@@ -10,6 +10,7 @@ import { getConvertedSize } from "@docspace/common/utils";
 
 import { getBannerAttribute } from "@docspace/components/utils/banner";
 import SnackBar from "@docspace/components/snackbar";
+import { QuotaBarTypes } from "SRC_DIR/helpers/constants";
 
 import QuotasBar from "./QuotasBar";
 import ConfirmEmailBar from "./ConfirmEmailBar";
@@ -17,6 +18,9 @@ import ConfirmEmailBar from "./ConfirmEmailBar";
 const CONFIRM_EMAIL = "confirm-email";
 const ROOM_QUOTA = "room-quota";
 const STORAGE_QUOTA = "storage-quota";
+const USER_QUOTA = "user-quota";
+const USER_AND_STORAGE_QUOTA = "user-storage-quota";
+const ROOM_AND_STORAGE_QUOTA = "room-storage-quota";
 
 const Bar = (props) => {
   const {
@@ -37,8 +41,12 @@ const Bar = (props) => {
     maxTotalSizeByQuota,
     usedTotalStorageSizeCount,
 
+    maxCountManagersByQuota,
+    addedManagersCount,
+
     showRoomQuotaBar,
     showStorageQuotaBar,
+    showUserQuotaBar,
 
     currentColorScheme,
 
@@ -49,6 +57,9 @@ const Bar = (props) => {
   const [barVisible, setBarVisible] = useState({
     roomQuota: false,
     storageQuota: false,
+    userQuota: false,
+    storageAndUserQuota: false,
+    storageAndRoomQuota: false,
     confirmEmail: false,
   });
 
@@ -75,12 +86,19 @@ const Bar = (props) => {
     }
 
     if (closed) {
-      if (!closed.includes(ROOM_QUOTA) && isAdmin) {
-        setBarVisible((value) => ({ ...value, roomQuota: true }));
-      }
-
-      if (!closed.includes(STORAGE_QUOTA) && isAdmin) {
-        setBarVisible((value) => ({ ...value, storageQuota: true }));
+      if (isAdmin) {
+        setBarVisible((value) => ({
+          ...value,
+          roomQuota: !closed.includes(QuotaBarTypes.RoomQuota),
+          storageQuota: !closed.includes(QuotaBarTypes.StorageQuota),
+          userQuota: !closed.includes(QuotaBarTypes.UserQuota),
+          storageAndRoomQuota: !closed.includes(
+            QuotaBarTypes.UserAndStorageQuota
+          ),
+          storageAndUserQuota: !closed.includes(
+            QuotaBarTypes.RoomAndStorageQuota
+          ),
+        }));
       }
 
       if (!closed.includes(CONFIRM_EMAIL)) {
@@ -90,6 +108,9 @@ const Bar = (props) => {
       setBarVisible({
         roomQuota: isAdmin,
         storageQuota: isAdmin,
+        userQuota: isAdmin,
+        storageAndUserQuota: isAdmin,
+        storageAndRoomQuota: isAdmin,
         confirmEmail: true,
       });
     }
@@ -138,8 +159,7 @@ const Bar = (props) => {
     onCloseQuota(isRoomQuota);
   };
 
-  const onCloseQuota = (isRoomQuota) => {
-    const currentBar = isRoomQuota ? ROOM_QUOTA : STORAGE_QUOTA;
+  const onCloseQuota = (currentBar) => {
     const closeItems = JSON.parse(localStorage.getItem("barClose")) || [];
 
     const closed =
@@ -147,11 +167,24 @@ const Bar = (props) => {
 
     localStorage.setItem("barClose", JSON.stringify(closed));
 
-    setBarVisible((value) =>
-      isRoomQuota
-        ? { ...value, roomQuota: false }
-        : { ...value, storageQuota: false }
-    );
+    switch (currentBar) {
+      case QuotaBarTypes.RoomQuota:
+        setBarVisible((value) => ({ ...value, roomQuota: false }));
+        break;
+      case QuotaBarTypes.StorageQuota:
+        setBarVisible((value) => ({ ...value, storageQuota: false }));
+        break;
+      case QuotaBarTypes.UserQuota:
+        setBarVisible((value) => ({ ...value, userQuota: false }));
+        break;
+      case QuotaBarTypes.UserAndStorageQuota:
+        setBarVisible((value) => ({ ...value, storageAndUserQuota: false }));
+        break;
+      case QuotaBarTypes.RoomAndStorageQuota:
+        setBarVisible((value) => ({ ...value, storageAndRoomQuota: false }));
+        break;
+    }
+
     setMaintenanceExist(false);
   };
 
@@ -170,19 +203,67 @@ const Bar = (props) => {
 
   const isRoomQuota = showRoomQuotaBar && barVisible.roomQuota;
   const isStorageQuota = showStorageQuotaBar && barVisible.storageQuota;
+  const isUserQuota = showUserQuotaBar && barVisible.userQuota;
+  const isUserStorageQuota =
+    showUserQuotaBar && showStorageQuotaBar && barVisible.storageAndUserQuota;
+  const isRoomStorageQuota =
+    showRoomQuotaBar && showStorageQuotaBar && barVisible.storageAndRoomQuota;
 
-  const quotasValue = {
-    maxValue: isRoomQuota
-      ? maxCountRoomsByQuota
-      : getConvertedSize(t, maxTotalSizeByQuota),
-    currentValue: isRoomQuota
-      ? usedRoomsCount
-      : getConvertedSize(t, usedTotalStorageSizeCount),
+  const getCurrentBar = () => {
+    if (
+      showRoomQuotaBar &&
+      showStorageQuotaBar &&
+      barVisible.storageAndRoomQuota
+    ) {
+      return {
+        type: QuotaBarTypes.RoomAndStorageQuota,
+        maxValue: null,
+        currentValue: null,
+      };
+    }
+    if (
+      showUserQuotaBar &&
+      showStorageQuotaBar &&
+      barVisible.storageAndUserQuota
+    ) {
+      return {
+        type: QuotaBarTypes.UserAndStorageQuota,
+        maxValue: null,
+        currentValue: null,
+      };
+    }
+
+    if (showRoomQuotaBar && barVisible.roomQuota) {
+      return {
+        type: QuotaBarTypes.RoomQuota,
+        maxValue: maxCountRoomsByQuota,
+        currentValue: usedRoomsCount,
+      };
+    }
+    if (showStorageQuotaBar && barVisible.storageQuota) {
+      return {
+        type: QuotaBarTypes.StorageQuota,
+        maxValue: getConvertedSize(t, maxTotalSizeByQuota),
+        currentValue: getConvertedSize(t, usedTotalStorageSizeCount),
+      };
+    }
+    if (showUserQuotaBar && barVisible.userQuota) {
+      return {
+        type: QuotaBarTypes.UserQuota,
+        maxValue: maxCountManagersByQuota,
+        currentValue: addedManagersCount,
+      };
+    }
+    return null;
   };
+
+  const currentBar = getCurrentBar();
+
+  const showQuotasBar = !!currentBar && tReady;
 
   React.useEffect(() => {
     const newValue =
-      ((isRoomQuota || isStorageQuota) && tReady) ||
+      showQuotasBar ||
       (withActivationBar && barVisible.confirmEmail && tReady) ||
       (htmlLink && !firstLoad && tReady);
 
@@ -192,21 +273,18 @@ const Bar = (props) => {
       setMainBarVisible(false);
     };
   }, [
-    isRoomQuota,
-    isStorageQuota,
-    tReady,
+    showQuotasBar,
     withActivationBar,
     barVisible.confirmEmail,
-    !!htmlLink,
+    tReady,
+    htmlLink,
     firstLoad,
-    mainBarVisible,
   ]);
 
-  return (isRoomQuota || isStorageQuota) && tReady ? (
+  return showQuotasBar ? (
     <QuotasBar
       currentColorScheme={currentColorScheme}
-      isRoomQuota={isRoomQuota}
-      {...quotasValue}
+      {...currentBar}
       onClick={onClickQuota}
       onClose={onCloseQuota}
       onLoad={onLoad}
@@ -240,8 +318,12 @@ export default inject(({ auth, profileActionsStore }) => {
     maxTotalSizeByQuota,
     usedTotalStorageSizeCount,
 
+    maxCountManagersByQuota,
+    addedManagersCount,
+
     showRoomQuotaBar,
     showStorageQuotaBar,
+    showUserQuotaBar,
   } = auth.currentQuotaStore;
 
   const {
@@ -263,8 +345,12 @@ export default inject(({ auth, profileActionsStore }) => {
     maxTotalSizeByQuota,
     usedTotalStorageSizeCount,
 
+    maxCountManagersByQuota,
+    addedManagersCount,
+
     showRoomQuotaBar,
     showStorageQuotaBar,
+    showUserQuotaBar,
 
     currentColorScheme,
     setMainBarVisible,
