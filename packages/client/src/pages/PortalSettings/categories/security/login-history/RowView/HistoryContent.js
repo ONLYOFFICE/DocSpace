@@ -10,6 +10,7 @@ const StyledRowContent = styled(RowContent)`
     justify-content: flex-start;
     width: min-content;
   }
+  padding-bottom: 10px;
 `;
 
 export const HistoryContent = ({ sectionWidth, item }) => {
