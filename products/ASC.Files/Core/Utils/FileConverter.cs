@@ -456,13 +456,14 @@ public class FileConverter
 
         var fileUri = _pathProvider.GetFileStreamUrl(file);
         var fileExtension = file.ConvertedExtension;
-        var toExtension = _fileUtility.GetInternalExtension(file.Title);
+        var toExtension = _fileUtility.GetInternalConvertExtension(file.Title);
         var docKey = _documentServiceHelper.GetDocKey(file);
 
         fileUri = _documentServiceConnector.ReplaceCommunityAdress(fileUri);
 
         var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, null, CultureInfo.CurrentUICulture.Name, null, null, false);
         var convertUri = uriTuple.ConvertedDocumentUri;
+        var convertType = uriTuple.convertedFileType;
 
         var operationResult = new FileConverterOperationResult
         {
@@ -484,7 +485,7 @@ public class FileConverter
 
         var operationResultError = string.Empty;
 
-        var newFile = await SaveConvertedFileAsync(file, convertUri);
+        var newFile = await SaveConvertedFileAsync(file, convertUri, convertType);
         if (newFile != null)
         {
             await _socketManager.CreateFileAsync(file);
@@ -545,13 +546,13 @@ public class FileConverter
         }
     }
 
-    public async Task<File<T>> SaveConvertedFileAsync<T>(File<T> file, string convertedFileUrl)
+    public async Task<File<T>> SaveConvertedFileAsync<T>(File<T> file, string convertedFileUrl, string convertedFileType)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
         File<T> newFile = null;
         var markAsTemplate = false;
-        var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, _fileUtility.GetInternalExtension(file.Title));
+        var newFileTitle = FileUtility.ReplaceFileExtension(file.Title, convertedFileType);
 
         if (!_filesSettingsHelper.StoreOriginalFiles && await _fileSecurity.CanEditAsync(file))
         {
