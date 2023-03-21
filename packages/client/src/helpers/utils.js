@@ -196,8 +196,7 @@ export const filterUserRoleOptions = (
   currentUser,
   withRemove = false
 ) => {
-  if (!options || !options.isArray()) return options;
-  console.log(options, currentUser);
+  if (!options || Array.isArray(options)) return options;
   let newOptions = [...options];
 
   if (currentUser?.isAdmin || currentUser?.isOwner) {
