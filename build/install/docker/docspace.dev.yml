@@ -33,13 +33,15 @@ x-service: &x-service-base
 
 services:
   onlyoffice-elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+    image: onlyoffice/elasticsearch:${ELK_VERSION}
     container_name: ${ELK_HOST}
     restart: always
     environment:
       - discovery.type=single-node
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
+      - "indices.fielddata.cache.size=30%"
+      - "indices.memory.index_buffer_size=30%"
     ulimits:
       memlock:
         soft: -1

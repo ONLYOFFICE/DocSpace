@@ -6,10 +6,11 @@ import styled from "styled-components";
 import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 
 const StyledRowContent = styled(RowContent)`
+  padding-bottom: 10px;
   .row-main-container-wrapper {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
+    justify-content: flex-start;
+    width: min-content;
   }
 
   ${(props) => props.isSettingNotPaid && UnavailableStyles}
@@ -29,12 +30,7 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
       isSettingNotPaid={isSettingNotPaid}
     >
       <div className="user-container-wrapper">
-        <Text
-          fontWeight={600}
-          fontSize="14px"
-          isTextOverflow={true}
-          className="settings_unavailable"
-        >
+        <Text fontWeight={600} fontSize="14px" isTextOverflow={true}>
           {item.user}
         </Text>
       </div>
