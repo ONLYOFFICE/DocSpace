@@ -193,7 +193,7 @@ function ViewerPlayer({
 
         api.start({
           x:
-            (isFistImage && mdx > 0) || (isLastImage && mdx < 0)
+            (isFistImage && mdx > 0) || (isLastImage && mdx < 0) || isFullScreen
               ? style.x.get()
               : dx,
           y: dy >= memo ? dy : style.y.get(),
@@ -206,10 +206,12 @@ function ViewerPlayer({
       onDragEnd: ({ movement: [mdx, mdy] }) => {
         if (isDesktop) return;
 
-        if (mdx < -style.width.get() / 4) {
-          return onNext();
-        } else if (mdx > style.width.get() / 4) {
-          return onPrev();
+        if (!isFullScreen) {
+          if (mdx < -style.width.get() / 4) {
+            return onNext();
+          } else if (mdx > style.width.get() / 4) {
+            return onPrev();
+          }
         }
         if (mdy > 120) {
           return onMask();
