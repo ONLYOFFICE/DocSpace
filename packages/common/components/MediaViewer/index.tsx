@@ -66,6 +66,12 @@ function MediaViewer({
   }, [props.playlist.length]);
 
   useEffect(() => {
+    return () => {
+      props.onClose();
+    };
+  }, []);
+
+  useEffect(() => {
     const { playlist, files, setBufferSelection } = props;
 
     const currentFile = playlist[playlistPos];
