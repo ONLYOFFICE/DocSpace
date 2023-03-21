@@ -367,7 +367,8 @@ const Items = ({
         );
       });
 
-      if (!firstLoad) items.splice(3, 0, <SettingsItem key="settings-item" />);
+      if (!firstLoad && !isVisitor)
+        items.splice(3, 0, <SettingsItem key="settings-item" />);
       if (!isVisitor && !isCollaborator)
         items.splice(3, 0, <AccountsItem key="accounts-item" />);
 

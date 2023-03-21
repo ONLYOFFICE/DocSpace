@@ -153,25 +153,29 @@ const PersonalSettings = ({
         />
       </Box> */}
 
-      <Box className="settings-section">
-        <Heading className="heading" level={2} size="xsmall">
-          {t("StoringFileVersion")}
-        </Heading>
-        {!isVisitor && (
-          <ToggleButton
-            className="toggle-btn"
-            label={t("UpdateOrCreate")}
-            onChange={onChangeUpdateIfExist}
-            isChecked={updateIfExist}
-          />
-        )}
-        <ToggleButton
-          className="toggle-btn"
-          label={t("KeepIntermediateVersion")}
-          onChange={onChangeForceSave}
-          isChecked={forceSave}
-        />
-      </Box>
+      {!isVisitor && (
+        <Box className="settings-section">
+          <Heading className="heading" level={2} size="xsmall">
+            {t("StoringFileVersion")}
+          </Heading>
+          {!isVisitor && (
+            <ToggleButton
+              className="toggle-btn"
+              label={t("UpdateOrCreate")}
+              onChange={onChangeUpdateIfExist}
+              isChecked={updateIfExist}
+            />
+          )}
+          {!isVisitor && (
+            <ToggleButton
+              className="toggle-btn"
+              label={t("KeepIntermediateVersion")}
+              onChange={onChangeForceSave}
+              isChecked={forceSave}
+            />
+          )}
+        </Box>
+      )}
     </StyledSettings>
   );
 };
