@@ -406,10 +406,9 @@ function ViewerPlayer({
     togglePlay();
   };
 
-  const handleVideoEnded = (
-    event: React.SyntheticEvent<HTMLVideoElement, Event>
-  ) => {
+  const handleVideoEnded = () => {
     setIsPlaying(false);
+    if (isMobile) removePanelVisibleTimeout();
   };
 
   const handleVolumeChange = useCallback(

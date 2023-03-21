@@ -65,7 +65,7 @@ function Viewer(props: ViewerProps) {
   const resetToolbarVisibleTimer = () => {
     if (panelToolbarRef.current) return;
 
-    if (panelVisibleRef.current) {
+    if (panelVisibleRef.current && panelVisible) {
       clearTimeout(timerIDRef.current);
       timerIDRef.current = setTimeout(() => {
         panelVisibleRef.current = false;
@@ -73,6 +73,7 @@ function Viewer(props: ViewerProps) {
       }, 2500);
     } else {
       setPanelVisible(true);
+      clearTimeout(timerIDRef.current);
       panelVisibleRef.current = true;
 
       timerIDRef.current = setTimeout(() => {
