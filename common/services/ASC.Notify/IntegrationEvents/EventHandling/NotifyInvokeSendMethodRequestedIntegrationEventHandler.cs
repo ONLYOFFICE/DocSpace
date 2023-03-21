@@ -40,7 +40,7 @@ public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrati
         _serviceScopeFactory = serviceScopeFactory;
     }
 
-    private async void InvokeSendMethod(NotifyInvoke notifyInvoke)
+    private async Task InvokeSendMethodAsync(NotifyInvoke notifyInvoke)
     {
         var service = notifyInvoke.Service;
         var method = notifyInvoke.Method;
@@ -79,7 +79,7 @@ public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrati
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
 
-            InvokeSendMethod(@event.NotifyInvoke);
+            await InvokeSendMethodAsync(@event.NotifyInvoke);
 
             await Task.CompletedTask;
         }

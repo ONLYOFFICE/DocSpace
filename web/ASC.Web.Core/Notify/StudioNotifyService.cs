@@ -88,14 +88,14 @@ public class StudioNotifyService
         _studioNotifyHelper = studioNotifyHelper;
     }
 
-    public void SendMsgToAdminAboutProfileUpdated()
+    public async Task SendMsgToAdminAboutProfileUpdatedAsync()
     {
-        _client.SendNoticeAsync(Actions.SelfProfileUpdated, null);
+        await _client.SendNoticeAsync(Actions.SelfProfileUpdated, null);
     }
 
-    public void SendMsgToAdminFromNotAuthUser(string email, string message)
+    public async Task SendMsgToAdminFromNotAuthUserAsync(string email, string message)
     {
-        _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
+        await _client.SendNoticeAsync(Actions.UserMessageToAdmin, null, new TagValue(Tags.Body, message), new TagValue(Tags.UserEmail, email));
     }
 
     public async Task SendMsgToSalesAsync(string email, string userName, string message)

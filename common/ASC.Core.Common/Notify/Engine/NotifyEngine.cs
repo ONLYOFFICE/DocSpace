@@ -56,8 +56,8 @@ public class NotifyEngine : INotifyEngine, IDisposable
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = options.CreateLogger("ASC.Notify");
         _serviceScopeFactory = serviceScopeFactory;
-        _notifyScheduler = new Thread(NotifyScheduler) { IsBackground = true, Name = "NotifyScheduler" };
-        _notifySender = new Thread(NotifySender) { IsBackground = true, Name = "NotifySender" };
+        _notifyScheduler = new Thread(NotifySchedulerAsync) { IsBackground = true, Name = "NotifyScheduler" };
+        _notifySender = new Thread(NotifySenderAsync) { IsBackground = true, Name = "NotifySender" };
     }
 
     public void AddAction<T>() where T : INotifyEngineAction
@@ -110,7 +110,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private async void NotifyScheduler(object state)
+    private async void NotifySchedulerAsync(object state)
     {
         try
         {
@@ -178,7 +178,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     }
 
 
-    private async void NotifySender(object state)
+    private async void NotifySenderAsync(object state)
     {
         try
         {

@@ -996,7 +996,7 @@ public class UserController : PeopleControllerBase
         }
         if (self && !isDocSpaceAdmin)
         {
-            _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
+            await _studioNotifyService.SendMsgToAdminAboutProfileUpdatedAsync();
         }
 
         // change user type

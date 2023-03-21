@@ -77,7 +77,7 @@ public class TelegramDao
             .ExecuteDeleteAsync();
     }
 
-    public async void DeleteAsync(long telegramId)
+    public async Task DeleteAsync(long telegramId)
     {
         using var dbContext = await _dbContextFactory.CreateDbContextAsync();
 

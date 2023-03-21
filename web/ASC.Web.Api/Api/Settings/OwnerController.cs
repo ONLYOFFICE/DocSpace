@@ -96,7 +96,7 @@ public class OwnerController : BaseSettingsController
 
     [HttpPut("owner")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalOwnerChange")]
-    public async void Owner(SettingsRequestsDto inDto)
+    public async Task OwnerAsync(SettingsRequestsDto inDto)
     {
         var newOwner = Constants.LostUser;
         try

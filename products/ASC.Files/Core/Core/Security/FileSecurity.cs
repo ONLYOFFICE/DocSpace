@@ -1092,7 +1092,7 @@ public class FileSecurity : IFileSecurity
             FileShareOptions = fileShareOptions,
         };
 
-        securityDao.SetShareAsync(r);
+        await securityDao.SetShareAsync(r);
     }
 
     public Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)

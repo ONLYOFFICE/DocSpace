@@ -74,7 +74,7 @@ public class StudioNotifyServiceSender
             }
             else if (_tenantExtraConfig.Opensource)
             {
-                _workContext.RegisterSendMethod(SendOpensourceTariffLettersAsync, cron);
+                _workContext.RegisterSendMethod(SendOpensourceTariffLetters, cron);
             }
             else if (_tenantExtraConfig.Saas)
             {
@@ -110,10 +110,10 @@ public class StudioNotifyServiceSender
         scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendEnterpriseLettersAsync(EMailSenderName, scheduleDate).Wait();
     }
 
-    public async void SendOpensourceTariffLettersAsync(DateTime scheduleDate)
+    public void SendOpensourceTariffLetters(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        await scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLettersAsync(EMailSenderName, scheduleDate);
+        scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendOpensourceLettersAsync(EMailSenderName, scheduleDate).Wait();
     }
 
     public void SendLettersPersonal(DateTime scheduleDate)
