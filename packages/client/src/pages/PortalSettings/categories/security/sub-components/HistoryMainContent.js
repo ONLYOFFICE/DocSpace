@@ -89,7 +89,7 @@ const DownLoadWrapper = styled.div`
 
   .download-report_description {
     font-style: normal;
-    font-weight: 600;
+    font-weight: 400;
     font-size: 12px;
     line-height: 16px;
 
