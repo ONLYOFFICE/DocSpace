@@ -114,6 +114,8 @@ class MembersHelper {
           options.viewer,
           ...deleteOption,
         ];
+      default:
+        return [];
     }
   };
 
