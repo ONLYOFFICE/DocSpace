@@ -884,6 +884,14 @@ class ContextOptionsStore {
         action: item.id,
       },
       {
+        id: "option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        icon: InvitationLinkReactSvgUrl,
+        onClick: () => this.onCopyLink(item, t),
+        disabled: false,
+      },
+      {
         id: "option_room-info",
         key: "room-info",
         label: t("Common:Info"),
@@ -915,14 +923,6 @@ class ContextOptionsStore {
         label: t("LinkForPortalUsers"),
         icon: InvitationLinkReactSvgUrl,
         onClick: () => this.onClickLinkForPortal(item, t),
-        disabled: false,
-      },
-      {
-        id: "option_link-for-room-members",
-        key: "link-for-room-members",
-        label: t("LinkForRoomMembers"),
-        icon: InvitationLinkReactSvgUrl,
-        onClick: () => this.onCopyLink(item, t),
         disabled: false,
       },
       // {
