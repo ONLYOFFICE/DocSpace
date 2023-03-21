@@ -76,7 +76,7 @@ reassign_values (){
 		EXEC_FILE="ASC.ApiSystem.dll"
 	;;
 	socket )
-		SERVICE_PORT="5028"
+		SERVICE_PORT="9899"
 		WORK_DIR="${BASE_DIR}/services/ASC.Socket.IO/"
 		EXEC_FILE="server.js"
 	;;
