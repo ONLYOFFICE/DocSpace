@@ -212,6 +212,9 @@ set_core_machinekey () {
 		CORE_MACHINEKEY=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12);
 		echo $CORE_MACHINEKEY >> $APP_DIR/.private/machinekey
 	fi
+
+	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
+	sed "s^\(machine_key\)\s*=.*^\1 = ${CORE_MACHINEKEY}^g" -i $APP_DIR/radicale.config
 }
 
 install_json() {
@@ -226,9 +229,6 @@ install_json() {
 	if [ ! -e $USER_CONF ]; then
 		echo "{}" >> $USER_CONF
 		chown ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $USER_CONF
-	
-		set_core_machinekey
-		$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
 	fi
 }
 
@@ -303,8 +303,8 @@ establish_mysql_conn(){
 SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
 
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
-	sed "s/Server=.*/$CONNECTION_STRING\"/g" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 
+	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//&/\\&}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 	change_mysql_config
 
 	#Enable database migration
@@ -435,7 +435,7 @@ setup_nginx(){
 
 		shopt -s nocasematch
 		PORTS=()
-		if $(getenforce) >/dev/null 2>&1; then
+		if command -v getenforce &> /dev/null; then
 			case $(getenforce) in
 				enforcing|permissive)
 					PORTS+=('5000') #ASC.Web.Api
@@ -446,14 +446,16 @@ setup_nginx(){
 					PORTS+=('5006') #ASC.Studio.Notify
 					PORTS+=('5007') #ASC.Files/server
 					PORTS+=('5009') #ASC.Files/service
+					PORTS+=('5010') #ASC.ApiSystem
 					PORTS+=('5011') #ASC.Login
 					PORTS+=('5012') #ASC.Data.Backup
 					PORTS+=('5013') #ASC.Files/editor
 					PORTS+=('5027') #ASC.ClearEvents
-					PORTS+=('5028') #ASC.Socket.IO
 					PORTS+=('5032') #ASC.Data.Backup.BackgroundTasks
-					PORTS+=('8081') #Storybook
+					PORTS+=('5033') #ASC.Web.HealthChecks
+					PORTS+=('5100') #ASC.ApiCache
 					PORTS+=('9834') #ASC.SsoAuth
+					PORTS+=('9899') #ASC.Socket.IO
 					setsebool -P httpd_can_network_connect on
 				;;
 				disabled)
@@ -480,8 +482,7 @@ setup_docs() {
 	local JSON_DSCONF="$JSON $DS_CONF -e"
 
 	#Changing the Docs port in nginx conf
-	sed -i "s/0.0.0.0:.*;/0.0.0.0:$DOCUMENT_SERVER_PORT;/" $NGINX_CONF/ds.conf
-	sed -i "s/]:.*;/]:$DOCUMENT_SERVER_PORT default_server;/g" $NGINX_CONF/ds.conf 
+	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DS_PORT}'\3\4/' -i $NGINX_CONF/ds.conf 
 	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf 	
 
 	#Enable JWT validation for Docs
@@ -495,7 +496,7 @@ setup_docs() {
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
 	'secret': {'value': \"$DOCUMENT_SERVER_JWT_SECRET\",'header': \"$DOCUMENT_SERVER_JWT_HEADER\"}, \
-	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
+	'url': {'public': \"http://${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT}\", 'internal': \"/ds-vpath/\",'portal': \"http://$APP_HOST:$APP_PORT\"}}}" >/dev/null 2>&1
 	
 	echo "OK"
 }
@@ -594,6 +595,15 @@ setup_rabbitmq() {
 	echo "OK"
 }
 
+product_configuration(){
+	echo -n "Configuring ${PRODUCT}... "
+
+	$JSON $APP_DIR/plugins.json -e "this.pluginsConf={'path': \"$PRODUCT_DIR/Tools/radicale/plugins/\" }" >/dev/null 2>&1 
+	set_core_machinekey
+
+	echo "OK"
+}
+
 if command -v yum >/dev/null 2>&1; then
 	DIST="RedHat"
 	PACKAGE_MANAGER="rpm -q"
@@ -607,6 +617,7 @@ elif command -v apt >/dev/null 2>&1; then
 fi
 
 install_json
+product_configuration
 
 if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-community-client >/dev/null 2>&1; then
     input_db_params

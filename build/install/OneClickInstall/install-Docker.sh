@@ -870,6 +870,7 @@ install_product () {
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
+	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }
 
 get_local_image_RepoDigests() {
