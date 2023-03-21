@@ -887,6 +887,7 @@ class ContextOptionsStore {
         disabled: false,
         action: item.id,
       },
+      ...versionActions,
       {
         id: "option_link-for-room-members",
         key: "link-for-room-members",
@@ -936,7 +937,6 @@ class ContextOptionsStore {
       //   icon: MailReactSvgUrl,
       //   disabled: emailSendIsDisabled,
       // },
-      ...versionActions,
       {
         id: "option_show-info",
         key: "show-info",
