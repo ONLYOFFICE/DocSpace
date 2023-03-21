@@ -5,10 +5,8 @@ import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import LanguageAndTimeZone from "./Customization/language-and-time-zone";
 import WelcomePageSettings from "./Customization/welcome-page-settings";
-import { isMobileOnly } from "react-device-detect";
 import PortalRenaming from "./Customization/portal-renaming";
 import DNSSettings from "./Customization/dns-settings";
-import { isSmallTablet } from "@docspace/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@docspace/components/themes";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
@@ -66,16 +64,19 @@ const StyledComponent = styled.div`
 StyledComponent.defaultProps = { theme: Base };
 
 const Customization = (props) => {
-  const { t, isLoaded, tReady, setIsLoadedCustomization, isLoadedPage } = props;
-  const [mobileView, setMobileView] = useState(true);
+  const {
+    t,
+    isLoaded,
+    tReady,
+    setIsLoadedCustomization,
+    isLoadedPage,
+    viewMobile,
+  } = props;
 
   const isLoadedSetting = isLoaded && tReady;
 
   useEffect(() => {
     setDocumentTitle(t("Customization"));
-    window.addEventListener("resize", checkInnerWidth);
-
-    return () => window.removeEventListener("resize", checkInnerWidth);
   }, []);
 
   useEffect(() => {
@@ -84,17 +85,7 @@ const Customization = (props) => {
     }
   }, [isLoadedSetting]);
 
-  const checkInnerWidth = () => {
-    if (isSmallTablet()) {
-      setMobileView(true);
-    } else {
-      setMobileView(false);
-    }
-  };
-
-  const isMobile = !!((isSmallTablet() || isMobileOnly) && mobileView);
-
-  return isMobile ? (
+  return viewMobile ? (
     <CustomizationNavbar isLoadedPage={isLoadedPage} />
   ) : (
     <StyledComponent>
@@ -105,13 +96,13 @@ const Customization = (props) => {
           {t("Settings:CustomizationDescription")}
         </div>
       )}
-      <LanguageAndTimeZone isMobileView={isMobile} />
+      <LanguageAndTimeZone isMobileView={viewMobile} />
       <StyledSettingsSeparator />
-      <WelcomePageSettings isMobileView={isMobile} />
+      <WelcomePageSettings isMobileView={viewMobile} />
       <StyledSettingsSeparator />
-      <DNSSettings isMobileView={isMobile} />
+      <DNSSettings isMobileView={viewMobile} />
       <StyledSettingsSeparator />
-      <PortalRenaming isMobileView={isMobile} />
+      <PortalRenaming isMobileView={viewMobile} />
     </StyledComponent>
   );
 };
