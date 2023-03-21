@@ -90,7 +90,7 @@ class Program
             //culture = "ru";
             //exportPath = @"C:\Git\portals\";
             //key = "*,HtmlMaster*";
-            key = "*";
+            //key = "*";
 
             if (format == "json")
             {
