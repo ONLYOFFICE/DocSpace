@@ -936,7 +936,7 @@ class ContextOptionsStore {
       {
         id: "option_show-info",
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
