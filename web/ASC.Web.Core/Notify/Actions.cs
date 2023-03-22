@@ -145,4 +145,11 @@ public static class Actions
 
     public static readonly INotifyAction SaasAdminUserAppsTipsV1 = new NotifyAction("saas_admin_user_apps_tips_v1");
     public static readonly INotifyAction EnterpriseAdminUserAppsTipsV1 = new NotifyAction("enterprise_admin_user_apps_tips_v1");
-}
+
+    public static readonly INotifyAction RoomsActivity = new NotifyAction("rooms_activity", "rooms activity");
+
+    public static readonly INotifyAction SaasOwnerPaymentWarningGracePeriodBeforeActivation = new NotifyAction("saas_owner_payment_warning_grace_period_before_activation");
+    public static readonly INotifyAction SaasOwnerPaymentWarningGracePeriodActivation = new NotifyAction("saas_owner_payment_warning_grace_period_activation");
+    public static readonly INotifyAction SaasOwnerPaymentWarningGracePeriodLastDay = new NotifyAction("saas_owner_payment_warning_grace_period_last_day");
+    public static readonly INotifyAction SaasOwnerPaymentWarningGracePeriodExpired = new NotifyAction("saas_owner_payment_warning_grace_period_expired");
+} 

@@ -24,9 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Notify.Engine;
-
+using Actions = ASC.Web.Studio.Core.Notify.Actions;
 using Context = ASC.Notify.Context;
+using ConfigurationConstants = ASC.Core.Configuration.Constants;
 
 namespace ASC.Files.Core.Services.NotifyService;
 
@@ -45,6 +45,7 @@ public class NotifyClient
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly Context _notifyContext;
     private readonly NotifyEngineQueue _notifyEngineQueue;
+    private readonly RoomsNotificationSettingsHelper _roomsNotificationSettingsHelper;
 
     public NotifyClient(
         Context notifyContext,
@@ -58,7 +59,8 @@ public class NotifyClient
         PathProvider pathProvider,
         UserManager userManager,
         TenantManager tenantManager,
-        StudioNotifyHelper studioNotifyHelper)
+        StudioNotifyHelper studioNotifyHelper,
+        RoomsNotificationSettingsHelper roomsNotificationSettingsHelper)
     {
         _notifyContext = notifyContext;
         _notifyEngineQueue = notifyEngineQueue;
@@ -72,6 +74,7 @@ public class NotifyClient
         _userManager = userManager;
         _tenantManager = tenantManager;
         _studioNotifyHelper = studioNotifyHelper;
+        _roomsNotificationSettingsHelper = roomsNotificationSettingsHelper;
     }
 
     public void SendDocuSignComplete<T>(File<T> file, string sourceTitle)
@@ -194,7 +197,7 @@ public class NotifyClient
         }
     }
 
-    public void SendEditorMentions<T>(FileEntry<T> file, string documentUrl, List<Guid> recipientIds, string message)
+    public async Task SendEditorMentions<T>(FileEntry<T> file, string documentUrl, List<Guid> recipientIds, string message)
     {
         if (file == null || recipientIds.Count == 0)
         {
@@ -205,23 +208,89 @@ public class NotifyClient
 
         var recipientsProvider = _notifySource.GetRecipientsProvider();
 
+        var folderDao = _daoFactory.GetFolderDao<T>();
+        var (roomId, roomTitle) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
+        var roomUrl = _pathProvider.GetRoomsUrl(roomId);       
+
         foreach (var recipientId in recipientIds)
         {
             var u = _userManager.GetUsers(recipientId);
 
+            if (!_studioNotifyHelper.IsSubscribedToNotify(u, Actions.RoomsActivity))
+            {
+                continue;
+            }
+
             var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
+
+            var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForUser(recipientId);
+
+            if (disabledRooms.Contains(roomId))
+            {
+                continue;
+            }
 
             client.SendNoticeAsync(
                 NotifyConstants.EventEditorMentions,
                 file.UniqID,
                 recipient,
-                true,
                 new TagValue(NotifyConstants.TagDocumentTitle, file.Title),
                 new TagValue(NotifyConstants.TagDocumentUrl, _baseCommonLinkUtility.GetFullAbsolutePath(documentUrl)),
                 new TagValue(NotifyConstants.TagMessage, message.HtmlEncode()),
-                new TagValue(NotifyConstants.TagFolderID, ((File<T>)file).ParentId),
+                new TagValue(NotifyConstants.RoomTitle, roomTitle),
+                new TagValue(NotifyConstants.RoomUrl, roomUrl),
                 new AdditionalSenderTag("push.sender")
                 );
+        }
+    }
+
+    public void SendRoomRemoved<T>(FileEntry<T> folder, List<AceWrapper> aces, Guid userId)
+    {
+        if (folder == null || folder.FileEntryType != FileEntryType.Folder || aces.Count == 0)
+        {
+            return;
+        }
+
+        var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
+        var recipientsProvider = _notifySource.GetRecipientsProvider();
+
+        var folderId = folder.Id.ToString();
+        var roomUrl = _pathProvider.GetRoomsUrl(folderId);
+
+        foreach (var ace in aces)
+        {
+            var recepientId = ace.Id;
+
+            if (ace.SubjectGroup
+                || recepientId == userId
+                || ace.Access != FileShare.RoomAdmin && ace.Owner != true)
+            {
+                continue;
+            }
+
+            if (!_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.RoomsActivity))
+            {
+                continue;
+            }
+
+            var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForUser(userId).Select(d => d.ToString());
+
+            if (disabledRooms.Contains(folderId))
+            {
+                continue;
+            }
+
+            var recipient = recipientsProvider.GetRecipient(recepientId.ToString());
+
+            client.SendNoticeAsync(
+                NotifyConstants.EventRoomRemoved,
+                folder.UniqID,
+                recipient,
+                ConfigurationConstants.NotifyEMailSenderSysName,
+                new TagValue(NotifyConstants.RoomTitle, folder.Title),
+                new TagValue(NotifyConstants.RoomUrl, roomUrl)
+                );
+
         }
     }
 

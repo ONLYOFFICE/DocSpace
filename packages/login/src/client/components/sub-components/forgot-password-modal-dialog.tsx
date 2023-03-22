@@ -88,6 +88,7 @@ const ForgotPasswordModalDialog: React.FC<IForgotPasswordDialogProps> = ({
           className="text-body"
           isBold={false}
           fontSize="13px"
+          noSelect
         >
           {t("MessageSendPasswordRecoveryInstructionsOnEmail")}
         </Text>

@@ -19,9 +19,9 @@ const App: React.FC<ILoginProps> = (props) => {
       const { status, standalone, message } = props.error;
 
       if (status === 404 && !standalone) {
-        window.location.replace(
-          `${wrongPortalNameUrl}?url=${window.location.hostname}`
-        );
+        const url = new URL(wrongPortalNameUrl);
+        url.searchParams.append("url", window.location.hostname);
+        window.location.replace(url);
       }
 
       throw new Error(message);

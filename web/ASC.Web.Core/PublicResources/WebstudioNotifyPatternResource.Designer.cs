@@ -214,6 +214,132 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; created a new document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionFileCreated {
+            get {
+                return ResourceManager.GetString("ActionFileCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; edited the document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt;.
+        /// </summary>
+        public static string ActionFileEdited {
+            get {
+                return ResourceManager.GetString("ActionFileEdited", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; uploaded a new document: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt;.
+        /// </summary>
+        public static string ActionFileUploaded {
+            get {
+                return ResourceManager.GetString("ActionFileUploaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; added a new comment to the document version: &lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionNewComment {
+            get {
+                return ResourceManager.GetString("ActionNewComment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; moved the room: &lt;a href={1}&gt;{2}&lt;/a&gt; to archive - &lt;b&gt;{3}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionRoomArchived {
+            get {
+                return ResourceManager.GetString("ActionRoomArchived", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; created a new room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionRoomCreated {
+            get {
+                return ResourceManager.GetString("ActionRoomCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; deleted the room: &lt;b&gt;{1}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionRoomRemoved {
+            get {
+                return ResourceManager.GetString("ActionRoomRemoved", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; renamed the room: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionRoomRenamed {
+            get {
+                return ResourceManager.GetString("ActionRoomRenamed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; was assigned the role of &lt;b&gt;{1}&lt;/b&gt; in the room: &lt;a href={2}&gt;{3}&lt;/a&gt;.
+        /// </summary>
+        public static string ActionRoomUpdateAccessForUser {
+            get {
+                return ResourceManager.GetString("ActionRoomUpdateAccessForUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt;  was added to the room: &lt;a href={1}&gt;{2}&lt;/a&gt;.
+        /// </summary>
+        public static string ActionUserAddedToRoom {
+            get {
+                return ResourceManager.GetString("ActionUserAddedToRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New DocSpace user added: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionUserCreated {
+            get {
+                return ResourceManager.GetString("ActionUserCreated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; was removed from the room: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionUserRemovedFromRoom {
+            get {
+                return ResourceManager.GetString("ActionUserRemovedFromRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;b&gt;{0}&lt;/b&gt; changed the access level of the users &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionUsersUpdatedType {
+            get {
+                return ResourceManager.GetString("ActionUsersUpdatedType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocSpace user updated: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;.
+        /// </summary>
+        public static string ActionUserUpdated {
+            get {
+                return ResourceManager.GetString("ActionUserUpdated", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Accept.
         /// </summary>
         public static string ButtonAccept {
@@ -471,6 +597,15 @@ namespace ASC.Web.Core.PublicResources {
         public static string ButtonUseDiscount {
             get {
                 return ResourceManager.GetString("ButtonUseDiscount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Visit Payments Section.
+        /// </summary>
+        public static string ButtonVisitPaymentsSection {
+            get {
+                return ResourceManager.GetString("ButtonVisitPaymentsSection", resourceCulture);
             }
         }
         
@@ -1910,6 +2045,82 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay‎ days for your ONLYOFFICE DocSpace is activated.
+        ///
+        ///Make sure to pay your Business subscription before the grace period is due. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_activation {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that your ONLYOFFICE DocSpace subscription expires in three days. After that, the grace period of $PaymentDelay days will be activated.
+        ///
+        ///We recommend paying your Business subscription now and continue to use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_before_activation {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_before_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay days for your ONLYOFFICE DocSpace is over.
+        ///
+        ///Make sure to pay your Business subscription as soon as possible. Thus, you will be able to use all the benefits of your ONLYOFFICE DocSpace as before.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_expired {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hello, $UserName!
+        ///
+        ///Please take into consideration that the grace period of $PaymentDelay days for your ONLYOFFICE DocSpace will expire tomorrow.
+        ///
+        ///Make sure to pay your Business subscription today. Thus, you will be able to further use all the benefits of your ONLYOFFICE DocSpace.
+        ///
+        ///$GreenButton
+        ///
+        ///Truly yours,
+        ///ONLYOFFICE Team
+        ///&quot;www.onlyoffice.com&quot;:&quot;https://onlyoffice.com/&quot;.
+        /// </summary>
+        public static string pattern_saas_owner_payment_warning_grace_period_last_day {
+            get {
+                return ResourceManager.GetString("pattern_saas_owner_payment_warning_grace_period_last_day", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
         ///You are invited to join $Message room at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
@@ -1988,24 +2199,12 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.What&apos;s new on &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal for $Date
+        ///   Looks up a localized string similar to h1.Here is what’s new in your DocSpace on $Date
         ///
         ///#foreach($activity in $Activities)
+        ///$activity
         ///
-        ///h2.$activity.Key
-        ///
-        ///#foreach($whatsNewActivity in $activity.Value)
-        ///#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-        ///#end &quot;$whatsNewActivity.Title&quot;:&quot;$whatsNewActivity.URL&quot;
-        ///*Author*: &quot;$whatsNewActivity.UserName&quot;:&quot;$whatsNewActivity.UserAbsoluteURL&quot;, $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-        ///
-        ///
-        ///#end
-        ///
-        ///#end
-        ///
-        ///
-        ///^If you do not want to receive the notificatio [rest of string was truncated]&quot;;.
+        ///#end.
         /// </summary>
         public static string pattern_send_whats_new {
             get {
@@ -2756,6 +2955,42 @@ namespace ASC.Web.Core.PublicResources {
         public static string subject_saas_guest_welcome_v115 {
             get {
                 return ResourceManager.GetString("subject_saas_guest_welcome_v115", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace activated.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_activation {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your ONLYOFFICE DocSpace subscription is about to expire.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_before_activation {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_before_activation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace expired.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_expired {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_expired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grace period for your ONLYOFFICE DocSpace expires tomorrow.
+        /// </summary>
+        public static string subject_saas_owner_payment_warning_grace_period_last_day {
+            get {
+                return ResourceManager.GetString("subject_saas_owner_payment_warning_grace_period_last_day", resourceCulture);
             }
         }
         

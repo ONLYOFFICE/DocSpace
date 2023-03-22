@@ -102,7 +102,7 @@ const ChangeUserTypeEvent = ({
       case "manager":
         return t("Common:RoomAdmin");
       case "collaborator":
-        return t("Common:Collaborator");
+        return t("Common:PowerUser");
       case "user":
       default:
         return t("Common:User");

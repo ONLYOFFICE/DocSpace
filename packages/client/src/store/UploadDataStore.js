@@ -180,6 +180,7 @@ class UploadDataStore {
       percent: 100,
       uploaded: true,
       converted: true,
+      currentUploadNumber: 0,
     };
 
     const newHistory = this.uploadedFilesHistory.filter(
@@ -1513,7 +1514,7 @@ class UploadDataStore {
       let newFilter;
 
       if (!withPaging) {
-        removeFiles(fileIds, folderIds);
+        !isCopy && removeFiles(fileIds, folderIds);
         this.clearActiveOperations(fileIds, folderIds);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         this.dialogsStore.setIsFolderActions(false);

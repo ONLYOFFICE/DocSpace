@@ -117,6 +117,7 @@ class ComboBox extends React.Component {
       isMobileView,
       withoutPadding,
       isLoading,
+      isNoFixedHeightOptions,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -159,7 +160,7 @@ class ComboBox extends React.Component {
         : 6;
     }
 
-    const disableMobileView = optionsCount < 5;
+    const disableMobileView = optionsCount < 4;
 
     return (
       <StyledComboBox
@@ -218,6 +219,7 @@ class ComboBox extends React.Component {
             isAside={isAside}
             withBackground={withBackground}
             isMobileView={isMobileView && !disableMobileView}
+            isNoFixedHeightOptions={isNoFixedHeightOptions}
           >
             {advancedOptions
               ? advancedOptions

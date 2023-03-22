@@ -78,7 +78,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                         new
                         {
                             Tenant = -2,
-                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,total_size:107374182400,file_size:1024,manager:1",
+                            Features = "audit,ldap,sso,whitelabel,thirdparty,restore,contentsearch,total_size:107374182400,file_size:1024,manager:1",
                             Name = "admin",
                             Price = 30m,
                             ProductId = "1002",
@@ -87,7 +87,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                         new
                         {
                             Tenant = -3,
-                            Features = "free,thirdparty,audit,total_size:2147483648,manager:1,room:12,usersInRoom:3",
+                            Features = "free,total_size:2147483648,manager:1,room:12,usersInRoom:3",
                             Name = "startup",
                             Price = 0m,
                             Visible = false

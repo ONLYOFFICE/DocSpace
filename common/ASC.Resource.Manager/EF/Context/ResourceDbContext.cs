@@ -24,21 +24,11 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-using System.Collections.Generic;
-
-using ASC.Common;
-using ASC.Core.Common.EF;
 using ASC.Core.Common.EF.Model;
-using ASC.Resource.Manager.EF.Model;
-
-using Microsoft.EntityFrameworkCore;
 
 namespace ASC.Resource.Manager.EF.Context;
 
-public class MySqlResourceDbContext : ResourceDbContext { }
-public class PostgreSqlResourceDbContext : ResourceDbContext { }
-public class ResourceDbContext : BaseDbContext
+public class ResourceDbContext : DbContext
 {
     public DbSet<ResAuthors> Authors { get; set; }
     public DbSet<ResAuthorsFile> ResAuthorsFiles { get; set; }
@@ -47,22 +37,11 @@ public class ResourceDbContext : BaseDbContext
     public DbSet<ResData> ResData { get; set; }
     public DbSet<ResFiles> ResFiles { get; set; }
     public DbSet<ResReserve> ResReserve { get; set; }
-    protected override Dictionary<Provider, Func<BaseDbContext>> ProviderContext
-    {
-        get
-        {
-            return new Dictionary<Provider, Func<BaseDbContext>>()
-            {
-                { Provider.MySql, () => new MySqlResourceDbContext() } ,
-                { Provider.PostgreSql, () => new PostgreSqlResourceDbContext() } ,
-            };
-        }
-    }
-
+    public ResourceDbContext(DbContextOptions<ResourceDbContext> options) : base(options) { }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         ModelBuilderWrapper
-            .From(modelBuilder, _provider)
+            .From(modelBuilder, Database)
             .AddResAuthorsLang()
             .AddResAuthorsFile()
             .AddResCultures()
@@ -70,13 +49,5 @@ public class ResourceDbContext : BaseDbContext
             .AddResData()
             .AddResAuthors()
             .AddResReserve();
-    }
-}
-
-public static class ResourceDbExtension
-{
-    public static DIHelper AddResourceDbService(this DIHelper services)
-    {
-        return services.AddDbContextManagerService<ResourceDbContext>();
     }
 }

@@ -747,7 +747,7 @@ set_jwt_secret () {
 	fi
 
 	if [[ -z ${JWT_SECRET} ]] && [[ "$UPDATE" != "true" ]]; then
-		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 12);
+		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 32);
 	fi
 }
 
@@ -870,6 +870,7 @@ install_product () {
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
+	docker-compose -f $BASE_DIR/healthchecks.yml up -d
 }
 
 get_local_image_RepoDigests() {
