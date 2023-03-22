@@ -512,6 +512,10 @@ class ContextOptionsStore {
           options[index].items = model[index].items.filter((item) =>
             filter.includes(item.key)
           );
+
+          if (options[index].items.length === 1) {
+            options[index] = options[index].items[0];
+          }
         }
       }
     }
@@ -883,6 +887,15 @@ class ContextOptionsStore {
         disabled: false,
         action: item.id,
       },
+      ...versionActions,
+      {
+        id: "option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        icon: InvitationLinkReactSvgUrl,
+        onClick: () => this.onCopyLink(item, t),
+        disabled: false,
+      },
       {
         id: "option_room-info",
         key: "room-info",
@@ -917,14 +930,6 @@ class ContextOptionsStore {
         onClick: () => this.onClickLinkForPortal(item, t),
         disabled: false,
       },
-      {
-        id: "option_link-for-room-members",
-        key: "link-for-room-members",
-        label: t("LinkForRoomMembers"),
-        icon: InvitationLinkReactSvgUrl,
-        onClick: () => this.onCopyLink(item, t),
-        disabled: false,
-      },
       // {
       //   id: "option_send-by-email",
       //   key: "send-by-email",
@@ -932,11 +937,10 @@ class ContextOptionsStore {
       //   icon: MailReactSvgUrl,
       //   disabled: emailSendIsDisabled,
       // },
-      ...versionActions,
       {
         id: "option_show-info",
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,

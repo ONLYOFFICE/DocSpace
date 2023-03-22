@@ -99,6 +99,9 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     message && setErrorText(message);
     confirmedEmail && setIdentifier(confirmedEmail);
 
+    confirmedEmail &&
+      toastr.success(`${t("MessageEmailConfirmed")} ${t("MessageAuthorize")}`);
+
     focusInput();
 
     window.authCallback = authCallback;
@@ -393,11 +396,6 @@ const LoginForm: React.FC<ILoginFormProps> = ({
             {t("SignInWithPassword")}
           </Link>
         </div>
-      )}
-      {confirmedEmail && (
-        <Text isBold={true} fontSize="16px">
-          {t("MessageEmailConfirmed")} {t("MessageAuthorize")}
-        </Text>
       )}
     </form>
   );

@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
-import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 
 const withLoading = (WrappedComponent) => {
@@ -19,6 +18,8 @@ const withLoading = (WrappedComponent) => {
       setIsBurgerLoading,
     } = props;
 
+    const [mobileView, setMobileView] = useState(true);
+
     useEffect(() => {
       if (isLoadedArticleBody) {
         setIsBurgerLoading(false);
@@ -27,11 +28,25 @@ const withLoading = (WrappedComponent) => {
       }
     }, [isLoadedArticleBody, setIsBurgerLoading]);
 
+    useEffect(() => {
+      window.addEventListener("resize", checkInnerWidth);
+
+      return () => window.removeEventListener("resize", checkInnerWidth);
+    }, []);
+
+    const checkInnerWidth = () => {
+      if (isSmallTablet()) {
+        setMobileView(true);
+      } else {
+        setMobileView(false);
+      }
+    };
+
     const pathname = location.pathname;
     const index = pathname.lastIndexOf("/");
     const setting = pathname.slice(index + 1);
 
-    const viewMobile = isSmallTablet() || isMobileOnly;
+    const viewMobile = !!(isSmallTablet() && mobileView);
 
     const isLoadedCustomizationSettings =
       isLoadedCustomization &&
@@ -88,7 +103,13 @@ const withLoading = (WrappedComponent) => {
         ? isLoadedCustomizationNavbarSettings
         : isLoadedCustomizationSettings;
 
-    return <WrappedComponent {...props} isLoadedPage={isLoadedPage} />;
+    return (
+      <WrappedComponent
+        {...props}
+        viewMobile={viewMobile}
+        isLoadedPage={isLoadedPage}
+      />
+    );
   };
 
   return inject(({ common, auth }) => {
