@@ -169,7 +169,8 @@ class QuotasStore {
 
   get showRoomQuotaBar() {
     return (
-      this.maxCountRoomsByQuota - this.usedRoomsCount <= COUNT_FOR_SHOWING_BAR
+      this.maxCountRoomsByQuota - this.usedRoomsCount <=
+        COUNT_FOR_SHOWING_BAR && this.maxCountRoomsByQuota > 0
     );
   }
 
