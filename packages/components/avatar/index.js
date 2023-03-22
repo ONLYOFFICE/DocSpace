@@ -95,8 +95,6 @@ const Avatar = (props) => {
 
   const uniqueTooltipId = withTooltip ? `roleTooltip_${Math.random()}` : "";
 
-  console.log(uniqueTooltipId);
-
   return (
     <StyledAvatar {...props}>
       <AvatarWrapper source={source} userName={userName}>
