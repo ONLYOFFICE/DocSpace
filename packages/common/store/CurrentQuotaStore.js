@@ -11,7 +11,6 @@ const ROOM = "room";
 const USERS = "users";
 const USERS_IN_ROOM = "usersInRoom";
 
-const USERS_COUNT_FOR_SHOWING_BAR = 10;
 const COUNT_FOR_SHOWING_BAR = 2;
 const PERCENTAGE_FOR_SHOWING_BAR = 90;
 
@@ -170,7 +169,9 @@ class QuotasStore {
   get showRoomQuotaBar() {
     return (
       this.maxCountRoomsByQuota - this.usedRoomsCount <=
-        COUNT_FOR_SHOWING_BAR && this.maxCountRoomsByQuota > 0
+        COUNT_FOR_SHOWING_BAR &&
+      this.maxCountRoomsByQuota > 0 &&
+      this.maxCountRoomsByQuota >= this.usedRoomsCount
     );
   }
 
@@ -183,9 +184,10 @@ class QuotasStore {
 
   get showUserQuotaBar() {
     return (
+      this.addedManagersCount > 1 &&
       this.maxCountManagersByQuota - this.addedManagersCount <=
         COUNT_FOR_SHOWING_BAR &&
-      this.addedManagersCount >= USERS_COUNT_FOR_SHOWING_BAR
+      this.maxCountManagersByQuota >= this.addedManagersCount
     );
   }
 
