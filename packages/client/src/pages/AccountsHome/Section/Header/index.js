@@ -268,7 +268,7 @@ const SectionHeaderContent = (props) => {
         id: "accounts-add_collaborator",
         className: "main-button_drop-down",
         icon: PersonReactSvgUrl,
-        label: t("Common:Collaborator"),
+        label: t("Common:PowerUser"),
         onClick: onInvite,
         "data-type": EmployeeType.Collaborator,
         key: "collaborator",

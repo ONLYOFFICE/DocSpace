@@ -322,7 +322,7 @@ const ArticleMainButtonContent = (props) => {
             id: "invite_room-collaborator",
             className: "main-button_drop-down",
             icon: PersonReactSvgUrl,
-            label: t("Common:Collaborator"),
+            label: t("Common:PowerUser"),
             onClick: onInvite,
             action: EmployeeType.Collaborator,
             key: "collaborator",

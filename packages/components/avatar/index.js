@@ -93,6 +93,8 @@ const Avatar = (props) => {
 
   const roleIcon = getRoleIcon(role);
 
+  const uniqueTooltipId = withTooltip ? `roleTooltip_${Math.random()}` : "";
+
   return (
     <StyledAvatar {...props}>
       <AvatarWrapper source={source} userName={userName}>
@@ -113,14 +115,14 @@ const Avatar = (props) => {
             <>
               <RoleWrapper
                 size={size}
-                data-for="roleTooltip"
+                data-for={uniqueTooltipId}
                 data-tip={tooltipContent}
               >
                 {roleIcon}
               </RoleWrapper>
               {withTooltip && (
                 <Tooltip
-                  id="roleTooltip"
+                  id={uniqueTooltipId}
                   getContent={(dataTip) => (
                     <Text fontSize="12px">{dataTip}</Text>
                   )}
