@@ -36,8 +36,7 @@ public class TenantLogoManager
 
     public bool WhiteLabelEnabled { get; private set; }
 
-    private readonly ICache _cache;
-    private readonly ICacheNotify<TenantLogoCacheItem> _cacheNotify;
+    private readonly IDistributedCache _distributedCache;
 
     public TenantLogoManager(
         TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
@@ -46,8 +45,7 @@ public class TenantLogoManager
         TenantManager tenantManager,
         AuthContext authContext,
         IConfiguration configuration,
-        ICacheNotify<TenantLogoCacheItem> cacheNotify,
-        ICache cache)
+        IDistributedCache distributedCache)
     {
         _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
         _settingsManager = settingsManager;
@@ -57,8 +55,7 @@ public class TenantLogoManager
         _configuration = configuration;
         var hideSettings = (_configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
         WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
-        _cache = cache;
-        _cacheNotify = cacheNotify;
+        _distributedCache = distributedCache;
     }
 
     public async Task<string> GetFavicon(bool timeParam, bool dark)
@@ -179,7 +176,7 @@ public class TenantLogoManager
         if (WhiteLabelEnabled)
         {
             var tenantWhiteLabelSettings = _settingsManager.Load<TenantWhiteLabelSettings>();
-            return await _tenantWhiteLabelSettingsHelper.GetWhitelabelLogoData(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LoginPage, true);
+            return await _tenantWhiteLabelSettingsHelper.GetWhitelabelLogoData(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification);
         }
 
         /*** simple scheme ***/
@@ -187,19 +184,73 @@ public class TenantLogoManager
         /***/
     }
 
-
-    public byte[] GetMailLogoDataFromCache()
+    public async Task<NotifyMessageAttachment> GetMailLogoAsAttacment()
     {
-        return _cache.Get<byte[]>(CacheKey);
-    }
+        var logoData = GetMailLogoDataFromCache();
 
-    public void InsertMailLogoDataToCache(byte[] data)
-    {
-        _cache.Insert(CacheKey, data, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
+        if (logoData == null)
+        {
+            var logoStream = await GetWhitelabelMailLogo();
+            logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
+
+            if (logoData != null)
+            {
+                InsertMailLogoDataToCache(logoData);
+            }
+        }
+
+        if (logoData != null)
+        {
+            var attachment = new NotifyMessageAttachment
+            {
+                FileName = "logo.png",
+                Content = logoData,
+                ContentId = MimeUtils.GenerateMessageId()
+            };
+
+            return attachment;
+        }
+
+        return null;
     }
 
     public void RemoveMailLogoDataFromCache()
     {
-        _cacheNotify.Publish(new TenantLogoCacheItem() { Key = CacheKey }, CacheNotifyAction.Remove);
+        _distributedCache.Remove(CacheKey);
+    }
+
+
+    private byte[] GetMailLogoDataFromCache()
+    {
+        return _distributedCache.Get(CacheKey);
+    }
+
+    private void InsertMailLogoDataToCache(byte[] data)
+    {
+        _distributedCache.Set(CacheKey, data, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.UtcNow.Add(TimeSpan.FromDays(1))
+        });
+    }
+
+    private static byte[] ReadStreamToByteArray(Stream inputStream)
+    {
+        if (inputStream == null)
+        {
+            return null;
+        }
+
+        using (inputStream)
+        {
+            using var memoryStream = new MemoryStream();
+            inputStream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
+        }
+    }
+
+    private static byte[] GetDefaultMailLogo()
+    {
+        var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, @"\..\..\..\..\..\", "public", "images", "notifications", "logo.png");
+        return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
     }
 }
