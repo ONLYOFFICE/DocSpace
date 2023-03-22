@@ -88,7 +88,7 @@ const StyledArticle = styled.article`
     ${!isMobileOnly &&
     css`
       @media ${tablet} {
-        height: calc(100% - 194px) !important;
+        height: calc(100% - 126px) !important;
       }
     `}
 
@@ -102,7 +102,7 @@ const StyledArticle = styled.article`
 
     ${isTablet &&
     css`
-      height: calc(100% - 194px) !important;
+      height: calc(100% - 126px) !important;
     `}
 
     ${isMobileOnly &&
@@ -118,20 +118,24 @@ const StyledArticle = styled.article`
 
       @media ${tablet} {
         padding: 0 8px !important;
+        height: calc(100% - 60px);
       }
 
       ${isTablet &&
       css`
         padding: 0 8px !important;
+        height: calc(100% - 60px);
       `}
 
       @media ${mobile} {
         padding-bottom: 20px;
+        height: 100%;
       }
 
       ${isMobileOnly &&
       css`
         padding-bottom: 20px;
+        height: 100%;
       `}
     }
   }
