@@ -15,13 +15,6 @@ import { QuotaBarTypes } from "SRC_DIR/helpers/constants";
 import QuotasBar from "./QuotasBar";
 import ConfirmEmailBar from "./ConfirmEmailBar";
 
-const CONFIRM_EMAIL = "confirm-email";
-const ROOM_QUOTA = "room-quota";
-const STORAGE_QUOTA = "storage-quota";
-const USER_QUOTA = "user-quota";
-const USER_AND_STORAGE_QUOTA = "user-storage-quota";
-const ROOM_AND_STORAGE_QUOTA = "room-storage-quota";
-
 const Bar = (props) => {
   const {
     t,
@@ -51,7 +44,6 @@ const Bar = (props) => {
     currentColorScheme,
 
     setMainBarVisible,
-    mainBarVisible,
   } = props;
 
   const [barVisible, setBarVisible] = useState({
@@ -101,7 +93,7 @@ const Bar = (props) => {
         }));
       }
 
-      if (!closed.includes(CONFIRM_EMAIL)) {
+      if (!closed.includes(QuotaBarTypes.ConfirmEmail)) {
         setBarVisible((value) => ({ ...value, confirmEmail: true }));
       }
     } else {
@@ -145,7 +137,9 @@ const Bar = (props) => {
     const closeItems = JSON.parse(localStorage.getItem("barClose")) || [];
 
     const closed =
-      closeItems.length > 0 ? [...closeItems, CONFIRM_EMAIL] : [CONFIRM_EMAIL];
+      closeItems.length > 0
+        ? [...closeItems, QuotaBarTypes.ConfirmEmail]
+        : [QuotaBarTypes.ConfirmEmail];
 
     localStorage.setItem("barClose", JSON.stringify(closed));
 
@@ -200,14 +194,6 @@ const Bar = (props) => {
   const onLoad = () => {
     setMaintenanceExist(true);
   };
-
-  const isRoomQuota = showRoomQuotaBar && barVisible.roomQuota;
-  const isStorageQuota = showStorageQuotaBar && barVisible.storageQuota;
-  const isUserQuota = showUserQuotaBar && barVisible.userQuota;
-  const isUserStorageQuota =
-    showUserQuotaBar && showStorageQuotaBar && barVisible.storageAndUserQuota;
-  const isRoomStorageQuota =
-    showRoomQuotaBar && showStorageQuotaBar && barVisible.storageAndRoomQuota;
 
   const getCurrentBar = () => {
     if (
@@ -326,11 +312,7 @@ export default inject(({ auth, profileActionsStore }) => {
     showUserQuotaBar,
   } = auth.currentQuotaStore;
 
-  const {
-    currentColorScheme,
-    setMainBarVisible,
-    mainBarVisible,
-  } = auth.settingsStore;
+  const { currentColorScheme, setMainBarVisible } = auth.settingsStore;
 
   return {
     isAdmin: user?.isAdmin,
@@ -354,6 +336,5 @@ export default inject(({ auth, profileActionsStore }) => {
 
     currentColorScheme,
     setMainBarVisible,
-    mainBarVisible,
   };
 })(withTranslation(["Profile", "Common"])(withRouter(observer(Bar))));
