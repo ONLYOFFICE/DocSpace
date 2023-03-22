@@ -7,14 +7,6 @@ import SnackBar from "@docspace/components/snackbar";
 import Link from "@docspace/components/link";
 import { QuotaBarTypes } from "SRC_DIR/helpers/constants";
 
-const StyledLink = styled(Link)`
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-
-  color: ${(props) => props.currentColorScheme.main.accent};
-`;
-
 const QuotasBar = ({
   t,
   tReady,
@@ -42,12 +34,14 @@ const QuotasBar = ({
           description: (
             <Trans i18nKey="RoomQuotaDescription" t={t}>
               You can archived the unnecessary rooms or
-              <StyledLink
-                currentColorScheme={currentColorScheme}
+              <Link
+                fontSize="12px"
+                fontWeight="400"
+                color={currentColorScheme?.main?.accent}
                 onClick={onClickAction}
               >
                 {{ clickHere: t("ClickHere").toLowerCase() }}
-              </StyledLink>{" "}
+              </Link>{" "}
               to find a better pricing plan for your portal.
             </Trans>
           ),
@@ -58,12 +52,14 @@ const QuotasBar = ({
           description: (
             <Trans i18nKey="StorageQuotaDescription" t={t}>
               You can remove the unnecessary files or
-              <StyledLink
-                currentColorScheme={currentColorScheme}
+              <Link
+                fontSize="12px"
+                fontWeight="400"
+                color={currentColorScheme?.main?.accent}
                 onClick={onClickAction}
               >
                 {{ clickHere: t("ClickHere").toLowerCase() }}
-              </StyledLink>{" "}
+              </Link>{" "}
               to find a better pricing plan for your portal.
             </Trans>
           ),
@@ -74,12 +70,14 @@ const QuotasBar = ({
           description: (
             <Trans i18nKey="UserQuotaDescription" t={t}>
               {""}
-              <StyledLink
-                currentColorScheme={currentColorScheme}
+              <Link
+                fontSize="12px"
+                fontWeight="400"
+                color={currentColorScheme?.main?.accent}
                 onClick={onClickAction}
               >
                 {{ clickHere: t("ClickHere") }}
-              </StyledLink>{" "}
+              </Link>{" "}
               to find a better pricing plan for your portal.
             </Trans>
           ),
@@ -90,12 +88,14 @@ const QuotasBar = ({
           description: (
             <Trans i18nKey="UserQuotaDescription" t={t}>
               {""}
-              <StyledLink
-                currentColorScheme={currentColorScheme}
+              <Link
+                fontSize="12px"
+                fontWeight="400"
+                color={currentColorScheme?.main?.accent}
                 onClick={onClickAction}
               >
                 {{ clickHere: t("ClickHere") }}
-              </StyledLink>{" "}
+              </Link>{" "}
               to find a better pricing plan for your portal.
             </Trans>
           ),
@@ -106,12 +106,14 @@ const QuotasBar = ({
           description: (
             <Trans i18nKey="UserQuotaDescription" t={t}>
               {""}
-              <StyledLink
-                currentColorScheme={currentColorScheme}
+              <Link
+                fontSize="12px"
+                fontWeight="400"
+                color={currentColorScheme?.main?.accent}
                 onClick={onClickAction}
               >
                 {{ clickHere: t("ClickHere") }}
-              </StyledLink>{" "}
+              </Link>{" "}
               to find a better pricing plan for your portal.
             </Trans>
           ),
