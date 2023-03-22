@@ -112,7 +112,7 @@ const Register: React.FC<IRegisterProps> = (props) => {
   return enabledJoin && !isAuthenticated ? (
     <>
       <StyledRegister id={id} onClick={onRegisterClick}>
-        <Text as="span" color={currentColorScheme.accentColor}>
+        <Text as="span" color={currentColorScheme.main.accent}>
           {t("Register")}
         </Text>
       </StyledRegister>

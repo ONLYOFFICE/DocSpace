@@ -145,7 +145,12 @@ public class StudioNotifySource : NotifySource
                 Actions.SaasUserActivationV1,
                 Actions.EnterpriseUserActivationV1,
                 Actions.EnterpriseWhitelabelUserActivationV1,
-                Actions.OpensourceUserActivationV1
+                Actions.OpensourceUserActivationV1,
+
+                Actions.SaasOwnerPaymentWarningGracePeriodBeforeActivation,
+                Actions.SaasOwnerPaymentWarningGracePeriodActivation,
+                Actions.SaasOwnerPaymentWarningGracePeriodLastDay,
+                Actions.SaasOwnerPaymentWarningGracePeriodExpired
             );
     }
 

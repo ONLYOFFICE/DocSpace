@@ -28,7 +28,7 @@ const StyledFileRow = styled(Row)`
     width: calc(100% - 16px);
   }
 
-  ${!isMobile && "min-height: 40px;"}
+  ${!isMobile && "min-height: 48px;"}
 
   height: 100%;
 
@@ -39,6 +39,10 @@ const StyledFileRow = styled(Row)`
       css`
         margin-top: ${isMobile ? "-44px" : "-48px"};
       `}
+  }
+
+  .styled-element {
+    margin-right: 8px !important;
   }
 
   .upload-panel_file-name {
@@ -254,6 +258,7 @@ class FileRow extends Component {
           }
           isMediaActive={isMediaActive}
           showPasswordInput={showPasswordInput}
+          withoutBorder
         >
           <>
             {item.fileId ? (
@@ -265,7 +270,7 @@ class FileRow extends Component {
                   truncate
                   onClick={() => this.onMediaClick(item.fileId)}
                 >
-                  {name}
+                  {item.file.name}
                 </Link>
               ) : (
                 <div className="upload-panel_file-name">
@@ -381,7 +386,7 @@ export default inject(
     const isMediaActive =
       playlist.findIndex((el) => el.fileId === item.fileId) !== -1;
 
-    const fileIcon = getIconSrc(ext, 24);
+    const fileIcon = getIconSrc(ext, 32);
 
     const downloadInCurrentTab = isArchive(ext) || !canViewedDocs(ext);
 

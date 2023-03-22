@@ -10,6 +10,7 @@ import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-
 import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
 import StyledDropdown from "./styled-drop-down";
+import Scrollbar from "@docspace/components/scrollbar";
 
 /* eslint-disable react/prop-types, react/display-name */
 
@@ -248,11 +249,17 @@ class DropDown extends React.PureComponent {
       showDisabledItems,
       theme,
       isMobileView,
+      isNoFixedHeightOptions,
     } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
 
     let cleanChildren = children;
-    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+    let itemCount = children.length;
+
+    if (!showDisabledItems) {
+      cleanChildren = this.hideDisabledItems();
+      if (cleanChildren) itemCount = cleanChildren.length;
+    }
 
     const rowHeights = React.Children.map(cleanChildren, (child) =>
       this.getItemHeight(child)
@@ -278,16 +285,22 @@ class DropDown extends React.PureComponent {
         {...dropDownMaxHeightProp}
       >
         {maxHeight ? (
-          <VariableSizeList
-            height={calculatedHeight}
-            width={width}
-            itemSize={getItemSize}
-            itemCount={children.length}
-            itemData={{ children: cleanChildren, theme: theme }}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {Row}
-          </VariableSizeList>
+          isNoFixedHeightOptions ? (
+            <Scrollbar style={{ height: maxHeight }} stype="mediumBlack">
+              {cleanChildren}
+            </Scrollbar>
+          ) : (
+            <VariableSizeList
+              height={calculatedHeight}
+              width={width}
+              itemSize={getItemSize}
+              itemCount={itemCount}
+              itemData={{ children: cleanChildren, theme: theme }}
+              outerElementType={CustomScrollbarsVirtualList}
+            >
+              {Row}
+            </VariableSizeList>
+          )
         ) : cleanChildren ? (
           cleanChildren
         ) : (

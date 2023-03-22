@@ -69,6 +69,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Collaborator.
+        /// </summary>
+        public static string AceStatusEnum_Collaborator {
+            get {
+                return ResourceManager.GetString("AceStatusEnum_Collaborator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Comment.
         /// </summary>
         public static string AceStatusEnum_Comment {
@@ -1002,6 +1011,87 @@ namespace ASC.Files.Core.Resources {
         public static string ProductUserOpportunities {
             get {
                 return ResourceManager.GetString("ProductUserOpportunities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Collaborator.
+        /// </summary>
+        public static string RoleEnum_Collaborator {
+            get {
+                return ResourceManager.GetString("RoleEnum_Collaborator", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Сommentator.
+        /// </summary>
+        public static string RoleEnum_Comment {
+            get {
+                return ResourceManager.GetString("RoleEnum_Comment", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DocSpace Administrator.
+        /// </summary>
+        public static string RoleEnum_DocSpaceAdmin {
+            get {
+                return ResourceManager.GetString("RoleEnum_DocSpaceAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Editor.
+        /// </summary>
+        public static string RoleEnum_Editing {
+            get {
+                return ResourceManager.GetString("RoleEnum_Editing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Form filler.
+        /// </summary>
+        public static string RoleEnum_FillForms {
+            get {
+                return ResourceManager.GetString("RoleEnum_FillForms", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Viewer.
+        /// </summary>
+        public static string RoleEnum_Read {
+            get {
+                return ResourceManager.GetString("RoleEnum_Read", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reviewer.
+        /// </summary>
+        public static string RoleEnum_Review {
+            get {
+                return ResourceManager.GetString("RoleEnum_Review", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Room Administrator.
+        /// </summary>
+        public static string RoleEnum_RoomAdmin {
+            get {
+                return ResourceManager.GetString("RoleEnum_RoomAdmin", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User.
+        /// </summary>
+        public static string RoleEnum_User {
+            get {
+                return ResourceManager.GetString("RoleEnum_User", resourceCulture);
             }
         }
         

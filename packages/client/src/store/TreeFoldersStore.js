@@ -23,6 +23,12 @@ class TreeFoldersStore {
     return treeFolders;
   };
 
+  resetTreeItemCount = () => {
+    this.treeFolders.map((item) => {
+      return (item.newItems = 0);
+    });
+  };
+
   setRootFoldersTitles = (treeFolders) => {
     treeFolders.forEach((elem) => {
       this.rootFoldersTitles[elem.rootFolderType] = {

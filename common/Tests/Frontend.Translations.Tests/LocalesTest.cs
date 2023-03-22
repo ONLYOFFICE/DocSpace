@@ -175,6 +175,7 @@ public class LocalesTest
                                from filePath in Utils.GetFiles(clientDir, searchPatern, SearchOption.AllDirectories)
                                where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
                                && !filePath.Contains(Utils.ConvertPathToOS("storybook-static/"))
+                               && !filePath.Contains(Utils.ConvertPathToOS("node_modules/"))
                                && !filePath.Contains(".test.js")
                                && !filePath.Contains(".stories.js")
                                && !filePath.Contains(".test.ts")

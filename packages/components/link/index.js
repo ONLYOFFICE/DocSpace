@@ -32,10 +32,12 @@ Link.propTypes = {
   className: PropTypes.string,
   /** Color of link */
   color: PropTypes.string,
-  /** ont size of link */
+  /** Font size of link */
   fontSize: PropTypes.string,
   /** Font weight of link */
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+  /** Line height of link */
+  lineHeight: PropTypes.string,
   /** Used as HTML `href` property */
   href: PropTypes.string,
   /** Accepts id */

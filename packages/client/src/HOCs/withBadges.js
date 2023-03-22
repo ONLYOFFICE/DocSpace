@@ -85,11 +85,13 @@ export default function withBadges(WrappedComponent) {
         isDesktopClient,
         sectionWidth,
         viewAs,
+        isMutedBadge,
       } = this.props;
-      const { fileStatus, access } = item;
+      const { fileStatus, access, mute } = item;
 
       const newItems =
-        item.new || (fileStatus & FileStatus.IsNew) === FileStatus.IsNew;
+        item.new ||
+        (!mute && (fileStatus & FileStatus.IsNew) === FileStatus.IsNew);
       const showNew = !!newItems;
 
       const accessToEdit =
@@ -115,6 +117,7 @@ export default function withBadges(WrappedComponent) {
           setConvertDialogVisible={this.setConvertDialogVisible}
           onFilesClick={onFilesClick}
           viewAs={viewAs}
+          isMutedBadge={isMutedBadge}
         />
       );
 
@@ -145,7 +148,11 @@ export default function withBadges(WrappedComponent) {
         setConvertDialogVisible,
         setConvertItem,
       } = dialogsStore;
-      const { setIsLoading } = filesStore;
+      const { setIsLoading, isMuteCurrentRoomNotifications } = filesStore;
+      const { roomType, mute } = item;
+
+      const isRoom = !!roomType;
+      const isMutedBadge = isRoom ? mute : isMuteCurrentRoomNotifications;
 
       return {
         theme,
@@ -164,6 +171,7 @@ export default function withBadges(WrappedComponent) {
         setConvertItem,
         isDesktopClient,
         setPinAction,
+        isMutedBadge,
       };
     }
   )(observer(WithBadges));

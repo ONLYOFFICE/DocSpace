@@ -124,9 +124,8 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     copy = _sendMethods.ToList();
                 }
 
-                for (var i = 0; i < copy.Count; i++)
+                foreach(var w in copy)
                 {
-                    using var w = copy[i];
                     if (!w.ScheduleDate.HasValue)
                     {
                         lock (_sendMethods)

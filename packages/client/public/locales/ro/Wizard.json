@@ -1,15 +1,10 @@
 {
-  "ChangeEmailTitle": "Schimbare email",
-  "Desc": "Configurați datele de înregistrare de portal",
+  "Desc": "Configurați datele de înregistrare de DocSpace",
   "Domain": "Domeniu:",
   "ErrorEmail": "Adresa e-mail invalidă",
   "ErrorInitWizard": "Serviciul nu este disponibil în acest moment, vă rugăm să încercați din nou mai târziu.",
   "ErrorInitWizardButton": "Încearcă din nou",
-  "ErrorLicenseBody": "Licența nu este valabilă. Verificați dacă ați ales fișierul potrivit",
-  "ErrorLicenseRead": "Trebuie să acceptați acordul de licență",
-  "ErrorLicenseTitle": "Eroare de încărcare",
-  "ErrorParamsBody": "Datele introduse sunt incorecte:",
-  "ErrorParamsTitle": "Eroarea de înregistrare",
+  "ErrorLicenseBody": "Licența nu este valabilă. Verificați dacă ați ales fișierul potrivit.",
   "ErrorPassword": "Parola nu îndeplinește cerințele ",
   "ErrorUploadLicenseFile": "Selectați fișierul de licență",
   "GeneratePassword": "Generează o parolă",
@@ -17,6 +12,5 @@
   "LicenseLink": "Acord de licență",
   "PlaceholderLicense": "Fișierul de licență dvs",
   "Timezone": "Fus orar:",
-  "WelcomeTitle": "Bine ați venit pe portalul dvs.!",
-  "WizardTitle": "Configurați portalul"
+  "WelcomeTitle": "Bine ați venit pe portalul dvs.!"
 }

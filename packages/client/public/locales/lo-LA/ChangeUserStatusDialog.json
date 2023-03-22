@@ -1,8 +1,6 @@
 {
   "ChangeUserStatusDialog": "ສະຖານະຂອງຜູ້ໃຊ້ທີ່ມີ '{{ userStatus }}' ຈະເປັນ {{ status }}.",
   "ChangeUserStatusDialogHeader": "ປ່ຽນສະຖານະຜູ້ໃຊ້",
-  "ChangeUserStatusDialogMessage": "ທ່ານບໍ່ສາມາດປ່ຽນສະຖານະພາບສຳລັບເຈົ້າຂອງ portal ແລະ ສຳລັບທ່ານເອງ",
-  "ChangeUsersActiveStatus": "ປິດການໃຊ້ງານ",
-  "ChangeUsersDisableStatus": "ເປີດໃຊ້ງານ",
+  "ChangeUserStatusDialogMessage": "ທ່ານບໍ່ສາມາດປ່ຽນສະຖານະພາບສຳລັບເຈົ້າຂອງ DocSpace ແລະ ສຳລັບທ່ານເອງ",
   "ChangeUsersStatusButton": "ປ່ຽນສະຖານະຜູ້ໃຊ້"
 }

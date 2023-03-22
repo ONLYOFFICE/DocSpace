@@ -18,6 +18,10 @@ interface ILoginFormWrapperProps {
   bgPattern?: string;
 }
 
+interface ILoginContentProps {
+  enabledJoin?: boolean;
+}
+
 export const LoginFormWrapper = styled.div`
   display: grid;
   grid-template-rows: ${(props: ILoginFormWrapperProps) =>
@@ -51,7 +55,7 @@ export const LoginFormWrapper = styled.div`
 `;
 
 export const LoginContent = styled.div`
-    min-height: 100vh;
+    min-height: ${(props: ILoginContentProps) => props.enabledJoin ? "calc(100vh - 68px)" : "100vh"};
     flex: 1 0 auto;
     flex-direction: column;
     display: flex;

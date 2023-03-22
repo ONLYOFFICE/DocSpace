@@ -35,28 +35,25 @@ var builder = WebApplication.CreateBuilder(options);
 builder.Configuration.AddJsonFile($"appsettings.runner.json", true)
                 .AddCommandLine(args);
 
-builder.WebHost.ConfigureServices((hostContext, services) =>
-{
-    services.AddScoped<EFLoggerFactory>();
-    services.AddBaseDbContext<AccountLinkContext>();
-    services.AddBaseDbContext<CoreDbContext>();
-    services.AddBaseDbContext<TenantDbContext>();
-    services.AddBaseDbContext<UserDbContext>();
-    services.AddBaseDbContext<TelegramDbContext>();
-    services.AddBaseDbContext<FirebaseDbContext>();
-    services.AddBaseDbContext<CustomDbContext>();
-    services.AddBaseDbContext<WebstudioDbContext>();
-    services.AddBaseDbContext<InstanceRegistrationContext>();
-    services.AddBaseDbContext<IntegrationEventLogContext>();
-    services.AddBaseDbContext<FeedDbContext>();
-    services.AddBaseDbContext<WebhooksDbContext>();
-    services.AddBaseDbContext<MessagesContext>();
-    services.AddBaseDbContext<BackupsContext>();
-    services.AddBaseDbContext<FilesDbContext>();
-    services.AddBaseDbContext<NotifyDbContext>();
-    services.AddBaseDbContext<UrlShortenerFakeDbContext>();
-    services.AddBaseDbContext<TeamlabSiteContext>();
-});
+builder.Services.AddScoped<EFLoggerFactory>();
+builder.Services.AddBaseDbContext<AccountLinkContext>();
+builder.Services.AddBaseDbContext<CoreDbContext>();
+builder.Services.AddBaseDbContext<TenantDbContext>();
+builder.Services.AddBaseDbContext<UserDbContext>();
+builder.Services.AddBaseDbContext<TelegramDbContext>();
+builder.Services.AddBaseDbContext<FirebaseDbContext>();
+builder.Services.AddBaseDbContext<CustomDbContext>();
+builder.Services.AddBaseDbContext<WebstudioDbContext>();
+builder.Services.AddBaseDbContext<InstanceRegistrationContext>();
+builder.Services.AddBaseDbContext<IntegrationEventLogContext>();
+builder.Services.AddBaseDbContext<FeedDbContext>();
+builder.Services.AddBaseDbContext<WebhooksDbContext>();
+builder.Services.AddBaseDbContext<MessagesContext>();
+builder.Services.AddBaseDbContext<BackupsContext>();
+builder.Services.AddBaseDbContext<FilesDbContext>();
+builder.Services.AddBaseDbContext<NotifyDbContext>();
+builder.Services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+builder.Services.AddBaseDbContext<TeamlabSiteContext>();
 
 var app = builder.Build();
 

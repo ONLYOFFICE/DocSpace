@@ -140,6 +140,18 @@ public class MessageService
         SendRequestMessage(null, null, action, target, d1);
     }
 
+    public void Send(MessageAction action, MessageTarget target, string d1, Guid userId)
+    {
+        if (TryAddNotificationParam(action, userId, out var parametr))
+        {
+            SendRequestMessage(null, null, action, target, d1, parametr);
+        }
+        else
+        {
+            SendRequestMessage(null, null, action, target, d1);
+        }
+    }
+
     public void Send(MessageAction action, MessageTarget target, string d1, string d2)
     {
         SendRequestMessage(null, null, action, target, d1, d2);
@@ -173,6 +185,18 @@ public class MessageService
     public void Send(MessageAction action, MessageTarget target, IEnumerable<string> d1)
     {
         SendRequestMessage(null, null, action, target, string.Join(", ", d1));
+    }
+
+    public void Send(MessageAction action, MessageTarget target, IEnumerable<string> d1, List<Guid> userIds, EmployeeType userType)
+    {
+        if (TryAddNotificationParam(action, userIds, out var parametr, userType))
+        {
+            SendRequestMessage(null, null, action, target, string.Join(", ", d1), parametr);
+        }
+        else
+        {
+            SendRequestMessage(null, null, action, target, string.Join(", ", d1));
+        }
     }
 
     public void Send(string loginName, MessageAction action, MessageTarget target)
@@ -322,4 +346,46 @@ public class MessageService
 
         return _sender.Send(message);
     }
+
+    private bool TryAddNotificationParam(MessageAction action, Guid userId, out string parametr)
+    {
+        return TryAddNotificationParam(action, new List<Guid> { userId }, out parametr);
+    }
+
+    private bool TryAddNotificationParam(MessageAction action, List<Guid> userIds, out string parametr, EmployeeType userType = 0)
+    {
+        parametr = "";
+
+        if (action == MessageAction.UsersUpdatedType)
+        {
+            parametr = JsonSerializer.Serialize(new AdditionalNotificationInfo
+            {
+                UserIds = userIds,
+                UserRole = (int)userType
+            });
+        }
+        else if (action == MessageAction.UserCreated || action == MessageAction.UserUpdated)
+        {
+            parametr = JsonSerializer.Serialize(new AdditionalNotificationInfo
+            {
+                UserIds = userIds
+            });
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+}
+
+public class AdditionalNotificationInfo
+{
+    public int RoomId { get; set; }
+    public string RoomTitle { get; set; }
+    public string RoomOldTitle { get; set; }
+    public string RootFolderTitle { get; set; }
+    public int UserRole { get; set; }
+    public List<Guid> UserIds { get; set; }
 }

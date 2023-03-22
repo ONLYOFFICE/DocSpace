@@ -8,9 +8,6 @@
   "ProviderSuccessfullyConnected": "Provider met succes verbonden",
   "ProviderSuccessfullyDisconnected": "Provider met succes losgekoppeld",
   "ShowBackupCodes": "Back-up codes tonen",
-  "SubscriptionEmailTipsToggleLbl": "E-mail kennisgeving met tips en trucs",
-  "SubscriptionTurnOffToast": "U bent met succes uitgeschreven van de mailinglijst. <1>Opnieuw inschrijven</1>",
-  "Subscriptions": "Abonnementen",
   "SystemTheme": "Gebruik systeemthema",
   "TfaLoginSettings": "Inlog instellingen",
   "TwoFactorDescription": "Twee-factor authenticatie via een code-genererende app was ingeschakeld voor alle gebruikers door de beheerder."

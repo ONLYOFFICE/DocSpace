@@ -77,15 +77,6 @@ const PriceCalculation = ({
   useEffect(async () => {
     initializeInfo();
 
-    if (isAlreadyPaid) return;
-
-    try {
-      const link = await getPaymentLink(managersCount, source?.token, backUrl);
-      setPaymentLink(link);
-    } catch (e) {
-      toastr.error(t("ErrorNotification"));
-    }
-
     return () => {
       timeout && clearTimeout(timeout);
       timeout = null;
@@ -110,7 +101,7 @@ const PriceCalculation = ({
       CancelToken = axios.CancelToken;
       source = CancelToken.source();
 
-      await getPaymentLink(value, source.token, backUrl)
+      await getPaymentLink(value, backUrl, source.token)
         .then((link) => {
           setPaymentLink(link);
           setIsLoading(false);
@@ -144,7 +135,7 @@ const PriceCalculation = ({
         }
         fontWeight={600}
       >
-        <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+        <Trans t={t} i18nKey="PerUserMonth" ns="Common">
           ""
           <Text
             fontSize="16px"
@@ -183,13 +174,16 @@ const PriceCalculation = ({
           : t("PriceCalculation")}
       </Text>
       {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
-        <CurrentUsersCountContainer isNeedPlusSign={isNeedPlusSign} t={t} />
+        <CurrentUsersCountContainer
+          isNeedPlusSign={isNeedPlusSign}
+          t={t}
+          isDisabled={isDisabled}
+        />
       ) : (
         <SelectUsersCountContainer
           isNeedPlusSign={isNeedPlusSign}
           isDisabled={isDisabled}
           setShoppingLink={setShoppingLink}
-          isAlreadyPaid={isAlreadyPaid}
         />
       )}
 
@@ -199,7 +193,6 @@ const PriceCalculation = ({
       <ButtonContainer
         isDisabled={isDisabled}
         t={t}
-        isAlreadyPaid={isAlreadyPaid}
         isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
       />
     </StyledBody>
@@ -215,6 +208,7 @@ export default inject(({ auth, payments }) => {
     maxAvailableManagersCount,
     initializeInfo,
     managersCount,
+    isAlreadyPaid,
   } = payments;
   const { theme } = auth.settingsStore;
   const {
@@ -229,6 +223,7 @@ export default inject(({ auth, payments }) => {
   const { user } = userStore;
 
   return {
+    isAlreadyPaid,
     managersCount,
 
     isFreeTariff,
