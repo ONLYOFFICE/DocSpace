@@ -177,8 +177,9 @@ class QuotasStore {
 
   get showUserQuotaBar() {
     return (
-      (this.addedManagersCount / this.maxCountManagersByQuota) * 100 >= 90 ||
-      this.maxCountManagersByQuota - this.addedManagersCount === 1
+      ((this.addedManagersCount / this.maxCountManagersByQuota) * 100 >= 90 ||
+        this.maxCountManagersByQuota - this.addedManagersCount === 1) &&
+      this.addedManagersCount > 10
     );
   }
 
