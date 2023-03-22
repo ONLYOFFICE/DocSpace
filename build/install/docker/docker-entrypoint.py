@@ -146,6 +146,13 @@ updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_S
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
 writeJsonFile(filePath, jsonData)
 
+filePath = "/app/onlyoffice/config/apisystem.json"
+jsonData = openJsonFile(filePath)
+updateJsonData(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false",)
+updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
+updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
+writeJsonFile(filePath, jsonData)
+
 filePath = "/app/onlyoffice/config/elastic.json"
 jsonData = openJsonFile(filePath)
 jsonData["elastic"]["Scheme"] = ELK_SHEME
