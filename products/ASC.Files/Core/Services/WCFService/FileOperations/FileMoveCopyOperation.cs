@@ -153,7 +153,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                 return;
             }
-            else if (!_copy && !await FilesSecurity.CanMoveAsync(firstFolder))
+            if (!_copy && !await FilesSecurity.CanMoveAsync(firstFolder))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 
@@ -171,7 +171,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
                 return;
             }
-            else if (!_copy && !await FilesSecurity.CanMoveAsync(firstFile))
+            if (!_copy && !await FilesSecurity.CanMoveAsync(firstFile))
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
 
@@ -185,7 +185,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
 
             return;
         }
-        else if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
+        if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
         {
             this[Err] = FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
 
@@ -257,15 +257,18 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
             var isThirdPartyRoom = isRoom && folder.ProviderEntry;
 
+            var canMoveOrCopy = (copy && await FilesSecurity.CanCopyAsync(folder)) || (!copy && await FilesSecurity.CanMoveAsync(folder));
+            checkPermissions = isRoom ? !canMoveOrCopy : checkPermissions;
+
             if (folder == null)
             {
                 this[Err] = FilesCommonResource.ErrorMassage_FolderNotFound;
             }
-            else if (copy && checkPermissions && !await FilesSecurity.CanCopyAsync(folder))
+            else if (copy && checkPermissions && !canMoveOrCopy)
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_CopyFolder;
             }
-            else if (!copy && checkPermissions && !await FilesSecurity.CanMoveAsync(folder))
+            else if (!copy && checkPermissions && !canMoveOrCopy)
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
             }
@@ -292,8 +295,6 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (!Equals(folder.ParentId ?? default, toFolderId) || _resolveType == FileConflictResolveType.Duplicate)
             {
-                checkPermissions = isRoom ? false : checkPermissions;
-
                 var files = await FileDao.GetFilesAsync(folder.Id, new OrderBy(SortedByType.AZ, true), FilterType.FilesOnly, false, Guid.Empty, string.Empty, false, withSubfolders: true).ToListAsync();
                 var (isError, message) = await WithErrorAsync(scope, files, checkPermissions);
 
