@@ -51,8 +51,8 @@ const getTreeItems = (data, path, t) => {
         return t("Backup");
       case "PortalDeletion":
         return t("PortalDeletion");
-      case "Common:PaymentsTitle":
-        return t("Common:PaymentsTitle");
+      case "Payments":
+        return t("Payments");
       case "SingleSignOn":
         return t("SingleSignOn");
       case "DeveloperTools":
@@ -222,8 +222,8 @@ class ArticleBodyContent extends React.Component {
         return t("Migration");
       case "Backup":
         return t("Backup");
-      case "Common:PaymentsTitle":
-        return t("Common:PaymentsTitle");
+      case "Payments":
+        return t("Payments");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
       case "RestoreBackup":
@@ -248,7 +248,7 @@ class ArticleBodyContent extends React.Component {
       resultTree = [...settingsTree].filter((e) => {
         return (
           e.tKey === "Backup" ||
-          e.tKey === "Common:PaymentsTitle" ||
+          e.tKey === "Payments" ||
           (isOwner && e.tKey === "PortalDeletion")
         );
       });

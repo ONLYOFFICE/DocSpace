@@ -3,6 +3,6 @@
   "Error403Text": "Извините, доступ закрыт.",
   "Error404Text": "Извините, страница не найдена.",
   "ErrorEmptyResponse": "Пустой ответ",
-  "ErrorOfflineText": "Нет подключения к интернету",
-  "ErrorUnavailableText": "DocSpace недоступен"
+  "ErrorOfflineText": "Нет подключения к интернету.",
+  "ErrorUnavailableText": "Портал недоступен"
 }

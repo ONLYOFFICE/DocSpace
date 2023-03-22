@@ -70,7 +70,6 @@ public class AuthenticationController : ControllerBase
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly ILogger<AuthenticationController> _logger;
-    private readonly RoomLinkService _roomLinkService;
 
     public AuthenticationController(
         UserManager userManager,
@@ -107,8 +106,7 @@ public class AuthenticationController : ControllerBase
         BruteForceLoginManager bruteForceLoginManager,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        ILogger<AuthenticationController> logger,
-        RoomLinkService roomLinkService)
+        ILogger<AuthenticationController> logger)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -145,7 +143,6 @@ public class AuthenticationController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _logger = logger;
-        _roomLinkService = roomLinkService;
     }
 
     [AllowNotPayment]
@@ -319,18 +316,8 @@ public class AuthenticationController : ControllerBase
 
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
-    public async Task<ValidationResult> CheckConfirm(EmailValidationKeyModel inDto)
+    public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
     {
-        if (inDto.Type == ConfirmType.LinkInvite)
-        {
-            var options = await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default);
-
-            if (options.LinkType == LinkType.InvitationToRoom && !options.IsCorrect)
-            {
-                return ValidationResult.Invalid;
-            }
-        }
-        
         return _emailValidationKeyModelHelper.Validate(inDto);
     }
 

@@ -127,25 +127,23 @@ const DeleteDialogComponent = (props) => {
 
     if (isRecycleBinFolder) {
       return isSingle
-        ? isFolder
-          ? t("DeleteFolder")
-          : t("DeleteFile")
+        ? t(isFolder ? "DeleteFolder" : "DeleteFile")
         : t("DeleteItems");
     }
 
     if (isPersonalRoom) {
       return isSingle
-        ? isFolder
-          ? t("MoveToTrashFolderFromPersonal")
-          : t("MoveToTrashFileFromPersonal")
+        ? t(
+            isFolder
+              ? "MoveToTrashFolderFromPersonal"
+              : "MoveToTrashFileFromPersonal"
+          )
         : t("MoveToTrashItemsFromPersonal");
     }
 
     if (isRoom) {
       return isSingle
-        ? isFolder
-          ? t("MoveToTrashFolder")
-          : t("MoveToTrashFile")
+        ? t(isFolder ? "MoveToTrashFolder" : "MoveToTrashFile")
         : t("MoveToTrashItems");
     }
   };

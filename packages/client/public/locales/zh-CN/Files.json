@@ -60,6 +60,7 @@
   "TooltipElementsMoveMessage": "移动{{element}}元素",
   "TrashEmptyDescription": "回收站\"存放的是被删除的文档。您可以选择“还原”或“永久删除”回收站中的文件。请注意：被永久删除的文档将无法再恢复。",
   "UnblockVersion": "取消阻止/签入",
+  "UploadToFolder": "上传至文件夹",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "版本历史",
   "ViewList": "列表",

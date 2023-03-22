@@ -23,7 +23,7 @@ import {
 } from "SRC_DIR/components/dialogs";
 
 import { StyledWrapper, StyledInfo } from "./styled-main-profile";
-import { HelpButton, Tooltip } from "@docspace/components";
+import { HelpButton } from "@docspace/components";
 
 const MainProfile = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
@@ -93,24 +93,12 @@ const MainProfile = (props) => {
               <div className="email-container">
                 <div className="email-edit-container">
                   <Text
-                    data-for="emailTooltip"
-                    data-tip={t("EmailNotVerified")}
                     as="div"
                     className={"email-text-container"}
                     fontWeight={600}
                   >
                     {profile.email}
                   </Text>
-                  {withActivationBar && (
-                    <Tooltip
-                      id="emailTooltip"
-                      getContent={(dataTip) => (
-                        <Text fontSize="12px">{dataTip}</Text>
-                      )}
-                      effect="float"
-                      place="bottom"
-                    />
-                  )}
 
                   <IconButton
                     className="edit-button email-edit-button"

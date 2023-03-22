@@ -73,7 +73,7 @@ const FilesArticle = React.memo(({ history, withMainButton }) => {
   );
 });
 
-const FilesSection = React.memo(({ withMainButton }) => {
+const FilesSection = React.memo(() => {
   return (
     <Switch>
       {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
@@ -138,7 +138,7 @@ const FilesSection = React.memo(({ withMainButton }) => {
 
       <PrivateRoute
         exact
-        path={["/accounts/view/@self", "/accounts/view/@self/notification"]}
+        path={["/accounts/view/@self"]}
         component={Accounts}
       />
 
@@ -148,9 +148,7 @@ const FilesSection = React.memo(({ withMainButton }) => {
         path={"/settings/admin"}
         component={Settings}
       />
-      {withMainButton && (
-        <PrivateRoute exact path={"/settings/common"} component={Settings} />
-      )}
+      <PrivateRoute exact path={"/settings/common"} component={Settings} />
       <PrivateRoute component={Error404Route} />
     </Switch>
   );
@@ -234,7 +232,7 @@ class FilesContent extends React.Component {
         ) : (
           <FilesArticle history={history} withMainButton={withMainButton} />
         )}
-        <FilesSection withMainButton={withMainButton} />
+        <FilesSection />
       </>
     );
   }

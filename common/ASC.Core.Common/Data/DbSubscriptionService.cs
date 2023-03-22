@@ -175,10 +175,10 @@ public class DbSubscriptionService : ISubscriptionService
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var strategy = userDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        strategy.Execute(() =>
         {
             using var userDbContext = _dbContextFactory.CreateDbContext();
-            using var tr = await userDbContext.Database.BeginTransactionAsync();
+            using var tr = userDbContext.Database.BeginTransaction();
             var q = userDbContext.Subscriptions
                 .Where(r => r.Tenant == tenant)
                 .Where(r => r.Source == sourceId)
@@ -189,16 +189,15 @@ public class DbSubscriptionService : ISubscriptionService
                 q = q.Where(r => r.Object == (objectId ?? string.Empty));
             }
 
-            var sub = await q.FirstOrDefaultAsync();
+            var sub = q.FirstOrDefault();
 
             if (sub != null)
             {
                 userDbContext.Subscriptions.Remove(sub);
             }
 
-            await tr.CommitAsync();
-        }).GetAwaiter()
-          .GetResult(); 
+            tr.Commit();
+        });
     }
 
 
@@ -254,10 +253,10 @@ public class DbSubscriptionService : ISubscriptionService
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var strategy = userDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        strategy.Execute(() =>
         {
             using var userDbContext = _dbContextFactory.CreateDbContext();
-            using var tr = await userDbContext.Database.BeginTransactionAsync();
+            using var tr = userDbContext.Database.BeginTransaction();
 
             if (m.Methods == null || m.Methods.Length == 0)
             {
@@ -267,7 +266,7 @@ public class DbSubscriptionService : ISubscriptionService
                     .Where(r => r.Recipient == m.Recipient)
                     .Where(r => r.Action == m.Action);
 
-                var sm = await q.FirstOrDefaultAsync();
+                var sm = q.FirstOrDefault();
 
                 if (sm != null)
                 {
@@ -284,14 +283,12 @@ public class DbSubscriptionService : ISubscriptionService
                     Tenant = m.Tenant,
                     Sender = string.Join("|", m.Methods)
                 };
-                await userDbContext.AddOrUpdateAsync(r => userDbContext.SubscriptionMethods, sm);
+                userDbContext.AddOrUpdate(userDbContext.SubscriptionMethods, sm);
             }
 
-            await userDbContext.SaveChangesAsync();
-            
-            await tr.CommitAsync();
-        }).GetAwaiter()
-          .GetResult();
+            userDbContext.SaveChanges();
+            tr.Commit();
+        });
     }
 
 

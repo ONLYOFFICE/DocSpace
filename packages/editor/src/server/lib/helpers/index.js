@@ -109,32 +109,15 @@ export const initDocEditor = async (req) => {
     //   logoUrls[index].path.light = getLogoFromPath(logo.path.dark);
     // });
 
-    // change only for default logo
-    if (
-      config?.editorConfig?.customization?.logo?.image.indexOf("images/logo/") >
-      -1
-    ) {
-      config.editorConfig.customization.logo.image =
-        config.editorConfig.customization.logo.url +
-        getLogoFromPath(config.editorConfig.customization.logo.image);
-    }
+    config.editorConfig.customization.logo.image =
+      config.editorConfig.customization.logo.url +
+      getLogoFromPath(config.editorConfig.customization.logo.image);
 
-    // change only for default logo
-    if (
-      config?.editorConfig?.customization?.logo?.imageDark.indexOf(
-        "images/logo/"
-      ) > -1
-    ) {
-      config.editorConfig.customization.logo.imageDark =
-        config.editorConfig.customization.logo.url +
-        getLogoFromPath(config.editorConfig.customization.logo.imageDark);
-    }
+    config.editorConfig.customization.logo.imageDark =
+      config.editorConfig.customization.logo.url +
+      getLogoFromPath(config.editorConfig.customization.logo.imageDark);
 
-    if (
-      config.editorConfig.customization.customer &&
-      config.editorConfig.customization.customer.logo.indexOf("images/logo/") >
-        -1
-    ) {
+    if (config.editorConfig.customization.customer) {
       config.editorConfig.customization.customer.logo =
         config.editorConfig.customization.logo.url +
         getLogoFromPath(config.editorConfig.customization.customer.logo);
@@ -164,14 +147,8 @@ export const initDocEditor = async (req) => {
     if (typeof err === "string") message = err;
     else message = err.response?.data?.error?.message || err.message;
 
-    const errorStatus =
-      typeof err !== "string"
-        ? err?.response?.data?.statusCode || err?.response?.data?.status
-        : null;
-
     error = {
       errorMessage: message,
-      errorStatus,
     };
     return { error, user, logoUrls };
   }

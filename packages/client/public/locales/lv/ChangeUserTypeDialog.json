@@ -2,6 +2,6 @@
   "ChangeUserTypeButton": "Mainīt veidu",
   "ChangeUserTypeHeader": "Mainiet lietotāja veidu",
   "ChangeUserTypeMessage": "Lietotāji ar '{{ firstType }}' veidu tiks pārvietoti uz '{{ secondType }}' veidu.",
-  "ChangeUserTypeMessageWarning": "Jūs nevarat mainīt veidu DocSpace administratoriem un sev.",
+  "ChangeUserTypeMessageWarning": "Jūs nevarat mainīt veidu portāla administratoriem un sev",
   "SuccessChangeUserType": "Lietotāja veids ir veiksmīgi nomainīts"
 }

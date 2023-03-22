@@ -449,7 +449,7 @@ class AutomaticBackup extends React.PureComponent {
           {!isEnableAuto && (
             <Badge
               backgroundColor="#EDC409"
-              label={t("Common:Paid")}
+              label="Paid"
               className="auto-backup_badge"
               isPaidBadge={true}
             />

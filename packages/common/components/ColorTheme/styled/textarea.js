@@ -8,7 +8,7 @@ const getDefaultStyles = ({ $currentColorScheme, hasError, theme }) =>
     :focus-within {
       border-color: ${hasError
         ? theme?.textArea.focusErrorBorderColor
-        : theme.textArea.focusBorderColor};
+        : $currentColorScheme.main?.accent};
     }
   `;
 

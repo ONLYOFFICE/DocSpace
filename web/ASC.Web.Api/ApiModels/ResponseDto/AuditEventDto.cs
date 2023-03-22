@@ -57,7 +57,6 @@ public class AuditEventDto
     public IEnumerable<string> Target { get; set; }
 
     public IEnumerable<EntryType> Entries { get; set; }
-    public string Context { get; set; }
 
     public AuditEventDto(AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
     {
@@ -96,7 +95,5 @@ public class AuditEventDto
         {
             Target = auditEvent.Target.GetItems();
         }
-
-        Context = auditEvent.Context;
     }
 }

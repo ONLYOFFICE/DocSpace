@@ -10,7 +10,7 @@ import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg
 import ActionsUploadReactSvgUrl from "PUBLIC_DIR/images/actions.upload.react.svg?url";
 import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
 import ReconnectSvgUrl from "PUBLIC_DIR/images/reconnect.svg?url";
-import SettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
@@ -83,11 +83,6 @@ const StyledContainer = styled.div`
   .header-container {
     min-height: 33px;
 
-    ${(props) =>
-      props.hideContextMenuInsideArchiveRoom &&
-      `.option-button {
-      display: none;}`}
-
     @media ${tablet} {
       height: 60px;
     }
@@ -114,11 +109,6 @@ class SectionHeaderContent extends React.Component {
   };
 
   onCreateRoom = () => {
-    if (this.props.isGracePeriod) {
-      this.props.setInviteUsersWarningDialogVisible(true);
-      return;
-    }
-
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   };
@@ -372,11 +362,6 @@ class SectionHeaderContent extends React.Component {
 
     if (isExistActiveItems) return;
 
-    if (this.props.isGracePeriod) {
-      this.props.setInviteUsersWarningDialogVisible(true);
-      return;
-    }
-
     this.props.setArchiveAction("unarchive");
     this.props.setRestoreAllArchive(true);
     this.props.setArchiveDialogVisible(true);
@@ -487,7 +472,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_show-info",
         key: "show-info",
-        label: t("Common:Info"),
+        label: t("InfoPanel:ViewDetails"),
         onClick: this.onShowInfo,
         disabled: isDisabled,
         icon: InfoOutlineReactSvgUrl,
@@ -533,7 +518,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_archive-room",
         key: "archive-room",
-        label: t("MoveToArchive"),
+        label: t("Archived"),
         icon: RoomArchiveSvgUrl,
         onClick: (e) => onClickArchive(e),
         disabled: !isRoom || !security?.Move,
@@ -680,7 +665,6 @@ class SectionHeaderContent extends React.Component {
       isGroupMenuBlocked,
       security,
       onClickBack,
-      hideContextMenuInsideArchiveRoom,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -694,10 +678,7 @@ class SectionHeaderContent extends React.Component {
     return [
       <Consumer key="header">
         {(context) => (
-          <StyledContainer
-            isRecycleBinFolder={isRecycleBinFolder}
-            hideContextMenuInsideArchiveRoom={hideContextMenuInsideArchiveRoom}
-          >
+          <StyledContainer isRecycleBinFolder={isRecycleBinFolder}>
             {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
@@ -818,7 +799,6 @@ export default inject(
       setArchiveDialogVisible,
       setRestoreAllArchive,
       setArchiveAction,
-      setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
     const {
@@ -827,7 +807,6 @@ export default inject(
       isRoomsFolder,
       isArchiveFolder,
       isPersonalRoom,
-      isArchiveFolderRoot,
     } = treeFoldersStore;
 
     const {
@@ -853,7 +832,6 @@ export default inject(
     const selectedFolder = { ...selectedFolderStore };
 
     const { enablePlugins } = auth.settingsStore;
-    const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
 
@@ -872,13 +850,7 @@ export default inject(
 
     const isEmptyArchive = !canRestoreAll && !canDeleteAll;
 
-    const hideContextMenuInsideArchiveRoom = isArchiveFolderRoot
-      ? !isArchiveFolder
-      : false;
-
     return {
-      isGracePeriod,
-      setInviteUsersWarningDialogVisible,
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
 
@@ -925,7 +897,6 @@ export default inject(
       isEmptyArchive,
       isPrivacyFolder,
       isArchiveFolder,
-      hideContextMenuInsideArchiveRoom,
 
       setIsLoading,
       fetchFiles,

@@ -374,7 +374,7 @@ internal class ProviderAccountDao : IProviderDao
 
     public virtual async Task<int> UpdateBackupProviderInfoAsync(string providerKey, string customerTitle, AuthData newAuthData)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         var querySelect =
                 filesDbContext.ThirdpartyAccount

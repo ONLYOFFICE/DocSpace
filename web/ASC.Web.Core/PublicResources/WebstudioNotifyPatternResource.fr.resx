@@ -846,6 +846,26 @@ Equipe ONLYOFFICE
 
 [$__AuthorName]($__AuthorUrl) a changé les détails de son profil sur le portail [${__VirtualRootPath}](${__VirtualRootPath}).</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Quoi de neuf sur le portail "${__VirtualRootPath}":"${__VirtualRootPath}" pour $Date
+
+#foreach($activity in $Activities)
+
+h2.$activity.Key
+
+#foreach($whatsNewActivity in $activity.Value)
+#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
+#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
+*Auteur*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString())
+
+
+#end
+
+#end
+
+
+^Si vous ne souhaitez pas recevoir les notifications sur les nouveaux événements sur le portail "${__VirtualRootPath}":"${__VirtualRootPath}", veuillez gérer vos "paramètres d'abonnement":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Message de Test de SMTP
 
@@ -1041,6 +1061,9 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>Notification sur la modification du profil sur le portail ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Quoi de neuf sur le portail pour le $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Message de test de SMTP</value>

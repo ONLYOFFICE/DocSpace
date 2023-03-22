@@ -82,8 +82,6 @@ export default function withFileActions(WrappedFileItem) {
         setBufferSelection,
         isActive,
         inProgress,
-        isSelected,
-        setSelection,
       } = this.props;
 
       const { isThirdPartyFolder } = item;
@@ -121,11 +119,7 @@ export default function withFileActions(WrappedFileItem) {
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
-
-      if (isFileName && !isSelected) {
-        setSelection([]);
-        setBufferSelection(item);
-      }
+      !isActive && setBufferSelection(null);
     };
 
     onMouseClick = (e) => {
@@ -227,7 +221,7 @@ export default function withFileActions(WrappedFileItem) {
         isPrivacy,
 
         sectionWidth,
-        isSelected,
+        checked,
         dragging,
         isFolder,
 
@@ -255,7 +249,7 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
-      const checkedProps = id <= 0 ? false : isSelected;
+      const checkedProps = id <= 0 ? false : checked;
 
       return (
         <WrappedFileItem
@@ -317,7 +311,6 @@ export default function withFileActions(WrappedFileItem) {
         dragging,
         setDragging,
         selection,
-        setSelection,
         setTooltipPosition,
         setStartDrag,
 
@@ -386,7 +379,7 @@ export default function withFileActions(WrappedFileItem) {
         isFolder,
         allowShareIn: filesStore.canShare,
 
-        isSelected: !!selectedItem,
+        checked: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,
         isTrashFolder: isRecycleBinFolder,
@@ -403,8 +396,6 @@ export default function withFileActions(WrappedFileItem) {
         setSelected,
         withCtrlSelect,
         withShiftSelect,
-
-        setSelection,
       };
     }
   )(observer(WithFileActions));

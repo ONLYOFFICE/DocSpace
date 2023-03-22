@@ -2,7 +2,7 @@
 import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
 import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
@@ -32,8 +32,6 @@ import EmptyScreenTrashSvgUrl from "PUBLIC_DIR/images/empty_screen_trash.svg?url
 import EmptyScreenTrashSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_trash_dark.svg?url";
 import EmptyScreenArchiveUrl from "PUBLIC_DIR/images/empty_screen_archive.svg?url";
 import EmptyScreenArchiveDarkUrl from "PUBLIC_DIR/images/empty_screen_archive_dark.svg?url";
-
-import { showLoader, hideLoader } from "./EmptyFolderContainerUtils";
 
 const StyledPlusIcon = styled(PlusIcon)`
   path {
@@ -101,7 +99,9 @@ const RootFolderContainer = (props) => {
 
   const roomHeader = "Welcome to DocSpace";
 
-  useEffect(() => {
+  const [showLoader, setShowLoader] = React.useState(false);
+
+  React.useEffect(() => {
     if (rootFolderType !== FolderType.COMMON) {
       setIsEmptyPage(true);
     } else {
@@ -114,7 +114,7 @@ const RootFolderContainer = (props) => {
     };
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     setIsLoadedEmptyPage(!isLoading);
   }, [isLoading]);
 
@@ -353,16 +353,8 @@ const RootFolderContainer = (props) => {
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const emptyFolderProps = getEmptyFolderProps();
 
-  useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
-
   if (isLoading) {
-    return (
-      <Loaders.EmptyContainerLoader
-        style={{ display: "none", marginTop: 32 }}
-        id="empty-container-loader"
-        viewAs={viewAs}
-      />
-    );
+    return <Loaders.EmptyContainerLoader viewAs={viewAs} />;
   }
 
   return (
@@ -370,7 +362,6 @@ const RootFolderContainer = (props) => {
       headerText={headerText}
       isEmptyPage={isEmptyPage}
       sectionWidth={sectionWidth}
-      style={{ marginTop: 32 }}
       {...emptyFolderProps}
     />
   );

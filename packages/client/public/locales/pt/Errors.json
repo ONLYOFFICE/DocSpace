@@ -3,5 +3,5 @@
   "Error403Text": "Desculpe, acesso negado.",
   "Error404Text": "Desculpe, o recurso não foi encontrado.",
   "ErrorEmptyResponse": "Resposta vazia",
-  "ErrorOfflineText": "Não foi encontrada qualquer conexão à internet"
+  "ErrorOfflineText": "Não foi encontrada qualquer conexão à internet."
 }

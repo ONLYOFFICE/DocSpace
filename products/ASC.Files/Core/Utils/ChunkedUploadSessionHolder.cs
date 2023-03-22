@@ -31,21 +31,35 @@ public class ChunkedUploadSessionHolder
 {
     public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
 
+    private readonly ILogger _options;
     private readonly GlobalStore _globalStore;
     private readonly SetupInfo _setupInfo;
     private readonly TempPath _tempPath;
     private readonly FileHelper _fileHelper;
 
     public ChunkedUploadSessionHolder(
+        ILogger<ChunkedUploadSessionHolder> options,
         GlobalStore globalStore,
         SetupInfo setupInfo,
         TempPath tempPath,
         FileHelper fileHelper)
     {
+        _options = options;
         _globalStore = globalStore;
         _setupInfo = setupInfo;
         _tempPath = tempPath;
         _fileHelper = fileHelper;
+
+        // clear old sessions
+        //TODO
+        //try
+        //{
+        //    CommonSessionHolder(false).DeleteExpired();
+        //}
+        //catch (Exception err)
+        //{
+        //    options.CurrentValue.Error(err);
+        //}
     }
 
     public async Task StoreSessionAsync<T>(ChunkedUploadSession<T> s)
@@ -106,6 +120,6 @@ public class ChunkedUploadSessionHolder
 
     private CommonChunkedUploadSessionHolder CommonSessionHolder(bool currentTenant = true)
     {
-        return new CommonChunkedUploadSessionHolder(_tempPath, _globalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, _setupInfo.ChunkUploadSize);
+        return new CommonChunkedUploadSessionHolder(_tempPath, _options, _globalStore.GetStore(currentTenant), FileConstant.StorageDomainTmp, _setupInfo.ChunkUploadSize);
     }
 }

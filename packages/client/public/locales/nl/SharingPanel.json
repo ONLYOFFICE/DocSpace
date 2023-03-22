@@ -11,7 +11,7 @@
   "InternalLink": "Interne link",
   "Notify users": "Gebruikers informeren",
   "ReadOnly": "Alleen lezen",
-  "ShareEmailBody": "U heeft toegang gekregen tot het {{itemName}} document. Klik op de onderstaande link om het document nu meteen te openen: {{shareLink}}.",
+  "ShareEmailBody": "U heeft toegang gekregen tot het {{itemName}} document. Klik op de onderstaande link om het document nu meteen te openen: {{shareLink}}",
   "ShareEmailSubject": "U heeft toegang gekregen tot het {{itemName}} document",
   "ShareVia": "Deel via",
   "SharingSettingsTitle": "Instellingen voor delen"

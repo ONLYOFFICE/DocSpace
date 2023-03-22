@@ -6,7 +6,7 @@ const LoginContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 56px auto 0 auto;
+  margin: 56px auto;
   max-width: 960px;
   z-index: 0;
 
@@ -42,7 +42,6 @@ const LoginContainer = styled.div`
 
   .login-or-access-text {
     text-transform: lowercase;
-    color: ${(props) => props.theme.login.orTextColor};
   }
 
   .recover-link {
@@ -77,7 +76,7 @@ const LoginContainer = styled.div`
     padding: 32px 0;
 
     @media ${tablet} {
-      width: 416px;
+      width: 480px;
     }
 
     @media ${hugeMobile} {

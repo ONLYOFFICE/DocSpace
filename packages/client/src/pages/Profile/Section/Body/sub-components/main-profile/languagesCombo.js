@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { Trans } from "react-i18next";
 
@@ -14,7 +14,6 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { isMobileOnly } from "react-device-detect";
 
 import { StyledRow } from "./styled-main-profile";
-import { isSmallTablet } from "@docspace/components/utils/device";
 
 const LanguagesCombo = (props) => {
   const {
@@ -28,7 +27,6 @@ const LanguagesCombo = (props) => {
     theme,
   } = props;
   const { cultureName, currentCulture } = profile;
-  const [horizontalOrientation, setHorizontalOrientation] = useState(false);
 
   const language = convertLanguage(cultureName || currentCulture || culture);
   const selectedLanguage = cultureNames.find((item) => item.key === language) ||
@@ -36,12 +34,6 @@ const LanguagesCombo = (props) => {
       key: language,
       label: "",
     };
-
-  useEffect(() => {
-    checkWidth();
-    window.addEventListener("resize", checkWidth);
-    return () => window.removeEventListener("resize", checkWidth);
-  }, []);
 
   const onLanguageSelect = (language) => {
     console.log("onLanguageSelect", language);
@@ -85,18 +77,6 @@ const LanguagesCombo = (props) => {
     </Text>
   );
 
-  const checkWidth = () => {
-    if (!isMobileOnly) return;
-
-    if (!isSmallTablet()) {
-      setHorizontalOrientation(true);
-    } else {
-      setHorizontalOrientation(false);
-    }
-  };
-
-  const isMobileHorizontalOrientation = isMobileOnly && horizontalOrientation;
-
   return (
     <StyledRow>
       <Text as="div" className="label">
@@ -110,7 +90,7 @@ const LanguagesCombo = (props) => {
       </Text>
       <ComboBox
         className="language-combo-box"
-        directionY={isMobileHorizontalOrientation ? "bottom" : "both"}
+        directionY="both"
         options={cultureNames}
         selectedOption={selectedLanguage}
         onSelect={onLanguageSelect}
@@ -121,12 +101,8 @@ const LanguagesCombo = (props) => {
         showDisabledItems={true}
         dropDownMaxHeight={364}
         manualWidth="250px"
-        isDefaultMode={
-          isMobileHorizontalOrientation
-            ? isMobileHorizontalOrientation
-            : !isMobileOnly
-        }
-        withBlur={isMobileHorizontalOrientation ? false : isMobileOnly}
+        isDefaultMode={!isMobileOnly}
+        withBlur={isMobileOnly}
         fillIcon={false}
         modernView={!isMobileOnly}
       />

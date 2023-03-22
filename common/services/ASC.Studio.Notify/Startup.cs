@@ -41,7 +41,6 @@ public class Startup : BaseWorkerStartup
         services.AddHttpClient();
 
         DIHelper.RegisterProducts(Configuration, HostEnvironment.ContentRootPath);
-        services.AddAutoMapper(GetAutoMapperProfileAssemblies());//toDo
         services.AddHostedService<ServiceLauncher>();
         DIHelper.TryAdd<ServiceLauncher>();
         NotifyConfigurationExtension.Register(DIHelper);

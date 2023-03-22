@@ -76,7 +76,7 @@ const Preview = styled(Box)`
 const PortalIntegration = (props) => {
   const { t, setDocumentTitle } = props;
 
-  setDocumentTitle(t("PortalIntegration"));
+  setDocumentTitle(`Portal integration`);
 
   const scriptUrl = `${window.location.origin}/static/scripts/api.js`;
 

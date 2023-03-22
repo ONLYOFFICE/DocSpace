@@ -298,7 +298,7 @@ class ManualBackup extends React.Component {
           {isCheckedTemporaryStorage && (
             <div className="manual-backup_buttons">
               <Button
-                label={t("Common:Create")}
+                label={t("Common:CreateCopy")}
                 onClick={this.onMakeTemporaryBackup}
                 primary
                 isDisabled={!isMaxProgress}

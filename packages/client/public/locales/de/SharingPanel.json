@@ -11,7 +11,7 @@
   "InternalLink": "Interner Link",
   "Notify users": "Benutzer benachrichtigen",
   "ReadOnly": "Schreibgeschützt",
-  "ShareEmailBody": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt. Zum Öffnen klicken Sie auf den Link: {{shareLink}}.",
+  "ShareEmailBody": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt. Zum Öffnen klicken Sie auf den Link: {{shareLink}}",
   "ShareEmailSubject": "Ihnen wurde Zugriff auf das Dokument {{itemName}} erteilt",
   "ShareVia": "Freigeben über",
   "SharingSettingsTitle": "Freigabeeinstellungen"

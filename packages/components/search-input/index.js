@@ -4,7 +4,6 @@ import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import SearchIconReactSvgUrl from "PUBLIC_DIR/images/search.react.svg?url";
 import InputBlock from "../input-block";
 import StyledSearchInput from "./styled-search-input";
-import { ReactSVG } from "react-svg";
 
 class SearchInput extends React.Component {
   constructor(props) {
@@ -70,26 +69,6 @@ class SearchInput extends React.Component {
         break;
     }
 
-    const showCrossIcon = !!this.state.inputValue || this.props.showClearButton;
-
-    const iconNode = (
-      <>
-        {showCrossIcon && (
-          <ReactSVG
-            className="icon-button_svg not-selectable"
-            src={CrossIconReactSvgUrl}
-          />
-        )}
-
-        {!showCrossIcon && (
-          <ReactSVG
-            className="icon-button_svg not-selectable"
-            src={SearchIconReactSvgUrl}
-          />
-        )}
-      </>
-    );
-
     return (
       <StyledSearchInput
         theme={this.props.theme}
@@ -103,7 +82,11 @@ class SearchInput extends React.Component {
           id={this.props.id}
           name={this.props.name}
           isDisabled={this.props.isDisabled}
-          iconNode={iconNode}
+          iconName={
+            !!this.state.inputValue || this.props.showClearButton
+              ? CrossIconReactSvgUrl
+              : SearchIconReactSvgUrl
+          }
           iconButtonClassName={
             !!this.state.inputValue || this.props.showClearButton
               ? "search-cross"

@@ -32,15 +32,10 @@ const ArticlePaymentAlert = ({
   toggleArticleOpen,
   tariffPlanTitle,
 }) => {
-  const { t, ready } = useTranslation("Common");
+  const { t, ready } = useTranslation("Payments");
 
-  useEffect(async () => {
-    if (isFreeTariff)
-      try {
-        await setPortalPaymentQuotas();
-      } catch (e) {
-        console.error(e);
-      }
+  useEffect(() => {
+    isFreeTariff && setPortalPaymentQuotas();
   }, []);
 
   const onClick = () => {
@@ -66,23 +61,23 @@ const ArticlePaymentAlert = ({
       <div>
         <Text className="article-payment_border">
           {isFreeTariff ? (
-            <Trans t={t} i18nKey="FreeStartupPlan" ns="Common">
+            <Trans t={t} i18nKey="FreeStartupPlan" ns="Payments">
               {{ planName: currentTariffPlanTitle }}
             </Trans>
           ) : (
-            t("Common:LatePayment")
+            t("LatePayment")
           )}
         </Text>
         <Text fontWeight={600}>
           {isFreeTariff
-            ? t("Common:ActivateBusinessPlan", { planName: tariffPlanTitle })
-            : t("Common:GracePeriodActivated")}
+            ? t("ActivateBusinessPlan", { planName: tariffPlanTitle })
+            : t("GracePeriodActivated")}
         </Text>
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (
             <>
               {pricePerManager ? (
-                <Trans t={t} i18nKey="PerUserMonth" ns="Common">
+                <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
                   From {{ currencySymbol }}
                   {{ price: pricePerManager }} per admin/month
                 </Trans>
@@ -91,7 +86,7 @@ const ArticlePaymentAlert = ({
               )}
             </>
           ) : (
-            t("Common:PayBeforeTheEndGracePeriod")
+            t("PayBeforeTheEndGracePeriod")
           )}
         </Text>
       </div>

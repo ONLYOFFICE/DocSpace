@@ -1,10 +1,10 @@
 {
+  "AddMembers": "멤버 추가",
   "DeleteSelfProfile": "프로필 삭제",
   "DisableUserButton": "비활성화",
   "DisabledEmployeeStatus": "비활성화",
   "EmailChangeButton": "이메일 변경",
   "EnableUserButton": "활성화",
-  "InviteLinkTitle": "초대 링크",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "비밀번호 변경",
   "PendingTitle": "보류 중",

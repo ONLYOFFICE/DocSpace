@@ -66,6 +66,14 @@
     <value>h1. $Message: $DocumentTitle 
 Влезте в своя DocuSign акаунт за повече информация. </value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. "$__AuthorName":"$__AuthorUrl" Ви спомена в коментар на документ
+
+ Това е съобщение по пощата, за да ви уведоми, че сте били споменати от "$__AuthorName":"$__AuthorUrl" в коментара към
+"$DocumentTitle":"$DocumentURL" document:
+
+$Message</value>
+  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Изпращане на поща 
 
@@ -90,6 +98,9 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Документи. Състоянието на регистрацията се промени</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Документи. Споменава се в документ</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Документи. Изпращането е пълно.</value>

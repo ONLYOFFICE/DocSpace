@@ -3,11 +3,11 @@ import TableHeader from "@docspace/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
-const TABLE_VERSION = "5";
+const TABLE_VERSION = "4";
 const TABLE_COLUMNS = `auditTableColumns_ver-${TABLE_VERSION}`;
 const COLUMNS_SIZE = `auditColumnsSize_ver-${TABLE_VERSION}`;
 
-class AuditTableHeader extends React.Component {
+class PeopleTableHeader extends React.Component {
   constructor(props) {
     super(props);
 
@@ -33,7 +33,7 @@ class AuditTableHeader extends React.Component {
       },
       {
         key: "Room",
-        title: t("Common:Context"),
+        title: t("Common:Room"),
         enable: true,
         resizable: true,
         onChange: this.onColumnChange,
@@ -125,6 +125,6 @@ export default inject(({ auth }) => {
   };
 })(
   withTranslation(["Home", "Common", "Translations"])(
-    observer(AuditTableHeader)
+    observer(PeopleTableHeader)
   )
 );

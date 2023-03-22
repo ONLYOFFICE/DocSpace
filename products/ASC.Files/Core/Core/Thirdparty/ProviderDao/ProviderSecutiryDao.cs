@@ -144,11 +144,6 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return _securityDao.RemoveSubjectAsync(subject);
     }
 
-    public IAsyncEnumerable<FileShareRecord> GetShareForEntryIdsAsync(Guid subject, IEnumerable<string> roomIds)
-    {
-        return _securityDao.GetShareForEntryIdsAsync(subject, roomIds);
-    }
-
     public IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects)
     {
         return _securityDao.GetSharesAsync(subjects);

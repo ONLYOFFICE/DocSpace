@@ -96,9 +96,9 @@ const ReactSmartBanner = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ bannerStore }) => {
   return {
-    isBannerVisible: auth.bannerStore.isBannerVisible,
-    setIsBannerVisible: auth.bannerStore.setIsBannerVisible,
+    isBannerVisible: bannerStore.isBannerVisible,
+    setIsBannerVisible: bannerStore.setIsBannerVisible,
   };
 })(observer(ReactSmartBanner));

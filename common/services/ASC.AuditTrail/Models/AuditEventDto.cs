@@ -44,7 +44,6 @@ public class AuditEventDto : BaseEvent, IMapFrom<AuditEventQuery>
 
     [Event("TargetIdCol", 34)]
     public MessageTarget Target { get; set; }
-    public string Context { get; set; }
 
     public override void Mapping(Profile profile)
     {

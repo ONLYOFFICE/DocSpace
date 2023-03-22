@@ -15,7 +15,6 @@ class CreateEditRoomStore {
   thirdPartyStore = null;
   settingsStore = null;
   infoPanelStore = null;
-  currentQuotaStore = null;
 
   constructor(
     filesStore,
@@ -24,8 +23,7 @@ class CreateEditRoomStore {
     tagsStore,
     thirdPartyStore,
     settingsStore,
-    infoPanelStore,
-    currentQuotaStore
+    infoPanelStore
   ) {
     makeAutoObservable(this);
 
@@ -36,7 +34,6 @@ class CreateEditRoomStore {
     this.thirdPartyStore = thirdPartyStore;
     this.settingsStore = settingsStore;
     this.infoPanelStore = infoPanelStore;
-    this.currentQuotaStore = currentQuotaStore;
   }
 
   setRoomParams = (roomParams) => {
@@ -136,9 +133,6 @@ class CreateEditRoomStore {
           img.src = url;
         });
       } else !withPaging && this.onOpenNewRoom(room.id);
-
-      this.currentQuotaStore.setPortalQuota();
-
       this.roomIsCreated = true;
     } catch (err) {
       toastr.error(err);

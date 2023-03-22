@@ -1,6 +1,6 @@
 {
   "ConversionMessage": "您所上传的所有文档都将被转换为Office Open XML格式（docx、xlsx或pptx）以供快速编辑。",
-  "ConvertedFileDestination": "该文件的副本将在文件夹中创建<strong>{{folderTitle}}</strong>.",
+  "ConvertedFileDestination": "该文件的副本将在文件夹中创建<strong>{{folderTitle}}</strong>",
   "DocumentConversionTitle": "文件转换",
   "FileUploadTitle": "文件上传",
   "HideMessage": "不要再次显示此消息",

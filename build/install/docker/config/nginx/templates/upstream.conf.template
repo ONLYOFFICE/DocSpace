@@ -75,11 +75,6 @@ map $SERVICE_SSOAUTH $service_sso {
     $SERVICE_SSOAUTH $SERVICE_SSOAUTH;
 }
 
-map $SERVICE_HELTHCHECKS $service_healthchecks {
-    volatile;
-    $SERVICE_HELTHCHECKS $SERVICE_HELTHCHECKS;
-}
-
 map $DOCUMENT_SERVER $document_server {
     volatile;
     $DOCUMENT_SERVER $DOCUMENT_SERVER;

@@ -152,50 +152,7 @@ const MobileView = styled.div`
     display: flex;
     flex-direction: column;
     gap: 4px;
-    margin-bottom: 32px;
-  }
-
-  .notifications {
-    .title {
-      padding-bottom: 10px;
-    }
-    margin-bottom: 32px;
-  }
-
-  .theme {
-    .theme-title {
-      padding-bottom: 12px;
-    }
-
-    .flex {
-      display: flex;
-    }
-
-    .check-box {
-      padding-right: 7px;
-    }
-
-    .theme-selection {
-      display: flex;
-      flex-direction: column;
-      padding-top: 4px;
-      padding-left: 22px;
-
-      .theme-description {
-        padding-bottom: 12px;
-      }
-
-      .check-box {
-        width: 16px;
-        height: 16px;
-      }
-
-      .check-box-container {
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
-    }
+    margin-bottom: 16px;
   }
 `;
 

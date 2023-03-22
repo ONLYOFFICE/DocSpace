@@ -5,8 +5,6 @@ import DragTooltip from "./DragTooltip";
 const Tooltip = ({ dragging }) => (dragging ? <DragTooltip /> : <></>);
 
 export default inject(({ filesStore }) => {
-  const { dragging, selection, startDrag, bufferSelection } = filesStore;
-  return {
-    dragging: dragging && (selection[0] || bufferSelection) && startDrag,
-  };
+  const { dragging, selection, startDrag } = filesStore;
+  return { dragging: dragging && selection[0] && startDrag };
 })(observer(Tooltip));

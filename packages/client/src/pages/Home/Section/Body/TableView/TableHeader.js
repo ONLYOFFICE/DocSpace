@@ -58,7 +58,7 @@ class FilesTableHeader extends React.Component {
         },
         {
           key: "Owner",
-          title: t("Common:Owner"),
+          title: t("ByOwner"),
           enable: this.props.roomColumnOwnerIsEnabled,
           resizable: true,
           sortBy: "Author",

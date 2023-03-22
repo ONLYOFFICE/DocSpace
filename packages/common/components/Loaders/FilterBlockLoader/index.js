@@ -1,5 +1,4 @@
 import React from "react";
-import { RoomsType } from "../../../constants";
 
 import RectangleLoader from "../RectangleLoader";
 
@@ -11,69 +10,8 @@ const FilterBlockLoader = ({
   style,
   isRooms,
   isAccounts,
-
   ...rest
 }) => {
-  const roomTypeLoader = isRooms ? (
-    <>
-      {Object.values(RoomsType).map((roomType) => {
-        switch (roomType) {
-          case RoomsType.FillingFormsRoom:
-            return (
-              <RectangleLoader
-                key={roomType}
-                width={"77"}
-                height={"28"}
-                borderRadius={"16"}
-                className={"loader-item tag-item"}
-              />
-            );
-          case RoomsType.EditingRoom:
-            return (
-              <RectangleLoader
-                key={roomType}
-                width={"98"}
-                height={"28"}
-                borderRadius={"16"}
-                className={"loader-item tag-item"}
-              />
-            );
-          case RoomsType.ReviewRoom:
-            return (
-              <RectangleLoader
-                key={roomType}
-                width={"112"}
-                height={"28"}
-                borderRadius={"16"}
-                className={"loader-item tag-item"}
-              />
-            );
-          case RoomsType.ReadOnlyRoom:
-            return (
-              <RectangleLoader
-                key={roomType}
-                width={"73"}
-                height={"28"}
-                borderRadius={"16"}
-                className={"loader-item tag-item"}
-              />
-            );
-          case RoomsType.CustomRoom:
-          default:
-            return (
-              <RectangleLoader
-                key={roomType}
-                width={"89"}
-                height={"28"}
-                borderRadius={"16"}
-                className={"loader-item tag-item"}
-              />
-            );
-        }
-      })}
-    </>
-  ) : null;
-
   return (
     <StyledContainer id={id} className={className} style={style} {...rest}>
       {!isRooms && !isAccounts && (
@@ -117,34 +55,32 @@ const FilterBlockLoader = ({
           />
           <div className="row-loader">
             <RectangleLoader
-              width={"51"}
-              height={"28"}
-              borderRadius={"16"}
+              width={"32"}
+              height={"32"}
+              borderRadius={"6"}
               className={"loader-item"}
             />
             <RectangleLoader
-              width={"68"}
-              height={"28"}
-              borderRadius={"16"}
+              width={"103"}
+              height={"16"}
+              borderRadius={"3"}
               className={"loader-item"}
             />
           </div>
-          {isRooms && (
-            <div className="row-loader">
-              <RectangleLoader
-                width={"16"}
-                height={"16"}
-                borderRadius={"3"}
-                className={"loader-item"}
-              />
-              <RectangleLoader
-                width={"137"}
-                height={"20"}
-                borderRadius={"3"}
-                className={"loader-item"}
-              />
-            </div>
-          )}
+          <div className="row-loader">
+            <RectangleLoader
+              width={"16"}
+              height={"16"}
+              borderRadius={"3"}
+              className={"loader-item"}
+            />
+            <RectangleLoader
+              width={"137"}
+              height={"20"}
+              borderRadius={"3"}
+              className={"loader-item"}
+            />
+          </div>
         </StyledBlock>
       )}
 
@@ -179,7 +115,38 @@ const FilterBlockLoader = ({
                 />
               </>
             ) : isRooms ? (
-              <>{roomTypeLoader}</>
+              <>
+                <RectangleLoader
+                  width={"77"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"98"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"112"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"73"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+                <RectangleLoader
+                  width={"89"}
+                  height={"28"}
+                  borderRadius={"16"}
+                  className={"loader-item tag-item"}
+                />
+              </>
             ) : (
               <></>
             )}

@@ -30,7 +30,6 @@ public class BackupSettings
 {
     public string UpgradesPath { get; set; }
     public int Limit { get; set; }
-    public long ChunkSize { get; set; }
     public ServiceConfigurationElement Service { get; set; }
     public SchedulerConfigurationElement Scheduler { get; set; }
     public CleanerConfigurationElement Cleaner { get; set; }

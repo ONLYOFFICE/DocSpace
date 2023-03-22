@@ -158,7 +158,6 @@ class AccountsContextOptionsStore {
             icon: RestoreAuthReactSvgUrl,
             label: t("PeopleTranslations:ResetAuth"),
             onClick: () => this.onResetAuth(item),
-            disabled: this.authStore.tfaStore.tfaSettings !== "app",
           };
         default:
           break;
@@ -188,7 +187,7 @@ class AccountsContextOptionsStore {
 
     const { isOwner } = this.authStore.userStore.user;
 
-    const { setIsVisible, isVisible } = this.authStore.infoPanelStore;
+    const { setIsVisible, isVisible } = this.peopleStore.infoPanelStore;
 
     const options = [];
 
@@ -391,7 +390,7 @@ class AccountsContextOptionsStore {
   };
 
   onDetailsClick = (item) => {
-    const { setIsVisible } = this.authStore.infoPanelStore;
+    const { setIsVisible } = this.peopleStore.infoPanelStore;
     const { setBufferSelection } = this.peopleStore.selectionStore;
     setBufferSelection(item);
     setIsVisible(true);

@@ -1,43 +1,44 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+
 import Text from "@docspace/components/text";
-import Button from "@docspace/components/button";
+import ToggleButton from "@docspace/components/toggle-button";
 
 import { StyledWrapper } from "./styled-subscriptions";
 
-import config from "PACKAGE_FILE";
-import { combineUrl } from "@docspace/common/utils";
 const Subscription = (props) => {
-  const { history, t } = props;
+  const { t } = useTranslation("Profile");
 
-  const onButtonClick = () => {
-    history.push(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/accounts/view/@self/notification"
-      )
-    );
+  const { changeEmailSubscription, tipsSubscription } = props;
+
+  const onChangeEmailSubscription = (e) => {
+    const checked = e.currentTarget.checked;
+    changeEmailSubscription(checked);
   };
 
   return (
     <StyledWrapper>
       <Text fontSize="16px" fontWeight={700}>
-        {t("Notifications:Notifications")}
+        {t("Subscriptions")}
       </Text>
-      <Button
-        size="small"
-        label={t("Notifications:ManageNotifications")}
-        onClick={onButtonClick}
+      <ToggleButton
+        className="toggle-btn"
+        label={t("SubscriptionEmailTipsToggleLbl")}
+        onChange={onChangeEmailSubscription}
+        isChecked={tipsSubscription}
       />
     </StyledWrapper>
   );
 };
 
-export default inject(({ auth }) => {
-  const { theme } = auth.settingsStore;
+export default inject(({ peopleStore }) => {
+  const { targetUserStore } = peopleStore;
+
+  const { changeEmailSubscription, tipsSubscription } = targetUserStore;
 
   return {
-    theme,
+    changeEmailSubscription,
+    tipsSubscription,
   };
 })(observer(Subscription));

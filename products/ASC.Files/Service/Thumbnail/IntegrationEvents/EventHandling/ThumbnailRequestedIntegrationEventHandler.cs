@@ -59,7 +59,7 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
     private async Task<IEnumerable<FileData<int>>> GetFreezingThumbnailsAsync()
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
 
         var result = filesDbContext.Files
                     .AsQueryable()

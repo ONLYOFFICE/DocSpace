@@ -139,11 +139,7 @@ const DNSSettings = (props) => {
             className="dns-setting_helpbutton "
           />
           {!isSettingPaid && (
-            <Badge
-              backgroundColor="#EDC409"
-              label={t("Common:Paid")}
-              isPaidBadge={true}
-            />
+            <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
           )}
         </div>
       )}

@@ -8,6 +8,9 @@
   "ProviderSuccessfullyConnected": "공급자 연결에 성공했습니다",
   "ProviderSuccessfullyDisconnected": "공급자 연결 해제에 성공했습니다",
   "ShowBackupCodes": "백업 코드 보기",
+  "SubscriptionEmailTipsToggleLbl": "꿀팁이 포함된 이메일 알림",
+  "SubscriptionTurnOffToast": "메일링 리스트에서 구독을 취소하는 데 성공했습니다. <1>다시 구독</1>",
+  "Subscriptions": "구독",
   "SystemTheme": "시스템 테마 사용",
   "TfaLoginSettings": "로그인 설정",
   "TwoFactorDescription": "관리자에 의해 코드 생성 앱을 통한 이중 인증이 모든 사용자에 대해 활성화됩니다."

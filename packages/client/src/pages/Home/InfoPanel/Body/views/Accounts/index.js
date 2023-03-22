@@ -51,7 +51,7 @@ const Accounts = ({
       case "manager":
         return t("Common:RoomAdmin");
       case "collaborator":
-        return t("Common:PowerUser");
+        return t("Common:Collaborator");
       case "user":
         return t("Common:User");
     }
@@ -77,8 +77,8 @@ const Accounts = ({
     const collaboratorOption = {
       id: "info-account-type_collaborator",
       key: "collaborator",
-      title: t("Common:PowerUser"),
-      label: t("Common:PowerUser"),
+      title: t("Common:Collaborator"),
+      label: t("Common:Collaborator"),
       action: "collaborator",
     };
     const userOption = {

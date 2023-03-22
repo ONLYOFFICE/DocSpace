@@ -148,23 +148,21 @@ class ThirdPartyServices extends React.Component {
           </Box>
 
           <div className="consumers-list-container">
-            {consumers
-              .filter((consumer) => consumer.title !== "Bitly")
-              .map((consumer) => (
-                <Box className="consumer-item-wrapper" key={consumer.name}>
-                  <ConsumerItem
-                    consumer={consumer}
-                    dialogVisible={dialogVisible}
-                    isLoading={isLoading}
-                    onChangeLoading={onChangeLoading}
-                    onModalClose={onModalClose}
-                    onModalOpen={onModalOpen}
-                    setConsumer={setConsumer}
-                    updateConsumerProps={updateConsumerProps}
-                    t={t}
-                  />
-                </Box>
-              ))}
+            {consumers.map((consumer) => (
+              <Box className="consumer-item-wrapper" key={consumer.name}>
+                <ConsumerItem
+                  consumer={consumer}
+                  dialogVisible={dialogVisible}
+                  isLoading={isLoading}
+                  onChangeLoading={onChangeLoading}
+                  onModalClose={onModalClose}
+                  onModalOpen={onModalOpen}
+                  setConsumer={setConsumer}
+                  updateConsumerProps={updateConsumerProps}
+                  t={t}
+                />
+              </Box>
+            ))}
           </div>
         </RootContainer>
         {dialogVisible && (

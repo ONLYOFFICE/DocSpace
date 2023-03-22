@@ -166,6 +166,7 @@ const FilesMediaViewer = (props) => {
       return;
     }
 
+    setScrollToItem({ id: currentMediaFileId, type: "file" });
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
 

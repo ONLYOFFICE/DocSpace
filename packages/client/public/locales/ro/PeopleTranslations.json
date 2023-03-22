@@ -1,10 +1,10 @@
 {
+  "AddMembers": "Adăugați membrii",
   "DeleteSelfProfile": "Ștergere profil",
   "DisableUserButton": "Dezactivează",
   "DisabledEmployeeStatus": "Dezactivat",
   "EmailChangeButton": "Schimbare email",
   "EnableUserButton": "Activează",
-  "InviteLinkTitle": "Link-ul de invitație",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Schimbare parola",
   "PendingTitle": "În așteptare",

@@ -441,7 +441,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             if (file.Id == default)

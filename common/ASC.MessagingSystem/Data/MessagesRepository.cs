@@ -156,10 +156,9 @@ public class MessagesRepository : IDisposable
         using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
         var strategy = ef.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        strategy.Execute(() =>
         {
-            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
-            using var tx = await ef.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
+            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
             var dict = new Dictionary<string, ClientInfo>();
 
             foreach (var message in events)
@@ -190,9 +189,8 @@ public class MessagesRepository : IDisposable
                 }
             }
 
-            await tx.CommitAsync();
-        }).GetAwaiter()
-          .GetResult();
+            tx.Commit();
+        });
     }
 
     private int AddLoginEvent(EventMessage message, MessagesContext dbContext)

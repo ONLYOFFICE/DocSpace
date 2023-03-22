@@ -37,9 +37,7 @@ const Members = ({
   roomsView,
   resendEmailInvitations,
   setInvitePanelOptions,
-  setInviteUsersWarningDialogVisible,
   changeUserType,
-  isGracePeriod,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -121,11 +119,6 @@ const Members = ({
     setIsMobileHidden(true);
     const parentRoomId = selectionParentRoom.id;
 
-    if (isGracePeriod) {
-      setInviteUsersWarningDialogVisible(true);
-      return;
-    }
-
     setInvitePanelOptions({
       visible: true,
       roomId: parentRoomId,
@@ -192,7 +185,7 @@ const Members = ({
 
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
-          <Text className="title">{t("PendingInvitations")}</Text>
+          <Text className="title">{t("ExpectPeople")}</Text>
           {canInviteUserInRoomAbility && (
             <IconButton
               className={"icon"}
@@ -259,11 +252,7 @@ export default inject(
       resendEmailInvitations,
     } = filesStore;
     const { id: selfId } = auth.userStore.user;
-    const { isGracePeriod } = auth.currentTariffStatusStore;
-    const {
-      setInvitePanelOptions,
-      setInviteUsersWarningDialogVisible,
-    } = dialogsStore;
+    const { setInvitePanelOptions } = dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
 
@@ -285,10 +274,8 @@ export default inject(
       selfId,
 
       setInvitePanelOptions,
-      setInviteUsersWarningDialogVisible,
       resendEmailInvitations,
       changeUserType,
-      isGracePeriod,
     };
   }
 )(

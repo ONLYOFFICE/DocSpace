@@ -1,10 +1,10 @@
 {
+  "AddMembers": "Ավելացնել անդամներ",
   "DeleteSelfProfile": "Ջնջել կայքէջը",
   "DisableUserButton": "Կասեցնել",
   "DisabledEmployeeStatus": "Կասեցված",
   "EmailChangeButton": "Փոխել էլ․ փոստը",
   "EnableUserButton": "Թույլատրել",
-  "InviteLinkTitle": "Հրավերի հղում",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Փոխել գաղտնաբառը",
   "PendingTitle": "Սպասող",

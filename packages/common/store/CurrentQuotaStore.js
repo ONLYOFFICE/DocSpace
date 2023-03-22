@@ -2,7 +2,6 @@ import { makeAutoObservable } from "mobx";
 
 import api from "../api";
 import { PortalFeaturesLimitations } from "../constants";
-import toastr from "@docspace/components/toast/toastr";
 
 const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
@@ -10,10 +9,6 @@ const FILE_SIZE = "file_size";
 const ROOM = "room";
 const USERS = "users";
 const USERS_IN_ROOM = "usersInRoom";
-
-const COUNT_FOR_SHOWING_BAR = 2;
-const PERCENTAGE_FOR_SHOWING_BAR = 90;
-
 class QuotasStore {
   currentPortalQuota = {};
   currentPortalQuotaFeatures = [];
@@ -28,6 +23,8 @@ class QuotasStore {
     if (this.isLoaded) return;
 
     await this.setPortalQuota();
+
+    this.setIsLoaded(true);
   };
 
   setIsLoaded = (isLoaded) => {
@@ -168,26 +165,14 @@ class QuotasStore {
 
   get showRoomQuotaBar() {
     return (
-      this.maxCountRoomsByQuota - this.usedRoomsCount <=
-        COUNT_FOR_SHOWING_BAR &&
-      this.maxCountRoomsByQuota > 0 &&
-      this.maxCountRoomsByQuota >= this.usedRoomsCount
+      (this.usedRoomsCount / this.maxCountRoomsByQuota) * 100 >= 90 ||
+      this.maxCountRoomsByQuota - this.usedRoomsCount === 1
     );
   }
 
   get showStorageQuotaBar() {
     return (
-      (this.usedTotalStorageSizeCount / this.maxTotalSizeByQuota) * 100 >=
-      PERCENTAGE_FOR_SHOWING_BAR
-    );
-  }
-
-  get showUserQuotaBar() {
-    return (
-      this.addedManagersCount > 1 &&
-      this.maxCountManagersByQuota - this.addedManagersCount <=
-        COUNT_FOR_SHOWING_BAR &&
-      this.maxCountManagersByQuota >= this.addedManagersCount
+      (this.usedTotalStorageSizeCount / this.maxTotalSizeByQuota) * 100 >= 90
     );
   }
 
@@ -196,17 +181,10 @@ class QuotasStore {
     this.currentPortalQuotaFeatures = res.features;
   };
   setPortalQuota = async () => {
-    try {
-      const res = await api.portal.getPortalQuota();
+    const res = await api.portal.getPortalQuota();
+    if (!res) return;
 
-      if (!res) return;
-
-      this.setIsLoaded(true);
-
-      this.setPortalQuotaValue(res);
-    } catch (e) {
-      toastr.error(e);
-    }
+    this.setPortalQuotaValue(res);
   };
 }
 

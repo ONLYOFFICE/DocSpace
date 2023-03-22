@@ -438,6 +438,26 @@ ONLYOFFICE™ komanda
 
 ^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}". Ja nevēlaties saņemt paziņojumus par profila atjauninājumiem, lūdzu, labojiet savus "abonēšanas uzstādījumus" ":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Katra portāla "${__VirtualRootPath}":"${__VirtualRootPath}" jaunumi datumā $Date
+
+#foreach($activity in $Activities)
+
+h2.$activity.Key
+
+#foreach($whatsNewActivity in $activity.Value)
+#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
+#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
+*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
+
+
+#end
+
+#end
+
+
+^Jūs saņemat šo e-pastu, jo reģistrējāties portālā "${__VirtualRootPath}":"${__VirtualRootPath}". Ja nevēlaties saņemt paziņojumus par jauniem notikumiem "${__VirtualRootPath}":"${__VirtualRootPath}" portālā, lūdzu, pārvaldiet savus "abonēšanas uzstādījumus" :"$RecipientSubscriptionConfigURL".^</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testa ziņa
 
@@ -527,6 +547,9 @@ ONLYOFFICE komanda</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portāla profila izmaiņu paziņojums</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Laipni lūgti savā portālā $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP testa ziņojums</value>

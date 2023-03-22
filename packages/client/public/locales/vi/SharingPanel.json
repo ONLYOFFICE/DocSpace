@@ -11,7 +11,7 @@
   "InternalLink": "Liên kết nội bộ",
   "Notify users": "Thông báo cho người dùng",
   "ReadOnly": "Chỉ đọc",
-  "ShareEmailBody": "Bạn đã được cấp quyền truy cập vào tài liệu {{itemName}}. Hãy nhấp vào liên kết bên dưới để mở tài liệu ngay: {{shareLink}}.",
+  "ShareEmailBody": "Bạn đã được cấp quyền truy cập vào tài liệu {{itemName}}. Hãy nhấp vào liên kết bên dưới để mở tài liệu ngay: {{shareLink}}",
   "ShareEmailSubject": "Bạn đã được cấp quyền truy cập vào tài liệu {{itemName}}",
   "ShareVia": "Chia sẻ qua",
   "SharingSettingsTitle": "Cài đặt chia sẻ"

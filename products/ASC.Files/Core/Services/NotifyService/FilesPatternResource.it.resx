@@ -68,6 +68,13 @@ Questa è una email di notifica per informarti che tutti i firmatari hanno firma
 
 Accedi al tuo account DocuSign per maggiori informazioni.</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. "$$__AuthorName":"$__AuthorUrl" ti ha menzionato nel commento al documento
+
+Hai ricevuto questo messaggio di posta elettronica per informarti che sei stato menzionato da "$__AuthorName":"$__AuthorUrl" nel commento al documento "$DocumentTitle":"$DocumentURL".
+
+$Message</value>
+  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Invio completato
 
@@ -99,6 +106,9 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Documenti. Lo status della firma è cambiato</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Documenti. Menzionato nel documento</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Documenti. L'invio è stato completato.</value>

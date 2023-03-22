@@ -236,8 +236,8 @@ ProfileMenu.propTypes = {
   clickOutsideAction: PropTypes.func,
 };
 
-export default inject(({ auth }) => {
-  const { isBannerVisible } = auth.bannerStore;
+export default inject(({ bannerStore }) => {
+  const { isBannerVisible } = bannerStore;
 
   return { isBannerVisible };
 })(observer(ProfileMenu));

@@ -26,10 +26,7 @@ const LoginHistory = (props) => {
   useEffect(() => {
     setDocumentTitle(t("LoginHistoryTitle"));
 
-    if (isAuditAvailable) {
-      getLoginHistory();
-    }
-
+    getLoginHistory();
     getLifetimeAuditSettings();
   }, []);
 
@@ -76,7 +73,6 @@ const LoginHistory = (props) => {
           setLifetimeAuditSettings={setLifetimeAuditSettings}
           content={getContent()}
           downloadReport={t("DownloadReportBtnText")}
-          downloadReportDescription={t("DownloadReportDescription")}
           getReport={getLoginHistoryReport}
           isSettingNotPaid={!isAuditAvailable}
         />

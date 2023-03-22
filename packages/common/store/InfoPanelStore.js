@@ -315,11 +315,6 @@ class InfoPanelStore {
     const pathname = givenPathName || window.location.pathname.toLowerCase();
     return pathname.indexOf("form-gallery") !== -1;
   };
-
-  getIsTrash = (givenPathName) => {
-    const pathname = givenPathName || window.location.pathname.toLowerCase();
-    return pathname.indexOf("files/trash") !== -1;
-  };
 }
 
 export default InfoPanelStore;

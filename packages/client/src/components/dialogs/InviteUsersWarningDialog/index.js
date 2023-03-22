@@ -8,8 +8,6 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
-import { getDaysRemaining } from "../../../helpers/filesUtils";
-
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
   "/portal-settings"
@@ -26,8 +24,6 @@ const InviteUsersWarningDialog = (props) => {
     visible,
     setIsVisible,
     isGracePeriod,
-    currentTariffPlanTitle,
-    isPaymentPageAvailable,
   } = props;
 
   const [datesData, setDatesData] = useState({});
@@ -47,7 +43,7 @@ const InviteUsersWarningDialog = (props) => {
     setDatesData({
       fromDate: fromDateMoment.format("LL"),
       byDate: byDateMoment.format("LL"),
-      delayDaysCount: getDaysRemaining(byDateMoment),
+      delayDaysCount: fromDateMoment.to(byDateMoment, true),
     });
   };
 
@@ -76,9 +72,7 @@ const InviteUsersWarningDialog = (props) => {
         {isGracePeriod ? (
           <>
             <Text fontWeight={700} noSelect>
-              {t("BusinessPlanPaymentOverdue", {
-                planName: currentTariffPlanTitle,
-              })}
+              {t("BusinessPlanPaymentOverdue")}
             </Text>
             <br />
             <Text noSelect as="div">
@@ -87,7 +81,7 @@ const InviteUsersWarningDialog = (props) => {
                 <strong>
                   from {{ fromDate }} to {{ byDate }}
                 </strong>
-                (days remaining: {{ delayDaysCount }})
+                ({{ delayDaysCount }})
               </Trans>
             </Text>
             <br />
@@ -108,36 +102,30 @@ const InviteUsersWarningDialog = (props) => {
       <ModalDialog.Footer>
         <Button
           key="OkButton"
-          label={
-            isPaymentPageAvailable ? t("UpgradePlan") : t("Common:OKButton")
-          }
+          label={t("UpgradePlan")}
           size="normal"
           primary
-          onClick={isPaymentPageAvailable ? onUpgradePlan : onClose}
-          scale={isPaymentPageAvailable}
+          onClick={onUpgradePlan}
+          scale
         />
-        {isPaymentPageAvailable && (
-          <Button
-            key="CancelButton"
-            label={t("Common:CancelButton")}
-            size="normal"
-            onClick={onClose}
-            scale
-          />
-        )}
+        <Button
+          key="CancelButton"
+          label={t("Common:CancelButton")}
+          size="normal"
+          onClick={onClose}
+          scale
+        />
       </ModalDialog.Footer>
     </ModalDialog>
   );
 };
 
 export default inject(({ auth, dialogsStore }) => {
-  const { isPaymentPageAvailable } = auth;
   const {
     dueDate,
     delayDueDate,
     isGracePeriod,
   } = auth.currentTariffStatusStore;
-  const { currentTariffPlanTitle } = auth.currentQuotaStore;
 
   const {
     inviteUsersWarningDialogVisible,
@@ -145,8 +133,6 @@ export default inject(({ auth, dialogsStore }) => {
   } = dialogsStore;
 
   return {
-    isPaymentPageAvailable,
-    currentTariffPlanTitle,
     language: auth.language,
     visible: inviteUsersWarningDialogVisible,
     setIsVisible: setInviteUsersWarningDialogVisible,

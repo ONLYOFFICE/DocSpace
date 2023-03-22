@@ -1,10 +1,10 @@
 {
+  "AddMembers": "Üzvlərin əlavə edilməsi",
   "DeleteSelfProfile": "Profilin silinməsi",
   "DisableUserButton": "Bloklamaq",
   "DisabledEmployeeStatus": "Söndürülüb",
   "EmailChangeButton": "Elektron poçtu dəyiş",
   "EnableUserButton": "İzn ver",
-  "InviteLinkTitle": "Dəvət üçün link",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Şifrəni dəyişdir",
   "PendingTitle": "Gözləmə",

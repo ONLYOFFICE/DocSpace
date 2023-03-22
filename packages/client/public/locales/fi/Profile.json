@@ -7,7 +7,10 @@
   "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>",
   "ProviderSuccessfullyConnected": "Palveluntarjoajan yhdistäminen onnistui",
   "ProviderSuccessfullyDisconnected": "Yhteys palveluntarjoajaan katkaistu",
-  "ShowBackupCodes": "Näytä varakoodit",
+  "ShowBackupCodes": "Näytä varakoodit\n",
+  "SubscriptionEmailTipsToggleLbl": "Sähköposti-ilmoitus, jossa on vinkkejä ja temppuja",
+  "SubscriptionTurnOffToast": "Postituslistan tilaus on peruutettu onnistuneesti. <1>Tilaa uudelleen</1>",
+  "Subscriptions": "Tilaukset",
   "SystemTheme": "Käytä järjestelmän teemaa",
   "TfaLoginSettings": "Kirjautumisasetukset",
   "TwoFactorDescription": "Järjestelmänvalvoja otti käyttöön kaksivaiheisen todennuksen koodia luovan sovelluksen kautta kaikille käyttäjille."

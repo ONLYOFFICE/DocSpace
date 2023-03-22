@@ -7,7 +7,6 @@ import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
 import Button from "@docspace/components/button";
 import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const StyledBodyContent = styled.div`
   max-width: 480px;
@@ -41,9 +40,6 @@ const StyledBody = styled.div`
     }
   }
 
-  .portal-unavailable_text {
-    color: ${(props) => props.theme.portalUnavailable.textDescription};
-  }
   @media (max-width: 768px) {
     .portal-unavailable_svg {
       margin-top: 0px;
@@ -87,7 +83,7 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
         visible={isVisible}
         t={t}
         emailPlaceholderText={t("Common:RegistrationEmail")}
-        textBody={t("PortalUnavailable:AccessingProblem")}
+        textBody={t("AccessingProblem")}
         onClose={onCloseDialog}
       />
       <ErrorContainer
@@ -95,8 +91,12 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
         headerText={t("ErrorUnavailableText")}
       >
         <StyledBodyContent>
-          <Text textAlign="center" className="portal-unavailable_text">
-            {t("PortalUnavailable:AccessingProblem")}
+          <Text
+            textAlign="center"
+            className="portal-unavailable_text"
+            color={theme.text.disableColor}
+          >
+            {t("AccessingProblem")}
           </Text>
           <Button
             scale
@@ -104,15 +104,14 @@ const PortalUnavailable = ({ theme, logoUrl, onLogoutClick }) => {
             size={"medium"}
             onClick={onClick}
           />
-
-          <ColorTheme
+          <Text
             textAlign="center"
-            themeId={ThemeType.Link}
             className="portal-unavailable_contact-text"
             onClick={onClickToContact}
+            color={theme.login.linkColor}
           >
-            {t("PortalUnavailable:ContactAdministrator")}
-          </ColorTheme>
+            {t("ContactAdministrator")}
+          </Text>
         </StyledBodyContent>
       </ErrorContainer>
     </StyledBody>

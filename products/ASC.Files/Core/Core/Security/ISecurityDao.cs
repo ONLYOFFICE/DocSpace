@@ -30,7 +30,6 @@ namespace ASC.Files.Core.Security;
 public interface ISecurityDao<T>
 {
     Task SetShareAsync(FileShareRecord r);
-    IAsyncEnumerable<FileShareRecord> GetShareForEntryIdsAsync(Guid subject, IEnumerable<string> roomIds);
     IAsyncEnumerable<FileShareRecord> GetSharesAsync(IEnumerable<Guid> subjects);
     Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry);
     Task RemoveSubjectAsync(Guid subject);

@@ -24,6 +24,7 @@ services:
       - ./config/mysql/conf.d/:/etc/mysql/conf.d
     networks:
       - ${NETWORK_NAME}
+    tmpfs: /var/log/mysql/
 
 networks:
   onlyoffice:

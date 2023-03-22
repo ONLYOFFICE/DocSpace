@@ -1,10 +1,15 @@
 {
+  "ChangeEmailTitle": "Wijzig e-mail",
   "Desc": "Stel de registratiegegevens van het portaal in.",
   "Domain": "Domein:",
   "ErrorEmail": "Ongeldig e-mailadres",
   "ErrorInitWizard": "De dienst is momenteel niet beschikbaar, probeer het later nog eens.",
   "ErrorInitWizardButton": "Probeer opnieuw",
-  "ErrorLicenseBody": "De licentie is ongeldig. Zorg ervoor dat u het juiste bestand selecteert.",
+  "ErrorLicenseBody": "De licentie is ongeldig. Zorg ervoor dat u het juiste bestand selecteert",
+  "ErrorLicenseRead": "Accepteer de licentieovereenkomst",
+  "ErrorLicenseTitle": "Fout bij het laden",
+  "ErrorParamsBody": "Onjuiste gegevens ingevoerd:",
+  "ErrorParamsTitle": "Fout bij registratie",
   "ErrorPassword": "Wachtwoord voldoet niet aan de eisen",
   "ErrorUploadLicenseFile": "Selecteer een licentiebestand",
   "GeneratePassword": "Genereer wachtwoord",
@@ -12,5 +17,6 @@
   "LicenseLink": "licentieovereenkomsten",
   "PlaceholderLicense": "Uw licentiebestand",
   "Timezone": "Tijdzone:",
-  "WelcomeTitle": "Welkom bij uw portaal!"
+  "WelcomeTitle": "Welkom bij uw portaal!",
+  "WizardTitle": "Stel uw portaal in"
 }

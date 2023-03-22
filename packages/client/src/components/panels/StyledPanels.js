@@ -65,8 +65,8 @@ const StyledAsidePanel = styled.div`
     width: calc(100% - 32px);
   }
   .upload-panel_body {
-    padding-top: ${isMobile ? "67px" : "60px"};
-    height: ${isMobile ? "calc(100vh - 67px)" : "calc(100vh - 60px)"};
+    padding-top: ${isMobile ? "55px" : "48px"};
+    height: ${isMobile ? "calc(100vh - 55px)" : "calc(100vh - 48px)"};
   }
 
   .modal-dialog-aside {

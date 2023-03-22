@@ -41,10 +41,10 @@ public class ResilientTransaction
         var strategy = _context.Database.CreateExecutionStrategy();
         await strategy.ExecuteAsync(async () =>
         {
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+            using (var transaction = _context.Database.BeginTransaction())
             {
                 await action();
-                await transaction.CommitAsync();
+                transaction.Commit();
             }
         });
     }

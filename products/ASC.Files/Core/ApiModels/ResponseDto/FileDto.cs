@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
 public class FileDto<T> : FileEntryDto<T>
@@ -35,7 +34,6 @@ public class FileDto<T> : FileEntryDto<T>
     public string ContentLength { get; set; }
     public long? PureContentLength { get; set; }
     public FileStatus FileStatus { get; set; }
-    public bool Mute { get; set; }
     public string ViewUrl { get; set; }
     public string WebUrl { get; set; }
     public FileType FileType { get; set; }
@@ -88,7 +86,6 @@ public class FileDtoHelper : FileEntryDtoHelper
     private readonly CommonLinkUtility _commonLinkUtility;
     private readonly FilesLinkUtility _filesLinkUtility;
     private readonly FileUtility _fileUtility;
-    private readonly BadgesSettingsHelper _badgesSettingsHelper;
 
     public FileDtoHelper(
         ApiDateTimeHelper apiDateTimeHelper,
@@ -100,8 +97,7 @@ public class FileDtoHelper : FileEntryDtoHelper
         CommonLinkUtility commonLinkUtility,
         FilesLinkUtility filesLinkUtility,
         FileUtility fileUtility,
-        FileSharingHelper fileSharingHelper,
-        BadgesSettingsHelper badgesSettingsHelper)
+        FileSharingHelper fileSharingHelper)
         : base(apiDateTimeHelper, employeeWrapperHelper, fileSharingHelper, fileSecurity)
     {
         _authContext = authContext;
@@ -110,7 +106,6 @@ public class FileDtoHelper : FileEntryDtoHelper
         _commonLinkUtility = commonLinkUtility;
         _filesLinkUtility = filesLinkUtility;
         _fileUtility = fileUtility;
-        _badgesSettingsHelper = badgesSettingsHelper;
     }
 
     public async Task<FileDto<T>> GetAsync<T>(File<T> file, List<Tuple<FileEntry<T>, bool>> folders = null)
@@ -151,7 +146,6 @@ public class FileDtoHelper : FileEntryDtoHelper
     private async Task<FileDto<T>> GetFileWrapperAsync<T>(File<T> file)
     {
         var result = await GetAsync<FileDto<T>, T>(file);
-        var isEnabledBadges = _badgesSettingsHelper.GetEnabledForCurrentUser();
 
         result.FileExst = FileUtility.GetFileExtension(file.Title);
         result.FileType = FileUtility.GetFileTypeByExtention(result.FileExst);
@@ -159,7 +153,6 @@ public class FileDtoHelper : FileEntryDtoHelper
         result.VersionGroup = file.VersionGroup;
         result.ContentLength = file.ContentLengthString;
         result.FileStatus = file.FileStatus;
-        result.Mute = !isEnabledBadges;
         result.PureContentLength = file.ContentLength.NullIfDefault();
         result.Comment = file.Comment;
         result.Encrypted = file.Encrypted.NullIfDefault();

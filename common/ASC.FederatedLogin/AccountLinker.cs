@@ -146,10 +146,10 @@ public class AccountLinker
         using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
         var strategy = accountLinkContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        strategy.Execute(() =>
         {
             using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
-            using var tr = await accountLinkContext.Database.BeginTransactionAsync();
+            using var tr = accountLinkContext.Database.BeginTransaction();
 
             var accountLinkQuery = accountLinkContext.AccountLinks
                 .Where(r => r.Id == obj);
@@ -164,13 +164,14 @@ public class AccountLinker
                 accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
             }
 
-            var accountLink = await accountLinkQuery.FirstOrDefaultAsync();
+            var accountLink = accountLinkQuery.FirstOrDefault();
             accountLinkContext.AccountLinks.Remove(accountLink);
-            await accountLinkContext.SaveChangesAsync();
+            accountLinkContext.SaveChanges();
 
-            await tr.CommitAsync();
-        }).GetAwaiter()
-          .GetResult();
+            tr.Commit();
+        });
+
+
 
         _accountLinkerStorage.RemoveFromCache(obj);
     }

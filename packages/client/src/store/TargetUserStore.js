@@ -1,31 +1,17 @@
 import api from "@docspace/common/api";
-import {
-  LANGUAGE,
-  COOKIE_EXPIRATION_YEAR,
-  NotificationsType,
-} from "@docspace/common/constants";
+import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { makeAutoObservable } from "mobx";
 import { setCookie } from "@docspace/common/utils";
-import {
-  changeNotificationSubscription,
-  getNotificationSubscription,
-} from "@docspace/common/api/settings";
-import toastr from "@docspace/components/toast/toastr";
-const { Badges, RoomsActivity, DailyFeed, UsefulTips } = NotificationsType;
+
 class TargetUserStore {
   peopleStore = null;
   targetUser = null;
   isEditTargetUser = false;
-
+  tipsSubscription = null;
   changeEmailVisible = false;
   changePasswordVisible = false;
   changeNameVisible = false;
   changeAvatarVisible = false;
-
-  badgesSubscription = false;
-  roomsActivitySubscription = false;
-  dailyFeedSubscriptions = false;
-  usefulTipsSubscription = false;
 
   constructor(peopleStore) {
     this.peopleStore = peopleStore;
@@ -56,7 +42,10 @@ class TargetUserStore {
       return this.setTargetUser(this.peopleStore.authStore.userStore.user);
     } else {*/
     const user = await api.people.getUser(userName);
-
+    if (user?.userName === this.peopleStore.authStore.userStore.user.userName) {
+      const tipsSubscription = await api.settings.getTipsSubscription();
+      this.tipsSubscription = tipsSubscription;
+    }
     this.setTargetUser(user);
     return user;
     //}
@@ -109,6 +98,11 @@ class TargetUserStore {
     this.isEditTargetUser = isEditTargetUser;
   };
 
+  changeEmailSubscription = async (enabled) => {
+    this.tipsSubscription = enabled;
+    this.tipsSubscription = await api.settings.toggleTipsSubscription();
+  };
+
   setChangeEmailVisible = (visible) => (this.changeEmailVisible = visible);
 
   setChangePasswordVisible = (visible) =>
@@ -117,48 +111,6 @@ class TargetUserStore {
   setChangeNameVisible = (visible) => (this.changeNameVisible = visible);
 
   setChangeAvatarVisible = (visible) => (this.changeAvatarVisible = visible);
-
-  setSubscriptions = (
-    isEnableBadges,
-    isEnableRoomsActivity,
-    isEnableDailyFeed,
-    isEnableTips
-  ) => {
-    this.badgesSubscription = isEnableBadges;
-    this.roomsActivitySubscription = isEnableRoomsActivity;
-    this.dailyFeedSubscriptions = isEnableDailyFeed;
-    this.usefulTipsSubscription = isEnableTips;
-  };
-
-  changeSubscription = async (notificationType, isEnabled) => {
-    const setNotificationValue = (notificationType, isEnabled) => {
-      switch (notificationType) {
-        case Badges:
-          this.badgesSubscription = isEnabled;
-          break;
-        case DailyFeed:
-          this.dailyFeedSubscriptions = isEnabled;
-          break;
-        case RoomsActivity:
-          this.roomsActivitySubscription = isEnabled;
-          break;
-        case UsefulTips:
-          this.usefulTipsSubscription = isEnabled;
-          break;
-      }
-    };
-
-    setNotificationValue(notificationType, isEnabled);
-
-    try {
-      await changeNotificationSubscription(notificationType, isEnabled);
-    } catch (e) {
-      toastr.error(e);
-      const notification = await getNotificationSubscription(notificationType);
-
-      setNotificationValue(notificationType, notification.isEnabled);
-    }
-  };
 }
 
 export default TargetUserStore;

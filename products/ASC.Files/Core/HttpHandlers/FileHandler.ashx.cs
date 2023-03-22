@@ -26,12 +26,6 @@
 
 using System;
 
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
-
-using static Dropbox.Api.UsersCommon.AccountType;
-
-using Image = SixLabors.ImageSharp.Image;
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
 
@@ -196,10 +190,7 @@ public class FileHandlerService
                     await DifferenceFile(context);
                     break;
                 case "thumb":
-                    await ThumbnailFile(context, false);
-                    break;
-                case "preview":
-                    await ThumbnailFile(context, true);
+                    await ThumbnailFile(context);
                     break;
                 case "track":
                     await TrackFile(context);
@@ -309,7 +300,7 @@ public class FileHandlerService
             var doc = context.Request.Query[FilesLinkUtility.DocShareKey].FirstOrDefault() ?? "";
 
             var fileDao = _daoFactory.GetFileDao<T>();
-            var version = 0;
+            int version = 0;
             var (readLink, file, linkShare) = await _fileShareLink.CheckAsync(doc, true, fileDao);
             if (!readLink && file == null)
             {
@@ -366,13 +357,13 @@ public class FileHandlerService
             {
                 if (forView)
                 {
-                    _ = _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
+                    _filesMessageService.Send(file, MessageAction.FileReaded, file.Title);
                 }
                 else
                 {
                     if (version == 0)
                     {
-                        _ = _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
+                        _filesMessageService.Send(file, MessageAction.FileDownloaded, file.Title);
                     }
                     else
                     {
@@ -1020,21 +1011,21 @@ public class FileHandlerService
         }
     }
 
-    private async Task ThumbnailFile(HttpContext context, bool force)
+    private async Task ThumbnailFile(HttpContext context)
     {
         var q = context.Request.Query[FilesLinkUtility.FileId];
 
         if (int.TryParse(q, out var id))
         {
-            await ThumbnailFile(context, id, force);
+            await ThumbnailFile(context, id);
         }
         else
         {
-            await ThumbnailFileFromThirdparty(context, q.FirstOrDefault() ?? "", force);
+            await ThumbnailFileFromThirdparty(context, q.FirstOrDefault() ?? "");
         }
     }
 
-    private async Task ThumbnailFile(HttpContext context, int id, bool force)
+    private async Task ThumbnailFile(HttpContext context, int id)
     {
         try
         {
@@ -1081,45 +1072,20 @@ public class FileHandlerService
                 return;
             }
 
-            if (file.ThumbnailStatus != Thumbnail.Created && !force)
+            if (file.ThumbnailStatus != Thumbnail.Created)
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NoContent;
                 return;
             }
 
-            if (force)
+            context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
+            context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
+
+            using (var stream = await _globalStore.GetStore().GetReadStreamAsync(fileDao.GetUniqThumbnailPath(file, width, height)))
             {
-                context.Response.ContentType = MimeMapping.GetMimeMapping(".jpeg");
-                context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".jpeg", true));
-
-                using (var stream = await fileDao.GetFileStreamAsync(file))
-                {                    
-                    var processedImage = await Image.LoadAsync(stream);
-
-                    processedImage.Mutate(x => x.Resize(new ResizeOptions
-                    {
-                        Size = new Size(width, height),
-                        Mode = ResizeMode.Crop
-                    }));
-
-                    // save as jpeg more fast, then webp
-                    await processedImage.SaveAsJpegAsync(context.Response.Body);
-                }
+                context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
+                await stream.CopyToAsync(context.Response.Body);
             }
-            else
-            {
-                context.Response.ContentType = MimeMapping.GetMimeMapping("." + _global.ThumbnailExtension);
-                context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue("." + _global.ThumbnailExtension));
-
-                var thumbnailFilePath = fileDao.GetUniqThumbnailPath(file, width, height);
-
-                using (var stream = await _globalStore.GetStore().GetReadStreamAsync(thumbnailFilePath))
-                {
-                    context.Response.Headers.Add("Content-Length", stream.Length.ToString(CultureInfo.InvariantCulture));
-                    await stream.CopyToAsync(context.Response.Body);
-                }
-            }
-
         }
         catch (FileNotFoundException ex)
         {
@@ -1147,7 +1113,7 @@ public class FileHandlerService
         }
     }
 
-    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id, bool force)
+    private async Task ThumbnailFileFromThirdparty(HttpContext context, string id)
     {
         try
         {

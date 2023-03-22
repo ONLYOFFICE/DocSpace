@@ -21,8 +21,9 @@ const PAYMENTS_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/portal-settings/payments/portal-payments"
 );
-
-//const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
+const HELP_URL = "https://onlyoffice.com/";
+const SUPPORT_URL = "https://onlyoffice.com/";
+const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
 class ProfileActionsStore {
   authStore = null;
@@ -88,21 +89,16 @@ class ProfileActionsStore {
   };
 
   onHelpCenterClick = () => {
-    const helpUrl = this.authStore.settingsStore.helpLink;
-
-    window.open(helpUrl, "_blank");
+    window.open(HELP_URL, "_blank");
   };
 
   onSupportClick = () => {
-    const supportUrl = this.authStore.settingsStore.additionalResourcesData
-      ?.feedbackAndSupportUrl;
-
-    window.open(supportUrl, "_blank");
+    window.open(SUPPORT_URL, "_blank");
   };
 
-  // onVideoGuidesClick = () => {
-  //   window.open(VIDEO_GUIDES_URL, "_blank");
-  // };
+  onVideoGuidesClick = () => {
+    window.open(VIDEO_GUIDES_URL, "_blank");
+  };
 
   onHotkeysClick = () => {
     this.authStore.settingsStore.setHotkeyPanelVisible(true);
@@ -199,12 +195,12 @@ class ProfileActionsStore {
         label: t("Common:FeedbackAndSupport"),
         onClick: this.onSupportClick,
       },
-      // {
-      //   key: "user-menu-video",
-      //   icon: VideoGuidesReactSvgUrl,
-      //   label: "VideoGuides",
-      //   onClick: this.onVideoGuidesClick,
-      // },
+      {
+        key: "user-menu-video",
+        icon: VideoGuidesReactSvgUrl,
+        label: t("Common:VideoGuides"),
+        onClick: this.onVideoGuidesClick,
+      },
       hotkeys,
       {
         key: "user-menu-about",

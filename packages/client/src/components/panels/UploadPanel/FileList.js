@@ -11,7 +11,7 @@ const CustomScrollbarsVirtualList = React.forwardRef((props, ref) => (
 ));
 
 const mobileRowHeight = 48;
-const desktopRowHeight = 48;
+const desktopRowHeight = 40;
 const mobileRowIncreasedHeight = 92;
 const desktopRowIncreasedHeight = 88;
 

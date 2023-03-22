@@ -37,22 +37,18 @@ const WhiteLabel = (props) => {
   } = props;
   const [isLoadedData, setIsLoadedData] = useState(false);
   const [logoTextWhiteLabel, setLogoTextWhiteLabel] = useState("");
-  const [defaultLogoTextWhiteLabel, setDefaultLogoTextWhiteLabel] = useState(
-    ""
-  );
-
   const [logoUrlsWhiteLabel, setLogoUrlsWhiteLabel] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const companyNameFromSessionStorage = getFromSessionStorage("companyName");
+  const companyNameFromeSessionStorage = getFromSessionStorage("companyName");
 
   useEffect(() => {
-    if (!companyNameFromSessionStorage) {
+    if (!companyNameFromeSessionStorage) {
       setLogoTextWhiteLabel(logoText);
       saveToSessionStorage("companyName", logoText);
     } else {
-      setLogoTextWhiteLabel(companyNameFromSessionStorage);
-      saveToSessionStorage("companyName", companyNameFromSessionStorage);
+      setLogoTextWhiteLabel(companyNameFromeSessionStorage);
+      saveToSessionStorage("companyName", companyNameFromeSessionStorage);
     }
   }, [logoText]);
 
@@ -64,20 +60,11 @@ const WhiteLabel = (props) => {
 
   useEffect(() => {
     if (logoTextWhiteLabel && logoUrlsWhiteLabel.length && !isLoadedData) {
-      setDefaultLogoTextWhiteLabel(logoText);
       setIsLoadedData(true);
     }
   }, [isLoadedData, logoTextWhiteLabel, logoUrlsWhiteLabel]);
 
-  const onResetCompanyName = async () => {
-    const whlText = await getWhiteLabelLogoText();
-    saveToSessionStorage("companyName", whlText);
-    setLogoTextWhiteLabel(logoText);
-  };
-
   const onChangeCompanyName = (e) => {
-    console.log(defaultLogoTextWhiteLabel);
-
     const value = e.target.value;
     setLogoTextWhiteLabel(value);
     saveToSessionStorage("companyName", value);
@@ -112,12 +99,12 @@ const WhiteLabel = (props) => {
     setLogoUrlsWhiteLabel(newLogos);
   };
 
-  const onRestoreDefault = async () => {
+  const onRestoreLogo = async () => {
     try {
       await restoreWhiteLabelSettings(true);
       await getWhiteLabelLogoUrls();
       await getWhiteLabelLogoUrlsAction(); //TODO: delete duplicate request
-      await onResetCompanyName();
+      await getWhiteLabelLogoText();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (error) {
       toastr.error(error);
@@ -189,9 +176,6 @@ const WhiteLabel = (props) => {
     }
   };
 
-  const isEqualLogo = isEqual(logoUrlsWhiteLabel, defaultWhiteLabelLogoUrls);
-  const isEqualText = defaultLogoTextWhiteLabel === logoTextWhiteLabel;
-
   return !isLoadedData ? (
     <LoaderWhiteLabel />
   ) : (
@@ -203,11 +187,7 @@ const WhiteLabel = (props) => {
           {t("WhiteLabel")}
         </Text>
         {!isSettingPaid && (
-          <Badge
-            backgroundColor="#EDC409"
-            label={t("Common:Paid")}
-            isPaidBadge={true}
-          />
+          <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
         )}
       </div>
       <Text className="wl-subtitle settings_unavailable" fontSize="12px">
@@ -440,12 +420,15 @@ const WhiteLabel = (props) => {
         tabIndex={3}
         className="save-cancel-buttons"
         onSaveClick={onSave}
-        onCancelClick={onRestoreDefault}
+        onCancelClick={onRestoreLogo}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("RestoreDefaultButton")}
         displaySettings={true}
         showReminder={isSettingPaid}
-        saveButtonDisabled={isEqualLogo && isEqualText}
+        saveButtonDisabled={isEqual(
+          logoUrlsWhiteLabel,
+          defaultWhiteLabelLogoUrls
+        )}
         isSaving={isSaving}
       />
     </WhiteLabelWrapper>

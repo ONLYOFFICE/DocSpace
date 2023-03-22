@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Şifre başarıyla değiştirildi",
-  "ConfirmOwnerPortalSuccessMessage": "DocSpace sahibi başarıyla değiştirildi. 10 saniye içinde yönlendirileceksiniz.",
-  "ConfirmOwnerPortalTitle": "DocSpace sahibini {{newOwner}} olarak değiştirmek istediğinizi lütfen onaylayın",
+  "ConfirmOwnerPortalSuccessMessage": "Portal sahibi başarıyla değiştirildi. 10 saniye içinde yönlendirileceksiniz",
+  "ConfirmOwnerPortalTitle": "Portal sahibini {{newOwner}} olarak değiştirmek istediğinizi lütfen onaylayın",
   "CurrentNumber": "Güncel mobil telefon numaranız",
   "DeleteProfileBtn": "Hesabımı sil",
   "DeleteProfileConfirmation": "Dikkat! Hesabınızı silmek üzeresiniz.",
@@ -17,9 +17,9 @@
   "InviteTitle": "Bu portala katılmaya davet edildiniz!",
   "LoginRegistryButton": "Katıl",
   "PassworResetTitle": "Şimdi yeni şifre oluşturabilirsiniz.",
-  "PhoneSubtitle": "İki aşamalı doğrulama ekstra güvenliği sağlamak için etkinleştirilmiştir. Portalda çalışmaya devam etmek için mobil telefon numaranızı giriniz. Mobil telefon numarası ülke koduyla girilmelidir.",
+  "PhoneSubtitle": "İki aşamalı doğrulama ekstra portal güvenliği sağlamak için etkinleştirilmiştir. Portalda çalışmaya devam etmek için mobil telefon numaranızı giriniz. Mobil telefon numarası ülke koduyla girilmelidir.",
   "SetAppButton": "Uygulamaya bağlan",
-  "SetAppDescription": "İki faktörlü kimlik doğrulama etkinleştirildi. DocSpace üzerinde çalışmaya devam etmek için kimlik doğrulama uygulamanızı yapılandırın. <1>Android</1> ve <4>iOS</4> için Google Authenticator'ı veya <8>Windows Phone</8> için Authenticator'ı kullanabilirsiniz.",
+  "SetAppDescription": "İki faktörlü kimlik doğrulama etkinleştirildi. Portal üzerinde çalışmaya devam etmek için kimlik doğrulama uygulamanızı yapılandırın. <1>Android</1> ve <4>iOS</4> için Google Authenticator'ı veya <8>Windows Phone</8> için Authenticator'ı kullanabilirsiniz.",
   "SetAppInstallDescription": "Uygulamayı bağlamak için QR kodunu tarayın veya gizli anahtarınızı <1>{{ secretKey }}</1> manuel olarak girin ve ardından uygulamanızdan 6 haneli bir kodu aşağıdaki alana girin.",
   "SetAppTitle": "Kimlik doğrulama uygulamanızı yapılandırın",
   "WelcomeUser": "Portalımıza hoş geldiniz!\nBaşlamak için kaydolun veya sosyal ağ üzerinden giriş yapın."

@@ -37,21 +37,18 @@ public class BackupWorker
     private int _limit;
     private string _upgradesPath;
     private readonly TempPath _tempPath;
-    private readonly SetupInfo _setupInfo;
     private readonly IServiceProvider _serviceProvider;
     private readonly object _synchRoot = new object();
 
     public BackupWorker(
         IDistributedTaskQueueFactory queueFactory,
         IServiceProvider serviceProvider,
-        TempPath tempPath,
-        SetupInfo setupInfo)
+        TempPath tempPath)
     {
         _serviceProvider = serviceProvider;
         _progressQueue = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
         _tempPath = tempPath;
         TempFolder = Path.Combine(_tempPath.GetTempPath(), "backup");
-        _setupInfo = setupInfo;
     }
 
     public void Start(BackupSettings settings)
@@ -63,7 +60,6 @@ public class BackupWorker
 
         _limit = settings.Limit;
         _upgradesPath = settings.UpgradesPath;
-        _setupInfo.ChunkUploadSize = settings.ChunkSize;
     }
 
     public void Stop()

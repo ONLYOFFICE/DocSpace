@@ -15,6 +15,7 @@ import {
 
 import Backdrop from "../backdrop";
 import Text from "../text";
+import { ReactSVG } from "react-svg";
 import Avatar from "../avatar";
 
 class ContextMenu extends Component {
@@ -329,10 +330,9 @@ class ContextMenu extends Component {
                 <div className="contextmenu-header">
                   {isIconExist && (
                     <div className="icon-wrapper">
-                      <img
+                      <ReactSVG
                         src={this.props.header.icon}
                         className="drop-down-item_icon"
-                        alt="drop-down_icon"
                       />
                     </div>
                   )}

@@ -5,12 +5,12 @@ import { Base } from "@docspace/components/themes";
 const StyledGalleryThumbnail = styled.div`
   box-sizing: border-box;
   width: 100%;
+  height: ${isMobileOnly ? "335" : "346"}px;
   overflow: hidden;
-  border-radius: 6px;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  height: ${isMobileOnly ? "335px" : "346px"};
   border: ${(props) =>
     `solid 1px ${props.theme.infoPanel.gallery.borderColor}`};
+  border-radius: 6px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
   .info-panel_gallery-img {
     display: block;

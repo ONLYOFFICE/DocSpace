@@ -1286,7 +1286,7 @@ public class EntryManager
 
                     await _socketManager.CreateFolderAsync(folder);
 
-                    _ = _filesMessageService.Send(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
+                    _filesMessageService.Send(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
                 }
 
                 folderId = folder.Id;
@@ -1311,7 +1311,7 @@ public class EntryManager
                 submitFile = await fileSourceDao.SaveFileAsync(submitFile, stream);
             }
 
-            _ = _filesMessageService.Send(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
+            _filesMessageService.Send(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
 
             await _fileMarker.MarkAsNewAsync(submitFile);
 

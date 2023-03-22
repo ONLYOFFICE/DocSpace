@@ -3,7 +3,6 @@ import api from "../api";
 import { setWithCredentialsStatus } from "../api/client";
 
 import SettingsStore from "./SettingsStore";
-import BannerStore from "./BannerStore";
 import UserStore from "./UserStore";
 import TfaStore from "./TfaStore";
 import InfoPanelStore from "./InfoPanelStore";
@@ -12,7 +11,6 @@ import { isAdmin, setCookie, getCookie } from "../utils";
 import CurrentQuotasStore from "./CurrentQuotaStore";
 import CurrentTariffStatusStore from "./CurrentTariffStatusStore";
 import PaymentQuotasStore from "./PaymentQuotasStore";
-
 import { LANGUAGE, COOKIE_EXPIRATION_YEAR, TenantStatus } from "../constants";
 
 class AuthStore {
@@ -29,6 +27,13 @@ class AuthStore {
   capabilities = [];
   isInit = false;
 
+  quota = {};
+  portalPaymentQuotas = {};
+  portalQuota = {};
+  portalTariff = {};
+  pricePerManager = null;
+  currencies = [];
+
   isLogout = false;
   constructor() {
     this.userStore = new UserStore();
@@ -39,8 +44,6 @@ class AuthStore {
     this.currentQuotaStore = new CurrentQuotasStore();
     this.currentTariffStatusStore = new CurrentTariffStatusStore();
     this.paymentQuotasStore = new PaymentQuotasStore();
-    this.bannerStore = new BannerStore();
-
     makeAutoObservable(this);
   }
 
@@ -68,13 +71,11 @@ class AuthStore {
         );
       }
 
-      this.settingsStore.tenantStatus !== TenantStatus.PortalRestore &&
-        requests.push(this.settingsStore.getAdditionalResources());
-
       if (!this.settingsStore.passwordSettings) {
         if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
           requests.push(
             this.settingsStore.getPortalPasswordSettings(),
+            this.settingsStore.getAdditionalResources(),
             this.settingsStore.getCompanyInfoSettings()
           );
         }
@@ -131,14 +132,6 @@ class AuthStore {
     if (!user) return false;
 
     return !user.isAdmin && !user.isOwner && !user.isVisitor;
-  }
-
-  get isPaymentPageAvailable() {
-    const { user } = this.userStore;
-
-    if (!user) return false;
-
-    return user.isOwner || user.isAdmin;
   }
 
   login = async (user, hash, session = true) => {
@@ -349,6 +342,11 @@ class AuthStore {
     });
 
     return promise;
+  };
+
+  setQuota = async () => {
+    const res = await api.settings.getPortalQuota();
+    if (res) this.quota = res;
   };
 
   getAuthProviders = async () => {

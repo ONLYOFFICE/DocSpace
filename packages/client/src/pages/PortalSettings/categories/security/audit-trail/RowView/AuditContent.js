@@ -6,11 +6,10 @@ import styled from "styled-components";
 import { UnavailableStyles } from "../../../../utils/commonSettingsStyles";
 
 const StyledRowContent = styled(RowContent)`
-  padding-bottom: 10px;
   .row-main-container-wrapper {
     display: flex;
-    justify-content: flex-start;
-    width: min-content;
+    justify-content: space-between;
+    width: 100%;
   }
 
   ${(props) => props.isSettingNotPaid && UnavailableStyles}
@@ -21,7 +20,6 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
   const to = moment(item.date).local();
 
   const dateStr = to.format(DATE_FORMAT);
-
   return (
     <StyledRowContent
       sideColor="#A3A9AE"
@@ -30,7 +28,12 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
       isSettingNotPaid={isSettingNotPaid}
     >
       <div className="user-container-wrapper">
-        <Text fontWeight={600} fontSize="14px" isTextOverflow={true}>
+        <Text
+          fontWeight={600}
+          fontSize="14px"
+          isTextOverflow={true}
+          className="settings_unavailable"
+        >
           {item.user}
         </Text>
       </div>
@@ -50,7 +53,7 @@ export const AuditContent = ({ sectionWidth, item, isSettingNotPaid }) => {
         fontWeight={600}
         className="settings_unavailable"
       >
-        {`${item.context ? item.context + " |" : ""} ${item.action}`}
+        {`${item.room ? item.room && "|" : ""} ${item.action}`}
       </Text>
     </StyledRowContent>
   );

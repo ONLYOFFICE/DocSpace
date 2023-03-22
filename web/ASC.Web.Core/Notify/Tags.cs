@@ -66,7 +66,6 @@ public static class Tags
     public const string BlogLink = "TagBlogLink";
     public const string DueDate = "DueDate";
     public const string DelayDueDate = "DelayDueDate";
-    public const string PaymentDelay = "PaymentDelay";
     public const string LinkToRecovery = "LinkToRecovery";
 
     public const string FromUserName = "FromUserName";

@@ -32,8 +32,7 @@ const StyledText = styled(PureText)`
   cursor: ${(props) => props.theme.link.cursor};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   opacity: ${(props) => props.isSemitransparent && props.theme.link.opacity};
-  line-height: ${(props) =>
-    props.lineHeight ? props.lineHeight : props.theme.link.lineHeight};
+  line-height: ${(props) => props.theme.link.lineHeight};
 
   ${colorCss};
 

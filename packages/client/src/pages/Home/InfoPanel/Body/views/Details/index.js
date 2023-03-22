@@ -57,22 +57,15 @@ const Details = ({
       ? selection?.logo?.large
       : getInfoPanelItemIcon(selection, 96);
 
-  //console.log("InfoPanel->Details render", { selection });
-
   return (
     <>
       {selection.thumbnailUrl && !isThumbnailError ? (
-        <StyledThumbnail
-          isImageOrMedia={
-            selection?.viewAccessability?.ImageView ||
-            selection?.viewAccessability?.MediaView
-          }
-        >
+        <StyledThumbnail>
           <img
-            src={`${selection.thumbnailUrl}&size=1280x720`}
+            src={selection.thumbnailUrl}
             alt="thumbnail-image"
-            //height={260}
-            //width={360}
+            height={260}
+            width={360}
             onError={onThumbnailError}
           />
         </StyledThumbnail>

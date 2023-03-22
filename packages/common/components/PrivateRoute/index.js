@@ -142,7 +142,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       isLoaded &&
       !user.isOwner &&
       !user.isAdmin &&
-      !isPortalUnavailableUrl
+      isPortalUnavailableUrl
     ) {
       return (
         <Redirect

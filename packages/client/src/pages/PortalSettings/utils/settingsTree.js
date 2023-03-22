@@ -327,7 +327,7 @@ export const settingsTree = [
     key: "7",
     icon: PaymentIconUrl,
     link: "payments",
-    tKey: "Common:PaymentsTitle",
+    tKey: "Payments",
     isHeader: true,
     children: [
       {
@@ -335,7 +335,7 @@ export const settingsTree = [
         key: "7-0",
         icon: "",
         link: "portal-payments",
-        tKey: "Common:PaymentsTitle",
+        tKey: "Payments",
         isCategory: true,
       },
     ],

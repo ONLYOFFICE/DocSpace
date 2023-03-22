@@ -4,7 +4,6 @@ import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
-import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import React, { useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -174,8 +173,6 @@ const SectionHeaderContent = (props) => {
     isOwner,
 
     setInvitePanelOptions,
-    isGracePeriod,
-    setInviteUsersWarningDialogVisible,
   } = props;
 
   //console.log("SectionHeaderContent render");
@@ -219,11 +216,6 @@ const SectionHeaderContent = (props) => {
   const onInvite = React.useCallback((e) => {
     const type = e.target.dataset.type;
 
-    if (isGracePeriod) {
-      setInviteUsersWarningDialogVisible(true);
-      return;
-    }
-
     setInvitePanelOptions({
       visible: true,
       roomId: -1,
@@ -263,15 +255,6 @@ const SectionHeaderContent = (props) => {
         onClick: onInvite,
         "data-type": EmployeeType.User,
         key: "manager",
-      },
-      {
-        id: "accounts-add_collaborator",
-        className: "main-button_drop-down",
-        icon: PersonReactSvgUrl,
-        label: t("Common:PowerUser"),
-        onClick: onInvite,
-        "data-type": EmployeeType.Collaborator,
-        key: "collaborator",
       },
       {
         id: "accounts-add_user",
@@ -370,13 +353,9 @@ export default withRouter(
       isVisible: isInfoPanelVisible,
     } = auth.infoPanelStore;
 
-    const {
-      setInvitePanelOptions,
-      setInviteUsersWarningDialogVisible,
-    } = dialogsStore;
+    const { setInvitePanelOptions } = dialogsStore;
 
     const { isOwner, isAdmin } = auth.userStore.user;
-    const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
 
@@ -405,8 +384,6 @@ export default withRouter(
       isOwner,
       isAdmin,
       setInvitePanelOptions,
-      isGracePeriod,
-      setInviteUsersWarningDialogVisible,
     };
   })(
     withTranslation([

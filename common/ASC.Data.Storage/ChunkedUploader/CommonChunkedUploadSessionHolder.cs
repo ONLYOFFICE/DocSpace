@@ -32,22 +32,38 @@ public class CommonChunkedUploadSessionHolder
 
     public static readonly TimeSpan SlidingExpiration = TimeSpan.FromHours(12);
     private readonly TempPath _tempPath;
+    private readonly ILogger _logger;
     private readonly string _domain;
     public long MaxChunkUploadSize;
 
-    public const string StoragePath = "sessions";
+    private const string StoragePath = "sessions";
     private readonly object _locker = new object();
 
     public CommonChunkedUploadSessionHolder(
         TempPath tempPath,
+        ILogger logger,
         IDataStore dataStore,
         string domain,
         long maxChunkUploadSize = 10 * 1024 * 1024)
     {
         _tempPath = tempPath;
+        _logger = logger;
         DataStore = dataStore;
         _domain = domain;
         MaxChunkUploadSize = maxChunkUploadSize;
+    }
+
+    public async Task DeleteExpiredAsync()
+    {
+        // clear old sessions
+        try
+        {
+            await DataStore.DeleteExpiredAsync(_domain, StoragePath, SlidingExpiration);
+        }
+        catch (Exception err)
+        {
+            _logger.ErrorDeleteExpired(err);
+        }
     }
 
     public async Task StoreAsync(CommonChunkedUploadSession s)
@@ -122,7 +138,7 @@ public class CommonChunkedUploadSessionHolder
         var uploadId = uploadSession.UploadId;
 
         int chunkNumber;
-        lock (_locker)
+        lock (_locker) 
         {
             int.TryParse(uploadSession.GetItemOrDefault<string>("ChunksUploaded"), out chunkNumber);
             chunkNumber++;
@@ -132,7 +148,7 @@ public class CommonChunkedUploadSessionHolder
 
         var eTag = await DataStore.UploadChunkAsync(_domain, tempPath, uploadId, stream, MaxChunkUploadSize, chunkNumber, length);
 
-        lock (_locker)
+        lock (_locker) 
         {
             var eTags = uploadSession.GetItemOrDefault<Dictionary<int, string>>("ETag") ?? new Dictionary<int, string>();
             eTags.Add(chunkNumber, eTag);

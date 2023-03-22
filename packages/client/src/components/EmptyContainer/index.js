@@ -23,8 +23,6 @@ const EmptyContainer = ({
   setCreateRoomDialogVisible,
   sectionWidth,
   isRoomNotFoundOrMoved,
-  isGracePeriod,
-  setInviteUsersWarningDialogVisible,
 }) => {
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
@@ -43,11 +41,6 @@ const EmptyContainer = ({
   };
 
   const onCreateRoom = (e) => {
-    if (isGracePeriod) {
-      setInviteUsersWarningDialogVisible(true);
-      return;
-    }
-
     const event = new Event(Events.ROOM_CREATE);
     window.dispatchEvent(event);
   };
@@ -112,14 +105,9 @@ export default inject(
       isArchiveFolder,
     } = treeFoldersStore;
 
-    const { isGracePeriod } = auth.currentTariffStatusStore;
-
     const isRooms = isRoomsFolder || isArchiveFolder;
 
-    const {
-      setCreateRoomDialogVisible,
-      setInviteUsersWarningDialogVisible,
-    } = dialogsStore;
+    const { setCreateRoomDialogVisible } = dialogsStore;
 
     const isFiltered = isRooms
       ? filterValue ||
@@ -148,8 +136,6 @@ export default inject(
 
       parentId: selectedFolderStore.parentId,
       isRoomNotFoundOrMoved,
-      isGracePeriod,
-      setInviteUsersWarningDialogVisible,
     };
   }
 )(observer(EmptyContainer));

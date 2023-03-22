@@ -7,12 +7,9 @@ import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
 import toastr from "@docspace/components/toast/toastr";
 import authStore from "@docspace/common/store/AuthStore";
-import moment from "moment";
-import { getUserByEmail } from "@docspace/common/api/people";
-import { getPaymentLink } from "@docspace/common/api/portal";
-import { getDaysRemaining } from "../helpers/filesUtils";
+
 class PaymentStore {
-  salesEmail = "";
+  salesEmail = "sales@onlyoffice.com";
   helpUrl = "https://helpdesk.onlyoffice.com";
   buyUrl =
     "https://www.onlyoffice.com/enterprise-edition.aspx?type=buyenterprise";
@@ -33,127 +30,36 @@ class PaymentStore {
   stepByQuotaForTotalSize = 107374182400;
   minAvailableTotalSizeValue = 107374182400;
 
-  isInitPaymentPage = false;
-
-  paymentDate = "";
-
-  gracePeriodEndDate = "";
-  delayDaysCount = "";
-
-  payerInfo = null;
-
   constructor() {
     makeAutoObservable(this);
   }
 
-  get isAlreadyPaid() {
-    const { currentQuotaStore, currentTariffStatusStore } = authStore;
-    const { customerId } = currentTariffStatusStore;
-    const { isFreeTariff } = currentQuotaStore;
-
-    return customerId?.length !== 0 || !isFreeTariff;
-  }
-
-  setTariffDates = () => {
-    const { currentTariffStatusStore } = authStore;
-    const {
-      isGracePeriod,
-      isNotPaidPeriod,
-      delayDueDate,
-      dueDate,
-    } = currentTariffStatusStore;
-
-    const setGracePeriodDays = () => {
-      const delayDueDateByMoment = moment(delayDueDate);
-
-      this.gracePeriodEndDate = delayDueDateByMoment.format("LL");
-
-      this.delayDaysCount = getDaysRemaining(delayDueDateByMoment);
-    };
-
-    this.paymentDate = moment(dueDate).format("LL");
-
-    (isGracePeriod || isNotPaidPeriod) && setGracePeriodDays();
-  };
-
-  init = async (t) => {
-    if (this.isInitPaymentPage) return;
-
-    const { currentTariffStatusStore, paymentQuotasStore } = authStore;
-    const { customerId } = currentTariffStatusStore;
-    const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
-
-    const requests = [this.getSettingsPayment()];
-
-    if (!isLoaded) requests.push(setPortalPaymentQuotas());
-
-    if (this.isAlreadyPaid) requests.push(this.setPaymentAccount());
-    if (!this.isAlreadyPaid) requests.push(this.getPaymentLink());
-
-    try {
-      await Promise.all(requests);
-      this.setRangeStepByQuota();
-      this.setTariffDates();
-
-      if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
-    } catch (error) {
-      toastr.error(t("Common:UnexpectedError"));
-      console.error(error);
-      return;
-    }
-
-    try {
-      if (this.isAlreadyPaid) this.payerInfo = await getUserByEmail(customerId);
-    } catch (e) {
-      console.error(e);
-    }
-
-    this.isInitPaymentPage = true;
-  };
-
-  getPaymentLink = async () => {
-    const backUrl = window.location.origin;
-
-    try {
-      const link = await getPaymentLink(this.managersCount, backUrl);
-
-      if (!link) return;
-      this.setPaymentLink(link);
-    } catch (e) {
-      console.error(e);
-    }
-  };
   getSettingsPayment = async () => {
-    try {
-      const newSettings = await getPaymentSettings();
+    const newSettings = await getPaymentSettings();
+    const {
+      buyUrl,
+      salesEmail,
+      currentLicense,
+      standalone: standaloneMode,
+      feedbackAndSupportUrl: helpUrl,
+      max,
+    } = newSettings;
 
-      if (!newSettings) return;
+    this.buyUrl = buyUrl;
+    this.salesEmail = salesEmail;
+    this.helpUrl = helpUrl;
+    this.standaloneMode = standaloneMode;
+    this.maxAvailableManagersCount = max;
 
-      const {
-        buyUrl,
-        salesEmail,
-        currentLicense,
-        standalone: standaloneMode,
-        feedbackAndSupportUrl: helpUrl,
-        max,
-      } = newSettings;
+    if (currentLicense) {
+      if (currentLicense.date)
+        this.currentLicense.expiresDate = new Date(currentLicense.date);
 
-      this.buyUrl = buyUrl;
-      this.salesEmail = salesEmail;
-      this.helpUrl = helpUrl;
-      this.standaloneMode = standaloneMode;
-      this.maxAvailableManagersCount = max;
-
-      if (currentLicense) {
-        if (currentLicense.date)
-          this.currentLicense.expiresDate = new Date(currentLicense.date);
-
-        if (currentLicense.trial)
-          this.currentLicense.trialMode = currentLicense.trial;
-      }
-    } catch (e) {
-      console.error(e);
+      if (currentLicense.trial)
+        this.currentLicense.trialMode = currentLicense.trial;
     }
+
+    return newSettings;
   };
 
   setPaymentsLicense = async (confirmKey, data) => {
@@ -172,14 +78,18 @@ class PaymentStore {
   };
 
   setPaymentAccount = async () => {
-    const res = await api.portal.getPaymentAccount();
+    try {
+      const res = await api.portal.getPaymentAccount();
 
-    if (res) {
-      if (res.indexOf("error") === -1) {
-        this.accountLink = res;
-      } else {
-        toastr.error(res);
+      if (res) {
+        if (res.indexOf("error") === -1) {
+          this.accountLink = res;
+        } else {
+          toastr.error(res);
+        }
       }
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -197,9 +107,6 @@ class PaymentStore {
   };
 
   get allowedStorageSizeByQuota() {
-    if (this.managersCount > this.maxAvailableManagersCount)
-      return this.maxAvailableManagersCount * this.stepByQuotaForTotalSize;
-
     return this.managersCount * this.stepByQuotaForTotalSize;
   }
 
@@ -252,17 +159,13 @@ class PaymentStore {
     return this.managersCount < this.minAvailableManagersValue;
   }
 
-  setRangeStepByQuota = () => {
-    const { paymentQuotasStore } = authStore;
-    const {
-      stepAddingQuotaManagers,
-      stepAddingQuotaTotalSize,
-    } = paymentQuotasStore;
-
-    this.stepByQuotaForManager = stepAddingQuotaManagers;
+  setRangeBound = () => {
+    this.stepByQuotaForManager =
+      authStore.paymentQuotasStore.stepAddingQuotaManagers;
     this.minAvailableManagersValue = this.stepByQuotaForManager;
 
-    this.stepByQuotaForTotalSize = stepAddingQuotaTotalSize;
+    this.stepByQuotaForTotalSize =
+      authStore.paymentQuotasStore.stepAddingQuotaTotalSize;
     this.minAvailableTotalSizeValue = this.stepByQuotaForManager;
   };
 

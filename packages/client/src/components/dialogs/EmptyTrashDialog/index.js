@@ -69,7 +69,7 @@ const EmptyTrashDialogComponent = (props) => {
     >
       <ModalDialog.Header>{t("DeleteForeverTitle")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text noSelect>
+        <Text>
           {isArchiveFolder
             ? t("DeleteForeverNoteArchive")
             : t("DeleteForeverNote")}

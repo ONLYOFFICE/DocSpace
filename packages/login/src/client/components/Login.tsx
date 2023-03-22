@@ -211,7 +211,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <div className="bg-cover"></div>
-      <LoginContent enabledJoin={enabledJoin}>
+      <LoginContent>
         <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
           <img src={logoUrl} className="logo-wrapper" />
           <Text
@@ -276,15 +276,14 @@ const Login: React.FC<ILoginProps> = ({
             id="recover-access-modal"
           />
         </ColorTheme>
-      </LoginContent>
-
-      {!checkIsSSR() && enabledJoin && (
-        <Register
-          id="login_register"
-          enabledJoin={enabledJoin}
-          currentColorScheme={currentColorScheme}
-        />
-      )}
+        {!checkIsSSR() && enabledJoin && (
+          <Register
+            id="login_register"
+            enabledJoin={enabledJoin}
+            currentColorScheme={currentColorScheme}
+          />
+        )}
+      </LoginContent>{" "}
     </LoginFormWrapper>
   );
 };

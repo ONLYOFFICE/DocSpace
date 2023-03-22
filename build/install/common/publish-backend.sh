@@ -1,5 +1,4 @@
 #!/bin/bash
-set -xe
 
 SRC_PATH="/AppServer"
 BUILD_PATH="/publish"

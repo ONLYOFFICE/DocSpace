@@ -13,13 +13,8 @@ export const StyledPage = styled.div`
     padding: 0 16px;
   }
 
-  @media ${hugeMobile} {
-    margin: 32px 0;
-    padding: 0 8px 0 20px;
-  }
-
   @media ${mobile} {
-    padding: 0 8px 0 16px;
+    margin-top: 32px;
   }
 
   .subtitle {

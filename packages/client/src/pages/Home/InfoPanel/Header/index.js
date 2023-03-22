@@ -31,7 +31,6 @@ const InfoPanelHeaderContent = (props) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
-    getIsTrash,
     isRootFolder,
     // rootFolderType,
     // selectionParentRoom,
@@ -40,13 +39,11 @@ const InfoPanelHeaderContent = (props) => {
   const isRooms = getIsRooms();
   const isGallery = getIsGallery();
   const isAccounts = getIsAccounts();
-  const isTrash = getIsTrash();
 
   const isNoItem = isRootFolder && selection?.isSelectedFolder;
   const isSeveralItems = selection && Array.isArray(selection);
 
-  const withSubmenu =
-    !isNoItem && !isSeveralItems && !isGallery && !isAccounts && !isTrash;
+  const withSubmenu = !isNoItem && !isSeveralItems && !isGallery && !isAccounts;
 
   const closeInfoPanel = () => setIsVisible(false);
 
@@ -147,7 +144,6 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
-    getIsTrash,
     //selectionParentRoom,
   } = auth.infoPanelStore;
   const {
@@ -165,7 +161,6 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsRooms,
     getIsGallery,
     getIsAccounts,
-    getIsTrash,
 
     isRootFolder,
     //  rootFolderType,

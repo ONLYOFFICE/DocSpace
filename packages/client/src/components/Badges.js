@@ -74,7 +74,6 @@ const Badges = ({
   setConvertDialogVisible,
   viewAs,
   onUnpinClick,
-  isMutedBadge,
 }) => {
   const {
     id,
@@ -129,7 +128,6 @@ const Badges = ({
     padding: paddingBadge,
     lineHeight: lineHeightBadge,
     "data-id": id,
-    isMutedBadge,
   };
 
   const versionBadgeProps = {

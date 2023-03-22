@@ -122,14 +122,7 @@ const PortalRenaming = (props) => {
     setIsLoadingPortalNameSave(true);
 
     setPortalRename(portalName)
-      .then((res) => {
-        toastr.success(t("SuccessfullySavePortalNameMessage"));
-
-        setPortalName(portalName);
-        setPortalNameDefault(portalName);
-
-        history.push(res);
-      })
+      .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
       .catch((error) => {
         let errorMessage = "";
         if (typeof error === "object") {
@@ -144,7 +137,12 @@ const PortalRenaming = (props) => {
 
         setErrorValue(errorMessage);
         saveToSessionStorage("errorValue", errorMessage);
-      });
+      })
+      .finally(() => setIsLoadingPortalNameSave(false));
+
+    setShowReminder(false);
+    setPortalName(portalName);
+    setPortalNameDefault(portalName);
 
     saveToSessionStorage("portalName", portalName);
     saveToSessionStorage("portalNameDefault", portalName);

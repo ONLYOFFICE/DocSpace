@@ -8,7 +8,6 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
 import Home from "./AccountsHome";
 import Profile from "./Profile";
-import NotificationComponent from "./Notifications";
 
 import Filter from "@docspace/common/api/people/filter";
 import { showLoader, hideLoader } from "@docspace/common/utils";
@@ -21,12 +20,7 @@ const PeopleSection = React.memo(() => {
       <PrivateRoute exact path={["/accounts/view/@self"]} component={Profile} />
       <PrivateRoute
         exact
-        path={["/accounts/view/@self/notification"]}
-        component={NotificationComponent}
-      />
-      <PrivateRoute
-        exact
-		withManager
+        withManager
         path={["/accounts"]}
         component={HomeRedirectToFilter}
       />

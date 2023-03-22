@@ -39,11 +39,12 @@ const DragTooltip = (props) => {
     tooltipOptions,
     iconOfDraggedFile,
     isSingleItem,
-    title,
+    item,
     tooltipPageX,
     tooltipPageY,
   } = props;
   const { filesCount, operationName } = tooltipOptions;
+  const { title } = item;
 
   useEffect(() => {
     setTooltipPosition();
@@ -107,14 +108,12 @@ export default inject(({ filesStore }) => {
     tooltipOptions,
     tooltipPageX,
     tooltipPageY,
-    bufferSelection,
   } = filesStore;
 
-  const isSingleItem = selection.length === 1 || bufferSelection;
-  const item = bufferSelection ? bufferSelection : selection[0];
+  const isSingleItem = selection.length === 1;
 
   return {
-    title: item?.title,
+    item: selection[0],
     isSingleItem,
     tooltipOptions,
     iconOfDraggedFile,

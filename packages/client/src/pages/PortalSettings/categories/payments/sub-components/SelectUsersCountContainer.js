@@ -299,14 +299,12 @@ export default inject(({ auth, payments }) => {
     setTotalPrice,
     isLessCountThanAcceptable,
     stepByQuotaForManager,
-    isAlreadyPaid,
   } = payments;
   const { addedManagersCountTitle } = paymentQuotasStore;
 
   const step = stepByQuotaForManager;
 
   return {
-    isAlreadyPaid,
     theme,
     isLoading,
     minAvailableManagersValue,

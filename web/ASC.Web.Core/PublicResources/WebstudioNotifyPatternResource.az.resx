@@ -883,6 +883,26 @@ ONLYOFFICE Komandası
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) portal profilinin dəyişdirilməsi haqqında bildiriş
 [$__AuthorName]($__AuthorUrl), [${__VirtualRootPath}](${__VirtualRootPath}) portalında profil detallarını dəyişib.</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalında yeniliklər: $Date üçün 
+
+#foreach($activity in $Activities)
+
+h2.$activity.Key
+
+#foreach($whatsNewActivity in $activity.Value)
+#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
+#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
+*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
+
+
+#end
+
+#end
+
+
+^"${__VirtualRootPath}":"${__VirtualRootPath}" portalında yeni hadisələr haqqında bildirişlər almaq istəmirsinizsə, zəhmət olmasa, "abunəlik parametrlərinizi idarə edin":"$RecipientSubscriptionConfigURL^</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP test mesajı
 
@@ -1084,6 +1104,9 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portalının profilinin dəyişdirilməsi ilə bağlı bildiriş</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>$Date üçün portalınızdakı yeniliklər</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP test mesajı</value>

@@ -34,14 +34,12 @@ const StyledInfoPanelWrapper = styled.div.attrs(({ id }) => ({
 
   ${isMobile &&
   css`
-    @media ${tablet} {
-      z-index: 309;
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0;
-    }
+    z-index: 309;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   `}
 `;
 
@@ -67,13 +65,11 @@ const StyledInfoPanel = styled.div`
 
   ${isMobile &&
   css`
-    @media ${tablet} {
-      position: absolute;
-      border: none;
-      right: 0;
-      width: 480px;
-      max-width: calc(100vw - 69px);
-    }
+    position: absolute;
+    border: none;
+    right: 0;
+    width: 480px;
+    max-width: calc(100vw - 69px);
   `}
 
   @media (max-width: 428px) {
@@ -106,11 +102,10 @@ const StyledControlContainer = styled.div`
 
   ${isMobile &&
   css`
-    @media ${tablet} {
-      display: flex;
-      top: 18px;
-      left: -27px;
-    }
+    display: flex;
+
+    top: 18px;
+    left: -27px;
   `}
 
   @media (max-width: 428px) {

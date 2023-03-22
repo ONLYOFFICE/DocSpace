@@ -58,7 +58,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
     if (initialState.isAuth && url !== "/login/error") {
       res.redirect("/");
-      return next();
+      next();
     }
 
     let currentLanguage: string = initialState?.portalSettings?.culture || "en";
@@ -102,7 +102,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
       t
     );
 
-    return res.send(htmlString);
+    res.send(htmlString);
   } catch (e) {
     let message: string | unknown = e;
     if (e instanceof Error) {
@@ -143,7 +143,7 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
     winston.error(message);
 
-    return res.send(htmlString);
+    res.send(htmlString);
   }
 });
 

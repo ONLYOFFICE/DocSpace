@@ -61,7 +61,7 @@ const UserContent = ({
       : role === "admin"
       ? t("Common:DocSpaceAdmin")
       : isCollaborator
-      ? t("Common:PowerUser")
+      ? t("Common:Collaborator")
       : isVisitor
       ? t("Common:User")
       : t("Common:RoomAdmin");

@@ -37,7 +37,6 @@ public enum EditorType
 
 public class ActionLinkConfig
 {
-    [JsonPropertyName("action")]
     public ActionConfig Action { get; set; }
 
     public static string Serialize(ActionLinkConfig actionLinkConfig)
@@ -47,10 +46,7 @@ public class ActionLinkConfig
 
     public class ActionConfig
     {
-        [JsonPropertyName("data")]
         public string Data { get; set; }
-
-        [JsonPropertyName("type")]
         public string Type { get; set; }
     }
 }

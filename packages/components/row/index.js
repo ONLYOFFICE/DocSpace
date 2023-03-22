@@ -39,7 +39,6 @@ class Row extends React.Component {
       sectionWidth,
       getContextModel,
       isRoom,
-      withoutBorder,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -107,7 +106,6 @@ class Row extends React.Component {
         {...rest}
         mode={mode}
         onContextMenu={onContextMenu}
-        withoutBorder={withoutBorder}
       >
         {inProgress ? (
           <Loader className="row-loader" type="oval" size="16px" />
@@ -220,14 +218,12 @@ Row.propTypes = {
   inProgress: PropTypes.bool,
   getContextModel: PropTypes.func,
   mode: PropTypes.string,
-  withoutBorder: PropTypes.bool,
 };
 
 Row.defaultProps = {
   contextButtonSpacerWidth: "26px",
   mode: "default",
   data: {},
-  withoutBorder: false,
 };
 
 export default Row;

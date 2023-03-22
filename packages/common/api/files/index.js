@@ -957,23 +957,3 @@ export function restoreDocumentsVersion(fileId, version, doc) {
 
   return request(options);
 }
-
-export function getSharedUsers(fileId) {
-  const options = {
-    method: "get",
-    url: `/files/file/${fileId}/sharedusers`,
-  };
-
-  return request(options);
-}
-export function sendEditorNotify(fileId, actionLink, emails, message) {
-  return request({
-    method: "post",
-    url: `files/file/${fileId}/sendeditornotify`,
-    data: {
-      actionLink,
-      emails,
-      message,
-    },
-  });
-}

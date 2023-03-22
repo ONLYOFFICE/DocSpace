@@ -140,7 +140,6 @@ class IconButton extends React.PureComponent {
       theme,
       color,
       hoverColor,
-      iconNode,
       ...rest
     } = this.props;
 
@@ -170,14 +169,10 @@ class IconButton extends React.PureComponent {
           isfill: isFill,
         })} */}
 
-        {iconNode ? (
-          iconNode
-        ) : (
-          <ReactSVG
-            className="icon-button_svg not-selectable"
-            src={this.state.currentIconName}
-          />
-        )}
+        <ReactSVG
+          className="icon-button_svg not-selectable"
+          src={this.state.currentIconName}
+        />
       </StyledOuter>
     );
   }
@@ -200,10 +195,8 @@ IconButton.propTypes = {
   isDisabled: PropTypes.bool,
   /** Set cursor value */
   isClickable: PropTypes.bool,
-  /** Icon node */
-  iconNode: PropTypes.node,
   /** Icon name */
-  iconName: PropTypes.string,
+  iconName: PropTypes.string.isRequired,
   /** Icon name on hover action */
   iconHoverName: PropTypes.string,
   /** Icon name on click action */

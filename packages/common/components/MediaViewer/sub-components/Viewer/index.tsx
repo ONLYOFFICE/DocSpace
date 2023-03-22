@@ -1,5 +1,5 @@
 import ReactDOM from "react-dom";
-import { isMobile } from "react-device-detect";
+import { isMobileOnly, isMobile } from "react-device-detect";
 import React, { useRef, useState, useEffect, useCallback } from "react";
 
 import ContextMenu from "@docspace/components/context-menu";
@@ -11,7 +11,7 @@ import PrevButton from "../PrevButton";
 import ImageViewer from "../ImageViewer";
 import MobileDetails from "../MobileDetails";
 import DesktopDetails from "../DesktopDetails";
-import ViewerPlayer from "../ViewerPlayer";
+import ViewerPlayer from "../ViewerPlayer/viewer-player";
 
 import type ViewerProps from "./Viewer.props";
 
@@ -22,15 +22,15 @@ function Viewer(props: ViewerProps) {
 
   const [panelVisible, setPanelVisible] = useState<boolean>(true);
   const [isOpenContextMenu, setIsOpenContextMenu] = useState<boolean>(false);
-
   const [isError, setIsError] = useState<boolean>(false);
+  const [isPlay, setIsPlay] = useState<boolean | null>(null);
 
   const [imageTimer, setImageTimer] = useState<NodeJS.Timeout>();
 
   const panelVisibleRef = useRef<boolean>(false);
-  const panelToolbarRef = useRef<boolean>(false);
 
   const contextMenuRef = useRef<ContextMenu>(null);
+  const videoElementRef = useRef<HTMLVideoElement>(null);
 
   const [isFullscreen, setIsFullScreen] = useState<boolean>(false);
   useEffect(() => {
@@ -43,10 +43,27 @@ function Viewer(props: ViewerProps) {
   }, []);
 
   useEffect(() => {
-    if (isOpenContextMenu) {
+    if ((!isPlay || isOpenContextMenu) && (!props.isImage || isOpenContextMenu))
+      return clearTimeout(timerIDRef.current);
+  }, [isPlay, isOpenContextMenu, props.isImage]);
+
+  const resetToolbarVisibleTimer = () => {
+    if (panelVisibleRef.current) {
       clearTimeout(timerIDRef.current);
+      timerIDRef.current = setTimeout(() => {
+        panelVisibleRef.current = false;
+        setPanelVisible(false);
+      }, 2500);
+    } else {
+      setPanelVisible(true);
+      panelVisibleRef.current = true;
+
+      timerIDRef.current = setTimeout(() => {
+        panelVisibleRef.current = false;
+        setPanelVisible(false);
+      }, 2500);
     }
-  }, [isOpenContextMenu]);
+  };
 
   useEffect(() => {
     if (isMobile) return;
@@ -62,44 +79,20 @@ function Viewer(props: ViewerProps) {
     };
   }, [setImageTimer, setPanelVisible]);
 
-  const resetToolbarVisibleTimer = () => {
-    if (panelToolbarRef.current) return;
+  useEffect(() => {
+    document.addEventListener("touchstart", onTouch);
 
-    if (panelVisibleRef.current && panelVisible) {
-      clearTimeout(timerIDRef.current);
-      timerIDRef.current = setTimeout(() => {
-        panelVisibleRef.current = false;
-        setPanelVisible(false);
-      }, 2500);
-    } else {
-      setPanelVisible(true);
-      clearTimeout(timerIDRef.current);
-      panelVisibleRef.current = true;
+    return () => document.removeEventListener("touchstart", onTouch);
+  }, [setPanelVisible]);
 
-      timerIDRef.current = setTimeout(() => {
-        panelVisibleRef.current = false;
-        setPanelVisible(false);
-      }, 2500);
-    }
-  };
-
-  const removeToolbarVisibleTimer = () => {
-    clearTimeout(timerIDRef.current);
-    panelVisibleRef.current = false;
-    panelToolbarRef.current = true;
-  };
-
-  const removePanelVisibleTimeout = () => {
-    clearTimeout(timerIDRef.current);
-    panelVisibleRef.current = true;
-    panelToolbarRef.current = false;
-    setPanelVisible(true);
-  };
-
-  const restartToolbarVisibleTimer = () => {
-    panelToolbarRef.current = false;
-    resetToolbarVisibleTimer();
-  };
+  const onTouch = useCallback(
+    (e: TouchEvent, canTouch?: boolean) => {
+      if (e.target === videoElementRef.current || canTouch) {
+        setPanelVisible((visible) => !visible);
+      }
+    },
+    [setPanelVisible]
+  );
 
   const nextClick = () => {
     clearTimeout(imageTimer);
@@ -124,22 +117,6 @@ function Viewer(props: ViewerProps) {
     setIsOpenContextMenu(false);
   }, [setIsOpenContextMenu]);
 
-  const handleMaskClick = () => {
-    if (isFullscreen) {
-      if (document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if (document["webkitExitFullscreen"]) {
-        document["webkitExitFullscreen"]();
-      } else if (document["mozCancelFullScreen"]) {
-        document["mozCancelFullScreen"]();
-      } else if (document["msExitFullscreen"]) {
-        document["msExitFullscreen"]();
-      }
-    }
-
-    props.onMaskClick();
-  };
-
   const mobileDetails = (
     <MobileDetails
       onHide={onHide}
@@ -147,12 +124,14 @@ function Viewer(props: ViewerProps) {
       title={props.title}
       ref={contextMenuRef}
       icon={props.headerIcon}
-      onMaskClick={handleMaskClick}
+      onMaskClick={props.onMaskClick}
       contextModel={props.contextModel}
       onContextMenu={onMobileContextMenu}
       isPreviewFile={props.isPreviewFile}
     />
   );
+
+  const displayUI = (isMobileOnly && props.isAudio) || panelVisible;
 
   const isNotFirstElement = props.playlistPos !== 0;
   const isNotLastElement = props.playlistPos < props.playlist.length - 1;
@@ -162,7 +141,7 @@ function Viewer(props: ViewerProps) {
   return (
     <StyledViewerContainer visible={props.visible}>
       {!isFullscreen && !isMobile && panelVisible && (
-        <DesktopDetails title={props.title} onMaskClick={handleMaskClick} />
+        <DesktopDetails title={props.title} onMaskClick={props.onMaskClick} />
       )}
 
       {props.playlist.length > 1 && !isFullscreen && !isMobile && (
@@ -196,31 +175,28 @@ function Viewer(props: ViewerProps) {
         : (props.isVideo || props.isAudio) &&
           ReactDOM.createPortal(
             <ViewerPlayer
-              isError={isError}
-              src={props.fileUrl}
+              {...props}
+              onNextClick={nextClick}
+              onPrevClick={prevClick}
               isAudio={props.isAudio}
-              isVideo={props.isVideo}
-              panelVisible={panelVisible}
               audioIcon={props.audioIcon}
-              isFullScreen={isFullscreen}
-              errorTitle={props.errorTitle}
-              mobileDetails={mobileDetails}
-              isLastImage={!isNotLastElement}
-              isFistImage={!isNotFirstElement}
-              isPreviewFile={props.isPreviewFile}
-              isOpenContextMenu={isOpenContextMenu}
-              setIsError={setIsError}
-              onMask={handleMaskClick}
-              onPrev={props.onPrevClick}
-              onNext={props.onNextClick}
-              setPanelVisible={setPanelVisible}
-              setIsFullScreen={setIsFullScreen}
               contextModel={props.contextModel}
-              onDownloadClick={props.onDownloadClick}
+              mobileDetails={mobileDetails}
+              displayUI={displayUI}
+              isOpenContextMenu={isOpenContextMenu}
+              onTouch={onTouch}
+              title={props.title}
+              setIsPlay={setIsPlay}
+              setIsOpenContextMenu={setIsOpenContextMenu}
+              isPlay={isPlay}
+              onMaskClick={props.onMaskClick}
+              setPanelVisible={setPanelVisible}
               generateContextMenu={props.generateContextMenu}
-              removeToolbarVisibleTimer={removeToolbarVisibleTimer}
-              removePanelVisibleTimeout={removePanelVisibleTimeout}
-              restartToolbarVisibleTimer={restartToolbarVisibleTimer}
+              setIsFullScreen={setIsFullScreen}
+              setIsError={setIsError}
+              videoRef={videoElementRef}
+              video={targetFile}
+              activeIndex={props.playlistPos}
             />,
             containerRef.current
           )}

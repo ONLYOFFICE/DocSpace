@@ -458,7 +458,7 @@ export const getConvertedSize = (t, size) => {
 
   const bytes = size;
 
-  if (bytes == 0) return `${"0" + " " + t("Common:Bytes")}`;
+  if (bytes == 0) return `${"0" + " " + t("Bytes")}`;
 
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
 

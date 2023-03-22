@@ -137,7 +137,6 @@ const User = ({
         userName={isExpect ? "" : user.displayName}
         withTooltip={withTooltip}
         tooltipContent={tooltipContent}
-        hideRoleIcon={!withTooltip}
       />
 
       <div className="name">

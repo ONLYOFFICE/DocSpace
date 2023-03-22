@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
+import { mobile } from "@docspace/components/utils/device";
 
 const StyledHistoryList = styled.div`
   display: flex;
@@ -78,6 +79,15 @@ const StyledHistoryBlock = styled.div`
         white-space: nowrap;
         overflow: hidden;
       }
+      /* .secondary-info {
+        white-space: nowrap;
+        font-weight: 400;
+        font-size: 14px;
+        color: #a3a9ae;
+        @media ${mobile} {
+          display: none;
+        }
+      } */
       .date {
         white-space: nowrap;
         display: inline-block;

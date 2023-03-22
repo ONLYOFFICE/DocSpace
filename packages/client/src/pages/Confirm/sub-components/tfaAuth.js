@@ -106,7 +106,7 @@ const TfaAuthForm = withLoader((props) => {
                     id="code"
                     name="code"
                     type="text"
-                    size="large"
+                    size="huge"
                     scale
                     isAutoFocussed
                     tabIndex={1}

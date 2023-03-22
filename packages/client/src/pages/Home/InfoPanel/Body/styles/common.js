@@ -1,13 +1,27 @@
 import styled, { css } from "styled-components";
 
 import { Base } from "@docspace/components/themes";
-import { hugeMobile, tablet } from "@docspace/components/utils/device";
+import { hugeMobile, mobile, tablet } from "@docspace/components/utils/device";
 
 const StyledInfoPanelBody = styled.div`
+  ${({ isAccounts }) =>
+    isAccounts
+      ? css`
+          padding: 80px 3px 0 20px;
+          @media ${hugeMobile} {
+            padding: 80px 8px 0 16px;
+          }
+        `
+      : css`
+          padding: 80px 3px 0 20px;
+          @media ${hugeMobile} {
+            padding: 80px 0 0 16px;
+          }
+        `}
+
   height: auto;
-  padding: 0px 3px 0 20px;
-  color: ${(props) => props.theme.infoPanel.textColor};
   background-color: ${(props) => props.theme.infoPanel.backgroundColor};
+  color: ${(props) => props.theme.infoPanel.textColor};
 
   .no-item {
     text-align: center;
@@ -20,19 +34,30 @@ const StyledInfoPanelBody = styled.div`
     height: 96px;
     margin-top: 116.56px;
   }
-
-  @media ${hugeMobile} {
-    padding: 0px 8px 0 16px;
-  }
 `;
 
 const StyledTitle = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  position: fixed;
+  margin-top: -80px;
   margin-left: -20px;
+  width: calc(100% - 40px);
   padding: 24px 0 24px 20px;
   background: ${(props) => props.theme.infoPanel.backgroundColor};
+  z-index: 100;
+
+  @media ${tablet} {
+    width: 440px;
+    padding: 24px 20px 24px 20px;
+  }
+
+  @media (max-width: 549px) {
+    width: calc(100vw - 69px - 40px);
+  }
+
+  @media ${hugeMobile} {
+    width: calc(100vw - 32px);
+    padding: 24px 0 24px 16px;
+  }
 
   display: flex;
   flex-wrap: no-wrap;
@@ -40,6 +65,26 @@ const StyledTitle = styled.div`
   align-items: center;
   height: 32px;
 
+  ${(props) =>
+    props.withBottomBorder &&
+    css`
+      width: calc(100% + 20px);
+      margin: 0 -20px 0 -20px;
+      padding: 23px 0 23px 20px;
+      border-bottom: ${(props) =>
+        `solid 1px ${props.theme.infoPanel.borderColor}`};
+
+      @media ${hugeMobile} {
+        width: calc(100% + 16px);
+        padding: 23px 0 23px 16px;
+        margin: 0 -16px 0 -16px;
+      }
+    `}
+
+  .item-icon {
+    height: 32px;
+    width: 32px;
+  }
   img {
     &.icon {
       display: flex;
@@ -68,32 +113,8 @@ const StyledTitle = styled.div`
     -webkit-line-clamp: 2;
   }
 
-  ${(props) =>
-    props.withBottomBorder &&
-    css`
-      width: calc(100% + 20px);
-      margin: 0 -20px 0 -20px;
-      padding: 23px 0 23px 20px;
-      border-bottom: ${(props) =>
-        `solid 1px ${props.theme.infoPanel.borderColor}`};
-    `}
-
-  @media ${tablet} {
-    width: 440px;
-    padding: 24px 20px 24px 20px;
-  }
-
-  @media ${hugeMobile} {
-    width: calc(100vw - 32px);
-    padding: 24px 0 24px 16px;
-
-    ${(props) =>
-      props.withBottomBorder &&
-      css`
-        width: calc(100% + 16px);
-        padding: 23px 0 23px 16px;
-        margin: 0 -16px 0 -16px;
-      `}
+  .context-menu-button {
+    margin: 0 20px 0 auto;
   }
 `;
 
@@ -124,8 +145,10 @@ const StyledProperties = styled.div`
     .property-content {
       max-width: 100%;
       margin: auto 0;
+
       font-weight: 600;
       font-size: 13px;
+
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -148,7 +171,6 @@ const StyledProperties = styled.div`
         }
       }
     }
-
     .property-comment_editor {
       &-display {
         display: flex;
@@ -182,6 +204,7 @@ const StyledProperties = styled.div`
         display: flex;
         flex-direction: column;
         gap: 8px;
+
         &-buttons {
           display: flex;
           flex-direction: row;

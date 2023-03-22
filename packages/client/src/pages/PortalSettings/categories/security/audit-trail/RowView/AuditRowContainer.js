@@ -10,7 +10,6 @@ const AuditRowContainer = ({
   auditTrailUsers,
   theme,
   sectionWidth,
-  isAuditAvailable,
 }) => {
   useEffect(() => {
     if (viewAs !== "table" && viewAs !== "row") return;
@@ -30,7 +29,6 @@ const AuditRowContainer = ({
           theme={theme}
           item={item}
           sectionWidth={sectionWidth}
-          isSettingNotPaid={!isAuditAvailable}
         />
       ))}
     </RowContainer>

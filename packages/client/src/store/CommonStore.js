@@ -68,7 +68,6 @@ class CommonStore {
   getWhiteLabelLogoText = async () => {
     const res = await api.settings.getLogoText();
     this.setLogoText(res);
-    return res;
   };
 
   setIsLoadedArticleBody = (isLoadedArticleBody) => {

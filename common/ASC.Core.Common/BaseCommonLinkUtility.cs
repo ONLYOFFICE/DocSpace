@@ -37,7 +37,6 @@ public class CommonLinkUtilitySettings
 public class BaseCommonLinkUtility
 {
     private const string LocalHost = "localhost";
-    private const int LocalPort = 8092;
 
     private UriBuilder _serverRoot;
     private string _vpath;
@@ -145,7 +144,6 @@ public class BaseCommonLinkUtility
                 if (tenant.Alias == LocalHost)
                 {
                     result.Host = LocalHost;
-                    result.Port = LocalPort;
                 }
 #endif
 
@@ -161,6 +159,13 @@ public class BaseCommonLinkUtility
             }
 
             return _serverRootPath = result.Uri.ToString().TrimEnd('/');
+        }
+        set
+        {
+            if (value == null)
+            {
+                _serverRootPath = null;
+            }
         }
     }
 

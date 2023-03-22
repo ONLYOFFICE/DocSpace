@@ -54,7 +54,7 @@ const PortalPlugins = ({
   const [plugins, setPlugins] = React.useState(null);
   const inputPluginElement = React.useRef(null);
 
-  setDocumentTitle(t("PortalIntegration"));
+  setDocumentTitle(`Portal plugins`);
 
   const uploadPlugin = React.useCallback(
     async (files) => {

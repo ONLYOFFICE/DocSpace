@@ -68,6 +68,13 @@ Bu e-posta bildirimi tüm imzacıların "$DocumentTitle":"$DocumentURL" tamamlad
 
 DocuSign hesabınıza girerek daha fazla bilgi alabilirsiniz.</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. "$__AuthorName":"$__AuthorUrl", belge yorumunda sizden bahsetti
+
+Bu, "$__AuthorName":"$__AuthorUrl" tarafından "$DocumentTitle":"$DocumentURL" belgesine yapılan yorumda sizden bahsedildiğini bildiren bir posta iletisidir:
+
+$Mesaj</value>
+  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. E-postalaşma tamamlandı
 
@@ -96,6 +103,9 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Belgeler. İmza statüsü değişti</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Belgeler. Belgede bahsedildi.</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Belgeler. E-postalaşma tamamlandı.</value>

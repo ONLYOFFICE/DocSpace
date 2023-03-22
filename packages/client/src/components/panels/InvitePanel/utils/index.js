@@ -33,8 +33,8 @@ export const getAccessOptions = (
     },
     collaborator: {
       key: "collaborator",
-      label: t("Common:PowerUser"),
-      description: t("Translations:RolePowerUserDescription"),
+      label: t("Common:Collaborator"),
+      description: t("Translations:RoleCollaboratorDescription"),
       quota: t("Common:Paid"),
       color: "#EDC409",
       access:

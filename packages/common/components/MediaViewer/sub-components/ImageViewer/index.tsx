@@ -20,7 +20,7 @@ import {
   ImperativeHandle,
   ToolbarItemType,
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
-import { ToolbarActionType, KeyboardEventKeys, compareTo } from "../../helpers";
+import { ToolbarActionType, KeyboardEventKeys } from "../../helpers";
 
 const MaxScale = 5;
 const MinScale = 0.5;
@@ -234,6 +234,10 @@ function ImageViewer({
 
     setIsLoading(false);
   }
+
+  const compareTo = (a: number, b: number) => {
+    return Math.trunc(a) > Math.trunc(b);
+  };
 
   const getSizeByAngle = (
     width: number,

@@ -402,6 +402,26 @@ ONLYOFFICE™ Support Team
 
 ^Nếu bạn không muốn nhận thông báo về cập nhật hồ sơ, vui lòng điều chỉnh "thiết lập đăng ký":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Có gì mới trên cổng "${__VirtualRootPath}":"${__VirtualRootPath}" vào ngày $Date
+
+#foreach($activity in $Activities)
+
+h2.$activity.Key
+
+#foreach($whatsNewActivity in $activity.Value)
+#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
+#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
+*Tác giả*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
+
+
+#end
+
+#end
+
+
+^Nếu bạn không muốn nhận thông báo về các sự kiện mới trên cổng "${__VirtualRootPath}":"${__VirtualRootPath}", vui lòng điều chỉnh trong "thiết lập đăng ký":"$RecipientSubscriptionConfigURL".^</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Tin nhắn SMTP thử nghiệm
 
@@ -484,6 +504,9 @@ Trân trọng,
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__ VirtualRootPath} thông báo thay đổi hồ sơ cổng thông tin</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Có gì mới trên cổng thông tin của bạn vào ngày $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Tin nhắn SMTP thử nghiệm</value>

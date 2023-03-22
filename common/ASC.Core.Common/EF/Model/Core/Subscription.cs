@@ -50,7 +50,6 @@ public static class SubscriptionExtension
             .Add(PgSqlAddSubscription, Provider.PostgreSql)
             .HasData(
             new Subscription { Source = "asc.web.studio", Action = "send_whats_new", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
-            new Subscription { Source = "asc.web.studio", Action = "rooms_activity", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
             new Subscription { Source = "6504977c-75af-4691-9099-084d3ddeea04", Action = "new feed", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
             new Subscription { Source = "6a598c74-91ae-437d-a5f4-ad339bd11bb2", Action = "new post", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },
             new Subscription { Source = "853b6eb9-73ee-438d-9b09-8ffeedf36234", Action = "new topic in forum", Recipient = "c5cc67d1-c3e8-43c0-a3ad-3928ae3e5b5e", Object = "", Tenant = -1 },

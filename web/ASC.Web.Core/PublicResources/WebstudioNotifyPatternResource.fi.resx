@@ -193,6 +193,9 @@ ONLYOFFICE Tiimi</value>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portaalin profiilin muutoksen tiedonanto</value>
   </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Mitä uutta portaalissasi: $Date</value>
+  </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP testiviesti</value>
   </data>

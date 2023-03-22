@@ -1,5 +1,7 @@
 {
   "BackupPortal": "Créer une sauvegarde de DocSpace",
+  "ChangeOwner": "Nommer les administrateurs du module",
+  "DeactivateOrDeletePortal": "Définir les droits d'accès aux modules",
   "ManagePortal": "Gérer la configuration du portail",
   "ManageUser": "Gérer les comptes d'utilisateurs"
 }

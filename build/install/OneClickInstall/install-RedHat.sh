@@ -86,7 +86,7 @@ name=onlyoffice repo
 baseurl=http://download.onlyoffice.com/repo/centos/main/noarch/
 gpgcheck=1
 enabled=1
-gpgkey=https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE
+gpgkey=http://keyserver.ubuntu.com/pks/lookup?op=get&search=0x8320CA65CB2DE8E5
 END
 
 cat > /etc/yum.repos.d/onlyoffice4testing.repo <<END
@@ -95,7 +95,7 @@ name=onlyoffice4testing repo
 baseurl=http://static.teamlab.info.s3.amazonaws.com/repo/4testing/centos/main/noarch/
 gpgcheck=1
 enabled=1
-gpgkey=https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE
+gpgkey=http://static.teamlab.info.s3.amazonaws.com/k8s
 END
 
 #DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/install-appserver/install-RedHat"

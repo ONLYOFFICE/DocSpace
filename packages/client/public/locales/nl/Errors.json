@@ -3,5 +3,5 @@
   "Error403Text": "Sorry, toegang geweigerd.",
   "Error404Text": "Sorry, de bron kan niet worden gevonden.",
   "ErrorEmptyResponse": "Lege reactie",
-  "ErrorOfflineText": "Geen internetverbinding gevonden"
+  "ErrorOfflineText": "Geen internetverbinding gevonden."
 }

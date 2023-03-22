@@ -68,6 +68,13 @@
 
 Для получения дополнительной информации зайдите в свой аккаунт DocuSign.</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. "$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу
+
+"$__AuthorName":"$__AuthorUrl" упомянул(а) вас в комментарии к документу "$DocumentTitle":"$DocumentURL":
+
+$Message</value>
+  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Рассылка завершена
 
@@ -97,6 +104,9 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Документы. Изменен статус подписания</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Документы. Упоминание в документе</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Документы. Рассылка завершена.</value>

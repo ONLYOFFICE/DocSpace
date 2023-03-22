@@ -32,6 +32,18 @@ class ArticleMainButtonContent extends React.Component {
     };
   }
 
+  onImportClick = () => {
+    const { history, homepage } = this.props;
+    history.push(
+      combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        homepage,
+        "${homepage}/import"
+      )
+    );
+    if (isMobile || isMobileUtils()) this.props.toggleShowText();
+  };
+
   goToEmployeeCreate = () => {
     const { history, homepage } = this.props;
     history.push(
@@ -55,6 +67,10 @@ class ArticleMainButtonContent extends React.Component {
   //   );
   //   if (isMobile || isMobileUtils()) this.props.toggleShowText();
   // };
+
+  onNotImplementedClick = (text) => {
+    toastr.success(text);
+  };
 
   onInvitationDialogClick = () =>
     this.setState({ dialogVisible: !this.state.dialogVisible });
@@ -123,6 +139,23 @@ class ArticleMainButtonContent extends React.Component {
         label: t("PeopleTranslations:InviteLinkTitle"),
         onClick: this.onInvitationDialogClick,
       },
+      /* {
+        icon: combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          PlaneReactSvgUrl
+        ),
+        label: t("SendInvitesAgain"),
+        onClick: this.onNotImplementedClick.bind(this, t("SendInvitesAgain")),
+      },
+      separator,
+      {
+        icon: combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          ImportReactSvgUrl
+        ),
+        label: t("ImportPeople"),
+        onClick: this.onImportClick,
+      }, */
     ];
 
     return isAdmin ? (

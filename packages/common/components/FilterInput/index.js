@@ -44,13 +44,11 @@ const FilterInput = React.memo(
     isRooms,
     isAccounts,
     filterTitle,
-    sortByTitle,
 
     clearSearch,
     setClearSearch,
 
     onSortButtonClick,
-    onClearFilter,
   }) => {
     const [viewSettings, setViewSettings] = React.useState([]);
     const [inputValue, setInputValue] = React.useState("");
@@ -68,7 +66,7 @@ const FilterInput = React.memo(
     React.useEffect(() => {
       if (clearSearch) {
         setInputValue("");
-        onClearFilter && onClearFilter();
+        onClearSearch();
         setClearSearch(false);
       }
     }, [clearSearch]);
@@ -171,7 +169,6 @@ const FilterInput = React.memo(
                 viewSelectorVisible &&
                 (isMobile || isMobileUtils() || isTabletUtils())
               }
-              title={sortByTitle}
             />
           )}
           {((viewSettings &&

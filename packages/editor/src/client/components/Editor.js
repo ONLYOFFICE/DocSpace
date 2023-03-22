@@ -13,8 +13,6 @@ import {
   checkFillFormDraft,
   convertFile,
   getReferenceData,
-  getSharedUsers,
-  sendEditorNotify,
 } from "@docspace/common/api/files";
 import { EditorWrapper } from "../components/StyledEditor";
 import { useTranslation } from "react-i18next";
@@ -64,7 +62,7 @@ let documentserverUrl =
   typeof window !== "undefined" && window?.location?.origin;
 let userAccessRights = {};
 let isArchiveFolderRoot = true;
-let usersInRoom = [];
+
 function Editor({
   config,
   //personal,
@@ -406,7 +404,7 @@ function Editor({
   };
 
   const onDocumentReady = () => {
-    console.log("onDocumentReady", arguments, { docEditor });
+    console.log("onDocumentReady", arguments);
     documentIsReady = true;
 
     // if (isSharingAccess) {
@@ -503,52 +501,6 @@ function Editor({
     }
   };
 
-  const onSDKRequestUsers = async () => {
-    try {
-      const res = await getSharedUsers(fileInfo.id);
-
-      res.map((item) => {
-        return usersInRoom.push({
-          email: item.email,
-          name: item.name,
-        });
-      });
-
-      docEditor.setUsers({
-        users: usersInRoom,
-      });
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  const onSDKRequestSendNotify = async (event) => {
-    const actionData = event.data.actionLink;
-    const comment = event.data.message;
-    const emails = event.data.emails;
-
-    try {
-      await sendEditorNotify(fileInfo.id, actionData, emails, comment);
-
-      if (usersInRoom.length === 0) return;
-
-      const usersNotFound = [...emails].filter((row) =>
-        usersInRoom.every((value) => {
-          return row !== value.email;
-        })
-      );
-
-      usersNotFound.length > 0 &&
-        docEditor.showMessage(
-          t("UsersWithoutAccess", {
-            users: usersNotFound,
-          })
-        );
-    } catch (e) {
-      toastr.error(e);
-    }
-  };
-
   const init = () => {
     try {
       if (isMobile) {
@@ -611,7 +563,7 @@ function Editor({
 
         const defaultFileName = getDefaultFileName(fileExt);
 
-        if (!user.isVisitor && !isDesktopEditor)
+        if (!user.isVisitor)
           config.editorConfig.createUrl = combineUrl(
             window.location.origin,
             window.DocSpaceConfig?.proxy?.url,
@@ -629,9 +581,7 @@ function Editor({
         onRequestCompareFile,
         onRequestRestore,
         onRequestHistory,
-        onRequestReferenceData,
-        onRequestUsers,
-        onRequestSendNotify;
+        onRequestReferenceData;
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -663,11 +613,6 @@ function Editor({
         onRequestReferenceData = onSDKRequestReferenceData;
       }
 
-      if (fileInfo?.rootFolderType !== FolderType.USER) {
-        onRequestUsers = onSDKRequestUsers;
-        onRequestSendNotify = onSDKRequestSendNotify;
-      }
-
       const events = {
         events: {
           onRequestReferenceData,
@@ -690,8 +635,6 @@ function Editor({
           onRequestHistoryClose: onSDKRequestHistoryClose,
           onRequestHistoryData: onSDKRequestHistoryData,
           onRequestRestore,
-          onRequestUsers,
-          onRequestSendNotify,
         },
       };
 

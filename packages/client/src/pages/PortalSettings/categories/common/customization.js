@@ -7,6 +7,7 @@ import LanguageAndTimeZone from "./Customization/language-and-time-zone";
 import WelcomePageSettings from "./Customization/welcome-page-settings";
 import PortalRenaming from "./Customization/portal-renaming";
 import DNSSettings from "./Customization/dns-settings";
+import { isSmallTablet } from "@docspace/components/utils/device";
 import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@docspace/components/themes";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
@@ -64,19 +65,16 @@ const StyledComponent = styled.div`
 StyledComponent.defaultProps = { theme: Base };
 
 const Customization = (props) => {
-  const {
-    t,
-    isLoaded,
-    tReady,
-    setIsLoadedCustomization,
-    isLoadedPage,
-    viewMobile,
-  } = props;
+  const { t, isLoaded, tReady, setIsLoadedCustomization, isLoadedPage } = props;
+  const [mobileView, setMobileView] = useState(true);
 
   const isLoadedSetting = isLoaded && tReady;
 
   useEffect(() => {
     setDocumentTitle(t("Customization"));
+    window.addEventListener("resize", checkInnerWidth);
+
+    return () => window.removeEventListener("resize", checkInnerWidth);
   }, []);
 
   useEffect(() => {
@@ -85,7 +83,17 @@ const Customization = (props) => {
     }
   }, [isLoadedSetting]);
 
-  return viewMobile ? (
+  const checkInnerWidth = () => {
+    if (isSmallTablet()) {
+      setMobileView(true);
+    } else {
+      setMobileView(false);
+    }
+  };
+
+  const isMobile = !!(isSmallTablet() && mobileView);
+
+  return isMobile ? (
     <CustomizationNavbar isLoadedPage={isLoadedPage} />
   ) : (
     <StyledComponent>
@@ -96,13 +104,13 @@ const Customization = (props) => {
           {t("Settings:CustomizationDescription")}
         </div>
       )}
-      <LanguageAndTimeZone isMobileView={viewMobile} />
+      <LanguageAndTimeZone isMobileView={isMobile} />
       <StyledSettingsSeparator />
-      <WelcomePageSettings isMobileView={viewMobile} />
+      <WelcomePageSettings isMobileView={isMobile} />
       <StyledSettingsSeparator />
-      <DNSSettings isMobileView={viewMobile} />
+      <DNSSettings isMobileView={isMobile} />
       <StyledSettingsSeparator />
-      <PortalRenaming isMobileView={viewMobile} />
+      <PortalRenaming isMobileView={isMobile} />
     </StyledComponent>
   );
 };

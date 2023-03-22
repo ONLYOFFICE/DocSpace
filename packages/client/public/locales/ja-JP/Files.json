@@ -60,6 +60,7 @@
   "TooltipElementsMoveMessage": " {{element}} 要素を移動",
   "TrashEmptyDescription": "すべての削除されたファイルは「ごみ箱」に移動されます。間違って削除されたファイルをを復元するか、完全に削除することができます。「ごみ箱」から削除されたファイルは、もう復元できないことにご注意ください。",
   "UnblockVersion": "アンブロック/チェックイン",
+  "UploadToFolder": "フォルダへのアップロード",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "バージョン履歴",
   "ViewList": "リスト",

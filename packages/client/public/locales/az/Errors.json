@@ -3,5 +3,5 @@
   "Error403Text": "Təəssüf ki, giriş rədd edilmişdir.",
   "Error404Text": "Təəssüf ki, resurs tapıla bilmir.",
   "ErrorEmptyResponse": "Boş cavab",
-  "ErrorOfflineText": "İnternet bağlantısı tapılmadı"
+  "ErrorOfflineText": "İnternet bağlantısı tapılmadı."
 }

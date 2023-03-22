@@ -17,9 +17,9 @@
   "InviteTitle": "Sei invitato/a invitata a unirti al portale!",
   "LoginRegistryButton": "Registrati",
   "PassworResetTitle": "Ora puoi creare una nuova password.",
-  "PhoneSubtitle": "L'autenticazione a due fattori è stata attivata per assicurare una sicurezza addizionale. Inserisci il tuo numero di cellulare per continuare a lavorare in DocSpace. Il numero di cellulare inserito deve essere nel formato internazionale con il codice di paese indicato.",
+  "PhoneSubtitle": "L'autenticazione a due fattori è stata attivata per assicurare una sicurezza addizionale. Inserisci il tuo numero di cellulare per continuare a lavorare nel portale. Il numero di cellulare inserito deve essere nel formato internazionale con il codice di paese indicato.",
   "SetAppButton": "Collegare l'app",
-  "SetAppDescription": "Autenticazione a due fattori è attivata. Configura l'app di autenticazione per continuare a lavorare in DocSpace. Puoi usare Google Authenticator per <1>Android</1> e <4>iOS</4> o Authenticator per <8>Windows Phone</8>.",
+  "SetAppDescription": "Autenticazione a due fattori è attivata. Configura l'app di autenticazione per continuare a lavorare sul portale. Puoi usare Google Authenticator per <1>Android</1> e <4>iOS</4> o Authenticator per <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Per connettere la app, scannerizza il codice QR o inserisci manualmente la tua chiave segreta <1>{{ secretKey }}</1> e poi inserisci un codice a 6-cifre dalla tua app nel campo sottostante.",
   "SetAppTitle": "Configurare la tua applicazione di autenticazione",
   "WelcomeUser": "Benvenuto nel nostro portale!\nPer iniziare registrati o accedi tramite social network."

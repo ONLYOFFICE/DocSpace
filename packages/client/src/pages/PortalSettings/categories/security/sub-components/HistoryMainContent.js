@@ -89,7 +89,7 @@ const DownLoadWrapper = styled.div`
 
   .download-report_description {
     font-style: normal;
-    font-weight: 400;
+    font-weight: 600;
     font-size: 12px;
     line-height: 16px;
 
@@ -255,11 +255,7 @@ const HistoryMainContent = (props) => {
   return (
     <MainContainer isSettingNotPaid={isSettingNotPaid}>
       {isSettingNotPaid && (
-        <Badge
-          backgroundColor="#EDC409"
-          label={t("Common:Paid")}
-          isPaidBadge={true}
-        />
+        <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
       )}
       <div className="main-wrapper">
         <Text fontSize="13px" className="login-history-description">

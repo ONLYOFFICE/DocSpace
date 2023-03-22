@@ -79,16 +79,11 @@ declare global {
     ssoUrl: string;
   }
 
-  type TThemeObj = {
-    accent: string;
-    buttons: string;
-  }
-
   interface ITheme {
     id: number;
-    main: TThemeObj;
-    text: TThemeObj;
-    name: string;
+    accentColor: string;
+    buttonsMain: string;
+    textColor: string;
   }
   interface IThemes {
     limit: number;

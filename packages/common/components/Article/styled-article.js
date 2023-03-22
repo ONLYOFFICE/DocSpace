@@ -5,7 +5,6 @@ import {
   mobile,
   tablet,
   isMobile as isMobileUtils,
-  hugeMobile,
 } from "@docspace/components/utils/device";
 
 import { Base } from "@docspace/components/themes";
@@ -32,20 +31,14 @@ const StyledArticle = styled.article`
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
 
-    height: ${(props) =>
-      props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
-
     //padding: 0 8px;
   }
 
-  ${isTablet &&
+  ${isMobile &&
   css`
     min-width: ${(props) => (props.showText ? "243px" : "60px")};
     max-width: ${(props) => (props.showText ? "243px" : "60px")};
     //padding: 0 8px;
-
-    height: ${(props) =>
-      props.correctTabletHeight ? `${props.correctTabletHeight}px` : `100%`};
   `}
 
   @media ${mobile} {
@@ -82,60 +75,36 @@ const StyledArticle = styled.article`
     props.showText && (isMobileOnly || isMobileUtils()) ? "230" : "205"};
 
   .article-body__scrollbar {
-    height: ${(props) =>
-      `calc(100% - ${props.$withMainButton ? "190px" : "150px"})`} !important;
-
-    ${!isMobileOnly &&
-    css`
-      @media ${tablet} {
-        height: calc(100% - 126px) !important;
-      }
-    `}
-
-    @media ${mobile} {
-      height: 100% !important;
-    }
-
-    @media ${hugeMobile} {
-      height: 100% !important;
-    }
-
-    ${isTablet &&
-    css`
-      height: calc(100% - 126px) !important;
-    `}
-
     ${isMobileOnly &&
     css`
-      height: 100% !important;
       margin-top: 32px !important;
     `}
 
     .scroll-body {
       overflow-x: hidden !important;
-
+      height: ${(props) =>
+        `calc(100% - ${props.$withMainButton ? "200px" : "150px"})`};
       padding: 0 20px !important;
 
       @media ${tablet} {
+        height: calc(100% - 150px);
         padding: 0 8px !important;
-        height: calc(100% - 60px);
       }
 
       ${isTablet &&
       css`
         padding: 0 8px !important;
-        height: calc(100% - 60px);
       `}
 
       @media ${mobile} {
+        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
-        height: 100%;
       }
 
       ${isMobileOnly &&
       css`
+        height: calc(100% - 20px) !important;
         padding-bottom: 20px;
-        height: 100%;
       `}
     }
   }

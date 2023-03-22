@@ -107,10 +107,7 @@ const FilesRowContent = ({
     title,
     isRoom,
     daysRemaining,
-    viewAccessability,
   } = item;
-
-  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   return (
     <>

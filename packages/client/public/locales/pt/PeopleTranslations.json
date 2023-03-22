@@ -1,10 +1,10 @@
 {
+  "AddMembers": "Adicionar membros",
   "DeleteSelfProfile": "Eliminar perfil",
   "DisableUserButton": "Desativar",
   "DisabledEmployeeStatus": "Desativado",
   "EmailChangeButton": "Alterar e-mail",
   "EnableUserButton": "Ativar",
-  "InviteLinkTitle": "Ligação de convite",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Alterar palavra-passe",
   "PendingTitle": "Pendente",

@@ -68,6 +68,13 @@ To jest powiadomienie e-mail, aby poinformować Cię, że wszyscy subskrybenci p
 
 Zaloguj się na swoje konto DocuSign, żeby uzyskać więcej informacji.</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. "$__AuthorName":"$__AuthorUrl" wymienił Cię w komentarzu
+
+Niniejsza wiadomość jest informacją, że zostałeś wymieniony przez autora "$__AuthorName":"$__AuthorUrl" w komentarzu do dokumentu "$DocumentTitle":"$DocumentURL":
+
+$Message</value>
+  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Zakończono wysyłanie wiadomości
 
@@ -94,6 +101,9 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Dokumenty. Zmienił się status podpisania.</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Dokumenty. Wymieniono w dokumencie</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Dokumenty. Wiadomości zostały wysłane.</value>

@@ -84,12 +84,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
         {ssoUrl && (
           <ProviderRow key={`ProviderItemSSO`}>
             <ReactSVG src={SsoReactSvgUrl} />
-            <Text
-              fontSize="14px"
-              fontWeight="600"
-              className="provider-name"
-              noSelect
-            >
+            <Text fontSize="14px" fontWeight="600" className="provider-name">
               {ssoLabel || getProviderTranslation("sso", t)}
             </Text>
             <Button
@@ -108,12 +103,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
           return (
             <ProviderRow key={`ProviderItem${index}`}>
               <ReactSVG src={icon} />
-              <Text
-                fontSize="14px"
-                fontWeight="600"
-                className="provider-name"
-                noSelect
-              >
+              <Text fontSize="14px" fontWeight="600" className="provider-name">
                 {getProviderTranslation(label, t)}
               </Text>
               <Button

@@ -174,11 +174,9 @@ export default inject(({ auth, payments }) => {
     managersCount,
     isLessCountThanAcceptable,
     accountLink,
-    isAlreadyPaid,
   } = payments;
 
   return {
-    isAlreadyPaid,
     setIsLoading,
     paymentLink,
     isNeedRequest,

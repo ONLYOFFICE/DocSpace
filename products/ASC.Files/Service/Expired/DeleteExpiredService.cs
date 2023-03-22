@@ -29,35 +29,25 @@ namespace ASC.Files.Expired;
 [Singletone]
 public class DeleteExpiredService : BackgroundService
 {
+    private readonly CommonChunkedUploadSessionHolder _commonChunkedUploadSessionHolder;
     private readonly TimeSpan _launchFrequency;
-    private readonly ILogger<DeleteExpiredService> _log;
-    private readonly GlobalStore _globalStore;
 
     public DeleteExpiredService(
         ILogger<DeleteExpiredService> log,
+        SetupInfo setupInfo,
+        TempPath tempPath,
         GlobalStore globalStore,
         IConfiguration configuration)
     {
         _launchFrequency = TimeSpan.Parse(configuration["files:deleteExpired"] ?? "1", CultureInfo.InvariantCulture);
-        _log = log;
-        _globalStore = globalStore;
+        _commonChunkedUploadSessionHolder = new CommonChunkedUploadSessionHolder(tempPath, log, globalStore.GetStore(false), FileConstant.StorageDomainTmp, setupInfo.ChunkUploadSize);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        var dataStore = _globalStore.GetStore(false);
-
         while (!stoppingToken.IsCancellationRequested)
         {
-            try
-            {
-                await dataStore.DeleteExpiredAsync(FileConstant.StorageDomainTmp, CommonChunkedUploadSessionHolder.StoragePath, CommonChunkedUploadSessionHolder.SlidingExpiration);
-            }
-            catch (Exception err)
-            {
-                _log.ErrorDeleteExpired(err);
-            }
-
+            await _commonChunkedUploadSessionHolder.DeleteExpiredAsync();
             await Task.Delay(_launchFrequency, stoppingToken);
         }
     }

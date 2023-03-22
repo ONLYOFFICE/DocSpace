@@ -441,6 +441,26 @@ ONLYOFFICE™ Destek Ekibi
 
 ^Profil güncellemeleri hakkında bildirim almak istemiyorsanız, lütfen "abonelik ayarlarınızı" değiştirin:"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalında $Date için neler yeni?
+
+#foreach($Activities içerisinde $activity)
+
+h2.$activity.Key
+
+#foreach($activity.Value içerisinde $whatsNewActivity)
+#foreach($whatsNewActivity.BreadCrumbs içerisinde $b) h3.$b
+#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
+*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
+
+
+#end
+
+#end
+
+
+^"${__VirtualRootPath}":"${__VirtualRootPath}" portalı hakkındaki haberler için bildirim almak istemiyorsanız lütfen "abonelik ayarları" bölümüne gidin:"$RecipientSubscriptionConfigURL"^</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP test mesajı
 
@@ -525,6 +545,9 @@ ONLYOFFICE Ekibi</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portal profili değişiklik bildirimi</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>$Date gününde portalda neler var?</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP test mesajı</value>

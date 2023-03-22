@@ -9,22 +9,17 @@ const StyledRow = styled.div`
   position: relative;
   min-height: ${(props) => props.theme.row.minHeight};
   width: ${(props) => props.theme.row.width};
-  border-bottom: ${(props) =>
-    props.withoutBorder ? "none" : "2px solid transparent"};
+  border-bottom: 2px solid transparent;
 
-  ${(props) =>
-    !props.withoutBorder &&
-    css`
-      ::after {
-        position: absolute;
-        display: block;
-        bottom: 0px;
-        width: 100%;
-        height: 1px;
-        background-color: ${(props) => props.theme.row.borderBottom};
-        content: "";
-      }
-    `}
+  ::after {
+    position: absolute;
+    display: block;
+    bottom: 0px;
+    width: 100%;
+    height: 1px;
+    background-color: ${(props) => props.theme.row.borderBottom};
+    content: "";
+  }
 
   display: flex;
   flex-direction: row;

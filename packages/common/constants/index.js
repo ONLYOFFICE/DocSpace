@@ -98,10 +98,10 @@ export const FileType = Object.freeze({
  * @readonly
  */
 export const RoomsType = Object.freeze({
-  //FillingFormsRoom: 1, //TODO: Restore when certs will be done
+  FillingFormsRoom: 1,
   EditingRoom: 2,
-  //ReviewRoom: 3, //TODO: Restore when certs will be done
-  //ReadOnlyRoom: 4, //TODO: Restore when certs will be done
+  ReviewRoom: 3,
+  ReadOnlyRoom: 4,
   CustomRoom: 5,
 });
 
@@ -379,21 +379,7 @@ export const PortalFeaturesLimitations = Object.freeze({
 
 export const EDITOR_ID = "docspace_editor";
 
-export const wrongPortalNameUrl =
-  (typeof window !== "undefined" &&
-    window.DocSpaceConfig?.wrongPortalNameUrl) ||
-  `https://www.onlyoffice.com/wrongportalname.aspx`;
-
-/**
- * Enum for notifications.
- * @readonly
- */
-export const NotificationsType = Object.freeze({
-  Badges: 0,
-  RoomsActivity: 1,
-  DailyFeed: 2,
-  UsefulTips: 3,
-});
+export const wrongPortalNameUrl = `https://www.onlyoffice.com/wrongportalname.aspx`;
 
 export const FilterGroups = Object.freeze({
   filterType: "filter-filterType",

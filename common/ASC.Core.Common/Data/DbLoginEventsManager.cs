@@ -65,7 +65,7 @@ public class DbLoginEventsManager
     {
         if (id < 0) return null;
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
 
         return await loginEventContext.LoginEvents.FindAsync(id);
     }
@@ -74,7 +74,7 @@ public class DbLoginEventsManager
     {
         var date = DateTime.UtcNow.AddYears(-1);
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
 
         var loginInfo = await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
@@ -86,7 +86,7 @@ public class DbLoginEventsManager
 
     public async Task LogOutEvent(int loginEventId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
 
         await loginEventContext.LoginEvents
            .Where(r => r.Id == loginEventId)
@@ -97,7 +97,7 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnections(int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
 
         await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Active)
@@ -108,7 +108,7 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnectionsForTenant(int tenantId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
 
         await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.Active)
@@ -117,7 +117,7 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnectionsExceptThis(int loginEventId, int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
 
         await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Id != loginEventId && r.Active)

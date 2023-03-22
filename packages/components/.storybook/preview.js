@@ -2,8 +2,6 @@ import { MINIMAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { withContexts } from "@storybook/addon-contexts/react";
 import { contexts } from "./contexts/index";
 
-import "../../common/opensansoffline.scss";
-
 export const parameters = {
   actions: { argTypesRegex: "^on[A-Z].*" },
   controls: { expanded: true },

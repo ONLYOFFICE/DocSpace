@@ -346,7 +346,7 @@ class WelcomePageSettings extends React.Component {
           showReminder={showReminder}
           reminderTest={t("YouHaveUnsavedChanges")}
           saveButtonLabel={t("Common:SaveButton")}
-          cancelButtonLabel={t("Common:Restore")}
+          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
           displaySettings={true}
           hasScroll={hasScroll}
           disableRestoreToDefault={greetingSettingsIsDefault}

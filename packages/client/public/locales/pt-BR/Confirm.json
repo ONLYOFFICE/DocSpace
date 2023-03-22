@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "A senha foi alterada com sucesso",
-  "ConfirmOwnerPortalSuccessMessage": "Proprietário do DocSpace foi alterado com sucesso. Em 10 segundos você será redirecionado.",
-  "ConfirmOwnerPortalTitle": "Por favor, confirme que você deseja mudar o proprietário do DocSpace para {{newOwner}}",
+  "ConfirmOwnerPortalSuccessMessage": "Proprietário portal foi alterado com sucesso. Em 10 segundos você será redirecionado.",
+  "ConfirmOwnerPortalTitle": "Por favor, confirme que você deseja mudar o proprietário do portal para {{newOwner}}",
   "CurrentNumber": "O seu número de celular atual",
   "DeleteProfileBtn": "Apagar minha conta",
   "DeleteProfileConfirmation": "Atenção! Você está prestes a apagar sua conta.",
@@ -17,9 +17,9 @@
   "InviteTitle": "Você está convidado a participar deste portal!",
   "LoginRegistryButton": "Aderir",
   "PassworResetTitle": "Agora você pode criar uma nova senha.",
-  "PhoneSubtitle": "A autenticação de dois fatores está habilitada para fornecer segurança adicional. Insira seu número de telefone para continuar a trabalhar no DocSpace. O número de celular deve ser inserido usando um formato internacional com o código de país.",
+  "PhoneSubtitle": "A autenticação de dois fatores está habilitada para fornecer segurança adicional ao portal. Insira seu número de telefone para continuar a trabalhar no portal. O número de celular deve ser inserido usando um formato internacional com o código de país.",
   "SetAppButton": "Conectar app",
-  "SetAppDescription": "A autenticação de dois fatores está ativada. Configure seu aplicativo autenticador para continuar a trabalhar no DocSpace. Você pode usar o Google Authenticator para <1> Android </1> e <4> iOS </4> ou o Authenticator para <8> Windows Phone </8>.",
+  "SetAppDescription": "A autenticação de dois fatores está ativada. Configure seu aplicativo autenticador para continuar a trabalhar no portal. Você pode usar o Google Authenticator para <1> Android </1> e <4> iOS </4> ou o Authenticator para <8> Windows Phone </8>.",
   "SetAppInstallDescription": "Para conectar o aplicativo, leia o código QR ou insira manualmente sua chave secreta <1> {{secretKey}} </1> e, em seguida, insira um código de 6 dígitos do seu aplicativo no campo abaixo.",
   "SetAppTitle": "Configure seu aplicativo autenticador",
   "WelcomeUser": "Bem-vindo ao nosso portal!\nPara começar a se registrar ou iniciar sessão via rede social."

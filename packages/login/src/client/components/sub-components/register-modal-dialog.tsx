@@ -79,7 +79,7 @@ const RegisterModalDialog: React.FC<IRegisterModalDialogProps> = ({
         </Text>
       </ModalDialog.Header>
       <ModalDialog.Body>
-        <Text key="text-body" isBold={false} fontSize="13px" noSelect>
+        <Text key="text-body" isBold={false} fontSize="13px">
           {getDomainsBlock()}
           {t("RegisterTextBodyAfterDomainsList")}
         </Text>

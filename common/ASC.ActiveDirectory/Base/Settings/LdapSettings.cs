@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Runtime.InteropServices;
-
 namespace ASC.ActiveDirectory.Base.Settings;
 
 [Scope]
@@ -88,7 +86,7 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
 
     public LdapSettings GetDefault()
     {
-        var isNotWindows = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows);
+        var isMono = WorkContext.IsMono;
 
         var settings = new LdapSettings()
         {
@@ -96,10 +94,10 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
             UserDN = "",
             PortNumber = LdapConstants.STANDART_LDAP_PORT,
             UserFilter = string.Format("({0}=*)",
-                isNotWindows
+                isMono
                     ? LdapConstants.RfcLDAPAttributes.UID
                     : LdapConstants.ADSchemaAttributes.USER_PRINCIPAL_NAME),
-            LoginAttribute = isNotWindows
+            LoginAttribute = isMono
                 ? LdapConstants.RfcLDAPAttributes.UID
                 : LdapConstants.ADSchemaAttributes.ACCOUNT_NAME,
             FirstNameAttribute = LdapConstants.ADSchemaAttributes.FIRST_NAME,
@@ -110,14 +108,14 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
             LocationAttribute = LdapConstants.ADSchemaAttributes.STREET,
             GroupDN = "",
             GroupFilter = string.Format("({0}={1})", LdapConstants.ADSchemaAttributes.OBJECT_CLASS,
-                isNotWindows
+                isMono
                     ? LdapConstants.ObjectClassKnowedValues.POSIX_GROUP
                     : LdapConstants.ObjectClassKnowedValues.GROUP),
             UserAttribute =
-                isNotWindows
+                isMono
                     ? LdapConstants.RfcLDAPAttributes.UID
                     : LdapConstants.ADSchemaAttributes.DISTINGUISHED_NAME,
-            GroupAttribute = isNotWindows ? LdapConstants.RfcLDAPAttributes.MEMBER_UID : LdapConstants.ADSchemaAttributes.MEMBER,
+            GroupAttribute = isMono ? LdapConstants.RfcLDAPAttributes.MEMBER_UID : LdapConstants.ADSchemaAttributes.MEMBER,
             GroupNameAttribute = LdapConstants.ADSchemaAttributes.COMMON_NAME,
             Authentication = true,
             AcceptCertificate = false,

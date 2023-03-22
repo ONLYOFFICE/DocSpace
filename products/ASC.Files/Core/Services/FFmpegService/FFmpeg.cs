@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Runtime.InteropServices;
-
 using File = System.IO.File;
 
 namespace ASC.Web.Files.Services.FFmpegService;
@@ -106,19 +104,17 @@ public class FFmpegService
         if (string.IsNullOrEmpty(_fFmpegPath))
         {
             var pathvar = Environment.GetEnvironmentVariable("PATH");
-            var folders = pathvar.Split(Path.PathSeparator).Distinct();
-
+            var folders = pathvar.Split(WorkContext.IsMono ? ':' : ';').Distinct();
             foreach (var folder in folders)
             {
                 if (!Directory.Exists(folder))
                 {
                     continue;
                 }
-                
+
                 foreach (var name in _fFmpegExecutables)
                 {
-                    var path = CrossPlatform.PathCombine(folder, RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? name + ".exe" : name);
-
+                    var path = CrossPlatform.PathCombine(folder, WorkContext.IsMono ? name : name + ".exe");
                     if (File.Exists(path))
                     {
                         _fFmpegPath = path;
@@ -189,7 +185,5 @@ public class FFmpegService
         using var process = Process.Start(startInfo);
 
         await ProcessLog(process.StandardError.BaseStream);
-
-        process.WaitForExit();
     }
 }

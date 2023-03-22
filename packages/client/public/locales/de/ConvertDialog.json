@@ -1,6 +1,6 @@
 {
   "ConversionMessage": "Alle hochgeladenden Dokumente werden ins Office Open XML Format (DOCX, XLSX oder PPTX) für eine schnellere Bearbeitung konvertiert.",
-  "ConvertedFileDestination": "Die Dateikopie wird im Ordner <strong>{{folderTitle}}</strong> erstellt.",
+  "ConvertedFileDestination": "Die Dateikopie wird im Ordner <strong>{{folderTitle}}</strong> erstellt",
   "DocumentConversionTitle": "Konvertierung von Dokumenten",
   "FileUploadTitle": "Hochladen von Dateien",
   "HideMessage": "Diese Nachricht nicht mehr anzeigen.",

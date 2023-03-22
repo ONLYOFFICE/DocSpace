@@ -23,7 +23,6 @@ md build\install\win\Files\services\ASC.Data.Backup.BackgroundTasks\service\temp
 md build\install\win\Files\services\ASC.ClearEvents\service\temp
 md build\install\win\Files\services\ASC.Web.Api\service\temp
 md build\install\win\Files\services\ASC.Web.Studio\service\temp
-md build\install\win\Files\services\ASC.Web.HealthChecks.UI\service\temp
 copy build\install\win\WinSW.NET4.exe "build\install\win\Files\tools\Proxy.exe" /y
 copy build\install\win\tools\Proxy.xml "build\install\win\Files\tools\Proxy.xml" /y
 copy build\install\win\WinSW3.0.0.exe "build\install\win\Files\tools\Socket.IO.exe" /y

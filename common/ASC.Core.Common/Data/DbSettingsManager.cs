@@ -253,10 +253,9 @@ public class SettingsManager
             {
                 var strategy = webstudioDbContext.Database.CreateExecutionStrategy();
 
-                strategy.Execute(async () =>
+                strategy.Execute(() =>
                 {
-                    using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-                    using var tr = await webstudioDbContext.Database.BeginTransactionAsync();
+                    using var tr = webstudioDbContext.Database.BeginTransaction();
                     // remove default settings
                     var s = webstudioDbContext.WebstudioSettings
                         .Where(r => r.Id == settings.ID)
@@ -269,11 +268,10 @@ public class SettingsManager
                         webstudioDbContext.WebstudioSettings.Remove(s);
                     }
 
-                    await webstudioDbContext.SaveChangesAsync();
+                    webstudioDbContext.SaveChanges();
 
-                    await tr.CommitAsync();
-                }).GetAwaiter()
-                  .GetResult();
+                    tr.Commit();
+                });
             }
             else
             {

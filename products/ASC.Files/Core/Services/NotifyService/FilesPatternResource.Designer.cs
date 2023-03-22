@@ -83,9 +83,9 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1. $__AuthorName mentioned you in the document comment
+        ///   Looks up a localized string similar to h1. &quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; mentioned you in the document comment
         ///
-        ///$__AuthorName mentioned you in the comment to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; documen in the room &quot;$RoomTitle&quot;:&quot;$RoomURL&quot;:
+        ///This is a mail message to notify that you have been mentioned by &quot;$__AuthorName&quot;:&quot;$__AuthorUrl&quot; in the comment to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; document:
         ///
         ///$Message.
         /// </summary>
@@ -105,17 +105,6 @@ namespace ASC.Files.Core.Services.NotifyService {
         public static string pattern_MailMergeEnd {
             get {
                 return ResourceManager.GetString("pattern_MailMergeEnd", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to h1. $__AuthorName deleted a room
-        ///
-        ///$__AuthorName deleted the room: $RoomTitle.
-        /// </summary>
-        public static string pattern_RoomRemoved {
-            get {
-                return ResourceManager.GetString("pattern_RoomRemoved", resourceCulture);
             }
         }
         
@@ -207,7 +196,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DocSpace notification. Mentioned in document.
+        ///   Looks up a localized string similar to Documents. Mentioned in document.
         /// </summary>
         public static string subject_EditorMentions {
             get {
@@ -243,15 +232,6 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to DocSpace notification. Room deleted.
-        /// </summary>
-        public static string subject_RoomRemoved {
-            get {
-                return ResourceManager.GetString("subject_RoomRemoved", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Documents. Access granted to document: $DocumentTitle.
         /// </summary>
         public static string subject_ShareDocument {
@@ -261,7 +241,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access granted to document: $DocumentTitle.
+        ///   Looks up a localized string similar to Documents. Access granted to document: [$DocumentTitle]($DocumentURL).
         /// </summary>
         public static string subject_ShareDocument_push {
             get {
