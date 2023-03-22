@@ -7,21 +7,9 @@
   },
   "tasks": [
     {
-      "label": "Workspace folder test",
+      "label": "Frontend | Start",
       "type": "shell",
-      "command": "echo ${workspaceFolder} && pause",
-      "osx": {
-        "command": "echo ${workspaceFolder} && read -p 'Press any key ...'"
-      }
-    },
-    {
-      "label": "Backend  | Start",
-      "type": "shell",
-      "command": "${workspaceFolder}/.vscode/tasks-scripts/start.sh ${input:start-param} "
-      // "windows": {
-      // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param}"
-      // "command": "${workspaceFolder}\\.vscode\\tasks-scripts\\start.bat ${input:start-param} ${input:local-docker}"
-      // }
+      "command": "cd ${workspaceFolder} ; yarn start"
     },
     {
       "label": "Backend  | Build",
@@ -32,19 +20,29 @@
       }
     },
     {
-      "label": "Frontend | Start",
+      "label": "Backend  | Start",
       "type": "shell",
-      "command": "cd ${workspaceFolder} ; yarn start"
+      "command": "${workspaceFolder}/build/start/start.backend.docker.sh",
+      "windows": {
+        "command": "${workspaceFolder}\\build\\start\\start.bat"
+      }
+    },
+    {
+      "label": "Backend  | Restart",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/start/restart.backend.docker.sh",
+      "windows": {
+        "command": "${workspaceFolder}\\build\\start\\restart.bat"
+      }
+    },
+    {
+      "label": "Backend  | Stop",
+      "type": "shell",
+      "command": "${workspaceFolder}/build/start/stop.backend.docker.sh",
+      "windows": {
+        "command": "${workspaceFolder}\\build\\start\\stop.bat"
+      }
     }
-
-    // {
-    //   "label": "Migrate",
-    //   "type": "shell",
-    //   "command": "${workspaceFolder}\\build\\runMigrations.sh",
-    //   "windows": {
-    //     "command": "${workspaceFolder}\\build\\runMigrations.bat"
-    //   }
-    // }
   ],
   "inputs": [
     {
