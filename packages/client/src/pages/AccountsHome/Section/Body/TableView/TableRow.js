@@ -171,8 +171,8 @@ const PeopleTableRow = (props) => {
     };
     const collaboratorOption = {
       key: "collaborator",
-      title: t("Common:Collaborator"),
-      label: t("Common:Collaborator"),
+      title: t("Common:PowerUser"),
+      label: t("Common:PowerUser"),
       action: "collaborator",
     };
     const userOption = {
@@ -237,7 +237,7 @@ const PeopleTableRow = (props) => {
       case "manager":
         return t("Common:RoomAdmin");
       case "collaborator":
-        return t("Common:Collaborator");
+        return t("Common:PowerUser");
       case "user":
         return t("Common:User");
     }
