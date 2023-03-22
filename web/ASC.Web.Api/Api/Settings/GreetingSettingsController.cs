@@ -69,7 +69,7 @@ public class GreetingSettingsController : BaseSettingsController
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         Tenant.Name = inDto.Title;
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
 
         await _messageService.SendAsync(MessageAction.GreetingSettingsUpdated);
 

@@ -160,10 +160,10 @@ public class Global
 
     public bool IsDocSpaceAdministrator => _fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID);
 
-    public string GetDocDbKey()
+    public async Task<string> GetDocDbKeyAsync()
     {
         const string dbKey = "UniqueDocument";
-        var resultKey = _coreSettings.GetSetting(dbKey);
+        var resultKey = await _coreSettings.GetSettingAsync(dbKey);
 
         if (!string.IsNullOrEmpty(resultKey))
         {
@@ -171,7 +171,7 @@ public class Global
         }
 
         resultKey = Guid.NewGuid().ToString();
-        _coreSettings.SaveSetting(dbKey, resultKey);
+        await _coreSettings.SaveSettingAsync(dbKey, resultKey);
 
         return resultKey;
     }

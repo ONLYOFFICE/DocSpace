@@ -52,11 +52,11 @@ public class DbTenantService : ITenantService
         _mapper = mapper;
     }
 
-    public void ValidateDomain(string domain)
+    public async Task ValidateDomainAsync(string domain)
     {
         // TODO: Why does open transaction?
         //        using var tr = TenantDbContext.Database.BeginTransaction();
-        ValidateDomain(domain, Tenant.DefaultTenant, true);
+        await ValidateDomainAsync(domain, Tenant.DefaultTenant, true);
     }
 
     public async Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true)
@@ -207,17 +207,28 @@ public class DbTenantService : ITenantService
             .FirstOrDefault();
     }
 
-    public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
+    public async Task<Tenant> GetTenantForStandaloneWithoutAliasAsync(string ip)
+    {
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+
+        return await tenantDbContext.Tenants
+            .OrderBy(a => a.Status)
+            .ThenByDescending(a => a.Id)
+            .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
+            .FirstOrDefaultAsync();
+    }
+
+    public async Task<Tenant> SaveTenantAsync(CoreSettings coreSettings, Tenant tenant)
     {
         ArgumentNullException.ThrowIfNull(tenant);
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        await strategy.ExecuteAsync(async () =>
         {
-            using var tenantDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = tenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
             if (!string.IsNullOrEmpty(tenant.MappedDomain))
             {
@@ -225,35 +236,35 @@ public class DbTenantService : ITenantService
 
                 if (baseUrl != null && tenant.MappedDomain.EndsWith("." + baseUrl, StringComparison.InvariantCultureIgnoreCase))
                 {
-                    ValidateDomain(tenant.MappedDomain.Substring(0, tenant.MappedDomain.Length - baseUrl.Length - 1), tenant.Id, false);
+                    await ValidateDomainAsync(tenant.MappedDomain.Substring(0, tenant.MappedDomain.Length - baseUrl.Length - 1), tenant.Id, false);
                 }
                 else
                 {
-                    ValidateDomain(tenant.MappedDomain, tenant.Id, false);
+                    await ValidateDomainAsync(tenant.MappedDomain, tenant.Id, false);
                 }
             }
 
             if (tenant.Id == Tenant.DefaultTenant)
             {
-                tenant.Version = tenantDbContext.TenantVersion
+                tenant.Version = await tenantDbContext.TenantVersion
                     .Where(r => r.DefaultVersion == 1 || r.Id == 0)
                     .OrderByDescending(r => r.Id)
                     .Select(r => r.Id)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 tenant.LastModified = DateTime.UtcNow;
 
                 var dbTenant = _mapper.Map<Tenant, DbTenant>(tenant);
                 dbTenant.Id = 0;
-                dbTenant = tenantDbContext.Tenants.Add(dbTenant).Entity;
-                tenantDbContext.SaveChanges();
+                dbTenant = (await tenantDbContext.Tenants.AddAsync(dbTenant)).Entity;
+                await tenantDbContext.SaveChangesAsync();
                 tenant.Id = dbTenant.Id;
             }
             else
             {
-                var dbTenant = tenantDbContext.Tenants
+                var dbTenant = await tenantDbContext.Tenants
                     .Where(r => r.Id == tenant.Id)
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 if (dbTenant != null)
                 {
@@ -275,40 +286,40 @@ public class DbTenantService : ITenantService
                     dbTenant.Spam = tenant.Spam;
                     dbTenant.Calls = tenant.Calls;
                     dbTenant.OwnerId = tenant.OwnerId;
-                }
 
-                tenantDbContext.SaveChanges();
+                    await tenantDbContext.SaveChangesAsync();
+                }
             }
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
         //CalculateTenantDomain(t);
         return tenant;
     }
 
-    public void RemoveTenant(int id, bool auto = false)
+    public async Task RemoveTenantAsync(int id, bool auto = false)
     {
         var postfix = auto ? "_auto_deleted" : "_deleted";
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
         var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        await strategy.ExecuteAsync(async () =>
         {
-            using var tenantDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = tenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
-            var alias = tenantDbContext.Tenants
+            var alias = await tenantDbContext.Tenants
                 .Where(r => r.Id == id)
                 .Select(r => r.Alias)
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
-            var count = tenantDbContext.Tenants
+            var count = await tenantDbContext.Tenants
                 .Where(r => r.Alias.StartsWith(alias + postfix))
-                .Count();
+                .CountAsync();
 
-            var tenant = tenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefault();
+            var tenant = await tenantDbContext.Tenants.Where(r => r.Id == id).FirstOrDefaultAsync();
 
             if (tenant != null)
             {
@@ -318,21 +329,31 @@ public class DbTenantService : ITenantService
                 tenant.LastModified = DateTime.UtcNow;
             }
 
-            tenantDbContext.SaveChanges();
+            await tenantDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
     }
 
-    public IEnumerable<TenantVersion> GetTenantVersions()
+    public async Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync()
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        return tenantDbContext.TenantVersion
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await tenantDbContext.TenantVersion
             .Where(r => r.Visible)
             .Select(r => new TenantVersion(r.Id, r.Version))
-            .ToList();
+            .ToListAsync();
     }
 
+
+    public async Task<byte[]> GetTenantSettingsAsync(int tenant, string key)
+    {
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+        return await tenantDbContext.CoreSettings
+            .Where(r => r.Tenant == tenant)
+            .Where(r => r.Id == key)
+            .Select(r => r.Value)
+            .FirstOrDefaultAsync();
+    }
 
     public byte[] GetTenantSettings(int tenant, string key)
     {
@@ -342,6 +363,47 @@ public class DbTenantService : ITenantService
             .Where(r => r.Id == key)
             .Select(r => r.Value)
             .FirstOrDefault();
+    }
+
+
+    public async Task SetTenantSettingsAsync(int tenant, string key, byte[] data)
+    {
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
+            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
+
+            if (data == null || data.Length == 0)
+            {
+                var settings = await tenantDbContext.CoreSettings
+                    .Where(r => r.Tenant == tenant)
+                    .Where(r => r.Id == key)
+                    .FirstOrDefaultAsync();
+
+                if (settings != null)
+                {
+                    tenantDbContext.CoreSettings.Remove(settings);
+                }
+            }
+            else
+            {
+                var settings = new DbCoreSettings
+                {
+                    Id = key,
+                    Tenant = tenant,
+                    Value = data,
+                    LastModified = DateTime.UtcNow
+                };
+
+                await tenantDbContext.AddOrUpdateAsync(q=> q.CoreSettings, settings);
+            }
+
+            await tenantDbContext.SaveChangesAsync();
+            await tx.CommitAsync();
+        });
     }
 
     public void SetTenantSettings(int tenant, string key, byte[] data)
@@ -384,7 +446,7 @@ public class DbTenantService : ITenantService
         });
     }
 
-    private void ValidateDomain(string domain, int tenantId, bool validateCharacters)
+    private async Task ValidateDomainAsync(string domain, int tenantId, bool validateCharacters)
     {
         // size
         _tenantDomainValidator.ValidateDomainLength(domain);
@@ -395,27 +457,27 @@ public class DbTenantService : ITenantService
             _tenantDomainValidator.ValidateDomainCharacters(domain);
         }
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        using var tenantDbContext = await _dbContextFactory.CreateDbContextAsync();
         // forbidden or exists
         var exists = false;
 
         domain = domain.ToLowerInvariant();
         if (_forbiddenDomains == null)
         {
-            _forbiddenDomains = tenantDbContext.TenantForbiden.Select(r => r.Address).ToList();
+            _forbiddenDomains = await tenantDbContext.TenantForbiden.Select(r => r.Address).ToListAsync();
         }
 
         exists = tenantId != 0 && _forbiddenDomains.Contains(domain);
 
         if (!exists)
         {
-            exists = tenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).Any();
+            exists = await tenantDbContext.Tenants.Where(r => r.Alias == domain && r.Id != tenantId).AnyAsync();
         }
         if (!exists)
         {
-            exists = tenantDbContext.Tenants
+            exists = await tenantDbContext.Tenants
                 .Where(r => r.MappedDomain == domain && r.Id != tenantId && !(r.Status == TenantStatus.RemovePending || r.Status == TenantStatus.Restoring))
-                .Any();
+                .AnyAsync();
         }
         if (exists)
         {
@@ -432,9 +494,9 @@ public class DbTenantService : ITenantService
                 }
             }
 
-            var existsTenants = tenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address).ToList();
-            existsTenants.AddRange(tenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias).ToList());
-            existsTenants.AddRange(tenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain).ToList());
+            var existsTenants = await tenantDbContext.TenantForbiden.Where(r => r.Address.StartsWith(domain)).Select(r => r.Address).ToListAsync();
+            existsTenants.AddRange(await tenantDbContext.Tenants.Where(r => r.Alias.StartsWith(domain) && r.Id != tenantId).Select(r => r.Alias).ToListAsync());
+            existsTenants.AddRange(await tenantDbContext.Tenants.Where(r => r.MappedDomain.StartsWith(domain) && r.Id != tenantId && r.Status != TenantStatus.RemovePending).Select(r => r.MappedDomain).ToListAsync());
 
             throw new TenantAlreadyExistsException("Address busy.", existsTenants.Distinct());
         }

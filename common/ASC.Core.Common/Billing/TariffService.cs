@@ -352,7 +352,7 @@ public class TariffService : ITariffService
             if (tenant != null)
             {
                 tenant.VersionChanged = DateTime.UtcNow;
-                _tenantService.SaveTenant(_coreSettings, tenant);
+                await _tenantService.SaveTenantAsync(_coreSettings, tenant);
             }
         }
     }
@@ -769,7 +769,7 @@ public class TariffService : ITariffService
             if (t != null)
             {
                 // update tenant.LastModified to flush cache in documents
-                _tenantService.SaveTenant(_coreSettings, t);
+                await _tenantService.SaveTenantAsync(_coreSettings, t);
             }
 
             ClearCache(tenant);
@@ -822,7 +822,7 @@ public class TariffService : ITariffService
                     if (tenant != null)
                     {
                         var fromDate = tenant.CreationDateTime < tenant.VersionChanged ? tenant.VersionChanged : tenant.CreationDateTime;
-                        var trialPeriod = GetPeriod("TrialPeriod", DefaultTrialPeriod);
+                        var trialPeriod = await GetPeriodAsync("TrialPeriod", DefaultTrialPeriod);
                         if (fromDate == DateTime.MinValue)
                         {
                             fromDate = DateTime.UtcNow.Date;
@@ -858,9 +858,9 @@ public class TariffService : ITariffService
         return tariff;
     }
 
-    private int GetPeriod(string key, int defaultValue)
+    private async Task<int> GetPeriodAsync(string key, int defaultValue)
     {
-        var settings = _tenantService.GetTenantSettings(Tenant.DefaultTenant, key);
+        var settings = await _tenantService.GetTenantSettingsAsync(Tenant.DefaultTenant, key);
 
         return settings != null ? Convert.ToInt32(Encoding.UTF8.GetString(settings)) : defaultValue;
     }

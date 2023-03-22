@@ -1381,7 +1381,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             item.ModifiedOn = _tenantUtil.DateTimeFromUtc(r.ModifiedOn);
             item.ModifiedBy = r.ModifiedBy;
             item.ChangesString = r.Changes;
-            item.Key = documentServiceHelper.GetDocKey(item.ID, item.Version, _tenantUtil.DateTimeFromUtc(r.CreateOn));
+            item.Key = await documentServiceHelper.GetDocKeyAsync(item.ID, item.Version, _tenantUtil.DateTimeFromUtc(r.CreateOn));
 
             yield return item;
         }

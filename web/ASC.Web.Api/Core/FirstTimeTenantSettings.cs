@@ -139,7 +139,7 @@ public class FirstTimeTenantSettings
 
             tenant.TimeZone = _timeZoneConverter.GetTimeZone(timeZone).Id;
 
-            _tenantManager.SaveTenant(tenant);
+            await _tenantManager.SaveTenantAsync(tenant);
 
             await _studioNotifyService.SendCongratulationsAsync(currentUser);
             await _studioNotifyService.SendRegDataAsync(currentUser);

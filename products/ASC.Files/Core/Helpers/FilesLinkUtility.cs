@@ -430,7 +430,7 @@ public class FilesLinkUtility
 
         if (GetUrlSetting(key) != value)
         {
-            _coreSettings.SaveSetting(GetSettingsKey(key), value);
+             _coreSettings.SaveSetting(GetSettingsKey(key), value);
         }
     }
 

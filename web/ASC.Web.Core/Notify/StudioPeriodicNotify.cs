@@ -199,7 +199,7 @@ public class StudioPeriodicNotify
                     }
                     else if (dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                     {
-                        _tenantManager.RemoveTenant(tenant.Id, true);
+                        await _tenantManager.RemoveTenantAsync(tenant.Id, true);
 
                         if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
                         {
@@ -234,7 +234,7 @@ public class StudioPeriodicNotify
                     }
                     else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6).AddDays(7) <= nowDate)
                     {
-                        _tenantManager.RemoveTenant(tenant.Id, true);
+                        await _tenantManager.RemoveTenantAsync(tenant.Id, true);
 
                         if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
                         {

@@ -79,7 +79,7 @@ public class SettingsController : ControllerBase
             });
         }
 
-        var settings = CoreSettings.GetSetting(model.Key, tenantId);
+        var settings = await CoreSettings.GetSettingAsync(model.Key, tenantId);
 
         return Ok(new
         {
@@ -117,9 +117,9 @@ public class SettingsController : ControllerBase
 
         Log.LogDebug("Set {0} value {1} for {2}", model.Key, model.Value, tenantId);
 
-        CoreSettings.SaveSetting(model.Key, model.Value, tenantId);
+        await CoreSettings.SaveSettingAsync(model.Key, model.Value, tenantId);
 
-        var settings = CoreSettings.GetSetting(model.Key, tenantId);
+        var settings = await CoreSettings.GetSettingAsync(model.Key, tenantId);
 
         return Ok(new
         {

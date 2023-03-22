@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Runtime.CompilerServices;
+
 namespace ASC.Core.Caching;
 
 [Singletone]
@@ -185,9 +187,9 @@ class CachedTenantService : ITenantService
         _cacheNotifySettings = tenantServiceCache.CacheNotifySettings;
     }
 
-    public void ValidateDomain(string domain)
+    public async Task ValidateDomainAsync(string domain)
     {
-        _service.ValidateDomain(domain);
+        await _service.ValidateDomainAsync(domain);
     }
 
     public Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash)
@@ -284,23 +286,53 @@ class CachedTenantService : ITenantService
         return t;
     }
 
-    public Tenant SaveTenant(CoreSettings coreSettings, Tenant tenant)
+    public async Task<Tenant> GetTenantForStandaloneWithoutAliasAsync(string ip)
     {
-        tenant = _service.SaveTenant(coreSettings, tenant);
+        var tenants = _tenantServiceCache.GetTenantStore();
+        var t = tenants.Get(ip);
+        if (t == null)
+        {
+            t = await _service.GetTenantForStandaloneWithoutAliasAsync(ip);
+            if (t != null)
+            {
+                tenants.Insert(t, ip);
+            }
+        }
+
+        return t;
+    }
+
+    public async Task<Tenant> SaveTenantAsync(CoreSettings coreSettings, Tenant tenant)
+    {
+        tenant = await _service.SaveTenantAsync(coreSettings, tenant);
         _cacheNotifyItem.Publish(new TenantCacheItem() { TenantId = tenant.Id }, CacheNotifyAction.InsertOrUpdate);
 
         return tenant;
     }
 
-    public void RemoveTenant(int id, bool auto = false)
+    public async Task RemoveTenantAsync(int id, bool auto = false)
     {
-        _service.RemoveTenant(id, auto);
+        await _service.RemoveTenantAsync(id, auto);
         _cacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
     }
 
-    public IEnumerable<TenantVersion> GetTenantVersions()
+    public async Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync()
     {
-        return _service.GetTenantVersions();
+        return await _service.GetTenantVersionsAsync();
+    }
+
+    public async Task<byte[]> GetTenantSettingsAsync(int tenant, string key)
+    {
+        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+        var data = _cache.Get<byte[]>(cacheKey);
+        if (data == null)
+        {
+            data = await _service.GetTenantSettingsAsync(tenant, key);
+
+            _cache.Insert(cacheKey, data ?? Array.Empty<byte>(), DateTime.UtcNow + _settingsExpiration);
+        }
+
+        return data == null ? null : data.Length == 0 ? null : data;
     }
 
     public byte[] GetTenantSettings(int tenant, string key)
@@ -315,6 +347,14 @@ class CachedTenantService : ITenantService
         }
 
         return data == null ? null : data.Length == 0 ? null : data;
+    }
+
+    public async Task SetTenantSettingsAsync(int tenant, string key, byte[] data)
+    {
+        await _service.SetTenantSettingsAsync(tenant, key, data);
+        var cacheKey = string.Format("settings/{0}/{1}", tenant, key);
+
+        _cacheNotifySettings.Publish(new TenantSetting { Key = cacheKey }, CacheNotifyAction.Remove);
     }
 
     public void SetTenantSettings(int tenant, string key, byte[] data)

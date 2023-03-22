@@ -69,7 +69,7 @@ public class CoreBaseSettings
 }
 
 [Scope]
-public class CoreSettings
+public class CoreSettings : IDisposable
 {
     public string BaseDomain
     {
@@ -98,6 +98,7 @@ public class CoreSettings
     internal ITenantService TenantService { get; set; }
     internal CoreBaseSettings CoreBaseSettings { get; set; }
     internal IConfiguration Configuration { get; set; }
+    internal SemaphoreSlim Semaphore { get; set; }
 
     public CoreSettings() { }
 
@@ -109,6 +110,7 @@ public class CoreSettings
         TenantService = tenantService;
         CoreBaseSettings = coreBaseSettings;
         Configuration = configuration;
+        Semaphore = new SemaphoreSlim(1);
     }
 
     public string GetBaseDomain(string hostedRegion)
@@ -124,6 +126,19 @@ public class CoreSettings
         return hostedRegion.StartsWith(subdomain) ? hostedRegion : (subdomain + hostedRegion.TrimStart('.'));
     }
 
+    public async Task SaveSettingAsync(string key, string value, int tenant = Tenant.DefaultTenant)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
+
+        byte[] bytes = null;
+        if (value != null)
+        {
+            bytes = Crypto.GetV(Encoding.UTF8.GetBytes(value), 2, true);
+        }
+
+        await TenantService.SetTenantSettingsAsync(tenant, key, bytes);
+    }
+
     public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
@@ -135,6 +150,17 @@ public class CoreSettings
         }
 
         TenantService.SetTenantSettings(tenant, key, bytes);
+    }
+
+    public async Task<string> GetSettingAsync(string key, int tenant = Tenant.DefaultTenant)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(key);
+
+        var bytes = await TenantService.GetTenantSettingsAsync(tenant, key);
+
+        var result = bytes != null ? Encoding.UTF8.GetString(Crypto.GetV(bytes, 2, false)) : null;
+
+        return result;
     }
 
     public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
@@ -152,18 +178,27 @@ public class CoreSettings
     {
         if (CoreBaseSettings.Standalone)
         {
-            var key = GetSetting("PortalId");
+            var key = await GetSettingAsync("PortalId");
             if (string.IsNullOrEmpty(key))
             {
-                lock (TenantService)
+                try
                 {
+                    await Semaphore.WaitAsync();
                     // thread safe
-                    key = GetSetting("PortalId");
+                    key = await GetSettingAsync("PortalId");
                     if (string.IsNullOrEmpty(key))
                     {
                         key = Guid.NewGuid().ToString();
-                        SaveSetting("PortalId", key);
+                        await SaveSettingAsync("PortalId", key);
                     }
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    Semaphore.Release();
                 }
             }
 
@@ -172,6 +207,48 @@ public class CoreSettings
         else
         {
             var t = await TenantService.GetTenantAsync(tenant);
+            if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
+            {
+                return t.PaymentId;
+            }
+
+            return Configuration["core:payment:region"] + tenant;
+        }
+    }
+
+    public string GetKey(int tenant)
+    {
+        if (CoreBaseSettings.Standalone)
+        {
+            var key = GetSetting("PortalId");
+            if (string.IsNullOrEmpty(key))
+            {
+                try
+                {
+                    Semaphore.Wait();
+                    // thread safe
+                    key = GetSetting("PortalId");
+                    if (string.IsNullOrEmpty(key))
+                    {
+                        key = Guid.NewGuid().ToString();
+                        SaveSetting("PortalId", key);
+                    }
+                }
+                catch
+                {
+                    throw;
+                }
+                finally
+                {
+                    Semaphore.Release();
+                }
+            }
+
+            return key;
+        }
+        else
+        {
+            var t = TenantService.GetTenant(tenant);
             if (t != null && !string.IsNullOrWhiteSpace(t.PaymentId))
             {
                 return t.PaymentId;
@@ -201,6 +278,11 @@ public class CoreSettings
         }
 
         return null;
+    }
+
+    public void Dispose()
+    {
+        Semaphore.Dispose();
     }
 }
 
@@ -248,11 +330,11 @@ public class CoreConfiguration
         if (tenant != null)
         {
 
-            var settingsValue = GetSetting("SmtpSettings", tenant.Id);
+            var settingsValue = await GetSettingAsync("SmtpSettings", tenant.Id);
             if (string.IsNullOrEmpty(settingsValue))
             {
                 isDefaultSettings = true;
-                settingsValue = GetSetting("SmtpSettings");
+                settingsValue = await GetSettingAsync("SmtpSettings");
             }
             var settings = SmtpSettings.Deserialize(settingsValue);
             settings.IsDefaultSettings = isDefaultSettings;
@@ -261,7 +343,7 @@ public class CoreConfiguration
         }
         else
         {
-            var settingsValue = GetSetting("SmtpSettings");
+            var settingsValue = await GetSettingAsync("SmtpSettings");
 
             var settings = SmtpSettings.Deserialize(settingsValue);
             settings.IsDefaultSettings = true;
@@ -272,7 +354,7 @@ public class CoreConfiguration
 
     public async Task SetSmtpSettingsAsync(SmtpSettings value)
     {
-        SaveSetting("SmtpSettings", value?.Serialize(), (await _tenantManager.GetCurrentTenantAsync()).Id);
+        await SaveSettingAsync("SmtpSettings", value?.Serialize(), (await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
     private readonly CoreSettings _coreSettings;
@@ -281,9 +363,14 @@ public class CoreConfiguration
 
     #region Methods Get/Save Setting
 
-    public void SaveSetting(string key, string value, int tenant = Tenant.DefaultTenant)
+    public async Task SaveSettingAsync(string key, string value, int tenant = Tenant.DefaultTenant)
     {
-        _coreSettings.SaveSetting(key, value, tenant);
+        await _coreSettings.SaveSettingAsync(key, value, tenant);
+    }
+
+    public async Task<string> GetSettingAsync(string key, int tenant = Tenant.DefaultTenant)
+    {
+        return await _coreSettings.GetSettingAsync(key, tenant);
     }
 
     public string GetSetting(string key, int tenant = Tenant.DefaultTenant)
@@ -300,22 +387,22 @@ public class CoreConfiguration
         return await GetSectionAsync<T>(typeof(T).Name);
     }
 
-    public T GetSection<T>(int tenantId) where T : class
+    public async Task<T> GetSectionAsync<T>(int tenantId) where T : class
     {
-        return GetSection<T>(tenantId, typeof(T).Name);
+        return await GetSectionAsync<T>(tenantId, typeof(T).Name);
     }
 
     public async Task<T> GetSectionAsync<T>(string sectionName) where T : class
     {
-        return GetSection<T>((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName);
+        return await GetSectionAsync<T>((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName);
     }
 
-    public T GetSection<T>(int tenantId, string sectionName) where T : class
+    public async Task<T> GetSectionAsync<T>(int tenantId, string sectionName) where T : class
     {
-        var serializedSection = GetSetting(sectionName, tenantId);
+        var serializedSection = await GetSettingAsync(sectionName, tenantId);
         if (serializedSection == null && tenantId != Tenant.DefaultTenant)
         {
-            serializedSection = GetSetting(sectionName, Tenant.DefaultTenant);
+            serializedSection = await GetSettingAsync(sectionName, Tenant.DefaultTenant);
         }
 
         return serializedSection != null ? JsonConvert.DeserializeObject<T>(serializedSection) : null;
@@ -323,7 +410,7 @@ public class CoreConfiguration
 
     public async Task SaveSectionAsync<T>(string sectionName, T section) where T : class
     {
-        SaveSection((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName, section);
+        await SaveSectionAsync((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName, section);
     }
 
     public async Task SaveSectionAsync<T>(T section) where T : class
@@ -331,15 +418,15 @@ public class CoreConfiguration
         await SaveSectionAsync(typeof(T).Name, section);
     }
 
-    public void SaveSection<T>(int tenantId, T section) where T : class
+    public async Task SaveSectionAsync<T>(int tenantId, T section) where T : class
     {
-        SaveSection(tenantId, typeof(T).Name, section);
+        await SaveSectionAsync(tenantId, typeof(T).Name, section);
     }
 
-    public void SaveSection<T>(int tenantId, string sectionName, T section) where T : class
+    public async Task SaveSectionAsync<T>(int tenantId, string sectionName, T section) where T : class
     {
         var serializedSection = section != null ? JsonConvert.SerializeObject(section) : null;
-        SaveSetting(sectionName, serializedSection, tenantId);
+        await SaveSettingAsync(sectionName, serializedSection, tenantId);
     }
 
     #endregion

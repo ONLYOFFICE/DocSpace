@@ -98,10 +98,10 @@ public class MultiRegionHostedSolution
         return result;
     }
 
-    public void RegisterTenant(string region, TenantRegistrationInfo ri, out Tenant tenant)
+    public async Task<Tenant> RegisterTenantAsync(string region, TenantRegistrationInfo ri)
     {
         ri.HostedRegion = region;
-        GetRegionService(region).RegisterTenant(ri, out tenant);
+        return await GetRegionService(region).RegisterTenantAsync(ri);
     }
 
     public async Task<Tenant> GetTenantAsync(string domain)
@@ -123,9 +123,9 @@ public class MultiRegionHostedSolution
         return await GetRegionService(region).GetTenantAsync(tenantId);
     }
 
-    public Tenant SaveTenant(string region, Tenant tenant)
+    public async Task<Tenant> SaveTenantAsync(string region, Tenant tenant)
     {
-        return GetRegionService(region).SaveTenant(tenant);
+        return await GetRegionService(region).SaveTenantAsync(tenant);
     }
 
     public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
@@ -153,11 +153,11 @@ public class MultiRegionHostedSolution
         return GetRegionService(region).GetTenantQuotaAsync(tenant);
     }
 
-    public void CheckTenantAddress(string address)
+    public async Task CheckTenantAddressAsync(string address)
     {
         foreach (var service in GetRegionServices())
         {
-            service.CheckTenantAddress(address);
+            await service.CheckTenantAddressAsync(address);
         }
     }
 

@@ -262,7 +262,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         tenantManager.SetCurrentTenant(tenant);
 
         tenant.SetStatus(TenantStatus.Migrating);
-        tenantManager.SaveTenant(tenant);
+        await tenantManager.SaveTenantAsync(tenant);
         PublishChanges();
 
         foreach (var file in _directoryFiles)
@@ -272,7 +272,7 @@ public class UploadOperationProgress : DistributedTaskProgress
         }
 
         tenant.SetStatus(TenantStatus.Active);
-        tenantManager.SaveTenant(tenant);
+        await tenantManager.SaveTenantAsync(tenant);
     }
 
     public object Clone()

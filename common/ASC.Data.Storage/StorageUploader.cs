@@ -196,7 +196,7 @@ public class MigrateOperation : DistributedTaskProgress
 
             settingsManager.Save(_settings);
             tenant.SetStatus(TenantStatus.Active);
-            tenantManager.SaveTenant(tenant);
+            await tenantManager.SaveTenantAsync(tenant);
 
             Status = DistributedTaskStatus.Completed;
         }

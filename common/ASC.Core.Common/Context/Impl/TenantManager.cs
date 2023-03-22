@@ -140,7 +140,7 @@ public class TenantManager
         }
         if (t == null && CoreBaseSettings.Standalone && !isAlias)
         {
-            t = TenantService.GetTenantForStandaloneWithoutAlias(domain);
+            t = await TenantService.GetTenantForStandaloneWithoutAliasAsync(domain);
         }
 
         return t;
@@ -181,14 +181,14 @@ public class TenantManager
         return t;
     }
 
-    public Tenant SetTenantVersion(Tenant tenant, int version)
+    public async Task<Tenant> SetTenantVersionAsync(Tenant tenant, int version)
     {
         ArgumentNullException.ThrowIfNull(tenant);
 
         if (tenant.Version != version)
         {
             tenant.Version = version;
-            SaveTenant(tenant);
+            await SaveTenantAsync(tenant);
         }
         else
         {
@@ -198,9 +198,9 @@ public class TenantManager
         return tenant;
     }
 
-    public Tenant SaveTenant(Tenant tenant)
+    public async Task<Tenant> SaveTenantAsync(Tenant tenant)
     {
-        var newTenant = TenantService.SaveTenant(CoreSettings, tenant);
+        var newTenant = await TenantService.SaveTenantAsync(CoreSettings, tenant);
         if (CallContext.GetData(CurrentTenant) is Tenant)
         {
             SetCurrentTenant(newTenant);
@@ -209,9 +209,9 @@ public class TenantManager
         return newTenant;
     }
 
-    public void RemoveTenant(int tenantId, bool auto = false)
+    public async Task RemoveTenantAsync(int tenantId, bool auto = false)
     {
-        TenantService.RemoveTenant(tenantId, auto);
+        await TenantService.RemoveTenantAsync(tenantId, auto);
     }
 
     public async Task<Tenant> GetCurrentTenantAsync(HttpContext context)
@@ -359,14 +359,14 @@ public class TenantManager
         return result;
     }
 
-    public void CheckTenantAddress(string address)
+    public async Task CheckTenantAddressAsync(string address)
     {
-        TenantService.ValidateDomain(address);
+        await TenantService.ValidateDomainAsync(address);
     }
 
-    public IEnumerable<TenantVersion> GetTenantVersions()
+    public async Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync()
     {
-        return TenantService.GetTenantVersions();
+        return await TenantService.GetTenantVersionsAsync();
     }
 
 

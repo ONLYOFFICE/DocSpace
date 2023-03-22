@@ -149,7 +149,7 @@ internal class FileConverterService<T> : BackgroundService
 
                     var toExtension = fileUtility.GetInternalExtension(file.Title);
                     var fileExtension = file.ConvertedExtension;
-                    var docKey = documentServiceHelper.GetDocKey(file);
+                    var docKey = await documentServiceHelper.GetDocKeyAsync(file);
 
                     fileUri = await documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
                     (operationResultProgress, convertedFileUrl) = await documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true);

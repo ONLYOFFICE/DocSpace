@@ -66,10 +66,9 @@ public class LicenseReader
         _constants = constants;
     }
 
-    public string CustomerId
+    public async Task SetCustomerIdAsync(string value)
     {
-        get => _coreSettings.GetSetting(CustomerIdKey);
-        private set => _coreSettings.SaveSetting(CustomerIdKey, value);
+        await _coreSettings.SaveSettingAsync(CustomerIdKey, value);
     }
 
     private Stream GetLicenseStream(bool temp = false)
@@ -192,7 +191,7 @@ public class LicenseReader
     {
         Validate(license);
 
-        CustomerId = license.CustomerId;
+        await SetCustomerIdAsync(license.CustomerId);
 
         var defaultQuota = await _tenantManager.GetTenantQuotaAsync(Tenant.DefaultTenant);
 

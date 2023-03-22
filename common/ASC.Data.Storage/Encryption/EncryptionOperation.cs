@@ -106,12 +106,12 @@ public class EncryptionOperation : DistributedTaskProgress
             if (!_hasErrors)
             {
                 await DeleteProgressFilesAsync(storageFactory);
-                SaveNewSettings(encryptionSettingsHelper, log);
+                await SaveNewSettingsAsync(encryptionSettingsHelper, log);
             }
 
             Percentage = 90;
             PublishChanges();
-            ActivateTenants(tenantManager, log, notifyHelper);
+            await ActivateTenantsAsync(tenantManager, log, notifyHelper);
 
             Percentage = 100;
 
@@ -268,7 +268,7 @@ public class EncryptionOperation : DistributedTaskProgress
         }
     }
 
-    private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILogger log)
+    private async Task SaveNewSettingsAsync(EncryptionSettingsHelper encryptionSettingsHelper, ILogger log)
     {
         if (_isEncryption)
         {
@@ -280,12 +280,12 @@ public class EncryptionOperation : DistributedTaskProgress
             _encryptionSettings.Password = string.Empty;
         }
 
-        encryptionSettingsHelper.Save(_encryptionSettings);
+        await encryptionSettingsHelper.SaveAsync(_encryptionSettings);
 
         log.DebugSaveNewEncryptionSettings();
     }
 
-    private void ActivateTenants(TenantManager tenantManager, ILogger log, NotifyHelper notifyHelper)
+    private async Task ActivateTenantsAsync(TenantManager tenantManager, ILogger log, NotifyHelper notifyHelper)
     {
         foreach (var tenant in _tenants)
         {
@@ -294,7 +294,7 @@ public class EncryptionOperation : DistributedTaskProgress
                 tenantManager.SetCurrentTenant(tenant);
 
                 tenant.SetStatus(TenantStatus.Active);
-                tenantManager.SaveTenant(tenant);
+                await tenantManager.SaveTenantAsync(tenant);
                 log.DebugTenantSetStatusActive(tenant.Alias);
 
                 if (!_hasErrors)

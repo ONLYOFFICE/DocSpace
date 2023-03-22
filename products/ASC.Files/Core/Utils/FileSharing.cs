@@ -584,7 +584,7 @@ public class FileSharing
             var w = new AceWrapper
             {
                 Id = FileConstant.ShareLinkId,
-                Link = _filesSettingsHelper.ExternalShare ? _fileShareLink.GetLink((File<T>)entry) : string.Empty,
+                Link = _filesSettingsHelper.ExternalShare ? await _fileShareLink.GetLinkAsync((File<T>)entry) : string.Empty,
                 SubjectGroup = true,
                 Access = linkAccess,
                 Owner = false

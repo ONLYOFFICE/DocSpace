@@ -100,12 +100,12 @@ public class HostedSolution
         return AddRegion(TenantService.GetTenant(id));
     }
 
-    public void CheckTenantAddress(string address)
+    public async Task CheckTenantAddressAsync(string address)
     {
-        TenantService.ValidateDomain(address);
+        await TenantService.ValidateDomainAsync(address);
     }
 
-    public void RegisterTenant(TenantRegistrationInfo registrationInfo, out Tenant tenant)
+    public async Task<Tenant> RegisterTenantAsync(TenantRegistrationInfo registrationInfo)
     {
         ArgumentNullException.ThrowIfNull(registrationInfo);
 
@@ -136,7 +136,7 @@ public class HostedSolution
         }
 
         // create tenant
-        tenant = new Tenant(registrationInfo.Address.ToLowerInvariant())
+        var tenant = new Tenant(registrationInfo.Address.ToLowerInvariant())
         {
             Name = registrationInfo.Name,
             Language = registrationInfo.Culture.Name,
@@ -149,7 +149,7 @@ public class HostedSolution
             Calls = registrationInfo.Calls
         };
 
-        tenant = TenantService.SaveTenant(CoreSettings, tenant);
+        tenant = await TenantService.SaveTenantAsync(CoreSettings, tenant);
 
         // create user
         var user = new UserInfo
@@ -169,17 +169,18 @@ public class HostedSolution
 
         // save tenant owner
         tenant.OwnerId = user.Id;
-        tenant = TenantService.SaveTenant(CoreSettings, tenant);
+        tenant = await TenantService.SaveTenantAsync(CoreSettings, tenant);
+        return tenant;
     }
 
-    public Tenant SaveTenant(Tenant tenant)
+    public async Task<Tenant> SaveTenantAsync(Tenant tenant)
     {
-        return TenantService.SaveTenant(CoreSettings, tenant);
+        return await TenantService.SaveTenantAsync(CoreSettings, tenant);
     }
 
-    public void RemoveTenant(Tenant tenant)
+    public async Task RemoveTenantAsync(Tenant tenant)
     {
-        TenantService.RemoveTenant(tenant.Id);
+        await TenantService.RemoveTenantAsync(tenant.Id);
     }
 
     public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)

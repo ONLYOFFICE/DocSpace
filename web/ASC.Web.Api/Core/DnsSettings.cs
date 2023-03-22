@@ -76,12 +76,12 @@ public class DnsSettings
                 dnsName = null;
             }
 
-            if (dnsName == null || CheckCustomDomain(dnsName))
+            if (dnsName == null || await CheckCustomDomainAsync(dnsName))
             {
                 if (_coreBaseSettings.Standalone)
                 {
                     tenant.MappedDomain = dnsName;
-                    _tenantManager.SaveTenant(tenant);
+                    await _tenantManager.SaveTenantAsync(tenant);
                     return null;
                 }
 
@@ -107,7 +107,7 @@ public class DnsSettings
         }
     }
 
-    private bool CheckCustomDomain(string domain)
+    private async Task<bool> CheckCustomDomainAsync(string domain)
     {
         if (string.IsNullOrEmpty(domain))
         {
@@ -126,7 +126,7 @@ public class DnsSettings
         {
             try
             {
-                _tenantManager.CheckTenantAddress(test.Host);
+                await _tenantManager.CheckTenantAddressAsync(test.Host);
             }
             catch (TenantTooShortException ex)
             {

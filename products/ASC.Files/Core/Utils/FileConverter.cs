@@ -421,7 +421,7 @@ public class FileConverter
         }
 
         var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
-        var docKey = _documentServiceHelper.GetDocKey(file);
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(file);
         fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var uriTuple = await _documentServiceConnector.GetConvertedUriAsync(fileUri, file.ConvertedExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, false);
@@ -457,7 +457,7 @@ public class FileConverter
         var fileUri = await _pathProvider.GetFileStreamUrlAsync(file);
         var fileExtension = file.ConvertedExtension;
         var toExtension = _fileUtility.GetInternalExtension(file.Title);
-        var docKey = _documentServiceHelper.GetDocKey(file);
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(file);
 
         fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 

@@ -52,7 +52,7 @@ public class FileShareLink
         _filesSettingsHelper = filesSettingsHelper;
     }
 
-    public string GetLink<T>(File<T> file, bool withHash = true)
+    public async Task<string> GetLinkAsync<T>(File<T> file, bool withHash = true)
     {
         var url = file.DownloadUrl;
 
@@ -63,25 +63,25 @@ public class FileShareLink
 
         if (withHash)
         {
-            var linkParams = CreateKey(file.Id);
+            var linkParams = await CreateKeyAsync(file.Id);
             url += "&" + FilesLinkUtility.DocShareKey + "=" + HttpUtility.UrlEncode(linkParams);
         }
 
         return _baseCommonLinkUtility.GetFullAbsolutePath(url);
     }
 
-    public string CreateKey<T>(T fileId)
+    public async Task<string> CreateKeyAsync<T>(T fileId)
     {
-        return Signature.Create(fileId, _global.GetDocDbKey());
+        return Signature.Create(fileId, await _global.GetDocDbKeyAsync());
     }
 
-    public string Parse(string doc)
+    public async Task<string> ParseAsync(string doc)
     {
-        return Signature.Read<string>(doc ?? string.Empty, _global.GetDocDbKey());
+        return Signature.Read<string>(doc ?? string.Empty, await _global.GetDocDbKeyAsync());
     }
-    public T Parse<T>(string doc)
+    public async Task<T> ParseAsync<T>(string doc)
     {
-        return Signature.Read<T>(doc ?? string.Empty, _global.GetDocDbKey());
+        return Signature.Read<T>(doc ?? string.Empty, await _global.GetDocDbKeyAsync());
     }
 
     public async Task<(bool EditLink, File<T> File, FileShare fileShare)> CheckAsync<T>(string doc, bool checkRead, IFileDao<T> fileDao)
@@ -110,7 +110,7 @@ public class FileShareLink
             return (FileShare.Restrict, null);
         }
 
-        var fileId = Parse<T>(doc);
+        var fileId = await ParseAsync<T>(doc);
 
         File<T> file = null;
 

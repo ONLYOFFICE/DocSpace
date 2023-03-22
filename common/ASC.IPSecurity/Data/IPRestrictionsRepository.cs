@@ -38,26 +38,26 @@ public class IPRestrictionsRepository
         _mapper = mapper;
     }
 
-    public List<IPRestriction> Get(int tenant)
+    public async Task<List<IPRestriction>> GetAsync(int tenant)
     {
-        using var tenantDbContext = _dbContextManager.CreateDbContext();
-        return tenantDbContext.TenantIpRestrictions
+        using var tenantDbContext = await _dbContextManager.CreateDbContextAsync();
+        return await tenantDbContext.TenantIpRestrictions
             .Where(r => r.Tenant == tenant)
             .ProjectTo<IPRestriction>(_mapper.ConfigurationProvider)
-            .ToList();
+            .ToListAsync();
     }
 
-    public List<IpRestrictionBase> Save(IEnumerable<IpRestrictionBase> ips, int tenant)
+    public async Task<List<IpRestrictionBase>> SaveAsync(IEnumerable<IpRestrictionBase> ips, int tenant)
     {
-        using var tenantDbContext = _dbContextManager.CreateDbContext();
+        using var tenantDbContext = await _dbContextManager.CreateDbContextAsync();
         var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        await strategy.ExecuteAsync(async () =>
         {
-            using var tenantDbContext = _dbContextManager.CreateDbContext();
-            using var tx = tenantDbContext.Database.BeginTransaction();
+            using var tenantDbContext = await _dbContextManager.CreateDbContextAsync();
+            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
-            tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDelete();
+            await tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDeleteAsync();
 
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
@@ -68,9 +68,9 @@ public class IPRestrictionsRepository
             });
 
             tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
-            tenantDbContext.SaveChanges();
+            await tenantDbContext.SaveChangesAsync();
 
-            tx.Commit();
+            await tx.CommitAsync();
         });
 
         return ips.ToList();

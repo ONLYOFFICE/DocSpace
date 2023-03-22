@@ -345,7 +345,7 @@ public class PortalController : ControllerBase
             }
             else
             {
-                _tenantManager.CheckTenantAddress(newAlias.Trim());
+                await _tenantManager.CheckTenantAddressAsync(newAlias.Trim());
             }
 
 
@@ -355,7 +355,7 @@ public class PortalController : ControllerBase
             }
 
             tenant.Alias = alias;
-            tenant = _tenantManager.SaveTenant(tenant);
+            tenant = await _tenantManager.SaveTenantAsync(tenant);
             _tenantManager.SetCurrentTenant(tenant);
             _commonLinkUtility.ServerRootPath = null;
 
@@ -378,7 +378,7 @@ public class PortalController : ControllerBase
     }
 
     [HttpDelete("deleteportalimmediately")]
-    public async Task DeletePortalImmediately()
+    public async Task DeletePortalImmediatelyAsync()
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
 
@@ -387,7 +387,7 @@ public class PortalController : ControllerBase
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
-        _tenantManager.RemoveTenant(tenant.Id);
+        await _tenantManager.RemoveTenantAsync(tenant.Id);
 
         if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
         {
@@ -454,10 +454,10 @@ public class PortalController : ControllerBase
     [AllowSuspended]
     [HttpPut("continue")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalContinue")]
-    public void ContinuePortal()
+    public async Task ContinuePortalAsync()
     {
         Tenant.SetStatus(TenantStatus.Active);
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
     }
 
     [HttpPut("suspend")]
@@ -465,21 +465,21 @@ public class PortalController : ControllerBase
     public async Task SuspendPortalAsync()
     {
         Tenant.SetStatus(TenantStatus.Suspended);
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
         await _messageService.SendAsync(MessageAction.PortalDeactivated);
     }
 
     [AllowNotPayment]
     [HttpDelete("delete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PortalRemove")]
-    public async Task<object> DeletePortal()
+    public async Task<object> DeletePortalAsync()
     {
         if (_securityContext.CurrentAccount.ID != Tenant.OwnerId)
         {
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
-        _tenantManager.RemoveTenant(Tenant.Id);
+        await _tenantManager.RemoveTenantAsync(Tenant.Id);
 
         if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
         {

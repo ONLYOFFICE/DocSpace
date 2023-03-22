@@ -243,7 +243,7 @@ public class PortalController : ControllerBase
                 _log.LogDebug("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
             }
 
-            _hostedSolution.RegisterTenant(info, out t);
+             t = await _hostedSolution.RegisterTenantAsync(info);
 
             /*********/
 
@@ -350,7 +350,7 @@ public class PortalController : ControllerBase
             });
         }
 
-        _hostedSolution.RemoveTenant(tenant);
+        await _hostedSolution.RemoveTenantAsync(tenant);
 
         return Ok(new
         {
@@ -395,7 +395,7 @@ public class PortalController : ControllerBase
 
         tenant.SetStatus(active);
 
-        _hostedSolution.SaveTenant(tenant);
+        await _hostedSolution.SaveTenantAsync(tenant);
 
         return Ok(new
         {
@@ -542,7 +542,7 @@ public class PortalController : ControllerBase
             }
             else
             {
-                _hostedSolution.CheckTenantAddress(portalName.Trim());
+                await _hostedSolution.CheckTenantAddressAsync(portalName.Trim());
             }
         }
         catch (TenantAlreadyExistsException ex)

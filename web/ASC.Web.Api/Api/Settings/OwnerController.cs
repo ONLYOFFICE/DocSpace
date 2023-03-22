@@ -118,7 +118,7 @@ public class OwnerController : BaseSettingsController
 
         var curTenant = await _tenantManager.GetCurrentTenantAsync();
         curTenant.OwnerId = newOwner.Id;
-        _tenantManager.SaveTenant(curTenant);
+        await _tenantManager.SaveTenantAsync(curTenant);
 
         await _messageService.SendAsync(MessageAction.OwnerUpdated, newOwner.DisplayUserName(false, _displayUserSettingsHelper));
     }

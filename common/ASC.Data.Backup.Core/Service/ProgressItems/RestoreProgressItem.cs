@@ -121,7 +121,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             _tenantManager.SetCurrentTenant(tenant);
             await _notifyHelper.SendAboutRestoreStartedAsync(tenant, Notify);
             tenant.SetStatus(TenantStatus.Restoring);
-            _tenantManager.SaveTenant(tenant);
+            await _tenantManager.SaveTenantAsync(tenant);
 
             _restorePortalTask = scope.ServiceProvider.GetService<RestorePortalTask>();
 
@@ -173,7 +173,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             }
             else
             {
-                _tenantManager.RemoveTenant(tenant.Id);
+                await _tenantManager.RemoveTenantAsync(tenant.Id);
 
                 restoredTenant = await _tenantManager.GetTenantAsync(columnMapper.GetTenantMapping());
                 restoredTenant.SetStatus(TenantStatus.Active);
@@ -185,7 +185,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
                     restoredTenant.MappedDomain = tenant.MappedDomain;
                 }
 
-                _tenantManager.SaveTenant(restoredTenant);
+                await _tenantManager.SaveTenantAsync(restoredTenant);
                 _tenantManager.SetCurrentTenant(restoredTenant);
                 TenantId = restoredTenant.Id;
 
@@ -210,7 +210,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
             if (tenant != null)
             {
                 tenant.SetStatus(TenantStatus.Active);
-                _tenantManager.SaveTenant(tenant);
+                await _tenantManager.SaveTenantAsync(tenant);
             }
         }
         finally

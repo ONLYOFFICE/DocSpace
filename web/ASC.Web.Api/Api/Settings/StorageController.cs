@@ -201,7 +201,7 @@ public class StorageController : BaseSettingsController, IDisposable
             _cacheDeleteSchedule.Publish(new DeleteSchedule() { TenantId = tenant.Id }, CacheNotifyAction.Insert);
         }
 
-        var settings = _encryptionSettingsHelper.Load();
+        var settings = await _encryptionSettingsHelper.LoadAsync();
 
         settings.NotifyUsers = notifyUsers;
 
@@ -236,10 +236,10 @@ public class StorageController : BaseSettingsController, IDisposable
             }
 
             tenant.SetStatus(TenantStatus.Encryption);
-            _tenantManager.SaveTenant(tenant);
+            await _tenantManager.SaveTenantAsync(tenant);
         }
 
-        _encryptionSettingsHelper.Save(settings);
+        await _encryptionSettingsHelper.SaveAsync(settings);
 
         _eventBus.Publish(new EncryptionDataStorageRequestedIntegrationEvent
         (
@@ -283,7 +283,7 @@ public class StorageController : BaseSettingsController, IDisposable
 
             await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-            var settings = _encryptionSettingsHelper.Load();
+            var settings = await _encryptionSettingsHelper.LoadAsync();
 
             settings.Password = string.Empty; // Don't show password
 
@@ -344,7 +344,7 @@ public class StorageController : BaseSettingsController, IDisposable
             settings.Module = inDto.Module;
             settings.Props = inDto.Props.ToDictionary(r => r.Key, b => b.Value);
 
-            StartMigrate(settings);
+            await StartMigrateAsync(settings);
             return settings;
         }
         catch (Exception e)
@@ -372,7 +372,7 @@ public class StorageController : BaseSettingsController, IDisposable
             settings.Props = null;
 
 
-            StartMigrate(settings);
+            await StartMigrateAsync(settings);
         }
         catch (Exception e)
         {
@@ -468,12 +468,12 @@ public class StorageController : BaseSettingsController, IDisposable
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
 
-    private void StartMigrate(StorageSettings settings)
+    private async Task StartMigrateAsync(StorageSettings settings)
     {
         _serviceClient.Migrate(Tenant.Id, settings);
 
         Tenant.SetStatus(TenantStatus.Migrating);
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
     }
 
     /// <summary>

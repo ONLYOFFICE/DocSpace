@@ -83,7 +83,7 @@ public class CustomSchemasController : BaseSettingsController
 
         _customNamingPeople.SetPeopleNames(inDto.Id);
 
-        _tenantManager.SaveTenant(await _tenantManager.GetCurrentTenantAsync());
+        await _tenantManager.SaveTenantAsync(await _tenantManager.GetCurrentTenantAsync());
 
         await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
@@ -134,7 +134,7 @@ public class CustomSchemasController : BaseSettingsController
 
         _customNamingPeople.SetPeopleNames(names);
 
-        _tenantManager.SaveTenant(await _tenantManager.GetCurrentTenantAsync());
+        await _tenantManager.SaveTenantAsync(await _tenantManager.GetCurrentTenantAsync());
 
         await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 

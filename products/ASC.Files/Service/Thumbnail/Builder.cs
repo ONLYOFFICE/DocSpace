@@ -271,7 +271,7 @@ public class Builder<T>
         fileUri = await _documentServiceConnector.ReplaceCommunityAdressAsync(fileUri);
 
         var fileExtension = file.ConvertedExtension;
-        var docKey = _documentServiceHelper.GetDocKey(file);
+        var docKey = await _documentServiceHelper.GetDocKeyAsync(file);
         var thumbnail = new ThumbnailData
         {
             Aspect = 2,

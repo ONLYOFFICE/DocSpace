@@ -72,7 +72,7 @@ public class TenantsModuleSpecifics : ModuleSpecificsBase
         if (table.Name == "tenants_tenants" && string.IsNullOrEmpty(Convert.ToString(row["payment_id"])))
         {
             var oldTenantID = Convert.ToInt32(row["id"]);
-            columnMapper.SetMapping("tenants_tenants", "payment_id", row["payment_id"], _coreSettings.GetKeyAsync(oldTenantID));
+            columnMapper.SetMapping("tenants_tenants", "payment_id", row["payment_id"], _coreSettings.GetKey(oldTenantID));
         }
 
         return base.TryPrepareRow(dump, connection, columnMapper, table, row, out preparedRow);

@@ -254,7 +254,7 @@ public class SettingsController : BaseSettingsController
 
         _settingsManager.Save(new StudioTrustedDomainSettings { InviteAsUsers = inDto.InviteAsUsers });
 
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
 
         await _messageService.SendAsync(MessageAction.TrustedMailDomainSettingsUpdated);
 
@@ -512,7 +512,7 @@ public class SettingsController : BaseSettingsController
         }
         Tenant.TimeZone = timeZones.FirstOrDefault(tz => tz.Id == inDto.TimeZoneID)?.Id ?? TimeZoneInfo.Utc.Id;
 
-        _tenantManager.SaveTenant(Tenant);
+        await _tenantManager.SaveTenantAsync(Tenant);
 
         if (!Tenant.TimeZone.Equals(oldTimeZone) || changelng)
         {

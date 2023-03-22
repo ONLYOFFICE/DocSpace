@@ -268,7 +268,7 @@ public class DocumentServiceTrackerHelper
             File<T> fileStable;
             fileStable = await _daoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
-            docKey = _documentServiceHelper.GetDocKey(fileStable);
+            docKey = await _documentServiceHelper.GetDocKeyAsync(fileStable);
         }
         else
         {
@@ -300,7 +300,7 @@ public class DocumentServiceTrackerHelper
 
                 try
                 {
-                    var doc = _fileShareLink.CreateKey(fileId);
+                    var doc = await _fileShareLink.CreateKeyAsync(fileId);
                     await _entryManager.TrackEditingAsync(fileId, userId, userId, doc);
                 }
                 catch (Exception e)
@@ -349,7 +349,7 @@ public class DocumentServiceTrackerHelper
             File<T> fileStable;
             fileStable = await _daoFactory.GetFileDao<T>().GetFileStableAsync(fileId);
 
-            var docKey = _documentServiceHelper.GetDocKey(fileStable);
+            var docKey = await _documentServiceHelper.GetDocKeyAsync(fileStable);
             if (!fileData.Key.Equals(docKey))
             {
                 _logger.ErrorDocServiceSavingFile(fileId.ToString(), docKey, fileData.Key);

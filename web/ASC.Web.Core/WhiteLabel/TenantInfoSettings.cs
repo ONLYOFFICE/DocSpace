@@ -82,7 +82,7 @@ public class TenantInfoSettingsHelper
     {
         var currentTenant = await _tenantManager.GetCurrentTenantAsync();
         currentTenant.Name = _configuration["web:portal-name"] ?? "";
-        _tenantManager.SaveTenant(currentTenant);
+        await _tenantManager.SaveTenantAsync(currentTenant);
     }
 
     public async Task RestoreDefaultLogoAsync(TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)

@@ -52,14 +52,14 @@ public class IpRestrictionsController : BaseSettingsController
     public async Task<IEnumerable<IPRestriction>> GetIpRestrictionsAsync()
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
-        return _iPRestrictionsService.Get(Tenant.Id);
+        return await _iPRestrictionsService.GetAsync(Tenant.Id);
     }
 
     [HttpPut("iprestrictions")]
     public async Task<IEnumerable<IpRestrictionBase>> SaveIpRestrictionsAsync(IpRestrictionsRequestsDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
-        return _iPRestrictionsService.Save(inDto.IpRestrictions, Tenant.Id);
+        return await _iPRestrictionsService.SaveAsync(inDto.IpRestrictions, Tenant.Id);
     }
 
     [HttpGet("iprestrictions/settings")]

@@ -975,7 +975,7 @@ public class FileStorageService<T> //: IFileStorageService
     {
         try
         {
-            var id = _fileShareLink.Parse<T>(doc);
+            var id = await _fileShareLink.ParseAsync<T>(doc);
             if (id == null)
             {
                 if (!_authContext.IsAuthenticated)
@@ -991,7 +991,7 @@ public class FileStorageService<T> //: IFileStorageService
                 id = fileId;
             }
 
-            if (docKeyForTrack != _documentServiceHelper.GetDocKey(id, -1, DateTime.MinValue))
+            if (docKeyForTrack != await _documentServiceHelper.GetDocKeyAsync(id, -1, DateTime.MinValue))
             {
                 throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
             }
@@ -1115,7 +1115,7 @@ public class FileStorageService<T> //: IFileStorageService
                 }
 
                 //without StartTrack, track via old scheme
-                return _documentServiceHelper.GetDocKey(fileId, -1, DateTime.MinValue);
+                return await _documentServiceHelper.GetDocKeyAsync(fileId, -1, DateTime.MinValue);
             }
 
             (File<string> File, Configuration<string> Configuration, bool LocatedInPrivateRoom) fileOptions;
@@ -1290,7 +1290,7 @@ public class FileStorageService<T> //: IFileStorageService
             if (usersDrop.Length > 0)
             {
                 var fileStable = file.Forcesave == ForcesaveType.None ? file : await fileDao.GetFileStableAsync(file.Id, file.Version);
-                var docKey = _documentServiceHelper.GetDocKey(fileStable);
+                var docKey = await _documentServiceHelper.GetDocKeyAsync(fileStable);
                 await _documentServiceHelper.DropUserAsync(docKey, usersDrop, file.Id);
             }
 
@@ -1373,7 +1373,7 @@ public class FileStorageService<T> //: IFileStorageService
         var result = new EditHistoryDataDto
         {
             FileType = file.ConvertedExtension.Trim('.'),
-            Key = _documentServiceHelper.GetDocKey(file),
+            Key = await _documentServiceHelper.GetDocKeyAsync(file),
             Url = await _documentServiceConnector.ReplaceCommunityAdressAsync(await _pathProvider.GetFileStreamUrlAsync(file, doc)),
             Version = version
         };
@@ -1393,7 +1393,7 @@ public class FileStorageService<T> //: IFileStorageService
                 sourceFileUrl = await _pathProvider.GetFileStreamUrlAsync(previousFileStable, doc);
                 sourceExt = previousFileStable.ConvertedExtension;
 
-                previouseKey = _documentServiceHelper.GetDocKey(previousFileStable);
+                previouseKey = await _documentServiceHelper.GetDocKeyAsync(previousFileStable);
                 previousFileExt = FileUtility.GetFileExtension(previousFileStable.Title);
             }
             else
@@ -2193,7 +2193,7 @@ public class FileStorageService<T> //: IFileStorageService
     public async Task<string> CheckFillFormDraftAsync(T fileId, int version, string doc, bool editPossible, bool view)
     {
         var (file, _configuration, _) = await _documentServiceHelper.GetParamsAsync(fileId, version, doc, editPossible, !view, true);
-        var _valideShareLink = !string.IsNullOrEmpty(_fileShareLink.Parse(doc));
+        var _valideShareLink = !string.IsNullOrEmpty(await _fileShareLink.ParseAsync(doc));
 
         if (_valideShareLink)
         {
@@ -2600,7 +2600,7 @@ public class FileStorageService<T> //: IFileStorageService
         var fileDao = GetFileDao();
         file = await fileDao.GetFileAsync(fileId);
         ErrorIf(!await _fileSharing.CanSetAccessAsync(file), FilesCommonResource.ErrorMassage_SecurityException);
-        var shareLink = _fileShareLink.GetLink(file);
+        var shareLink = await _fileShareLink.GetLinkAsync(file);
 
         try
         {
