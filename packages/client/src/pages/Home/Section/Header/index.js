@@ -487,7 +487,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_show-info",
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         onClick: this.onShowInfo,
         disabled: isDisabled,
         icon: InfoOutlineReactSvgUrl,

@@ -180,6 +180,7 @@ class UploadDataStore {
       percent: 100,
       uploaded: true,
       converted: true,
+      currentUploadNumber: 0,
     };
 
     const newHistory = this.uploadedFilesHistory.filter(

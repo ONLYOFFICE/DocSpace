@@ -1295,7 +1295,7 @@ class FilesStore {
       })
       .catch((err) => {
         console.error(err);
-      
+
         if (err?.response?.status === 402)
           this.authStore.currentTariffStatusStore.setPortalTariff();
 
@@ -1868,10 +1868,7 @@ class FilesStore {
       }
 
       if (isArchiveFolder || item.rootFolderType === FolderType.Archive) {
-        roomOptions = this.removeOptions(roomOptions, [
-          "archive-room",
-          "separator1",
-        ]);
+        roomOptions = this.removeOptions(roomOptions, ["archive-room"]);
       } else {
         roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
 
