@@ -10,7 +10,7 @@ import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg
 import ActionsUploadReactSvgUrl from "PUBLIC_DIR/images/actions.upload.react.svg?url";
 import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
 import ReconnectSvgUrl from "PUBLIC_DIR/images/reconnect.svg?url";
-import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
