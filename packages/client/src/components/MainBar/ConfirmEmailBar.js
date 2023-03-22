@@ -29,12 +29,14 @@ const ConfirmEmailBar = ({
         text={
           <>
             {t("ConfirmEmailDescription")}{" "}
-            <StyledLink
-              currentColorScheme={currentColorScheme}
+            <Link
+              fontSize="12px"
+              fontWeight="400"
+              color={currentColorScheme?.main?.accent}
               onClick={onClick}
             >
               {t("RequestActivation")}
-            </StyledLink>
+            </Link>
           </>
         }
         isCampaigns={false}
