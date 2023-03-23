@@ -164,7 +164,7 @@ class UploadDataStore {
     return this.files.filter((f) => f.uniqueId === id);
   };
 
-  cancelUpload = () => {
+  cancelUpload = (t) => {
     let newFiles = [];
 
     for (let i = 0; i < this.files.length; i++) {
@@ -190,6 +190,8 @@ class UploadDataStore {
     if (newUploadData.files.length === 0) this.setUploadPanelVisible(false);
     this.setUploadData(newUploadData);
     this.uploadedFilesHistory = newHistory;
+
+    toastr.info(t("CancelUpload"));
   };
 
   cancelConversion = () => {

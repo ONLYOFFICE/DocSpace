@@ -67,6 +67,10 @@ class UploadPanelComponent extends React.Component {
     this.onClose();
   };
 
+  onCancelUpload = () => {
+    this.props.cancelUpload(this.props.t);
+  };
+
   render() {
     //console.log("UploadPanel render");
     const {
@@ -75,7 +79,6 @@ class UploadPanelComponent extends React.Component {
       /* sharingPanelVisible, */ uploaded,
       converted,
       uploadDataFiles,
-      cancelUpload,
       cancelConversion,
       isUploading,
       isUploadingAndConversion,
@@ -126,7 +129,9 @@ class UploadPanelComponent extends React.Component {
                       iconName={ButtonCancelReactSvgUrl}
                       // color={theme.filesPanels.upload.color}
                       isClickable
-                      onClick={uploaded ? cancelConversion : cancelUpload}
+                      onClick={
+                        uploaded ? cancelConversion : this.onCancelUpload
+                      }
                     />
                   )}
                 </div>
