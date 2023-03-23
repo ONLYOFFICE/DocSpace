@@ -227,9 +227,12 @@ CMD ["ASC.Files.dll", "ASC.Files"]
 
 ## ASC.Files.Service ##
 FROM dotnetrun AS files_services
-RUN apt-get -y update && \
-    apt-get install -yq ffmpeg &&\
-    rm -rf /var/lib/apt/lists/*
+RUN add-apt-repository ppa:savoury1/ffmpeg4 && \
+   add-apt-repository ppa:savoury1/ffmpeg6 && \
+   apt-get -y update && \
+   apt-get -y upgrade && sudo apt-get -y dist-upgrade && \
+   apt-get install -yq  ffmpeg && \
+   rm -rf /var/lib/apt/lists/*
 
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
