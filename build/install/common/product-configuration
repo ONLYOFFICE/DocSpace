@@ -566,7 +566,7 @@ setup_elasticsearch() {
 	echo -n "Configuring elasticsearch... "
 
 	#Save elasticsearch parameters in .json
-	$JSON $APP_DIR/elastic.json -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\",'Threads': \"1\" }" >/dev/null 2>&1
+	$JSON $APP_DIR/elastic.$ENVIRONMENT.json -e "this.elastic={'Scheme': \"${ELK_SHEME}\",'Host': \"${ELK_HOST}\",'Port': \"${ELK_PORT}\",'Threads': \"1\" }" >/dev/null 2>&1
 
 	change_elasticsearch_config
 	
@@ -590,7 +590,7 @@ setup_redis() {
 setup_rabbitmq() {
 	echo -n "Configuring rabbitmq... "
 
-	$JSON $APP_DIR/rabbitmq.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\",'Port': \"${RABBITMQ_PORT}\",'VirtualHost': \"/\" }" >/dev/null 2>&1
+	$JSON $APP_DIR/rabbitmq.$ENVIRONMENT.json -e "this.RabbitMQ={'Hostname': \"${RABBITMQ_HOST}\",'UserName': \"${RABBITMQ_USER}\",'Password': \"${RABBITMQ_PASSWORD}\",'Port': \"${RABBITMQ_PORT}\",'VirtualHost': \"/\" }" >/dev/null 2>&1
 	
 	systemctl enable rabbitmq-server >/dev/null 2>&1
 	systemctl restart rabbitmq-server
