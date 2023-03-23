@@ -214,6 +214,7 @@ set_core_machinekey () {
 	fi
 
 	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
+	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
 	sed "s^\(machine_key\)\s*=.*^\1 = ${CORE_MACHINEKEY}^g" -i $APP_DIR/radicale.config
 }
 
@@ -303,6 +304,7 @@ establish_mysql_conn(){
 SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
 
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
+	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
 
 	sed "s_\(\"ConnectionString\":\).*_\1 \"${CONNECTION_STRING//&/\\&}\"_" -i $PRODUCT_DIR/services/ASC.Migration.Runner/appsettings.runner.json
 	change_mysql_config
