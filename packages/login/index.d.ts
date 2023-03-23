@@ -57,6 +57,7 @@ declare global {
     utcOffset: string;
     version: string;
     standalone: boolean;
+    trustedDomains: string[];
   }
 
   interface IBuildInfo {

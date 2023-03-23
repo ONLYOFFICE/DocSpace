@@ -12,6 +12,7 @@ Architecture: any
 Depends: debconf,
          ${misc:Depends}, ${shlibs:Depends},
          {{product}}-api (= {{package_header_tag_version}}),
+         {{product}}-api-system (= {{package_header_tag_version}}),
          {{product}}-backup (= {{package_header_tag_version}}),
          {{product}}-backup-background (= {{package_header_tag_version}}),
          {{product}}-clear-events (= {{package_header_tag_version}}),
