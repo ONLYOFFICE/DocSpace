@@ -25,7 +25,7 @@ const PortalDeletion = (props) => {
   };
 
   useEffect(() => {
-    setDocumentTitle(t("PortalDeletion"));
+    setDocumentTitle(t("DeleteDocSpace"));
     fetchData();
   }, []);
 
