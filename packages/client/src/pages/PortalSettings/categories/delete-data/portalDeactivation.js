@@ -12,9 +12,13 @@ import { sendSuspendPortalEmail } from "@docspace/common/api/portal";
 const PortalDeactivation = (props) => {
   const { t, getPortalOwner, owner } = props;
 
+  const fetchData = async () => {
+    await getPortalOwner();
+  };
+
   useEffect(() => {
     setDocumentTitle(t("PortalDeactivation"));
-    getPortalOwner();
+    fetchData();
   }, []);
 
   const onDeactivateClick = async () => {

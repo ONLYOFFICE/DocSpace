@@ -19,13 +19,13 @@ const PortalDeletion = (props) => {
   const [stripeUrl, setStripeUrl] = useState(null);
 
   const fetchData = async () => {
+    await getPortalOwner();
     const res = await getPaymentAccount();
     setStripeUrl(res);
   };
 
   useEffect(() => {
     setDocumentTitle(t("PortalDeletion"));
-    getPortalOwner();
     fetchData();
   }, []);
 
