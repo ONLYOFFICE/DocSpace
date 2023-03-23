@@ -1,20 +1,21 @@
 import React from "react";
+import styled from "styled-components";
+
+import HistoryHeader from "./sub-components/HistoryHeader";
+import HistoryFilterHeader from "./sub-components/HistoryFilterHeader";
+
+const WebhookWrapper = styled.div`
+  width: 100%;
+`;
 
 const WebhookHistory = () => {
   return (
-    <>
-      <header>
-        <a href="">arrow</a>
-        History
-        <span>Deliveries are automatically deleted after 15 days</span>
-      </header>
-      <body>
-        <header>
-          Webhook 32
-          <button>filter</button>
-        </header>
-      </body>
-    </>
+    <WebhookWrapper>
+      <HistoryHeader />
+      <main>
+        <HistoryFilterHeader />
+      </main>
+    </WebhookWrapper>
   );
 };
 
