@@ -31,10 +31,5 @@ export const DateItem = styled.button`
         ? "transparent"
         : props.theme.calendar.onHoverBackground};
   }
-
-  :focus {
-    color: #4781d1;
-    border: 2px solid #4781d1;
-  }
 `;
 DateItem.defaultProps = { theme: Base };
