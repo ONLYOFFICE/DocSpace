@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Parola a fost schimbată cu succes",
-  "ConfirmOwnerPortalSuccessMessage": "Proprietarul portalului a fost schimbat cu succes. Veţi fi redirecționat automat după 10 secunde.",
-  "ConfirmOwnerPortalTitle": "Confirmați dacă doriți să schimbați proprietarul portalului în {{newOwner}}",
+  "ConfirmOwnerPortalSuccessMessage": "Proprietarul DocSpace a fost schimbat cu succes. Veţi fi redirecționat automat după 10 secunde.",
+  "ConfirmOwnerPortalTitle": "Confirmați dacă doriți să schimbați proprietarul DocSpace în {{newOwner}}",
   "CurrentNumber": "Numărul dvs. de telefon mobil curent",
   "DeleteProfileBtn": "Șterge contul meu",
   "DeleteProfileConfirmation": "Atenție! Dumneavoastră sunteți pe cale de a șterge contul dvs.",
@@ -17,9 +17,9 @@
   "InviteTitle": "Sunteți invitați să aderați la acest portal!",
   "LoginRegistryButton": "Înregistrați-vă",
   "PassworResetTitle": "Acum puteți crea o parolă nouă",
-  "PhoneSubtitle": "Autentificarea cu doi factori este activată ca o măsură suplimentară de securitate pentru portal. Introduceți numărul de telefon dvs. ca să puteți continua lucrul în cadrul portalului. Numărul de telefon mobil trebuie introdus în format internațional cu prefixul de țară.",
+  "PhoneSubtitle": "Autentificarea cu doi factori este activată ca o măsură suplimentară de securitate. Introduceți numărul de telefon dvs. ca să puteți continua lucrul în cadrul portalului. Numărul de telefon mobil trebuie introdus în format internațional cu prefixul de țară.",
   "SetAppButton": "Conectarea aplicației",
-  "SetAppDescription": "Autentificarea cu doi factori este activată. Configurați aplicația de autentificare dvs ca să lucrați mai departe în portal. Puteți utiliza Google Authenticator pentru <1>Android</1> și <4>iOS</4> sau Authenticator pentru <8>Windows Phone</8>.",
+  "SetAppDescription": "Autentificarea cu doi factori este activată. Configurați aplicația de autentificare dvs ca să lucrați mai departe în DocSpace. Puteți utiliza Google Authenticator pentru <1>Android</1> și <4>iOS</4> sau Authenticator pentru <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Pentru a conecta aplicația, scanați codul QR sau introduceți manual cheia secretă <1>{{ secretKey }}</1>, și apoi introduceți codul din 6 cifre din aplicația în câmpul aflat dedesubt.",
   "SetAppTitle": "Configurarea aplicației de autentificare dvs.",
   "WelcomeUser": "Bine ați venit pe portalul!\nPentru a începe lucrul, vă înregistrați sau vă conectați prin intermediul rețelelor de socializare."

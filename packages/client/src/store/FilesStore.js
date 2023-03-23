@@ -288,7 +288,7 @@ class FilesStore {
 
       if (this.selectedFolderStore.id !== file.folderId) {
         const movedToIndex = this.getFolderIndex(file.folderId);
-        if (movedToIndex) this.folders[movedToIndex].filesCount++;
+        if (movedToIndex > -1) this.folders[movedToIndex].filesCount++;
         return;
       }
 
@@ -327,7 +327,7 @@ class FilesStore {
 
       if (this.selectedFolderStore.id !== folder.parentId) {
         const movedToIndex = this.getFolderIndex(folder.parentId);
-        if (movedToIndex) this.folders[movedToIndex].foldersCount++;
+        if (movedToIndex > -1) this.folders[movedToIndex].foldersCount++;
       }
 
       if (
@@ -1295,7 +1295,7 @@ class FilesStore {
       })
       .catch((err) => {
         console.error(err);
-      
+
         if (err?.response?.status === 402)
           this.authStore.currentTariffStatusStore.setPortalTariff();
 
@@ -1868,10 +1868,7 @@ class FilesStore {
       }
 
       if (isArchiveFolder || item.rootFolderType === FolderType.Archive) {
-        roomOptions = this.removeOptions(roomOptions, [
-          "archive-room",
-          "separator1",
-        ]);
+        roomOptions = this.removeOptions(roomOptions, ["archive-room"]);
       } else {
         roomOptions = this.removeOptions(roomOptions, ["unarchive-room"]);
 

@@ -52,8 +52,6 @@ const StyledSnackBar = styled(Box)`
         line-height: 16px;
         font-weight: 600;
 
-        text-align: justify;
-
         margin: 0;
       }
     }
@@ -69,8 +67,6 @@ const StyledSnackBar = styled(Box)`
         font-size: 12px;
         line-height: 16px;
         font-weight: 400;
-
-        text-align: justify;
       }
     }
   }

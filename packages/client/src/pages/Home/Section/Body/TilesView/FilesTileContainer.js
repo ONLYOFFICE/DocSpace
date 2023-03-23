@@ -39,7 +39,13 @@ const elementResizeDetector = elementResizeDetectorMaker({
   callOnAdd: false,
 });
 
-const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
+const FilesTileContainer = ({
+  filesList,
+  t,
+  sectionWidth,
+  withPaging,
+  thumbnails1280x720,
+}) => {
   const tileRef = useRef(null);
   const timerRef = useRef(null);
   const isMountedRef = useRef(true);
@@ -61,7 +67,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       const { width } = node.getBoundingClientRect();
 
-      const size = getThumbSize(width);
+      const size = thumbnails1280x720 ? "1280x720" : getThumbSize(width);
 
       const widthWithoutPadding = width - 32;
 
@@ -77,7 +83,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       setThumbSize(size);
     },
-    [columnCount, thumbSize]
+    [columnCount, thumbSize, thumbnails1280x720]
   );
 
   const onSetTileRef = React.useCallback((node) => {
@@ -140,12 +146,14 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, filesStore, settingsStore }) => {
   const { filesList } = filesStore;
   const { withPaging } = auth.settingsStore;
+  const { thumbnails1280x720 } = settingsStore;
 
   return {
     filesList,
     withPaging,
+    thumbnails1280x720,
   };
 })(observer(FilesTileContainer));

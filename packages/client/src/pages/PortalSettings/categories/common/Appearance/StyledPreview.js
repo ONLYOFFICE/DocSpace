@@ -73,7 +73,7 @@ const StyledComponent = styled.div`
 
   .section {
     position: relative;
-    width: ${(props) => (props.isViewTablet ? "89%" : "56%")};
+    width: ${(props) => (props.isViewTablet ? "100%" : "56%")};
     ${(props) =>
       props.withBorder &&
       css`

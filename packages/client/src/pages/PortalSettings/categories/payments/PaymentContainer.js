@@ -241,7 +241,12 @@ const PaymentContainer = ({
             ? expiredTitleSubscriptionWarning()
             : currentPlanTitle()}
 
-          {isAlreadyPaid && <PayerInformationContainer isPayer={isPayer} />}
+          {isAlreadyPaid && (
+            <PayerInformationContainer
+              isPayer={isPayer}
+              isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
+            />
+          )}
 
           <CurrentTariffContainer />
 

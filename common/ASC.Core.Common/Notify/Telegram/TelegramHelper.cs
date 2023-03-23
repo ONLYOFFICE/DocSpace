@@ -172,10 +172,15 @@ public class TelegramHelper
 
     public TelegramBotClient InitClient(string token, string proxy)
     {
+        if (string.IsNullOrEmpty(proxy))
+        {
+            return new TelegramBotClient(token);
+        }
+
         var httpClient = _httpClientFactory.CreateClient();
 
         httpClient.BaseAddress = new Uri(proxy);
 
-        return string.IsNullOrEmpty(proxy) ? new TelegramBotClient(token) : new TelegramBotClient(token, httpClient);
+        return new TelegramBotClient(token, httpClient);
     }
 }

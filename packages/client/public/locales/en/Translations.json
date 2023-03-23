@@ -41,7 +41,7 @@
   "OwnerChange": "Change owner",
   "Presentations": "Presentations",
   "Remove": "Remove",
-  "RoleCollaboratorDescription": "Collaborators can create and edit files in the room, but can't create rooms, manage users, or access settings.",
+  "RolePowerUserDescription": "Power users can create and edit files in the room, but can't create rooms, manage users, or access settings.",
   "RoleCommentator": "Commentator",
   "RoleCommentatorDescription": "Operations with existing files: viewing, commenting.",
   "RoleDocSpaceAdminDescription": "DocSpace admins can access DocSpace settings, manage and archive rooms, invite new users and assign roles below their level. All admins have access to the Personal section.",

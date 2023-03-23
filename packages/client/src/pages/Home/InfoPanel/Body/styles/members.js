@@ -50,16 +50,14 @@ const StyledUser = styled.div`
   }
 
   .name {
-    ${(props) =>
-      props.isExpect && `color: ${props.theme.infoPanel.members.isExpectName}`};
-
     font-weight: 600;
     font-size: 14px;
     line-height: 16px;
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    ${(props) =>
+      props.isExpect && `color: ${props.theme.infoPanel.members.isExpectName}`};
   }
 
   .me-label {
@@ -73,7 +71,6 @@ const StyledUser = styled.div`
   .role-wrapper {
     padding-left: 8px;
     margin-left: auto;
-
     font-weight: 600;
     font-size: 13px;
     line-height: 20px;
@@ -104,5 +101,4 @@ const StyledUser = styled.div`
 `;
 
 StyledUserTypeHeader.defaultProps = { theme: Base };
-
 export { StyledUserTypeHeader, StyledUserList, StyledUser };

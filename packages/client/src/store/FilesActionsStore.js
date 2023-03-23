@@ -1287,8 +1287,12 @@ class FilesActionStore {
     const fileIds = [];
     const deleteAfter = false;
 
-    const { selection } = this.filesStore;
+    const { bufferSelection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
+
+    const selection = bufferSelection
+      ? [bufferSelection]
+      : this.filesStore.selection;
 
     const isCopy = selection.findIndex((f) => f.security.Move) === -1;
 
@@ -1629,7 +1633,7 @@ class FilesActionStore {
           return {
             id: "menu-archive",
             key: "archive",
-            label: t("ToArchive"),
+            label: t("MoveToArchive"),
             iconUrl: RoomArchiveSvgUrl,
             onClick: () => this.archiveRooms("archive"),
             disabled: false,

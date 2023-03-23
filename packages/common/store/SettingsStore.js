@@ -140,6 +140,8 @@ class SettingsStore {
   whiteLabelLogoUrls = [];
   standalone = false;
 
+  mainBarVisible = false;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -163,6 +165,10 @@ class SettingsStore {
   get helpUrlCreatingBackup() {
     return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
   }
+
+  setMainBarVisible = (visible) => {
+    this.mainBarVisible = visible;
+  };
 
   setValue = (key, value) => {
     this[key] = value;
