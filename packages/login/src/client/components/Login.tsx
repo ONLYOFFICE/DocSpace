@@ -283,6 +283,8 @@ const Login: React.FC<ILoginProps> = ({
           id="login_register"
           enabledJoin={enabledJoin}
           currentColorScheme={currentColorScheme}
+          trustedDomains={portalSettings?.trustedDomains}
+          trustedDomainsType={portalSettings?.trustedDomainsType}
         />
       )}
     </LoginFormWrapper>
