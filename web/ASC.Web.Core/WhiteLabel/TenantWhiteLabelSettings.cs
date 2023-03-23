@@ -99,7 +99,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
     public static readonly Size LogoDocsEditorEmbedSize = new Size(172, 40);
     public static readonly Size LogoLeftMenuSize = new Size(56, 56);
     public static readonly Size LogoAboutPageSize = new Size(442, 48);
-    public static readonly Size LogoNotificationSize = new Size(386,44);
+    public static readonly Size LogoNotificationSize = new Size(386, 44);
     public static Size GetSize(WhiteLabelLogoTypeEnum type)
     {
         return type switch
@@ -418,7 +418,11 @@ public class TenantWhiteLabelSettingsHelper
                 if (currentLogoType == WhiteLabelLogoTypeEnum.LoginPage)
                 {
                     var (notificationData, extNotification) = GetNotificationLogoData(lightData, extLight, tenantWhiteLabelSettings);
-                    await SetLogo(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification, extNotification, notificationData, false, storage);
+
+                    if (notificationData != null)
+                    {
+                        await SetLogo(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification, extNotification, notificationData, false, storage);
+                    }
                 }
             }
 
@@ -489,7 +493,20 @@ public class TenantWhiteLabelSettingsHelper
     {
         var extNotification = tenantWhiteLabelSettings.GetExt(WhiteLabelLogoTypeEnum.Notification);
 
-        if (extLogo != extNotification)
+        switch (extLogo)
+        {
+            case "png":
+                return (logoData, extNotification);
+            case "svg":
+                return (GetLogoDataFromSvg(), extNotification);
+            case "jpg":
+            case "jpeg":
+                return (GetLogoDataFromJpg(), extNotification);
+            default:
+                return (null, extNotification);
+        }
+
+        byte[] GetLogoDataFromSvg()
         {
             var size = GetSize(WhiteLabelLogoTypeEnum.Notification);
             var skSize = new SKSize(size.Width, size.Height);
@@ -509,13 +526,18 @@ public class TenantWhiteLabelSettingsHelper
                 using (var image = SKImage.FromBitmap(bitMap))
                 using (var pngData = image.Encode(SKEncodedImageFormat.Png, 100))
                 {
-                    return (pngData.ToArray(), extNotification);
+                    return pngData.ToArray();
                 }
             }
         }
-        else
+
+        byte[] GetLogoDataFromJpg()
         {
-            return (null, extNotification);
+            using (var image = SKImage.FromEncodedData(logoData))
+            using (var pngData = image.Encode(SKEncodedImageFormat.Png, 100))
+            {
+                return pngData.ToArray();
+            }
         }
     }
 
