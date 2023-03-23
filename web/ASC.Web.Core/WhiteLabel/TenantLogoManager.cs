@@ -250,7 +250,10 @@ public class TenantLogoManager
 
     private static byte[] GetDefaultMailLogo()
     {
-        var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, @"\..\..\..\..\..\", "public", "images", "notifications", "logo.png");
-        return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
+        var myAssembly = Assembly.GetExecutingAssembly();
+        using var stream = myAssembly.GetManifestResourceStream("ASC.Web.Core.PublicResources.logo.png");
+        using var memoryStream = new MemoryStream();
+        stream.CopyTo(memoryStream);
+        return memoryStream.ToArray();
     }
 }
