@@ -178,7 +178,7 @@ public class StudioNotifyHelper
         {
             return
                 _commonLinkUtility.GetFullAbsolutePath(
-                    _webImageSupplier.GetAbsoluteWebPath("notification/" + imageFileName));
+                    _webImageSupplier.GetAbsoluteWebPath("notifications/" + imageFileName));
         }
 
         return _notificationImagePath.TrimEnd('/') + "/" + imageFileName;

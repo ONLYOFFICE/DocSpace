@@ -77,10 +77,10 @@ public static class Actions
     public static readonly INotifyAction EnterpriseWhitelabelGuestActivationV10 = new NotifyAction("enterprise_whitelabel_guest_activation_v10");
     public static readonly INotifyAction OpensourceGuestActivationV11 = new NotifyAction("opensource_guest_activation_v11");
 
-    public static readonly INotifyAction SaasGuestWelcomeV115 = new NotifyAction("saas_guest_welcome_v115");
-    public static readonly INotifyAction EnterpriseGuestWelcomeV10 = new NotifyAction("enterprise_guest_welcome_v10");
-    public static readonly INotifyAction EnterpriseWhitelabelGuestWelcomeV10 = new NotifyAction("enterprise_whitelabel_guest_welcome_v10");
-    public static readonly INotifyAction OpensourceGuestWelcomeV11 = new NotifyAction("opensource_guest_welcome_v11");
+    public static readonly INotifyAction SaasGuestWelcomeV1 = new NotifyAction("saas_guest_welcome_v1");
+    public static readonly INotifyAction EnterpriseGuestWelcomeV1 = new NotifyAction("enterprise_guest_welcome_v1");
+    public static readonly INotifyAction EnterpriseWhitelabelGuestWelcomeV1 = new NotifyAction("enterprise_whitelabel_guest_welcome_v1");
+    public static readonly INotifyAction OpensourceGuestWelcomeV1 = new NotifyAction("opensource_guest_welcome_v1");
 
     public static readonly INotifyAction PersonalActivate = new NotifyAction("personal_activate");
     public static readonly INotifyAction PersonalAfterRegistration1 = new NotifyAction("personal_after_registration1");

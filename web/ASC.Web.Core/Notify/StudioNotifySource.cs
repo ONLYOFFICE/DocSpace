@@ -73,10 +73,10 @@ public class StudioNotifySource : NotifySource
                 Actions.EnterpriseWhitelabelGuestActivationV10,
                 Actions.OpensourceGuestActivationV11,
 
-                Actions.SaasGuestWelcomeV115,
-                Actions.EnterpriseGuestWelcomeV10,
-                Actions.EnterpriseWhitelabelGuestWelcomeV10,
-                Actions.OpensourceGuestWelcomeV11,
+                Actions.SaasGuestWelcomeV1,
+                Actions.EnterpriseGuestWelcomeV1,
+                Actions.EnterpriseWhitelabelGuestWelcomeV1,
+                Actions.OpensourceGuestWelcomeV1,
 
                 Actions.EnterpriseAdminUserAppsTipsV1,
 
