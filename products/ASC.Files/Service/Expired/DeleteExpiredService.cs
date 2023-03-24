@@ -40,7 +40,7 @@ public class DeleteExpiredService : BackgroundService
         IConfiguration configuration)
     {
         _launchFrequency = TimeSpan.Parse(configuration["files:deleteExpired"] ?? "1", CultureInfo.InvariantCulture);
-        _commonChunkedUploadSessionHolder = new CommonChunkedUploadSessionHolder(tempPath, log, globalStore.GetStore(false), FileConstant.StorageDomainTmp, setupInfo.ChunkUploadSize);
+        _commonChunkedUploadSessionHolder = new CommonChunkedUploadSessionHolder(tempPath, log, globalStore.GetStoreAsync(false).Result, FileConstant.StorageDomainTmp, setupInfo.ChunkUploadSize);
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

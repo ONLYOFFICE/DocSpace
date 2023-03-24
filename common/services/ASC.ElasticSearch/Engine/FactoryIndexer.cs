@@ -50,7 +50,7 @@ public interface IFactoryIndexer
     string IndexName { get; }
     string SettingsTitle { get; }
     Task IndexAllAsync();
-    void ReIndex();
+    Task ReIndexAsync();
 }
 
 [Scope]
@@ -172,7 +172,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
     public async Task<bool> CanIndexByContentAsync(T t)
     {
-        return Support(t) && _searchSettingsHelper.CanIndexByContent<T>((await _tenantManager.GetCurrentTenantAsync()).Id);
+        return Support(t) && await _searchSettingsHelper.CanIndexByContentAsync<T>((await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
     public async Task<bool> Index(T data, bool immediately = true)
@@ -185,7 +185,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            await _indexer.Index(data, immediately);
+            await _indexer.IndexAsync(data, immediately);
 
             return true;
         }
@@ -207,7 +207,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            await _indexer.Index(data, immediately);
+            await _indexer.IndexAsync(data, immediately);
         }
         catch (ElasticsearchClientException e)
         {
@@ -462,7 +462,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         return !Support(t)
             ? Task.FromResult(false)
-            : Queue(() => _indexer.Index(data, immediately));
+            : Queue(() => _indexer.IndexAsync(data, immediately));
     }
 
     public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
@@ -523,9 +523,9 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         return Task.CompletedTask;
     }
 
-    public void ReIndex()
+    public async Task ReIndexAsync()
     {
-        _indexer.ReIndex();
+        await _indexer.ReIndrexAsync();
     }
 
     public bool Support(T t)
@@ -791,7 +791,7 @@ public class FactoryIndexer
         };
     }
 
-    public void Reindex(string name)
+    public async Task ReindexAsync(string name)
     {
         if (!_coreBaseSettings.Standalone)
         {
@@ -805,7 +805,7 @@ public class FactoryIndexer
 
         foreach (var indexer in indexers)
         {
-            indexer.ReIndex();
+            await indexer.ReIndexAsync();
         }
     }
 }

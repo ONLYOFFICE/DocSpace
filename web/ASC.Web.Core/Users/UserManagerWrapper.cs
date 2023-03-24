@@ -317,14 +317,14 @@ public sealed class UserManagerWrapper
         return changed;
     }
 
-    public void CheckPasswordPolicy(string password)
+    public async Task CheckPasswordPolicyAsync(string password)
     {
         if (string.IsNullOrWhiteSpace(password))
         {
             throw new Exception(Resource.ErrorPasswordEmpty);
         }
 
-        var passwordSettingsObj = _settingsManager.Load<PasswordSettings>();
+        var passwordSettingsObj = await _settingsManager.LoadAsync<PasswordSettings>();
 
         if (!CheckPasswordRegex(passwordSettingsObj, password))
         {
@@ -371,7 +371,7 @@ public sealed class UserManagerWrapper
             throw new ArgumentNullException(nameof(email), Resource.ErrorNotCorrectEmail);
         }
 
-        var settings = _settingsManager.Load<IPRestrictionsSettings>();
+        var settings = await _settingsManager.LoadAsync<IPRestrictionsSettings>();
 
         if (settings.Enable && !await _iPSecurity.VerifyAsync())
         {
@@ -445,9 +445,9 @@ public sealed class UserManagerWrapper
         return text.ToString();
     }
 
-    public string GetPasswordHelpMessage()
+    public async Task<string> GetPasswordHelpMessageAsync()
     {
-        return GetPasswordHelpMessage(_settingsManager.Load<PasswordSettings>());
+        return GetPasswordHelpMessage(await _settingsManager.LoadAsync<PasswordSettings>());
     }
 
     #endregion

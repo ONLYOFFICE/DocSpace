@@ -89,7 +89,7 @@ public class TenantInfoSettingsHelper
     {
         tenantInfoSettings.IsDefault = true;
 
-        var store = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
+        var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
         try
         {
             await store.DeleteFilesAsync("", "*", false);
@@ -104,7 +104,7 @@ public class TenantInfoSettingsHelper
 
     public async Task SetCompanyLogoAsync(string companyLogoFileName, byte[] data, TenantInfoSettings tenantInfoSettings, TenantLogoManager tenantLogoManager)
     {
-        var store = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
+        var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
 
         if (!tenantInfoSettings.IsDefault)
         {
@@ -137,7 +137,7 @@ public class TenantInfoSettingsHelper
             return _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
         }
 
-        var store = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
+        var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
         return (await store.GetUriAsync(tenantInfoSettings.CompanyLogoFileName ?? "")).ToString();
     }
 
@@ -151,7 +151,7 @@ public class TenantInfoSettingsHelper
             return null;
         }
 
-        var storage = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
+        var storage = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, "logo");
 
         if (storage == null)
         {

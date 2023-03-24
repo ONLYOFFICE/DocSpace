@@ -127,7 +127,7 @@ public class LdapObjectExtension
         }
     }
 
-    public UserInfo ToUserInfo(LdapObject ldapUser, LdapUserImporter ldapUserImporter)
+    public async Task<UserInfo> ToUserInfoAsync(LdapObject ldapUser, LdapUserImporter ldapUserImporter)
     {
         var settings = ldapUserImporter.Settings;
         var resource = ldapUserImporter.Resource;
@@ -148,7 +148,7 @@ public class LdapObjectExtension
         var emails = GetContacts(ldapUser, Mapping.AdditionalMail, settings);
         var skype = GetContacts(ldapUser, Mapping.Skype, settings);
 
-        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+        var quotaSettings = await _settingsManager.LoadAsync<TenantUserQuotaSettings>();
         var quota = settings.LdapMapping.ContainsKey(Mapping.UserQuotaLimit) ? ByteConverter.ConvertSizeToBytes(GetAttribute(ldapUser, settings.LdapMapping[Mapping.UserQuotaLimit])) : quotaSettings.DefaultUserQuota;
 
         if (string.IsNullOrEmpty(userName))

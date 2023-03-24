@@ -152,7 +152,7 @@ public class StudioNotifyHelper
             var tariff = await _tenantManager.GetTenantQuotaAsync(tenant.Id);
             if (tariff.Free || tariff.Trial)
             {
-                var spamEmailSettings = _settingsManager.Load<SpamEmailSettings>();
+                var spamEmailSettings = await _settingsManager.LoadAsync<SpamEmailSettings>();
                 var sended = spamEmailSettings.MailsSended;
 
                 var mayTake = Math.Max(0, _countMailsToNotActivated - sended);
@@ -164,7 +164,7 @@ public class StudioNotifyHelper
                     _logger.WarningFreeTenant(tenant.Id, tryCount, mayTake);
                 }
                 spamEmailSettings.MailsSended = sended + tryCount;
-                _settingsManager.Save(spamEmailSettings);
+                await _settingsManager.SaveAsync(spamEmailSettings);
             }
         }
 

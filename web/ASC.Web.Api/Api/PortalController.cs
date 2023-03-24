@@ -177,7 +177,7 @@ public class PortalController : ControllerBase
             tariff = await _tenantExtra.GetCurrentTariffAsync(),
             quota = await _tenantManager.GetCurrentTenantQuotaAsync(),
             notPaid = await _tenantExtra.IsNotPaidAsync(),
-            licenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
+            licenseAccept = (await _settingsManager.LoadForCurrentUserAsync<TariffSettings>()).LicenseAcceptSetting,
             enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                 (!_coreBaseSettings.Standalone || !string.IsNullOrEmpty(_licenseReader.LicensePath))
                 && string.IsNullOrEmpty(_setupInfo.AmiMetaUrl)
@@ -272,13 +272,13 @@ public class PortalController : ControllerBase
     }
 
     [HttpPost("present/mark")]
-    public void MarkPresentAsReaded()
+    public async Task MarkPresentAsReadedAsync()
     {
         try
         {
-            var settings = _settingsManager.LoadForCurrentUser<OpensourceGiftSettings>();
+            var settings = await _settingsManager.LoadForCurrentUserAsync<OpensourceGiftSettings>();
             settings.Readed = true;
-            _settingsManager.SaveForCurrentUser(settings);
+            await _settingsManager.SaveForCurrentUserAsync(settings);
         }
         catch (Exception ex)
         {

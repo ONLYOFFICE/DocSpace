@@ -67,7 +67,7 @@ public static class UserPhotoThumbnailManager
 
         await thumbnailsData.SaveAsync(resultBitmaps);
 
-        settingsManager.Save(thumbnailSettings, userId);
+        await settingsManager.SaveAsync(thumbnailSettings, userId);
 
         return await thumbnailsData.ThumbnailList();
     }

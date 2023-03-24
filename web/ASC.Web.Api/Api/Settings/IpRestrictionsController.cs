@@ -67,7 +67,7 @@ public class IpRestrictionsController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        return _settingsManager.Load<IPRestrictionsSettings>();
+        return await _settingsManager.LoadAsync<IPRestrictionsSettings>();
     }
 
     [HttpPut("iprestrictions/settings")]
@@ -76,7 +76,7 @@ public class IpRestrictionsController : BaseSettingsController
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var settings = new IPRestrictionsSettings { Enable = inDto.Enable };
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         return settings;
     }

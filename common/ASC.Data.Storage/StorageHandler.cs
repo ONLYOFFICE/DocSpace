@@ -50,7 +50,7 @@ public class StorageHandler
 
     public async Task InvokeAsync(HttpContext context, TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
     {
-        var storage = storageFactory.GetStorage((await tenantManager.GetCurrentTenantAsync()).Id, _module);
+        var storage = await storageFactory.GetStorageAsync((await tenantManager.GetCurrentTenantAsync()).Id, _module);
         var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
         var header = context.Request.Query[Constants.QueryHeader].FirstOrDefault() ?? "";
         var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";

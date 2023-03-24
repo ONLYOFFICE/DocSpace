@@ -50,28 +50,28 @@ public class TfaAppUserSettings : ISettings<TfaAppUserSettings>
         };
     }
 
-    public static long GetSalt(SettingsManager settingsManager, Guid userId)
+    public static async Task<long> GetSaltAsync(SettingsManager settingsManager, Guid userId)
     {
-        var settings = settingsManager.Load<TfaAppUserSettings>(userId);
+        var settings = await settingsManager.LoadAsync<TfaAppUserSettings>(userId);
         var salt = settings.SaltSetting;
         if (salt == 0)
         {
             var from = new DateTime(2018, 07, 07, 0, 0, 0, DateTimeKind.Utc);
             settings.SaltSetting = salt = (long)(DateTime.UtcNow - from).TotalMilliseconds;
 
-            settingsManager.Save(settings, userId);
+            await settingsManager.SaveAsync(settings, userId);
         }
         return salt;
     }
 
-    public static IEnumerable<BackupCode> BackupCodesForUser(SettingsManager settingsManager, Guid userId)
+    public static async Task<IEnumerable<BackupCode>> BackupCodesForUserAsync(SettingsManager settingsManager, Guid userId)
     {
-        return settingsManager.Load<TfaAppUserSettings>(userId).CodesSetting;
+        return (await settingsManager.LoadAsync<TfaAppUserSettings>(userId)).CodesSetting;
     }
 
-    public static void DisableCodeForUser(SettingsManager settingsManager, InstanceCrypto instanceCrypto, Signature signature, Guid userId, string code)
+    public static async Task DisableCodeForUserAsync(SettingsManager settingsManager, InstanceCrypto instanceCrypto, Signature signature, Guid userId, string code)
     {
-        var settings = settingsManager.Load<TfaAppUserSettings>(userId);
+        var settings = await settingsManager.LoadAsync<TfaAppUserSettings>(userId);
         var query = settings.CodesSetting.Where(x => x.GetEncryptedCode(instanceCrypto, signature) == code).ToList();
 
         if (query.Count > 0)
@@ -79,17 +79,17 @@ public class TfaAppUserSettings : ISettings<TfaAppUserSettings>
             query.First().IsUsed = true;
         }
 
-        settingsManager.Save(settings, userId);
+        await settingsManager.SaveAsync(settings, userId);
     }
 
-    public static bool EnableForUser(SettingsManager settingsManager, Guid guid)
+    public static async Task<bool> EnableForUserAsync(SettingsManager settingsManager, Guid guid)
     {
-        return settingsManager.Load<TfaAppUserSettings>(guid).CodesSetting.Any();
+        return (await settingsManager.LoadAsync<TfaAppUserSettings>(guid)).CodesSetting.Any();
     }
 
-    public static void DisableForUser(SettingsManager settingsManager, Guid guid)
+    public static async Task DisableForUserAsync(SettingsManager settingsManager, Guid guid)
     {
         var defaultSettings = settingsManager.GetDefault<TfaAppUserSettings>();
-        settingsManager.Save(defaultSettings, guid);
+        await settingsManager.SaveAsync(defaultSettings, guid);
     }
 }

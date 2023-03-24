@@ -70,7 +70,7 @@ public class StaticUploader
             return null;
         }
 
-        if (!CanUpload())
+        if (!await CanUploadAsync())
         {
             return null;
         }
@@ -105,7 +105,7 @@ public class StaticUploader
 
     public async Task UploadDirAsync(string relativePath, string mappedPath)
     {
-        if (!CanUpload())
+        if (!await CanUploadAsync())
         {
             return;
         }
@@ -131,9 +131,9 @@ public class StaticUploader
         }
     }
 
-    public bool CanUpload()
+    public async Task<bool> CanUploadAsync()
     {
-        var current = _storageSettingsHelper.DataStoreConsumer(_settingsManager.Load<CdnStorageSettings>());
+        var current = _storageSettingsHelper.DataStoreConsumer(await _settingsManager.LoadAsync<CdnStorageSettings>());
         if (current == null || !current.IsSet || (string.IsNullOrEmpty(current["cnamessl"]) && string.IsNullOrEmpty(current["cname"])))
         {
             return false;
@@ -198,7 +198,7 @@ public class UploadOperation
             _tenantManager.SetCurrentTenant(tenant);
             await _securityContext.AuthenticateMeWithoutCookieAsync(tenant.OwnerId);
 
-            var dataStore = await _storageSettingsHelper.DataStoreAsync(_settingsManager.Load<CdnStorageSettings>());
+            var dataStore = await _storageSettingsHelper.DataStoreAsync(await _settingsManager.LoadAsync<CdnStorageSettings>());
 
             if (File.Exists(mappedPath))
             {

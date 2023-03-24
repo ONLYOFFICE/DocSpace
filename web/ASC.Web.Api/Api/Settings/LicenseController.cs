@@ -94,7 +94,7 @@ public class LicenseController : BaseSettingsController
             return "";
         }
 
-        TariffSettings.SetLicenseAccept(_settingsManager);
+        await TariffSettings.SetLicenseAcceptAsync(_settingsManager);
         await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
         try
@@ -196,7 +196,7 @@ public class LicenseController : BaseSettingsController
         try
         {
             await ApiContext.AuthByClaimAsync();
-            if (!_authContext.IsAuthenticated && _settingsManager.Load<WizardSettings>().Completed)
+            if (!_authContext.IsAuthenticated && (await _settingsManager.LoadAsync<WizardSettings>()).Completed)
             {
                 throw new SecurityException(Resource.PortalSecurity);
             }

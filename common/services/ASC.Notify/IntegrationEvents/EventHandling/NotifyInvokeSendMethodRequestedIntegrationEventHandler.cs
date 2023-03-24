@@ -68,7 +68,7 @@ public class NotifyInvokeSendMethodRequestedIntegrationEventHandler : IIntegrati
         var settingsManager = scope.ServiceProvider.GetService<SettingsManager>();
 
         await tenantManager.SetCurrentTenantAsync(tenant);
-        tenantWhiteLabelSettingsHelper.Apply(settingsManager.Load<TenantWhiteLabelSettings>(), tenant);
+        await tenantWhiteLabelSettingsHelper.ApplyAsync(await settingsManager.LoadAsync<TenantWhiteLabelSettings>(), tenant);
         methodInfo.Invoke(instance, parameters.ToArray());
     }
 

@@ -380,9 +380,9 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             if (isNew)
             {
-                var userHelpTourSettings = _settingsManager.LoadForCurrentUser<UserHelpTourSettings>();
+                var userHelpTourSettings = await _settingsManager.LoadForCurrentUserAsync<UserHelpTourSettings>();
                 userHelpTourSettings.IsNewUser = true;
-                _settingsManager.SaveForCurrentUser(userHelpTourSettings);
+                await _settingsManager.SaveForCurrentUserAsync(userHelpTourSettings);
 
                 _personalSettingsHelper.IsNewUser = true;
                 _personalSettingsHelper.IsNotActivated = true;
@@ -564,7 +564,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var culture = (await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID)).GetCulture();
-        var storeTemplate = _globalStore.GetStoreTemplate();
+        var storeTemplate = await _globalStore.GetStoreTemplateAsync();
 
         var path = FileConstant.NewDocPath + culture + "/";
         if (!await storeTemplate.IsDirectoryAsync(path))

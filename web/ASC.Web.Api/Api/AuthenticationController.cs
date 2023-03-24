@@ -180,7 +180,7 @@ public class AuthenticationController : ControllerBase
             }
 
             var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, MessageAction.LoginSuccess);
-            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+            var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
 
             var result = new AuthenticationTokenDto
             {
@@ -252,12 +252,12 @@ public class AuthenticationController : ControllerBase
 
         if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
-            if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
+            if (!await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
             {
                 return new AuthenticationTokenDto
                 {
                     Tfa = true,
-                    TfaKey = _tfaManager.GenerateSetupCode(user).ManualEntryKey,
+                    TfaKey = (await _tfaManager.GenerateSetupCodeAsync(user)).ManualEntryKey,
                     ConfirmUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.TfaActivation)
                 };
             }
@@ -275,7 +275,7 @@ public class AuthenticationController : ControllerBase
             var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
 
             var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
-            var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+            var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
 
             return new AuthenticationTokenDto
             {

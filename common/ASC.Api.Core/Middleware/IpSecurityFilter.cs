@@ -52,7 +52,7 @@ public class IpSecurityFilter : IResourceFilter
     {
         if (_authContext.IsAuthenticated)
         {
-            var enable = _settingsManager.Load<IPRestrictionsSettings>().Enable;
+            var enable = (await _settingsManager.LoadAsync<IPRestrictionsSettings>()).Enable;
 
             if (enable && !await _iPSecurity.VerifyAsync())
             {

@@ -382,7 +382,7 @@ public class BackupAjaxHandler
 
     public async Task<string> GetTmpFilePathAsync()
     {
-        var discStore = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, BackupTempModule, (IQuotaController)null) as DiscDataStore;
+        var discStore = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, BackupTempModule, (IQuotaController)null) as DiscDataStore;
         var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))

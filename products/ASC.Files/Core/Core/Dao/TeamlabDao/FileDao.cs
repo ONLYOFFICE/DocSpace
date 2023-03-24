@@ -407,19 +407,19 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         if (checkQuota && _coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
-            var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
+            var personalMaxSpace = await _coreConfiguration.PersonalMaxSpaceAsync(_settingsManager);
             if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);
             }
         }
 
-        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+        var quotaSettings = await _settingsManager.LoadAsync<TenantUserQuotaSettings>();
 
         if (quotaSettings.EnableUserQuota)
         {
             var user = await _userManager.GetUsersAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
-            var userQuotaSettings = _settingsManager.Load<UserQuotaSettings>(user);
+            var userQuotaSettings = await _settingsManager.LoadAsync<UserQuotaSettings>(user);
             var quotaLimit = userQuotaSettings.UserQuota;
 
             if (quotaLimit != -1)
@@ -588,7 +588,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
-            var personalMaxSpace = _coreConfiguration.PersonalMaxSpace(_settingsManager);
+            var personalMaxSpace = await _coreConfiguration.PersonalMaxSpaceAsync(_settingsManager);
             if (personalMaxSpace - await _globalSpace.GetUserUsedSpaceAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy) < file.ContentLength)
             {
                 throw FileSizeComment.GetPersonalFreeSpaceException(personalMaxSpace);

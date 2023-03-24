@@ -825,7 +825,7 @@ public class FileHandlerService
                        + (_coreBaseSettings.CustomMode ? "ru-RU/" : "en-US/")
                        + fileName;
 
-            var storeTemplate = _globalStore.GetStoreTemplate();
+            var storeTemplate = await _globalStore.GetStoreTemplateAsync();
             if (!await storeTemplate.IsFileAsync("", path))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
@@ -1294,7 +1294,7 @@ public class FileHandlerService
 
     private async Task<File<T>> CreateFileFromTemplateAsync<T>(Folder<T> folder, string fileTitle, string docType)
     {
-        var storeTemplate = _globalStore.GetStoreTemplate();
+        var storeTemplate = await _globalStore.GetStoreTemplateAsync();
 
         var lang = (await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID)).GetCulture();
 

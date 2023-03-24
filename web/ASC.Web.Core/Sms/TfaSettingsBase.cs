@@ -64,7 +64,7 @@ public abstract class TfaSettingsHelperBase<T> where T : TfaSettingsBase<T>, new
 
     public async Task<bool> TfaEnabledForUserAsync(Guid userGuid)
     {
-        var settings = _settingsManager.Load<T>();
+        var settings = await _settingsManager.LoadAsync<T>();
 
         if (!settings.EnableSetting)
         {

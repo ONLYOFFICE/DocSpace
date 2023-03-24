@@ -75,7 +75,7 @@ public class ElasticSearchService
             var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
             var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
             await tenantManager.SetCurrentTenantAsync(tenant);
-            settingsManager.ClearCache<SearchSettings>();
+            await settingsManager.ClearCacheAsync<SearchSettings>();
         }
     }
     //public State GetState()

@@ -259,17 +259,13 @@ public class GlobalStore
 
     public async Task<IDataStore> GetStoreAsync(bool currentTenant = true)
     {
-        return _storageFactory.GetStorage(currentTenant ? (await _tenantManager.GetCurrentTenantAsync()).Id : null, FileConstant.StorageModule);
+        return await _storageFactory.GetStorageAsync(currentTenant ? (await _tenantManager.GetCurrentTenantAsync()).Id : null, FileConstant.StorageModule);
     }
 
-    public IDataStore GetStore(bool currentTenant = true)
-    {
-        return _storageFactory.GetStorage(currentTenant ? _tenantManager.GetCurrentTenant().Id : null, FileConstant.StorageModule);
-    }
 
-    public IDataStore GetStoreTemplate()
+    public async Task<IDataStore> GetStoreTemplateAsync()
     {
-        return _storageFactory.GetStorage(null, FileConstant.StorageTemplate);
+        return await _storageFactory.GetStorageAsync(null, FileConstant.StorageTemplate);
     }
 }
 
@@ -691,11 +687,11 @@ public class GlobalFolder
             id = my ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
 
             //Copy start document
-            if (_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
+            if ((await _settingsManager.LoadForDefaultTenantAsync<AdditionalWhiteLabelSettings>()).StartDocsEnabled)
             {
                 try
                 {
-                    var storeTemplate = _globalStore.GetStoreTemplate();
+                    var storeTemplate = await _globalStore.GetStoreTemplateAsync();
 
                     var culture = my ? (await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID)).GetCulture() : (await _tenantManager.GetCurrentTenantAsync()).GetCulture();
                     var path = FileConstant.StartDocPath + culture + "/";

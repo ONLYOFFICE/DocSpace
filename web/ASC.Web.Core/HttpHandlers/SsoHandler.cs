@@ -125,7 +125,7 @@ public class SsoHandlerService
                 throw new SSOException("Single sign-on settings are not paid", MessageKey.ErrorNotAllowedOption);
             }
 
-            var settings = _settingsManager.Load<SsoSettingsV2>();
+            var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
 
             if (context.Request.Query["config"] == "saml")
             {

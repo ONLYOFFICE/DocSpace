@@ -187,19 +187,19 @@ public class HostedSolution
     {
         var u = await UserService.GetUserAsync(tenantId, userId);
 
-        return CreateAuthenticationCookie(cookieStorage, tenantId, u);
+        return await CreateAuthenticationCookieAsync(cookieStorage, tenantId, u);
     }
 
-    private string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, UserInfo user)
+    private async Task<string> CreateAuthenticationCookieAsync(CookieStorage cookieStorage, int tenantId, UserInfo user)
     {
         if (user == null)
         {
             return null;
         }
 
-        var tenantSettings = SettingsManager.Load<TenantCookieSettings>(tenantId, Guid.Empty);
+        var tenantSettings = await SettingsManager.LoadAsync<TenantCookieSettings>(tenantId, Guid.Empty);
         var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-        var userSettings = SettingsManager.Load<TenantCookieSettings>(tenantId, user.Id);
+        var userSettings = await SettingsManager.LoadAsync<TenantCookieSettings>(tenantId, user.Id);
 
         return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index, 0);
     }

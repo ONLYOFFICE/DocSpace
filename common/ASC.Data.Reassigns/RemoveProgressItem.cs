@@ -208,7 +208,7 @@ public class RemoveProgressItem : DistributedTaskProgress
 
         var md5Hash = sBuilder.ToString();
 
-        var storage = storageFactory.GetStorage(_tenantId, "talk");
+        var storage = await storageFactory.GetStorageAsync(_tenantId, "talk");
 
         if (storage != null && await storage.IsDirectoryAsync(md5Hash))
         {

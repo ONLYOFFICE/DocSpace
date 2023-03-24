@@ -337,9 +337,9 @@ public class NotifyTransferRequest : INotifyEngineAction
         }
 
         var logoText = TenantWhiteLabelSettings.DefaultLogoText;
-        if ((_tenantExtra.Enterprise || _coreBaseSettings.CustomMode) && !MailWhiteLabelSettings.IsDefault(_settingsManager))
+        if ((_tenantExtra.Enterprise || _coreBaseSettings.CustomMode) && !await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager))
         {
-            logoText = _tenantLogoManager.GetLogoText();
+            logoText = await _tenantLogoManager.GetLogoTextAsync();
         }
 
         request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
@@ -353,9 +353,9 @@ public class NotifyTransferRequest : INotifyEngineAction
         request.Arguments.Add(new TagValue(CommonTags.RecipientID, Context.SysRecipient));
         request.Arguments.Add(new TagValue(CommonTags.ProfileUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetMyStaff())));
         request.Arguments.Add(new TagValue(CommonTags.RecipientSubscriptionConfigURL, _commonLinkUtility.GetUnsubscribe()));
-        request.Arguments.Add(new TagValue(CommonTags.HelpLink, _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
+        request.Arguments.Add(new TagValue(CommonTags.HelpLink, await _commonLinkUtility.GetHelpLinkAsync(_settingsManager, _additionalWhiteLabelSettingsHelper, false)));
         request.Arguments.Add(new TagValue(CommonTags.LetterLogoText, logoText));
-        request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, MailWhiteLabelSettings.Instance(_settingsManager)));
+        request.Arguments.Add(new TagValue(CommonTags.MailWhiteLabelSettings, await MailWhiteLabelSettings.InstanceAsync(_settingsManager)));
         request.Arguments.Add(new TagValue(CommonTags.SendFrom, tenant.Name == "" ? Resource.PortalName : tenant.Name));
         request.Arguments.Add(new TagValue(CommonTags.ImagePath, _studioNotifyHelper.GetNotificationImageUrl("").TrimEnd('/')));
 
@@ -405,7 +405,7 @@ public class NotifyTransferRequest : INotifyEngineAction
             }
         }
 
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(false).Result);
+        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDarkAsync(false).Result);
 
         request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
     }

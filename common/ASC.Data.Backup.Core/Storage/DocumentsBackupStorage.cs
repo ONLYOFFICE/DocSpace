@@ -62,10 +62,10 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         _logger = logger;
     }
 
-    public void Init(int tenantId)
+    public async Task InitAsync(int tenantId)
     {
         _tenantId = tenantId;
-        var store = _storageFactory.GetStorage(_tenantId, "files");
+        var store = await _storageFactory.GetStorageAsync(_tenantId, "files");
         _sessionHolder = new FilesChunkedUploadSessionHolder(_daoFactory, _tempPath, _logger, store, "", _setupInfo.ChunkUploadSize);
     }
 
@@ -110,12 +110,12 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
 
         if (int.TryParse(fileId, out var fId))
         {
-            await DeleteDao(fId);
+            await DeleteDaoAsync(fId);
 
             return;
         }
 
-        await DeleteDao(fileId);
+        await DeleteDaoAsync(fileId);
     }
 
     public async Task<bool> IsExistsAsync(string fileId)
@@ -123,10 +123,10 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         await _tenantManager.SetCurrentTenantAsync(_tenantId);
         if (int.TryParse(fileId, out var fId))
         {
-            return await IsExistsDao(fId);
+            return await IsExistsDaoAsync(fId);
         }
 
-        return await IsExistsDao(fileId);
+        return await IsExistsDaoAsync(fileId);
     }
 
     public Task<string> GetPublicLinkAsync(string fileId)
@@ -137,7 +137,7 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
     private async Task<T> Upload<T>(T folderId, string localPath)
     {
         var folderDao = GetFolderDao<T>();
-        var fileDao = GetFileDao<T>();
+        var fileDao = await GetFileDaoAsync<T>();
 
         var folder = await folderDao.GetFolderAsync(folderId);
         if (folder == null)
@@ -174,7 +174,7 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
     private async Task DownloadDaoAsync<T>(T fileId, string targetLocalPath)
     {
         await _tenantManager.SetCurrentTenantAsync(_tenantId);
-        var fileDao = GetFileDao<T>();
+        var fileDao = await GetFileDaoAsync<T>();
         var file = await fileDao.GetFileAsync(fileId);
         if (file == null)
         {
@@ -186,15 +186,15 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         await source.CopyToAsync(destination);
     }
 
-    private async Task DeleteDao<T>(T fileId)
+    private async Task DeleteDaoAsync<T>(T fileId)
     {
-        var fileDao = GetFileDao<T>();
+        var fileDao = await GetFileDaoAsync<T>();
         await fileDao.DeleteFileAsync(fileId);
     }
 
-    private async Task<bool> IsExistsDao<T>(T fileId)
+    private async Task<bool> IsExistsDaoAsync<T>(T fileId)
     {
-        var fileDao = GetFileDao<T>();
+        var fileDao = await GetFileDaoAsync<T>();
         try
         {
 
@@ -237,7 +237,7 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
     private async Task<CommonChunkedUploadSession> InitUploadChunkAsync<T>(T folderId, string title)
     {
         var folderDao = GetFolderDao<T>();
-        var fileDao = GetFileDao<T>();
+        var fileDao = await GetFileDaoAsync<T>();
 
         var folder = await folderDao.GetFolderAsync(folderId);
         var newFile = _serviceProvider.GetService<File<T>>();
@@ -255,11 +255,11 @@ public class DocumentsBackupStorage : IBackupStorage, IGetterWriteOperator
         return _daoFactory.GetFolderDao<T>();
     }
 
-    private IFileDao<T> GetFileDao<T>()
+    private async Task<IFileDao<T>> GetFileDaoAsync<T>()
     {
         // hack: create storage using webConfigPath and put it into DataStoreCache
         // FileDao will use this storage and will not try to create the new one from service config
-        _storageFactory.GetStorage(_tenantId, "files");
+        await _storageFactory.GetStorageAsync(_tenantId, "files");
         return _daoFactory.GetFileDao<T>();
     }
 }

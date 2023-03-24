@@ -107,7 +107,7 @@ public class StorageController : BaseSettingsController, IDisposable
             throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
-        var current = _settingsManager.Load<StorageSettings>();
+        var current = await _settingsManager.LoadAsync<StorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>();
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
@@ -335,7 +335,7 @@ public class StorageController : BaseSettingsController, IDisposable
                 throw new ArgumentException("module");
             }
 
-            var settings = _settingsManager.Load<StorageSettings>();
+            var settings = await _settingsManager.LoadAsync<StorageSettings>();
             if (settings.Module == inDto.Module)
             {
                 return settings;
@@ -366,7 +366,7 @@ public class StorageController : BaseSettingsController, IDisposable
                 throw new SecurityException(Resource.ErrorAccessDenied);
             }
 
-            var settings = _settingsManager.Load<StorageSettings>();
+            var settings = await _settingsManager.LoadAsync<StorageSettings>();
 
             settings.Module = null;
             settings.Props = null;
@@ -391,7 +391,7 @@ public class StorageController : BaseSettingsController, IDisposable
             throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
-        var current = _settingsManager.Load<CdnStorageSettings>();
+        var current = await _settingsManager.LoadAsync<CdnStorageSettings>();
         var consumers = _consumerFactory.GetAll<DataStoreConsumer>().Where(r => r.Cdn != null);
         return consumers.Select(consumer => new StorageDto(consumer, current)).ToList();
     }
@@ -412,7 +412,7 @@ public class StorageController : BaseSettingsController, IDisposable
             throw new ArgumentException("module");
         }
 
-        var settings = _settingsManager.Load<CdnStorageSettings>();
+        var settings = await _settingsManager.LoadAsync<CdnStorageSettings>();
         if (settings.Module == inDto.Module)
         {
             return settings;
@@ -444,7 +444,7 @@ public class StorageController : BaseSettingsController, IDisposable
             throw new SecurityException(Resource.ErrorAccessDenied);
         }
 
-        await _storageSettingsHelper.ClearAsync(_settingsManager.Load<CdnStorageSettings>());
+        await _storageSettingsHelper.ClearAsync(await _settingsManager.LoadAsync<CdnStorageSettings>());
     }
 
     [HttpGet("storage/backup")]

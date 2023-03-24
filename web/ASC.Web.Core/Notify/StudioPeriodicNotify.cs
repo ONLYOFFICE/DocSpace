@@ -305,7 +305,7 @@ public class StudioPeriodicNotify
         {
             try
             {
-                var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+                var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
                 await _tenantManager.SetCurrentTenantAsync(tenant.Id);
                 var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 

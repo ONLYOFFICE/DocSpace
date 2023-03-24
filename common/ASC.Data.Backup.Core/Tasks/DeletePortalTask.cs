@@ -56,7 +56,7 @@ public class DeletePortalTask : PortalTaskBase
 
         if (ProcessStorage)
         {
-            await DoDeleteStorage();
+            await DoDeleteStorageAsync();
         }
 
         _logger.DebugEndDelete(TenantId);
@@ -83,14 +83,14 @@ public class DeletePortalTask : PortalTaskBase
         _logger.DebugEndDeleteDataForModule(module.ModuleName);
     }
 
-    private async Task DoDeleteStorage()
+    private async Task DoDeleteStorageAsync()
     {
         _logger.DebugBeginDeleteStorage();
         var storageModules = StorageFactoryConfig.GetModuleList().Where(IsStorageModuleAllowed).ToList();
         var modulesProcessed = 0;
         foreach (var module in storageModules)
         {
-            var storage = StorageFactory.GetStorage(TenantId, module);
+            var storage = await StorageFactory.GetStorageAsync(TenantId, module);
             var domains = StorageFactoryConfig.GetDomainList(module);
             foreach (var domain in domains)
             {

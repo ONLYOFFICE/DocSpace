@@ -82,7 +82,7 @@ public class QuotaUsageManager
 
         if (_coreBaseSettings.Personal && SetupInfo.IsVisibleSettings("PersonalMaxSpace"))
         {
-            result.UserStorageSize = _configuration.PersonalMaxSpace(_settingsManager);
+            result.UserStorageSize = await _configuration.PersonalMaxSpaceAsync(_settingsManager);
 
             var webItem = _webItemManager[WebItemManager.DocumentsProductID];
             if (webItem.Context.SpaceUsageStatManager is IUserSpaceUsage spaceUsageManager)

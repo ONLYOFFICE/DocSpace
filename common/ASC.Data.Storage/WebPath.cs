@@ -188,11 +188,11 @@ public class WebPath
 
     private async Task<string> InternalGetPathAsync(string relativePath)
     {
-        if (_coreBaseSettings.Standalone && ServiceProvider.GetService<StaticUploader>().CanUpload()) //hack for skip resolve DistributedTaskQueueOptionsManager
+        if (_coreBaseSettings.Standalone && await ServiceProvider.GetService<StaticUploader>().CanUploadAsync()) //hack for skip resolve DistributedTaskQueueOptionsManager
         {
             try
             {
-                var uri = await (await _storageSettingsHelper.DataStoreAsync(_settingsManager.Load<CdnStorageSettings>())).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
+                var uri = await (await _storageSettingsHelper.DataStoreAsync(await _settingsManager.LoadAsync<CdnStorageSettings>())).GetInternalUriAsync("", relativePath, TimeSpan.Zero, null);
                 var result = uri.AbsoluteUri.ToLower();
                 if (!string.IsNullOrEmpty(result))
                 {

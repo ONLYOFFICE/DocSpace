@@ -85,7 +85,7 @@ public class EditorControllerThirdparty : EditorController<string>
         configuration.EditorConfig.Customization.GobackUrl = string.Empty;
         configuration.EditorType = EditorType.External;
 
-        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
+        if (file.RootFolderType == FolderType.Privacy && await PrivacyRoomSettings.GetEnabledAsync(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
             var keyPair = await _encryptionKeyPairDtoHelper.GetKeyPairAsync();
             if (keyPair != null)
@@ -219,7 +219,7 @@ public abstract class EditorController<T> : ApiControllerBase
         var file = docParams.File;
         configuration.EditorType = EditorType.External;
 
-        if (file.RootFolderType == FolderType.Privacy && PrivacyRoomSettings.GetEnabled(_settingsManager) || docParams.LocatedInPrivateRoom)
+        if (file.RootFolderType == FolderType.Privacy && await PrivacyRoomSettings.GetEnabledAsync(_settingsManager) || docParams.LocatedInPrivateRoom)
         {
             var keyPair = await _encryptionKeyPairDtoHelper.GetKeyPairAsync();
             if (keyPair != null)

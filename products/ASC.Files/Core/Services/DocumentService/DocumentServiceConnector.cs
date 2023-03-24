@@ -297,7 +297,7 @@ public class DocumentServiceConnector
         {
             try
             {
-                var storeTemplate = _globalStore.GetStoreTemplate();
+                var storeTemplate = await _globalStore.GetStoreTemplateAsync();
                 var scriptUri = await storeTemplate.GetUriAsync("", "test.docbuilder");
                 var scriptUrl = _baseCommonLinkUtility.GetFullAbsolutePath(scriptUri.ToString());
                 scriptUrl = await ReplaceCommunityAdressAsync(scriptUrl);

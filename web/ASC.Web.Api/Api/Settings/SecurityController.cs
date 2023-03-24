@@ -138,9 +138,9 @@ public class SecurityController : BaseSettingsController
     [HttpGet("security/password")]
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Everyone")]
-    public PasswordSettings GetPasswordSettings()
+    public async Task<PasswordSettings> GetPasswordSettingsAsync()
     {
-        return _settingsManager.Load<PasswordSettings>();
+        return await _settingsManager.LoadAsync<PasswordSettings>();
     }
 
     [HttpPut("security/password")]
@@ -148,14 +148,14 @@ public class SecurityController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var userPasswordSettings = _settingsManager.Load<PasswordSettings>();
+        var userPasswordSettings = await _settingsManager.LoadAsync<PasswordSettings>();
 
         userPasswordSettings.MinLength = model.MinLength;
         userPasswordSettings.UpperCase = model.UpperCase;
         userPasswordSettings.Digits = model.Digits;
         userPasswordSettings.SpecSymbols = model.SpecSymbols;
 
-        _settingsManager.Save(userPasswordSettings);
+        await _settingsManager.SaveAsync(userPasswordSettings);
 
         await _messageService.SendAsync(MessageAction.PasswordStrengthSettingsUpdated);
 
@@ -215,7 +215,7 @@ public class SecurityController : BaseSettingsController
             }
         }
 
-        var defaultPageSettings = _settingsManager.Load<StudioDefaultPageSettings>();
+        var defaultPageSettings = await _settingsManager.LoadAsync<StudioDefaultPageSettings>();
 
         foreach (var item in itemList)
         {
@@ -238,7 +238,7 @@ public class SecurityController : BaseSettingsController
             }
             else if (productId == defaultPageSettings.DefaultProductID)
             {
-                _settingsManager.Save(_settingsManager.GetDefault<StudioDefaultPageSettings>());
+                await _settingsManager.SaveAsync(_settingsManager.GetDefault<StudioDefaultPageSettings>());
             }
 
             await _webItemSecurity.SetSecurityAsync(item.Key, item.Value, subjects);
@@ -325,7 +325,7 @@ public class SecurityController : BaseSettingsController
             BlockTime = blockTime
         };
 
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }
@@ -335,7 +335,7 @@ public class SecurityController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<LoginSettings>();
+        var settings = await _settingsManager.LoadAsync<LoginSettings>();
 
         return _mapper.Map<LoginSettings, LoginSettingsDto>(settings);
     }

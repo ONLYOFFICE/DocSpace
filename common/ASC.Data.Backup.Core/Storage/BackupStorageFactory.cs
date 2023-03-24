@@ -75,13 +75,13 @@ public class BackupStorageFactory
             case BackupStorageType.Documents:
             case BackupStorageType.ThridpartyDocuments:
                 {
-                    _documentsBackupStorage.Init(tenantId);
+                    await _documentsBackupStorage.InitAsync(tenantId);
 
                     return _documentsBackupStorage;
                 }
             case BackupStorageType.DataStore:
                 {
-                    _consumerBackupStorage.Init(tenantId);
+                    await _consumerBackupStorage.InitAsync(tenantId);
 
                     return _consumerBackupStorage;
                 }

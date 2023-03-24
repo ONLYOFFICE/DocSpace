@@ -118,7 +118,7 @@ public class CapabilitiesController : ControllerBase
                     || SetupInfo.IsVisibleSettings(ManagementType.SingleSignOnSettings.ToString())
                         && quota.Sso)
             {
-                var settings = _settingsManager.Load<SsoSettingsV2>();
+                var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
 
                 if (settings.EnableSso)
                 {

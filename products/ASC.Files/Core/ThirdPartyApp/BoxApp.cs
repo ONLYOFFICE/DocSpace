@@ -377,9 +377,9 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             if (isNew)
             {
-                var userHelpTourSettings = _settingsManager.LoadForCurrentUser<UserHelpTourSettings>();
+                var userHelpTourSettings = await _settingsManager.LoadForCurrentUserAsync<UserHelpTourSettings>();
                 userHelpTourSettings.IsNewUser = true;
-                _settingsManager.SaveForCurrentUser(userHelpTourSettings);
+                await _settingsManager.SaveForCurrentUserAsync(userHelpTourSettings);
 
                 _personalSettingsHelper.IsNewUser = true;
                 _personalSettingsHelper.IsNotActivated = true;

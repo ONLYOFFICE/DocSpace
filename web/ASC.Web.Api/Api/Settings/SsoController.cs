@@ -68,7 +68,7 @@ public class SsoController : BaseSettingsController
     {
         await CheckSsoPermissionsAsync();
 
-        var settings = _settingsManager.Load<SsoSettingsV2>();
+        var settings = await _settingsManager.LoadAsync<SsoSettingsV2>();
 
         if (string.IsNullOrEmpty(settings.SpLoginLabel))
         {
@@ -180,7 +180,7 @@ public class SsoController : BaseSettingsController
             settings.SpLoginLabel = settings.SpLoginLabel.Substring(0, 100);
         }
 
-        if (!_settingsManager.Save(settings))
+        if (!await _settingsManager.SaveAsync(settings))
         {
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
@@ -212,7 +212,7 @@ public class SsoController : BaseSettingsController
 
         var defaultSettings = _settingsManager.GetDefault<SsoSettingsV2>();
 
-        if (!_settingsManager.Save(defaultSettings))
+        if (!await _settingsManager.SaveAsync(defaultSettings))
         {
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }

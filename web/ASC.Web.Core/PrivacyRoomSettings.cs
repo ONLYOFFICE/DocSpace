@@ -45,21 +45,21 @@ public class PrivacyRoomSettings : ISettings<PrivacyRoomSettings>
         };
     }
 
-    public static bool GetEnabled(SettingsManager settingsManager)
+    public static async Task<bool> GetEnabledAsync(SettingsManager settingsManager)
     {
-        return settingsManager.Load<PrivacyRoomSettings>().EnabledSetting;
+        return (await settingsManager.LoadAsync<PrivacyRoomSettings>()).EnabledSetting;
     }
 
-    public static void SetEnabled(SettingsManager settingsManager, bool value)
+    public static async Task SetEnabledAsync(SettingsManager settingsManager, bool value)
     {
         if (!IsAvailable())
         {
             return;
         }
 
-        var settings = settingsManager.Load<PrivacyRoomSettings>();
+        var settings = await settingsManager.LoadAsync<PrivacyRoomSettings>();
         settings.EnabledSetting = value;
-        settingsManager.Save(settings);
+        await settingsManager.SaveAsync(settings);
     }
 
     public static bool IsAvailable()

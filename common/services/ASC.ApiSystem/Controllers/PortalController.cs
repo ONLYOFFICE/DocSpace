@@ -297,11 +297,11 @@ public class PortalController : ControllerBase
                 /* set wizard not completed*/
                 _tenantManager.SetCurrentTenant(t);
 
-                var settings = _settingsManager.Load<WizardSettings>();
+                var settings = await _settingsManager.LoadAsync<WizardSettings>();
 
                 settings.Completed = false;
 
-                _settingsManager.Save(settings);
+                await _settingsManager.SaveAsync(settings);
             }
             catch (Exception e)
             {

@@ -100,7 +100,7 @@ public class StudioNotifyService
 
     public async Task SendMsgToSalesAsync(string email, string userName, string message)
     {
-        var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+        var settings = await _settingsManager.LoadForDefaultTenantAsync<AdditionalWhiteLabelSettings>();
 
         await _client.SendNoticeToAsync(
             Actions.UserMessageToSales,
@@ -143,7 +143,7 @@ public class StudioNotifyService
             throw new ArgumentNullException(nameof(message));
         }
 
-        var salesEmail = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().SalesEmail ?? _setupInfo.SalesEmail;
+        var salesEmail = (await _settingsManager.LoadForDefaultTenantAsync<AdditionalWhiteLabelSettings>()).SalesEmail ?? _setupInfo.SalesEmail;
 
         var recipient = (IRecipient)new DirectRecipient(_authContext.CurrentAccount.ID.ToString(), string.Empty, new[] { salesEmail }, false);
 
@@ -387,7 +387,7 @@ public class StudioNotifyService
         }
         else if (_tenantExtra.Enterprise)
         {
-            var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+            var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
             notifyAction = defaultRebranding
                                ? Actions.EnterpriseUserWelcomeV1
                                    : _coreBaseSettings.CustomMode
@@ -430,7 +430,7 @@ public class StudioNotifyService
 
         if (_tenantExtra.Enterprise)
         {
-            var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+            var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
             notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV10 : Actions.EnterpriseWhitelabelGuestWelcomeV10;
             footer = null;
         }
@@ -470,7 +470,7 @@ public class StudioNotifyService
 
         if (_tenantExtra.Enterprise)
         {
-            var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+            var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
             notifyAction = defaultRebranding ? Actions.EnterpriseUserActivationV1 : Actions.EnterpriseWhitelabelUserActivationV1;
             footer = null;
         }
@@ -510,7 +510,7 @@ public class StudioNotifyService
 
         if (_tenantExtra.Enterprise)
         {
-            var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+            var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
             notifyAction = defaultRebranding ? Actions.EnterpriseGuestActivationV10 : Actions.EnterpriseWhitelabelGuestActivationV10;
             footer = null;
         }
@@ -662,7 +662,7 @@ public class StudioNotifyService
 
         if (_tenantExtra.Enterprise)
         {
-            var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+            var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
             notifyAction = defaultRebranding ? Actions.EnterpriseAdminWelcomeV1 : Actions.EnterpriseWhitelabelAdminWelcomeV1;
         }
         else if (_tenantExtra.Opensource)
@@ -772,7 +772,7 @@ public class StudioNotifyService
 
             if (_tenantExtra.Enterprise)
             {
-                var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
+                var defaultRebranding = await MailWhiteLabelSettings.IsDefaultAsync(_settingsManager);
                 notifyAction = defaultRebranding ? Actions.EnterpriseAdminActivationV1 : Actions.EnterpriseWhitelabelAdminActivationV1;
                 footer = null;
             }
@@ -939,7 +939,7 @@ public class StudioNotifyService
                 return;
             }
 
-            var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+            var settings = await _settingsManager.LoadForDefaultTenantAsync<AdditionalWhiteLabelSettings>();
             var salesEmail = settings.SalesEmail ?? _setupInfo.SalesEmail;
 
             if (string.IsNullOrEmpty(salesEmail))

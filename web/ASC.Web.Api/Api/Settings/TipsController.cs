@@ -58,10 +58,10 @@ public class TipsController : BaseSettingsController
     }
 
     [HttpPut("tips")]
-    public TipsSettings UpdateTipsSettings(SettingsRequestsDto inDto)
+    public async Task<TipsSettings> UpdateTipsSettingsAsync(SettingsRequestsDto inDto)
     {
         var settings = new TipsSettings { Show = inDto.Show };
-        _settingsManager.SaveForCurrentUser(settings);
+        await _settingsManager.SaveForCurrentUserAsync(settings);
 
         if (!inDto.Show && !string.IsNullOrEmpty(_setupInfo.TipsAddress))
         {

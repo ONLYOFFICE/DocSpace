@@ -208,7 +208,7 @@ public class WebItemSecurity
 
     public async Task SetSecurityAsync(string id, bool enabled, params Guid[] subjects)
     {
-        if (_settingsManager.Load<TenantAccessSettings>().Anyone)
+        if ((await _settingsManager.LoadAsync<TenantAccessSettings>()).Anyone)
         {
             throw new SecurityException("Security settings are disabled for an open portal");
         }

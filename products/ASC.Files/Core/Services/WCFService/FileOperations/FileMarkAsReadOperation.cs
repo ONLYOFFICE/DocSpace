@@ -107,7 +107,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
                 await globalFolder.GetFolderVirtualRoomsAsync(daoFactory),
             };
 
-        if (PrivacyRoomSettings.GetEnabled(settingsManager))
+        if (await PrivacyRoomSettings.GetEnabledAsync(settingsManager))
         {
             rootIds.Add(await globalFolder.GetFolderPrivacyAsync(daoFactory));
         }

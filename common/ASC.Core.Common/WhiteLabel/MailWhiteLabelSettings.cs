@@ -80,14 +80,14 @@ public class MailWhiteLabelSettings : ISettings<MailWhiteLabelSettings>
                 SiteUrl == defaultSettings.SiteUrl;
     }
 
-    public static MailWhiteLabelSettings Instance(SettingsManager settingsManager)
+    public static async Task<MailWhiteLabelSettings> InstanceAsync(SettingsManager settingsManager)
     {
-        return settingsManager.LoadForDefaultTenant<MailWhiteLabelSettings>();
+        return await settingsManager.LoadForDefaultTenantAsync<MailWhiteLabelSettings>();
     }
 
-    public static bool IsDefault(SettingsManager settingsManager)
+    public static async Task<bool> IsDefaultAsync(SettingsManager settingsManager)
     {
-        return Instance(settingsManager).IsDefault();
+        return (await InstanceAsync(settingsManager)).IsDefault();
     }
 }
 

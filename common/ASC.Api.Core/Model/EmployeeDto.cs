@@ -81,7 +81,7 @@ public class EmployeeDtoHelper
         {
             return _dictionary[userInfo.Id];
         }
-        var employee = await Init(new EmployeeDto(), userInfo);
+        var employee = await InitAsync(new EmployeeDto(), userInfo);
         _dictionary.Add(userInfo.Id, employee);
 
         return employee;
@@ -99,7 +99,7 @@ public class EmployeeDtoHelper
         }
     }
 
-    protected async Task<EmployeeDto> Init(EmployeeDto result, UserInfo userInfo)
+    protected async Task<EmployeeDto> InitAsync(EmployeeDto result, UserInfo userInfo)
     {
         result.Id = userInfo.Id;
         result.DisplayName = _displayUserSettingsHelper.GetFullUserName(userInfo);

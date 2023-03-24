@@ -66,7 +66,7 @@ public class StorageHelper
 
             data = await _userPhotoManager.GetTempPhotoData(fileName);
 
-            await _userPhotoManager.RemoveTempPhoto(fileName);
+            await _userPhotoManager.RemoveTempPhotoAsync(fileName);
 
             return await SaveLogoAsync(fileName, data);
         }
@@ -86,7 +86,7 @@ public class StorageHelper
 
         try
         {
-            var store = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, StorageName);
+            var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, StorageName);
 
             var fileName = Path.GetFileName(logoPath);
 
@@ -103,7 +103,7 @@ public class StorageHelper
 
     private async Task<string> SaveLogoAsync(string fileName, byte[] data)
     {
-        var store = _storageFactory.GetStorage((await _tenantManager.GetCurrentTenantAsync()).Id, StorageName);
+        var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, StorageName);
 
         using var stream = new MemoryStream(data);
         stream.Seek(0, SeekOrigin.Begin);

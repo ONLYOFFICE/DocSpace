@@ -90,11 +90,11 @@ public class PhotoController : PeopleControllerBase
                 settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
             }
 
-            _settingsManager.Save(settings, user.Id);
+            await _settingsManager.SaveAsync(settings, user.Id);
 
             await _userPhotoManager.RemovePhotoAsync(user.Id);
             await _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
-            await _userPhotoManager.RemoveTempPhoto(fileName);
+            await _userPhotoManager.RemoveTempPhotoAsync(fileName);
         }
         else
         {

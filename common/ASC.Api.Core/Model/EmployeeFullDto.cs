@@ -199,14 +199,14 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             IsSSO = userInfo.IsSSO()
         };
 
-        await Init(result, userInfo);
+        await InitAsync(result, userInfo);
 
-        var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+        var quotaSettings = await _settingsManager.LoadAsync<TenantUserQuotaSettings>();
 
         if (quotaSettings.EnableUserQuota)
         {
             result.UsedSpace = Math.Max(0, (await _quotaService.FindUserQuotaRowsAsync(_context.Tenant.Id, userInfo.Id)).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
-            var userQuotaSettings = _settingsManager.Load<UserQuotaSettings>(userInfo);
+            var userQuotaSettings = await _settingsManager.LoadAsync<UserQuotaSettings>(userInfo);
             result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
         }
 

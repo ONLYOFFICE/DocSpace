@@ -159,7 +159,7 @@ public class MigrateOperation : DistributedTaskProgress
 
             foreach (var module in _modules)
             {
-                var oldStore = storageFactory.GetStorage(_tenantId, module);
+                var oldStore = await storageFactory.GetStorageAsync(_tenantId, module);
                 var store = storageFactory.GetStorageFromConsumer(_tenantId, module, storageSettingsHelper.DataStoreConsumer(_settings));
                 var domains = _storageFactoryConfig.GetDomainList(module).ToList();
 
@@ -194,7 +194,7 @@ public class MigrateOperation : DistributedTaskProgress
                 MigrationPublish();
             }
 
-            settingsManager.Save(_settings);
+            await settingsManager.SaveAsync(_settings);
             tenant.SetStatus(TenantStatus.Active);
             await tenantManager.SaveTenantAsync(tenant);
 

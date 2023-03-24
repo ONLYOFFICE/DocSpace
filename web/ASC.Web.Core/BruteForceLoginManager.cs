@@ -74,7 +74,7 @@ public class BruteForceLoginManager
             {
                 historyCacheKey = GetHistoryCacheKey(login, requestIp);
 
-                settings = new LoginSettingsWrapper(_settingsManager.Load<LoginSettings>());
+                settings = new LoginSettingsWrapper(await _settingsManager.LoadAsync<LoginSettings>());
                 var checkTime = now.Subtract(settings.CheckPeriod);
 
                 history = GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>();

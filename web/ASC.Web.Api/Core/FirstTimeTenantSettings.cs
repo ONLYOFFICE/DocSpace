@@ -80,7 +80,7 @@ public class FirstTimeTenantSettings
             var (email, passwordHash, lng, timeZone, amiid, subscribeFromSite) = inDto;
 
             var tenant = await _tenantManager.GetCurrentTenantAsync();
-            var settings = _settingsManager.Load<WizardSettings>();
+            var settings = await _settingsManager.LoadAsync<WizardSettings>();
             if (settings.Completed)
             {
                 throw new Exception("Wizard passed.");
@@ -126,14 +126,14 @@ public class FirstTimeTenantSettings
 
             if (RequestLicense)
             {
-                TariffSettings.SetLicenseAccept(_settingsManager);
+                await TariffSettings.SetLicenseAcceptAsync(_settingsManager);
                 await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
                 await _licenseReader.RefreshLicenseAsync();
             }
 
             settings.Completed = true;
-            _settingsManager.Save(settings);
+            await _settingsManager.SaveAsync(settings);
 
             TrySetLanguage(tenant, lng);
 

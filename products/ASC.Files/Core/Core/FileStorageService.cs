@@ -858,7 +858,7 @@ public class FileStorageService<T> //: IFileStorageService
         else if (EqualityComparer<TTemplate>.Default.Equals(fileWrapper.TemplateId, default(TTemplate)))
         {
             var culture = (await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID)).GetCulture();
-            var storeTemplate = GetStoreTemplate();
+            var storeTemplate = await GetStoreTemplateAsync();
 
             var path = FileConstant.NewDocPath + culture + "/";
             if (!await storeTemplate.IsDirectoryAsync(path))
@@ -1399,7 +1399,7 @@ public class FileStorageService<T> //: IFileStorageService
             else
             {
                 var culture = (await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID)).GetCulture();
-                var storeTemplate = GetStoreTemplate();
+                var storeTemplate = await GetStoreTemplateAsync();
 
                 var path = FileConstant.NewDocPath + culture + "/";
                 if (!await storeTemplate.IsDirectoryAsync(path))
@@ -2919,7 +2919,7 @@ public class FileStorageService<T> //: IFileStorageService
 
     public async Task<List<EncryptionKeyPairDto>> GetEncryptionAccessAsync(T fileId)
     {
-        ErrorIf(!PrivacyRoomSettings.GetEnabled(_settingsManager), FilesCommonResource.ErrorMassage_SecurityException);
+        ErrorIf(!await PrivacyRoomSettings.GetEnabledAsync(_settingsManager), FilesCommonResource.ErrorMassage_SecurityException);
 
         var fileKeyPair = await _encryptionKeyPairHelper.GetKeyPairAsync(fileId, this);
 
@@ -3280,9 +3280,9 @@ public class FileStorageService<T> //: IFileStorageService
         return _daoFactory.GetTagDao<T>();
     }
 
-    private IDataStore GetStoreTemplate()
+    private async Task<IDataStore> GetStoreTemplateAsync()
     {
-        return _globalStore.GetStoreTemplate();
+        return await _globalStore.GetStoreTemplateAsync();
     }
 
     private IProviderDao GetProviderDao()

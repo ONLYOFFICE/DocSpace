@@ -141,7 +141,7 @@ public class SecurityContext
             return false;
         }
 
-        var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
+        var settingsTenant = await _tenantCookieSettingsHelper.GetForTenantAsync(tenant);
 
         if (indexTenant != settingsTenant.Index)
         {
@@ -155,7 +155,7 @@ public class SecurityContext
 
         try
         {
-            var settingsUser = _tenantCookieSettingsHelper.GetForUser(userid);
+            var settingsUser = await _tenantCookieSettingsHelper.GetForUserAsync(userid);
             if (indexUser != settingsUser.Index)
             {
                 return false;
@@ -208,7 +208,7 @@ public class SecurityContext
                 loginEventId = await funcLoginEvent();
             }
 
-            cookie = _cookieStorage.EncryptCookie((await _tenantManager.GetCurrentTenantAsync()).Id, account.ID, loginEventId);
+            cookie = await _cookieStorage.EncryptCookieAsync((await _tenantManager.GetCurrentTenantAsync()).Id, account.ID, loginEventId);
         }
 
         return cookie;

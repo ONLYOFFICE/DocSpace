@@ -298,9 +298,9 @@ public class CoreConfiguration
         _configuration = configuration;
     }
 
-    public long PersonalMaxSpace(SettingsManager settingsManager)
+    public async Task<long> PersonalMaxSpaceAsync(SettingsManager settingsManager)
     {
-        var quotaSettings = settingsManager.LoadForCurrentUser<PersonalQuotaSettings>();
+        var quotaSettings = await settingsManager.LoadForCurrentUserAsync<PersonalQuotaSettings>();
 
         if (quotaSettings.MaxSpace != long.MaxValue)
         {

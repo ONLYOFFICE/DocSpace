@@ -76,7 +76,7 @@ public class LdapController : BaseSettingsController
     {
         await CheckLdapPermissionsAsync();
 
-        var settings = _settingsManager.Load<LdapSettings>();
+        var settings = await _settingsManager.LoadAsync<LdapSettings>();
 
         settings = settings.Clone() as LdapSettings; // clone LdapSettings object for clear password (potencial AscCache.Memory issue)
 
@@ -113,7 +113,7 @@ public class LdapController : BaseSettingsController
     {
         await CheckLdapPermissionsAsync();
 
-        var settings = _settingsManager.Load<LdapCronSettings>();
+        var settings = await _settingsManager.LoadAsync<LdapCronSettings>();
 
         if (settings == null)
             settings = new LdapCronSettings().GetDefault();
@@ -144,19 +144,19 @@ public class LdapController : BaseSettingsController
         {
             new CronExpression(cron); // validate
 
-            if (!_settingsManager.Load<LdapSettings>().EnableLdapAuthentication)
+            if (!(await _settingsManager.LoadAsync<LdapSettings>()).EnableLdapAuthentication)
             {
                 throw new Exception(Resource.LdapSettingsErrorCantSaveLdapSettings);
             }
         }
 
-        var settings = _settingsManager.Load<LdapCronSettings>();
+        var settings = await _settingsManager.LoadAsync<LdapCronSettings>();
 
         if (settings == null)
             settings = new LdapCronSettings();
 
         settings.Cron = cron;
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         var t = await _tenantManager.GetCurrentTenantAsync();
         if (!string.IsNullOrEmpty(cron))
@@ -183,7 +183,7 @@ public class LdapController : BaseSettingsController
     {
         await CheckLdapPermissionsAsync();
 
-        var ldapSettings = _settingsManager.Load<LdapSettings>();
+        var ldapSettings = await _settingsManager.LoadAsync<LdapSettings>();
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
@@ -205,7 +205,7 @@ public class LdapController : BaseSettingsController
     {
         await CheckLdapPermissionsAsync();
 
-        var ldapSettings = _settingsManager.Load<LdapSettings>();
+        var ldapSettings = await _settingsManager.LoadAsync<LdapSettings>();
 
         var result = await _ldapSaveSyncOperation.TestLdapSyncAsync(ldapSettings, Tenant);
 

@@ -97,7 +97,7 @@ public class BackupPortalTask : PortalTaskBase
                 }
                 if (ProcessStorage)
                 {
-                    await DoBackupStorage(WriteOperator, fileGroups);
+                    await DoBackupStorageAsync(WriteOperator, fileGroups);
                 }
             }
         }
@@ -544,7 +544,7 @@ public class BackupPortalTask : PortalTaskBase
             for (var j = 0; j < TasksLimit && i + j < files.Count; j++)
             {
                 var t = files[i + j];
-                tasks.Add(Task.Run(() => DoDumpFile(t, storageDir)));
+                tasks.Add(Task.Run(() => DoDumpFileAsync(t, storageDir)));
             }
 
             Task.WaitAll(tasks.ToArray());
@@ -572,9 +572,9 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndBackupStorage();
     }
 
-    private async Task DoDumpFile(BackupFileInfo file, string dir)
+    private async Task DoDumpFileAsync(BackupFileInfo file, string dir)
     {
-        var storage = StorageFactory.GetStorage(file.Tenant, file.Module);
+        var storage = await StorageFactory.GetStorageAsync(file.Tenant, file.Module);
         var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
         var dirName = Path.GetDirectoryName(filePath);
 
@@ -697,7 +697,7 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndSavingDataForModule(module.ModuleName);
     }
 
-    private async Task DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
+    private async Task DoBackupStorageAsync(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
     {
         _logger.DebugBeginBackupStorage();
 
@@ -708,7 +708,7 @@ public class BackupPortalTask : PortalTaskBase
 
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(TenantId, group.Key);
+                var storage = await StorageFactory.GetStorageAsync(TenantId, group.Key);
                 var file1 = file;
                 await ActionInvoker.Try(async state =>
                 {

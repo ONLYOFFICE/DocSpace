@@ -63,13 +63,13 @@ public class BaseStorageSettingsListener
 
                 var scopeClass = scope.ServiceProvider.GetService<BaseStorageSettingsListenerScope>();
                 var (storageSettingsHelper, settingsManager) = scopeClass;
-                var settings = settingsManager.Load<StorageSettings>(i.TenantId);
+                var settings = await settingsManager.LoadAsync<StorageSettings>(i.TenantId);
                 if (i.Name == settings.Module)
                 {
                     await storageSettingsHelper.ClearAsync(settings);
                 }
 
-                var cdnSettings = settingsManager.Load<CdnStorageSettings>(i.TenantId);
+                var cdnSettings = await settingsManager.LoadAsync<CdnStorageSettings>(i.TenantId);
                 if (i.Name == cdnSettings.Module)
                 {
                     await storageSettingsHelper.ClearAsync(cdnSettings);
@@ -154,7 +154,7 @@ public class StorageSettingsHelper
     {
         await ClearDataStoreCacheAsync();
 
-        return _settingsManager.Save(baseStorageSettings);
+        return await _settingsManager.SaveAsync(baseStorageSettings);
     }
 
     public async Task ClearAsync<T>(BaseStorageSettings<T> baseStorageSettings) where T : class, ISettings<T>, new()

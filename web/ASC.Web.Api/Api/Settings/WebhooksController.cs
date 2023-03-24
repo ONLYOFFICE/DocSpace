@@ -169,7 +169,7 @@ public class WebhooksController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<WebHooksSettings>();
+        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
 
         return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
@@ -179,9 +179,9 @@ public class WebhooksController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<WebHooksSettings>();
+        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
         settings.EnableSSLVerification = isEnabled;
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
@@ -189,7 +189,7 @@ public class WebhooksController : BaseSettingsController
     [HttpGet("webhooks")]
     public async IAsyncEnumerable<Webhook> Settings()
     {
-        var settings = _settingsManager.Load<WebHooksSettings>();
+        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
 
         foreach (var w in await _webhookDbWorker.GetWebhooksAsync())
         {
@@ -201,7 +201,7 @@ public class WebhooksController : BaseSettingsController
     [HttpPut("webhook/{id}")]
     public async Task<Webhook> DisableWebHook(int id)
     {
-        var settings = _settingsManager.Load<WebHooksSettings>();
+        var settings = await _settingsManager.LoadAsync<WebHooksSettings>();
 
         Webhook result = null;
 
@@ -212,7 +212,7 @@ public class WebhooksController : BaseSettingsController
 
         if (result != null)
         {
-            _settingsManager.Save(settings);
+            await _settingsManager.SaveAsync(settings);
         }
 
         return result;

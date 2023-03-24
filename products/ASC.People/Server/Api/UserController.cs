@@ -161,7 +161,7 @@ public class UserController : PeopleControllerBase
             }
             else
             {
-                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
+                await _userManagerWrapper.CheckPasswordPolicyAsync(inDto.Password);
             }
 
             inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
@@ -249,7 +249,7 @@ public class UserController : PeopleControllerBase
             }
             else
             {
-                _userManagerWrapper.CheckPasswordPolicy(inDto.Password);
+                await _userManagerWrapper.CheckPasswordPolicyAsync(inDto.Password);
             }
             inDto.PasswordHash = _passwordHasher.GetClientPassword(inDto.Password);
         }
@@ -753,33 +753,33 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("theme")]
-    public DarkThemeSettings GetTheme()
+    public async Task<DarkThemeSettings> GetThemeAsync()
     {
-        return _settingsManager.LoadForCurrentUser<DarkThemeSettings>();
+        return await _settingsManager.LoadForCurrentUserAsync<DarkThemeSettings>();
     }
 
     [HttpPut("theme")]
-    public DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
+    public async Task<DarkThemeSettings> ChangeThemeAsync(DarkThemeSettingsRequestDto model)
     {
         var darkThemeSettings = new DarkThemeSettings
         {
             Theme = model.Theme
         };
 
-        _settingsManager.SaveForCurrentUser(darkThemeSettings);
+        await _settingsManager.SaveForCurrentUserAsync(darkThemeSettings);
 
         return darkThemeSettings;
     }
 
     [AllowNotPayment]
     [HttpGet("@self")]
-    public async Task<EmployeeFullDto> Self()
+    public async Task<EmployeeFullDto> SelfAsync()
     {
         var user = await _userManager.GetUserAsync(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
 
         var result = await _employeeFullDtoHelper.GetFullAsync(user);
 
-        result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
+        result.Theme = (await _settingsManager.LoadForCurrentUserAsync<DarkThemeSettings>()).Theme;
 
         return result;
     }
@@ -1149,9 +1149,9 @@ public class UserController : PeopleControllerBase
                 }
             }
 
-            var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
+            var quotaSettings = await _settingsManager.LoadAsync<TenantUserQuotaSettings>();
 
-            _settingsManager.Save(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
+            await _settingsManager.SaveAsync(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
 
             yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }

@@ -30,7 +30,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class SettingsController : BaseSettingsController
 {
-    private static readonly object locked = new object();
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
@@ -137,7 +137,7 @@ public class SettingsController : BaseSettingsController
     [AllowNotPayment, AllowSuspended, AllowAnonymous]
     public async Task<SettingsDto> GetSettingsAsync(bool? withpassword)
     {
-        var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
+        var studioAdminMessageSettings = await _settingsManager.LoadAsync<StudioAdminMessageSettings>();
 
         var settings = new SettingsDto
         {
@@ -176,7 +176,7 @@ public class SettingsController : BaseSettingsController
                 MeasurementId = _configuration["firebase:measurementId"] ?? ""
             };
 
-            settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
+            settings.HelpLink = await _commonLinkUtility.GetHelpLinkAsync(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))
@@ -196,7 +196,7 @@ public class SettingsController : BaseSettingsController
         }
         else
         {
-            if (!_settingsManager.Load<WizardSettings>().Completed)
+            if (!(await _settingsManager.LoadAsync<WizardSettings>()).Completed)
             {
                 settings.WizardToken = _commonLinkUtility.GetToken(Tenant.Id, "", ConfirmType.Wizard, userId: Tenant.OwnerId);
             }
@@ -252,7 +252,7 @@ public class SettingsController : BaseSettingsController
 
         Tenant.TrustedDomainsType = inDto.Type;
 
-        _settingsManager.Save(new StudioTrustedDomainSettings { InviteAsUsers = inDto.InviteAsUsers });
+        await _settingsManager.SaveAsync(new StudioTrustedDomainSettings { InviteAsUsers = inDto.InviteAsUsers });
 
         await _tenantManager.SaveTenantAsync(Tenant);
 
@@ -272,7 +272,7 @@ public class SettingsController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
+        await _settingsManager.SaveAsync(new TenantUserQuotaSettings { EnableUserQuota = inDto.EnableUserQuota, DefaultUserQuota = inDto.DefaultUserQuota });
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
@@ -341,9 +341,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpGet("logo")]
-    public async Task<object> GetLogo()
+    public async Task<object> GetLogoAsync()
     {
-        return await _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPathAsync(_settingsManager.Load<TenantInfoSettings>());
+        return await _tenantInfoSettingsHelper.GetAbsoluteCompanyLogoPathAsync(await _settingsManager.LoadAsync<TenantInfoSettings>());
     }
 
     [AllowNotPayment]
@@ -364,7 +364,7 @@ public class SettingsController : BaseSettingsController
     {
         var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
-        var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
+        var collaboratorPopupSettings = await _settingsManager.LoadForCurrentUserAsync<CollaboratorSettings>();
 
         if (!(await _userManager.IsUserAsync(currentUser) && collaboratorPopupSettings.FirstVisit && !await _userManager.IsOutsiderAsync(currentUser)))
         {
@@ -372,26 +372,27 @@ public class SettingsController : BaseSettingsController
         }
 
         collaboratorPopupSettings.FirstVisit = false;
-        _settingsManager.SaveForCurrentUser(collaboratorPopupSettings);
+        await _settingsManager.SaveForCurrentUserAsync(collaboratorPopupSettings);
     }
 
     [AllowAnonymous, AllowNotPayment, AllowSuspended]
     [HttpGet("colortheme")]
-    public CustomColorThemesSettingsDto GetColorTheme()
+    public async Task<CustomColorThemesSettingsDto> GetColorThemeAsync()
     {
-        return new CustomColorThemesSettingsDto(_settingsManager.Load<CustomColorThemesSettings>(), _customColorThemesSettingsHelper.Limit);
+        return new CustomColorThemesSettingsDto(await _settingsManager.LoadAsync<CustomColorThemesSettings>(), _customColorThemesSettingsHelper.Limit);
     }
 
     [HttpPut("colortheme")]
     public async Task<CustomColorThemesSettingsDto> SaveColorThemeAsync(CustomColorThemesSettingsRequestsDto inDto)
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
-        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+        var settings = await _settingsManager.LoadAsync<CustomColorThemesSettings>();
 
         if (inDto.Theme != null)
         {
-            lock (locked)
+            try
             {
+                await _semaphore.WaitAsync();
                 var theme = inDto.Theme;
 
                 if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == theme.Id))
@@ -434,14 +435,22 @@ public class SettingsController : BaseSettingsController
                 }
 
 
-                _settingsManager.Save(settings);
+                await _settingsManager.SaveAsync(settings);
+            }
+            catch
+            {
+                throw;
+            }
+            finally
+            {
+                _semaphore.Release();
             }
         }
 
         if (inDto.Selected.HasValue && settings.Themes.Any(r => r.Id == inDto.Selected.Value))
         {
             settings.Selected = inDto.Selected.Value;
-            _settingsManager.Save(settings);
+            await _settingsManager.SaveAsync(settings);
             await _messageService.SendAsync(MessageAction.ColorThemeChanged);
         }
 
@@ -453,7 +462,7 @@ public class SettingsController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<CustomColorThemesSettings>();
+        var settings = await _settingsManager.LoadAsync<CustomColorThemesSettings>();
 
         if (CustomColorThemesSettingsItem.Default.Any(r => r.Id == id))
         {
@@ -468,7 +477,7 @@ public class SettingsController : BaseSettingsController
            await _messageService.SendAsync(MessageAction.ColorThemeChanged);
         }
 
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         return new CustomColorThemesSettingsDto(settings, _customColorThemesSettingsHelper.Limit);
     }
@@ -481,9 +490,9 @@ public class SettingsController : BaseSettingsController
             throw new NotSupportedException("Not available.");
         }
 
-        var adminHelperSettings = _settingsManager.LoadForCurrentUser<AdminHelperSettings>();
+        var adminHelperSettings = await _settingsManager.LoadForCurrentUserAsync<AdminHelperSettings>();
         adminHelperSettings.Viewed = true;
-        _settingsManager.SaveForCurrentUser(adminHelperSettings);
+        await _settingsManager.SaveForCurrentUserAsync(adminHelperSettings);
     }
 
     ///<visible>false</visible>
@@ -535,7 +544,7 @@ public class SettingsController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new StudioDefaultPageSettings { DefaultProductID = inDto.DefaultProductID });
+        await _settingsManager.SaveAsync(new StudioDefaultPageSettings { DefaultProductID = inDto.DefaultProductID });
 
         await _messageService.SendAsync(MessageAction.DefaultStartPageSettingsUpdated);
 
@@ -543,9 +552,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPut("emailactivation")]
-    public EmailActivationSettings UpdateEmailActivationSettings(EmailActivationSettings settings)
+    public async Task<EmailActivationSettings> UpdateEmailActivationSettingsAsync(EmailActivationSettings settings)
     {
-        _settingsManager.SaveForCurrentUser(settings);
+        await _settingsManager.SaveForCurrentUserAsync(settings);
         return settings;
     }
 
@@ -738,7 +747,7 @@ public class SettingsController : BaseSettingsController
     [HttpGet("payment")]
     public async Task<object> PaymentSettingsAsync()
     {
-        var settings = _settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();
+        var settings = await _settingsManager.LoadForDefaultTenantAsync<AdditionalWhiteLabelSettings>();
         var currentQuota = await _tenantManager.GetCurrentTenantQuotaAsync();
         var currentTariff = await _tenantExtra.GetCurrentTariffAsync();
 

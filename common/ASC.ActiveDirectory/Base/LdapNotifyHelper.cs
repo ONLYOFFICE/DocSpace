@@ -57,13 +57,13 @@ public class LdapNotifyService : BackgroundService
         {
             var tId = t.Id;
 
-            var ldapSettings = settingsManager.Load<LdapSettings>(tId);
+            var ldapSettings = await settingsManager.LoadAsync<LdapSettings>(tId);
             if (!ldapSettings.EnableLdapAuthentication)
             {
                 continue;
             }
 
-            var cronSettings = settingsManager.Load<LdapCronSettings>(tId);
+            var cronSettings = await settingsManager.LoadAsync<LdapCronSettings>(tId);
             if (string.IsNullOrEmpty(cronSettings.Cron))
             {
                 continue;
@@ -101,13 +101,13 @@ public class LdapNotifyService : BackgroundService
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
-        var ldapSettings = settingsManager.Load<LdapSettings>(tenant.Id);
+        var ldapSettings = await settingsManager.LoadAsync<LdapSettings>(tenant.Id);
 
         if (!ldapSettings.EnableLdapAuthentication)
         {
-            var cronSettings = settingsManager.Load<LdapCronSettings>(tenant.Id);
+            var cronSettings = await settingsManager.LoadAsync<LdapCronSettings>(tenant.Id);
             cronSettings.Cron = "";
-            settingsManager.Save(cronSettings, tenant.Id);
+            await settingsManager.SaveAsync(cronSettings, tenant.Id);
             UnregisterAutoSync(tenant);
             return;
         }

@@ -50,9 +50,9 @@ public class CustomNavigationController : BaseSettingsController
     }
 
     [HttpGet("customnavigation/getall")]
-    public List<CustomNavigationItem> GetCustomNavigationItems()
+    public async Task<List<CustomNavigationItem>> GetCustomNavigationItemsAsync()
     {
-        return _settingsManager.Load<CustomNavigationSettings>().Items;
+        return (await _settingsManager.LoadAsync<CustomNavigationSettings>()).Items;
     }
 
     [HttpGet("customnavigation/getsample")]
@@ -62,9 +62,9 @@ public class CustomNavigationController : BaseSettingsController
     }
 
     [HttpGet("customnavigation/get/{id}")]
-    public CustomNavigationItem GetCustomNavigationItem(Guid id)
+    public async Task<CustomNavigationItem> GetCustomNavigationItemAsync(Guid id)
     {
-        return _settingsManager.Load<CustomNavigationSettings>().Items.FirstOrDefault(item => item.Id == id);
+        return (await _settingsManager.LoadAsync<CustomNavigationSettings>()).Items.FirstOrDefault(item => item.Id == id);
     }
 
     [HttpPost("customnavigation/create")]
@@ -72,7 +72,7 @@ public class CustomNavigationController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<CustomNavigationSettings>();
+        var settings = await _settingsManager.LoadAsync<CustomNavigationSettings>();
 
         var exist = false;
 
@@ -113,7 +113,7 @@ public class CustomNavigationController : BaseSettingsController
             settings.Items.Add(item);
         }
 
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         await _messageService.SendAsync(MessageAction.CustomNavigationSettingsUpdated);
 
@@ -125,7 +125,7 @@ public class CustomNavigationController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var settings = _settingsManager.Load<CustomNavigationSettings>();
+        var settings = await _settingsManager.LoadAsync<CustomNavigationSettings>();
 
         var terget = settings.Items.FirstOrDefault(item => item.Id == id);
 
@@ -138,7 +138,7 @@ public class CustomNavigationController : BaseSettingsController
         await _storageHelper.DeleteLogoAsync(terget.BigImg);
 
         settings.Items.Remove(terget);
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         await _messageService.SendAsync(MessageAction.CustomNavigationSettingsUpdated);
     }

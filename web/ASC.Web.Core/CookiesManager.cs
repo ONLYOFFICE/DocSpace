@@ -138,7 +138,7 @@ public class CookiesManager
         if (!session)
         {
             var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
-            expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
+            expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
         }
 
         return expires;
@@ -152,7 +152,7 @@ public class CookiesManager
             throw new SecurityException();
         }
 
-        var settings = _tenantCookieSettingsHelper.GetForTenant(tenant.Id);
+        var settings = await _tenantCookieSettingsHelper.GetForTenantAsync(tenant.Id);
 
         if (lifeTime > 0)
         {
@@ -164,7 +164,7 @@ public class CookiesManager
             settings.LifeTime = 0;
         }
 
-        _tenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
+        await _tenantCookieSettingsHelper.SetForTenantAsync(tenant.Id, settings);
 
         if (lifeTime > 0)
         {
@@ -174,18 +174,18 @@ public class CookiesManager
         await AuthenticateMeAndSetCookiesAsync(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
     }
 
-    public int GetLifeTime(int tenantId)
+    public async Task<int> GetLifeTimeAsync(int tenantId)
     {
-        return _tenantCookieSettingsHelper.GetForTenant(tenantId).LifeTime;
+        return (await _tenantCookieSettingsHelper.GetForTenantAsync(tenantId)).LifeTime;
     }
 
     public async Task ResetUserCookieAsync(Guid? userId = null)
     {
         var currentUserId = _securityContext.CurrentAccount.ID;
         var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
-        var settings = _tenantCookieSettingsHelper.GetForUser(userId ?? currentUserId);
+        var settings = await _tenantCookieSettingsHelper.GetForUserAsync(userId ?? currentUserId);
         settings.Index = settings.Index + 1;
-        _tenantCookieSettingsHelper.SetForUser(userId ?? currentUserId, settings);
+        await _tenantCookieSettingsHelper.SetForUserAsync(userId ?? currentUserId, settings);
 
         await _dbLoginEventsManager.LogOutAllActiveConnections(tenant, userId ?? currentUserId);
 
@@ -204,9 +204,9 @@ public class CookiesManager
             throw new SecurityException();
         }
 
-        var settings = _tenantCookieSettingsHelper.GetForTenant(tenant.Id);
+        var settings = await _tenantCookieSettingsHelper.GetForTenantAsync(tenant.Id);
         settings.Index += 1;
-        _tenantCookieSettingsHelper.SetForTenant(tenant.Id, settings);
+        await _tenantCookieSettingsHelper.SetForTenantAsync(tenant.Id, settings);
 
         await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
     }

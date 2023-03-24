@@ -82,7 +82,7 @@ public class MessageSettingsController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new StudioAdminMessageSettings { Enable = inDto.TurnOn });
+        await _settingsManager.SaveAsync(new StudioAdminMessageSettings { Enable = inDto.TurnOn });
 
         await _messageService.SendAsync(MessageAction.AdministratorMessageSettingsUpdated);
 
@@ -92,7 +92,7 @@ public class MessageSettingsController : BaseSettingsController
     [HttpGet("cookiesettings")]
     public async Task<int> GetCookieSettingsAsync()
     {
-        return _cookiesManager.GetLifeTime((await _tenantManager.GetCurrentTenantAsync()).Id);
+        return await _cookiesManager.GetLifeTimeAsync((await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
     [HttpPut("cookiesettings")]
@@ -116,7 +116,7 @@ public class MessageSettingsController : BaseSettingsController
     [HttpPost("sendadmmail")]
     public async Task<object> SendAdmMailAsync(AdminMessageSettingsRequestsDto inDto)
     {
-        var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
+        var studioAdminMessageSettings = await _settingsManager.LoadAsync<StudioAdminMessageSettings>();
         var enableAdmMess = studioAdminMessageSettings.Enable || (await _tenantExtra.IsNotPaidAsync());
 
         if (!enableAdmMess)
@@ -170,14 +170,14 @@ public class MessageSettingsController : BaseSettingsController
                 throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
             }
 
-            var settings = _settingsManager.Load<IPRestrictionsSettings>();
+            var settings = await _settingsManager.LoadAsync<IPRestrictionsSettings>();
 
             if (settings.Enable && !await _ipSecurity.VerifyAsync())
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
 
-            var trustedDomainSettings = _settingsManager.Load<StudioTrustedDomainSettings>();
+            var trustedDomainSettings = await _settingsManager.LoadAsync<StudioTrustedDomainSettings>();
             var emplType = trustedDomainSettings.InviteAsUsers ? EmployeeType.User : EmployeeType.RoomAdmin;
             if (!_coreBaseSettings.Personal)
             {
