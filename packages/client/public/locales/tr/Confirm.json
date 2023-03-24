@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Şifre başarıyla değiştirildi",
   "ConfirmOwnerPortalSuccessMessage": "DocSpace sahibi başarıyla değiştirildi. 10 saniye içinde yönlendirileceksiniz.",
-  "ConfirmOwnerPortalTitle": "DocSpace sahibini {{newOwner}} olarak değiştirmek istediğinizi lütfen onaylayın",
+  "ConfirmOwnerPortalTitle": "DocSpace sahibini {{newOwner}} olarak değiştirmek istediğinizi lütfen onaylayın.",
   "CurrentNumber": "Güncel mobil telefon numaranız",
   "DeleteProfileBtn": "Hesabımı sil",
   "DeleteProfileConfirmation": "Dikkat! Hesabınızı silmek üzeresiniz.",

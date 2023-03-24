@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Password has been successfully changed",
   "ConfirmOwnerPortalSuccessMessage": "DocSpace owner has been successfully changed. You will be redirected in 10 seconds.",
-  "ConfirmOwnerPortalTitle": "Please confirm you want to change the DocSpace owner to {{newOwner}}",
+  "ConfirmOwnerPortalTitle": "Please confirm you want to change the DocSpace owner to {{newOwner}}.",
   "CurrentNumber": "Your current mobile phone number",
   "DeleteProfileBtn": "Delete my account",
   "DeleteProfileConfirmation": "Attention! You are about to delete your account.",
@@ -18,9 +18,9 @@
   "LoginRegistryButton": "Join",
   "PassworResetTitle": "Now you can create a new password.",
   "PhoneSubtitle": "The two-factor authentication is enabled to provide additional security. Enter your mobile phone number to continue working in the DocSpace. Mobile phone number must be entered using an international format with the country code.",
-  "PortalContinueTitle": "Please confirm that you want to reactivate your DocSpace",
-  "PortalDeactivateTitle": "Please confirm that you want to deactivate your DocSpace",
-  "PortalRemoveTitle": "Please confirm that you want to delete your DocSpace",
+  "PortalContinueTitle": "Please confirm that you want to reactivate your DocSpace.",
+  "PortalDeactivateTitle": "Please confirm that you want to deactivate your DocSpace.",
+  "PortalRemoveTitle": "Please confirm that you want to delete your DocSpace.",
   "Reactivate": "Reactivate",
   "SetAppButton": "Connect app",
   "SetAppDescription": "Two-factor authentication is enabled. Configure your authenticator app to continue working in the DocSpace. You can use Google Authenticator for <1>Android</1> and <4>iOS</4> or Authenticator for <8>Windows Phone</8>.",
@@ -28,5 +28,5 @@
   "SetAppTitle": "Configure your authenticator application",
   "SuccessDeactivate": "Your account has been successfully deactivated. In 10 seconds you will be redirected to the <1>site</1>.",
   "SuccessReactivate": "Your account has been successfully reactivated. In 10 seconds you will be redirected to the <1>portal</1>.",
-  "WelcomeUser": "Welcome to our DocSpace! To get started, register or log in via social networks."
+  "WelcomeUser": "Welcome to our DocSpace!\nTo get started, register or log in via social networks."
 }

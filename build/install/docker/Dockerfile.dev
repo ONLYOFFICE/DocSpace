@@ -129,8 +129,8 @@ ENV DNS_NAMESERVER=127.0.0.11 \
     MAP_HASH_BUCKET_SIZE=""
 
 RUN apt-get -y update && \
-    apt-get install -yq vim && \
-    apt-get install -y dos2unix && \
+    apt-get install -yq vim \
+    dos2unix && \
     rm -rf /var/lib/apt/lists/* && \
     rm -rf /usr/share/nginx/html/* 
 
@@ -164,6 +164,7 @@ RUN chown nginx:nginx /etc/nginx/* -R && \
     sed -i 's/127.0.0.1:5011/$service_login/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5001/$service_client/' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/127.0.0.1:5033/$service_healthchecks/' /etc/nginx/conf.d/onlyoffice.conf && \
+    sed -i 's/$public_root/\/var\/www\/public\//' /etc/nginx/conf.d/onlyoffice.conf && \
     sed -i 's/172.*/$document_server;/' /etc/nginx/conf.d/onlyoffice.conf
 
 ## ASC.Data.Backup.BackgroundTasks ##
@@ -331,7 +332,7 @@ ENV SRC_PATH=${SRC_PATH}
 WORKDIR ${BUILD_PATH}/services/ASC.Migration.Runner/
 
 RUN apt-get update && \
-    apt-get install -y dos2unix
+    apt-get install -yq dos2unix
 
 COPY docker-migration-entrypoint.sh docker-migration-entrypoint.sh
 
