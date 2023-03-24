@@ -61,10 +61,10 @@ const ChangeUserTypeEvent = ({
   const onChangeUserType = () => {
     onClosePanel();
     updateUserType(toType, userIDs, peopleFilter, fromType)
-      .then(() => {
+      .then((users) => {
         toastr.success(t("SuccessChangeUserType"));
 
-        successCallback && successCallback();
+        successCallback && successCallback(users);
       })
       .catch((err) => {
         toastr.error(

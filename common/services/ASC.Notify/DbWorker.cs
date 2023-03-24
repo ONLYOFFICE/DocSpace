@@ -56,6 +56,7 @@ public class DbWorker
             using var tx = await dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
             var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
+            notifyQueue.Attachments = JsonConvert.SerializeObject(m.Attachments);
 
             notifyQueue = dbContext.NotifyQueue.Add(notifyQueue).Entity;
             await dbContext.SaveChangesAsync();

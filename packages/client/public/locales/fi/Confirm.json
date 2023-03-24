@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Salasanan vaihtaminen onnistui",
   "ConfirmOwnerPortalSuccessMessage": "DocSpace omistajan vaihto onnistui. 10 sekunnin kuluttua sinut uudelleen ohjataan.",
-  "ConfirmOwnerPortalTitle": "Vahvista, että haluat vaihtaa DocSpace omistajaksi henkilön {{newOwner}}",
+  "ConfirmOwnerPortalTitle": "Vahvista, että haluat vaihtaa DocSpace omistajaksi henkilön {{newOwner}}.",
   "CurrentNumber": "Nykyinen matkapuhelinnumerosi",
   "DeleteProfileBtn": "Poista tilini",
   "DeleteProfileConfirmation": "Huomio! Olet poistamassa tilisi.",
@@ -22,5 +22,5 @@
   "SetAppDescription": "Kaksivaiheinen todennus on käytössä. Määritä autentikointisovelluksesi jatkaaksesi työskentelyä DocSpacessa. Voit käyttää Google Authenticatoria <1> Android</1> ja <4> iOS</4>-järjestelmällä tai Authenticatoria <8> Windows-puhelimella</8>.",
   "SetAppInstallDescription": "Jos haluat yhdistää sovelluksen, skannaa QR-koodi tai kirjoita salainen avaimesi <1> {{secretKey}} </1> manuaalisesti ja kirjoita sitten 6-numeroinen koodi sovelluksestasi alla olevaan kenttään.",
   "SetAppTitle": "Määritä todennussovelluksesi",
-  "WelcomeUser": "Tervetuloa mukaan portaaliimme!\nAloita rekisteröityminen tai kirjautuminen sosiaalisen verkostoitumisen kautta."
+  "WelcomeUser": "Tervetuloa DocSpaceen!\nAloita rekisteröityminen tai kirjautuminen sosiaalisen verkostoitumisen kautta."
 }

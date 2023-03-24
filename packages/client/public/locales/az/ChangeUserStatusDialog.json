@@ -2,6 +2,6 @@
   "ChangeUserStatusDialog": "{{ userStatus }} olan istifadəçilər {{ status }} olacaqlar.",
   "ChangeUserStatusDialogHeader": "İstifadəçi statusunun dəyişdirilməsi",
   "ChangeUsersActiveStatus": "iz ver",
-  "ChangeUsersDisableStatus": "Söndürülüb",
+  "ChangeUsersDisableStatus": "söndürülüb",
   "ChangeUsersStatusButton": "İstifadəçi statusunun dəyişdirilməsi"
 }
