@@ -143,10 +143,6 @@ const InfoPanel = ({
   canDisplay,
   viewAs,
 }) => {
-  if (!isVisible || !canDisplay) return null;
-  if ((isTablet() || isMobile || isMobileUtils()) && isMobileHidden)
-    return null;
-
   const closeInfoPanel = () => setIsVisible(false);
 
   useEffect(() => {
@@ -198,7 +194,13 @@ const InfoPanel = ({
     );
   };
 
-  return isMobileOnly ? renderPortalInfoPanel() : infoPanelComponent;
+  return !isVisible ||
+    !canDisplay ||
+    ((isTablet() || isMobile || isMobileUtils()) && isMobileHidden)
+    ? null
+    : isMobileOnly
+    ? renderPortalInfoPanel()
+    : infoPanelComponent;
 };
 
 InfoPanel.propTypes = {
@@ -215,12 +217,8 @@ StyledInfoPanel.defaultProps = { theme: Base };
 InfoPanel.defaultProps = { theme: Base };
 
 export default inject(({ auth }) => {
-  const {
-    isVisible,
-    isMobileHidden,
-    setIsVisible,
-    getCanDisplay,
-  } = auth.infoPanelStore;
+  const { isVisible, isMobileHidden, setIsVisible, getCanDisplay } =
+    auth.infoPanelStore;
 
   const canDisplay = getCanDisplay();
 
