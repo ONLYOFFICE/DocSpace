@@ -3,7 +3,6 @@ import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 import { hugeMobile } from "@docspace/components/utils/device";
 import { getLogoFromPath } from "@docspace/common/utils";
-import { Dark } from "@docspace/components/themes";
 
 const StyledNav = styled.div`
   display: none;
@@ -22,7 +21,11 @@ const StyledNav = styled.div`
   }
 `;
 
-const SimpleNav = ({ theme, logoUrls }) => {
+interface ISimpleNav extends IInitialState {
+  theme: IUserTheme;
+}
+
+const SimpleNav = ({ theme, logoUrls }: ISimpleNav) => {
   const logo = logoUrls && Object.values(logoUrls)[0];
 
   const logoUrl = !logo

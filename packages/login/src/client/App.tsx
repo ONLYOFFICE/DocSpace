@@ -10,7 +10,10 @@ import { wrongPortalNameUrl } from "@docspace/common/constants";
 
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
+  theme: IUserTheme;
+  setTheme: (theme: IUserTheme) => void;
 }
+
 const App: React.FC<ILoginProps> = (props) => {
   const loginStore = initLoginStore(props?.currentColorScheme || {});
 

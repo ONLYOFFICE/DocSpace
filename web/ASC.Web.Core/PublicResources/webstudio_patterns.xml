@@ -457,45 +457,44 @@ $activity.Key
     <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_opensource_guest_activation_v11|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- saas guest welcome v10 -->
-  <pattern id="saas_guest_welcome_v115" sender="email.sender">
-    <subject resource="|subject_saas_guest_welcome_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_saas_guest_welcome_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+  <!-- saas guest welcome v1 -->
+  <pattern id="saas_guest_welcome_v1" sender="email.sender">
+    <subject resource="|subject_saas_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_saas_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
-  <pattern id="saas_guest_welcome_v115" sender="messanger.sender">
+  <pattern id="saas_guest_welcome_v1" sender="messanger.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_saas_guest_welcome_v115|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_saas_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- enterprise guest welcome v10 -->
-  <pattern id="enterprise_guest_welcome_v10" sender="email.sender">
-    <subject resource="|subject_enterprise_guest_welcome_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_guest_welcome_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+  <!-- enterprise guest welcome v1 -->
+  <pattern id="enterprise_guest_welcome_v1" sender="email.sender">
+    <subject resource="|subject_enterprise_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
-  <pattern id="enterprise_guest_welcome_v10" sender="messanger.sender">
+  <pattern id="enterprise_guest_welcome_v1" sender="messanger.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_guest_welcome_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- enterprise whitelabel guest welcome v10 -->
-  <pattern id="enterprise_whitelabel_guest_welcome_v10" sender="email.sender">
-    <subject resource="|subject_enterprise_whitelabel_guest_welcome_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_guest_welcome_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+  <!-- enterprise whitelabel guest welcome v1 -->
+  <pattern id="enterprise_whitelabel_guest_welcome_v1" sender="email.sender">
+    <subject resource="|subject_enterprise_whitelabel_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
-  <pattern id="enterprise_whitelabel_guest_welcome_v10" sender="messanger.sender">
+  <pattern id="enterprise_whitelabel_guest_welcome_v1" sender="messanger.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_guest_welcome_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_guest_welcome_v10|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_enterprise_whitelabel_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
-  <!-- opensource guest welcome v11 -->
-  <pattern id="opensource_guest_welcome_v11" sender="email.sender">
-    <subject resource="|subject_opensource_guest_welcome_v11|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
-    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_opensource_guest_welcome_v11|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+  <!-- opensource guest welcome v1 -->
+  <pattern id="opensource_guest_welcome_v1" sender="email.sender">
+    <subject resource="|subject_opensource_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.TextileStyler,ASC.Notify.Textile" resource="|pattern_opensource_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
-  <pattern id="opensource_guest_welcome_v11" sender="messanger.sender">
+  <pattern id="opensource_guest_welcome_v1" sender="messanger.sender">
     <subject />
-    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_opensource_guest_welcome_v11|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
+    <body styler="ASC.Notify.Textile.JabberStyler,ASC.Notify.Textile" resource="|pattern_opensource_guest_welcome_v1|ASC.Web.Core.PublicResources.WebstudioNotifyPatternResource,ASC.Web.Core" />
   </pattern>
 
   <!-- enterprise admin user docs tips v1 for DocSpace -->
