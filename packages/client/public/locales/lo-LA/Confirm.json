@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "ລະຫັດຜ່ານໄດ້ຖືກປ່ຽນແລ້ວ",
   "ConfirmOwnerPortalSuccessMessage": "ປ່ຽນເຈົ້າຂອງ DocSpace ສຳເລັດ. ໃນ 10 ວິນາທີທ່ານຈະໄດ້ຮັບການປ່ຽນເສັ້ນທາງ.",
-  "ConfirmOwnerPortalTitle": "ກະລຸນາຢືນຢັນວ່າທ່ານຕ້ອງການທີ່ຈະປ່ຽນຜູ້ໃຊ້ເກົ່າ DocSpace owner ເປັນ {{newOwner}}",
+  "ConfirmOwnerPortalTitle": "ກະລຸນາຢືນຢັນວ່າທ່ານຕ້ອງການທີ່ຈະປ່ຽນຜູ້ໃຊ້ເກົ່າ DocSpace owner ເປັນ {{newOwner}}.",
   "CurrentNumber": "ເບີໂທລະສັບມືຖືປະຈຸບັນຂອງເຈົ້າ",
   "DeleteProfileBtn": "ລຶບບັນຊີຂອງຂ້ອຍ",
   "DeleteProfileConfirmation": "ຮຽນທ່ານ!ກ່ຽວກັບການລຶບບັນຊີຂອງທ່ານ",

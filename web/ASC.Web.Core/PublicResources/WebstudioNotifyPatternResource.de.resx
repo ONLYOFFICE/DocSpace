@@ -296,19 +296,6 @@ Der Link ist nur 7 Tage gültig.
 
 Sie werden weitere Tipps zur Verwendung Ihres Web-Office erhalten. Sie können die Abonnements auf Ihrer Profilseite jederzeit kündigen und wieder aktivieren.</value>
   </data>
-  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Ihr Gast-Profil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Nun können Sie:
-
-# Ihr "Profil":"$MyStaffLink" bearbeiten.
-# Den Inhalt aus "Community":"${__VirtualRootPath}/Products/Community/" und "Projects":"${__VirtualRootPath}/Products/Projects/"  betrachten und kommentieren.
-# Hinzufügen und Herunterladen von Dateien aus "Documents":"${__VirtualRootPath}/Products/Files/".
-# Ihren Zeitplan mit "Calendar":"${__VirtualRootPath}/addons/calendar/" organisieren.
-# Mit "Chat":"${__VirtualRootPath}/addons/talk/" Sofortnachrichten austauschen.
-
-$GreenButton</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Hallo, $UserName!
 
@@ -319,19 +306,6 @@ $GreenButton
 Der Link ist nur 7 Tage gültig.
 
 Sie werden weitere Tipps zur Verwendung Ihres Web-Office erhalten. Sie können die Abonnements auf Ihrer Profilseite jederzeit kündigen und wieder aktivieren.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Ihr Gast-Profil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Nun können Sie:
-
-# Ihr "Profil":"$MyStaffLink" bearbeiten.
-# Den Inhalt aus "Community":"${__VirtualRootPath}/Products/Community/" und "Projects":"${__VirtualRootPath}/Products/Projects/"  betrachten und kommentieren.
-# Hinzufügen und Herunterladen von Dateien aus "Documents":"${__VirtualRootPath}/Products/Files/".
-# Ihren Zeitplan mit "Calendar":"${__VirtualRootPath}/addons/calendar/" organisieren.
-# Mit "Chat":"${__VirtualRootPath}/addons/talk/" Sofortnachrichten austauschen.
-
-$GreenButton</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Nachricht von dem "${__VirtualRootPath}":"${__VirtualRootPath}" Portal
@@ -462,25 +436,6 @@ Sie wurden zu "${__VirtualRootPath}":"${__VirtualRootPath}" als Gast eingeladen.
 Der Link ist nur 7 Tage lang gültig.
 
 Sie erhalten mehr Tipps für Ihr Online-Büro. Sie können dies jederzeit auf Ihrer Profil-Seite deaktivieren oder wieder aktivieren.</value>
-  </data>
-  <data name="pattern_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Hallo $UserName!
-
-Sie sind nun ein Gast-Nutzer bei "${__VirtualRootPath}":"${__VirtualRootPath}". Nun können Sie:
-
-*Stellen Sie sich dem Team vor*, indem Sie Ihr Profil bearbeiten.
-
-*Betrachten Sie geteilte Dokumente*, laden Sie sie herunter und laden Sie neue Dateien in geteilte Verzeichnisse hoch.
-
-*Betrachten und Kommentieren Sie Projekte*, Blogs und Foren-Posts, zu denen Sie eingeladen wurden.
-
-*Senden Sie Sofortnachrichten* und teilen Sie Dateien über Talk.
-
-*Nutzen Sie persönliche oder geteilte Kalender*, um Besprechungen zu organisieren, Erinnerungen zu setzen und Todo-Listen zu erstellen!
-
-Um auf Ihr Online-Office zuzugreifen, folgen Sie "diesem Link":"${__VirtualRootPath}".
-
-Besuchen Sie die "offizielle ONLYOFFICE Webseite":"https://www.onlyoffice.com/" wenn Sie Ihr eigenes Online-Office nutzen möchten.</value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Hallo, $UserName
@@ -831,25 +786,6 @@ Beste Grüße,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Ihr Profil wurde als Gast zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt.  Jetzt können Sie:
-
-# Ihr "Profil":"$MyStaffLink" bearbeiten.
-# Inhalte in Modulen "Community":"${__VirtualRootPath}/Products/Community/" und "Projekte":"${__VirtualRootPath}/Products/Projects/" sehen und kommentieren.
-# Dateien im Modul "Dokumente":"${__VirtualRootPath}/Products/Files/" hoch- und herunterladen.
-# Arbeitspläne mit dem integrierten "Kalender":"${__VirtualRootPath}/addons/calendar/" organisieren.
-# "Chat":"${__VirtualRootPath}/addons/talk/" verwenden, um Sofortnachrichten auszutauschen.
-
-$GreenButton
-
-Bei Schwierigkeiten besuchen Sie unser "Hilfe-Center":"${__HelpLink}".
-
-Beste Grüße,
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.Benachrichtigung über die Profiländerung des Portals "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -958,14 +894,8 @@ Dieser Link ist nur 7 Tage gültig.</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Willkommen in Ihrem Web-Office</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Willkommen in Ihrem Web-Office</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Benutzermeldung an Administratoren
@@ -991,9 +921,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Willkommen in Ihrem Web-Office</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Willkommen auf ONLYOFFICE für persönlichen Gebrauch</value>
@@ -1051,9 +978,6 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>${__VirtualRootPath} beitreten</value>
-  </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Willkommen auf ONLYOFFICE</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} Benachrichtigung über die Profiländerung des Portals</value>

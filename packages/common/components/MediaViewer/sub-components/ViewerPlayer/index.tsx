@@ -550,7 +550,10 @@ function ViewerPlayer({
           )}
         </VideoWrapper>
 
-        <ViewerLoader isLoading={isLoading || (isWaiting && isPlaying)} />
+        <ViewerLoader
+          isLoading={isLoading || (isWaiting && isPlaying)}
+          isError={isError}
+        />
       </ContainerPlayer>
       {isError ? (
         <PlayerMessageError
