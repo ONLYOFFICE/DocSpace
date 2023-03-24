@@ -878,20 +878,17 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///1. Edit your profile. 
-        ///2. View and comment the content available in the Community and Projects.
-        ///3. Add and download files available for you in the Documents.
-        ///4. Organize your schedule with the built-in Calendar.
-        ///5. Use Chat to exchange instant messages.
+        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///To access your web-office, follow the link
-        ///$GreenButton.
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_guest_welcome_v10 {
+        public static string pattern_enterprise_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -994,16 +991,17 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///# Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
-        ///# View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
-        ///# Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
-        ///# Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPath [rest of string was truncated]&quot;;.
+        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_enterprise_whitelabel_guest_welcome_v10 {
+        public static string pattern_enterprise_whitelabel_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_enterprise_whitelabel_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("pattern_enterprise_whitelabel_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -1314,21 +1312,17 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///You are now a guest user at&quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*Introduce yourself* to the team by editing your profile.
+        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*View shared documents* as well as download them and upload new files to shared folders.
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*View and comment projects* you’ve been invited to as well as blog and forum posts.
-        ///
-        ///*Exchange instant messages* and quickly share files using Talk.
-        ///
-        ///*Use personal and shared calendars* to arrange meetings, set reminders, and create to-do lists [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_opensource_guest_welcome_v11 {
+        public static string pattern_opensource_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_opensource_guest_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("pattern_opensource_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2023,16 +2017,17 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello, $UserName!
         ///
-        ///Your guest profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;.  Now you can:
+        ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///1. Edit your &quot;profile&quot;:&quot;$MyStaffLink&quot;.
-        ///2. View and comment the content available in the &quot;Community&quot;:&quot;${__VirtualRootPath}/Products/Community/&quot; and &quot;Projects&quot;:&quot;${__VirtualRootPath}/Products/Projects/&quot;.
-        ///3. Add and download files available for you in the &quot;Documents&quot;:&quot;${__VirtualRootPath}/Products/Files/&quot;.
-        ///4. Organize your schedule with the built-in &quot;Calendar&quot;:&quot;${__VirtualRootPa [rest of string was truncated]&quot;;.
+        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///
+        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///
+        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string pattern_saas_guest_welcome_v115 {
+        public static string pattern_saas_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("pattern_saas_guest_welcome_v115", resourceCulture);
+                return ResourceManager.GetString("pattern_saas_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2456,11 +2451,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_guest_welcome_v10 {
+        public static string subject_enterprise_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2510,11 +2505,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_enterprise_whitelabel_guest_welcome_v10 {
+        public static string subject_enterprise_whitelabel_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_enterprise_whitelabel_guest_welcome_v10", resourceCulture);
+                return ResourceManager.GetString("subject_enterprise_whitelabel_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2645,11 +2640,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your web-office.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_opensource_guest_welcome_v11 {
+        public static string subject_opensource_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_opensource_guest_welcome_v11", resourceCulture);
+                return ResourceManager.GetString("subject_opensource_guest_welcome_v1", resourceCulture);
             }
         }
         
@@ -2942,11 +2937,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Welcome to your ONLYOFFICE.
+        ///   Looks up a localized string similar to Welcome to ONLYOFFICE DocSpace!.
         /// </summary>
-        public static string subject_saas_guest_welcome_v115 {
+        public static string subject_saas_guest_welcome_v1 {
             get {
-                return ResourceManager.GetString("subject_saas_guest_welcome_v115", resourceCulture);
+                return ResourceManager.GetString("subject_saas_guest_welcome_v1", resourceCulture);
             }
         }
         

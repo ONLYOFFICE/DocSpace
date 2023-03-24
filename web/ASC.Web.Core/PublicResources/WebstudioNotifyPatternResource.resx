@@ -344,19 +344,26 @@ The link is only valid for 7 days.
 
 You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
   </data>
-  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-Your guest profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-1. Edit your profile. 
-2. View and comment the content available in the Community and Projects.
-3. Add and download files available for you in the Documents.
-4. Organize your schedule with the built-in Calendar.
-5. Use Chat to exchange instant messages.
+*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-To access your web-office, follow the link
-$GreenButton</value>
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Hello, $UserName!
@@ -369,18 +376,26 @@ The link is only valid for 7 days.
 
 You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
   </data>
-  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-Your guest profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-# Edit your "profile":"$MyStaffLink".
-# View and comment the content available in the "Community":"${__VirtualRootPath}/Products/Community/" and "Projects":"${__VirtualRootPath}/Products/Projects/".
-# Add and download files available for you in the "Documents":"${__VirtualRootPath}/Products/Files/".
-# Organize your schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-# Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
+*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-$GreenButton</value>
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Message from the "${__VirtualRootPath}":"${__VirtualRootPath}" portal
@@ -517,25 +532,26 @@ The link is only valid for 7 days.
 
 You will get more tips on how to use your web-office. You can cancel the subscriptions on your Profile page at any moment as well as re-enable them.</value>
   </data>
-  <data name="pattern_opensource_guest_welcome_v11" xml:space="preserve">
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-You are now a guest user at"${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*Introduce yourself* to the team by editing your profile.
+*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*View shared documents* as well as download them and upload new files to shared folders.
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*View and comment projects* you’ve been invited to as well as blog and forum posts.
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*Exchange instant messages* and quickly share files using Talk.
+*# Connect any cloud storage* and work without switching between apps. 
 
-*Use personal and shared calendars* to arrange meetings, set reminders, and create to-do lists!
+$GreenButton
 
-To access your web-office, follow "the link":"${__VirtualRootPath}".
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
 
-If you want to create your own web-office, visit "ONLYOFFICE official website":"https://www.onlyoffice.com/". 
-</value>
+Truly yours, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Hello, $UserName
@@ -895,22 +911,24 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
 
-Your guest profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}".  Now you can:
+Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-1. Edit your "profile":"$MyStaffLink".
-2. View and comment the content available in the "Community":"${__VirtualRootPath}/Products/Community/" and "Projects":"${__VirtualRootPath}/Products/Projects/".
-3. Add and download files available for you in the "Documents":"${__VirtualRootPath}/Products/Files/".
-4. Organize your schedule with the built-in "Calendar":"${__VirtualRootPath}/addons/calendar/".
-5. Use "Chat":"${__VirtualRootPath}/addons/talk/" to exchange instant messages.
+*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+
+*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+
+*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+
+*# Connect any cloud storage* and work without switching between apps. 
 
 $GreenButton
 
-If you need help, browse our "Help Center":"${__HelpLink}".
+If you need help, browse our "Help Center":"https://helpcenter.onlyoffice.com/" or ask our "support team":"https://www.onlyoffice.com/support-contact-form.aspx".
 
-Truly yours,
+Truly yours, 
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
@@ -1033,14 +1051,14 @@ The link is only valid for 7 days.</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Welcome to your web-office</value>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Welcome to your web-office</value>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>User message to administrators</value>
@@ -1066,8 +1084,8 @@ The link is only valid for 7 days.</value>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Welcome to your web-office</value>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Welcome to ONLYOFFICE for personal use!</value>
@@ -1126,8 +1144,8 @@ The link is only valid for 7 days.</value>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Join ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Welcome to your ONLYOFFICE</value>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Welcome to ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portal profile change notification</value>
