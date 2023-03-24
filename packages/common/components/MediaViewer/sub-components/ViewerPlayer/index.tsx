@@ -68,6 +68,8 @@ function ViewerPlayer({
   const containerRef = useRef<HTMLDivElement>(null);
   const playerWrapperRef = useRef<HTMLDivElement>(null);
 
+  const isDurationInfinityRef = useRef<boolean>(false);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
@@ -323,7 +325,7 @@ function ViewerPlayer({
     });
   };
 
-  const handleResize = (event: any) => {
+  const handleResize = () => {
     const target = videoRef.current;
 
     if (!target || isLoading) return;
@@ -343,18 +345,24 @@ function ViewerPlayer({
     target.playbackRate = 1;
 
     if (target.duration === Infinity) {
+      isDurationInfinityRef.current = true;
       target.currentTime = Number.MAX_SAFE_INTEGER;
+      return;
     }
+    setDuration(target.duration);
+    setIsLoading(false);
   };
 
   const handleDurationChange = (
     event: React.SyntheticEvent<HTMLVideoElement, Event>
   ) => {
     const target = event.target as HTMLVideoElement;
-    if (!Number.isFinite(target.duration)) return;
+    if (!Number.isFinite(target.duration) || !isDurationInfinityRef.current)
+      return;
 
-    setDuration(target.duration);
     target.currentTime = 0;
+    isDurationInfinityRef.current = false;
+    setDuration(target.duration);
     setIsLoading(false);
   };
 
