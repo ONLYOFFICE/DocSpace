@@ -341,7 +341,19 @@ function ViewerPlayer({
     target.muted = isMuted;
     target.playbackRate = 1;
 
+    if (target.duration === Infinity) {
+      target.currentTime = Number.MAX_SAFE_INTEGER;
+    }
+  };
+
+  const handleDurationChange = (
+    event: React.SyntheticEvent<HTMLVideoElement, Event>
+  ) => {
+    const target = event.target as HTMLVideoElement;
+    if (!Number.isFinite(target.duration)) return;
+
     setDuration(target.duration);
+    target.currentTime = 0;
     setIsLoading(false);
   };
 
@@ -530,12 +542,14 @@ function ViewerPlayer({
             preload="metadata"
             onClick={handleClickVideo}
             onEnded={handleVideoEnded}
+            onDurationChange={handleDurationChange}
             onTimeUpdate={handleTimeUpdate}
             onPlaying={() => setIsWaiting(false)}
             onWaiting={() => setIsWaiting(true)}
-            onError={() => {
-              console.error("video error");
+            onError={(error) => {
+              console.error("video error", error);
               setIsError(true);
+              setIsLoading(false);
             }}
             onLoadedMetadata={handleLoadedMetaDataVideo}
           />
