@@ -96,7 +96,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
             async r => await Task.FromResult(r.Size),
             async (userId, items) =>
             {
-                var user = _userManager.GetUsers(userId);
+                var user = await _userManager.GetUsersAsync(userId);
                 var item = new UsageSpaceStatItem { SpaceUsage = await items.SumAsync() };
                 if (user.Equals(Constants.LostUser))
                 {

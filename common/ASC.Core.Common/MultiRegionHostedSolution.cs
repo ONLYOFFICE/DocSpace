@@ -128,9 +128,9 @@ public class MultiRegionHostedSolution
         return await GetRegionService(region).SaveTenantAsync(tenant);
     }
 
-    public string CreateAuthenticationCookie(string region, int tenantId, Guid userId)
+    public async Task<string> CreateAuthenticationCookieAsync(string region, int tenantId, Guid userId)
     {
-        return GetRegionService(region).CreateAuthenticationCookie(_cookieStorage, tenantId, userId);
+        return await GetRegionService(region).CreateAuthenticationCookieAsync(_cookieStorage, tenantId, userId);
     }
 
     public Task<Tariff> GetTariffAsync(string region, int tenantId, bool withRequestToPaymentSystem = true)

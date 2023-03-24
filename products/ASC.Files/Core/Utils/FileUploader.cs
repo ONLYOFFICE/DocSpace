@@ -179,7 +179,7 @@ public class FileUploader
     {
         return file != null
                && await _fileSecurity.CanEditAsync(file)
-               && !_userManager.IsUser(_authContext.CurrentAccount.ID)
+               && !await _userManager.IsUserAsync(_authContext.CurrentAccount.ID)
                && !await _entryManager.FileLockedForMeAsync(file.Id)
                && !_fileTracker.IsEditing(file.Id)
                && file.RootFolderType != FolderType.TRASH

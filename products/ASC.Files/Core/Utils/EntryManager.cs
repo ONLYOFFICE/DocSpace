@@ -229,7 +229,7 @@ public class EntryStatusManager
                 var lockedBy = lockedTag.Owner;
                 file.Locked = lockedBy != Guid.Empty;
                 file.LockedBy = lockedBy != Guid.Empty && lockedBy != _authContext.CurrentAccount.ID
-                    ? _global.GetUserName(lockedBy)
+                    ? await _global.GetUserNameAsync(lockedBy)
                     : null;
 
                 continue;
@@ -393,7 +393,7 @@ public class EntryManager
 
         var entries = new List<FileEntry>();
 
-        searchInContent = searchInContent && filterType != FilterType.ByExtension && !Equals(parent.Id, _globalFolderHelper.FolderTrash);
+        searchInContent = searchInContent && filterType != FilterType.ByExtension && !Equals(parent.Id, await _globalFolderHelper.FolderTrashAsync);
 
         if (parent.FolderType == FolderType.Projects && parent.Id.Equals(await _globalFolderHelper.FolderProjectsAsync))
         {
@@ -808,9 +808,9 @@ public class EntryManager
 
         if (subjectId != Guid.Empty)
         {
-            entries = entries.Where(f =>
+            entries = entries.WhereAwait(async f =>
                                     subjectGroup
-                                        ? _userManager.GetUsersByGroup(subjectId).Any(s => s.Id == f.CreateBy)
+                                        ? (await _userManager.GetUsersByGroupAsync(subjectId)).Any(s => s.Id == f.CreateBy)
                                         : f.CreateBy == subjectId
                 );
         }
@@ -1109,7 +1109,7 @@ public class EntryManager
 
             if (sourceFile.ProviderEntry)
             {
-                var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+                var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
                 var displayedName = user.DisplayUserName(_displayUserSettingsHelper);
 
                 title += $" ({displayedName})";
@@ -1293,7 +1293,7 @@ public class EntryManager
             }
             //todo: think about right to create in folder
 
-            var title = properties.FormFilling.GetTitleByMask(sourceFile.Title);
+            var title = await properties.FormFilling.GetTitleByMaskAsync(sourceFile.Title);
 
             var submitFile = new File<TSource>
             {
@@ -1358,7 +1358,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditAsync(file) || await _userManager.IsUserAsync(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1598,7 +1598,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && !editLink && (!await _fileSecurity.CanEditHistoryAsync(fromFile) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
+        if (checkRight && !editLink && (!await _fileSecurity.CanEditHistoryAsync(fromFile) || await _userManager.IsUserAsync(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1733,7 +1733,7 @@ public class EntryManager
             throw new FileNotFoundException(FilesCommonResource.ErrorMassage_FileNotFound);
         }
 
-        if (checkRight && (!await _fileSecurity.CanEditHistoryAsync(fileVersion) || _userManager.IsUser(_authContext.CurrentAccount.ID)))
+        if (checkRight && (!await _fileSecurity.CanEditHistoryAsync(fileVersion) || await _userManager.IsUserAsync(_authContext.CurrentAccount.ID)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_EditFile);
         }
@@ -1796,7 +1796,7 @@ public class EntryManager
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }
 
-        if (!await _fileSecurity.CanDeleteAsync(file) && _userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (!await _fileSecurity.CanDeleteAsync(file) && await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_RenameFile);
         }

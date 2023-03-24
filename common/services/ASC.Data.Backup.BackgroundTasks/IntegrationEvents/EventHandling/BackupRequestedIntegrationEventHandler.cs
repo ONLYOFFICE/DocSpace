@@ -67,7 +67,7 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
             }
 
             await _tenantManager.SetCurrentTenantAsync(@event.TenantId);
-            await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
+            await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(@event.TenantId, @event.CreateBy));
 
             if (@event.IsScheduled)
             {

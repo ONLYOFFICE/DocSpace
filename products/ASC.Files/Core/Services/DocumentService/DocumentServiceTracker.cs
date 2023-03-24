@@ -365,7 +365,7 @@ public class DocumentServiceTrackerHelper
         {
             await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
 
-            user = _userManager.GetUsers(userId);
+            user = await _userManager.GetUsersAsync(userId);
             var culture = string.IsNullOrEmpty(user.CultureName) ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;
@@ -485,7 +485,7 @@ public class DocumentServiceTrackerHelper
         {
             await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
 
-            var user = _userManager.GetUsers(userId);
+            var user = await _userManager.GetUsersAsync(userId);
             var culture = string.IsNullOrEmpty(user.CultureName) ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
             Thread.CurrentThread.CurrentCulture = culture;
             Thread.CurrentThread.CurrentUICulture = culture;

@@ -337,8 +337,8 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <category>Folders</category>
     /// <returns>Trash folder contents</returns>
     [HttpGet("@trash")]
-    public Task<FolderContentDto<int>> GetTrashFolderAsync(Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withsubfolders)
+    public async Task<FolderContentDto<int>> GetTrashFolderAsync(Guid? userIdOrGroupId, FilterType? filterType, bool? searchInContent, bool? withsubfolders)
     {
-        return _foldersControllerHelperInt.GetFolderAsync(Convert.ToInt32(_globalFolderHelper.FolderTrash), userIdOrGroupId, filterType, default, searchInContent, withsubfolders, false);
+        return await _foldersControllerHelperInt.GetFolderAsync(Convert.ToInt32(await _globalFolderHelper.FolderTrashAsync), userIdOrGroupId, filterType, default, searchInContent, withsubfolders, false);
     }
 }

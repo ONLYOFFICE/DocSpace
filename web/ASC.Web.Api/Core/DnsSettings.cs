@@ -89,7 +89,7 @@ public class DnsSettings
                 {
                     var portalAddress = $"http://{tenant.Alias ?? string.Empty}.{_coreSettings.BaseDomain}";
 
-                    var u = _userManager.GetUsers(tenant.OwnerId);
+                    var u = await _userManager.GetUsersAsync(tenant.OwnerId);
                     await _studioNotifyService.SendMsgDnsChangeAsync(tenant, await GenerateDnsChangeConfirmUrlAsync(u.Email, dnsName, tenant.Alias, ConfirmType.DnsChange), portalAddress, dnsName);
 
                     await _messageService.SendAsync(MessageAction.DnsSettingsUpdated);

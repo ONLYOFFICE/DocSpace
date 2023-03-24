@@ -165,28 +165,28 @@ public class WebItemSecurity
                     webitem.ID == WebItemManager.PeopleProductID ||
                     webitem.ID == WebItemManager.BirthdaysProductID ||
                     webitem.ID == WebItemManager.MailProductID) &&
-                    _userManager.IsUser(@for))
+                    await _userManager.IsUserAsync(@for))
                 {
                     // hack: crm, people, birtthday and mail products not visible for collaborators
                     result = false;
                 }
                 else if ((webitem.ID == WebItemManager.CalendarProductID ||
                           webitem.ID == WebItemManager.TalkProductID) &&
-                         _userManager.IsOutsider(@for))
+                         await _userManager.IsOutsiderAsync(@for))
                 {
                     // hack: calendar and talk products not visible for outsider
                     result = false;
                 }
                 else if (webitem is IModule)
                 {
-                    result = await _permissionContext.PermissionResolver.CheckAsync(_authentication.GetAccountByID(tenant.Id, @for), securityObj, null, _read) &&
+                    result = await _permissionContext.PermissionResolver.CheckAsync(await _authentication.GetAccountByIDAsync(tenant.Id, @for), securityObj, null, _read) &&
                         await IsAvailableForUserAsync(_webItemManager.GetParentItemID(webitem.ID), @for);
                 }
                 else
                 {
                     var hasUsers = (await _authorizationManager.GetAcesAsync(Guid.Empty, _read.ID, securityObj)).Any(a => a.Subject != ASC.Core.Users.Constants.GroupEveryone.ID);
-                    result = await _permissionContext.PermissionResolver.CheckAsync(_authentication.GetAccountByID(tenant.Id, @for), securityObj, null, _read) ||
-                             (hasUsers && IsProductAdministrator(securityObj.WebItemId, @for));
+                    result = await _permissionContext.PermissionResolver.CheckAsync(await _authentication.GetAccountByIDAsync(tenant.Id, @for), securityObj, null, _read) ||
+                             (hasUsers && await IsProductAdministratorAsync(securityObj.WebItemId, @for));
                 }
             }
             else
@@ -243,21 +243,24 @@ public class WebItemSecurity
     {
         var info = (await GetSecurityAsync(id)).ToList();
         var module = _webItemManager.GetParentItemID(new Guid(id)) != Guid.Empty;
+
+        var infoAsync = info.ToAsyncEnumerable();
         return new WebItemSecurityInfo
         {
             WebItemId = id,
 
             Enabled = info.Count == 0 || (!module && info.Any(i => i.Item2)) || (module && info.All(i => i.Item2)),
 
-            Users = info
-                           .Select(i => _userManager.GetUsers(i.Item1))
-                           .Where(u => u.Id != ASC.Core.Users.Constants.LostUser.Id),
+            Users = await infoAsync
+                           .SelectAwait(async i => await _userManager.GetUsersAsync(i.Item1))
+                           .Where(u => u.Id != ASC.Core.Users.Constants.LostUser.Id).ToListAsync(),
 
-            Groups = info
-                           .Select(i => _userManager.GetGroupInfo(i.Item1))
-                           .Where(g => g.ID != ASC.Core.Users.Constants.LostGroupInfo.ID && g.CategoryID != ASC.Core.Users.Constants.SysGroupCategoryId)
+            Groups = await infoAsync
+                           .SelectAwait(async i => await _userManager.GetGroupInfoAsync(i.Item1))
+                           .Where(g => g.ID != ASC.Core.Users.Constants.LostGroupInfo.ID && g.CategoryID != ASC.Core.Users.Constants.SysGroupCategoryId).ToListAsync()
         };
     }
+
 
     private async Task<IEnumerable<Tuple<Guid, bool>>> GetSecurityAsync(string id)
     {
@@ -283,7 +286,7 @@ public class WebItemSecurity
 
         if (administrator)
         {
-            if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
+            if (await _userManager.IsUserInGroupAsync(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
                 await _countPaidUserChecker.CheckAppend();
                 await _userManager.RemoveUserFromGroupAsync(userid, ASC.Core.Users.Constants.GroupUser.ID);
@@ -326,13 +329,13 @@ public class WebItemSecurity
         _webItemSecurityCache.Publish((await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
-    public bool IsProductAdministrator(Guid productid, Guid userid)
+    public async Task<bool> IsProductAdministratorAsync(Guid productid, Guid userid)
     {
-        return _userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupAdmin.ID) ||
-               _userManager.IsUserInGroup(userid, productid);
+        return await _userManager.IsUserInGroupAsync(userid, ASC.Core.Users.Constants.GroupAdmin.ID) ||
+               await _userManager.IsUserInGroupAsync(userid, productid);
     }
 
-    public IEnumerable<UserInfo> GetProductAdministrators(Guid productid)
+    public async Task<IEnumerable<UserInfo>> GetProductAdministratorsAsync(Guid productid)
     {
         var groups = new List<Guid>();
         if (productid == Guid.Empty)
@@ -349,7 +352,7 @@ public class WebItemSecurity
         var users = Enumerable.Empty<UserInfo>();
         foreach (var id in groups)
         {
-            users = users.Union(_userManager.GetUsersByGroup(id));
+            users = users.Union(await _userManager.GetUsersByGroupAsync(id));
         }
         return users.ToList();
     }

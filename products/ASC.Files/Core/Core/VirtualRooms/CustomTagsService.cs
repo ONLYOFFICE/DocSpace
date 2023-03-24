@@ -58,7 +58,7 @@ public class CustomTagsService<T>
 
     public async Task<object> CreateTagAsync(string name)
     {
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
@@ -88,7 +88,7 @@ public class CustomTagsService<T>
 
     public async Task DeleteTagsAsync(IEnumerable<string> names)
     {
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }

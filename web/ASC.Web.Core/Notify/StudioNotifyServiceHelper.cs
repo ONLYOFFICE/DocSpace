@@ -77,7 +77,7 @@ public class StudioNotifyServiceHelper
     public async Task SendNoticeAsync(INotifyAction action, string objectID, params ITagValue[] args)
     {
         var subscriptionSource = _studioNotifyHelper.NotifySource.GetSubscriptionProvider();
-        var recipients = subscriptionSource.GetRecipients(action, objectID);
+        var recipients = await subscriptionSource.GetRecipientsAsync(action, objectID);
 
         await SendNoticeToAsync(action, objectID, recipients, null, false, args);
     }

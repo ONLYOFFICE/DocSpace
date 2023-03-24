@@ -79,7 +79,7 @@ public class JabberSenderSinkMessageCreator : SinkMessageCreator
 
     public override async Task<NotifyMessage> CreateNotifyMessageAsync(INoticeMessage message, string senderName)
     {
-        var username = _userManager.GetUsers(new Guid(message.Recipient.ID)).UserName;
+        var username = (await _userManager.GetUsersAsync(new Guid(message.Recipient.ID))).UserName;
 
         var m = new NotifyMessage
         {

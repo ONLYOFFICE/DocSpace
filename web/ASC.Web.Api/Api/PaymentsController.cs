@@ -75,10 +75,10 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPut("payment/url")]
-    public async Task<Uri> GetPaymentUrl(PaymentUrlRequestsDto inDto)
+    public async Task<Uri> GetPaymentUrlAsync(PaymentUrlRequestsDto inDto)
     {
         if ((await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() ||
-            !_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID))
+            !await _userManager.IsDocSpaceAdminAsync(_securityContext.CurrentAccount.ID))
         {
             return null;
         }
@@ -87,7 +87,7 @@ public class PaymentController : ControllerBase
 
         return await _tariffService.GetShoppingUriAsync(Tenant.Id, currency,
             Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
-            _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
+            (await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID)).Email,
             inDto.Quantity,
             inDto.BackUrl);
     }
@@ -96,7 +96,7 @@ public class PaymentController : ControllerBase
     public async Task<bool> PaymentUpdateAsync(PaymentUrlRequestsDto inDto)
     {
         var payerId = (await _tariffService.GetTariffAsync(Tenant.Id)).CustomerId;
-        var payer = _userManager.GetUserByEmail(payerId);
+        var payer = await _userManager.GetUserByEmailAsync(payerId);
 
         if (!(await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() ||
             _securityContext.CurrentAccount.ID != payer.Id)
@@ -111,7 +111,7 @@ public class PaymentController : ControllerBase
     public async Task<Uri> GetPaymentAccountAsync(string backUrl)
     {
         var payerId = (await _tariffService.GetTariffAsync(Tenant.Id)).CustomerId;
-        var payer = _userManager.GetUserByEmail(payerId);
+        var payer = await _userManager.GetUserByEmailAsync(payerId);
 
         if (_securityContext.CurrentAccount.ID != payer.Id &&
             _securityContext.CurrentAccount.ID != Tenant.OwnerId)

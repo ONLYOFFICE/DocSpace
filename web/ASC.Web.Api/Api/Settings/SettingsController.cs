@@ -360,13 +360,13 @@ public class SettingsController : BaseSettingsController
 
     ///<visible>false</visible>
     [HttpPut("welcome/close")]
-    public void CloseWelcomePopup()
+    public async Task CloseWelcomePopupAsync()
     {
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
         var collaboratorPopupSettings = _settingsManager.LoadForCurrentUser<CollaboratorSettings>();
 
-        if (!(_userManager.IsUser(currentUser) && collaboratorPopupSettings.FirstVisit && !_userManager.IsOutsider(currentUser)))
+        if (!(await _userManager.IsUserAsync(currentUser) && collaboratorPopupSettings.FirstVisit && !await _userManager.IsOutsiderAsync(currentUser)))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -474,9 +474,9 @@ public class SettingsController : BaseSettingsController
     }
 
     [HttpPut("closeadminhelper")]
-    public void CloseAdminHelper()
+    public async Task CloseAdminHelperAsync()
     {
-        if (!_userManager.IsDocSpaceAdmin(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
+        if (!await _userManager.IsDocSpaceAdminAsync(_authContext.CurrentAccount.ID) || _coreBaseSettings.CustomMode || !_coreBaseSettings.Standalone)
         {
             throw new NotSupportedException("Not available.");
         }

@@ -103,7 +103,7 @@ public class SmtpOperation
 
             SetProgress(15, "Find user data");
 
-            var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var currentUser = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
             SetProgress(20, "Create mime message");
 

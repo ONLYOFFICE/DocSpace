@@ -559,8 +559,8 @@ public class StudioNotifyService
     public async Task SendMsgProfileHasDeletedItselfAsync(UserInfo user)
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        var admins = _userManager.GetUsers()
-                    .Where(u => _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, u.Id));
+        var admins = (await _userManager.GetUsersAsync()).ToAsyncEnumerable()
+                    .WhereAwait(async u => await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, u.Id));
 
         ThreadPool.QueueUserWorkItem(async _ =>
         {
@@ -568,7 +568,7 @@ public class StudioNotifyService
             {
                 _tenantManager.SetCurrentTenant(tenant);
 
-                foreach (var admin in admins)
+                await foreach (var admin in admins)
                 {
                     var culture = string.IsNullOrEmpty(admin.CultureName) ? tenant.GetCulture() : admin.GetCulture();
                     Thread.CurrentThread.CurrentCulture = culture;
@@ -595,9 +595,9 @@ public class StudioNotifyService
     {
         await _client.SendNoticeToAsync(
         Actions.ReassignsCompleted,
-            new[] { _studioNotifyHelper.ToRecipient(recipientId) },
+            new[] { await _studioNotifyHelper.ToRecipientAsync(recipientId) },
         new[] { EMailSenderName },
-            new TagValue(Tags.UserName, _displayUserSettingsHelper.GetFullUserName(recipientId)),
+            new TagValue(Tags.UserName, await _displayUserSettingsHelper.GetFullUserNameAsync(recipientId)),
             new TagValue(Tags.FromUserName, fromUser.DisplayUserName(_displayUserSettingsHelper)),
         new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
             new TagValue(Tags.ToUserName, toUser.DisplayUserName(_displayUserSettingsHelper)),
@@ -608,9 +608,9 @@ public class StudioNotifyService
     {
         await _client.SendNoticeToAsync(
         Actions.ReassignsFailed,
-            new[] { _studioNotifyHelper.ToRecipient(recipientId) },
+            new[] { await _studioNotifyHelper.ToRecipientAsync(recipientId) },
         new[] { EMailSenderName },
-            new TagValue(Tags.UserName, _displayUserSettingsHelper.GetFullUserName(recipientId)),
+            new TagValue(Tags.UserName, await _displayUserSettingsHelper.GetFullUserNameAsync(recipientId)),
             new TagValue(Tags.FromUserName, fromUser.DisplayUserName(_displayUserSettingsHelper)),
         new TagValue(Tags.FromUserLink, GetUserProfileLink(fromUser)),
             new TagValue(Tags.ToUserName, toUser.DisplayUserName(_displayUserSettingsHelper)),
@@ -622,9 +622,9 @@ public class StudioNotifyService
     {
         await _client.SendNoticeToAsync(
             _coreBaseSettings.CustomMode ? Actions.RemoveUserDataCompletedCustomMode : Actions.RemoveUserDataCompleted,
-            new[] { _studioNotifyHelper.ToRecipient(recipientId) },
+            new[] { await _studioNotifyHelper.ToRecipientAsync(recipientId) },
         new[] { EMailSenderName },
-            new TagValue(Tags.UserName, _displayUserSettingsHelper.GetFullUserName(recipientId)),
+            new TagValue(Tags.UserName, await _displayUserSettingsHelper.GetFullUserNameAsync(recipientId)),
         new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
         new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
         new TagValue("DocsSpace", FileSizeComment.FilesSizeToString(docsSpace)),
@@ -637,9 +637,9 @@ public class StudioNotifyService
     {
         await _client.SendNoticeToAsync(
         Actions.RemoveUserDataFailed,
-            new[] { _studioNotifyHelper.ToRecipient(recipientId) },
+            new[] { await _studioNotifyHelper.ToRecipientAsync(recipientId) },
         new[] { EMailSenderName },
-            new TagValue(Tags.UserName, _displayUserSettingsHelper.GetFullUserName(recipientId)),
+            new TagValue(Tags.UserName, await _displayUserSettingsHelper.GetFullUserNameAsync(recipientId)),
         new TagValue(Tags.FromUserName, fromUserName.HtmlEncode()),
         new TagValue(Tags.FromUserLink, GetUserProfileLink(user)),
         new TagValue(Tags.Message, message));
@@ -690,7 +690,7 @@ public class StudioNotifyService
 
     public async Task SendMsgPortalDeactivationAsync(Tenant t, string deactivateUrl, string activateUrl)
     {
-        var u = _userManager.GetUsers(t.OwnerId);
+        var u = await _userManager.GetUsersAsync(t.OwnerId);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
 
@@ -705,7 +705,7 @@ public class StudioNotifyService
 
     public async Task SendMsgPortalDeletionAsync(Tenant t, string url, bool showAutoRenewText)
     {
-        var u = _userManager.GetUsers(t.OwnerId);
+        var u = await _userManager.GetUsersAsync(t.OwnerId);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeletePortal;
 
@@ -734,7 +734,7 @@ public class StudioNotifyService
 
     public async Task SendMsgDnsChangeAsync(Tenant t, string confirmDnsUpdateUrl, string portalAddress, string portalDns)
     {
-        var u = _userManager.GetUsers(t.OwnerId);
+        var u = await _userManager.GetUsersAsync(t.OwnerId);
 
         static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
 
@@ -809,7 +809,7 @@ public class StudioNotifyService
 
     public async Task SendInvitePersonalAsync(string email, string additionalMember = "")
     {
-        var newUserInfo = _userManager.GetUserByEmail(email);
+        var newUserInfo = await _userManager.GetUserByEmailAsync(email);
         if (_userManager.UserExists(newUserInfo))
         {
             return;
@@ -837,7 +837,7 @@ public class StudioNotifyService
 
     public async Task SendAlreadyExistAsync(string email)
     {
-        var userInfo = _userManager.GetUserByEmail(email);
+        var userInfo = await _userManager.GetUserByEmailAsync(email);
         if (!_userManager.UserExists(userInfo))
         {
             return;
@@ -875,7 +875,7 @@ public class StudioNotifyService
 
     public async Task PortalRenameNotifyAsync(Tenant tenant, string oldVirtualRootPath)
     {
-        var users = _userManager.GetUsers()
+        var users = (await _userManager.GetUsersAsync())
                 .Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
 
         try
@@ -890,7 +890,7 @@ public class StudioNotifyService
 
                 await _client.SendNoticeToAsync(
                     Actions.PortalRename,
-                    new[] { _studioNotifyHelper.ToRecipient(u.Id) },
+                    new[] { await _studioNotifyHelper.ToRecipientAsync(u.Id) },
                     new[] { EMailSenderName },
                     new TagValue(Tags.PortalUrl, oldVirtualRootPath),
                     new TagValue(Tags.UserDisplayName, u.DisplayUserName(_displayUserSettingsHelper)));
@@ -1005,15 +1005,15 @@ public class StudioNotifyService
     private async Task SendStorageEncryptionNotifyAsync(INotifyAction action, bool notifyAdminsOnly, string serverRootPath)
     {
         var users = notifyAdminsOnly
-                    ? _userManager.GetUsersByGroup(Constants.GroupAdmin.ID)
-                    : _userManager.GetUsers().Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
+                    ? await _userManager.GetUsersByGroupAsync(Constants.GroupAdmin.ID)
+                    : (await _userManager.GetUsersAsync()).Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
 
         foreach (var u in users)
         {
             await _client.SendNoticeToAsync(
             action,
             null,
-                new[] { _studioNotifyHelper.ToRecipient(u.Id) },
+                new[] { await _studioNotifyHelper.ToRecipientAsync(u.Id) },
             new[] { EMailSenderName },
             new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
             new TagValue(Tags.PortalUrl, serverRootPath),

@@ -94,14 +94,14 @@ public class TipsController : BaseSettingsController
     }
 
     [HttpPut("tips/change/subscription")]
-    public bool UpdateTipsSubscription()
+    public async Task<bool> UpdateTipsSubscriptionAsync()
     {
-        return StudioPeriodicNotify.ChangeSubscription(_authContext.CurrentAccount.ID, _studioNotifyHelper);
+        return await StudioPeriodicNotify.ChangeSubscriptionAsync(_authContext.CurrentAccount.ID, _studioNotifyHelper);
     }
 
     [HttpGet("tips/subscription")]
-    public bool GetTipsSubscription()
+    public async Task<bool> GetTipsSubscriptionAsync()
     {
-        return _studioNotifyHelper.IsSubscribedToNotify(_authContext.CurrentAccount.ID, Actions.PeriodicNotify);
+        return await _studioNotifyHelper.IsSubscribedToNotifyAsync(_authContext.CurrentAccount.ID, Actions.PeriodicNotify);
     }
 }

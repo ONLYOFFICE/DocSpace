@@ -563,7 +563,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
 
         var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
-        var culture = _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture();
+        var culture = (await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID)).GetCulture();
         var storeTemplate = _globalStore.GetStoreTemplate();
 
         var path = FileConstant.NewDocPath + culture + "/";
@@ -652,7 +652,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             return null;
         }
 
-        var userInfo = _userManager.GetUserByEmail(loginProfile.EMail);
+        var userInfo = await _userManager.GetUserByEmailAsync(loginProfile.EMail);
         if (Equals(userInfo, Constants.LostUser))
         {
             userInfo = loginProfile.ProfileToUserInfo(CoreBaseSettings);

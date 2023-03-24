@@ -112,8 +112,8 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -186,13 +186,13 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
         //Get only files
         var folderFiles = await ProviderInfo.GetFolderFilesAsync(parentId);
-        var files = folderFiles.Select(r => ProviderInfo.ToFile(r));
+        var files = folderFiles.Select(r => ProviderInfo.ToFile(r)).ToAsyncEnumerable();
 
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -201,25 +201,25 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
             case FilterType.FoldersOnly:
                 yield break;
             case FilterType.DocumentsOnly:
-                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document).ToList();
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Document);
                 break;
             case FilterType.OFormOnly:
-                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OForm).ToList();
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OForm);
                 break;
             case FilterType.OFormTemplateOnly:
-                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OFormTemplate).ToList();
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.OFormTemplate);
                 break;
             case FilterType.PresentationsOnly:
-                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation).ToList();
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Presentation);
                 break;
             case FilterType.SpreadsheetsOnly:
-                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet).ToList();
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Spreadsheet);
                 break;
             case FilterType.ImagesOnly:
-                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image).ToList();
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Image);
                 break;
             case FilterType.ArchiveOnly:
-                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive).ToList();
+                files = files.Where(x => FileUtility.GetFileTypeByFileName(x.Title) == FileType.Archive);
                 break;
             case FilterType.MediaOnly:
                 files = files.Where(x =>
@@ -240,7 +240,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
 
         if (!string.IsNullOrEmpty(searchText))
         {
-            files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1).ToList();
+            files = files.Where(x => x.Title.IndexOf(searchText, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
         if (orderBy == null)
@@ -257,7 +257,7 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
             _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
         };
 
-        foreach (var f in files)
+        await foreach (var f in files)
         {
             yield return f;
         }

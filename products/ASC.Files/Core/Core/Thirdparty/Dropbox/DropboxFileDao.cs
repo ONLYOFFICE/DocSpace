@@ -125,8 +125,8 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -199,13 +199,13 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
         //Get only files
 
         var items = await GetDropboxItemsAsync(parentId, false);
-        var files = items.Select(item => ToFile(item.AsFile));
+        var files = items.Select(item => ToFile(item.AsFile)).ToAsyncEnumerable();
 
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -270,7 +270,7 @@ internal class DropboxFileDao : DropboxDaoBase, IFileDao<string>
             _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
         };
 
-        foreach (var f in files)
+        await foreach (var f in files)
         {
             yield return f;
         }

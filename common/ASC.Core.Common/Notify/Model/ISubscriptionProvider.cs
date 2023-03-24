@@ -28,28 +28,28 @@ namespace ASC.Notify.Model;
 
 public interface ISubscriptionProvider
 {
-    bool IsUnsubscribe(IDirectRecipient recipient, INotifyAction action, string objectID);
-    IRecipient[] GetRecipients(INotifyAction action, string objectID);
-    object GetSubscriptionRecord(INotifyAction action, IRecipient recipient, string objectID);
-    string[] GetSubscriptionMethod(INotifyAction action, IRecipient recipient);
-    string[] GetSubscriptions(INotifyAction action, IRecipient recipient, bool checkSubscribe = true);
-    void Subscribe(INotifyAction action, string objectID, IRecipient recipient);
-    void UnSubscribe(INotifyAction action);
-    void UnSubscribe(INotifyAction action, IRecipient recipient);
-    void UnSubscribe(INotifyAction action, string objectID);
-    void UnSubscribe(INotifyAction action, string objectID, IRecipient recipient);
-    void UpdateSubscriptionMethod(INotifyAction action, IRecipient recipient, params string[] senderNames);
+    Task<bool> IsUnsubscribeAsync(IDirectRecipient recipient, INotifyAction action, string objectID);
+    Task<IRecipient[]> GetRecipientsAsync(INotifyAction action, string objectID);
+    Task<object> GetSubscriptionRecordAsync(INotifyAction action, IRecipient recipient, string objectID);
+    Task<string[]> GetSubscriptionMethodAsync(INotifyAction action, IRecipient recipient);
+    Task<string[]> GetSubscriptionsAsync(INotifyAction action, IRecipient recipient, bool checkSubscribe = true);
+    Task SubscribeAsync(INotifyAction action, string objectID, IRecipient recipient);
+    Task UnSubscribeAsync(INotifyAction action);
+    Task UnSubscribeAsync(INotifyAction action, IRecipient recipient);
+    Task UnSubscribeAsync(INotifyAction action, string objectID);
+    Task UnSubscribeAsync(INotifyAction action, string objectID, IRecipient recipient);
+    Task UpdateSubscriptionMethodAsync(INotifyAction action, IRecipient recipient, params string[] senderNames);
 }
 
 public static class SubscriptionProviderHelper
 {
-    public static bool IsSubscribed(this ISubscriptionProvider provider, ILogger log, INotifyAction action, IRecipient recipient, string objectID)
+    public static async Task<bool> IsSubscribedAsync(this ISubscriptionProvider provider, ILogger log, INotifyAction action, IRecipient recipient, string objectID)
     {
         var result = false;
 
         try
         {
-            var subscriptionRecord = provider.GetSubscriptionRecord(action, recipient, objectID);
+            var subscriptionRecord = await provider.GetSubscriptionRecordAsync(action, recipient, objectID);
             if (subscriptionRecord != null)
             {
                 var properties = subscriptionRecord.GetType().GetProperties();

@@ -82,11 +82,11 @@ public class ThirdpartyController : ApiControllerBase
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive</remarks>
     /// <returns></returns>
     [HttpGet("thirdparty/capabilities")]
-    public List<List<string>> Capabilities()
+    public async Task<List<List<string>>> CapabilitiesAsync()
     {
         var result = new List<List<string>>();
 
-        if (_userManager.IsUser(_securityContext.CurrentAccount.ID)
+        if (await _userManager.IsUserAsync(_securityContext.CurrentAccount.ID)
                 || (!_filesSettingsHelper.EnableThirdParty
                 && !_coreBaseSettings.Personal))
         {
@@ -293,7 +293,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/backup")]
     public async Task<FolderDto<string>> SaveThirdPartyBackupAsync(ThirdPartyBackupRequestDto inDto)
     {
-        if (!_fileSecurityCommon.IsDocSpaceAdministrator(_securityContext.CurrentAccount.ID))
+        if (!await _fileSecurityCommon.IsDocSpaceAdministratorAsync(_securityContext.CurrentAccount.ID))
         {
             throw new InvalidOperationException(FilesCommonResource.ErrorMassage_SecurityException_Create);
         }

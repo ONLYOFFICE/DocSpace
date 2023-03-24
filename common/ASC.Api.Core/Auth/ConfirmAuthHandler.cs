@@ -103,7 +103,7 @@ public class ConfirmAuthHandler : AuthenticationHandler<AuthenticationSchemeOpti
                     }
                     else
                     {
-                        userId = _userManager.GetUserByEmail(emailValidationKeyModel.Email).Id;
+                        userId = (await _userManager.GetUserByEmailAsync(emailValidationKeyModel.Email)).Id;
                     }
                 }
             }

@@ -99,7 +99,7 @@ public class JabberServiceClient
         {
             try
             {
-                return service.GetNewMessagesCount(await GetCurrentTenantIdAsync(), GetCurrentUserName());
+                return service.GetNewMessagesCount(await GetCurrentTenantIdAsync(), await GetCurrentUserNameAsync());
             }
             catch (Exception error)
             {
@@ -121,7 +121,7 @@ public class JabberServiceClient
         using var service = GetService();
         try
         {
-            result = service.AddXmppConnection(connectionId, GetCurrentUserName(), state, await GetCurrentTenantIdAsync());
+            result = service.AddXmppConnection(connectionId, await GetCurrentUserNameAsync(), state, await GetCurrentTenantIdAsync());
         }
         catch (Exception error)
         {
@@ -143,7 +143,7 @@ public class JabberServiceClient
         {
             try
             {
-                return service.RemoveXmppConnection(connectionId, GetCurrentUserName(), await GetCurrentTenantIdAsync());
+                return service.RemoveXmppConnection(connectionId, await GetCurrentUserNameAsync(), await GetCurrentTenantIdAsync());
             }
             catch (Exception error)
             {
@@ -188,7 +188,7 @@ public class JabberServiceClient
 
             using var service = GetService();
 
-            return service.SendState(await GetCurrentTenantIdAsync(), GetCurrentUserName(), state);
+            return service.SendState(await GetCurrentTenantIdAsync(), await GetCurrentUserNameAsync(), state);
         }
         catch (Exception error)
         {
@@ -209,7 +209,7 @@ public class JabberServiceClient
             }
 
             using var service = GetService();
-            states = service.GetAllStates(await GetCurrentTenantIdAsync(), GetCurrentUserName());
+            states = service.GetAllStates(await GetCurrentTenantIdAsync(), await GetCurrentUserNameAsync());
         }
         catch (Exception error)
         {
@@ -230,7 +230,7 @@ public class JabberServiceClient
             }
 
             using var service = GetService();
-            messages = service.GetRecentMessages(await GetCurrentTenantIdAsync(), GetCurrentUserName(), to, id);
+            messages = service.GetRecentMessages(await GetCurrentTenantIdAsync(), await GetCurrentUserNameAsync(), to, id);
         }
         catch (Exception error)
         {
@@ -250,7 +250,7 @@ public class JabberServiceClient
             }
 
             using var service = GetService();
-            service.Ping(_authContext.CurrentAccount.ID.ToString(), await GetCurrentTenantIdAsync(), GetCurrentUserName(), state);
+            service.Ping(_authContext.CurrentAccount.ID.ToString(), await GetCurrentTenantIdAsync(), await GetCurrentUserNameAsync(), state);
         }
         catch (Exception error)
         {
@@ -263,9 +263,9 @@ public class JabberServiceClient
         return (await _tenantManager.GetCurrentTenantAsync()).Id;
     }
 
-    private string GetCurrentUserName()
+    private async Task<string> GetCurrentUserNameAsync()
     {
-        return _userManager.GetUsers(_authContext.CurrentAccount.ID).UserName;
+        return (await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID)).UserName;
     }
 
     private static void ProcessError(Exception error)

@@ -35,19 +35,19 @@ class RoleProvider : IRoleProvider
     private readonly IServiceProvider _serviceProvider;
     public RoleProvider(IServiceProvider serviceProvider) => _serviceProvider = serviceProvider;
 
-    public List<IRole> GetRoles(ISubject account)
+    public async Task<List<IRole>> GetRolesAsync(ISubject account)
     {
         var roles = new List<IRole>();
         if (account is not ISystemAccount)
         {
             if (account is IRole)
             {
-                roles = GetParentRoles(account.ID).ToList();
+                roles = (await GetParentRolesAsync(account.ID)).ToList();
             }
             else if (account is IUserAccount)
             {
-                roles = _serviceProvider.GetService<UserManager>()
-                                   .GetUserGroups(account.ID, IncludeType.Distinct | IncludeType.InParent)
+                roles = (await _serviceProvider.GetService<UserManager>()
+                                   .GetUserGroupsAsync(account.ID, IncludeType.Distinct | IncludeType.InParent))
                                    .Select(g => (IRole)g)
                                    .ToList();
             }
@@ -61,15 +61,15 @@ class RoleProvider : IRoleProvider
         return roles;
     }
 
-    public bool IsSubjectInRole(ISubject account, IRole role)
+    public async Task<bool> IsSubjectInRoleAsync(ISubject account, IRole role)
     {
-        return _serviceProvider.GetService<UserManager>().IsUserInGroup(account.ID, role.ID);
+        return await _serviceProvider.GetService<UserManager>().IsUserInGroupAsync(account.ID, role.ID);
     }
 
-    private List<IRole> GetParentRoles(Guid roleID)
+    private async Task<List<IRole>> GetParentRolesAsync(Guid roleID)
     {
         var roles = new List<IRole>();
-        var gi = _serviceProvider.GetService<UserManager>().GetGroupInfo(roleID);
+        var gi = await _serviceProvider.GetService<UserManager>().GetGroupInfoAsync(roleID);
         if (gi != null)
         {
             var parent = gi.Parent;

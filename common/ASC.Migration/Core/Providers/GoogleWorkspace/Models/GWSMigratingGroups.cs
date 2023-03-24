@@ -88,7 +88,7 @@ public class GWSMigratingGroups : MigratingGroup
 
     public override async Task MigrateAsync()
     {
-        var existingGroups = _userManager.GetGroups().ToList();
+        var existingGroups = (await _userManager.GetGroupsAsync()).ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
         if (oldGroup != null)
         {
@@ -103,12 +103,12 @@ public class GWSMigratingGroups : MigratingGroup
             UserInfo user;
             try
             {
-                user = _userManager.GetUserByEmail(userEmail);
+                user = await _userManager.GetUserByEmailAsync(userEmail);
                 if (user == Constants.LostUser)
                 {
                     throw new ArgumentNullException();
                 }
-                if (!_userManager.IsUserInGroup(user.Id, _groupinfo.ID))
+                if (!await _userManager.IsUserInGroupAsync(user.Id, _groupinfo.ID))
                 {
                     await _userManager.AddUserIntoGroupAsync(user.Id, _groupinfo.ID);
                 }

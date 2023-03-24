@@ -70,16 +70,16 @@ public class GroupFullDtoHelper
             Category = group.CategoryID,
             Parent = group.Parent != null ? group.Parent.ID : Guid.Empty,
             Name = group.Name,
-            Manager = await _employeeWraperHelper.Get(_userManager.GetUsers(_userManager.GetDepartmentManager(group.ID)))
+            Manager = await _employeeWraperHelper.GetAsync(await _userManager.GetUsersAsync(await _userManager.GetDepartmentManagerAsync(group.ID)))
         };
 
         if (includeMembers)
         {
             result.Members = new List<EmployeeDto>();
 
-            foreach (var m in _userManager.GetUsersByGroup(group.ID))
+            foreach (var m in await _userManager.GetUsersByGroupAsync(group.ID))
             {
-                result.Members.Add(await _employeeWraperHelper.Get(m));
+                result.Members.Add(await _employeeWraperHelper.GetAsync(m));
             }
         }
 

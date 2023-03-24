@@ -113,94 +113,94 @@ public class CachedSubscriptionService : ISubscriptionService
     }
 
 
-    public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId)
+    public async Task<IEnumerable<SubscriptionRecord>> GetSubscriptionsAsync(int tenant, string sourceId, string actionId)
     {
-        var store = GetSubsciptionsStore(tenant, sourceId, actionId);
+        var store = await GetSubsciptionsStoreAsync(tenant, sourceId, actionId);
         lock (store)
         {
             return store.GetSubscriptions();
         }
     }
 
-    public IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, string objectId)
+    public async Task<IEnumerable<SubscriptionRecord>> GetSubscriptionsAsync(int tenant, string sourceId, string actionId, string recipientId, string objectId)
     {
-        var store = GetSubsciptionsStore(tenant, sourceId, actionId);
+        var store = await GetSubsciptionsStoreAsync(tenant, sourceId, actionId);
         lock (store)
         {
             return store.GetSubscriptions(recipientId, objectId);
         }
     }
 
-    public string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID)
+    public async Task<string[]> GetRecipientsAsync(int tenant, string sourceID, string actionID, string objectID)
     {
-        return _service.GetRecipients(tenant, sourceID, actionID, objectID);
+        return await _service.GetRecipientsAsync(tenant, sourceID, actionID, objectID);
     }
 
-    public string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
+    public async Task<string[]> GetSubscriptionsAsync(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe)
     {
-        return _service.GetSubscriptions(tenant, sourceId, actionId, recipientId, checkSubscribe);
+        return await _service.GetSubscriptionsAsync(tenant, sourceId, actionId, recipientId, checkSubscribe);
     }
 
-    public SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId)
+    public async Task<SubscriptionRecord> GetSubscriptionAsync(int tenant, string sourceId, string actionId, string recipientId, string objectId)
     {
-        var store = GetSubsciptionsStore(tenant, sourceId, actionId);
+        var store = await GetSubsciptionsStoreAsync(tenant, sourceId, actionId);
         lock (store)
         {
             return store.GetSubscription(recipientId, objectId);
         }
     }
 
-    public void SaveSubscription(SubscriptionRecord s)
+    public async Task SaveSubscriptionAsync(SubscriptionRecord s)
     {
-        _service.SaveSubscription(s);
+        await _service.SaveSubscriptionAsync(s);
         _notifyRecord.Publish(s, CacheNotifyAction.InsertOrUpdate);
     }
 
-    public void RemoveSubscriptions(int tenant, string sourceId, string actionId)
+    public async Task RemoveSubscriptionsAsync(int tenant, string sourceId, string actionId)
     {
-        _service.RemoveSubscriptions(tenant, sourceId, actionId);
+        await _service.RemoveSubscriptionsAsync(tenant, sourceId, actionId);
         _notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId }, CacheNotifyAction.Remove);
     }
 
-    public void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId)
+    public async Task RemoveSubscriptionsAsync(int tenant, string sourceId, string actionId, string objectId)
     {
-        _service.RemoveSubscriptions(tenant, sourceId, actionId, objectId);
+        await _service.RemoveSubscriptionsAsync(tenant, sourceId, actionId, objectId);
         _notifyRecord.Publish(new SubscriptionRecord { Tenant = tenant, SourceId = sourceId, ActionId = actionId, ObjectId = objectId }, CacheNotifyAction.Remove);
     }
 
-    public IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId)
+    public async Task<IEnumerable<SubscriptionMethod>> GetSubscriptionMethodsAsync(int tenant, string sourceId, string actionId, string recipientId)
     {
-        var store = GetSubsciptionsStore(tenant, sourceId, actionId);
+        var store = await GetSubsciptionsStoreAsync(tenant, sourceId, actionId);
         lock (store)
         {
             return store.GetSubscriptionMethods(recipientId);
         }
     }
 
-    public void SetSubscriptionMethod(SubscriptionMethod m)
+    public async Task SetSubscriptionMethodAsync(SubscriptionMethod m)
     {
-        _service.SetSubscriptionMethod(m);
+        await _service.SetSubscriptionMethodAsync(m);
         _notifyMethod.Publish(m, CacheNotifyAction.Any);
     }
 
 
-    private SubsciptionsStore GetSubsciptionsStore(int tenant, string sourceId, string actionId)
+    private async Task<SubsciptionsStore> GetSubsciptionsStoreAsync(int tenant, string sourceId, string actionId)
     {
         var key = SubscriptionServiceCache.GetKey(tenant, sourceId, actionId);
         var store = _cache.Get<SubsciptionsStore>(key);
         if (store == null)
         {
-            var records = _service.GetSubscriptions(tenant, sourceId, actionId);
-            var methods = _service.GetSubscriptionMethods(tenant, sourceId, actionId, null);
+            var records = await _service.GetSubscriptionsAsync(tenant, sourceId, actionId);
+            var methods = await _service.GetSubscriptionMethodsAsync(tenant, sourceId, actionId, null);
             store = new SubsciptionsStore(records, methods);
             _cache.Insert(key, store, DateTime.UtcNow.Add(_cacheExpiration));
         }
 
         return store;
     }
-    public bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId)
+    public async Task<bool> IsUnsubscribeAsync(int tenant, string sourceId, string actionId, string recipientId, string objectId)
     {
-        return _service.IsUnsubscribe(tenant, sourceId, actionId, recipientId, objectId);
+        return await _service.IsUnsubscribeAsync(tenant, sourceId, actionId, recipientId, objectId);
     }
 }
 

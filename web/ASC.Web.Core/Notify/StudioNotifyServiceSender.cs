@@ -177,7 +177,7 @@ public class StudioNotifyWorker
         if (Guid.TryParse(item.UserId, out var userId) && !userId.Equals(Constants.Guest.ID) && !userId.Equals(Guid.Empty))
         {
             await _securityContext.AuthenticateMeWithoutCookieAsync(Guid.Parse(item.UserId));
-            var user = _userManager.GetUsers(userId);
+            var user = await _userManager.GetUsersAsync(userId);
             if (!string.IsNullOrEmpty(user.CultureName))
             {
                 culture = CultureInfo.GetCultureInfo(user.CultureName);

@@ -105,7 +105,7 @@ public class IPSecurity
                           ? Array.Empty<string>()
                           : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            var isDocSpaceAdmin = _userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
+            var isDocSpaceAdmin = await _userManager.IsUserInGroupAsync(_securityContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
 
             if (ips.Any(requestIp => restrictions.Any(restriction => (restriction.ForAdmin ? isDocSpaceAdmin : true) && MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
             {

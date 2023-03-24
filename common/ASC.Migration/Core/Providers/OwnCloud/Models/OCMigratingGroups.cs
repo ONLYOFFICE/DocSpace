@@ -58,7 +58,7 @@ public class OCMigratingGroups : MigratingGroup
 
     public override async Task MigrateAsync()
     {
-        var existingGroups = _userManager.GetGroups().ToList();
+        var existingGroups = (await _userManager.GetGroupsAsync()).ToList();
         var oldGroup = existingGroups.Find(g => g.Name == _groupinfo.Name);
         if (oldGroup != null)
         {
@@ -73,12 +73,12 @@ public class OCMigratingGroups : MigratingGroup
             UserInfo user;
             try
             {
-                user = _userManager.GetUsers(userGuid.Value);
+                user = await _userManager.GetUsersAsync(userGuid.Value);
                 if (user == Constants.LostUser)
                 {
                     throw new ArgumentNullException();
                 }
-                if (!_userManager.IsUserInGroup(user.Id, _groupinfo.ID))
+                if (!await _userManager.IsUserInGroupAsync(user.Id, _groupinfo.ID))
                 {
                     await _userManager.AddUserIntoGroupAsync(user.Id, _groupinfo.ID);
                 }

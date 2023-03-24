@@ -166,7 +166,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             LastName = userInfo.LastName,
         };
 
-        FillGroups(result, userInfo);
+        await FillGroupsAsync(result, userInfo);
 
         var photoData = await _userPhotoManager.GetUserPhotoData(userInfo.Id, UserPhotoManager.BigFotoSize);
 
@@ -178,7 +178,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         return result;
     }
 
-    public async Task<EmployeeFullDto> GetFull(UserInfo userInfo)
+    public async Task<EmployeeFullDto> GetFullAsync(UserInfo userInfo)
     {
         var result = new EmployeeFullDto
         {
@@ -191,10 +191,10 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             Terminated = _apiDateTimeHelper.Get(userInfo.TerminatedDate),
             WorkFrom = _apiDateTimeHelper.Get(userInfo.WorkFromDate),
             Email = userInfo.Email,
-            IsVisitor = _userManager.IsUser(userInfo),
-            IsAdmin = _userManager.IsDocSpaceAdmin(userInfo),
+            IsVisitor = await _userManager.IsUserAsync(userInfo),
+            IsAdmin = await _userManager.IsDocSpaceAdminAsync(userInfo),
             IsOwner = userInfo.IsOwner(_context.Tenant),
-            IsCollaborator = _userManager.IsCollaborator(userInfo),
+            IsCollaborator = await _userManager.IsCollaboratorAsync(userInfo),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
         };
@@ -238,7 +238,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         }
 
         FillConacts(result, userInfo);
-        FillGroups(result, userInfo);
+        await FillGroupsAsync(result, userInfo);
 
         var cacheKey = Math.Abs(userInfo.LastModified.GetHashCode());
 
@@ -260,7 +260,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("listAdminModules"))
         {
-            var listAdminModules = userInfo.GetListAdminModules(_webItemSecurity, _webItemManager);
+            var listAdminModules = await userInfo.GetListAdminModulesAsync(_webItemSecurity, _webItemManager);
             if (listAdminModules.Count > 0)
             {
                 result.ListAdminModules = listAdminModules;
@@ -269,14 +269,14 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         return result;
     }
-    private void FillGroups(EmployeeFullDto result, UserInfo userInfo)
+    private async Task FillGroupsAsync(EmployeeFullDto result, UserInfo userInfo)
     {
         if (!_context.Check("groups") && !_context.Check("department"))
         {
             return;
         }
 
-        var groups = _userManager.GetUserGroups(userInfo.Id)
+        var groups = (await _userManager.GetUserGroupsAsync(userInfo.Id))
             .Select(x => new GroupSummaryDto(x, _userManager))
             .ToList();
 

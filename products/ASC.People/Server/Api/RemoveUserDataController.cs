@@ -70,7 +70,7 @@ public class RemoveUserDataController : ApiControllerBase
     [HttpPut("self/delete")]
     public async Task<object> SendInstructionsToDeleteAsync()
     {
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
         if (user.IsLDAP())
         {
@@ -88,7 +88,7 @@ public class RemoveUserDataController : ApiControllerBase
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var user = _userManager.GetUsers(inDto.UserId);
+        var user = await _userManager.GetUsersAsync(inDto.UserId);
 
         if (user == null || user.Id == Constants.LostUser.Id)
         {

@@ -135,9 +135,9 @@ public class PortalController : ControllerBase
     }
 
     [HttpGet("users/{userID}")]
-    public UserInfo GetUser(Guid userID)
+    public async Task<UserInfo> GetUserAsync(Guid userID)
     {
-        return _userManager.GetUsers(userID);
+        return await _userManager.GetUsersAsync(userID);
     }
 
     [HttpGet("users/invite/{employeeType}")]
@@ -199,9 +199,9 @@ public class PortalController : ControllerBase
 
 
     [HttpGet("userscount")]
-    public long GetUsersCount()
+    public async Task<long> GetUsersCountAsync()
     {
-        return _coreBaseSettings.Personal ? 1 : _userManager.GetUserNames(EmployeeStatus.Active).Length;
+        return _coreBaseSettings.Personal ? 1 : (await _userManager.GetUserNamesAsyncAsync(EmployeeStatus.Active)).Length;
     }
 
     [AllowNotPayment]
@@ -222,7 +222,7 @@ public class PortalController : ControllerBase
     public async Task<TenantQuota> GetRightQuotaAsync()
     {
         var usedSpace = await GetUsedSpaceAsync();
-        var needUsersCount = GetUsersCount();
+        var needUsersCount = await GetUsersCountAsync();
 
         return (await _tenantManager.GetTenantQuotasAsync()).OrderBy(r => r.Price)
                             .FirstOrDefault(quota =>
@@ -287,17 +287,17 @@ public class PortalController : ControllerBase
     }
 
     [HttpPost("mobile/registration")]
-    public Task RegisterMobileAppInstallAsync(MobileAppRequestsDto inDto)
+    public async Task RegisterMobileAppInstallAsync(MobileAppRequestsDto inDto)
     {
-        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        return _mobileAppInstallRegistrator.RegisterInstallAsync(currentUser.Email, inDto.Type);
+        var currentUser = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        await _mobileAppInstallRegistrator.RegisterInstallAsync(currentUser.Email, inDto.Type);
     }
 
     [HttpPost("mobile/registration")]
-    public Task RegisterMobileAppInstall(MobileAppType type)
+    public async Task RegisterMobileAppInstallAsync(MobileAppType type)
     {
-        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        return _mobileAppInstallRegistrator.RegisterInstallAsync(currentUser.Email, type);
+        var currentUser = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        await _mobileAppInstallRegistrator.RegisterInstallAsync(currentUser.Email, type);
     }
 
     /// <summary>
@@ -329,7 +329,7 @@ public class PortalController : ControllerBase
         }
 
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
         var localhost = _coreSettings.BaseDomain == "localhost" || tenant.Alias == "localhost";
 
@@ -420,7 +420,7 @@ public class PortalController : ControllerBase
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
-        var owner = _userManager.GetUsers(Tenant.OwnerId);
+        var owner = await _userManager.GetUsersAsync(Tenant.OwnerId);
         var suspendUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(owner.Email, ConfirmType.PortalSuspend);
         var continueUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(owner.Email, ConfirmType.PortalContinue);
 
@@ -440,7 +440,7 @@ public class PortalController : ControllerBase
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
-        var owner = _userManager.GetUsers(Tenant.OwnerId);
+        var owner = await _userManager.GetUsersAsync(Tenant.OwnerId);
 
         var showAutoRenewText = !_coreBaseSettings.Standalone &&
                         (await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() &&
@@ -486,7 +486,7 @@ public class PortalController : ControllerBase
             await _apiSystemHelper.RemoveTenantFromCacheAsync(Tenant.Alias, _securityContext.CurrentAccount.ID);
         }
 
-        var owner = _userManager.GetUsers(Tenant.OwnerId);
+        var owner = await _userManager.GetUsersAsync(Tenant.OwnerId);
         var redirectLink = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#";
         var parameters = Convert.ToBase64String(Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
                                                                                 "\",\"lastname\":\"" + owner.LastName +
@@ -530,7 +530,7 @@ public class PortalController : ControllerBase
         switch (checkKeyResult)
         {
             case ValidationResult.Ok:
-                var currentUser = _userManager.GetUsers(inDto.Userid);
+                var currentUser = await _userManager.GetUsersAsync(inDto.Userid);
 
                 await _studioNotifyService.SendCongratulationsAsync(currentUser);
                 await _studioNotifyService.SendRegDataAsync(currentUser);

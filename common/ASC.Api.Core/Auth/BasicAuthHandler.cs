@@ -84,7 +84,7 @@ public class BasicAuthHandler : AuthenticationHandler<AuthenticationSchemeOption
 
         try
         {
-            var userInfo = _userManager.GetUserByEmail(authUsername);
+            var userInfo = await _userManager.GetUserByEmailAsync(authUsername);
             var passwordHash = _passwordHasher.GetClientPassword(authPassword);
 
             await _securityContext.AuthenticateMeAsync(userInfo.Email, passwordHash);

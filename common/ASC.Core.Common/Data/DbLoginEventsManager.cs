@@ -61,7 +61,7 @@ public class DbLoginEventsManager
         _mapper = mapper;
     }
 
-    public async Task<LoginEvent> GetById(int id)
+    public async Task<LoginEvent> GetByIdAsync(int id)
     {
         if (id < 0) return null;
 

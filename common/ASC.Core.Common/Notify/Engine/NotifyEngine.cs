@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Notify.Messages;
+
 namespace ASC.Notify.Engine;
 
 public interface INotifyEngineAction
@@ -272,12 +274,12 @@ public class NotifyEngine : INotifyEngine, IDisposable
         if (request.Recipient is IDirectRecipient)
         {
             var subscriptionSource = request.GetSubscriptionProvider(serviceScope);
-            if (!request._isNeedCheckSubscriptions || !subscriptionSource.IsUnsubscribe(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
+            if (!request._isNeedCheckSubscriptions || !await subscriptionSource.IsUnsubscribeAsync(request.Recipient as IDirectRecipient, request.NotifyAction, request.ObjectID))
             {
                 var directresponses = new List<SendResponse>(1);
                 try
                 {
-                    directresponses = await SendDirectNotify(request, serviceScope);
+                    directresponses = await SendDirectNotifyAsync(request, serviceScope);
                 }
                 catch (Exception exc)
                 {
@@ -303,7 +305,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
                     try
                     {
-                        var recipients = recipientProvider.GetGroupEntries(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
+                        var recipients = await recipientProvider.GetGroupEntriesAsync(request.Recipient as IRecipientsGroup) ?? new IRecipient[0];
                         foreach (var recipient in recipients)
                         {
                             try
@@ -335,7 +337,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private async Task<List<SendResponse>> SendDirectNotify(NotifyRequest request, IServiceScope serviceScope)
+    private async Task<List<SendResponse>> SendDirectNotifyAsync(NotifyRequest request, IServiceScope serviceScope)
     {
         if (request.Recipient is not IDirectRecipient)
         {
@@ -353,7 +355,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
         try
         {
-            PrepareRequestFillSenders(request, serviceScope);
+            await PrepareRequestFillSendersAsync(request, serviceScope);
             PrepareRequestFillPatterns(request, serviceScope);
             PrepareRequestFillTags(request, serviceScope);
         }
@@ -406,7 +408,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
         request.CurrentSender = channel.SenderName;
 
-        var oops = CreateNoticeMessageFromNotifyRequest(request, channel.SenderName, serviceScope, out var noticeMessage);
+        (var oops, var noticeMessage) = await CreateNoticeMessageFromNotifyRequestAsync(request, channel.SenderName, serviceScope);
         if (oops != null)
         {
             return oops;
@@ -424,34 +426,34 @@ public class NotifyEngine : INotifyEngine, IDisposable
         return new SendResponse(noticeMessage, channel.SenderName, SendResult.Inprogress);
     }
 
-    private SendResponse CreateNoticeMessageFromNotifyRequest(NotifyRequest request, string sender, IServiceScope serviceScope, out NoticeMessage noticeMessage)
+    private async Task<(SendResponse, NoticeMessage)> CreateNoticeMessageFromNotifyRequestAsync(NotifyRequest request, string sender, IServiceScope serviceScope)
     {
         ArgumentNullException.ThrowIfNull(request);
-
+        NoticeMessage noticeMessage = null;
         var recipientProvider = request.GetRecipientsProvider(serviceScope);
         var recipient = request.Recipient as IDirectRecipient;
 
         var addresses = recipient.Addresses;
         if (addresses == null || addresses.Length == 0)
         {
-            addresses = recipientProvider.GetRecipientAddresses(request.Recipient as IDirectRecipient, sender);
+            addresses = await recipientProvider.GetRecipientAddressesAsync(request.Recipient as IDirectRecipient, sender);
             recipient = new DirectRecipient(request.Recipient.ID, request.Recipient.Name, addresses);
         }
 
-        recipient = recipientProvider.FilterRecipientAddresses(recipient);
+        recipient = await recipientProvider.FilterRecipientAddressesAsync(recipient);
         noticeMessage = request.CreateMessage(recipient);
 
         addresses = recipient.Addresses;
         if (addresses == null || !addresses.Any(a => !string.IsNullOrEmpty(a)))
         {
             //checking addresses
-            return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For recipient {0} by sender {1} no one addresses getted.", recipient, sender)));
+            return (new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For recipient {0} by sender {1} no one addresses getted.", recipient, sender))), noticeMessage);
         }
 
         var pattern = request.GetSenderPattern(sender);
         if (pattern == null)
         {
-            return new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender)));
+            return (new SendResponse(request.NotifyAction, sender, recipient, new NotifyException(string.Format("For action \"{0}\" by sender \"{1}\" no one patterns getted.", request.NotifyAction, sender))), noticeMessage);
         }
 
         noticeMessage.Pattern = pattern;
@@ -483,10 +485,10 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
         catch (Exception exc)
         {
-            return new SendResponse(request.NotifyAction, sender, recipient, exc);
+            return (new SendResponse(request.NotifyAction, sender, recipient, exc), noticeMessage);
         }
 
-        return null;
+        return (null, noticeMessage);
     }
 
     private void StyleMessage(IServiceScope scope, NoticeMessage message)
@@ -508,14 +510,14 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private void PrepareRequestFillSenders(NotifyRequest request, IServiceScope serviceScope)
+    private async Task PrepareRequestFillSendersAsync(NotifyRequest request, IServiceScope serviceScope)
     {
         if (request._senderNames == null)
         {
             var subscriptionProvider = request.GetSubscriptionProvider(serviceScope);
 
             var senderNames = new List<string>();
-            senderNames.AddRange(subscriptionProvider.GetSubscriptionMethod(request.NotifyAction, request.Recipient) ?? Array.Empty<string>());
+            senderNames.AddRange(await subscriptionProvider.GetSubscriptionMethodAsync(request.NotifyAction, request.Recipient) ?? Array.Empty<string>());
             senderNames.AddRange(request.Arguments.OfType<AdditionalSenderTag>().Select(tag => (string)tag.Value));
 
             request._senderNames = senderNames.ToArray();

@@ -77,7 +77,7 @@ public class NotifyClient
     public async Task SendDocuSignCompleteAsync<T>(File<T> file, string sourceTitle)
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
-        var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
+        var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(_securityContext.CurrentAccount.ID.ToString());
 
         await client.SendNoticeAsync(
             NotifyConstants.EventDocuSignComplete,
@@ -94,7 +94,7 @@ public class NotifyClient
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-        var recipient = _notifySource.GetRecipientsProvider().GetRecipient(_securityContext.CurrentAccount.ID.ToString());
+        var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(_securityContext.CurrentAccount.ID.ToString());
 
         await client.SendNoticeAsync(
             NotifyConstants.EventDocuSignStatus,
@@ -110,7 +110,7 @@ public class NotifyClient
     {
         var client = _notifyContext.RegisterClient(_notifyEngineQueue, _notifySource);
 
-        var recipient = _notifySource.GetRecipientsProvider().GetRecipient(userId.ToString());
+        var recipient = await _notifySource.GetRecipientsProvider().GetRecipientAsync(userId.ToString());
 
         await client.SendNoticeAsync(
             NotifyConstants.EventMailMergeEnd,
@@ -167,13 +167,13 @@ public class NotifyClient
 
         foreach (var recipientPair in recipients)
         {
-            var u = _userManager.GetUsers(recipientPair.Key);
+            var u = await _userManager.GetUsersAsync(recipientPair.Key);
             var culture = string.IsNullOrEmpty(u.CultureName)
                               ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture()
                               : CultureInfo.GetCultureInfo(u.CultureName);
 
             var aceString = GetAccessString(recipientPair.Value, culture);
-            var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
+            var recipient = await recipientsProvider.GetRecipientAsync(u.Id.ToString());
 
             await client.SendNoticeAsync(
                 action,
@@ -207,9 +207,9 @@ public class NotifyClient
 
         foreach (var recipientId in recipientIds)
         {
-            var u = _userManager.GetUsers(recipientId);
+            var u = await _userManager.GetUsersAsync(recipientId);
 
-            var recipient = recipientsProvider.GetRecipient(u.Id.ToString());
+            var recipient = await recipientsProvider.GetRecipientAsync(u.Id.ToString());
 
             await client.SendNoticeAsync(
                 NotifyConstants.EventEditorMentions,

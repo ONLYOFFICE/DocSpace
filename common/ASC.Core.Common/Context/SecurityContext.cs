@@ -90,7 +90,7 @@ public class SecurityContext
         ArgumentNullException.ThrowIfNull(passwordHash);
 
         var tenantid = (await _tenantManager.GetCurrentTenantAsync()).Id;
-        var u = _userManager.GetUsersByPasswordHash(tenantid, login, passwordHash);
+        var u = await _userManager.GetUsersByPasswordHashAsync(tenantid, login, passwordHash);
 
         return await AuthenticateMeAsync(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
     }
@@ -161,7 +161,7 @@ public class SecurityContext
                 return false;
             }
 
-            var loginEventById = await _dbLoginEventsManager.GetById(loginEventId);
+            var loginEventById = await _dbLoginEventsManager.GetByIdAsync(loginEventId);
 
             if (loginEventById == null || !loginEventById.Active)
             {
@@ -190,7 +190,7 @@ public class SecurityContext
 
     public async Task<string> AuthenticateMeAsync(Guid userId, Func<Task<int>> funcLoginEvent = null, List<Claim> additionalClaims = null)
     {
-        var account = _authentication.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, userId);
+        var account = await _authentication.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId);
         return await AuthenticateMeAsync(account, funcLoginEvent, additionalClaims);
     }
 
@@ -232,7 +232,7 @@ public class SecurityContext
         {
             var tenant = await _tenantManager.GetCurrentTenantAsync();
 
-            var u = _userManager.GetUsers(account.ID);
+            var u = await _userManager.GetUsersAsync(account.ID);
 
             if (u.Id == Users.Constants.LostUser.Id)
             {
@@ -252,7 +252,7 @@ public class SecurityContext
                 }
             }
 
-            if (_userManager.IsUserInGroup(u.Id, Users.Constants.GroupAdmin.ID))
+            if (await _userManager.IsUserInGroupAsync(u.Id, Users.Constants.GroupAdmin.ID))
             {
                 roles.Add(Role.DocSpaceAdministrators);
             }
@@ -279,7 +279,7 @@ public class SecurityContext
 
     public async Task AuthenticateMeWithoutCookieAsync(Guid userId, List<Claim> additionalClaims = null)
     {
-        var account = _authentication.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, userId);
+        var account = await _authentication.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId);
 
         await AuthenticateMeWithoutCookieAsync(account, additionalClaims);
     }
@@ -292,7 +292,7 @@ public class SecurityContext
     public async Task SetUserPasswordHashAsync(Guid userID, string passwordHash)
     {
         var tenantid = (await _tenantManager.GetCurrentTenantAsync()).Id;
-        var u = _userManager.GetUsersByPasswordHash(tenantid, userID.ToString(), passwordHash);
+        var u = await _userManager.GetUsersByPasswordHashAsync(tenantid, userID.ToString(), passwordHash);
         if (!Equals(u, Users.Constants.LostUser))
         {
             throw new PasswordException("A new password must be used");

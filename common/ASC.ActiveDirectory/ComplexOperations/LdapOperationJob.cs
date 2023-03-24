@@ -106,14 +106,14 @@ public class LdapOperationJob : DistributedTaskProgress
         _logger = logger;
     }
 
-    public void InitJob(
+    public async Task InitJobAsync(
        LdapSettings settings,
        Tenant tenant,
        LdapOperationType operationType,
        LdapLocalization resource,
        string userId)
     {
-        _currentUser = userId != null ? _userManager.GetUsers(Guid.Parse(userId)) : null;
+        _currentUser = userId != null ? await _userManager.GetUsersAsync(Guid.Parse(userId)) : null;
 
         TenantId = tenant.Id;
         _tenantManager.SetCurrentTenant(tenant);
@@ -355,7 +355,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         SetProgress((int)percents, Resource.LdapSettingsModifyLdapUsers);
 
-        var existingLDAPUsers = _userManager.GetUsers(EmployeeStatus.All).Where(u => u.Sid != null).ToList();
+        var existingLDAPUsers = (await _userManager.GetUsersAsync(EmployeeStatus.All)).Where(u => u.Sid != null).ToList();
 
         var step = percents / existingLDAPUsers.Count;
 
@@ -472,7 +472,7 @@ public class LdapOperationJob : DistributedTaskProgress
                 hash = Convert.ToBase64String(md5.ComputeHash((byte[])image));
             }
 
-            var user = _userManager.GetUserBySid(ldapUser.Sid);
+            var user = await _userManager.GetUserBySidAsync(ldapUser.Sid);
 
             _logger.DebugSyncLdapAvatarsFoundPhoto(ldapUser.Sid);
 
@@ -588,7 +588,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
             foreach (var ldapGr in ldapGroups)
             {
-                var gr = _userManager.GetGroupInfoBySid(ldapGr.Sid);
+                var gr = await _userManager.GetGroupInfoBySidAsync(ldapGr.Sid);
 
                 if (gr == null)
                 {
@@ -596,14 +596,14 @@ public class LdapOperationJob : DistributedTaskProgress
                     continue;
                 }
 
-                var users = _userManager.GetUsersByGroup(gr.ID);
+                var users = await _userManager.GetUsersByGroupAsync(gr.ID);
 
                 _logger.DebugGiveUsersRightsFoundUsersForGroup(users.Count(), gr.Name, gr.ID);
 
 
                 foreach (var user in users)
                 {
-                    if (!user.Equals(Constants.LostUser) && !_userManager.IsUser(user))
+                    if (!user.Equals(Constants.LostUser) && !await _userManager.IsUserAsync(user))
                     {
                         if (!usersWithRightsFlat.Contains(user.Id.ToString()))
                         {
@@ -615,7 +615,7 @@ public class LdapOperationJob : DistributedTaskProgress
                             {
                                 var prodId = LdapSettings.AccessRightsGuids[r];
 
-                                if (_webItemSecurity.IsProductAdministrator(prodId, user.Id))
+                                if (await _webItemSecurity.IsProductAdministratorAsync(prodId, user.Id))
                                 {
                                     cleared = true;
                                     await _webItemSecurity.SetProductAdministrator(prodId, user.Id, false);
@@ -761,7 +761,7 @@ public class LdapOperationJob : DistributedTaskProgress
                     string.Format("({0}/{1}): {2}", gIndex,
                         gCount, ldapGroup.Name));
 
-            var dbLdapGroup = _userManager.GetGroupInfoBySid(ldapGroup.Sid);
+            var dbLdapGroup = await _userManager.GetGroupInfoBySidAsync(ldapGroup.Sid);
 
             if (Equals(dbLdapGroup, Constants.LostGroupInfo))
             {
@@ -789,10 +789,9 @@ public class LdapOperationJob : DistributedTaskProgress
             return;
         }
 
-        var groupMembersToAdd =
-            ldapGroupUsers.Select(ldapGroupUser => SearchDbUserBySid(ldapGroupUser.Sid))
+        var groupMembersToAdd = await ldapGroupUsers.ToAsyncEnumerable().SelectAwait(async ldapGroupUser => await SearchDbUserBySidAsync(ldapGroupUser.Sid))
                 .Where(userBySid => !Equals(userBySid, Constants.LostUser))
-                .ToList();
+                .ToListAsync();
 
         if (groupMembersToAdd.Any())
         {
@@ -853,7 +852,7 @@ public class LdapOperationJob : DistributedTaskProgress
             string.Format("({0}/{1}): {2}", gIndex, gCount, ldapGroup.Name));
 
         var dbGroupMembers =
-                    _userManager.GetUsersByGroup(dbLdapGroup.ID, EmployeeStatus.All)
+                    (await _userManager.GetUsersByGroupAsync(dbLdapGroup.ID, EmployeeStatus.All))
                         .Where(u => u.Sid != null)
                         .ToList();
 
@@ -861,14 +860,9 @@ public class LdapOperationJob : DistributedTaskProgress
             dbGroupMembers.Where(
                 dbUser => ldapGroupUsers.FirstOrDefault(lu => dbUser.Sid.Equals(lu.Sid)) == null).ToList();
 
-        var groupMembersToAdd = (from ldapGroupUser in ldapGroupUsers
-                                 let dbUser = dbGroupMembers.FirstOrDefault(u => u.Sid.Equals(ldapGroupUser.Sid))
-                                 where dbUser == null
-                                 select SearchDbUserBySid(ldapGroupUser.Sid)
-                                     into userBySid
-                                 where !Equals(userBySid, Constants.LostUser)
-                                 select userBySid)
-            .ToList();
+        var groupMembersToAdd = await ldapGroupUsers.ToAsyncEnumerable().Where(q => dbGroupMembers.FirstOrDefault(u => u.Sid.Equals(q.Sid)) == null)
+            .SelectAwait(async q => await SearchDbUserBySidAsync(q.Sid)).Where(q => !Equals(q, Constants.LostUser)).ToListAsync();
+
 
         switch (OperationType)
         {
@@ -953,14 +947,14 @@ public class LdapOperationJob : DistributedTaskProgress
         }
     }
 
-    private UserInfo SearchDbUserBySid(string sid)
+    private async Task<UserInfo> SearchDbUserBySidAsync(string sid)
     {
         if (string.IsNullOrEmpty(sid))
         {
             return Constants.LostUser;
         }
 
-        var foundUser = _userManager.GetUserBySid(sid);
+        var foundUser = await _userManager.GetUserBySidAsync(sid);
 
         return foundUser;
     }
@@ -1014,7 +1008,7 @@ public class LdapOperationJob : DistributedTaskProgress
     /// <returns>New list of actual LDAP users</returns>
     private async Task<List<UserInfo>> RemoveOldDbUsersAsync(List<UserInfo> ldapUsers)
     {
-        var dbLdapUsers = _userManager.GetUsers(EmployeeStatus.All).Where(u => u.Sid != null).ToList();
+        var dbLdapUsers = (await _userManager.GetUsersAsync(EmployeeStatus.All)).Where(u => u.Sid != null).ToList();
 
         if (!dbLdapUsers.Any())
         {
@@ -1050,7 +1044,7 @@ public class LdapOperationJob : DistributedTaskProgress
                 case LdapOperationType.Save:
                 case LdapOperationType.Sync:
                     removedUser.Sid = null;
-                    if (!removedUser.IsOwner(await _tenantManager.GetCurrentTenantAsync()) && !(_currentUser != null && _currentUser.Id == removedUser.Id && _userManager.IsDocSpaceAdmin(removedUser)))
+                    if (!removedUser.IsOwner(await _tenantManager.GetCurrentTenantAsync()) && !(_currentUser != null && _currentUser.Id == removedUser.Id && await _userManager.IsDocSpaceAdminAsync(removedUser)))
                     {
                         removedUser.Status = EmployeeStatus.Terminated; // Disable user on portal
                     }
@@ -1089,7 +1083,7 @@ public class LdapOperationJob : DistributedTaskProgress
         var percentage = GetProgress();
 
         var removedDbLdapGroups =
-            _userManager.GetGroups()
+           (await _userManager.GetGroupsAsync())
                 .Where(g => g.Sid != null && ldapGroups.FirstOrDefault(lg => g.Sid.Equals(lg.Sid)) == null)
                 .ToList();
 

@@ -43,14 +43,14 @@ public class FileShareParamsHelper
         _userManager = userManager;
     }
 
-    public AceWrapper ToAceObject(FileShareParams fileShareParams)
+    public async Task<AceWrapper> ToAceObjectAsync(FileShareParams fileShareParams)
     {
         return new AceWrapper
         {
             Access = fileShareParams.Access,
             Id = fileShareParams.ShareTo,
             Email = fileShareParams.Email,
-            SubjectGroup = string.IsNullOrEmpty(fileShareParams.Email) && !_userManager.UserExists(fileShareParams.ShareTo)
+            SubjectGroup = string.IsNullOrEmpty(fileShareParams.Email) && !await _userManager.UserExistsAsync(fileShareParams.ShareTo)
         };
     }
 }

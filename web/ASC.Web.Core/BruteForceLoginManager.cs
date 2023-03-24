@@ -93,7 +93,7 @@ public class BruteForceLoginManager
                 SetToCache(historyCacheKey, history, now.Add(settings.CheckPeriod));
             }
 
-            user = _userManager.GetUsersByPasswordHash(
+            user = await _userManager.GetUsersByPasswordHashAsync(
                    (await _tenantManager.GetCurrentTenantAsync()).Id,
                    login,
                    passwordHash);

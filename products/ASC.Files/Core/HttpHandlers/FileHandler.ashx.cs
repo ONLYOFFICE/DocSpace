@@ -1296,7 +1296,7 @@ public class FileHandlerService
     {
         var storeTemplate = _globalStore.GetStoreTemplate();
 
-        var lang = _userManager.GetUsers(_securityContext.CurrentAccount.ID).GetCulture();
+        var lang = (await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID)).GetCulture();
 
         var fileExt = _fileUtility.InternalExtension[FileType.Document];
         if (!string.IsNullOrEmpty(docType))

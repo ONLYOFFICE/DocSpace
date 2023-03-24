@@ -127,7 +127,7 @@ internal class FileConverterService<T> : BackgroundService
                 try
                 {
 
-                    var user = userManager.GetUsers(converter.Account);
+                    var user = await userManager.GetUsersAsync(converter.Account);
 
                     var culture = string.IsNullOrEmpty(user.CultureName) ? (await tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
 

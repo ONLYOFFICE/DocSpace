@@ -77,7 +77,7 @@ public class HostedSolution
 
     public async Task<List<Tenant>> FindTenantsAsync(string login, string passwordHash = null)
     {
-        if (!string.IsNullOrEmpty(passwordHash) && UserService.GetUserByPasswordHash(Tenant.DefaultTenant, login, passwordHash) == null)
+        if (!string.IsNullOrEmpty(passwordHash) && await UserService.GetUserByPasswordHashAsync(Tenant.DefaultTenant, login, passwordHash) == null)
         {
             throw new SecurityException("Invalid login or password.");
         }
@@ -163,9 +163,9 @@ public class HostedSolution
             ActivationStatus = registrationInfo.ActivationStatus
         };
 
-        user = UserService.SaveUser(tenant.Id, user);
-        UserService.SetUserPasswordHash(tenant.Id, user.Id, registrationInfo.PasswordHash);
-        UserService.SaveUserGroupRef(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
+        user = await UserService.SaveUserAsync(tenant.Id, user);
+        await UserService.SetUserPasswordHashAsync(tenant.Id, user.Id, registrationInfo.PasswordHash);
+        await UserService.SaveUserGroupRefAsync(tenant.Id, new UserGroupRef(user.Id, Constants.GroupAdmin.ID, UserGroupRefType.Contains));
 
         // save tenant owner
         tenant.OwnerId = user.Id;
@@ -183,9 +183,9 @@ public class HostedSolution
         await TenantService.RemoveTenantAsync(tenant.Id);
     }
 
-    public string CreateAuthenticationCookie(CookieStorage cookieStorage, int tenantId, Guid userId)
+    public async Task<string> CreateAuthenticationCookieAsync(CookieStorage cookieStorage, int tenantId, Guid userId)
     {
-        var u = UserService.GetUser(tenantId, userId);
+        var u = await UserService.GetUserAsync(tenantId, userId);
 
         return CreateAuthenticationCookie(cookieStorage, tenantId, u);
     }
@@ -238,9 +238,9 @@ public class HostedSolution
         return TariffService.SetTariffAsync(tenant, tariff);
     }
 
-    public IEnumerable<UserInfo> FindUsers(IEnumerable<Guid> userIds)
+    public async Task<IEnumerable<UserInfo>> FindUsersAsync(IEnumerable<Guid> userIds)
     {
-        return UserService.GetUsersAllTenants(userIds);
+        return await UserService.GetUsersAllTenantsAsync(userIds);
     }
 
     private Tenant AddRegion(Tenant tenant)

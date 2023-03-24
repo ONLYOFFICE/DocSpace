@@ -509,7 +509,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         }
 
         var email = boxUserInfo.Value<string>("login");
-        var userInfo = _userManager.GetUserByEmail(email);
+        var userInfo = await _userManager.GetUserByEmailAsync(email);
         if (Equals(userInfo, Constants.LostUser))
         {
             userInfo = new UserInfo

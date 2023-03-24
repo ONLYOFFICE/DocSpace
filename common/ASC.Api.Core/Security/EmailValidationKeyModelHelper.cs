@@ -127,9 +127,9 @@ public class EmailValidationKeyModelHelper
                 checkKeyResult = await _provider.ValidateEmailKeyAsync(email + type + _authContext.CurrentAccount.ID, key, _provider.ValidEmailKeyInterval);
                 break;
             case ConfirmType.PasswordChange:
-                var userInfo = _userManager.GetUserByEmail(email);
+                var userInfo = await _userManager.GetUserByEmailAsync(email);
                 var auditEvent = (await _auditEventsRepository.GetByFilterAsync(action: MessageAction.UserSentPasswordChangeInstructions, entry: EntryType.User, target: _messageTarget.Create(userInfo.Id).ToString(), limit: 1)).FirstOrDefault();
-                var passwordStamp = await _authentication.GetUserPasswordStampAsync(_userManager.GetUserByEmail(email).Id);
+                var passwordStamp = await _authentication.GetUserPasswordStampAsync(userInfo.Id);
 
                 string hash;
 
@@ -153,7 +153,7 @@ public class EmailValidationKeyModelHelper
 
             case ConfirmType.ProfileRemove:
                 // validate UiD
-                var user = _userManager.GetUsers(uiD.GetValueOrDefault());
+                var user = await _userManager.GetUsersAsync(uiD.GetValueOrDefault());
                 if (user == null || user == Constants.LostUser || user.Status == EmployeeStatus.Terminated || _authContext.IsAuthenticated && _authContext.CurrentAccount.ID != uiD)
                 {
                     return ValidationResult.Invalid;

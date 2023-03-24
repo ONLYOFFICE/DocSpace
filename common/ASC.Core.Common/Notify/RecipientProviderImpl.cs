@@ -37,17 +37,17 @@ public class RecipientProviderImpl : IRecipientProvider
         _userManager = userManager;
     }
 
-    public virtual IRecipient GetRecipient(string id)
+    public virtual async Task<IRecipient> GetRecipientAsync(string id)
     {
         if (TryParseGuid(id, out var recID))
         {
-            var user = _userManager.GetUsers(recID);
+            var user = await _userManager.GetUsersAsync(recID);
             if (user.Id != Constants.LostUser.Id)
             {
                 return new DirectRecipient(user.Id.ToString(), user.ToString());
             }
 
-            var group = _userManager.GetGroupInfo(recID);
+            var group = await _userManager.GetGroupInfoAsync(recID);
             if (group.ID != Constants.LostGroupInfo.ID)
             {
                 return new RecipientsGroup(group.ID.ToString(), group.Name);
@@ -57,17 +57,17 @@ public class RecipientProviderImpl : IRecipientProvider
         return null;
     }
 
-    public virtual IRecipient[] GetGroupEntries(IRecipientsGroup group)
+    public virtual async Task<IRecipient[]> GetGroupEntriesAsync(IRecipientsGroup group)
     {
         ArgumentNullException.ThrowIfNull(group);
 
         var result = new List<IRecipient>();
         if (TryParseGuid(group.ID, out var groupID))
         {
-            var coreGroup = _userManager.GetGroupInfo(groupID);
+            var coreGroup = await _userManager.GetGroupInfoAsync(groupID);
             if (coreGroup.ID != Constants.LostGroupInfo.ID)
             {
-                var users = _userManager.GetUsersByGroup(coreGroup.ID);
+                var users = await _userManager.GetUsersByGroupAsync(coreGroup.ID);
                 Array.ForEach(users, u => result.Add(new DirectRecipient(u.Id.ToString(), u.ToString())));
             }
         }
@@ -75,7 +75,7 @@ public class RecipientProviderImpl : IRecipientProvider
         return result.ToArray();
     }
 
-    public virtual IRecipientsGroup[] GetGroups(IRecipient recipient)
+    public virtual async Task<IRecipientsGroup[]> GetGroupsAsync(IRecipient recipient)
     {
         ArgumentNullException.ThrowIfNull(recipient);
 
@@ -84,7 +84,7 @@ public class RecipientProviderImpl : IRecipientProvider
         {
             if (recipient is IRecipientsGroup)
             {
-                var group = _userManager.GetGroupInfo(recID);
+                var group = await _userManager.GetGroupInfoAsync(recID);
                 while (group != null && group.Parent != null)
                 {
                     result.Add(new RecipientsGroup(group.Parent.ID.ToString(), group.Parent.Name));
@@ -93,7 +93,7 @@ public class RecipientProviderImpl : IRecipientProvider
             }
             else if (recipient is IDirectRecipient)
             {
-                foreach (var group in _userManager.GetUserGroups(recID, IncludeType.Distinct))
+                foreach (var group in (await _userManager.GetUserGroupsAsync(recID, IncludeType.Distinct)))
                 {
                     result.Add(new RecipientsGroup(group.ID.ToString(), group.Name));
                 }
@@ -103,13 +103,13 @@ public class RecipientProviderImpl : IRecipientProvider
         return result.ToArray();
     }
 
-    public virtual string[] GetRecipientAddresses(IDirectRecipient recipient, string senderName)
+    public virtual async Task<string[]> GetRecipientAddressesAsync(IDirectRecipient recipient, string senderName)
     {
         ArgumentNullException.ThrowIfNull(recipient);
 
         if (TryParseGuid(recipient.ID, out var userID))
         {
-            var user = _userManager.GetUsers(userID);
+            var user = await _userManager.GetUsersAsync(userID);
             if (user.Id != Constants.LostUser.Id)
             {
                 if (senderName == Configuration.Constants.NotifyEMailSenderSysName)
@@ -142,7 +142,7 @@ public class RecipientProviderImpl : IRecipientProvider
     /// </summary>
     /// <param name="recipient"></param>
     /// <returns></returns>
-    public IDirectRecipient FilterRecipientAddresses(IDirectRecipient recipient)
+    public async Task<IDirectRecipient> FilterRecipientAddressesAsync(IDirectRecipient recipient)
     {
         //Check activation
         if (recipient.CheckActivation)
@@ -151,16 +151,20 @@ public class RecipientProviderImpl : IRecipientProvider
             if (recipient.Addresses != null && recipient.Addresses.Length > 0)
             {
                 //Filtering only missing users and users who activated already
-                var filteredAddresses = from address in recipient.Addresses
-                                        let user = _userManager.GetUserByEmail(address)
-                                        where user.Id == Constants.LostUser.Id || (user.IsActive && (user.Status & EmployeeStatus.Default) == user.Status)
-                                        select address;
+
+                var filteredAddresses = await recipient.Addresses.ToAsyncEnumerable().WhereAwait(WhereAsync).ToArrayAsync();
 
                 return new DirectRecipient(recipient.ID, recipient.Name, filteredAddresses.ToArray(), false);
             }
         }
 
         return recipient;
+    }
+
+    private async ValueTask<bool> WhereAsync(string address)
+    {
+        var user = await _userManager.GetUserByEmailAsync(address);
+        return user.Id == Constants.LostUser.Id || (user.IsActive && (user.Status & EmployeeStatus.Default) == user.Status);
     }
 
 

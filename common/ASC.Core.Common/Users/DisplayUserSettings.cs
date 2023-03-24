@@ -57,9 +57,9 @@ public class DisplayUserSettingsHelper
     private readonly UserManager _userManager;
     private readonly UserFormatter _userFormatter;
 
-    public string GetFullUserName(Guid userID, bool withHtmlEncode = true)
+    public async Task<string> GetFullUserNameAsync(Guid userID, bool withHtmlEncode = true)
     {
-        return GetFullUserName(_userManager.GetUsers(userID), withHtmlEncode);
+        return GetFullUserName(await _userManager.GetUsersAsync(userID), withHtmlEncode);
     }
 
     public string GetFullUserName(UserInfo userInfo, bool withHtmlEncode = true)

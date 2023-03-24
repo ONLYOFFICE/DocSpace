@@ -156,7 +156,7 @@ public class CardDavAddressbook : RadicaleEntity
         try
         {
             await _radicaleClient.RemoveAsync(davRequest);
-            await _dbRadicale.RemoveCardDavUser(tenantId, userID);
+            await _dbRadicale.RemoveCardDavUserAsync(tenantId, userID);
         }
         catch (Exception ex)
         {
@@ -180,7 +180,7 @@ public class CardDavAddressbook : RadicaleEntity
 
             try
             {
-                await _dbRadicale.RemoveCardDavUser(tenantId, user.ID);
+                await _dbRadicale.RemoveCardDavUserAsync(tenantId, user.ID);
             }
             catch (Exception ex)
             {

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using static DotNetOpenAuth.OpenId.Extensions.AttributeExchange.WellKnownAttributes.Contact;
+
 namespace ASC.Web.Core.Users;
 
 [Transient]
@@ -351,7 +353,7 @@ public class UserPhotoManager
 
         try
         {
-            var data = _userManager.GetUserPhoto(userID);
+            var data = await _userManager.GetUserPhotoAsync(userID);
             string photoUrl;
             string fileName;
             if (data == null || data.Length == 0)
@@ -405,7 +407,7 @@ public class UserPhotoManager
 
         try
         {
-            var data = _userManager.GetUserPhoto(userID);
+            var data = await _userManager.GetUserPhotoAsync(userID);
 
             if (data == null || data.Length == 0)
             {
@@ -851,23 +853,24 @@ public class UserPhotoManager
     }
 
 
-    public Image GetPhotoImage(Guid userID, out IImageFormat format)
+    public async Task<(Image, IImageFormat)> GetPhotoImageAsync(Guid userID)
     {
+        IImageFormat format;
         try
         {
-            var data = _userManager.GetUserPhoto(userID);
+            var data = await _userManager.GetUserPhotoAsync(userID);
             if (data != null)
             {
                 var img = Image.Load(data);
                 
                 format = img.Metadata.DecodedImageFormat;
 
-                return img;
+                return (img ,format);
             }
         }
         catch { }
         format = null;
-        return null;
+        return (null, format);
     }
 
     public async Task<string> SaveThumbnail(Guid userID, Image img, IImageFormat format)

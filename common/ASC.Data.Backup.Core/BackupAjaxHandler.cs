@@ -354,7 +354,7 @@ public class BackupAjaxHandler
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.Migration))
         || !currentUser.IsOwner(await _tenantManager.GetCurrentTenantAsync())
         || !SetupInfo.IsSecretEmail(currentUser.Email) && !(await _tenantManager.GetCurrentTenantQuotaAsync()).AutoBackupRestore)

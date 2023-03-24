@@ -91,7 +91,7 @@ public class DocSpaceLinkHelper
 
         if (result == ValidationResult.Ok)
         {
-            var user = _userManager.GetUserByEmail(email);
+            var user = await _userManager.GetUserByEmailAsync(email);
 
             if (user == ASC.Core.Users.Constants.LostUser || await _authManager.GetUserPasswordStampAsync(user.Id) != DateTime.MinValue)
             {

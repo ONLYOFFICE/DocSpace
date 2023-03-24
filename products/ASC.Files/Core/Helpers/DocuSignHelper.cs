@@ -183,7 +183,7 @@ public class DocuSignHelper
         var apiClient = await GetApiClientAsync(account, token);
         var (document, sourceFile) = await CreateDocumentAsync(fileId, docuSignData.Name, docuSignData.FolderId);
 
-        var url = CreateEnvelope(account.AccountId, document, docuSignData, apiClient);
+        var url = await CreateEnvelopeAsync(account.AccountId, document, docuSignData, apiClient);
 
         await _filesMessageService.SendAsync(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
 
@@ -279,7 +279,7 @@ public class DocuSignHelper
         return (document, file);
     }
 
-    private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, DocuSignClient apiClient)
+    private async Task<string> CreateEnvelopeAsync(string accountId, Document document, DocuSignData docuSignData, DocuSignClient apiClient)
     {
         var eventNotification = new EventNotification
         {
@@ -307,11 +307,12 @@ public class DocuSignHelper
         _logger.DebugDocuSingHookUrl(eventNotification.Url);
 
         var signers = new List<Signer>();
-        docuSignData.Users.ForEach(uid =>
+        
+        foreach(var uid in docuSignData.Users)
         {
             try
             {
-                var user = _userManager.GetUsers(uid);
+                var user = await _userManager.GetUsersAsync(uid);
                 signers.Add(new Signer
                 {
                     Email = user.Email,
@@ -323,7 +324,7 @@ public class DocuSignHelper
             {
                 _logger.ErrorSignerIsUndefined(ex);
             }
-        });
+        }
 
         var envelopeDefinition = new EnvelopeDefinition
         {

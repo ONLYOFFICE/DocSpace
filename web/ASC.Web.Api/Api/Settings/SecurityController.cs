@@ -105,7 +105,7 @@ public class SecurityController : BaseSettingsController
 
             foreach (var e in i.Users)
             {
-                s.Users.Add(await _employeeHelperDto.Get(e));
+                s.Users.Add(await _employeeHelperDto.GetAsync(e));
             }
 
             yield return s;
@@ -252,18 +252,18 @@ public class SecurityController : BaseSettingsController
     [HttpGet("security/administrator/{productid}")]
     public async IAsyncEnumerable<EmployeeDto> GetProductAdministrators(Guid productid)
     {
-        var admins = _webItemSecurity.GetProductAdministrators(productid);
+        var admins = await _webItemSecurity.GetProductAdministratorsAsync(productid);
 
         foreach (var a in admins)
         {
-            yield return await _employeeHelperDto.Get(a);
+            yield return await _employeeHelperDto.GetAsync(a);
         }
     }
 
     [HttpGet("security/administrator")]
-    public object IsProductAdministrator(Guid productid, Guid userid)
+    public async Task<object> IsProductAdministratorAsync(Guid productid, Guid userid)
     {
-        var result = _webItemSecurity.IsProductAdministrator(productid, userid);
+        var result = await _webItemSecurity.IsProductAdministratorAsync(productid, userid);
         return new { ProductId = productid, UserId = userid, Administrator = result };
     }
 
@@ -280,7 +280,7 @@ public class SecurityController : BaseSettingsController
 
         await _webItemSecurity.SetProductAdministrator(inDto.ProductId, inDto.UserId, inDto.Administrator);
 
-        var admin = _userManager.GetUsers(inDto.UserId);
+        var admin = await _userManager.GetUsersAsync(inDto.UserId);
 
         if (inDto.ProductId == Guid.Empty)
         {

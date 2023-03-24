@@ -187,7 +187,7 @@ public class LdapController : BaseSettingsController
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        var result = _ldapSaveSyncOperation.SyncLdap(ldapSettings, Tenant, userId);
+        var result = await _ldapSaveSyncOperation.SyncLdapAsync(ldapSettings, Tenant, userId);
 
         return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
@@ -207,7 +207,7 @@ public class LdapController : BaseSettingsController
 
         var ldapSettings = _settingsManager.Load<LdapSettings>();
 
-        var result = _ldapSaveSyncOperation.TestLdapSync(ldapSettings, Tenant);
+        var result = await _ldapSaveSyncOperation.TestLdapSyncAsync(ldapSettings, Tenant);
 
         return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
@@ -236,7 +236,7 @@ public class LdapController : BaseSettingsController
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        var result = _ldapSaveSyncOperation.SaveLdapSettings(ldapSettings, Tenant, userId);
+        var result = await _ldapSaveSyncOperation.SaveLdapSettingsAsync(ldapSettings, Tenant, userId);
 
         return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }
@@ -258,7 +258,7 @@ public class LdapController : BaseSettingsController
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        var result = _ldapSaveSyncOperation.TestLdapSave(ldapSettings, Tenant, userId);
+        var result = await _ldapSaveSyncOperation.TestLdapSaveAsync(ldapSettings, Tenant, userId);
 
         return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }

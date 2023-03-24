@@ -158,7 +158,7 @@ public class Global
         }
     }
 
-    public bool IsDocSpaceAdministrator => _fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID);
+    public Task<bool> IsDocSpaceAdministratorAsync => _fileSecurityCommon.IsDocSpaceAdministratorAsync(_authContext.CurrentAccount.ID);
 
     public async Task<string> GetDocDbKeyAsync()
     {
@@ -200,6 +200,27 @@ public class Global
         }
 
         return InvalidTitleChars.Replace(title, "_");
+    }
+
+    public async Task<string> GetUserNameAsync(Guid userId, bool alive = false)
+    {
+        if (userId.Equals(_authContext.CurrentAccount.ID))
+        {
+            return FilesCommonResource.Author_Me;
+        }
+
+        if (userId.Equals(ASC.Core.Configuration.Constants.Guest.ID))
+        {
+            return FilesCommonResource.Guest;
+        }
+
+        var userInfo = await _userManager.GetUsersAsync(userId);
+        if (userInfo.Equals(Constants.LostUser))
+        {
+            return alive ? FilesCommonResource.Guest : _customNamingPeople.Substitute<FilesCommonResource>("ProfileRemoved");
+        }
+
+        return userInfo.DisplayUserName(false, _displayUserSettingsHelper);
     }
 
     public string GetUserName(Guid userId, bool alive = false)
@@ -412,7 +433,7 @@ public class GlobalFolder
             return default;
         }
 
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             return default;
         }
@@ -486,7 +507,7 @@ public class GlobalFolder
             return default;
         }
 
-        if (IsOutsider)
+        if (await IsOutsiderAsync)
         {
             return default;
         }
@@ -570,7 +591,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -604,7 +625,7 @@ public class GlobalFolder
             return 0;
         }
 
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             return 0;
         }
@@ -636,7 +657,7 @@ public class GlobalFolder
 
     public async ValueTask<object> GetFolderTrashAsync(IDaoFactory daoFactory)
     {
-        if (IsOutsider)
+        if (await IsOutsiderAsync)
         {
             return null;
         }
@@ -652,7 +673,7 @@ public class GlobalFolder
         return trashFolderId;
     }
 
-    protected internal async Task SetFolderTrashAsync(object value)
+    public async Task SetFolderTrashAsync(object value)
     {
         var cacheKey = string.Format("trash/{0}/{1}", (await _tenantManager.GetCurrentTenantAsync()).Id, value);
         TrashFolderCache.Remove(cacheKey);
@@ -676,7 +697,7 @@ public class GlobalFolder
                 {
                     var storeTemplate = _globalStore.GetStoreTemplate();
 
-                    var culture = my ? _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture() : (await _tenantManager.GetCurrentTenantAsync()).GetCulture();
+                    var culture = my ? (await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID)).GetCulture() : (await _tenantManager.GetCurrentTenantAsync()).GetCulture();
                     var path = FileConstant.StartDocPath + culture + "/";
 
                     if (!await storeTemplate.IsDirectoryAsync(path))
@@ -750,7 +771,7 @@ public class GlobalFolder
         }
     }
 
-    public bool IsOutsider => _userManager.IsOutsider(_authContext.CurrentAccount.ID);
+    private Task<bool> IsOutsiderAsync => _userManager.IsOutsiderAsync(_authContext.CurrentAccount.ID);
 }
 
 [Scope]
@@ -792,9 +813,9 @@ public class GlobalFolderHelper
         return (T)Convert.ChangeType(await FolderProjectsAsync, typeof(T));
     }
 
-    public T GetFolderTrash<T>()
+    public async Task<T> GetFolderTrashAsync<T>()
     {
-        return (T)Convert.ChangeType(FolderTrash, typeof(T));
+        return (T)Convert.ChangeType(await FolderTrashAsync, typeof(T));
     }
 
     public async ValueTask<T> GetFolderPrivacyAsync<T>()
@@ -823,9 +844,13 @@ public class GlobalFolderHelper
     }
     public ValueTask<int> FolderShareAsync => _globalFolder.GetFolderShareAsync(_daoFactory);
 
-    public object FolderTrash
+    public async Task SetFolderTrashAsync(object value)
     {
-        get => _globalFolder.GetFolderTrashAsync(_daoFactory).Result;
-        set => _globalFolder.SetFolderTrashAsync(value).Wait();
+        await _globalFolder.SetFolderTrashAsync(value);
     }
+    public ValueTask<object> FolderTrashAsync
+    {
+        get => _globalFolder.GetFolderTrashAsync(_daoFactory);
+    }
+
 }

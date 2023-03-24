@@ -279,7 +279,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             if (subjectGroup)
             {
-                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = (await _userManager.GetUsersByGroupAsync(subjectID)).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -333,7 +333,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             if (subjectGroup)
             {
-                var users = _userManager.GetUsersByGroup(subjectID.Value).Select(u => u.Id).ToArray();
+                var users = (await _userManager.GetUsersByGroupAsync(subjectID.Value)).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else

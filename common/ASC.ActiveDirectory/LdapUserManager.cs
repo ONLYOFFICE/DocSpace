@@ -100,9 +100,9 @@ public class LdapUserManager
         return uniqueName;
     }
 
-    private bool CheckUniqueEmail(Guid userId, string email)
+    private async Task<bool> CheckUniqueEmailAsync(Guid userId, string email)
     {
-        var foundUser = _userManager.GetUserByEmail(email);
+        var foundUser = await _userManager.GetUserByEmailAsync(email);
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
@@ -119,7 +119,7 @@ public class LdapUserManager
 
             _logger.DebugTryAddLdapUser(ldapUserInfo.Sid, ldapUserInfo.Email, ldapUserInfo.UserName);
 
-            if (!CheckUniqueEmail(ldapUserInfo.Id, ldapUserInfo.Email))
+            if (!await CheckUniqueEmailAsync(ldapUserInfo.Id, ldapUserInfo.Email))
             {
                 _logger.DebugUserAlredyExistsForEmail(ldapUserInfo.Sid, ldapUserInfo.Email);
 
@@ -241,11 +241,11 @@ public class LdapUserManager
             UserInfo = Constants.LostUser
         };
 
-        var userBySid = _userManager.GetUserBySid(ldapUserInfo.Sid);
+        var userBySid = await _userManager.GetUserBySidAsync(ldapUserInfo.Sid);
 
         if (Equals(userBySid, Constants.LostUser))
         {
-            var userByEmail = _userManager.GetUserByEmail(ldapUserInfo.Email);
+            var userByEmail = await _userManager.GetUserByEmailAsync(ldapUserInfo.Email);
 
             if (Equals(userByEmail, Constants.LostUser))
             {
@@ -534,7 +534,7 @@ public class LdapUserManager
             }
 
             if (!userToUpdate.Email.Equals(updateInfo.Email, StringComparison.InvariantCultureIgnoreCase)
-                && !CheckUniqueEmail(userToUpdate.Id, updateInfo.Email))
+                && !await CheckUniqueEmailAsync(userToUpdate.Id, updateInfo.Email))
             {
                 _logger.DebugUpdateUserEmailAlreadyExists(userToUpdate.Id, userToUpdate.Email, updateInfo.Email);
 
@@ -628,7 +628,7 @@ public class LdapUserManager
                 return userInfo;
             }
 
-            var portalUser = _userManager.GetUserBySid(ldapUserInfo.Item1.Sid);
+            var portalUser = await _userManager.GetUserBySidAsync(ldapUserInfo.Item1.Sid);
 
             if (portalUser.Status == EmployeeStatus.Terminated || portalUser.Equals(Constants.LostUser))
             {

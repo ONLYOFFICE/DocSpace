@@ -158,7 +158,7 @@ public class SsoHandlerService
                     throw new SSOException("SAML response is not valid", MessageKey.SsoSettingsNotValidToken);
                 }
 
-                var userInfo = ToUserInfo(userData, true);
+                var userInfo = await ToUserInfoAsync(userData, true);
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
@@ -172,7 +172,7 @@ public class SsoHandlerService
 
                 if (context.User != null && context.User.Identity != null && context.User.Identity.IsAuthenticated)
                 {
-                    var authenticatedUserInfo = _userManager.GetUsers(((IUserAccount)context.User.Identity).ID);
+                    var authenticatedUserInfo = await _userManager.GetUsersAsync(((IUserAccount)context.User.Identity).ID);
 
                     if (!Equals(userInfo, authenticatedUserInfo))
                     {
@@ -203,7 +203,7 @@ public class SsoHandlerService
                     throw new SSOException("SAML Logout response is not valid", MessageKey.SsoSettingsNotValidToken);
                 }
 
-                var userInfo = _userManager.GetSsoUserByNameId(logoutSsoUserData.NameId);
+                var userInfo = await _userManager.GetSsoUserByNameIdAsync(logoutSsoUserData.NameId);
 
                 if (Equals(userInfo, Constants.LostUser))
                 {
@@ -308,7 +308,7 @@ public class SsoHandlerService
 
     }
 
-    private UserInfo ToUserInfo(SsoUserData UserData, bool checkExistance = false)
+    private async Task<UserInfo> ToUserInfoAsync(SsoUserData UserData, bool checkExistance = false)
     {
         var firstName = TrimToLimit(UserData.FirstName);
         var lastName = TrimToLimit(UserData.LastName);
@@ -328,11 +328,11 @@ public class SsoHandlerService
 
         if (checkExistance)
         {
-            userInfo = _userManager.GetSsoUserByNameId(nameId);
+            userInfo = await _userManager.GetSsoUserByNameIdAsync(nameId);
 
             if (Equals(userInfo, Constants.LostUser))
             {
-                userInfo = _userManager.GetUserByEmail(email);
+                userInfo = await _userManager.GetUserByEmailAsync(email);
             }
         }
 

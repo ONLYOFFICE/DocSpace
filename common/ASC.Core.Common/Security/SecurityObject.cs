@@ -44,9 +44,9 @@ public abstract class SecurityObject : ISecurityObject
         return null;
     }
 
-    public bool IsMatchDefaultRules(ISubject subject, IAction action, IRoleProvider roleProvider)
+    public async Task<bool> IsMatchDefaultRulesAsync(ISubject subject, IAction action, IRoleProvider roleProvider)
     {
-        var subjectRoles = roleProvider.GetRoles(subject);
+        var subjectRoles = await roleProvider.GetRolesAsync(subject);
         var targetRoles = GetTargetRoles(roleProvider);
 
         foreach (var subjectRole in subjectRoles)

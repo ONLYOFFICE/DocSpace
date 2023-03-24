@@ -148,8 +148,8 @@ public class ReassignProgressItem : DistributedTaskProgress
 
     private async Task SendSuccessNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
     {
-        var fromUser = userManager.GetUsers(FromUser);
-        var toUser = userManager.GetUsers(ToUser);
+        var fromUser = await userManager.GetUsersAsync(FromUser);
+        var toUser = await userManager.GetUsersAsync(ToUser);
 
         await studioNotifyService.SendMsgReassignsCompletedAsync(_currentUserId, fromUser, toUser);
 
@@ -168,15 +168,15 @@ public class ReassignProgressItem : DistributedTaskProgress
 
     private async Task SendErrorNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
     {
-        var fromUser = userManager.GetUsers(FromUser);
-        var toUser = userManager.GetUsers(ToUser);
+        var fromUser = await userManager.GetUsersAsync(FromUser);
+        var toUser = await userManager.GetUsersAsync(ToUser);
 
         await studioNotifyService.SendMsgReassignsFailedAsync(_currentUserId, fromUser, toUser, errorMessage);
     }
 
     private async Task DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper, QueueWorkerRemove queueWorkerRemove)
     {
-        var user = userManager.GetUsers(FromUser);
+        var user = await userManager.GetUsersAsync(FromUser);
         var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
         await userPhotoManager.RemovePhotoAsync(user.Id);

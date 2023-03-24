@@ -102,7 +102,7 @@ public class PushSenderSinkMessageCreator : SinkMessageCreator
             tenant = await _tenantManager.GetCurrentTenantAsync(false);
         }      
 
-        var user = _userManager.GetUsers(new Guid(message.Recipient.ID));
+        var user = await _userManager.GetUsersAsync(new Guid(message.Recipient.ID));
         var username = user.UserName;
 
         var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));

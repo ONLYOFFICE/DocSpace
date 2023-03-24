@@ -100,7 +100,7 @@ public class SmsManager
             }
         }
 
-        if (_studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+        if (await _studioSmsNotificationSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             await PutAuthCodeAsync(user, false);
         }
@@ -115,7 +115,7 @@ public class SmsManager
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (!await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() || !_studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+        if (!await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() || !await _studioSmsNotificationSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             throw new MethodAccessException();
         }
@@ -146,7 +146,7 @@ public class SmsManager
     public async Task ValidateSmsCodeAsync(UserInfo user, string code, bool isEntryPoint = false)
     {
         if (!await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync()
-            || !_studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+            || !await _studioSmsNotificationSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             return;
         }

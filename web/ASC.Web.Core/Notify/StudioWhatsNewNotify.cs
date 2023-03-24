@@ -126,14 +126,14 @@ public class StudioWhatsNewNotify
             var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifyHelper.NotifySource);
 
             _log.InformationStartSendWhatsNewIn(tenant.GetTenantDomain(_coreSettings), tenantid);
-            foreach (var user in _userManager.GetUsers())
+            foreach (var user in await _userManager.GetUsersAsync())
             {
-                if (!_studioNotifyHelper.IsSubscribedToNotify(user, Actions.SendWhatsNew))
+                if (!await _studioNotifyHelper.IsSubscribedToNotifyAsync(user, Actions.SendWhatsNew))
                 {
                     continue;
                 }
 
-                await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(tenant.Id, user.Id));
+                await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(tenant.Id, user.Id));
 
                 var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 

@@ -57,7 +57,7 @@ public abstract class PeopleControllerBase : ApiControllerBase
         try
         {
             var userId = new Guid(userNameOrId);
-            user = _userManager.GetUsers(userId);
+            user = await _userManager.GetUsersAsync(userId);
         }
         catch (FormatException)
         {

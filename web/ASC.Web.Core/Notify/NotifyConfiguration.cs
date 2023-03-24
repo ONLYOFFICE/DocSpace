@@ -194,13 +194,13 @@ public class ProductSecurityInterceptor
 
                     if (guid != default)
                     {
-                        u = _userManager.GetUsers(guid);
+                        u = await _userManager.GetUsersAsync(guid);
                     }
                 }
 
                 if (Constants.LostUser.Equals(u))
                 {
-                    u = _userManager.GetUserByEmail(r.Recipient.ID);
+                    u = await _userManager.GetUserByEmailAsync(r.Recipient.ID);
                 }
 
                 if (Constants.LostUser.Equals(u))
@@ -321,7 +321,7 @@ public class NotifyTransferRequest : INotifyEngineAction
         if (_authContext.IsAuthenticated)
         {
             aid = _authContext.CurrentAccount.ID;
-            var user = _userManager.GetUsers(aid);
+            var user = await _userManager.GetUsersAsync(aid);
             if (_userManager.UserExists(user))
             {
                 aname = user.DisplayUserName(false, _displayUserSettingsHelper)
@@ -344,7 +344,7 @@ public class NotifyTransferRequest : INotifyEngineAction
 
         request.Arguments.Add(new TagValue(CommonTags.AuthorID, aid));
         request.Arguments.Add(new TagValue(CommonTags.AuthorName, aname));
-        request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, _commonLinkUtility.GetFullAbsolutePath(_commonLinkUtility.GetUserProfile(aid))));
+        request.Arguments.Add(new TagValue(CommonTags.AuthorUrl, _commonLinkUtility.GetFullAbsolutePath(await _commonLinkUtility.GetUserProfileAsync(aid))));
         request.Arguments.Add(new TagValue(CommonTags.VirtualRootPath, _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/')));
         request.Arguments.Add(new TagValue(CommonTags.ProductID, product != null ? product.ID : Guid.Empty));
         request.Arguments.Add(new TagValue(CommonTags.ModuleID, module != null ? module.ID : Guid.Empty));

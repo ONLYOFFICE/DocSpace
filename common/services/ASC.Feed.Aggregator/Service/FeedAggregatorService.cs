@@ -78,7 +78,7 @@ public class FeedAggregatorService : FeedBaseService
     {
         try
         {
-            await securityContext.AuthenticateMeWithoutCookieAsync(authManager.GetAccountByID(tenantId, userid));
+            await securityContext.AuthenticateMeWithoutCookieAsync(await authManager.GetAccountByIDAsync(tenantId, userid));
             return true;
         }
         catch
@@ -140,7 +140,7 @@ public class FeedAggregatorService : FeedBaseService
                         }
 
                         await tenantManager.SetCurrentTenantAsync(tenant);
-                        var users = userManager.GetUsers();
+                        var users = await userManager.GetUsersAsync();
 
                         var feeds = await Attempt(10, async () => (await module.GetFeeds(new FeedFilter(fromTime, toTime) { Tenant = tenant })).Where(r => r.Item1 != null).ToList());
                         _logger.DebugCountFeeds(feeds.Count, tenant);

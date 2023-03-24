@@ -41,7 +41,7 @@ public class CultureMiddleware
 
         if (authContext.IsAuthenticated)
         {
-            var user = userManager.GetUsers(authContext.CurrentAccount.ID);
+            var user = await userManager.GetUsersAsync(authContext.CurrentAccount.ID);
 
             if (!string.IsNullOrEmpty(user.CultureName))
             {

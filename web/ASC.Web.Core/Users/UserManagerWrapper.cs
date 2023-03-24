@@ -107,9 +107,9 @@ public sealed class UserManagerWrapper
         return uniqueName;
     }
 
-    public bool CheckUniqueEmail(Guid userId, string email)
+    public async Task<bool> CheckUniqueEmailAsync(Guid userId, string email)
     {
-        var foundUser = _userManager.GetUserByEmail(email);
+        var foundUser = await _userManager.GetUserByEmailAsync(email);
         return Equals(foundUser, Constants.LostUser) || foundUser.Id == userId;
     }
 
@@ -117,7 +117,7 @@ public sealed class UserManagerWrapper
     {
         var mail = new MailAddress(email);
 
-        if (_userManager.GetUserByEmail(mail.Address).Id != Constants.LostUser.Id)
+        if ((await _userManager.GetUserByEmailAsync(mail.Address)).Id != Constants.LostUser.Id)
         {
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
@@ -162,7 +162,7 @@ public sealed class UserManagerWrapper
             throw new Exception(Resource.ErrorIncorrectUserName);
         }
 
-        if (!updateExising && !CheckUniqueEmail(userInfo.Id, userInfo.Email))
+        if (!updateExising && !await CheckUniqueEmailAsync(userInfo.Id, userInfo.Email))
         {
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
@@ -249,7 +249,7 @@ public sealed class UserManagerWrapper
 
     public async Task<bool> UpdateUserTypeAsync(UserInfo user, EmployeeType type)
     {
-        var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         var changed = false;
 
         if (user.IsOwner(Tenant) || user.IsMe(currentUser.Id))
@@ -257,7 +257,7 @@ public sealed class UserManagerWrapper
             return await Task.FromResult(false);
         }
         
-        var currentType = _userManager.GetUserType(user.Id);
+        var currentType = await _userManager.GetUserTypeAsync(user.Id);
         
         if (type is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
         {
@@ -378,7 +378,7 @@ public sealed class UserManagerWrapper
             throw new Exception(Resource.ErrorAccessRestricted);
         }
 
-        var userInfo = _userManager.GetUserByEmail(email);
+        var userInfo = await _userManager.GetUserByEmailAsync(email);
         if (!_userManager.UserExists(userInfo) || string.IsNullOrEmpty(userInfo.Email))
         {
             return string.Format(Resource.ErrorUserNotFoundByEmail, email);

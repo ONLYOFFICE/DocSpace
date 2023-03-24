@@ -122,8 +122,8 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
         //Filter
         if (subjectID != Guid.Empty)
         {
-            folders = folders.Where(x => subjectGroup
-                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            folders = folders.WhereAwait(async x => subjectGroup
+                                             ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                              : x.CreateBy == subjectID);
         }
 
@@ -157,8 +157,8 @@ internal class OneDriveFolderDao : OneDriveDaoBase, IFolderDao<string>
 
         if (subjectID.HasValue && subjectID != Guid.Empty)
         {
-            folders = folders.Where(x => subjectGroup
-                                             ? _userManager.IsUserInGroup(x.CreateBy, subjectID.Value)
+            folders = folders.WhereAwait(async x => subjectGroup
+                                             ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID.Value)
                                              : x.CreateBy == subjectID);
         }
 

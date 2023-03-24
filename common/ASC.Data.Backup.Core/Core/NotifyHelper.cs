@@ -89,9 +89,9 @@ public class NotifyHelper
 
         await client.SendNoticeToAsync(
             Actions.BackupCreated,
-            new[] { _studioNotifyHelper.ToRecipient(userId) },
+            new[] { await _studioNotifyHelper.ToRecipientAsync(userId) },
             new[] { StudioNotifyService.EMailSenderName },
-            new TagValue(Tags.OwnerName, _userManager.GetUsers(userId).DisplayUserName(_displayUserSettingsHelper)));
+            new TagValue(Tags.OwnerName, (await _userManager.GetUsersAsync(userId)).DisplayUserName(_displayUserSettingsHelper)));
     }
 
     public async Task SendAboutRestoreStartedAsync(Tenant tenant, bool notifyAllUsers)
@@ -100,10 +100,10 @@ public class NotifyHelper
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
 
-        var owner = _userManager.GetUsers(tenant.OwnerId);
+        var owner = await _userManager.GetUsersAsync(tenant.OwnerId);
         var users =
             notifyAllUsers
-                ? await _studioNotifyHelper.RecipientFromEmailAsync(_userManager.GetUsers(EmployeeStatus.Active).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
+                ? await _studioNotifyHelper.RecipientFromEmailAsync((await _userManager.GetUsersAsync(EmployeeStatus.Active)).Where(r => r.ActivationStatus == EmployeeActivationStatus.Activated).Select(u => u.Email).ToList(), false)
                 : owner.ActivationStatus == EmployeeActivationStatus.Activated ? await _studioNotifyHelper.RecipientFromEmailAsync(owner.Email, false) : new IDirectRecipient[0];
 
         await client.SendNoticeToAsync(
@@ -118,8 +118,8 @@ public class NotifyHelper
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
 
         var users = notifyAllUsers
-            ? _userManager.GetUsers(EmployeeStatus.Active)
-            : new[] { _userManager.GetUsers((await _tenantManager.GetCurrentTenantAsync()).OwnerId) };
+            ? await _userManager.GetUsersAsync(EmployeeStatus.Active)
+            : new[] { await _userManager.GetUsersAsync((await _tenantManager.GetCurrentTenantAsync()).OwnerId) };
 
         foreach (var user in users)
         {
@@ -142,7 +142,7 @@ public class NotifyHelper
 
         var client = _workContext.NotifyContext.RegisterClient(_notifyEngineQueue, _studioNotifySource);
 
-        var users = _userManager.GetUsers()
+        var users = (await _userManager.GetUsersAsync())
             .Where(u => notify ? u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated) : u.IsOwner(tenant))
             .ToArray();
 
@@ -175,7 +175,7 @@ public class NotifyHelper
                 await client.SendNoticeToAsync(
                     action,
                     null,
-                    users.Select(u => _studioNotifyHelper.ToRecipient(u.Id)).ToArray(),
+                    await users.ToAsyncEnumerable().SelectAwait(async u => await _studioNotifyHelper.ToRecipientAsync(u.Id)).ToArrayAsync(),
                     new[] { StudioNotifyService.EMailSenderName },
                     args.ToArray());
             }

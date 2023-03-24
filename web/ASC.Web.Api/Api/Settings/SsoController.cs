@@ -226,7 +226,7 @@ public class SsoController : BaseSettingsController
 
     private async Task ConverSsoUsersToOrdinaryAsync()
     {
-        var ssoUsers = _userManager.GetUsers().Where(u => u.IsSSO()).ToList();
+        var ssoUsers = (await _userManager.GetUsersAsync()).Where(u => u.IsSSO()).ToList();
 
         if (!ssoUsers.Any())
         {

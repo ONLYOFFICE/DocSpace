@@ -189,7 +189,7 @@ public class StudioPeriodicNotify
 
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                        var owner = _userManager.GetUsers(tenant.OwnerId);
+                        var owner = await _userManager.GetUsersAsync(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                   HttpUtility.UrlEncode(Convert.ToBase64String(
                                       Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
@@ -224,7 +224,7 @@ public class StudioPeriodicNotify
 
                         greenButtonText = () => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
 
-                        var owner = _userManager.GetUsers(tenant.OwnerId);
+                        var owner = await _userManager.GetUsersAsync(tenant.OwnerId);
                         greenButtonUrl = _setupInfo.TeamlabSiteRedirect + "/remove-portal-feedback-form.aspx#" +
                                   HttpUtility.UrlEncode(Convert.ToBase64String(
                                       Encoding.UTF8.GetBytes("{\"firstname\":\"" + owner.FirstName +
@@ -254,10 +254,10 @@ public class StudioPeriodicNotify
                 }
 
                 var users = toowner
-                                    ? new List<UserInfo> { _userManager.GetUsers(tenant.OwnerId) }
-                                    : _studioNotifyHelper.GetRecipients(toadmins, tousers, false);
+                                    ? new List<UserInfo> { await _userManager.GetUsersAsync(tenant.OwnerId) }
+                                    : await _studioNotifyHelper.GetRecipientsAsync(toadmins, tousers, false);
 
-                foreach (var u in users.Where(u => paymentMessage || _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                await foreach (var u in users.ToAsyncEnumerable().WhereAwait(async u => paymentMessage || await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                 {
                     var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                     Thread.CurrentThread.CurrentCulture = culture;
@@ -266,16 +266,16 @@ public class StudioPeriodicNotify
 
                     await client.SendNoticeToAsync(
                         action,
-                            new[] { _studioNotifyHelper.ToRecipient(u.Id) },
+                            new[] { await _studioNotifyHelper.ToRecipientAsync(u.Id) },
                         new[] { senderName },
                         new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.ActiveUsers, _userManager.GetUsers().Length),
+                            new TagValue(Tags.ActiveUsers, (await _userManager.GetUsersAsync()).Length),
                         new TagValue(Tags.Price, rquota.Price),
                         new TagValue(Tags.PricePeriod, UserControlsCommonResource.TariffPerMonth),
                         new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
                         new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
                         TagValues.GreenButton(greenButtonText, greenButtonUrl),
-                        new TagValue(CommonTags.Footer, _userManager.IsDocSpaceAdmin(u) ? "common" : "social"));
+                        new TagValue(CommonTags.Footer, await _userManager.IsDocSpaceAdminAsync(u) ? "common" : "social"));
                 }
             }
             catch (Exception err)
@@ -369,9 +369,9 @@ public class StudioPeriodicNotify
                     continue;
                 }
 
-                var users = _studioNotifyHelper.GetRecipients(toadmins, tousers, false);
+                var users = await _studioNotifyHelper.GetRecipientsAsync(toadmins, tousers, false);
 
-                foreach (var u in users.Where(u => paymentMessage || _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                await foreach (var u in users.ToAsyncEnumerable().WhereAwait(async u => paymentMessage || await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                 {
                     var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                     Thread.CurrentThread.CurrentCulture = culture;
@@ -381,10 +381,10 @@ public class StudioPeriodicNotify
 
                     await client.SendNoticeToAsync(
                         action,
-                            new[] { _studioNotifyHelper.ToRecipient(u.Id) },
+                            new[] { await _studioNotifyHelper.ToRecipientAsync(u.Id) },
                         new[] { senderName },
                         new TagValue(Tags.UserName, u.FirstName.HtmlEncode()),
-                            new TagValue(Tags.ActiveUsers, _userManager.GetUsers().Length),
+                            new TagValue(Tags.ActiveUsers, (await _userManager.GetUsersAsync()).Length),
                         new TagValue(Tags.Price, rquota.Price),
                         new TagValue(Tags.PricePeriod, UserControlsCommonResource.TariffPerMonth),
                         new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
@@ -431,19 +431,19 @@ public class StudioPeriodicNotify
 
                 if (createdDate.AddDays(7) == nowDate)
                 {
-                    var users = _studioNotifyHelper.GetRecipients(true, true, false);
+                    var users = await _studioNotifyHelper.GetRecipientsAsync(true, true, false);
                     var greenButtonText = () => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
                     var greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~").TrimEnd('/');
 
-                    foreach (var u in users.Where(u => _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                    await foreach (var u in users.ToAsyncEnumerable().WhereAwait(async u => await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                         Thread.CurrentThread.CurrentCulture = culture;
                         Thread.CurrentThread.CurrentUICulture = culture;
 
                         await client.SendNoticeToAsync(
-                                _userManager.IsDocSpaceAdmin(u) ? Actions.OpensourceAdminDocsTipsV1 : Actions.OpensourceUserDocsTipsV1,
-                                new[] { _studioNotifyHelper.ToRecipient(u.Id) },
+                                await _userManager.IsDocSpaceAdminAsync(u) ? Actions.OpensourceAdminDocsTipsV1 : Actions.OpensourceUserDocsTipsV1,
+                                new[] { await _studioNotifyHelper.ToRecipientAsync(u.Id) },
                             new[] { senderName },
                                 new TagValue(Tags.UserName, u.DisplayUserName(_displayUserSettingsHelper)),
                             new TagValue(CommonTags.Footer, "opensource"),
@@ -483,13 +483,13 @@ public class StudioPeriodicNotify
 
                 _log.InformationCurrentTenant(tenant.Id);
 
-                var users = _userManager.GetUsers(EmployeeStatus.Active);
+                var users = await _userManager.GetUsersAsync(EmployeeStatus.Active);
 
-                foreach (var user in users.Where(u => _studioNotifyHelper.IsSubscribedToNotify(u, Actions.PeriodicNotify)))
+                await foreach (var user in users.ToAsyncEnumerable().WhereAwait(async u => await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                 {
                     INotifyAction action;
 
-                    await _securityContext.AuthenticateMeWithoutCookieAsync(_authManager.GetAccountByID(tenant.Id, user.Id));
+                    await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(tenant.Id, user.Id));
 
                     var culture = tenant.GetCulture();
                     if (!string.IsNullOrEmpty(user.CultureName))
@@ -550,13 +550,13 @@ public class StudioPeriodicNotify
         _log.InformationEndSendLettersPersonal();
     }
 
-    public static bool ChangeSubscription(Guid userId, StudioNotifyHelper studioNotifyHelper)
+    public static async Task<bool> ChangeSubscriptionAsync(Guid userId, StudioNotifyHelper studioNotifyHelper)
     {
-        var recipient = studioNotifyHelper.ToRecipient(userId);
+        var recipient = await studioNotifyHelper.ToRecipientAsync(userId);
 
-        var isSubscribe = studioNotifyHelper.IsSubscribedToNotify(recipient, Actions.PeriodicNotify);
+        var isSubscribe = await studioNotifyHelper.IsSubscribedToNotifyAsync(recipient, Actions.PeriodicNotify);
 
-        studioNotifyHelper.SubscribeToNotify(recipient, Actions.PeriodicNotify, !isSubscribe);
+        await studioNotifyHelper.SubscribeToNotifyAsync(recipient, Actions.PeriodicNotify, !isSubscribe);
 
         return !isSubscribe;
     }

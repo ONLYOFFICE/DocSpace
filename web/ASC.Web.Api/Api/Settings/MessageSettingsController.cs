@@ -164,7 +164,7 @@ public class MessageSettingsController : BaseSettingsController
 
             CheckCache("sendjoininvite");
 
-            var user = _userManager.GetUserByEmail(email);
+            var user = await _userManager.GetUserByEmailAsync(email);
             if (!user.Id.Equals(Constants.LostUser.Id))
             {
                 throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));

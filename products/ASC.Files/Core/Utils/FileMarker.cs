@@ -163,7 +163,7 @@ public class FileMarker
             }
             if (obj.FileEntry.ProviderEntry)
             {
-                userIDs = userIDs.Where(u => !_userManager.IsUser(u)).ToList();
+                userIDs = await userIDs.ToAsyncEnumerable().WhereAwait(async u => !await _userManager.IsUserAsync(u)).ToListAsync();
 
                 if (obj.FileEntry.RootFolderType == FolderType.VirtualRooms)
                 {

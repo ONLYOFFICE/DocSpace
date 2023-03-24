@@ -135,7 +135,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 
             await _tenantManager.SetCurrentTenantAsync(TenantId);
 
-            var users = _userManager.GetUsers();
+            var users = await _userManager.GetUsersAsync();
             var webItems = _webItemManagerSecurity.GetItems(Web.Core.WebZones.WebZoneType.All, ItemAvailableState.All);
 
             foreach (var user in users)
@@ -149,7 +149,7 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
                 Percentage += 1.0 * 100 / users.Length;
                 PublishChanges();
 
-                var account = _authentication.GetAccountByID(TenantId, user.Id);
+                var account = await _authentication.GetAccountByIDAsync(TenantId, user.Id);
                 await _securityContext.AuthenticateMeAsync(account);
 
                 foreach (var item in webItems)

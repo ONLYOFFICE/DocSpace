@@ -75,7 +75,7 @@ public class EmployeeDtoHelper
         _dictionary = new Dictionary<Guid, EmployeeDto>();
     }
 
-    public async Task<EmployeeDto> Get(UserInfo userInfo)
+    public async Task<EmployeeDto> GetAsync(UserInfo userInfo)
     {
         if (_dictionary.ContainsKey(userInfo.Id))
         {
@@ -87,15 +87,15 @@ public class EmployeeDtoHelper
         return employee;
     }
 
-    public async Task<EmployeeDto> Get(Guid userId)
+    public async Task<EmployeeDto> GetAsync(Guid userId)
     {
         try
         {
-            return await Get(_userManager.GetUsers(userId));
+            return await GetAsync(await _userManager.GetUsersAsync(userId));
         }
         catch (Exception)
         {
-            return await Get(ASC.Core.Users.Constants.LostUser);
+            return await GetAsync(ASC.Core.Users.Constants.LostUser);
         }
     }
 

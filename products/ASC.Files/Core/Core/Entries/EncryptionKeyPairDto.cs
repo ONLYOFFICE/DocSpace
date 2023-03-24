@@ -56,13 +56,13 @@ public class EncryptionKeyPairDtoHelper
         _daoFactory = daoFactory;
     }
 
-    public Task SetKeyPairAsync(string publicKey, string privateKeyEnc)
+    public async Task SetKeyPairAsync(string publicKey, string privateKeyEnc)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(publicKey);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(privateKeyEnc);
 
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        if (!_authContext.IsAuthenticated || _userManager.IsUser(user))
+        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
+        if (!_authContext.IsAuthenticated || await _userManager.IsUserAsync(user))
         {
             throw new SecurityException();
         }
@@ -75,7 +75,7 @@ public class EncryptionKeyPairDtoHelper
         };
 
         var keyPairString = JsonSerializer.Serialize(keyPair);
-        return _encryptionLoginProvider.SetKeysAsync(user.Id, keyPairString);
+        await _encryptionLoginProvider.SetKeysAsync(user.Id, keyPairString);
     }
 
     public async Task<EncryptionKeyPairDto> GetKeyPairAsync()

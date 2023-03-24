@@ -41,7 +41,7 @@ public class AuthorizationManager
 
     public async Task<IEnumerable<AzRecord>> GetAcesAsync(Guid subjectId, Guid actionId)
     {
-        var aces = _service.GetAces((await _tenantManager.GetCurrentTenantAsync()).Id, default);
+        var aces = await _service.GetAcesAsync((await _tenantManager.GetCurrentTenantAsync()).Id, default);
 
         return aces
             .Where(a => a.Action == actionId && (a.Subject == subjectId || subjectId == Guid.Empty))
@@ -50,7 +50,7 @@ public class AuthorizationManager
 
     public async Task<IEnumerable<AzRecord>> GetAcesAsync(Guid subjectId, Guid actionId, ISecurityObjectId objectId)
     {
-        var aces = _service.GetAces((await _tenantManager.GetCurrentTenantAsync()).Id, default);
+        var aces = await _service.GetAcesAsync((await _tenantManager.GetCurrentTenantAsync()).Id, default);
 
         return FilterAces(aces, subjectId, actionId, objectId)
             .ToList();
@@ -64,7 +64,7 @@ public class AuthorizationManager
         }
 
         var result = new List<AzRecord>();
-        var aces = _service.GetAces((await _tenantManager.GetCurrentTenantAsync()).Id, default);
+        var aces = await _service.GetAcesAsync((await _tenantManager.GetCurrentTenantAsync()).Id, default);
         result.AddRange(FilterAces(aces, subjectId, actionId, objectId));
 
         var inherits = new List<AzRecord>();
@@ -83,12 +83,12 @@ public class AuthorizationManager
 
     public async Task AddAceAsync(AzRecord r)
     {
-        _service.SaveAce((await _tenantManager.GetCurrentTenantAsync()).Id, r);
+        await _service.SaveAceAsync((await _tenantManager.GetCurrentTenantAsync()).Id, r);
     }
 
     public async Task RemoveAceAsync(AzRecord r)
     {
-        _service.RemoveAce((await _tenantManager.GetCurrentTenantAsync()).Id, r);
+        await _service.RemoveAceAsync((await _tenantManager.GetCurrentTenantAsync()).Id, r);
     }
 
     public async Task RemoveAllAcesAsync(ISecurityObjectId id)

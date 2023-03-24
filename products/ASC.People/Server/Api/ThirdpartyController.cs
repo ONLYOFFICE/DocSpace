@@ -209,7 +209,7 @@ public class ThirdpartyController : ApiControllerBase
             _securityContext.Logout();
         }
 
-        var user = _userManager.GetUsers(userID);
+        var user = await _userManager.GetUsersAsync(userID);
 
         await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, MessageAction.LoginSuccess);
 

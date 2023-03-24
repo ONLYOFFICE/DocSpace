@@ -90,9 +90,9 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
 
     public async IAsyncEnumerable<int> GetRootFoldersIdsAsync(bool withoutTrash, bool withoutAdditionalFolder)
     {
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        var IsUser = _userManager.IsUser(user);
-        var IsOutsider = _userManager.IsOutsider(user);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        var IsUser = await _userManager.IsUserAsync(user);
+        var IsOutsider = await _userManager.IsOutsiderAsync(user);
 
         if (IsOutsider)
         {
@@ -108,7 +108,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
         if (_coreBaseSettings.DisableDocSpace)
         {
             if (!_coreBaseSettings.Personal &&
-                !_userManager.IsOutsider(user))
+                !await _userManager.IsOutsiderAsync(user))
             {
                 yield return await _globalFolderHelper.FolderShareAsync;
             }
@@ -149,7 +149,7 @@ public class FoldersControllerHelper<T> : FilesHelperBase<T>
 
         if (!withoutTrash && !IsUser)
         {
-            yield return (int)_globalFolderHelper.FolderTrash;
+            yield return (int)await _globalFolderHelper.FolderTrashAsync;
         }
 
         if (!_coreBaseSettings.DisableDocSpace)

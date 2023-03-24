@@ -264,7 +264,7 @@ public class DocumentServiceHelper
                     strError = string.Format(!coauth
                                                  ? FilesCommonResource.ErrorMassage_EditingCoauth
                                                  : FilesCommonResource.ErrorMassage_EditingMobile,
-                                             _global.GetUserName(editingBy, true));
+                                             await _global.GetUserNameAsync(editingBy, true));
                 }
                 rightToEdit = editPossible = reviewPossible = fillFormsPossible = commentPossible = false;
             }
@@ -400,7 +400,7 @@ public class DocumentServiceHelper
 
         foreach (var uid in _fileTracker.GetEditingBy(file.Id))
         {
-            if (!_userManager.UserExists(uid) && !sharedLink)
+            if (!await _userManager.UserExistsAsync(uid) && !sharedLink)
             {
                 usersDrop.Add(uid.ToString());
                 continue;

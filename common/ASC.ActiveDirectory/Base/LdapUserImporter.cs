@@ -376,7 +376,7 @@ public class LdapUserImporter : IDisposable
         var ldapUser = ldapUserInfo.Item2;
 
         var portalUserLdapGroups =
-            UserManager.GetUserGroups(userInfo.Id, IncludeType.All)
+            (await UserManager.GetUserGroupsAsync(userInfo.Id, IncludeType.All))
                 .Where(g => !string.IsNullOrEmpty(g.Sid))
                 .ToList();
 
@@ -393,7 +393,7 @@ public class LdapUserImporter : IDisposable
 
         foreach (var ldapUserGroup in ldapUserGroupList)
         {
-            var groupInfo = UserManager.GetGroupInfoBySid(ldapUserGroup.Sid);
+            var groupInfo = await UserManager.GetGroupInfoBySidAsync(ldapUserGroup.Sid);
 
             if (Equals(groupInfo, Constants.LostGroupInfo))
             {

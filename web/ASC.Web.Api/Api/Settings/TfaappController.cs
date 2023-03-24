@@ -138,7 +138,7 @@ public class TfaappController : BaseSettingsController
     public async Task<bool> TfaValidateAuthCodeAsync(TfaValidateRequestsDto inDto)
     {
         await ApiContext.AuthByClaimAsync();
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
         _securityContext.Logout();
         return await _tfaManager.ValidateAuthCodeAsync(user, inDto.Code);
     }
@@ -146,9 +146,9 @@ public class TfaappController : BaseSettingsController
     [HttpGet("tfaapp/confirm")]
     public async Task<object> TfaConfirmUrlAsync()
     {
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
-        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))// && smsConfirm.ToLower() != "true")
+        if (_studioSmsNotificationSettingsHelper.IsVisibleSettings && await _studioSmsNotificationSettingsHelper.TfaEnabledForUserAsync(user.Id))// && smsConfirm.ToLower() != "true")
         {
             var confirmType = string.IsNullOrEmpty(user.MobilePhone) ||
                             user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated
@@ -158,7 +158,7 @@ public class TfaappController : BaseSettingsController
             return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, confirmType);
         }
 
-        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             var confirmType = TfaAppUserSettings.EnableForUser(_settingsManager, _authContext.CurrentAccount.ID)
                 ? ConfirmType.TfaAuth
@@ -278,7 +278,7 @@ public class TfaappController : BaseSettingsController
     public async Task<SetupCode> TfaAppGenerateSetupCodeAsync()
     {
         await ApiContext.AuthByClaimAsync();
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
         if (!_tfaAppAuthSettingsHelper.IsVisibleSettings ||
             !_settingsManager.Load<TfaAppAuthSettings>().EnableSetting ||
@@ -287,7 +287,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (await _userManager.IsUserAsync(currentUser) || await _userManager.IsOutsiderAsync(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -296,16 +296,16 @@ public class TfaappController : BaseSettingsController
     }
 
     [HttpGet("tfaappcodes")]
-    public IEnumerable<object> TfaAppGetCodes()
+    public async Task<IEnumerable<object>> TfaAppGetCodesAsync()
     {
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
         if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (await _userManager.IsUserAsync(currentUser) || await _userManager.IsOutsiderAsync(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -316,14 +316,14 @@ public class TfaappController : BaseSettingsController
     [HttpPut("tfaappnewcodes")]
     public async Task<IEnumerable<object>> TfaAppRequestNewCodesAsync()
     {
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var currentUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
 
         if (!_tfaAppAuthSettingsHelper.IsVisibleSettings || !TfaAppUserSettings.EnableForUser(_settingsManager, currentUser.Id))
         {
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (await _userManager.IsUserAsync(currentUser) || await _userManager.IsOutsiderAsync(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }
@@ -339,7 +339,7 @@ public class TfaappController : BaseSettingsController
         var id = inDto?.Id ?? Guid.Empty;
         var isMe = id.Equals(Guid.Empty) || id.Equals(_authContext.CurrentAccount.ID);
 
-        var user = _userManager.GetUsers(id);
+        var user = await _userManager.GetUsersAsync(id);
 
         if (!isMe && !await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser))
         {
@@ -351,7 +351,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(user) || _userManager.IsOutsider(user))
+        if (await _userManager.IsUserAsync(user) || await _userManager.IsOutsiderAsync(user))
         {
             throw new NotSupportedException("Not available.");
         }

@@ -81,7 +81,7 @@ public class ConnectionsController : ControllerBase
     [HttpGet("activeconnections")]
     public async Task<object> GetAllActiveConnections()
     {
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         var loginEvents = await _dbLoginEventsManager.GetLoginEvents(user.Tenant, user.Id);
         var tasks = loginEvents.ConvertAll(async r => await ConvertAsync(r));
         var listLoginEvents = (await Task.WhenAll(tasks)).ToList();
@@ -132,7 +132,7 @@ public class ConnectionsController : ControllerBase
     {
         try
         {
-            var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
 
             await LogOutAllActiveConnections(user.Id);
@@ -157,10 +157,10 @@ public class ConnectionsController : ControllerBase
     }
 
     [HttpPut("activeconnections/logoutall/{userId}")]
-    public async Task LogOutAllActiveConnectionsForUser(Guid userId)
+    public async Task LogOutAllActiveConnectionsForUserAsync(Guid userId)
     {
-        if (!_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID)
-            && !_webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
+        if (!await _userManager.IsDocSpaceAdminAsync(_securityContext.CurrentAccount.ID)
+            && !await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID))
         {
             throw new SecurityException("Method not available");
         }
@@ -173,7 +173,7 @@ public class ConnectionsController : ControllerBase
     {
         try
         {
-            var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
             var loginEventFromCookie = GetLoginEventIdFromCookie();
 
@@ -194,7 +194,7 @@ public class ConnectionsController : ControllerBase
     {
         try
         {
-            var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
 
             await _dbLoginEventsManager.LogOutEvent(loginEventId);
@@ -212,7 +212,7 @@ public class ConnectionsController : ControllerBase
     private async Task LogOutAllActiveConnections(Guid? userId = null)
     {
         var currentUserId = _securityContext.CurrentAccount.ID;
-        var user = _userManager.GetUsers(userId ?? currentUserId);
+        var user = await _userManager.GetUsersAsync(userId ?? currentUserId);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         var auditEventDate = DateTime.UtcNow;
 

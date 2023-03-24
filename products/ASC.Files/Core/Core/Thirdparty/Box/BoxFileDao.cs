@@ -122,8 +122,8 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -195,13 +195,13 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
         //Get only files
         var filesWait = await GetBoxItemsAsync(parentId, false);
-        var files = filesWait.Select(item => ToFile(item as BoxFile));
+        var files = filesWait.Select(item => ToFile(item as BoxFile)).ToAsyncEnumerable();
 
         //Filter
         if (subjectID != Guid.Empty)
         {
-            files = files.Where(x => subjectGroup
-                                         ? _userManager.IsUserInGroup(x.CreateBy, subjectID)
+            files = files.WhereAwait(async x => subjectGroup
+                                         ? await _userManager.IsUserInGroupAsync(x.CreateBy, subjectID)
                                          : x.CreateBy == subjectID);
         }
 
@@ -266,7 +266,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
             _ => orderBy.IsAsc ? files.OrderBy(x => x.Title) : files.OrderByDescending(x => x.Title),
         };
 
-        foreach (var f in files)
+        await foreach (var f in files)
         {
             yield return f;
         }

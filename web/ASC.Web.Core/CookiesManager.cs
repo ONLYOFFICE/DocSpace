@@ -147,7 +147,7 @@ public class CookiesManager
     public async Task SetLifeTimeAsync(int lifeTime)
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        if (!_userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+        if (!await _userManager.IsUserInGroupAsync(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
             throw new SecurityException();
         }
@@ -199,7 +199,7 @@ public class CookiesManager
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
 
-        if (!_userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
+        if (!await _userManager.IsUserInGroupAsync(_securityContext.CurrentAccount.ID, Constants.GroupAdmin.ID))
         {
             throw new SecurityException();
         }

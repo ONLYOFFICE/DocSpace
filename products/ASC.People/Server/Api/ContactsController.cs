@@ -56,7 +56,7 @@ public class ContactsController : PeopleControllerBase
         await DeleteContactsAsync(inDto.Contacts, user);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPost("{userid}/contacts")]
@@ -73,7 +73,7 @@ public class ContactsController : PeopleControllerBase
         await UpdateContactsAsync(inDto.Contacts, user);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPut("{userid}/contacts")]
@@ -89,7 +89,7 @@ public class ContactsController : PeopleControllerBase
         await UpdateContactsAsync(inDto.Contacts, user);
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     private async Task DeleteContactsAsync(IEnumerable<Contact> contacts, UserInfo user)

@@ -102,7 +102,7 @@ public class RegionHelper
 
         if (regionInfo == null)
         {
-            var owner = _userManager.GetUsers(tenant.OwnerId);
+            var owner = await _userManager.GetUsersAsync(tenant.OwnerId);
             var culture = string.IsNullOrEmpty(owner.CultureName) ? tenant.GetCulture() : owner.GetCulture();
             regionInfo = GetRegionInfo(culture.Name);
         }

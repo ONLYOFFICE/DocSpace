@@ -56,8 +56,8 @@ public class AzManager
 
     internal async Task<AzManagerAcl> GetAzManagerAclAsync(ISubject subject, IAction action, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
     {
-        if (action.AdministratorAlwaysAllow && (Constants.DocSpaceAdmin.ID == subject.ID || _roleProvider.IsSubjectInRole(subject, Constants.DocSpaceAdmin) 
-            || (objectId is SecurityObject obj && obj.IsMatchDefaultRules(subject, action, _roleProvider))))
+        if (action.AdministratorAlwaysAllow && (Constants.DocSpaceAdmin.ID == subject.ID || await _roleProvider.IsSubjectInRoleAsync(subject, Constants.DocSpaceAdmin) 
+            || (objectId is SecurityObject obj && await obj.IsMatchDefaultRulesAsync(subject, action, _roleProvider))))
         {
             return AzManagerAcl.Allow;
         }
@@ -65,7 +65,7 @@ public class AzManager
         var acl = AzManagerAcl.Default;
         var exit = false;
 
-        foreach (var s in GetSubjects(subject, objectId, securityObjProvider))
+        foreach (var s in await GetSubjectsAsync(subject, objectId, securityObjProvider))
         {
             var aceList = await _permissionProvider.GetAclAsync(s, action, objectId, securityObjProvider);
             foreach (var ace in aceList)
@@ -100,14 +100,14 @@ public class AzManager
         return acl;
     }
 
-    internal IEnumerable<ISubject> GetSubjects(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
+    internal async Task<IEnumerable<ISubject>> GetSubjectsAsync(ISubject subject, ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider)
     {
         var subjects = new List<ISubject>
             {
                 subject
             };
         subjects.AddRange(
-            _roleProvider.GetRoles(subject)
+            (await _roleProvider.GetRolesAsync(subject))
                 .ConvertAll(r => { return (ISubject)r; })
             );
         if (objectId != null)

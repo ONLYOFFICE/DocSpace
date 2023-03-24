@@ -99,12 +99,12 @@ public class FileShareDtoHelper
             else
             {
                 //Shared to group
-                result.SharedTo = new GroupSummaryDto(_userManager.GetGroupInfo(aceWrapper.Id), _userManager);
+                result.SharedTo = new GroupSummaryDto(await _userManager.GetGroupInfoAsync(aceWrapper.Id), _userManager);
             }
         }
         else
         {
-            result.SharedTo = await _employeeWraperFullHelper.GetFull(_userManager.GetUsers(aceWrapper.Id));
+            result.SharedTo = await _employeeWraperFullHelper.GetFullAsync(await _userManager.GetUsersAsync(aceWrapper.Id));
         }
 
         result.Access = aceWrapper.Access;

@@ -198,7 +198,7 @@ public class UserController : PeopleControllerBase
             await UpdatePhotoUrlAsync(inDto.Files, user);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPost]
@@ -230,7 +230,7 @@ public class UserController : PeopleControllerBase
 
         if (byEmail)
         {
-            user = _userManager.GetUserByEmail(inDto.Email);
+            user = await _userManager.GetUserByEmailAsync(inDto.Email);
 
             if (user.Equals(Constants.LostUser) || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
@@ -304,7 +304,7 @@ public class UserController : PeopleControllerBase
         var messageAction = inDto.IsUser ? MessageAction.GuestCreated : MessageAction.UserCreated;
         await _messageService.SendAsync(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPost("invite")]
@@ -326,11 +326,11 @@ public class UserController : PeopleControllerBase
 
         var result = new List<EmployeeDto>();
 
-        var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+        var users = (await _userManager.GetUsersAsync()).Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
 
         foreach (var user in users)
         {
-            result.Add(await _employeeDtoHelper.Get(user));
+            result.Add(await _employeeDtoHelper.GetAsync(user));
         }
 
         return result;
@@ -343,7 +343,7 @@ public class UserController : PeopleControllerBase
         await _apiContext.AuthByClaimAsync();
         await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(userid), Constants.Action_EditUser);
 
-        var user = _userManager.GetUsers(userid);
+        var user = await _userManager.GetUsersAsync(userid);
 
         if (!_userManager.UserExists(user))
         {
@@ -387,7 +387,7 @@ public class UserController : PeopleControllerBase
             await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
-        return await _employeeFullDtoHelper.GetFull(await GetUserInfoAsync(userid.ToString()));
+        return await _employeeFullDtoHelper.GetFullAsync(await GetUserInfoAsync(userid.ToString()));
     }
 
     [HttpDelete("{userid}")]
@@ -407,7 +407,7 @@ public class UserController : PeopleControllerBase
             throw new Exception("The user is not suspended");
         }
 
-        CheckReassignProccess(new[] { user.Id });
+        await CheckReassignProccessAsync(new[] { user.Id });
 
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         await _userPhotoManager.RemovePhotoAsync(user.Id);
@@ -416,7 +416,7 @@ public class UserController : PeopleControllerBase
 
         await _messageService.SendAsync(MessageAction.UserDeleted, _messageTarget.Create(user.Id), userName);
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpDelete("@self")]
@@ -464,7 +464,7 @@ public class UserController : PeopleControllerBase
             //StudioNotifyService.SendMsgProfileDeletion(Tenant.TenantId, user);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpGet("status/{status}/search")]
@@ -475,22 +475,22 @@ public class UserController : PeopleControllerBase
             throw new MethodAccessException("Method not available");
         }
 
-        var list = _userManager.GetUsers(status).AsEnumerable();
+        var list = (await _userManager.GetUsersAsync(status)).ToAsyncEnumerable();
 
         if ("group".Equals(_apiContext.FilterBy, StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(_apiContext.FilterValue))
         {
             var groupId = new Guid(_apiContext.FilterValue);
             //Filter by group
-            list = list.Where(x => _userManager.IsUserInGroup(x.Id, groupId));
+            list = list.WhereAwait(async x => await _userManager.IsUserInGroupAsync(x.Id, groupId));
             _apiContext.SetDataFiltered();
         }
 
         list = list.Where(x => x.FirstName != null && x.FirstName.IndexOf(query, StringComparison.OrdinalIgnoreCase) > -1 || (x.LastName != null && x.LastName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) ||
                                 (x.UserName != null && x.UserName.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.Email != null && x.Email.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1) || (x.ContactsList != null && x.ContactsList.Any(y => y.IndexOf(query, StringComparison.OrdinalIgnoreCase) != -1)));
 
-        foreach (var item in list)
+        await foreach (var item in list)
         {
-            yield return await _employeeFullDtoHelper.GetFull(item);
+            yield return await _employeeFullDtoHelper.GetFullAsync(item);
         }
     }
 
@@ -502,20 +502,20 @@ public class UserController : PeopleControllerBase
 
     [AllowNotPayment]
     [HttpGet("email")]
-    public async Task<EmployeeFullDto> GetByEmail([FromQuery] string email)
+    public async Task<EmployeeFullDto> GetByEmailAsync([FromQuery] string email)
     {
-        if (_coreBaseSettings.Personal && !_userManager.GetUsers(_securityContext.CurrentAccount.ID).IsOwner(Tenant))
+        if (_coreBaseSettings.Personal && !(await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID)).IsOwner(Tenant))
         {
             throw new MethodAccessException("Method not available");
         }
 
-        var user = _userManager.GetUserByEmail(email);
+        var user = await _userManager.GetUserByEmailAsync(email);
         if (user.Id == Constants.LostUser.Id)
         {
             throw new ItemNotFoundException("User not found");
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [AllowNotPayment]
@@ -538,7 +538,7 @@ public class UserController : PeopleControllerBase
         {
             if (Guid.TryParse(username, out var userId))
             {
-                user = _userManager.GetUsers(userId);
+                user = await _userManager.GetUsersAsync(userId);
             }
             else
             {
@@ -556,7 +556,7 @@ public class UserController : PeopleControllerBase
             return await _employeeFullDtoHelper.GetSimple(user);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpGet("status/{status}")]
@@ -580,11 +580,11 @@ public class UserController : PeopleControllerBase
     [HttpGet("filter")]
     public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
@@ -617,22 +617,22 @@ public class UserController : PeopleControllerBase
             groupId = new Guid(_apiContext.FilterValue);
         }
 
-        var users = _userManager.Search(query, EmployeeStatus.Active, groupId);
+        var users = await _userManager.SearchAsync(query, EmployeeStatus.Active, groupId);
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
     [HttpGet("simple/filter")]
     public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = await GetByFilterAsync(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
 
         foreach (var user in users)
         {
-            yield return await _employeeDtoHelper.Get(user);
+            yield return await _employeeDtoHelper.GetAsync(user);
         }
     }
 
@@ -653,11 +653,10 @@ public class UserController : PeopleControllerBase
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_AddRemoveUser);
 
-        CheckReassignProccess(inDto.UserIds);
+        await CheckReassignProccessAsync(inDto.UserIds);
 
-        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
-            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
-            .ToList();
+        var users = await inDto.UserIds.ToAsyncEnumerable().SelectAwait(async userId => await _userManager.GetUsersAsync(userId))
+            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP()).ToListAsync();
 
         var userNames = users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)).ToList();
 
@@ -677,7 +676,7 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
@@ -690,13 +689,13 @@ public class UserController : PeopleControllerBase
 
         if (inDto.ResendAll)
         {
-            users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
+            users = (await _userManager.GetUsersAsync()).Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
         }
         else
         {
-            users = inDto.UserIds
+            users = await inDto.UserIds.ToAsyncEnumerable()
                 .Where(userId => !_userManager.IsSystemUser(userId))
-                .Select(userId => _userManager.GetUsers(userId));
+                .SelectAwait(async userId => await _userManager.GetUsersAsync(userId)).ToListAsync();
         }
 
         foreach (var user in users)
@@ -706,14 +705,14 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+            var viewer = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
             if (viewer == null)
             {
                 throw new Exception(Resource.ErrorAccessDenied);
             }
 
-            if (_userManager.IsDocSpaceAdmin(viewer) || viewer.Id == user.Id)
+            if (await _userManager.IsDocSpaceAdminAsync(viewer) || viewer.Id == user.Id)
             {
                 if (user.ActivationStatus == EmployeeActivationStatus.Activated)
                 {
@@ -729,7 +728,7 @@ public class UserController : PeopleControllerBase
 
             if (user.ActivationStatus == EmployeeActivationStatus.Pending)
             {
-                var type = _userManager.GetUserType(user.Id);
+                var type = await _userManager.GetUserTypeAsync(user.Id);
 
                 if (!await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(type), Constants.Action_AddRemoveUser))
                 {
@@ -747,9 +746,9 @@ public class UserController : PeopleControllerBase
 
         await _messageService.SendAsync(MessageAction.UsersSentActivationInstructions, _messageTarget.Create(users.Select(x => x.Id)), users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
-        foreach (var user in users)
+         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
@@ -776,9 +775,9 @@ public class UserController : PeopleControllerBase
     [HttpGet("@self")]
     public async Task<EmployeeFullDto> Self()
     {
-        var user = _userManager.GetUser(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
+        var user = await _userManager.GetUserAsync(_securityContext.CurrentAccount.ID, EmployeeFullDtoHelper.GetExpression(_apiContext));
 
-        var result = await _employeeFullDtoHelper.GetFull(user);
+        var result = await _employeeFullDtoHelper.GetFullAsync(user);
 
         result.Theme = _settingsManager.LoadForCurrentUser<DarkThemeSettings>().Theme;
 
@@ -808,8 +807,8 @@ public class UserController : PeopleControllerBase
             throw new Exception(Resource.ErrorNotCorrectEmail);
         }
 
-        var viewer = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
-        var user = _userManager.GetUsers(userid);
+        var viewer = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(userid);
 
         if (user == null)
         {
@@ -821,14 +820,14 @@ public class UserController : PeopleControllerBase
             throw new Exception(Resource.ErrorAccessDenied);
         }
 
-        var existentUser = _userManager.GetUserByEmail(email);
+        var existentUser = await _userManager.GetUserByEmailAsync(email);
 
         if (existentUser.Id != Constants.LostUser.Id)
         {
             throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
         }
 
-        if (!_userManager.IsDocSpaceAdmin(viewer))
+        if (!await _userManager.IsDocSpaceAdminAsync(viewer))
         {
             await _studioNotifyService.SendEmailChangeInstructionsAsync(user, email);
         }
@@ -873,7 +872,7 @@ public class UserController : PeopleControllerBase
         foreach (var id in inDto.UserIds.Where(userId => !_userManager.IsSystemUser(userId)))
         {
             await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(id), Constants.Action_EditUser);
-            var u = _userManager.GetUsers(id);
+            var u = await _userManager.GetUsersAsync(id);
             if (u.Id == Constants.LostUser.Id || u.IsLDAP())
             {
                 continue;
@@ -881,7 +880,7 @@ public class UserController : PeopleControllerBase
 
             u.ActivationStatus = activationstatus;
             await _userManager.UpdateUserInfoAsync(u);
-            yield return await _employeeFullDtoHelper.GetFull(u);
+            yield return await _employeeFullDtoHelper.GetFullAsync(u);
         }
     }
 
@@ -920,7 +919,7 @@ public class UserController : PeopleControllerBase
             }
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPut("{userid}", Order = 1)]
@@ -941,7 +940,7 @@ public class UserController : PeopleControllerBase
 
         var isLdap = user.IsLDAP();
         var isSso = user.IsSSO();
-        var isDocSpaceAdmin = _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
+        var isDocSpaceAdmin = await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         if (!isLdap && !isSso)
         {
@@ -1000,16 +999,16 @@ public class UserController : PeopleControllerBase
         }
 
         // change user type
-        var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsDocSpaceAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
+        var canBeGuestFlag = !user.IsOwner(Tenant) && !await _userManager.IsDocSpaceAdminAsync(user) && (await user.GetListAdminModulesAsync(_webItemSecurity, _webItemManager)).Count == 0 && !user.IsMe(_authContext);
 
-        if (inDto.IsUser && !_userManager.IsUser(user) && canBeGuestFlag)
+        if (inDto.IsUser && !await _userManager.IsUserAsync(user) && canBeGuestFlag)
         {
             await _countUserChecker.CheckAppend();
             await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
-        if (!self && !inDto.IsUser && _userManager.IsUser(user))
+        if (!self && !inDto.IsUser && await _userManager.IsUserAsync(user))
         {
             await _countPaidUserChecker.CheckAppend();
             await _userManager.RemoveUserFromGroupAsync(user.Id, Constants.GroupUser.ID);
@@ -1025,7 +1024,7 @@ public class UserController : PeopleControllerBase
             await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
         }
 
-        return await _employeeFullDtoHelper.GetFull(user);
+        return await _employeeFullDtoHelper.GetFullAsync(user);
     }
 
     [HttpPut("status/{status}")]
@@ -1033,9 +1032,8 @@ public class UserController : PeopleControllerBase
     {
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditUser);
 
-        var users = inDto.UserIds.Select(userId => _userManager.GetUsers(userId))
-            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP())
-            .ToList();
+        var users = await inDto.UserIds.ToAsyncEnumerable().SelectAwait(async userId => await _userManager.GetUsersAsync(userId))
+            .Where(u => !_userManager.IsSystemUser(u.Id) && !u.IsLDAP()).ToListAsync();
 
         foreach (var user in users)
         {
@@ -1049,7 +1047,7 @@ public class UserController : PeopleControllerBase
                 case EmployeeStatus.Active:
                     if (user.Status == EmployeeStatus.Terminated)
                     {
-                        if (!_userManager.IsUser(user))
+                        if (! await _userManager.IsUserAsync(user))
                         {
                             await _countPaidUserChecker.CheckAppend();
                         }
@@ -1078,7 +1076,7 @@ public class UserController : PeopleControllerBase
 
         foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
@@ -1088,13 +1086,13 @@ public class UserController : PeopleControllerBase
         await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
 
         var users = inDto.UserIds
+            .ToAsyncEnumerable()
             .Where(userId => !_userManager.IsSystemUser(userId))
-            .Select(userId => _userManager.GetUsers(userId))
-            .ToList();
+            .SelectAwait(async userId => await _userManager.GetUsersAsync(userId));
 
-        var updatedUsers = new List<UserInfo>(users.Count);
+        var updatedUsers = new List<UserInfo>(await users.CountAsync());
 
-        foreach (var user in users)
+        await foreach (var user in users)
         {
             if (await _userManagerWrapper.UpdateUserTypeAsync(user, type))
             {
@@ -1105,9 +1103,9 @@ public class UserController : PeopleControllerBase
         await _messageService.SendAsync(MessageAction.UsersUpdatedType, _messageTarget.Create(updatedUsers.Select(x => x.Id)),
             updatedUsers.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
 
-        foreach (var user in users)
+        await foreach (var user in users)
         {
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
@@ -1128,12 +1126,11 @@ public class UserController : PeopleControllerBase
     [HttpPut("quota")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateUserQuotaAsync(UpdateMembersQuotaRequestDto inDto)
     {
-        var users = inDto.UserIds
+        var users = inDto.UserIds.ToAsyncEnumerable()
             .Where(userId => !_userManager.IsSystemUser(userId))
-            .Select(userId => _userManager.GetUsers(userId))
-            .ToList();
+            .SelectAwait(async userId => await _userManager.GetUsersAsync(userId));
 
-        foreach (var user in users)
+        await foreach (var user in users)
         {
             if (inDto.Quota != -1)
             {
@@ -1156,7 +1153,7 @@ public class UserController : PeopleControllerBase
 
             _settingsManager.Save(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
 
-            yield return await _employeeFullDtoHelper.GetFull(user);
+            yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
 
@@ -1173,33 +1170,33 @@ public class UserController : PeopleControllerBase
             return;
         }
 
-        var groups = _userManager.GetUserGroups(user.Id);
+        var groups = await _userManager.GetUserGroupsAsync(user.Id);
         var managerGroups = new List<Guid>();
         foreach (var groupInfo in groups)
         {
             await _userManager.RemoveUserFromGroupAsync(user.Id, groupInfo.ID);
-            var managerId = _userManager.GetDepartmentManager(groupInfo.ID);
+            var managerId = await _userManager.GetDepartmentManagerAsync(groupInfo.ID);
             if (managerId == user.Id)
             {
                 managerGroups.Add(groupInfo.ID);
-                _userManager.SetDepartmentManager(groupInfo.ID, Guid.Empty);
+                await _userManager.SetDepartmentManagerAsync(groupInfo.ID, Guid.Empty);
             }
         }
         foreach (var guid in department)
         {
-            var userDepartment = _userManager.GetGroupInfo(guid);
+            var userDepartment = await _userManager.GetGroupInfoAsync(guid);
             if (userDepartment != Constants.LostGroupInfo)
             {
                 await _userManager.AddUserIntoGroupAsync(user.Id, guid);
                 if (managerGroups.Contains(guid))
                 {
-                    _userManager.SetDepartmentManager(guid, user.Id);
+                    await _userManager.SetDepartmentManagerAsync(guid, user.Id);
                 }
             }
         }
     }
 
-    private void CheckReassignProccess(IEnumerable<Guid> userIds)
+    private async Task CheckReassignProccessAsync(IEnumerable<Guid> userIds)
     {
         foreach (var userId in userIds)
         {
@@ -1209,7 +1206,7 @@ public class UserController : PeopleControllerBase
                 continue;
             }
 
-            var userName = _userManager.GetUsers(userId).DisplayUserName(_displayUserSettingsHelper);
+            var userName = (await _userManager.GetUsersAsync(userId)).DisplayUserName(_displayUserSettingsHelper);
 
             throw new Exception(string.Format(Resource.ReassignDataRemoveUserError, userName));
         }
@@ -1250,9 +1247,9 @@ public class UserController : PeopleControllerBase
                 }
             }
 
-            var newUserInfo = _userManager.GetUserByEmail(inDto.Email);
+            var newUserInfo = await _userManager.GetUserByEmailAsync(inDto.Email);
 
-            if (_userManager.UserExists(newUserInfo.Id))
+            if (await _userManager.UserExistsAsync(newUserInfo.Id))
             {
                 if (!SetupInfo.IsSecretEmail(inDto.Email) || _securityContext.IsAuthenticated)
                 {
@@ -1301,15 +1298,15 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)
+    private async Task<IQueryable<UserInfo>> GetByFilterAsync(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)
     {
         if (_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method not available");
         }
 
-        var isDocSpaceAdmin = _userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID) ||
-                      _webItemSecurity.IsProductAdministrator(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
+        var isDocSpaceAdmin = (await _userManager.IsDocSpaceAdminAsync(_securityContext.CurrentAccount.ID)) ||
+                      await _webItemSecurity.IsProductAdministratorAsync(WebItemManager.PeopleProductID, _securityContext.CurrentAccount.ID);
 
         var includeGroups = new List<List<Guid>>();
         if (groupId.HasValue)

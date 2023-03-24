@@ -227,7 +227,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = (await _userManager.GetUsersByGroupAsync(subjectID)).Select(u => u.Id).ToArray();
                 query = query.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -331,7 +331,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = (await _userManager.GetUsersByGroupAsync(subjectID)).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -418,7 +418,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
         if (quotaSettings.EnableUserQuota)
         {
-            var user = _userManager.GetUsers(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
+            var user = await _userManager.GetUsersAsync(file.Id == default ? _authContext.CurrentAccount.ID : file.CreateBy);
             var userQuotaSettings = _settingsManager.Load<UserQuotaSettings>(user);
             var quotaLimit = userQuotaSettings.UserQuota;
 
@@ -1249,7 +1249,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         {
             if (subjectGroup)
             {
-                var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                var users = (await _userManager.GetUsersByGroupAsync(subjectID)).Select(u => u.Id).ToArray();
                 q = q.Where(r => users.Contains(r.CreateBy));
             }
             else
@@ -1551,7 +1551,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private Func<Selector<DbFile>, Selector<DbFile>> GetFuncForSearch(int? parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent, bool withSubfolders = false)
     {
         return s =>
-       {
+        {
            var result = !searchInContent || filterType == FilterType.ByExtension
                ? s.Match(r => r.Title, searchText)
                : s.MatchAll(searchText);
@@ -1594,7 +1594,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
            {
                if (subjectGroup)
                {
-                   var users = _userManager.GetUsersByGroup(subjectID).Select(u => u.Id).ToArray();
+                   var users = _userManager.GetUsersByGroupAsync(subjectID).Result.Select(u => u.Id).ToArray();
                    result.In(r => r.CreateBy, users);
                }
                else

@@ -72,10 +72,10 @@ public class OwnerController : BaseSettingsController
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var curTenant = await _tenantManager.GetCurrentTenantAsync();
-        var owner = _userManager.GetUsers(curTenant.OwnerId);
-        var newOwner = _userManager.GetUsers(inDto.OwnerId);
+        var owner = await _userManager.GetUsersAsync(curTenant.OwnerId);
+        var newOwner = await _userManager.GetUsersAsync(inDto.OwnerId);
 
-        if (_userManager.IsUser(newOwner))
+        if (await _userManager.IsUserAsync(newOwner))
         {
             throw new SecurityException("Collaborator can not be an owner");
         }
@@ -101,7 +101,7 @@ public class OwnerController : BaseSettingsController
         var newOwner = Constants.LostUser;
         try
         {
-            newOwner = _userManager.GetUsers(inDto.OwnerId);
+            newOwner = await _userManager.GetUsersAsync(inDto.OwnerId);
         }
         catch
         {
@@ -111,7 +111,7 @@ public class OwnerController : BaseSettingsController
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (_userManager.IsUserInGroup(newOwner.Id, Constants.GroupUser.ID))
+        if (await _userManager.IsUserInGroupAsync(newOwner.Id, Constants.GroupUser.ID))
         {
             throw new Exception(Resource.ErrorUserNotFound);
         }

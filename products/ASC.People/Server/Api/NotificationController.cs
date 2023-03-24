@@ -54,7 +54,7 @@ public class NotificationController : ApiControllerBase
     [HttpPost("phone")]
     public async Task<object> SendNotificationToChangeAsync(UpdateMemberRequestDto inDto)
     {
-        var user = _userManager.GetUsers(string.IsNullOrEmpty(inDto.UserId)
+        var user = await _userManager.GetUsersAsync(string.IsNullOrEmpty(inDto.UserId)
             ? _securityContext.CurrentAccount.ID : new Guid(inDto.UserId));
 
         var canChange = user.IsMe(_authContext) || await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);

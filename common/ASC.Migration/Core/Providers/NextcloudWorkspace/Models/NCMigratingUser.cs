@@ -188,7 +188,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
             _userInfo.LastName = FilesCommonResource.UnknownLastName;
         }
 
-        var saved = _userManager.GetUserByEmail(_userInfo.Email);
+        var saved = await _userManager.GetUserByEmailAsync(_userInfo.Email);
         if (saved != Constants.LostUser)
         {
             saved.ContactsList = saved.ContactsList.Union(_userInfo.ContactsList).ToList();

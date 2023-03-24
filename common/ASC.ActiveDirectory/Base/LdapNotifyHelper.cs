@@ -82,7 +82,7 @@ public class LdapNotifyService : BackgroundService
             var notifyEngineQueue = scope.ServiceProvider.GetRequiredService<NotifyEngineQueue>();
             source.Init(tenant);
             var client = _workContext.NotifyContext.RegisterClient(notifyEngineQueue, source);
-            _workContext.RegisterSendMethod(source.AutoSync, cron);
+            _workContext.RegisterSendMethod(source.AutoSyncAsync, cron);
             _clients.TryAdd(tenant.Id, new Tuple<INotifyClient, LdapNotifySource>(client, source));
         }
     }
@@ -92,12 +92,12 @@ public class LdapNotifyService : BackgroundService
         if (_clients.ContainsKey(tenant.Id))
         {
             var client = _clients[tenant.Id];
-            _workContext.UnregisterSendMethod(client.Item2.AutoSync);
+            _workContext.UnregisterSendMethod(client.Item2.AutoSyncAsync);
             _clients.TryRemove(tenant.Id, out _);
         }
     }
 
-    public void AutoSync(Tenant tenant)
+    public async Task AutoSyncAsync(Tenant tenant)
     {
         using var scope = _serviceScopeFactory.CreateScope();
         var settingsManager = scope.ServiceProvider.GetRequiredService<SettingsManager>();
@@ -112,7 +112,7 @@ public class LdapNotifyService : BackgroundService
             return;
         }
 
-        _ldapSaveSyncOperation.RunJob(ldapSettings, tenant, LdapOperationType.Sync);
+        await _ldapSaveSyncOperation.RunJobAsync(ldapSettings, tenant, LdapOperationType.Sync);
     }
 }
 

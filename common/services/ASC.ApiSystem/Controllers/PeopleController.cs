@@ -74,12 +74,12 @@ public class PeopleController : ControllerBase
 
     [HttpPost("find")]
     [AllowCrossSiteJson]
-    public IActionResult Find(FindPeopleModel model)
+    public async Task<IActionResult> FindAsync(FindPeopleModel model)
     {
         var sw = Stopwatch.StartNew();
         var userIds = model.UserIds ?? new List<Guid>();
 
-        var users = _hostedSolution.FindUsers(userIds);
+        var users = await _hostedSolution.FindUsersAsync(userIds);
 
         var result = users.Select(user => new
         {

@@ -134,14 +134,14 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     #region user profile link
 
-    public string GetUserProfile(Guid userID)
+    public async Task<string> GetUserProfileAsync(Guid userID)
     {
-        if (!_userManager.UserExists(userID))
+        if (!await _userManager.UserExistsAsync(userID))
         {
             return GetEmployees();
         }
 
-        return GetUserProfile(userID.ToString());
+        return await GetUserProfileAsync(userID.ToString());
     }
 
     public string GetUserProfile(UserInfo user)
@@ -154,7 +154,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return GetUserProfile(user, true);
     }
 
-    public string GetUserProfile(string user, bool absolute = true)
+    public async Task<string> GetUserProfileAsync(string user, bool absolute = true)
     {
         var queryParams = "";
 
@@ -172,7 +172,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
                 }
             }
 
-            queryParams = guid != Guid.Empty ? GetUserParamsPair(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
+            queryParams = guid != Guid.Empty ? await GetUserParamsPairAsync(guid) : HttpUtility.UrlEncode(user.ToLowerInvariant());
         }
 
         var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
@@ -192,9 +192,10 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
         return url;
     }
-    public string GetUserProfile(Guid user, bool absolute = true)
+
+    public async Task<string> GetUserProfileAsync(Guid user, bool absolute = true)
     {
-        var queryParams = GetUserParamsPair(user);
+        var queryParams = await GetUserParamsPairAsync(user);
 
         var url = absolute ? ToAbsolute(VirtualAccountsPath) : AbsoluteAccountsPath;
         url += "view/";
@@ -479,9 +480,9 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return result;
     }
 
-    public string GetUserParamsPair(Guid userID)
+    public async Task<string> GetUserParamsPairAsync(Guid userID)
     {
-        return GetUserParamsPair(_userManager.GetUsers(userID));
+        return GetUserParamsPair(await _userManager.GetUsersAsync(userID));
     }
 
     public string GetUserParamsPair(UserInfo user)

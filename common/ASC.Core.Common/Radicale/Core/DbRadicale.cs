@@ -36,14 +36,14 @@ public class DbRadicale
         _dbContextFactory = dbContextFactory;
     }
 
-    public void SaveCardDavUser(int tenant, Guid id)
+    public async Task SaveCardDavUserAsync(int tenant, Guid id)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        userDbContext.AddOrUpdate(userDbContext.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
-        userDbContext.SaveChanges();
+        await userDbContext.AddOrUpdateAsync(q => q.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
+        await userDbContext.SaveChangesAsync();
     }
 
-    public async Task RemoveCardDavUser(int tenant, Guid id)
+    public async Task RemoveCardDavUserAsync(int tenant, Guid id)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var userDav = await userDbContext.UsersDav.FirstOrDefaultAsync(r => r.TenantId == tenant && r.UserId == id);
@@ -54,7 +54,7 @@ public class DbRadicale
         }
     }
 
-    public async Task<bool> IsExistCardDavUser(int tenant, Guid id)
+    public async Task<bool> IsExistCardDavUserAsync(int tenant, Guid id)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
         return await userDbContext.UsersDav.AnyAsync(r => r.TenantId == tenant && r.UserId == id);

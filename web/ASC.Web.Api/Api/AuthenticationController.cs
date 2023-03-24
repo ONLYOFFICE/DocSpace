@@ -162,12 +162,12 @@ public class AuthenticationController : ControllerBase
 
         try
         {
-            if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+            if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && await _studioSmsNotificationSettingsHelper.TfaEnabledForUserAsync(user.Id))
             {
                 sms = true;
                 await _smsManager.ValidateSmsCodeAsync(user, inDto.Code, true);
             }
-            else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
+            else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
             {
                 if (await _tfaManager.ValidateAuthCodeAsync(user, inDto.Code, true, true))
                 {
@@ -228,7 +228,7 @@ public class AuthenticationController : ControllerBase
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
+        if (await _studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettingsAsync() && await _studioSmsNotificationSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             if (string.IsNullOrEmpty(user.MobilePhone) || user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
             {
@@ -250,7 +250,7 @@ public class AuthenticationController : ControllerBase
             };
         }
 
-        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             if (!TfaAppUserSettings.EnableForUser(_settingsManager, user.Id))
             {
@@ -304,7 +304,7 @@ public class AuthenticationController : ControllerBase
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
         await _dbLoginEventsManager.LogOutEvent(loginEventId);
 
-        var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         var loginName = user.DisplayUserName(false, _displayUserSettingsHelper);
         await _messageService.SendAsync(loginName, MessageAction.Logout);
 
@@ -327,7 +327,7 @@ public class AuthenticationController : ControllerBase
     public async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto inDto)
     {
         await _apiContext.AuthByClaimAsync();
-        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
+        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
         inDto.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, inDto.MobilePhone);
         await _messageService.SendAsync(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
 
@@ -375,8 +375,8 @@ public class AuthenticationController : ControllerBase
                 if (checkKeyResult == ValidationResult.Ok)
                 {
                     user = email.Contains("@")
-                                   ? _userManager.GetUserByEmail(email)
-                                   : _userManager.GetUsers(new Guid(email));
+                                   ? await _userManager.GetUserByEmailAsync(email)
+                                   : await _userManager.GetUsersAsync(new Guid(email));
 
                     if (_securityContext.IsAuthenticated && _securityContext.CurrentAccount.ID != user.Id)
                     {
@@ -471,13 +471,13 @@ public class AuthenticationController : ControllerBase
             var userId = await GetUserByHashAsync(loginProfile.HashId);
             if (userId != Guid.Empty)
             {
-                userInfo = _userManager.GetUsers(userId);
+                userInfo = await _userManager.GetUsersAsync(userId);
             }
 
             var isNew = false;
             if (_coreBaseSettings.Personal)
             {
-                if (_userManager.UserExists(userInfo.Id) && SetupInfo.IsSecretEmail(userInfo.Email))
+                if (await _userManager.UserExistsAsync(userInfo.Id) && SetupInfo.IsSecretEmail(userInfo.Email))
                 {
                     try
                     {
@@ -491,7 +491,7 @@ public class AuthenticationController : ControllerBase
                     }
                 }
 
-                if (!_userManager.UserExists(userInfo.Id))
+                if (!await _userManager.UserExistsAsync(userInfo.Id))
                 {
                     userInfo = await JoinByThirdPartyAccount(loginProfile);
 
@@ -546,8 +546,8 @@ public class AuthenticationController : ControllerBase
             throw new Exception(Resource.ErrorNotCorrectEmail);
         }
 
-        var userInfo = _userManager.GetUserByEmail(loginProfile.EMail);
-        if (!_userManager.UserExists(userInfo.Id))
+        var userInfo = await _userManager.GetUserByEmailAsync(loginProfile.EMail);
+        if (!await _userManager.UserExistsAsync(userInfo.Id))
         {
             var newUserInfo = ProfileToUserInfo(loginProfile);
 

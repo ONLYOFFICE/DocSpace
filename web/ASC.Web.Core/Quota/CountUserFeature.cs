@@ -59,9 +59,9 @@ public class CountUserStatistic : ITenantQuotaFeatureStat<CountUserFeature, int>
         _serviceProvider = serviceProvider;
     }
 
-    public Task<int> GetValueAsync()
+    public async Task<int> GetValueAsync()
     {
         var userManager = _serviceProvider.GetService<UserManager>();
-        return Task.FromResult(userManager.GetUsersByGroup(Constants.GroupUser.ID).Length);
+        return (await userManager.GetUsersByGroupAsync(Constants.GroupUser.ID)).Length;
     }
 }

@@ -38,10 +38,10 @@ public class FileSecurityCommon
         _webItemSecurity = webItemSecurity;
     }
 
-    public bool IsDocSpaceAdministrator(Guid userId)
+    public async Task<bool> IsDocSpaceAdministratorAsync(Guid userId)
     {
-        return _userManager.IsUserInGroup(userId, Constants.GroupAdmin.ID) ||
-               _webItemSecurity.IsProductAdministrator(ProductEntryPoint.ID, userId);
+        return await _userManager.IsUserInGroupAsync(userId, Constants.GroupAdmin.ID) ||
+               await _webItemSecurity.IsProductAdministratorAsync(ProductEntryPoint.ID, userId);
     }
 }
 
@@ -420,7 +420,7 @@ public class FileSecurity : IFileSecurity
                     if ((defaultShareRecord.Share == FileShare.Read && action == FilesSecurityActions.Read) ||
                         (defaultShareRecord.Share == FileShare.ReadWrite))
                     {
-                        return _userManager.GetUsersByGroup(defaultShareRecord.Subject)
+                        return (await _userManager.GetUsersByGroupAsync(defaultShareRecord.Subject))
                                           .Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id).Distinct();
                     }
 
@@ -527,7 +527,7 @@ public class FileSecurity : IFileSecurity
 
                     foreach (var defaultRecord in defaultRecords)
                     {
-                        users.AddRange(_userManager.GetUsersByGroup(defaultRecord.Subject).Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id));
+                        users.AddRange((await _userManager.GetUsersByGroupAsync(defaultRecord.Subject)).Where(x => x.Status == EmployeeStatus.Active).Select(y => y.Id));
                     }
 
                     return users.Distinct();
@@ -545,23 +545,11 @@ public class FileSecurity : IFileSecurity
             shares = shares.Concat(defaultRecords);
         }
 
-        var manyShares = shares.SelectMany(x =>
-        {
-            var groupInfo = _userManager.GetGroupInfo(x.Subject);
-
-            if (groupInfo.ID != Constants.LostGroupInfo.ID)
-            {
-                return _userManager.GetUsersByGroup(groupInfo.ID)
-                .Where(p => p.Status == EmployeeStatus.Active)
-                .Select(y => y.Id);
-            }
-
-            return new[] { x.Subject };
-        }).Distinct();
+        var manyShares = shares.ToAsyncEnumerable().SelectManyAwait(async x => await ToGuidAsync(x)).Distinct();
 
         var result = new List<Guid>();
 
-        foreach (var x in manyShares)
+        await foreach (var x in manyShares)
         {
             if (await CanAsync(entry, x, action, copyShares))
             {
@@ -570,6 +558,20 @@ public class FileSecurity : IFileSecurity
         }
 
         return result;
+    }
+
+    private async ValueTask<IAsyncEnumerable<Guid>> ToGuidAsync(FileShareRecord x)
+    {
+        var groupInfo = await _userManager.GetGroupInfoAsync(x.Subject);
+
+        if (groupInfo.ID != Constants.LostGroupInfo.ID)
+        {
+            return (await _userManager.GetUsersByGroupAsync(groupInfo.ID))
+            .Where(p => p.Status == EmployeeStatus.Active)
+            .Select(y => y.Id).ToAsyncEnumerable();
+        }
+
+        return new[] { x.Subject }.ToAsyncEnumerable();
     }
 
     public async IAsyncEnumerable<FileEntry<T>> FilterReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
@@ -590,12 +592,12 @@ public class FileSecurity : IFileSecurity
 
     public async IAsyncEnumerable<FileEntry<T>> SetSecurity<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
     {
-        var user = _userManager.GetUsers(userId);
-        var isOutsider = _userManager.IsOutsider(user);
-        var isUser = _userManager.IsUser(user);
-        var isAuthenticated = _authManager.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, userId).IsAuthenticated;
-        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
-        var isCollaborator = _userManager.IsCollaborator(user);
+        var user = await _userManager.GetUsersAsync(userId);
+        var isOutsider = await _userManager.IsOutsiderAsync(user);
+        var isUser = await _userManager.IsUserAsync(user);
+        var isAuthenticated = (await _authManager.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId)).IsAuthenticated;
+        var isDocSpaceAdmin = await _fileSecurityCommon.IsDocSpaceAdministratorAsync(userId);
+        var isCollaborator = await _userManager.IsCollaboratorAsync(user);
 
         await foreach (var entry in entries)
         {
@@ -625,18 +627,18 @@ public class FileSecurity : IFileSecurity
             return entry.Security[action];
         }
 
-        var user = _userManager.GetUsers(userId);
-        var isOutsider = _userManager.IsOutsider(user);
+        var user = await _userManager.GetUsersAsync(userId);
+        var isOutsider = await _userManager.IsOutsiderAsync(user);
 
         if (isOutsider && action != FilesSecurityActions.Read)
         {
             return false;
         }
 
-        var isUser = _userManager.IsUser(user);
-        var isAuthenticated = _authManager.GetAccountByID((await _tenantManager.GetCurrentTenantAsync()).Id, userId).IsAuthenticated;
-        var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
-        var isCollaborator = _userManager.IsCollaborator(user);
+        var isUser = await _userManager.IsUserAsync(user);
+        var isAuthenticated = (await _authManager.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId)).IsAuthenticated;
+        var isDocSpaceAdmin = await _fileSecurityCommon.IsDocSpaceAdministratorAsync(userId);
+        var isCollaborator = await _userManager.IsCollaboratorAsync(user);
 
         return await FilterEntry(entry, action, userId, shares, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin, isCollaborator);
     }
@@ -865,7 +867,7 @@ public class FileSecurity : IFileSecurity
         var subjects = new List<Guid>();
         if (shares == null)
         {
-            subjects = GetUserSubjects(userId);
+            subjects = await GetUserSubjectsAsync(userId);
             shares = (await GetSharesAsync(e))
                     .Join(subjects, r => r.Subject, s => s, (r, s) => r)
                     .ToList();
@@ -1103,7 +1105,7 @@ public class FileSecurity : IFileSecurity
     public async IAsyncEnumerable<FileEntry> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
-        var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
+        var subjects = await GetUserSubjectsAsync(_authContext.CurrentAccount.ID);
         var records = await securityDao.GetSharesAsync(subjects).ToListAsync();
 
         var firstTask = GetSharesForMeAsync<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders).ToListAsync();
@@ -1127,7 +1129,7 @@ public class FileSecurity : IFileSecurity
                 ? await securityDao.GetSharesAsync(new[] { subjectId }).Where(r => r.EntryType == FileEntryType.Folder).Select(r => r.EntryId.ToString()).ToListAsync()
                 : null;
 
-        if (_fileSecurityCommon.IsDocSpaceAdministrator(_authContext.CurrentAccount.ID))
+        if (await _fileSecurityCommon.IsDocSpaceAdministratorAsync(_authContext.CurrentAccount.ID))
         {
             return await GetAllVirtualRoomsAsync(filterType, subjectId, searchText, searchInContent, withSubfolders, searchArea, withoutTags, tagNames, excludeSubject, provider, subjectFilter, subjectEntries);
         }
@@ -1199,7 +1201,7 @@ public class FileSecurity : IFileSecurity
 
         var entries = new List<FileEntry>();
 
-        var currentUserSubjects = GetUserSubjects(_authContext.CurrentAccount.ID);
+        var currentUserSubjects = await GetUserSubjectsAsync(_authContext.CurrentAccount.ID);
         var currentUsersRecords = await securityDao.GetSharesAsync(currentUserSubjects).ToListAsync();
 
         var roomsIds = new Dictionary<int, FileShare>();
@@ -1426,7 +1428,7 @@ public class FileSecurity : IFileSecurity
                                 && f.RootCreateBy != _authContext.CurrentAccount.ID // don't show my files
             );
 
-        if (_userManager.IsUser(_authContext.CurrentAccount.ID))
+        if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             data = data.Where(r => !r.ProviderEntry);
         }
@@ -1461,7 +1463,7 @@ public class FileSecurity : IFileSecurity
     public async IAsyncEnumerable<FileEntry> GetPrivacyForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
     {
         var securityDao = _daoFactory.GetSecurityDao<int>();
-        var subjects = GetUserSubjects(_authContext.CurrentAccount.ID);
+        var subjects = await GetUserSubjectsAsync(_authContext.CurrentAccount.ID);
         var records = await securityDao.GetSharesAsync(subjects).ToListAsync();
 
         await foreach (var e in GetPrivacyForMeAsync<int>(records.Where(r => r.EntryId is int), subjects, filterType, subjectGroup, subjectID, searchText, searchInContent, withSubfolders))
@@ -1574,7 +1576,7 @@ public class FileSecurity : IFileSecurity
         return _daoFactory.GetSecurityDao<T>().RemoveSubjectAsync(subject);
     }
 
-    public List<Guid> GetUserSubjects(Guid userId)
+    public async Task<List<Guid>> GetUserSubjectsAsync(Guid userId)
     {
         // priority order
         // User, Departments, admin, everyone
@@ -1585,8 +1587,8 @@ public class FileSecurity : IFileSecurity
             return result;
         }
 
-        result.AddRange(_userManager.GetUserGroups(userId).Select(g => g.ID));
-        if (_fileSecurityCommon.IsDocSpaceAdministrator(userId))
+        result.AddRange((await _userManager.GetUserGroupsAsync(userId)).Select(g => g.ID));
+        if (await _fileSecurityCommon.IsDocSpaceAdministratorAsync(userId))
         {
             result.Add(Constants.GroupAdmin.ID);
         }

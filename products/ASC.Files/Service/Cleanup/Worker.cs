@@ -87,7 +87,7 @@ public class Worker
                 var fileStorageService = scope.ServiceProvider.GetRequiredService<Web.Files.Services.WCFService.FileStorageService<int>>();
                 var fileDateTime = scope.ServiceProvider.GetRequiredService<FileDateTime>();
 
-                var userAccount = authManager.GetAccountByID(tenantUser.TenantId, tenantUser.UserId);
+                var userAccount = await authManager.GetAccountByIDAsync(tenantUser.TenantId, tenantUser.UserId);
 
                 if (userAccount == ASC.Core.Configuration.Constants.Guest)
                 {

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Users;
+
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Core;
@@ -141,36 +143,36 @@ public class UserManager
 
     #region Users
 
-    public UserInfo[] GetUsers()
+    public async Task<UserInfo[]> GetUsersAsync()
     {
-        return GetUsers(EmployeeStatus.Default);
+        return await GetUsersAsync(EmployeeStatus.Default);
     }
 
-    public UserInfo[] GetUsers(EmployeeStatus status)
+    public async Task<UserInfo[]> GetUsersAsync(EmployeeStatus status)
     {
-        return GetUsers(status, EmployeeType.All);
+        return await GetUsersAsync(status, EmployeeType.All);
     }
 
-    public UserInfo[] GetUsers(EmployeeStatus status, EmployeeType type)
+    public async Task<UserInfo[]> GetUsersAsync(EmployeeStatus status, EmployeeType type)
     {
-        var users = GetUsersInternal().Where(u => (u.Status & status) == u.Status);
+        var users = (await GetUsersInternalAsync()).Where(u => (u.Status & status) == u.Status).ToAsyncEnumerable();
         switch (type)
         {
             case EmployeeType.RoomAdmin:
-                users = users.Where(u => !this.IsUser(u) && !this.IsCollaborator(u) && !this.IsDocSpaceAdmin(u));
+                users = users.WhereAwait(async u => !await this.IsUserAsync(u) && !await this.IsCollaboratorAsync(u) && !await this.IsDocSpaceAdminAsync(u));
                 break;
             case EmployeeType.DocSpaceAdmin:
-                users = users.Where(this.IsDocSpaceAdmin);
+                users = users.WhereAwait(async u => await this.IsDocSpaceAdminAsync(u));
                 break;
             case EmployeeType.Collaborator:
-                users = users.Where(this.IsCollaborator);
+                users = users.WhereAwait(async u => await this.IsCollaboratorAsync(u));
                 break;
             case EmployeeType.User:
-                users = users.Where(this.IsUser);
+                users = users.WhereAwait(async u => await this.IsUserAsync(u));
                 break;
         }
-
-        return users.ToArray();
+        
+        return await users.ToArrayAsync();
     }
 
     public IQueryable<UserInfo> GetUsers(
@@ -190,9 +192,9 @@ public class UserManager
         return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
-    public string[] GetUserNames(EmployeeStatus status)
+    public async Task<string[]> GetUserNamesAsyncAsync(EmployeeStatus status)
     {
-        return GetUsers(status)
+        return (await GetUsersAsync(status))
             .Select(u => u.UserName)
             .Where(s => !string.IsNullOrEmpty(s))
             .ToArray();
@@ -200,26 +202,38 @@ public class UserManager
 
     public async Task<UserInfo> GetUserByUserNameAsync(string username)
     {
-        var u = _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, username);
+        var u = await _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, username);
 
         return u ?? Constants.LostUser;
     }
 
-    public UserInfo GetUserBySid(string sid)
+    public async Task<UserInfo> GetUserBySidAsync(string sid)
     {
-        return GetUsersInternal()
+        return (await GetUsersInternalAsync())
                 .FirstOrDefault(u => u.Sid != null && string.Equals(u.Sid, sid, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
     }
 
-    public UserInfo GetSsoUserByNameId(string nameId)
+    public async Task<UserInfo> GetSsoUserByNameIdAsync(string nameId)
     {
-        return GetUsersInternal()
+        return (await GetUsersInternalAsync())
             .FirstOrDefault(u => !string.IsNullOrEmpty(u.SsoNameId) && string.Equals(u.SsoNameId, nameId, StringComparison.CurrentCultureIgnoreCase)) ?? Constants.LostUser;
     }
-    public bool IsUserNameExists(string username)
+    public async Task<bool> IsUserNameExistsAsync(string username)
     {
-        return GetUserNames(EmployeeStatus.All)
+        return (await GetUserNamesAsyncAsync(EmployeeStatus.All))
             .Contains(username, StringComparer.CurrentCultureIgnoreCase);
+    }
+
+    public async Task<UserInfo> GetUsersAsync(Guid id)
+    {
+        if (IsSystemUser(id))
+        {
+            return SystemUsers[id];
+        }
+
+        var u = await _userService.GetUserAsync(Tenant.Id, id);
+
+        return u != null && !u.Removed ? u : Constants.LostUser;
     }
 
     public UserInfo GetUsers(Guid id)
@@ -234,28 +248,33 @@ public class UserManager
         return u != null && !u.Removed ? u : Constants.LostUser;
     }
 
-    public UserInfo GetUser(Guid id, Expression<Func<User, UserInfo>> exp)
+    public async Task<UserInfo> GetUserAsync(Guid id, Expression<Func<User, UserInfo>> exp)
     {
         if (IsSystemUser(id))
         {
             return SystemUsers[id];
         }
 
-        var u = _userService.GetUser(Tenant.Id, id, exp);
+        var u = await _userService.GetUserAsync(Tenant.Id, id, exp);
 
         return u != null && !u.Removed ? u : Constants.LostUser;
     }
 
-    public UserInfo GetUsersByPasswordHash(int tenant, string login, string passwordHash)
+    public async Task<UserInfo> GetUsersByPasswordHashAsync(int tenant, string login, string passwordHash)
     {
-        var u = _userService.GetUserByPasswordHash(tenant, login, passwordHash);
+        var u = await _userService.GetUserByPasswordHashAsync(tenant, login, passwordHash);
 
         return u != null && !u.Removed ? u : Constants.LostUser;
+    }
+
+    public async Task<bool> UserExistsAsync(Guid id)
+    {
+        return UserExists(await GetUsersAsync(id));
     }
 
     public bool UserExists(Guid id)
     {
-        return UserExists(GetUsers(id));
+        return UserExists (GetUsers(id));
     }
 
     public bool UserExists(UserInfo user)
@@ -268,24 +287,24 @@ public class UserManager
         return SystemUsers.ContainsKey(id);
     }
 
-    public UserInfo GetUserByEmail(string email)
+    public async Task<UserInfo> GetUserByEmailAsync(string email)
     {
         if (string.IsNullOrEmpty(email))
         {
             return Constants.LostUser;
         }
 
-        var u = _userService.GetUser(Tenant.Id, email);
+        var u = await _userService.GetUserAsync(Tenant.Id, email);
 
         return u != null && !u.Removed ? u : Constants.LostUser;
     }
 
-    public UserInfo[] Search(string text, EmployeeStatus status)
+    public async Task<UserInfo[]> SearchAsync(string text, EmployeeStatus status)
     {
-        return Search(text, status, Guid.Empty);
+        return await SearchAsync(text, status, Guid.Empty);
     }
 
-    public UserInfo[] Search(string text, EmployeeStatus status, Guid groupId)
+    public async Task<UserInfo[]> SearchAsync(string text, EmployeeStatus status, Guid groupId)
     {
         if (text == null || text.Trim().Length == 0)
         {
@@ -299,8 +318,8 @@ public class UserManager
         }
 
         var users = groupId == Guid.Empty ?
-            GetUsers(status) :
-            GetUsersByGroup(groupId).Where(u => (u.Status & status) == status);
+            await GetUsersAsync(status) :
+            (await GetUsersByGroupAsync(groupId)).Where(u => (u.Status & status) == status);
 
         var findUsers = new List<UserInfo>();
         foreach (var user in users)
@@ -338,19 +357,19 @@ public class UserManager
             throw new InvalidOperationException("Can not disable tenant owner.");
         }
 
-        var oldUserData = _userService.GetUserByUserName(tenant.Id, u.UserName);
+        var oldUserData = await _userService.GetUserByUserName(tenant.Id, u.UserName);
 
         if (oldUserData == null || Equals(oldUserData, Constants.LostUser))
         {
             throw new InvalidOperationException("User not found.");
         }
 
-        return _userService.SaveUser(tenant.Id, u);
+        return await _userService.SaveUserAsync(tenant.Id, u);
     }
 
     public async Task<UserInfo> UpdateUserInfoWithSyncCardDavAsync(UserInfo u)
     {
-        var oldUserData = _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
+        var oldUserData = await _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
 
         var newUser = await UpdateUserInfoAsync(u);
         
@@ -373,13 +392,13 @@ public class UserManager
 
         if (!_coreBaseSettings.Personal)
         {
-            if (_constants.MaxEveryoneCount <= GetUsersByGroup(Constants.GroupEveryone.ID).Length)
+            if (_constants.MaxEveryoneCount <= (await GetUsersByGroupAsync(Constants.GroupEveryone.ID)).Length)
             {
                 throw new TenantQuotaException("Maximum number of users exceeded");
             }
         }
 
-        var oldUserData = _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
+        var oldUserData = await _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
 
         if (oldUserData != null && !Equals(oldUserData, Constants.LostUser))
         {
@@ -395,7 +414,7 @@ public class UserManager
             await _countPaidUserChecker.CheckAppend();
         }
 
-        var newUser = _userService.SaveUser((await _tenantManager.GetCurrentTenantAsync()).Id, u);
+        var newUser = await _userService.SaveUserAsync((await _tenantManager.GetCurrentTenantAsync()).Id, u);
         if (syncCardDav)
         {
             await SyncCardDavAsync(u, oldUserData, newUser);
@@ -465,12 +484,12 @@ public class UserManager
 
     public async Task<IEnumerable<string>> GetDavUserEmailsAsync()
     {
-        return _userService.GetDavUserEmails((await _tenantManager.GetCurrentTenantAsync()).Id);
+        return await _userService.GetDavUserEmailsAsync((await _tenantManager.GetCurrentTenantAsync()).Id);
     }
 
-    public IEnumerable<int> GetTenantsWithFeeds(DateTime from)
+    public async Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime from)
     {
-        return _userService.GetTenantsWithFeeds(from);
+        return await _userService.GetTenantsWithFeedsAsync(from);
     }
 
     public async Task DeleteUserAsync(Guid id)
@@ -486,8 +505,8 @@ public class UserManager
             throw new InvalidOperationException("Can not remove tenant owner.");
         }
 
-        var delUser = GetUsers(id);
-        _userService.RemoveUser(Tenant.Id, id);
+        var delUser = await GetUsersAsync(id);
+        await _userService.RemoveUserAsync(Tenant.Id, id);
         var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         try
@@ -549,35 +568,35 @@ public class UserManager
 
         await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(id), Constants.Action_EditUser);
 
-        _userService.SetUserPhoto(Tenant.Id, id, photo);
+        await _userService.SetUserPhotoAsync(Tenant.Id, id, photo);
     }
 
-    public byte[] GetUserPhoto(Guid id)
+    public async Task<byte[]> GetUserPhotoAsync(Guid id)
     {
         if (IsSystemUser(id))
         {
             return null;
         }
 
-        return _userService.GetUserPhoto(Tenant.Id, id);
+        return await _userService.GetUserPhotoAsync(Tenant.Id, id);
     }
 
-    public List<GroupInfo> GetUserGroups(Guid id)
+    public async Task<List<GroupInfo>> GetUserGroupsAsync(Guid id)
     {
-        return GetUserGroups(id, IncludeType.Distinct, Guid.Empty);
+        return await GetUserGroupsAsync(id, IncludeType.Distinct, Guid.Empty);
     }
 
-    public List<GroupInfo> GetUserGroups(Guid id, Guid categoryID)
+    public async Task<List<GroupInfo>> GetUserGroupsAsync(Guid id, Guid categoryID)
     {
-        return GetUserGroups(id, IncludeType.Distinct, categoryID);
+        return await GetUserGroupsAsync(id, IncludeType.Distinct, categoryID);
     }
 
-    public List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType)
+    public async Task<List<GroupInfo>> GetUserGroupsAsync(Guid userID, IncludeType includeType)
     {
-        return GetUserGroups(userID, includeType, null);
+        return await GetUserGroupsAsync(userID, includeType, null);
     }
 
-    internal List<GroupInfo> GetUserGroups(Guid userID, IncludeType includeType, Guid? categoryId)
+    internal async Task<List<GroupInfo>> GetUserGroupsAsync(Guid userID, IncludeType includeType, Guid? categoryId)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -599,7 +618,7 @@ public class UserManager
         result = new List<GroupInfo>();
         var distinctUserGroups = new List<GroupInfo>();
 
-        var refs = GetRefsInternal();
+        var refs = await GetRefsInternalAsync();
         IEnumerable<UserGroupRef> userRefs = null;
         if (refs is UserGroupRefStore store)
         {
@@ -608,7 +627,7 @@ public class UserManager
 
         var userRefsContainsNotRemoved = userRefs?.Where(r => !r.Removed && r.RefType == UserGroupRefType.Contains).ToList();
 
-        foreach (var g in GetGroupsInternal().Where(g => !categoryId.HasValue || g.CategoryID == categoryId))
+        foreach (var g in (await GetGroupsInternalAsync()).Where(g => !categoryId.HasValue || g.CategoryID == categoryId))
         {
             if (((g.CategoryID == Constants.SysGroupCategoryId || userRefs == null) && IsUserInGroupInternal(userID, g.ID, refs)) ||
                 (userRefsContainsNotRemoved != null && userRefsContainsNotRemoved.Any(r => r.GroupId == g.ID)))
@@ -634,16 +653,21 @@ public class UserManager
         return result;
     }
 
+    public async Task<bool> IsUserInGroupAsync(Guid userId, Guid groupId)
+    {
+        return IsUserInGroupInternal(userId, groupId, await GetRefsInternalAsync());
+    }
+
     public bool IsUserInGroup(Guid userId, Guid groupId)
     {
         return IsUserInGroupInternal(userId, groupId, GetRefsInternal());
     }
 
-    public UserInfo[] GetUsersByGroup(Guid groupId, EmployeeStatus employeeStatus = EmployeeStatus.Default)
+    public async Task<UserInfo[]> GetUsersByGroupAsync(Guid groupId, EmployeeStatus employeeStatus = EmployeeStatus.Default)
     {
-        var refs = GetRefsInternal();
+        var refs = await GetRefsInternalAsync();
 
-        return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
+        return (await GetUsersAsync(employeeStatus)).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
     public async Task AddUserIntoGroupAsync(Guid userId, Guid groupId, bool dontClearAddressBook = false)
@@ -653,12 +677,12 @@ public class UserManager
             return;
         }
 
-        var user = GetUsers(userId);
+        var user = await GetUsersAsync(userId);
 
         await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, (await _tenantManager.GetCurrentTenantAsync()).Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
 
-        _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
+        await _userService.SaveUserGroupRefAsync(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
         ResetGroupCache(userId);
         if (groupId == Constants.GroupUser.ID)
@@ -682,12 +706,12 @@ public class UserManager
             return;
         }
 
-        var user = GetUsers(userId);
+        var user = await GetUsersAsync(userId);
 
         await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, (await _tenantManager.GetCurrentTenantAsync()).Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
 
-        _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
+        await _userService.RemoveUserGroupRefAsync(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
 
         ResetGroupCache(userId);
     }
@@ -703,9 +727,21 @@ public class UserManager
 
     #region Company
 
-    public GroupInfo[] GetDepartments()
+    public async Task<GroupInfo[]> GetDepartmentsAsync()
     {
-        return GetGroups();
+        return await GetGroupsAsync();
+    }
+
+    public async Task<Guid> GetDepartmentManagerAsync(Guid deparmentID)
+    {
+        var groupRef = await _userService.GetUserGroupRefAsync(Tenant.Id, deparmentID, UserGroupRefType.Manager);
+
+        if (groupRef == null)
+        {
+            return Guid.Empty;
+        }
+
+        return groupRef.UserId;
     }
 
     public Guid GetDepartmentManager(Guid deparmentID)
@@ -720,33 +756,33 @@ public class UserManager
         return groupRef.UserId;
     }
 
-    public void SetDepartmentManager(Guid deparmentID, Guid userID)
+    public async Task SetDepartmentManagerAsync(Guid deparmentID, Guid userID)
     {
-        var managerId = GetDepartmentManager(deparmentID);
+        var managerId = await GetDepartmentManagerAsync(deparmentID);
         if (managerId != Guid.Empty)
         {
-            _userService.RemoveUserGroupRef(
+            await _userService.RemoveUserGroupRefAsync(
                 Tenant.Id,
                 managerId, deparmentID, UserGroupRefType.Manager);
         }
         if (userID != Guid.Empty)
         {
-            _userService.SaveUserGroupRef(
+            await _userService.SaveUserGroupRefAsync(
                 Tenant.Id,
                 new UserGroupRef(userID, deparmentID, UserGroupRefType.Manager));
         }
     }
 
-    public UserInfo GetCompanyCEO()
+    public async Task<UserInfo> GetCompanyCEOAsync()
     {
-        var id = GetDepartmentManager(Guid.Empty);
+        var id = await GetDepartmentManagerAsync(Guid.Empty);
 
-        return id != Guid.Empty ? GetUsers(id) : null;
+        return id != Guid.Empty ? await GetUsersAsync(id) : null;
     }
 
-    public void SetCompanyCEO(Guid userId)
+    public async Task SetCompanyCEOAsync(Guid userId)
     {
-        SetDepartmentManager(Guid.Empty, userId);
+        await SetDepartmentManagerAsync(Guid.Empty, userId);
     }
 
     #endregion Company
@@ -754,21 +790,21 @@ public class UserManager
 
     #region Groups
 
-    public GroupInfo[] GetGroups()
+    public async Task<GroupInfo[]> GetGroupsAsync()
     {
-        return GetGroups(Guid.Empty);
+        return await GetGroupsAsync(Guid.Empty);
     }
 
-    public GroupInfo[] GetGroups(Guid categoryID)
+    public async Task<GroupInfo[]> GetGroupsAsync(Guid categoryID)
     {
-        return GetGroupsInternal()
+        return (await GetGroupsInternalAsync())
             .Where(g => g.CategoryID == categoryID)
             .ToArray();
     }
 
-    public GroupInfo GetGroupInfo(Guid groupID)
+    public async Task<GroupInfo> GetGroupInfoAsync(Guid groupID)
     {
-        var group = _userService.GetGroup(Tenant.Id, groupID);
+        var group = await _userService.GetGroupAsync(Tenant.Id, groupID);
 
         if (group == null)
         {
@@ -789,9 +825,9 @@ public class UserManager
         };
     }
 
-    public GroupInfo GetGroupInfoBySid(string sid)
+    public async Task<GroupInfo> GetGroupInfoBySidAsync(string sid)
     {
-        return GetGroupsInternal()
+        return (await GetGroupsInternalAsync())
             .SingleOrDefault(g => g.Sid == sid) ?? Constants.LostGroupInfo;
     }
 
@@ -809,7 +845,7 @@ public class UserManager
 
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditGroups);
 
-        var newGroup = _userService.SaveGroup(Tenant.Id, ToGroup(g));
+        var newGroup = await _userService.SaveGroupAsync(Tenant.Id, ToGroup(g));
 
         return new GroupInfo(newGroup.CategoryId) { ID = newGroup.Id, Name = newGroup.Name, Sid = newGroup.Sid };
     }
@@ -828,7 +864,7 @@ public class UserManager
 
         await _permissionContext.DemandPermissionsAsync(Constants.Action_EditGroups);
 
-        _userService.RemoveGroup(Tenant.Id, id);
+        await _userService.RemoveGroupAsync(Tenant.Id, id);
     }
 
     #endregion Groups
@@ -857,19 +893,24 @@ public class UserManager
     }
 
 
-    private IEnumerable<UserInfo> GetUsersInternal()
+    private async Task<IEnumerable<UserInfo>> GetUsersInternalAsync()
     {
-        return _userService.GetUsers(Tenant.Id)
+        return (await _userService.GetUsersAsync(Tenant.Id))
             .Where(u => !u.Removed);
     }
 
-    private IEnumerable<GroupInfo> GetGroupsInternal()
+    private async Task<IEnumerable<GroupInfo>> GetGroupsInternalAsync()
     {
-        return _userService.GetGroups(Tenant.Id)
+        return (await _userService.GetGroupsAsync(Tenant.Id))
             .Where(g => !g.Removed)
             .Select(g => new GroupInfo(g.CategoryId) { ID = g.Id, Name = g.Name, Sid = g.Sid })
             .Concat(Constants.BuildinGroups)
             .ToList();
+    }
+
+    private async Task<IDictionary<string, UserGroupRef>> GetRefsInternalAsync()
+    {
+        return await _userService.GetUserGroupRefsAsync(Tenant.Id);
     }
 
     private IDictionary<string, UserGroupRef> GetRefsInternal()

@@ -125,7 +125,7 @@ public class FormFillingProperties
         }
     }
 
-    public string GetTitleByMask(string sourceFileName)
+    public async Task<string> GetTitleByMaskAsync(string sourceFileName)
     {
         FixFileMask();
 
@@ -136,7 +136,7 @@ public class FormFillingProperties
         }
 
         string userName;
-        var userInfo = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
+        var userInfo = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         if (userInfo.Equals(Constants.LostUser))
         {
             userName = _customNamingPeople.Substitute<FilesCommonResource>("ProfileRemoved");
