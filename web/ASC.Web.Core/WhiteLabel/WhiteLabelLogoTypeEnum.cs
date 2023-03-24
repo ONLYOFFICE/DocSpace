@@ -34,5 +34,6 @@ public enum WhiteLabelLogoTypeEnum
     DocsEditor = 4,
     DocsEditorEmbed = 5,
     LeftMenu = 6,
-    AboutPage = 7
+    AboutPage = 7,
+    Notification = 8
 }

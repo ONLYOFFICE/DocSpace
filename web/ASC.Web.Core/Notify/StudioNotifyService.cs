@@ -431,17 +431,17 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV10 : Actions.EnterpriseWhitelabelGuestWelcomeV10;
+            notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV1 : Actions.EnterpriseWhitelabelGuestWelcomeV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceGuestWelcomeV11;
+            notifyAction = Actions.OpensourceGuestWelcomeV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasGuestWelcomeV115;
+            notifyAction = Actions.SaasGuestWelcomeV1;
         }
 
         string greenButtonText() => _tenantExtra.Enterprise

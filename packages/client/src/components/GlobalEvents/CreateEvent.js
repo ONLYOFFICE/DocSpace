@@ -56,11 +56,13 @@ const CreateEvent = ({
 
   const { t } = useTranslation(["Translations", "Common"]);
 
-  const onCloseAction = () => {
+  const onCloseAction = (e) => {
     if (gallerySelected) {
       setGallerySelected && setGallerySelected(null);
     }
-    onClose && onClose();
+
+    setEventDialogVisible(false);
+    onClose && onClose(e);
   };
 
   React.useEffect(() => {
@@ -273,13 +275,6 @@ const CreateEvent = ({
     }
   };
 
-  const onCancel = React.useCallback(
-    (e) => {
-      onCloseAction && onCloseAction();
-    },
-    [onCloseAction]
-  );
-
   return (
     <Dialog
       t={t}
@@ -287,7 +282,7 @@ const CreateEvent = ({
       title={headerTitle}
       startValue={startValue}
       onSave={onSave}
-      onCancel={onCancel}
+      onCancel={onCloseAction}
       onClose={onCloseAction}
       isCreateDialog={true}
       extension={extension}
