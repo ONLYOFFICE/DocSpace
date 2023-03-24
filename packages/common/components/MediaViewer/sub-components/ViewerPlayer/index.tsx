@@ -272,6 +272,7 @@ function ViewerPlayer({
     setDuration(0);
     setCurrentTime(0);
     setIsPlaying(false);
+    setIsError(false);
     removePanelVisibleTimeout();
   };
 
