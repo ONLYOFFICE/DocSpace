@@ -829,11 +829,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_user_docs_tips_v1 {
             get {
@@ -1267,11 +1265,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_admin_docs_tips_v1 {
             get {
@@ -1358,11 +1354,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_user_docs_tips_v1 {
             get {
@@ -1959,11 +1953,9 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
         ///
-        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+        ///*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
-        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
-        ///
-        ///*#3. Co-author effective [rest of string was truncated]&quot;;.
+        ///*#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, mult [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_user_docs_tips_v1 {
             get {
@@ -2437,7 +2429,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_enterprise_admin_user_docs_tips_v1 {
             get {
@@ -2626,7 +2618,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_opensource_admin_docs_tips_v1 {
             get {
@@ -2671,7 +2663,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_opensource_user_docs_tips_v1 {
             get {
@@ -2914,7 +2906,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 5 tips for effective work on your docs.
+        ///   Looks up a localized string similar to Several tips for effective work on your docs.
         /// </summary>
         public static string subject_saas_admin_user_docs_tips_v1 {
             get {

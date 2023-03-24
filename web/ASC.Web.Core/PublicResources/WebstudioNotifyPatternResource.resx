@@ -1422,15 +1422,13 @@ ONLYOFFICE Team
 
 We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
 
-*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
 
 *#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
 *#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
 
-*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
-
-*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+*#4. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
 
 $GreenButton
 
@@ -1443,15 +1441,13 @@ ONLYOFFICE Team
 
 We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
 
-*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
 
 *#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
 *#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
 
-*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
-
-*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+*#4. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
 
 $GreenButton
 
@@ -1464,15 +1460,13 @@ ONLYOFFICE Team
 
 We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
 
-*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
 
 *#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
 *#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
 
-*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
-
-*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+*#4. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
 
 $GreenButton
 
@@ -1485,15 +1479,13 @@ ONLYOFFICE Team
 
 We hope you enjoy using your ONLYOFFICE DocSpace. Here are some tips on how to make work on documents more effective.
 
-*#1. Choose the way you work.* Organize your workflow as you need it by creating various room types: view-only, review, collaboration, custom rooms.
+*#1. Choose the way you work.* Organize your workflow as you need it by creating collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
 
 *#2. Work with any content you have.* Store and work with files of different formats within your rooms: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
 *#3. Co-author effectively.* Collaborate on documents with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls.
 
-*#4. Collaborate securely.* For sensitive or confidential documents, you can use private rooms where every symbol you type is encrypted end-to-end.
-
-*#5. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
+*#4. Connect 3rd party clouds.* Connect any cloud storage and work without switching between apps.
 
 $GreenButton
 
@@ -1502,16 +1494,16 @@ ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
-    <value>5 tips for effective work on your docs</value>
+    <value>Several tips for effective work on your docs</value>
   </data>
   <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
-    <value>5 tips for effective work on your docs</value>
+    <value>Several tips for effective work on your docs</value>
   </data>
   <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
-    <value>5 tips for effective work on your docs</value>
+    <value>Several tips for effective work on your docs</value>
   </data>
   <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
-    <value>5 tips for effective work on your docs</value>
+    <value>Several tips for effective work on your docs</value>
   </data>
   <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
     <value>Hello, $UserName!
