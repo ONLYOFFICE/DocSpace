@@ -117,7 +117,7 @@ const Template = (args) => {
         style={{
           width: "200px",
           height: "200px",
-          backgroundColor: "red",
+          backgroundColor: "#7dadfa",
           display: "inline-block",
         }}
         onContextMenu={(e) => cm.current.show(e)}
