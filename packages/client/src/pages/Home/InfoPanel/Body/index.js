@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 
@@ -108,7 +108,8 @@ const InfoPanelBodyContent = ({
 
   // Updating selectionParentRoom after selectFolder change
   // if it is located in another room
-  useEffect(async () => {
+
+  const updateSelectionParentRoomAction = useCallback(async () => {
     if (!isRooms) return;
     if (selection?.isRoom && roomsView === "members") return;
 
@@ -126,6 +127,10 @@ const InfoPanelBodyContent = ({
 
     setSelectionParentRoom(normalizeSelection(newSelectionParentRoom));
   }, [selectedFolder]);
+
+  useEffect(() => {
+    updateSelectionParentRoomAction();
+  }, [selectedFolder, updateSelectionParentRoomAction]);
 
   //////////////////////////////////////////////////////////
 
