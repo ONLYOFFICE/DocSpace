@@ -29,7 +29,7 @@ namespace ASC.Files.Thirdparty.OneDrive;
 [Scope]
 internal class OneDriveTagDao : ThirdPartyTagDao<Item, Item, Item>
 {
-    public OneDriveTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<Item, Item, Item>> daoSelector, IDaoBase<Item, Item, Item> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
+    public OneDriveTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<Item, Item, Item, IProviderInfo<Item, Item, Item>> daoSelector, IDaoBase<Item, Item, Item> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

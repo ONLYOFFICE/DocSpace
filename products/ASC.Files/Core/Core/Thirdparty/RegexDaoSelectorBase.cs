@@ -26,16 +26,20 @@
 
 namespace ASC.Files.Thirdparty;
 
-internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
+internal abstract class RegexDaoSelectorBase<TFile, TFolder, TItem, T>
+    where T : class, IProviderInfo<TFile, TFolder, TItem>
+    where TFile : class, TItem
+    where TFolder : class, TItem
+    where TItem : class
 {
-    private readonly IServiceProvider _serviceProvider;
+    protected readonly IServiceProvider _serviceProvider;
     private readonly IDaoFactory _daoFactory;
-    protected internal abstract string Name { get; }
-    protected internal abstract string Id { get; }
+    protected internal string Name { get => _serviceProvider.GetService<T>().Selector.Name; }
+    protected internal string Id { get => _serviceProvider.GetService<T>().Selector.Id; }
     public Regex Selector => _selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
     private Regex _selector;
 
-    private Dictionary<string, BaseProviderInfo<T>> Providers { get; set; }
+    private Dictionary<string, BaseProviderInfo<TFile, TFolder, TItem, T>> Providers { get; set; }
 
     protected RegexDaoSelectorBase(
         IServiceProvider serviceProvider,
@@ -43,7 +47,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
     {
         _serviceProvider = serviceProvider;
         _daoFactory = daoFactory;
-        Providers = new Dictionary<string, BaseProviderInfo<T>>();
+        Providers = new Dictionary<string, BaseProviderInfo<TFile, TFolder, TItem, T>>();
     }
 
     public virtual string ConvertId(string id)
@@ -88,21 +92,21 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
         return id != null && Selector.IsMatch(id);
     }
 
-    public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : IFileDao<string>
+    public virtual IFileDao<string> GetFileDao(string id)
     {
-        return _serviceProvider.GetService<T1>();
+        return _serviceProvider.GetService<ThirdPartyFileDao<TFile, TFolder, TItem>>();
     }
 
-    public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : IFolderDao<string>
+    public virtual IFolderDao<string> GetFolderDao(string id)
     {
-        return _serviceProvider.GetService<T1>();
+        return _serviceProvider.GetService<ThirdPartyFolderDao<TFile, TFolder, TItem>>();
     }
 
     public IThirdPartyTagDao GetTagDao(string id)
     {
         var providerKey = $"{id}";
         var info = Providers.Get(providerKey);
-        var res = _serviceProvider.GetService<IThirdPartyTagDao<T>>();
+        var res = _serviceProvider.GetService<IThirdPartyTagDao<TFile, TFolder, TItem, T>>();
 
         if (info != null)
         {
@@ -118,7 +122,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
         return res;
     }
 
-    internal BaseProviderInfo<T> GetInfo(string objectId)
+    internal BaseProviderInfo<TFile, TFolder, TItem, T> GetInfo(string objectId)
     {
         ArgumentNullException.ThrowIfNull(objectId);
 
@@ -128,7 +132,7 @@ internal abstract class RegexDaoSelectorBase<T> where T : class, IProviderInfo
         {
             var providerInfo = GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
 
-            return new BaseProviderInfo<T>
+            return new BaseProviderInfo<TFile, TFolder, TItem, T>
             {
                 Path = match.Groups["path"].Value,
                 ProviderInfo = providerInfo,

@@ -32,7 +32,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive;
 [DebuggerDisplay("{CustomerTitle}")]
 internal class GoogleDriveProviderInfo : AbstractProviderInfo<DriveFile, DriveFile, DriveFile, GoogleLoginProvider>
 {
-    public override string Selector { get; } = Selectors.GoogleDrive.Id;
+    public override Selector Selector { get; } = Selectors.GoogleDrive;
 
     public GoogleDriveProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {
@@ -42,6 +42,6 @@ internal class GoogleDriveProviderInfo : AbstractProviderInfo<DriveFile, DriveFi
     {
         var storage = await StorageAsync;
 
-        return await ProviderInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector, folder);
+        return await ProviderInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector.Id, folder);
     }
 }

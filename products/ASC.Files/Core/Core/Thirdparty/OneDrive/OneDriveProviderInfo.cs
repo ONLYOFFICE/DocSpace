@@ -30,7 +30,7 @@ namespace ASC.Files.Thirdparty.OneDrive;
 [DebuggerDisplay("{CustomerTitle}")]
 internal class OneDriveProviderInfo : AbstractProviderInfo<Item, Item, Item, OneDriveLoginProvider>
 {
-    public override string Selector { get; } = Selectors.OneDrive.Id;
+    public override Selector Selector { get; } = Selectors.OneDrive;
 
     public OneDriveProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {

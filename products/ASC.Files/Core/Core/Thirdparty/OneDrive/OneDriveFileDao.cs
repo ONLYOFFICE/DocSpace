@@ -24,15 +24,13 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Files.Thirdparty.OneDrive;
-
 using ResumableUploadSession = ASC.Files.Thirdparty.OneDrive.ResumableUploadSession;
 using ResumableUploadSessionStatus = ASC.Files.Thirdparty.OneDrive.ResumableUploadSessionStatus;
 
 namespace ASC.Files.Core.Core.Thirdparty.OneDrive;
 
 [Scope]
-internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>, IFileDao<string>
+internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
 {
     private readonly SetupInfo _setupInfo;
     private readonly TempPath _tempPath;

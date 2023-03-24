@@ -31,7 +31,7 @@ using ResumableUploadSessionStatus = ASC.Files.Thirdparty.GoogleDrive.ResumableU
 namespace ASC.Files.Core.Core.Thirdparty.GoogleDrive;
 
 [Scope]
-internal class GoogleDriveFileDao : ThirdPartyFileDao<DriveFile, DriveFile, DriveFile>, IFileDao<string>
+internal class GoogleDriveFileDao : ThirdPartyFileDao<DriveFile, DriveFile, DriveFile>
 {
     private readonly TempPath _tempPath;
     private readonly SetupInfo _setupInfo;

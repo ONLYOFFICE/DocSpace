@@ -35,7 +35,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly UserManager _userManager;
     private readonly CrossDao _crossDao;
-    private readonly IDaoSelector<IProviderInfo<TFile, TFolder, TItem>> _daoSelector;
+    private readonly IDaoSelector<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>> _daoSelector;
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
     private readonly TempStream _tempStream;
@@ -48,7 +48,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     public ThirdPartyFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory,
         UserManager userManager,
         CrossDao crossDao,
-        IDaoSelector<IProviderInfo<TFile, TFolder, TItem>> daoSelector,
+        IDaoSelector<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>> daoSelector,
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
         TempStream tempStream,

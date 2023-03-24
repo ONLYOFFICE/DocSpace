@@ -24,27 +24,28 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using File = Microsoft.SharePoint.Client.File;
+using Folder = Microsoft.SharePoint.Client.Folder;
+
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope(Additional = typeof(SharePointDaoSelectorExtension))]
-internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
+internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, ClientObject, SharePointProviderInfo>, IDaoSelector
 {
-    protected internal override string Name => Selectors.SharePoint.Name;
-    protected internal override string Id => Selectors.SharePoint.Id;
 
     public SharePointDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)
     {
     }
 
-    public IFileDao<string> GetFileDao(string id)
+    public override IFileDao<string> GetFileDao(string id)
     {
-        return base.GetFileDao<SharePointFileDao>(id);
+        return _serviceProvider.GetService<SharePointFileDao>();
     }
 
-    public IFolderDao<string> GetFolderDao(string id)
+    public override IFolderDao<string> GetFolderDao(string id)
     {
-        return base.GetFolderDao<SharePointFolderDao>(id);
+        return _serviceProvider.GetService<SharePointFolderDao>();
     }
 
     public override string ConvertId(string id)

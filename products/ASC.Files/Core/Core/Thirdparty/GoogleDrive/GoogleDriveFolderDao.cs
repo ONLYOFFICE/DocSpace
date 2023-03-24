@@ -1,4 +1,4 @@
-// (c) Copyright Ascensio System SIA 2010-2022
+﻿// (c) Copyright Ascensio System SIA 2010-2022
 //
 // This program is a free software product.
 // You can redistribute it and/or modify it under the terms
@@ -24,12 +24,14 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Thirdparty.Sharpbox;
+using DriveFile = Google.Apis.Drive.v3.Data.File;
+
+namespace ASC.Files.Core.Core.Thirdparty.GoogleDrive;
 
 [Scope]
-internal class SharpBoxTagDao : ThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>
+internal class GoogleDriveFolderDao : ThirdPartyFolderDao<DriveFile, DriveFile, DriveFile>
 {
-    public SharpBoxTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>> daoSelector, IDaoBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
+    public GoogleDriveFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory, UserManager userManager, CrossDao crossDao, IDaoSelector<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>> daoSelector, IFileDao<int> fileDao, IFolderDao<int> folderDao, TempStream tempStream, SetupInfo setupInfo, IDaoBase<DriveFile, DriveFile, DriveFile> dao, IProviderInfo<DriveFile, DriveFile, DriveFile> providerInfo) : base(dbContextFactory, userManager, crossDao, daoSelector, fileDao, folderDao, tempStream, setupInfo, dao, providerInfo)
     {
     }
 }

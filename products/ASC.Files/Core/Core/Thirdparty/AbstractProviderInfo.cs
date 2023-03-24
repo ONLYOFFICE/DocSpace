@@ -32,7 +32,7 @@ internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> :
     where TItem : class
     where TProvider : Consumer, IOAuthProvider, new()
 {
-    public abstract string Selector { get; }
+    public abstract Selector Selector { get; }
     private readonly DisposableWrapper _wrapper;
     internal readonly ProviderInfoHelper ProviderInfoHelper;
 
@@ -108,21 +108,21 @@ internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> :
     {
         var storage = await StorageAsync;
 
-        return await ProviderInfoHelper.GetFileAsync(storage, ProviderId, fileId, Selector);
+        return await ProviderInfoHelper.GetFileAsync(storage, ProviderId, fileId, Selector.Id);
     }
 
     public async Task<TFolder> GetFolderAsync(string folderId)
     {
         var storage = await StorageAsync;
 
-        return await ProviderInfoHelper.GetFolderAsync(storage, ProviderId, folderId, Selector);
+        return await ProviderInfoHelper.GetFolderAsync(storage, ProviderId, folderId, Selector.Id);
     }
 
     public async Task<List<TItem>> GetItemsAsync(string folderId)
     {
         var storage = await StorageAsync;
 
-        return await ProviderInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector);
+        return await ProviderInfoHelper.GetItemsAsync(storage, ProviderId, folderId, Selector.Id);
     }
 }
 

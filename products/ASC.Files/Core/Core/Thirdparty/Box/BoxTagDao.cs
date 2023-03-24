@@ -31,7 +31,7 @@ internal class BoxTagDao : ThirdPartyTagDao<BoxFile, BoxFolder, BoxItem>
 {
     public BoxTagDao(
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        IDaoSelector<IProviderInfo<BoxFile, BoxFolder, BoxItem>> daoSelector,
+        IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>> daoSelector,
         IDaoBase<BoxFile, BoxFolder, BoxItem> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }

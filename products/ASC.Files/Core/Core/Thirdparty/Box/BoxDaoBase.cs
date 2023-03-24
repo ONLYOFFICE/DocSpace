@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Box;
 
 [Scope]
-internal class BoxDaoBase : ThirdPartyProviderDao<BoxProviderInfo>, IDaoBase<BoxFile, BoxFolder, BoxItem>
+internal class BoxDaoBase : ThirdPartyProviderDao<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>, IDaoBase<BoxFile, BoxFolder, BoxItem>
 {
     public BoxDaoBase(
         IServiceProvider serviceProvider,

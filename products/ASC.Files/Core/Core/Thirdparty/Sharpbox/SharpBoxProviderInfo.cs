@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Sharpbox;
 
 [Transient]
-internal class SharpBoxProviderInfo : IProviderInfo
+internal class SharpBoxProviderInfo : IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>
 {
     private nSupportedCloudConfigurations _providerKey;
     private readonly ILogger<SharpBoxProviderInfo> _logger;
@@ -58,7 +58,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
     public string RootFolderId => $"{Selector}-{ID}";
     public FolderType RootFolderType { get; set; }
 
-    public string Selector { get; } = Selectors.SharpBox.Id;
+    public Selector Selector { get; } = Selectors.SharpBox;
 
     internal CloudStorage Storage
     {
@@ -77,6 +77,9 @@ internal class SharpBoxProviderInfo : IProviderInfo
     internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;
 
     public int ProviderId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public Task<IThirdPartyStorage<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>> StorageAsync =>
+        throw new NotImplementedException();
 
     public Task<bool> CheckAccessAsync()
     {

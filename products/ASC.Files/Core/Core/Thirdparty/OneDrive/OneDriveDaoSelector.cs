@@ -29,24 +29,11 @@ using ASC.Files.Core.Core.Thirdparty.OneDrive;
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Scope(Additional = typeof(OneDriveDaoSelectorExtension))]
-internal class OneDriveDaoSelector : RegexDaoSelectorBase<OneDriveProviderInfo>, IDaoSelector<OneDriveProviderInfo>
+internal class OneDriveDaoSelector : RegexDaoSelectorBase<Item, Item, Item, OneDriveProviderInfo>, IDaoSelector<Item, Item, Item, OneDriveProviderInfo>
 {
-    protected internal override string Name => Selectors.OneDrive.Name;
-    protected internal override string Id => Selectors.OneDrive.Id;
-
     public OneDriveDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)
     {
-    }
-
-    public IFileDao<string> GetFileDao(string id)
-    {
-        return base.GetFileDao<OneDriveFileDao>(id);
-    }
-
-    public IFolderDao<string> GetFolderDao(string id)
-    {
-        return base.GetFolderDao<ThirdPartyFolderDao<Item, Item, Item>>(id);
     }
 }
 
@@ -54,8 +41,10 @@ public static class OneDriveDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<OneDriveFileDao>();
-        services.TryAdd<ThirdPartyFolderDao<Item, Item, Item>>();
-        services.TryAdd<OneDriveTagDao>();
+        services.TryAdd<ThirdPartyFileDao<Item, Item, Item>, OneDriveFileDao>();
+        services.TryAdd<ThirdPartyFolderDao<Item, Item, Item>, OneDriveFolderDao>();
+        services.TryAdd<IThirdPartyTagDao<Item, Item, Item, OneDriveProviderInfo>, OneDriveTagDao>();
+        services.TryAdd<IDaoBase<Item, Item, Item>, OneDriveDaoBase>();
+        services.TryAdd<IDaoSelector<Item, Item, Item, IProviderInfo<Item, Item, Item>>, OneDriveDaoSelector>();
     }
 }

@@ -29,7 +29,7 @@ namespace ASC.Files.Thirdparty.Dropbox;
 [Scope]
 internal class DropboxTagDao : ThirdPartyTagDao<FileMetadata, FolderMetadata, Metadata>
 {
-    public DropboxTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<FileMetadata, FolderMetadata, Metadata>> daoSelector, IDaoBase<FileMetadata, FolderMetadata, Metadata> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
+    public DropboxTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<FileMetadata, FolderMetadata, Metadata, IProviderInfo<FileMetadata, FolderMetadata, Metadata>> daoSelector, IDaoBase<FileMetadata, FolderMetadata, Metadata> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

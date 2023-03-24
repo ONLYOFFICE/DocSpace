@@ -188,7 +188,7 @@ public class ProductEntryPoint : Product
             if (e.Action == (int)MessageAction.UserCreated
             || e.Action == (int)MessageAction.UserUpdated)
             {
-                if (docSpaceAdmin) 
+                if (docSpaceAdmin)
                 {
                     result.Add(activityInfo);
                 }
@@ -288,7 +288,7 @@ public class ProductEntryPoint : Product
     public override ProductContext Context => _productContext;
     public override string ApiURL => string.Empty;
 
-    private async Task<Dictionary<string,bool>> GetUserRoomsWithRole(Guid userId)
+    private async Task<Dictionary<string, bool>> GetUserRoomsWithRole(Guid userId)
     {
         var result = new Dictionary<string, bool>();
 
@@ -300,20 +300,20 @@ public class ProductEntryPoint : Product
 
         foreach (var record in currentUsersRecords)
         {
-            if(record.Owner == userId || record.Share == FileShare.RoomAdmin)
+            if (record.Owner == userId || record.Share == FileShare.RoomAdmin)
             {
                 result.TryAdd(record.EntryId.ToString(), true);
             }
-            else if(record.Share != FileShare.Restrict)
+            else if (record.Share != FileShare.Restrict)
             {
                 result.TryAdd(record.EntryId.ToString(), false);
-            }      
+            }
         }
 
-        var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<int>(_daoFactory);
+        var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory);
         var ArchiveFolderId = await _globalFolder.GetFolderArchiveAsync<int>(_daoFactory);
 
-        var rooms = await folderDao.GetRoomsAsync(new List<int> { virtualRoomsFolderId, ArchiveFolderId }, new List<int>(), FilterType.None, null, Guid.Empty, null, false, false, false, ProviderFilter.None, SubjectFilter.Owner, null).ToListAsync();
+        var rooms = await folderDao.GetRoomsAsync(new List<int> { virtualRoomsFolderId, ArchiveFolderId }, FilterType.None, null, Guid.Empty, null, false, false, false, ProviderFilter.None, SubjectFilter.Owner, null).ToListAsync();
 
         foreach (var room in rooms)
         {

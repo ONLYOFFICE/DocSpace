@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Dropbox;
 
 [Scope]
-internal class DropboxDaoBase : ThirdPartyProviderDao<DropboxProviderInfo>, IDaoBase<FileMetadata, FolderMetadata, Metadata>
+internal class DropboxDaoBase : ThirdPartyProviderDao<FileMetadata, FolderMetadata, Metadata, DropboxProviderInfo>, IDaoBase<FileMetadata, FolderMetadata, Metadata>
 {
     public DropboxDaoBase(
         IServiceProvider serviceProvider,

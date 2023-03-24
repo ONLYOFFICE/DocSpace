@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Scope]
-internal class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>, IDaoBase<Item, Item, Item>
+internal class OneDriveDaoBase : ThirdPartyProviderDao<Item, Item, Item, OneDriveProviderInfo>, IDaoBase<Item, Item, Item>
 {
     public OneDriveDaoBase(
         IServiceProvider serviceProvider,

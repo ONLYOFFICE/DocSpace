@@ -36,7 +36,11 @@ internal interface IDaoSelector : IDisposable
     string GetIdCode(string id);
 }
 
-internal interface IDaoSelector<T> : IDaoSelector where T : class, IProviderInfo
+internal interface IDaoSelector<TFile, TFolder, TItem, T> : IDaoSelector
+    where T : class, IProviderInfo<TFile, TFolder, TItem>
+    where TFile : class, TItem
+    where TFolder : class, TItem
+    where TItem : class
 {
     Task RenameProviderAsync(T provider, string newTitle);
 }

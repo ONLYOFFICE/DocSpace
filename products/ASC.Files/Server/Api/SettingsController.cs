@@ -216,7 +216,7 @@ public class SettingsController : ApiControllerBase
     [HttpPut("keepnewfilename")]
     public bool KeepNewFileName(SettingsRequestDto inDto)
     {
-        return _fileStorageServiceString.KeepNewFileName(inDto.Set);
+        return _fileStorageService.KeepNewFileName(inDto.Set);
     }
 
     /// <summary>

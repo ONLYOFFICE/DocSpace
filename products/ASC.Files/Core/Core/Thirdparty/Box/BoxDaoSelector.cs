@@ -29,24 +29,11 @@ using ASC.Files.Core.Core.Thirdparty.Box;
 namespace ASC.Files.Thirdparty.Box;
 
 [Scope(Additional = typeof(BoxDaoSelectorExtension))]
-internal class BoxDaoSelector : RegexDaoSelectorBase<BoxProviderInfo>, IDaoSelector<BoxProviderInfo>
+internal class BoxDaoSelector : RegexDaoSelectorBase<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>, IDaoSelector<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>
 {
-    protected internal override string Name => Selectors.Box.Name;
-    protected internal override string Id => Selectors.Box.Id;
-
     public BoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)
     {
-    }
-
-    public IFileDao<string> GetFileDao(string id)
-    {
-        return base.GetFileDao<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>>(id);
-    }
-
-    public IFolderDao<string> GetFolderDao(string id)
-    {
-        return base.GetFolderDao<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>(id);
     }
 }
 
@@ -56,6 +43,8 @@ public static class BoxDaoSelectorExtension
     {
         services.TryAdd<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>, BoxFileDao>();
         services.TryAdd<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>, BoxFolderDao>();
-        services.TryAdd<IThirdPartyTagDao<BoxProviderInfo>, BoxTagDao>();
+        services.TryAdd<IThirdPartyTagDao<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>, BoxTagDao>();
+        services.TryAdd<IDaoBase<BoxFile, BoxFolder, BoxItem>, BoxDaoBase>();
+        services.TryAdd<IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>, BoxDaoSelector>();
     }
 }

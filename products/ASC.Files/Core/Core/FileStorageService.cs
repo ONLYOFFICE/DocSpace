@@ -2448,7 +2448,7 @@ public class FileStorageService //: IFileStorageService
     {
         var fileDao = GetFileDao<T>();
         var folderDao = GetFolderDao<T>();
-        var securityDao = GetSecurityDao();
+        var securityDao = GetSecurityDao<T>();
 
         var entries = new List<FileEntry<T>>();
         string warning = null;
@@ -2480,11 +2480,11 @@ public class FileStorageService //: IFileStorageService
 
                     EventType eventType;
 
-                    if(usersRecords.Any() && ace.Access != FileShare.None && recordEntrys.Contains(entry.Id.ToString()))
+                    if (usersRecords.Any() && ace.Access != FileShare.None && recordEntrys.Contains(entry.Id.ToString()))
                     {
                         eventType = EventType.Update;
                     }
-                    else if(!usersRecords.Any() || !recordEntrys.Contains(entry.Id.ToString()))
+                    else if (!usersRecords.Any() || !recordEntrys.Contains(entry.Id.ToString()))
                     {
                         eventType = EventType.Create;
                     }
@@ -2503,10 +2503,10 @@ public class FileStorageService //: IFileStorageService
                 {
                     foreach (var e in eventTypes)
                     {
-                        var user = e.User;              
+                        var user = e.User;
                         var name = user.DisplayUserName(false, _displayUserSettingsHelper);
 
-                        var access = e.Access;                        
+                        var access = e.Access;
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
@@ -2521,7 +2521,7 @@ public class FileStorageService //: IFileStorageService
                                 case EventType.Update:
                                     _ = _filesMessageService.Send(entry, GetHttpHeaders(), MessageAction.RoomUpdateAccessForUser, access, user.Id, name);
                                     break;
-                        }
+                            }
                         }
                         else
                         {
@@ -2601,7 +2601,7 @@ public class FileStorageService //: IFileStorageService
         {
             var linkExist = (await _fileSecurity.GetSharesAsync(room))
                 .Any(r => r.Subject == linkId && r.SubjectType == SubjectType.InvitationLink);
-            
+
             if (linkExist)
             {
                 messageAction = MessageAction.RoomLinkUpdated;
@@ -2757,7 +2757,7 @@ public class FileStorageService //: IFileStorageService
 
         ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
 
-        var folderDao = GetFolderDao();
+        var folderDao = GetFolderDao<T>();
 
         var (roomId, _) = await folderDao.GetParentRoomInfoFromFileEntryAsync(file);
 
@@ -3198,7 +3198,7 @@ public class FileStorageService //: IFileStorageService
         try
         {
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
-           
+
             _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant().Id)
             {
                 BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath(""),
@@ -3402,7 +3402,7 @@ public class FileStorageService //: IFileStorageService
         Update,
         Create,
         Remove
-}
+    }
 }
 
 public class FileModel<T, TTempate>

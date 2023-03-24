@@ -29,7 +29,7 @@ namespace ASC.Files.Core.Core.Thirdparty.Box;
 [Scope]
 internal class BoxFolderDao : ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>
 {
-    public BoxFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory, UserManager userManager, CrossDao crossDao, IDaoSelector<IProviderInfo<BoxFile, BoxFolder, BoxItem>> daoSelector, IFileDao<int> fileDao, IFolderDao<int> folderDao, TempStream tempStream, SetupInfo setupInfo, IDaoBase<BoxFile, BoxFolder, BoxItem> dao, IProviderInfo<BoxFile, BoxFolder, BoxItem> providerInfo) : base(dbContextFactory, userManager, crossDao, daoSelector, fileDao, folderDao, tempStream, setupInfo, dao, providerInfo)
+    public BoxFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory, UserManager userManager, CrossDao crossDao, IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>> daoSelector, IFileDao<int> fileDao, IFolderDao<int> folderDao, TempStream tempStream, SetupInfo setupInfo, IDaoBase<BoxFile, BoxFolder, BoxItem> dao, IProviderInfo<BoxFile, BoxFolder, BoxItem> providerInfo) : base(dbContextFactory, userManager, crossDao, daoSelector, fileDao, folderDao, tempStream, setupInfo, dao, providerInfo)
     {
     }
 }

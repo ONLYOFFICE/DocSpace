@@ -27,7 +27,7 @@
 namespace ASC.Files.Core.Core.Thirdparty.Dropbox;
 
 [Scope]
-internal class DropboxFileDao : ThirdPartyFileDao<FileMetadata, FolderMetadata, Metadata>, IFileDao<string>
+internal class DropboxFileDao : ThirdPartyFileDao<FileMetadata, FolderMetadata, Metadata>
 {
     private readonly TempPath _tempPath;
     private readonly SetupInfo _setupInfo;

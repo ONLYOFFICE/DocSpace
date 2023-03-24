@@ -24,12 +24,15 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using File = Microsoft.SharePoint.Client.File;
+using Folder = Microsoft.SharePoint.Client.Folder;
+
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope]
-internal class SharePointTagDao : ThirdPartyTagDao<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject>
+internal class SharePointTagDao : ThirdPartyTagDao<File, Folder, ClientObject>
 {
-    public SharePointTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject>> daoSelector, IDaoBase<Microsoft.SharePoint.Client.File, Microsoft.SharePoint.Client.Folder, ClientObject> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
+    public SharePointTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>> daoSelector, IDaoBase<File, Folder, ClientObject> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }

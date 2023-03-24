@@ -30,7 +30,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Transient]
-public class SharePointProviderInfo : IProviderInfo
+public class SharePointProviderInfo : IProviderInfo<File, Folder, ClientObject>
 {
     private ClientContext _clientContext;
 
@@ -47,7 +47,7 @@ public class SharePointProviderInfo : IProviderInfo
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
 
-    public string Selector { get; } = Selectors.SharePoint.Id;
+    public Selector Selector { get; } = Selectors.SharePoint;
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,
@@ -365,6 +365,8 @@ public class SharePointProviderInfo : IProviderInfo
     }
 
     public int ProviderId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+    public Task<IThirdPartyStorage<File, Folder, ClientObject>> StorageAsync => throw new NotImplementedException();
 
     private readonly ILogger<SharePointProviderInfo> _logger;
     private readonly IServiceProvider _serviceProvider;

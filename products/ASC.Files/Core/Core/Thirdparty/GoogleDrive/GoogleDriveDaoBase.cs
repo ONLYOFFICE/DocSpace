@@ -29,7 +29,7 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
 [Scope]
-internal class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDriveProviderInfo>, IDaoBase<DriveFile, DriveFile, DriveFile>
+internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>, IDaoBase<DriveFile, DriveFile, DriveFile>
 {
     protected GoogleDriveDaoBase(
         IServiceProvider serviceProvider,

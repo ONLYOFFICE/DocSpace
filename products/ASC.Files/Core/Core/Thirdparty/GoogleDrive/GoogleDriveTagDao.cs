@@ -31,7 +31,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive;
 [Scope]
 internal class GoogleDriveTagDao : ThirdPartyTagDao<DriveFile, DriveFile, DriveFile>
 {
-    public GoogleDriveTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<IProviderInfo<DriveFile, DriveFile, DriveFile>> daoSelector, IDaoBase<DriveFile, DriveFile, DriveFile> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
+    public GoogleDriveTagDao(IDbContextFactory<FilesDbContext> dbContextFactory, IDaoSelector<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>> daoSelector, IDaoBase<DriveFile, DriveFile, DriveFile> dao, TenantManager tenantManager) : base(dbContextFactory, daoSelector, dao, tenantManager)
     {
     }
 }
