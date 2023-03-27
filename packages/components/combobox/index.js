@@ -51,7 +51,8 @@ class ComboBox extends React.Component {
       isDisabled ||
       disableItemClick ||
       isLoading ||
-      (disableIconClick && e && e.target.closest(".optionalBlock"))
+      (disableIconClick && e && e.target.closest(".optionalBlock")) ||
+      e?.target.classList.contains("nav-thumb-vertical")
     )
       return;
 
