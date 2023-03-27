@@ -108,7 +108,11 @@ class FilesActionStore {
       resetFilterPage,
     } = this.filesStore;
 
-    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+    const {
+      isRoomsFolder,
+      isArchiveFolder,
+      isArchiveFolderRoot,
+    } = this.treeFoldersStore;
 
     let newFilter;
 
@@ -130,7 +134,7 @@ class FilesActionStore {
       updatedFolder = this.selectedFolderStore.parentId;
     }
 
-    if (isRoomsFolder || isArchiveFolder) {
+    if (isRoomsFolder || isArchiveFolder || isArchiveFolderRoot) {
       fetchRooms(
         updatedFolder,
         newFilter ? newFilter : roomsFilter.clone()
@@ -584,6 +588,7 @@ class FilesActionStore {
             id: selectedItem.id,
             isFolder: selectedItem.isFolder,
           },
+          false,
           false
         );
         break;

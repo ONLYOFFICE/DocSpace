@@ -1214,6 +1214,9 @@ class ContextOptionsStore {
 
       if (!isArchiveFolder) {
         options.push(pinOption);
+      }
+
+      if ((canArchiveRoom || canDelete) && !isArchiveFolder) {
         options.push({
           key: "separator0",
           isSeparator: true,

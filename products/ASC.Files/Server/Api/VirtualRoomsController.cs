@@ -591,7 +591,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     private readonly RoomLogoManager _roomLogoManager;
     private readonly SetupInfo _setupInfo;
     private readonly FileSizeComment _fileSizeComment;
-    private readonly RoomLinkService _roomLinkService;
+    private readonly InvitationLinkService _invitationLinkService;
     private readonly AuthContext _authContext;
 
     public VirtualRoomsCommonController(
@@ -607,7 +607,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         FileSizeComment fileSizeComment,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper,
-        RoomLinkService roomLinkService,
+        InvitationLinkService invitationLinkService,
         AuthContext authContext) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageServiceInt = fileStorageServiceInt;
@@ -620,7 +620,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
         _roomLogoManager = roomLogoManager;
         _setupInfo = setupInfo;
         _fileSizeComment = fileSizeComment;
-        _roomLinkService = roomLinkService;
+        _invitationLinkService = invitationLinkService;
         _authContext = authContext;
     }
 
@@ -846,18 +846,18 @@ public class VirtualRoomsCommonController : ApiControllerBase
     [HttpPost("rooms/accept")]
     public async Task SetSecurityByLink(AcceptInvitationDto inDto)
     {
-        var options = await _roomLinkService.GetOptionsAsync(inDto.Key, null);
+        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, null);
 
-        if (!options.IsCorrect)
+        if (!linkData.IsCorrect)
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
         var aces = new List<AceWrapper>
         {
-            new AceWrapper
+            new()
             {
-                Access = options.Share,
+                Access = linkData.Share,
                 Id = _authContext.CurrentAccount.ID
             }
         };
@@ -867,7 +867,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             InvitationLink = true
         };
 
-        if (int.TryParse(options.RoomId, out var id))
+        if (int.TryParse(linkData.RoomId, out var id))
         {
             var aceCollection = new AceCollection<int>
             {
@@ -885,7 +885,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             {
                 Aces = aces,
                 Files = Array.Empty<string>(),
-                Folders = new[] { options.RoomId },
+                Folders = new[] { linkData.RoomId },
                 AdvancedSettings = settings
             };
 

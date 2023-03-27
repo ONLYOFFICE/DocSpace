@@ -16,6 +16,8 @@ interface IClientApp extends IInitialState {
   initialLanguage: string;
   initialI18nStoreASC: any;
   isDesktopEditor: boolean;
+  theme: IUserTheme;
+  setTheme: (theme: IUserTheme) => void;
 }
 
 const ThemeProviderWrapper = inject(({ auth }) => {

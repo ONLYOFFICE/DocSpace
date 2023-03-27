@@ -13,12 +13,11 @@ export const StyledMediaError = styled.div`
   justify-content: center;
   align-items: center;
 
-  width: 267px;
-  height: 56px;
   background: rgba(0, 0, 0, 0.7);
 
   opacity: 1;
   border-radius: 20px;
+  padding: 20px 24px;
 `;
 
 export const StyledErrorToolbar = styled.div`

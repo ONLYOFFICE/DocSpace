@@ -1,1 +1,8 @@
-{}
+{
+  "ClickHere": "Clique aqui",
+  "ConfirmEmailDescription": "Use o link fornecido no e-mail de ativação. Não recebeu um e-mail com o link de ativação?",
+  "ConfirmEmailHeader": "Favor ativar seu e-mail para ter acesso às características do DocSpace.",
+  "RequestActivation": "Solicitar ativação mais uma vez",
+  "RoomQuotaDescription": "Você pode arquivar as salas desnecessárias ou <1>{{clickHere}}</1> para encontrar um plano de preços mais adequado para o seu DocSpace.",
+  "StorageQuotaHeader": "A quantidade de espaço de armazenamento está prestes a ser excedida: {{currentValue}} / {{maxValue}}."
+}

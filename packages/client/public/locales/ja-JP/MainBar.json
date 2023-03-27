@@ -1,1 +1,9 @@
-{}
+{
+  "ClickHere": "ここをクリック",
+  "ConfirmEmailDescription": "アクティベーションメールに記載されているリンクを使用してください。アクティベーション用リンクが記載されたメールが届いていませんか？",
+  "ConfirmEmailHeader": "DocSpaceの機能を利用するために、メールを有効にしてください。",
+  "RequestActivation": "もう一度アクティベーションを要求する",
+  "RoomQuotaDescription": "不要なルームをアーカイブしたり、<1>{{clickHere}}</1>して、DocSpaceにもっと適した料金プランを見つけることができます。",
+  "RoomQuotaHeader": "このルームは、もうすぐ制限を超えます：{{currentValue}} / {{maxValue}}",
+  "StorageQuotaHeader": "ストレージのスペースは、もうすぐサイズ上限を超えます：{{currentValue}} / {{maxValue}}。"
+}

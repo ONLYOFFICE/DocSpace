@@ -1,1 +1,9 @@
-{}
+{
+  "AccessingProblem": "Pokud jste stávající uživatel a máte problémy s přístupem do tohoto prostoru, obraťte se na správce.",
+  "AdministratorDescription": "Konfigurace DocSpace, vytváření a správa místností, možnost pozvat a spravovat uživatele v DocSpace a ve virtuálních místnostech, možnost spravovat přístupová práva.",
+  "Benefits": "Výhody",
+  "BusinessExpired": "Platnost vašeho tarifu {{planName}} vypršela dne {{date}}",
+  "BusinessFinalDateInfo": "Předplatné bude automaticky obnoveno k datu {{finalDate}} s aktualizovanými cenami a specifikacemi. Můžete jej zrušit nebo změnit fakturační údaje na svém zákaznickém portálu Stripe.",
+  "BusinessPlanPaymentOverdue": "Nelze přidávat nové uživatele a vytvářet nové místnosti. Platba za tarif {{planName}} je po splatnosti.",
+  "BusinessRequestDescription": "Cenové tarify s více manažery {{peopleNumber}} jsou k dispozici pouze na vyžádání."
+}

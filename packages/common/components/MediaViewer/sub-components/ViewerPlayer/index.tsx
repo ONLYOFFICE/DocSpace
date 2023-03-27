@@ -68,6 +68,8 @@ function ViewerPlayer({
   const containerRef = useRef<HTMLDivElement>(null);
   const playerWrapperRef = useRef<HTMLDivElement>(null);
 
+  const isDurationInfinityRef = useRef<boolean>(false);
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isWaiting, setIsWaiting] = useState<boolean>(false);
@@ -272,6 +274,7 @@ function ViewerPlayer({
     setDuration(0);
     setCurrentTime(0);
     setIsPlaying(false);
+    setIsError(false);
     removePanelVisibleTimeout();
   };
 
@@ -322,7 +325,7 @@ function ViewerPlayer({
     });
   };
 
-  const handleResize = (event: any) => {
+  const handleResize = () => {
     const target = videoRef.current;
 
     if (!target || isLoading) return;
@@ -341,6 +344,24 @@ function ViewerPlayer({
     target.muted = isMuted;
     target.playbackRate = 1;
 
+    if (target.duration === Infinity) {
+      isDurationInfinityRef.current = true;
+      target.currentTime = Number.MAX_SAFE_INTEGER;
+      return;
+    }
+    setDuration(target.duration);
+    setIsLoading(false);
+  };
+
+  const handleDurationChange = (
+    event: React.SyntheticEvent<HTMLVideoElement, Event>
+  ) => {
+    const target = event.target as HTMLVideoElement;
+    if (!Number.isFinite(target.duration) || !isDurationInfinityRef.current)
+      return;
+
+    target.currentTime = 0;
+    isDurationInfinityRef.current = false;
     setDuration(target.duration);
     setIsLoading(false);
   };
@@ -530,12 +551,14 @@ function ViewerPlayer({
             preload="metadata"
             onClick={handleClickVideo}
             onEnded={handleVideoEnded}
+            onDurationChange={handleDurationChange}
             onTimeUpdate={handleTimeUpdate}
             onPlaying={() => setIsWaiting(false)}
             onWaiting={() => setIsWaiting(true)}
-            onError={() => {
-              console.error("video error");
+            onError={(error) => {
+              console.error("video error", error);
               setIsError(true);
+              setIsLoading(false);
             }}
             onLoadedMetadata={handleLoadedMetaDataVideo}
           />
@@ -550,7 +573,10 @@ function ViewerPlayer({
           )}
         </VideoWrapper>
 
-        <ViewerLoader isLoading={isLoading || (isWaiting && isPlaying)} />
+        <ViewerLoader
+          isLoading={isLoading || (isWaiting && isPlaying)}
+          isError={isError}
+        />
       </ContainerPlayer>
       {isError ? (
         <PlayerMessageError

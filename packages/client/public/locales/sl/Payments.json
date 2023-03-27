@@ -1,1 +1,9 @@
-{}
+{
+  "AccessingProblem": "Če ste obstoječi uporabnik in imate težave z dostopom do tega prostora, se obrnite na skrbnika.",
+  "AdministratorDescription": "Konfiguracija DocSpace, ustvarjanje in upravljanje sob, možnost vabljenja in upravljanja uporabnikov v DocSpace in v virtualnih sobah, možnost upravljanja pravic za dostop.",
+  "Benefits": "Prednosti",
+  "BusinessExpired": "Vaš {{planName}} paket je potekel dne {{date}}",
+  "BusinessFinalDateInfo": "Naročnina bo samodejno podaljšana dne {{finalDate}} s posodobljenimi cenami in specifikacijami. Lahko jo prekličete ali spremenite podatke za obračun na portalu za stranke Stripe.",
+  "BusinessPlanPaymentOverdue": "Ni mogoče dodati novih uporabnikov in ustvariti novih sob. Zapadlo plačilo naročniškega paketa {{planName}}.",
+  "BusinessRequestDescription": "Cenovni paketi z več kot {{peopleNumber}} upravitelji so na voljo le na zahtevo."
+}
