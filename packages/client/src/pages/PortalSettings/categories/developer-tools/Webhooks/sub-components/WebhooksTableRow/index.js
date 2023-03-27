@@ -3,8 +3,7 @@ import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
 import { FailBadge } from "../FailBadge";
 import { SuccessBadge } from "../SuccessBadge";
-import { ToggleButton } from "@docspace/components";
-import ContextMenuButton from "@docspace/components/context-menu-button";
+import { ToggleButton } from "@docspace/components"
 import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
@@ -20,14 +19,12 @@ export const WebhooksTableRow = ({
   retryWebhookEvent,
 }) => {
   const [isChecked, setIsChecked] = useState(webhook.isEnabled);
-  const [isOpen, setIsOpen] = useState(false);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
   const [isDeleteOpened, setIsDeleteOpened] = useState(false);
 
   const closeSettings = () => setIsSettingsOpened(false);
   const openSettings = () => setIsSettingsOpened(true);
   const onDeleteClose = () => setIsDeleteOpened(false);
-  const toggleContextMenu = () => setIsOpen((prevIsOpen) => !prevIsOpen);
 
   const handleWebhookUpdate = (webhookInfo) => editWebhook(webhook, webhookInfo);
   const handleWebhookDelete = () => deleteWebhook(webhook);
