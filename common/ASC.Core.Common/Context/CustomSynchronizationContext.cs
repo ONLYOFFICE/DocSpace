@@ -24,18 +24,54 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Reflection;
+using Microsoft.AspNetCore.Builder;
 
-global using ASC.Api.Core;
-global using ASC.Api.Core.Extensions;
-global using ASC.Common;
-global using ASC.Core;
-global using ASC.Core.Encryption;
-global using ASC.Data.Encryption;
-global using ASC.Data.Storage.Encryption;
-global using ASC.Data.Storage.Encryption.IntegrationEvents.Events;
-global using ASC.EventBus.Abstractions;
-global using ASC.EventBus.Log;
-global using ASC.Notify.IntegrationEvents.EventHandling;
+namespace ASC.Core;
 
-global using Microsoft.Extensions.Hosting.WindowsServices;
+public class CustomSynchronizationContext
+{
+    public IPrincipal CurrentPrincipal { get; set; }
+    public CultureInfo CurrentCulture { get; set; }
+    public CultureInfo CurrentUICulture { get; set; }
+
+    private readonly static AsyncLocal<CustomSynchronizationContext> _context = new AsyncLocal<CustomSynchronizationContext>();
+    public static CustomSynchronizationContext CurrentContext => _context.Value;
+
+    public static void CreateContext()
+    {
+        if(CurrentContext == null)
+        {
+            var context = new CustomSynchronizationContext()
+            {
+                CurrentCulture = Thread.CurrentThread.CurrentCulture,
+                CurrentUICulture = Thread.CurrentThread.CurrentUICulture,
+            };
+            _context.Value = context;
+        }
+    }
+}
+
+
+public class SynchronizationContextMiddleware
+{
+    private readonly RequestDelegate _next;
+
+    public SynchronizationContextMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
+
+    public async Task Invoke(HttpContext context)
+    {
+        CustomSynchronizationContext.CreateContext();
+        await _next.Invoke(context);
+    }
+}
+
+public static class SynchronizationContextMiddlewareExtensions
+{
+    public static IApplicationBuilder UseSynchronizationContextMiddleware(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<SynchronizationContextMiddleware>();
+    }
+}

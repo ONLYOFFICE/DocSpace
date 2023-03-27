@@ -1225,7 +1225,7 @@ public class UserController : PeopleControllerBase
 
             if (cultureInfo != null)
             {
-                Thread.CurrentThread.CurrentUICulture = cultureInfo;
+                CustomSynchronizationContext.CurrentContext.CurrentUICulture = cultureInfo;
             }
 
             inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));

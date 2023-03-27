@@ -137,8 +137,8 @@ public class StudioWhatsNewNotify
 
                 var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
-                Thread.CurrentThread.CurrentCulture = culture;
-                Thread.CurrentThread.CurrentUICulture = culture;
+                CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+                CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
 
                 var feeds = await _feedAggregateDataProvider.GetFeedsAsync(new FeedApiFilter
                 {

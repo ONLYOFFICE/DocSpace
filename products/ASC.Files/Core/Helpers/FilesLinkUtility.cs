@@ -369,7 +369,7 @@ public class FilesLinkUtility
                                         contentLength,
                                         tenantId,
                                         HttpUtility.UrlEncode(_instanceCrypto.Encrypt(securityContext.CurrentAccount.ID.ToString())),
-                                        Thread.CurrentThread.CurrentUICulture.Name,
+                                        CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name,
                                         encrypted.ToString().ToLower());
 
         if (fileId != null)

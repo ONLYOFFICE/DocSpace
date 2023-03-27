@@ -88,11 +88,6 @@ public class BackupProgressItem : BaseBackupProgressItem
 
     protected override async Task DoJob()
     {
-        if (ThreadPriority.BelowNormal < Thread.CurrentThread.Priority)
-        {
-            Thread.CurrentThread.Priority = ThreadPriority.BelowNormal;
-        }
-
         await using var scope = _serviceScopeProvider.CreateAsyncScope();
 
         _tenantManager = scope.ServiceProvider.GetService<TenantManager>();

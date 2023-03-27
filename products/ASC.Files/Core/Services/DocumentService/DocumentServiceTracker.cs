@@ -367,8 +367,8 @@ public class DocumentServiceTrackerHelper
 
             user = await _userManager.GetUsersAsync(userId);
             var culture = string.IsNullOrEmpty(user.CultureName) ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
         }
         catch (Exception ex)
         {
@@ -487,8 +487,8 @@ public class DocumentServiceTrackerHelper
 
             var user = await _userManager.GetUsersAsync(userId);
             var culture = string.IsNullOrEmpty(user.CultureName) ? (await _tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
 
             if (string.IsNullOrEmpty(fileData.Url))
             {

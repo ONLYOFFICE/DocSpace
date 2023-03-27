@@ -56,8 +56,8 @@ public class CultureMiddleware
 
         if (culture != null)
         {
-            Thread.CurrentThread.CurrentCulture = culture;
-            Thread.CurrentThread.CurrentUICulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
         }
 
         await _next.Invoke(context);

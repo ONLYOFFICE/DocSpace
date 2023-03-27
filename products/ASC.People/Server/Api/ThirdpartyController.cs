@@ -252,7 +252,7 @@ public class ThirdpartyController : ApiControllerBase
         if (_coreBaseSettings.Personal)
         {
             userInfo.ActivationStatus = EmployeeActivationStatus.Activated;
-            userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name;
+            userInfo.CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name;
         }
 
         return await _userManagerWrapper.AddUserAsync(userInfo, passwordHash, true, true, employeeType, fromInviteLink);

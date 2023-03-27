@@ -571,8 +571,8 @@ public class StudioNotifyService
                 await foreach (var admin in admins)
                 {
                     var culture = string.IsNullOrEmpty(admin.CultureName) ? tenant.GetCulture() : admin.GetCulture();
-                    Thread.CurrentThread.CurrentCulture = culture;
-                    Thread.CurrentThread.CurrentUICulture = culture;
+                    CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+                    CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
 
                     await _client.SendNoticeToAsync(
                     Actions.ProfileHasDeletedItself,
@@ -817,7 +817,7 @@ public class StudioNotifyService
 
         var lang = _coreBaseSettings.CustomMode
                        ? "ru-RU"
-                       : Thread.CurrentThread.CurrentUICulture.Name;
+                       : CustomSynchronizationContext.CurrentContext.CurrentCulture.Name;
 
         var culture = _setupInfo.GetPersonalCulture(lang);
 
@@ -832,7 +832,7 @@ public class StudioNotifyService
         new[] { EMailSenderName },
         new TagValue(Tags.InviteLink, confirmUrl),
             new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
-        new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
+        new TagValue(CommonTags.Culture, CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name));
     }
 
     public async Task SendAlreadyExistAsync(string email)
@@ -856,7 +856,7 @@ public class StudioNotifyService
         new TagValue(Tags.PortalUrl, portalUrl),
         new TagValue(Tags.LinkToRecovery, linkToRecovery),
             new TagValue(CommonTags.Footer, _coreBaseSettings.CustomMode ? "personalCustomMode" : "personal"),
-        new TagValue(CommonTags.Culture, Thread.CurrentThread.CurrentUICulture.Name));
+        new TagValue(CommonTags.Culture, CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name));
     }
 
     public async Task SendUserWelcomePersonalAsync(UserInfo newUserInfo)
@@ -885,8 +885,8 @@ public class StudioNotifyService
             foreach (var u in users)
             {
                 var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
-                Thread.CurrentThread.CurrentCulture = culture;
-                Thread.CurrentThread.CurrentUICulture = culture;
+                CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+                CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
 
                 await _client.SendNoticeToAsync(
                     Actions.PortalRename,

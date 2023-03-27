@@ -48,7 +48,7 @@ public class Schedule
             var tenant = _tenantManager.GetTenant(backupSchedule.TenantId);
             var tenantTimeZone = tenant.TimeZone;
             var culture = tenant.GetCulture();
-            Thread.CurrentThread.CurrentCulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
 
             var lastBackupTime = backupSchedule.LastBackupTime.Equals(default)
                 ? DateTime.UtcNow.Date.AddSeconds(-1)

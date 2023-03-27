@@ -184,13 +184,13 @@ public class StudioNotifyWorker
             }
         }
 
-        if (culture != null && !Equals(Thread.CurrentThread.CurrentCulture, culture))
+        if (culture != null && !Equals(CustomSynchronizationContext.CurrentContext.CurrentCulture, culture))
         {
-            Thread.CurrentThread.CurrentCulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
         }
-        if (culture != null && !Equals(Thread.CurrentThread.CurrentUICulture, culture))
+        if (culture != null && !Equals(CustomSynchronizationContext.CurrentContext.CurrentUICulture, culture))
         {
-            Thread.CurrentThread.CurrentUICulture = culture;
+            CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
         }
 
         await client.SendNoticeToAsync(

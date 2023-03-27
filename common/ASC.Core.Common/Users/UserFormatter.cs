@@ -137,10 +137,10 @@ public class UserFormatter : IComparer<UserInfo>
             return _forceFormat;
         }
 
-        var culture = Thread.CurrentThread.CurrentCulture.Name;
+        var culture = CustomSynchronizationContext.CurrentContext.CurrentCulture.Name;
         if (!_displayFormats.TryGetValue(culture, out var formats))
         {
-            var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+            var twoletter = CustomSynchronizationContext.CurrentContext.CurrentCulture.TwoLetterISOLanguageName;
             if (!_displayFormats.TryGetValue(twoletter, out formats))
             {
                 formats = _displayFormats["default"];
@@ -152,10 +152,10 @@ public class UserFormatter : IComparer<UserInfo>
 
     public static DisplayUserNameFormat GetUserDisplayDefaultOrder()
     {
-        var culture = Thread.CurrentThread.CurrentCulture.Name;
+        var culture = CustomSynchronizationContext.CurrentContext.CurrentCulture.Name;
         if (!_displayFormats.TryGetValue(culture, out var formats))
         {
-            var twoletter = Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName;
+            var twoletter = CustomSynchronizationContext.CurrentContext.CurrentCulture.TwoLetterISOLanguageName;
             if (!_displayFormats.TryGetValue(twoletter, out formats))
             {
                 formats = _displayFormats["default"];

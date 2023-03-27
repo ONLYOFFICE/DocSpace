@@ -338,8 +338,8 @@ public class TenantManager
                 HttpContextAccessor.HttpContext.Items[CurrentTenant] = tenant;
             }
 
-            Thread.CurrentThread.CurrentCulture = tenant.GetCulture();
-            Thread.CurrentThread.CurrentUICulture = tenant.GetCulture();
+            CustomSynchronizationContext.CurrentContext.CurrentCulture = tenant.GetCulture();
+            CustomSynchronizationContext.CurrentContext.CurrentUICulture = tenant.GetCulture();
         }
     }
 

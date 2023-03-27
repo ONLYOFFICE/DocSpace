@@ -46,10 +46,10 @@ public abstract class FileOperation : DistributedTaskProgress
     public int Total { get; set; }
     protected FileOperation(IServiceProvider serviceProvider)
     {
-        _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
-        _culture = Thread.CurrentThread.CurrentCulture.Name;
+        _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal;
+        _culture = CustomSynchronizationContext.CurrentContext.CurrentCulture.Name;
 
-        this[Owner] = ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
+        this[Owner] = ((IAccount)(_principal ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal).Identity).ID.ToString();
         this[Src] = _props.ContainsValue(Src) ? this[Src] : "";
         this[Progress] = 0;
         this[Res] = "";
@@ -224,9 +224,9 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
             var (tenantManager, daoFactory, fileSecurity, logger) = scopeClass;
             tenantManager.SetCurrentTenant(CurrentTenant);
 
-            Thread.CurrentPrincipal = _principal;
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
+            CustomSynchronizationContext.CurrentContext.CurrentPrincipal = _principal;
+            CustomSynchronizationContext.CurrentContext.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
+            CustomSynchronizationContext.CurrentContext.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
 
             FolderDao = daoFactory.GetFolderDao<TId>();
             FileDao = daoFactory.GetFileDao<TId>();

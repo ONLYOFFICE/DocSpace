@@ -81,7 +81,7 @@ class FileMarkAsReadOperation<T> : FileOperation<FileMarkAsReadOperationData<T>,
         {
             CancellationToken.ThrowIfCancellationRequested();
 
-            await fileMarker.RemoveMarkAsNewAsync(entry, ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID);
+            await fileMarker.RemoveMarkAsNewAsync(entry, ((IAccount)(_principal ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal).Identity).ID);
 
             if (entry.FileEntryType == FileEntryType.File)
             {

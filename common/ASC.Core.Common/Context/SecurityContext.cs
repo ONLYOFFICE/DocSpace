@@ -376,10 +376,10 @@ public class AuthContext
 
     internal ClaimsPrincipal Principal
     {
-        get => Thread.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
+        get => CustomSynchronizationContext.CurrentContext.CurrentPrincipal as ClaimsPrincipal ?? HttpContextAccessor?.HttpContext?.User;
         set
         {
-            Thread.CurrentPrincipal = value;
+            CustomSynchronizationContext.CurrentContext.CurrentPrincipal = value;
 
             if (HttpContextAccessor?.HttpContext != null)
             {

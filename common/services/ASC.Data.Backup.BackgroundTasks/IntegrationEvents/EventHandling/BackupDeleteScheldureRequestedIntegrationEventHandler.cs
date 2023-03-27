@@ -42,6 +42,7 @@ public class BackupDeleteScheldureRequestedIntegrationEventHandler : IIntegratio
 
     public async Task Handle(IntegrationEvent @event)
     {
+        CustomSynchronizationContext.CreateContext();
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);

@@ -660,7 +660,7 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             var cultureName = loginProfile.Locale;
             if (string.IsNullOrEmpty(cultureName))
             {
-                cultureName = Thread.CurrentThread.CurrentUICulture.Name;
+                cultureName = CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name;
             }
 
             var cultureInfo = _setupInfo.EnabledCultures.Find(c => string.Equals(c.Name, cultureName, StringComparison.InvariantCultureIgnoreCase));

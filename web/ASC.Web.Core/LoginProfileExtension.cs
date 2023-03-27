@@ -48,7 +48,7 @@ public static class LoginProfileExtension
             Email = loginProfile.EMail,
             Title = string.Empty,
             Location = string.Empty,
-            CultureName = coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name,
+            CultureName = coreBaseSettings.CustomMode ? "ru-RU" : CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name,
             ActivationStatus = EmployeeActivationStatus.Activated,
         };
 

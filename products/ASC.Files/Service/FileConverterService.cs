@@ -131,8 +131,8 @@ internal class FileConverterService<T> : BackgroundService
 
                     var culture = string.IsNullOrEmpty(user.CultureName) ? (await tenantManager.GetCurrentTenantAsync()).GetCulture() : CultureInfo.GetCultureInfo(user.CultureName);
 
-                    Thread.CurrentThread.CurrentCulture = culture;
-                    Thread.CurrentThread.CurrentUICulture = culture;
+                    CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+                    CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
 
                     if (!await fileSecurity.CanReadAsync(file) && file.RootFolderType != FolderType.BUNCH)
                     {

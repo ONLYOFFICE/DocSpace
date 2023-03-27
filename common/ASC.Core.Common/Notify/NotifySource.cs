@@ -59,7 +59,7 @@ public abstract class NotifySource : INotifySource
     {
         lock (_actions)
         {
-            var culture = Thread.CurrentThread.CurrentCulture;
+            var culture = CustomSynchronizationContext.CurrentContext.CurrentCulture;
             if (!_actions.ContainsKey(culture))
             {
                 _actions[culture] = CreateActionProvider();
@@ -73,10 +73,10 @@ public abstract class NotifySource : INotifySource
     {
         lock (_patterns)
         {
-            var culture = Thread.CurrentThread.CurrentCulture;
-            if (Thread.CurrentThread.CurrentUICulture != culture)
+            var culture = CustomSynchronizationContext.CurrentContext.CurrentCulture;
+            if (CustomSynchronizationContext.CurrentContext.CurrentUICulture != culture)
             {
-                Thread.CurrentThread.CurrentUICulture = culture;
+                CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
             }
             if (!_patterns.ContainsKey(culture))
             {

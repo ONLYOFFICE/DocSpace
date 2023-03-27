@@ -522,7 +522,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
             var cultureName = boxUserInfo.Value<string>("language");
             if (string.IsNullOrEmpty(cultureName))
             {
-                cultureName = Thread.CurrentThread.CurrentUICulture.TwoLetterISOLanguageName;
+                cultureName = CustomSynchronizationContext.CurrentContext.CurrentUICulture.TwoLetterISOLanguageName;
             }
 
             var cultureInfo = _setupInfo.EnabledCultures.Find(c => string.Equals(c.TwoLetterISOLanguageName, cultureName, StringComparison.InvariantCultureIgnoreCase));

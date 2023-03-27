@@ -285,6 +285,8 @@ public abstract class BaseStartup
             app.UseSession();
         }
 
+        app.UseSynchronizationContextMiddleware();
+
         app.UseAuthentication();
 
         app.UseAuthorization();

@@ -177,7 +177,7 @@ public class ChunkedUploaderHandlerService
             var cultureInfo = request.CultureInfo(_setupInfo);
             if (cultureInfo != null)
             {
-                Thread.CurrentThread.CurrentUICulture = cultureInfo;
+                CustomSynchronizationContext.CurrentContext.CurrentUICulture = cultureInfo;
             }
 
             return true;
@@ -193,7 +193,7 @@ public class ChunkedUploaderHandlerService
                 var culture = _setupInfo.GetPersonalCulture(uploadSession.CultureName).Value;
                 if (culture != null)
                 {
-                    Thread.CurrentThread.CurrentUICulture = culture;
+                    CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
                 }
 
                 return true;

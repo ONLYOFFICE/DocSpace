@@ -211,8 +211,8 @@ public class ProductSecurityInterceptor
                 if (!Constants.LostUser.Equals(u))
                 {
                     var culture = !string.IsNullOrEmpty(u.CultureName) ? u.GetCulture() : tenant.GetCulture();
-                    Thread.CurrentThread.CurrentCulture = culture;
-                    Thread.CurrentThread.CurrentUICulture = culture;
+                    CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+                    CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
 
                     // security
                     var tag = r.Arguments.Find(a => a.Tag == CommonTags.ModuleID);
@@ -237,8 +237,8 @@ public class ProductSecurityInterceptor
             if (tagCulture != null)
             {
                 var culture = CultureInfo.GetCultureInfo((string)tagCulture.Value);
-                Thread.CurrentThread.CurrentCulture = culture;
-                Thread.CurrentThread.CurrentUICulture = culture;
+                CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
+                CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
             }
         }
         catch (Exception error)
