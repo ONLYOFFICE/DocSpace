@@ -121,6 +121,17 @@ const StyledDropdownItem = styled.div`
     padding: ${(props) => props.theme.dropDownItem.tabletPadding};
   }
 
+  ${(props) =>
+    props.$isActivedescendant &&
+    !props.disabled &&
+    css`
+      background-color: ${(props) =>
+        props.noHover
+          ? props.theme.dropDownItem.backgroundColor
+          : props.theme.dropDownItem.hoverBackgroundColor};
+      text-align: left;
+    `}
+
   ${(props) => props.disabled && disabledAndHeaderStyle}
 
   .submenu-arrow {
