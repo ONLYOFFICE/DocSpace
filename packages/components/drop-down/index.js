@@ -27,8 +27,9 @@ const Row = memo(({ data, index, style }) => {
       theme={theme}
       // eslint-disable-next-line react/prop-types
       {...option?.props}
+      noHover
       style={newStyle}
-      onMouseEnter={() => {
+      onMouseMove={() => {
         handleMouseEnter(index);
       }}
       $isActivedescendant={activedescendant === index}

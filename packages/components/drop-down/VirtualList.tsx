@@ -101,6 +101,8 @@ function VirtualList({
   );
 
   const handleMouseEnter = useCallback((index: number) => {
+    if (currentIndexRef.current === index) return;
+
     setCurrentIndex(index);
     currentIndexRef.current = index;
   }, []);

@@ -84,11 +84,13 @@ const StyledDropdownItem = styled.div`
   ${itemTruncate}
 
   &:hover {
-    background-color: ${(props) =>
-      props.noHover
-        ? props.theme.dropDownItem.backgroundColor
-        : props.theme.dropDownItem.hoverBackgroundColor};
-    text-align: left;
+    ${(props) =>
+      !props.noHover &&
+      css`
+        background-color: ${(props) =>
+          props.theme.dropDownItem.hoverBackgroundColor};
+        text-align: left;
+      `}
   }
 
   ${(props) =>
@@ -126,9 +128,7 @@ const StyledDropdownItem = styled.div`
     !props.disabled &&
     css`
       background-color: ${(props) =>
-        props.noHover
-          ? props.theme.dropDownItem.backgroundColor
-          : props.theme.dropDownItem.hoverBackgroundColor};
+        props.theme.dropDownItem.hoverBackgroundColor};
       text-align: left;
     `}
 
