@@ -1,7 +1,7 @@
 {
   "AddCertificate": "Add certificate",
   "AdvancedSettings": "Advanced Settings",
-  "AdvancedSettingsTooltip": "Hide default authentication page and automatically redirect to SSO service",
+  "AdvancedSettingsTooltip": "Hide default authentication page and automatically redirect to SSO service.",
   "AttributeMatching": "Attribute Mapping",
   "AttributeMatchingTooltip": "The correspondence of the Single Sign-On attributes to the entries of the 'Accounts' section",
   "Binding": "Binding:",

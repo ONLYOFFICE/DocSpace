@@ -1,1 +1,9 @@
-{}
+{
+  "ClickHere": "Klikněte zde",
+  "ConfirmEmailDescription": "Použijte odkaz uvedený v aktivačním e-mailu. Neobdrželi jste e-mail s aktivačním odkazem?",
+  "ConfirmEmailHeader": "Pro získání přístupu k funkcím DocSpace aktivujte svůj e-mail.",
+  "RequestActivation": "Znovu požádat o o aktivaci",
+  "RoomQuotaDescription": "Nepotřebné místnosti můžete archivovat nebo <1>{{clickHere}}}</1> pro nalezení vhodnějšího cenového tarifu pro váš DocSpace.",
+  "RoomQuotaHeader": "Počet místností bude brzy překročen: {{currentValue}} / {{maxValue}}",
+  "StorageQuotaHeader": "Množství úložného prostoru bude brzy překročeno: {{currentValue}} / {{maxValue}}."
+}

@@ -19,11 +19,24 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 
 const RemovePortal = (props) => {
-  const { t, greetingTitle, linkData, history } = props;
+  const {
+    t,
+    greetingTitle,
+    linkData,
+    history,
+    companyInfoSettingsData,
+  } = props;
+  const [isRemoved, setIsRemoved] = useState(false);
+
+  const url = companyInfoSettingsData?.site
+    ? companyInfoSettingsData.site
+    : "https://onlyoffice.com";
 
   const onDeleteClick = async () => {
     try {
       await deletePortal(linkData.confirmHeader);
+      setIsRemoved(true);
+      setTimeout(() => (location.href = url), 10000);
     } catch (e) {
       toastr.error(e);
     }
@@ -43,24 +56,36 @@ const RemovePortal = (props) => {
           </Text>
 
           <FormWrapper>
-            <Text className="subtitle">{t("PortalRemoveTitle")}</Text>
-            <ButtonsWrapper>
-              <Button
-                primary
-                scale
-                size="medium"
-                label={t("Common:Delete")}
-                tabIndex={1}
-                onClick={onDeleteClick}
-              />
-              <Button
-                scale
-                size="medium"
-                label={t("Common:CancelButton")}
-                tabIndex={1}
-                onClick={onCancelClick}
-              />
-            </ButtonsWrapper>
+            {isRemoved ? (
+              <Trans t={t} i18nKey="SuccessRemoved" ns="Confirm">
+                Your account has been successfully removed. In 10 seconds you
+                will be redirected to the
+                <Link isHovered href={url}>
+                  site
+                </Link>
+              </Trans>
+            ) : (
+              <>
+                <Text className="subtitle">{t("PortalRemoveTitle")}</Text>
+                <ButtonsWrapper>
+                  <Button
+                    primary
+                    scale
+                    size="medium"
+                    label={t("Common:Delete")}
+                    tabIndex={1}
+                    onClick={onDeleteClick}
+                  />
+                  <Button
+                    scale
+                    size="medium"
+                    label={t("Common:CancelButton")}
+                    tabIndex={1}
+                    onClick={onCancelClick}
+                  />
+                </ButtonsWrapper>
+              </>
+            )}
           </FormWrapper>
         </StyledBody>
       </StyledContent>
@@ -71,6 +96,7 @@ const RemovePortal = (props) => {
 export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   theme: auth.settingsStore.theme,
+  companyInfoSettingsData: auth.settingsStore.companyInfoSettingsData,
 }))(
   withRouter(
     withTranslation(["Confirm", "Common"])(withLoader(observer(RemovePortal)))
