@@ -36,7 +36,7 @@ const WebhookDialog = (props) => {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [isFormBlank, setIsFormBlank] = useState(true);
   const [webhookInfo, setWebhookInfo] = useState({
-    id: 0,
+    id: webhook ? webhook.id : 0,
     title: webhook ? webhook.title : "",
     url: webhook ? webhook.url : "",
     secretKey: webhook ? webhook.secretKey : "",
@@ -70,7 +70,7 @@ const WebhookDialog = (props) => {
     e.preventDefault();
     onSubmit(webhookInfo);
     setWebhookInfo({
-      id: 0,
+      id: webhook ? webhook.id : 0,
       title: webhook ? webhook.title : "",
       url: webhook ? webhook.url : "",
       secretKey: webhook ? webhook.secretKey : "",
