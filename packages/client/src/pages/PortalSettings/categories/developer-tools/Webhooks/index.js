@@ -2,7 +2,7 @@ import Button from "@docspace/components/button";
 import React, { useState, useEffect } from "react";
 import WebhookDialog from "./sub-components/WebhookDialog";
 import { WebhookInfo } from "./sub-components/WebhookInfo";
-import { WebhooksTable } from "./sub-components/WebhooksTable";
+import WebhooksTable from "./sub-components/WebhooksTable";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 import { inject, observer } from "mobx-react";
@@ -19,18 +19,7 @@ const MainWrapper = styled.div`
 `;
 
 const Webhooks = (props) => {
-  const {
-    webhooks,
-    state,
-    loadWebhooks,
-    addWebhook,
-    isWebhookExist,
-    isWebhooksEmpty,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
-    retryWebhookEvent,
-  } = props;
+  const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -55,15 +44,7 @@ const Webhooks = (props) => {
     <MainWrapper>
       <WebhookInfo />
       <Button label="Create webhook" primary size="small" onClick={openModal} />
-      {!isWebhooksEmpty && (
-        <WebhooksTable
-          webhooks={webhooks}
-          toggleEnabled={toggleEnabled}
-          deleteWebhook={deleteWebhook}
-          editWebhook={editWebhook}
-          retryWebhookEvent={retryWebhookEvent}
-        />
-      )}
+      {!isWebhooksEmpty && <WebhooksTable />}
       <WebhookDialog
         visible={isModalOpen}
         onClose={closeModal}
@@ -79,29 +60,13 @@ const Webhooks = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const {
-    webhooks,
-    state,
-    loadWebhooks,
-    addWebhook,
-    isWebhookExist,
-    isWebhooksEmpty,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
-    retryWebhookEvent,
-  } = webhooksStore;
+  const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty } = webhooksStore;
 
   return {
-    webhooks,
     state,
     loadWebhooks,
     addWebhook,
     isWebhookExist,
     isWebhooksEmpty,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
-    retryWebhookEvent,
   };
 })(observer(Webhooks));
