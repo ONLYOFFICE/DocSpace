@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { toastr } from "@docspace/components";
+import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
 
 class CreateEditRoomStore {
