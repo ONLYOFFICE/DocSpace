@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Vytvořte první místnost v části Moje místnosti.",
+  "EmptyRoomsHeader": "Zatím zde nejsou žádné místnosti",
+  "RoomList": "Seznam místností",
+  "SearchEmptyRoomsDescription": "Tomuto filtru neodpovídají žádné místnosti. Vyzkoušejte jiný filtr nebo vymažte filtr pro zobrazení všech místností."
+}

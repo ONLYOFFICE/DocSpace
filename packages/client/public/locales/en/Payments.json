@@ -4,7 +4,7 @@
   "Benefits": "Benefits",
   "BusinessExpired": "Your {{planName}} plan has expired on {{date}}",
   "BusinessFinalDateInfo": "Subscription will be automatically renewed on {{finalDate}} with updated pricing and specifications. You can cancel it or change your billing info on your Stripe customer portal.",
-  "BusinessPlanPaymentOverdue": "Cannot add new users and create new rooms. {{planName}} plan payment overdue",
+  "BusinessPlanPaymentOverdue": "Cannot add new users and create new rooms. {{planName}} plan payment overdue.",
   "BusinessRequestDescription": "The pricing plans with more {{peopleNumber}} managers are available upon request only.",
   "BusinessSuggestion": "Customize your {{planName}} plan",
   "BusinessTitle": "You are using {{planName}} plan",
@@ -38,7 +38,7 @@
   "UpgradeNow": "Upgrade now",
   "UpgradePlan": "Upgrade plan",
   "UpgradePlanInfo": "Adding new users will exceed the maximum number of room members allowed by your current pricing plan.",
-  "UserNotFound": "User <1>{{email}}</1> is not found",
+  "UserNotFound": "User <1>{{email}}</1> is not found.",
   "UserNotFoundMatchingEmail": "We couldn’t find the user with the matching Stripe e-mail.",
   "YourPrice": "Your price"
 }
