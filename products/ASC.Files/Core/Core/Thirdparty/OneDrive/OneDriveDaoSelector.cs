@@ -42,7 +42,7 @@ public static class OneDriveDaoSelectorExtension
     public static void Register(DIHelper services)
     {
         services.TryAdd<ThirdPartyFileDao<Item, Item, Item>, OneDriveFileDao>();
-        services.TryAdd<ThirdPartyFolderDao<Item, Item, Item>, OneDriveFolderDao>();
+        services.TryAdd<ThirdPartyFolderDao<Item, Item, Item>>();
         services.TryAdd<IThirdPartyTagDao<Item, Item, Item, OneDriveProviderInfo>, ThirdPartyTagDao<Item, Item, Item>>();
         services.TryAdd<IDaoBase<Item, Item, Item>, OneDriveDaoBase>();
         services.TryAdd<IDaoSelector<Item, Item, Item, IProviderInfo<Item, Item, Item>>, OneDriveDaoSelector>();
