@@ -132,7 +132,14 @@ const StyledDropdownItem = styled.div`
       text-align: left;
     `}
 
-  ${(props) => props.disabled && disabledAndHeaderStyle}
+  ${(props) => props.disabled && !props.$isSelected && disabledAndHeaderStyle}
+
+  ${(props) =>
+    ((props.disabled && props.$isSelected) || props.isActive) &&
+    css`
+      background-color: ${(props) =>
+        props.theme.dropDownItem.selectedBackgroundColor};
+    `}
 
   .submenu-arrow {
     margin-left: auto;
@@ -143,13 +150,6 @@ const StyledDropdownItem = styled.div`
         height: auto;
       `}
   }
-
-  ${(props) =>
-    props.isActive &&
-    css`
-      background-color: ${(props) =>
-        props.theme.dropDownItem.hoverBackgroundColor} !important;
-    `}
 
   @media (max-width: 500px) {
     max-width: 100vw;

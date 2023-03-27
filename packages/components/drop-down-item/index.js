@@ -24,6 +24,7 @@ const DropDownItem = (props) => {
     withoutIcon,
     noHover,
     height,
+    isSelected,
   } = props;
 
   const onClickAction = (e) => {
@@ -38,6 +39,7 @@ const DropDownItem = (props) => {
       onClick={onClickAction}
       disabled={disabled}
       isActive={isActive}
+      $isSelected={isSelected}
     >
       {icon && (
         <IconWrapper className="drop-down-icon">
