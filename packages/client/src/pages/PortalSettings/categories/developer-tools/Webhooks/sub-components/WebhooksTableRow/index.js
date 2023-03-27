@@ -9,7 +9,7 @@ import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
-import  WebhookDialog from "../WebhookDialog";
+import WebhookDialog from "../WebhookDialog";
 import { DeleteWebhookDialog } from "../DeleteWebhookDialog";
 
 export const WebhooksTableRow = ({
@@ -36,42 +36,40 @@ export const WebhooksTableRow = ({
     setIsChecked((prevIsChecked) => !prevIsChecked);
   };
 
-  const getDropdownItems = () => {
-    return [
-      {
-        key: "Settings dropdownItem",
-        label: "Settings",
-        icon: SettingsIcon,
-        onClick: openSettings,
-      },
-      {
-        key: "Webhook history dropdownItem",
-        label: "Webhook history",
-        icon: HistoryIcon,
-        onClick: () => console.log("webhooks history"),
-      },
-      {
-        key: "Retry dropdownItem",
-        label: "Retry",
-        icon: RetryIcon,
-        onClick: () => retryWebhookEvent(webhook.id),
-      },
-      {
-        key: "Separator dropdownItem",
-        isSeparator: true,
-      },
-      {
-        key: "Delete webhook dropdownItem",
-        label: "Delete webhook",
-        icon: DeleteIcon,
-        onClick: () => setIsDeleteOpened(true),
-      },
-    ];
-  };
+  const contextOptions = [
+    {
+      key: "Settings dropdownItem",
+      label: "Settings",
+      icon: SettingsIcon,
+      onClick: openSettings,
+    },
+    {
+      key: "Webhook history dropdownItem",
+      label: "Webhook history",
+      icon: HistoryIcon,
+      onClick: () => console.log("webhooks history"),
+    },
+    {
+      key: "Retry dropdownItem",
+      label: "Retry",
+      icon: RetryIcon,
+      onClick: () => retryWebhookEvent(webhook.id),
+    },
+    {
+      key: "Separator dropdownItem",
+      isSeparator: true,
+    },
+    {
+      key: "Delete webhook dropdownItem",
+      label: "Delete webhook",
+      icon: DeleteIcon,
+      onClick: () => setIsDeleteOpened(true),
+    },
+  ];
 
   return (
     <>
-      <TableRow>
+      <TableRow contextOptions={contextOptions}>
         <TableCell>
           {webhook.title}{" "}
           {webhook.responseStatus === "success" ? (
@@ -89,16 +87,6 @@ export const WebhooksTableRow = ({
             id="toggle id"
             isChecked={isChecked}
             onChange={handleToggleEnabled}
-          />
-        </TableCell>
-
-        <TableCell>
-          <ContextMenuButton
-            directionX="right"
-            getData={getDropdownItems}
-            opened={isOpen}
-            onClick={toggleContextMenu}
-            title="Actions"
           />
         </TableCell>
       </TableRow>
