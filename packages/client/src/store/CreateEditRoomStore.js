@@ -124,13 +124,19 @@ class CreateEditRoomStore {
           const img = new Image();
           img.onload = async () => {
             const { x, y, zoom } = roomParams.icon;
-            room = await addLogoToRoom(room.id, {
-              tmpFile: response.data,
-              ...calculateRoomLogoParams(img, x, y, zoom),
-            });
+            try {
+              room = await addLogoToRoom(room.id, {
+                tmpFile: response.data,
+                ...calculateRoomLogoParams(img, x, y, zoom),
+              });
+            } catch (e) {
+              toastr.error(e);
+              this.setIsLoading(false);
+              this.setConfirmDialogIsLoading(false);
+              this.onClose();
+            }
 
             !withPaging && this.onOpenNewRoom(room.id);
-
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
