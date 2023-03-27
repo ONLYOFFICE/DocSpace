@@ -88,7 +88,6 @@ public class WebhooksController : BaseSettingsController
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         ArgumentNullException.ThrowIfNull(model.Uri);
-        ArgumentNullException.ThrowIfNull(model.SecretKey);
         ArgumentNullException.ThrowIfNull(model.Name);
 
         var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Name, model.Uri, model.SecretKey, model.Enabled);
