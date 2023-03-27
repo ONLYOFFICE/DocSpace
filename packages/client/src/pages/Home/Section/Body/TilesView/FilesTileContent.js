@@ -91,7 +91,7 @@ const FilesTileContent = ({
         isRooms={isRooms}
       >
         <Link
-          className={`item-file-name ${isMedia ? "media-file" : ""}`}
+          className="item-file-name"
           containerWidth="100%"
           type="page"
           title={title}

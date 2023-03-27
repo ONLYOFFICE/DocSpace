@@ -10,7 +10,7 @@ import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg
 import ActionsUploadReactSvgUrl from "PUBLIC_DIR/images/actions.upload.react.svg?url";
 import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
 import ReconnectSvgUrl from "PUBLIC_DIR/images/reconnect.svg?url";
-import SettingsReactSvgUrl from "PUBLIC_DIR/images/settings.react.svg?url";
+import SettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
@@ -82,6 +82,11 @@ const StyledContainer = styled.div`
 
   .header-container {
     min-height: 33px;
+
+    ${(props) =>
+      props.hideContextMenuInsideArchiveRoom &&
+      `.option-button {
+      display: none;}`}
 
     @media ${tablet} {
       height: 60px;
@@ -482,7 +487,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_show-info",
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         onClick: this.onShowInfo,
         disabled: isDisabled,
         icon: InfoOutlineReactSvgUrl,
@@ -528,7 +533,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_archive-room",
         key: "archive-room",
-        label: t("ToArchive"),
+        label: t("MoveToArchive"),
         icon: RoomArchiveSvgUrl,
         onClick: (e) => onClickArchive(e),
         disabled: !isRoom || !security?.Move,
@@ -675,6 +680,7 @@ class SectionHeaderContent extends React.Component {
       isGroupMenuBlocked,
       security,
       onClickBack,
+      hideContextMenuInsideArchiveRoom,
     } = this.props;
 
     const menuItems = this.getMenuItems();
@@ -688,7 +694,10 @@ class SectionHeaderContent extends React.Component {
     return [
       <Consumer key="header">
         {(context) => (
-          <StyledContainer isRecycleBinFolder={isRecycleBinFolder}>
+          <StyledContainer
+            isRecycleBinFolder={isRecycleBinFolder}
+            hideContextMenuInsideArchiveRoom={hideContextMenuInsideArchiveRoom}
+          >
             {isHeaderVisible && headerMenu.length ? (
               <TableGroupMenu
                 checkboxOptions={menuItems}
@@ -818,6 +827,7 @@ export default inject(
       isRoomsFolder,
       isArchiveFolder,
       isPersonalRoom,
+      isArchiveFolderRoot,
     } = treeFoldersStore;
 
     const {
@@ -861,6 +871,10 @@ export default inject(
     const canDeleteAll = isArchiveFolder && roomsForDelete.length > 0;
 
     const isEmptyArchive = !canRestoreAll && !canDeleteAll;
+
+    const hideContextMenuInsideArchiveRoom = isArchiveFolderRoot
+      ? !isArchiveFolder
+      : false;
 
     return {
       isGracePeriod,
@@ -911,6 +925,7 @@ export default inject(
       isEmptyArchive,
       isPrivacyFolder,
       isArchiveFolder,
+      hideContextMenuInsideArchiveRoom,
 
       setIsLoading,
       fetchFiles,

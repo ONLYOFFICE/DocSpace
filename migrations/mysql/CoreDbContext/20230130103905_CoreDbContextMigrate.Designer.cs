@@ -90,7 +90,7 @@ namespace ASC.Migrations.MySql.Migrations.CoreDb
                         new
                         {
                             Tenant = -3,
-                            Features = "free,thirdparty,audit,total_size:2147483648,manager:1,room:12,usersInRoom:3",
+                            Features = "free,total_size:2147483648,manager:5,room:5",
                             Name = "startup",
                             Price = 0m,
                             Visible = false

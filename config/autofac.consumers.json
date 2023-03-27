@@ -491,37 +491,6 @@
 	  }
     },
 	{
-      "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "vk",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "vk",
-		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "vk",
-		  "order": "14",
-		  "props": {
-			"vkClientId": "",
-			"vkClientSecret": ""
-		  },
-		  "additional": {
-			"vkRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
-	{
       "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin",
       "services": [
         {
@@ -549,37 +518,6 @@
 		  },
 		  "additional": {
 			"wpRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
-	{
-      "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "yandex",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "yandex",
-		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "yandex",
-		  "order": "15",
-		  "props": {
-			"yandexClientId": "",
-			"yandexClientSecret": ""
-		  },
-		  "additional": {
-			"yandexRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },

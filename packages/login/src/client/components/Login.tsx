@@ -27,12 +27,15 @@ import useIsomorphicLayoutEffect from "../hooks/useIsomorphicLayoutEffect";
 import { getLogoFromPath } from "@docspace/common/utils";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
 import { TenantStatus } from "@docspace/common/constants";
+
 interface ILoginProps extends IInitialState {
   isDesktopEditor?: boolean;
+  theme: IUserTheme;
+  setTheme: (theme: IUserTheme) => void;
 }
+
 const Login: React.FC<ILoginProps> = ({
   portalSettings,
-  buildInfo,
   providers,
   capabilities,
   isDesktopEditor,
@@ -58,8 +61,8 @@ const Login: React.FC<ILoginProps> = ({
     enableAdmMess: false,
   };
 
-  const ssoLabel = capabilities?.ssoLabel;
-  const ssoUrl = capabilities?.ssoUrl;
+  const ssoLabel = capabilities?.ssoLabel || "";
+  const ssoUrl = capabilities?.ssoUrl || "";
   const { t } = useTranslation(["Login", "Common"]);
   const mounted = useMounted();
   const systemTheme = typeof window !== "undefined" && useThemeDetector();
@@ -82,6 +85,7 @@ const Login: React.FC<ILoginProps> = ({
     if (ssoUrl) return true;
     else return false;
   };
+
   const ssoButton = () => {
     const onClick = () => (window.location.href = ssoUrl);
     return (
@@ -211,7 +215,7 @@ const Login: React.FC<ILoginProps> = ({
       bgPattern={bgPattern}
     >
       <div className="bg-cover"></div>
-      <LoginContent>
+      <LoginContent enabledJoin={enabledJoin}>
         <ColorTheme themeId={ThemeType.LinkForgotPassword} theme={theme}>
           <img src={logoUrl} className="logo-wrapper" />
           <Text
@@ -276,14 +280,17 @@ const Login: React.FC<ILoginProps> = ({
             id="recover-access-modal"
           />
         </ColorTheme>
-        {!checkIsSSR() && enabledJoin && (
-          <Register
-            id="login_register"
-            enabledJoin={enabledJoin}
-            currentColorScheme={currentColorScheme}
-          />
-        )}
-      </LoginContent>{" "}
+      </LoginContent>
+
+      {!checkIsSSR() && enabledJoin && (
+        <Register
+          id="login_register"
+          enabledJoin={enabledJoin}
+          currentColorScheme={currentColorScheme}
+          trustedDomains={portalSettings?.trustedDomains}
+          trustedDomainsType={portalSettings?.trustedDomainsType}
+        />
+      )}
     </LoginFormWrapper>
   );
 };

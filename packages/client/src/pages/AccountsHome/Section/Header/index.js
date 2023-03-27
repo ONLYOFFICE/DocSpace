@@ -4,6 +4,7 @@ import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
+import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import React, { useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -262,6 +263,15 @@ const SectionHeaderContent = (props) => {
         onClick: onInvite,
         "data-type": EmployeeType.User,
         key: "manager",
+      },
+      {
+        id: "accounts-add_collaborator",
+        className: "main-button_drop-down",
+        icon: PersonReactSvgUrl,
+        label: t("Common:PowerUser"),
+        onClick: onInvite,
+        "data-type": EmployeeType.Collaborator,
+        key: "collaborator",
       },
       {
         id: "accounts-add_user",

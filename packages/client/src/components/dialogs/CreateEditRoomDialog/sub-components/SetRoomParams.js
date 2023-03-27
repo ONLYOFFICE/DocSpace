@@ -3,13 +3,13 @@ import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
 import RoomTypeDropdown from "./RoomTypeDropdown";
-import ThirdPartyStorage from "./ThirdPartyStorage";
 import TagInput from "./TagInput";
 import RoomType from "./RoomType";
 
 import PermanentSettings from "./PermanentSettings";
 import InputParam from "./Params/InputParam";
-import IsPrivateParam from "./IsPrivateParam";
+// import ThirdPartyStorage from "./ThirdPartyStorage";
+// import IsPrivateParam from "./IsPrivateParam";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Loaders from "@docspace/common/components/Loaders";

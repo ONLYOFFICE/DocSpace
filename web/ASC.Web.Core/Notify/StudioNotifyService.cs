@@ -431,17 +431,17 @@ public class StudioNotifyService
         if (_tenantExtra.Enterprise)
         {
             var defaultRebranding = MailWhiteLabelSettings.IsDefault(_settingsManager);
-            notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV10 : Actions.EnterpriseWhitelabelGuestWelcomeV10;
+            notifyAction = defaultRebranding ? Actions.EnterpriseGuestWelcomeV1 : Actions.EnterpriseWhitelabelGuestWelcomeV1;
             footer = null;
         }
         else if (_tenantExtra.Opensource)
         {
-            notifyAction = Actions.OpensourceGuestWelcomeV11;
+            notifyAction = Actions.OpensourceGuestWelcomeV1;
             footer = "opensource";
         }
         else
         {
-            notifyAction = Actions.SaasGuestWelcomeV115;
+            notifyAction = Actions.SaasGuestWelcomeV1;
         }
 
         string greenButtonText() => _tenantExtra.Enterprise
@@ -677,7 +677,7 @@ public class StudioNotifyService
         }
 
         tagValues.Add(new TagValue(Tags.UserName, newUserInfo.FirstName.HtmlEncode()));
-        tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/payments")));
+        tagValues.Add(new TagValue(Tags.PricingPage, _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments")));
 
         _client.SendNoticeToAsync(
         notifyAction,
