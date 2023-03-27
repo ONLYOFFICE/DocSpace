@@ -9,7 +9,6 @@ export default {
     maxDate: { control: "date" },
     minDate: { control: "date" },
     initialDate: { control: "date" },
-    selectedDate: { control: "date" },
     locale: {
       type: "select",
       options: [
@@ -70,7 +69,4 @@ Default.args = {
   locale: "en",
   maxDate: new Date(new Date().getFullYear() + 1 + "/01/01"),
   minDate: new Date("1970/01/01"),
-  initialDate: new Date(),
-  selectedDate: new Date(),
-  setSelectedDate: () => {},
 };
