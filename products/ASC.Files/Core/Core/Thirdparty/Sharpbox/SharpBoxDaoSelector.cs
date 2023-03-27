@@ -51,6 +51,6 @@ public static class SharpBoxDaoSelectorExtension
     {
         services.TryAdd<SharpBoxFileDao>();
         services.TryAdd<SharpBoxFolderDao>();
-        services.TryAdd<SharpBoxTagDao>();
+        services.TryAdd<IThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo>, ThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>();
     }
 }

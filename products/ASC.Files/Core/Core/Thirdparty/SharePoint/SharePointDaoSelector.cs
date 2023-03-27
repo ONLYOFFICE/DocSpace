@@ -71,6 +71,6 @@ public static class SharePointDaoSelectorExtension
     {
         services.TryAdd<SharePointFileDao>();
         services.TryAdd<SharePointFolderDao>();
-        services.TryAdd<SharePointTagDao>();
+        services.TryAdd<IThirdPartyTagDao<File, Folder, ClientObject, SharePointProviderInfo>, ThirdPartyTagDao<File, Folder, ClientObject>>();
     }
 }

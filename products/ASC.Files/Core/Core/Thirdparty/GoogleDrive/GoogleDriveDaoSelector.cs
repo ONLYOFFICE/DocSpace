@@ -45,7 +45,7 @@ public static class GoogleDriveDaoSelectorExtension
     {
         services.TryAdd<ThirdPartyFileDao<DriveFile, DriveFile, DriveFile>, GoogleDriveFileDao>();
         services.TryAdd<ThirdPartyFolderDao<DriveFile, DriveFile, DriveFile>, GoogleDriveFolderDao>();
-        services.TryAdd<IThirdPartyTagDao<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>, GoogleDriveTagDao>();
+        services.TryAdd<IThirdPartyTagDao<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>, ThirdPartyTagDao<DriveFile, DriveFile, DriveFile>>();
         services.TryAdd<IDaoBase<DriveFile, DriveFile, DriveFile>, GoogleDriveDaoBase>();
         services.TryAdd<IDaoSelector<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>>, GoogleDriveDaoSelector>();
     }
