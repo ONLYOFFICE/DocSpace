@@ -133,7 +133,7 @@ const FilesTileContainer = ({
         />
       );
     });
-  }, [filesList, sectionWidth, onSetTileRef, columnCount]);
+  }, [filesList, sectionWidth, onSetTileRef, thumbSize, columnCount]);
 
   return (
     <TileContainer
