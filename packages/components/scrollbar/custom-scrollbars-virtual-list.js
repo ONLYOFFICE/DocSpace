@@ -23,9 +23,7 @@ export class CustomScrollbars extends React.Component {
     //console.log("CustomScrollbars", this.props);
     return (
       <Scrollbar
-        ref={(scrollbarsRef) =>
-          this.refSetter.bind(this, scrollbarsRef, forwardedRef)
-        }
+        ref={(scrollbarsRef) => this.refSetter(scrollbarsRef, forwardedRef)}
         style={{ ...style, overflow: "hidden" }}
         onScroll={onScroll}
         stype={stype}
