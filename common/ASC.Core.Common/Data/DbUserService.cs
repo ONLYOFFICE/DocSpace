@@ -379,8 +379,8 @@ public class EFUserService : IUserService
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var userDbContext = await _dbContextFactory.CreateDbContextAsync();
-            using var tr = userDbContext.Database.BeginTransaction();
+            using var userDbContext = _dbContextFactory.CreateDbContext();
+            using var tr = await userDbContext.Database.BeginTransactionAsync();
 
             userDbContext.Acl.Where(r => r.Tenant == tenant && r.Subject == id).ExecuteDelete();
             userDbContext.Subscriptions.Where(r => r.Tenant == tenant && r.Recipient == id.ToString()).ExecuteDelete();

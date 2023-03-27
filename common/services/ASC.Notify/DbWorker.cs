@@ -46,7 +46,7 @@ public class DbWorker : IDisposable
 
         var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-        using var dbContext = await scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContextAsync();
+        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
         var strategy = dbContext.Database.CreateExecutionStrategy();
 
@@ -57,7 +57,6 @@ public class DbWorker : IDisposable
             var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
 
             notifyQueue = (await dbContext.NotifyQueue.AddAsync(notifyQueue)).Entity;
-            await dbContext.SaveChangesAsync();
 
             var id = notifyQueue.NotifyId;
 
@@ -86,7 +85,7 @@ public class DbWorker : IDisposable
 
             var _mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-            using var dbContext = await scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContextAsync();
+            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
             var q = dbContext.NotifyQueue
                 .Join(dbContext.NotifyInfo, r => r.NotifyId, r => r.NotifyId, (queue, info) => new { queue, info })
@@ -133,7 +132,7 @@ public class DbWorker : IDisposable
     public async Task ResetStatesAsync()
     {
         using var scope = _serviceScopeFactory.CreateScope();
-        using var dbContext = await scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContextAsync();
+        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
         await dbContext.NotifyInfo.Where(r => r.State == 1).ExecuteUpdateAsync(q => q.SetProperty(p => p.State, 0));
     }
@@ -141,7 +140,7 @@ public class DbWorker : IDisposable
     public async Task SetStateAsync(int id, MailSendingState result)
     {
         using var scope = _serviceScopeFactory.CreateScope();
-        using var dbContext = await scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContextAsync();
+        using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
         var strategy = dbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>

@@ -97,7 +97,7 @@ public class MessagesRepository : IDisposable
             }
 
             using var scope = _serviceScopeFactory.CreateScope();
-            using var ef = await scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContextAsync();
+            using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
 
             if ((int)message.Action < 2000)
             {
@@ -153,7 +153,7 @@ public class MessagesRepository : IDisposable
         }
 
         using var scope = _serviceScopeFactory.CreateScope();
-        using var ef = await scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContextAsync();
+        using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
         var strategy = ef.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>

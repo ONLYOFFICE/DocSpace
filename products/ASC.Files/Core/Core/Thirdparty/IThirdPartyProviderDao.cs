@@ -448,7 +448,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
 
     private async Task<string> InternalMappingIDAsync(string id, bool saveIfNotExist = false)
     {
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         string result;
         if (id.StartsWith(Id))
@@ -689,7 +689,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
         return Task.FromResult(Enumerable.Empty<Tag>());
     }
 
-    public Task<IEnumerable<Tag>> SaveTags(Tag tag)
+    public Task<IEnumerable<Tag>> SaveTagsAsync(Tag tag)
     {
         return Task.FromResult(Enumerable.Empty<Tag>());
     }
@@ -742,7 +742,7 @@ internal abstract class ThirdPartyProviderDao<T> : ThirdPartyProviderDao, IDispo
     {
         var folderId = DaoSelector.ConvertId(parentFolder.Id);
 
-        var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        var filesDbContext = _dbContextFactory.CreateDbContext();
         var entryIDs = await filesDbContext.ThirdpartyIdMapping
                    .Where(r => r.Id.StartsWith(PathPrefix))
                    .Select(r => r.HashId)

@@ -1860,7 +1860,7 @@ public class EntryManager
 
         var tag = Tag.Recent(userID, file);
 
-        await tagDao.SaveTags(tag);
+        await tagDao.SaveTagsAsync(tag);
     }
 
     private async Task<List<FileEntry>> GetWithOriginAsync(List<FileEntry> entries, int filterRoomId)

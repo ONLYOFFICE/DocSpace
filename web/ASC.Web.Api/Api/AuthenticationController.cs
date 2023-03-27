@@ -302,7 +302,7 @@ public class AuthenticationController : ControllerBase
     {
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
-        await _dbLoginEventsManager.LogOutEvent(loginEventId);
+        await _dbLoginEventsManager.LogOutEventAsync(loginEventId);
 
         var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
         var loginName = user.DisplayUserName(false, _displayUserSettingsHelper);

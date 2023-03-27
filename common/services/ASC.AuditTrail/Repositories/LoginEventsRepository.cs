@@ -52,7 +52,7 @@ public class LoginEventsRepository
         int limit = 0)
     {
         var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
-        using var messagesContext = await _dbContextFactory.CreateDbContextAsync();
+        using var messagesContext = _dbContextFactory.CreateDbContext();
 
         var query =
             from q in messagesContext.LoginEvents
@@ -113,7 +113,7 @@ public class LoginEventsRepository
 
     public async Task<int> GetCountAsync(int tenant, DateTime? from = null, DateTime? to = null)
     {
-        using var messagesContext = await _dbContextFactory.CreateDbContextAsync();
+        using var messagesContext = _dbContextFactory.CreateDbContext();
         var query = messagesContext.LoginEvents
             .Where(l => l.TenantId == tenant);
 

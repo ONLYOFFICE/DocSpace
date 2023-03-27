@@ -647,7 +647,7 @@ public class FileConverter
 
         if (markAsTemplate)
         {
-            await tagDao.SaveTags(Tag.Template(_authContext.CurrentAccount.ID, newFile));
+            await tagDao.SaveTagsAsync(Tag.Template(_authContext.CurrentAccount.ID, newFile));
         }
 
         return newFile;

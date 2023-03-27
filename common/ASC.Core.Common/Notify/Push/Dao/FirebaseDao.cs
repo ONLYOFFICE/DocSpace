@@ -38,7 +38,7 @@ public class FirebaseDao
 
     public async Task<FireBaseUser> RegisterUserDeviceAsync(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
-        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var dbContext = _dbContextFactory.CreateDbContext();
         var user = await dbContext.Users
             .AsNoTracking()
             .Where(r => r.UserId == userId)
@@ -69,7 +69,7 @@ public class FirebaseDao
 
     public async Task<List<FireBaseUser>> GetUserDeviceTokensAsync(Guid userId, int tenantId, string application)
     {
-        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var dbContext = _dbContextFactory.CreateDbContext();
         return await dbContext.Users
             .AsNoTracking()
             .Where(r => r.UserId == userId)
@@ -80,7 +80,7 @@ public class FirebaseDao
 
     public async Task<FireBaseUser> UpdateUserAsync(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
-        using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var dbContext = _dbContextFactory.CreateDbContext();
         var user = new FireBaseUser
         {
             UserId = userId,

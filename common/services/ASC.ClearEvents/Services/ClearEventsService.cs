@@ -93,7 +93,7 @@ public class ClearEventsService : IHostedService, IDisposable
         var compile = func.Compile();
 
         using var scope = _serviceScopeFactory.CreateScope();
-        using var ef = await scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContextAsync();
+        using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
         var table = compile.Invoke(ef);
         await table
                 .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)

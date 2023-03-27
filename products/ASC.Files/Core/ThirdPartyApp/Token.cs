@@ -104,7 +104,7 @@ public class TokenHelper
             ModifiedOn = DateTime.UtcNow
         };
 
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         await filesDbContext.AddOrUpdateAsync(q => q.ThirdpartyApp, dbFilesThirdpartyApp);
         await filesDbContext.SaveChangesAsync();
     }
@@ -117,7 +117,7 @@ public class TokenHelper
     public async Task<Token> GetTokenAsync(string app, Guid userId)
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         var oAuth20Token = await filesDbContext.ThirdpartyApp
             .Where(r => r.TenantId == tenant.Id)
             .Where(r => r.UserId == userId)
@@ -136,7 +136,7 @@ public class TokenHelper
     public async Task DeleteTokenAsync(string app, Guid? userId = null)
     {
         var tenant = await _tenantManager.GetCurrentTenantAsync();
-        using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var filesDbContext = _dbContextFactory.CreateDbContext();
         await filesDbContext.ThirdpartyApp
             .Where(r => r.TenantId == tenant.Id)
             .Where(r => r.UserId == (userId ?? _authContext.CurrentAccount.ID))

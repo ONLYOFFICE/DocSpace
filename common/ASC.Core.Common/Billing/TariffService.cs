@@ -663,7 +663,7 @@ public class TariffService : ITariffService
 
     private async Task<Tariff> GetBillingInfoAsync(int? tenant = null, int? id = null)
     {
-        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
         var q = coreDbContext.Tariffs.AsQueryable();
 
         if (tenant.HasValue)
@@ -703,13 +703,13 @@ public class TariffService : ITariffService
         {
             try
             {
-                using var dbContext = await _dbContextFactory.CreateDbContextAsync();
+                using var dbContext = _dbContextFactory.CreateDbContext();
                 var strategy = dbContext.Database.CreateExecutionStrategy();
 
                 await strategy.ExecuteAsync(async () =>
                 {
-                    using var dbContext = await _dbContextFactory.CreateDbContextAsync();
-                    using var tx = dbContext.Database.BeginTransaction();
+                    using var dbContext = _dbContextFactory.CreateDbContext();
+                    using var tx = await dbContext.Database.BeginTransactionAsync();
 
                     var stamp = tariffInfo.DueDate;
                     if (stamp.Equals(DateTime.MaxValue))
@@ -782,7 +782,7 @@ public class TariffService : ITariffService
     {
         const int tenant = Tenant.DefaultTenant;
 
-        using var coreDbContext = await _dbContextFactory.CreateDbContextAsync();
+        using var coreDbContext = _dbContextFactory.CreateDbContext();
         var tariffs = await coreDbContext.Tariffs.Where(r => r.Tenant == tenant).ToListAsync();
 
         foreach (var t in tariffs)

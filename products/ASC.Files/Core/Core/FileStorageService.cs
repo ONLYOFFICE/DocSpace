@@ -1283,7 +1283,7 @@ public class FileStorageService<T> //: IFileStorageService
             {
                 tagLocked = new Tag("locked", TagType.Locked, _authContext.CurrentAccount.ID, 0).AddEntry(file);
 
-                await tagDao.SaveTags(tagLocked);
+                await tagDao.SaveTagsAsync(tagLocked);
             }
 
             var usersDrop = _fileTracker.GetEditingBy(file.Id).Where(uid => uid != _authContext.CurrentAccount.ID).Select(u => u.ToString()).ToArray();
@@ -2808,7 +2808,7 @@ public class FileStorageService<T> //: IFileStorageService
 
         if (pin)
         {
-            await tagDao.SaveTags(tag);
+            await tagDao.SaveTagsAsync(tag);
         }
         else
         {

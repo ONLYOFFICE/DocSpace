@@ -88,9 +88,9 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return await _tagDao.SaveTags(tag, createdBy);
     }
 
-    public async Task<IEnumerable<Tag>> SaveTags(Tag tag)
+    public async Task<IEnumerable<Tag>> SaveTagsAsync(Tag tag)
     {
-        return await _tagDao.SaveTags(tag);
+        return await _tagDao.SaveTagsAsync(tag);
     }
 
     public async Task UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)

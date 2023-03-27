@@ -50,7 +50,7 @@ public class AuditEventsRepository
 
     private async Task<IEnumerable<AuditEventDto>> GetAsync(int tenant, DateTime? fromDate, DateTime? to, int? limit)
     {
-        using var auditTrailContext = await _dbContextFactory.CreateDbContextAsync();
+        using var auditTrailContext = _dbContextFactory.CreateDbContext();
         var query =
            (from q in auditTrailContext.AuditEvents
             from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
@@ -91,7 +91,7 @@ public class AuditEventsRepository
         int limit = 0)
     {
         var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
-        using var auditTrailContext = await _dbContextFactory.CreateDbContextAsync();
+        using var auditTrailContext = _dbContextFactory.CreateDbContext();
         var query =
            from q in auditTrailContext.AuditEvents
            from p in auditTrailContext.Users.Where(p => q.UserId == p.Id).DefaultIfEmpty()
@@ -218,7 +218,7 @@ public class AuditEventsRepository
 
     public async Task<int> GetCountAsync(int tenant, DateTime? from = null, DateTime? to = null)
     {
-        using var auditTrailContext = await _dbContextFactory.CreateDbContextAsync();
+        using var auditTrailContext = _dbContextFactory.CreateDbContext();
 
         var query = auditTrailContext.AuditEvents
             .Where(a => a.TenantId == tenant);

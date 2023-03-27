@@ -39,7 +39,7 @@ public class CustomSynchronizationContext
 
     public static void CreateContext()
     {
-        if(CurrentContext == null)
+        if (CurrentContext == null)
         {
             var context = new CustomSynchronizationContext()
             {

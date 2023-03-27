@@ -85,7 +85,7 @@ public class AccountLinker
 
     public async Task<IEnumerable<string>> GetLinkedObjectsByHashIdAsync(string hashid)
     {
-        using var accountLinkContext = await _accountLinkContextManager.CreateDbContextAsync();
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
         return await accountLinkContext.AccountLinks
             .Where(r => r.UId == hashid)
             .Where(r => r.Provider != string.Empty)
@@ -119,7 +119,7 @@ public class AccountLinker
             Linked = DateTime.UtcNow
         };
 
-        using var accountLinkContext = await _accountLinkContextManager.CreateDbContextAsync();
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
         await accountLinkContext.AddOrUpdateAsync(a => a.AccountLinks, accountLink);
         await accountLinkContext.SaveChangesAsync();
 
@@ -143,7 +143,7 @@ public class AccountLinker
 
     public async Task RemoveProviderAsync(string obj, string provider = null, string hashId = null)
     {
-        using var accountLinkContext = await _accountLinkContextManager.CreateDbContextAsync();
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
 
         var accountLinkQuery = accountLinkContext.AccountLinks.Where(r => r.Id == obj);
 
@@ -164,7 +164,7 @@ public class AccountLinker
 
     private async Task<List<LoginProfile>> GetLinkedProfilesFromDBAsync(string obj)
     {
-        using var accountLinkContext = await _accountLinkContextManager.CreateDbContextAsync();
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
 
         //Retrieve by uinque id
         return (await accountLinkContext.AccountLinks
@@ -176,7 +176,7 @@ public class AccountLinker
 
     private async Task<IDictionary<string, LoginProfile>> GetLinkedProfilesAsync(IEnumerable<string> objects)
     {
-        using var accountLinkContext = await _accountLinkContextManager.CreateDbContextAsync();
+        using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
 
         return await accountLinkContext.AccountLinks.Where(r => objects.Contains(r.Id))
             .Select(r => new { r.Id, r.Profile })

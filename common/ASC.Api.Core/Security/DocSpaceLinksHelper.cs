@@ -135,7 +135,7 @@ public class DocSpaceLinkHelper
 
     private async Task<AuditEvent> GetLinkInfoAsync(string email, string key)
     {
-        using var context = await _dbContextFactory.CreateDbContextAsync();
+        using var context = _dbContextFactory.CreateDbContext();
         var target = _messageTarget.Create(email);
         var description = JsonConvert.SerializeObject(new[] { key },
             new JsonSerializerSettings

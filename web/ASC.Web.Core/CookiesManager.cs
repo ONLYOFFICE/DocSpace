@@ -168,7 +168,7 @@ public class CookiesManager
 
         if (lifeTime > 0)
         {
-            await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
+            await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenantAsync(tenant.Id);
         }
 
         await AuthenticateMeAndSetCookiesAsync(tenant.Id, _securityContext.CurrentAccount.ID, MessageAction.LoginSuccess);
@@ -187,7 +187,7 @@ public class CookiesManager
         settings.Index = settings.Index + 1;
         await _tenantCookieSettingsHelper.SetForUserAsync(userId ?? currentUserId, settings);
 
-        await _dbLoginEventsManager.LogOutAllActiveConnections(tenant, userId ?? currentUserId);
+        await _dbLoginEventsManager.LogOutAllActiveConnectionsAsync(tenant, userId ?? currentUserId);
 
         if (!userId.HasValue)
         {
@@ -208,7 +208,7 @@ public class CookiesManager
         settings.Index += 1;
         await _tenantCookieSettingsHelper.SetForTenantAsync(tenant.Id, settings);
 
-        await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenant(tenant.Id);
+        await _dbLoginEventsManager.LogOutAllActiveConnectionsForTenantAsync(tenant.Id);
     }
 
     public async Task<string> AuthenticateMeAndSetCookiesAsync(int tenantId, Guid userId, MessageAction action, bool session = false)

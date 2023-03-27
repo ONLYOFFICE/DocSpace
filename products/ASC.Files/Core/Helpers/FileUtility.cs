@@ -441,8 +441,8 @@ public class FileUtility
                 return _extsConvertible;
             }
 
-            using var filesDbContext = await _dbContextFactory.CreateDbContextAsync();
-            var list = filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            var list = await filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToListAsync();
 
             foreach (var item in list)
             {

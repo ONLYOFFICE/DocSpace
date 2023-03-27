@@ -65,16 +65,16 @@ public class DbLoginEventsManager
     {
         if (id < 0) return null;
 
-        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         return await loginEventContext.LoginEvents.FindAsync(id);
     }
 
-    public async Task<List<BaseEvent>> GetLoginEvents(int tenantId, Guid userId)
+    public async Task<List<BaseEvent>> GetLoginEventsAsync(int tenantId, Guid userId)
     {
         var date = DateTime.UtcNow.AddYears(-1);
 
-        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         var loginInfo = await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && _loginActions.Contains(r.Action ?? 0) && r.Date >= date && r.Active)
@@ -84,9 +84,9 @@ public class DbLoginEventsManager
         return _mapper.Map<List<LoginEvent>, List<BaseEvent>>(loginInfo);
     }
 
-    public async Task LogOutEvent(int loginEventId)
+    public async Task LogOutEventAsync(int loginEventId)
     {
-        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await loginEventContext.LoginEvents
            .Where(r => r.Id == loginEventId)
@@ -95,9 +95,9 @@ public class DbLoginEventsManager
         await ResetCacheAsync();
     }
 
-    public async Task LogOutAllActiveConnections(int tenantId, Guid userId)
+    public async Task LogOutAllActiveConnectionsAsync(int tenantId, Guid userId)
     {
-        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Active)
@@ -106,18 +106,18 @@ public class DbLoginEventsManager
         ResetCache(tenantId, userId);
     }
 
-    public async Task LogOutAllActiveConnectionsForTenant(int tenantId)
+    public async Task LogOutAllActiveConnectionsForTenantAsync(int tenantId)
     {
-        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.Active)
             .ExecuteUpdateAsync(r => r.SetProperty(p => p.Active, false));
     }
 
-    public async Task LogOutAllActiveConnectionsExceptThis(int loginEventId, int tenantId, Guid userId)
+    public async Task LogOutAllActiveConnectionsExceptThisAsync(int loginEventId, int tenantId, Guid userId)
     {
-        using var loginEventContext = await _dbContextFactory.CreateDbContextAsync();
+        using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await loginEventContext.LoginEvents
             .Where(r => r.TenantId == tenantId && r.UserId == userId && r.Id != loginEventId && r.Active)

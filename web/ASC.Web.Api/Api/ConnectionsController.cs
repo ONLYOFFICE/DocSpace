@@ -82,7 +82,7 @@ public class ConnectionsController : ControllerBase
     public async Task<object> GetAllActiveConnections()
     {
         var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
-        var loginEvents = await _dbLoginEventsManager.GetLoginEvents(user.Tenant, user.Id);
+        var loginEvents = await _dbLoginEventsManager.GetLoginEventsAsync(user.Tenant, user.Id);
         var tasks = loginEvents.ConvertAll(async r => await ConvertAsync(r));
         var listLoginEvents = (await Task.WhenAll(tasks)).ToList();
         var loginEventId = GetLoginEventIdFromCookie();
@@ -177,7 +177,7 @@ public class ConnectionsController : ControllerBase
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
             var loginEventFromCookie = GetLoginEventIdFromCookie();
 
-            await _dbLoginEventsManager.LogOutAllActiveConnectionsExceptThis(loginEventFromCookie, user.Tenant, user.Id);
+            await _dbLoginEventsManager.LogOutAllActiveConnectionsExceptThisAsync(loginEventFromCookie, user.Tenant, user.Id);
 
             await _messageService.SendAsync(MessageAction.UserLogoutActiveConnections, userName);
             return userName;
@@ -197,7 +197,7 @@ public class ConnectionsController : ControllerBase
             var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
             var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
 
-            await _dbLoginEventsManager.LogOutEvent(loginEventId);
+            await _dbLoginEventsManager.LogOutEventAsync(loginEventId);
 
             await _messageService.SendAsync(MessageAction.UserLogoutActiveConnection, userName);
             return true;
