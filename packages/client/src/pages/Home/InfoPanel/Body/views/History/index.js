@@ -88,7 +88,7 @@ const History = ({
     return { ...fetchedHistory, feedsByDays: parsedFeeds };
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!isMount.current) return;
 
     if (selection.history) {

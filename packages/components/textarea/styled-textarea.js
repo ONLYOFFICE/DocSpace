@@ -42,14 +42,25 @@ StyledScrollbar.defaultProps = {
 
 // eslint-disable-next-line react/prop-types, no-unused-vars
 const ClearTextareaAutosize = React.forwardRef(
-  ({ isDisabled, heightScale, hasError, color, ...props }, ref) => (
-    <TextareaAutosize {...props} ref={ref} />
-  )
+  (
+    {
+      isDisabled,
+      heightScale,
+      hasError,
+      color,
+      paddingLeftProp,
+      isJSONField,
+      ...props
+    },
+    ref
+  ) => <TextareaAutosize {...props} ref={ref} />
 );
 
-const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
-  autoFocus: props.autoFocus,
-}))`
+const StyledTextarea = styled(ClearTextareaAutosize).attrs(
+  ({ autoFocus, ...props }) => ({
+    autoFocus: props.autoFocus,
+  })
+)`
   ${commonInputStyle};
   white-space: ${(props) => (props.isJSONField ? "pre" : "normal")};
 
@@ -61,7 +72,7 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs((props) => ({
   resize: none;
   overflow: ${(props) => (props.isJSONField ? "visible !important" : "hidden")};
   padding: 5px 8px 2px;
-  padding-left: ${(props) => props.paddingLeft};
+  padding-left: ${(props) => props.paddingLeftProp};
   font-size: ${(props) => props.fontSize + "px"};
   font-family: ${(props) => props.theme.fontFamily};
   line-height: 1.5;

@@ -9,10 +9,12 @@ const renderApp = (i18n, initialState) => {
   const sheet = new ServerStyleSheet();
   const component = renderToString(
     sheet.collectStyles(
-      <I18nextProvider i18n={i18n}>
-        <GlobalStyle />
-        <Editor {...initialState} />
-      </I18nextProvider>
+      <React.Suspense fallback={<div></div>}>
+        <I18nextProvider i18n={i18n}>
+          <GlobalStyle />
+          <Editor {...initialState} />
+        </I18nextProvider>
+      </React.Suspense>
     )
   );
 
