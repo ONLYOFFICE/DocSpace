@@ -123,7 +123,7 @@ class ThirdPartyServices extends React.Component {
       i18n,
       consumers,
       updateConsumerProps,
-      urlAuthKeys,
+      integrationSettingsUrl,
       theme,
       currentColorScheme,
     } = this.props;
@@ -141,7 +141,7 @@ class ThirdPartyServices extends React.Component {
               color={currentColorScheme.main.accent}
               isHovered
               target="_blank"
-              href={urlAuthKeys}
+              href={integrationSettingsUrl}
             >
               {t("Common:LearnMore")}
             </Link>
@@ -187,7 +187,7 @@ ThirdPartyServices.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  urlAuthKeys: PropTypes.string,
+  integrationSettingsUrl: PropTypes.string,
   getConsumers: PropTypes.func.isRequired,
   updateConsumerProps: PropTypes.func.isRequired,
   setSelectedConsumer: PropTypes.func.isRequired,
@@ -195,7 +195,7 @@ ThirdPartyServices.propTypes = {
 
 export default inject(({ setup, auth }) => {
   const { settingsStore, setDocumentTitle } = auth;
-  const { urlAuthKeys, theme, currentColorScheme } = settingsStore;
+  const { integrationSettingsUrl, theme, currentColorScheme } = settingsStore;
   const {
     getConsumers,
     integration,
@@ -207,7 +207,7 @@ export default inject(({ setup, auth }) => {
   return {
     theme,
     consumers,
-    urlAuthKeys,
+    integrationSettingsUrl,
     getConsumers,
     updateConsumerProps,
     setSelectedConsumer,
