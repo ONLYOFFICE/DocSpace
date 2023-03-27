@@ -1,1 +1,8 @@
-{}
+{
+  "AccessingProblem": "Se você é um usuário existente e tem problemas para acessar este espaço, entre em contato com o administrador.",
+  "Benefits": "Benefícios",
+  "BusinessExpired": "Seu plano {{planName}} expirou em {{date}}",
+  "BusinessFinalDateInfo": "A assinatura será renovada automaticamente em {{finalDate}} com preços e especificações atualizados. Você pode cancelá-lo ou alterar suas informações de cobrança no portal do cliente Stripe.",
+  "BusinessPlanPaymentOverdue": "Não é possível adicionar novos usuários e criar novas salas. Pagamento do plano {{planName}} atrasado.",
+  "BusinessRequestDescription": "Os planos de preços com mais {{peopleNumber}} gerentes estão disponíveis apenas mediante solicitação."
+}

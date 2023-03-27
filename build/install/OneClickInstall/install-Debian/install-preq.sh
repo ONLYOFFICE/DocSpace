@@ -37,7 +37,7 @@ fi
 locale-gen en_US.UTF-8
 
 # add elasticsearch repo
-ELASTIC_VERSION="7.16.3"
+ELASTIC_VERSION="7.10.0"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg --import
 echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list

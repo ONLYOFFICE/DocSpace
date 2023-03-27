@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Titre du dossier",
   "ConnectionUrl": "URL de connexion",
   "Login": "Identifiant",
-  "Reconnect": "Reconnexion"
+  "Reconnect": "Reconnexion",
+  "SuccessfulConnectionOfAThirdParty": "Le service tiers a été connecté avec succès."
 }

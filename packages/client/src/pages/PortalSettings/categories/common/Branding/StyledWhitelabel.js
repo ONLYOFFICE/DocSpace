@@ -104,7 +104,7 @@ const WhiteLabelWrapper = styled.div`
   .logo-favicon {
     width: 30px;
     height: 30px;
-    margin-bottom: 8px;
+    margin-bottom: 5px;
   }
 
   .logo-docs-editor {

@@ -407,10 +407,14 @@ class ContextOptionsStore {
     this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
   };
 
-  onClickDeleteSelectedFolder = (t) => {
-    const { setIsFolderActions, setDeleteDialogVisible } = this.dialogsStore;
+  onClickDeleteSelectedFolder = (t, isRoom) => {
+    const {
+      setIsFolderActions,
+      setDeleteDialogVisible,
+      setIsRoomDelete,
+    } = this.dialogsStore;
     const { confirmDelete } = this.settingsStore;
-    const { deleteAction } = this.filesActionsStore;
+    const { deleteAction, deleteRoomsAction } = this.filesActionsStore;
     const { id: selectedFolderId } = this.selectedFolderStore;
     const {
       isThirdPartySelection,
@@ -423,10 +427,26 @@ class ContextOptionsStore {
     if (confirmDelete || isThirdPartySelection) {
       getFolderInfo(selectedFolderId).then((data) => {
         setBufferSelection(data);
+        setIsRoomDelete(isRoom);
         setDeleteDialogVisible(true);
       });
+
+      return;
+    }
+
+    let translations;
+
+    if (isRoom) {
+      translations = {
+        successRemoveRoom: t("Files:RoomRemoved"),
+        successRemoveRooms: t("Files:RoomsRemoved"),
+      };
+
+      deleteRoomsAction([selectedFolderId], translations).catch((err) =>
+        toastr.error(err)
+      );
     } else {
-      const translations = {
+      translations = {
         deleteOperation: t("Translations:DeleteOperation"),
         deleteFromTrash: t("Translations:DeleteFromTrash"),
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
@@ -440,19 +460,19 @@ class ContextOptionsStore {
   };
 
   onClickDelete = (item, t) => {
-    if (item.id === this.selectedFolderStore.id) {
-      this.onClickDeleteSelectedFolder(t);
-      return;
-    }
+    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
     const {
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,
     } = this.dialogsStore;
 
-    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
+    if (id === this.selectedFolderStore.id) {
+      this.onClickDeleteSelectedFolder(t, isRoom);
 
-    console.log(providerKey, id, rootFolderId);
+      return;
+    }
+
     const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
     if (isRootThirdPartyFolder) {
@@ -1194,6 +1214,9 @@ class ContextOptionsStore {
 
       if (!isArchiveFolder) {
         options.push(pinOption);
+      }
+
+      if ((canArchiveRoom || canDelete) && !isArchiveFolder) {
         options.push({
           key: "separator0",
           isSeparator: true,

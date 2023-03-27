@@ -2,6 +2,7 @@ import React from "react";
 import DefaultUserPhotoSize32PngUrl from "PUBLIC_DIR/images/default_user_photo_size_32-32.png";
 import { StyledText, StyledAuthorCell } from "./CellStyles";
 import Avatar from "@docspace/components/avatar";
+import { decode } from "he";
 
 const AuthorCell = ({ fileOwner, sideColor, item }) => {
   const { avatarSmall, hasAvatar } = item.createdBy;
@@ -19,10 +20,10 @@ const AuthorCell = ({ fileOwner, sideColor, item }) => {
         color={sideColor}
         fontSize="12px"
         fontWeight={600}
-        title={fileOwner}
+        title={decode(fileOwner)}
         truncate
       >
-        {fileOwner}
+        {decode(fileOwner)}
       </StyledText>
     </StyledAuthorCell>
   );

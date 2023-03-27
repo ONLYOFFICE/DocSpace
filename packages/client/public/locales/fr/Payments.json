@@ -1,1 +1,9 @@
-{}
+{
+  "AccessingProblem": "Si vous êtes un utilisateur existant et que vous avez des problèmes pour accéder à cet espace, veuillez contacter l’administrateur.",
+  "AdministratorDescription": "Configuration de DocSpace, création et administration de salles, possibilité d’inviter et de gérer des utilisateurs dans DocSpace et dans les salles virtuelles, possibilité de gérer les droits d’accès.",
+  "Benefits": "Avantages",
+  "BusinessExpired": "Votre plan tarifaire {{planName}} a expiré le {{date}}",
+  "BusinessFinalDateInfo": "L’abonnement sera automatiquement renouvelé le {{finalDate}} avec une mise à jour des prix et des spécifications. Vous pouvez l’annuler ou modifier vos informations de facturation sur votre portail client Stripe.",
+  "BusinessPlanPaymentOverdue": "Impossible d’ajouter de nouveaux utilisateurs et de créer de nouvelles salles. {{planName}} paiement du plan en retard.",
+  "BusinessRequestDescription": "Les plans tarifaires avec plus de gestionnaires {{peopleNumber}} sont disponibles sur demande uniquement."
+}

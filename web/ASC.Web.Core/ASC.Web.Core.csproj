@@ -16,9 +16,11 @@
     <Compile Remove="WebZones\IRenderCustomNavigation.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Remove="PublicResources\logo.png" />
     <None Remove="PublicResources\webstudio_patterns.xml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="PublicResources\logo.png" />
     <EmbeddedResource Include="PublicResources\webstudio_patterns.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -426,6 +428,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="SixLabors.ImageSharp" Version="3.0.0" />
+    <PackageReference Include="SkiaSharp" Version="2.88.3" />
+    <PackageReference Include="SkiaSharp.Svg" Version="1.60.0" />
     <PackageReference Include="Twilio" Version="5.81.2" />
   </ItemGroup>
 </Project>

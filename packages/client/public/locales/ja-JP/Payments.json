@@ -1,1 +1,8 @@
-{}
+{
+  "AccessingProblem": " 既存のユーザーでこのスペースへのアクセスに問題がある場合は、管理者までご連絡ください。",
+  "Benefits": "メリット",
+  "BusinessExpired": "{{planName}}プランは{{date}}で期限切れとなりました。",
+  "BusinessFinalDateInfo": "サブスクリプションは、価格と仕様を更新して{{finalDate}}日に自動更新されます。Stripeカスタマーポータルでキャンセルまたは請求先情報を変更することができます。",
+  "BusinessPlanPaymentOverdue": "新規ユーザーの追加や新規ルームの作成ができません。{planName}}プランの支払い期限を過ぎています。",
+  "BusinessRequestDescription": "{{peopleNumber}}人より多くのマネージャー数を持つ料金プランは、リクエストに応じてご提供します。"
+}
