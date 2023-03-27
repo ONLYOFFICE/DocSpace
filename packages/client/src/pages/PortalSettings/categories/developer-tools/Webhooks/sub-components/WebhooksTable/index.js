@@ -3,66 +3,34 @@ import React, { useRef } from "react";
 import styled from "styled-components";
 
 import TableContainer from "@docspace/components/table-container/TableContainer";
-import TableHeader from "@docspace/components/table-container/TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
 
 import { WebhooksTableRow } from "../WebhooksTableRow";
 
 import { Consumer } from "@docspace/components/utils/context";
 
+import { inject, observer } from "mobx-react";
+import { WebhookTableHeader } from "./WebhookTableHeader";
+
 const TableWrapper = styled(TableContainer)`
   margin-top: 16px;
 `;
 
-export const WebhooksTable = ({
-  webhooks,
-  toggleEnabled,
-  deleteWebhook,
-  editWebhook,
-  retryWebhookEvent,
-}) => {
-  const tableRef = useRef(null);
+const WebhooksTable = (props) => {
+  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, retryWebhookEvent, viewAs } = props;
 
-  const columns = useRef([
-    {
-      key: "Name",
-      title: "Name",
-      enable: true,
-      default: true,
-      active: true,
-      minWidth: 200,
-    },
-    {
-      key: "URL",
-      title: "URL",
-      enable: true,
-      resizable: true,
-    },
-    {
-      key: "State",
-      title: "State",
-      enable: true,
-      resizable: true,
-    },
-    {
-      key: "Settings",
-      title: "",
-    },
-  ]);
+  const tableRef = useRef(null);
 
   return (
     <Consumer>
-      {(context) => {
-        return (
-          <TableWrapper forwardedRef={tableRef}>
-            <TableHeader
-              columns={columns.current}
-              containerRef={tableRef}
-              checkboxMargin="12px"
-              checkboxSize="48px"
-              sectionWidth={context.sectionWidth}
-              showSettings={false}
-            />
+      {(context) =>
+        viewAs === "table" ? (
+          <TableWrapper
+            forwardedRef={tableRef}
+            style={{
+              gridTemplateColumns: "200px 500px 110px 24px",
+            }}>
+            <WebhookTableHeader sectionWidth={context.sectionWidth} tableRef={tableRef} />
             <TableBody>
               {webhooks.map((webhook, index) => (
                 <WebhooksTableRow
@@ -77,8 +45,25 @@ export const WebhooksTable = ({
               ))}
             </TableBody>
           </TableWrapper>
-        );
-      }}
+        ) : (
+          <></>
+        )
+      }
     </Consumer>
   );
 };
+
+export default inject(({ webhooksStore, setup }) => {
+  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, retryWebhookEvent } = webhooksStore;
+
+  const { viewAs } = setup;
+
+  return {
+    webhooks,
+    toggleEnabled,
+    deleteWebhook,
+    editWebhook,
+    retryWebhookEvent,
+    viewAs,
+  };
+})(observer(WebhooksTable));
