@@ -15,13 +15,12 @@ const container = document.getElementById("root");
 if (container) {
   hydrateRoot(
     container,
-    <React.Suspense fallback={<div></div>}>
-      <App
-        initialLanguage={initialLanguage}
-        initialI18nStoreASC={initialI18nStoreASC}
-        {...propsObj}
-      />
-    </React.Suspense>
+
+    <App
+      initialLanguage={initialLanguage}
+      initialI18nStoreASC={initialI18nStoreASC}
+      {...propsObj}
+    />
   );
 }
 if (IS_DEVELOPMENT) {
