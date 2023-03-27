@@ -32,7 +32,7 @@ const Row = memo(({ data, index, style }) => {
       onMouseMove={() => {
         handleMouseMove(index);
       }}
-      $isActivedescendant={activedescendant === index}
+      isActivedescendant={activedescendant === index}
     />
   );
 });

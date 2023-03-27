@@ -124,7 +124,7 @@ const StyledDropdownItem = styled.div`
   }
 
   ${(props) =>
-    props.$isActivedescendant &&
+    props.isActiveDescendant &&
     !props.disabled &&
     css`
       background-color: ${(props) =>
@@ -132,10 +132,10 @@ const StyledDropdownItem = styled.div`
       text-align: left;
     `}
 
-  ${(props) => props.disabled && !props.$isSelected && disabledAndHeaderStyle}
+  ${(props) => props.disabled && !props.isSelected && disabledAndHeaderStyle}
 
   ${(props) =>
-    ((props.disabled && props.$isSelected) || props.isActive) &&
+    ((props.disabled && props.isSelected) || props.isActive) &&
     css`
       background-color: ${(props) =>
         props.theme.dropDownItem.selectedBackgroundColor};

@@ -25,6 +25,7 @@ const DropDownItem = (props) => {
     noHover,
     height,
     isSelected,
+    isActiveDescendant,
   } = props;
 
   const onClickAction = (e) => {
@@ -39,7 +40,8 @@ const DropDownItem = (props) => {
       onClick={onClickAction}
       disabled={disabled}
       isActive={isActive}
-      $isSelected={isSelected}
+      isSelected={isSelected}
+      isActiveDescendant={isActiveDescendant}
     >
       {icon && (
         <IconWrapper className="drop-down-icon">
@@ -104,6 +106,8 @@ DropDownItem.propTypes = {
   isActive: PropTypes.bool,
   withoutIcon: PropTypes.bool,
   isModern: PropTypes.bool,
+  isActiveDescendant: PropTypes.bool,
+  isSelected: PropTypes.bool,
 };
 
 DropDownItem.defaultProps = {
