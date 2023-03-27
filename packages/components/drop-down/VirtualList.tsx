@@ -100,7 +100,7 @@ function VirtualList({
     [isOpen]
   );
 
-  const handleMouseEnter = useCallback((index: number) => {
+  const handleMouseMove = useCallback((index: number) => {
     if (currentIndexRef.current === index) return;
 
     setCurrentIndex(index);
@@ -128,7 +128,7 @@ function VirtualList({
             theme: theme,
             activeIndex,
             activedescendant: currentIndex,
-            handleMouseEnter,
+            handleMouseMove,
           }}
           outerElementType={CustomScrollbarsVirtualList}
         >

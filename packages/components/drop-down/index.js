@@ -13,7 +13,7 @@ import VirtualList from "./VirtualList";
 /* eslint-disable react/prop-types, react/display-name */
 
 const Row = memo(({ data, index, style }) => {
-  const { children, theme, activedescendant, handleMouseEnter } = data;
+  const { children, theme, activedescendant, handleMouseMove } = data;
 
   const option = children[index];
 
@@ -30,7 +30,7 @@ const Row = memo(({ data, index, style }) => {
       noHover
       style={newStyle}
       onMouseMove={() => {
-        handleMouseEnter(index);
+        handleMouseMove(index);
       }}
       $isActivedescendant={activedescendant === index}
     />
