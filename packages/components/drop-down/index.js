@@ -288,6 +288,7 @@ class DropDown extends React.PureComponent {
         isExternalLink={this.props.isExternalLink}
         isPersonal={this.props.isPersonal}
         isMobileView={isMobileView}
+        itemCount={itemCount}
         {...dropDownMaxHeightProp}
       >
         <VirtualList
