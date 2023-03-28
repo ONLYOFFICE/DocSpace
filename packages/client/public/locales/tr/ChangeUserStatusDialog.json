@@ -1,6 +1,5 @@
 {
   "ChangeUserStatusDialog": "'{{ userStatus }} durumuna sahip kullanıcılar {{ status }} olacak.",
   "ChangeUserStatusDialogHeader": "Kullanıcı durumunu değiştir",
-  "ChangeUserStatusDialogMessage": "DocSpace sahibi ve kendiniz için durumu değiştiremezsiniz.",
-  "ChangeUsersStatusButton": "Kullanıcı durumunu değiştir"
+  "ChangeUserStatusDialogMessage": "DocSpace sahibi ve kendiniz için durumu değiştiremezsiniz."
 }
