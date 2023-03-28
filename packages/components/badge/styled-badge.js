@@ -20,7 +20,7 @@ const StyledBadge = styled.div`
   line-height: ${(props) => props.theme.badge.lineHeight};
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
-
+  flex-shrink: 0;
   &:hover {
     ${(props) => !props.noHover && hoveredCss};
   }
