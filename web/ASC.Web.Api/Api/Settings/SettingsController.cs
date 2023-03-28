@@ -419,7 +419,7 @@ public class SettingsController : BaseSettingsController
     }
 
     /// <summary>
-    /// Starts the process of recalculating quota.
+    /// Starts the process of quota recalculation.
     /// </summary>
     /// <short>
     /// Recalculate quota 
@@ -436,7 +436,7 @@ public class SettingsController : BaseSettingsController
     }
 
     /// <summary>
-    /// Checks the process of recalculating quota.
+    /// Checks the process of quota recalculation.
     /// </summary>
     /// <short>
     /// Check quota recalculation
@@ -472,7 +472,7 @@ public class SettingsController : BaseSettingsController
     /// Completes the Wizard settings.
     /// </summary>
     /// <short>Complete the Wizard settings</short>
-    /// <category>Wizard</category>
+    /// <category>Common settings</category>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WizardRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Wizard settings request parameters: <![CDATA[
     /// <ul>
     ///     <li><b>Email</b> (string) - email,</li>

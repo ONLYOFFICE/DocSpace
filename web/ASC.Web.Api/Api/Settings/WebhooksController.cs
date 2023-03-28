@@ -228,7 +228,7 @@ public class WebhooksController : BaseSettingsController
     /// Retry webhooks
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhookRetryRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters to retry webhooks: Ids (List&lt;int&lt;) - list of webhook IDs</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhookRetryRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters to retry webhooks: <![CDATA[Ids (List&lt;int&gt;) - list of webhook IDs]]></param>
     /// <path>api/2.0/settings/webhook/retry</path>
     /// <httpMethod>PUT</httpMethod>
     /// <returns>Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>

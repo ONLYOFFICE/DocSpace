@@ -136,7 +136,7 @@ public class PortalController : ControllerBase
     /// Returns the current portal.
     /// </summary>
     /// <short>
-    /// Get the current portal
+    /// Get a portal
     /// </short>
     /// <category>Settings</category>
     /// <returns>Current portal information</returns>
@@ -303,7 +303,7 @@ public class PortalController : ControllerBase
     /// Get a portal quota
     /// </short>
     /// <category>Quota</category>
-    /// <returns>Current portal quota</returns>
+    /// <returns>Current portal quota: tenant, name, price, product ID, visible or not, tenant quota features</returns>
     /// <path>api/2.0/portal/quota</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
@@ -354,7 +354,7 @@ public class PortalController : ControllerBase
     }
 
     /// <summary>
-    /// Returns a thumbnail for the bookmark URL specified in the request.
+    /// Returns a thumbnail of the bookmark URL specified in the request.
     /// </summary>
     /// <short>
     /// Get a bookmark thumbnail
@@ -543,7 +543,7 @@ public class PortalController : ControllerBase
     /// <summary>
     /// Deletes the current portal immediately.
     /// </summary>
-    /// <short>Delete the current portal immediately</short>
+    /// <short>Delete a portal immediately</short>
     /// <category>Settings</category>
     /// <returns>Task awaiter</returns>
     /// <path>api/2.0/portal/deleteportalimmediately</path>
@@ -609,7 +609,7 @@ public class PortalController : ControllerBase
     }
 
     /// <summary>
-    /// Sends the instructions to delete the current portal.
+    /// Sends the instructions to remove the current portal.
     /// </summary>
     /// <short>Send removal instructions</short>
     /// <category>Settings</category>
@@ -641,7 +641,7 @@ public class PortalController : ControllerBase
     /// <summary>
     /// Restores the current portal.
     /// </summary>
-    /// <short>Restore the current portal</short>
+    /// <short>Restore a portal</short>
     /// <category>Settings</category>
     /// <returns></returns>
     /// <path>api/2.0/portal/continue</path>
@@ -658,7 +658,7 @@ public class PortalController : ControllerBase
     /// <summary>
     /// Deactivates the current portal.
     /// </summary>
-    /// <short>Deactivate the current portal</short>
+    /// <short>Deactivate a portal</short>
     /// <category>Settings</category>
     /// <returns></returns>
     /// <path>api/2.0/portal/suspend</path>
@@ -675,7 +675,7 @@ public class PortalController : ControllerBase
     /// <summary>
     /// Deletes the current portal.
     /// </summary>
-    /// <short>Delete the current portal</short>
+    /// <short>Delete a portal</short>
     /// <category>Settings</category>
     /// <returns>URL to the feedback form about removing a portal</returns>
     /// <path>api/2.0/portal/delete</path>

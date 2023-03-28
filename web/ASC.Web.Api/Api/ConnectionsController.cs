@@ -139,7 +139,7 @@ public class ConnectionsController : ControllerBase
     }
 
     /// <summary>
-    /// Logs out from all the active connections for the current user and changes their password.
+    /// Logs out from all the active connections of the current user and changes their password.
     /// </summary>
     /// <short>
     /// Log out and change password
@@ -178,7 +178,7 @@ public class ConnectionsController : ControllerBase
     }
 
     /// <summary>
-    /// Logs out from all the active connections for the user with the ID specified in the request.
+    /// Logs out from all the active connections of the user with the ID specified in the request.
     /// </summary>
     /// <short>
     /// Log out for the user by ID

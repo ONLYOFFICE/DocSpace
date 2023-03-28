@@ -457,8 +457,8 @@ public class StorageController : BaseSettingsController
     /// Updates the CDN storage with the parameters specified in the request.
     /// </summary>
     /// <category>Storage</category>
-    /// <short>Update the CDN storage: module, properties</short>
-    /// <returns>Updated CDN storage</returns>
+    /// <short>Update the CDN storage</short>
+    /// <returns>Updated CDN storage: module, properties</returns>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, AASC.Web.Api.ApiModel.RequestsDto" name="inDto">CDN storage settings request parameters: <![CDATA[
     /// <ul>
     ///     <li><b>Module</b> (string) - CDN storage name,</li>

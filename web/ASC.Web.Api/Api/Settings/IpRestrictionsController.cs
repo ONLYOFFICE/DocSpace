@@ -68,7 +68,7 @@ public class IpRestrictionsController : BaseSettingsController
     /// </summary>
     /// <short>Save the IP restrictions</short>
     /// <category>IP restrictions</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">IP restrictions request parameters: IpRestrictions (IEnumerable&lt;IpRestrictionBase&gt;) - list of IP addresses</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">IP restrictions request parameters: <![CDATA[IpRestrictions (IEnumerable&lt;IpRestrictionBase&gt;) - list of IP addresses]]></param>
     /// <returns>List of updated IP restrictions: IP addresses, for admin users only or not</returns>
     /// <path>api/2.0/settings/iprestrictions</path>
     /// <httpMethod>PUT</httpMethod>

@@ -66,11 +66,11 @@ public class GreetingSettingsController : BaseSettingsController
     }
 
     /// <summary>
-    /// Checks if the greeting settings of the current portal is default or not.
+    /// Checks if the greeting settings of the current portal are set to default or not.
     /// </summary>
     /// <short>Check the default greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <returns>Boolean value: true if the greeting settings of the current portal is default</returns>
+    /// <returns>Boolean value: true if the greeting settings of the current portal are set to default</returns>
     /// <path>api/2.0/settings/greetingsettings/isdefault</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings/isdefault")]

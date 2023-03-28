@@ -171,7 +171,7 @@ public class FeedController : ControllerBase
     }
 
     /// <summary>
-    /// Returns a number of fresh feeds.
+    /// Returns an integer representing the number of fresh feeds.
     /// </summary>
     /// <short>
     /// Count fresh feeds

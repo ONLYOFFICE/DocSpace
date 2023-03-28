@@ -284,7 +284,7 @@ public class SecurityController : BaseSettingsController
     /// Set the access settings to products
     /// </short>
     /// <category>Security</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WebItemSecurityRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Module request parameters: Items (IEnumerable&lt;ItemKeyValuePair&lt;string, bool&gt;&gt;) - products with security information</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WebItemSecurityRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Module request parameters: <![CDATA[Items (IEnumerable&lt;ItemKeyValuePair&lt;string, bool&gt;&gt;) - products with security information]]></param>
     /// <path>api/2.0/settings/security/access</path>
     /// <httpMethod>PUT</httpMethod>
     /// <returns>Security settings: module ID, list of users with the access to the module, list of groups with the access to the module, security settings are enabled or not, subitem or not</returns>
@@ -338,7 +338,7 @@ public class SecurityController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns a list of all the administrators of the product with the ID specified in the request.
+    /// Returns a list of all the product administrators with the ID specified in the request.
     /// </summary>
     /// <short>
     /// Get the product administrators
@@ -360,10 +360,10 @@ public class SecurityController : BaseSettingsController
     }
 
     /// <summary>
-    /// Checks if the selected user is an administrator of a product with the ID specified in the request.
+    /// Checks if the selected user is a product administrator with the ID specified in the request.
     /// </summary>
     /// <short>
-    /// Check the product administrator
+    /// Check a product administrator
     /// </short>
     /// <category>Security</category>
     /// <param type="System.Guid, System" name="productid">Product ID</param>
@@ -379,10 +379,10 @@ public class SecurityController : BaseSettingsController
     }
 
     /// <summary>
-    /// Sets the selected user as an administrator of a product with the ID specified in the request.
+    /// Sets the selected user as a product administrator with the ID specified in the request.
     /// </summary>
     /// <short>
-    /// Set the product administrator
+    /// Set a product administrator
     /// </short>
     /// <category>Security</category>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SecurityRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Security request parameters: <![CDATA[
@@ -434,8 +434,8 @@ public class SecurityController : BaseSettingsController
     /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LoginSettingsRequestDto, ASC.Web.Api.ApiModels.RequestsDto" name="loginSettingsRequestDto">Login settings request parameters: <![CDATA[
     /// <ul>
     ///     <li><b>AttemptCount</b> (integer) - maximum number of the user attempts to log in,</li>
-    ///     <li><b>BlockTime</b> (integer) - the time for which the user will be blocked after unsuccessful login attempts,</li>
-    ///     <li><b>CheckPeriod</b> (integer) - the time to wait for a response from the server.</li>
+    ///     <li><b>BlockTime</b> (integer) - the duration of the account suspension for unsuccessful login attempts,</li>
+    ///     <li><b>CheckPeriod</b> (integer) - expected server response time.</li>
     /// </ul>
     /// ]]></param>
     /// <returns>Updated login settings: maximum number of the user attempts to log in, the time for which the user will be blocked after unsuccessful login attempts, the time to wait for a response from the server</returns>

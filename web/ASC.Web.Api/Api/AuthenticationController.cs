@@ -395,7 +395,7 @@ public class AuthenticationController : ControllerBase
     }
 
     /// <summary>
-    /// Opens a confirmation email URL to validate some action (employee invitation, portal removal, phone activation, etc.).
+    /// Opens a confirmation email URL to validate a certain action (employee invitation, portal removal, phone activation, etc.).
     /// </summary>
     /// <short>
     /// Open confirmation email URL

@@ -78,7 +78,7 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     /// <summary>
-    /// Displays the contact form on the "Sign In" page so that people can send a message to the DocSpace administrator in case they have troubles while accessing DocSpace.
+    /// Displays the contact form on the "Sign In" page, allowing users to send a message to the DocSpace administrator in case they encounter any issues while accessing DocSpace.
     /// </summary>
     /// <short>
     /// Enable the administrator message settings
@@ -145,7 +145,7 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     /// <summary>
-    /// Sends a message to the administrator email from the unauthorized users when they have troubles while accessing DocSpace.
+    /// Sends a message to the administrator email when unauthorized users encounter issues accessing DocSpace.
     /// </summary>
     /// <short>
     /// Send a message to the administrator

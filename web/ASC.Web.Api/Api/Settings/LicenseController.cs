@@ -233,7 +233,7 @@ public class LicenseController : BaseSettingsController
     /// <short>
     /// Upload a license
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters to upload a license: Files (IEnumerable&lt;IFormFile&lt;) - license attachments</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters to upload a license: <![CDATA[Files (IEnumerable&lt;IFormFile&gt;) - license attachments]]></param>
     /// <category>License</category>
     /// <returns>License</returns>
     /// <path>api/2.0/settings/license</path>

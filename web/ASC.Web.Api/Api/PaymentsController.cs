@@ -119,7 +119,7 @@ public class PaymentController : ControllerBase
     /// Update the payment quantity
     /// </short>
     /// <category>Payment</category>
-    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api.Models" name="inDto">Payment URL request parameters: Quantity (Dictionary&lt;string, int&gt;) - the quantity of payment</param>
+    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api.Models" name="inDto">Payment URL request parameters: <![CDATA[Quantity (Dictionary&lt;string, int&gt;) - the quantity of payment]]></param>
     /// <returns>Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/portal/payment/update</path>
     /// <httpMethod>PUT</httpMethod>
@@ -214,7 +214,7 @@ public class PaymentController : ControllerBase
     /// <short>
     /// Get quotas
     /// </short>
-    /// <category>Payment</category>
+    /// <category>Quota</category>
     /// <returns>List of available portal quotas</returns>
     /// <path>api/2.0/portal/payment/quotas</path>
     /// <httpMethod>GET</httpMethod>
@@ -225,13 +225,13 @@ public class PaymentController : ControllerBase
     }
 
     /// <summary>
-    /// Returns the current portal quota.
+    /// Returns the payment information about the current portal quota.
     /// </summary>
     /// <short>
-    /// Get portal quota
+    /// Get quota payment information
     /// </short>
     /// <category>Payment</category>
-    /// <returns>Current portal quota</returns>
+    /// <returns>Payment information about the current portal quota: ID, title, price, nonprofit or not, free or not, trial or not, tenant quota features</returns>
     /// <path>api/2.0/portal/payment/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quota")]

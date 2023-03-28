@@ -50,7 +50,7 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     /// <summary>
-    /// Returns all the portal team templates which allow you to name the organization (or group), its members and their activities within your portal.
+    /// Returns all portal team templates that allow users to name their organization (or group), add members, and define their activities within the portal.
     /// </summary>
     /// <short>Get team templates</short>
     /// <category>Team templates</category>

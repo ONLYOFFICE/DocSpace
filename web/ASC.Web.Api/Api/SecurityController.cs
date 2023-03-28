@@ -77,7 +77,7 @@ public class SecurityController : ControllerBase
     }
 
     /// <summary>
-    /// Returns all the latest user login activity including successful logins and failed attempts with an indication of reasons.
+    /// Returns all the latest user login activity, including successful logins and error logs.
     /// </summary>
     /// <short>
     /// Get login history
