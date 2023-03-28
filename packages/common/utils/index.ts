@@ -433,10 +433,9 @@ export const frameCallCommand = (commandName: string, commandData: any) => {
   );
 };
 
-export const getConvertedSize = (t, size) => {
-  const bytes = size;
+export const getConvertedSize = (t, bytes) => {
   let power = 0,
-    resultSize = size;
+    resultSize = bytes;
 
   const sizeNames = [
     t("Common:Bytes"),
