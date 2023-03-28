@@ -38,6 +38,7 @@ const tabletProps = css`
 `;
 
 const StyledSectionContainer = styled.section`
+  container-name: section-container;
   padding: 0 0 0 20px;
   flex-grow: 1;
   display: flex;
