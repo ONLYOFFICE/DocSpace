@@ -45,9 +45,19 @@
     files.markAsNewFile(req.body);
     res.end();
   });
-  
+
   router.post("/markasnew-folder", (req, res) => {
     files.markAsNewFolder(req.body);
+    res.end();
+  });
+
+  router.post("/change-quota-used-value", (req, res) => {
+    files.changeQuotaUsedValue(req.body);
+    res.end();
+  });
+
+  router.post("/change-quota-feature-value", (req, res) => {
+    files.changeQuotaFeatureValue(req.body);
     res.end();
   });
 
