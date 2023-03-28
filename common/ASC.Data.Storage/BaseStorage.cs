@@ -334,14 +334,12 @@ public abstract class BaseStorage : IDataStore
     public abstract string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,
                                          string contentDisposition);
 
-    internal Task QuotaUsedAddAsync(string domain, long size, bool quotaCheckFileSize = true)
+    internal async Task QuotaUsedAddAsync(string domain, long size, bool quotaCheckFileSize = true)
     {
         if (QuotaController != null)
         {
-            return QuotaController.QuotaUsedAddAsync(Modulename, domain, DataList.GetData(domain), size, quotaCheckFileSize);
+            await QuotaController.QuotaUsedAddAsync(Modulename, domain, DataList.GetData(domain), size, quotaCheckFileSize);
         }
-
-        return Task.CompletedTask;
     }
 
     internal async Task QuotaUsedDeleteAsync(string domain, long size)

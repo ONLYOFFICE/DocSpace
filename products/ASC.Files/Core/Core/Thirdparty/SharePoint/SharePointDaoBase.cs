@@ -113,14 +113,14 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         return string.Format(" ({0}){1}", index + 1, staticText);
     }
 
-    protected Task UpdatePathInDBAsync(string oldValue, string newValue)
+    protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
     {
         if (oldValue.Equals(newValue))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalUpdatePathInDBAsync(oldValue, newValue);
+        await InternalUpdatePathInDBAsync(oldValue, newValue);
     }
 
     private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
@@ -197,9 +197,9 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         });
     }
 
-    protected Task<string> MappingIDAsync(string id)
+    protected async Task<string> MappingIDAsync(string id)
     {
-        return MappingIDAsync(id, false);
+        return await MappingIDAsync(id, false);
     }
 
     protected override string MakeId(string path = null)

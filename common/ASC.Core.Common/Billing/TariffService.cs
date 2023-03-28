@@ -357,16 +357,16 @@ public class TariffService : ITariffService
         }
     }
 
-    internal Task<Tariff> GetTariffFromCacheAsync(int tenantId)
+    internal async Task<Tariff> GetTariffFromCacheAsync(int tenantId)
     {
         var id = _cache.Get<string>(GetTariffCacheKey(tenantId));
 
         if (!int.TryParse(id, out var tariffId))
         {
-            return Task.FromResult<Tariff>(null);
+            return null;
         }
 
-        return GetBillingInfoAsync(tenantId, tariffId);
+        return await GetBillingInfoAsync(tenantId, tariffId);
     }
 
 

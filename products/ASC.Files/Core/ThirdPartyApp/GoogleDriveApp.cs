@@ -618,11 +618,11 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
     }
 
-    private Task AddLinkerAsync(string googleUserId)
+    private async Task AddLinkerAsync(string googleUserId)
     {
         _logger.DebugGoogleDriveApAddLinker(googleUserId);
 
-        return _accountLinker.AddLinkAsync(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
+        await _accountLinker.AddLinkAsync(_authContext.CurrentAccount.ID.ToString(), googleUserId, ProviderConstants.Google);
     }
 
     private async Task<UserInfoWrapper> GetUserInfoAsync(Token token)

@@ -52,19 +52,19 @@ public class DocumentServiceLicense
         _clientFactory = clientFactory;
     }
 
-    private Task<CommandResponse> GetDocumentServiceLicenseAsync()
+    private async Task<CommandResponse> GetDocumentServiceLicenseAsync()
     {
         if (!_coreBaseSettings.Standalone)
         {
-            return Task.FromResult<CommandResponse>(null);
+            return null;
         }
 
         if (string.IsNullOrEmpty(_filesLinkUtility.DocServiceCommandUrl))
         {
-            return Task.FromResult<CommandResponse>(null);
+            return null;
         }
 
-        return InternalGetDocumentServiceLicenseAsync();
+        return await InternalGetDocumentServiceLicenseAsync();
     }
 
     private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()

@@ -99,9 +99,9 @@ public class GoogleDriveProviderInfoHelper
         }
     }
 
-    internal Task CacheResetChildsAsync(int id, string parentDriveId, bool? childFolder = null)
+    internal async Task CacheResetChildsAsync(int id, string parentDriveId, bool? childFolder = null)
     {
-        return _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
+        await _cacheNotify.PublishAsync(new GoogleDriveCacheItem { ResetChilds = true, Key = id + "-" + parentDriveId, ChildFolder = childFolder ?? false, ChildFolderExist = childFolder.HasValue }, CacheNotifyAction.Remove);
     }
 
     internal async Task<List<DriveFile>> GetDriveEntriesAsync(GoogleDriveStorage storage, int id, string parentDriveId, bool? folder = null)
@@ -282,19 +282,19 @@ internal class GoogleDriveProviderInfo : IProviderInfo
         CustomerTitle = newtitle;
     }
 
-    internal Task CacheResetAsync(DriveFile driveEntry)
+    internal async Task CacheResetAsync(DriveFile driveEntry)
     {
-        return _googleDriveProviderInfoHelper.CacheResetAsync(driveEntry, ID);
+        await _googleDriveProviderInfoHelper.CacheResetAsync(driveEntry, ID);
     }
 
-    internal Task CacheResetAsync(string driveId = null, bool? childFolder = null)
+    internal async Task CacheResetAsync(string driveId = null, bool? childFolder = null)
     {
-        return _googleDriveProviderInfoHelper.CacheResetAsync(DriveRootId, ID, driveId, childFolder);
+        await _googleDriveProviderInfoHelper.CacheResetAsync(DriveRootId, ID, driveId, childFolder);
     }
 
-    internal Task CacheResetChildsAsync(string parentDriveId, bool? childFolder = null)
+    internal async Task CacheResetChildsAsync(string parentDriveId, bool? childFolder = null)
     {
-        return _googleDriveProviderInfoHelper.CacheResetChildsAsync(ID, parentDriveId, childFolder);
+        await _googleDriveProviderInfoHelper.CacheResetChildsAsync(ID, parentDriveId, childFolder);
     }
 
     internal async Task<List<DriveFile>> GetDriveEntriesAsync(string parentDriveId, bool? folder = null)
@@ -371,14 +371,14 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
         return driveStorage;
     }
 
-    private Task CheckTokenAsync(OAuth20Token token, int id)
+    private async Task CheckTokenAsync(OAuth20Token token, int id)
     {
         if (token == null)
         {
             throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
         }
 
-        return InternalCheckTokenAsync(token, id);
+        await InternalCheckTokenAsync(token, id);
     }
 
     private async Task InternalCheckTokenAsync(OAuth20Token token, int id)

@@ -201,9 +201,9 @@ internal class OneDriveProviderInfo : IProviderInfo
         CustomerTitle = newtitle;
     }
 
-    internal Task CacheResetAsync(string onedriveId = null)
+    internal async Task CacheResetAsync(string onedriveId = null)
     {
-        return _oneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
+        await _oneDriveProviderInfoHelper.CacheResetAsync(ID, onedriveId);
     }
 
     internal async Task<Item> GetOneDriveItemAsync(string itemId)
@@ -270,14 +270,14 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
         }
     }
 
-    private Task CheckTokenAsync(OAuth20Token token, int id)
+    private async Task CheckTokenAsync(OAuth20Token token, int id)
     {
         if (token == null)
         {
             throw new UnauthorizedAccessException("Cannot create GoogleDrive session with given token");
         }
 
-        return InternalCheckTokenAsync(token, id);
+        await InternalCheckTokenAsync(token, id);
     }
 
     private async Task InternalCheckTokenAsync(OAuth20Token token, int id)

@@ -76,16 +76,16 @@ internal class ProviderSecurityDao : ProviderDaoBase, ISecurityDao<string>
         return result;
     }
 
-    private Task GetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders)
+    private async Task GetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders)
     {
         var selector = GetSelector(folderId);
         var folderDao = selector.GetFolderDao(folderId);
         if (folderDao == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalGetFoldersForShareAsync(folderId, folders, folderDao, selector);
+        await InternalGetFoldersForShareAsync(folderId, folders, folderDao, selector);
     }
 
     private async Task InternalGetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders, IFolderDao<string> folderDao, IDaoSelector selector)

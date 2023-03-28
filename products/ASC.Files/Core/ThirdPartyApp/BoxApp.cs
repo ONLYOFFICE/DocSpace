@@ -471,11 +471,11 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         return linkedProfiles.Any(profileId => Guid.TryParse(profileId, out var tmp) && tmp == _authContext.CurrentAccount.ID);
     }
 
-    private Task AddLinkerAsync(string boxUserId)
+    private async Task AddLinkerAsync(string boxUserId)
     {
         _logger.DebugBoxAppAddLinker(boxUserId);
 
-        return _accountLinker.AddLinkAsync(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
+        await _accountLinker.AddLinkAsync(_authContext.CurrentAccount.ID.ToString(), boxUserId, ProviderConstants.Box);
     }
 
     private async Task<UserInfoWrapper> GetUserInfo(Token token)

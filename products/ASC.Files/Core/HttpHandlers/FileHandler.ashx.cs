@@ -1176,7 +1176,7 @@ public class FileHandlerService
         return file.Id + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
     }
 
-    private Task CreateFile(HttpContext context)
+    private async Task CreateFile(HttpContext context)
     {
         if (!_securityContext.IsAuthenticated)
         {
@@ -1185,10 +1185,10 @@ public class FileHandlerService
             //context.Session["refererURL"] = refererURL;
             const string authUrl = "~/Auth.aspx";
             context.Response.Redirect(authUrl, true);
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalCreateFile(context);
+        await InternalCreateFile(context);
     }
 
     private async Task InternalCreateFile(HttpContext context)
@@ -1281,7 +1281,7 @@ public class FileHandlerService
         return;
     }
 
-    private Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
+    private async Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
     {
         var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
         if (_fileUtility.CanWebRestrictedEditing(file.Title))
@@ -1289,7 +1289,7 @@ public class FileHandlerService
             message = string.Format(FilesCommonResource.MessageFileCreatedForm, folder.Title);
         }
 
-        return context.Response.WriteAsync("ok: " + message);
+        await context.Response.WriteAsync("ok: " + message);
     }
 
     private async Task<File<T>> CreateFileFromTemplateAsync<T>(Folder<T> folder, string fileTitle, string docType)

@@ -362,11 +362,11 @@ public class FileUploader
         await _chunkedUploadSessionHolder.RemoveSessionAsync(uploadSession);
     }
 
-    private Task<long> GetMaxFileSizeAsync<T>(T folderId, bool chunkedUpload = false)
+    private async Task<long> GetMaxFileSizeAsync<T>(T folderId, bool chunkedUpload = false)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
 
-        return folderDao.GetMaxUploadSizeAsync(folderId, chunkedUpload);
+        return await folderDao.GetMaxUploadSizeAsync(folderId, chunkedUpload);
     }
 
     #endregion

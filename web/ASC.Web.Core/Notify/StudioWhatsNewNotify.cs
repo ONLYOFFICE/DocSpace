@@ -104,9 +104,9 @@ public class StudioWhatsNewNotify
         }
     }
 
-    private Task<IEnumerable<int>> GetChangedTenantsAsync(DateTime date)
+    private async Task<IEnumerable<int>> GetChangedTenantsAsync(DateTime date)
     {
-        return _feedAggregateDataProvider.GetTenantsAsync(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
+        return await _feedAggregateDataProvider.GetTenantsAsync(new TimeInterval(date.Date.AddDays(-1), date.Date.AddSeconds(-1)));
     }
 
     private async Task SendMsgWhatsNewAsync(int tenantid, DateTime scheduleDate, Dictionary<string, IWebItem> products)

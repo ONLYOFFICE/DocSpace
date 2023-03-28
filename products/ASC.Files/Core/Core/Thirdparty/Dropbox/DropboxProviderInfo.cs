@@ -136,9 +136,9 @@ public class DropboxProviderInfoHelper
 
         return items;
     }
-    internal Task<Stream> GetThumbnailsAsync(DropboxStorage storage, string filePath, int width, int height)
+    internal async Task<Stream> GetThumbnailsAsync(DropboxStorage storage, string filePath, int width, int height)
     {
-        return storage.GetThumbnailsAsync(filePath, width, height);
+        return await storage.GetThumbnailsAsync(filePath, width, height);
     }
 }
 
@@ -221,14 +221,14 @@ internal class DropboxProviderInfo : IProviderInfo
         CustomerTitle = newtitle;
     }
 
-    internal Task CacheResetAsync(Metadata dropboxItem)
+    internal async Task CacheResetAsync(Metadata dropboxItem)
     {
-        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem);
+        await _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxItem);
     }
 
-    internal Task CacheResetAsync(string dropboxPath = null, bool? isFile = null)
+    internal async Task CacheResetAsync(string dropboxPath = null, bool? isFile = null)
     {
-        return _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
+        await _dropboxProviderInfoHelper.CacheResetAsync(ID, dropboxPath, isFile);
     }
 
     internal async Task<FileMetadata> GetDropboxFileAsync(string dropboxFilePath)
@@ -309,14 +309,14 @@ internal class DropboxStorageDisposableWrapper : IDisposable
         return dropboxStorage;
     }
 
-    private Task CheckTokenAsync(OAuth20Token token, int id)
+    private async Task CheckTokenAsync(OAuth20Token token, int id)
     {
         if (token == null)
         {
             throw new UnauthorizedAccessException("Cannot create Dropbox session with given token");
         }
 
-        return InternalCheckTokenAsync(token, id);
+        await InternalCheckTokenAsync(token, id);
     }
 
     private async Task InternalCheckTokenAsync(OAuth20Token token, int id)

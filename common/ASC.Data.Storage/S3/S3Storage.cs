@@ -1021,14 +1021,14 @@ public class S3Storage : BaseStorage
         return new UnencodedUri(baseUri, signedPart);
     }
 
-    private Task InvalidateCloudFrontAsync(params string[] paths)
+    private async Task InvalidateCloudFrontAsync(params string[] paths)
     {
         if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalInvalidateCloudFrontAsync(paths);
+        await InternalInvalidateCloudFrontAsync(paths);
     }
 
     private async Task InternalInvalidateCloudFrontAsync(params string[] paths)
@@ -1174,14 +1174,14 @@ public class S3Storage : BaseStorage
         return string.IsNullOrEmpty(_recycleDir) ? "" : $"{_recycleDir}/{path.TrimStart('/')}";
     }
 
-    private Task RecycleAsync(IAmazonS3 client, string domain, string key)
+    private async Task RecycleAsync(IAmazonS3 client, string domain, string key)
     {
         if (string.IsNullOrEmpty(_recycleDir))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalRecycleAsync(client, domain, key);
+        await InternalRecycleAsync(client, domain, key);
     }
 
     private async Task InternalRecycleAsync(IAmazonS3 client, string domain, string key)

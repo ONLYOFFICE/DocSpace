@@ -149,14 +149,14 @@ public class EncryptionOperation : DistributedTaskProgress
         log.DebugPercentage(Percentage);
     }
 
-    private Task<List<string>> ReadProgressAsync(DiscDataStore store)
+    private async Task<List<string>> ReadProgressAsync(DiscDataStore store)
     {
         if (!_useProgressFile)
         {
-            return Task.FromResult(new List<string>());
+            return new List<string>();
         }
 
-        return InternalReadProgressAsync(store);
+        return await InternalReadProgressAsync(store);
     }
 
     private async Task<List<string>> InternalReadProgressAsync(DiscDataStore store)

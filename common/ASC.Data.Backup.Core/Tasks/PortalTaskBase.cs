@@ -273,14 +273,14 @@ public abstract class PortalTaskBase
         Logger.DebugCompleteMySQlFile(file);
     }
 
-    protected Task RunMysqlFile(Stream stream, string db, string delimiter = ";")
+    protected async Task RunMysqlFile(Stream stream, string db, string delimiter = ";")
     {
         if (stream == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalRunMysqlFile(stream, db, delimiter);
+        await InternalRunMysqlFile(stream, db, delimiter);
     }
 
     private async Task InternalRunMysqlFile(Stream stream, string db, string delimiter = ";")

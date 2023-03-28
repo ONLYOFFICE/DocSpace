@@ -133,9 +133,9 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         public nChildState HasChildrens => nChildState.HasNoChilds;
     }
 
-    protected Task<string> MappingIDAsync(string id)
+    protected async Task<string> MappingIDAsync(string id)
     {
-        return MappingIDAsync(id, false);
+        return await MappingIDAsync(id, false);
     }
 
     protected async Task UpdatePathInDBAsync(string oldValue, string newValue)

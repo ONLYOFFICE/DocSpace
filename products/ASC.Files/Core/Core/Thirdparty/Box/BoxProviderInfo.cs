@@ -118,14 +118,14 @@ internal class BoxProviderInfo : IProviderInfo
         CustomerTitle = newtitle;
     }
 
-    internal Task CacheResetAsync(BoxItem boxItem)
+    internal async Task CacheResetAsync(BoxItem boxItem)
     {
-        return _boxProviderInfoHelper.CacheResetAsync(ID, boxItem);
+        await _boxProviderInfoHelper.CacheResetAsync(ID, boxItem);
     }
 
-    internal Task CacheResetAsync(string boxPath = null, bool? isFile = null)
+    internal async Task CacheResetAsync(string boxPath = null, bool? isFile = null)
     {
-        return _boxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile);
+        await _boxProviderInfoHelper.CacheResetAsync(BoxRootId, ID, boxPath, isFile);
     }
 
     internal async ValueTask<BoxFile> GetBoxFileAsync(string dropboxFilePath)
@@ -184,14 +184,14 @@ internal class BoxStorageDisposableWrapper : IDisposable
         }
     }
 
-    internal Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
+    internal async Task<BoxStorage> CreateStorageAsync(OAuth20Token token, int id)
     {
         if (TryGetStorage(id, out var storage) && storage.IsOpened)
         {
-            return Task.FromResult(storage);
+            return storage;
         }
 
-        return InternalCreateStorageAsync(token, id);
+        return await InternalCreateStorageAsync(token, id);
     }
 
     internal bool TryGetStorage(int providerId, out BoxStorage storage)
@@ -199,14 +199,14 @@ internal class BoxStorageDisposableWrapper : IDisposable
         return _storages.TryGetValue(providerId, out storage);
     }
 
-    private Task CheckTokenAsync(OAuth20Token token, int id)
+    private async Task CheckTokenAsync(OAuth20Token token, int id)
     {
         if (token == null)
         {
             throw new UnauthorizedAccessException("Cannot create Box session with given token");
         }
 
-        return InternalCheckTokenAsync(token, id);
+        await InternalCheckTokenAsync(token, id);
     }
 
     private async Task InternalCheckTokenAsync(OAuth20Token token, int id)

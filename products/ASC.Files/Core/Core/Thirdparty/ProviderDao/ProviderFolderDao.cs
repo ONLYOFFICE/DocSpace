@@ -380,11 +380,11 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         return await InternalCanMoveOrCopyAsync(to, matchedIds, selector);
     }
 
-    private Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
+    private async Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
     {
         var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
 
-        return folderDao.CanMoveOrCopyAsync(matchedIds, to);
+        return await folderDao.CanMoveOrCopyAsync(matchedIds, to);
     }
 
     public async Task<string> RenameFolderAsync(Folder<string> folder, string newTitle)

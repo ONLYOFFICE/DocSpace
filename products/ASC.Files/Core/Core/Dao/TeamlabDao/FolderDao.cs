@@ -390,11 +390,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return await SaveFolderAsync(folder, null);
     }
 
-    private Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
+    private async Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return InternalSaveFolderAsync(folder, transaction);
+        return await InternalSaveFolderAsync(folder, transaction);
     }
 
     private async Task<int> InternalSaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)

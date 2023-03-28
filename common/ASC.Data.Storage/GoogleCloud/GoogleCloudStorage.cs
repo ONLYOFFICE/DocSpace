@@ -779,11 +779,11 @@ public class GoogleCloudStorage : BaseStorage
         return StorageClient.Create(credential);
     }
 
-    private Task<StorageClient> GetStorageAsync()
+    private async Task<StorageClient> GetStorageAsync()
     {
         var credential = GoogleCredential.FromJson(_json);
 
-        return StorageClient.CreateAsync(credential);
+        return await StorageClient.CreateAsync(credential);
     }
 
     private string MakePath(string domain, string path)

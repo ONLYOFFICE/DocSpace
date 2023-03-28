@@ -692,16 +692,16 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return await GetFileAsync(file.Id);
     }
 
-    private Task DeleteVersionAsync(File<int> file)
+    private async Task DeleteVersionAsync(File<int> file)
     {
         if (file == null
             || file.Id == default
             || file.Version <= 1)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalDeleteVersionAsync(file);
+        await InternalDeleteVersionAsync(file);
     }
 
     private async Task InternalDeleteVersionAsync(File<int> file)
@@ -732,17 +732,17 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await DeleteFileAsync(fileId, true);
     }
 
-    private Task DeleteFileAsync(int fileId, bool deleteFolder)
+    private async Task DeleteFileAsync(int fileId, bool deleteFolder)
     {
         if (fileId == default)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return internalDeleteFileAsync(fileId, deleteFolder);
+        await InternalDeleteFileAsync(fileId, deleteFolder);
     }
 
-    private async Task internalDeleteFileAsync(int fileId, bool deleteFolder)
+    private async Task InternalDeleteFileAsync(int fileId, bool deleteFolder)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
@@ -1104,9 +1104,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
                    : null;
     }
 
-    private Task RecalculateFilesCountAsync(int folderId)
+    private async Task RecalculateFilesCountAsync(int folderId)
     {
-        return GetRecalculateFilesCountUpdateAsync(folderId);
+        await GetRecalculateFilesCountUpdateAsync(folderId);
     }
 
     #region chunking

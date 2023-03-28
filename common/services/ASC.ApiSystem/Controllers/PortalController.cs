@@ -520,15 +520,15 @@ public class PortalController : ControllerBase
         }
     }
 
-    private Task<(bool exists, object error)> CheckExistingNamePortalAsync(string portalName)
+    private async Task<(bool exists, object error)> CheckExistingNamePortalAsync(string portalName)
     {
         if (string.IsNullOrEmpty(portalName))
         {
             object error = new { error = "portalNameEmpty", message = "PortalName is required" };
-            return Task.FromResult((false, error));
+            return (false, error);
         }
 
-        return internalCheckExistingNamePortalAsync(portalName);
+        return await internalCheckExistingNamePortalAsync(portalName);
     }
 
     private async Task<(bool exists, object error)> internalCheckExistingNamePortalAsync(string portalName)

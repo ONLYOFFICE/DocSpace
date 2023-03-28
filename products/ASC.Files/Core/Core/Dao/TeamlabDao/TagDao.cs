@@ -512,14 +512,14 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         _semaphore.Release();
     }
 
-    private Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
+    private async Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
     {
         if (tag == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalUpdateNewTagsInDbAsync(tag, createOn, createdBy);
+        await InternalUpdateNewTagsInDbAsync(tag, createOn, createdBy);
     }
 
     private async Task InternalUpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
@@ -648,14 +648,14 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     }
 
-    private Task RemoveTagInDbAsync(Tag tag)
+    private async Task RemoveTagInDbAsync(Tag tag)
     {
         if (tag == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalRemoveTagInDbAsync(tag);
+        await InternalRemoveTagInDbAsync(tag);
     }
 
     private async Task InternalRemoveTagInDbAsync(Tag tag)
