@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
-import { FailBadge } from "../FailBadge";
-import { SuccessBadge } from "../SuccessBadge";
-import { ToggleButton } from "@docspace/components"
+import Text from "@docspace/components/text";
+
+import { ToggleButton } from "@docspace/components";
 import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 import WebhookDialog from "../WebhookDialog";
 import { DeleteWebhookDialog } from "../DeleteWebhookDialog";
+import { StatusBadge } from "../StatusBadge";
 
 export const WebhooksTableRow = ({
   webhook,
@@ -46,12 +47,12 @@ export const WebhooksTableRow = ({
       icon: HistoryIcon,
       onClick: () => console.log("webhooks history"),
     },
-    {
-      key: "Retry dropdownItem",
-      label: "Retry",
-      icon: RetryIcon,
-      onClick: () => retryWebhookEvent(webhook.id),
-    },
+    // {
+    //   key: "Retry dropdownItem",
+    //   label: "Retry",
+    //   icon: RetryIcon,
+    //   onClick: () => retryWebhookEvent(webhook.id),
+    // },
     {
       key: "Separator dropdownItem",
       isSeparator: true,
@@ -68,16 +69,16 @@ export const WebhooksTableRow = ({
     <>
       <TableRow contextOptions={contextOptions}>
         <TableCell>
-          {webhook.title}{" "}
-          {webhook.responseStatus === "success" ? (
-            <SuccessBadge label={webhook.responseCode} />
-          ) : webhook.responseStatus === "error" ? (
-            <FailBadge label={webhook.responseCode} />
-          ) : (
-            ""
-          )}
+          <Text as="span" fontWeight={600}>
+            {webhook.title}{" "}
+          </Text>
+          <StatusBadge status={webhook.responseCode} />
         </TableCell>
-        <TableCell>{webhook.url}</TableCell>
+        <TableCell>
+          <Text as="span" fontSize="11px" color="#A3A9AE" fontWeight={600}>
+            {webhook.url}
+          </Text>
+        </TableCell>
         <TableCell>
           <ToggleButton
             className="toggle toggleButton"
