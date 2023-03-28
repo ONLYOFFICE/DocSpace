@@ -123,6 +123,10 @@ class ConsumerModalDialog extends React.Component {
         return this.props.rackspaceUrl;
       case "selectel":
         return this.props.selectelUrl;
+      case "yandex":
+        return this.props.yandexUrl;
+      case "vk":
+        return this.props.vkUrl;
       default:
         return this.props.docspaceSettingsUrl;
     }
@@ -145,7 +149,7 @@ class ConsumerModalDialog extends React.Component {
       </Link>
     </Trans>
   );
-  
+
   supportTeamDescription = (
     <Box paddingProp="20px 0 8px">
       <Trans
@@ -284,6 +288,8 @@ export default inject(({ setup, auth }) => {
     googleCloudUrl,
     rackspaceUrl,
     selectelUrl,
+    yandexUrl,
+    vkUrl,
   } = settingsStore;
   const { integration } = setup;
   const { selectedConsumer } = integration;
@@ -312,5 +318,7 @@ export default inject(({ setup, auth }) => {
     googleCloudUrl,
     rackspaceUrl,
     selectelUrl,
+    yandexUrl,
+    vkUrl,
   };
 })(observer(ConsumerModalDialog));

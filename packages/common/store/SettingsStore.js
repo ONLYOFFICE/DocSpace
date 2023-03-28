@@ -234,6 +234,14 @@ class SettingsStore {
     return `${this.helpLink}/administration/connect-selectel-docspace.aspx`;
   }
 
+  get yandexUrl() {
+    return `${this.helpLink}/administration/connect-yandex-docspace.aspx`;
+  }
+
+  get vkUrl() {
+    return `${this.helpLink}/administration/connect-vk-docspace.aspx`;
+  }
+
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
   }

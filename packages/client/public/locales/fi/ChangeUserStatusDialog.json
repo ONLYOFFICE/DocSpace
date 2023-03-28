@@ -1,5 +1,4 @@
 {
   "ChangeUserStatusDialog": "Käyttäjät, joilla on tila {{userStatus}}, tulee {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Muuta käyttäjän tilaa",
-  "ChangeUsersStatusButton": "Muuta käyttäjän tilaa"
+  "ChangeUserStatusDialogHeader": "Muuta käyttäjän tilaa"
 }

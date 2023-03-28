@@ -1,5 +1,4 @@
 {
   "ChangeUserStatusDialog": "'{{ userStatus }}'ունեցող օգտվողները կլինեն {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Փոխել օգտվողի կարգավիճակը",
-  "ChangeUsersStatusButton": "Փոխել օգտվողի կարգավիճակը"
+  "ChangeUserStatusDialogHeader": "Փոխել օգտվողի կարգավիճակը"
 }
