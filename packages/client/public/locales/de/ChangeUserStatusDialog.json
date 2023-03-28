@@ -3,6 +3,5 @@
   "ChangeUserStatusDialogHeader": "Status ändern",
   "ChangeUserStatusDialogMessage": "Sie können Status für Sie oder Portalbesitzer nicht ändern.",
   "ChangeUsersActiveStatus": "aktiviert",
-  "ChangeUsersDisableStatus": "deaktiviert",
-  "ChangeUsersStatusButton": "Benutzerstatus ändern"
+  "ChangeUsersDisableStatus": "deaktiviert"
 }

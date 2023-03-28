@@ -67,6 +67,8 @@ const FilesTileContainer = ({
 
       const { width } = node.getBoundingClientRect();
 
+      if (width === 0) return;
+
       const size = thumbnails1280x720 ? "1280x720" : getThumbSize(width);
 
       const widthWithoutPadding = width - 32;

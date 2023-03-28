@@ -3,6 +3,5 @@
   "ChangeUserStatusDialogHeader": "Изменение статуса",
   "ChangeUserStatusDialogMessage": "Вы не можете изменить статус владельца DocSpace и свой собственный статус.",
   "ChangeUsersActiveStatus": "разблокированы",
-  "ChangeUsersDisableStatus": "заблокированы",
-  "ChangeUsersStatusButton": "Изменить статус пользователя"
+  "ChangeUsersDisableStatus": "заблокированы"
 }

@@ -1,5 +1,4 @@
 {
   "ChangeUserStatusDialog": "带有‘{{ userStatus }}’状态的用户将‘{{ userStatus }}",
-  "ChangeUserStatusDialogHeader": "变更用户状态",
-  "ChangeUsersStatusButton": "变更用户状态"
+  "ChangeUserStatusDialogHeader": "变更用户状态"
 }

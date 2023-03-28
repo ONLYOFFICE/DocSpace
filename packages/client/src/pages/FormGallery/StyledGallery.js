@@ -57,6 +57,9 @@ const StyledInfoPanelToggleWrapper = styled.div`
   margin-left: auto;
 
   display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+  align-items: center;
+  justify-content: center;
+
   @media ${tablet} {
     display: none;
   }
@@ -68,6 +71,8 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+    margin-bottom: 1px;
+
     background-color: ${(props) =>
       props.isInfoPanelVisible
         ? props.theme.infoPanel.sectionHeaderToggleBgActive

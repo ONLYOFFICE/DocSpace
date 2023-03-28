@@ -3,6 +3,5 @@
   "ChangeUserStatusDialogHeader": "Промени статус",
   "ChangeUserStatusDialogMessage": "Не можете да смените статуса за собственика на DocSpace и за себе си.",
   "ChangeUsersActiveStatus": "активиран",
-  "ChangeUsersDisableStatus": "активиран",
-  "ChangeUsersStatusButton": "Промени потребителския статус"
+  "ChangeUsersDisableStatus": "активиран"
 }
