@@ -17,6 +17,7 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
   isDesktop as isDesktopUtils,
+  isSmallTablet as isSmallTabletUtils,
 } from "@docspace/components/utils/device";
 import ToggleInfoPanelButton from "./sub-components/toggle-infopanel-btn";
 import TrashWarning from "./sub-components/trash-warning";
@@ -59,8 +60,7 @@ const Navigation = ({
   const containerRef = React.useRef(null);
 
   const isDesktop =
-    (!isMobile && !isTabletUtils() && !isMobileUtils()) ||
-    (isDesktopUtils() && !isMobile);
+    (!isTabletUtils() && !isSmallTabletUtils()) || isDesktopUtils();
 
   const infoPanelIsVisible = React.useMemo(
     () => isDesktop && (!isEmptyPage || (isEmptyPage && isRoom)),

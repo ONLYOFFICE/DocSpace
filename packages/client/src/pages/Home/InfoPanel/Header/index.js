@@ -1,5 +1,5 @@
 ﻿import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { isMobile as isMobileRDD } from "react-device-detect";
@@ -11,7 +11,7 @@ import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Submenu from "@docspace/components/submenu";
 import {
   isDesktop as isDesktopUtils,
-  isMobile as isMobileUtils,
+  isSmallTablet as isSmallTabletUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 
@@ -37,6 +37,8 @@ const InfoPanelHeaderContent = (props) => {
     // selectionParentRoom,
   } = props;
 
+  const [isTablet, setIsTablet] = useState(false);
+
   const isRooms = getIsRooms();
   const isGallery = getIsGallery();
   const isAccounts = getIsAccounts();
@@ -47,6 +49,19 @@ const InfoPanelHeaderContent = (props) => {
 
   const withSubmenu =
     !isNoItem && !isSeveralItems && !isGallery && !isAccounts && !isTrash;
+
+  useEffect(() => {
+    checkWidth();
+    window.addEventListener("resize", checkWidth);
+    return () => window.removeEventListener("resize", checkWidth);
+  }, []);
+
+  const checkWidth = () => {
+    const isTablet =
+      isTabletUtils() || isSmallTabletUtils() || !isDesktopUtils();
+
+    setIsTablet(isTablet);
+  };
 
   const closeInfoPanel = () => setIsVisible(false);
 
@@ -83,9 +98,6 @@ const InfoPanelHeaderContent = (props) => {
   const roomsSubmenu = [...submenuData];
 
   const personalSubmenu = [submenuData[1], submenuData[2]];
-
-  const isTablet =
-    isTabletUtils() || isMobileUtils() || isMobileRDD || !isDesktopUtils();
 
   return (
     <StyledInfoPanelHeader isTablet={isTablet} withSubmenu={withSubmenu}>
