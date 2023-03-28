@@ -1,3 +1,4 @@
+import React from "react";
 import { DaysContainer } from "../styled-components";
 
 import { getDayElements, getWeekdayElements } from "../utils";

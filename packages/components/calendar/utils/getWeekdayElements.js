@@ -1,5 +1,7 @@
-import { Weekday } from "../styled-components";
+import React from "react";
 import moment from "moment";
+
+import { Weekday } from "../styled-components";
 
 export const getWeekdayElements = () => {
   const weekdays = moment

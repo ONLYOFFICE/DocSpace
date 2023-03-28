@@ -1,3 +1,4 @@
+import React from "react";
 import { MonthsBody } from "./MonthsBody";
 import { MonthsHeader } from "./MonthsHeader";
 

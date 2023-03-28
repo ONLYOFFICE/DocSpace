@@ -1,3 +1,4 @@
+import React from "react";
 import { MonthsContainer } from "../styled-components/MonthsContainer";
 import { getCalendarMonths, getMonthElements } from "../utils";
 
@@ -7,7 +8,7 @@ export const MonthsBody = ({
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
 }) => {
   const months = getCalendarMonths(observedDate);
   const monthsElements = getMonthElements(

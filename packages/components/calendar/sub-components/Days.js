@@ -1,3 +1,4 @@
+import React from "react";
 import { DaysBody } from "./DaysBody";
 import { DaysHeader } from "./DaysHeader";
 

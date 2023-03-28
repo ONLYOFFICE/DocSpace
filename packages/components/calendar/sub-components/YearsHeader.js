@@ -1,3 +1,4 @@
+import React from "react";
 import moment from "moment";
 import { HeaderContainer, Title } from "../styled-components";
 import { HeaderButtons } from "./HeaderButtons";
