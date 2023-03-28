@@ -3,6 +3,5 @@
   "ChangeUserStatusDialogHeader": "Alterar estado de utilizador",
   "ChangeUserStatusDialogMessage": "Não pode alterar o estado para o dono do DocSpace e para si próprio.",
   "ChangeUsersActiveStatus": "ativado",
-  "ChangeUsersDisableStatus": "desabilitado",
-  "ChangeUsersStatusButton": "Alterar estado de utilizador"
+  "ChangeUsersDisableStatus": "desabilitado"
 }

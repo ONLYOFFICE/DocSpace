@@ -3,6 +3,5 @@
   "ChangeUserStatusDialogHeader": "Schimbați statutul utilizatorului",
   "ChangeUserStatusDialogMessage": "Nu puteți schimba statutul posesorului portalului și nici al dumneavoastră.",
   "ChangeUsersActiveStatus": "activat",
-  "ChangeUsersDisableStatus": "desactivat",
-  "ChangeUsersStatusButton": "Schimbați statutul utilizatorului"
+  "ChangeUsersDisableStatus": "desactivat"
 }
