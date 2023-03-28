@@ -165,7 +165,7 @@
   "PasswordLimitSpecialSymbols": "caractères spéciaux",
   "PasswordLimitUpperCase": "lettres majuscules",
   "PasswordMinimumLength": "Longueur minimale",
-  "PayBeforeTheEndGracePeriod": "Veillez à effectuer le paiement avant l’expiration de la période de grâce",
+  "PayBeforeTheEndGracePeriod": "Veillez à effectuer le paiement avant l’expiration de la période de grâce.",
   "PaymentsTitle": "Paiements",
   "People": "Personnes",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> par administrateur/mois",

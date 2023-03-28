@@ -1,6 +1,6 @@
 {
   "ChangeUserStatusDialog": "Používatelia so stavom '{{ userStatus }}' budú {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Zmeniť stav používateľa",
+  "ChangeUserStatusDialogHeader": "Zmeniť stav",
   "ChangeUserStatusDialogMessage": "Nemôžete zmeniť svoj stav a stav vlastníka DocSpace.",
   "ChangeUsersActiveStatus": "aktivovaný",
   "ChangeUsersStatusButton": "Zmeniť stav používateľa"
