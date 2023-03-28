@@ -299,7 +299,7 @@ public class BackupAjaxHandler
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var quota = await _tenantManager.GetTenantQuotaAsync(_tenantManager.GetCurrentTenantAsync().Id);
+        var quota = await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id);
         if (!SetupInfo.IsVisibleSettings("Restore") ||
             (!_coreBaseSettings.Standalone && !quota.AutoBackupRestore))
         {

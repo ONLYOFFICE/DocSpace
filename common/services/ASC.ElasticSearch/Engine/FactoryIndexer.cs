@@ -462,7 +462,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         return !Support(t)
             ? Task.FromResult(false)
-            : Queue(() => _indexer.IndexAsync(data, immediately));
+            : QueueAsync(() => _indexer.IndexAsync(data, immediately));
     }
 
     public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
@@ -595,7 +595,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         return task;
     }
 
-    private Task Queue(Func<Task> actionData)
+    private Task QueueAsync(Func<Task> actionData)
     {
         var task = new Task(async () =>
         {
