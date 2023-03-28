@@ -5,7 +5,12 @@ import {
 } from "../../../utils/commonSettingsStyles";
 import globalColors from "@docspace/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
-import { hugeMobile, tablet, mobile } from "@docspace/components/utils/device";
+import {
+  hugeMobile,
+  tablet,
+  mobile,
+  smallTablet,
+} from "@docspace/components/utils/device";
 
 const linkColor = globalColors.black;
 
@@ -250,7 +255,9 @@ const StyledRestoreBackup = styled.div`
     margin-bottom: 16px;
   }
   .restore-backup_button {
-    ${isMobileOnly && "width:100%"}
+    @media ${smallTablet} {
+      width: 100%;
+    }
   }
   ${(props) => !props.isEnableRestore && UnavailableStyles}
 `;
