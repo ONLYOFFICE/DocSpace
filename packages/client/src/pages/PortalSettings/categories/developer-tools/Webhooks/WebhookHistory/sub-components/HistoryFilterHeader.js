@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 import { Base } from "@docspace/components/themes";
@@ -6,6 +6,7 @@ import FilterReactSvrUrl from "PUBLIC_DIR/images/filter.react.svg?url";
 import IconButton from "@docspace/components/icon-button";
 
 import { useParams } from "react-router-dom";
+import { FilterDialog } from "./FilterDialog";
 
 const ListHeader = styled.header`
   display: flex;
@@ -51,13 +52,29 @@ const FilterButton = styled.div`
 const HistoryFilterHeader = () => {
   const { id } = useParams();
 
+  const [isFiltersVisible, setIsFiltersVisible] = useState(false);
+
+  const openFiltersModal = () => {
+    setIsFiltersVisible(true);
+  };
+
+  const closeFiltersModal = () => {
+    setIsFiltersVisible(false);
+  };
+
   return (
     <ListHeader>
       <ListHeading>Webhook {id}</ListHeading>
 
-      <FilterButton>
+      <FilterButton onClick={openFiltersModal}>
         <IconButton iconName={FilterReactSvrUrl} size={16} />
       </FilterButton>
+
+      <FilterDialog
+        visible={isFiltersVisible}
+        closeModal={closeFiltersModal}
+        applyFilters={() => {}}
+      />
     </ListHeader>
   );
 };
