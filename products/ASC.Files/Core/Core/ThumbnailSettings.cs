@@ -115,12 +115,20 @@ public class ThumbnailSettings
         set => _maxDegreeOfParallelism = value;
     }
 
-    private long? _availableFileSize;
-    public long? AvailableFileSize
+    private long? _maxImageFileSize;
+    public long? MaxImageFileSize
     {
-        get => _availableFileSize ?? 100L * 1024L * 1024L;
-        set => _availableFileSize = value;
+        get => _maxImageFileSize ?? 30L * 1024L * 1024L;
+        set => _maxImageFileSize = value;
     }
+
+    private long? _maxVideoFileSize;
+    public long? MaxVideoFileSize
+    {
+        get => _maxVideoFileSize ?? 1000L * 1024L * 1024L;
+        set => _maxVideoFileSize = value;
+    }
+
 
     private int? _attemptsLimit;
     public int? AttemptsLimit
