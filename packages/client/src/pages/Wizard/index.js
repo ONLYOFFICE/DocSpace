@@ -407,6 +407,7 @@ const Wizard = (props) => {
                 {t("Timezone")}
               </Text>
               <ComboBox
+                textOverflow
                 withoutPadding
                 directionY="both"
                 options={timezones}
