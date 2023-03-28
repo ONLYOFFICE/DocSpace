@@ -59,6 +59,23 @@ public abstract class MasterFormController<T> : ApiControllerBase
         _fileStorageService = fileStorageServiceString;
     }
 
+    /// <summary>
+    /// Checks if the current file is a form draft which can be filled out.
+    /// </summary>
+    /// <short>Check the form draft</short>
+    /// <category>Files</category>
+    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CheckFillFormDraftRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for checking a form draft: <![CDATA[
+    /// <ul>
+    ///     <li><b>Version</b> (integer) - file version,</li>
+    ///     <li><b>Doc</b> (string) - shared token,</li>
+    ///     <li><b>RequestView</b> (bool) - specifies whether to request a form for viewing or not,</li>
+    ///     <li><b>RequestEmbedded</b> (bool) - specifies whether to request an embedded form or not.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Link to the form</returns>
+    /// <path>api/2.0/files/masterform/{fileId}/checkfillformdraft</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("masterform/{fileId}/checkfillformdraft")]
     public async Task<object> CheckFillFormDraftAsync(T fileId, CheckFillFormDraftRequestDto inDto)
     {

@@ -68,6 +68,18 @@ public class EditorControllerThirdparty : EditorController<string>
         _thirdPartySelector = thirdPartySelector;
     }
 
+    /// <summary>
+    /// Opens a third-party file with the ID specified in the request for editing.
+    /// </summary>
+    /// <short>
+    /// Open a third-party file
+    /// </short>
+    /// <category>Third-party integration</category>
+    /// <param type="System.String, System" name="fileId">File ID</param>
+    /// <returns>Configuration parameters: document config, document type, editor config, editor type, editor URL, token, platform type</returns>
+    /// <path>api/2.0/files/file/app-{fileId}/openedit</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("file/app-{fileId}/openedit")]
@@ -145,16 +157,23 @@ public abstract class EditorController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Saves edits to a file with the ID specified in the request.
     /// </summary>
-    /// <param name="fileId">File ID</param>
-    /// <param name="fileExtension"></param>
-    /// <param name="downloadUri"></param>
-    /// <param name="stream"></param>
-    /// <param name="doc"></param>
-    /// <param name="forcesave"></param>
+    /// <short>Save file edits</short>
+    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SaveEditingRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for saving file edits: <![CDATA[
+    /// <ul>
+    ///     <li><b>FileExtension</b> (string) - file extension,</li>
+    ///     <li><b>DownloadUri</b> (string) - URI to download a file,</li>
+    ///     <li><b>File</b> (IFormFile) - request file stream,</li>
+    ///     <li><b>Doc</b> (string) - shared token,</li>
+    ///     <li><b>Forcesave</b> (bool) - specifies whether to force save a file or not.</li>
+    /// </ul>
+    /// ]]></param>
     /// <category>Files</category>
-    /// <returns></returns>
+    /// <returns>Saved file parameters: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <path>api/2.0/files/file/{fileId}/saveediting</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("file/{fileId}/saveediting")]
     public async Task<FileDto<T>> SaveEditingFromFormAsync(T fileId, [FromForm] SaveEditingRequestDto inDto)
     {
@@ -171,13 +190,20 @@ public abstract class EditorController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Informs about opening a file with the ID specified in the request for editing, locking it from being deleted or moved (this method is called by the mobile editors).
     /// </summary>
-    /// <param name="fileId">File ID</param>
-    /// <param name="editingAlone"></param>
-    /// <param name="doc"></param>
+    /// <short>Start file editing</short>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.StartEditRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for starting file editing: <![CDATA[
+    /// <ul>
+    ///     <li><b>EditingAlone</b> (bool) - specifies whether to share a file with other users for editing or not,</li>
+    ///     <li><b>Doc</b> (string) - shared token.</li>
+    /// </ul>
+    /// ]]></param>
     /// <category>Files</category>
-    /// <returns></returns>
+    /// <returns>File key for Document Service</returns>
+    /// <path>api/2.0/files/file/{fileId}/startedit</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("file/{fileId}/startedit")]
     public async Task<object> StartEditAsync(T fileId, StartEditRequestDto inDto)
     {
@@ -185,15 +211,18 @@ public abstract class EditorController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Tracks file changes when editing.
     /// </summary>
-    /// <param name="fileId">File ID</param>
-    /// <param name="tabId"></param>
-    /// <param name="docKeyForTrack"></param>
-    /// <param name="doc"></param>
-    /// <param name="isFinish"></param>
+    /// <short>Track file editing</short>
+    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Guid, System" name="tabId">Tab ID</param>
+    /// <param type="System.String, System" name="docKeyForTrack">Document key for tracking</param>
+    /// <param type="System.String, System" name="doc">Shared token</param>
+    /// <param type="System.Boolean, System" name="isFinish">Specifies whether to finish file tracking or not</param>
     /// <category>Files</category>
-    /// <returns></returns>
+    /// <returns>File changes</returns>
+    /// <path>api/2.0/files/file/{fileId}/trackeditfile</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("file/{fileId}/trackeditfile")]
     public Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
@@ -201,13 +230,18 @@ public abstract class EditorController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Returns the initialization configuration of a file to open it in the editor.
     /// </summary>
-    /// <param name="fileId">File ID</param>
-    /// <param name="version"></param>
-    /// <param name="doc"></param>
+    /// <short>Open a file</short>
+    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Int32, System" name="version">File version</param>
+    /// <param type="System.String, System" name="doc">Shared token</param>
+    /// <param type="System.Boolean, System" name="view">Specifies if a document will be opened for viewing only or not</param>
     /// <category>Files</category>
-    /// <returns></returns>
+    /// <returns>Configuration parameters: document config, document type, editor config, editor type, editor URL, token, platform type, file parameters</returns>
+    /// <path>api/2.0/files/file/{fileId}/openedit</path>
+    /// <requiresAuthorization>false</requiresAuthorization>
+    /// <httpMethod>GET</httpMethod>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("file/{fileId}/openedit")]
@@ -244,12 +278,30 @@ public abstract class EditorController<T> : ApiControllerBase
         return result;
     }
 
+    /// <summary>
+    /// Returns a link to download a file with the ID specified in the request asynchronously.
+    /// </summary>
+    /// <short>Get file download link asynchronously</short>
+    /// <category>Files</category>
+    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <returns>File download link</returns>
+    /// <path>api/2.0/files/file/{fileId}/presigned</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("file/{fileId}/presigned")]
     public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
         return _fileStorageService.GetPresignedUriAsync(fileId);
     }
 
+    /// <summary>
+    /// Returns a list of users with their access rights to the file with the ID specified in the request.
+    /// </summary>
+    /// <short>Get shared users</short>
+    /// <category>Sharing</category>
+    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <returns>List of users with their access rights to the file: user information, user email, user ID, has access to the file or not, user display name</returns>
+    /// <path>api/2.0/files/file/{fileId}/sharedusers</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("file/{fileId}/sharedusers")]
     public Task<List<MentionWrapper>> SharedUsers(T fileId)
     {
@@ -280,12 +332,20 @@ public class EditorController : ApiControllerBase
 
 
     /// <summary>
-    ///  Checking document service location
+    /// Checks the document service location.
     /// </summary>
-    /// <param name="docServiceUrl">Document editing service Domain</param>
-    /// <param name="docServiceUrlInternal">Document command service Domain</param>
-    /// <param name="docServiceUrlPortal">Community Server Address</param>
-    /// <returns></returns>
+    /// <short>Check the document service URL</short>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CheckDocServiceUrlRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for checking the document service location: <![CDATA[
+    /// <ul>
+    ///     <li><b>DocServiceUrl</b> (string) - the Document Server address,</li>
+    ///     <li><b>DocServiceUrlInternal</b> (string) - the Document Server address in the local private network,</li>
+    ///     <li><b>DocServiceUrlPortal</b> (string) - the Community Server address.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <category>Settings</category>
+    /// <returns>Document service information: the Document Server address, the Document Server address in the local private network, the Community Server address</returns>
+    /// <path>api/2.0/files/docservice</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("docservice")]
     public Task<IEnumerable<string>> CheckDocServiceUrl(CheckDocServiceUrlRequestDto inDto)
     {
@@ -305,6 +365,16 @@ public class EditorController : ApiControllerBase
         return InternalCheckDocServiceUrlAsync();
     }
 
+    /// <summary>
+    /// Returns the address of the connected editors.
+    /// </summary>
+    /// <short>Get the document service URL</short>
+    /// <category>Settings</category>
+    /// <param type="System.Boolean, System" name="version">Specifies the editor version or not</param>
+    /// <returns>The document service URL with the editor version specified</returns>
+    /// <path>api/2.0/files/docservice</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <requiresAuthorization>false</requiresAuthorization>
     /// <visible>false</visible>
     [AllowAnonymous]
     [HttpGet("docservice")]
