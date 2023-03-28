@@ -1,30 +1,26 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
 
 import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 import { Provider } from "@docspace/components/utils/context";
-import { isMobile } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
 import SubSectionHeader from "./sub-components/section-header";
 import SubSectionFilter from "./sub-components/section-filter";
 import SubSectionBody from "./sub-components/section-body";
 import SubSectionBodyContent from "./sub-components/section-body-content";
-
 import SubSectionPaging from "./sub-components/section-paging";
-//import SectionToggler from "./sub-components/section-toggler";
 import InfoPanel from "./sub-components/info-panel";
 import SubInfoPanelBody from "./sub-components/info-panel-body";
 import SubInfoPanelHeader from "./sub-components/info-panel-header";
-
 import SubSectionFooter from "./sub-components/section-footer";
 
-import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
-import { inject, observer } from "mobx-react";
 
 const Section = (props) => {
   const {
@@ -55,7 +51,13 @@ const Section = (props) => {
     isEmptyPage,
   } = props;
 
+  const [sectionSize, setSectionSize] = React.useState({
+    width: null,
+    height: null,
+  });
+
   const containerRef = React.useRef(null);
+  const timerRef = React.useRef(null);
 
   let sectionHeaderContent = null;
   let sectionFilterContent = null;
@@ -109,167 +111,184 @@ const Section = (props) => {
       isSectionBodyAvailable ||
       isSectionPagingAvailable;
 
+  React.useEffect(() => {
+    window.addEventListener("resize", onResize);
+    onResize();
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  const onResize = React.useCallback(() => {
+    clearTimeout(timerRef.current);
+
+    timerRef.current = setTimeout(() => {
+      if (!containerRef.current) return;
+
+      const computedStyles = window.getComputedStyle(
+        containerRef.current,
+        null
+      );
+      const width = +computedStyles.getPropertyValue("width").replace("px", "");
+      const height = +computedStyles
+        .getPropertyValue("height")
+        .replace("px", "");
+
+      setSectionSize(() => ({ width, height }));
+    }, 100);
+  }, []);
+
   return (
     <>
       {isSectionAvailable && (
-        <ReactResizeDetector
-          refreshRate={100}
-          refreshMode="debounce"
-          refreshOptions={{ trailing: true }}
+        <Provider
+          value={{
+            sectionWidth: sectionSize.width,
+            sectionHeight: sectionSize.height,
+          }}
         >
-          {({ width, height }) => (
-            <Provider
-              value={{
-                sectionWidth: width,
-                sectionHeight: height,
-              }}
-            >
-              <SectionContainer
-                widthProp={width}
-                showText={showText}
-                viewAs={viewAs}
+          <SectionContainer
+            showText={showText}
+            viewAs={viewAs}
+            ref={containerRef}
+            maintenanceExist={maintenanceExist}
+            isSectionHeaderAvailable={isSectionHeaderAvailable}
+            settingsStudio={settingsStudio}
+            isInfoPanelVisible={isInfoPanelVisible}
+          >
+            {isSectionHeaderAvailable && !isMobile && (
+              <SubSectionHeader
                 maintenanceExist={maintenanceExist}
-                isSectionHeaderAvailable={isSectionHeaderAvailable}
-                settingsStudio={settingsStudio}
-                isInfoPanelVisible={isInfoPanelVisible}
+                snackbarExist={snackbarExist}
+                className="section-header_header"
+                isHeaderVisible={isHeaderVisible}
+                viewAs={viewAs}
+                showText={showText}
+                isEmptyPage={isEmptyPage}
               >
-                {isSectionHeaderAvailable && !isMobile && (
-                  <SubSectionHeader
-                    maintenanceExist={maintenanceExist}
-                    snackbarExist={snackbarExist}
-                    className="section-header_header"
-                    isHeaderVisible={isHeaderVisible}
-                    viewAs={viewAs}
-                    showText={showText}
-                    isEmptyPage={isEmptyPage}
-                  >
-                    {sectionHeaderContent
-                      ? sectionHeaderContent.props.children
-                      : null}
-                  </SubSectionHeader>
-                )}
-                {isSectionFilterAvailable && !isMobile && (
-                  <>
-                    <SubSectionFilter
-                      className="section-header_filter"
+                {sectionHeaderContent
+                  ? sectionHeaderContent.props.children
+                  : null}
+              </SubSectionHeader>
+            )}
+            {isSectionFilterAvailable && !isMobile && (
+              <>
+                <SubSectionFilter
+                  className="section-header_filter"
+                  viewAs={viewAs}
+                >
+                  {sectionFilterContent
+                    ? sectionFilterContent.props.children
+                    : null}
+                </SubSectionFilter>
+              </>
+            )}
+
+            {isSectionBodyAvailable && (
+              <>
+                <SubSectionBody
+                  onDrop={onDrop}
+                  uploadFiles={uploadFiles}
+                  withScroll={withBodyScroll}
+                  autoFocus={isMobile || isTabletView ? false : true}
+                  viewAs={viewAs}
+                  settingsStudio={settingsStudio}
+                >
+                  {isSectionHeaderAvailable && isMobile && (
+                    <SubSectionHeader
+                      className="section-body_header"
+                      isHeaderVisible={isHeaderVisible}
                       viewAs={viewAs}
+                      showText={showText}
+                      settingsStudio={settingsStudio}
+                      isEmptyPage={isEmptyPage}
                     >
+                      {sectionHeaderContent
+                        ? sectionHeaderContent.props.children
+                        : null}
+                    </SubSectionHeader>
+                  )}
+                  {isSectionFilterAvailable && isMobile && (
+                    <SubSectionFilter className="section-body_filter">
                       {sectionFilterContent
                         ? sectionFilterContent.props.children
                         : null}
                     </SubSectionFilter>
-                  </>
-                )}
+                  )}
+                  <SubSectionBodyContent>
+                    {sectionBodyContent
+                      ? sectionBodyContent.props.children
+                      : null}
+                  </SubSectionBodyContent>
+                  <SubSectionFooter>
+                    {sectionFooterContent
+                      ? sectionFooterContent.props.children
+                      : null}
+                  </SubSectionFooter>
+                  {isSectionPagingAvailable && (
+                    <SubSectionPaging>
+                      {sectionPagingContent
+                        ? sectionPagingContent.props.children
+                        : null}
+                    </SubSectionPaging>
+                  )}
+                </SubSectionBody>
+              </>
+            )}
 
-                {isSectionBodyAvailable && (
-                  <>
-                    <SubSectionBody
-                      onDrop={onDrop}
-                      uploadFiles={uploadFiles}
-                      withScroll={withBodyScroll}
-                      autoFocus={isMobile || isTabletView ? false : true}
-                      viewAs={viewAs}
-                      settingsStudio={settingsStudio}
-                    >
-                      {isSectionHeaderAvailable && isMobile && (
-                        <SubSectionHeader
-                          className="section-body_header"
-                          isHeaderVisible={isHeaderVisible}
-                          viewAs={viewAs}
-                          showText={showText}
-                          settingsStudio={settingsStudio}
-                          isEmptyPage={isEmptyPage}
-                        >
-                          {sectionHeaderContent
-                            ? sectionHeaderContent.props.children
-                            : null}
-                        </SubSectionHeader>
-                      )}
-                      {isSectionFilterAvailable && isMobile && (
-                        <SubSectionFilter className="section-body_filter">
-                          {sectionFilterContent
-                            ? sectionFilterContent.props.children
-                            : null}
-                        </SubSectionFilter>
-                      )}
-                      <SubSectionBodyContent>
-                        {sectionBodyContent
-                          ? sectionBodyContent.props.children
-                          : null}
-                      </SubSectionBodyContent>
-                      <SubSectionFooter>
-                        {sectionFooterContent
-                          ? sectionFooterContent.props.children
-                          : null}
-                      </SubSectionFooter>
-                      {isSectionPagingAvailable && (
-                        <SubSectionPaging>
-                          {sectionPagingContent
-                            ? sectionPagingContent.props.children
-                            : null}
-                        </SubSectionPaging>
-                      )}
-                    </SubSectionBody>
-                  </>
-                )}
+            {!(isMobile || isMobileUtils() || isTabletUtils()) ? (
+              showPrimaryProgressBar && showSecondaryProgressBar ? (
+                <>
+                  <FloatingButton
+                    className="layout-progress-bar"
+                    icon={primaryProgressBarIcon}
+                    percent={primaryProgressBarValue}
+                    alert={showPrimaryButtonAlert}
+                    onClick={onOpenUploadPanel}
+                    clearUploadedFilesHistory={clearUploadedFilesHistory}
+                  />
+                  <FloatingButton
+                    className="layout-progress-second-bar"
+                    icon={secondaryProgressBarIcon}
+                    percent={secondaryProgressBarValue}
+                    alert={showSecondaryButtonAlert}
+                  />
+                </>
+              ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
+                <FloatingButton
+                  className="layout-progress-bar"
+                  icon={primaryProgressBarIcon}
+                  percent={primaryProgressBarValue}
+                  alert={showPrimaryButtonAlert}
+                  onClick={onOpenUploadPanel}
+                  clearUploadedFilesHistory={clearUploadedFilesHistory}
+                />
+              ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
+                <FloatingButton
+                  className="layout-progress-bar"
+                  icon={secondaryProgressBarIcon}
+                  percent={secondaryProgressBarValue}
+                  alert={showSecondaryButtonAlert}
+                />
+              ) : (
+                <></>
+              )
+            ) : (
+              <></>
+            )}
+          </SectionContainer>
 
-                {!(isMobile || isMobileUtils() || isTabletUtils()) ? (
-                  showPrimaryProgressBar && showSecondaryProgressBar ? (
-                    <>
-                      <FloatingButton
-                        className="layout-progress-bar"
-                        icon={primaryProgressBarIcon}
-                        percent={primaryProgressBarValue}
-                        alert={showPrimaryButtonAlert}
-                        onClick={onOpenUploadPanel}
-                        clearUploadedFilesHistory={clearUploadedFilesHistory}
-                      />
-                      <FloatingButton
-                        className="layout-progress-second-bar"
-                        icon={secondaryProgressBarIcon}
-                        percent={secondaryProgressBarValue}
-                        alert={showSecondaryButtonAlert}
-                      />
-                    </>
-                  ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
-                    <FloatingButton
-                      className="layout-progress-bar"
-                      icon={primaryProgressBarIcon}
-                      percent={primaryProgressBarValue}
-                      alert={showPrimaryButtonAlert}
-                      onClick={onOpenUploadPanel}
-                      clearUploadedFilesHistory={clearUploadedFilesHistory}
-                    />
-                  ) : !showPrimaryProgressBar && showSecondaryProgressBar ? (
-                    <FloatingButton
-                      className="layout-progress-bar"
-                      icon={secondaryProgressBarIcon}
-                      percent={secondaryProgressBarValue}
-                      alert={showSecondaryButtonAlert}
-                    />
-                  ) : (
-                    <></>
-                  )
-                ) : (
-                  <></>
-                )}
-              </SectionContainer>
-
-              {isInfoPanelAvailable && (
-                <InfoPanel viewAs={viewAs}>
-                  <SubInfoPanelHeader>
-                    {infoPanelHeaderContent}
-                  </SubInfoPanelHeader>
-                  <SubInfoPanelBody
-                    isInfoPanelScrollLocked={isInfoPanelScrollLocked}
-                  >
-                    {infoPanelBodyContent}
-                  </SubInfoPanelBody>
-                </InfoPanel>
-              )}
-            </Provider>
+          {isInfoPanelAvailable && (
+            <InfoPanel viewAs={viewAs}>
+              <SubInfoPanelHeader>{infoPanelHeaderContent}</SubInfoPanelHeader>
+              <SubInfoPanelBody
+                isInfoPanelScrollLocked={isInfoPanelScrollLocked}
+              >
+                {infoPanelBodyContent}
+              </SubInfoPanelBody>
+            </InfoPanel>
           )}
-        </ReactResizeDetector>
+        </Provider>
       )}
     </>
   );
