@@ -78,14 +78,14 @@ public class SharePointProviderInfo : IProviderInfo
         }
     }
 
-    public Task InvalidateStorageAsync()
+    public async Task InvalidateStorageAsync()
     {
         if (_clientContext != null)
         {
             _clientContext.Dispose();
         }
 
-        return _sharePointProviderInfoHelper.InvalidateAsync();
+        await _sharePointProviderInfoHelper.InvalidateAsync();
     }
 
     public void UpdateTitle(string newtitle)
@@ -414,9 +414,9 @@ public class SharePointProviderInfo : IProviderInfo
         return folder;
     }
 
-    public Task<Folder> GetParentFolderAsync(string serverRelativeUrl)
+    public async Task<Folder> GetParentFolderAsync(string serverRelativeUrl)
     {
-        return GetFolderByIdAsync(GetParentFolderId(serverRelativeUrl));
+        return await GetFolderByIdAsync(GetParentFolderId(serverRelativeUrl));
     }
 
     public async Task<IEnumerable<File>> GetFolderFilesAsync(object id)
@@ -700,14 +700,14 @@ public class SharePointProviderInfoHelper
         }, CacheNotifyAction.Remove);
     }
 
-    public Task InvalidateAsync()
+    public async Task InvalidateAsync()
     {
-        return _notify.PublishAsync(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove);
+        await _notify.PublishAsync(new SharePointProviderCacheItem { }, CacheNotifyAction.Remove);
     }
 
-    public Task PublishFolderAsync(string id)
+    public async Task PublishFolderAsync(string id)
     {
-        return _notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove);
+        await _notify.PublishAsync(new SharePointProviderCacheItem { FolderKey = id }, CacheNotifyAction.Remove);
     }
 
     public async Task PublishFolderAsync(string id1, string id2)
@@ -722,9 +722,9 @@ public class SharePointProviderInfoHelper
         await PublishFolderAsync(id3);
     }
 
-    public Task PublishFileAsync(string fileId, string folderId)
+    public async Task PublishFileAsync(string fileId, string folderId)
     {
-        return _notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove);
+        await _notify.PublishAsync(new SharePointProviderCacheItem { FileKey = fileId, FolderKey = folderId }, CacheNotifyAction.Remove);
     }
 
     public async Task CreateFolderAsync(string id, string parentFolderId, Folder folder)

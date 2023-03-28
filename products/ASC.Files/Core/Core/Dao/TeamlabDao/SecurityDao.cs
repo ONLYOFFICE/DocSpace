@@ -252,14 +252,14 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     /// </summary>
     /// <param name="entry"></param>
     /// <returns></returns>
-    public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry)
+    public async Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<T> entry)
     {
         if (entry == null)
         {
-            return Task.FromResult(Enumerable.Empty<FileShareRecord>());
+            return Enumerable.Empty<FileShareRecord>();
         }
 
-        return InternalGetSharesAsync(entry);
+        return await InternalGetSharesAsync(entry);
     }
 
     public async Task<IEnumerable<FileShareRecord>> InternalGetSharesAsync(FileEntry<T> entry)

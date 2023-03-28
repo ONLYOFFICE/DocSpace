@@ -638,14 +638,14 @@ public class UserController : PeopleControllerBase
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
+    public async Task<string> RegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
     {
         if (!_coreBaseSettings.Personal)
         {
             throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
         }
 
-        return InternalRegisterUserOnPersonalAsync(inDto);
+        return await InternalRegisterUserOnPersonalAsync(inDto);
     }
 
     [HttpPut("delete", Order = -1)]

@@ -76,14 +76,14 @@ internal class DropboxStorage : IDisposable
     }
 
 
-    public Task<FolderMetadata> GetFolderAsync(string folderPath)
+    public async Task<FolderMetadata> GetFolderAsync(string folderPath)
     {
         if (string.IsNullOrEmpty(folderPath) || folderPath == "/")
         {
-            return Task.FromResult(new FolderMetadata(string.Empty, "/"));
+            return new FolderMetadata(string.Empty, "/");
         }
 
-        return InternalGetFolderAsync(folderPath);
+        return await InternalGetFolderAsync(folderPath);
     }
 
     public async Task<FolderMetadata> InternalGetFolderAsync(string folderPath)
@@ -170,11 +170,11 @@ internal class DropboxStorage : IDisposable
         }
     }
 
-    public Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)
+    public async Task<Stream> DownloadStreamAsync(string filePath, int offset = 0)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filePath);
 
-        return InternalDownloadStreamAsync(filePath, offset);
+        return await InternalDownloadStreamAsync(filePath, offset);
     }
 
     public async Task<Stream> InternalDownloadStreamAsync(string filePath, int offset = 0)
@@ -202,16 +202,16 @@ internal class DropboxStorage : IDisposable
         return result.Metadata;
     }
 
-    public Task<FileMetadata> CreateFileAsync(Stream fileStream, string title, string parentPath)
+    public async Task<FileMetadata> CreateFileAsync(Stream fileStream, string title, string parentPath)
     {
         var path = MakeDropboxPath(parentPath, title);
 
-        return _dropboxClient.Files.UploadAsync(path, WriteMode.Add.Instance, true, body: fileStream);
+        return await _dropboxClient.Files.UploadAsync(path, WriteMode.Add.Instance, true, body: fileStream);
     }
 
-    public Task DeleteItemAsync(Metadata dropboxItem)
+    public async Task DeleteItemAsync(Metadata dropboxItem)
     {
-        return _dropboxClient.Files.DeleteV2Async(dropboxItem.PathDisplay);
+        await _dropboxClient.Files.DeleteV2Async(dropboxItem.PathDisplay);
     }
 
     public async Task<FolderMetadata> MoveFolderAsync(string dropboxFolderPath, string dropboxFolderPathTo, string folderName)
@@ -260,15 +260,15 @@ internal class DropboxStorage : IDisposable
         return session.SessionId;
     }
 
-    public Task TransferAsync(string dropboxSession, long offset, Stream stream)
+    public async Task TransferAsync(string dropboxSession, long offset, Stream stream)
     {
-        return _dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(dropboxSession, (ulong)offset), body: stream);
+        await _dropboxClient.Files.UploadSessionAppendV2Async(new UploadSessionCursor(dropboxSession, (ulong)offset), body: stream);
     }
 
-    public Task<Metadata> FinishResumableSessionAsync(string dropboxSession, string dropboxFolderPath, string fileName, long offset)
+    public async Task<Metadata> FinishResumableSessionAsync(string dropboxSession, string dropboxFolderPath, string fileName, long offset)
     {
         var dropboxFilePath = MakeDropboxPath(dropboxFolderPath, fileName);
-        return FinishResumableSessionAsync(dropboxSession, dropboxFilePath, offset);
+        return await FinishResumableSessionAsync(dropboxSession, dropboxFilePath, offset);
     }
 
     public async Task<Metadata> FinishResumableSessionAsync(string dropboxSession, string dropboxFilePath, long offset)

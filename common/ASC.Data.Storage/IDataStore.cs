@@ -218,7 +218,7 @@ public interface IDataStore
     ///<param name="assignedPath"></param>
     ///<param name="stream"></param>
     ///<returns></returns>
-    Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream);
+    Task<(Uri, string)> SaveTempAsync(string domain, Stream stream);
 
     /// <summary>
     ///  Returns a list of links to all subfolders
@@ -288,7 +288,7 @@ public interface IDataStore
     Task DeleteAsync(string path);
     Task DeleteFilesAsync(string folderPath, string pattern, bool recursive);
     Task<Uri> MoveAsync(string srcpath, string newdomain, string newpath);
-    Task<Uri> SaveTempAsync(out string assignedPath, Stream stream);
+    Task<(Uri, string)> SaveTempAsync(Stream stream);
     IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string path, bool recursive);
     IAsyncEnumerable<Uri> ListFilesAsync(string path, string pattern, bool recursive);
     Task<bool> IsFileAsync(string path);

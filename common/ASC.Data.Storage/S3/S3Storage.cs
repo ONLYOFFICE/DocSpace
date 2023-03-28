@@ -563,10 +563,10 @@ public class S3Storage : BaseStorage
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
+    public override async Task<(Uri, string)> SaveTempAsync(string domain, Stream stream)
     {
-        assignedPath = Guid.NewGuid().ToString();
-        return SaveAsync(domain, assignedPath, stream);
+        var assignedPath = Guid.NewGuid().ToString();
+        return (await SaveAsync(domain, assignedPath, stream), assignedPath);
     }
 
     public override async IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive)

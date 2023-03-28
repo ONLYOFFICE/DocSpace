@@ -254,11 +254,11 @@ internal class GoogleDriveStorage : IDisposable
         return files;
     }
 
-    public Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
+    public async Task<Stream> DownloadStreamAsync(DriveFile file, int offset = 0)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return InternalDownloadStreamAsync(file, offset);
+        return await InternalDownloadStreamAsync(file, offset);
     }
 
     private async Task<Stream> InternalDownloadStreamAsync(DriveFile file, int offset = 0)
@@ -370,9 +370,9 @@ internal class GoogleDriveStorage : IDisposable
         _driveService.Files.Delete(entryId).Execute();
     }
 
-    public Task DeleteEntryAsync(string entryId)
+    public async Task DeleteEntryAsync(string entryId)
     {
-        return _driveService.Files.Delete(entryId).ExecuteAsync();
+        await _driveService.Files.Delete(entryId).ExecuteAsync();
     }
 
     public DriveFile InsertEntryIntoFolder(DriveFile entry, string folderId)
@@ -384,13 +384,13 @@ internal class GoogleDriveStorage : IDisposable
         return request.Execute();
     }
 
-    public Task<DriveFile> InsertEntryIntoFolderAsync(DriveFile entry, string folderId)
+    public async Task<DriveFile> InsertEntryIntoFolderAsync(DriveFile entry, string folderId)
     {
         var request = _driveService.Files.Update(FileConstructor(), entry.Id);
         request.AddParents = folderId;
         request.Fields = GoogleLoginProvider.FilesFields;
 
-        return request.ExecuteAsync();
+        return await request.ExecuteAsync();
     }
 
     public DriveFile RemoveEntryFromFolder(DriveFile entry, string folderId)
@@ -402,13 +402,13 @@ internal class GoogleDriveStorage : IDisposable
         return request.Execute();
     }
 
-    public Task<DriveFile> RemoveEntryFromFolderAsync(DriveFile entry, string folderId)
+    public async Task<DriveFile> RemoveEntryFromFolderAsync(DriveFile entry, string folderId)
     {
         var request = _driveService.Files.Update(FileConstructor(), entry.Id);
         request.RemoveParents = folderId;
         request.Fields = GoogleLoginProvider.FilesFields;
 
-        return request.ExecuteAsync();
+        return await request.ExecuteAsync();
     }
 
     public DriveFile CopyEntry(string toFolderId, string originEntryId)
@@ -459,12 +459,12 @@ internal class GoogleDriveStorage : IDisposable
         return request.Execute();
     }
 
-    public Task<DriveFile> RenameEntryAsync(string fileId, string newTitle)
+    public async Task<DriveFile> RenameEntryAsync(string fileId, string newTitle)
     {
         var request = _driveService.Files.Update(FileConstructor(newTitle), fileId);
         request.Fields = GoogleLoginProvider.FilesFields;
 
-        return request.ExecuteAsync();
+        return await request.ExecuteAsync();
     }
 
     public DriveFile SaveStream(string fileId, Stream fileStream, string fileTitle)
@@ -531,11 +531,11 @@ internal class GoogleDriveStorage : IDisposable
         return file;
     }
 
-    public Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
+    public async Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
     {
         ArgumentNullException.ThrowIfNull(driveFile);
 
-        return InternalCreateResumableSessionAsync(driveFile, contentLength);
+        return await InternalCreateResumableSessionAsync(driveFile, contentLength);
     }
 
     private async Task<ResumableUploadSession> InternalCreateResumableSessionAsync(DriveFile driveFile, long contentLength)
@@ -580,7 +580,7 @@ internal class GoogleDriveStorage : IDisposable
         return uploadSession;
     }
 
-    public Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
+    public async Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -589,7 +589,7 @@ internal class GoogleDriveStorage : IDisposable
             throw new InvalidOperationException("Can't upload chunk for given upload session.");
         }
 
-        return InternalTransferAsync(googleDriveSession, stream, chunkLength, lastChunk);
+        await InternalTransferAsync(googleDriveSession, stream, chunkLength, lastChunk);
     }
 
     private async Task InternalTransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)

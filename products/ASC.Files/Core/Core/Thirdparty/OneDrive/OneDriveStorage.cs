@@ -111,11 +111,11 @@ internal class OneDriveStorage
         return (parentPath ?? "") + "/" + (name ?? "");
     }
 
-    public Task<Item> GetItemAsync(string itemId)
+    public async Task<Item> GetItemAsync(string itemId)
     {
         try
         {
-            return GetItemRequest(itemId).Request().GetAsync();
+            return await GetItemRequest(itemId).Request().GetAsync();
         }
         catch (Exception ex)
         {
@@ -133,12 +133,12 @@ internal class OneDriveStorage
         return new List<Item>(await GetItemRequest(folderId).Children.Request().GetAsync());
     }
 
-    public Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
+    public async Task<Stream> DownloadStreamAsync(Item file, int offset = 0)
     {
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullException.ThrowIfNull(file.File);
 
-        return InternalDownloadStreamAsync(file, offset);
+        return await InternalDownloadStreamAsync(file, offset);
     }
 
     private async Task<Stream> InternalDownloadStreamAsync(Item file, int offset = 0)
@@ -158,7 +158,7 @@ internal class OneDriveStorage
         return fileStream;
     }
 
-    public Task<Item> CreateFolderAsync(string title, string parentId)
+    public async Task<Item> CreateFolderAsync(string title, string parentId)
     {
         var newFolderItem = new Item
         {
@@ -166,16 +166,16 @@ internal class OneDriveStorage
             Name = title
         };
 
-        return GetItemRequest(parentId)
+        return await GetItemRequest(parentId)
             .Children
             .Request()
             .AddAsync(newFolderItem);
     }
 
 
-    public Task<Item> CreateFileAsync(Stream fileStream, string title, string parentPath)
+    public async Task<Item> CreateFileAsync(Stream fileStream, string title, string parentPath)
     {
-        return OnedriveClient
+        return await OnedriveClient
             .Drive
             .Root
             .ItemWithPath(MakeOneDrivePath(parentPath, title))
@@ -184,20 +184,20 @@ internal class OneDriveStorage
             .PutAsync<Item>(fileStream);
     }
 
-    public Task DeleteItemAsync(Item item)
+    public async Task DeleteItemAsync(Item item)
     {
-        return OnedriveClient
+        await OnedriveClient
             .Drive
             .Items[item.Id]
             .Request()
             .DeleteAsync();
     }
 
-    public Task<Item> MoveItemAsync(string itemId, string newItemName, string toFolderId)
+    public async Task<Item> MoveItemAsync(string itemId, string newItemName, string toFolderId)
     {
         var updateItem = new Item { ParentReference = new ItemReference { Id = toFolderId }, Name = newItemName };
 
-        return OnedriveClient
+        return await OnedriveClient
             .Drive
             .Items[itemId]
             .Request()
@@ -216,20 +216,20 @@ internal class OneDriveStorage
         return await copyMonitor.PollForOperationCompletionAsync(null, CancellationToken.None);
     }
 
-    public Task<Item> RenameItemAsync(string itemId, string newName)
+    public async Task<Item> RenameItemAsync(string itemId, string newName)
     {
         var updateItem = new Item { Name = newName };
 
-        return OnedriveClient
+        return await OnedriveClient
             .Drive
             .Items[itemId]
             .Request()
             .UpdateAsync(updateItem);
     }
 
-    public Task<Item> SaveStreamAsync(string fileId, Stream fileStream)
+    public async Task<Item> SaveStreamAsync(string fileId, Stream fileStream)
     {
-        return OnedriveClient
+        return await OnedriveClient
             .Drive
             .Items[fileId]
             .Content
@@ -244,11 +244,11 @@ internal class OneDriveStorage
                    : OnedriveClient.Drive.Items[itemId];
     }
 
-    public Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
+    public async Task<ResumableUploadSession> CreateResumableSessionAsync(Item onedriveFile, long contentLength)
     {
         ArgumentNullException.ThrowIfNull(onedriveFile);
 
-        return InternalCreateResumableSessionAsync(onedriveFile, contentLength);
+        return await InternalCreateResumableSessionAsync(onedriveFile, contentLength);
     }
 
     private async Task<ResumableUploadSession> InternalCreateResumableSessionAsync(Item onedriveFile, long contentLength)
@@ -292,7 +292,7 @@ internal class OneDriveStorage
         return uploadSession;
     }
 
-    public Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
+    public async Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -301,7 +301,7 @@ internal class OneDriveStorage
             throw new InvalidOperationException("Can't upload chunk for given upload session.");
         }
 
-        return InternalTransferAsync(oneDriveSession, stream, chunkLength);
+        await InternalTransferAsync(oneDriveSession, stream, chunkLength);
     }
 
     private async Task InternalTransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
@@ -391,11 +391,11 @@ public class OneDriveAuthProvider : IAuthenticationProvider
         _accessToken = accessToken;
     }
 
-    public Task AuthenticateRequestAsync(HttpRequestMessage request)
+    public async Task AuthenticateRequestAsync(HttpRequestMessage request)
     {
         request.Headers.Authorization = new AuthenticationHeaderValue("bearer", _accessToken);
 
-        return Task.WhenAll();
+        await Task.WhenAll();
     }
 }
 

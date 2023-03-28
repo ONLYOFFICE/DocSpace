@@ -91,9 +91,9 @@ public class FileUploader
         _socketManager = socketManager;
     }
 
-    public Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data)
+    public async Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data)
     {
-        return ExecAsync(folderId, title, contentLength, data, !_filesSettingsHelper.UpdateIfExist);
+        return await ExecAsync(folderId, title, contentLength, data, !_filesSettingsHelper.UpdateIfExist);
     }
 
     public async Task<File<T>> ExecAsync<T>(T folderId, string title, long contentLength, Stream data, bool createNewIfExist, bool deleteConvertStatus = true)

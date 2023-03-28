@@ -82,7 +82,7 @@ public class LicenseReader
         return File.OpenRead(path);
     }
 
-    public Task RejectLicenseAsync()
+    public async Task RejectLicenseAsync()
     {
         if (File.Exists(_licensePathTemp))
         {
@@ -94,7 +94,7 @@ public class LicenseReader
             File.Delete(LicensePath);
         }
 
-        return _tariffService.DeleteDefaultBillingInfoAsync();
+        await _tariffService.DeleteDefaultBillingInfoAsync();
     }
 
     public async Task RefreshLicenseAsync()

@@ -192,18 +192,18 @@ class CachedTenantService : ITenantService
         await _service.ValidateDomainAsync(domain);
     }
 
-    public Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash)
+    public async Task<IEnumerable<Tenant>> GetTenantsAsync(string login, string passwordHash)
     {
-        return _service.GetTenantsAsync(login, passwordHash);
+        return await _service.GetTenantsAsync(login, passwordHash);
     }
 
-    public Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true)
+    public async Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true)
     {
-        return _service.GetTenantsAsync(from, active);
+        return await _service.GetTenantsAsync(from, active);
     }
-    public Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids)
+    public async Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids)
     {
-        return _service.GetTenantsAsync(ids);
+        return await _service.GetTenantsAsync(ids);
     }
 
     public async Task<Tenant> GetTenantAsync(int id)

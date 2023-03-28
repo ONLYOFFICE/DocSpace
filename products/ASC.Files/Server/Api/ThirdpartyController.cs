@@ -138,9 +138,9 @@ public class ThirdpartyController : ApiControllerBase
     /// <returns>Folder id</returns>
     ///<exception cref="ArgumentException"></exception>
     [HttpDelete("thirdparty/{providerId:int}")]
-    public Task<object> DeleteThirdPartyAsync(int providerId)
+    public async Task<object> DeleteThirdPartyAsync(int providerId)
     {
-        return _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
+        return await _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
     }
 
     /// <visible>false</visible>

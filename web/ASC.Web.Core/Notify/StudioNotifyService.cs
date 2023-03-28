@@ -264,9 +264,9 @@ public class StudioNotifyService
 
     #region MailServer
 
-    public Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address)
+    public async Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address)
     {
-        return SendMailboxCreatedAsync(toEmails, username, address, null, null, -1, -1, null);
+        await SendMailboxCreatedAsync(toEmails, username, address, null, null, -1, -1, null);
     }
 
     public async Task SendMailboxCreatedAsync(List<string> toEmails, string username, string address, string server,

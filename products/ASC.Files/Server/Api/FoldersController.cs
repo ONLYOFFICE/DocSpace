@@ -87,9 +87,9 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="title">Title of new folder</param>
     /// <returns>New folder contents</returns>
     [HttpPost("folder/{folderId}")]
-    public Task<FolderDto<T>> CreateFolderAsync(T folderId, CreateFolderRequestDto inDto)
+    public async Task<FolderDto<T>> CreateFolderAsync(T folderId, CreateFolderRequestDto inDto)
     {
-        return _foldersControllerHelper.CreateFolderAsync(folderId, inDto.Title);
+        return await _foldersControllerHelper.CreateFolderAsync(folderId, inDto.Title);
     }
 
     /// <summary>
@@ -136,9 +136,9 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <category>Folders</category>
     /// <returns>Folder info</returns>
     [HttpGet("folder/{folderId}")]
-    public Task<FolderDto<T>> GetFolderInfoAsync(T folderId)
+    public async Task<FolderDto<T>> GetFolderInfoAsync(T folderId)
     {
-        return _foldersControllerHelper.GetFolderInfoAsync(folderId);
+        return await _foldersControllerHelper.GetFolderInfoAsync(folderId);
     }
 
     /// <summary>
@@ -190,9 +190,9 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param name="title">New title</param>
     /// <returns>Folder contents</returns>
     [HttpPut("folder/{folderId}")]
-    public Task<FolderDto<T>> RenameFolderAsync(T folderId, CreateFolderRequestDto inDto)
+    public async Task<FolderDto<T>> RenameFolderAsync(T folderId, CreateFolderRequestDto inDto)
     {
-        return _foldersControllerHelper.RenameFolderAsync(folderId, inDto.Title);
+        return await _foldersControllerHelper.RenameFolderAsync(folderId, inDto.Title);
     }
 }
 

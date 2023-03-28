@@ -102,15 +102,15 @@ public class PortalController : ControllerBase
     [HttpPost("register")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:registerportal")]
-    public Task<IActionResult> RegisterAsync(TenantModel model)
+    public async Task<IActionResult> RegisterAsync(TenantModel model)
     {
         if (model == null)
         {
-            return Task.FromResult<IActionResult>(BadRequest(new
+            return BadRequest(new
             {
                 error = "portalNameEmpty",
                 message = "PortalName is required"
-            }));
+            });
         }
 
         if (!ModelState.IsValid)
@@ -122,11 +122,11 @@ public class PortalController : ControllerBase
                 message.Add(ModelState[k].Errors.FirstOrDefault().ErrorMessage);
             }
 
-            return Task.FromResult<IActionResult>(BadRequest(new
+            return BadRequest(new
             {
                 error = "params",
                 message
-            }));
+            });
         }
 
         var sw = Stopwatch.StartNew();
@@ -136,7 +136,7 @@ public class PortalController : ControllerBase
             if (!CheckPasswordPolicy(model.Password, out var error1))
             {
                 sw.Stop();
-                return Task.FromResult<IActionResult>(BadRequest(error1));
+                return BadRequest(error1);
             }
 
             if (!string.IsNullOrEmpty(model.Password))
@@ -152,10 +152,10 @@ public class PortalController : ControllerBase
         {
             sw.Stop();
 
-            return Task.FromResult<IActionResult>(BadRequest(error));
+            return BadRequest(error);
         }
 
-        return InternalRegisterAsync(model, error, sw);
+        return await InternalRegisterAsync(model, error, sw);
     }
 
     private async Task<IActionResult> InternalRegisterAsync(TenantModel model, object error, Stopwatch sw)
@@ -405,18 +405,18 @@ public class PortalController : ControllerBase
 
     [HttpPost("validateportalname")]
     [AllowCrossSiteJson]
-    public Task<IActionResult> CheckExistingNamePortalAsync(TenantModel model)
+    public async Task<IActionResult> CheckExistingNamePortalAsync(TenantModel model)
     {
         if (model == null)
         {
-            return Task.FromResult<IActionResult>(BadRequest(new
+            return BadRequest(new
             {
                 error = "portalNameEmpty",
                 message = "PortalName is required"
-            }));
+            });
         }
 
-        return InternalCheckExistingNamePortalAsync(model);
+        return await InternalCheckExistingNamePortalAsync(model);
     }
 
     private async Task<IActionResult> InternalCheckExistingNamePortalAsync(TenantModel model)

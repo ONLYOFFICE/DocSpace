@@ -469,10 +469,10 @@ public class DiscDataStore : BaseStorage
         throw new FileNotFoundException("directory not found " + target);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
+    public override async Task<(Uri, string)> SaveTempAsync(string domain, Stream stream)
     {
-        assignedPath = Guid.NewGuid().ToString();
-        return SaveAsync(domain, assignedPath, stream);
+        var assignedPath = Guid.NewGuid().ToString();
+        return (await SaveAsync(domain, assignedPath, stream), assignedPath);
     }
 
     public override async Task<string> SavePrivateAsync(string domain, string path, Stream stream, DateTime expires)

@@ -150,14 +150,14 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         return await _fileDtoHelper.GetAsync(file);
     }
 
-    public Task<FileDto<T>> CreateHtmlFileAsync(T folderId, string title, string content)
+    public async Task<FileDto<T>> CreateHtmlFileAsync(T folderId, string title, string content)
     {
         ArgumentNullException.ThrowIfNull(title);
 
-        return CreateFileAsync(folderId, title, content, ".html");
+        return await CreateFileAsync(folderId, title, content, ".html");
     }
 
-    public Task<FileDto<T>> CreateTextFileAsync(T folderId, string title, string content)
+    public async Task<FileDto<T>> CreateTextFileAsync(T folderId, string title, string content)
     {
         ArgumentNullException.ThrowIfNull(title);
 
@@ -171,7 +171,7 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
             }
         }
 
-        return CreateFileAsync(folderId, title, content, extension);
+        return await CreateFileAsync(folderId, title, content, extension);
     }
 
     private async Task<FileDto<T>> CreateFileAsync(T folderId, string title, string content, string extension)
@@ -184,9 +184,9 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         return await _fileDtoHelper.GetAsync(file);
     }
 
-    public Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
+    public async Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
     {
-        return _fileStorageService.GetEditDiffUrlAsync(fileId, version, doc);
+        return await _fileStorageService.GetEditDiffUrlAsync(fileId, version, doc);
     }
 
     public async IAsyncEnumerable<EditHistoryDto> GetEditHistoryAsync(T fileId, string doc = null)
@@ -227,9 +227,9 @@ public class FilesControllerHelper<T> : FilesHelperBase<T>
         return CheckConversionAsync(cheqConversionRequestDto);
     }
 
-    public Task<string> UpdateCommentAsync(T fileId, int version, string comment)
+    public async Task<string> UpdateCommentAsync(T fileId, int version, string comment)
     {
-        return _fileStorageService.UpdateCommentAsync(fileId, version, comment);
+        return await _fileStorageService.UpdateCommentAsync(fileId, version, comment);
     }
 
     public async Task<FileDto<T>> UpdateFileAsync(T fileId, string title, int lastVersion)

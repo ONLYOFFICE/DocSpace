@@ -370,9 +370,9 @@ public class TenantManager
     }
 
 
-    public Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
+    public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        return GetTenantQuotasAsync(false);
+        return await GetTenantQuotasAsync(false);
     }
 
     public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync(bool all)

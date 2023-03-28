@@ -75,9 +75,9 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
                    : ToFolder(metadata.AsFolder);
     }
 
-    public Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
+    public async Task<Folder<string>> GetRootFolderByFileAsync(string fileId)
     {
-        return GetRootFolderAsync(fileId);
+        return await GetRootFolderAsync(fileId);
     }
 
     public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> parentsIds, IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider, SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds)
@@ -201,11 +201,11 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         }
     }
 
-    public Task<string> SaveFolderAsync(Folder<string> folder)
+    public async Task<string> SaveFolderAsync(Folder<string> folder)
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return InternalSaveFolderAsync(folder);
+        return await InternalSaveFolderAsync(folder);
     }
 
     public async Task<string> InternalSaveFolderAsync(Folder<string> folder)
@@ -406,16 +406,16 @@ internal class DropboxFolderDao : DropboxDaoBase, IFolderDao<string>
         return ToFolder(newDropboxFolder);
     }
 
-    public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return CanMoveOrCopyAsync(folderIds, tId);
+            return await CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return CanMoveOrCopyAsync(folderIds, tsId);
+            return await CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();

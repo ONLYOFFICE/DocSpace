@@ -109,9 +109,9 @@ public class TokenHelper
         await filesDbContext.SaveChangesAsync();
     }
 
-    public Task<Token> GetTokenAsync(string app)
+    public async Task<Token> GetTokenAsync(string app)
     {
-        return GetTokenAsync(app, _authContext.CurrentAccount.ID);
+        return await GetTokenAsync(app, _authContext.CurrentAccount.ID);
     }
 
     public async Task<Token> GetTokenAsync(string app, Guid userId)

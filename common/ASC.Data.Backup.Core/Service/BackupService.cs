@@ -183,9 +183,9 @@ public class BackupService : IBackupService
         return _backupWorker.TempFolder;
     }
 
-    public Task CreateScheduleAsync(CreateScheduleRequest request)
+    public async Task CreateScheduleAsync(CreateScheduleRequest request)
     {
-        return _backupRepository.SaveBackupScheduleAsync(
+        await _backupRepository.SaveBackupScheduleAsync(
             new BackupSchedule()
             {
                 TenantId = request.TenantId,
@@ -197,9 +197,9 @@ public class BackupService : IBackupService
             });
     }
 
-    public Task DeleteScheduleAsync(int tenantId)
+    public async Task DeleteScheduleAsync(int tenantId)
     {
-        return _backupRepository.DeleteBackupScheduleAsync(tenantId);
+        await _backupRepository.DeleteBackupScheduleAsync(tenantId);
     }
 
     public async Task<ScheduleResponse> GetScheduleAsync(int tenantId)

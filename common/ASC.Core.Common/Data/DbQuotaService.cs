@@ -101,9 +101,9 @@ class DbQuotaService : IQuotaService
         }
     }
 
-    public Task<IEnumerable<TenantQuotaRow>> FindTenantQuotaRowsAsync(int tenantId)
+    public async Task<IEnumerable<TenantQuotaRow>> FindTenantQuotaRowsAsync(int tenantId)
     {
-        return FindUserQuotaRowsAsync(tenantId, Guid.Empty);
+        return await FindUserQuotaRowsAsync(tenantId, Guid.Empty);
     }
 
     public async Task<IEnumerable<TenantQuotaRow>> FindUserQuotaRowsAsync(int tenantId, Guid userId)

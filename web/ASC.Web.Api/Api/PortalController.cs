@@ -206,16 +206,16 @@ public class PortalController : ControllerBase
 
     [AllowNotPayment]
     [HttpGet("tariff")]
-    public Task<Tariff> GetTariffAsync()
+    public async Task<Tariff> GetTariffAsync()
     {
-        return _tariffService.GetTariffAsync(Tenant.Id);
+        return await _tariffService.GetTariffAsync(Tenant.Id);
     }
 
     [AllowNotPayment]
     [HttpGet("quota")]
-    public Task<TenantQuota> GetQuotaAsync()
+    public async Task<TenantQuota> GetQuotaAsync()
     {
-        return _tenantManager.GetTenantQuotaAsync(Tenant.Id);
+        return await _tenantManager.GetTenantQuotaAsync(Tenant.Id);
     }
 
     [HttpGet("quota/right")]

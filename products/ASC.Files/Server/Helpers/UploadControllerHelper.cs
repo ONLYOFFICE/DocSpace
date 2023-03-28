@@ -71,7 +71,7 @@ public class UploadControllerHelper<T> : FilesHelperBase<T>
         _securityContext = securityContext;
     }
 
-    public async Task<object> CreateEditSession(T fileId, long fileSize)
+    public async Task<object> CreateEditSessionAsync(T fileId, long fileSize)
     {
         var file = await _fileUploader.VerifyChunkedUploadForEditing(fileId, fileSize);
 

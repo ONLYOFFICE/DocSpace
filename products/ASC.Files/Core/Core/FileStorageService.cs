@@ -468,14 +468,14 @@ public class FileStorageService<T> //: IFileStorageService
         return result;
     }
 
-    public Task<Folder<T>> CreateNewFolderAsync(T parentId, string title)
+    public async Task<Folder<T>> CreateNewFolderAsync(T parentId, string title)
     {
         if (string.IsNullOrEmpty(title) || parentId == null)
         {
             throw new ArgumentException();
         }
 
-        return InternalCreateNewFolderAsync(parentId, title);
+        return await InternalCreateNewFolderAsync(parentId, title);
     }
 
     public async Task<Folder<T>> CreateRoomAsync(string title, RoomType roomType, bool @private, IEnumerable<FileShareParams> share, bool notify, string sharingMessage)
@@ -785,14 +785,14 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
-    public Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
+    public async Task<File<T>> CreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
     {
         if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null)
         {
             throw new ArgumentException();
         }
 
-        return InternalCreateNewFileAsync(fileWrapper, enableExternalExt);
+        return await InternalCreateNewFileAsync(fileWrapper, enableExternalExt);
     }
 
     private async Task<File<T>> InternalCreateNewFileAsync<TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
@@ -1731,16 +1731,16 @@ public class FileStorageService<T> //: IFileStorageService
         }
     }
 
-    public Task<Folder<T>> SaveThirdPartyAsync(ThirdPartyParams thirdPartyParams)
+    public async Task<Folder<T>> SaveThirdPartyAsync(ThirdPartyParams thirdPartyParams)
     {
         var providerDao = GetProviderDao();
 
         if (providerDao == null)
         {
-            return Task.FromResult<Folder<T>>(null);
+            return null;
         }
 
-        return InternalSaveThirdPartyAsync(thirdPartyParams, providerDao);
+        return await InternalSaveThirdPartyAsync(thirdPartyParams, providerDao);
     }
 
     private async Task<Folder<T>> InternalSaveThirdPartyAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
@@ -1824,16 +1824,16 @@ public class FileStorageService<T> //: IFileStorageService
         return folder;
     }
 
-    public Task<Folder<T>> SaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams)
+    public async Task<Folder<T>> SaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams)
     {
         var providerDao = GetProviderDao();
 
         if (providerDao == null)
         {
-            return Task.FromResult<Folder<T>>(null);
+            return null;
         }
 
-        return InternalSaveThirdPartyBackupAsync(thirdPartyParams, providerDao);
+        return await InternalSaveThirdPartyBackupAsync(thirdPartyParams, providerDao);
     }
 
     private async Task<Folder<T>> InternalSaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
@@ -1890,15 +1890,15 @@ public class FileStorageService<T> //: IFileStorageService
         return folder;
     }
 
-    public Task<object> DeleteThirdPartyAsync(string providerId)
+    public async Task<object> DeleteThirdPartyAsync(string providerId)
     {
         var providerDao = GetProviderDao();
         if (providerDao == null)
         {
-            return Task.FromResult<object>(null);
+            return null;
         }
 
-        return InternalDeleteThirdPartyAsync(providerId, providerDao);
+        return await InternalDeleteThirdPartyAsync(providerId, providerDao);
     }
 
     private async Task<object> InternalDeleteThirdPartyAsync(string providerId, IProviderDao providerDao)
@@ -1944,9 +1944,9 @@ public class FileStorageService<T> //: IFileStorageService
         return true;
     }
 
-    public Task DeleteDocuSignAsync()
+    public async Task DeleteDocuSignAsync()
     {
-         return _docuSignToken.DeleteTokenAsync();
+         await _docuSignToken.DeleteTokenAsync();
     }
 
     public async Task<string> SendDocuSignAsync(T fileId, DocuSignData docuSignData)
@@ -2500,19 +2500,19 @@ public class FileStorageService<T> //: IFileStorageService
 
     #endregion
 
-    public Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
+    public async Task<List<AceWrapper>> GetSharedInfoAsync(IEnumerable<T> fileIds, IEnumerable<T> folderIds)
     {
-        return _fileSharing.GetSharedInfoAsync(fileIds, folderIds);
+        return await _fileSharing.GetSharedInfoAsync(fileIds, folderIds);
     }
 
-    public Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
+    public async Task<List<AceShortWrapper>> GetSharedInfoShortFileAsync(T fileId)
     {
-        return _fileSharing.GetSharedInfoShortFileAsync(fileId);
+        return await _fileSharing.GetSharedInfoShortFileAsync(fileId);
     }
 
-    public Task<List<AceShortWrapper>> GetSharedInfoShortFolder(T folderId)
+    public async Task<List<AceShortWrapper>> GetSharedInfoShortFolder(T folderId)
     {
-        return _fileSharing.GetSharedInfoShortFolderAsync(folderId);
+        return await _fileSharing.GetSharedInfoShortFolderAsync(folderId);
     }
 
     public async Task<string> SetAceObjectAsync(AceCollection<T> aceCollection, bool notify)
@@ -2683,14 +2683,14 @@ public class FileStorageService<T> //: IFileStorageService
         return await securityDao.IsSharedAsync(file.Id, FileEntryType.File);
     }
 
-    public Task<List<MentionWrapper>> SharedUsersAsync(T fileId)
+    public async Task<List<MentionWrapper>> SharedUsersAsync(T fileId)
     {
         if (!_authContext.IsAuthenticated || _coreBaseSettings.Personal)
         {
-            return Task.FromResult<List<MentionWrapper>>(null);
+            return null;
         }
 
-        return InternalSharedUsersAsync(fileId);
+        return await InternalSharedUsersAsync(fileId);
     }
 
     public async Task<FileReference<T>> GetReferenceDataAsync(T fileId, string portalName, T sourceFileId, string path)

@@ -107,11 +107,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
 
-    public Task<Folder<int>> GetFolderAsync(string title, int parentId)
+    public async Task<Folder<int>> GetFolderAsync(string title, int parentId)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
-        return InternalGetFolderAsync(title, parentId);
+        return await InternalGetFolderAsync(title, parentId);
     }
 
     private async Task<Folder<int>> InternalGetFolderAsync(string title, int parentId)
@@ -385,9 +385,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
     }
 
-    public Task<int> SaveFolderAsync(Folder<int> folder)
+    public async Task<int> SaveFolderAsync(Folder<int> folder)
     {
-        return SaveFolderAsync(folder, null);
+        return await SaveFolderAsync(folder, null);
     }
 
     private Task<int> SaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
@@ -538,14 +538,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             .AnyAsync(r => r.Id == folderId);
     }
 
-    public Task DeleteFolderAsync(int folderId)
+    public async Task DeleteFolderAsync(int folderId)
     {
         if (folderId == default)
         {
             throw new ArgumentNullException(nameof(folderId));
         }
 
-        return InternalDeleteFolderAsync(folderId);
+        await InternalDeleteFolderAsync(folderId);
     }
 
     private async Task InternalDeleteFolderAsync(int id)
@@ -800,16 +800,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return moved;
     }
 
-    public Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
+    public async Task<IDictionary<int, string>> CanMoveOrCopyAsync<TTo>(int[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return CanMoveOrCopyAsync(folderIds, tId);
+            return await CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return CanMoveOrCopyAsync(folderIds, tsId);
+            return await CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();
@@ -1148,12 +1148,12 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         }
     }
 
-    public Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
+    public async Task<int> GetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(module);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(bunch);
 
-        return InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
+        return await InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
     }
 
     private async Task<int> InternalGetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
@@ -1276,29 +1276,29 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Projects, null, createIfNotExists);
     }
 
-    public Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
+    public async Task<int> GetFolderIDTrashAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Trash, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Trash, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
-    public Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
+    public async Task<int> GetFolderIDCommonAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Common, null, createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Common, null, createIfNotExists);
     }
 
-    public Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
+    public async Task<int> GetFolderIDUserAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, My, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, My, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
-    public Task<int> GetFolderIDShareAsync(bool createIfNotExists)
+    public async Task<int> GetFolderIDShareAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Share, null, createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Share, null, createIfNotExists);
     }
 
-    public Task<int> GetFolderIDRecentAsync(bool createIfNotExists)
+    public async Task<int> GetFolderIDRecentAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Recent, null, createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Recent, null, createIfNotExists);
     }
 
     public Task<int> GetFolderIDFavoritesAsync(bool createIfNotExists)
@@ -1306,24 +1306,24 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Favorites, null, createIfNotExists);
     }
 
-    public Task<int> GetFolderIDTemplatesAsync(bool createIfNotExists)
+    public async Task<int> GetFolderIDTemplatesAsync(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Templates, null, createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Templates, null, createIfNotExists);
     }
 
-    public Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
+    public async Task<int> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Privacy, (userId ?? _authContext.CurrentAccount.ID).ToString(), createIfNotExists);
     }
 
-    public Task<int> GetFolderIDVirtualRooms(bool createIfNotExists)
+    public async Task<int> GetFolderIDVirtualRooms(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, VirtualRooms, null, createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, VirtualRooms, null, createIfNotExists);
     }
 
-    public Task<int> GetFolderIDArchive(bool createIfNotExists)
+    public async Task<int> GetFolderIDArchive(bool createIfNotExists)
     {
-        return (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
+        return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
     }
 
     public async IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<int> entriesIds)

@@ -59,14 +59,14 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         _fileDao = fileDao;
     }
 
-    public Task InvalidateCacheAsync(string fileId)
+    public async Task InvalidateCacheAsync(string fileId)
     {
-        return ProviderInfo.InvalidateStorageAsync();
+        await ProviderInfo.InvalidateStorageAsync();
     }
 
-    public Task<File<string>> GetFileAsync(string fileId)
+    public async Task<File<string>> GetFileAsync(string fileId)
     {
-        return GetFileAsync(fileId, 1);
+        return await GetFileAsync(fileId, 1);
     }
 
     public Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -363,9 +363,9 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         return ToFile(entry);
     }
 
-    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
-        return SaveFileAsync(file, fileStream);
+        return await SaveFileAsync(file, fileStream);
     }
 
     public async Task DeleteFileAsync(string fileId)
@@ -432,11 +432,11 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         }
     }
 
-    public Task<bool> IsExistAsync(string title, object folderId)
+    public async Task<bool> IsExistAsync(string title, object folderId)
     {
         var folder = ProviderInfo.Storage.GetFolder(MakePath(folderId));
 
-        return IsExistAsync(title, folder);
+        return await IsExistAsync(title, folder);
     }
 
     public Task<bool> IsExistAsync(string title, ICloudDirectoryEntry folder)

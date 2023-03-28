@@ -267,14 +267,14 @@ internal class GoogleDriveProviderInfo : IProviderInfo
             StorageAsync.Result.Close();
         }
     }
-    public Task InvalidateStorageAsync()
+    public async Task InvalidateStorageAsync()
     {
         if (_wrapper != null)
         {
             _wrapper.Dispose();
         }
 
-        return CacheResetAsync();
+        await CacheResetAsync();
     }
 
     public void UpdateTitle(string newtitle)
@@ -334,14 +334,14 @@ internal class GoogleDriveStorageDisposableWrapper : IDisposable
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
-    public Task<GoogleDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
+    public async Task<GoogleDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
     {
         if (TryGetStorage(id, out var storage) && storage.IsOpened)
         {
-            return Task.FromResult(storage);
+            return storage;
         }
 
-        return InternalCreateStorageAsync(token, id);
+        return await InternalCreateStorageAsync(token, id);
     }
 
     public bool TryGetStorage(int id, out GoogleDriveStorage storage)

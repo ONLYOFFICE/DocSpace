@@ -345,16 +345,16 @@ internal class SharePointFolderDao : SharePointDaoBase, IFolderDao<string>
         return moved;
     }
 
-    public Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
+    public async Task<IDictionary<string, string>> CanMoveOrCopyAsync<TTo>(string[] folderIds, TTo to)
     {
         if (to is int tId)
         {
-            return CanMoveOrCopyAsync(folderIds, tId);
+            return await CanMoveOrCopyAsync(folderIds, tId);
         }
 
         if (to is string tsId)
         {
-            return CanMoveOrCopyAsync(folderIds, tsId);
+            return await CanMoveOrCopyAsync(folderIds, tsId);
         }
 
         throw new NotImplementedException();

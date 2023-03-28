@@ -88,9 +88,9 @@ public class FileSizeComment
     /// Get note about maximum file size
     /// </summary>
     /// <returns>Note: the file size cannot exceed 25 MB</returns>
-    public Task<string> GetFileSizeNoteAsync()
+    public async Task<string> GetFileSizeNoteAsync()
     {
-        return GetFileSizeNoteAsync(true);
+        return await GetFileSizeNoteAsync(true);
     }
 
     /// <summary>
@@ -98,9 +98,9 @@ public class FileSizeComment
     /// </summary>
     /// <param name="withHtmlStrong">Highlight a word about size</param>
     /// <returns>Note: the file size cannot exceed 25 MB</returns>
-    public Task<string> GetFileSizeNoteAsync(bool withHtmlStrong)
+    public async Task<string> GetFileSizeNoteAsync(bool withHtmlStrong)
     {
-        return GetFileSizeNoteAsync(Resource.FileSizeNote, withHtmlStrong);
+        return await GetFileSizeNoteAsync(Resource.FileSizeNote, withHtmlStrong);
     }
 
     /// <summary>

@@ -37,11 +37,11 @@ public class FilesIntegration
         _daoFactory = daoFactory;
     }
 
-    public Task<T> RegisterBunchAsync<T>(string module, string bunch, string data)
+    public async Task<T> RegisterBunchAsync<T>(string module, string bunch, string data)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
 
-        return folderDao.GetFolderIDAsync(module, bunch, data, true);
+        return await folderDao.GetFolderIDAsync(module, bunch, data, true);
     }
 
     public IAsyncEnumerable<T> RegisterBunchFoldersAsync<T>(string module, string bunch, IEnumerable<string> data)

@@ -401,9 +401,9 @@ public class FileConverter
         return (await _fileUtility.GetExtsConvertibleAsync()).ContainsKey(fileExtension) && (await _fileUtility.GetExtsConvertibleAsync())[fileExtension].Contains(toExtension);
     }
 
-    public Task<Stream> ExecAsync<T>(File<T> file)
+    public async Task<Stream> ExecAsync<T>(File<T> file)
     {
-        return ExecAsync(file, _fileUtility.GetInternalExtension(file.Title));
+        return await ExecAsync(file, _fileUtility.GetInternalExtension(file.Title));
     }
 
     public async Task<Stream> ExecAsync<T>(File<T> file, string toExtension, string password = null)

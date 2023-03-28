@@ -195,69 +195,69 @@ public class FileSecurity : IFileSecurity
         return CanReadAsync(entries, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanReadAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Read);
+        return await CanAsync(entry, userId, FilesSecurityActions.Read);
     }
 
-    public Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry)
     {
-        return CanReadHistoryAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanReadHistoryAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanReadHistoryAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.ReadHistory);
+        return await CanAsync(entry, userId, FilesSecurityActions.ReadHistory);
     }
 
-    public Task<bool> CanCommentAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanCommentAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Comment);
+        return await CanAsync(entry, userId, FilesSecurityActions.Comment);
     }
 
-    public Task<bool> CanFillFormsAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanFillFormsAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.FillForms);
+        return await CanAsync(entry, userId, FilesSecurityActions.FillForms);
     }
 
-    public Task<bool> CanReviewAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanReviewAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Review);
+        return await CanAsync(entry, userId, FilesSecurityActions.Review);
     }
 
-    public Task<bool> CanCustomFilterEditAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanCustomFilterEditAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.CustomFilter);
+        return await CanAsync(entry, userId, FilesSecurityActions.CustomFilter);
     }
 
-    public Task<bool> CanCreateAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanCreateAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Create);
+        return await CanAsync(entry, userId, FilesSecurityActions.Create);
     }
 
-    public Task<bool> CanEditAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanEditAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Edit);
+        return await CanAsync(entry, userId, FilesSecurityActions.Edit);
     }
 
-    public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanDeleteAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Delete);
+        return await CanAsync(entry, userId, FilesSecurityActions.Delete);
     }
 
-    public Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.EditRoom);
+        return await CanAsync(entry, userId, FilesSecurityActions.EditRoom);
     }
 
-    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanRenameAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Rename);
+        return await CanAsync(entry, userId, FilesSecurityActions.Rename);
     }
 
-    public Task<bool> CanDownloadAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanDownloadAsync<T>(FileEntry<T> entry)
     {
-        return CanDownloadAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanDownloadAsync(entry, _authContext.CurrentAccount.ID);
     }
 
     public async Task<bool> CanDownloadAsync<T>(FileEntry<T> entry, Guid userId)
@@ -280,113 +280,113 @@ public class FileSecurity : IFileSecurity
         return CheckDenySharing(entry);
     }
 
-    public Task<bool> CanReadAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanReadAsync<T>(FileEntry<T> entry)
     {
-        return CanReadAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanReadAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanCommentAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanCommentAsync<T>(FileEntry<T> entry)
     {
-        return CanCommentAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanCommentAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanCustomFilterEditAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanCustomFilterEditAsync<T>(FileEntry<T> entry)
     {
-        return CanCustomFilterEditAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanCustomFilterEditAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanFillFormsAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanFillFormsAsync<T>(FileEntry<T> entry)
     {
-        return CanFillFormsAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanFillFormsAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanReviewAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanReviewAsync<T>(FileEntry<T> entry)
     {
-        return CanReviewAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanReviewAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanCreateAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanCreateAsync<T>(FileEntry<T> entry)
     {
-        return CanCreateAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanCreateAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanEditAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanEditAsync<T>(FileEntry<T> entry)
     {
-        return CanEditAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanEditAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanRenameAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanRenameAsync<T>(FileEntry<T> entry)
     {
-        return CanRenameAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanRenameAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanDeleteAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanDeleteAsync<T>(FileEntry<T> entry)
     {
-        return CanDeleteAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanDeleteAsync(entry, _authContext.CurrentAccount.ID);
     }
-    public Task<bool> CanDownload<T>(FileEntry<T> entry)
+    public async Task<bool> CanDownload<T>(FileEntry<T> entry)
     {
-        return CanDownloadAsync(entry, _authContext.CurrentAccount.ID);
-    }
-
-    public Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry)
-    {
-        return CanEditRoomAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanDownloadAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanShareAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanEditRoomAsync<T>(FileEntry<T> entry)
     {
-        return CanShareAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanEditRoomAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanLockAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanShareAsync<T>(FileEntry<T> entry)
     {
-        return CanLockAsync(entry, _authContext.CurrentAccount.ID);
+        return await CanShareAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanLockAsync<T>(FileEntry<T> entry, Guid userId)
+    public async Task<bool> CanLockAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, userId, FilesSecurityActions.Lock);
+        return await CanLockAsync(entry, _authContext.CurrentAccount.ID);
     }
 
-    public Task<bool> CanCopyToAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanLockAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyTo);
+        return await CanAsync(entry, userId, FilesSecurityActions.Lock);
     }
 
-    public Task<bool> CanCopyAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanCopyToAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Copy);
+        return await CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.CopyTo);
     }
 
-    public Task<bool> CanMoveToAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanCopyAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.MoveTo);
+        return await CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Copy);
     }
 
-    public Task<bool> CanMoveAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanMoveToAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Move);
+        return await CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.MoveTo);
     }
 
-    public Task<bool> CanPinAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanMoveAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Pin);
+        return await CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Move);
     }
 
-    public Task<bool> CanEditAccessAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanPinAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditAccess);
+        return await CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.Pin);
     }
 
-    public Task<bool> CanEditHistoryAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanEditAccessAsync<T>(FileEntry<T> entry)
     {
-        return CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditHistory);
+        return await CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditAccess);
     }
 
-    public Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanEditHistoryAsync<T>(FileEntry<T> entry)
     {
-        return WhoCanAsync(entry, FilesSecurityActions.Read);
+        return await CanAsync(entry, _authContext.CurrentAccount.ID, FilesSecurityActions.EditHistory);
+    }
+
+    public async Task<IEnumerable<Guid>> WhoCanReadAsync<T>(FileEntry<T> entry)
+    {
+        return await WhoCanAsync(entry, FilesSecurityActions.Read);
     }
 
     private async Task<IEnumerable<Guid>> WhoCanAsync<T>(FileEntry<T> entry, FilesSecurityActions action)
@@ -1097,9 +1097,9 @@ public class FileSecurity : IFileSecurity
         await securityDao.SetShareAsync(r);
     }
 
-    public Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)
+    public async Task<IEnumerable<FileShareRecord>> GetSharesAsync<T>(FileEntry<T> entry)
     {
-        return _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
+        return await _daoFactory.GetSecurityDao<T>().GetSharesAsync(entry);
     }
 
     public async IAsyncEnumerable<FileEntry> GetSharesForMeAsync(FilterType filterType, bool subjectGroup, Guid subjectID, string searchText = "", bool searchInContent = false, bool withSubfolders = false)
@@ -1571,9 +1571,9 @@ public class FileSecurity : IFileSecurity
     }
 
 
-    public Task RemoveSubjectAsync<T>(Guid subject)
+    public async Task RemoveSubjectAsync<T>(Guid subject)
     {
-        return _daoFactory.GetSecurityDao<T>().RemoveSubjectAsync(subject);
+        await _daoFactory.GetSecurityDao<T>().RemoveSubjectAsync(subject);
     }
 
     public async Task<List<Guid>> GetUserSubjectsAsync(Guid userId)

@@ -67,9 +67,9 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         }
     }
 
-    public Task<File<string>> GetFileAsync(string fileId)
+    public async Task<File<string>> GetFileAsync(string fileId)
     {
-        return GetFileAsync(fileId, 1);
+        return await GetFileAsync(fileId, 1);
     }
 
     public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -309,12 +309,12 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         return Task.FromResult(false);
     }
 
-    public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullException.ThrowIfNull(fileStream);
 
-        return InternalSaveFileAsync(file, fileStream);
+        return await InternalSaveFileAsync(file, fileStream);
     }
 
     private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
@@ -353,9 +353,9 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         return ToFile(newOneDriveFile);
     }
 
-    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
-        return SaveFileAsync(file, fileStream);
+        return await SaveFileAsync(file, fileStream);
     }
 
     public async Task DeleteFileAsync(string fileId)
@@ -607,14 +607,14 @@ internal class OneDriveFileDao : OneDriveDaoBase, IFileDao<string>
         return file;
     }
 
-    public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+    public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
         if (_setupInfo.ChunkUploadSize > contentLength)
         {
-            return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
+            return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
         }
 
-        return InternalCreateUploadSessionAsync(file, contentLength);
+        return await InternalCreateUploadSessionAsync(file, contentLength);
     }
 
     private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)

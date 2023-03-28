@@ -361,9 +361,9 @@ public class NotifyTransferRequest : INotifyEngineAction
 
         await AddLetterLogoAsync(request);
     }
-    public Task AfterTransferRequestAsync(NotifyRequest request)
+    public void AfterTransferRequest(NotifyRequest request)
     {
-        return Task.CompletedTask;
+
     }
 
     private async Task AddLetterLogoAsync(NotifyRequest request)

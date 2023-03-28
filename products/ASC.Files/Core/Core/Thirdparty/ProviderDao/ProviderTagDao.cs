@@ -128,9 +128,9 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return _tagDao.GetTagsAsync(entryID, entryType, tagType);
     }
 
-    public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
+    public async Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
     {
-        return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
+        return await _tagDao.GetTagsAsync(subject, tagType, fileEntries);
     }
 
     public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
@@ -143,14 +143,14 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         return _tagDao.GetTagsInfoAsync(names);
     }
 
-    public Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
+    public async Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
     {
-        return _tagDao.SaveTagInfoAsync(tagInfo);
+        return await _tagDao.SaveTagInfoAsync(tagInfo);
     }
 
-    public Task RemoveTagsAsync(IEnumerable<int> tagsIds)
+    public async Task RemoveTagsAsync(IEnumerable<int> tagsIds)
     {
-        return _tagDao.RemoveTagsAsync(tagsIds);
+        await _tagDao.RemoveTagsAsync(tagsIds);
     }
 
     #endregion

@@ -48,11 +48,11 @@ public class WordpressToken
         return await _tokenHelper.GetTokenAsync(AppAttr);
     }
 
-    public Task SaveTokenAsync(OAuth20Token token)
+    public async Task SaveTokenAsync(OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(token);
 
-        return _tokenHelper.SaveTokenAsync(new Token(token, AppAttr));
+        await _tokenHelper.SaveTokenAsync(new Token(token, AppAttr));
     }
 
     public async Task<OAuth20Token> SaveTokenFromCodeAsync(string code)
@@ -65,11 +65,11 @@ public class WordpressToken
         return token;
     }
 
-    public Task DeleteTokenAsync(OAuth20Token token)
+    public async Task DeleteTokenAsync(OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(token);
 
-        return _tokenHelper.DeleteTokenAsync(AppAttr);
+        await _tokenHelper.DeleteTokenAsync(AppAttr);
     }
 }
 

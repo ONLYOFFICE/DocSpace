@@ -133,11 +133,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return _mapper.Map<DbFileQuery, File<int>>(dbFile);
     }
 
-    public Task<File<int>> GetFileAsync(int parentId, string title)
+    public async Task<File<int>> GetFileAsync(int parentId, string title)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
-        return InternalGetFileAsync(parentId, title);
+        return await InternalGetFileAsync(parentId, title);
     }
 
     private async Task<File<int>> InternalGetFileAsync(int parentId, string title)
@@ -390,9 +390,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return await (await _globalStore.GetStoreAsync()).GetReadStreamAsync(string.Empty, GetUniqFilePath(file), 0);
     }
 
-    public Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream)
+    public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream)
     {
-        return SaveFileAsync(file, fileStream, true);
+        return await SaveFileAsync(file, fileStream, true);
     }
 
     public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
@@ -565,7 +565,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return await GetFileAsync(file.Id);
     }
 
-    public Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
+    public async Task<File<int>> ReplaceFileVersionAsync(File<int> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(file);
 
@@ -574,7 +574,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        return InternalReplaceFileVersionAsync(file, fileStream);
+        return await InternalReplaceFileVersionAsync(file, fileStream);
     }
 
     private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
@@ -727,9 +727,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await (await _globalStore.GetStoreAsync()).SaveAsync(string.Empty, GetUniqFilePath(file), stream, file.Title);
     }
 
-    public Task DeleteFileAsync(int fileId)
+    public async Task DeleteFileAsync(int fileId)
     {
-        return DeleteFileAsync(fileId, true);
+        await DeleteFileAsync(fileId, true);
     }
 
     private Task DeleteFileAsync(int fileId, bool deleteFolder)
@@ -800,11 +800,11 @@ internal class FileDao : AbstractDao, IFileDao<int>
         });
     }
 
-    public Task<bool> IsExistAsync(string title, object folderId)
+    public async Task<bool> IsExistAsync(string title, object folderId)
     {
         if (folderId is int fId)
         {
-            return IsExistAsync(title, fId);
+            return await IsExistAsync(title, fId);
         }
 
         throw new NotImplementedException();
@@ -836,14 +836,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
         throw new NotImplementedException();
     }
 
-    public Task<int> MoveFileAsync(int fileId, int toFolderId)
+    public async Task<int> MoveFileAsync(int fileId, int toFolderId)
     {
         if (fileId == default)
         {
-            return Task.FromResult<int>(default);
+            return default;
         }
 
-        return InternalMoveFileAsync(fileId, toFolderId);
+        return await InternalMoveFileAsync(fileId, toFolderId);
     }
 
     private async Task<int> InternalMoveFileAsync(int fileId, int toFolderId)
@@ -1111,9 +1111,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     #region chunking
 
-    public Task<ChunkedUploadSession<int>> CreateUploadSessionAsync(File<int> file, long contentLength)
+    public async Task<ChunkedUploadSession<int>> CreateUploadSessionAsync(File<int> file, long contentLength)
     {
-        return _chunkedUploadSessionHolder.CreateUploadSessionAsync(file, contentLength);
+        return await _chunkedUploadSessionHolder.CreateUploadSessionAsync(file, contentLength);
     }
 
     public async Task<File<int>> UploadChunkAsync(ChunkedUploadSession<int> uploadSession, Stream stream, long chunkLength)
@@ -1151,9 +1151,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return file;
     }
 
-    public Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
+    public async Task AbortUploadSessionAsync(ChunkedUploadSession<int> uploadSession)
     {
-        return _chunkedUploadSessionHolder.AbortUploadSessionAsync(uploadSession);
+        await _chunkedUploadSessionHolder.AbortUploadSessionAsync(uploadSession);
     }
 
     private async Task<File<int>> GetFileForCommitAsync(ChunkedUploadSession<int> uploadSession)
@@ -1324,14 +1324,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private const string DiffTitle = "diff.zip";
 
-    public Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
+    public async Task SaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
     {
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(changes);
 
         ArgumentNullException.ThrowIfNull(differenceStream);
 
-        return InternalSaveEditHistoryAsync(file, changes, differenceStream);
+        await InternalSaveEditHistoryAsync(file, changes, differenceStream);
     }
 
     private async Task InternalSaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)

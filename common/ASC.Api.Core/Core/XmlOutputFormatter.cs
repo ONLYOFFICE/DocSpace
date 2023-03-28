@@ -33,7 +33,7 @@ public class XmlOutputFormatter : IOutputFormatter
         return context.ContentType == MimeMapping.GetMimeMapping(".xml");
     }
 
-    public Task WriteAsync(OutputFormatterWriteContext context)
+    public async Task WriteAsync(OutputFormatterWriteContext context)
     {
         var settings = new JsonSerializerSettings
         {
@@ -44,6 +44,6 @@ public class XmlOutputFormatter : IOutputFormatter
         var responseJson = JsonConvert.SerializeObject(context.Object, Formatting.Indented, settings);
         responseJson = JsonConvert.DeserializeObject<XDocument>("{\"result\":" + responseJson + "}", settings).ToString(SaveOptions.None);
 
-        return context.HttpContext.Response.WriteAsync(responseJson);
+        await context.HttpContext.Response.WriteAsync(responseJson);
     }
 }

@@ -278,15 +278,15 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+    public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
     {
         var t = _serviceProvider.GetService<T>();
         if (!Support(t) || data.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalIndexAsync(data, immediately, retry);
+        await InternalIndexAsync(data, immediately, retry);
     }
 
     private async Task InternalIndexAsync(List<T> data, bool immediately, int retry)
@@ -456,31 +456,32 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public Task IndexAsync(T data, bool immediately = true)
+    public async Task IndexAsync(T data, bool immediately = true)
     {
         var t = _serviceProvider.GetService<T>();
 
-        return !Support(t)
-            ? Task.FromResult(false)
-            : QueueAsync(() => _indexer.IndexAsync(data, immediately));
+        if (Support(t))
+        {
+            await QueueAsync(() => _indexer.IndexAsync(data, immediately));
+        }
     }
 
-    public Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
+    public async Task<bool> UpdateAsync(T data, bool immediately = true, params Expression<Func<T, object>>[] fields)
     {
         var t = _serviceProvider.GetService<T>();
 
         return !Support(t)
-            ? Task.FromResult(false)
-            : Queue(() => _indexer.Update(data, immediately, fields));
+            ? false
+            : await QueueAsync(() => _indexer.Update(data, immediately, fields));
     }
 
-    public Task<bool> DeleteAsync(T data, bool immediately = true)
+    public async Task<bool> DeleteAsync(T data, bool immediately = true)
     {
         var t = _serviceProvider.GetService<T>();
 
         return !Support(t)
-            ? Task.FromResult(false)
-            : Queue(() => _indexer.Delete(data, immediately));
+            ? false
+            : await QueueAsync(() => _indexer.Delete(data, immediately));
     }
 
     public async Task<bool> DeleteAsync(Expression<Func<Selector<T>, Selector<T>>> expression, bool immediately = true)
@@ -493,7 +494,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
 
-        return await Queue(() => _indexer.Delete(expression, tenant, immediately));
+        return await QueueAsync(() => _indexer.Delete(expression, tenant, immediately));
     }
 
     public void Flush()
@@ -568,7 +569,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         return _factoryIndexerCommon.CheckStateAsync();
     }
 
-    private Task<bool> Queue(Action actionData)
+    private Task<bool> QueueAsync(Action actionData)
     {
         var task = new Task<bool>(() =>
         {

@@ -243,14 +243,14 @@ internal class OneDriveStorageDisposableWrapper : IDisposable
         _oAuth20TokenHelper = oAuth20TokenHelper;
     }
 
-    public Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
+    public async Task<OneDriveStorage> CreateStorageAsync(OAuth20Token token, int id)
     {
         if (TryGetStorage(id, out var storage) && storage.IsOpened)
         {
-            return Task.FromResult(storage);
+            return storage;
         }
 
-        return InternalCreateStorageAsync(token, id);
+        return await InternalCreateStorageAsync(token, id);
     }
 
     public bool TryGetStorage(int id, out OneDriveStorage storage)

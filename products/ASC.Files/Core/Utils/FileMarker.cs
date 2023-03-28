@@ -408,14 +408,14 @@ public class FileMarker
         }
     }
 
-    public Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
+    public async Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
     {
         if (fileEntry == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalMarkAsNewAsync(fileEntry, userIDs);
+        await InternalMarkAsNewAsync(fileEntry, userIDs);
     }
 
     private async Task InternalMarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
@@ -451,14 +451,14 @@ public class FileMarker
         _serviceProvider.GetService<FileMarkerHelper<T>>().Add(taskData);
     }
 
-    public Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
+    public async Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
     {
         if (fileEntry == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalRemoveMarkAsNewAsync(fileEntry, userID);
+        await InternalRemoveMarkAsNewAsync(fileEntry, userID);
     }
 
     public async Task InternalRemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)

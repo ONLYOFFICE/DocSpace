@@ -133,24 +133,24 @@ public class MultiRegionHostedSolution
         return await GetRegionService(region).CreateAuthenticationCookieAsync(_cookieStorage, tenantId, userId);
     }
 
-    public Task<Tariff> GetTariffAsync(string region, int tenantId, bool withRequestToPaymentSystem = true)
+    public async Task<Tariff> GetTariffAsync(string region, int tenantId, bool withRequestToPaymentSystem = true)
     {
-        return GetRegionService(region).GetTariffAsync(tenantId, withRequestToPaymentSystem);
+        return await GetRegionService(region).GetTariffAsync(tenantId, withRequestToPaymentSystem);
     }
 
-    public Task SetTariffAsync(string region, int tenant, bool paid)
+    public async Task SetTariffAsync(string region, int tenant, bool paid)
     {
-        return GetRegionService(region).SetTariffAsync(tenant, paid);
+        await GetRegionService(region).SetTariffAsync(tenant, paid);
     }
 
-    public Task SetTariffAsync(string region, int tenant, Tariff tariff)
+    public async Task SetTariffAsync(string region, int tenant, Tariff tariff)
     {
-        return GetRegionService(region).SetTariffAsync(tenant, tariff);
+        await GetRegionService(region).SetTariffAsync(tenant, tariff);
     }
 
-    public Task<TenantQuota> GetTenantQuotaAsync(string region, int tenant)
+    public async Task<TenantQuota> GetTenantQuotaAsync(string region, int tenant)
     {
-        return GetRegionService(region).GetTenantQuotaAsync(tenant);
+        return await GetRegionService(region).GetTenantQuotaAsync(tenant);
     }
 
     public async Task CheckTenantAddressAsync(string address)

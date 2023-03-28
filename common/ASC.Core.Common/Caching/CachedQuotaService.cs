@@ -89,15 +89,15 @@ class CachedQuotaService : IQuotaService
         CacheNotify = quotaServiceCache.CacheNotify;
     }
 
-    public Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
+    public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
         var quotas = Cache.Get<IEnumerable<TenantQuota>>(QuotaServiceCache.KeyQuota);
         if (quotas == null)
         {
-            return GetTenantQuotasInternalAsync();
+            return await GetTenantQuotasInternalAsync();
         }
 
-        return Task.FromResult(quotas);
+        return quotas;
     }
 
     private async Task<IEnumerable<TenantQuota>> GetTenantQuotasInternalAsync()

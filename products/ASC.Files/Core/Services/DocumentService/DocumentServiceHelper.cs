@@ -433,9 +433,9 @@ public class DocumentServiceHelper
         await DropUserAsync(docKey, usersDrop.ToArray(), file.Id);
     }
 
-    public Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
+    public async Task<bool> DropUserAsync(string docKeyForTrack, string[] users, object fileId = null)
     {
-        return _documentServiceConnector.CommandAsync(CommandMethod.Drop, docKeyForTrack, fileId, null, users);
+        return await _documentServiceConnector.CommandAsync(CommandMethod.Drop, docKeyForTrack, fileId, null, users);
     }
 
     public async Task<bool> RenameFileAsync<T>(File<T> file, IFileDao<T> fileDao)

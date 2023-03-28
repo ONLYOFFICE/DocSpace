@@ -176,14 +176,14 @@ public class WebPath
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public Task<string> GetPathAsync(string relativePath)
+    public async Task<string> GetPathAsync(string relativePath)
     {
         if (!string.IsNullOrEmpty(relativePath) && relativePath.IndexOf('~') == 0)
         {
             throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
         }
 
-        return InternalGetPathAsync(relativePath);
+        return await InternalGetPathAsync(relativePath);
     }
 
     private async Task<string> InternalGetPathAsync(string relativePath)

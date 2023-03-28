@@ -126,9 +126,9 @@ public class StudioNotifyHelper
         return await RecipientsProvider.GetRecipientAsync(userId.ToString());
     }
 
-    public Task<IRecipient[]> RecipientFromEmailAsync(string email, bool checkActivation)
+    public async Task<IRecipient[]> RecipientFromEmailAsync(string email, bool checkActivation)
     {
-        return RecipientFromEmailAsync(new List<string> { email }, checkActivation);
+        return await RecipientFromEmailAsync(new List<string> { email }, checkActivation);
     }
 
     public async Task<IRecipient[]> RecipientFromEmailAsync(List<string> emails, bool checkActivation)

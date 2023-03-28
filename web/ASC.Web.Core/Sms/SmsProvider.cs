@@ -47,11 +47,11 @@ public class SmsProviderManager
         return SmscProvider.Enable() || ClickatellProvider.Enable() || ClickatellUSAProvider.Enable() || TwilioProvider.Enable() || TwilioSaaSProvider.Enable();
     }
 
-    public Task<bool> SendMessageAsync(string number, string message)
+    public async Task<bool> SendMessageAsync(string number, string message)
     {
         if (!Enabled())
         {
-            return Task.FromResult(false);
+            return false;
         }
 
         SmsProvider provider = null;
@@ -86,10 +86,10 @@ public class SmsProviderManager
 
         if (provider == null)
         {
-            return Task.FromResult(false);
+            return false;
         }
 
-        return provider.SendMessageAsync(number, message);
+        return await provider.SendMessageAsync(number, message);
     }
 }
 

@@ -50,11 +50,11 @@ public class EncryptionLoginProvider
     }
 
 
-    public Task SetKeysAsync(Guid userId, string keys)
+    public async Task SetKeysAsync(Guid userId, string keys)
     {
         if (string.IsNullOrEmpty(keys))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         var loginProfile = new LoginProfile(_signature, _instanceCrypto)
@@ -63,12 +63,12 @@ public class EncryptionLoginProvider
             Name = _instanceCrypto.Encrypt(keys)
         };
 
-        return _accountLinker.AddLinkAsync(userId.ToString(), loginProfile);
+        await _accountLinker.AddLinkAsync(userId.ToString(), loginProfile);
     }
 
-    public Task<string> GetKeysAsync()
+    public async Task<string> GetKeysAsync()
     {
-        return GetKeysAsync(_securityContext.CurrentAccount.ID);
+        return await GetKeysAsync(_securityContext.CurrentAccount.ID);
     }
 
     public async Task<string> GetKeysAsync(Guid userId)

@@ -69,9 +69,9 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         }
     }
 
-    public Task<File<string>> GetFileAsync(string fileId)
+    public async Task<File<string>> GetFileAsync(string fileId)
     {
-        return GetFileAsync(fileId, 1);
+        return await GetFileAsync(fileId, 1);
     }
 
     public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -309,12 +309,12 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         return Task.FromResult(false);
     }
 
-    public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullException.ThrowIfNull(fileStream);
 
-        return InternalSaveFileAsync(file, fileStream);
+        return await InternalSaveFileAsync(file, fileStream);
     }
 
     private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
@@ -351,9 +351,9 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         return ToFile(newBoxFile);
     }
 
-    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
-        return SaveFileAsync(file, fileStream);
+        return await SaveFileAsync(file, fileStream);
     }
 
     public async Task DeleteFileAsync(string fileId)
@@ -521,14 +521,12 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         return ToFile(newBoxFile);
     }
 
-    public Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+    public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
     {
-        var moved = _crossDao.PerformCrossDaoFileCopyAsync(
+        return await _crossDao.PerformCrossDaoFileCopyAsync(
             fileId, this, _boxDaoSelector.ConvertId,
             toFolderId, _fileDao, r => r,
             false);
-
-        return moved;
     }
 
     public async Task<string> FileRenameAsync(File<string> file, string newTitle)

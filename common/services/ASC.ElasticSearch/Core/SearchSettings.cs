@@ -163,9 +163,9 @@ public class SearchSettingsHelper
         return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
     }
 
-    public Task<bool> CanSearchByContentAsync<T>() where T : class, ISearchItem
+    public async Task<bool> CanSearchByContentAsync<T>() where T : class, ISearchItem
     {
-        return CanSearchByContentAsync(typeof(T));
+        return await CanSearchByContentAsync(typeof(T));
     }
 
     public async Task<bool> CanSearchByContentAsync(Type t)

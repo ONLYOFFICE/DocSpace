@@ -74,14 +74,14 @@ public abstract class BaseStorage : IDataStore
         return DomainsExpires.ContainsKey(domain) ? DomainsExpires[domain] : DomainsExpires[string.Empty];
     }
 
-    public Task<Uri> GetUriAsync(string path)
+    public async Task<Uri> GetUriAsync(string path)
     {
-        return GetUriAsync(string.Empty, path);
+        return await GetUriAsync(string.Empty, path);
     }
 
-    public Task<Uri> GetUriAsync(string domain, string path)
+    public async Task<Uri> GetUriAsync(string domain, string path)
     {
-        return GetPreSignedUriAsync(domain, path, TimeSpan.MaxValue, null);
+        return await GetPreSignedUriAsync(domain, path, TimeSpan.MaxValue, null);
     }
 
     public async Task<Uri> GetPreSignedUriAsync(string domain, string path, TimeSpan expire, IEnumerable<string> headers)
@@ -154,13 +154,13 @@ public abstract class BaseStorage : IDataStore
     public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream);
     public abstract Task<Uri> SaveAsync(string domain, string path, Stream stream, ACL acl);
 
-    public Task<Uri> SaveAsync(string domain, string path, Stream stream, string attachmentFileName)
+    public async Task<Uri> SaveAsync(string domain, string path, Stream stream, string attachmentFileName)
     {
         if (!string.IsNullOrEmpty(attachmentFileName))
         {
-            return SaveWithAutoAttachmentAsync(domain, path, stream, attachmentFileName);
+            return await SaveWithAutoAttachmentAsync(domain, path, stream, attachmentFileName);
         }
-        return SaveAsync(domain, path, stream);
+        return await SaveAsync(domain, path, stream);
     }
 
     protected abstract Task<Uri> SaveWithAutoAttachmentAsync(string domain, string path, Stream stream, string attachmentFileName);
@@ -207,7 +207,7 @@ public abstract class BaseStorage : IDataStore
     public abstract Task DeleteFilesAsync(string domain, string folderPath, DateTime fromDate, DateTime toDate);
     public abstract Task MoveDirectoryAsync(string srcdomain, string srcdir, string newdomain, string newdir);
     public abstract Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
-    public abstract Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream);
+    public abstract Task<(Uri, string)> SaveTempAsync(string domain, Stream stream);
     public abstract IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive);
     public abstract IAsyncEnumerable<string> ListFilesRelativeAsync(string domain, string path, string pattern, bool recursive);
 
@@ -221,19 +221,19 @@ public abstract class BaseStorage : IDataStore
     public abstract Task<Uri> CopyAsync(string srcdomain, string path, string newdomain, string newpath);
     public abstract Task CopyDirectoryAsync(string srcdomain, string dir, string newdomain, string newdir);
 
-    public Task<Stream> GetReadStreamAsync(string path)
+    public async Task<Stream> GetReadStreamAsync(string path)
     {
-        return GetReadStreamAsync(string.Empty, path);
+        return await GetReadStreamAsync(string.Empty, path);
     }
 
-    public Task<Uri> SaveAsync(string path, Stream stream, string attachmentFileName)
+    public async Task<Uri> SaveAsync(string path, Stream stream, string attachmentFileName)
     {
-        return SaveAsync(string.Empty, path, stream, attachmentFileName);
+        return await SaveAsync(string.Empty, path, stream, attachmentFileName);
     }
 
-    public Task<Uri> SaveAsync(string path, Stream stream)
+    public async Task<Uri> SaveAsync(string path, Stream stream)
     {
-        return SaveAsync(string.Empty, path, stream);
+        return await SaveAsync(string.Empty, path, stream);
     }
 
     public async Task DeleteAsync(string path)
@@ -246,14 +246,14 @@ public abstract class BaseStorage : IDataStore
         await DeleteFilesAsync(string.Empty, folderPath, pattern, recursive);
     }
 
-    public Task<Uri> MoveAsync(string srcpath, string newdomain, string newpath)
+    public async Task<Uri> MoveAsync(string srcpath, string newdomain, string newpath)
     {
-        return MoveAsync(string.Empty, srcpath, newdomain, newpath);
+        return await MoveAsync(string.Empty, srcpath, newdomain, newpath);
     }
 
-    public Task<Uri> SaveTempAsync(out string assignedPath, Stream stream)
+    public async Task<(Uri, string)> SaveTempAsync(Stream stream)
     {
-        return SaveTempAsync(string.Empty, out assignedPath, stream);
+        return await SaveTempAsync(string.Empty, stream);
     }
 
     public IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string path, bool recursive)
@@ -276,14 +276,14 @@ public abstract class BaseStorage : IDataStore
         }
     }
 
-    public Task<bool> IsFileAsync(string path)
+    public async Task<bool> IsFileAsync(string path)
     {
-        return IsFileAsync(string.Empty, path);
+        return await IsFileAsync(string.Empty, path);
     }
 
-    public Task<bool> IsDirectoryAsync(string path)
+    public async Task<bool> IsDirectoryAsync(string path)
     {
-        return IsDirectoryAsync(string.Empty, path);
+        return await IsDirectoryAsync(string.Empty, path);
     }
 
     public async Task DeleteDirectoryAsync(string path)
@@ -291,19 +291,19 @@ public abstract class BaseStorage : IDataStore
         await DeleteDirectoryAsync(string.Empty, path);
     }
 
-    public Task<long> GetFileSizeAsync(string path)
+    public async Task<long> GetFileSizeAsync(string path)
     {
-        return GetFileSizeAsync(string.Empty, path);
+        return await GetFileSizeAsync(string.Empty, path);
     }
 
-    public Task<long> GetDirectorySizeAsync(string path)
+    public async Task<long> GetDirectorySizeAsync(string path)
     {
-        return GetDirectorySizeAsync(string.Empty, path);
+        return await GetDirectorySizeAsync(string.Empty, path);
     }
 
-    public Task<Uri> CopyAsync(string path, string newdomain, string newpath)
+    public async Task<Uri> CopyAsync(string path, string newdomain, string newpath)
     {
-        return CopyAsync(string.Empty, path, newdomain, newpath);
+        return await CopyAsync(string.Empty, path, newdomain, newpath);
     }
 
     public async Task CopyDirectoryAsync(string dir, string newdomain, string newdir)

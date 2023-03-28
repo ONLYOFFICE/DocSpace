@@ -55,16 +55,16 @@ public class DocuSignToken
         return await _tokenHelper.GetTokenAsync(AppAttr);
     }
 
-    public Task DeleteTokenAsync(Guid? userId = null)
+    public async Task DeleteTokenAsync(Guid? userId = null)
     {
-        return _tokenHelper.DeleteTokenAsync(AppAttr, userId);
+        await _tokenHelper.DeleteTokenAsync(AppAttr, userId);
     }
 
-    public Task SaveTokenAsync(OAuth20Token token)
+    public async Task SaveTokenAsync(OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(token);
 
-        return _tokenHelper.SaveTokenAsync(new Token(token, AppAttr));
+        await _tokenHelper.SaveTokenAsync(new Token(token, AppAttr));
     }
 
     internal async Task<string> GetRefreshedTokenAsync(OAuth20Token token)

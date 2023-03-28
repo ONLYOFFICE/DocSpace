@@ -281,14 +281,14 @@ public class GlobalSpace
         _authContext = authContext;
     }
 
-    public Task<long> GetUserUsedSpaceAsync()
+    public async Task<long> GetUserUsedSpaceAsync()
     {
-        return GetUserUsedSpaceAsync(_authContext.CurrentAccount.ID);
+        return await GetUserUsedSpaceAsync(_authContext.CurrentAccount.ID);
     }
 
-    public Task<long> GetUserUsedSpaceAsync(Guid userId)
+    public async Task<long> GetUserUsedSpaceAsync(Guid userId)
     {
-        return _filesSpaceUsageStatManager.GetUserSpaceUsageAsync(userId);
+        return await _filesSpaceUsageStatManager.GetUserSpaceUsageAsync(userId);
     }
 }
 

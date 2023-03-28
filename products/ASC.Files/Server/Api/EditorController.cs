@@ -196,9 +196,9 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns></returns>
     [HttpGet("file/{fileId}/trackeditfile")]
-    public Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
+    public async Task<KeyValuePair<bool, string>> TrackEditFileAsync(T fileId, Guid tabId, string docKeyForTrack, string doc, bool isFinish)
     {
-        return _fileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
+        return await _fileStorageService.TrackEditFileAsync(fileId, tabId, docKeyForTrack, doc, isFinish);
     }
 
     /// <summary>
@@ -246,22 +246,21 @@ public abstract class EditorController<T> : ApiControllerBase
     }
 
     [HttpGet("file/{fileId}/presigned")]
-    public Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
+    public async Task<DocumentService.FileLink> GetPresignedUriAsync(T fileId)
     {
-        return _fileStorageService.GetPresignedUriAsync(fileId);
+        return await _fileStorageService.GetPresignedUriAsync(fileId);
     }
 
     [HttpGet("file/{fileId}/sharedusers")]
-    public Task<List<MentionWrapper>> SharedUsers(T fileId)
+    public async Task<List<MentionWrapper>> SharedUsers(T fileId)
     {
-        return _fileStorageService.SharedUsersAsync(fileId);
+        return await _fileStorageService.SharedUsersAsync(fileId);
     }
 
     [HttpPost("file/referencedata")]
-    public Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
+    public async Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
     {
-
-        return  _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
+        return await _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
     }
 }
 
@@ -316,15 +315,15 @@ public class EditorController : ApiControllerBase
     /// <visible>false</visible>
     [AllowAnonymous]
     [HttpGet("docservice")]
-    public Task<object> GetDocServiceUrlAsync(bool version)
+    public async Task<object> GetDocServiceUrlAsync(bool version)
     {
         var url = _commonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.DocServiceApiUrl);
         if (!version)
         {
-            return Task.FromResult<object>(url);
+            return url;
         }
 
-        return InternalGetDocServiceUrlAsync(url);
+        return await InternalGetDocServiceUrlAsync(url);
     }
 
     private async Task<object> InternalGetDocServiceUrlAsync(string url)

@@ -40,12 +40,12 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     }
 
-    public Task InvalidateCacheAsync(string fileId)
+    public async Task InvalidateCacheAsync(string fileId)
     {
         var selector = GetSelector(fileId);
         var fileDao = selector.GetFileDao(fileId);
 
-        return fileDao.InvalidateCacheAsync(selector.ConvertId(fileId));
+        await fileDao.InvalidateCacheAsync(selector.ConvertId(fileId));
     }
 
     public async Task<File<string>> GetFileAsync(string fileId)
@@ -187,11 +187,11 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     /// <param name="file"></param>
     /// <param name="offset"></param>
     /// <returns>Stream</returns>
-    public Task<Stream> GetFileStreamAsync(File<string> file, long offset)
+    public async Task<Stream> GetFileStreamAsync(File<string> file, long offset)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return InternalGetFileStreamAsync(file, offset);
+        return await InternalGetFileStreamAsync(file, offset);
     }
 
     private async Task<Stream> InternalGetFileStreamAsync(File<string> file, long offset)
@@ -207,11 +207,11 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return stream;
     }
 
-    public Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
+    public async Task<bool> IsSupportedPreSignedUriAsync(File<string> file)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return InternalIsSupportedPreSignedUriAsync(file);
+        return await InternalIsSupportedPreSignedUriAsync(file);
     }
 
     private async Task<bool> InternalIsSupportedPreSignedUriAsync(File<string> file)
@@ -227,11 +227,11 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return isSupported;
     }
 
-    public Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
+    public async Task<Uri> GetPreSignedUriAsync(File<string> file, TimeSpan expires)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return InternalGetPreSignedUriAsync(file, expires);
+        return await InternalGetPreSignedUriAsync(file, expires);
     }
 
     private async Task<Uri> InternalGetPreSignedUriAsync(File<string> file, TimeSpan expires)
@@ -247,11 +247,11 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return streamUri;
     }
 
-    public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return InternalSaveFileAsync(file, fileStream);
+        return await InternalSaveFileAsync(file, fileStream);
     }
 
     private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
@@ -290,7 +290,7 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         throw new ArgumentException("No file id or folder id toFolderId determine provider");
     }
 
-    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(file);
 
@@ -313,24 +313,24 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
         var fileDao = selector.GetFileDao(fileId);
 
-        return fileDao.ReplaceFileVersionAsync(file, fileStream);
+        return await fileDao.ReplaceFileVersionAsync(file, fileStream);
     }
 
-    public Task DeleteFileAsync(string fileId)
+    public async Task DeleteFileAsync(string fileId)
     {
         var selector = GetSelector(fileId);
         var fileDao = selector.GetFileDao(fileId);
 
-        return fileDao.DeleteFileAsync(selector.ConvertId(fileId));
+        await fileDao.DeleteFileAsync(selector.ConvertId(fileId));
     }
 
-    public Task<bool> IsExistAsync(string title, object folderId)
+    public async Task<bool> IsExistAsync(string title, object folderId)
     {
         var selector = GetSelector(folderId.ToString());
 
         var fileDao = selector.GetFileDao(folderId.ToString());
 
-        return fileDao.IsExistAsync(title, selector.ConvertId(folderId.ToString()));
+        return await fileDao.IsExistAsync(title, selector.ConvertId(folderId.ToString()));
     }
 
     public async Task<TTo> MoveFileAsync<TTo>(string fileId, TTo toFolderId)
@@ -385,56 +385,56 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         throw new NotImplementedException();
     }
 
-    public Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
+    public async Task<File<int>> CopyFileAsync(string fileId, int toFolderId)
     {
-        return PerformCrossDaoFileCopyAsync(fileId, toFolderId, false);
+        return await PerformCrossDaoFileCopyAsync(fileId, toFolderId, false);
     }
 
-    public Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
+    public async Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
     {
         var selector = GetSelector(fileId);
         if (IsCrossDao(fileId, toFolderId))
         {
-            return PerformCrossDaoFileCopyAsync(fileId, toFolderId, false);
+            return await PerformCrossDaoFileCopyAsync(fileId, toFolderId, false);
         }
 
         var fileDao = selector.GetFileDao(fileId);
 
-        return fileDao.CopyFileAsync(selector.ConvertId(fileId), selector.ConvertId(toFolderId));
+        return await fileDao.CopyFileAsync(selector.ConvertId(fileId), selector.ConvertId(toFolderId));
     }
 
-    public Task<string> FileRenameAsync(File<string> file, string newTitle)
+    public async Task<string> FileRenameAsync(File<string> file, string newTitle)
     {
         var selector = GetSelector(file.Id);
         var fileDao = selector.GetFileDao(file.Id);
 
-        return fileDao.FileRenameAsync(ConvertId(file), newTitle);
+        return await fileDao.FileRenameAsync(ConvertId(file), newTitle);
     }
 
-    public Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
+    public async Task<string> UpdateCommentAsync(string fileId, int fileVersion, string comment)
     {
         var selector = GetSelector(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
 
-        return fileDao.UpdateCommentAsync(selector.ConvertId(fileId), fileVersion, comment);
+        return await fileDao.UpdateCommentAsync(selector.ConvertId(fileId), fileVersion, comment);
     }
 
-    public Task CompleteVersionAsync(string fileId, int fileVersion)
+    public async Task CompleteVersionAsync(string fileId, int fileVersion)
     {
         var selector = GetSelector(fileId);
 
         var fileDao = selector.GetFileDao(fileId);
 
-        return fileDao.CompleteVersionAsync(selector.ConvertId(fileId), fileVersion);
+        await fileDao.CompleteVersionAsync(selector.ConvertId(fileId), fileVersion);
     }
 
-    public Task ContinueVersionAsync(string fileId, int fileVersion)
+    public async Task ContinueVersionAsync(string fileId, int fileVersion)
     {
         var selector = GetSelector(fileId);
         var fileDao = selector.GetFileDao(fileId);
 
-        return fileDao.ContinueVersionAsync(selector.ConvertId(fileId), fileVersion);
+        await fileDao.ContinueVersionAsync(selector.ConvertId(fileId), fileVersion);
     }
 
     public bool UseTrashForRemove(File<string> file)
@@ -447,11 +447,11 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
 
     #region chunking
 
-    public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
+    public async Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
         var fileDao = GetFileDao(file);
 
-        return fileDao.CreateUploadSessionAsync(ConvertId(file), contentLength);
+        return await fileDao.CreateUploadSessionAsync(ConvertId(file), contentLength);
     }
 
     public async Task<File<string>> UploadChunkAsync(ChunkedUploadSession<string> uploadSession, Stream chunkStream, long chunkLength)
@@ -463,19 +463,19 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return uploadSession.File;
     }
 
-    public Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    public async Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
     {
         var fileDao = GetFileDao(uploadSession.File);
         uploadSession.File = ConvertId(uploadSession.File);
-        return fileDao.FinalizeUploadSessionAsync(uploadSession);
+        return await fileDao.FinalizeUploadSessionAsync(uploadSession);
     }
 
-    public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    public async Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
     {
         var fileDao = GetFileDao(uploadSession.File);
         uploadSession.File = ConvertId(uploadSession.File);
 
-        return fileDao.AbortUploadSessionAsync(uploadSession);
+        await fileDao.AbortUploadSessionAsync(uploadSession);
     }
 
     private IFileDao<string> GetFileDao(File<string> file)

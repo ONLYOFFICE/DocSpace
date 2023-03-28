@@ -103,9 +103,9 @@ public class TenantQuotaController : IQuotaController
         await SetTenantQuotaRowAsync(module, domain, size, dataTag, false, Guid.Empty);
     }
 
-    public Task QuotaUsedCheckAsync(long size)
+    public async Task QuotaUsedCheckAsync(long size)
     {
-        return QuotaUsedCheckAsync(size, true);
+        await QuotaUsedCheckAsync(size, true);
     }
 
     public async Task QuotaUsedCheckAsync(long size, bool quotaCheckFileSize)

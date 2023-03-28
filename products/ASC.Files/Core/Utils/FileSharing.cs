@@ -459,9 +459,9 @@ public class FileSharing
         _roomLinkService = roomLinkService;
     }
 
-    public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
+    public async Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
     {
-        return _fileSharingHelper.CanSetAccessAsync(entry);
+        return await _fileSharingHelper.CanSetAccessAsync(entry);
     }
 
     public async Task<List<AceWrapper>> GetSharedInfoAsync<T>(FileEntry<T> entry)

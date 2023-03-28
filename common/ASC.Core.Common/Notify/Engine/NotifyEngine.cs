@@ -31,7 +31,7 @@ namespace ASC.Notify.Engine;
 public interface INotifyEngineAction
 {
     Task BeforeTransferRequestAsync(NotifyRequest request);
-    Task AfterTransferRequestAsync(NotifyRequest request);
+    void AfterTransferRequest(NotifyRequest request);
 }
 
 [Singletone]
@@ -189,7 +189,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     await using var scope = _serviceScopeFactory.CreateAsyncScope();
                     foreach (var action in Actions)
                     {
-                        await ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequestAsync(request);
+                        ((INotifyEngineAction)scope.ServiceProvider.GetRequiredService(action)).AfterTransferRequest(request);
                     }
 
                     try

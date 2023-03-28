@@ -57,7 +57,7 @@ public class SmsManager
         _cookieManager = cookieManager;
     }
 
-    public Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
+    public async Task<string> SaveMobilePhoneAsync(UserInfo user, string mobilePhone)
     {
         mobilePhone = SmsSender.GetPhoneValueDigits(mobilePhone);
 
@@ -76,7 +76,7 @@ public class SmsManager
             throw new Exception(Resource.MobilePhoneMustErase);
         }
 
-        return InternalSaveMobilePhoneAsync(user, mobilePhone);
+        return await InternalSaveMobilePhoneAsync(user, mobilePhone);
     }
 
     private async Task<string> InternalSaveMobilePhoneAsync(UserInfo user, string mobilePhone)

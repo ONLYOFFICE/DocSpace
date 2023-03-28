@@ -161,9 +161,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <remarks>In case the extension for the file title differs from DOCX/XLSX/PPTX and belongs to one of the known text, spreadsheet or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not set or is unknown, the DOCX extension will be added to the file title.</remarks>
     /// <returns>New file info</returns>
     [HttpPost("{folderId}/file")]
-    public Task<FileDto<T>> CreateFileAsync(T folderId, CreateFileRequestDto<JsonElement> inDto)
+    public async Task<FileDto<T>> CreateFileAsync(T folderId, CreateFileRequestDto<JsonElement> inDto)
     {
-        return _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
+        return await _filesControllerHelper.CreateFileAsync(folderId, inDto.Title, inDto.TemplateId, inDto.FormId, inDto.EnableExternalExt);
     }
 
     /// <summary>
@@ -176,9 +176,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>
     [HttpPost("{folderId}/html")]
-    public Task<FileDto<T>> CreateHtmlFileAsync(T folderId, CreateTextOrHtmlFileRequestDto inDto)
+    public async Task<FileDto<T>> CreateHtmlFileAsync(T folderId, CreateTextOrHtmlFileRequestDto inDto)
     {
-        return _filesControllerHelper.CreateHtmlFileAsync(folderId, inDto.Title, inDto.Content);
+        return await _filesControllerHelper.CreateHtmlFileAsync(folderId, inDto.Title, inDto.Content);
     }
 
     /// <summary>
@@ -191,9 +191,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="content">File contents</param>
     /// <returns>Folder contents</returns>
     [HttpPost("{folderId}/text")]
-    public Task<FileDto<T>> CreateTextFileAsync(T folderId, CreateTextOrHtmlFileRequestDto inDto)
+    public async Task<FileDto<T>> CreateTextFileAsync(T folderId, CreateTextOrHtmlFileRequestDto inDto)
     {
-        return _filesControllerHelper.CreateTextFileAsync(folderId, inDto.Title, inDto.Content);
+        return await _filesControllerHelper.CreateTextFileAsync(folderId, inDto.Title, inDto.Content);
     }
 
     /// <summary>
@@ -216,9 +216,9 @@ public abstract class FilesController<T> : ApiControllerBase
 
     [AllowAnonymous]
     [HttpGet("file/{fileId}/edit/diff")]
-    public Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
+    public async Task<EditHistoryDataDto> GetEditDiffUrlAsync(T fileId, int version = 0, string doc = null)
     {
-        return _filesControllerHelper.GetEditDiffUrlAsync(fileId, version, doc);
+        return await _filesControllerHelper.GetEditDiffUrlAsync(fileId, version, doc);
     }
 
     [AllowAnonymous]
@@ -235,9 +235,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <returns>File info</returns>
     [HttpGet("file/{fileId}")]
-    public Task<FileDto<T>> GetFileInfoAsync(T fileId, int version = -1)
+    public async Task<FileDto<T>> GetFileInfoAsync(T fileId, int version = -1)
     {
-        return _filesControllerHelper.GetFileInfoAsync(fileId, version);
+        return await _filesControllerHelper.GetFileInfoAsync(fileId, version);
     }
 
 
@@ -255,9 +255,9 @@ public abstract class FilesController<T> : ApiControllerBase
     }
 
     [HttpPut("file/{fileId}/lock")]
-    public Task<FileDto<T>> LockFileAsync(T fileId, LockFileRequestDto inDto)
+    public async Task<FileDto<T>> LockFileAsync(T fileId, LockFileRequestDto inDto)
     {
-        return _filesControllerHelper.LockFileAsync(fileId, inDto.LockFile);
+        return await _filesControllerHelper.LockFileAsync(fileId, inDto.LockFile);
     }
 
     [AllowAnonymous]
@@ -302,9 +302,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param name="lastVersion">File last version number</param>
     /// <returns>File info</returns>
     [HttpPut("file/{fileId}")]
-    public Task<FileDto<T>> UpdateFileAsync(T fileId, UpdateFileRequestDto inDto)
+    public async Task<FileDto<T>> UpdateFileAsync(T fileId, UpdateFileRequestDto inDto)
     {
-        return _filesControllerHelper.UpdateFileAsync(fileId, inDto.Title, inDto.LastVersion);
+        return await _filesControllerHelper.UpdateFileAsync(fileId, inDto.Title, inDto.LastVersion);
     }
 
     /// <summary>
@@ -316,9 +316,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <returns></returns>
     /// <visible>false</visible>
     [HttpPut("{fileId}/update")]
-    public Task<FileDto<T>> UpdateFileStreamFromFormAsync(T fileId, [FromForm] FileStreamRequestDto inDto)
+    public async Task<FileDto<T>> UpdateFileStreamFromFormAsync(T fileId, [FromForm] FileStreamRequestDto inDto)
     {
-        return _filesControllerHelper.UpdateFileStreamAsync(_filesControllerHelper.GetFileFromRequest(inDto).OpenReadStream(), fileId, inDto.FileExtension, inDto.Encrypted, inDto.Forcesave);
+        return await _filesControllerHelper.UpdateFileStreamAsync(_filesControllerHelper.GetFileFromRequest(inDto).OpenReadStream(), fileId, inDto.FileExtension, inDto.Encrypted, inDto.Forcesave);
     }
 
     [HttpGet("{fileId}/properties")]
@@ -329,9 +329,9 @@ public abstract class FilesController<T> : ApiControllerBase
 
 
     [HttpPut("{fileId}/properties")]
-    public Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto fileProperties)
+    public async Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto fileProperties)
     {
-        return _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
+        return await _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
     }
 }
 

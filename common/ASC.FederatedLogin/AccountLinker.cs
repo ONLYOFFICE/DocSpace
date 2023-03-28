@@ -73,14 +73,14 @@ public class AccountLinker
         _accountLinkContextManager = accountLinkContextManager;
     }
 
-    public Task<IEnumerable<string>> GetLinkedObjectsAsync(string id, string provider)
+    public async Task<IEnumerable<string>> GetLinkedObjectsAsync(string id, string provider)
     {
-        return GetLinkedObjectsAsync(new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
+        return await GetLinkedObjectsAsync(new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
     }
 
-    public Task<IEnumerable<string>> GetLinkedObjectsAsync(LoginProfile profile)
+    public async Task<IEnumerable<string>> GetLinkedObjectsAsync(LoginProfile profile)
     {
-        return GetLinkedObjectsByHashIdAsync(profile.HashId);
+        return await GetLinkedObjectsByHashIdAsync(profile.HashId);
     }
 
     public async Task<IEnumerable<string>> GetLinkedObjectsByHashIdAsync(string hashid)
@@ -126,19 +126,19 @@ public class AccountLinker
         _accountLinkerStorage.RemoveFromCache(obj);
     }
 
-    public Task AddLinkAsync(string obj, string id, string provider)
+    public async Task AddLinkAsync(string obj, string id, string provider)
     {
-        return AddLinkAsync(obj, new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
+        await AddLinkAsync(obj, new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
     }
 
-    public Task RemoveLinkAsync(string obj, string id, string provider)
+    public async Task RemoveLinkAsync(string obj, string id, string provider)
     {
-        return RemoveLinkAsync(obj, new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
+        await RemoveLinkAsync(obj, new LoginProfile(_signature, _instanceCrypto) { Id = id, Provider = provider });
     }
 
-    public Task RemoveLinkAsync(string obj, LoginProfile profile)
+    public async Task RemoveLinkAsync(string obj, LoginProfile profile)
     {
-        return RemoveProviderAsync(obj, hashId: profile.HashId);
+        await RemoveProviderAsync(obj, hashId: profile.HashId);
     }
 
     public async Task RemoveProviderAsync(string obj, string provider = null, string hashId = null)

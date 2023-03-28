@@ -113,9 +113,9 @@ public abstract class SecutiryController<T> : ApiControllerBase
     }
 
     [HttpPut("{fileId}/setacelink")]
-    public Task<bool> SetAceLinkAsync(T fileId, [FromBody] GenerateSharedLinkRequestDto inDto)
+    public async Task<bool> SetAceLinkAsync(T fileId, [FromBody] GenerateSharedLinkRequestDto inDto)
     {
-        return _fileStorageService.SetAceLinkAsync(fileId, inDto.Share);
+        return await _fileStorageService.SetAceLinkAsync(fileId, inDto.Share);
     }
 
     /// <summary>
@@ -163,15 +163,15 @@ public abstract class SecutiryController<T> : ApiControllerBase
     }
 
     [HttpGet("file/{fileId}/publickeys")]
-    public Task<List<EncryptionKeyPairDto>> GetEncryptionAccess(T fileId)
+    public async Task<List<EncryptionKeyPairDto>> GetEncryptionAccess(T fileId)
     {
-        return _fileStorageService.GetEncryptionAccessAsync(fileId);
+        return await _fileStorageService.GetEncryptionAccessAsync(fileId);
     }
 
     [HttpPost("file/{fileId}/sendeditornotify")]
-    public Task<List<AceShortWrapper>> SendEditorNotify(T fileId, MentionMessageWrapper mentionMessage)
+    public async Task<List<AceShortWrapper>> SendEditorNotify(T fileId, MentionMessageWrapper mentionMessage)
     {
-        return _fileStorageService.SendEditorNotifyAsync(fileId, mentionMessage);
+        return await _fileStorageService.SendEditorNotifyAsync(fileId, mentionMessage);
     }
 }
 

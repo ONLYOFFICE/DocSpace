@@ -204,24 +204,24 @@ public class HostedSolution
         return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index, 0);
     }
 
-    public Task<Tariff> GetTariffAsync(int tenant, bool withRequestToPaymentSystem = true)
+    public async Task<Tariff> GetTariffAsync(int tenant, bool withRequestToPaymentSystem = true)
     {
-        return TariffService.GetTariffAsync(tenant, withRequestToPaymentSystem);
+        return await TariffService.GetTariffAsync(tenant, withRequestToPaymentSystem);
     }
 
-    public Task<TenantQuota> GetTenantQuotaAsync(int tenant)
+    public async Task<TenantQuota> GetTenantQuotaAsync(int tenant)
     {
-        return ClientTenantManager.GetTenantQuotaAsync(tenant);
+        return await ClientTenantManager.GetTenantQuotaAsync(tenant);
     }
 
-    public Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
+    public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        return ClientTenantManager.GetTenantQuotasAsync();
+        return await ClientTenantManager.GetTenantQuotasAsync();
     }
 
-    public Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
+    public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
     {
-        return ClientTenantManager.SaveTenantQuotaAsync(quota);
+        return await ClientTenantManager.SaveTenantQuotaAsync(quota);
     }
 
     public async Task SetTariffAsync(int tenant, bool paid)
@@ -233,9 +233,9 @@ public class HostedSolution
         }
     }
 
-    public Task SetTariffAsync(int tenant, Tariff tariff)
+    public async Task SetTariffAsync(int tenant, Tariff tariff)
     {
-        return TariffService.SetTariffAsync(tenant, tariff);
+        await TariffService.SetTariffAsync(tenant, tariff);
     }
 
     public async Task<IEnumerable<UserInfo>> FindUsersAsync(IEnumerable<Guid> userIds)

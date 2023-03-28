@@ -384,11 +384,11 @@ public class GoogleCloudStorage : BaseStorage
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
+    public override async Task<(Uri, string)> SaveTempAsync(string domain, Stream stream)
     {
-        assignedPath = Guid.NewGuid().ToString();
+        var assignedPath = Guid.NewGuid().ToString();
 
-        return SaveAsync(domain, assignedPath, stream);
+        return (await SaveAsync(domain, assignedPath, stream), assignedPath);
     }
 
     public override IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive)

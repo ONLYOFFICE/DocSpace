@@ -40,17 +40,17 @@ public class UserCommands : CommandContext
     }
 
     [Command("start")]
-    public Task StartCommand(string token)
+    public async Task StartCommand(string token)
     {
         if (string.IsNullOrEmpty(token))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalStartCommand(token);
+        return await InternalStartCommandAsync(token);
     }
 
-    private async Task InternalStartCommand(string token)
+    private async Task InternalStartCommandAsync(string token)
     {
 
         var user = await _distributedCache.GetStringAsync(token);

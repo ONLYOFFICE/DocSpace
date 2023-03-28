@@ -54,14 +54,14 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         _fileDao = fileDao;
     }
 
-    public Task InvalidateCacheAsync(string fileId)
+    public async Task InvalidateCacheAsync(string fileId)
     {
-        return ProviderInfo.InvalidateStorageAsync();
+        await ProviderInfo.InvalidateStorageAsync();
     }
 
-    public Task<File<string>> GetFileAsync(string fileId)
+    public async Task<File<string>> GetFileAsync(string fileId)
     {
-        return GetFileAsync(fileId, 1);
+        return await GetFileAsync(fileId, 1);
     }
 
     public async Task<File<string>> GetFileAsync(string fileId, int fileVersion)
@@ -291,14 +291,14 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         return Task.FromResult(false);
     }
 
-    public Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> SaveFileAsync(File<string> file, Stream fileStream)
     {
         ArgumentNullException.ThrowIfNull(fileStream);
 
-        return internalSaveFileAsync(file, fileStream);
+        return await InternalSaveFileAsync(file, fileStream);
     }
 
-    private async Task<File<string>> internalSaveFileAsync(File<string> file, Stream fileStream)
+    private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
     {
         if (file.Id != null)
         {
@@ -330,14 +330,14 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         return null;
     }
 
-    public Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
+    public async Task<File<string>> ReplaceFileVersionAsync(File<string> file, Stream fileStream)
     {
-        return SaveFileAsync(file, fileStream);
+        return await SaveFileAsync(file, fileStream);
     }
 
-    public Task DeleteFileAsync(string fileId)
+    public async Task DeleteFileAsync(string fileId)
     {
-        return ProviderInfo.DeleteFileAsync(fileId);
+        await ProviderInfo.DeleteFileAsync(fileId);
     }
 
     public async Task<bool> IsExistAsync(string title, object folderId)

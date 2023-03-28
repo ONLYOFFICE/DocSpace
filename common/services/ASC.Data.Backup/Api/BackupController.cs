@@ -53,9 +53,9 @@ public class BackupController : ControllerBase
     /// <category>Backup</category>
     /// <returns>Backup Schedule</returns>
     [HttpGet("getbackupschedule")]
-    public Task<BackupAjaxHandler.Schedule> GetBackupSchedule()
+    public async Task<BackupAjaxHandler.Schedule> GetBackupSchedule()
     {
-        return _backupHandler.GetScheduleAsync();
+        return await _backupHandler.GetScheduleAsync();
     }
 
     /// <summary>

@@ -103,14 +103,14 @@ internal class BoxProviderInfo : IProviderInfo
         }
     }
 
-    public Task InvalidateStorageAsync()
+    public async Task InvalidateStorageAsync()
     {
         if (_wrapper != null)
         {
             _wrapper.Dispose();
         }
 
-        return CacheResetAsync();
+        await CacheResetAsync();
     }
 
     public void UpdateTitle(string newtitle)

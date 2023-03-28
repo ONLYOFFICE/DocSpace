@@ -110,11 +110,11 @@ internal class BoxStorage
         return folderItems.Entries;
     }
 
-    public Task<Stream> DownloadStreamAsync(BoxFile file, int offset = 0)
+    public async Task<Stream> DownloadStreamAsync(BoxFile file, int offset = 0)
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return InternalDownloadStreamAsync(file, offset);
+        return await InternalDownloadStreamAsync(file, offset);
     }
 
     public async Task<Stream> InternalDownloadStreamAsync(BoxFile file, int offset = 0)
@@ -143,7 +143,7 @@ internal class BoxStorage
         return tempBuffer;
     }
 
-    public Task<BoxFolder> CreateFolderAsync(string title, string parentId)
+    public async Task<BoxFolder> CreateFolderAsync(string title, string parentId)
     {
         var boxFolderRequest = new BoxFolderRequest
         {
@@ -154,10 +154,10 @@ internal class BoxStorage
             }
         };
 
-        return _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields);
+        return await _boxClient.FoldersManager.CreateAsync(boxFolderRequest, _boxFields);
     }
 
-    public Task<BoxFile> CreateFileAsync(Stream fileStream, string title, string parentId)
+    public async Task<BoxFile> CreateFileAsync(Stream fileStream, string title, string parentId)
     {
         var boxFileRequest = new BoxFileRequest
         {
@@ -168,7 +168,7 @@ internal class BoxStorage
             }
         };
 
-        return _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false);
+        return await _boxClient.FilesManager.UploadAsync(boxFileRequest, fileStream, _boxFields, setStreamPositionToZero: false);
     }
 
     public async Task DeleteItemAsync(BoxItem boxItem)
@@ -183,7 +183,7 @@ internal class BoxStorage
         }
     }
 
-    public Task<BoxFolder> MoveFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
+    public async Task<BoxFolder> MoveFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
     {
         var boxFolderRequest = new BoxFolderRequest
         {
@@ -195,10 +195,10 @@ internal class BoxStorage
             }
         };
 
-        return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
+        return await _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
     }
 
-    public Task<BoxFile> MoveFileAsync(string boxFileId, string newFileName, string toFolderId)
+    public async Task<BoxFile> MoveFileAsync(string boxFileId, string newFileName, string toFolderId)
     {
         var boxFileRequest = new BoxFileRequest
         {
@@ -210,10 +210,10 @@ internal class BoxStorage
             }
         };
 
-        return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
+        return await _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
     }
 
-    public Task<BoxFolder> CopyFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
+    public async Task<BoxFolder> CopyFolderAsync(string boxFolderId, string newFolderName, string toFolderId)
     {
         var boxFolderRequest = new BoxFolderRequest
         {
@@ -225,10 +225,10 @@ internal class BoxStorage
             }
         };
 
-        return _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields);
+        return await _boxClient.FoldersManager.CopyAsync(boxFolderRequest, _boxFields);
     }
 
-    public Task<BoxFile> CopyFileAsync(string boxFileId, string newFileName, string toFolderId)
+    public async Task<BoxFile> CopyFileAsync(string boxFileId, string newFileName, string toFolderId)
     {
         var boxFileRequest = new BoxFileRequest
         {
@@ -240,26 +240,26 @@ internal class BoxStorage
             }
         };
 
-        return _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields);
+        return await _boxClient.FilesManager.CopyAsync(boxFileRequest, _boxFields);
     }
 
-    public Task<BoxFolder> RenameFolderAsync(string boxFolderId, string newName)
+    public async Task<BoxFolder> RenameFolderAsync(string boxFolderId, string newName)
     {
         var boxFolderRequest = new BoxFolderRequest { Id = boxFolderId, Name = newName };
 
-        return _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
+        return await _boxClient.FoldersManager.UpdateInformationAsync(boxFolderRequest, _boxFields);
     }
 
-    public Task<BoxFile> RenameFileAsync(string boxFileId, string newName)
+    public async Task<BoxFile> RenameFileAsync(string boxFileId, string newName)
     {
         var boxFileRequest = new BoxFileRequest { Id = boxFileId, Name = newName };
 
-        return _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
+        return await _boxClient.FilesManager.UpdateInformationAsync(boxFileRequest, null, _boxFields);
     }
 
-    public Task<BoxFile> SaveStreamAsync(string fileId, Stream fileStream)
+    public async Task<BoxFile> SaveStreamAsync(string fileId, Stream fileStream)
     {
-        return _boxClient.FilesManager.UploadNewVersionAsync(null, fileId, fileStream, fields: _boxFields, setStreamPositionToZero: false);
+        return await _boxClient.FilesManager.UploadNewVersionAsync(null, fileId, fileStream, fields: _boxFields, setStreamPositionToZero: false);
     }
 
     public async Task<long> GetMaxUploadSizeAsync()

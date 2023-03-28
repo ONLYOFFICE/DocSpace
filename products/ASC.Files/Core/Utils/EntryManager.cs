@@ -105,11 +105,11 @@ public class BreadCrumbsManager
         _authContext = authContext;
     }
 
-    public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
+    public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
     {
         var folderDao = _daoFactory.GetFolderDao<T>();
 
-        return GetBreadCrumbsAsync(folderId, folderDao);
+        return await GetBreadCrumbsAsync(folderId, folderDao);
     }
 
     public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
@@ -1018,14 +1018,14 @@ public class EntryManager
         return folder;
     }
 
-    public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
+    public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId)
     {
-        return _breadCrumbsManager.GetBreadCrumbsAsync(folderId);
+        return await _breadCrumbsManager.GetBreadCrumbsAsync(folderId);
     }
 
-    public Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
+    public async Task<List<FileEntry>> GetBreadCrumbsAsync<T>(T folderId, IFolderDao<T> folderDao)
     {
-        return _breadCrumbsManager.GetBreadCrumbsAsync(folderId, folderDao);
+        return await _breadCrumbsManager.GetBreadCrumbsAsync(folderId, folderDao);
     }
 
     public async Task CheckFolderIdAsync<T>(IFolderDao<T> folderDao, IEnumerable<FileEntry<T>> entries)
@@ -1050,14 +1050,14 @@ public class EntryManager
         }
     }
 
-    public Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
+    public async Task<bool> FileLockedForMeAsync<T>(T fileId, Guid userId = default)
     {
-        return _lockerManager.FileLockedForMeAsync(fileId, userId);
+        return await _lockerManager.FileLockedForMeAsync(fileId, userId);
     }
 
-    public Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
+    public async Task<Guid> FileLockedByAsync<T>(T fileId, ITagDao<T> tagDao)
     {
-        return _lockerManager.FileLockedByAsync(fileId, tagDao);
+        return await _lockerManager.FileLockedByAsync(fileId, tagDao);
     }
 
     public async Task<(File<T> file, Folder<T> folderIfNew)> GetFillFormDraftAsync<T>(File<T> sourceFile)
