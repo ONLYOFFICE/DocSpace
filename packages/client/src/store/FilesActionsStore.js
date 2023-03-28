@@ -588,6 +588,7 @@ class FilesActionStore {
             id: selectedItem.id,
             isFolder: selectedItem.isFolder,
           },
+          false,
           false
         );
         break;

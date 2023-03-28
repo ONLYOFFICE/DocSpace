@@ -4,7 +4,7 @@
   "EditPhoto": "Επεξεργασία φωτογραφίας",
   "InterfaceTheme": "Θέμα διεπαφής",
   "LightTheme": "Ανοιχτό θέμα",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης email έχουν σταλεί στη διεύθυνση email <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης email έχουν σταλεί στη διεύθυνση email <strong>{{ email }}</strong>.",
   "ProviderSuccessfullyConnected": "Ο πάροχος συνδέθηκε επιτυχώς",
   "ProviderSuccessfullyDisconnected": "Ο πάροχος αποσυνδέθηκε επιτυχώς",
   "ShowBackupCodes": "Εμφάνιση εφεδρικών κωδικών",

@@ -1,5 +1,5 @@
 {
   "LblInviteAgain": "Opnieuw uitnodigen",
-  "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail activatie instructies zijn verzonden naar het <1>{{email}}</1> e-mailadres",
+  "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail activatie instructies zijn verzonden naar het <1>{{email}}</1> e-mailadres.",
   "UserStatus": "Status"
 }

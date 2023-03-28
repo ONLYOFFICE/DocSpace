@@ -53,7 +53,7 @@ const SectionBodyContent = ({ t, ready, setSubscriptions }) => {
     }
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     timerId = setTimeout(() => {
       setIsLoading(true);
     }, 400);

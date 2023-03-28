@@ -1,8 +1,8 @@
 {
+  "CancelUpload": "The upload has been interrupted. Some files have not been uploaded.",
   "EnterPassword": "Enter password",
   "HideInput": "Hide",
   "Ready": "Done",
   "UploadAndConvert": "Upload and convert files",
-  "Uploads": "Uploads",
-  "CancelUpload": "The upload has been interrupted. Some files have not been uploaded."
+  "Uploads": "Uploads"
 }

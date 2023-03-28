@@ -236,7 +236,7 @@ const AboutContent = (props) => {
             href={site}
             enableUserSelect
           >
-            &nbsp;{site.replace(/^https?\:\/\//i, "")}
+            &nbsp;{site?.replace(/^https?\:\/\//i, "")}
           </ColorTheme>
         </div>
       </StyledAboutBody>
