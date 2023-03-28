@@ -4,7 +4,7 @@
   "EditPhoto": "사진 편집",
   "InterfaceTheme": "인터페이스 테마",
   "LightTheme": "라이트 테마",
-  "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <strong>{{ email }}</strong> 이메일 주소로 전송되었습니다",
+  "MessageEmailActivationInstuctionsSentOnEmail": "이메일 활성화 방법이 <strong>{{ email }}</strong> 이메일 주소로 전송되었습니다.",
   "ProviderSuccessfullyConnected": "공급자 연결에 성공했습니다",
   "ProviderSuccessfullyDisconnected": "공급자 연결 해제에 성공했습니다",
   "ShowBackupCodes": "백업 코드 보기",

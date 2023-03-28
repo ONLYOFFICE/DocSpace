@@ -139,7 +139,7 @@ const DropBox = React.forwardRef(
 
       setDropBoxHeight(
         currentHeight + navHeight > sectionHeight
-          ? sectionHeight - navHeight
+          ? sectionHeight - navHeight - 20
           : currentHeight
       );
     }, [sectionHeight]);
@@ -149,7 +149,7 @@ const DropBox = React.forwardRef(
         <StyledBox
           ref={ref}
           maxHeight={maxHeight}
-          height={sectionHeight < dropBoxHeight ? sectionHeight - 20 : null}
+          height={sectionHeight < dropBoxHeight ? sectionHeight : null}
           showText={showText}
           dropBoxWidth={dropBoxWidth}
           isDesktop={isDesktop}
@@ -180,7 +180,7 @@ const DropBox = React.forwardRef(
           </StyledContainer>
 
           <VariableSizeList
-            height={dropBoxHeight - 20}
+            height={dropBoxHeight}
             width={"auto"}
             itemCount={countItems}
             itemSize={getItemSize}
