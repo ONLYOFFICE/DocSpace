@@ -38,7 +38,7 @@
   "UpgradeNow": "Upgrade now",
   "UpgradePlan": "Upgrade plan",
   "UpgradePlanInfo": "Adding new users will exceed the maximum number of room members allowed by your current pricing plan.",
-  "UserNotFound": "User <1>{{email}}</1> is not found",
+  "UserNotFound": "User <1>{{email}}</1> is not found.",
   "UserNotFoundMatchingEmail": "We couldn’t find the user with the matching Stripe e-mail.",
   "YourPrice": "Your price"
 }
