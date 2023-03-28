@@ -5,6 +5,7 @@ import { EditRoomDialog } from "../dialogs";
 import { Encoder } from "@docspace/common/utils/encoder";
 import api from "@docspace/common/api";
 import { getRoomInfo } from "@docspace/common/api/rooms";
+import toastr from "@docspace/components/toast/toastr";
 
 const EditRoomEvent = ({
   addActiveItems,
@@ -133,12 +134,18 @@ const EditRoomEvent = ({
         const img = new Image();
         img.onload = async () => {
           const { x, y, zoom } = roomParams.icon;
-          room = await addLogoToRoom(room.id, {
-            tmpFile: response.data,
-            ...calculateRoomLogoParams(img, x, y, zoom),
-          });
+
+          try {
+            room = await addLogoToRoom(room.id, {
+              tmpFile: response.data,
+              ...calculateRoomLogoParams(img, x, y, zoom),
+            });
+          } catch (e) {
+            toastr.error(e);
+          }
 
           !withPaging && updateRoom(item, room);
+
           reloadInfoPanelSelection();
           URL.revokeObjectURL(img.src);
           setActiveFolders([]);

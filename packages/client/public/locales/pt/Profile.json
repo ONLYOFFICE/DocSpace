@@ -4,7 +4,7 @@
   "EditPhoto": "Editar foto",
   "InterfaceTheme": "Tema da interface",
   "LightTheme": "Tema claro",
-  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <strong>{{{ email }}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <strong>{{{ email }}</strong>.",
   "ProviderSuccessfullyConnected": "Operadora ligada com êxito",
   "ProviderSuccessfullyDisconnected": "Operadora desligada com êxito",
   "ShowBackupCodes": "Mostrar códigos de cópia de segurança",

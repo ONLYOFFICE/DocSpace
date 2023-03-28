@@ -4,7 +4,7 @@
   "EditPhoto": "Muokkaa kuvaa",
   "InterfaceTheme": "Käyttöliittymän teema",
   "LightTheme": "Kevyt teema",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>.",
   "ProviderSuccessfullyConnected": "Palveluntarjoajan yhdistäminen onnistui",
   "ProviderSuccessfullyDisconnected": "Yhteys palveluntarjoajaan katkaistu",
   "ShowBackupCodes": "Näytä varakoodit",

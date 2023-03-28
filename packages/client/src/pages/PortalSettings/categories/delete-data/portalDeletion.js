@@ -4,7 +4,8 @@ import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-import { MainContainer } from "./StyledDeleteData";
+import Link from "@docspace/components/link";
+import { MainContainer, ButtonWrapper } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
 import { DeletePortalDialog } from "SRC_DIR/components/dialogs";
 import toastr from "@docspace/components/toast/toastr";
@@ -13,9 +14,16 @@ import {
   sendDeletePortalEmail,
 } from "@docspace/common/api/portal";
 import { isDesktop } from "@docspace/components/utils/device";
+import { EmployeeActivationStatus } from "@docspace/common/constants";
 
 const PortalDeletion = (props) => {
-  const { t, getPortalOwner, owner } = props;
+  const {
+    t,
+    getPortalOwner,
+    owner,
+    currentColorScheme,
+    sendActivationLink,
+  } = props;
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [stripeUrl, setStripeUrl] = useState(null);
   const [isDesktopView, setIsDesktopView] = useState(false);
@@ -54,6 +62,13 @@ const PortalDeletion = (props) => {
     }
   };
 
+  const requestAgain = () => {
+    sendActivationLink && sendActivationLink(t);
+  };
+
+  const notActivatedEmail =
+    owner.activationStatus === EmployeeActivationStatus.NotActivated;
+
   return (
     <MainContainer>
       <Text fontSize="16px" fontWeight="700" className="header">
@@ -63,14 +78,30 @@ const PortalDeletion = (props) => {
         {t("PortalDeletionDescription")}
       </Text>
       <Text className="helper">{t("PortalDeletionHelper")}</Text>
-      <Button
-        className="button"
-        label={t("Common:Delete")}
-        primary
-        size={isDesktopView ? "small" : "normal"}
-        onClick={onDeleteClick}
-      />
-
+      <ButtonWrapper>
+        <Button
+          className="button"
+          label={t("Common:Delete")}
+          primary
+          size={isDesktopView ? "small" : "normal"}
+          onClick={onDeleteClick}
+          isDisabled={notActivatedEmail}
+        />
+        {notActivatedEmail && (
+          <Text fontSize="12px" fontWeight="600">
+            {t("MainBar:ConfirmEmailHeader")}
+            <Link
+              className="request-again-link"
+              color={currentColorScheme?.main?.accent}
+              fontSize="12px"
+              fontWeight="400"
+              onClick={requestAgain}
+            >
+              {t("MainBar:RequestActivation")}
+            </Link>
+          </Text>
+        )}
+      </ButtonWrapper>
       <DeletePortalDialog
         visible={isDialogVisible}
         onClose={() => setIsDialogVisible(false)}
@@ -82,9 +113,17 @@ const PortalDeletion = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { getPortalOwner, owner } = auth.settingsStore;
+  const { getPortalOwner, owner, currentColorScheme } = auth.settingsStore;
+  const { sendActivationLink } = auth.userStore;
+
   return {
     getPortalOwner,
     owner,
+    currentColorScheme,
+    sendActivationLink,
   };
-})(withTranslation(["Settings", "Common"])(withRouter(PortalDeletion)));
+})(
+  withTranslation(["Settings", "MainBar", "People", "Common"])(
+    withRouter(PortalDeletion)
+  )
+);

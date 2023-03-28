@@ -5,13 +5,21 @@ import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
-import { MainContainer } from "./StyledDeleteData";
+import Link from "@docspace/components/link";
+import { MainContainer, ButtonWrapper } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
 import { sendSuspendPortalEmail } from "@docspace/common/api/portal";
 import { isDesktop } from "@docspace/components/utils/device";
+import { EmployeeActivationStatus } from "@docspace/common/constants";
 
 const PortalDeactivation = (props) => {
-  const { t, getPortalOwner, owner } = props;
+  const {
+    t,
+    getPortalOwner,
+    owner,
+    currentColorScheme,
+    sendActivationLink,
+  } = props;
   const [isDesktopView, setIsDesktopView] = useState(false);
 
   const fetchData = async () => {
@@ -42,6 +50,13 @@ const PortalDeactivation = (props) => {
     }
   };
 
+  const requestAgain = () => {
+    sendActivationLink && sendActivationLink(t);
+  };
+
+  const notActivatedEmail =
+    owner.activationStatus === EmployeeActivationStatus.NotActivated;
+
   return (
     <MainContainer>
       <Text fontSize="16px" fontWeight="700" className="header">
@@ -51,21 +66,46 @@ const PortalDeactivation = (props) => {
         {t("PortalDeactivationDescription")}
       </Text>
       <Text className="helper">{t("PortalDeactivationHelper")}</Text>
-      <Button
-        className="button"
-        label={t("Deactivate")}
-        primary
-        size={isDesktopView ? "small" : "normal"}
-        onClick={onDeactivateClick}
-      />
+      <ButtonWrapper>
+        <Button
+          className="button"
+          label={t("Deactivate")}
+          primary
+          size={isDesktopView ? "small" : "normal"}
+          onClick={onDeactivateClick}
+          isDisabled={notActivatedEmail}
+        />
+        {notActivatedEmail && (
+          <Text fontSize="12px" fontWeight="600">
+            {t("MainBar:ConfirmEmailHeader")}
+            <Link
+              className="request-again-link"
+              color={currentColorScheme?.main?.accent}
+              fontSize="12px"
+              fontWeight="400"
+              onClick={requestAgain}
+            >
+              {t("MainBar:RequestActivation")}
+            </Link>
+          </Text>
+        )}
+      </ButtonWrapper>
     </MainContainer>
   );
 };
 
 export default inject(({ auth }) => {
-  const { getPortalOwner, owner } = auth.settingsStore;
+  const { getPortalOwner, owner, currentColorScheme } = auth.settingsStore;
+  const { sendActivationLink } = auth.userStore;
+
   return {
     getPortalOwner,
     owner,
+    currentColorScheme,
+    sendActivationLink,
   };
-})(withTranslation("Settings")(withRouter(PortalDeactivation)));
+})(
+  withTranslation(["Settings", "MainBar", "People"])(
+    withRouter(PortalDeactivation)
+  )
+);

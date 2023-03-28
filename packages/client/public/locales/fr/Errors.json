@@ -3,5 +3,6 @@
   "Error403Text": "Désolé, accès refusé.",
   "Error404Text": "Désolé, la ressource n'a pu être trouvée.",
   "ErrorEmptyResponse": "Réponse vide",
-  "ErrorOfflineText": "Aucune connexion Internet trouvée"
+  "ErrorOfflineText": "Aucune connexion Internet trouvée",
+  "ErrorUnavailableText": "DocSpace non disponible"
 }

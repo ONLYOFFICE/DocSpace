@@ -4,7 +4,7 @@
   "EditPhoto": "ແກ້ໄຂຮູບພາບ",
   "InterfaceTheme": "ການໂຕ້ຕອບ ຫົວ​ຂໍ້",
   "LightTheme": "ແສງສະຫວ່າງ ຫົວ​ຂໍ້",
-  "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ <strong>{{ email }}</strong> ທີ່ຢູ່ອີເມວ",
+  "MessageEmailActivationInstuctionsSentOnEmail": "ຄຳແນະນຳກ່ຽວກັບການເປີດໃຊ້ອີເມວໄດ້ຖືກສົ່ງໄປທີ່ <strong>{{ email }}</strong> ທີ່ຢູ່ອີເມວ.",
   "ProviderSuccessfullyConnected": "ເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການສຳເລັດແລ້ວ",
   "ProviderSuccessfullyDisconnected": "ຕັດການເຊື່ອມຕໍ່ຜູ້ໃຫ້ບໍລິການສຳເລັດແລ້ວ",
   "ShowBackupCodes": "ສະແດງລະຫັດສຳຮອງ",
