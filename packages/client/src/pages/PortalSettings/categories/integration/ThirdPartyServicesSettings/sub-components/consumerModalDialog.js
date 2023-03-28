@@ -12,6 +12,15 @@ import Link from "@docspace/components/link";
 import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "./modalDialogContainer";
 import { showLoader, hideLoader } from "@docspace/common/utils";
+import { hugeMobile } from "@docspace/components/utils/device";
+import styled from "styled-components";
+
+const StyledBox = styled(Box)`
+  padding: 20px 0 8px;
+  @media ${hugeMobile} {
+    padding-top: 0;
+  }
+`;
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -85,7 +94,7 @@ class ConsumerModalDialog extends React.Component {
 
   thirdPartyServicesUrl = () => {
     switch (this.props.selectedConsumer.name) {
-      case "docuSign":
+      case "docusign" || "docuSign":
         return this.props.docuSignUrl;
       case "dropbox":
         return this.props.dropboxUrl;
@@ -151,7 +160,7 @@ class ConsumerModalDialog extends React.Component {
   );
 
   supportTeamDescription = (
-    <Box paddingProp="20px 0 8px">
+    <StyledBox>
       <Trans
         t={this.props.t}
         i18nKey="ThirdPartyBottomDescription"
@@ -168,7 +177,7 @@ class ConsumerModalDialog extends React.Component {
           Support Team
         </Link>
       </Trans>
-    </Box>
+    </StyledBox>
   );
 
   render() {
@@ -231,7 +240,7 @@ class ConsumerModalDialog extends React.Component {
           <Button
             primary
             size="normal"
-            label={isLoading ? t("Common:Sending") : t("Common:Connect")}
+            label={isLoading ? t("Common:Sending") : t("Common:Enable")}
             isLoading={isLoading}
             isDisabled={isLoading}
             scale
