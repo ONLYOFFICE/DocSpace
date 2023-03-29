@@ -116,6 +116,14 @@ class QuotasStore {
     return result?.value;
   }
 
+  get isOAuthAvailable() {
+    const result = this.currentPortalQuotaFeatures.find(
+      (obj) => obj.id === "oauth"
+    );
+
+    return result?.value;
+  }
+
   get isThirdPartyAvailable() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === "thirdparty"
