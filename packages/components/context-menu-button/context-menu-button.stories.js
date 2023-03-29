@@ -64,6 +64,6 @@ Default.args = {
   title: "Actions",
   iconName: VerticalDotsReactSvgUrl,
   size: 16,
-  directionX: "right",
+  directionX: "left",
   isDisabled: false,
 };
