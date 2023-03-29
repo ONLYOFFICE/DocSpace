@@ -5,7 +5,6 @@ import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import LinkWithDropdown from "@docspace/components/link-with-dropdown";
 import DropDownItem from "@docspace/components/drop-down-item";
-import GroupButton from "@docspace/components/group-button";
 
 const DownloadRow = (props) => {
   const {
