@@ -213,7 +213,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Rename a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="id">Request parameters for updating a virtual room: Title (string) - new room name</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a virtual room: Title (string) - new room name</param>
     /// <returns>Updated room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}</path>
     /// <httpMethod>PUT</httpMethod>
@@ -233,7 +233,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Remove a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="id">Request parameters for deleting a virtual room: DeleteAfter (bool) - specifies whether to delete a room after the editing session is finished or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting a virtual room: DeleteAfter (bool) - specifies whether to delete a room after the editing session is finished or not</param>
     /// <returns>File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/rooms/{id}</path>
     /// <httpMethod>DELETE</httpMethod>
@@ -254,7 +254,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Archive a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="id">Request parameters for archiving a virtual room: DeleteAfter (bool) - specifies whether to archive a room after the editing session is finished or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for archiving a virtual room: DeleteAfter (bool) - specifies whether to archive a room after the editing session is finished or not</param>
     /// <returns>File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/rooms/{id}/archive</path>
     /// <httpMethod>PUT</httpMethod>
@@ -278,7 +278,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Unarchive a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="id">Request parameters for unarchiving a virtual room: DeleteAfter (bool) - specifies whether to unarchive a room after the editing session is finished or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for unarchiving a virtual room: DeleteAfter (bool) - specifies whether to unarchive a room after the editing session is finished or not</param>
     /// <returns>File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/rooms/{id}/unarchive</path>
     /// <httpMethod>PUT</httpMethod>
