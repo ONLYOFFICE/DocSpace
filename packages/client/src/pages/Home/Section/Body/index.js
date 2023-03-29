@@ -253,7 +253,7 @@ const SectionBodyContent = (props) => {
       {(context) =>
         isEmptyFilesList || null ? (
           <>
-            <EmptyContainer sectionWidth={context.sectionWidth} />
+            <EmptyContainer />
           </>
         ) : viewAs === "tile" ? (
           <>

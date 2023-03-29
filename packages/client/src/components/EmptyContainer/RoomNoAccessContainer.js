@@ -23,7 +23,7 @@ const RoomNoAccessContainer = (props) => {
     setAlreadyFetchingRooms,
     categoryType,
     isEmptyPage,
-    sectionWidth,
+
     theme,
   } = props;
 
@@ -88,7 +88,6 @@ const RoomNoAccessContainer = (props) => {
   return (
     <EmptyContainer
       isEmptyPage={isEmptyPage}
-      sectionWidth={sectionWidth}
       imageStyle={{ marginRight: "20px" }}
       className="empty-folder_room-not-found"
       {...propsRoomNotFoundOrMoved}

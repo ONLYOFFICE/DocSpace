@@ -68,7 +68,7 @@ const RootFolderContainer = (props) => {
     setIsEmptyPage,
     isVisitor,
     isCollaborator,
-    sectionWidth,
+
     setIsLoadedEmptyPage,
     security,
   } = props;
@@ -369,7 +369,6 @@ const RootFolderContainer = (props) => {
     <EmptyContainer
       headerText={headerText}
       isEmptyPage={isEmptyPage}
-      sectionWidth={sectionWidth}
       style={{ marginTop: 32 }}
       {...emptyFolderProps}
     />
@@ -378,12 +377,8 @@ const RootFolderContainer = (props) => {
 
 export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const {
-      isDesktopClient,
-      isEncryptionSupport,
-      organizationName,
-      theme,
-    } = auth.settingsStore;
+    const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
+      auth.settingsStore;
 
     const {
       filter,

@@ -21,7 +21,7 @@ const EmptyContainer = ({
   parentId,
   theme,
   setCreateRoomDialogVisible,
-  sectionWidth,
+
   isRoomNotFoundOrMoved,
   isGracePeriod,
   setInviteUsersWarningDialogVisible,
@@ -53,12 +53,7 @@ const EmptyContainer = ({
   };
 
   if (isRoomNotFoundOrMoved) {
-    return (
-      <RoomNoAccessContainer
-        linkStyles={linkStyles}
-        sectionWidth={sectionWidth}
-      />
-    );
+    return <RoomNoAccessContainer linkStyles={linkStyles} />;
   }
 
   return isFiltered ? (
@@ -68,14 +63,9 @@ const EmptyContainer = ({
       onCreate={onCreate}
       linkStyles={linkStyles}
       onCreateRoom={onCreateRoom}
-      sectionWidth={sectionWidth}
     />
   ) : (
-    <EmptyFolderContainer
-      sectionWidth={sectionWidth}
-      onCreate={onCreate}
-      linkStyles={linkStyles}
-    />
+    <EmptyFolderContainer onCreate={onCreate} linkStyles={linkStyles} />
   );
 };
 
@@ -89,13 +79,8 @@ export default inject(
   }) => {
     const { filter, roomsFilter, isErrorRoomNotAvailable } = filesStore;
 
-    const {
-      authorType,
-      search,
-      withSubfolders,
-      filterType,
-      searchInContent,
-    } = filter;
+    const { authorType, search, withSubfolders, filterType, searchInContent } =
+      filter;
     const {
       subjectId,
       filterValue,
@@ -106,20 +91,15 @@ export default inject(
       withoutTags,
     } = roomsFilter;
 
-    const {
-      isPrivacyFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-    } = treeFoldersStore;
+    const { isPrivacyFolder, isRoomsFolder, isArchiveFolder } =
+      treeFoldersStore;
 
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
 
-    const {
-      setCreateRoomDialogVisible,
-      setInviteUsersWarningDialogVisible,
-    } = dialogsStore;
+    const { setCreateRoomDialogVisible, setInviteUsersWarningDialogVisible } =
+      dialogsStore;
 
     const isFiltered = isRooms
       ? filterValue ||
