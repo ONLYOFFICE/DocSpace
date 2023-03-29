@@ -10,7 +10,7 @@
     <GenerateMvcApplicationPartsAssemblyAttributes>false</GenerateMvcApplicationPartsAssemblyAttributes>
     <DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <NoWarn>NU1701;1591</NoWarn>
+    <NoWarn>NU1701</NoWarn>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
