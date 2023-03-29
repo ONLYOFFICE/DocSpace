@@ -31,7 +31,6 @@ namespace ASC.Web.Api.Controllers;
 /// <summary>
 /// Modules API.
 /// </summary>
-/// <name>modules</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
