@@ -195,6 +195,17 @@ class QuotasStore {
     this.currentPortalQuota = res;
     this.currentPortalQuotaFeatures = res.features;
   };
+
+  updateQuotaUsedValue = (featureId, value) => {
+    this.currentPortalQuotaFeatures.forEach((elem) => {
+      if (elem.id === featureId) elem.used.value = value;
+    });
+  };
+  updateQuotaFeatureValue = (featureId, value) => {
+    this.currentPortalQuotaFeatures.forEach((elem) => {
+      if (elem.id === featureId) elem.value = value;
+    });
+  };
   setPortalQuota = async () => {
     try {
       const res = await api.portal.getPortalQuota();

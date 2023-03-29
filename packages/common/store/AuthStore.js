@@ -42,6 +42,24 @@ class AuthStore {
     this.bannerStore = new BannerStore();
 
     makeAutoObservable(this);
+
+    const { socketHelper } = this.settingsStore;
+
+    socketHelper.on("s:change-quota-used-value", ({ featureId, value }) => {
+      console.log(`[WS] change-quota-used-value ${featureId}:${value}`);
+
+      runInAction(() => {
+        this.currentQuotaStore.updateQuotaUsedValue(featureId, value);
+      });
+    });
+
+    socketHelper.on("s:change-quota-feature-value", ({ featureId, value }) => {
+      console.log(`[WS] change-quota-feature-value ${featureId}:${value}`);
+
+      runInAction(() => {
+        this.currentQuotaStore.updateQuotaFeatureValue(featureId, value);
+      });
+    });
   }
 
   init = async (skipRequest = false) => {
