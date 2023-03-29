@@ -100,7 +100,7 @@
     "sass-loader": "^13.2.1",
     "serve": "^14.2.0",
     "style-loader": "^3.3.2",
-    "styled-components": "beta",
+    "styled-components": "^5.3.9",
     "svg-inline-loader": "^0.8.2"
   }
 }
