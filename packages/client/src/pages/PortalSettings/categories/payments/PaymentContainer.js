@@ -116,6 +116,9 @@ const PaymentContainer = ({
               <br />
               <Text isBold>{t("Common:RoomAdmin")}</Text>
               <Text>{t("RoomManagerDescription")}</Text>
+              <br />
+              <Text isBold>{t("Common:PowerUser")}</Text>
+              <Text>{t("PowerUserDescription")}</Text>
             </>
           }
         />
@@ -291,7 +294,7 @@ const PaymentContainer = ({
               >
                 <Trans t={t} i18nKey="PerUserMonth" ns="Common">
                   From {{ currencySymbol }}
-                  {{ price: startValue }} per admin/month
+                  {{ price: startValue }} per admin/power user /month
                 </Trans>
               </Text>
 

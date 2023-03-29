@@ -1394,6 +1394,7 @@ const Base = {
     backgroundColor: white,
     hoverBackgroundColor: grayLight,
     hoverDisabledBackgroundColor: white,
+    selectedBackgroundColor: lightHover,
     fontWeight: "600",
     fontSize: "13px",
     width: "100%",

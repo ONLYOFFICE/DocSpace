@@ -20,7 +20,7 @@ const StyledBody = styled.div`
     props.theme.client.settings.payment.priceContainer.background};
   max-width: 320px;
 
-  padding: 24px;
+  padding: 23px;
   box-sizing: border-box;
 
   .payment_main-title {
@@ -41,12 +41,12 @@ const StyledBody = styled.div`
     margin-top: 24px;
     min-height: 38px;
     border-radius: 6px;
-    p:first-child {
-      margin-right: 8px;
-    }
+
     p {
       margin-bottom: 5px;
       margin-top: 5px;
+      padding-left: 16px;
+      padding-right: 16px;
     }
   }
 `;

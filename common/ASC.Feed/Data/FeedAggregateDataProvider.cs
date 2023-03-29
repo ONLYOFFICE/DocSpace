@@ -323,30 +323,30 @@ public class FeedAggregateDataProvider
 
         if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(module))
         {
-            return exp;
+            return null;
         }
 
-        if (module == Constants.RoomsModule)
+        switch (module)
         {
-            var roomId = $"{Constants.RoomItem}_{id}";
-            var sharedRoomId = $"{Constants.SharedRoomItem}_{id}";
+            case Constants.RoomsModule:
+                {
+                    var roomId = $"{Constants.RoomItem}_{id}";
 
-            exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId);
+                    exp = f => f.Id == roomId || (f.Id.StartsWith(Constants.SharedRoomItem) && f.ContextId == roomId);
 
-            if (withRelated)
-            {
-                exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId) || f.ContextId == roomId;
-            }
-        }
+                    if (withRelated)
+                    {
+                        exp = f => f.Id == roomId || f.ContextId == roomId;
+                    }
 
-        if (module == Constants.FilesModule)
-        {
-            exp = f => f.Id.StartsWith($"{Constants.FileItem}_{id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{id}");
-        }
-
-        if (module == Constants.FoldersModule)
-        {
-            exp = f => f.Id == $"{Constants.FolderItem}_{id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{id}");
+                    break;
+                }
+            case Constants.FilesModule:
+                exp = f => f.Id.StartsWith($"{Constants.FileItem}_{id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{id}");
+                break;
+            case Constants.FoldersModule:
+                exp = f => f.Id == $"{Constants.FolderItem}_{id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{id}");
+                break;
         }
 
         return exp;

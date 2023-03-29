@@ -17,7 +17,6 @@
   "GracePeriodActivatedDescription": "V prehodnem obdobju skrbniki ne morejo ustvarjati novih sob in dodajati novih uporabnikov. Po datumu zapadlosti bo DocSpace postal nedosegljiv, dokler plačilo ni izvedeno.",
   "GracePeriodActivatedInfo": "Odložno obdobje velja <1>od {{fromDate}} do {{byDate}}</1> (preostalo je še: {{delayDaysCount}}).",
   "ManagerTypesDescription": "Vrste skrbniških računov in njihove pravice",
-  "NumberOfAdmins": "Število skrbnikov",
   "Pay": "Plačaj",
   "Payer": "Plačnik",
   "PayerDescription": "Ta uporabnik ima dostop do podrobnosti plačila in je edini uporabnik, ki lahko prilagaja račun in izvaja plačila. Lastnik DocSpace in sam upravitelj plačevanja lahko prerazporedita vlogo upravitelja plačevanja prek portala za stranke Stripe.",

@@ -16,7 +16,6 @@
   "GracePeriodActivatedDescription": "Durante el periodo de gracia, los administradores no pueden crear nuevas salas ni añadir nuevos usuarios. Tras la fecha de vencimiento del periodo de gracia, DocSpace dejará de estar disponible hasta que se realice el pago.",
   "GracePeriodActivatedInfo": "El periodo de gracia es válido <1>desde {{fromDate}} hasta {{byDate}}</1> (días restantes: {{delayDaysCount}}).",
   "ManagerTypesDescription": "Tipos de cuentas de administrador y sus privilegios",
-  "NumberOfAdmins": "Número de administradores",
   "Pay": "Pagar",
   "Payer": "Pagador",
   "PayerDescription": "Este usuario tiene acceso a los detalles de pago y es el único que puede ajustar la cuota y realizar pagos. El propietario de DocSpace, así como el propio gestor de pagos, pueden reasignar el rol de gestor de pagos mediante el portal de cliente de Stripe.",
