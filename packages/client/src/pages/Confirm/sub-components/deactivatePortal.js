@@ -58,13 +58,15 @@ const DeactivatePortal = (props) => {
 
           <FormWrapper>
             {isDeactivate ? (
-              <Trans t={t} i18nKey="SuccessDeactivate" ns="Confirm">
-                Your account has been successfully deactivated. In 10 seconds
-                you will be redirected to the
-                <Link isHovered href={url}>
-                  site
-                </Link>
-              </Trans>
+              <Text>
+                <Trans t={t} i18nKey="SuccessDeactivate" ns="Confirm">
+                  Your account has been successfully deactivated. In 10 seconds
+                  you will be redirected to the
+                  <Link isHovered href={url}>
+                    site
+                  </Link>
+                </Trans>
+              </Text>
             ) : (
               <>
                 <Text className="subtitle">{t("PortalDeactivateTitle")}</Text>
