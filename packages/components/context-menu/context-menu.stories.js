@@ -118,11 +118,15 @@ const Template = (args) => {
           width: "200px",
           height: "200px",
           backgroundColor: "#7dadfa",
-          display: "inline-block",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          color: "#fff",
+          fontSize: "18px",
         }}
         onContextMenu={(e) => cm.current.show(e)}
       >
-        {""}
+        {"Right click on me"}
       </div>
     </div>
   );
