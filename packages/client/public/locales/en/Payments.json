@@ -22,7 +22,6 @@
   "InvalidEmailWithoutActiveSubscription": "We recommend choosing a new Payer who gets access to subscription settings in DocSpace.",
   "InvalidEmailWithoutActiveSubscriptionByAdmin": "We recommend contacting the DocSpace owner to choose a new Payer.",
   "ManagerTypesDescription": "Admin account types and their privileges",
-  "NumberOfAdmins": "Number of admins",
   "Pay": "Pay",
   "Payer": "Payer",
   "PayerDescription": "This user has access to payment details and is the only user who can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manger role using the Stripe customer portal.",
