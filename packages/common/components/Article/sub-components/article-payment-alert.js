@@ -84,7 +84,7 @@ const ArticlePaymentAlert = ({
               {pricePerManager ? (
                 <Trans t={t} i18nKey="PerUserMonth" ns="Common">
                   From {{ currencySymbol }}
-                  {{ price: pricePerManager }} per admin/month
+                  {{ price: pricePerManager }} per admin/power user /month
                 </Trans>
               ) : (
                 <></>
