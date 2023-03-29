@@ -14,7 +14,7 @@ interface ViewerPlayerProps {
   isPreviewFile: boolean;
   isOpenContextMenu: boolean;
   mobileDetails: JSX.Element;
-
+  thumbnailSrc?: string;
   onMask: VoidFunction;
   onPrev: VoidFunction;
   onNext: VoidFunction;

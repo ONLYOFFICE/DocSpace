@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import {
   isNullOrUndefined,
   findNearestIndex,
+  isVideo,
 } from "@docspace/common/components/MediaViewer/helpers";
 import { thumbnailStatuses } from "SRC_DIR/helpers/filesConstants";
 import api from "@docspace/common/api";
@@ -151,14 +152,17 @@ class MediaViewerDataStore {
             fileStatus: file.fileStatus,
             canShare: file.canShare,
             version: file.version,
-            thumbnailUrl:
-              file.thumbnailStatus === thumbnailStatuses.CREATED &&
-              file.viewAccessability.ImageView
-                ? file.thumbnailUrl
-                : null,
+            thumbnailUrl: file.thumbnailUrl,
           });
 
-          if (file.viewAccessability.ImageView) itemsWithoutThumb.push(file);
+          const thumbnailIsNotCreated =
+            file.thumbnailStatus === thumbnailStatuses.WAITING;
+
+          const isVideoOrImage =
+            file.viewAccessability.ImageView || isVideo(file.fileExst);
+
+          if (thumbnailIsNotCreated && isVideoOrImage)
+            itemsWithoutThumb.push(file);
 
           id++;
         }
@@ -175,11 +179,7 @@ class MediaViewerDataStore {
         fileId: this.previewFile.id,
         src: this.previewFile.viewUrl,
         version: this.previewFile.version,
-        thumbnailUrl:
-          this.previewFile.thumbnailStatus === thumbnailStatuses.CREATED &&
-          this.previewFile.viewAccessability.ImageView
-            ? this.previewFile.thumbnailUrl
-            : null,
+        thumbnailUrl: this.previewFile.thumbnailUrl,
       });
 
       if (this.previewFile.viewAccessability.ImageView) {

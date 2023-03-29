@@ -194,10 +194,11 @@ function Viewer(props: ViewerProps) {
             containerRef.current
           )
         : (props.isVideo || props.isAudio) &&
-            ReactDOM.createPortal(
+          ReactDOM.createPortal(
             <ViewerPlayer
               isError={isError}
               src={props.fileUrl}
+              thumbnailSrc={targetFile.thumbnailUrl}
               isAudio={props.isAudio}
               isVideo={props.isVideo}
               panelVisible={panelVisible}
