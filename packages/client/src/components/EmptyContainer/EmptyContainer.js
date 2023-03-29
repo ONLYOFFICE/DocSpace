@@ -111,19 +111,15 @@ const EmptyFolderWrapper = styled.div`
         padding: 20px 42px 64px 11px !important;
       `}
 
-      
-  
-
     ${(props) =>
       (props.isEmptyPage || props.isEmptyFolderContainer) &&
+      props.sectionWidth <= size.smallTablet &&
       !isMobileOnly &&
       css`
-        @container section-container (width <= ${size.smallTablet}px) {
-          padding-left: 12px !important;
+        padding-left: 12px !important;
 
-          .empty-folder_link {
-            margin-bottom: 0 !important;
-          }
+        .empty-folder_link {
+          margin-bottom: 0 !important;
         }
       `}
   }
@@ -145,17 +141,19 @@ const EmptyFoldersContainer = (props) => {
     imageStyle,
     buttonStyle,
     isEmptyPage,
-
+    sectionWidth,
     isEmptyFolderContainer,
     className,
   } = props;
 
   return (
     <EmptyFolderWrapper
+      sectionWidth={sectionWidth}
       isEmptyPage={isEmptyPage}
       isEmptyFolderContainer={isEmptyFolderContainer}
     >
       <EmptyScreenContainer
+        sectionWidth={sectionWidth}
         className={classNames("empty-folder_container", className)}
         style={style}
         imageStyle={imageStyle}

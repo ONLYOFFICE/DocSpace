@@ -45,11 +45,9 @@ const EmptyPageStyles = css`
     ${(props) =>
       props.sectionWidth > size.smallTablet &&
       css`
-        @container section-container (width > ${size.smallTablet}px) {
-          margin: 0 13% !important;
-          width: 74%;
-          min-width: auto;
-        }
+        margin: 0 13% !important;
+        width: 74%;
+        min-width: auto;
       `}
   }
 
@@ -186,22 +184,21 @@ const EmptyContentBody = styled.div`
 
   ${(props) =>
     (props.isEmptyPage || props.isEmptyFolderContainer) &&
+    props.sectionWidth <= size.smallTablet &&
     !isMobileOnly &&
     css`
-      @container section-container (width <= ${size.smallTablet}px) {
-        ${MobileView}
+      ${MobileView}
 
-        .ec-desc {
-          max-width: none;
-        }
+      .ec-desc {
+        max-width: none;
+      }
 
-        .ec-header {
-          padding-top: 22px;
-        }
+      .ec-header {
+        padding-top: 22px;
+      }
 
-        .ec-image {
-          height: 100px !important;
-        }
+      .ec-image {
+        height: 100px !important;
       }
     `}
 
@@ -218,13 +215,12 @@ const EmptyContentBody = styled.div`
 
     ${(props) =>
     (props.isEmptyPage || props.isEmptyFolderContainer) &&
+    props.sectionWidth <= size.smallTablet &&
     css`
-      @container section-container (width <= ${size.smallTablet}px) {
-        max-width: none !important;
-        width: auto !important;
-        min-width: auto !important;
-        margin: 0 !important;
-      }
+      max-width: none !important;
+      width: auto !important;
+      min-width: auto !important;
+      margin: 0 !important;
     `}
 `;
 

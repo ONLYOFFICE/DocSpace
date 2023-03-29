@@ -24,7 +24,7 @@ const EmptyFolderContainer = ({
   parentId,
   linkStyles,
   isRooms,
-
+  sectionWidth,
   canCreateFiles,
   canInviteUsers,
   setIsEmptyPage,
@@ -176,6 +176,7 @@ const EmptyFolderContainer = ({
       }
       imageSrc={isRooms ? emptyScreenCorporateSvg : emptyScreenAltSvg}
       buttons={buttons}
+      sectionWidth={sectionWidth}
       isEmptyFolderContainer={true}
     />
   );
