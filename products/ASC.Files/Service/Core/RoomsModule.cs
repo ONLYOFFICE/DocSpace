@@ -106,45 +106,46 @@ public class RoomsModule : FeedModule
 
     private Feed.Aggregator.Feed ToFeed(FolderWithShare folderWithSecurity)
     {
-        var folder = folderWithSecurity.Folder;
+        var room = folderWithSecurity.Folder;
         var shareRecord = folderWithSecurity.ShareRecord;
 
-        if (shareRecord != null)
+        if (shareRecord == null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
+            return new Feed.Aggregator.Feed(room.CreateBy, room.CreateOn)
             {
-                Item = SharedRoomItem,
-                ItemId = string.Format("{0}_{1}_{2}", folder.Id, shareRecord.Subject, shareRecord.TimeStamp.Ticks),
+                Item = RoomItem,
+                ItemId = room.Id.ToString(),
                 Product = Product,
                 Module = Name,
-                Title = folder.Title,
+                Title = room.Title,
                 ExtraLocationTitle = FilesUCResource.VirtualRooms,
-                ExtraLocation = folder.ParentId.ToString(),
-                Keywords = folder.Title,
-                AdditionalInfo = ((int)folder.FolderType).ToString(),
-                AdditionalInfo2 = ((int)shareRecord.Share).ToString(),
-                AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
-                AdditionalInfo4 = folder.Private ? "private" : null,
-                Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, folder.ParentId.ToString())
+                ExtraLocation = room.ParentId.ToString(),
+                Keywords = room.Title,
+                AdditionalInfo = ((int)room.FolderType).ToString(),
+                AdditionalInfo4 = room.Private ? "private" : null,
+                GroupId = GetGroupId(RoomItem, room.CreateBy, room.ParentId.ToString())
             };
-
-            return feed;
         }
 
-        return new Feed.Aggregator.Feed(folder.CreateBy, folder.CreateOn)
+        var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
         {
-            Item = RoomItem,
-            ItemId = folder.Id.ToString(),
+            Item = SharedRoomItem,
+            ItemId = $"{shareRecord.Subject}_{shareRecord.TimeStamp.Ticks}",
             Product = Product,
             Module = Name,
-            Title = folder.Title,
+            Title = room.Title,
             ExtraLocationTitle = FilesUCResource.VirtualRooms,
-            ExtraLocation = folder.ParentId.ToString(),
-            Keywords = folder.Title,
-            AdditionalInfo = ((int)folder.FolderType).ToString(),
-            AdditionalInfo4 = folder.Private ? "private" : null,
-            GroupId = GetGroupId(RoomItem, folder.CreateBy, folder.ParentId.ToString())
+            ExtraLocation = room.ParentId.ToString(),
+            Keywords = room.Title,
+            AdditionalInfo = ((int)room.FolderType).ToString(),
+            AdditionalInfo2 = ((int)shareRecord.Share).ToString(),
+            AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
+            AdditionalInfo4 = room.Private ? "private" : null,
+            Target = shareRecord.Subject,
+            GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, room.ParentId.ToString()),
+            ContextId = $"{RoomItem}_{room.Id}"
         };
+
+        return feed;
     }
 }

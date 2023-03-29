@@ -168,7 +168,7 @@
   "PayBeforeTheEndGracePeriod": "Make sure to make payment before the grace period is due.",
   "PaymentsTitle": "Payments",
   "People": "People",
-  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per admin/month",
+  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per admin/power user /month",
   "Petabyte": "PB",
   "Phone": "Phone",
   "Plugin": "Plugin",
