@@ -29,7 +29,6 @@ namespace ASC.Api.Settings;
 ///<summary>
 /// SMTP settings API.
 ///</summary>
-///<name>smtpsettings</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
