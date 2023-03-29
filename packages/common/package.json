@@ -40,7 +40,7 @@
     "screenfull": "^5.2.0",
     "sjcl": "^1.0.8",
     "socket.io-client": "^4.6.1",
-    "styled-components": "^5.3.9",
+    "styled-components": "beta",
     "workbox-window": "^6.5.4"
   },
   "devDependencies": {
