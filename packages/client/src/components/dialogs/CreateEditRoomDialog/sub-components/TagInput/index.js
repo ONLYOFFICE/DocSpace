@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 
 import TagList from "./TagList";
@@ -27,6 +27,7 @@ const StyledTagInput = styled.div`
 `;
 
 const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
+  const inputRef = useRef();
   const [tagInput, setTagInput] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -49,6 +50,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
       hasTags={!!tagHandler.tags.length}
     >
       <InputParam
+        ref={inputRef}
         id="shared_tags-input"
         title={`${t("Common:Tags")}:`}
         placeholder={t("TagsPlaceholder")}
@@ -60,6 +62,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
       />
 
       <TagDropdown
+        inputRef={inputRef}
         open={isDropdownOpen}
         tagHandler={tagHandler}
         tagInputValue={tagInput}
