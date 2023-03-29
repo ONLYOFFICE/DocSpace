@@ -4,7 +4,7 @@
   "EditPhoto": "Rediģēt fotoattēlu",
   "InterfaceTheme": "Interfeisa dizains",
   "LightTheme": "Gaišs dizains",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <strong>{{ email }}</strong> e-pasta adresi",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <strong>{{ email }}</strong> e-pasta adresi.",
   "ProviderSuccessfullyConnected": "Piegādātājs ir veiksmīgi savienots",
   "ProviderSuccessfullyDisconnected": "Piegādātājs ir veiksmīgi atvienots",
   "ShowBackupCodes": "Rādīt rezerves kodus",

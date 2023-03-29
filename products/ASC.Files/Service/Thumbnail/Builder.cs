@@ -132,9 +132,7 @@ public class Builder<T>
                 return;
             }
 
-            var ext = FileUtility.GetFileExtension(file.Title);
-
-            if (!CanCreateThumbnail(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH || file.ContentLength > _config.AvailableFileSize)
+            if (!CanCreateThumbnail(file))
             {
                 file.ThumbnailStatus = Core.Thumbnail.NotRequired;
 
@@ -145,21 +143,19 @@ public class Builder<T>
 
             await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Creating);
 
+            var ext = FileUtility.GetFileExtension(file.Title);
+
             if (IsVideo(ext))
             {
                 await MakeThumbnailFromVideo(fileDao, file);
             }
+            else if (IsImage(ext))
+            {
+                await MakeThumbnailFromImage(fileDao, file);
+            }
             else
             {
-
-                if (IsImage(ext))
-                {
-                    await MakeThumbnailFromImage(fileDao, file);
-                }
-                else
-                {
-                    await MakeThumbnailFromDocs(fileDao, file);
-                }
+                await MakeThumbnailFromDocs(fileDao, file);
             }
 
             await fileDao.SetThumbnailStatusAsync(file, Core.Thumbnail.Created);
@@ -339,6 +335,17 @@ public class Builder<T>
         }
 
         _logger.DebugMakeThumbnail4(file.Id.ToString());
+    }
+
+    public bool CanCreateThumbnail(File<T> file)
+    {
+        var ext = FileUtility.GetFileExtension(file.Title);
+
+        if (!CanCreateThumbnail(ext) || file.Encrypted || file.RootFolderType == FolderType.TRASH) return false;
+        if (IsVideo(ext) && file.ContentLength > _config.MaxVideoFileSize) return false;
+        if (IsImage(ext) && file.ContentLength > _config.MaxImageFileSize) return false;
+
+        return true;
     }
 
     private bool CanCreateThumbnail(string extention)

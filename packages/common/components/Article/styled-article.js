@@ -236,10 +236,10 @@ const StyledIconBox = styled.div`
   cursor: pointer;
   display: none;
   align-items: center;
-  height: 20px;
 
   img {
-    height: 24px;
+    height: 28px;
+    width: 28px;
   }
 
   @media ${tablet} {

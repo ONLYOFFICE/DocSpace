@@ -27,16 +27,30 @@ export const MainContainer = styled.div`
     margin-bottom: 24px;
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
+`;
 
-  .button {
-    @media (${smallTablet}) {
-      position: absolute;
-      bottom: 16px;
-      width: calc(100% - 40px);
+export const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
 
-      @media (${mobile}) {
-        width: calc(100% - 32px);
-      }
+  .request-again-link {
+    margin-left: 4px;
+  }
+
+  @media (${smallTablet}) {
+    flex-direction: column-reverse;
+    gap: 16px;
+    position: absolute;
+    bottom: 16px;
+    width: calc(100% - 40px);
+
+    @media (${mobile}) {
+      width: calc(100% - 32px);
+    }
+
+    .button {
+      width: 100%;
     }
   }
 `;

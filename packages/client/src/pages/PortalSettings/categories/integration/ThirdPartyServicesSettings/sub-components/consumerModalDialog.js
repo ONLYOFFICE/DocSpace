@@ -12,6 +12,15 @@ import Link from "@docspace/components/link";
 import toastr from "@docspace/components/toast/toastr";
 import ModalDialogContainer from "./modalDialogContainer";
 import { showLoader, hideLoader } from "@docspace/common/utils";
+import { hugeMobile } from "@docspace/components/utils/device";
+import styled from "styled-components";
+
+const StyledBox = styled(Box)`
+  padding: 20px 0 8px;
+  @media ${hugeMobile} {
+    padding-top: 0;
+  }
+`;
 
 class ConsumerModalDialog extends React.Component {
   constructor(props) {
@@ -83,52 +92,92 @@ class ConsumerModalDialog extends React.Component {
     this.mapTokenNameToState();
   }
 
+  thirdPartyServicesUrl = () => {
+    switch (this.props.selectedConsumer.name) {
+      case "docusign" || "docuSign":
+        return this.props.docuSignUrl;
+      case "dropbox":
+        return this.props.dropboxUrl;
+      case "box":
+        return this.props.boxUrl;
+      case "mailru":
+        return this.props.mailRuUrl;
+      case "skydrive":
+        return this.props.oneDriveUrl;
+      case "microsoft":
+        return this.props.microsoftUrl;
+      case "google":
+        return this.props.googleUrl;
+      case "facebook":
+        return this.props.facebookUrl;
+      case "linkedin":
+        return this.props.linkedinUrl;
+      case "clickatell":
+        return this.props.clickatellUrl;
+      case "smsc":
+        return this.props.smsclUrl;
+      case "firebase":
+        return this.props.firebaseUrl;
+      case "appleID":
+        return this.props.appleIDUrl;
+      case "telegram":
+        return this.props.telegramUrl;
+      case "wordpress":
+        return this.props.wordpressUrl;
+      case "s3":
+        return this.props.awsUrl;
+      case "googlecloud":
+        return this.props.googleCloudUrl;
+      case "rackspace":
+        return this.props.rackspaceUrl;
+      case "selectel":
+        return this.props.selectelUrl;
+      case "yandex":
+        return this.props.yandexUrl;
+      case "vk":
+        return this.props.vkUrl;
+      default:
+        return this.props.docspaceSettingsUrl;
+    }
+  };
+
   consumerInstruction =
     this.props.selectedConsumer.instruction &&
-    format(this.props.selectedConsumer.instruction, <Box marginProp="4px 0" />);
+    format(this.props.selectedConsumer.instruction, <Box marginProp="0" />);
 
-  bodyDescription = (
-    <Box marginProp={`${this.consumerInstruction ? "44px" : 0} 0 16px 0`}>
-      <Box marginProp="0 0 16px 0">
-        <Text as="div" isBold fontSize="15px">
-          {this.props.t("ThirdPartyHowItWorks")}
-        </Text>
-      </Box>
-      <Text as="div">
-        <Trans
-          t={this.props.t}
-          i18nKey="ThirdPartyBodyDescription"
-          ns="Settings"
-        >
-          For more detailed instructions about connecting this service, please
-          refer to our{" "}
-          <Link
-            color={this.props.theme.client.settings.integration.linkColor}
-            isHovered={false}
-            target="_blank"
-            href={`${this.props.urlAuthKeys}#${this.props.selectedConsumer.name}`}
-          >
-            Help Center
-          </Link>{" "}
-          that provides all the necessary information.
-        </Trans>
-      </Text>
-    </Box>
-  );
-
-  bottomDescription = (
-    <Trans t={this.props.t} i18nKey="ThirdPartyBottomDescription" ns="Settings">
-      If you still have some questions on how to connect this service or need
-      technical assistance, please feel free to contact our{" "}
+  helpCenterDescription = (
+    <Trans t={this.props.t} i18nKey="ThirdPartyBodyDescription" ns="Settings">
+      Detailed instructions in our{" "}
       <Link
         color={this.props.theme.client.settings.integration.linkColor}
         isHovered={false}
         target="_blank"
-        href={this.props.urlSupport}
+        href={this.thirdPartyServicesUrl()}
       >
-        Support Team
+        Help Center
       </Link>
     </Trans>
+  );
+
+  supportTeamDescription = (
+    <StyledBox>
+      <Trans
+        t={this.props.t}
+        i18nKey="ThirdPartyBottomDescription"
+        ns="Settings"
+      >
+        If you still have some questions on how to connect this service or need
+        technical assistance, please feel free to contact our{" "}
+        <Link
+          color={this.props.theme.client.settings.integration.linkColor}
+          isHovered={false}
+          target="_blank"
+          href={this.props.urlSupport}
+        >
+          Support Team
+        </Link>
+      </Trans>
+    </StyledBox>
   );
 
   render() {
@@ -144,8 +193,8 @@ class ConsumerModalDialog extends React.Component {
       onChangeHandler,
       updateConsumerValues,
       consumerInstruction,
-      bodyDescription,
-      bottomDescription,
+      helpCenterDescription,
+      supportTeamDescription,
     } = this;
 
     return (
@@ -156,8 +205,7 @@ class ConsumerModalDialog extends React.Component {
       >
         <ModalDialog.Header>{selectedConsumer.title}</ModalDialog.Header>
         <ModalDialog.Body>
-          <Text as="div">{consumerInstruction}</Text>
-          <Text as="div">{bodyDescription}</Text>
+          <Box paddingProp="0 0 16px">{consumerInstruction}</Box>
           <React.Fragment>
             {selectedConsumer.props.map((prop, i) => (
               <React.Fragment key={prop.name}>
@@ -185,13 +233,14 @@ class ConsumerModalDialog extends React.Component {
               </React.Fragment>
             ))}
           </React.Fragment>
-          <Text>{bottomDescription}</Text>
+          <Text as="div">{supportTeamDescription}</Text>
+          <Text as="div">{helpCenterDescription}</Text>
         </ModalDialog.Body>
         <ModalDialog.Footer>
           <Button
             primary
             size="normal"
-            label={isLoading ? t("Common:Sending") : t("Common:Connect")}
+            label={isLoading ? t("Common:Sending") : t("Common:Enable")}
             isLoading={isLoading}
             isDisabled={isLoading}
             scale
@@ -225,7 +274,32 @@ ConsumerModalDialog.propTypes = {
 
 export default inject(({ setup, auth }) => {
   const { settingsStore } = auth;
-  const { urlAuthKeys, urlSupport, theme } = settingsStore;
+  const {
+    theme,
+    urlSupport,
+    docspaceSettingsUrl,
+    docuSignUrl,
+    dropboxUrl,
+    boxUrl,
+    mailRuUrl,
+    oneDriveUrl,
+    microsoftUrl,
+    googleUrl,
+    facebookUrl,
+    linkedinUrl,
+    clickatellUrl,
+    smsclUrl,
+    firebaseUrl,
+    appleIDUrl,
+    telegramUrl,
+    wordpressUrl,
+    awsUrl,
+    googleCloudUrl,
+    rackspaceUrl,
+    selectelUrl,
+    yandexUrl,
+    vkUrl,
+  } = settingsStore;
   const { integration } = setup;
   const { selectedConsumer } = integration;
 
@@ -233,6 +307,27 @@ export default inject(({ setup, auth }) => {
     theme,
     selectedConsumer,
     urlSupport,
-    urlAuthKeys,
+    docspaceSettingsUrl,
+    docuSignUrl,
+    dropboxUrl,
+    boxUrl,
+    mailRuUrl,
+    oneDriveUrl,
+    microsoftUrl,
+    googleUrl,
+    facebookUrl,
+    linkedinUrl,
+    clickatellUrl,
+    smsclUrl,
+    firebaseUrl,
+    appleIDUrl,
+    telegramUrl,
+    wordpressUrl,
+    awsUrl,
+    googleCloudUrl,
+    rackspaceUrl,
+    selectelUrl,
+    yandexUrl,
+    vkUrl,
   };
 })(observer(ConsumerModalDialog));

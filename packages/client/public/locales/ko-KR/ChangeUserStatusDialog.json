@@ -1,5 +1,4 @@
 {
   "ChangeUserStatusDialog": "'{{ userStatus }}' 상태 사용자는 {{ status }}.",
-  "ChangeUserStatusDialogHeader": "사용자 상태 변경",
-  "ChangeUsersStatusButton": "사용자 상태 변경"
+  "ChangeUserStatusDialogHeader": "사용자 상태 변경"
 }

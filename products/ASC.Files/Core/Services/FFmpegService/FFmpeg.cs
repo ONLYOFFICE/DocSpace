@@ -98,7 +98,7 @@ public class FFmpegService
         _logger = logger;
         _fFmpegPath = configuration["files:ffmpeg:value"];
         _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
-        _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-ss 3 -i \"{0}\" -vf \"thumbnail\" -frames:v 1 -vsync vfr \"{1}\" -y";
+        _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-ss 3 -i \"{0}\" -frames:v 1 \"{1}\" -y";
         _fFmpegFormats = configuration.GetSection("files:ffmpeg:thumbnails:formats").Get<List<string>>() ?? FileUtility.ExtsVideo;
 
         _convertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();

@@ -5,9 +5,9 @@
   "CookieSettingsTitle": "Durata della sessione",
   "ErrorInvalidHeader": "Collegamento scaduto",
   "ErrorInvalidText": "Tra 10 secondi sarai reindirizzato alla <1>DocSpace</1>",
-  "ExpiredCode": "Questo codice non è più valido. Richiedi un nuovo codice e riprova",
+  "ExpiredCode": "Questo codice non è più valido. Richiedi un nuovo codice e riprova.",
   "ForgotPassword": "Password dimenticata?",
-  "InvalidCode": "Questo codice non è valido. Riprova",
+  "InvalidCode": "Questo codice non è valido. Riprova.",
   "MessageAuthorize": "‎Accedere per continuare‎",
   "MessageEmailConfirmed": "Il tuo indirizzo email è stato confermato con successo.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "‎Inserisci l'e-mail che hai usato per la registrazione. Le istruzioni per il recupero della password verranno inviate su di esso.‎",
@@ -24,5 +24,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "‎Ricordati di me‎",
   "RememberHelper": "‎La durata predefinita della sessione è di 20 minuti. Selezionare questa opzione per impostarla su 1 anno. Per impostare il proprio valore, passare a Impostazioni.‎",
-  "ResendCode": "Invia nuovamente il codice"
+  "ResendCode": "Invia nuovamente il codice",
+  "SignInWithCode": "Accedi con codice segreto",
+  "SignInWithPassword": "Accedi con password"
 }

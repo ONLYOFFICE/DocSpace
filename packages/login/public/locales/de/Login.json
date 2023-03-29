@@ -5,9 +5,9 @@
   "CookieSettingsTitle": "Gültigkeitsdauer der Sitzung",
   "ErrorInvalidHeader": "Abgelaufener Link",
   "ErrorInvalidText": "In 10 Sekunden werden Sie auf die <1>DocSpace</1> weitergeleitet",
-  "ExpiredCode": "Dieser Code ist nicht mehr gültig. Fordern Sie einen neuen Code an und versuchen Sie es erneut",
+  "ExpiredCode": "Dieser Code ist nicht mehr gültig. Fordern Sie einen neuen Code an und versuchen Sie es erneut.",
   "ForgotPassword": "Kennwort vergessen?",
-  "InvalidCode": "Dieser Code ist ungültig. Versuchen Sie es erneut",
+  "InvalidCode": "Dieser Code ist ungültig. Versuchen Sie es erneut.",
   "MessageAuthorize": "Bitte einloggen",
   "MessageEmailConfirmed": "Ihre E-Mail-Adresse wurde erfolgreich aktiviert.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Bitte E-Mail eingeben, das Sie bei der Registrierung verwendet haben. Anleitungen zur Änderung eines Passworts werden daran gesendet.",
@@ -24,5 +24,7 @@
   "RegistrationEmailWatermark": "E-Mail",
   "Remember": "Anmeldedaten speichern",
   "RememberHelper": "Lebensdauer der Sitzung ist standardmäßig 20 Minuten. Wählen Sie diese Option aus, um den Wert 1 Jahr zu setzen. Für benutzerdefinierte Werte öffnen Sie Einstellungen.",
-  "ResendCode": "Code nochmals senden"
+  "ResendCode": "Code nochmals senden",
+  "SignInWithCode": "Anmeldung mit Geheimcode",
+  "SignInWithPassword": "Anmeldung mit Passwort"
 }

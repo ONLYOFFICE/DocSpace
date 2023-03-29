@@ -5,5 +5,6 @@
   "ImageFileType": "slike",
   "MailMergeFileType": "Izberi datoteko v XLSX formatu",
   "OpenSavedDocument": "Odpri shranjen dokument v novem zavihku",
-  "SelectFilesType": "Izberi datoteke ali tip: {{fileType}}"
+  "SelectFilesType": "Izberi datoteke ali tip: {{fileType}}",
+  "UsersWithoutAccess": "Nekateri uporabniki, ki jih želite omeniti, nimajo dostopa do sobe: {{users}}"
 }

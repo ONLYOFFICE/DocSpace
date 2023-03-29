@@ -288,7 +288,7 @@ class FilesStore {
 
       if (this.selectedFolderStore.id !== file.folderId) {
         const movedToIndex = this.getFolderIndex(file.folderId);
-        if (movedToIndex) this.folders[movedToIndex].filesCount++;
+        if (movedToIndex > -1) this.folders[movedToIndex].filesCount++;
         return;
       }
 
@@ -327,7 +327,7 @@ class FilesStore {
 
       if (this.selectedFolderStore.id !== folder.parentId) {
         const movedToIndex = this.getFolderIndex(folder.parentId);
-        if (movedToIndex) this.folders[movedToIndex].foldersCount++;
+        if (movedToIndex > -1) this.folders[movedToIndex].foldersCount++;
       }
 
       if (

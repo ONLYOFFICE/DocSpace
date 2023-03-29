@@ -126,6 +126,9 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             var folder = await FolderDao.GetFolderAsync(folderId);
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
 
+            var canDelete = await FilesSecurity.CanDeleteAsync(folder);
+            checkPermissions = isRoom ? !canDelete : checkPermissions;
+
             T canCalculate = default;
             if (folder == null)
             {
@@ -136,7 +139,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
-            else if (!_ignoreException && checkPermissions && !await FilesSecurity.CanDeleteAsync(folder))
+            else if (!_ignoreException && checkPermissions && !canDelete)
             {
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
@@ -144,8 +147,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             }
             else
             {
-                checkPermissions = isRoom ? false : checkPermissions;
-
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                 await fileMarker.RemoveMarkAsNewForAllAsync(folder);

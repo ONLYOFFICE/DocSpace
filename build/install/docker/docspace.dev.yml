@@ -32,28 +32,28 @@ x-service: &x-service-base
     - ${ROOT_DIR}/config/apisystem.${ENV_EXTENSION}.json:/app/onlyoffice/config/apisystem.${ENV_EXTENSION}.json
 
 services:
-  onlyoffice-elasticsearch:
-    image: onlyoffice/elasticsearch:${ELK_VERSION}
-    container_name: ${ELK_HOST}
-    restart: always
-    environment:
-      - discovery.type=single-node
-      - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
-      - "indices.fielddata.cache.size=30%"
-      - "indices.memory.index_buffer_size=30%"
-    ulimits:
-      memlock:
-        soft: -1
-        hard: -1
-      nofile:
-        soft: 65535
-        hard: 65535
-    volumes:
-      - es_data:/usr/share/elasticsearch/data
-    expose:
-      - "9200"
-      - "9300"
+  # onlyoffice-elasticsearch:
+  #   image: onlyoffice/elasticsearch:${ELK_VERSION}
+  #   container_name: ${ELK_HOST}
+  #   restart: always
+  #   environment:
+  #     - discovery.type=single-node
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms4g -Xmx4g -Dlog4j2.formatMsgNoLookups=true"
+  #     - "indices.fielddata.cache.size=30%"
+  #     - "indices.memory.index_buffer_size=30%"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #     nofile:
+  #       soft: 65535
+  #       hard: 65535
+  #   volumes:
+  #     - es_data:/usr/share/elasticsearch/data
+  #   expose:
+  #     - "9200"
+  #     - "9300"
   onlyoffice-backup-background-tasks:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup-background:${DOCKER_TAG}"
@@ -64,10 +64,10 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-backup:${DOCKER_TAG}"
     container_name: ${BACKUP_HOST}
 
-  onlyoffice-clear-events:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}"
-    container_name: ${CLEAR_EVENTS_HOST}
+  # onlyoffice-clear-events:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-clear-events:${DOCKER_TAG}"
+  #   container_name: ${CLEAR_EVENTS_HOST}
 
   # onlyoffice-migration:
   #   <<: *x-service-base
@@ -119,23 +119,23 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api:${DOCKER_TAG}"
     container_name: ${API_HOST}
 
-  onlyoffice-api-system:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
-    container_name: ${API_SYSTEM_HOST}
+  # onlyoffice-api-system:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-api-system:${DOCKER_TAG}"
+  #   container_name: ${API_SYSTEM_HOST}
 
   onlyoffice-studio:
     <<: *x-service-base
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
     container_name: ${STUDIO_HOST}
 
-  onlyoffice-ssoauth:
-    <<: *x-service-base
-    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
-    container_name: ${SSOAUTH_HOST}
-    expose:
-      - ${SERVICE_PORT}
-      - "9834"
+  # onlyoffice-ssoauth:
+  #   <<: *x-service-base
+  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
+  #   container_name: ${SSOAUTH_HOST}
+  #   expose:
+  #     - ${SERVICE_PORT}
+  #     - "9834"
 
   # onlyoffice-webhooks-service:
   #   <<: *x-service-base
@@ -155,7 +155,7 @@ services:
     depends_on:
       - onlyoffice-backup-background-tasks
       - onlyoffice-backup
-      - onlyoffice-clear-events
+      # - onlyoffice-clear-events
       # - onlyoffice-migration
       # - webhooks-service
       - onlyoffice-files
@@ -166,14 +166,14 @@ services:
       # - onlyoffice-telegram-service
       # - onlyoffice-urlshortener
       - onlyoffice-api
-      - onlyoffice-api-system
+      # - onlyoffice-api-system
       - onlyoffice-studio
-      - onlyoffice-ssoauth
+      # - onlyoffice-ssoauth
     environment:
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_FILES=${SERVICE_FILES}
       - SERVICE_FILES_SERVICES=${SERVICE_FILES_SERVICES}
-      - SERVICE_CLEAR_EVENTS=${SERVICE_CLEAR_EVENTS}
+      # - SERVICE_CLEAR_EVENTS=${SERVICE_CLEAR_EVENTS}
       # - SERVICE_MIGRATION=${SERVICE_MIGRATION}
       # - SERVICE_WEBHOOKS_SERVICE=${SERVICE_WEBHOOKS_SERVICE}
       - SERVICE_NOTIFY=${SERVICE_NOTIFY}

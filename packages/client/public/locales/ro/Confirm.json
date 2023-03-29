@@ -1,13 +1,13 @@
 {
   "ChangePasswordSuccess": "Parola a fost schimbată cu succes",
   "ConfirmOwnerPortalSuccessMessage": "Proprietarul DocSpace a fost schimbat cu succes. Veţi fi redirecționat automat după 10 secunde.",
-  "ConfirmOwnerPortalTitle": "Confirmați dacă doriți să schimbați proprietarul DocSpace în {{newOwner}}",
+  "ConfirmOwnerPortalTitle": "Confirmați dacă doriți să schimbați proprietarul DocSpace în {{newOwner}}.",
   "CurrentNumber": "Numărul dvs. de telefon mobil curent",
   "DeleteProfileBtn": "Șterge contul meu",
   "DeleteProfileConfirmation": "Atenție! Dumneavoastră sunteți pe cale de a șterge contul dvs.",
   "DeleteProfileConfirmationInfo": "Apăsând Șterge contul meu, acceptați că sunteți de acord cu Politica de confidențialitate a companiei.",
   "DeleteProfileSuccessMessage": "Contul dvs a fost șters cu succes.",
-  "DeleteProfileSuccessMessageInfo": "Vă invităm să luați la cunoștință Politica de confidențialitate ca să aflați mai multe despre suprimarea contului și datelor asociate contului",
+  "DeleteProfileSuccessMessageInfo": "Vă invităm să luați la cunoștință Politica de confidențialitate ca să aflați mai multe despre suprimarea contului și datelor asociate contului.",
   "EmailAndPasswordCopiedToClipboard": "Adresa de e-mail și parola sunt copiate în clipboard  ",
   "EnterAppCodeDescription": "Introduceți un cod de verificare din șase cifre gererat cu aplicația dvs. Dacă nu aveți acces la telefonul dvs, folosiți un cod de rezervă.",
   "EnterAppCodeTitle": "Introduceți codul din aplicația de autentificare",
@@ -22,5 +22,5 @@
   "SetAppDescription": "Autentificarea cu doi factori este activată. Configurați aplicația de autentificare dvs ca să lucrați mai departe în DocSpace. Puteți utiliza Google Authenticator pentru <1>Android</1> și <4>iOS</4> sau Authenticator pentru <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Pentru a conecta aplicația, scanați codul QR sau introduceți manual cheia secretă <1>{{ secretKey }}</1>, și apoi introduceți codul din 6 cifre din aplicația în câmpul aflat dedesubt.",
   "SetAppTitle": "Configurarea aplicației de autentificare dvs.",
-  "WelcomeUser": "Bine ați venit pe portalul!\nPentru a începe lucrul, vă înregistrați sau vă conectați prin intermediul rețelelor de socializare."
+  "WelcomeUser": "Bine ați venit pe DocSpace!\nPentru a începe lucrul, vă înregistrați sau vă conectați prin intermediul rețelelor de socializare."
 }

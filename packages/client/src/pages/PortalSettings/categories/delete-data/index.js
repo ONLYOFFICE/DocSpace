@@ -10,7 +10,7 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "../../../../../package.json";
 
 const DeleteData = (props) => {
-  const { t, history, isNotPaidPeriod } = props;
+  const { t, history, isNotPaidPeriod, tReady } = props;
 
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,7 +45,7 @@ const DeleteData = (props) => {
     );
   };
 
-  if (!isLoading) return <DeleteDataLoader />;
+  if (!isLoading || !tReady) return <DeleteDataLoader />;
   return isNotPaidPeriod ? (
     <PortalDeletionSection />
   ) : (
