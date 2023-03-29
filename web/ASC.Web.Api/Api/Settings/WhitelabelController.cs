@@ -364,7 +364,7 @@ public class WhitelabelController : BaseSettingsController
 
         return true;
     }
-    [AllowNotPayment]
+
     /// <summary>
     /// Returns the company white label settings.
     /// </summary>
@@ -374,6 +374,7 @@ public class WhitelabelController : BaseSettingsController
     /// <path>api/2.0/settings/rebranding/company</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("rebranding/company")]
     public CompanyWhiteLabelSettingsDto GetCompanyWhiteLabelSettings()
     {
@@ -445,7 +446,7 @@ public class WhitelabelController : BaseSettingsController
 
         return true;
     }
-    [AllowNotPayment]
+
     /// <summary>
     /// Returns the additional white label settings.
     /// </summary>
@@ -455,6 +456,7 @@ public class WhitelabelController : BaseSettingsController
     /// <path>api/2.0/settings/rebranding/additional</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
+    [AllowNotPayment]
     [HttpGet("rebranding/additional")]
     public AdditionalWhiteLabelSettingsDto GetAdditionalWhiteLabelSettings()
     {

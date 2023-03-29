@@ -168,9 +168,7 @@ public class WebhooksController : BaseSettingsController
     /// Get webhook logs
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="System.Nullable{System.DateTime}, System" name="delivery">Time when a webhook was delivered</param>
-    /// <param type="System.String, System" name="hookname">Hook name</param>
-    /// <param type="System.String, System" name="route">Webhook route</param>
+    /// <param type="System.Nullable{System.DateTime}, System" name="model">Time when a webhook was delivered, Hook name, Webhook route</param>
     /// <path>api/2.0/settings/webhooks/log</path>
     /// <httpMethod>GET</httpMethod>
     /// <returns>Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>

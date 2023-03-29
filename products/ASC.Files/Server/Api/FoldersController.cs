@@ -128,6 +128,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
     /// <param type="System.Nullable{System.Guid}, System" name="userIdOrGroupId" optional="true">User or group ID</param>
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), FillingFormsRooms (13), EditingRooms (14), ReviewRooms (15), ReadOnlyRooms (16), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
+    /// <param type="System.Int32, System" name="roomId">Room ID</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="excludeSubject">Specifies whether to exclude a subject or not</param>
