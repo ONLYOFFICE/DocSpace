@@ -118,6 +118,11 @@ internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
         await _tagDao.RemoveTags(tag);
     }
 
+    public async Task<int> RemoveTagLinksAsync(string entryId, FileEntryType entryType, TagType tagType)
+    {
+        return await _tagDao.RemoveTagLinksAsync(entryId, entryType, tagType);
+    }
+
     public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
     {
         return _tagDao.GetTagsAsync(entryID, entryType, tagType);

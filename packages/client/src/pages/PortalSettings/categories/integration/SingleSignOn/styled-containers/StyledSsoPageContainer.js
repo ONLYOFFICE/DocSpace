@@ -10,6 +10,7 @@ const StyledSsoPage = styled.div`
   .intro-text {
     margin-bottom: 18px;
     max-width: 700px;
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
   .toggle {

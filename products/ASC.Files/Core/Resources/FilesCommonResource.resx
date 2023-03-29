@@ -363,8 +363,8 @@
   <data name="ErrorMessage_InvintationLink" xml:space="preserve">
     <value>The invitation link is invalid or it's validity has expired</value>
   </data>
-  <data name="ErrorMessage_PaidRole" xml:space="preserve">
-    <value>The role is only available to a paid user</value>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>The role is not available for this user type</value>
   </data>
   <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
     <value>This provider is already connected to the room</value>
@@ -441,5 +441,35 @@ Highest compatibility with docx, xlsx, pptx. </value>
   </data>
   <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
     <value>You don't have permission to edit the room</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace Administrator</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Room Administrator</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Viewer</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Сommentator</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Form filler</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Reviewer</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Collaborator</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaborator</value>
   </data>
 </root>

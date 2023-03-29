@@ -99,10 +99,6 @@ public class WhitelabelController : BaseSettingsController
             foreach (var l in inDto.Logo)
             {
                 var key = Int32.Parse(l.Key);
-                if (key == (int)WhiteLabelLogoTypeEnum.Favicon && !(l.Value.Light.EndsWith("ico") || l.Value.Light.EndsWith("svg")))
-                {
-                    throw new InvalidOperationException("Favicon must have .ico or .svg extension");
-                }
 
                 logoDict.Add(key, new KeyValuePair<string, string>(l.Value.Light, l.Value.Dark));
             }
@@ -173,7 +169,7 @@ public class WhitelabelController : BaseSettingsController
             }
         }
 
-        _settingsManager.SaveForTenant(settings, Tenant.Id);
+        _settingsManager.Save(settings, Tenant.Id);
 
         return true;
     }
@@ -368,7 +364,7 @@ public class WhitelabelController : BaseSettingsController
 
         return true;
     }
-
+    [AllowNotPayment]
     /// <summary>
     /// Returns the company white label settings.
     /// </summary>
@@ -449,7 +445,7 @@ public class WhitelabelController : BaseSettingsController
 
         return true;
     }
-
+    [AllowNotPayment]
     /// <summary>
     /// Returns the additional white label settings.
     /// </summary>
@@ -538,11 +534,10 @@ public class WhitelabelController : BaseSettingsController
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         DemandWhiteLabelPermission();
 
-        var settings = _settingsManager.Load<MailWhiteLabelSettings>();
-
+        _settingsManager.Manage<MailWhiteLabelSettings>(settings =>
+        {
         settings.FooterEnabled = inDto.FooterEnabled;
-
-        _settingsManager.Save(settings);
+        });
 
         return true;
     }

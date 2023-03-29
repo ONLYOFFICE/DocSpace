@@ -38,16 +38,21 @@ ELK_PORT = os.environ["ELK_PORT"] if environ.get("ELK_PORT") else "9200"
 ELK_THREADS = os.environ["ELK_THREADS"] if environ.get("ELK_THREADS") else "1"
 
 KAFKA_HOST = os.environ["KAFKA_HOST"] if environ.get("KAFKA_HOST") else "kafka:9092"
-RUN_FILE = sys.argv[1] if sys.argv[1] else "none"
-LOG_FILE = sys.argv[2] if sys.argv[2] else "none"
+RUN_FILE = sys.argv[1] if (len(sys.argv) > 1) else "none"
+LOG_FILE = sys.argv[2] if (len(sys.argv) > 2) else "none"
+CORE_EVENT_BUS = sys.argv[3] if (len(sys.argv) > 3) else ""
 
 REDIS_HOST = os.environ["REDIS_HOST"] if environ.get("REDIS_HOST") else "onlyoffice-redis"
 REDIS_PORT = os.environ["REDIS_PORT"] if environ.get("REDIS_PORT") else "6379"
+REDIS_USER_NAME = {"User": os.environ["REDIS_USER_NAME"]} if environ.get("REDIS_USER_NAME") else None
+REDIS_PASSWORD = {"Password": os.environ["REDIS_PASSWORD"]} if environ.get("REDIS_PASSWORD") else None
 
 RABBIT_HOST = os.environ["RABBIT_HOST"] if environ.get("RABBIT_HOST") else "onlyoffice-rabbitmq"
 RABBIT_USER_NAME = os.environ["RABBIT_USER_NAME"] if environ.get("RABBIT_USER_NAME") else "guest"
 RABBIT_PASSWORD = os.environ["RABBIT_PASSWORD"] if environ.get("RABBIT_PASSWORD") else "guest"
 RABBIT_PORT =  os.environ["RABBIT_PORT"] if environ.get("RABBIT_PORT") else "5672"
+RABBIT_VIRTUAL_HOST = os.environ["RABBIT_VIRTUAL_HOST"] if environ.get("RABBIT_VIRTUAL_HOST") else "/"
+RABBIT_URI = {"Uri": os.environ["RABBIT_URI"]} if environ.get("RABBIT_URI") else None
 
 class RunServices:
     def __init__(self, SERVICE_PORT, PATH_TO_CONF):
@@ -80,7 +85,8 @@ class RunServices:
                         " --log:dir=" + LOG_DIR +\
                             " --log:name=" + LOG_FILE +\
                                 " core:products:folder=/var/www/products/" +\
-                                    " core:products:subfolder=server")
+                                    " core:products:subfolder=server" + " " +\
+                                        CORE_EVENT_BUS)
         else:
             os.system("dotnet " + RUN_FILE + " --urls=" + URLS + self.SERVICE_PORT +\
                  " --\'$STORAGE_ROOT\'=" + APP_STORAGE_ROOT +\
@@ -89,7 +95,8 @@ class RunServices:
                             " --log:name=" + LOG_FILE +\
                                 " --ENVIRONMENT=" + ENV_EXTENSION +\
                                     " core:products:folder=/var/www/products/" +\
-                                        " core:products:subfolder=server")
+                                        " core:products:subfolder=server" + " " +\
+                                            CORE_EVENT_BUS)
 
 def openJsonFile(filePath):
     try:
@@ -139,12 +146,19 @@ updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_S
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
 writeJsonFile(filePath, jsonData)
 
+filePath = "/app/onlyoffice/config/apisystem.json"
+jsonData = openJsonFile(filePath)
+updateJsonData(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false",)
+updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
+updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
+writeJsonFile(filePath, jsonData)
+
 filePath = "/app/onlyoffice/config/elastic.json"
 jsonData = openJsonFile(filePath)
-updateJsonData(jsonData,"$.elastic.Scheme", ELK_SHEME)
-updateJsonData(jsonData,"$.elastic.Host", ELK_HOST)
-updateJsonData(jsonData,"$.elastic.Port", ELK_PORT)
-updateJsonData(jsonData,"$.elastic.Threads", ELK_THREADS)
+jsonData["elastic"]["Scheme"] = ELK_SHEME
+jsonData["elastic"]["Host"] = ELK_HOST
+jsonData["elastic"]["Port"] = ELK_PORT
+jsonData["elastic"]["Threads"] = ELK_THREADS
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/kafka.json"
@@ -168,12 +182,16 @@ updateJsonData(jsonData,"$.RabbitMQ.Hostname", RABBIT_HOST)
 updateJsonData(jsonData,"$.RabbitMQ.UserName", RABBIT_USER_NAME)
 updateJsonData(jsonData, "$.RabbitMQ.Password", RABBIT_PASSWORD)
 updateJsonData(jsonData, "$.RabbitMQ.Port", RABBIT_PORT)
+updateJsonData(jsonData, "$.RabbitMQ.VirtualHost", RABBIT_VIRTUAL_HOST)
+jsonData["RabbitMQ"].update(RABBIT_URI) if RABBIT_URI is not None else None
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/redis.json"
 jsonData = openJsonFile(filePath)
 updateJsonData(jsonData,"$.Redis.Hosts.[0].Host", REDIS_HOST)
 updateJsonData(jsonData,"$.Redis.Hosts.[0].Port", REDIS_PORT)
+jsonData["Redis"].update(REDIS_USER_NAME) if REDIS_USER_NAME is not None else None
+jsonData["Redis"].update(REDIS_PASSWORD) if REDIS_PASSWORD is not None else None
 writeJsonFile(filePath, jsonData)
 
 run = RunServices(SERVICE_PORT, PATH_TO_CONF)

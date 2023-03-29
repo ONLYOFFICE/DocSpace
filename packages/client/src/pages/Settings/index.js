@@ -15,7 +15,16 @@ const PureSettings = ({
   isLoadedSettingsTree,
   setFirstLoad,
   isAdmin,
+  onClickBack,
 }) => {
+  useEffect(() => {
+    window.addEventListener("popstate", onClickBack);
+
+    return () => {
+      window.removeEventListener("popstate", onClickBack);
+    };
+  }, []);
+
   useEffect(() => {
     setFirstLoad(false);
   }, [setFirstLoad]);
@@ -71,10 +80,17 @@ SettingsHeader,
 const Settings = withTranslation(["FilesSettings", "Common"])(PureSettings);
 
 export default inject(
-  ({ auth, filesStore, settingsStore, treeFoldersStore }) => {
+  ({
+    auth,
+    filesStore,
+    settingsStore,
+    treeFoldersStore,
+    filesActionsStore,
+  }) => {
     const { setFirstLoad, isLoading } = filesStore;
     const { setSelectedNode } = treeFoldersStore;
     const { getFilesSettings, isLoadedSettingsTree } = settingsStore;
+    const { onClickBack } = filesActionsStore;
 
     return {
       isLoading,
@@ -83,6 +99,7 @@ export default inject(
       setSelectedNode,
       getFilesSettings,
       isAdmin: auth.isAdmin,
+      onClickBack,
     };
   }
 )(observer(Settings));

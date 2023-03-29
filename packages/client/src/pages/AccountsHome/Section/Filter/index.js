@@ -11,7 +11,11 @@ import Loaders from "@docspace/common/components/Loaders";
 import { withLayoutSize } from "@docspace/common/utils";
 
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
-import { EmployeeType, PaymentsType } from "@docspace/common/constants";
+import {
+  EmployeeType,
+  EmployeeStatus,
+  PaymentsType,
+} from "@docspace/common/constants";
 
 const getStatus = (filterValues) => {
   const employeeStatus = result(
@@ -69,7 +73,6 @@ const SectionFilterContent = ({
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
 
-  //TODO: add new options from filter after update backend and fix manager from role
   const onFilter = (data) => {
     const status = getStatus(data);
 
@@ -80,8 +83,12 @@ const SectionFilterContent = ({
     const newFilter = filter.clone();
 
     if (status === 3) {
-      newFilter.employeeStatus = 2;
+      newFilter.employeeStatus = EmployeeStatus.Disabled;
       newFilter.activationStatus = null;
+    } else if (status === 2) {
+      console.log(status);
+      newFilter.employeeStatus = EmployeeStatus.Active;
+      newFilter.activationStatus = status;
     } else {
       newFilter.employeeStatus = null;
       newFilter.activationStatus = status;
@@ -94,6 +101,7 @@ const SectionFilterContent = ({
     newFilter.group = group;
 
     newFilter.payments = payments;
+    //console.log(newFilter);
 
     setIsLoading(true);
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
@@ -123,7 +131,6 @@ const SectionFilterContent = ({
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
-  // TODO: change translation keys
   const getData = async () => {
     const statusItems = [
       {
@@ -171,6 +178,12 @@ const SectionFilterContent = ({
         key: EmployeeType.User,
         group: "filter-type",
         label: t("Common:RoomAdmin"),
+      },
+      {
+        id: "filter_type-room-admin",
+        key: EmployeeType.Collaborator,
+        group: "filter-type",
+        label: t("Common:PowerUser"),
       },
       {
         id: "filter_type-user",
@@ -311,6 +324,9 @@ const SectionFilterContent = ({
           break;
         case EmployeeType.User:
           label = t("Common:RoomAdmin");
+          break;
+        case EmployeeType.Collaborator:
+          label = t("Common:PowerUser");
           break;
         case EmployeeType.Guest:
           label = t("Common:User");

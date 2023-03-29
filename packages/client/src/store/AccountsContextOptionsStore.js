@@ -140,7 +140,7 @@ class AccountsContextOptionsStore {
             key: option,
             icon: InfoOutlineReactSvgUrl,
             label: t("Common:Info"),
-            onClick: this.onDetailsClick,
+            onClick: () => this.onDetailsClick(item),
           };
 
         case "invite-again":
@@ -158,6 +158,7 @@ class AccountsContextOptionsStore {
             icon: RestoreAuthReactSvgUrl,
             label: t("PeopleTranslations:ResetAuth"),
             onClick: () => this.onResetAuth(item),
+            disabled: this.authStore.tfaStore.tfaSettings !== "app",
           };
         default:
           break;
@@ -187,7 +188,7 @@ class AccountsContextOptionsStore {
 
     const { isOwner } = this.authStore.userStore.user;
 
-    const { setIsVisible, isVisible } = this.peopleStore.infoPanelStore;
+    const { setIsVisible, isVisible } = this.authStore.infoPanelStore;
 
     const options = [];
 
@@ -389,8 +390,10 @@ class AccountsContextOptionsStore {
     setDeleteProfileDialogVisible(true);
   };
 
-  onDetailsClick = () => {
-    const { setIsVisible } = this.peopleStore.infoPanelStore;
+  onDetailsClick = (item) => {
+    const { setIsVisible } = this.authStore.infoPanelStore;
+    const { setBufferSelection } = this.peopleStore.selectionStore;
+    setBufferSelection(item);
     setIsVisible(true);
   };
 
@@ -413,8 +416,13 @@ class AccountsContextOptionsStore {
   };
 
   onResetAuth = (item) => {
-    toastr.warning("Work at progress");
-    console.log(item);
+    const {
+      setDialogData,
+      setResetAuthDialogVisible,
+    } = this.peopleStore.dialogStore;
+
+    setResetAuthDialogVisible(true);
+    setDialogData(item.id);
   };
 }
 

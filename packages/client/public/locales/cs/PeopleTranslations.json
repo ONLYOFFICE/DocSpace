@@ -1,16 +1,19 @@
 {
-  "AddMembers": "Přidat členy",
   "DeleteSelfProfile": "Smazat profil",
   "DisableUserButton": "Deaktivovat",
   "DisabledEmployeeStatus": "Deaktivováno",
   "EmailChangeButton": "Změnit emailovou adresu",
   "EnableUserButton": "Aktivovat",
+  "InviteLinkTitle": "Odkaz s pozvánkou",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Změna názvu",
   "PasswordChangeButton": "Změnit heslo",
   "PendingTitle": "Čekající",
   "RemoveData": "Odstranit osobní údaje",
+  "ResetAuth": "Obnovení ověřování",
   "SendInviteAgain": "Odeslat pozvánku ještě jednou",
   "SuccessChangeUserStatus": "Stav uživatele byl úspěšně změněn",
   "SuccessDeletePersonalData": "Osobní údaje byly úspěšně odstraněny",
-  "SuccessSentInvitation": "Pozvánka byla úspěšně odeslána"
+  "SuccessSentInvitation": "Pozvánka byla úspěšně odeslána",
+  "SuccessSentMultipleInvitatios": "Pozvánky byly úspěšně odeslány"
 }

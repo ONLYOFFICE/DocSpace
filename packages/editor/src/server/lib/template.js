@@ -32,11 +32,17 @@ export default function template(
     });
   }
 
+  const initialEditorStateStringify = JSON.stringify(initialEditorState);
+
+  const initialEditorStateString = initialEditorStateStringify.includes(
+    "</script>"
+  )
+    ? initialEditorStateStringify.replaceAll("</script>", "<\\/script>")
+    : initialEditorStateStringify;
+
   const scripts = `   
     <script id="__ASC_INITIAL_EDITOR_STATE__">
-      window.__ASC_INITIAL_EDITOR_STATE__ = ${JSON.stringify(
-        initialEditorState
-      )}
+      window.__ASC_INITIAL_EDITOR_STATE__ = ${initialEditorStateString}
     </script>
     <script id="__ASC_INITIAL_EDITOR_I18N__">
       window.initialI18nStoreASC = ${JSON.stringify(initialI18nStoreASC)}
@@ -398,6 +404,7 @@ export default function template(
           </div>
           <div id="root">${appComponent}</div>
           <noscript> You need to enable JavaScript to run this app. </noscript>
+          <script src="/static/scripts/browserDetector.js"></script>
           ${scripts}
         </body>
       </html>

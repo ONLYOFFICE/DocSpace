@@ -1,6 +1,9 @@
 {
-  "BackupPortal": "Desactivar o eliminar el portal",
-  "ChangeOwner": "Asignar los administradores del módulo",
+  "AppointAdmin": "Designar administradores",
+  "BackupPortal": "Dados do DocSpace de backup",
+  "ChangeInstruction": "Para cambiar el propietario de DocSpace, elija a continuación el nombre del nuevo propietario.",
+  "ChangeOwner": "Cambiar el propietario de DocSpace",
+  "ChangeUser": "Cambiar usuario",
   "DeactivateOrDeletePortal": "Desactivar o eliminar DocSpace",
   "ManagePortal": "Gestionar la configuración del portal",
   "ManageUser": "Gestionar las cuentas de usuarios"

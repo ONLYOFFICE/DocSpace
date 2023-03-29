@@ -296,20 +296,6 @@ Este enlace es válido solo durante 7 días.
 
 Usted obtendrá más consejos útiles sobre cómo usar su oficina web. Usted puede cancelar las suscripciones así como re-activarlas en la página de su Perfil en cualquier momento.</value>
   </data>
-  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Su perfil de invitado ha sido agregado con éxito al "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora usted puede:
-
-1. Editar su perfil.
-2. Visualizar y comentar el contenido disponible en los módulos Comunidad y Proyectos.
-3. Añadir y descargar archivos disponibles para usted en el módulo Documentos.
-4. Organizar su horario con el Calendario incorporado.
-5. Usar el Chat para intercambiar mensajes instantáneos.
-
-Para acceder a su oficina web, siga el enlace
-$GreenButton</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>¡Buen día, $UserName!
 
@@ -320,19 +306,6 @@ $GreenButton
 Este enlace es válido solo durante 7 días.
 
 Usted obtendrá más consejos útiles sobre cómo usar su oficina web. Usted puede cancelar las suscripciones así como re-activarlas en la página de su Perfil en cualquier momento.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Su perfil de invitado ha sido agregado con éxito al "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora usted puede:
-
-# Editar su "perfil":"$MyStaffLink".
-# Visualizar y comentar el contenido disponible en el módulo "Comunidad":"${__VirtualRootPath}/Products/Community/" y "Proyectos":"${__VirtualRootPath}/Products/Projects/".
-# Añadir y descargar archivos disponibles para usted en el módulo "Documentos":"${__VirtualRootPath}/Products/Files/".
-# Organizar su horario con el "Calendario" incorporado:"${__VirtualRootPath}/addons/calendar/".
-# Usar "Chat":"${__VirtualRootPath}/addons/talk/" para intercambiar mensajes instantáneos.
-
-$GreenButton</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Mensaje de Portal "${__VirtualRootPath}":"${__VirtualRootPath}" 
@@ -461,25 +434,6 @@ Está invitado a unirse a "${__VirtualRootPath}":"${__VirtualRootPath}" como usu
 El enlace sólo es válido durante 7 días.
 
 Recibirá más consejos sobre cómo usar su oficina web. Puede cancelar las suscripciones en su página de perfil en cualquier momento, así como volver a activarlas.</value>
-  </data>
-  <data name="pattern_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Ahora usted es un usuario invitado en "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
-
-*Presentarse* al equipo editando su perfil.
-
-*Ver documentos compartidos* así como descargarlos y subir nuevos archivos a las carpetas compartidas.
-
-*Ver y comentar los proyectos* a los que ha sido invitado así como las entradas del blog y del foro.
-
-*Intercambiar mensajes instantáneos* y compartir rápidamente archivos usando Talk.
-
-*Utilizar calendarios personales y compartidos* para organizar reuniones, establecer recordatorios y crear listas de tareas.
-
-Para acceder a su oficina web, siga "el enlace":"${__VirtualRootPath}".
-
-Si desea crear su propia oficina web, visite "el sitio web oficial de ONLYOFFICE":"https://www.onlyoffice.com/".  </value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Hola, $Usuario
@@ -822,25 +776,6 @@ Cordialmente,
 Equipo de ONLYOFFICE
 "www.onlyoffice.com":"https://www.onlyoffice.com/es/"</value>
   </data>
-  <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Su perfil de invitado ha sido añadido con éxito al "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora usted puede:
-
-1. Editar su "perfil:"$MyStaffLink".
-2. Ver y comentar el contenido disponible en los módulos "Comunidad":"${__VirtualRootPath}/Products/Community/" y "Proyectos":"${__VirtualRootPath}/Products/Projects/".
-3. Añadir y descargar archivos disponibles para usted en el módulo "Documentos":"${__VirtualRootPath}/Products/Files/".
-4. Organizar su agenda con el "Calendario" incorporado:"${__VirtualRootPath}/addons/calendar/".
-5. Usar "Chat":"${__VirtualRootPath}/addons/talk/" para intercambiar mensajes instantáneos.
-
-$GreenButton
-
-Si usted necesita ayuda, navegue por nuestro "Centro de Ayuda":"${__HelpLink}".
-
-Cordialmente,
-Equipo de ONLYOFFICE
-www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.Notificación de cambio de perfil en el portal "${__VirtualRootPath}":"${__VirtualRootPath}" 
 
@@ -853,26 +788,6 @@ www.onlyoffice.com":"http://onlyoffice.com/"</value>
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) notificación de cambio de perfil del portal
 
 [$__AuthorName]($__AuthorUrl) ha cambiado los detalles de su perfil en el portal [${__VirtualRootPath}](${__VirtualRootPath}).</value>
-  </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Qué hay nuevo en el Portal "${__VirtualRootPath}":"${__VirtualRootPath}" para $Date
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^Si no desea recibir las notificaciones sobre los nuevos eventos en el "${__VirtualRootPath}":"${__VirtualRootPath}" portal, por favor administre su "configuración de la suscripción":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP Mensaje de Prueba 
@@ -970,14 +885,8 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Bienvenido a su oficina web</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Bienvenido a su oficina web</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Mensaje de usuario para los administradores</value>
@@ -1002,9 +911,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Bienvenido a su oficina web</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>¡Bienvenido a ONLYOFFICE para uso personal!</value>
@@ -1063,14 +969,8 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Bienvenido/a a su ONLYOFFICE</value>
-  </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>Notificación de cambio de perfil en el portal ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Noticias de su portal para $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Mensaje de prueba SMTP </value>

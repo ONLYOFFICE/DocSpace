@@ -52,28 +52,27 @@ public class IPRestrictionsRepository
         using var tenantDbContext = _dbContextManager.CreateDbContext();
         var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
             using var tenantDbContext = _dbContextManager.CreateDbContext();
-            using var tx = tenantDbContext.Database.BeginTransaction();
+            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
 
-            var restrictions = tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ToList();
-            tenantDbContext.TenantIpRestrictions.RemoveRange(restrictions);
-            tenantDbContext.SaveChanges();
+            await tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDeleteAsync();
 
             var ipsList = ips.Select(r => new TenantIpRestrictions
             {
                 Tenant = tenant,
                 Ip = r.Ip,
                 ForAdmin = r.ForAdmin
-                
+
             });
 
             tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
-            tenantDbContext.SaveChanges();
+            await tenantDbContext.SaveChangesAsync();
 
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult();
 
         return ips.ToList();
     }

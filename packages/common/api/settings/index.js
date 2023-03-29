@@ -1,10 +1,10 @@
 import { request } from "../client";
 import axios from "axios";
 
-export function getSettings() {
+export function getSettings(withPassword = false) {
   return request({
     method: "get",
-    url: "/settings.json",
+    url: `/settings.json?withPassword=${withPassword}`,
   });
 }
 
@@ -569,6 +569,28 @@ export function getTipsSubscription() {
   return request(options);
 }
 
+export function getNotificationSubscription(notificationType) {
+  const options = {
+    method: "get",
+    url: `/settings/notification/${notificationType}`,
+  };
+  return request(options);
+}
+
+export function changeNotificationSubscription(notificationType, isEnabled) {
+  const data = {
+    Type: notificationType,
+    isEnabled,
+  };
+  const options = {
+    method: "post",
+    url: "/settings/notification",
+    data,
+  };
+
+  return request(options);
+}
+
 export function toggleTipsSubscription() {
   const options = {
     method: "put",
@@ -693,4 +715,14 @@ export function removeActiveSession(eventId) {
     url: `/security/activeconnections/logout/${eventId}`,
     data: { eventId },
   });
+}
+
+export function muteRoomNotification(id, isMute) {
+  const options = {
+    method: "post",
+    url: `/settings/notification/rooms`,
+    data: { RoomsId: id, Mute: isMute },
+  };
+
+  return request(options);
 }

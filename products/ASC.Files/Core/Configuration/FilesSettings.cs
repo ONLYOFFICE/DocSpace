@@ -38,6 +38,9 @@ public class FilesSettings : ISettings<FilesSettings>
     [JsonPropertyName("StoreOriginalFiles")]
     public bool StoreOriginalFilesSetting { get; set; }
 
+    [JsonPropertyName("KeepNewFileName")]
+    public bool KeepNewFileName { get; set; }
+
     [JsonPropertyName("UpdateIfExist")]
     public bool UpdateIfExistSetting { get; set; }
 
@@ -229,6 +232,12 @@ public class FilesSettingsHelper
         get => LoadForCurrentUser().StoreOriginalFilesSetting;
     }
 
+    public bool KeepNewFileName
+    {
+        set => _settingsManager.ManageForCurrentUser<FilesSettings>(setting => setting.KeepNewFileName = value);
+        get => LoadForCurrentUser().KeepNewFileName;
+    }
+
     public bool UpdateIfExist
     {
         set
@@ -374,7 +383,16 @@ public class FilesSettingsHelper
         get
         {
             var setting = LoadForCurrentUser().AutomaticallyCleanUpSetting;
-            return setting ?? new AutoCleanUpData();
+            
+            if (setting != null)
+            {
+                return setting;
+            }
+
+            setting = new AutoCleanUpData { IsAutoCleanUp = true, Gap = DateToAutoCleanUp.ThirtyDays };
+            AutomaticallyCleanUp = setting;
+
+            return setting;
         }
     }
 

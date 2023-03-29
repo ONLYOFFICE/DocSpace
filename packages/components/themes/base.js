@@ -576,6 +576,7 @@ const Base = {
     overflow: "hidden",
     color: white,
     backgroundColor: orangeMain,
+    disableBackgroundColor: "#A3A9AE",
   },
 
   scrollbar: {
@@ -711,7 +712,7 @@ const Base = {
         middle: "36px",
         big: "36px",
         huge: "37px",
-        large: "43px",
+        large: "42px",
       },
     },
 
@@ -1393,6 +1394,7 @@ const Base = {
     backgroundColor: white,
     hoverBackgroundColor: grayLight,
     hoverDisabledBackgroundColor: white,
+    selectedBackgroundColor: lightHover,
     fontWeight: "600",
     fontSize: "13px",
     width: "100%",
@@ -1693,6 +1695,7 @@ const Base = {
   },
 
   toggleButton: {
+    fillColorDefault: "#4781D1",
     fillColorOff: "#D0D5DA",
     hoverFillColorOff: "#A3A9AE",
     fillCircleColor: white,
@@ -2048,6 +2051,8 @@ const Base = {
     header: {
       backgroundColor: white,
       background: `linear-gradient(180deg,#ffffff 2.81%,rgba(255, 255, 255, 0.91) 63.03%,rgba(255, 255, 255, 0) 100%)`,
+      trashErasureLabelBackground: "#f8f9f9",
+      trashErasureLabelText: "#555f65",
     },
   },
 
@@ -3078,10 +3083,16 @@ const Base = {
     main: {
       background: "#F8F9F9",
       textColor: black,
+
+      descriptionTextColor: "#A3A9AE",
+      pendingEmailTextColor: "#A3A9AE",
     },
     themePreview: {
       descriptionColor: "#A3A9AE",
       border: "1px solid #eceef1",
+    },
+    notifications: {
+      textDescriptionColor: "#A3A9AE",
     },
   },
 
@@ -3122,6 +3133,14 @@ const Base = {
 
   itemIcon: {
     borderColor: grayLightMid,
+  },
+
+  invitePage: {
+    borderColor: "#eceef1",
+  },
+
+  portalUnavailable: {
+    textDescriptionColor: "#A3A9AE",
   },
 };
 

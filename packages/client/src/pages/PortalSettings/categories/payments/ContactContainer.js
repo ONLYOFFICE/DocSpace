@@ -14,20 +14,22 @@ const StyledContactContainer = styled.div`
   }
 `;
 
-const ContactContainer = ({ t, salesEmail, theme }) => {
+const ContactContainer = ({ t, salesEmail }) => {
   return (
     <StyledContactContainer>
-      <Text as="span" noSelect fontWeight={600}>
-        {t("ContactUs")}
-        <ColorTheme
-          tag="a"
-          themeId={ThemeType.Link}
-          fontWeight="600"
-          href={`mailto:${salesEmail}`}
-        >
-          {salesEmail}
-        </ColorTheme>
-      </Text>
+      {salesEmail && (
+        <Text as="span" noSelect fontWeight={600}>
+          {t("ContactUs")}
+          <ColorTheme
+            tag="a"
+            themeId={ThemeType.Link}
+            fontWeight="600"
+            href={`mailto:${salesEmail}`}
+          >
+            {salesEmail}
+          </ColorTheme>
+        </Text>
+      )}
     </StyledContactContainer>
   );
 };

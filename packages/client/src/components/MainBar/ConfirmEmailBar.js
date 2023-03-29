@@ -6,15 +6,14 @@ import SnackBar from "@docspace/components/snackbar";
 
 import Link from "@docspace/components/link";
 
-const StyledLink = styled(Link)`
-  font-size: 12px;
-  line-height: 16px;
-  font-weight: 400;
-
-  color: #316daa;
-`;
-
-const ConfirmEmailBar = ({ t, tReady, onClick, onClose, onLoad }) => {
+const ConfirmEmailBar = ({
+  t,
+  tReady,
+  onClick,
+  onClose,
+  onLoad,
+  currentColorScheme,
+}) => {
   return (
     tReady && (
       <SnackBar
@@ -22,7 +21,14 @@ const ConfirmEmailBar = ({ t, tReady, onClick, onClose, onLoad }) => {
         text={
           <>
             {t("ConfirmEmailDescription")}{" "}
-            <StyledLink onClick={onClick}>{t("RequestActivation")}</StyledLink>
+            <Link
+              fontSize="12px"
+              fontWeight="400"
+              color={currentColorScheme?.main?.accent}
+              onClick={onClick}
+            >
+              {t("RequestActivation")}
+            </Link>
           </>
         }
         isCampaigns={false}

@@ -26,7 +26,9 @@ const AuditTrail = (props) => {
   useEffect(() => {
     setDocumentTitle(t("AuditTrailNav"));
 
-    getAuditTrail();
+    if (isAuditAvailable) {
+      getAuditTrail();
+    }
 
     getLifetimeAuditSettings();
   }, []);

@@ -33,17 +33,23 @@ public class SettingsController : ApiControllerBase
     private readonly FileStorageService<string> _fileStorageServiceString;
     private readonly FilesSettingsHelper _filesSettingsHelper;
     private readonly ProductEntryPoint _productEntryPoint;
+    private readonly SettingsManager _settingsManager;
+    private readonly TenantManager _tenantManager;
 
     public SettingsController(
         FileStorageService<string> fileStorageServiceString,
         FilesSettingsHelper filesSettingsHelper,
         ProductEntryPoint productEntryPoint,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper,
+        SettingsManager settingsManager,
+        TenantManager tenantManager) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageServiceString = fileStorageServiceString;
         _filesSettingsHelper = filesSettingsHelper;
         _productEntryPoint = productEntryPoint;
+        _settingsManager = settingsManager;
+        _tenantManager = tenantManager;
     }
 
     /// <summary>
@@ -294,6 +300,17 @@ public class SettingsController : ApiControllerBase
     /// <returns>Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/updateifexist</path>
     /// <httpMethod>PUT</httpMethod>
+    [HttpPut("keepnewfilename")]
+    public bool KeepNewFileName(SettingsRequestDto inDto)
+    {
+        return _fileStorageServiceString.KeepNewFileName(inDto.Set);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="set"></param>
+    /// <returns></returns>
     [HttpPut("updateifexist")]
     public bool UpdateIfExist(SettingsRequestDto inDto)
     {

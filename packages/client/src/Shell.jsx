@@ -24,7 +24,7 @@ import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile, isIOS, isFirefox } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
@@ -384,6 +384,21 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     };
   }, [isLoaded]);
 
+  // fix night mode for IOS firefox
+  useEffect(() => {
+    if (isIOS && isMobile && isFirefox) {
+      Array.from(document.querySelectorAll("style")).forEach((sheet) => {
+        if (
+          sheet?.textContent?.includes(
+            "-webkit-filter: hue-rotate(180deg) invert(100%) !important;"
+          )
+        ) {
+          sheet.parentNode?.removeChild(sheet);
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     console.log("Current page ", page);
   }, [page]);
@@ -464,6 +479,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/accounts/edit/:userId",
                   "/accounts/view/:userId",
                   "/accounts/view/@self",
+                  "/accounts/view/@self/notification",
 
                   "/settings",
                   "/settings/common",
@@ -517,7 +533,6 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
-    getWhiteLabelLogoUrls,
     whiteLabelLogoUrls,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;

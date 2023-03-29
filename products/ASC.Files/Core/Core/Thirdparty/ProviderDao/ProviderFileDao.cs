@@ -463,6 +463,13 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
         return uploadSession.File;
     }
 
+    public Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    {
+        var fileDao = GetFileDao(uploadSession.File);
+        uploadSession.File = ConvertId(uploadSession.File);
+        return fileDao.FinalizeUploadSessionAsync(uploadSession);
+    }
+
     public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
     {
         var fileDao = GetFileDao(uploadSession.File);

@@ -212,10 +212,6 @@ const paddingCss = css`
   @media ${desktop} {
     padding-right: 3px;
   }
-
-  @media ${tablet} {
-    margin-left: -1px;
-  }
 `;
 
 const StyledGridWrapper = styled.div`

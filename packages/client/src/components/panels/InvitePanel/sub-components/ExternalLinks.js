@@ -20,6 +20,7 @@ import {
   StyledInviteInput,
   StyledInviteInputContainer,
   StyledToggleButton,
+  StyledDescription,
 } from "../StyledInvitePanel";
 
 const ExternalLinks = ({
@@ -39,10 +40,10 @@ const ExternalLinks = ({
   const inputsRef = useRef();
 
   useEffect(() => {
-    if (shareLinks[0]?.expirationDate) toggleLinks();
+    if (shareLinks[0]?.expirationDate) toggleLinks(false);
   }, [shareLinks]);
 
-  const toggleLinks = (e) => {
+  const toggleLinks = (withCopy = true) => {
     let link = null;
     if (!shareLinks.length) return;
 
@@ -58,7 +59,7 @@ const ExternalLinks = ({
 
     setLinksVisible(!linksVisible);
 
-    if (!linksVisible) copyLink(link?.shareLink);
+    if (!linksVisible && withCopy) copyLink(link?.shareLink);
   };
 
   const disableLink = () => {
@@ -156,7 +157,7 @@ const ExternalLinks = ({
   return (
     <StyledBlock noPadding ref={inputsRef}>
       <StyledSubHeader inline>
-        {t("SharingPanel:ExternalLink")}
+        {t("InviteViaLink")}
         {false && ( //TODO: Change to linksVisible after added link information from backend
           <div style={{ position: "relative" }}>
             <IconButton
@@ -186,6 +187,11 @@ const ExternalLinks = ({
         )}
         <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
       </StyledSubHeader>
+      <StyledDescription>
+        {roomId === -1
+          ? t("InviteViaLinkDescriptionAccounts")
+          : t("InviteViaLinkDescriptionRoom")}
+      </StyledDescription>
       {linksVisible && (
         <StyledInviteInputContainer key={activeLink.id}>
           <StyledInviteInput>

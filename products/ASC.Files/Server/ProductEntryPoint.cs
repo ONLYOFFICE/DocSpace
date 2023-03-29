@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.AuditTrail.Repositories;
+using ASC.Web.Core.Notify;
+
 namespace ASC.Files;
 
 [Scope]
@@ -39,9 +42,31 @@ public class ApiProductEntryPoint : ProductEntryPoint
        CoreBaseSettings coreBaseSettings,
        AuthContext authContext,
        UserManager userManager,
-        NotifyConfiguration notifyConfiguration
+       NotifyConfiguration notifyConfiguration,
+       AuditEventsRepository auditEventsRepository,
+       IDaoFactory daoFactory,
+       TenantManager tenantManager,
+       RoomsNotificationSettingsHelper roomsNotificationSettingsHelper,
+       PathProvider pathProvider,
+       FilesLinkUtility filesLinkUtility,
+       FileSecurity fileSecurity,
+       GlobalFolder globalFolder,
+       CommonLinkUtility commonLinkUtility
        //SubscriptionManager subscriptionManager
-       ) : base(filesSpaceUsageStatManager, coreBaseSettings, authContext, userManager, notifyConfiguration)
+       ) : base(filesSpaceUsageStatManager,
+           coreBaseSettings,
+           authContext, 
+           userManager,
+           notifyConfiguration, 
+           auditEventsRepository, 
+           daoFactory, 
+           tenantManager, 
+           roomsNotificationSettingsHelper,
+           pathProvider,
+           filesLinkUtility,
+           fileSecurity,
+           globalFolder,
+           commonLinkUtility)
     {
 
     }

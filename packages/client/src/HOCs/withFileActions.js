@@ -82,12 +82,16 @@ export default function withFileActions(WrappedFileItem) {
         setBufferSelection,
         isActive,
         inProgress,
+        isSelected,
+        setSelection,
       } = this.props;
 
       const { isThirdPartyFolder } = item;
 
       const notSelectable = e.target.closest(".not-selectable");
-      const isFileName = e.target.classList.contains("item-file-name");
+      const isFileName =
+        e.target.classList.contains("item-file-name") ||
+        e.target.classList.contains("row-content-link");
 
       if (
         isPrivacy ||
@@ -117,7 +121,11 @@ export default function withFileActions(WrappedFileItem) {
       e.preventDefault();
       setTooltipPosition(e.pageX, e.pageY);
       setStartDrag(true);
-      !isActive && setBufferSelection(null);
+
+      if (isFileName && !isSelected) {
+        setSelection([]);
+        setBufferSelection(item);
+      }
     };
 
     onMouseClick = (e) => {
@@ -219,11 +227,13 @@ export default function withFileActions(WrappedFileItem) {
         isPrivacy,
 
         sectionWidth,
-        checked,
+        isSelected,
         dragging,
         isFolder,
+
+        itemIndex,
       } = this.props;
-      const { fileExst, access, id } = item;
+      const { access, id } = item;
 
       const isDragging = isFolder && access < 2 && !isTrashFolder && !isPrivacy;
 
@@ -231,11 +241,9 @@ export default function withFileActions(WrappedFileItem) {
       if (draggable) className += " draggable";
 
       let value = !item.isFolder ? `file_${id}` : `folder_${id}`;
-      value += draggable
-        ? "_draggable"
-        : item.providerKey
-        ? `_${item.providerKey}`
-        : "";
+      value += draggable ? "_draggable" : "_false";
+
+      value += `_index_${itemIndex}`;
 
       const isShareable = allowShareIn && item.canShare;
 
@@ -247,7 +255,7 @@ export default function withFileActions(WrappedFileItem) {
         ? "38px"
         : "96px";
 
-      const checkedProps = id <= 0 ? false : checked;
+      const checkedProps = id <= 0 ? false : isSelected;
 
       return (
         <WrappedFileItem
@@ -309,6 +317,7 @@ export default function withFileActions(WrappedFileItem) {
         dragging,
         setDragging,
         selection,
+        setSelection,
         setTooltipPosition,
         setStartDrag,
 
@@ -377,7 +386,7 @@ export default function withFileActions(WrappedFileItem) {
         isFolder,
         allowShareIn: filesStore.canShare,
 
-        checked: !!selectedItem,
+        isSelected: !!selectedItem,
         //parentFolder: selectedFolderStore.parentId,
         setParentId: selectedFolderStore.setParentId,
         isTrashFolder: isRecycleBinFolder,
@@ -394,6 +403,8 @@ export default function withFileActions(WrappedFileItem) {
         setSelected,
         withCtrlSelect,
         withShiftSelect,
+
+        setSelection,
       };
     }
   )(observer(WithFileActions));

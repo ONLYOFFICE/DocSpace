@@ -1,10 +1,10 @@
 {
-  "AddMembers": "Добавить участников",
   "DeleteSelfProfile": "Удалить профиль",
   "DisableUserButton": "Заблокировать",
   "DisabledEmployeeStatus": "Заблокирован",
   "EmailChangeButton": "Изменить email",
   "EnableUserButton": "Разблокировать",
+  "InviteLinkTitle": "Пригласительная ссылка",
   "LDAPLbl": "LDAP",
   "NameChangeButton": "Изменить имя",
   "PasswordChangeButton": "Изменить пароль",

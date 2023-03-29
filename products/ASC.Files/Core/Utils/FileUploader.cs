@@ -218,7 +218,7 @@ public class FileUploader
                     folderId = await folderDao.SaveFolderAsync(newFolder);
                     folder = await folderDao.GetFolderAsync(folderId);
                     await _socketManager.CreateFolderAsync(folder);
-                    _filesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
+                    _ = _filesMessageService.Send(folder, MessageAction.FolderCreated, folder.Title);
                 }
 
                 folderId = folder.Id;
@@ -334,7 +334,7 @@ public class FileUploader
         var dao = _daoFactory.GetFileDao<T>();
         await dao.UploadChunkAsync(uploadSession, stream, chunkLength);
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
             var linkDao = _daoFactory.GetLinkDao();
             await linkDao.DeleteAllLinkAsync(uploadSession.File.Id.ToString());

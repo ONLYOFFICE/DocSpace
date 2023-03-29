@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TableContainer from "@docspace/components/table-container";
 import { inject, observer } from "mobx-react";
@@ -116,10 +116,11 @@ const Table = ({
   hasMoreFiles,
   filterTotal,
   isRooms,
+  isTrashFolder,
   withPaging,
   columnStorageName,
   columnInfoPanelStorageName,
-  setUploadedFileIdWithVersion,
+  highlightFile,
 }) => {
   const [tagCount, setTagCount] = React.useState(null);
   const [hideColumns, setHideColumns] = React.useState(false);
@@ -174,6 +175,41 @@ const Table = ({
     }
   }, []);
 
+  const filesListNode = useMemo(() => {
+    return filesList.map((item, index) => (
+      <TableRow
+        id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+        key={
+          item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+        }
+        item={item}
+        itemIndex={index}
+        index={index}
+        setFirsElemChecked={setFirsElemChecked}
+        setHeaderBorder={setHeaderBorder}
+        theme={theme}
+        tagCount={tagCount}
+        isRooms={isRooms}
+        isTrashFolder={isTrashFolder}
+        hideColumns={hideColumns}
+        isHighlight={
+          highlightFile.id == item.id && highlightFile.isExst === !item.fileExst
+        }
+      />
+    ));
+  }, [
+    filesList,
+    setFirsElemChecked,
+    setHeaderBorder,
+    theme,
+    tagCount,
+    isRooms,
+    hideColumns,
+    highlightFile.id,
+    highlightFile.isExst,
+    isTrashFolder,
+  ]);
+
   return (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
       <TableHeader
@@ -194,21 +230,7 @@ const Table = ({
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         itemHeight={49}
       >
-        {filesList.map((item, index) => (
-          <TableRow
-            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
-            item={item}
-            index={index}
-            setFirsElemChecked={setFirsElemChecked}
-            setHeaderBorder={setHeaderBorder}
-            theme={theme}
-            tagCount={tagCount}
-            isRooms={isRooms}
-            hideColumns={hideColumns}
-            setUploadedFileIdWithVersion={setUploadedFileIdWithVersion}
-          />
-        ))}
+        {filesListNode}
       </TableBody>
     </StyledTableContainer>
   );
@@ -217,7 +239,7 @@ const Table = ({
 export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+  const { isRoomsFolder, isArchiveFolder, isTrashFolder } = treeFoldersStore;
   const isRooms = isRoomsFolder || isArchiveFolder;
 
   const { columnStorageName, columnInfoPanelStorageName } = tableStore;
@@ -232,7 +254,7 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     hasMoreFiles,
     filterTotal,
     roomsFilterTotal,
-    setUploadedFileIdWithVersion,
+    highlightFile,
   } = filesStore;
 
   const { withPaging, theme } = auth.settingsStore;
@@ -250,9 +272,10 @@ export default inject(({ filesStore, treeFoldersStore, auth, tableStore }) => {
     hasMoreFiles,
     filterTotal: isRooms ? roomsFilterTotal : filterTotal,
     isRooms,
+    isTrashFolder,
     withPaging,
     columnStorageName,
     columnInfoPanelStorageName,
-    setUploadedFileIdWithVersion,
+    highlightFile,
   };
 })(observer(Table));

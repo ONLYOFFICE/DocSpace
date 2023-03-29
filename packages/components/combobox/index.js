@@ -51,7 +51,8 @@ class ComboBox extends React.Component {
       isDisabled ||
       disableItemClick ||
       isLoading ||
-      (disableIconClick && e && e.target.closest(".optionalBlock"))
+      (disableIconClick && e && e.target.closest(".optionalBlock")) ||
+      e?.target.classList.contains("nav-thumb-vertical")
     )
       return;
 
@@ -117,6 +118,7 @@ class ComboBox extends React.Component {
       isMobileView,
       withoutPadding,
       isLoading,
+      isNoFixedHeightOptions,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -159,7 +161,7 @@ class ComboBox extends React.Component {
         : 6;
     }
 
-    const disableMobileView = optionsCount < 5;
+    const disableMobileView = optionsCount < 4;
 
     return (
       <StyledComboBox
@@ -218,6 +220,7 @@ class ComboBox extends React.Component {
             isAside={isAside}
             withBackground={withBackground}
             isMobileView={isMobileView && !disableMobileView}
+            isNoFixedHeightOptions={isNoFixedHeightOptions}
           >
             {advancedOptions
               ? advancedOptions
@@ -227,6 +230,11 @@ class ComboBox extends React.Component {
                     (!displaySelectedOption &&
                       option.label === selectedOption.label);
 
+                  const isActive =
+                    displaySelectedOption &&
+                    option.label === selectedOption.label;
+
+                  const isSelected = option.label === selectedOption.label;
                   return (
                     <DropDownItem
                       {...option}
@@ -236,6 +244,8 @@ class ComboBox extends React.Component {
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
                       isModern={noBorder}
+                      isActive={isActive}
+                      isSelected={isSelected}
                     />
                   );
                 })}

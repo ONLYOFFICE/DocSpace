@@ -1,20 +1,21 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { VariableSizeList } from "react-window";
+
 import onClickOutside from "react-onclickoutside";
 import { isMobile } from "react-device-detect";
 import Portal from "../portal";
 import DomHelpers from "../utils/domHelpers";
 
-import CustomScrollbarsVirtualList from "../scrollbar/custom-scrollbars-virtual-list";
 import DropDownItem from "../drop-down-item";
 import Backdrop from "../backdrop";
 import StyledDropdown from "./styled-drop-down";
-
+import VirtualList from "./VirtualList";
 /* eslint-disable react/prop-types, react/display-name */
 
 const Row = memo(({ data, index, style }) => {
-  const option = data.children[index];
+  const { children, theme, activedescendant, handleMouseMove } = data;
+
+  const option = children[index];
 
   const separator = option?.props?.isSeparator
     ? { width: `calc(100% - 32px)`, height: `1px` }
@@ -23,10 +24,15 @@ const Row = memo(({ data, index, style }) => {
 
   return (
     <DropDownItem
-      theme={data.theme}
+      theme={theme}
       // eslint-disable-next-line react/prop-types
       {...option?.props}
+      noHover
       style={newStyle}
+      onMouseMove={() => {
+        handleMouseMove(index);
+      }}
+      isActiveDescendant={activedescendant === index}
     />
   );
 });
@@ -75,7 +81,10 @@ class DropDown extends React.PureComponent {
   }
 
   handleClickOutside = (e) => {
-    e.preventDefault();
+    if (e.type !== "touchstart") {
+      e.preventDefault();
+    }
+
     this.toggleDropDown(e);
   };
 
@@ -248,11 +257,18 @@ class DropDown extends React.PureComponent {
       showDisabledItems,
       theme,
       isMobileView,
+      isNoFixedHeightOptions,
+      open,
     } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
 
     let cleanChildren = children;
-    if (!showDisabledItems) cleanChildren = this.hideDisabledItems();
+    let itemCount = children.length;
+
+    if (!showDisabledItems) {
+      cleanChildren = this.hideDisabledItems();
+      if (cleanChildren) itemCount = cleanChildren.length;
+    }
 
     const rowHeights = React.Children.map(cleanChildren, (child) =>
       this.getItemHeight(child)
@@ -275,24 +291,22 @@ class DropDown extends React.PureComponent {
         isExternalLink={this.props.isExternalLink}
         isPersonal={this.props.isPersonal}
         isMobileView={isMobileView}
+        itemCount={itemCount}
         {...dropDownMaxHeightProp}
       >
-        {maxHeight ? (
-          <VariableSizeList
-            height={calculatedHeight}
-            width={width}
-            itemSize={getItemSize}
-            itemCount={children.length}
-            itemData={{ children: cleanChildren, theme: theme }}
-            outerElementType={CustomScrollbarsVirtualList}
-          >
-            {Row}
-          </VariableSizeList>
-        ) : cleanChildren ? (
-          cleanChildren
-        ) : (
-          children
-        )}
+        <VirtualList
+          Row={Row}
+          theme={theme}
+          width={width}
+          itemCount={itemCount}
+          maxHeight={maxHeight}
+          cleanChildren={cleanChildren}
+          calculatedHeight={calculatedHeight}
+          isNoFixedHeightOptions={isNoFixedHeightOptions}
+          getItemSize={getItemSize}
+          children={children}
+          isOpen={open}
+        />
       </StyledDropdown>
     );
   }

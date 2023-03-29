@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { countAutoFocus, countAutoOffset } from "./autoOffset";
 import {
   StyledSubmenu,
@@ -8,6 +8,9 @@ import {
   StyledSubmenuItem,
   StyledSubmenuItems,
   StyledSubmenuItemText,
+  SubmenuScroller,
+  SubmenuRoot,
+  SubmenuScrollbarSize,
 } from "./styled-submenu";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
@@ -25,6 +28,23 @@ const Submenu = (props) => {
   const [currentItem, setCurrentItem] = useState(
     data[startSelect] || startSelect || null
   );
+
+  useEffect(() => {
+    window.addEventListener("popstate", onCheckCurrentItem);
+    onCheckCurrentItem();
+
+    return () => {
+      window.removeEventListener("popstate", onCheckCurrentItem);
+    };
+  }, []);
+
+  const onCheckCurrentItem = useCallback(() => {
+    const isSelect = data.find((item) =>
+      window.location.pathname.endsWith(item.id)
+    );
+
+    if (isSelect) setCurrentItem(isSelect);
+  }, [data, setCurrentItem]);
 
   const submenuItemsRef = useRef();
 
@@ -83,42 +103,48 @@ const Submenu = (props) => {
   return (
     <StyledSubmenu {...rest}>
       <div className="sticky">
-        <StyledSubmenuItems ref={submenuItemsRef} role="list">
-          {data.map((d) => {
-            const isActive = d.id === (forsedActiveItemId || currentItem.id);
+        <SubmenuRoot>
+          <SubmenuScrollbarSize />
+          <SubmenuScroller>
+            <StyledSubmenuItems ref={submenuItemsRef} role="list">
+              {data.map((d) => {
+                const isActive =
+                  d.id === (forsedActiveItemId || currentItem.id);
 
-            return (
-              <StyledSubmenuItem
-                key={d.id}
-                id={d.id}
-                onClick={(e) => {
-                  d.onClick && d.onClick();
-                  selectSubmenuItem(e);
-                }}
-              >
-                <StyledSubmenuItemText isActive={isActive}>
-                  <ColorTheme
-                    {...props}
-                    themeId={ThemeType.SubmenuText}
-                    className="item-text"
-                    fontSize="13px"
-                    fontWeight="600"
-                    truncate={false}
-                    isActive={isActive}
+                return (
+                  <StyledSubmenuItem
+                    key={d.id}
+                    id={d.id}
+                    onClick={(e) => {
+                      d.onClick && d.onClick();
+                      selectSubmenuItem(e);
+                    }}
                   >
-                    {d.name}
-                  </ColorTheme>
-                </StyledSubmenuItemText>
+                    <StyledSubmenuItemText isActive={isActive}>
+                      <ColorTheme
+                        {...props}
+                        themeId={ThemeType.SubmenuText}
+                        className="item-text"
+                        fontSize="13px"
+                        fontWeight="600"
+                        truncate={false}
+                        isActive={isActive}
+                      >
+                        {d.name}
+                      </ColorTheme>
+                    </StyledSubmenuItemText>
 
-                <ColorTheme
-                  {...props}
-                  themeId={ThemeType.SubmenuItemLabel}
-                  isActive={isActive}
-                />
-              </StyledSubmenuItem>
-            );
-          })}
-        </StyledSubmenuItems>
+                    <ColorTheme
+                      {...props}
+                      themeId={ThemeType.SubmenuItemLabel}
+                      isActive={isActive}
+                    />
+                  </StyledSubmenuItem>
+                );
+              })}
+            </StyledSubmenuItems>
+          </SubmenuScroller>
+        </SubmenuRoot>
         <StyledSubmenuBottomLine className="bottom-line" />
       </div>
       <div className="sticky-indent"></div>

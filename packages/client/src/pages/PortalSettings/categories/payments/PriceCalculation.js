@@ -20,7 +20,7 @@ const StyledBody = styled.div`
     props.theme.client.settings.payment.priceContainer.background};
   max-width: 320px;
 
-  padding: 24px;
+  padding: 23px;
   box-sizing: border-box;
 
   .payment_main-title {
@@ -41,12 +41,12 @@ const StyledBody = styled.div`
     margin-top: 24px;
     min-height: 38px;
     border-radius: 6px;
-    p:first-child {
-      margin-right: 8px;
-    }
+
     p {
       margin-bottom: 5px;
       margin-top: 5px;
+      padding-left: 16px;
+      padding-right: 16px;
     }
   }
 `;
@@ -55,6 +55,7 @@ let timeout = null,
   CancelToken,
   source;
 
+const backUrl = window.location.origin;
 const PriceCalculation = ({
   t,
   user,
@@ -71,13 +72,10 @@ const PriceCalculation = ({
   currencySymbol,
   isAlreadyPaid,
   isFreeAfterPaidPeriod,
-  setStartPaymentLink,
   managersCount,
 }) => {
-  useEffect(() => {
+  useEffect(async () => {
     initializeInfo();
-
-    !isAlreadyPaid && setStartPaymentLink(t);
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -103,7 +101,7 @@ const PriceCalculation = ({
       CancelToken = axios.CancelToken;
       source = CancelToken.source();
 
-      await getPaymentLink(value, source.token)
+      await getPaymentLink(value, backUrl, source.token)
         .then((link) => {
           setPaymentLink(link);
           setIsLoading(false);
@@ -137,7 +135,7 @@ const PriceCalculation = ({
         }
         fontWeight={600}
       >
-        <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+        <Trans t={t} i18nKey="PerUserMonth" ns="Common">
           ""
           <Text
             fontSize="16px"
@@ -176,13 +174,16 @@ const PriceCalculation = ({
           : t("PriceCalculation")}
       </Text>
       {isGracePeriod || isNotPaidPeriod || isFreeAfterPaidPeriod ? (
-        <CurrentUsersCountContainer isNeedPlusSign={isNeedPlusSign} t={t} />
+        <CurrentUsersCountContainer
+          isNeedPlusSign={isNeedPlusSign}
+          t={t}
+          isDisabled={isDisabled}
+        />
       ) : (
         <SelectUsersCountContainer
           isNeedPlusSign={isNeedPlusSign}
           isDisabled={isDisabled}
           setShoppingLink={setShoppingLink}
-          isAlreadyPaid={isAlreadyPaid}
         />
       )}
 
@@ -192,7 +193,6 @@ const PriceCalculation = ({
       <ButtonContainer
         isDisabled={isDisabled}
         t={t}
-        isAlreadyPaid={isAlreadyPaid}
         isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
       />
     </StyledBody>
@@ -207,8 +207,8 @@ export default inject(({ auth, payments }) => {
     setManagersCount,
     maxAvailableManagersCount,
     initializeInfo,
-    setStartPaymentLink,
     managersCount,
+    isAlreadyPaid,
   } = payments;
   const { theme } = auth.settingsStore;
   const {
@@ -223,8 +223,9 @@ export default inject(({ auth, payments }) => {
   const { user } = userStore;
 
   return {
+    isAlreadyPaid,
     managersCount,
-    setStartPaymentLink,
+
     isFreeTariff,
     setManagersCount,
     tariffsInfo,

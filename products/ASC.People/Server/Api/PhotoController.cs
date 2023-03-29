@@ -78,9 +78,20 @@ public class PhotoController : PeopleControllerBase
             var fileName = Path.GetFileName(inDto.TmpFile);
             var data = await _userPhotoManager.GetTempPhotoData(fileName);
 
-            var settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
+            UserPhotoThumbnailSettings settings = null;
 
-            _settingsManager.SaveForUser(settings, user.Id);
+            if (inDto.Width == 0 && inDto.Height == 0)
+            {
+                using var img = Image.Load(data);
+                settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, img.Width, img.Height);
+            }
+            else
+            {
+                settings = new UserPhotoThumbnailSettings(inDto.X, inDto.Y, inDto.Width, inDto.Height);
+            }
+
+            _settingsManager.Save(settings, user.Id);
+
             await _userPhotoManager.RemovePhoto(user.Id);
             await _userPhotoManager.SaveOrUpdatePhoto(user.Id, data);
             await _userPhotoManager.RemoveTempPhoto(fileName);
@@ -252,8 +263,8 @@ public class PhotoController : PeopleControllerBase
         IImageFormat imgFormat;
         try
         {
-            using var img = Image.Load(data, out var format);
-            imgFormat = format;
+            using var img = Image.Load(data);
+            imgFormat = img.Metadata.DecodedImageFormat;
         }
         catch (OutOfMemoryException)
         {

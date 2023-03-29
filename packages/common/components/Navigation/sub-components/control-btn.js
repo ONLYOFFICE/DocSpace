@@ -90,7 +90,7 @@ StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
 
 const ControlButtons = ({
   personal,
-  isDropBox,
+  isDropBoxComponent,
   isRootFolder,
   canCreate,
   getContextOptionsFolder,
@@ -112,9 +112,8 @@ const ControlButtons = ({
   };
 
   return (
-    <StyledContainer isDropBox={isDropBox}>
-      {(!isRootFolder && canCreate) ||
-      (isRecycleBinFolder && !isEmptyFilesList) ? (
+    <StyledContainer isDropBoxComponent={isDropBoxComponent}>
+      {!isRootFolder || (isRecycleBinFolder && !isEmptyFilesList) ? (
         <>
           {!isMobile && canCreate && (
             <PlusButton
@@ -124,19 +123,19 @@ const ControlButtons = ({
               onPlusClick={onPlusClick}
             />
           )}
-          {!personal && (
-            <ContextMenuButton
-              id="header_optional-button"
-              zIndex={402}
-              className="option-button"
-              directionX="right"
-              iconName={VerticalDotsReactSvgUrl}
-              size={15}
-              isFill
-              getData={getContextOptionsFolder}
-              isDisabled={false}
-            />
-          )}
+
+          <ContextMenuButton
+            id="header_optional-button"
+            zIndex={402}
+            className="option-button"
+            directionX="right"
+            iconName={VerticalDotsReactSvgUrl}
+            size={15}
+            isFill
+            getData={getContextOptionsFolder}
+            isDisabled={false}
+          />
+
           {!isDesktop && (
             <ToggleInfoPanelButton
               isRootFolder={isRootFolder}

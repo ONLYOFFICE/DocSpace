@@ -51,8 +51,8 @@ const getTreeItems = (data, path, t) => {
         return t("Backup");
       case "PortalDeletion":
         return t("PortalDeletion");
-      case "Payments":
-        return t("Payments");
+      case "Common:PaymentsTitle":
+        return t("Common:PaymentsTitle");
       case "SingleSignOn":
         return t("SingleSignOn");
       case "DeveloperTools":
@@ -136,22 +136,37 @@ class ArticleBodyContent extends React.Component {
     if (tReady) setIsLoadedArticleBody(true);
 
     if (prevProps.location.pathname !== this.props.location.pathname) {
-      if (this.props.location.pathname.includes("payments")) {
-        this.setState({ selectedKeys: ["7-0"] });
-      }
-
       if (this.props.location.pathname.includes("common")) {
         this.setState({ selectedKeys: ["0-0"] });
       }
-    }
 
-    if (!isArrayEqual(prevState.selectedKeys, this.state.selectedKeys)) {
-      const { selectedKeys } = this.state;
+      if (this.props.location.pathname.includes("security")) {
+        this.setState({ selectedKeys: ["1-0"] });
+      }
 
-      const { match, history } = this.props;
-      const settingsPath = getSelectedLinkByKey(selectedKeys[0], settingsTree);
-      const newPath = match.path + settingsPath;
-      history.push(newPath);
+      if (this.props.location.pathname.includes("backup")) {
+        this.setState({ selectedKeys: ["2-0"] });
+      }
+
+      if (this.props.location.pathname.includes("restore")) {
+        this.setState({ selectedKeys: ["3-0"] });
+      }
+
+      if (this.props.location.pathname.includes("integration")) {
+        this.setState({ selectedKeys: ["4-0"] });
+      }
+
+      if (this.props.location.pathname.includes("developer")) {
+        this.setState({ selectedKeys: ["5-0"] });
+      }
+
+      if (this.props.location.pathname.includes("delete-data")) {
+        this.setState({ selectedKeys: ["6-0"] });
+      }
+
+      if (this.props.location.pathname.includes("payments")) {
+        this.setState({ selectedKeys: ["7-0"] });
+      }
     }
   }
 
@@ -169,6 +184,15 @@ class ArticleBodyContent extends React.Component {
     if (isMobileOnly || isMobile()) {
       toggleArticleOpen();
     }
+
+    const { match, history } = this.props;
+    const settingsPath = getSelectedLinkByKey(value + "-0", settingsTree);
+    const newPath = match.path + settingsPath;
+    const currentUrl = window.location.href.replace(window.location.origin, "");
+
+    if (newPath === currentUrl) return;
+
+    history.push(newPath);
   };
 
   mapKeys = (tKey) => {
@@ -198,8 +222,8 @@ class ArticleBodyContent extends React.Component {
         return t("Migration");
       case "Backup":
         return t("Backup");
-      case "Payments":
-        return t("Payments");
+      case "Common:PaymentsTitle":
+        return t("Common:PaymentsTitle");
       case "ManagementCategoryDataManagement":
         return t("ManagementCategoryDataManagement");
       case "RestoreBackup":
@@ -224,7 +248,7 @@ class ArticleBodyContent extends React.Component {
       resultTree = [...settingsTree].filter((e) => {
         return (
           e.tKey === "Backup" ||
-          e.tKey === "Payments" ||
+          e.tKey === "Common:PaymentsTitle" ||
           (isOwner && e.tKey === "PortalDeletion")
         );
       });

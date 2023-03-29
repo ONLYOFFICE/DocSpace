@@ -114,6 +114,7 @@ const Selector = ({
             avatar: item.avatar,
             icon: item.icon,
             label: item.label,
+            ...item,
           });
 
           compareSelectedItems(value);
@@ -140,6 +141,7 @@ const Selector = ({
         avatar: item.avatar,
         icon: item.icon,
         label: item.label,
+        ...item,
       };
 
       if (item.isSelected) {

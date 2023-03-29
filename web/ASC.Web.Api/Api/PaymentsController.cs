@@ -219,7 +219,7 @@ public class PaymentController : ControllerBase
     /// <path>api/2.0/portal/payment/quotas</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quotas")]
-    public IEnumerable<QuotaDto> GetQuotas()
+    public IAsyncEnumerable<QuotaDto> GetQuotas()
     {
         return _quotaHelper.GetQuotas();
     }
@@ -235,9 +235,9 @@ public class PaymentController : ControllerBase
     /// <path>api/2.0/portal/payment/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quota")]
-    public QuotaDto GetQuota()
+    public async Task<QuotaDto> GetQuota()
     {
-        return _quotaHelper.GetCurrentQuota();
+        return await _quotaHelper.GetCurrentQuota();
     }
 
     /// <summary>

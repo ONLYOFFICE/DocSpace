@@ -20,6 +20,8 @@
       "common\\ASC.MessagingSystem\\ASC.MessagingSystem.csproj",
       "common\\ASC.Notify.Textile\\ASC.Notify.Textile.csproj",
       "common\\ASC.Textile\\ASC.Textile.csproj",
+      "common\\ASC.Webhooks.Core\\ASC.Webhooks.Core.csproj",
+      "common\\services\\ASC.ApiCache\\ASC.ApiCache.csproj",
       "common\\services\\ASC.ApiSystem\\ASC.ApiSystem.csproj",
       "common\\services\\ASC.AuditTrail\\ASC.AuditTrail.csproj",
       "common\\services\\ASC.ClearEvents\\ASC.ClearEvents.csproj",

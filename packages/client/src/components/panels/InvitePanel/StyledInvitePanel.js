@@ -49,7 +49,7 @@ const StyledSubHeader = styled(Heading)`
   font-size: 16px;
   padding-left: 16px;
   padding-right: 16px;
-  margin: 16px 0;
+  margin: 16px 0 8px 0;
 
   ${(props) =>
     props.inline &&
@@ -59,6 +59,20 @@ const StyledSubHeader = styled(Heading)`
       gap: 16px;
     `};
 `;
+
+const StyledDescription = styled(Text)`
+  padding-left: 16px;
+  padding-right: 16px;
+  color: ${(props) =>
+    props.theme.createEditRoomDialog.commonParam.descriptionColor};
+  margin-bottom: 16px;
+
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+`;
+
+StyledDescription.defaultProps = { theme: Base };
 
 const StyledRow = styled.div`
   width: calc(100% - 32px) !important;
@@ -128,7 +142,7 @@ const StyledInviteInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  ${fillAvailableWidth}
+  width: 100%;
   margin-bottom: 20px;
 
   .header_aside-panel {
@@ -225,6 +239,10 @@ const StyledToggleButton = styled(ToggleButton)`
   margin-top: -4px;
 `;
 
+const StyledText = styled(Text)`
+  flex-basis: 72%;
+`;
+
 export {
   StyledBlock,
   StyledHeading,
@@ -247,4 +265,6 @@ export {
   ScrollList,
   StyledAccessSelector,
   StyledToggleButton,
+  StyledText,
+  StyledDescription,
 };

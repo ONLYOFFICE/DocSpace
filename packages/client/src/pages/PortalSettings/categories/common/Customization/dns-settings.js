@@ -16,9 +16,9 @@ import { DNSSettingsTooltip } from "../sub-components/common-tooltips";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
-import Textarea from "@docspace/components/textarea";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Badge from "@docspace/components/badge";
+
 const DNSSettings = (props) => {
   const {
     t,
@@ -76,13 +76,20 @@ const DNSSettings = (props) => {
     if (!isSmallTablet()) {
       setIsCustomizationView(true);
 
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/portal-settings/common/customization"
-        )
+      const currentUrl = window.location.href.replace(
+        window.location.origin,
+        ""
       );
+
+      const newUrl = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/portal-settings/customization/general"
+      );
+
+      if (newUrl === currentUrl) return;
+
+      history.push(newUrl);
     } else {
       setIsCustomizationView(false);
     }
@@ -101,10 +108,10 @@ const DNSSettings = (props) => {
         labelText={`${t("YourCurrentDomain")}`}
         isVertical={true}
       >
-        <Textarea
+        <TextInput
           id="textInputContainerDNSSettings"
           className="dns-textarea"
-          heightTextArea={30}
+          scale={true}
           tabIndex={8}
           isDisabled={true}
           value={location.hostname}
@@ -132,7 +139,11 @@ const DNSSettings = (props) => {
             className="dns-setting_helpbutton "
           />
           {!isSettingPaid && (
-            <Badge backgroundColor="#EDC409" label="Paid" isPaidBadge={true} />
+            <Badge
+              backgroundColor="#EDC409"
+              label={t("Common:Paid")}
+              isPaidBadge={true}
+            />
           )}
         </div>
       )}

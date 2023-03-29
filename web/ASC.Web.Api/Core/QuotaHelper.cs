@@ -40,28 +40,31 @@ public class QuotaHelper
         _serviceProvider = serviceProvider;
     }
 
-    public IEnumerable<QuotaDto> GetQuotas()
+    public async IAsyncEnumerable<QuotaDto> GetQuotas()
     {
         var quotaList = _tenantManager.GetTenantQuotas(false);
         var priceInfo = _tenantManager.GetProductPriceInfo();
         var currentRegion = _regionHelper.GetCurrentRegionInfo();
 
-        return quotaList.Select(x => ToQuotaDto(x, priceInfo, currentRegion)).ToList();
+        foreach (var quota in quotaList)
+        {
+            yield return await ToQuotaDto(quota, priceInfo, currentRegion);
+        }
     }
 
-    public QuotaDto GetCurrentQuota()
+    public async Task<QuotaDto> GetCurrentQuota()
     {
         var quota = _tenantManager.GetCurrentTenantQuota();
         var priceInfo = _tenantManager.GetProductPriceInfo();
         var currentRegion = _regionHelper.GetCurrentRegionInfo();
 
-        return ToQuotaDto(quota, priceInfo, currentRegion, true);
+        return await ToQuotaDto(quota, priceInfo, currentRegion, true, true);
     }
 
-    private QuotaDto ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false)
+    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false, bool visible = false)
     {
         var price = GetPrice(quota, priceInfo, currentRegion);
-        var features = GetFeatures(quota, getUsed);
+        var features = await GetFeatures(quota, getUsed, visible).ToListAsync();
 
         return new QuotaDto
         {
@@ -95,15 +98,18 @@ public class QuotaHelper
         return quota.Price;
     }
 
-    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed)
+    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed, bool visible)
     {
         var assembly = GetType().Assembly;
 
         var features = quota.Features.Split(' ', ',', ';');
 
-        foreach (var feature in quota.TenantQuotaFeatures.Where(r => r.Visible).OrderBy(r => r.Order))
+        foreach (var feature in quota.TenantQuotaFeatures.Where(r => visible || r.Visible).OrderBy(r => r.Order))
         {
-            var result = new TenantQuotaFeatureDto();
+            var result = new TenantQuotaFeatureDto()
+            {
+                Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}")
+            };
 
             if (feature.Paid)
             {
@@ -118,6 +124,7 @@ public class QuotaHelper
             {
                 result.Value = size.Value == long.MaxValue ? -1 : size.Value;
                 result.Type = "size";
+                result.Title = string.Format(result.Title, FileSizeComment.FilesSizeToString((long)result.Value));
 
                 await GetStat<long>();
             }
@@ -147,7 +154,6 @@ public class QuotaHelper
             }
             else
             {
-                result.Title = Resource.ResourceManager.GetString($"TariffsFeature_{feature.Name}");
                 var img = assembly.GetManifestResourceStream($"{assembly.GetName().Name}.img.{feature.Name}.svg");
 
                 if (img != null)

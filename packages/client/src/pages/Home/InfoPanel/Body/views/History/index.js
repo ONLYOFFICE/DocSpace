@@ -19,12 +19,7 @@ const History = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
-  searchTitleOpenLocation,
-  itemOpenLocation,
-  isLoadedSearchFiles,
-  getFolderInfo,
-  getFileInfo,
-  setSelectionFiles,
+  isCollaborator,
 }) => {
   const [history, setHistory] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
@@ -34,27 +29,6 @@ const History = ({
   useEffect(() => {
     return () => (isMount.current = false);
   }, []);
-
-  useEffect(() => {
-    if (!(searchTitleOpenLocation && isLoadedSearchFiles && itemOpenLocation))
-      return;
-
-    const requestInfo = itemOpenLocation.isFolder ? getFolderInfo : getFileInfo;
-
-    requestInfo(+itemOpenLocation.id).then((res) => {
-      if (itemOpenLocation.isFolder) res.isFolder = true;
-
-      setSelectionFiles([res]);
-      setSelection(res);
-    });
-  }, [
-    searchTitleOpenLocation,
-    isLoadedSearchFiles,
-    itemOpenLocation,
-    getFolderInfo,
-    getFileInfo,
-    setSelectionFiles,
-  ]);
 
   const fetchHistory = async (itemId) => {
     let module = "files";
@@ -145,6 +119,7 @@ const History = ({
               checkAndOpenLocationAction={checkAndOpenLocationAction}
               openUser={openUser}
               isVisitor={isVisitor}
+              isCollaborator={isCollaborator}
               isLastEntity={i === feeds.length - 1}
             />
           )),
@@ -165,21 +140,12 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   } = auth.infoPanelStore;
   const { personal, culture } = auth.settingsStore;
 
-  const {
-    getHistory,
-    getFolderInfo,
-    getFileInfo,
-    setSelection: setSelectionFiles,
-  } = filesStore;
-  const {
-    checkAndOpenLocationAction,
-    searchTitleOpenLocation,
-    itemOpenLocation,
-    isLoadedSearchFiles,
-  } = filesActionsStore;
+  const { getHistory } = filesStore;
+  const { checkAndOpenLocationAction } = filesActionsStore;
 
   const { user } = userStore;
   const isVisitor = user.isVisitor;
+  const isCollaborator = user.isCollaborator;
 
   return {
     personal,
@@ -192,11 +158,6 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     checkAndOpenLocationAction,
     openUser,
     isVisitor,
-    searchTitleOpenLocation,
-    itemOpenLocation,
-    isLoadedSearchFiles,
-    getFolderInfo,
-    getFileInfo,
-    setSelectionFiles,
+    isCollaborator,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations"])(observer(History)));

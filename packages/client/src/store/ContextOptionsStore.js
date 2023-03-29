@@ -1,4 +1,4 @@
-﻿import HistoryReactSvgUrl from "PUBLIC_DIR/images/history.react.svg?url";
+import HistoryReactSvgUrl from "PUBLIC_DIR/images/history.react.svg?url";
 import HistoryFinalizedReactSvgUrl from "PUBLIC_DIR/images/history-finalized.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import CheckBoxReactSvgUrl from "PUBLIC_DIR/images/check-box.react.svg?url";
@@ -25,6 +25,8 @@ import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import PinReactSvgUrl from "PUBLIC_DIR/images/pin.react.svg?url";
 import UnpinReactSvgUrl from "PUBLIC_DIR/images/unpin.react.svg?url";
+import UnmuteReactSvgUrl from "PUBLIC_DIR/images/unmute.react.svg?url";
+import MuteReactSvgUrl from "PUBLIC_DIR/images/mute.react.svg?url";
 import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
 import InvitationLinkReactSvgUrl from "PUBLIC_DIR/images/invitation.link.react.svg?url";
 import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
@@ -405,10 +407,14 @@ class ContextOptionsStore {
     this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
   };
 
-  onClickDeleteSelectedFolder = (t) => {
-    const { setIsFolderActions, setDeleteDialogVisible } = this.dialogsStore;
+  onClickDeleteSelectedFolder = (t, isRoom) => {
+    const {
+      setIsFolderActions,
+      setDeleteDialogVisible,
+      setIsRoomDelete,
+    } = this.dialogsStore;
     const { confirmDelete } = this.settingsStore;
-    const { deleteAction } = this.filesActionsStore;
+    const { deleteAction, deleteRoomsAction } = this.filesActionsStore;
     const { id: selectedFolderId } = this.selectedFolderStore;
     const {
       isThirdPartySelection,
@@ -421,10 +427,26 @@ class ContextOptionsStore {
     if (confirmDelete || isThirdPartySelection) {
       getFolderInfo(selectedFolderId).then((data) => {
         setBufferSelection(data);
+        setIsRoomDelete(isRoom);
         setDeleteDialogVisible(true);
       });
+
+      return;
+    }
+
+    let translations;
+
+    if (isRoom) {
+      translations = {
+        successRemoveRoom: t("Files:RoomRemoved"),
+        successRemoveRooms: t("Files:RoomsRemoved"),
+      };
+
+      deleteRoomsAction([selectedFolderId], translations).catch((err) =>
+        toastr.error(err)
+      );
     } else {
-      const translations = {
+      translations = {
         deleteOperation: t("Translations:DeleteOperation"),
         deleteFromTrash: t("Translations:DeleteFromTrash"),
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
@@ -438,19 +460,19 @@ class ContextOptionsStore {
   };
 
   onClickDelete = (item, t) => {
-    if (item.id === this.selectedFolderStore.id) {
-      this.onClickDeleteSelectedFolder(t);
-      return;
-    }
+    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
     const {
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,
     } = this.dialogsStore;
 
-    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
+    if (id === this.selectedFolderStore.id) {
+      this.onClickDeleteSelectedFolder(t, isRoom);
 
-    console.log(providerKey, id, rootFolderId);
+      return;
+    }
+
     const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
     if (isRootThirdPartyFolder) {
@@ -510,11 +532,15 @@ class ContextOptionsStore {
           options[index].items = model[index].items.filter((item) =>
             filter.includes(item.key)
           );
+
+          if (options[index].items.length === 1) {
+            options[index] = options[index].items[0];
+          }
         }
       }
     }
 
-    return options;
+    return options.filter((o) => !!o);
   };
 
   onShowInfoPanel = (item) => {
@@ -560,8 +586,17 @@ class ContextOptionsStore {
   onClickArchive = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
     const { action } = data;
+    const { isGracePeriod } = this.authStore.currentTariffStatusStore;
+    const {
+      setArchiveDialogVisible,
+      setArchiveAction,
+      setInviteUsersWarningDialogVisible,
+    } = this.dialogsStore;
 
-    const { setArchiveDialogVisible, setArchiveAction } = this.dialogsStore;
+    if (action === "unarchive" && isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
 
     setArchiveAction(action);
     setArchiveDialogVisible(true);
@@ -573,15 +608,75 @@ class ContextOptionsStore {
     onSelectItem({ id: item.id, isFolder: item.isFolder }, true, false);
   };
 
+  onClickMute = (e, item, t) => {
+    const data = (e.currentTarget && e.currentTarget.dataset) || e;
+    const { action } = data;
+
+    this.filesActionsStore.setMuteAction(action, item, t);
+  };
+
+  getRoomsRootContextOptions = (item, t) => {
+    const { id, rootFolderId } = this.selectedFolderStore;
+    const isRootRoom = item.isRoom && rootFolderId === id;
+
+    if (!isRootRoom) return { pinOptions: [], muteOptions: [] };
+
+    const pinOptions = [
+      {
+        id: "option_pin-room",
+        key: "pin-room",
+        label: t("PinToTop"),
+        icon: PinReactSvgUrl,
+        onClick: (e) => this.onClickPin(e, item.id, t),
+        disabled: false,
+        "data-action": "pin",
+        action: "pin",
+      },
+      {
+        id: "option_unpin-room",
+        key: "unpin-room",
+        label: t("Unpin"),
+        icon: UnpinReactSvgUrl,
+        onClick: (e) => this.onClickPin(e, item.id, t),
+        disabled: false,
+        "data-action": "unpin",
+        action: "unpin",
+      },
+    ];
+
+    const muteOptions = [
+      {
+        id: "option_unmute-room",
+        key: "unmute-room",
+        label: t("EnableNotifications"),
+        icon: UnmuteReactSvgUrl,
+        onClick: (e) => this.onClickMute(e, item, t),
+        disabled: false,
+        "data-action": "unmute",
+        action: "unmute",
+      },
+      {
+        id: "option_mute-room",
+        key: "mute-room",
+        label: t("DisableNotifications"),
+        icon: MuteReactSvgUrl,
+        onClick: (e) => this.onClickMute(e, item, t),
+        disabled: false,
+        "data-action": "mute",
+        action: "mute",
+      },
+    ];
+
+    return { pinOptions, muteOptions };
+  };
   getFilesContextOptions = (item, t, isInfoPanel) => {
     const { contextOptions } = item;
-    const { id, rootFolderId } = this.selectedFolderStore;
+
     const { enablePlugins } = this.authStore.settingsStore;
 
     const isRootThirdPartyFolder =
       item.providerKey && item.id === item.rootFolderId;
 
-    const isRootRoom = item.isRoom && rootFolderId === id;
     const isShareable = item.canShare;
 
     const isMedia =
@@ -589,8 +684,8 @@ class ContextOptionsStore {
 
     const hasInfoPanel = contextOptions.includes("show-info");
 
-    const emailSendIsDisabled = true;
-    const showSeparator0 = hasInfoPanel || !isMedia || !emailSendIsDisabled;
+    //const emailSendIsDisabled = true;
+    const showSeparator0 = hasInfoPanel || !isMedia; // || !emailSendIsDisabled;
 
     const separator0 = showSeparator0
       ? {
@@ -724,30 +819,10 @@ class ContextOptionsStore {
             },
           ];
 
-    const pinOptions = isRootRoom
-      ? [
-          {
-            id: "option_pin-room",
-            key: "pin-room",
-            label: t("PinToTop"),
-            icon: PinReactSvgUrl,
-            onClick: (e) => this.onClickPin(e, item.id, t),
-            disabled: false,
-            "data-action": "pin",
-            action: "pin",
-          },
-          {
-            id: "option_unpin-room",
-            key: "unpin-room",
-            label: t("Unpin"),
-            icon: UnpinReactSvgUrl,
-            onClick: (e) => this.onClickPin(e, item.id, t),
-            disabled: false,
-            "data-action": "unpin",
-            action: "unpin",
-          },
-        ]
-      : [];
+    const { pinOptions, muteOptions } = this.getRoomsRootContextOptions(
+      item,
+      t
+    );
 
     const optionsModel = [
       {
@@ -832,6 +907,15 @@ class ContextOptionsStore {
         disabled: false,
         action: item.id,
       },
+      ...versionActions,
+      {
+        id: "option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        icon: InvitationLinkReactSvgUrl,
+        onClick: () => this.onCopyLink(item, t),
+        disabled: false,
+      },
       {
         id: "option_room-info",
         key: "room-info",
@@ -841,6 +925,7 @@ class ContextOptionsStore {
         disabled: false,
       },
       ...pinOptions,
+      ...muteOptions,
       {
         id: "option_sharing-settings",
         key: "sharing-settings",
@@ -865,26 +950,17 @@ class ContextOptionsStore {
         onClick: () => this.onClickLinkForPortal(item, t),
         disabled: false,
       },
-      {
-        id: "option_link-for-room-members",
-        key: "link-for-room-members",
-        label: t("LinkForRoomMembers"),
-        icon: InvitationLinkReactSvgUrl,
-        onClick: () => this.onCopyLink(item, t),
-        disabled: false,
-      },
-      {
-        id: "option_send-by-email",
-        key: "send-by-email",
-        label: t("SendByEmail"),
-        icon: MailReactSvgUrl,
-        disabled: emailSendIsDisabled,
-      },
-      ...versionActions,
+      // {
+      //   id: "option_send-by-email",
+      //   key: "send-by-email",
+      //   label: t("SendByEmail"),
+      //   icon: MailReactSvgUrl,
+      //   disabled: emailSendIsDisabled,
+      // },
       {
         id: "option_show-info",
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
@@ -993,7 +1069,7 @@ class ContextOptionsStore {
       {
         id: "option_archive-room",
         key: "archive-room",
-        label: t("Archived"),
+        label: t("MoveToArchive"),
         icon: RoomArchiveSvgUrl,
         onClick: (e) => this.onClickArchive(e),
         disabled: false,
@@ -1048,6 +1124,15 @@ class ContextOptionsStore {
         });
       }
     }
+
+    if (options[0]?.isSeparator) {
+      options.shift();
+    }
+
+    if (options[options.length - 1]?.isSeparator) {
+      options.pop();
+    }
+
     return options;
   };
 
@@ -1105,7 +1190,7 @@ class ContextOptionsStore {
       if (canArchiveRoom) {
         archiveOptions = {
           key: "archive-room",
-          label: t("Archived"),
+          label: t("MoveToArchive"),
           icon: RoomArchiveSvgUrl,
           onClick: (e) => this.onClickArchive(e),
           disabled: false,
@@ -1129,6 +1214,9 @@ class ContextOptionsStore {
 
       if (!isArchiveFolder) {
         options.push(pinOption);
+      }
+
+      if ((canArchiveRoom || canDelete) && !isArchiveFolder) {
         options.push({
           key: "separator0",
           isSeparator: true,

@@ -28,8 +28,13 @@ const PersonalSettings = ({
 
   t,
   showTitle,
-  createWithoutDialog,
-  setCreateWithoutDialog,
+
+  showAdminSettings,
+
+  keepNewFileName,
+  setKeepNewFileName,
+  setThumbnails1280x720,
+  thumbnails1280x720,
 }) => {
   const [isLoadingFavorites, setIsLoadingFavorites] = React.useState(false);
   const [isLoadingRecent, setIsLoadingRecent] = React.useState(false);
@@ -49,6 +54,14 @@ const PersonalSettings = ({
   const onChangeForceSave = React.useCallback(() => {
     setForceSave(!forceSave);
   }, [setForceSave, forceSave]);
+
+  const onChangeThumbnailsSize = React.useCallback(() => {
+    setThumbnails1280x720(!thumbnails1280x720);
+  }, [setThumbnails1280x720, thumbnails1280x720]);
+
+  const onChangeKeepNewFileName = React.useCallback(() => {
+    setKeepNewFileName(!keepNewFileName);
+  }, [setKeepNewFileName, keepNewFileName]);
 
   const onChangeFavorites = React.useCallback(
     (e) => {
@@ -70,12 +83,11 @@ const PersonalSettings = ({
     [setIsLoadingRecent, setRecentSetting]
   );
 
-  const onChangeCheckbox = () => {
-    setCreateWithoutDialog(!createWithoutDialog);
-  };
-
   return (
-    <StyledSettings showTitle={showTitle}>
+    <StyledSettings
+      showTitle={showTitle}
+      hideAdminSettings={!showAdminSettings}
+    >
       <Box className="settings-section">
         {showTitle && (
           <Heading className="heading" level={2} size="xsmall">
@@ -84,10 +96,19 @@ const PersonalSettings = ({
         )}
         <ToggleButton
           className="toggle-btn"
-          label={t("Common:DontAskAgain")}
-          onChange={onChangeCheckbox}
-          isChecked={createWithoutDialog}
+          label={"Thumbnails 1280x720"}
+          onChange={onChangeThumbnailsSize}
+          isChecked={thumbnails1280x720}
+          style={{ display: "none" }}
         />
+        {!isVisitor && (
+          <ToggleButton
+            className="toggle-btn"
+            label={t("Common:DontAskAgain")}
+            onChange={onChangeKeepNewFileName}
+            isChecked={keepNewFileName}
+          />
+        )}
         <ToggleButton
           className="toggle-btn"
           label={t("OriginalCopy")}
@@ -132,78 +153,89 @@ const PersonalSettings = ({
         />
       </Box> */}
 
-      <Box className="settings-section">
-        <Heading className="heading" level={2} size="xsmall">
-          {t("StoringFileVersion")}
-        </Heading>
-        {!isVisitor && (
-          <ToggleButton
-            className="toggle-btn"
-            label={t("UpdateOrCreate")}
-            onChange={onChangeUpdateIfExist}
-            isChecked={updateIfExist}
-          />
-        )}
-        <ToggleButton
-          className="toggle-btn"
-          label={t("KeepIntermediateVersion")}
-          onChange={onChangeForceSave}
-          isChecked={forceSave}
-        />
-      </Box>
+      {!isVisitor && (
+        <Box className="settings-section">
+          <Heading className="heading" level={2} size="xsmall">
+            {t("StoringFileVersion")}
+          </Heading>
+          {!isVisitor && (
+            <ToggleButton
+              className="toggle-btn"
+              label={t("UpdateOrCreate")}
+              onChange={onChangeUpdateIfExist}
+              isChecked={updateIfExist}
+            />
+          )}
+          {!isVisitor && (
+            <ToggleButton
+              className="toggle-btn"
+              label={t("KeepIntermediateVersion")}
+              onChange={onChangeForceSave}
+              isChecked={forceSave}
+            />
+          )}
+        </Box>
+      )}
     </StyledSettings>
   );
 };
 
-export default inject(
-  ({ auth, settingsStore, treeFoldersStore, filesStore }) => {
-    const {
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forcesave,
+export default inject(({ auth, settingsStore, treeFoldersStore }) => {
+  const {
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forcesave,
 
-      setUpdateIfExist,
-      setStoreOriginal,
+    setUpdateIfExist,
+    setStoreOriginal,
 
-      setConfirmDelete,
+    setConfirmDelete,
 
-      setForceSave,
+    setForceSave,
 
-      favoritesSection,
-      recentSection,
-      setFavoritesSetting,
-      setRecentSetting,
-    } = settingsStore;
+    favoritesSection,
+    recentSection,
+    setFavoritesSetting,
+    setRecentSetting,
 
-    const { myFolderId, commonFolderId } = treeFoldersStore;
-    const { setCreateWithoutDialog, createWithoutDialog } = filesStore;
+    keepNewFileName,
+    setKeepNewFileName,
 
-    return {
-      storeOriginalFiles,
-      confirmDelete,
-      updateIfExist,
-      forceSave: forcesave,
+    setThumbnails1280x720,
+    thumbnails1280x720,
+  } = settingsStore;
 
-      myFolderId,
-      commonFolderId,
-      isVisitor: auth.userStore.user.isVisitor,
-      favoritesSection,
-      recentSection,
+  const { myFolderId, commonFolderId } = treeFoldersStore;
 
-      setUpdateIfExist,
-      setStoreOriginal,
+  return {
+    storeOriginalFiles,
+    confirmDelete,
+    updateIfExist,
+    forceSave: forcesave,
 
-      setConfirmDelete,
+    myFolderId,
+    commonFolderId,
+    isVisitor: auth.userStore.user.isVisitor,
+    favoritesSection,
+    recentSection,
 
-      setForceSave,
+    setUpdateIfExist,
+    setStoreOriginal,
 
-      setFavoritesSetting,
-      setRecentSetting,
-      myFolderId,
-      commonFolderId,
-      setCreateWithoutDialog,
-      createWithoutDialog,
-    };
-  }
-)(observer(PersonalSettings));
+    setConfirmDelete,
+
+    setForceSave,
+
+    setFavoritesSetting,
+    setRecentSetting,
+    myFolderId,
+    commonFolderId,
+
+    keepNewFileName,
+    setKeepNewFileName,
+
+    setThumbnails1280x720,
+    thumbnails1280x720,
+  };
+})(observer(PersonalSettings));

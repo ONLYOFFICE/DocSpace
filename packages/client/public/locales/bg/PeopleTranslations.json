@@ -1,10 +1,10 @@
 {
-  "AddMembers": "Добави членове",
   "DeleteSelfProfile": "Изтрий профил",
   "DisableUserButton": "Деактивирай",
   "DisabledEmployeeStatus": "Деактивиран",
   "EmailChangeButton": "Промени имейл",
   "EnableUserButton": "Активирай",
+  "InviteLinkTitle": "Връзка за покана",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Промяна на парола",
   "PendingTitle": "В очакване",

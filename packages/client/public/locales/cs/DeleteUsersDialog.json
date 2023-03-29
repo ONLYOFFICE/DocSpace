@@ -1,3 +1,4 @@
 {
-  "DeleteGroupUsersSuccessMessage": "Uživatelé byli úspěšně odstraněni."
+  "DeleteGroupUsersSuccessMessage": "Uživatelé byli úspěšně odstraněni.",
+  "DeleteUsersMessage": "Vybraní zakázaní uživatelé budou z prostoru DocSpace odstraněni. Osobní dokumenty těchto uživatelů, které jsou k dispozici ostatním, budou odstraněny."
 }

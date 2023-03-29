@@ -397,24 +397,20 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var row in mustBeDeleted)
         {
-            var linksToRemove = await Query(filesDbContext.TagLink)
+            await Query(filesDbContext.TagLink)
                 .Where(r => r.TagId == row.Link.TagId)
                 .Where(r => r.EntryId == row.Link.EntryId)
                 .Where(r => r.EntryType == row.Link.EntryType)
-                .ToListAsync();
-
-            filesDbContext.TagLink.RemoveRange(linksToRemove);
+                .ExecuteDeleteAsync();
         }
 
-        await filesDbContext.SaveChangesAsync();
 
         var tagsToRemove = from ft in filesDbContext.Tag
-                           join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                           join ftl in filesDbContext.TagLink.DefaultIfEmpty() on new { ft.TenantId, ft.Id } equals new { ftl.TenantId, Id = ftl.TagId }
                            where ftl == null
                            select ft;
 
-        filesDbContext.Tag.RemoveRange(await tagsToRemove.ToListAsync());
-        await filesDbContext.SaveChangesAsync();
+        await tagsToRemove.ExecuteDeleteAsync();
     }
 
     private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn, Guid createdBy = default)
@@ -530,19 +526,18 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var mappedId = (await MappingIDAsync(tag.EntryId)).ToString();
-        var forUpdate = Query(filesDbContext.TagLink)
-            .Where(r => r.TagId == tag.Id)
-            .Where(r => r.EntryType == tag.EntryType)
-            .Where(r => r.EntryId == mappedId);
+        var tagId = tag.Id;
+        var tagEntryType = tag.EntryType;
 
-        foreach (var f in forUpdate)
-        {
-            f.CreateBy = createdBy != default ? createdBy : _authContext.CurrentAccount.ID;
-            f.CreateOn = createOn;
-            f.Count = tag.Count;
-        }
-
-        await filesDbContext.SaveChangesAsync();
+        await Query(filesDbContext.TagLink)
+            .Where(r => r.TagId == tagId)
+            .Where(r => r.EntryType == tagEntryType)
+            .Where(r => r.EntryId == mappedId)
+            .ExecuteUpdateAsync(f => f
+            .SetProperty(p => p.CreateBy, createdBy != default ? createdBy : _authContext.CurrentAccount.ID)
+            .SetProperty(p => p.CreateOn, createOn)
+            .SetProperty(p => p.Count, tag.Count)
+            );
     }
 
     public async Task RemoveTags(IEnumerable<Tag> tags)
@@ -602,44 +597,67 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         var entryId = (await MappingIDAsync(entry.Id)).ToString();
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var toDelete = await Query(filesDbContext.TagLink)
+        await Query(filesDbContext.TagLink)
             .Where(r => tagsIds.Contains(r.TagId) && r.EntryId == entryId && r.EntryType == entry.FileEntryType)
-            .ToListAsync();
-
-        filesDbContext.TagLink.RemoveRange(toDelete);
-        await filesDbContext.SaveChangesAsync();
+            .ExecuteDeleteAsync();
 
         var any = await Query(filesDbContext.TagLink).AnyAsync(r => tagsIds.Contains(r.TagId));
         if (!any)
         {
-            var tagToDelete = await Query(filesDbContext.Tag).Where(r => tagsIds.Contains(r.Id)).ToListAsync();
-            filesDbContext.Tag.RemoveRange(tagToDelete);
-            await filesDbContext.SaveChangesAsync();
+            await Query(filesDbContext.Tag)
+                .Where(r => tagsIds.Contains(r.Id))
+                .ExecuteDeleteAsync();
         }
     }
 
     public async Task RemoveTagsAsync(IEnumerable<int> tagsIds)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-
-        var toDeleteTags = await Query(filesDbContext.Tag)
-            .Where(r => tagsIds.Contains(r.Id)).ToListAsync();
-        var toDeleteLinks = await Query(filesDbContext.TagLink)
-            .Where(r => toDeleteTags.Select(t => t.Id).Contains(r.TagId)).ToListAsync();
-
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
+            using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            filesDbContext.RemoveRange(toDeleteTags);
-            filesDbContext.RemoveRange(toDeleteLinks);
+            var toDeleteTags = Query(filesDbContext.Tag)
+                .Where(r => tagsIds.Contains(r.Id));
 
-            await filesDbContext.SaveChangesAsync();
+            await Query(filesDbContext.TagLink)
+                .Where(r => toDeleteTags.Select(t => t.Id).Contains(r.TagId))
+                .ExecuteDeleteAsync();
+
+            await toDeleteTags.ExecuteDeleteAsync();
 
             await tx.CommitAsync();
         });
+    }
+
+    public async Task<int> RemoveTagLinksAsync(T entryId, FileEntryType entryType, TagType tagType)
+    {
+        var count = 0;
+
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
+        var strategy = filesDbContext.Database.CreateExecutionStrategy();
+        var mappedId = (await MappingIDAsync(entryId)).ToString();
+
+        await strategy.ExecuteAsync(async () =>
+        {
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
+
+            count = await Query(filesDbContext.TagLink)
+                .Where(l => l.EntryId == mappedId && l.EntryType == entryType)
+                .Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (l, t) => new { l, t.Type })
+                .Where(r => r.Type == tagType)
+                .Select(r => r.l)
+                .ExecuteDeleteAsync();
+
+            await tx.CommitAsync();
+
+        });
+
+        return count;
     }
 
     private Task RemoveTagInDbAsync(Tag tag)
@@ -661,27 +679,24 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                         r.Owner == tag.Owner &&
                         r.Type == tag.Type)
             .Select(r => r.Id)
-            .FirstOrDefaultAsync()
-            ;
+            .FirstOrDefaultAsync();
 
         if (id != 0)
         {
             var entryId = (await MappingIDAsync(tag.EntryId)).ToString();
-            var toDelete = await Query(filesDbContext.TagLink)
+
+            await Query(filesDbContext.TagLink)
                 .Where(r => r.TagId == id &&
                             r.EntryId == entryId &&
                             r.EntryType == tag.EntryType)
-                .ToListAsync();
-
-            filesDbContext.TagLink.RemoveRange(toDelete);
-            await filesDbContext.SaveChangesAsync();
+                .ExecuteDeleteAsync();
 
             var any = await Query(filesDbContext.TagLink).AnyAsync(r => r.TagId == id);
             if (!any)
             {
-                var tagToDelete = await Query(filesDbContext.Tag).Where(r => r.Id == id).ToListAsync();
-                filesDbContext.Tag.RemoveRange(tagToDelete);
-                await filesDbContext.SaveChangesAsync();
+                await Query(filesDbContext.Tag)
+                   .Where(r => r.Id == id)
+                   .ExecuteDeleteAsync();
             }
         }
     }

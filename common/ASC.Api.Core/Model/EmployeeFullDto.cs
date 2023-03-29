@@ -51,6 +51,7 @@ public class EmployeeFullDto : EmployeeDto
     public List<string> ListAdminModules { get; set; }
     public bool IsOwner { get; set; }
     public bool IsVisitor { get; set; }
+    public bool IsCollaborator { get; set; }
     public string CultureName { get; set; }
     public string MobilePhone { get; set; }
     public MobilePhoneActivationStatus MobilePhoneActivationStatus { get; set; }
@@ -193,9 +194,9 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             IsVisitor = _userManager.IsUser(userInfo),
             IsAdmin = _userManager.IsDocSpaceAdmin(userInfo),
             IsOwner = userInfo.IsOwner(_context.Tenant),
+            IsCollaborator = _userManager.IsCollaborator(userInfo),
             IsLDAP = userInfo.IsLDAP(),
             IsSSO = userInfo.IsSSO()
-
         };
 
         await Init(result, userInfo);
@@ -205,7 +206,7 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
         if (quotaSettings.EnableUserQuota)
         {
             result.UsedSpace = Math.Max(0, _quotaService.FindUserQuotaRows(_context.Tenant.Id, userInfo.Id).Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));
-            var userQuotaSettings = _settingsManager.LoadForUser<UserQuotaSettings>(userInfo);
+            var userQuotaSettings = _settingsManager.Load<UserQuotaSettings>(userInfo);
             result.QuotaLimit = userQuotaSettings != null ? userQuotaSettings.UserQuota : quotaSettings.DefaultUserQuota;
         }
 
@@ -244,17 +245,17 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
 
         if (_context.Check("avatarMax"))
         {
-            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?_={cacheKey}";
+            result.AvatarMax = await _userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?hash={cacheKey}";
         }
 
         if (_context.Check("avatarMedium"))
         {
-            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?_={cacheKey}";
+            result.AvatarMedium = await _userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?hash={cacheKey}";
         }
 
         if (_context.Check("avatar"))
         {
-            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?_={cacheKey}";
+            result.Avatar = await _userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?hash={cacheKey}";
         }
 
         if (_context.Check("listAdminModules"))

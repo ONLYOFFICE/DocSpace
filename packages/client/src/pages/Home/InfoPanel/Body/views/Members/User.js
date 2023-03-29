@@ -7,6 +7,8 @@ import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82
 import toastr from "@docspace/components/toast/toastr";
 import { isMobileOnly } from "react-device-detect";
 import { decode } from "he";
+import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
+import { getUserRole } from "@docspace/common/utils";
 
 const User = ({
   t,
@@ -18,6 +20,8 @@ const User = ({
   selectionParentRoom,
   setSelectionParentRoom,
   changeUserType,
+  isScrollLocked,
+  setIsScrollLocked,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -33,10 +37,9 @@ const User = ({
     canChangeUserRole
   );
 
-  const userRole = membersHelper.getOptionByUserAccess(user.access);
-  const userRoleOptions = fullRoomRoleOptions?.filter(
-    (role) => role.key !== userRole.key
-  );
+  const userRole = membersHelper.getOptionByUserAccess(user.access, user);
+
+  const userRoleOptions = filterUserRoleOptions(fullRoomRoleOptions, user);
 
   const updateRole = (option) => {
     return updateRoomMemberRole(selectionParentRoom.id, {
@@ -82,11 +85,15 @@ const User = ({
   };
 
   const onOptionClick = (option) => {
+    if (option.access === userRole.access) return;
+
     const userType =
       option.key === "owner"
         ? "admin"
         : option.key === "roomAdmin"
         ? "manager"
+        : option.key === "collaborator"
+        ? "collaborator"
         : "user";
 
     const successCallback = () => {
@@ -95,21 +102,42 @@ const User = ({
 
     setIsLoading(true);
 
-    if (!changeUserType(userType, [user], successCallback, abortCallback)) {
+    const needChangeUserType =
+      ((user.isVisitor || user.isCollaborator) && userType === "manager") ||
+      (user.isVisitor && userType === "collaborator");
+
+    if (needChangeUserType) {
+      changeUserType(userType, [user], successCallback, abortCallback);
+    } else {
       updateRole(option);
     }
   };
 
+  const onToggle = () => {
+    setIsScrollLocked(!isScrollLocked);
+  };
+
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
+
+  const role = getUserRole(user);
+
+  const withTooltip = user.isOwner || user.isAdmin;
+
+  const tooltipContent = `${
+    user.isOwner ? t("Common:DocSpaceOwner") : t("Common:DocSpaceAdmin")
+  }. ${t("Common:HasFullAccess")}`;
 
   return (
     <StyledUser isExpect={isExpect} key={user.id}>
       <Avatar
-        role="user"
+        role={role}
         className="avatar"
         size="min"
         source={isExpect ? AtReactSvgUrl : userAvatar || ""}
         userName={isExpect ? "" : user.displayName}
+        withTooltip={withTooltip}
+        tooltipContent={tooltipContent}
+        hideRoleIcon={!withTooltip}
       />
 
       <div className="name">
@@ -135,6 +163,9 @@ const User = ({
               manualWidth={"fit-content"}
               isLoading={isLoading}
               isMobileView={isMobileOnly}
+              directionY="both"
+              toggleAction={onToggle}
+              displaySelectedOption
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>

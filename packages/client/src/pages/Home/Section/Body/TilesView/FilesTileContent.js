@@ -79,7 +79,9 @@ const FilesTileContent = ({
   theme,
   isRooms,
 }) => {
-  const { fileExst, title } = item;
+  const { fileExst, title, viewAccessability } = item;
+
+  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   return (
     <>

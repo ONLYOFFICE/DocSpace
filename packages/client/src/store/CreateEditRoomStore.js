@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { toastr } from "@docspace/components";
+import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
 
 class CreateEditRoomStore {
@@ -15,6 +15,7 @@ class CreateEditRoomStore {
   thirdPartyStore = null;
   settingsStore = null;
   infoPanelStore = null;
+  currentQuotaStore = null;
 
   constructor(
     filesStore,
@@ -23,7 +24,8 @@ class CreateEditRoomStore {
     tagsStore,
     thirdPartyStore,
     settingsStore,
-    infoPanelStore
+    infoPanelStore,
+    currentQuotaStore
   ) {
     makeAutoObservable(this);
 
@@ -34,6 +36,7 @@ class CreateEditRoomStore {
     this.thirdPartyStore = thirdPartyStore;
     this.settingsStore = settingsStore;
     this.infoPanelStore = infoPanelStore;
+    this.currentQuotaStore = currentQuotaStore;
   }
 
   setRoomParams = (roomParams) => {
@@ -121,18 +124,27 @@ class CreateEditRoomStore {
           const img = new Image();
           img.onload = async () => {
             const { x, y, zoom } = roomParams.icon;
-            room = await addLogoToRoom(room.id, {
-              tmpFile: response.data,
-              ...calculateRoomLogoParams(img, x, y, zoom),
-            });
+            try {
+              room = await addLogoToRoom(room.id, {
+                tmpFile: response.data,
+                ...calculateRoomLogoParams(img, x, y, zoom),
+              });
+            } catch (e) {
+              toastr.error(e);
+              this.setIsLoading(false);
+              this.setConfirmDialogIsLoading(false);
+              this.onClose();
+            }
 
             !withPaging && this.onOpenNewRoom(room.id);
-
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
       } else !withPaging && this.onOpenNewRoom(room.id);
+
+      this.currentQuotaStore.setPortalQuota();
+
       this.roomIsCreated = true;
     } catch (err) {
       toastr.error(err);

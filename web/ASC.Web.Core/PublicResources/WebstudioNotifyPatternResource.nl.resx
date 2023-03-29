@@ -400,26 +400,6 @@ ONLYOFFICE™ Support Team
 
 ^Als u geen notificaties wilt ontvangen over profielupdates, kunt u dit beheren in uw "abonnementsinstellingen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Wat is er nieuw op "${__VirtualRootPath}":"${__VirtualRootPath}" portaal voor $Date
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Auteur*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^Als u geen notificaties wilt ontvangen over nieuwe geberutenissen op het "${__VirtualRootPath}":"${__VirtualRootPath}" portaal, kunt u dit beheren in uw "abonnementsinstellingen":"$RecipientSubscriptionConfigURL".^</value>
-  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testbericht
 
@@ -498,9 +478,6 @@ ONLYOFFICE Team</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portaal profiel wijzigings notificatie</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Wat is er nieuw op uw portaal voor $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP testbericht</value>

@@ -2,14 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import {
-  tablet,
-  mobile,
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
-import NoUserSelect from "@docspace/components/utils/commonStyles";
 import { Provider } from "@docspace/components/utils/context";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile } from "react-device-detect";
 
 import SectionContainer from "./sub-components/section-container";
 import SubSectionHeader from "./sub-components/section-header";
@@ -28,14 +25,6 @@ import SubSectionFooter from "./sub-components/section-footer";
 import ReactResizeDetector from "react-resize-detector";
 import FloatingButton from "../FloatingButton";
 import { inject, observer } from "mobx-react";
-import Selecto from "react-selecto";
-import styled, { css } from "styled-components";
-
-const StyledSelectoWrapper = styled.div`
-  .selecto-selection {
-    z-index: 200;
-  }
-`;
 
 function SectionHeader() {
   return null;
@@ -89,7 +78,6 @@ class Section extends React.Component {
     this.intervalHandler = null;
 
     this.scroll = null;
-    this.selectoRef = React.createRef(null);
   }
 
   componentDidUpdate(prevProps) {
@@ -98,18 +86,10 @@ class Section extends React.Component {
     }
   }
 
-  componentDidMount() {}
-
   componentWillUnmount() {
     if (this.intervalHandler) clearInterval(this.intervalHandler);
     if (this.timeoutHandler) clearTimeout(this.timeoutHandler);
   }
-
-  onSelect = (e) => {
-    if (this.props.dragging) return;
-    const items = e.selected;
-    this.props.setSelections(items);
-  };
 
   dragCondition = (e) => {
     const path = e.inputEvent.composedPath();
@@ -150,16 +130,14 @@ class Section extends React.Component {
       isHeaderVisible,
       onOpenUploadPanel,
       isTabletView,
-      dragging,
       maintenanceExist,
-      setMaintenanceExist,
       snackbarExist,
       showText,
       isInfoPanelAvailable,
       settingsStudio,
       clearUploadedFilesHistory,
-      withPaging,
       isInfoPanelVisible,
+      isInfoPanelScrollLocked,
     } = this.props;
 
     let sectionHeaderContent = null;
@@ -248,6 +226,7 @@ class Section extends React.Component {
                         isHeaderVisible={isHeaderVisible}
                         viewAs={viewAs}
                         showText={showText}
+                        isEmptyPage={this.props.isEmptyPage}
                       >
                         {sectionHeaderContent
                           ? sectionHeaderContent.props.children
@@ -276,7 +255,6 @@ class Section extends React.Component {
                           autoFocus={isMobile || isTabletView ? false : true}
                           viewAs={viewAs}
                           settingsStudio={settingsStudio}
-                          selectoRef={this.selectoRef}
                         >
                           {isSectionHeaderAvailable && isMobile && (
                             <SubSectionHeader
@@ -285,6 +263,7 @@ class Section extends React.Component {
                               viewAs={viewAs}
                               showText={showText}
                               settingsStudio={settingsStudio}
+                              isEmptyPage={this.props.isEmptyPage}
                             >
                               {sectionHeaderContent
                                 ? sectionHeaderContent.props.children
@@ -374,7 +353,9 @@ class Section extends React.Component {
                       <SubInfoPanelHeader>
                         {infoPanelHeaderContent}
                       </SubInfoPanelHeader>
-                      <SubInfoPanelBody>
+                      <SubInfoPanelBody
+                        isInfoPanelScrollLocked={isInfoPanelScrollLocked}
+                      >
                         {infoPanelBodyContent}
                       </SubInfoPanelBody>
                     </InfoPanel>
@@ -387,38 +368,7 @@ class Section extends React.Component {
       );
     };
 
-    const scrollOptions = this.scroll
-      ? {
-          container: this.scroll,
-          throttleTime: 0,
-          threshold: 100,
-        }
-      : {};
-
-    return (
-      <>
-        {renderSection()}
-        {!isMobile && uploadFiles && !dragging && withPaging && (
-          <StyledSelectoWrapper>
-            <Selecto
-              ref={this.selectoRef}
-              boundContainer=".section-wrapper-content"
-              dragContainer=".section-wrapper"
-              selectableTargets={[".files-item"]}
-              hitRate={0}
-              selectByClick={false}
-              selectFromInside={true}
-              ratio={0}
-              continueSelect={false}
-              onSelect={this.onSelect}
-              dragCondition={this.dragCondition}
-              scrollOptions={scrollOptions}
-              onScroll={this.onScroll}
-            />
-          </StyledSelectoWrapper>
-        )}
-      </>
-    );
+    return <>{renderSection()}</>;
   }
 }
 
@@ -435,7 +385,6 @@ Section.propTypes = {
   secondaryProgressBarIcon: PropTypes.string,
   showSecondaryButtonAlert: PropTypes.bool,
   onDrop: PropTypes.func,
-  setSelections: PropTypes.func,
   uploadFiles: PropTypes.bool,
   viewAs: PropTypes.string,
   onOpenUploadPanel: PropTypes.func,
@@ -443,14 +392,13 @@ Section.propTypes = {
   isHeaderVisible: PropTypes.bool,
   isInfoPanelAvailable: PropTypes.bool,
   settingsStudio: PropTypes.bool,
-  withPaging: PropTypes.bool,
+  isEmptyPage: PropTypes.bool,
 };
 
 Section.defaultProps = {
   withBodyScroll: true,
   isInfoPanelAvailable: true,
   settingsStudio: false,
-  withPaging: true,
 };
 
 Section.InfoPanelHeader = InfoPanelHeader;
@@ -468,11 +416,13 @@ export default inject(({ auth }) => {
     isTabletView,
     maintenanceExist,
     snackbarExist,
-    setMaintenanceExist,
     showText,
   } = settingsStore;
 
-  const { isVisible: isInfoPanelVisible } = auth.infoPanelStore;
+  const {
+    isVisible: isInfoPanelVisible,
+    isScrollLocked: isInfoPanelScrollLocked,
+  } = auth.infoPanelStore;
 
   return {
     isTabletView,
@@ -480,10 +430,10 @@ export default inject(({ auth }) => {
 
     maintenanceExist,
     snackbarExist,
-    setMaintenanceExist,
 
     showText,
 
     isInfoPanelVisible,
+    isInfoPanelScrollLocked,
   };
 })(observer(Section));

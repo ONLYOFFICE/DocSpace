@@ -38,7 +38,7 @@ public class MessageSettingsController : BaseSettingsController
     private readonly IPSecurity.IPSecurity _ipSecurity;
     private readonly TenantManager _tenantManager;
     private readonly CookiesManager _cookiesManager;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
     private readonly UserManager _userManager;
     private readonly TenantExtra _tenantExtra;
     private readonly PermissionContext _permissionContext;
@@ -61,13 +61,13 @@ public class MessageSettingsController : BaseSettingsController
         IHttpContextAccessor httpContextAccessor,
         TenantManager tenantManager,
         CookiesManager cookiesManager,
-        CountRoomAdminChecker countRoomAdminChecker) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
+        CountPaidUserChecker countPaidUserChecker) : base(apiContext, memoryCache, webItemManager, httpContextAccessor)
     {
         _customNamingPeople = customNamingPeople;
         _ipSecurity = ipSecurity;
         _tenantManager = tenantManager;
         _cookiesManager = cookiesManager;
-        _countRoomAdminChecker = countRoomAdminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -245,7 +245,7 @@ public class MessageSettingsController : BaseSettingsController
                 var enableInviteUsers = true;
                 try
                 {
-                    await _countRoomAdminChecker.CheckAppend();
+                    await _countPaidUserChecker.CheckAppend();
                 }
                 catch (Exception)
                 {

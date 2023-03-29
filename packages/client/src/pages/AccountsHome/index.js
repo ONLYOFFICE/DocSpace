@@ -42,10 +42,20 @@ const PureHome = ({
 
   setSelectedNode,
   withPaging,
+  onClickBack,
+  setPortalTariff,
 }) => {
   const { location } = history;
   const { pathname } = location;
   //console.log("People Home render");
+
+  useEffect(() => {
+    window.addEventListener("popstate", onClickBack);
+
+    return () => {
+      window.removeEventListener("popstate", onClickBack);
+    };
+  }, []);
 
   useEffect(() => {
     if (pathname.indexOf("/accounts/filter") > -1) {
@@ -54,11 +64,15 @@ const PureHome = ({
       setIsRefresh(true);
       const newFilter = Filter.getFilter(location);
       //console.log("PEOPLE URL changed", pathname, newFilter);
-      getUsersList(newFilter, true).finally(() => {
-        setFirstLoad(false);
-        setIsLoading(false);
-        setIsRefresh(false);
-      });
+      getUsersList(newFilter, true)
+        .catch((err) => {
+          if (err?.response?.status === 402) setPortalTariff();
+        })
+        .finally(() => {
+          setFirstLoad(false);
+          setIsLoading(false);
+          setIsRefresh(false);
+        });
     }
   }, [pathname, location, setSelectedNode]);
 
@@ -95,6 +109,7 @@ const PureHome = ({
         <Section.SectionBody>
           <SectionBodyContent />
         </Section.SectionBody>
+
         <Section.InfoPanelHeader>
           <InfoPanelHeaderContent />
         </Section.InfoPanelHeader>
@@ -120,36 +135,47 @@ PureHome.propTypes = {
 
 const Home = withTranslation("People")(PureHome);
 
-export default inject(({ auth, peopleStore, treeFoldersStore }) => {
-  const { settingsStore } = auth;
-  const { showCatalog, withPaging } = settingsStore;
-  const { usersStore, selectedGroupStore, loadingStore, viewAs } = peopleStore;
-  const { getUsersList } = usersStore;
-  const { selectedGroup } = selectedGroupStore;
-  const { setSelectedNode } = treeFoldersStore;
-  const {
-    isLoading,
-    setIsLoading,
-    setIsRefresh,
-    firstLoad,
-    setFirstLoad,
-  } = loadingStore;
+export default inject(
+  ({ auth, peopleStore, treeFoldersStore, filesActionsStore }) => {
+    const { settingsStore, currentTariffStatusStore } = auth;
+    const { setPortalTariff } = currentTariffStatusStore;
+    const { showCatalog, withPaging } = settingsStore;
+    const {
+      usersStore,
+      selectedGroupStore,
+      loadingStore,
+      viewAs,
+    } = peopleStore;
+    const { getUsersList } = usersStore;
+    const { selectedGroup } = selectedGroupStore;
+    const { setSelectedNode } = treeFoldersStore;
+    const { onClickBack } = filesActionsStore;
+    const {
+      isLoading,
+      setIsLoading,
+      setIsRefresh,
+      firstLoad,
+      setFirstLoad,
+    } = loadingStore;
 
-  return {
-    isAdmin: auth.isAdmin,
-    isLoading,
-    getUsersList,
-    setIsLoading,
-    setIsRefresh,
-    selectedGroup,
-    showCatalog,
-    firstLoad,
-    setFirstLoad,
-    viewAs,
-    setSelectedNode,
-    checkedMaintenance: auth.settingsStore.checkedMaintenance,
-    setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
-    snackbarExist: auth.settingsStore.snackbarExist,
-    withPaging,
-  };
-})(observer(withRouter(Home)));
+    return {
+      setPortalTariff,
+      isAdmin: auth.isAdmin,
+      isLoading,
+      getUsersList,
+      setIsLoading,
+      setIsRefresh,
+      selectedGroup,
+      showCatalog,
+      firstLoad,
+      setFirstLoad,
+      viewAs,
+      setSelectedNode,
+      checkedMaintenance: auth.settingsStore.checkedMaintenance,
+      setMaintenanceExist: auth.settingsStore.setMaintenanceExist,
+      snackbarExist: auth.settingsStore.snackbarExist,
+      withPaging,
+      onClickBack,
+    };
+  }
+)(observer(withRouter(Home)));

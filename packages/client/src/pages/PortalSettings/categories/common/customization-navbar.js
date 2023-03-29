@@ -38,7 +38,7 @@ const StyledComponent = styled.div`
     }
 
     .category-item-description {
-      color: #657077;
+      color: ${(props) => props.theme.client.settings.common.descriptionColor};
       font-size: 13px;
       max-width: 1024px;
       line-height: 20px;
@@ -91,7 +91,7 @@ const CustomizationNavbar = ({
             truncate={true}
             href={combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/common/customization/language-and-time-zone"
+              "/portal-settings/customization/general/language-and-time-zone"
             )}
           >
             {t("StudioTimeLanguageSettings")}
@@ -121,7 +121,7 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             href={combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/common/customization/welcome-page-settings"
+              "/portal-settings/customization/general/welcome-page-settings"
             )}
           >
             {t("CustomTitlesWelcome")}
@@ -142,7 +142,7 @@ const CustomizationNavbar = ({
               onClick={onClickLink}
               href={combineUrl(
                 window.DocSpaceConfig?.proxy?.url,
-                "/portal-settings/common/customization/dns-settings"
+                "/portal-settings/customization/general/dns-settings"
               )}
             >
               {t("DNSSettings")}
@@ -180,7 +180,7 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             href={combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/common/customization/portal-renaming"
+              "/portal-settings/customization/general/portal-renaming"
             )}
           >
             {t("PortalRenaming")}

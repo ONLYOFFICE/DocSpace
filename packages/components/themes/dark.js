@@ -569,6 +569,7 @@ const Dark = {
     overflow: "hidden",
     color: black,
     backgroundColor: "#F59931",
+    disableBackgroundColor: "#858585",
   },
 
   scrollbar: {
@@ -705,7 +706,7 @@ const Dark = {
         middle: "36px",
         big: "36px",
         huge: "37px",
-        large: "43px",
+        large: "42px",
       },
     },
     iconButton: {
@@ -1383,6 +1384,7 @@ const Dark = {
     backgroundColor: black,
     hoverBackgroundColor: "#3D3D3D",
     hoverDisabledBackgroundColor: black,
+    selectedBackgroundColor: "#282828",
     fontWeight: "600",
     fontSize: "13px",
     width: "100%",
@@ -1684,6 +1686,7 @@ const Dark = {
   },
 
   toggleButton: {
+    fillColorDefault: "#4781D1",
     fillColorOff: "#292929",
     hoverFillColorOff: "#3D3D3D",
 
@@ -2039,6 +2042,8 @@ const Dark = {
     header: {
       backgroundColor: black,
       background: `linear-gradient(180deg, #333333 2.81%, rgba(51, 51, 51, 0.9) 63.03%, rgba(51, 51, 51, 0) 100%);`,
+      trashErasureLabelBackground: "#292929",
+      trashErasureLabelText: "#ADADAD",
     },
   },
 
@@ -2327,7 +2332,7 @@ const Dark = {
     },
 
     emptyScreen: {
-      descriptionColor: cyanBlueDarkShade,
+      descriptionColor: "#ADADAD",
     },
   },
 
@@ -3077,10 +3082,16 @@ const Dark = {
     main: {
       background: "#1f1f1f",
       textColor: white,
+
+      descriptionTextColor: "#858585",
+      pendingEmailTextColor: "#858585",
     },
     themePreview: {
       descriptionColor: "#ADADAD",
       border: "1px solid #474747",
+    },
+    notifications: {
+      textDescriptionColor: "#858585",
     },
   },
 
@@ -3121,6 +3132,14 @@ const Dark = {
 
   itemIcon: {
     borderColor: "#474747",
+  },
+
+  invitePage: {
+    borderColor: "#474747",
+  },
+
+  portalUnavailable: {
+    textDescriptionColor: "#858585",
   },
 };
 

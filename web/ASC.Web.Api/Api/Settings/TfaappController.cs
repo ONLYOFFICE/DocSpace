@@ -352,7 +352,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (_userManager.IsUser(currentUser) || _userManager.IsOutsider(currentUser))
+        if (_userManager.IsOutsider(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }

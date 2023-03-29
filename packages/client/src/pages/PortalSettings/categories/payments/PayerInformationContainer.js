@@ -16,7 +16,7 @@ const StyledContainer = styled.div`
   box-sizing: border-box;
   margin-top: 16px;
   border-radius: 6px;
-  .change-payer,
+
   .payer-info {
     margin-left: 3px;
   }
@@ -58,11 +58,11 @@ const PayerInformationContainer = ({
   accountLink,
   isPayer,
   payerInfo,
-  payerEmail,
+  email,
+  isNotPaidPeriod,
+  isFreeAfterPaidPeriod,
 }) => {
   const { t } = useTranslation("Payments");
-
-  const email = payerEmail;
 
   const isLinkAvailable = user.isOwner || isPayer;
 
@@ -78,30 +78,44 @@ const PayerInformationContainer = ({
     />
   );
 
+  const unknownPayerDescription = () => {
+    const userNotFound = t("UserNotFoundMatchingEmail") + " ";
+
+    let invalidEmailDescription = user.isOwner
+      ? t("InvalidEmailWithActiveSubscription")
+      : t("InvalidEmailWithActiveSubscriptionForAdmin");
+
+    if (isNotPaidPeriod || isFreeAfterPaidPeriod) {
+      invalidEmailDescription = user.isOwner
+        ? t("InvalidEmailWithoutActiveSubscription")
+        : t("InvalidEmailWithoutActiveSubscriptionByAdmin");
+
+      return userNotFound + invalidEmailDescription;
+    }
+
+    return userNotFound + invalidEmailDescription;
+  };
+
   const unknownPayerInformation = (
     <div>
-      <Text as="span" fontSize="13px" isBold noSelect>
-        {t("InvalidEmail")}
-        {"."}
+      <Text as="span" fontSize="13px" noSelect>
+        {unknownPayerDescription()}
       </Text>
-      {isLinkAvailable ? (
-        <ColorTheme
-          noSelect
-          fontWeight={600}
-          href={accountLink}
-          className="change-payer"
-          tag="a"
-          themeId={ThemeType.Link}
-          target="_blank"
-        >
-          {t("ChangePayer")}
-        </ColorTheme>
-      ) : (
-        <Text as="span" fontSize="13px" isBold className="change-payer">
-          {t("OwnerCanChangePayer")}
-          {"."}
-        </Text>
-      )}
+      <div>
+        {isLinkAvailable && (
+          <ColorTheme
+            noSelect
+            fontWeight={600}
+            href={accountLink}
+            tag="a"
+            themeId={ThemeType.Link}
+            target="_blank"
+            className="payer-info_account-link"
+          >
+            {t("ChooseNewPayer")}
+          </ColorTheme>
+        )}
+      </div>
     </div>
   );
 
@@ -133,9 +147,9 @@ const PayerInformationContainer = ({
   );
 
   const payerName = () => {
-    let emailUnfoundedUser = email;
+    let emailUnfoundedUser;
 
-    if (email) emailUnfoundedUser = "«" + emailUnfoundedUser + "»";
+    if (email) emailUnfoundedUser = "«" + email + "»";
 
     return (
       <Text as="span" fontWeight={600} noSelect fontSize={"14px"}>
@@ -148,6 +162,7 @@ const PayerInformationContainer = ({
               as="span"
               color={theme.client.settings.payment.warningColor}
               fontWeight={600}
+              fontSize={"14px"}
             >
               {{ email: emailUnfoundedUser }}
             </Text>
@@ -191,15 +206,23 @@ const PayerInformationContainer = ({
 };
 
 export default inject(({ auth, payments }) => {
-  const { userStore, settingsStore } = auth;
-  const { accountLink } = payments;
+  const { userStore, settingsStore, currentTariffStatusStore } = auth;
+  const { accountLink, payerInfo } = payments;
   const { theme } = settingsStore;
-
+  const {
+    customerId,
+    isGracePeriod,
+    isNotPaidPeriod,
+  } = currentTariffStatusStore;
   const { user } = userStore;
 
   return {
     theme,
     user,
     accountLink,
+    payerInfo,
+    email: customerId,
+    isGracePeriod,
+    isNotPaidPeriod,
   };
 })(observer(PayerInformationContainer));

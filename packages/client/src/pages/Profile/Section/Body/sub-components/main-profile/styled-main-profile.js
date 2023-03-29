@@ -1,8 +1,9 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import {
   hugeMobile,
   smallTablet,
   desktop,
+  tablet,
 } from "@docspace/components/utils/device";
 
 export const StyledWrapper = styled.div`
@@ -42,17 +43,32 @@ export const StyledInfo = styled.div`
 
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 11px;
+
+  @media ${tablet} {
+    gap: 7px;
+  }
+
+  padding-top: 5px;
 
   @media ${smallTablet} {
     width: 100%;
     gap: 16px;
   }
 
+  .label {
+    min-width: 75px;
+    max-width: 75px;
+    white-space: nowrap;
+    color: ${(props) => props.theme.profile.main.descriptionTextColor};
+  }
+
   .rows-container {
     display: flex;
     flex-direction: column;
     gap: 16px;
+
+    max-width: 100%;
 
     @media ${hugeMobile} {
       gap: 8px;
@@ -61,16 +77,24 @@ export const StyledInfo = styled.div`
 
   .row {
     display: flex;
-    align-items: center;
+    align-items: baseline;
     gap: 8px;
+    line-height: 20px;
+    max-width: 100%;
 
     @media ${desktop} {
-      height: 20px;
+      height: auto;
+    }
+
+    @media ${smallTablet} {
+      align-items: center;
     }
 
     .field {
       display: flex;
       gap: 16px;
+      align-items: baseline;
+      max-width: calc(100% - 28px);
 
       & > p {
         padding-left: 8px;
@@ -78,74 +102,100 @@ export const StyledInfo = styled.div`
     }
 
     .email-text-container {
-      padding-left: 8px;
-    }
-
-    .send-again-text {
-      line-height: 15px;
-
-      color: #316daa;
-
-      border-bottom: 1px solid #316daa;
-
-      width: fit-content;
-
-      display: none;
-
-      @media ${smallTablet} {
-        display: block;
-
-        cursor: pointer;
-      }
-    }
-
-    .send-again-icon {
-      display: none;
-
-      @media ${smallTablet} {
-        display: block;
-        padding-left: 5px;
-
-        max-width: 12px;
-        max-height: 12px;
-      }
+      ${(props) =>
+        props.withActivationBar &&
+        css`
+          color: ${props.theme.profile.main.pendingEmailTextColor};
+        `}
     }
 
     .send-again-container {
-      display: flex;
-      align-items: center;
+      flex-grow: 1;
 
-      margin-left: 8px;
+      max-width: 50%;
+      cursor: pointer;
+
+      align-items: center;
 
       cursor: pointer;
 
-      .send-again-text {
-        display: block;
+      height: 18px;
 
-        margin-left: 4px;
+      .send-again-text {
+        margin-left: 5px;
+
+        line-height: 15px;
+
+        color: ${(props) => props.currentColorScheme.main.accent};
+
+        border-bottom: 1px solid
+          ${(props) => props.currentColorScheme.main.accent};
+
+        margin-top: 2px;
       }
+
       .send-again-icon {
         display: block;
-      }
 
-      @media ${smallTablet} {
-        display: none;
+        width: 12px;
+        height: 12px;
 
-        .send-again-text,
-        .send-again-icon {
-          display: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        div {
+          width: 12px;
+          height: 12px;
+        }
+
+        svg {
+          width: 12px;
+          height: 12px;
+
+          path {
+            fill: ${(props) => props.currentColorScheme.main.accent};
+          }
         }
       }
     }
 
-    .label {
-      min-width: 75px;
-      max-width: 75px;
-      white-space: nowrap;
+    .send-again-desktop {
+      display: flex;
+    }
+
+    .send-again-mobile {
+      display: none;
     }
 
     .edit-button {
       min-width: 12px;
+
+      svg path {
+        fill: ${(props) => props.theme.isBase && `#657077`};
+      }
+    }
+
+    .email-edit-button {
+      display: block;
+      padding-left: 8px;
+    }
+
+    .email-edit-container {
+      display: flex;
+      align-items: center;
+      padding-right: 16px;
+    }
+
+    .email-container {
+      padding-left: 8px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+    }
+
+    .email-edit-button-mobile {
+      display: none;
     }
 
     @media ${smallTablet} {
@@ -158,26 +208,15 @@ export const StyledInfo = styled.div`
         flex-direction: column;
         gap: 2px;
 
-        .email-text-container {
-          display: flex;
-
-          .send-again-icon {
-            margin-left: 4px;
-
-            display: flex;
-            align-items: center;
-
-            div {
-              display: flex;
-              align-items: center;
-            }
-          }
+        .email-container {
+          padding-left: 0px;
         }
 
         & > p {
           padding-left: 0;
           font-size: 12px !important;
           line-height: 16px !important;
+          max-width: 100%;
         }
       }
 
@@ -188,13 +227,27 @@ export const StyledInfo = styled.div`
         line-height: 16px !important;
       }
 
+      .email-edit-button-mobile {
+        display: block;
+      }
+
+      .email-edit-button {
+        display: none;
+      }
+
       .edit-button {
         margin-left: auto;
         min-width: 12px;
       }
 
-      .email-text-container {
-        padding-left: 0px;
+      .send-again-desktop {
+        display: none;
+
+        margin-left: 8px;
+      }
+
+      .send-again-mobile {
+        display: flex;
       }
     }
   }
@@ -218,6 +271,10 @@ export const StyledRow = styled.div`
     white-space: nowrap;
   }
 
+  .language-combo-box {
+    margin-left: -8px;
+  }
+
   @media ${smallTablet} {
     width: 100%;
     flex-direction: column;
@@ -232,6 +289,10 @@ export const StyledRow = styled.div`
       & > div {
         padding-left: 8px !important;
       }
+    }
+
+    .language-combo-box {
+      margin-left: 0;
     }
   }
 `;

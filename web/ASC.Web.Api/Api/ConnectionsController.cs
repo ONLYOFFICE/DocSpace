@@ -262,7 +262,7 @@ public class ConnectionsController : ControllerBase
         }
     }
 
-    public async Task LogOutAllActiveConnections(Guid? userId = null)
+    private async Task LogOutAllActiveConnections(Guid? userId = null)
     {
         var currentUserId = _securityContext.CurrentAccount.ID;
         var user = _userManager.GetUsers(userId ?? currentUserId);
@@ -273,7 +273,7 @@ public class ConnectionsController : ControllerBase
         await _cookiesManager.ResetUserCookie(user.Id);
     }
 
-    public int GetLoginEventIdFromCookie()
+    private int GetLoginEventIdFromCookie()
     {
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);

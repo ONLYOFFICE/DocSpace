@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Api.Core.Security;
 using ASC.Common.Log;
 
 namespace ASC.People.Api;
@@ -58,10 +59,10 @@ public class UserController : PeopleControllerBase
     private readonly AuthContext _authContext;
     private readonly SetupInfo _setupInfo;
     private readonly SettingsManager _settingsManager;
-    private readonly RoomLinkService _roomLinkService;
+    private readonly InvitationLinkService _invitationLinkService;
     private readonly FileSecurity _fileSecurity;
     private readonly IQuotaService _quotaService;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
     private readonly UsersQuotaSyncOperation _usersQuotaSyncOperation;
     private readonly CountUserChecker _countUserChecker;
     private readonly UsersInRoomChecker _usersInRoomChecker;
@@ -99,10 +100,10 @@ public class UserController : PeopleControllerBase
         IHttpClientFactory httpClientFactory,
         IHttpContextAccessor httpContextAccessor,
         SettingsManager settingsManager,
-        RoomLinkService roomLinkService,
+        InvitationLinkService invitationLinkService,
         FileSecurity fileSecurity,
         UsersQuotaSyncOperation usersQuotaSyncOperation,
-        CountRoomAdminChecker countRoomAdminChecker,
+        CountPaidUserChecker countPaidUserChecker,
         CountUserChecker activeUsersChecker,
         UsersInRoomChecker usersInRoomChecker,
         IQuotaService quotaService)
@@ -134,9 +135,9 @@ public class UserController : PeopleControllerBase
         _authContext = authContext;
         _setupInfo = setupInfo;
         _settingsManager = settingsManager;
-        _roomLinkService = roomLinkService;
+        _invitationLinkService = invitationLinkService;
         _fileSecurity = fileSecurity;
-        _countRoomAdminChecker = countRoomAdminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
         _countUserChecker = activeUsersChecker;
         _usersInRoomChecker = usersInRoomChecker;
         _quotaService = quotaService;
@@ -186,8 +187,8 @@ public class UserController : PeopleControllerBase
         UpdateContacts(inDto.Contacts, user);
 
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type == EmployeeType.User, 
-            false, true, true, inDto.Type == EmployeeType.DocSpaceAdmin);
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type,
+            false, true, true);
 
         user.ActivationStatus = EmployeeActivationStatus.Activated;
 
@@ -207,25 +208,32 @@ public class UserController : PeopleControllerBase
     {
         _apiContext.AuthByClaim();
 
-        var options = inDto.FromInviteLink ? await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.Type) : null;
-        if (options != null && !options.IsCorrect)
+        var linkData = inDto.FromInviteLink ? await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.Type) : null;
+        if (linkData is { IsCorrect: false })
         {
             throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
         }
 
-        _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, options.EmployeeType) ,Constants.Action_AddRemoveUser);
+        if (linkData != null)
+        { 
+            _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, linkData.EmployeeType) ,Constants.Action_AddRemoveUser);
+        }
+        else
+        {
+            _permissionContext.DemandPermissions(Constants.Action_AddRemoveUser);
+        }
 
-        inDto.Type = options != null ? options.EmployeeType : inDto.Type;
+        inDto.Type = linkData?.EmployeeType ?? inDto.Type;
 
         var user = new UserInfo();
 
-        var byEmail = options?.LinkType == LinkType.InvintationByEmail;
+        var byEmail = linkData?.LinkType == InvitationLinkType.Individual;
 
         if (byEmail)
         {
             user = _userManager.GetUserByEmail(inDto.Email);
 
-            if (user == Constants.LostUser || user.ActivationStatus != EmployeeActivationStatus.Pending)
+            if (user.Equals(Constants.LostUser) || user.ActivationStatus != EmployeeActivationStatus.Pending)
             {
                 throw new SecurityException(FilesCommonResource.ErrorMessage_InvintationLink);
             }
@@ -265,8 +273,11 @@ public class UserController : PeopleControllerBase
         user.WorkFromDate = inDto.Worksfrom != null && inDto.Worksfrom != DateTime.MinValue ? _tenantUtil.DateTimeFromUtc(inDto.Worksfrom) : DateTime.UtcNow.Date;
 
         UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
+
         _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
-        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type == EmployeeType.User, inDto.FromInviteLink && options.IsCorrect, true, true, byEmail, inDto.Type == EmployeeType.DocSpaceAdmin);
+
+        user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
+            inDto.FromInviteLink && linkData is { IsCorrect: true }, true, true, byEmail);
 
         await UpdateDepartments(inDto.Department, user);
 
@@ -275,30 +286,36 @@ public class UserController : PeopleControllerBase
             await UpdatePhotoUrl(inDto.Files, user);
         }
 
-        if (options != null && options.LinkType == LinkType.InvintationToRoom)
+        if (linkData is { LinkType: InvitationLinkType.CommonWithRoom })
         {
-            var success = int.TryParse(options.RoomId, out var id);
+            var success = int.TryParse(linkData.RoomId, out var id);
 
             if (success)
             {
                 await _usersInRoomChecker.CheckAppend();
-                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, options.Share);
+                await _fileSecurity.ShareAsync(id, FileEntryType.Folder, user.Id, linkData.Share);
             }
             else
             {
                 await _usersInRoomChecker.CheckAppend();
-                await _fileSecurity.ShareAsync(options.RoomId, FileEntryType.Folder, user.Id, options.Share);
+                await _fileSecurity.ShareAsync(linkData.RoomId, FileEntryType.Folder, user.Id, linkData.Share);
             }
         }
 
-        var messageAction = inDto.IsUser ? MessageAction.GuestCreated : MessageAction.UserCreated;
-        _messageService.Send(messageAction, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        if (inDto.IsUser)
+        {
+            _messageService.Send(MessageAction.GuestCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+        }
+        else
+        {
+            _messageService.Send(MessageAction.UserCreated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
+        }
 
         return await _employeeFullDtoHelper.GetFull(user);
     }
 
     [HttpPost("invite")]
-    public async IAsyncEnumerable<EmployeeDto> InviteUsersAsync(InviteUsersRequestDto inDto)
+    public async Task<List<EmployeeDto>> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
         foreach (var invite in inDto.Invitations)
         {
@@ -308,18 +325,22 @@ public class UserController : PeopleControllerBase
             }
 
             var user = await _userManagerWrapper.AddInvitedUserAsync(invite.Email, invite.Type);
-            var link = _roomLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
+            var link = _invitationLinkService.GetInvitationLink(user.Email, invite.Type, _authContext.CurrentAccount.ID);
 
             _studioNotifyService.SendDocSpaceInvite(user.Email, link);
             _logger.Debug(link);
         }
 
+        var result = new List<EmployeeDto>();
+
         var users = _userManager.GetUsers().Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
 
         foreach (var user in users)
         {
-            yield return await _employeeDtoHelper.Get(user);
+            result.Add(await _employeeDtoHelper.Get(user));
         }
+
+        return result;
     }
 
     [HttpPut("{userid}/password")]
@@ -722,7 +743,7 @@ public class UserController : PeopleControllerBase
                     continue;
                 }
 
-                var link = _roomLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
+                var link = _invitationLinkService.GetInvitationLink(user.Email, type, _authContext.CurrentAccount.ID);
                 _studioNotifyService.SendDocSpaceInvite(user.Email, link);
             }
             else
@@ -997,13 +1018,14 @@ public class UserController : PeopleControllerBase
 
         if (!self && !inDto.IsUser && _userManager.IsUser(user))
         {
-            await _countRoomAdminChecker.CheckAppend();
+            await _countPaidUserChecker.CheckAppend();
             _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
-        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
+
+        _messageService.Send(MessageAction.UserUpdated, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), user.Id);
 
         if (inDto.Disable.HasValue && inDto.Disable.Value)
         {
@@ -1037,7 +1059,7 @@ public class UserController : PeopleControllerBase
                     {
                         if (!_userManager.IsUser(user))
                         {
-                            await _countRoomAdminChecker.CheckAppend();
+                            await _countPaidUserChecker.CheckAppend();
                         }
                         else
                         {
@@ -1073,55 +1095,23 @@ public class UserController : PeopleControllerBase
     {
         _permissionContext.DemandPermissions(new UserSecurityProvider(type), Constants.Action_AddRemoveUser);
 
-        var currentUser = _userManager.GetUsers(_authContext.CurrentAccount.ID);
-        
         var users = inDto.UserIds
             .Where(userId => !_userManager.IsSystemUser(userId))
             .Select(userId => _userManager.GetUsers(userId))
             .ToList();
 
+        var updatedUsers = new List<UserInfo>(users.Count);
+
         foreach (var user in users)
         {
-            if (user.IsOwner(Tenant) || user.IsMe(_authContext))
+            if (await _userManagerWrapper.UpdateUserTypeAsync(user, type))
             {
-                continue;
+                updatedUsers.Add(user);
             }
-
-            var currentType = _userManager.GetUserType(user.Id);
-
-            if (type is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
-            {
-                if (currentType is EmployeeType.RoomAdmin)
-                {
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
                 }
-                else if (currentType is EmployeeType.User)
-                {
-                    await _countRoomAdminChecker.CheckAppend();
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-                    await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                }
-            }
-            else if (type is EmployeeType.RoomAdmin)
-            {
-                if (currentType is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
-                {
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                }
-                else if (currentType is EmployeeType.User)
-                {
-                    await _countRoomAdminChecker.CheckAppend();
-                    _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
-                    _webItemSecurityCache.ClearCache(Tenant.Id);
-                }
-            }
-        }
         
-        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.Create(users.Select(x => x.Id)), 
-            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)));
+            _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.CreateFromGroupValues(users.Select(x => x.Id.ToString())),
+            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)), users.Select(x => x.Id).ToList(), type);
         
         foreach (var user in users)
         {
@@ -1172,7 +1162,7 @@ public class UserController : PeopleControllerBase
 
             var quotaSettings = _settingsManager.Load<TenantUserQuotaSettings>();
 
-            _settingsManager.SaveForUser(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
+            _settingsManager.Save(new UserQuotaSettings { UserQuota = inDto.Quota }, user);
 
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
@@ -1347,6 +1337,10 @@ public class UserController : PeopleControllerBase
                 case EmployeeType.RoomAdmin:
                     excludeGroups.Add(Constants.GroupUser.ID); 
                     excludeGroups.Add(Constants.GroupAdmin.ID);
+                    excludeGroups.Add(Constants.GroupCollaborator.ID);
+                    break;
+                case EmployeeType.Collaborator:
+                    includeGroups.Add(new List<Guid> { Constants.GroupCollaborator.ID });
                     break;
                 case EmployeeType.User:
                     includeGroups.Add(new List<Guid> { Constants.GroupUser.ID });

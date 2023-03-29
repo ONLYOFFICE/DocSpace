@@ -211,6 +211,11 @@ public interface IFolderDao<T>
     /// <returns>Maximum size of file which can be uploaded to folder</returns>
     Task<long> GetMaxUploadSizeAsync(T folderId, bool chunkedUpload = false);
 
+    IDataWriteOperator CreateDataWriteOperator(
+            T folderId,
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder);
+
     #region Only for TMFolderDao
 
     /// <summary>
@@ -353,6 +358,15 @@ public interface IFolderDao<T>
 
     IAsyncEnumerable<int> GetTenantsWithFoldersFeedsAsync(DateTime fromTime);
     IAsyncEnumerable<int> GetTenantsWithRoomsFeedsAsync(DateTime fromTime);
+    IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<T> entriesIds);
+
+    /// <summary>
+    /// Tries to return id of the parent virtual room
+    /// Only in TMFolderDao
+    /// </summary>
+    /// <param name="fileEntry"></param>
+    /// <returns></returns>
+    Task<(int RoomId, string RoomTitle)> GetParentRoomInfoFromFileEntryAsync<TTo>(FileEntry<TTo> fileEntry);
 
     #endregion
 }

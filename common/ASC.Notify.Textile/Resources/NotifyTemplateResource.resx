@@ -126,8 +126,8 @@
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td colspan="3" style="margin: 0; padding: 0; background-color: #fff; height: 65px; padding: 20px 0 0 30px;"&gt;
             &lt;div style="text-align: left; height: 65px; width: 570px; margin: 0; padding: 0;"&gt;
-                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 216px; height: 35px; margin: 0; padding: 0;" target="_blank"&gt;
-                    &lt;img src="%LOGO%" style="border: 0px none; width: 216px; height: 35px; margin: 0; padding: 0;" alt="%LOGOTEXT%" /&gt;
+                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;" target="_blank"&gt;
+                    &lt;img src="%LOGO%" style="border: 0px none; width: 386px; height: 44px; margin: 0; padding: 0;" alt="%LOGOTEXT%" /&gt;
                 &lt;/a&gt;
             &lt;/div&gt;
           &lt;/td&gt;
@@ -193,9 +193,8 @@
         &lt;/tr&gt;</value>
   </data>
   <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
-    <value>For any purchase questions, email us at &lt;a href="mailto:sales@onlyoffice.com" style="color: #7b7b7b;" target="_blank"&gt;sales@onlyoffice.com&lt;/a&gt;.
-&lt;br /&gt;In case of technical problems contact our &lt;a href="https://www.onlyoffice.com/support-contact-form.aspx" style="color: #7b7b7b;" target="_blank"&gt;support team&lt;/a&gt;.
-&lt;br /&gt; &lt;a href="{0}" style="color: #7b7b7b;" target="_blank"&gt;Click here to unsubscribe&lt;/a&gt;
+    <value>This email is generated automatically and you do not need to answer it.&lt;br /&gt;You received this email because you are a registered user of&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;.
+&lt;br /&gt; Click here to unsubscribe from the DocSpace notification emails: &lt;a href="{1}"  target="_blank"&gt;Unsubscribe&lt;/a&gt;
 &lt;br /&gt;</value>
   </data>
 </root>

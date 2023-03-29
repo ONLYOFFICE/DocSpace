@@ -35,6 +35,7 @@ public class CommonChunkedUploadSession : ICloneable
     public string Location { get; set; }
     public long BytesUploaded { get; set; }
     public long BytesTotal { get; set; }
+    public bool LastChunk { get; set; }
     public int TenantId { get; set; }
     public Guid UserId { get; set; }
     public bool UseChunks { get; set; }
@@ -73,6 +74,7 @@ public class CommonChunkedUploadSession : ICloneable
         BytesUploaded = 0;
         BytesTotal = bytesTotal;
         UseChunks = true;
+        LastChunk = false;
     }
 
     public T GetItemOrDefault<T>(string key)
@@ -115,13 +117,16 @@ public class CommonChunkedUploadSession : ICloneable
                         switch (value.ValueKind)
                     {
                             case JsonValueKind.String:
-                        newItems.Add(item.Key, item.Value.ToString());
+                                newItems.Add(item.Key, item.Value.ToString());
                                 break;
                             case JsonValueKind.Number:
                                 newItems.Add(item.Key, Int32.Parse(item.Value.ToString()));
                                 break;
                             case JsonValueKind.Array:
-                        newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                                newItems.Add(item.Key, value.EnumerateArray().Select(o => o.ToString()).ToList());
+                                break;
+                            case JsonValueKind.Object:
+                                newItems.Add(item.Key, JsonSerializer.Deserialize<Dictionary<int, string>>(item.Value.ToString()));
                                 break;
                             default:
                                 newItems.Add(item.Key, item.Value);

@@ -11,10 +11,12 @@ import {
   isMobileOnly,
   isChrome,
   isTablet,
+  isAndroid,
 } from "react-device-detect";
 import { inject, observer } from "mobx-react";
 
 const StyledContainer = styled.div`
+  user-select: none;
   width: 100%;
   height: ${(props) =>
     isMobileOnly && isIOS ? "calc(var(--vh, 1vh) * 100)" : props.contentHeight};
@@ -127,6 +129,10 @@ const Layout = (props) => {
         if (window.innerHeight < window.innerWidth && isPortrait) {
           height = window.screen.availWidth - correctorMobileChrome + "px";
         }
+      }
+
+      if (isMobileOnly && isAndroid && isChrome) {
+        height = `calc(100vh - ${correctorMobileChrome}px)`;
       }
 
       // if (isTablet && isIOS && isSafari) {

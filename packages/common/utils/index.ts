@@ -180,6 +180,7 @@ export const getUserRole = (user) => {
     return "admin";
   //TODO: Need refactoring
   else if (user.isVisitor) return "user";
+  else if (user.isCollaborator) return "collaborator";
   else return "manager";
 };
 
@@ -432,41 +433,32 @@ export const frameCallCommand = (commandName: string, commandData: any) => {
   );
 };
 
-export const getConvertedSize = (t, size) => {
-  let sizeNames;
+export const getConvertedSize = (t, bytes) => {
+  let power = 0,
+    resultSize = bytes;
 
-  if (size < 0) return `${8 + " " + t("Common:Exabyte")}`;
+  const sizeNames = [
+    t("Common:Bytes"),
+    t("Common:Kilobyte"),
+    t("Common:Megabyte"),
+    t("Common:Gigabyte"),
+    t("Common:Terabyte"),
+    t("Common:Petabyte"),
+    t("Common:Exabyte"),
+  ];
 
-  if (size < 1024 * 1024) {
-    sizeNames = [
-      t("Common:Megabyte"),
-      t("Common:Gigabyte"),
-      t("Common:Terabyte"),
-    ];
-  } else {
-    sizeNames = [
-      t("Common:Bytes"),
-      t("Common:Kilobyte"),
-      t("Common:Megabyte"),
-      t("Common:Gigabyte"),
-      t("Common:Terabyte"),
-      t("Common:Petabyte"),
-      t("Common:Exabyte"),
-    ];
+  if (bytes <= 0) return `${"0" + " " + t("Common:Bytes")}`;
+
+  if (bytes >= 1024) {
+    power = Math.floor(Math.log(bytes) / Math.log(1024));
+    power = power < sizeNames.length ? power : sizeNames.length - 1;
+    resultSize = parseFloat((bytes / Math.pow(1024, power)).toFixed(2));
   }
 
-  const bytes = size;
-
-  if (bytes == 0) return `${"0" + " " + t("Bytes")}`;
-
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-
-  return (
-    parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + " " + sizeNames[i]
-  );
+  return resultSize + " " + sizeNames[power];
 };
 
-export const getBgPattern = (colorSchemeId: number) => {
+export const getBgPattern = (colorSchemeId: number | undefined) => {
   switch (colorSchemeId) {
     case 1:
       return `url('${BackgroundPatternReactSvgUrl}')`;

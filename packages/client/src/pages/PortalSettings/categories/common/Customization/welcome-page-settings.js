@@ -247,13 +247,20 @@ class WelcomePageSettings extends React.Component {
         isCustomizationView: true,
       });
 
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/portal-settings/common/customization"
-        )
+      const currentUrl = window.location.href.replace(
+        window.location.origin,
+        ""
       );
+
+      const newUrl = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/portal-settings/customization/general"
+      );
+
+      if (newUrl === currentUrl) return;
+
+      history.push(newUrl);
     } else {
       this.setState({
         isCustomizationView: false,
@@ -339,7 +346,7 @@ class WelcomePageSettings extends React.Component {
           showReminder={showReminder}
           reminderTest={t("YouHaveUnsavedChanges")}
           saveButtonLabel={t("Common:SaveButton")}
-          cancelButtonLabel={t("Settings:RestoreDefaultButton")}
+          cancelButtonLabel={t("Common:Restore")}
           displaySettings={true}
           hasScroll={hasScroll}
           disableRestoreToDefault={greetingSettingsIsDefault}

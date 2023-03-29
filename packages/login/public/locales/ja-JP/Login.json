@@ -3,6 +3,7 @@
   "CodeSubtitle": "{{email}}に6桁のコードを送りました。コードは有効期限がありますので、お早めにご入力ください。",
   "CodeTitle": "コードを送りました",
   "CookieSettingsTitle": "セッション期間",
+  "ErrorInvalidHeader": "期限切れリンク",
   "ErrorInvalidText": "10秒後、<1>DocSpace</1>にリダイレクトされます。",
   "ExpiredCode": "このコードは有効期限が切られています。新しいコードをリクエストして、もう一度ご入力ください。",
   "ForgotPassword": "パスワードをお忘れですか？",
@@ -23,5 +24,7 @@
   "RegistrationEmailWatermark": "メール",
   "Remember": "保存",
   "RememberHelper": "デフォルトのセッションライフタイムは20分です。このオプションをチェックすると、1年間に設定されます。独自の値を設定するには、「設定」で設定します。",
-  "ResendCode": "コードの再送信"
+  "ResendCode": "コードの再送信",
+  "SignInWithCode": "シークレットコードでサインインする",
+  "SignInWithPassword": "パスワードでサインインする"
 }

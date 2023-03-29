@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Actions = ASC.Web.Studio.Core.Notify.Actions;
+
 namespace ASC.Files.Core.Security;
 
 [Scope]
@@ -53,7 +55,69 @@ public class FileSecurity : IFileSecurity
     public readonly FileShare DefaultCommonShare = FileShare.Read;
     public readonly FileShare DefaultPrivacyShare = FileShare.Restrict;
     public readonly FileShare DefaultVirtualRoomsShare = FileShare.Restrict;
+    
+    public static readonly Dictionary<FolderType, HashSet<FileShare>> AvailableRoomRights = new()
+    { 
+        { 
+            FolderType.CustomRoom, new HashSet<FileShare>
+            { 
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+            }
+        }, 
+        {
+            FolderType.FillingFormsRoom, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.FillForms, FileShare.Read, FileShare.None
+            }
+        },
+        {
+            FolderType.EditingRoom, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Read, FileShare.None
+            }
+        },
+        {
+            FolderType.ReviewRoom, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None
+            }
+        },
+        {
+            FolderType.ReadOnlyRoom, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None
+            }
+        }
+    };
 
+    public static readonly Dictionary<EmployeeType, HashSet<FileShare>> AvailableUserRights = new()
+    {
+        {
+            EmployeeType.DocSpaceAdmin, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.None
+            }
+        },
+        {
+            EmployeeType.RoomAdmin, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+            }
+        },
+        {
+            EmployeeType.Collaborator, new HashSet<FileShare>
+            {
+                FileShare.Collaborator, FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+            }
+        },
+        {
+            EmployeeType.User, new HashSet<FileShare>
+            {
+                FileShare.Editing, FileShare.Review, FileShare.Comment, FileShare.FillForms, FileShare.Read, FileShare.None
+            }
+        }
+    };
+        
     private static readonly IDictionary<FileEntryType, IEnumerable<FilesSecurityActions>> _securityEntries =
     new Dictionary<FileEntryType, IEnumerable<FilesSecurityActions>>()
     {
@@ -89,6 +153,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Copy,
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Pin,
+                    FilesSecurityActions.Mute,
                     FilesSecurityActions.EditAccess,
                     FilesSecurityActions.Duplicate,
                 }
@@ -102,6 +167,8 @@ public class FileSecurity : IFileSecurity
     private readonly GlobalFolder _globalFolder;
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FileUtility _fileUtility;
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+    private readonly BadgesSettingsHelper _badgesSettingsHelper;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -111,7 +178,9 @@ public class FileSecurity : IFileSecurity
         AuthManager authManager,
         GlobalFolder globalFolder,
         FileSecurityCommon fileSecurityCommon,
-        FileUtility fileUtility)
+        FileUtility fileUtility,
+        StudioNotifyHelper studioNotifyHelper,
+        BadgesSettingsHelper badgesSettingsHelper)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -121,6 +190,8 @@ public class FileSecurity : IFileSecurity
         _globalFolder = globalFolder;
         _fileSecurityCommon = fileSecurityCommon;
         _fileUtility = fileUtility;
+        _studioNotifyHelper = studioNotifyHelper;
+        _badgesSettingsHelper = badgesSettingsHelper;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
@@ -533,6 +604,7 @@ public class FileSecurity : IFileSecurity
         var isUser = _userManager.IsUser(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
         var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
+        var isCollaborator = _userManager.IsCollaborator(user);
 
         await foreach (var entry in entries)
         {
@@ -545,7 +617,7 @@ public class FileSecurity : IFileSecurity
                 .Where(r => _securityEntries[entry.FileEntryType].Contains(r))
                 .Select(async e =>
                 {
-                    var t = await FilterEntry(entry, e, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
+                    var t = await FilterEntry(entry, e, userId, null, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin, isCollaborator);
                     return new KeyValuePair<FilesSecurityActions, bool>(e, t);
                 });
 
@@ -573,13 +645,37 @@ public class FileSecurity : IFileSecurity
         var isUser = _userManager.IsUser(user);
         var isAuthenticated = _authManager.GetAccountByID(_tenantManager.GetCurrentTenant().Id, userId).IsAuthenticated;
         var isDocSpaceAdmin = _fileSecurityCommon.IsDocSpaceAdministrator(userId);
+        var isCollaborator = _userManager.IsCollaborator(user);
 
-        return await FilterEntry(entry, action, userId, shares, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin);
+        return await FilterEntry(entry, action, userId, shares, isOutsider, isUser, isAuthenticated, isDocSpaceAdmin, isCollaborator);
     }
 
     public IAsyncEnumerable<FileEntry<T>> FilterDownloadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries)
     {
         return FilterReadAsync(entries).Where(CheckDenyDownload);
+    }
+    
+    public static FileShare GetHighFreeRole(FolderType folderType)
+    {
+        return folderType switch
+        {
+            FolderType.CustomRoom => FileShare.Editing,
+            FolderType.FillingFormsRoom => FileShare.FillForms,
+            FolderType.EditingRoom => FileShare.Editing,
+            FolderType.ReviewRoom => FileShare.Review,
+            FolderType.ReadOnlyRoom => FileShare.Read,
+            _ => FileShare.None
+        };
+    }
+    
+    public static EmployeeType GetTypeByShare(FileShare share)
+    {
+        return share switch
+        {
+            FileShare.RoomAdmin => EmployeeType.RoomAdmin,
+            FileShare.Collaborator => EmployeeType.Collaborator,
+            _ => EmployeeType.User,
+        };
     }
 
     private bool CheckDenyDownload<T>(FileEntry<T> entry)
@@ -611,7 +707,7 @@ public class FileSecurity : IFileSecurity
         }
     }
 
-    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin)
+    private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin, bool isCollaborator)
     {
         if (!isAuthenticated && userId != FileConstant.ShareLinkId)
         {
@@ -646,8 +742,14 @@ public class FileSecurity : IFileSecurity
             if (action != FilesSecurityActions.Read)
             {
                 if ((action == FilesSecurityActions.Pin ||
-                     action == FilesSecurityActions.EditAccess) &&
+                     action == FilesSecurityActions.EditAccess ||
+                     action == FilesSecurityActions.Mute) &&
                     !isRoom)
+                {
+                    return false;
+                }
+
+                if (action == FilesSecurityActions.Mute && isRoom && IsAllGeneralNotificationSettingsOff())
                 {
                     return false;
                 }
@@ -672,7 +774,7 @@ public class FileSecurity : IFileSecurity
                         return action == FilesSecurityActions.MoveTo;
                     }
 
-                    if (folder.FolderType == FolderType.VirtualRooms)
+                    if (folder.FolderType == FolderType.VirtualRooms && !isCollaborator)
                     {
                         return action == FilesSecurityActions.Create ||
                             action == FilesSecurityActions.MoveTo;
@@ -713,9 +815,8 @@ public class FileSecurity : IFileSecurity
                 {
                     return false;
                 }
-
-                var folderDao = _daoFactory.GetFolderDao<T>();
-                var mytrashId = await folderDao.GetFolderIDTrashAsync(false, userId);
+                
+                var mytrashId = await _globalFolder.GetFolderTrashAsync(_daoFactory);
                 if (!Equals(mytrashId, 0) && Equals(e.RootId, mytrashId))
                 {
                     return folder == null || action != FilesSecurityActions.Delete || !Equals(e.Id, mytrashId);
@@ -738,7 +839,7 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin, isRoom))
+                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin, isRoom, isCollaborator))
                 {
                     return true;
                 }
@@ -761,7 +862,7 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin, isRoom))
+                if (await HasAccessAsync(e, userId, isUser, isDocSpaceAdmin, isRoom, isCollaborator))
                 {
                     return true;
                 }
@@ -829,6 +930,7 @@ public class FileSecurity : IFileSecurity
         {
             case FilesSecurityActions.Read:
             case FilesSecurityActions.Pin:
+            case FilesSecurityActions.Mute:
                 return e.Access != FileShare.Restrict;
             case FilesSecurityActions.Comment:
                 if (e.Access == FileShare.Comment ||
@@ -837,7 +939,8 @@ public class FileSecurity : IFileSecurity
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
                     e.Access == FileShare.Editing ||
-                    e.Access == FileShare.FillForms)
+                    e.Access == FileShare.FillForms ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
@@ -846,7 +949,8 @@ public class FileSecurity : IFileSecurity
                 if (e.Access == FileShare.FillForms ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing)
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
@@ -855,13 +959,16 @@ public class FileSecurity : IFileSecurity
                 if (e.Access == FileShare.Review ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing)
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
                 break;
             case FilesSecurityActions.Create:
-                if (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin)
+                if (e.Access == FileShare.ReadWrite || 
+                    e.Access == FileShare.RoomAdmin || 
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
@@ -869,30 +976,33 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.Edit:
                 if (e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing)
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
                 break;
             case FilesSecurityActions.Delete:
-                if (e.Access == FileShare.RoomAdmin)
+                if (e.Access == FileShare.RoomAdmin || 
+                    (e.Access == FileShare.Collaborator && e.CreateBy == _authContext.CurrentAccount.ID))
                 {
-                    if (file != null && (file.RootFolderType == FolderType.VirtualRooms))
+                    if (file is { RootFolderType: FolderType.VirtualRooms })
                     {
                         return true;
                     }
-                    else if (folder != null && folder.RootFolderType == FolderType.VirtualRooms &&
-                        folder.FolderType == FolderType.DEFAULT)
+
+                    if (folder is { RootFolderType: FolderType.VirtualRooms, FolderType: FolderType.DEFAULT })
                     {
                         return true;
                     }
                 }
                 break;
             case FilesSecurityActions.CustomFilter:
-                if ((e.Access == FileShare.CustomFilter ||
+                if (e.Access == FileShare.CustomFilter ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
-                    e.Access == FileShare.Editing))
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
@@ -904,42 +1014,62 @@ public class FileSecurity : IFileSecurity
                 }
                 break;
             case FilesSecurityActions.Rename:
-                if (e.Access == FileShare.ReadWrite || e.Access == FileShare.RoomAdmin)
+                if (e.Access == FileShare.ReadWrite || 
+                    e.Access == FileShare.RoomAdmin ||
+                    (e.Access == FileShare.Collaborator && e.CreateBy == _authContext.CurrentAccount.ID))
                 {
                     return true;
                 }
                 break;
             case FilesSecurityActions.ReadHistory:
-                if (e.Access == FileShare.RoomAdmin || e.Access == FileShare.Editing)
+                if (e.Access == FileShare.RoomAdmin || 
+                    e.Access == FileShare.Editing ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
                 break;
             case FilesSecurityActions.Lock:
-                if (e.Access == FileShare.RoomAdmin)
+                if (e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return true;
                 }
                 break;
             case FilesSecurityActions.EditHistory:
                 if (e.Access == FileShare.ReadWrite ||
-                    e.Access == FileShare.RoomAdmin)
+                    e.Access == FileShare.RoomAdmin ||
+                    e.Access == FileShare.Collaborator)
                 {
                     return file != null && !file.Encrypted;
                 }
                 break;
             case FilesSecurityActions.CopyTo:
-            case FilesSecurityActions.Copy:
             case FilesSecurityActions.MoveTo:
-            case FilesSecurityActions.EditAccess:
+                if (e.Access == FileShare.RoomAdmin || 
+                    e.Access == FileShare.Collaborator)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Copy:
             case FilesSecurityActions.Duplicate:
+                if (e.Access == FileShare.RoomAdmin || 
+                    (e.Access == FileShare.Collaborator && e.CreateBy == _authContext.CurrentAccount.ID))
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.EditAccess:
                 if (e.Access == FileShare.RoomAdmin)
                 {
                     return true;
                 }
                 break;
             case FilesSecurityActions.Move:
-                if (e.Access == FileShare.RoomAdmin && !isRoom)
+                if ((e.Access == FileShare.RoomAdmin || 
+                     e.Access == FileShare.Collaborator && e.CreateBy == _authContext.CurrentAccount.ID) 
+                    && !isRoom)
                 {
                     return true;
                 }
@@ -1502,9 +1632,9 @@ public class FileSecurity : IFileSecurity
         }
     }
 
-    private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin, bool isRoom)
+    private async Task<bool> HasAccessAsync<T>(FileEntry<T> entry, Guid userId, bool isUser, bool isDocSpaceAdmin, bool isRoom, bool isCollaborator)
     {
-        if (!isUser)
+        if (!isUser && !isCollaborator)
         {
             if (isDocSpaceAdmin)
             {
@@ -1523,6 +1653,20 @@ public class FileSecurity : IFileSecurity
             {
                 return true;
             }
+        }
+
+        return false;
+    }
+
+    private bool IsAllGeneralNotificationSettingsOff()
+    {
+        var userId = _authContext.CurrentAccount.ID;
+
+        if (!_badgesSettingsHelper.GetEnabledForCurrentUser()
+            && !_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.RoomsActivity)
+            && !_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.SendWhatsNew))
+        {
+            return true;
         }
 
         return false;
@@ -1577,6 +1721,7 @@ public class FileSecurity : IFileSecurity
         MoveTo,
         Move,
         Pin,
+        Mute,
         EditAccess,
         Duplicate,
     }

@@ -74,6 +74,7 @@ public class AuthenticationController : ControllerBase
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly ILogger<AuthenticationController> _logger;
+    private readonly InvitationLinkService _invitationLinkService;
 
     public AuthenticationController(
         UserManager userManager,
@@ -110,7 +111,8 @@ public class AuthenticationController : ControllerBase
         BruteForceLoginManager bruteForceLoginManager,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        ILogger<AuthenticationController> logger)
+        ILogger<AuthenticationController> logger,
+        InvitationLinkService invitationLinkService)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -147,6 +149,7 @@ public class AuthenticationController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _logger = logger;
+        _invitationLinkService = invitationLinkService;
     }
 
     /// <summary>
@@ -414,9 +417,16 @@ public class AuthenticationController : ControllerBase
     /// <returns>Validation result: Ok, Invalid, or Expired</returns>
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
-    public ValidationResult CheckConfirm(EmailValidationKeyModel inDto)
+    public async Task<ValidationResult> CheckConfirm(EmailValidationKeyModel inDto)
     {
+        if (inDto.Type != ConfirmType.LinkInvite)
+        {
         return _emailValidationKeyModelHelper.Validate(inDto);
+    }
+
+        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.UiD ?? default);
+
+        return linkData.Result;
     }
 
     /// <summary>

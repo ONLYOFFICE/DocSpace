@@ -19,6 +19,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+
 const PortalRenaming = (props) => {
   const {
     t,
@@ -121,7 +122,14 @@ const PortalRenaming = (props) => {
     setIsLoadingPortalNameSave(true);
 
     setPortalRename(portalName)
-      .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
+      .then((res) => {
+        toastr.success(t("SuccessfullySavePortalNameMessage"));
+
+        setPortalName(portalName);
+        setPortalNameDefault(portalName);
+
+        history.push(res);
+      })
       .catch((error) => {
         let errorMessage = "";
         if (typeof error === "object") {
@@ -136,12 +144,7 @@ const PortalRenaming = (props) => {
 
         setErrorValue(errorMessage);
         saveToSessionStorage("errorValue", errorMessage);
-      })
-      .finally(() => setIsLoadingPortalNameSave(false));
-
-    setShowReminder(false);
-    setPortalName(portalName);
-    setPortalNameDefault(portalName);
+      });
 
     saveToSessionStorage("portalName", portalName);
     saveToSessionStorage("portalNameDefault", portalName);
@@ -243,13 +246,20 @@ const PortalRenaming = (props) => {
     if (!isSmallTablet()) {
       setIsCustomizationView(true);
 
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/portal-settings/common/customization"
-        )
+      const currentUrl = window.location.href.replace(
+        window.location.origin,
+        ""
       );
+
+      const newUrl = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/portal-settings/customization/general"
+      );
+
+      if (newUrl === currentUrl) return;
+
+      history.push(newUrl);
     } else {
       setIsCustomizationView(false);
     }

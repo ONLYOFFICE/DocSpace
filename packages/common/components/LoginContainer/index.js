@@ -2,11 +2,13 @@ import styled from "styled-components";
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
 
 const LoginContainer = styled.div`
+  user-select: none;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 56px auto 0 auto;
   max-width: 960px;
+  z-index: 0;
 
   .remember-wrapper {
     max-width: 142px;
@@ -40,6 +42,7 @@ const LoginContainer = styled.div`
 
   .login-or-access-text {
     text-transform: lowercase;
+    color: ${(props) => props.theme.login.orTextColor};
   }
 
   .recover-link {
@@ -74,7 +77,7 @@ const LoginContainer = styled.div`
     padding: 32px 0;
 
     @media ${tablet} {
-      width: 480px;
+      width: 416px;
     }
 
     @media ${hugeMobile} {
@@ -235,7 +238,7 @@ const LoginContainer = styled.div`
     justify-content: center;
     width: 100%;
     height: 46px;
-    padding-bottom: 64px;
+    padding-bottom: 40px;
 
     svg {
       path:last-child {

@@ -102,6 +102,20 @@ class ManualBackup extends React.Component {
 
   componentDidMount() {
     const { fetchTreeFolders, rootFoldersTitles, isNotPaidPeriod } = this.props;
+    const valueFromLocalStorage = getFromLocalStorage("LocalCopyStorageType");
+
+    if (valueFromLocalStorage) {
+      let newStateObj = {};
+      const name = valueFromLocalStorage;
+      newStateObj[name] = true;
+      const newState = this.switches.filter((el) => el !== name);
+      newState.forEach((name) => (newStateObj[name] = false));
+      this.setState({
+        ...newStateObj,
+      });
+    } else {
+      saveToLocalStorage("LocalCopyStorageType", "isCheckedTemporaryStorage");
+    }
 
     if (isNotPaidPeriod) {
       this.setState({
@@ -136,7 +150,6 @@ class ManualBackup extends React.Component {
     const { TemporaryModuleType } = BackupStorageType;
 
     clearLocalStorage();
-    saveToLocalStorage("LocalCopyStorageType", "TemporaryStorage");
 
     try {
       await startBackup(`${TemporaryModuleType}`, null);
@@ -162,6 +175,7 @@ class ManualBackup extends React.Component {
     this.setState({
       ...newStateObj,
     });
+    saveToLocalStorage("LocalCopyStorageType", name);
   };
   onMakeCopy = async (
     selectedFolder,
@@ -284,7 +298,7 @@ class ManualBackup extends React.Component {
           {isCheckedTemporaryStorage && (
             <div className="manual-backup_buttons">
               <Button
-                label={t("Common:Duplicate")}
+                label={t("Common:Create")}
                 onClick={this.onMakeTemporaryBackup}
                 primary
                 isDisabled={!isMaxProgress}

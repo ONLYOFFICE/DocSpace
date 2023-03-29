@@ -11,6 +11,7 @@ const FilesMediaViewer = (props) => {
     t,
     files,
     playlist,
+    currentPostionIndex,
     visible,
     currentMediaFileId,
     deleteItemAction,
@@ -26,6 +27,7 @@ const FilesMediaViewer = (props) => {
     setToPreviewFile,
     setScrollToItem,
     setCurrentId,
+    setAlreadyFetchingRooms,
     setBufferSelection,
     isFavoritesFolder,
     archiveRoomsId,
@@ -43,9 +45,18 @@ const FilesMediaViewer = (props) => {
     extsMediaPreviewed,
     setIsPreview,
     isPreview,
+    nextMedia,
+    prevMedia,
     resetUrl,
     firstLoad,
+    setSelection,
   } = props;
+
+  useEffect(() => {
+    if (visible) {
+      resetSelection();
+    }
+  }, [visible]);
 
   useEffect(() => {
     const previewId = queryString.parse(location.search).preview;
@@ -62,6 +73,7 @@ const FilesMediaViewer = (props) => {
       fetchFiles(previewFile.folderId).finally(() => {
         setIsLoading(false);
         setFirstLoad(false);
+        setAlreadyFetchingRooms(false);
       });
     }
   }, [previewFile]);
@@ -88,6 +100,10 @@ const FilesMediaViewer = (props) => {
     window.history.pushState(null, null, url);
   };
 
+  const resetSelection = () => {
+    setSelection([]);
+  };
+
   const removeQuery = (queryName) => {
     const queryParams = new URLSearchParams(location.search);
 
@@ -107,9 +123,6 @@ const FilesMediaViewer = (props) => {
       setMediaViewerData(item);
     }
   };
-
-  const canDelete = (fileId) => true; //TODO:
-  const canDownload = (fileId) => true; //TODO:
 
   const onDeleteMediaFile = (id) => {
     const translations = {
@@ -138,22 +151,12 @@ const FilesMediaViewer = (props) => {
     if (isPreview) {
       setIsPreview(false);
       resetUrl();
-      setScrollToItem({ id: previewFile.id, type: "file" });
-      setBufferSelection(previewFile);
+      if (previewFile) {
+        setScrollToItem({ id: previewFile.id, type: "file" });
+        setBufferSelection(previewFile);
+      }
       setToPreviewFile(null);
     }
-    // if (previewFile) {
-    //   setIsLoading(true);
-    //   setFirstLoad(true);
-
-    //   fetchFiles(previewFile.folderId).finally(() => {
-    //     setIsLoading(false);
-    //     setFirstLoad(false);
-    //     setScrollToItem({ id: previewFile.id, type: "file" });
-    //     setBufferSelection(previewFile);
-    //     setToPreviewFile(null);
-    //   });
-    // }
 
     setMediaViewerData({ visible: false, id: null });
 
@@ -163,7 +166,6 @@ const FilesMediaViewer = (props) => {
       return;
     }
 
-    setScrollToItem({ id: currentMediaFileId, type: "file" });
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
 
@@ -176,20 +178,16 @@ const FilesMediaViewer = (props) => {
         t={t}
         userAccess={userAccess}
         currentFileId={currentMediaFileId}
-        allowConvert={true} //TODO:
-        canDelete={canDelete} //TODO:
-        canDownload={canDownload} //TODO:
         visible={visible}
         playlist={playlist}
+        playlistPos={currentPostionIndex}
         onDelete={onDeleteMediaFile}
         onDownload={onDownloadMediaFile}
-        onClickFavorite={onClickFavorite}
         setBufferSelection={setBufferSelection}
         archiveRoomsId={archiveRoomsId}
         files={files}
         onClickDownload={onClickDownload}
         onShowInfoPanel={onShowInfoPanel}
-        onClickDownloadAs={onClickDownloadAs}
         onClickDelete={onClickDelete}
         onClickRename={onClickRename}
         onMoveAction={onMoveAction}
@@ -201,11 +199,10 @@ const FilesMediaViewer = (props) => {
         deleteDialogVisible={deleteDialogVisible}
         extsMediaPreviewed={extsMediaPreviewed}
         extsImagePreviewed={extsImagePreviewed}
-        errorLabel={t("Translations:MediaLoadError")}
         isPreviewFile={firstLoad}
-        previewFile={previewFile}
         onChangeUrl={onChangeUrl}
-        isFavoritesFolder={isFavoritesFolder}
+        nextMedia={nextMedia}
+        prevMedia={prevMedia}
       />
     )
   );
@@ -233,15 +230,20 @@ export default inject(
       setIsPreview,
       isPreview,
       resetUrl,
+      setSelection,
+      setAlreadyFetchingRooms,
     } = filesStore;
     const {
       visible,
       id: currentMediaFileId,
+      currentPostionIndex,
       setMediaViewerData,
       playlist,
       previewFile,
       setToPreviewFile,
       setCurrentId,
+      nextMedia,
+      prevMedia,
     } = mediaViewerDataStore;
     const { deleteItemAction } = filesActionsStore;
     const { getIcon, extsImagePreviewed, extsMediaPreviewed } = settingsStore;
@@ -262,6 +264,9 @@ export default inject(
     return {
       files,
       playlist,
+      currentPostionIndex,
+      nextMedia,
+      prevMedia,
       userAccess,
       visible: playlist.length > 0 && visible,
       currentMediaFileId,
@@ -283,6 +288,7 @@ export default inject(
       setScrollToItem,
       setCurrentId,
       setBufferSelection,
+      setAlreadyFetchingRooms,
       isFavoritesFolder,
       onClickFavorite,
       onClickDownloadAs,
@@ -295,6 +301,7 @@ export default inject(
       onCopyAction,
       onDuplicate,
       archiveRoomsId,
+      setSelection,
     };
   }
 )(
