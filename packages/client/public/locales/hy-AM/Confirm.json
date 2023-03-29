@@ -1,7 +1,6 @@
 {
   "ChangePasswordSuccess": "Գաղտնաբառը հաջողությամբ փոխվել է",
   "ConfirmOwnerPortalSuccessMessage": "Կայքէջի տնօրինողը հաջողությամբ փոխվել է: 10 վայրկյանից դուք կվերաուղղորդվեք:",
-  "ConfirmOwnerPortalTitle": "Խնդրում ենք հաստատել, որ ցանկանում եք փոխել կայքէջի տնօրինողին {{newOwner}}.",
   "CurrentNumber": "Ձեր ընթացիկ բջջային հեռախոսահամարը",
   "DeleteProfileBtn": "Ջնջել իմ հաշիվը",
   "DeleteProfileConfirmation": "Ուշադրություն! Դուք պատրաստվում եք ջնջել Ձեր հաշիվը",
