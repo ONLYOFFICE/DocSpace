@@ -22,6 +22,7 @@ type VirtualListProps = {
   cleanChildren: ReactElement[];
   children: ReactElement[];
   Row: NamedExoticComponent<object>;
+  enableKeyboardEvents: boolean;
 
   getItemSize: (index: number) => number;
 };
@@ -38,6 +39,7 @@ function VirtualList({
   calculatedHeight,
   isNoFixedHeightOptions,
   getItemSize,
+  enableKeyboardEvents,
 }: VirtualListProps) {
   const ref = useRef<VariableSizeList>(null);
 
@@ -53,7 +55,7 @@ function VirtualList({
   const currentIndexRef = useRef<number>(activeIndex);
 
   useEffect(() => {
-    if (isOpen && maxHeight) {
+    if (isOpen && maxHeight && enableKeyboardEvents) {
       window.addEventListener("keydown", onKeyDown);
     }
 
@@ -67,7 +69,7 @@ function VirtualList({
         ref.current.scrollToItem(activeIndex, "smart");
       }
     };
-  }, [isOpen, activeIndex, maxHeight]);
+  }, [isOpen, activeIndex, maxHeight, enableKeyboardEvents]);
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
