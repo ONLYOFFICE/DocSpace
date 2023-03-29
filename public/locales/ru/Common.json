@@ -165,7 +165,7 @@
   "PasswordLimitSpecialSymbols": "специальные символы",
   "PasswordLimitUpperCase": "заглавные буквы",
   "PasswordMinimumLength": "Минимальная длина",
-  "PayBeforeTheEndGracePeriod": "Обязательно произведите оплату до окончания льготного периода",
+  "PayBeforeTheEndGracePeriod": "Обязательно произведите оплату до окончания льготного периода.",
   "PaymentsTitle": "Платежи",
   "People": "Люди",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> за администратора/опытного пользователя /месяц",

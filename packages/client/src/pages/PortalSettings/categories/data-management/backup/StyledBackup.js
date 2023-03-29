@@ -244,6 +244,10 @@ const StyledRestoreBackup = styled.div`
   .restore-backup_input {
     margin: 16px 0;
     max-width: ${INPUT_LENGTH};
+
+    @media ${smallTablet} {
+      max-width: none;
+    }
   }
   .restore-description {
     margin-bottom: 24px;

@@ -1384,6 +1384,7 @@ const Dark = {
     backgroundColor: black,
     hoverBackgroundColor: "#3D3D3D",
     hoverDisabledBackgroundColor: black,
+    selectedBackgroundColor: "#282828",
     fontWeight: "600",
     fontSize: "13px",
     width: "100%",
