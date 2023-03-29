@@ -4,10 +4,14 @@ import Scrollbar from "../scrollbar";
 
 export class CustomScrollbars extends React.Component {
   refSetter = (scrollbarsRef, forwardedRef) => {
-    if (scrollbarsRef) {
-      forwardedRef(scrollbarsRef.view);
+    const isFuntion = typeof forwardedRef === "function";
+
+    const ref = scrollbarsRef?.view ?? null;
+
+    if (isFuntion) {
+      forwardedRef(ref);
     } else {
-      forwardedRef(null);
+      forwardedRef = ref;
     }
   };
 

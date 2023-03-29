@@ -90,7 +90,6 @@
   "SettingPasswordStrengthHelper": "최소 비밀번호 길이바를 사용하여 비밀번호 길이를 결정하세요. 비밀번호에 사용해야 하는 문자 집합을 결정하려면 아래에서 해당 상자를 체크하시기 바랍니다.",
   "StudioTimeLanguageSettings": "언어 및 시간대 설정",
   "SuccessfullySaveGreetingSettingsMessage": "환영 페이지 설정이 성공적으로 저장되었습니다",
-  "SuccessfullySavePortalNameMessage": "포털 이름 변경에 성공했습니다",
   "SuccessfullySaveSettingsMessage": "설정이 성공적으로 업데이트되었습니다",
   "TemporaryStorage": "임시 저장소",
   "TemporaryStorageDescription": "백업은 '백업' 섹션에 저장되며 생성 후 24시간 이내에 다운로드할 수 있습니다.",
