@@ -43,7 +43,7 @@ public abstract class FormatterState
     /// <summary>
     /// Public constructor.
     /// </summary>
-    /// <param name="f">The parent formatter.</param>
+    /// <param name="formatter">The parent formatter.</param>
     protected FormatterState(TextileFormatter formatter)
     {
         Formatter = formatter;
@@ -72,15 +72,15 @@ public abstract class FormatterState
     /// <param name="input">The line of text.</param>
     public abstract void FormatLine(string input);
 
-    /// <summary>
-    /// Returns whether this state can last for more than one line.
-    /// </summary>
-    /// <returns>A boolean value stating whether this state is only for one line.</returns>
-    /// This method should return true only if this state is genuinely
-    /// multi-line. For example, a header text is only one line long. You can
-    /// have several consecutive lines of header texts, but they are not the same
-    /// header - just several headers one after the other.
-    /// Bulleted and numbered lists are good examples of multi-line states.
+    ///// <summary>
+    ///// Returns whether this state can last for more than one line.
+    ///// </summary>
+    ///// <returns>A boolean value stating whether this state is only for one line.</returns>
+    ///// This method should return true only if this state is genuinely
+    ///// multi-line. For example, a header text is only one line long. You can
+    ///// have several consecutive lines of header texts, but they are not the same
+    ///// header - just several headers one after the other.
+    ///// Bulleted and numbered lists are good examples of multi-line states.
     //abstract public bool IsOneLineOnly();
 
     /// <summary>
@@ -93,9 +93,7 @@ public abstract class FormatterState
     /// <summary>
     /// 
     /// </summary>
-    /// <param name="actualTag"></param>
-    /// <param name="alignNfo"></param>
-    /// <param name="attNfo"></param>
+    /// <param name="other"></param>
     /// <returns></returns>
     public virtual bool ShouldNestState(FormatterState other)
     {

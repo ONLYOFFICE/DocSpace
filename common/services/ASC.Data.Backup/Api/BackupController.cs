@@ -61,10 +61,7 @@ public class BackupController : ControllerBase
     /// <summary>
     /// Create the backup schedule of the current portal
     /// </summary>
-    /// <param name="storageType">Storage type</param>
-    /// <param name="storageParams">Storage parameters</param>
-    /// <param name="backupsStored">Max of the backup's stored copies</param>
-    /// <param name="cronParams">Cron parameters</param>
+    /// <param name="backupSchedule">Storage type, Storage parameters, Max of the backup's stored copies, Cron parameters</param>
     /// <category>Backup</category>
     [HttpPost("createbackupschedule")]
     public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
@@ -97,8 +94,7 @@ public class BackupController : ControllerBase
     /// <summary>
     /// Start a backup of the current portal
     /// </summary>
-    /// <param name="storageType">Storage Type</param>
-    /// <param name="storageParams">Storage Params</param>
+    /// <param name="backup">Storage Type, Storage Params</param>
     /// <category>Backup</category>
     /// <returns>Backup Progress</returns>
     [AllowNotPayment]
@@ -167,10 +163,7 @@ public class BackupController : ControllerBase
     /// <summary>
     /// Start a data restore of the current portal
     /// </summary>
-    /// <param name="backupId">Backup Id</param>
-    /// <param name="storageType">Storage Type</param>
-    /// <param name="storageParams">Storage Params</param>
-    /// <param name="notify">Notify about backup to users</param>
+    /// <param name="backupRestore">Backup Id, Storage Type, Storage Params, Notify about backup to users</param>
     /// <category>Backup</category>
     /// <returns>Restore Progress</returns>
     [HttpPost("startrestore")]

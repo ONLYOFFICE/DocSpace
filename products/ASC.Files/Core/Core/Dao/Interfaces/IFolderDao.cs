@@ -86,7 +86,7 @@ public interface IFolderDao<T>
     /// <param name="subjectID"></param>
     /// <param name="searchText"></param>
     /// <param name="withSubfolders"></param>
-    /// <param name="tagIds"></param>
+    /// <param name="exludeSubject"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(T parentId, OrderBy orderBy, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool withSubfolders = false, bool exludeSubject = false);
 
@@ -100,7 +100,7 @@ public interface IFolderDao<T>
     /// <param name="searchText"></param>
     /// <param name="searchSubfolders"></param>
     /// <param name="checkShare"></param>
-    /// <param name="tagIds"></param>
+    /// <param name="exludeSubject"></param>
     /// <returns></returns>
     IAsyncEnumerable<Folder<T>> GetFoldersAsync(IEnumerable<T> folderIds, FilterType filterTypes = FilterType.None, bool subjectGroup = false, Guid? subjectID = null, string searchText = "", bool searchSubfolders = false, bool checkShare = true, bool exludeSubject = false);
 
@@ -275,8 +275,6 @@ public interface IFolderDao<T>
     Task<T> GetFolderIDRecentAsync(bool createIfNotExists);
 
     /// <summary>
-
-    /// <summary>
     /// Returns id folder "Favorites"
     /// Only in TMFolderDao
     /// </summary>
@@ -297,6 +295,7 @@ public interface IFolderDao<T>
     /// Only in TMFolderDao
     /// </summary>
     /// <param name="createIfNotExists"></param>
+    /// <param name="userId"></param>
     /// <returns></returns>
     Task<T> GetFolderIDPrivacyAsync(bool createIfNotExists, Guid? userId = null);
 

@@ -65,16 +65,19 @@ public static class DocumentService
     /// <summary>
     /// The method is to convert the file to the required format
     /// </summary>
+    /// <param name="fileUtility"></param>
     /// <param name="documentConverterUrl">Url to the service of conversion</param>
     /// <param name="documentUri">Uri for the document to convert</param>
     /// <param name="fromExtension">Document extension</param>
     /// <param name="toExtension">Extension to which to convert</param>
     /// <param name="documentRevisionId">Key for caching on service</param>
     /// <param name="password">Password</param>
+    /// <param name="region"></param>
     /// <param name="thumbnail">Thumbnail settings</param>
+    /// <param name="spreadsheetLayout"></param>
     /// <param name="isAsync">Perform conversions asynchronously</param>
     /// <param name="signatureSecret">Secret key to generate the token</param>
-    /// <param name="convertedDocumentUri">Uri to the converted document</param>
+    /// <param name="clientFactory"></param>
     /// <returns>The percentage of completion of conversion</returns>
     /// <example>
     /// string convertedDocumentUri;
@@ -238,6 +241,7 @@ public static class DocumentService
     /// <summary>
     /// Request to Document Server with command
     /// </summary>
+    /// <param name="fileUtility"></param>
     /// <param name="documentTrackerUrl">Url to the command service</param>
     /// <param name="method">Name of method</param>
     /// <param name="documentRevisionId">Key for caching on service, whose used in editor</param>
@@ -245,7 +249,7 @@ public static class DocumentService
     /// <param name="users">users id for drop</param>
     /// <param name="meta">file meta data for update</param>
     /// <param name="signatureSecret">Secret key to generate the token</param>
-    /// <param name="version">server version</param>
+    /// <param name="clientFactory"></param>
     /// <returns>Response</returns>
 
     public static async Task<CommandResponse> CommandRequestAsync(FileUtility fileUtility,
@@ -905,8 +909,7 @@ public static class DocumentService
     /// Processing document received from the editing service
     /// </summary>
     /// <param name="jsonDocumentResponse">The resulting json from editing service</param>
-    /// <param name="responseUri">Uri to the converted document</param>
-    /// <returns>The percentage of completion of conversion</returns>
+    /// <returns>The percentage of completion of conversion and Uri to the converted document</returns>
     private static (int ResultPercent, string responseuri) GetResponseUri(string jsonDocumentResponse)
     {
         if (string.IsNullOrEmpty(jsonDocumentResponse))

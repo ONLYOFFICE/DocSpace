@@ -46,6 +46,7 @@ public abstract class LdapObject
     /// Get property object
     /// </summary>
     /// <param name="propertyName">property name</param>
+    /// <param name="getBytes"></param>
     /// <returns>value object</returns>
     public abstract object GetValue(string propertyName, bool getBytes = false);
 

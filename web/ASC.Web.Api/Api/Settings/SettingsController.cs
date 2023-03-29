@@ -403,7 +403,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save the DNS settings</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api.Models" name="inDto">DNS settings request parameters: <![CDATA[
+    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api.Models" name="model">DNS settings request parameters: <![CDATA[
     /// <ul>
     ///     <li><b>DnsName</b> (string) - DNS,</li>
     ///     <li><b>Enable</b> (bool) - enabled or not.</li>

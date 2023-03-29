@@ -90,16 +90,17 @@ public interface IDataStore
     ///</summary>
     ///<param name="domain"></param>
     ///<param name="path"></param>
+    ///<param name="offset"></param>
     ///<returns></returns>
     Task<Stream> GetReadStreamAsync(string domain, string path, long offset);
 
     ///<summary>
     /// Saves the contents of the stream in the repository.
-    ///</ Summary>
+    ///</summary>
     /// <param Name="domain"> </param>
     /// <param Name="path"> </param>
     /// <param Name="stream"> flow. Is read from the current position! Desirable to set to 0 when the transmission MemoryStream instance </param>
-    /// <returns> </Returns>
+    /// <returns> </returns>
     Task<Uri> SaveAsync(string domain, string path, Stream stream);
 
     /// <summary>
@@ -176,7 +177,7 @@ public interface IDataStore
     /// Deletes files
     ///</summary>
     ///<param name="domain"></param>
-    ///<param name="listPaths"></param>
+    ///<param name="paths"></param>
     Task DeleteFilesAsync(string domain, List<string> paths);
 
     ///<summary>
@@ -204,6 +205,7 @@ public interface IDataStore
     ///<param name="srcpath"></param>
     ///<param name="newdomain"></param>
     ///<param name="newpath"></param>
+    ///<param name="quotaCheckFileSize"></param>
     ///<returns></returns>
     Task<Uri> MoveAsync(string srcdomain, string srcpath, string newdomain, string newpath, bool quotaCheckFileSize = true);
 
