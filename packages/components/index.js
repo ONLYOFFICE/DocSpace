@@ -19,8 +19,6 @@ export { default as EmptyScreenContainer } from "./empty-screen-container";
 export { default as FieldContainer } from "./field-container";
 export { default as FileInput } from "./file-input";
 export { default as Grid } from "./grid";
-export { default as GroupButton } from "./group-button";
-export { default as GroupButtonsMenu } from "./group-buttons-menu";
 export { default as Heading } from "./heading";
 export { default as HelpButton } from "./help-button";
 export { default as IconButton } from "./icon-button";
