@@ -81,7 +81,10 @@ class DropDown extends React.PureComponent {
   }
 
   handleClickOutside = (e) => {
-    e.preventDefault();
+    if (e.type !== "touchstart") {
+      e.preventDefault();
+    }
+
     this.toggleDropDown(e);
   };
 

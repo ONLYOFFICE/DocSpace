@@ -16,7 +16,6 @@
   "GracePeriodActivatedDescription": "Během období odkladu nemohou správci vytvářet nové místnosti a přidávat nové uživatele. Po uplynutí doby odkladu platby se DocSpace stane nedostupným, dokud nebude provedena platba.",
   "GracePeriodActivatedInfo": "Doba odkladu platí <1>od {{fromDate}} do {{byDate}}</1> (zbývající dny: {{delayDaysCount}}).",
   "ManagerTypesDescription": "Typy účtů správce a jejich oprávnění",
-  "NumberOfAdmins": "Počet správců",
   "Pay": "Platit",
   "Payer": "Plátce",
   "PayerDescription": "Tento uživatel má přístup k platebním údajům a je jediným uživatelem, který může upravovat kvóty a provádět platby. Vlastník prostoru DocSpace, stejně jako samotný správce platby, může roli správce platby přeřadit pomocí zákaznického portálu Stripe.",

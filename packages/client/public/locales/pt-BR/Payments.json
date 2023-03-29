@@ -16,7 +16,6 @@
   "GracePeriodActivatedDescription": "Durante o período de cortesia, os administradores não podem criar novas salas e adicionar novos usuários. Após a data de vencimento do período de carência, o DocSpace ficará indisponível até que o pagamento seja efetuado.",
   "GracePeriodActivatedInfo": "O período de tolerância é válido <1>de {{fromDate}} a {{byDate}}</1> (dias restantes: {{delayDaysCount}}).",
   "ManagerTypesDescription": "Tipos de conta de administrador e seus privilégios",
-  "NumberOfAdmins": "Número de administradores",
   "Pay": "Pagar",
   "Payer": "Pagador",
   "PayerDescription": "Este usuário tem acesso aos detalhes de pagamento e é o único usuário que pode ajustar a cota e efetuar pagamentos. O proprietário do DocSpace, bem como o próprio gerente pagador, pode reatribuir a função de gerente pagador usando o portal do cliente Stripe.",

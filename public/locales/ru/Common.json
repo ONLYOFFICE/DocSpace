@@ -168,7 +168,7 @@
   "PayBeforeTheEndGracePeriod": "Обязательно произведите оплату до окончания льготного периода.",
   "PaymentsTitle": "Платежи",
   "People": "Люди",
-  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> за администратора/месяц",
+  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> за администратора/опытного пользователя /месяц",
   "Petabyte": "Пб",
   "Phone": "Телефон",
   "Plugin": "Плагин",
