@@ -165,7 +165,7 @@ while (rowCount != 0) {
 }
 
 export default {
-  title: "Components/All",
+  title: "All",
   parameters: {
     docs: { description: { component: "All components" } },
   },
