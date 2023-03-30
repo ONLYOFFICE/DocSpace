@@ -202,23 +202,58 @@ public class FeedAggregateDataProvider
         var q = feedDbContext.FeedAggregates.AsNoTracking()
             .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id);
 
-        var exp = GetIdSearchExpression(filter.Id, filter.Module, filter.WithRelated);
+        var feeds = filter.History ? GetFeedsAsHistoryQuery(q, filter) : GetFeedsDefaultQuery(feedDbContext, q, filter);
 
-        if (exp != null)
+        return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(feeds);
+    }
+
+    private static IQueryable<FeedAggregate> GetFeedsAsHistoryQuery(IQueryable<FeedAggregate> query, FeedApiFilter filter)
+    {
+        Expression<Func<FeedAggregate, bool>> exp = null;
+
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filter.Id);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filter.Module);
+
+        switch (filter.Module)
         {
-            q = q.Where(exp);
+            case Constants.RoomsModule:
+                {
+                    var roomId = $"{Constants.RoomItem}_{filter.Id}";
+
+                    exp = f => f.Id == roomId || (f.Id.StartsWith(Constants.SharedRoomItem) && f.ContextId == roomId);
+
+                    if (filter.History)
+                    {
+                        exp = f => f.Id == roomId || f.ContextId == roomId;
+                    }
+
+                    break;
+                }
+            case Constants.FilesModule:
+                exp = f => f.Id.StartsWith($"{Constants.FileItem}_{filter.Id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{filter.Id}");
+                break;
+            case Constants.FoldersModule:
+                exp = f => f.Id == $"{Constants.FolderItem}_{filter.Id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{filter.Id}");
+                break;
         }
 
-        var q1 = q.Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
+        if (exp == null)
+        {
+            throw new InvalidOperationException();
+        }
+
+        return query.Where(exp);
+    }
+
+    private IQueryable<FeedAggregate> GetFeedsDefaultQuery(FeedDbContext feedDbContext, IQueryable<FeedAggregate> query, FeedApiFilter filter)
+    {
+        var q1 = query.Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .OrderByDescending(r => r.aggregates.ModifiedDate)
             .Skip(filter.Offset)
             .Take(filter.Max);
 
-        if (exp == null)
-        {
-            q1 = q1.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID).
-                Where(r => r.users.UserId == _authContext.CurrentAccount.ID);
-        }
+        q1 = q1.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID).
+            Where(r => r.users.UserId == _authContext.CurrentAccount.ID);
 
         if (filter.OnlyNew)
         {
@@ -249,16 +284,14 @@ public class FeedAggregateDataProvider
         if (filter.SearchKeys != null && filter.SearchKeys.Length > 0)
         {
             var keys = filter.SearchKeys
-                            .Where(s => !string.IsNullOrEmpty(s))
-                            .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
-                            .ToList();
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
+                .ToList();
 
             q1 = q1.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
         }
 
-        var news = q1.Select(r => r.aggregates).Distinct().AsEnumerable();
-
-        return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
+        return q1.Select(r => r.aggregates).Distinct();
     }
 
     public int GetNewFeedsCount(DateTime lastReadedTime)

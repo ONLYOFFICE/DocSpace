@@ -122,7 +122,7 @@ public class FoldersModule : FeedModule
             var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
             {
                 Item = SharedFolderItem,
-                ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
+                ItemId = $"{folder.Id}_{shareRecord.Subject}",
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
@@ -130,7 +130,7 @@ public class FoldersModule : FeedModule
                 ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString()),
+                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, shareRecord.TimeStamp, folder.ParentId.ToString()),
                 ContextId = contextId
             };
 
@@ -147,7 +147,7 @@ public class FoldersModule : FeedModule
             ExtraLocationTitle = parentFolder.Title,
             ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString()),
+            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.CreateOn, folder.ParentId.ToString()),
             ContextId = contextId
         };
     }
