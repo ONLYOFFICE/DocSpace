@@ -618,8 +618,8 @@ public class SettingsController : BaseSettingsController
             });
         }
 
-        var hits = _statisticManager.GetHitsByPeriod(Tenant.Id, from, to);
-        var hosts = _statisticManager.GetHostsByPeriod(Tenant.Id, from, to);
+        var hits = await _statisticManager.GetHitsByPeriodAsync(Tenant.Id, from, to);
+        var hosts = await _statisticManager.GetHostsByPeriodAsync(Tenant.Id, from, to);
 
         if (hits.Count == 0 || hosts.Count == 0)
         {

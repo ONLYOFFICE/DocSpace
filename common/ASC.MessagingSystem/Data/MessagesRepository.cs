@@ -65,7 +65,7 @@ public class MessagesRepository : IDisposable
 
     ~MessagesRepository()
     {
-        _ = FlushCacheAsync(true);
+        FlushCacheAsync(true).Wait();
     }
 
     private bool ForseSave(EventMessage message)

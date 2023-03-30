@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Core.Billing;
 
 [Singletone]
@@ -224,9 +222,9 @@ public class TariffService : ITariffService
                 }
                 catch (BillingNotFoundException)
                 {
-                    var freeTariff = tariff.Quotas.FirstOrDefault(tariffRow =>
+                    var freeTariff = await tariff.Quotas.ToAsyncEnumerable().FirstOrDefaultAwaitAsync(async tariffRow =>
                     {
-                        var q = _quotaService.GetTenantQuotaAsync(tariffRow.Id).Result;
+                        var q = await _quotaService.GetTenantQuotaAsync(tariffRow.Id);
                         return q == null
                             || (_trialEnabled && q.Trial)
                             || q.Free
@@ -338,7 +336,7 @@ public class TariffService : ITariffService
 
         List<TenantQuota> quotas = null;
         if (tariff.Quotas == null ||
-            (quotas = tariff.Quotas.Select(q => _quotaService.GetTenantQuotaAsync(q.Id).Result).ToList()).Any(q => q == null))
+            (quotas = await tariff.Quotas.ToAsyncEnumerable().SelectAwait(async q => await _quotaService.GetTenantQuotaAsync(q.Id)).ToListAsync()).Any(q => q == null))
         {
             return;
         }

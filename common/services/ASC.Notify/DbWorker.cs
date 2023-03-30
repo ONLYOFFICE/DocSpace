@@ -169,8 +169,6 @@ public class DbWorker : IDisposable
                     q.SetProperty(p => p.State, (int)result)
                     .SetProperty(p => p.Attempts, p => p.Attempts + 1)
                     .SetProperty(p => p.ModifyDate, DateTime.UtcNow));
-
-                await dbContext.SaveChangesAsync();
             }
 
             await tx.CommitAsync();

@@ -30,6 +30,7 @@ global using System.Linq.Expressions;
 global using System.Text.Json;
 
 global using ASC.Api.Core;
+global using Microsoft.EntityFrameworkCore;
 global using ASC.Api.Core.Extensions;
 global using ASC.Common;
 global using ASC.Common.Caching;

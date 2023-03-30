@@ -68,7 +68,15 @@ class DbQuotaService : IQuotaService
     public async Task RemoveTenantQuotaAsync(int id)
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
-        await coreDbContext.Quotas.Where(r => r.Tenant == id).ExecuteDeleteAsync();
+        var d = await coreDbContext.Quotas
+                 .Where(r => r.Tenant == id)
+                 .SingleOrDefaultAsync();
+
+        if (d != null)
+        {
+            coreDbContext.Quotas.Remove(d);
+            await coreDbContext.SaveChangesAsync();
+        }
     }
 
 

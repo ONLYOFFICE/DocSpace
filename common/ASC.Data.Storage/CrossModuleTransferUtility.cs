@@ -52,14 +52,14 @@ public class CrossModuleTransferUtility
         _chunkSize = 5 * 1024 * 1024;
     }
 
-    public Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
+    public async Task CopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)
     {
         ArgumentNullException.ThrowIfNull(srcDomain);
         ArgumentNullException.ThrowIfNull(srcPath);
         ArgumentNullException.ThrowIfNull(destDomain);
         ArgumentNullException.ThrowIfNull(destPath);
 
-        return InternalCopyFileAsync(srcDomain, srcPath, destDomain, destPath);
+        await InternalCopyFileAsync(srcDomain, srcPath, destDomain, destPath);
     }
 
     private async Task InternalCopyFileAsync(string srcDomain, string srcPath, string destDomain, string destPath)

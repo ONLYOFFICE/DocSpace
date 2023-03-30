@@ -54,7 +54,7 @@ public class Worker
         await using (var scope = _serviceScopeFactory.CreateAsyncScope())
         {
             using var dbContext = scope.ServiceProvider.GetRequiredService<IDbContextFactory<WebstudioDbContext>>().CreateDbContext();
-            activeTenantsUsers = GetTenantsUsers(dbContext);
+            activeTenantsUsers = await GetTenantsUsersAsync(dbContext);
         }
 
         if (!activeTenantsUsers.Any())
@@ -141,10 +141,10 @@ public class Worker
         }
     }
 
-    private List<TenantUserSettings> GetTenantsUsers(WebstudioDbContext dbContext)
+    private async Task<List<TenantUserSettings>> GetTenantsUsersAsync(WebstudioDbContext dbContext)
     {
         var filesSettingsId = new FilesSettings().ID;
-        return dbContext.Tenants
+        return await dbContext.Tenants
             .Join(dbContext.WebstudioSettings, a => a.Id, b => b.TenantId, (tenants, settings) => new { tenants, settings })
             .Where(x => x.tenants.Status == TenantStatus.Active &&
                         x.settings.Id == filesSettingsId &&
@@ -155,6 +155,6 @@ public class Worker
                 UserId = r.settings.UserId,
                 Setting = (DateToAutoCleanUp)Convert.ToInt32(JsonExtensions.JsonValue(nameof(r.settings.Data).ToLower(), "AutomaticallyCleanUp.Gap"))
             })
-            .ToList();
+            .ToListAsync();
     }
 }

@@ -157,7 +157,9 @@ public class AccountLinker
             accountLinkQuery = accountLinkQuery.Where(r => r.UId == hashId);
         }
 
-        await accountLinkQuery.ExecuteDeleteAsync();
+        var accountLink = await accountLinkQuery.FirstOrDefaultAsync();
+        accountLinkContext.AccountLinks.Remove(accountLink);
+        await accountLinkContext.SaveChangesAsync();
 
         _accountLinkerStorage.RemoveFromCache(obj);
     }

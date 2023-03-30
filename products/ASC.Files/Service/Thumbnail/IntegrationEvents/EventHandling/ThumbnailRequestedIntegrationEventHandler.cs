@@ -24,12 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Threading.Channels;
-
-using ASC.Core.Billing;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Thumbnail.IntegrationEvents.EventHandling;
 
 [Scope]
@@ -71,14 +65,14 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
         {
             return new List<FileData<int>>();
         }
-
-        return result.ToList().Select(r =>
+       
+        return await result.ToAsyncEnumerable().SelectAwait(async r =>
         {
-            var tariff = _tariffService.GetTariffAsync(r.TenantId).Result;
+            var tariff = await _tariffService.GetTariffAsync(r.TenantId);
             var fileData = new FileData<int>(r.TenantId, r.Id, "", tariff.State);
 
             return fileData;
-        });
+        }).ToListAsync();
     }
 
 

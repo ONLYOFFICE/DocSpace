@@ -182,10 +182,12 @@ public class DbHelper : IDisposable
                         r[table.Columns["mappeddomain"]] = null;
                         if (table.Columns.Contains("id"))
                         {
-                            await _coreDbContext.Tariffs.Where(t => t.Tenant == tenant.Id)
-                                .ExecuteUpdateAsync(q =>
-                                    q.SetProperty(p => p.Tenant, (int)r[table.Columns["id"]])
-                                    .SetProperty(p => p.CreateOn, DateTime.Now));
+                            var tariff = await _coreDbContext.Tariffs.FirstOrDefaultAsync(t => t.Tenant == tenant.Id);
+                            tariff.Tenant = (int)r[table.Columns["id"]];
+                            tariff.CreateOn = DateTime.Now;
+                            //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
+                            _coreDbContext.Entry(tariff).State = EntityState.Modified;
+                            await _coreDbContext.SaveChangesAsync();
                         }
                     }
                 }

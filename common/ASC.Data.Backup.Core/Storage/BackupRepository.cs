@@ -96,8 +96,13 @@ public class BackupRepository : IBackupRepository
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
 
-        await backupContext.Backups.Where(q => q.Id == id)
-            .ExecuteUpdateAsync(q => q.SetProperty(b => b.Removed, b => true));
+        var backup = await backupContext.Backups.FindAsync(id);
+
+        if (backup != null)
+        {
+            backup.Removed = true;
+            await backupContext.SaveChangesAsync();
+        }
     }
 
     public async Task SaveBackupScheduleAsync(BackupSchedule schedule)

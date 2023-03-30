@@ -311,9 +311,9 @@ public class DbTenantService : ITenantService
             tenant.Status = TenantStatus.RemovePending;
             tenant.StatusChanged = DateTime.UtcNow;
             tenant.LastModified = DateTime.UtcNow;
-        }
 
-        await tenantDbContext.SaveChangesAsync();
+            await tenantDbContext.SaveChangesAsync();
+        }
     }
 
     public async Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync()
