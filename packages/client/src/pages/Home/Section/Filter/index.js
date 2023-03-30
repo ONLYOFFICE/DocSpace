@@ -20,6 +20,7 @@ import {
   FilterSubject,
   RoomSearchArea,
 } from "@docspace/common/constants";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 import Loaders from "@docspace/common/components/Loaders";
 import FilterInput from "@docspace/common/components/FilterInput";
 import { withLayoutSize } from "@docspace/common/utils";
@@ -179,6 +180,7 @@ const SectionFilterContent = ({
   clearSearch,
   setClearSearch,
   setMainButtonMobileVisible,
+  isArchiveFolder,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -1436,7 +1438,15 @@ const SectionFilterContent = ({
     if (isRooms) {
       setIsLoading(true);
 
-      fetchRooms(selectedFolderId).finally(() => setIsLoading(false));
+      const newFilter = RoomsFilter.getDefault();
+
+      if (isArchiveFolder) {
+        newFilter.searchArea = RoomSearchArea.Archive;
+      }
+
+      fetchRooms(selectedFolderId, newFilter).finally(() =>
+        setIsLoading(false)
+      );
     } else {
       setIsLoading(true);
 
@@ -1545,6 +1555,7 @@ export default inject(
       isRecentFolder,
       isRooms,
       isTrash,
+      isArchiveFolder,
 
       setIsLoading,
       fetchFiles,
