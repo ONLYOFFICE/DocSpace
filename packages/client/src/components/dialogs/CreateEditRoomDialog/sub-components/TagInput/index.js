@@ -61,6 +61,17 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
     setIsDropdownOpen(false);
   };
 
+  const handleKeyDown = (event) => {
+    const keyCode = event.code;
+
+    const isAcceptableEvents =
+      keyCode === "ArrowUp" || keyCode === "ArrowDown" || keyCode === "Enter";
+
+    if (isAcceptableEvents && isDropdownOpen) return;
+
+    event.stopPropagation();
+  };
+
   return (
     <StyledTagInput
       className="set_room_params-input set_room_params-tag_input"
@@ -76,6 +87,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
         onBlur={closeDropdown}
         onFocus={handleFocus}
         isDisabled={isDisabled}
+        onKeyDown={handleKeyDown}
       />
 
       <TagDropdown

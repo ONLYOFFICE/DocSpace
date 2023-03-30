@@ -69,7 +69,7 @@ function VirtualList({
         ref.current.scrollToItem(activeIndex, "smart");
       }
     };
-  }, [isOpen, activeIndex, maxHeight, enableKeyboardEvents]);
+  }, [isOpen, activeIndex, maxHeight, enableKeyboardEvents, children]);
 
   const onKeyDown = useCallback(
     (event: KeyboardEvent) => {
@@ -99,7 +99,7 @@ function VirtualList({
       currentIndexRef.current = index;
       ref.current.scrollToItem(index, "smart");
     },
-    [isOpen]
+    [isOpen, children]
   );
 
   const handleMouseMove = useCallback((index: number) => {

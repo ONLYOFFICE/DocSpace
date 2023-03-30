@@ -119,7 +119,6 @@ const TagDropdown = ({
         hasItems={!!dropdownItems.length}
         clickOutsideAction={onClickOutside}
         withBackdrop={false}
-        enableKeyboardEvents={false}
       >
         {dropdownItems}
       </StyledDropDown>
