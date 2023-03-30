@@ -29,7 +29,6 @@ import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 import withLoader from "../../../../HOCs/withLoader";
 import { TableVersions } from "SRC_DIR/helpers/constants";
 import { showLoader, hideLoader } from "./FilterUtils";
-import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
