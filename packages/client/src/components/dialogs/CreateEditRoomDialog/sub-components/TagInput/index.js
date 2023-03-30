@@ -31,7 +31,17 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
   const [tagInput, setTagInput] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const onTagInputChange = (e) => setTagInput(e.target.value);
+  const onTagInputChange = (e) => {
+    const text = e.target.value;
+
+    if (text.trim().length > 0 && !isDropdownOpen) {
+      openDropdown();
+    } else if (text.length === 0 && isDropdownOpen) {
+      closeDropdown();
+    }
+
+    setTagInput(text);
+  };
 
   const openDropdown = () => {
     if (isDisabled) return;
@@ -56,7 +66,6 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
         placeholder={t("TagsPlaceholder")}
         value={tagInput}
         onChange={onTagInputChange}
-        onFocus={openDropdown}
         onBlur={closeDropdown}
         isDisabled={isDisabled}
       />
