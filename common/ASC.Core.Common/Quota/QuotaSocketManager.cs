@@ -59,6 +59,6 @@ public class QuotaSocketManager : SocketServiceClient
     {
         var tenantId = _tenantManager.GetCurrentTenant().Id;
 
-        return $"quota-{tenantId}";
+        return $"{tenantId}-quota";
     }
 }
