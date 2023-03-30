@@ -258,6 +258,7 @@ const InviteInput = ({
             }
             value={inputValue}
             onFocus={openInviteInputPanel}
+            isAutoFocussed={true}
           />
         </StyledInviteInput>
         {inputValue.length > 2 && (
