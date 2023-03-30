@@ -220,6 +220,17 @@ const InviteInput = ({
     }
   };
 
+  const onKeyDown = (event) => {
+    const keyCode = event.code;
+
+    const isAcceptableEvents =
+      keyCode === "ArrowUp" || keyCode === "ArrowDown" || keyCode === "Enter";
+
+    if (isAcceptableEvents && inputValue.length > 2) return;
+
+    event.stopPropagation();
+  };
+
   useEffect(() => {
     document.addEventListener("keyup", onKeyPress);
     return () => document.removeEventListener("keyup", onKeyPress);
@@ -258,6 +269,8 @@ const InviteInput = ({
             }
             value={inputValue}
             onFocus={openInviteInputPanel}
+            isAutoFocussed={true}
+            onKeyDown={onKeyDown}
           />
         </StyledInviteInput>
         {inputValue.length > 2 && (

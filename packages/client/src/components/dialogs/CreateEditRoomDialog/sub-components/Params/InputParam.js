@@ -31,6 +31,8 @@ const InputParam = React.forwardRef(
       isValidTitle,
       errorMessage,
       isAutoFocussed,
+      onKeyUp,
+      onKeyDown,
     },
     ref
   ) => {
@@ -63,6 +65,8 @@ const InputParam = React.forwardRef(
             isDisabled={isDisabled}
             hasError={!isValidTitle}
             isAutoFocussed={isAutoFocussed}
+            onKeyUp={onKeyUp}
+            onKeyDown={onKeyDown}
           />
         </FieldContainer>
       </StyledInputParam>
