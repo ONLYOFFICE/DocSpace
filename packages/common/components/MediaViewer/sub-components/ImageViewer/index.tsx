@@ -50,6 +50,7 @@ function ImageViewer({
   thumbnailSrc,
   imageId,
   version,
+  isTiff,
 }: ImageViewerProps) {
   const imgRef = useRef<HTMLImageElement>(null);
   const imgWrapperRef = useRef<HTMLDivElement>(null);
@@ -91,7 +92,7 @@ function ImageViewer({
   }, []);
 
   useEffect(() => {
-    if (unmountRef.current) return;
+    if (unmountRef.current || isTiff) return;
     setIsLoading(true);
   }, [src]);
 
@@ -136,14 +137,30 @@ function ImageViewer({
     (src) => {
       changeSourceTimeoutRef.current = setTimeout(() => {
         if (imgRef.current && !unmountRef.current) {
-          imgRef.current.src = URL.createObjectURL(src);
+          if (!src) return;
+
+          if (!isTiff) {
+            imgRef.current.src = URL.createObjectURL(src);
+          } else {
+            imgRef.current.src = src;
+          }
+
+          setIsLoading(() => false);
         }
       }, 500);
     },
-    [imageId]
+    [src, isTiff, imageId]
   );
 
   const loadImage = React.useCallback(async () => {
+    if (!src) return;
+
+    if (isTiff) {
+      return changeSource(src);
+    }
+
+    console.log(isTiff, src);
+
     const res = await fetch(src);
     const blob = await res.blob();
 
@@ -155,7 +172,7 @@ function ImageViewer({
     });
 
     changeSource(blob);
-  }, [src, imageId, version, changeSource]);
+  }, [src, imageId, version, isTiff, changeSource]);
 
   useEffect(() => {
     changeSourceTimeoutRef.current &&
@@ -167,14 +184,12 @@ function ImageViewer({
 
     indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
       if (result && result.version === version) {
-        console.log("change");
         changeSource(result.src);
       } else {
-        console.log("load");
         loadImage();
       }
     });
-  }, [src, imageId, version, loadImage, changeSource]);
+  }, [src, imageId, version, isTiff, loadImage, changeSource]);
 
   function resize() {
     if (!imgRef.current || isLoading) return;
@@ -197,10 +212,8 @@ function ImageViewer({
   ) {
     if (!containerRef.current) return;
 
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = containerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      containerRef.current.getBoundingClientRect();
 
     let width = Math.min(containerWidth, imageNaturalWidth);
     let height = (width / imageNaturalWidth) * imageNaturalHeight;
@@ -452,10 +465,8 @@ function ImageViewer({
       return;
 
     const { width, height, x, y } = imgRef.current.getBoundingClientRect();
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = containerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      containerRef.current.getBoundingClientRect();
 
     const scale = Math.max(style.scale.get() - DefaultSpeedScale, MinScale);
 
@@ -501,10 +512,8 @@ function ImageViewer({
       return;
 
     const { width, height, x, y } = imgRef.current.getBoundingClientRect();
-    const {
-      width: containerWidth,
-      height: containerHeight,
-    } = containerRef.current.getBoundingClientRect();
+    const { width: containerWidth, height: containerHeight } =
+      containerRef.current.getBoundingClientRect();
 
     const tx = ((containerWidth - width) / 2 - x) / style.scale.get();
     const ty = ((containerHeight - height) / 2 - y) / style.scale.get();
@@ -722,12 +731,8 @@ function ImageViewer({
         if (!pinching) cancel();
 
         if (first) {
-          const {
-            width,
-            height,
-            x,
-            y,
-          } = imgRef.current.getBoundingClientRect();
+          const { width, height, x, y } =
+            imgRef.current.getBoundingClientRect();
           const tx = ox - (x + width / 2);
           const ty = oy - (y + height / 2);
           memo = [style.x.get(), style.y.get(), tx, ty];
@@ -869,12 +874,8 @@ function ImageViewer({
         const mScale = (-1 * mYWheel) / RatioWheel;
 
         if (first || !memo) {
-          const {
-            width,
-            height,
-            x,
-            y,
-          } = imgRef.current.getBoundingClientRect();
+          const { width, height, x, y } =
+            imgRef.current.getBoundingClientRect();
           const tx = (event.pageX - (x + width / 2)) / style.scale.get();
           const ty = (event.pageY - (y + height / 2)) / style.scale.get();
           memo = [style.x.get(), style.y.get(), tx, ty];

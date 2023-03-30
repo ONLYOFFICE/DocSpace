@@ -159,6 +159,9 @@ function Viewer(props: ViewerProps) {
 
   const targetFile = props.playlist[props.playlistPos];
 
+  const isTiff =
+    targetFile?.fileExst === ".tiff" || targetFile.fileExst === ".tif";
+
   return (
     <StyledViewerContainer visible={props.visible}>
       {!isFullscreen && !isMobile && panelVisible && (
@@ -177,7 +180,8 @@ function Viewer(props: ViewerProps) {
             <ImageViewer
               panelVisible={panelVisible}
               toolbar={props.toolbar}
-              src={targetFile.src}
+              src={isTiff ? props.fileUrl : targetFile.src}
+              isTiff={isTiff}
               thumbnailSrc={targetFile.thumbnailUrl}
               imageId={targetFile.fileId}
               version={targetFile.version}

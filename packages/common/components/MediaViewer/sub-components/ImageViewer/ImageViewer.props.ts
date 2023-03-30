@@ -4,6 +4,7 @@ import { getCustomToolbar } from "../../helpers/getCustomToolbar";
 interface ImageViewerProps {
   src?: string;
   thumbnailSrc?: string;
+  isTiff?: boolean;
   imageId?: number;
   version?: number;
 
