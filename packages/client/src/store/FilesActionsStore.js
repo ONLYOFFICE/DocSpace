@@ -715,7 +715,13 @@ class FilesActionStore {
       });
 
       try {
-        await this.deleteItemOperation(isFile, itemId, translations, isRoom);
+        await this.deleteItemOperation(
+          isFile,
+          itemId,
+          translations,
+          isRoom,
+          operationId
+        );
 
         const id = Array.isArray(itemId) ? itemId : [itemId];
 
@@ -733,7 +739,7 @@ class FilesActionStore {
     }
   };
 
-  deleteItemOperation = (isFile, itemId, translations, isRoom) => {
+  deleteItemOperation = (isFile, itemId, translations, isRoom, operationId) => {
     const { addActiveItems, getIsEmptyTrash } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
 
@@ -1577,7 +1583,13 @@ class FilesActionStore {
 
     try {
       this.setGroupMenuBlocked(true);
-      await this.deleteItemOperation(false, itemId, translations, true);
+      await this.deleteItemOperation(
+        false,
+        itemId,
+        translations,
+        true,
+        operationId
+      );
 
       const id = Array.isArray(itemId) ? itemId : [itemId];
 

@@ -33,6 +33,15 @@ class SecondaryProgressDataStore {
         }
       }
     } else {
+      if (this.secondaryOperationsArray.length === 0) {
+        const progressDataItems = Object.keys(secondaryProgressData);
+        for (let key of progressDataItems) {
+          if (key in this) {
+            this[key] = secondaryProgressData[key];
+          }
+        }
+      }
+
       this.secondaryOperationsArray.push(secondaryProgressData);
     }
   };
