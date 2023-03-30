@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import PropTypes, { element } from "prop-types";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 
@@ -113,8 +113,12 @@ const Section = (props) => {
 
   React.useEffect(() => {
     window.addEventListener("resize", onResize);
-    onResize();
+
+    const ro = new ResizeObserver(onResize);
+
+    !!containerRef.current && ro.observe(containerRef.current);
     return () => {
+      !!containerRef.current && ro.unobserve(containerRef.current);
       window.removeEventListener("resize", onResize);
     };
   }, []);
@@ -123,6 +127,7 @@ const Section = (props) => {
     clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(() => {
+      console.log("call resize");
       if (!containerRef.current) return;
 
       const computedStyles = window.getComputedStyle(
