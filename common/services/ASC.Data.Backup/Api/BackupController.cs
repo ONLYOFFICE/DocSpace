@@ -26,6 +26,10 @@
 
 namespace ASC.Data.Backup.Controllers;
 
+/// <summary>
+/// Backup API.
+/// </summary>
+/// <name>backup</name>
 [Scope]
 [DefaultRoute]
 [ApiController]
@@ -48,10 +52,12 @@ public class BackupController : ControllerBase
         _eventBus = eventBus;
     }
     /// <summary>
-    /// Returns the backup schedule of the current portal
+    /// Returns the backup schedule of the current portal.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup Schedule</returns>
+    /// <short>Get the backup schedule</short>
+    /// <returns>Backup schedule: storage type, storage parameters, cron parameters, maximum number of the stored backup copies, last backup creation time</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getbackupschedule</path>
     [HttpGet("getbackupschedule")]
     public BackupAjaxHandler.Schedule GetBackupSchedule()
     {
@@ -59,10 +65,25 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Create the backup schedule of the current portal
+    /// Creates the backup schedule of the current portal with the parameters specified in the request.
     /// </summary>
-    /// <param name="backupSchedule">Storage type, Storage parameters, Max of the backup's stored copies, Cron parameters</param>
-    /// <category>Backup</category>
+    /// <short>Create the backup schedule</short>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup.ApiModels" name="backupSchedule">Backup schedule parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>StorageType</b> (string) - storage type,</li>
+    ///     <li><b>StorageParams</b> (IEnumerable&lt;ItemKeyValuePair&lt;object, object&gt;&gt;) - storage parameters,</li>
+    ///     <li><b>BackupsStored</b> (string) - maximum number of the stored backup copies,</li>
+    ///     <li><b>CronParams</b> (Cron) - cron parameters:</li>
+    ///     <ul>
+    ///         <li><b>Period</b> (string) - period,</li>
+    ///         <li><b>Hour</b> (string) - hour,</li>
+    ///         <li><b>Day</b> (string) - day.</li>
+    ///     </ul>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/backup/createbackupschedule</path>
     [HttpPost("createbackupschedule")]
     public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
     {
@@ -80,9 +101,12 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Delete the backup schedule of the current portal
+    /// Deletes the backup schedule of the current portal.
     /// </summary>
-    /// <category>Backup</category>
+    /// <short>Delete the backup schedule</short>
+    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <path>api/2.0/backup/deletebackupschedule</path>
     [HttpDelete("deletebackupschedule")]
     public bool DeleteBackupSchedule()
     {
@@ -92,11 +116,18 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Start a backup of the current portal
+    /// Starts the backup of the current portal with the parameters specified in the request.
     /// </summary>
-    /// <param name="backup">Storage Type, Storage Params</param>
-    /// <category>Backup</category>
-    /// <returns>Backup Progress</returns>
+    /// <short>Start the backup</short>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup.ApiModels" name="backup">Backup parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>StorageType</b> (string) - storage type,</li>
+    ///     <li><b>StorageParams</b> (IEnumerable&lt;ItemKeyValuePair&lt;object, object&gt;&gt;) - storage parameters.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/backup/startbackup</path>
     [AllowNotPayment]
     [HttpPost("startbackup")]
     public BackupProgress StartBackup(BackupDto backup)
@@ -115,10 +146,12 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Returns the progress of the started backup
+    /// Returns the progress of the started backup.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup Progress</returns>
+    /// <short>Get the backup progress</short>
+    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getbackupprogress</path>
     [AllowNotPayment]
     [HttpGet("getbackupprogress")]
     public BackupProgress GetBackupProgress()
@@ -127,10 +160,12 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Returns the backup history of the started backup
+    /// Returns the history of the started backup.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup History</returns>
+    /// <short>Get the backup history</short>
+    /// <returns>List of backup history records: backup ID, file name, storage type, creation date, expiration date</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getbackuphistory</path>
     [HttpGet("getbackuphistory")]
     public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
@@ -138,9 +173,13 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Delete the backup with the specified id
+    /// Deletes the backup with the ID specified in the request.
     /// </summary>
-    /// <category>Backup</category>
+    /// <short>Delete the backup</short>
+    /// <param type="System.Guid, System" name="id">Backup ID</param>
+    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <path>api/2.0/backup/deletebackup/{id}</path>
     [HttpDelete("deletebackup/{id}")]
     public async Task<bool> DeleteBackup(Guid id)
     {
@@ -149,10 +188,12 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Delete all backups of the current portal
+    /// Deletes the backup history of the current portal.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Backup History</returns>
+    /// <short>Delete the backup history</short>
+    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <httpMethod>DELETE</httpMethod>
+    /// <path>api/2.0/backup/deletebackuphistory</path>
     [HttpDelete("deletebackuphistory")]
     public async Task<bool> DeleteBackupHistory()
     {
@@ -161,11 +202,20 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Start a data restore of the current portal
+    /// Starts the data restoring process of the current portal with the parameters specified in the request.
     /// </summary>
-    /// <param name="backupRestore">Backup Id, Storage Type, Storage Params, Notify about backup to users</param>
-    /// <category>Backup</category>
-    /// <returns>Restore Progress</returns>
+    /// <short>Start the restoring process</short>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup.ApiModels" name="backupRestore">Restoring parameters: <![CDATA[
+    /// <ul>
+    ///     <li><b>BackupId</b> (string) - backup ID,</li>
+    ///     <li><b>StorageType</b> (object) - storage type,</li>
+    ///     <li><b>StorageParams</b> (IEnumerable&lt;ItemKeyValuePair&lt;object, object&gt;&gt;) - storage parameters,</li>
+    ///     <li><b>Notify</b> (bool) - notifies users about portal restoring process or not.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>POST</httpMethod>
+    /// <path>api/2.0/backup/startrestore</path>
     [HttpPost("startrestore")]
     public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
     {
@@ -185,10 +235,13 @@ public class BackupController : ControllerBase
     }
 
     /// <summary>
-    /// Returns the progress of the started restore
+    /// Returns the progress of the started restoring process.
     /// </summary>
-    /// <category>Backup</category>
-    /// <returns>Restore Progress</returns>
+    /// <short>Get the restoring progress</short>
+    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/getrestoreprogress</path>
+    /// <requiresAuthorization>false</requiresAuthorization>
     [HttpGet("getrestoreprogress")]  //NOTE: this method doesn't check payment!!!
     [AllowAnonymous]
     [AllowNotPayment]
@@ -197,6 +250,13 @@ public class BackupController : ControllerBase
         return _backupHandler.GetRestoreProgress();
     }
 
+    /// <summary>
+    /// Returns a path to the temporary folder with the stored backup.
+    /// </summary>
+    /// <short>Get the temporary backup folder</short>
+    /// <returns>Path to the temporary folder with the stored backup</returns>
+    /// <httpMethod>GET</httpMethod>
+    /// <path>api/2.0/backup/backuptmp</path>
     ///<visible>false</visible>
     [HttpGet("backuptmp")]
     public object GetTempPath()
