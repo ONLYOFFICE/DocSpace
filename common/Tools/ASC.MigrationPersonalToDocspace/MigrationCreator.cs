@@ -97,7 +97,7 @@ public class MigrationCreator
         await using (var writer = new ZipWriteOperator(_tempStream, path))
         {
             await DoMigrationDb(id, writer);
-            DoMigrationStorage(id, writer);
+            await DoMigrationStorage(id, writer);
         }
         return fileName;
     }
@@ -370,18 +370,18 @@ public class MigrationCreator
     private async Task DoMigrationStorage(Guid id, IDataWriteOperator writer)
     {
         Console.WriteLine($"start backup storage");
-        var fileGroups = GetFilesGroup(id);
+        var fileGroups = await GetFilesGroup(id);
         foreach (var group in fileGroups)
         {
             Console.WriteLine($"start backup fileGroup: {group.Key}");
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(_fromTenantId, group.Key);
+                var storage = await _storageFactory.GetStorageAsync(_fromTenantId, group.Key);
                 var file1 = file;
                 await ActionInvoker.Try(async state =>
                 {
                     var f = (BackupFileInfo)state;
-                    using var fileStream = storage.GetReadStreamAsync(f.Domain, f.Path).Result;
+                    using var fileStream = await storage.GetReadStreamAsync(f.Domain, f.Path);
                     await writer.WriteEntryAsync(file1.GetZipKey(), fileStream);
                 }, file, 5);
             }
@@ -402,14 +402,14 @@ public class MigrationCreator
         Console.WriteLine($"end backup storage");
     }
 
-    private List<IGrouping<string, BackupFileInfo>> GetFilesGroup(Guid id)
+    private async Task<List<IGrouping<string, BackupFileInfo>>> GetFilesGroup(Guid id)
     {
-        var files = GetFilesToProcess(id).ToList();
+        var files = (await GetFilesToProcess(id)).ToList();
 
         return files.GroupBy(file => file.Module).ToList();
     }
 
-    private IEnumerable<BackupFileInfo> GetFilesToProcess(Guid id)
+    private async Task<IEnumerable<BackupFileInfo>> GetFilesToProcess(Guid id)
     {
         var files = new List<BackupFileInfo>();
 
@@ -417,7 +417,7 @@ public class MigrationCreator
 
         var module = _storageFactoryConfig.GetModuleList().Where(m => m == "files").Single();
 
-        var store = _storageFactory.GetStorage(_fromTenantId, module);
+        var store = await _storageFactory.GetStorageAsync(_fromTenantId, module);
 
         var dbFiles = filesDbContext.Files.Where(q => q.CreateBy == id && q.TenantId == _fromTenantId).ToList();
 

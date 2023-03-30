@@ -114,7 +114,7 @@ public class MigrationRunner
             Console.WriteLine($"start restore fileGroup: {group.Key}");
             foreach (var file in group)
             {
-                var storage = _storageFactory.GetStorage(columnMapper.GetTenantMapping(), group.Key, _region);
+                var storage = await _storageFactory.GetStorageAsync(columnMapper.GetTenantMapping(), group.Key, _region);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
