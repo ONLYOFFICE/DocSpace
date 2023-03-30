@@ -97,6 +97,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
         tagInputValue={tagInput}
         setTagInputValue={setTagInput}
         createTagLabel={t("CreateTagOption")}
+        closeDropdown={closeDropdown}
       />
 
       <TagList
