@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "当前存储空间：<1>{{size}}</1>。",
+  "DowngradePlan": "降级版本",
+  "SaveOrChange": "减少必要参数或保留您当前的定价版本。",
+  "StorageSpaceSizeAllowed": "允许的存储空间大小：<1>{{size}}</1>。"
+}

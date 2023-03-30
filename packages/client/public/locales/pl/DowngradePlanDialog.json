@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "Dostępna pamięć: <1>{{size}}</1>.",
+  "DowngradePlan": "Zmień plan na tańszy",
+  "SaveOrChange": "Zredukuj wymagany parametr lub zachowaj aktualny plan cenowy.",
+  "StorageSpaceSizeAllowed": "Dozwolony rozmiar pamięci: <1>{{size}}</1>."
+}

@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "Pašreizējā krātuves vieta: <1>{{size}} </1>.",
+  "DowngradePlan": "Pazemināšanas plāns",
+  "SaveOrChange": "Samaziniet nepieciešamo parametru vai saglabājiet pašreizējo cenu plānu.",
+  "StorageSpaceSizeAllowed": "Atļautais krātuves vietas lielums: <1>{{size}}</1>."
+}

@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "Geçerli depolama alanı: <1>{{size}}</1>.",
+  "DowngradePlan": "Planı eski sürüme döndür",
+  "SaveOrChange": "Gerekli parametreyi azaltın veya mevcut fiyatlandırma planınızı koruyun.",
+  "StorageSpaceSizeAllowed": "İzin verilen depolama alanı boyutu: <1>{{size}}</1>."
+}
