@@ -61,7 +61,7 @@ const StyledSettingsComponent = styled.div`
 
   .settings-block-description {
     line-height: 20px;
-    color: #657077;
+    color: ${(props) => props.theme.client.settings.security.descriptionColor};
     padding-bottom: 12px;
   }
 
