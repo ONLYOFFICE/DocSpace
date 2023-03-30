@@ -24,6 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using File = Microsoft.SharePoint.Client.File;
+using Folder = Microsoft.SharePoint.Client.Folder;
+
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope]
@@ -40,14 +43,14 @@ internal class SharePointFileDao : SharePointDaoBase, IFileDao<string>
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        ILogger<SharePointFileDao> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         SharePointDaoSelector sharePointDaoSelector,
         IFileDao<int> fileDao,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<File, Folder, ClientObject, SharePointProviderInfo> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
         _crossDao = crossDao;
         _sharePointDaoSelector = sharePointDaoSelector;

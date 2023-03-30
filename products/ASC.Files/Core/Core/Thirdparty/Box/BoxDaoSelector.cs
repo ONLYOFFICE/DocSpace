@@ -28,23 +28,15 @@ using ASC.Files.Core.Core.Thirdparty.Box;
 
 namespace ASC.Files.Thirdparty.Box;
 
-[Scope(Additional = typeof(BoxDaoSelectorExtension))]
-internal class BoxDaoSelector : RegexDaoSelectorBase<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>, IDaoSelector<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>
-{
-    public BoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-        : base(serviceProvider, daoFactory)
-    {
-    }
-}
-
 public static class BoxDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
         services.TryAdd<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>, BoxFileDao>();
         services.TryAdd<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>();
-        services.TryAdd<IThirdPartyTagDao<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>, ThirdPartyTagDao<BoxFile, BoxFolder, BoxItem>>();
+        services.TryAdd<IProviderInfo<BoxFile, BoxFolder, BoxItem>, BoxProviderInfo>();
+        services.TryAdd<IThirdPartyTagDao<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>, ThirdPartyTagDao<BoxFile, BoxFolder, BoxItem>>();
         services.TryAdd<IDaoBase<BoxFile, BoxFolder, BoxItem>, BoxDaoBase>();
-        services.TryAdd<IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>, BoxDaoSelector>();
+        services.TryAdd<IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>, RegexDaoSelectorBase<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>>();
     }
 }

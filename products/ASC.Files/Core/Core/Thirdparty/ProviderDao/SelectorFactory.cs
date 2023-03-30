@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using DriveFile = Google.Apis.Drive.v3.Data.File;
+using File = Microsoft.SharePoint.Client.File;
+using Folder = Microsoft.SharePoint.Client.Folder;
+
 namespace ASC.Files.Core.Core.Thirdparty.ProviderDao;
 
 [Scope(Additional = typeof(SelectorFactoryExtension))]
@@ -48,17 +52,17 @@ internal class SelectorFactory
     private IDaoSelector GetSelectorInternal(string selector)
     {
         if (selector == Selectors.SharpBox.Id)
-            return _serviceProvider.GetService<SharpBoxDaoSelector>();
+            return _serviceProvider.GetService<IDaoSelector<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>>();
         else if (selector == Selectors.SharePoint.Id)
-            return _serviceProvider.GetService<SharePointDaoSelector>();
+            return _serviceProvider.GetService<IDaoSelector<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>>();
         else if (selector == Selectors.GoogleDrive.Id)
-            return _serviceProvider.GetService<GoogleDriveDaoSelector>();
+            return _serviceProvider.GetService<IDaoSelector<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>>>();
         else if (selector == Selectors.Box.Id)
-            return _serviceProvider.GetService<BoxDaoSelector>();
+            return _serviceProvider.GetService<IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>>();
         else if (selector == Selectors.Dropbox.Id)
-            return _serviceProvider.GetService<DropboxDaoSelector>();
+            return _serviceProvider.GetService<IDaoSelector<FileMetadata, FolderMetadata, Metadata, IProviderInfo<FileMetadata, FolderMetadata, Metadata>>>();
         else if (selector == Selectors.OneDrive.Id)
-            return _serviceProvider.GetService<OneDriveDaoSelector>();
+            return _serviceProvider.GetService<IDaoSelector<Item, Item, Item, IProviderInfo<Item, Item, Item>>>();
         else
             return null;
     }
@@ -88,9 +92,9 @@ public static class SelectorFactoryExtension
     {
         services.TryAdd<SharpBoxDaoSelector>();
         services.TryAdd<SharePointDaoSelector>();
-        services.TryAdd<OneDriveDaoSelector>();
-        services.TryAdd<GoogleDriveDaoSelector>();
-        services.TryAdd<DropboxDaoSelector>();
-        services.TryAdd<BoxDaoSelector>();
+        OneDriveDaoSelectorExtension.Register(services);
+        GoogleDriveDaoSelectorExtension.Register(services);
+        DropboxDaoSelectorExtension.Register(services);
+        BoxDaoSelectorExtension.Register(services);
     }
 }

@@ -28,23 +28,15 @@ using ASC.Files.Core.Core.Thirdparty.Dropbox;
 
 namespace ASC.Files.Thirdparty.Dropbox;
 
-[Scope(Additional = typeof(DropboxDaoSelectorExtension))]
-internal class DropboxDaoSelector : RegexDaoSelectorBase<FileMetadata, FolderMetadata, Metadata, DropboxProviderInfo>, IDaoSelector<FileMetadata, FolderMetadata, Metadata, DropboxProviderInfo>
-{
-    public DropboxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-        : base(serviceProvider, daoFactory)
-    {
-    }
-}
-
 public static class DropboxDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
         services.TryAdd<ThirdPartyFileDao<FileMetadata, FolderMetadata, Metadata>, DropboxFileDao>();
         services.TryAdd<ThirdPartyFolderDao<FileMetadata, FolderMetadata, Metadata>>();
-        services.TryAdd<IThirdPartyTagDao<FileMetadata, FolderMetadata, Metadata, DropboxProviderInfo>, ThirdPartyTagDao<FileMetadata, FolderMetadata, Metadata>>();
+        services.TryAdd<IProviderInfo<FileMetadata, FolderMetadata, Metadata>, DropboxProviderInfo>();
+        services.TryAdd<IThirdPartyTagDao<FileMetadata, FolderMetadata, Metadata, IProviderInfo<FileMetadata, FolderMetadata, Metadata>>, ThirdPartyTagDao<FileMetadata, FolderMetadata, Metadata>>();
         services.TryAdd<IDaoBase<FileMetadata, FolderMetadata, Metadata>, DropboxDaoBase>();
-        services.TryAdd<IDaoSelector<FileMetadata, FolderMetadata, Metadata, IProviderInfo<FileMetadata, FolderMetadata, Metadata>>, DropboxDaoSelector>();
+        services.TryAdd<IDaoSelector<FileMetadata, FolderMetadata, Metadata, IProviderInfo<FileMetadata, FolderMetadata, Metadata>>, RegexDaoSelectorBase<FileMetadata, FolderMetadata, Metadata, IProviderInfo<FileMetadata, FolderMetadata, Metadata>>>();
     }
 }

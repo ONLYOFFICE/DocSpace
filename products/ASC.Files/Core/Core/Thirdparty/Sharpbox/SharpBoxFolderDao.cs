@@ -41,15 +41,16 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        ILogger<SharpBoxFolderDao> monitor,
+        ILogger<SharpBoxDaoBase> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         SharpBoxDaoSelector sharpBoxDaoSelector,
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
         _crossDao = crossDao;
         _sharpBoxDaoSelector = sharpBoxDaoSelector;
@@ -80,7 +81,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     }
 
     public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider,
-        SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds,IEnumerable<int> parentsIds = null)
+        SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null)
     {
         if (CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != ProviderFilter.kDrive && provider != ProviderFilter.WebDav && provider != ProviderFilter.Yandex))
         {
@@ -449,10 +450,10 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
                     if (ProviderInfo.FolderId == oldId)
                     {
-                    await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
+                        await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
+                    }
                 }
             }
-        }
         }
 
         await UpdatePathInDBAsync(oldId, newId);

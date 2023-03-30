@@ -30,7 +30,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope(Additional = typeof(SharePointDaoSelectorExtension))]
-internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, ClientObject, SharePointProviderInfo>, IDaoSelector
+internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>
 {
 
     public SharePointDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
@@ -55,7 +55,8 @@ internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, Client
             var match = Selector.Match(id);
             if (match.Success)
             {
-                return GetInfo(id).ProviderInfo.SpRootFolderId + match.Groups["path"].Value.Replace('|', '/');
+                //return GetInfo(id).ProviderInfo.SpRootFolderId + match.Groups["path"].Value.Replace('|', '/');
+                return "" + match.Groups["path"].Value.Replace('|', '/');
             }
 
             throw new ArgumentException("Id is not a sharepoint id");
@@ -71,6 +72,8 @@ public static class SharePointDaoSelectorExtension
     {
         services.TryAdd<SharePointFileDao>();
         services.TryAdd<SharePointFolderDao>();
-        services.TryAdd<IThirdPartyTagDao<File, Folder, ClientObject, SharePointProviderInfo>, ThirdPartyTagDao<File, Folder, ClientObject>>();
+        services.TryAdd<IProviderInfo<File, Folder, ClientObject>, SharePointProviderInfo>();
+        services.TryAdd<IThirdPartyTagDao<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>, ThirdPartyTagDao<File, Folder, ClientObject>>();
+        services.TryAdd<IDaoSelector<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>, SharePointDaoSelector>();
     }
 }

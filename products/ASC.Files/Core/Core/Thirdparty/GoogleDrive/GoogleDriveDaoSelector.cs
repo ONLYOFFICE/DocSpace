@@ -30,23 +30,15 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
-[Scope(Additional = typeof(GoogleDriveDaoSelectorExtension))]
-internal class GoogleDriveDaoSelector : RegexDaoSelectorBase<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>, IDaoSelector<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>
-{
-    public GoogleDriveDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-        : base(serviceProvider, daoFactory)
-    {
-    }
-}
-
 public static class GoogleDriveDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
         services.TryAdd<ThirdPartyFileDao<DriveFile, DriveFile, DriveFile>, GoogleDriveFileDao>();
         services.TryAdd<ThirdPartyFolderDao<DriveFile, DriveFile, DriveFile>>();
-        services.TryAdd<IThirdPartyTagDao<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>, ThirdPartyTagDao<DriveFile, DriveFile, DriveFile>>();
+        services.TryAdd<IThirdPartyTagDao<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>>, ThirdPartyTagDao<DriveFile, DriveFile, DriveFile>>();
         services.TryAdd<IDaoBase<DriveFile, DriveFile, DriveFile>, GoogleDriveDaoBase>();
-        services.TryAdd<IDaoSelector<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>>, GoogleDriveDaoSelector>();
+        services.TryAdd<IProviderInfo<DriveFile, DriveFile, DriveFile>, GoogleDriveProviderInfo>();
+        services.TryAdd<IDaoSelector<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>>, RegexDaoSelectorBase<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>>>();
     }
 }

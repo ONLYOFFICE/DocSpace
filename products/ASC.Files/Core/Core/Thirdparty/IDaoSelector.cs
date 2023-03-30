@@ -36,6 +36,7 @@ internal interface IDaoSelector : IDisposable
     string GetIdCode(string id);
 }
 
+[Scope]
 internal interface IDaoSelector<TFile, TFolder, TItem, T> : IDaoSelector
     where T : class, IProviderInfo<TFile, TFolder, TItem>
     where TFile : class, TItem

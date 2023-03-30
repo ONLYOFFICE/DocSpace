@@ -25,6 +25,8 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.Core.Thirdparty;
+
+[Scope]
 internal interface IDaoBase<TFile, TFolder, TItem>
     where TFile : TItem
     where TFolder : TItem

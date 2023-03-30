@@ -35,12 +35,14 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        ILogger monitor,
+        ILogger<SharpBoxDaoBase> monitor,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+        _logger = monitor;
     }
 
     protected class ErrorEntry : ICloudDirectoryEntry
@@ -430,6 +432,8 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
     }
 
     private string _rootFolderId;
+    private readonly ILogger<SharpBoxDaoBase> _logger;
+
     protected string RootFolderMakeId()
     {
         return _rootFolderId ??= MakeId(RootFolder());

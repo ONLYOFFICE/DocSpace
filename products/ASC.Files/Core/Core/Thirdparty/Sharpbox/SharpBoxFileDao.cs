@@ -44,14 +44,15 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        ILogger<SharpBoxFileDao> monitor,
+        ILogger<SharpBoxDaoBase> monitor,
         FileUtility fileUtility,
         CrossDao crossDao,
         SharpBoxDaoSelector sharpBoxDaoSelector,
         IFileDao<int> fileDao,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
         _tempStream = tempStream;
         _crossDao = crossDao;

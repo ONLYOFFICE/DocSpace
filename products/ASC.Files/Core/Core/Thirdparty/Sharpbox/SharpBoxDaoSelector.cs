@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Sharpbox;
 
 [Scope(Additional = typeof(SharpBoxDaoSelectorExtension))]
-internal class SharpBoxDaoSelector : RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo>, IDaoSelector
+internal class SharpBoxDaoSelector : RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>
 {
     public SharpBoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)
@@ -51,6 +51,8 @@ public static class SharpBoxDaoSelectorExtension
     {
         services.TryAdd<SharpBoxFileDao>();
         services.TryAdd<SharpBoxFolderDao>();
-        services.TryAdd<IThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo>, ThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>();
+        services.TryAdd<IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>, SharpBoxProviderInfo>();
+        services.TryAdd<IThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>, ThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>();
+        services.TryAdd<IDaoSelector<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>, SharpBoxDaoSelector>();
     }
 }

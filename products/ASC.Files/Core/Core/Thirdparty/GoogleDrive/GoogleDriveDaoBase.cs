@@ -31,18 +31,18 @@ namespace ASC.Files.Thirdparty.GoogleDrive;
 [Scope]
 internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>, IDaoBase<DriveFile, DriveFile, DriveFile>
 {
-    protected GoogleDriveDaoBase(
+    public GoogleDriveDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        ILogger monitor,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
     }
 

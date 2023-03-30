@@ -46,6 +46,7 @@ public interface IProviderInfo : IDisposable
     Selector Selector { get; }
 }
 
+[Transient]
 public interface IProviderInfo<TFile, TFolder, TItem> : IProviderInfo
     where TFile : class, TItem
     where TFolder : class, TItem

@@ -26,7 +26,8 @@
 
 namespace ASC.Files.Thirdparty;
 
-internal abstract class RegexDaoSelectorBase<TFile, TFolder, TItem, T>
+[Scope]
+internal class RegexDaoSelectorBase<TFile, TFolder, TItem, T> : IDaoSelector<TFile, TFolder, TItem, T>
     where T : class, IProviderInfo<TFile, TFolder, TItem>
     where TFile : class, TItem
     where TFolder : class, TItem
@@ -41,7 +42,7 @@ internal abstract class RegexDaoSelectorBase<TFile, TFolder, TItem, T>
 
     private Dictionary<string, BaseProviderInfo<TFile, TFolder, TItem, T>> Providers { get; set; }
 
-    protected RegexDaoSelectorBase(
+    public RegexDaoSelectorBase(
         IServiceProvider serviceProvider,
         IDaoFactory daoFactory)
     {

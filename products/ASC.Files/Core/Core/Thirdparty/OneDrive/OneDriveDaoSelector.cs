@@ -28,23 +28,15 @@ using ASC.Files.Core.Core.Thirdparty.OneDrive;
 
 namespace ASC.Files.Thirdparty.OneDrive;
 
-[Scope(Additional = typeof(OneDriveDaoSelectorExtension))]
-internal class OneDriveDaoSelector : RegexDaoSelectorBase<Item, Item, Item, OneDriveProviderInfo>, IDaoSelector<Item, Item, Item, OneDriveProviderInfo>
-{
-    public OneDriveDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-        : base(serviceProvider, daoFactory)
-    {
-    }
-}
-
 public static class OneDriveDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
         services.TryAdd<ThirdPartyFileDao<Item, Item, Item>, OneDriveFileDao>();
         services.TryAdd<ThirdPartyFolderDao<Item, Item, Item>>();
-        services.TryAdd<IThirdPartyTagDao<Item, Item, Item, OneDriveProviderInfo>, ThirdPartyTagDao<Item, Item, Item>>();
+        services.TryAdd<IThirdPartyTagDao<Item, Item, Item, IProviderInfo<Item, Item, Item>>, ThirdPartyTagDao<Item, Item, Item>>();
         services.TryAdd<IDaoBase<Item, Item, Item>, OneDriveDaoBase>();
-        services.TryAdd<IDaoSelector<Item, Item, Item, IProviderInfo<Item, Item, Item>>, OneDriveDaoSelector>();
+        services.TryAdd<IProviderInfo<Item, Item, Item>, OneDriveProviderInfo>();
+        services.TryAdd<IDaoSelector<Item, Item, Item, IProviderInfo<Item, Item, Item>>, RegexDaoSelectorBase<Item, Item, Item, IProviderInfo<Item, Item, Item>>>();
     }
 }

@@ -398,7 +398,6 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem, T> : ThirdP
     protected readonly TenantUtil _tenantUtil;
     protected readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     protected readonly SetupInfo _setupInfo;
-    protected readonly ILogger _logger;
     protected readonly FileUtility _fileUtility;
     protected readonly TempPath _tempPath;
     protected readonly AuthContext _authContext;
@@ -415,21 +414,21 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem, T> : ThirdP
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
-        ILogger logger,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<TFile, TFolder, TItem, T> regexDaoSelectorBase)
     {
         _serviceProvider = serviceProvider;
         _userManager = userManager;
         _tenantUtil = tenantUtil;
         _dbContextFactory = dbContextFactory;
         _setupInfo = setupInfo;
-        _logger = logger;
         _fileUtility = fileUtility;
         _tempPath = tempPath;
         TenantID = tenantManager.GetCurrentTenant().Id;
         _authContext = authContext;
+        DaoSelector = regexDaoSelectorBase;
     }
 
     public IQueryable<TSet> Query<TSet>(DbSet<TSet> set) where TSet : class, IDbFile
