@@ -87,8 +87,7 @@ function VirtualList({
           index--;
           break;
         case "Enter":
-          children[index]?.props?.onClick();
-          break;
+          return children[index]?.props?.onClick();
         default:
           return;
       }
