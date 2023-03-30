@@ -17,52 +17,58 @@ const StyledInputParam = styled(StyledParam)`
   }
 `;
 
-const InputParam = ({
-  id,
-  title,
-  placeholder,
-  value,
-  onChange,
-  onFocus,
-  onBlur,
-  isDisabled,
-  isValidTitle,
-  errorMessage,
-  isAutoFocussed,
-}) => {
-  return (
-    <StyledInputParam>
-      <Label
-        title={title}
-        className="input-label"
-        display="display"
-        htmlFor={id}
-        text={title}
-      />
-
-      <FieldContainer
-        isVertical={true}
-        labelVisible={false}
-        hasError={!isValidTitle}
-        errorMessage={errorMessage}
-      >
-        <TextInput
-          id={id}
-          value={value}
-          onChange={onChange}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          scale
-          placeholder={placeholder}
-          tabIndex={2}
-          isDisabled={isDisabled}
-          hasError={!isValidTitle}
-          isAutoFocussed={isAutoFocussed}
+const InputParam = React.forwardRef(
+  (
+    {
+      id,
+      title,
+      placeholder,
+      value,
+      onChange,
+      onFocus,
+      onBlur,
+      isDisabled,
+      isValidTitle,
+      errorMessage,
+      isAutoFocussed,
+    },
+    ref
+  ) => {
+    return (
+      <StyledInputParam>
+        <Label
+          title={title}
+          className="input-label"
+          display="display"
+          htmlFor={id}
+          text={title}
         />
-      </FieldContainer>
-    </StyledInputParam>
-  );
-};
+
+        <FieldContainer
+          isVertical={true}
+          labelVisible={false}
+          hasError={!isValidTitle}
+          errorMessage={errorMessage}
+        >
+          <TextInput
+            forwardedRef={ref}
+            id={id}
+            value={value}
+            onChange={onChange}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            scale
+            placeholder={placeholder}
+            tabIndex={2}
+            isDisabled={isDisabled}
+            hasError={!isValidTitle}
+            isAutoFocussed={isAutoFocussed}
+          />
+        </FieldContainer>
+      </StyledInputParam>
+    );
+  }
+);
 
 InputParam.defaultProps = {
   isValidTitle: true,

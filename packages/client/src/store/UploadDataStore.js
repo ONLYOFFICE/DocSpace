@@ -21,6 +21,8 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
+import { combineUrl } from "@docspace/common/utils";
+import config from "PACKAGE_FILE";
 
 const UPLOAD_LIMIT_AT_ONCE = 5;
 
@@ -280,7 +282,7 @@ class UploadDataStore {
     this.setUploadData(newUploadData);
   };
 
-  convertFile = (file, t) => {
+  convertFile = (file, t, isOpen) => {
     this.dialogsStore.setConvertItem(null);
 
     const secondConvertingWithPassword = file.hasOwnProperty("password");
@@ -312,7 +314,7 @@ class UploadDataStore {
         this.filesToConversion.push(file);
         if (!secondConvertingWithPassword && !conversionPositionIndex)
           this.uploadedFilesHistory.push(file);
-        this.startConversion(t);
+        this.startConversion(t, isOpen);
       } else {
         this.filesToConversion.push(file);
         if (!secondConvertingWithPassword && !conversionPositionIndex)
@@ -387,7 +389,7 @@ class UploadDataStore {
     return (fileIndex / length) * 100;
   };
 
-  startConversion = async (t) => {
+  startConversion = async (t, isOpen = false) => {
     const {
       isRecentFolder,
       isFavoritesFolder,
@@ -512,6 +514,26 @@ class UploadDataStore {
 
         if (progress === 100) {
           if (!error) error = data[0].error;
+
+          if (isOpen && data && data[0]) {
+            let tab =
+              !this.authStore.settingsStore.isDesktopClient && fileInfo.fileExst
+                ? window.open(
+                    combineUrl(
+                      window.DocSpaceConfig?.proxy?.url,
+                      config.homepage,
+                      `/doceditor`
+                    ),
+                    "_blank"
+                  )
+                : null;
+
+            this.filesStore.openDocEditor(
+              fileInfo.id,
+              fileInfo.providerKey,
+              tab
+            );
+          }
 
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);

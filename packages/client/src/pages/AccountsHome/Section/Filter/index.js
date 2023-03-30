@@ -213,12 +213,20 @@ const SectionFilterContent = ({
       {
         key: "filter-account",
         group: "filter-account",
-        label: "Account",
+        label: t("ConnectDialog:Account"),
         isHeader: true,
         isLast: true,
       },
-      { key: PaymentsType.Paid, group: "filter-account", label: "Paid" },
-      { key: PaymentsType.Free, group: "filter-account", label: "Free" },
+      {
+        key: PaymentsType.Paid,
+        group: "filter-account",
+        label: t("Common:Paid"),
+      },
+      {
+        key: PaymentsType.Free,
+        group: "filter-account",
+        label: t("SmartBanner:Price"),
+      },
     ];
 
     // const roomItems = [
@@ -346,7 +354,9 @@ const SectionFilterContent = ({
       filterValues.push({
         key: filter.payments.toString(),
         label:
-          PaymentsType.Paid === filter.payments.toString() ? "Paid" : "Free",
+          PaymentsType.Paid === filter.payments.toString()
+            ? t("Common:Paid")
+            : t("SmartBanner:Price"),
         group: "filter-account",
       });
     }
@@ -503,9 +513,13 @@ export default withRouter(
   })(
     observer(
       withLayoutSize(
-        withTranslation(["People", "Common", "PeopleTranslations"])(
-          withPeopleLoader(SectionFilterContent)(<Loaders.Filter />)
-        )
+        withTranslation([
+          "People",
+          "Common",
+          "PeopleTranslations",
+          "ConnectDialog",
+          "SmartBanner",
+        ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
       )
     )
   )

@@ -304,6 +304,7 @@ export const FileStatus = Object.freeze({
  * @readonly
  */
 export const TenantStatus = Object.freeze({
+  PortalDeactivate: 1,
   PortalRestore: 4,
 });
 

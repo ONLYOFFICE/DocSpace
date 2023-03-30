@@ -1,1 +1,24 @@
-{}
+{
+  "ChooseRoomType": "Izvēlieties telpas tipu",
+  "CollaborationRoomDescription": "Sadarbojieties ar savu komandu vienā vai vairākos dokumentos",
+  "CollaborationRoomTitle": "Sadarbības telpa",
+  "CreateRoomConfirmation": "Vai turpināt, neizveidojot savienojumu ar krātuvi?\nEsat atlasījis trešās puses krātuves opciju, kas vēl nav pievienota. Ja turpināsiet, nepievienojot pakalpojumu, šī opcija netiks pievienota.",
+  "CreateTagOption": "Izveidot birku",
+  "CustomRoomDescription": "Lietojiet savus iestatījumus, lai izmantotu šo telpu jebkādam pielāgotam mērķiem.",
+  "CustomRoomTitle": "Pielāgota telpa",
+  "FillingFormsRoomDescription": "Veidojiet, kopīgojiet un aizpildiet dokumentu veidnes vai strādājiet ar gataviem sākotnējiem iestatījumiem, lai ātri izveidotu jebkura veida dokumentus.",
+  "Icon": "Ikona",
+  "MakeRoomPrivateDescription": "Visi faili šajā telpā tiks šifrēti.",
+  "ReviewRoomDescription": "Pieprasīt pārskatīšanu vai komentārus par dokumentiem",
+  "RoomEditing": "Telpas rediģēšana",
+  "RootLabel": "Sakne",
+  "TagsPlaceholder": "Pievienot atzīmi",
+  "ThirdPartyStorageComboBoxPlaceholder": "Izvēlieties krātuvi",
+  "ThirdPartyStorageDescription": "Izmantojiet trešās puses pakalpojumus kā šīs telpas datu krātuvi. Pievienotajā krātuvē tiks izveidota jauna mape šīs telpas datu glabāšanai.",
+  "ThirdPartyStorageNoStorageAlert": "Vispirms attiecīgais pakalpojums ir jāpievieno sadaļā Integrācija (Integration). Pretējā gadījumā savienojums nebūs iespējams.",
+  "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
+  "ThirdPartyStorageRoomAdminNoStorageAlert": "Lai pievienotu trešās puses krātuvi, jums ir jāpievieno atbilstošais pakalpojums DocSpace iestatījumu sadaļā Integrācija. Lai iespējotu integrāciju, sazinieties ar DocSpace īpašnieku vai administratoru.",
+  "ThirdPartyStorageTitle": "Trešās puses krātuve",
+  "ViewOnlyRoomDescription": "Kopīgojiet visus gatavos dokumentus, pārskatus, dokumentāciju un citus failus skatīšanai.",
+  "ViewOnlyRoomTitle": "Tikai skatīšanai paredzēta telpa"
+}

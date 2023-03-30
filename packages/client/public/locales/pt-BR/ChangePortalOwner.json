@@ -5,6 +5,10 @@
   "ChangeOwner": "Alterar proprietário do DocSpace",
   "ChangeUser": "Mudar usuário",
   "DeactivateOrDeletePortal": "Desativar ou excluir DocSpace",
+  "DoTheSame": "Faça o mesmo que os administradores",
   "ManagePortal": "Gerenciar configuração do DocSpace",
-  "ManageUser": "Gerenciar contas de usuário"
+  "ManageUser": "Gerenciar contas de usuário",
+  "NewPortalOwner": "Novo proprietário do DocSpace",
+  "PortalOwnerCan": "O proprietário do DocSpace pode:",
+  "SetAccessRights": "Definir direitos de acesso"
 }
