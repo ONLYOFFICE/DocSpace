@@ -198,7 +198,7 @@ class QuotasStore {
 
   updateQuotaUsedValue = (featureId, value) => {
     this.currentPortalQuotaFeatures.forEach((elem) => {
-      if (elem.id === featureId) elem.used.value = value;
+      if (elem.id === featureId && elem.used) elem.used.value = value;
     });
   };
   updateQuotaFeatureValue = (featureId, value) => {
