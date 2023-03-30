@@ -1,7 +1,7 @@
 {
-  "AllowedManagerNumber": "Number of managers allowed: <1>{{valuesRange}}</1>.",
-  "CannotDowngradePlan": "You cannot downgrade your plan as the storage amount/manager numbers exceeds limitations according to the pricing plan selected.",
-  "CurrentManagerNumber": "Current number of managers: <1>{{currentCount}}</1>.",
+  "AllowedManagerNumber": "Number of admins/power users allowed: <1>{{valuesRange}}</1>.",
+  "CannotDowngradePlan": "You cannot downgrade your plan as the storage amount/admins/power users numbers exceeds limitations according to the pricing plan selected:",
+  "CurrentManagerNumber": "Current number of admins/power users: <1>{{currentCount}}</1>.",
   "CurrentStorageSpace": "Current storage space:  <1>{{size}}</1>.",
   "DowngradePlan": "Downgrade plan",
   "SaveOrChange": "Reduce the required parameter or preserve your current pricing plan.",

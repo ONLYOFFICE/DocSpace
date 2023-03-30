@@ -102,6 +102,8 @@ const Login: React.FC<ILoginProps> = ({
   };
 
   const oauthDataExists = () => {
+    if (!capabilities?.oauthEnabled) return false;
+
     let existProviders = 0;
     providers && providers.length > 0;
     providers?.map((item) => {

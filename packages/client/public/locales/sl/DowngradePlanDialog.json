@@ -1,6 +1,6 @@
 {
   "AllowedManagerNumber": "Dovoljeno število skrbnikov: <1>{{valuesRange}}</1>.",
-  "CannotDowngradePlan": "Svojega paketa ne morete znižati, ker količina prostora za shranjevanje/številke upraviteljev presegajo omejitve v skladu z izbranim cenovnim načrtom.",
+  "CannotDowngradePlan": "Svojega paketa ne morete znižati, ker količina prostora za shranjevanje/številke upraviteljev presegajo omejitve v skladu z izbranim cenovnim načrtom:",
   "CurrentManagerNumber": "Trenutno število upraviteljev: <1>{{currentCount}}</1>.",
   "CurrentStorageSpace": "Trenutni prostor za shranjevanje: <1>{{size}}</1>.",
   "DowngradePlan": "Degradiraj paket",

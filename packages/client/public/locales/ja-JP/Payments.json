@@ -15,7 +15,6 @@
   "GracePeriodActivatedDescription": "猶予期間中は、管理者は新しいルームの作成と新しいユーザーの追加ができません。猶予期間の期限を過ぎると、お支払いが完了するまでDocSpaceはご利用いただけません。",
   "GracePeriodActivatedInfo": "猶予期間は<1>{{fromDate}}から{{byDate}}まで</1>（残り日数：{{delayDaysCount}}）に適用されます。",
   "ManagerTypesDescription": "管理者アカウントの種類とその権限",
-  "NumberOfAdmins": "管理者数",
   "Pay": "支払",
   "Payer": "支払人",
   "PayerDescription": "このユーザーは、支払いの詳細へのアクセス権を持ち、クォータの調整と支払いを行うことができる唯一のユーザーです。DocSpaceの所有者だけでなく、支払いマネージャー自身も、Stripeカスタマーポータルを使用してペイイングマネージャーの役割を再割り当てすることができます。",

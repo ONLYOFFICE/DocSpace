@@ -5,5 +5,6 @@
   "ImageFileType": "görüntüler",
   "MailMergeFileType": "Dosyayı XLSX formatında seçin",
   "OpenSavedDocument": "Kaydedilen belgeyi yeni sekmede aç",
-  "SelectFilesType": "Şu türdeki dosyaları seçin: {{fileType}}"
+  "SelectFilesType": "Şu türdeki dosyaları seçin: {{fileType}}",
+  "UsersWithoutAccess": "Bahsetmek istediğiniz bazı kullanıcıların odaya erişimi yok: {{users}}"
 }

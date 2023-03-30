@@ -81,7 +81,10 @@ class DropDown extends React.PureComponent {
   }
 
   handleClickOutside = (e) => {
-    e.preventDefault();
+    if (e.type !== "touchstart") {
+      e.preventDefault();
+    }
+
     this.toggleDropDown(e);
   };
 
@@ -256,6 +259,7 @@ class DropDown extends React.PureComponent {
       isMobileView,
       isNoFixedHeightOptions,
       open,
+      enableKeyboardEvents,
     } = this.props;
     const { directionX, directionY, width, manualY } = this.state;
 
@@ -303,6 +307,7 @@ class DropDown extends React.PureComponent {
           getItemSize={getItemSize}
           children={children}
           isOpen={open}
+          enableKeyboardEvents={enableKeyboardEvents}
         />
       </StyledDropdown>
     );
@@ -415,6 +420,7 @@ DropDownContainer.defaultProps = {
   isDefaultMode: true,
   fixedDirection: false,
   offsetLeft: 0,
+  enableKeyboardEvents: true,
 };
 
 export default DropDownContainer;

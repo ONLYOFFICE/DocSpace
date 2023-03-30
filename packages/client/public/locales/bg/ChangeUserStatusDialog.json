@@ -1,6 +1,6 @@
 {
   "ChangeUserStatusDialog": "Потребителят със статус '{{ userStatus }}' ще бъде {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Промени потребителски статус",
+  "ChangeUserStatusDialogHeader": "Промени статус",
   "ChangeUserStatusDialogMessage": "Не можете да смените статуса за собственика на DocSpace и за себе си.",
   "ChangeUsersActiveStatus": "активиран",
   "ChangeUsersDisableStatus": "активиран"
