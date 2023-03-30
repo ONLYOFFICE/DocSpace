@@ -989,7 +989,6 @@ class FilesActionStore {
       archiveRoomsId,
       myRoomsId,
     } = this.treeFoldersStore;
-    const { setPortalQuota } = this.authStore.currentQuotaStore;
 
     const {
       secondaryProgressDataStore,
@@ -1056,7 +1055,7 @@ class FilesActionStore {
 
             this.updateCurrentFolder();
           })
-          .then(() => setPortalQuota())
+
           .then(() => {
             const successTranslation =
               folders.length !== 1 && Array.isArray(folders)
@@ -1100,7 +1099,7 @@ class FilesActionStore {
 
             this.updateCurrentFolder(null, [items]);
           })
-          .then(() => setPortalQuota())
+
           .then(() => {
             const successTranslation =
               folders.length !== 1 && Array.isArray(folders)
