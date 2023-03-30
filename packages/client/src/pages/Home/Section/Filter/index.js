@@ -18,6 +18,7 @@ import {
   RoomsProviderType,
   RoomsProviderTypeName,
   FilterSubject,
+  RoomSearchArea,
 } from "@docspace/common/constants";
 import Loaders from "@docspace/common/components/Loaders";
 import FilterInput from "@docspace/common/components/FilterInput";
@@ -27,6 +28,7 @@ import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 import withLoader from "../../../../HOCs/withLoader";
 import { TableVersions } from "SRC_DIR/helpers/constants";
 import { showLoader, hideLoader } from "./FilterUtils";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -295,10 +297,8 @@ const SectionFilterContent = ({
 
   const onClearFilter = useCallback(() => {
     if (isRooms) {
-      const newFilter = roomsFilter.clone();
-      newFilter.type = null;
-      newFilter.page = 0;
-      newFilter.filterValue = "";
+      const newFilter = RoomsFilter.getDefault();
+      newFilter.searchArea = roomsFilter.searchArea;
 
       fetchRooms(selectedFolderId, newFilter).finally(() =>
         setIsLoading(false)
