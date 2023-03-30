@@ -123,6 +123,7 @@ internal class FileConverterService<T> : BackgroundService
                 var fileUri = file.Id.ToString();
 
                 string convertedFileUrl;
+                string convertedFileType;
 
                 try
                 {
@@ -147,12 +148,12 @@ internal class FileConverterService<T> : BackgroundService
 
                     fileUri = pathProvider.GetFileStreamUrl(file);
 
-                    var toExtension = fileUtility.GetInternalExtension(file.Title);
+                    var toExtension = fileUtility.GetInternalConvertExtension(file.Title);
                     var fileExtension = file.ConvertedExtension;
                     var docKey = documentServiceHelper.GetDocKey(file);
 
                     fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                    (operationResultProgress, convertedFileUrl) = await documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true);
+                    (operationResultProgress, convertedFileUrl, convertedFileType) = await documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true);
                 }
                 catch (Exception exception)
                 {
@@ -213,13 +214,13 @@ internal class FileConverterService<T> : BackgroundService
 
                 try
                 {
-                    newFile = await fileConverter.SaveConvertedFileAsync(file, convertedFileUrl);
+                    newFile = await fileConverter.SaveConvertedFileAsync(file, convertedFileUrl, convertedFileType);
                 }
                 catch (Exception e)
                 {
                     operationResultError = e.Message;
 
-                    logger.ErrorOperation(operationResultError, convertedFileUrl, fileUri, e);
+                    logger.ErrorOperation(operationResultError, convertedFileUrl, fileUri, convertedFileType, e);
 
                     continue;
                 }

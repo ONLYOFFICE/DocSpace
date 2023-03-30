@@ -247,10 +247,16 @@ public class FileUtility
         return GetInternalExtension(googleExtension);
     }
 
+    public string GetInternalConvertExtension(string fileName)
+    {
+        return "ooxml";
+    }
+
     public static string ReplaceFileExtension(string fileName, string newExtension)
     {
         newExtension = string.IsNullOrEmpty(newExtension) ? string.Empty : newExtension;
-        return Path.GetFileNameWithoutExtension(fileName) + newExtension;
+        return Path.GetFileNameWithoutExtension(fileName)
+                 + "." + newExtension.TrimStart('.');
     }
 
     public static FileType GetFileTypeByFileName(string fileName)
