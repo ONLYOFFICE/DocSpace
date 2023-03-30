@@ -895,7 +895,7 @@ public class LdapOperationJob : DistributedTaskProgress
                                 ++index, count,
                                 _userFormatter.GetUserName(dbUser, DisplayUserNameFormat.Default)));
 
-                    _userManager.RemoveUserFromGroup(dbUser.Id, dbLdapGroup.ID);
+                    await _userManager.RemoveUserFromGroup(dbUser.Id, dbLdapGroup.ID);
                 }
 
                 index = 0;

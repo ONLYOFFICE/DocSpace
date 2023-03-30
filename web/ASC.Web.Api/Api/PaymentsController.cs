@@ -46,6 +46,7 @@ public class PaymentController : ControllerBase
     private readonly StudioNotifyService _studioNotifyService;
     private readonly int _maxCount = 10;
     private readonly int _expirationMinutes = 2;
+    private readonly QuotaSocketManager _quotaSocketManager;
     protected Tenant Tenant { get { return _apiContext.Tenant; } }
 
     public PaymentController(
@@ -59,7 +60,8 @@ public class PaymentController : ControllerBase
         IMemoryCache memoryCache,
         IHttpContextAccessor httpContextAccessor,
         MessageService messageService,
-        StudioNotifyService studioNotifyService)
+        StudioNotifyService studioNotifyService,
+        QuotaSocketManager quotaSocketManager)
     {
         _apiContext = apiContext;
         _userManager = userManager;
@@ -72,6 +74,7 @@ public class PaymentController : ControllerBase
         _httpContextAccessor = httpContextAccessor;
         _messageService = messageService;
         _studioNotifyService = studioNotifyService;
+        _quotaSocketManager = quotaSocketManager;
     }
 
     [HttpPut("payment/url")]
@@ -104,7 +107,14 @@ public class PaymentController : ControllerBase
             return false;
         }
 
-        return await _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
+        var changed = await _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
+
+        if (changed)
+        {
+            await NotifyWebSocket();
+        }
+
+        return changed;
     }
 
     [HttpGet("payment/account")]
@@ -189,5 +199,20 @@ public class PaymentController : ControllerBase
         }
 
         _memoryCache.Set(key, count + 1, TimeSpan.FromMinutes(_expirationMinutes));
+    }
+
+    private async Task NotifyWebSocket()
+    {
+        var updatedQuota = _tenantManager.GetCurrentTenantQuota();
+
+        var maxTotalSize = updatedQuota.MaxTotalSize;
+        var maxTotalSizeFeatureName = updatedQuota.GetFeature<MaxTotalSizeFeature>().Name;
+
+        await _quotaSocketManager.ChangeQuotaFeatureValue(maxTotalSizeFeatureName, maxTotalSize);
+
+        var maxPaidUsers = updatedQuota.CountRoomAdmin;
+        var maxPaidUsersFeatureName = updatedQuota.GetFeature<CountPaidUserFeature>().Name;
+
+        await _quotaSocketManager.ChangeQuotaFeatureValue(maxPaidUsersFeatureName, maxPaidUsers);
     }
 }

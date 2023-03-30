@@ -48,6 +48,9 @@ public abstract class BaseStorage : IDataStore
     protected readonly ILoggerProvider _options;
     protected readonly IHttpClientFactory _clientFactory;
 
+    private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
+    private readonly QuotaSocketManager _quotaSocketManager;
+
     public BaseStorage(
         TempStream tempStream,
         TenantManager tenantManager,
@@ -56,7 +59,9 @@ public abstract class BaseStorage : IDataStore
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider options,
         ILogger logger,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
     {
 
         _tempStream = tempStream;
@@ -67,6 +72,8 @@ public abstract class BaseStorage : IDataStore
         _clientFactory = clientFactory;
         Logger = logger;
         _httpContextAccessor = httpContextAccessor;
+        _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
+        _quotaSocketManager = quotaSocketManager;
     }
 
     public TimeSpan GetExpire(string domain)
@@ -334,19 +341,23 @@ public abstract class BaseStorage : IDataStore
     public abstract string GetPostParams(string domain, string directoryPath, long maxUploadSize, string contentType,
                                          string contentDisposition);
 
-    internal void QuotaUsedAdd(string domain, long size, bool quotaCheckFileSize = true)
+    internal async Task QuotaUsedAdd(string domain, long size, bool quotaCheckFileSize = true)
     {
         if (QuotaController != null)
         {
             QuotaController.QuotaUsedAdd(Modulename, domain, DataList.GetData(domain), size, quotaCheckFileSize);
+            var(name, value) = await _tenantQuotaFeatureStatHelper.GetStat<MaxFileSizeFeature, long>();
+            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
     }
 
-    internal void QuotaUsedDelete(string domain, long size)
+    internal async Task QuotaUsedDelete(string domain, long size)
     {
         if (QuotaController != null)
         {
             QuotaController.QuotaUsedDelete(Modulename, domain, DataList.GetData(domain), size);
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<MaxFileSizeFeature, long>();
+            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
     }
 

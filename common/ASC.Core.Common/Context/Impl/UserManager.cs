@@ -65,6 +65,8 @@ public class UserManager
     private readonly TenantQuotaFeatureCheckerCount<CountUserFeature> _activeUsersFeatureChecker;
     private readonly Constants _constants;
     private readonly UserFormatter _userFormatter;
+    private readonly QuotaSocketManager _quotaSocketManager;
+    private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
 
     private Tenant _tenant;
     private Tenant Tenant => _tenant ??= _tenantManager.GetCurrentTenant();
@@ -88,7 +90,9 @@ public class UserManager
         ICache cache,
         TenantQuotaFeatureCheckerCount<CountPaidUserFeature> countPaidUserChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
-        UserFormatter userFormatter
+        UserFormatter userFormatter,
+        QuotaSocketManager quotaSocketManager,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper
         )
     {
         _userService = service;
@@ -106,6 +110,8 @@ public class UserManager
         _activeUsersFeatureChecker = activeUsersFeatureChecker;
         _constants = _userManagerConstants.Constants;
         _userFormatter = userFormatter;
+        _quotaSocketManager = quotaSocketManager;
+        _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
     }
 
     public UserManager(
@@ -123,8 +129,10 @@ public class UserManager
         TenantQuotaFeatureCheckerCount<CountPaidUserFeature> tenantQuotaFeatureChecker,
         TenantQuotaFeatureCheckerCount<CountUserFeature> activeUsersFeatureChecker,
         IHttpContextAccessor httpContextAccessor,
-        UserFormatter userFormatter)
-        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker, userFormatter)
+        UserFormatter userFormatter,
+        QuotaSocketManager quotaSocketManager,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper)
+        : this(service, tenantManager, permissionContext, userManagerConstants, coreBaseSettings, coreSettings, instanceCrypto, radicaleClient, cardDavAddressbook, log, cache, tenantQuotaFeatureChecker, activeUsersFeatureChecker, userFormatter, quotaSocketManager, tenantQuotaFeatureStatHelper)
     {
         _accessor = httpContextAccessor;
     }
@@ -351,7 +359,7 @@ public class UserManager
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
 
         var newUser = UpdateUserInfo(u);
-        
+
         if (_coreBaseSettings.DisableDocSpace)
         {
             await SyncCardDavAsync(u, oldUserData, newUser);
@@ -652,6 +660,7 @@ public class UserManager
         }
 
         var user = GetUsers(userId);
+        var isUser = IsUserInGroup(userId, Constants.GroupUser.ID);
 
         _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
@@ -671,9 +680,16 @@ public class UserManager
                 await _cardDavAddressbook.Delete(myUri, user.Id, user.Email, tenant.Id);
             }
         }
+
+        if (isUser && groupId != Constants.GroupUser.ID ||
+            !isUser && groupId == Constants.GroupUser.ID)
+        {
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
+            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+        }
     }
 
-    public void RemoveUserFromGroup(Guid userId, Guid groupId)
+    public async Task RemoveUserFromGroup(Guid userId, Guid groupId)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
@@ -688,6 +704,12 @@ public class UserManager
         _userService.RemoveUserGroupRef(Tenant.Id, userId, groupId, UserGroupRefType.Contains);
 
         ResetGroupCache(userId);
+
+        if (groupId != Constants.GroupUser.ID)
+        {
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
+            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+        }
     }
 
     internal void ResetGroupCache(Guid userID)
@@ -904,7 +926,7 @@ public class UserManager
             {
                 return isCollaborator;
             }
-            
+
             if (groupId == Constants.GroupManager.ID)
             {
                 return !isUser && !isCollaborator;

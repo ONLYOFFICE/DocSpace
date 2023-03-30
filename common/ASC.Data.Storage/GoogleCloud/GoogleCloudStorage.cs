@@ -48,8 +48,10 @@ public class GoogleCloudStorage : BaseStorage
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider factory,
         ILogger<GoogleCloudStorage> options,
-        IHttpClientFactory clientFactory)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory)
+        IHttpClientFactory clientFactory,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory, tenantQuotaFeatureStatHelper, quotaSocketManager)
     {
     }
 
@@ -234,7 +236,7 @@ public class GoogleCloudStorage : BaseStorage
 
         //           InvalidateCloudFront(MakePath(domain, path));
 
-        QuotaUsedAdd(domain, buffered.Length);
+        await QuotaUsedAdd(domain, buffered.Length);
 
         return await GetUriAsync(domain, path);
     }
@@ -248,7 +250,7 @@ public class GoogleCloudStorage : BaseStorage
 
         await storage.DeleteObjectAsync(_bucket, key);
 
-        QuotaUsedDelete(domain, size);
+        await QuotaUsedDelete(domain, size);
     }
 
     public override async Task DeleteFilesAsync(string domain, string folderPath, string pattern, bool recursive)
@@ -271,7 +273,7 @@ public class GoogleCloudStorage : BaseStorage
         await foreach (var obj in objToDel)
         {
             await storage.DeleteObjectAsync(_bucket, obj.Name);
-            QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
+            await QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
         }
     }
 
@@ -325,7 +327,7 @@ public class GoogleCloudStorage : BaseStorage
 
         if (quotaUsed > 0)
         {
-            QuotaUsedDelete(domain, quotaUsed);
+            await QuotaUsedDelete(domain, quotaUsed);
         }
     }
 
@@ -339,7 +341,7 @@ public class GoogleCloudStorage : BaseStorage
         await foreach (var obj in objToDel)
         {
             await storage.DeleteObjectAsync(_bucket, obj.Name);
-            QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
+            await QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
         }
     }
 
@@ -378,8 +380,8 @@ public class GoogleCloudStorage : BaseStorage
 
         await DeleteAsync(srcdomain, srcpath);
 
-        QuotaUsedDelete(srcdomain, size);
-        QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
+        await QuotaUsedDelete(srcdomain, size);
+        await QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
 
         return await GetUriAsync(newdomain, newpath);
     }
@@ -455,7 +457,7 @@ public class GoogleCloudStorage : BaseStorage
         await foreach (var obj in objToDel)
         {
             await storage.DeleteObjectAsync(_bucket, obj.Name);
-            QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
+            await QuotaUsedDelete(domain, Convert.ToInt64(obj.Size));
         }
     }
 
@@ -549,7 +551,7 @@ public class GoogleCloudStorage : BaseStorage
 
         await storage.CopyObjectAsync(_bucket, MakePath(srcdomain, srcpath), _bucket, MakePath(newdomain, newpath), options);
 
-        QuotaUsedAdd(newdomain, size);
+        await QuotaUsedAdd(newdomain, size);
 
         return await GetUriAsync(newdomain, newpath);
     }
@@ -571,7 +573,7 @@ public class GoogleCloudStorage : BaseStorage
                 DestinationPredefinedAcl = GetDomainACL(newdomain)
             });
 
-            QuotaUsedAdd(newdomain, Convert.ToInt64(obj.Size));
+            await QuotaUsedAdd(newdomain, Convert.ToInt64(obj.Size));
         }
     }
 
@@ -734,7 +736,7 @@ public class GoogleCloudStorage : BaseStorage
         if (QuotaController != null)
         {
             var size = await GetFileSizeAsync(domain, path);
-            QuotaUsedAdd(domain, size);
+            await QuotaUsedAdd(domain, size);
         }
 
         return await GetUriAsync(domain, path);

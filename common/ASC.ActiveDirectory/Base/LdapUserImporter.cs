@@ -417,7 +417,7 @@ public class LdapUserImporter : IDisposable
             if (!actualPortalLdapGroups.Contains(portalUserLdapGroup))
             {
                 _logger.DebugTrySyncUserGroupMembershipRemovingUserFromGroup(userInfo.UserName, ldapUser.Sid, portalUserLdapGroup.Name, portalUserLdapGroup.Sid);
-                UserManager.RemoveUserFromGroup(userInfo.Id, portalUserLdapGroup.ID);
+                await UserManager.RemoveUserFromGroup(userInfo.Id, portalUserLdapGroup.ID);
             }
         }
 
