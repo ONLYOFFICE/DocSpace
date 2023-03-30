@@ -69,6 +69,15 @@ const Error401Route = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const ErrorUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <ErrorUnavailable {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const FilesRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -509,6 +518,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-unavailable"}
                 component={PortalUnavailableRoute}
               />
+              <Route path={"/unavailable"} component={ErrorUnavailableRoute} />
               <PrivateRoute path={"/error401"} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
             </Switch>

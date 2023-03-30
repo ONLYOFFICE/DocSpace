@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Nome cartella",
   "ConnectionUrl": "URL di connessione",
   "Login": "Accedi",
-  "Reconnect": "Riconnetti"
+  "Reconnect": "Riconnetti",
+  "SuccessfulConnectionOfAThirdParty": "Il servizio di terze parti è stato connesso correttamente."
 }

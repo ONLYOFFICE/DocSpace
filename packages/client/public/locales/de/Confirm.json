@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Passwort wurde erfolgreich geändert",
   "ConfirmOwnerPortalSuccessMessage": "Der Portalbesitzer wurde erfolgreich geändert. In 10 Sekunden werden umgeleitet werden.",
-  "ConfirmOwnerPortalTitle": "Bitte bestätigen Sie, dass {{newOwner}} Portalbesitzer werden soll.",
+  "ConfirmOwnerPortalTitle": "Bitte bestätigen Sie, dass {{newOwner}} DocSpace-Besitzer werden soll.",
   "CurrentNumber": "Ihre aktuelle Telefonnummer",
   "DeleteProfileBtn": "Mein Konto löschen",
   "DeleteProfileConfirmation": "Achtung! Dies wird Ihr Konto löschen.",
@@ -19,9 +19,14 @@
   "PassworResetTitle": "Jetzt können Sie ein neues Kennwort erstellen.",
   "PhoneSubtitle": "Die Zwei-Faktor-Authentifizierung ist für die zusätzliche Sicherheit des Portals bereitgestellt. Geben Sie eine neue Telefonnummer ein, um die Arbeit auf dem DocSpace fortzusetzen. Die Mobiltelefonnummer muss im internationalen Format mit dem Ländercode eingegeben werden.",
   "PortalContinueTitle": "Veuillez confirmer que vous souhaitez réactiver votre DocSpace.",
+  "PortalDeactivateTitle": "Bitte bestätigen Sie, dass Sie Ihren DocSpace deaktivieren möchten.",
+  "PortalRemoveTitle": "Bitte bestätigen Sie, dass Sie Ihren DocSpace löschen möchten.",
+  "Reactivate": "Wieder aktivieren",
   "SetAppButton": "App verbinden",
   "SetAppDescription": "Zwei-Faktor-Authentifizierung ist aktiv. Konfigurieren Sie Ihre Authentifizierungsanwendung für weitere Arbeit auf dem Portal. Sie können Google Authenticator für <1>Android</1> und <4>iOS</4> oder Authenticator für <8>Windows Phone</8> benutzen.",
   "SetAppInstallDescription": "Verbinden Sie die App, indem Sie den QR-Code einscannen oder den Geheimschlüssel <1>{{ secretKey }}</1> manuell eingeben. Geben Sie dann den sechsstelligen Code aus Ihrer App im unten stehenden Feld ein.",
   "SetAppTitle": "Konfigurieren Sie Ihre Authentifizierungsanwendung",
+  "SuccessDeactivate": "Ihr Konto wurde erfolgreich deaktiviert. In 10 Sekunden werden Sie auf die <1>Seite</1> weitergeleitet.",
+  "SuccessReactivate": "Ihr Konto wurde erfolgreich wieder aktiviert. In 10 Sekunden werden Sie zum <1>Portal</1> weitergeleitet.",
   "WelcomeUser": "Willkommen bei unserem DocSpace!\nRegistrieren Sie sich oder melden Sie sich über soziale Netzwerke an, um fortzusetzen."
 }
