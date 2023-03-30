@@ -43,6 +43,13 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
     setTagInput(text);
   };
 
+  const handleFocus = (event) => {
+    const text = event.target.value;
+    if (text.trim().length > 0) {
+      openDropdown();
+    }
+  };
+
   const openDropdown = () => {
     if (isDisabled) return;
     setIsScrollLocked(true);
@@ -67,6 +74,7 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
         value={tagInput}
         onChange={onTagInputChange}
         onBlur={closeDropdown}
+        onFocus={handleFocus}
         isDisabled={isDisabled}
       />
 
