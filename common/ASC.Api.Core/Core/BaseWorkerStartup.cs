@@ -63,8 +63,11 @@ public class BaseWorkerStartup
 
         services.AddAutoMapper(GetAutoMapperProfileAssemblies());
 
-        services.AddStartupTask<WarmupServicesStartupTask>()
-                   .TryAddSingleton(services);
+        if (!HostEnvironment.IsDevelopment())
+        {
+            services.AddStartupTask<WarmupServicesStartupTask>()
+                    .TryAddSingleton(services);
+        }
 
 
         services.AddMemoryCache();
