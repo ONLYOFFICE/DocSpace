@@ -293,7 +293,7 @@ class FilesStore {
       }
 
       //To update a file version
-      if (foundIndex > -1 && !withPaging) {
+      if (foundIndex > -1 && !this.authStore.settingsStore.withPaging) {
         this.getFileInfo(file.id);
         this.checkSelection(file);
       }
