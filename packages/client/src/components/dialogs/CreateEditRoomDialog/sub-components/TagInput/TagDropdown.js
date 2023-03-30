@@ -14,6 +14,7 @@ const TagDropdown = ({
   createTagLabel,
   isDisabled,
   inputRef,
+  closeDropdown,
 }) => {
   const dropdownRef = useRef(null);
 
@@ -42,7 +43,8 @@ const TagDropdown = ({
   const onClickOutside = (e) => {
     /*     if (!e) return;
     if (e.target.id === "shared_tags-input") return; */
-    inputRef?.current?.blur();
+    // inputRef?.current?.blur();
+    closeDropdown();
   };
 
   const addNewTag = () => {
@@ -119,7 +121,6 @@ const TagDropdown = ({
         hasItems={!!dropdownItems.length}
         clickOutsideAction={onClickOutside}
         withBackdrop={false}
-        enableKeyboardEvents={false}
       >
         {dropdownItems}
       </StyledDropDown>

@@ -38,6 +38,5 @@ public class FeedApiFilter
     public Guid Author { get; set; }
     public string[] SearchKeys { get; set; }
     public bool OnlyNew { get; set; }
-    public bool WithoutMe { get; set; }
-    public bool WithRelated { get; set; }
+    public bool History { get; set; }
 }

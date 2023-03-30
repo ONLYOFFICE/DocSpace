@@ -123,14 +123,14 @@ public class RoomsModule : FeedModule
                 Keywords = room.Title,
                 AdditionalInfo = ((int)room.FolderType).ToString(),
                 AdditionalInfo4 = room.Private ? "private" : null,
-                GroupId = GetGroupId(RoomItem, room.CreateBy, room.ParentId.ToString())
+                GroupId = GetGroupId(RoomItem, room.CreateBy, room.CreateOn, room.ParentId.ToString())
             };
         }
 
         var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
         {
             Item = SharedRoomItem,
-            ItemId = $"{shareRecord.Subject}_{shareRecord.TimeStamp.Ticks}",
+            ItemId = $"{shareRecord.Subject}_{Guid.NewGuid()}",
             Product = Product,
             Module = Name,
             Title = room.Title,
@@ -142,7 +142,7 @@ public class RoomsModule : FeedModule
             AdditionalInfo3 = ((int)shareRecord.SubjectType).ToString(),
             AdditionalInfo4 = room.Private ? "private" : null,
             Target = shareRecord.Subject,
-            GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, room.ParentId.ToString()),
+            GroupId = GetGroupId(SharedRoomItem, shareRecord.Owner, shareRecord.TimeStamp, room.ParentId.ToString()),
             ContextId = $"{RoomItem}_{room.Id}"
         };
 

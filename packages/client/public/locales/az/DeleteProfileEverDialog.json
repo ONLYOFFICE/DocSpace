@@ -1,4 +1,5 @@
 {
   "DeleteUser": "İstifadəçini sil",
+  "DeleteUserMessage": "{{istifadəçiAdı}} <güclü>{{istifadəçi}}</güclü> silinəcək. Başqalarına açıq olan istifadəçinin şəxsi sənədləri silinəcək. Davam etmək istədiyinizə əminsiniz?",
   "SuccessfullyDeleteUserInfoMessage": "İstifadəçi müvəffəqiyyətlə silinmişdir"
 }

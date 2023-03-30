@@ -298,10 +298,8 @@ const SectionFilterContent = ({
 
   const onClearFilter = useCallback(() => {
     if (isRooms) {
-      const newFilter = roomsFilter.clone();
-      newFilter.type = null;
-      newFilter.page = 0;
-      newFilter.filterValue = "";
+      const newFilter = RoomsFilter.getDefault();
+      newFilter.searchArea = roomsFilter.searchArea;
 
       fetchRooms(selectedFolderId, newFilter).finally(() =>
         setIsLoading(false)

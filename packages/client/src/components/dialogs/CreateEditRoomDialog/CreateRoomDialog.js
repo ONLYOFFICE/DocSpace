@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled, { css } from "styled-components";
 
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -94,14 +94,6 @@ const CreateRoomDialog = ({
     if (e.keyCode === 13) onCreateRoom();
   };
 
-  useEffect(() => {
-    document.addEventListener("keyup", onKeyUpHandler, false);
-
-    return () => {
-      document.removeEventListener("keyup", onKeyUpHandler, false);
-    };
-  }, [onKeyUpHandler]);
-
   const onCreateRoom = async () => {
     if (!roomParams.title.trim()) {
       setIsValidTitle(false);
@@ -166,6 +158,7 @@ const CreateRoomDialog = ({
             isValidTitle={isValidTitle}
             setIsValidTitle={setIsValidTitle}
             enableThirdParty={enableThirdParty}
+            onKeyUp={onKeyUpHandler}
           />
         )}
       </ModalDialog.Body>

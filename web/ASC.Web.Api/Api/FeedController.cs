@@ -109,7 +109,7 @@ public class FeedController : ControllerBase
             Author = author ?? Guid.Empty,
             SearchKeys = _apiContext.FilterValues,
             OnlyNew = onlyNew.HasValue && onlyNew.Value,
-            WithRelated = withRelated.HasValue && withRelated.Value,
+            History = withRelated.HasValue && withRelated.Value,
         };
 
         if (from != null && to != null)
@@ -156,6 +156,7 @@ public class FeedController : ControllerBase
                          firstFeed.GroupedFeeds = group.Skip(1);
                          return firstFeed;
                      })
+            .OrderByDescending(f => f.ModifiedDate)
             .ToList();
 
         return new { feeds, readedDate };
