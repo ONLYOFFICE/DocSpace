@@ -23,25 +23,18 @@ class SecondaryProgressDataStore {
 
     if (progressIndex !== -1) {
       this.secondaryOperationsArray[progressIndex] = secondaryProgressData;
+    }
 
-      if (progressIndex === 0) {
-        const progressDataItems = Object.keys(secondaryProgressData);
-        for (let key of progressDataItems) {
-          if (key in this) {
-            this[key] = secondaryProgressData[key];
-          }
+    if (progressIndex === 0 || this.secondaryOperationsArray.length === 0) {
+      const progressDataItems = Object.keys(secondaryProgressData);
+      for (let key of progressDataItems) {
+        if (key in this) {
+          this[key] = secondaryProgressData[key];
         }
       }
-    } else {
-      if (this.secondaryOperationsArray.length === 0) {
-        const progressDataItems = Object.keys(secondaryProgressData);
-        for (let key of progressDataItems) {
-          if (key in this) {
-            this[key] = secondaryProgressData[key];
-          }
-        }
-      }
+    }
 
+    if (progressIndex === -1) {
       this.secondaryOperationsArray.push(secondaryProgressData);
     }
   };
