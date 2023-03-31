@@ -3,5 +3,6 @@
   "Error403Text": "Üzgünüz, erişim reddedildi.",
   "Error404Text": "Üzgünüz, kaynak bulunamadı.",
   "ErrorEmptyResponse": "Boş yanıt",
-  "ErrorOfflineText": "İnternet bağlantısı bulunamadı"
+  "ErrorOfflineText": "İnternet bağlantısı bulunamadı",
+  "ErrorUnavailableText": "DocSpace kullanılamıyor"
 }

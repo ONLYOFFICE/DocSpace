@@ -306,7 +306,7 @@ class ContextOptionsStore {
     const canConvert = item.viewAccessability?.Convert;
 
     if (canConvert) {
-      setConvertItem(item);
+      setConvertItem({ ...item, isOpen: true });
       setConvertDialogVisible(true);
     } else {
       this.gotoDocEditor(false, item);

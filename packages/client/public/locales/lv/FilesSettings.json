@@ -1,4 +1,5 @@
 {
+  "AdditionalSections": "Papildu sadaļas",
   "ConnectEmpty": "Šeit nekā nav",
   "DisplayFavorites": "Rādīt izlasi",
   "DisplayNotification": "Parādīt paziņojumu, pārvietojot vienumus uz atkritni",
@@ -8,5 +9,8 @@
   "KeepIntermediateVersion": "Rediģēšanas laikā saglabājiet starpnieka versijas",
   "OriginalCopy": "Saglabājiet faila kopiju arī sākotnējā formātā",
   "StoringFileVersion": "Failu versiju uzglabāšana",
-  "UpdateOrCreate": "Atjauniniet faila versiju esošajam failam ar tādu pašu nosaukumu. Pretējā gadījumā tiks izveidota faila kopija."
+  "ThirdPartyAccounts": "Trešo personu konti",
+  "ThirdPartyBtn": "Atļaut savienot trešo pušu krātuves",
+  "UpdateOrCreate": "Atjauniniet faila versiju esošajam failam ar tādu pašu nosaukumu. Pretējā gadījumā tiks izveidota faila kopija.",
+  "UploadPluginsHere": "Augšupielādēt spraudņus šeit"
 }

@@ -172,7 +172,7 @@ public class FilesModule : FeedModule
                 AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
                 Keywords = file.Title,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString()),
+                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, shareRecord.TimeStamp, file.ParentId.ToString()),
                 ContextId = contextId
             };
 
@@ -194,7 +194,7 @@ public class FilesModule : FeedModule
             AdditionalInfo = file.ContentLengthString,
             AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
             Keywords = file.Title,
-            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0),
+            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ModifiedOn, file.ParentId.ToString(), updated ? 1 : 0),
             ContextId = contextId
         };
     }

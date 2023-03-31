@@ -1,5 +1,16 @@
 {
+  "DeleteFile": "Zamierzasz usunąć ten plik. Czy na pewno chcesz kontynuować?",
+  "DeleteFolder": "Zamierzasz usunąć ten katalog. Czy na pewno chcesz kontynuować?",
+  "DeleteItems": "Zamierzasz usunąć te pozycje. Czy na pewno chcesz kontynuować?",
+  "DeleteRoom": "Zamierzasz usunąć ten pokój. Nie będziesz w stanie go odzyskać.",
+  "DeleteRooms": "Zamierzasz usunąć te pokoje. Nie będziesz w stanie ich odzyskać.",
   "MoveToTrashButton": "Przenieś do kosza",
+  "MoveToTrashFileFromPersonal": "Zamierzasz usunąć ten plik. Czy na pewno chcesz kontynuować?",
+  "MoveToTrashFolder": "Zamierzasz usunąć ten katalog. Pamiętaj, że jeśli udostępniasz go innym użytkownikom, stracą oni do niego dostęp. Czy na pewno chcesz kontynuować?",
+  "MoveToTrashFolderFromPersonal": "Zamierzasz usunąć ten katalog. Czy na pewno chcesz kontynuować?",
+  "MoveToTrashItems": "Zamierzasz usunąć te pozycje. Pamiętaj, że jeśli udostępniasz je innym użytkownikom, stracą oni do nich dostęp. Czy na pewno chcesz kontynuować?",
+  "MoveToTrashItemsFromPersonal": "Zamierzasz usunąć te pozycje. Czy na pewno chcesz kontynuować?",
+  "MoveToTrashTitle": "Przenieść do kosza?",
   "UnsubscribeButton": "Zrezygnuj z subskrypcji",
   "UnsubscribeNote": "Czy na pewno chcesz zrezygnować z subskrypcji dla wybranych elementów z listy?",
   "UnsubscribeTitle": "Potwierdź rezygnację"

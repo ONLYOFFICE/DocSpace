@@ -157,6 +157,20 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
+    if (tenantStatus === TenantStatus.PortalDeactivate) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              "/unavailable"
+            ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
     if (!isLoaded) {
       return <AppLoader />;
     }

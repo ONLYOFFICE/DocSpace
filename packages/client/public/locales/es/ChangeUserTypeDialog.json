@@ -3,6 +3,6 @@
   "ChangeUserTypeHeader": "Cambiar tipo de usuario",
   "ChangeUserTypeMessage": "Los usuarios con el tipo '{{ firstType }}' serán movidos al tipo '{{ secondType }}'.",
   "ChangeUserTypeMessageMulti": "Los usuarios seleccionados se moverán al tipo '{{ secondType }}'.",
-  "ChangeUserTypeMessageWarning": "No puede cambiar el estado para el propietario del portal y para usted mismo.",
+  "ChangeUserTypeMessageWarning": "No puede cambiar el tipo para el propietario de DocSpace y para usted mismo.",
   "SuccessChangeUserType": "Se ha cambiado el tipo de usuario correctamente"
 }
