@@ -14,6 +14,7 @@ const FileNameCell = ({
   theme,
   t,
   inProgress,
+  isRoomTable,
 }) => {
   const { title, viewAccessability } = item;
 
@@ -36,6 +37,7 @@ const FileNameCell = ({
           className="table-container_element-wrapper"
           hasAccess={true}
           checked={checked}
+          style={isRoomTable ? { borderBottom: "none" } : {}}
         >
           <div className="table-container_element-container">
             <div className="table-container_element">{element}</div>
