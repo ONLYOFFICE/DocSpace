@@ -156,8 +156,9 @@ const Template = ({ ...args }) => {
   return (
     <MainButtonMobile
       {...args}
-      style={{ position: "absolute", top: "87%", left: "87%" }}
+      style={{ position: "absolute", bottom: "26px", right: "44px" }}
       actionOptions={actionOptions}
+      dropdownStyle={{ right: "104px", bottom: "55px" }}
       progressOptions={progressOptions}
       buttonOptions={buttonOptions}
       onUploadClick={onUploadClick}

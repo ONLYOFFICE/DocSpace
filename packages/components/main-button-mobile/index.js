@@ -125,6 +125,7 @@ const MainButtonMobile = (props) => {
     onClick,
     onAlertClick,
     withAlertClick,
+    dropdownStyle,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
@@ -381,6 +382,7 @@ const MainButtonMobile = (props) => {
         />
 
         <StyledDropDown
+          style={dropdownStyle}
           open={isOpen}
           withBackdrop={false}
           manualWidth={manualWidth || "400px"}
