@@ -12,6 +12,7 @@ import Webhooks from "./Webhooks";
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 import WebhookHistory from "./Webhooks/WebhookHistory";
+import WebhookEventDetails from "./Webhooks/WebhookEventDetails";
 
 const DeveloperToolsWrapper = (props) => {
   const { t, tReady, history, loadBaseInfo, setDocumentTitle } = props;
@@ -35,6 +36,11 @@ const DeveloperToolsWrapper = (props) => {
       id: "webhooks/history/1",
       name: t("History"),
       content: <WebhookHistory />,
+    },
+    {
+      id: "webhooks/history/1/event/1",
+      name: t("Webhook Details"),
+      content: <WebhookEventDetails />,
     },
   ];
 
