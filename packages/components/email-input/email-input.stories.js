@@ -27,16 +27,18 @@ const Template = ({
     allowLocalDomainName,
   });
   return (
-    <EmailInput
-      {...rest}
-      value={emailValue}
-      emailSettings={settings}
-      onValidateInput={(isEmailValid) => rest.onValidateInput(isEmailValid)}
-      onChange={(e) => {
-        rest.onChange(e.target.value);
-        onChangeHandler(e.target.value);
-      }}
-    />
+    <div style={{ margin: "7px" }}>
+      <EmailInput
+        {...rest}
+        value={emailValue}
+        emailSettings={settings}
+        onValidateInput={(isEmailValid) => rest.onValidateInput(isEmailValid)}
+        onChange={(e) => {
+          rest.onChange(e.target.value);
+          onChangeHandler(e.target.value);
+        }}
+      />
+    </div>
   );
 };
 
