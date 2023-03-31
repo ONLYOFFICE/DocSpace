@@ -27,14 +27,16 @@ export const getMonthElements = (
   const onClick = (dateString) =>
     onDateClick(dateString, setObservedDate, setSelectedScene);
 
+  const dateFormat = "YYYY-M";
+
   const monthsElements = months.map((month) => (
     <DateItem
       big
       key={month.key}
       onClick={() => onClick(month.key)}
       disabled={
-        moment(month.key).endOf("month") < minDate ||
-        moment(month.key).startOf("month") > maxDate
+        moment(month.key, dateFormat).endOf("month") < minDate ||
+        moment(month.key, dateFormat).startOf("month") > maxDate
       }
     >
       {month.value}
@@ -47,8 +49,8 @@ export const getMonthElements = (
         key={months[i].key}
         onClick={() => onClick(months[i].key)}
         disabled={
-          moment(months[i].key).endOf("month") < minDate ||
-          moment(months[i].key).startOf("month") > maxDate
+          moment(months[i].key, dateFormat).endOf("month") < minDate ||
+          moment(months[i].key, dateFormat).startOf("month") > maxDate
         }
       >
         {months[i].value}
@@ -69,8 +71,8 @@ export const getMonthElements = (
           key={month.key}
           onClick={() => onClick(month.key)}
           disabled={
-            moment(month.key).endOf("month") < minDate ||
-            moment(month.key).startOf("month") > maxDate
+            moment(month.key, dateFormat).endOf("month") < minDate ||
+            moment(month.key, dateFormat).startOf("month") > maxDate
           }
         >
           {month.value}
@@ -84,8 +86,8 @@ export const getMonthElements = (
           focused
           onClick={() => onClick(month.key)}
           disabled={
-            moment(month.key).endOf("month") < minDate ||
-            moment(month.key).startOf("month") > maxDate
+            moment(month.key, dateFormat).endOf("month") < minDate ||
+            moment(month.key, dateFormat).startOf("month") > maxDate
           }
         >
           {month.value}
