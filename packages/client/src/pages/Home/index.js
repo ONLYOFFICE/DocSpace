@@ -344,6 +344,7 @@ class PureHome extends React.Component {
     }
     if (
       isProgressFinished &&
+      itemsSelectionTitle &&
       isProgressFinished !== prevProps.isProgressFinished
     ) {
       this.showOperationToast(

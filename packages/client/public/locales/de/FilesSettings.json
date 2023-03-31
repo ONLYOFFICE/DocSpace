@@ -1,4 +1,5 @@
 {
+  "AdditionalSections": "Zusätzliche Bereiche",
   "ConnectEmpty": "Nichts gefunden",
   "DisplayFavorites": "Favoriten anzeigen",
   "DisplayNotification": "Benachrichtigung beim Verschieben in den Papierkorb anzeigen",
@@ -8,5 +9,8 @@
   "KeepIntermediateVersion": "Zwischenversionen bei der Bearbeitung aufbewahren",
   "OriginalCopy": "Dateikopie auch im Originalformat speichern",
   "StoringFileVersion": "Speicherung von Dateiversionen",
-  "UpdateOrCreate": "Die Version dieser Datei mit demselben Namen erneuern. Ansonsten wird eine Kopie erstellt."
+  "ThirdPartyAccounts": "Konten von Drittanbietern",
+  "ThirdPartyBtn": "Verbindung von Drittspeichern zulassen",
+  "UpdateOrCreate": "Die Version dieser Datei mit demselben Namen erneuern. Ansonsten wird eine Kopie erstellt.",
+  "UploadPluginsHere": "Plugins hier hochladen"
 }

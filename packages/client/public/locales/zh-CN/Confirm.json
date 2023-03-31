@@ -17,10 +17,16 @@
   "InviteTitle": "欢迎您加入此门户！",
   "LoginRegistryButton": "加入",
   "PassworResetTitle": "现在您可创建新密码。",
-  "PhoneSubtitle": "双因素身份验证功能可提供额外的门户安全性。请输入您的手机号码，以继续在门户上工作。必须使用具有国家/地区代码的国际格式输入手机号码。",
+  "PhoneSubtitle": "双因素身份验证功能可提供额外的门户安全性。请输入您的手机号码，以继续在协作空间上工作。必须使用具有国家/地区代码的国际格式输入手机号码。",
+  "PortalContinueTitle": "请确认重新激活您的协作空间。",
+  "PortalDeactivateTitle": "请确认停用您的协作空间。",
+  "PortalRemoveTitle": "请确认删除您的协作空间。",
+  "Reactivate": "重新激活",
   "SetAppButton": "连接应用",
   "SetAppDescription": "双因素身份验证功能已启用。请配置您的身份验证应用，以便继续使用门户。如果您使用的是<1>Android</1>与<4>iOS</4>系统，则可使用Google Authenticator。<8>Windows Phone</8>可使用Authenticator。",
   "SetAppInstallDescription": "如需连接应用，请扫描二维码或手动输入您的密钥<1>{{ secretKey }}</1>，然后在下方的字段中输入应用中的6位数字码。",
   "SetAppTitle": "配置您的身份验证应用",
+  "SuccessDeactivate": "您的账户已成功停用。10 秒后您将被重定向至<1>站点</1>。",
+  "SuccessReactivate": "您的账户已成功重新启用。10 秒后您将被重定向至<1>门户</1>。",
   "WelcomeUser": "欢迎加入我们的门户网站！\n要开始，请注册或通过社交网络登录。"
 }

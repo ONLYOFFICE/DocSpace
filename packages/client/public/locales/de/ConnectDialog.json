@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Ordnertitel",
   "ConnectionUrl": "Verbindungs-URL",
   "Login": "Anmeldung",
-  "Reconnect": "Neu verbinden"
+  "Reconnect": "Neu verbinden",
+  "SuccessfulConnectionOfAThirdParty": "Der Drittanbieterdienst wurde erfolgreich verbunden."
 }

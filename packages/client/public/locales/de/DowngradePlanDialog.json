@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "Aktueller Speicherplatz: <1>{{size}}</1>.",
+  "DowngradePlan": "Plan herabstufen",
+  "SaveOrChange": "Verringern Sie den erforderlichen Parameter oder behalten Sie Ihren aktuellen Preisplan bei.",
+  "StorageSpaceSizeAllowed": "Erlaubte Speicherplatzgröße: <1>{{size}}</1>."
+}

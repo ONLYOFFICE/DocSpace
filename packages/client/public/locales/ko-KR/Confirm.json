@@ -1,6 +1,7 @@
 {
   "ChangePasswordSuccess": "비밀번호가 성공적으로 변경되었습니다",
   "ConfirmOwnerPortalSuccessMessage": "포털 소유자가 성공적으로 변경되었습니다. 10초 후에 리디렉션됩니다.",
+  "ConfirmOwnerPortalTitle": "DocSpace 소유자를 {{newOwner}}님으로 변경할 것인지 확인해주세요.",
   "CurrentNumber": "사용 중인 휴대폰 번호",
   "DeleteProfileBtn": "내 계정 삭제",
   "DeleteProfileConfirmation": "주목해주세요! 고객님께서는 계정을 삭제하려고 하십니다.",
@@ -16,9 +17,16 @@
   "InviteTitle": "이 포털에 초대 받으셨습니다!",
   "LoginRegistryButton": "참여",
   "PassworResetTitle": "이제 새 비밀번호를 설정하실 수 있습니다.",
+  "PhoneSubtitle": "추가 보안을 제공하기 위해 이중 인증이 활성화됩니다. DocSpace에서 계속 작업하려면 휴대폰 번호를 입력해주세요. 휴대폰 번호는 국가 코드와 함께 국제 형식으로 입력해야 합니다.",
+  "PortalContinueTitle": "DocSpace를 다시 활성화할 것인지 확인해주세요.",
+  "PortalDeactivateTitle": "DocSpace를 비활성화할 것인지 확인해주세요.",
+  "PortalRemoveTitle": "DocSpace를 삭제할 것인지 확인해주세요.",
+  "Reactivate": "다시 활성화",
   "SetAppButton": "앱 연결",
   "SetAppDescription": "이중 인증이 활성화되었습니다. 계속하시려면 인증 앱을 구성하세요. <1>Android</1> 및 <4>iOS</4>의 경우 Google Authenticator, <8>Windows Phone</8>의 경우 Authenticator를 사용하실 수 있습니다.",
   "SetAppInstallDescription": "앱에 연결하시려면, QR 코드를 스캔하거나 비밀 키 <1>{{ secretKey }}</1>를 직접 입력한 뒤, 앱에서 생성한 6자리 코드를 아래에 입력해주세요.",
   "SetAppTitle": "인증 애플리케이션 구성",
+  "SuccessDeactivate": "계정이 성공적으로 비활성화되었습니다. 10초 후에 <1>사이트</1>로 리디렉션됩니다.",
+  "SuccessReactivate": "계정이 성공적으로 재활성화되었습니다. 10초 후에 <1>포털</1>로 리디렉션됩니다.",
   "WelcomeUser": "저희 포털에 오신 것을 환영합니다!\n 시작하려면, 등록하거나 소셜 네트워킹을 통해 로그인해주세요."
 }

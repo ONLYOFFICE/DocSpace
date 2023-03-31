@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "文件夹标题",
   "ConnectionUrl": "连接URL",
   "Login": "登录",
-  "Reconnect": "重新连接"
+  "Reconnect": "重新连接",
+  "SuccessfulConnectionOfAThirdParty": "第三方服务已成功连接。"
 }

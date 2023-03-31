@@ -1029,6 +1029,7 @@ class FilesActionStore {
             if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
+              icon: "move",
               label: "Archive rooms operation",
             };
             const data = lastResult || null;
@@ -1071,6 +1072,7 @@ class FilesActionStore {
           .catch((err) => {
             clearActiveOperations(null, items);
             setSecondaryProgressBarData({
+              icon: "move",
               visible: true,
               alert: true,
             });
@@ -1090,6 +1092,7 @@ class FilesActionStore {
             if (lastResult?.error) return Promise.reject(lastResult.error);
 
             const pbData = {
+              icon: "move",
               label: "Restore rooms from archive operation",
             };
             const data = lastResult || null;

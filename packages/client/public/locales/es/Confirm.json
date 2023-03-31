@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Contraseña se ha cambiado con éxito",
   "ConfirmOwnerPortalSuccessMessage": "El propietario del portal ha sido cambiado correctamente. Dentro de 10 segundos será redirigido.",
-  "ConfirmOwnerPortalTitle": "Por favor, confirme que desea cambiar el propietario del portal a {{newOwner}}.",
+  "ConfirmOwnerPortalTitle": "Por favor, confirme que desea cambiar el propietario de DocSpace a {{newOwner}}.",
   "CurrentNumber": "Su número de teléfono móvil actual",
   "DeleteProfileBtn": "Eliminar mi cuenta",
   "DeleteProfileConfirmation": "¡Atención! Usted va a eliminar su cuenta.",
