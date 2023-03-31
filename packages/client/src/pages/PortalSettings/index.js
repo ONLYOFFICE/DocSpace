@@ -64,6 +64,7 @@ const DEVELOPER_URLS = [
   combineUrl(PROXY_BASE_URL, "/developer/tools/javascript-sdk"),
   combineUrl(PROXY_BASE_URL, "/developer/tools/webhooks"),
   combineUrl(PROXY_BASE_URL, "/developer/tools/webhooks/history/:id"),
+  combineUrl(PROXY_BASE_URL, "/developer/tools/webhooks/history/:id/event/:eventId"),
 ];
 
 const BACKUP_URLS = [
