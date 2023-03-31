@@ -1,5 +1,6 @@
 {
   "AccessingProblem": " 既存のユーザーでこのスペースへのアクセスに問題がある場合は、管理者までご連絡ください。",
+  "AdministratorDescription": "DocSpaceの設定、ルームの作成と管理、DocSpaceやバーチャルルームでのユーザーの招待と管理機能、アクセス権の管理機能。",
   "Benefits": "メリット",
   "BusinessExpired": "{{planName}}プランは{{date}}で期限切れとなりました。",
   "BusinessFinalDateInfo": "サブスクリプションは、価格と仕様を更新して{{finalDate}}日に自動更新されます。Stripeカスタマーポータルでキャンセルまたは請求先情報を変更することができます。",
@@ -10,6 +11,7 @@
   "BusinessUpdated": "{{planName}} プランがアップデートされました",
   "ChooseNewPlan": " 新しい料金プランの選択を希望されますか？",
   "ContactUs": "販売に関するご質問は、次のメールアドレスまでお問い合わせください：",
+  "DelayedPayment": "{{planName}}プランの{{date}}までのお支払いを確認できませんでした",
   "DowngradeNow": "今すぐダウングレードする",
   "ErrorNotification": "料金プランの更新に失敗しました。後でもう一度試すか、営業部までご連絡ください。",
   "GracePeriodActivatedDescription": "猶予期間中は、管理者は新しいルームの作成と新しいユーザーの追加ができません。猶予期間の期限を過ぎると、お支払いが完了するまでDocSpaceはご利用いただけません。",

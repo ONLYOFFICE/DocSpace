@@ -1,1 +1,12 @@
-{}
+{
+  "Badges": "Abzeichen",
+  "DailyFeed": "Täglicher DocSpace-Feed",
+  "DailyFeedDescription": "Lesen Sie Nachrichten und Ereignisse aus Ihrem DocSpace in einer täglichen Zusammenfassung.",
+  "ManageNotifications": "Verwalten",
+  "Notifications": "Benachrichtigungen",
+  "RoomsActions": "Vorgänge mit Dateien in Räumen",
+  "RoomsActivity": "Aktivität der Räume",
+  "RoomsActivityDescription": "Stündliche Benachrichtigungen. Bleiben Sie über alle Aktivitäten in Ihren Räumen informiert.",
+  "UsefulTips": "Nützliche DocSpace-Tipps",
+  "UsefulTipsDescription": "Erhalten Sie nützliche Anleitungen zu DocSpace"
+}

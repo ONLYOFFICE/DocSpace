@@ -30,7 +30,7 @@
   "AutoBackupHelp": "<strong>自動バックアップ</strong>はポータルデータの写しを自動的に取って保管し、ローカルサーバに復元するのために使用される機能です。",
   "AutoBackupHelpNote": "データのためのストレージ、自動バックアップ期間、保存されるコピーの最大数を選択してください。<br/>　<strong>ご注意してください：</strong>バックアップを保存する前に、第三者サービスのアカウント（DropBox、Box.com、OneDriveまたはGoogle Drive）を{{organizationName}}「共通文書」フォルダーに接続する必要です。",
   "AutoSavePeriod": "自動保存期間",
-  "AutoSavePeriodHelp": "以下に示す時刻は、ポータルで設定されたタイムゾーンに対応しています",
+  "AutoSavePeriodHelp": "以下に示す時刻は、ポータルで設定されたタイムゾーンに対応しています。",
   "Backup": "バックアップ",
   "BackupCreatedError": "エラーが発生してしまいました。管理者を連絡ください。",
   "BackupCreatedSuccess": "バックアップ・コピーは正常に作成されました。",

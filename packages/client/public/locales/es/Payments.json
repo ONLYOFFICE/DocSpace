@@ -11,6 +11,7 @@
   "BusinessUpdated": "El plan {{planName}} se ha actualizado",
   "ChooseNewPlan": "¿Desea elegir un nuevo plan de precios?",
   "ContactUs": "Si tiene preguntas sobre ventas, póngase en contacto con nosotros a través de",
+  "DelayedPayment": "Retraso en el pago para el plan {{planName}} con fecha {{date}}",
   "DowngradeNow": "Cambiar al plan anterior ahora",
   "ErrorNotification": "Error al actualizar el plan de tarifas. Inténtelo de nuevo más tarde o póngase en contacto con el departamento de ventas.",
   "GracePeriodActivatedDescription": "Durante el periodo de gracia, los administradores no pueden crear nuevas salas ni añadir nuevos usuarios. Tras la fecha de vencimiento del periodo de gracia, DocSpace dejará de estar disponible hasta que se realice el pago.",

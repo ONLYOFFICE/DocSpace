@@ -1,1 +1,6 @@
-{}
+{
+  "RequestDetails": "Bitte beschreiben Sie hier die Details Ihrer Anfrage.",
+  "SuccessfullySentMessage": "Ihre Nachricht wurde erfolgreich gesendet. Sie werden von der Verkaufsabteilung kontaktiert.",
+  "YouWillBeContacted": "Das Verkaufsteam wird Sie nach der Erstellung der Anfrage kontaktieren.",
+  "YourName": "Ihr Name"
+}

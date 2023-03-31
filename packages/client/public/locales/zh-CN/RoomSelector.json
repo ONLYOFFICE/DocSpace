@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "请在“我的房间”中创建首个房间。",
+  "EmptyRoomsHeader": "此处暂无房间",
+  "RoomList": "房间列表",
+  "SearchEmptyRoomsDescription": "没有符合此过滤条件的房间。请尝试另一个过滤条件或清除条件以查看所有房间。"
+}

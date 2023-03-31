@@ -1,5 +1,6 @@
 {
   "AccessingProblem": "Se você é um usuário existente e tem problemas para acessar este espaço, entre em contato com o administrador.",
+  "AdministratorDescription": "Configuração do DocSpace, criação e administração de salas, capacidade de convidar e gerenciar usuários no DocSpace e em salas virtuais, capacidade de gerenciar direitos de acesso.",
   "Benefits": "Benefícios",
   "BusinessExpired": "Seu plano {{planName}} expirou em {{date}}",
   "BusinessFinalDateInfo": "A assinatura será renovada automaticamente em {{finalDate}} com preços e especificações atualizados. Você pode cancelá-lo ou alterar suas informações de cobrança no portal do cliente Stripe.",

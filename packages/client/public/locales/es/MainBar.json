@@ -5,5 +5,6 @@
   "RequestActivation": "Volver a solicitar la activación",
   "RoomQuotaDescription": "Puede archivar las salas innecesarias o <1>{{clickHere}}</1> para encontrar un plan de precios más adecuado para su DocSpace.",
   "RoomQuotaHeader": "Las salas están a punto de excederse: {{currentValue}} / {{maxValue}}",
+  "StorageQuotaDescription": "Puede eliminar los archivos innecesarios o <1>{{clickHere}}</1> para encontrar un plan de precios más adecuado para su DocSpace.",
   "StorageQuotaHeader": "La cantidad de espacio de almacenamiento está a punto de excederse: {{currentValue}} / {{maxValue}}."
 }
