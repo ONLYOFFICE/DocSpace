@@ -3108,17 +3108,16 @@ class FilesStore {
     preview = false
   ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
-    if (foundIndex !== -1 && !preview) {
-      this.updateSelectionStatus(
-        id,
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
-        true
-      );
+    if (
+      foundIndex !== -1 &&
+      !preview &&
+      this.files[foundIndex].rootFolderType !== FolderType.Archive
+    ) {
+      const newStatus =
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing;
 
-      this.updateFileStatus(
-        foundIndex,
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing
-      );
+      this.updateSelectionStatus(id, newStatus, true);
+      this.updateFileStatus(foundIndex, newStatus);
     }
 
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
