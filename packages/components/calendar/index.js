@@ -41,7 +41,7 @@ const Calendar = ({
       );
     }
     initialDate.startOf("day");
-    setSelectedDate(initialDate);
+    // setSelectedDate(initialDate);   
     setObservedDate(initialDate);
   }, []);
 
