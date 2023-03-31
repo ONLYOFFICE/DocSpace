@@ -1348,12 +1348,16 @@ class UploadDataStore {
       deleteAfter
     )
       .then((res) => {
-        if (res[res.length - 1]?.error) {
-          return Promise.reject(res[res.length - 1]);
-        }
-
-        const data = res[res.length - 1] ? res[res.length - 1] : null;
         const pbData = { icon: "duplicate", operationId };
+        let data = null;
+
+        if (res && res.length > 0) {
+          if (res[res.length - 1]?.error) {
+            return Promise.reject(res[res.length - 1]);
+          }
+
+          data = res[res.length - 1] ? res[res.length - 1] : null;
+        }
 
         return this.loopFilesOperations(data, pbData)
           .then(() =>
@@ -1398,8 +1402,16 @@ class UploadDataStore {
       deleteAfter
     )
       .then((res) => {
-        const data = res[res.length - 1] ? res[res.length - 1] : null;
         const pbData = { icon: "move", operationId };
+        let data = null;
+
+        if (res && res.length > 0) {
+          if (res[res.length - 1]?.error) {
+            return Promise.reject(res[res.length - 1]);
+          }
+
+          data = res[res.length - 1] ? res[res.length - 1] : null;
+        }
 
         return this.loopFilesOperations(data, pbData)
           .then(() =>
