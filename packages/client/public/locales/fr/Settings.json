@@ -63,7 +63,7 @@
   "DNSSettings": "Paramètres DNS",
   "DNSSettingsDescription": "Les paramètres DNS permettent de définir une URL alternative pour votre espace.",
   "DNSSettingsMobile": "Envoyez votre demande à notre équipe de support et nos spécialistes vous aideront à définir les paramètres.",
-  "DNSSettingsTooltip": "Les paramètres DNS vous permettent de définir une adresse URL alternative pour votre espace {{ nom d’organisation }}. Envoyez votre demande à notre équipe de support, et nos spécialistes vous aideront à effectuer les réglages.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "Les paramètres DNS vous permettent de définir une adresse URL alternative pour votre espace {{ nom d’organisation }}. Envoyez votre demande à notre équipe de support, et nos spécialistes vous aideront à effectuer les réglages.",
   "DataBackup": "Sauvegarde des données",
   "Deactivate": "Désactiver",
   "DeactivateOrDeletePortal": "Désactiver ou supprimer le portail.",

@@ -64,7 +64,7 @@
   "DNSSettings": "DNS nastavitve",
   "DNSSettingsDescription": "Nastavitve DNS so način za nastavitev alternativnega URL za vaš prostor.",
   "DNSSettingsMobile": "Pošlji zahtevo naši skupini za podporo in strokovnjaki bodo pomagali pri nastavitvah.",
-  "DNSSettingsTooltip": "Nastavitve DNS vam omogočajo, da nastavite alternativni naslov URL za vaš prostor {{ organizationName }}. Pošljite zahtevo naši skupini za podporo in naši strokovnjaki vam bodo pomagali pri nastavitvah.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "Nastavitve DNS vam omogočajo, da nastavite alternativni naslov URL za vaš prostor {{ organizationName }}. Pošljite zahtevo naši skupini za podporo in naši strokovnjaki vam bodo pomagali pri nastavitvah.",
   "DataBackup": "Varnostno kopiranje podatkov",
   "Deactivate": "Deaktiviraj",
   "DeactivateOrDeletePortal": "Deaktivirajte ali izbrišite portal.",

@@ -37,7 +37,7 @@ const StyledLoader = styled.div`
 
 type ViewerLoader = {
   isLoading: boolean;
-  isError: boolean;
+  isError?: boolean;
 };
 
 export default function ViewerLoader({ isLoading, isError }: ViewerLoader) {
