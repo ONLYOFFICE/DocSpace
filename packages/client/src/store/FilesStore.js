@@ -152,7 +152,7 @@ class FilesStore {
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
-    const { socketHelper, withPaging } = authStore.settingsStore;
+    const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
@@ -307,7 +307,10 @@ class FilesStore {
 
       const newFiles = [fileInfo, ...this.files];
 
-      if (newFiles.length > this.filter.pageCount && withPaging) {
+      if (
+        newFiles.length > this.filter.pageCount &&
+        this.authStore.settingsStore.withPaging
+      ) {
         newFiles.pop(); // Remove last
       }
 
@@ -344,7 +347,10 @@ class FilesStore {
 
       const newFolders = [folderInfo, ...this.folders];
 
-      if (newFolders.length > this.filter.pageCount && withPaging) {
+      if (
+        newFolders.length > this.filter.pageCount &&
+        this.authStore.settingsStore.withPaging
+      ) {
         newFolders.pop(); // Remove last
       }
 
