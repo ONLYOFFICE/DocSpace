@@ -64,7 +64,7 @@
   "DNSSettings": "Configuración DNS",
   "DNSSettingsDescription": "La configuración DNS permite establecer una URL alternativa para su espacio.",
   "DNSSettingsMobile": "Envíe su solicitud a nuestro equipo de soporte y nuestros especialistas le ayudarán con la configuración.",
-  "DNSSettingsTooltip": "La configuración DNS le permite establecer una dirección URL alternativa para su espacio {{ organizationName }}. Envíe su solicitud a nuestro equipo de soporte y nuestros especialistas le ayudarán con la configuración.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "La configuración DNS le permite establecer una dirección URL alternativa para su espacio {{ organizationName }}. Envíe su solicitud a nuestro equipo de soporte y nuestros especialistas le ayudarán con la configuración.",
   "DataBackup": "Copia de seguridad de datos",
   "Deactivate": "Desactivar",
   "DeactivateOrDeletePortal": "Desactivar o eliminar el portal.",
