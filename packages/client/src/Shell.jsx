@@ -29,6 +29,7 @@ import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
+import queryString from "query-string";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
@@ -504,7 +505,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               />
               <PublicRoute exact path={"/wizard"} component={WizardRoute} />
               <PrivateRoute path={"/about"} component={AboutRoute} />
-              <Route path={"/confirm"} component={ConfirmRoute} />
+              <Route path={"/confirm/:type"} component={ConfirmRoute} />
+              <Route
+                path={["/confirm", "/confirm.aspx"]}
+                component={({ location }) => {
+                  const type = queryString.parse(location.search).type;
+
+                  return (
+                    <Redirect
+                      to={{
+                        pathname: `/confirm/${type}`,
+                        search: location.search,
+                        state: { from: location },
+                      }}
+                    />
+                  );
+                }}
+              />
               <PrivateRoute
                 restricted
                 path={"/portal-settings"}

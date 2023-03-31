@@ -64,7 +64,7 @@
   "DNSSettings": "DNS設定",
   "DNSSettingsDescription": "DNS設定は、自分のスペースの代替URLを設定する方法です。",
   "DNSSettingsMobile": "弊社サポートチームまでご連絡いただければ、専門スタッフが設定をお手伝いさせていただきます。",
-  "DNSSettingsTooltip": "DNS設定により、{{ organizationName }}スペースの代替URLアドレスを設定することができます。詳しくはサポートチームまでご連絡ください。<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "DNS設定により、{{ organizationName }}スペースの代替URLアドレスを設定することができます。詳しくはサポートチームまでご連絡ください。",
   "DataBackup": "データのバックアップ",
   "Deactivate": "停止する",
   "DeactivateOrDeletePortal": "ポータルを無効にする、または削除する。",

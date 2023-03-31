@@ -64,7 +64,7 @@
   "DNSSettings": "DNS Settings",
   "DNSSettingsDescription": "DNS Settings is a way to set an alternative URL for your space.",
   "DNSSettingsMobile": "Send your request to our support team, and our specialists will help you with the settings.",
-  "DNSSettingsTooltip": "DNS Settings allow you to set an alternative URL address for your {{ organizationName }} space. Send your request to our support team, and our specialists will help you with the settings.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "DNS Settings allow you to set an alternative URL address for your {{ organizationName }} space. Send your request to our support team, and our specialists will help you with the settings.",
   "DataBackup": "Data backup",
   "Deactivate": "Deactivate",
   "DeactivateOrDeletePortal": "Deactivate or delete space.",
