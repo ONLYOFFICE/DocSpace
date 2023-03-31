@@ -28,15 +28,13 @@ import {
   FileStatus,
   FolderType,
 } from "@docspace/common/constants";
-import { makeAutoObservable, runInAction } from "mobx";
+import { makeAutoObservable } from "mobx";
 import { isMobile } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import { TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 import { checkProtocol } from "../helpers/files-helpers";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import FilesFilter from "@docspace/common/api/files/filter";
-import api from "@docspace/common/api";
 import { isTablet } from "@docspace/components/utils/device";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { muteRoomNotification } from "@docspace/common/api/settings";
@@ -44,6 +42,7 @@ import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
 import { getObjectByLocation } from "@docspace/common/utils";
+import uniqueid from "lodash/uniqueId";
 
 class FilesActionStore {
   authStore;
@@ -94,7 +93,7 @@ class FilesActionStore {
     }
   };
 
-  updateCurrentFolder = (fileIds, folderIds, clearSelection) => {
+  updateCurrentFolder = (fileIds, folderIds, clearSelection, operationId) => {
     const {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
@@ -140,7 +139,10 @@ class FilesActionStore {
         newFilter ? newFilter : roomsFilter.clone()
       ).finally(() => {
         this.dialogsStore.setIsFolderActions(false);
-        return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return setTimeout(
+          () => clearSecondaryProgressData(operationId),
+          TIMEOUT
+        );
       });
     } else {
       fetchFiles(
@@ -151,7 +153,10 @@ class FilesActionStore {
         clearSelection
       ).finally(() => {
         this.dialogsStore.setIsFolderActions(false);
-        return setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        return setTimeout(
+          () => clearSecondaryProgressData(operationId),
+          TIMEOUT
+        );
       });
     }
   };
@@ -208,6 +213,8 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
+    const operationId = uniqueid("operation_");
+
     const toFolderId = folderId ? folderId : this.selectedFolderStore.id;
 
     setSecondaryProgressBarData({
@@ -216,17 +223,18 @@ class FilesActionStore {
       percent: 0,
       label: "",
       alert: false,
+      operationId,
     });
 
     const tree = this.convertToTree(emptyFolders);
     await this.createFolderTree(tree, toFolderId);
 
-    this.updateCurrentFolder(null, [folderId]);
+    this.updateCurrentFolder(null, [folderId], null, operationId);
 
-    setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+    setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
   };
 
-  updateFilesAfterDelete = () => {
+  updateFilesAfterDelete = (operationId) => {
     const { setSelected } = this.filesStore;
     const {
       clearSecondaryProgressData,
@@ -235,7 +243,7 @@ class FilesActionStore {
     setSelected("close");
 
     this.dialogsStore.setIsFolderActions(false);
-    setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+    setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
   };
 
   deleteAction = async (
@@ -260,6 +268,8 @@ class FilesActionStore {
 
     const currentFolderId = this.selectedFolderStore.id;
 
+    const operationId = uniqueid("operation_");
+
     setSecondaryProgressBarData({
       icon: "trash",
       visible: true,
@@ -267,6 +277,7 @@ class FilesActionStore {
       label: translations.deleteOperation,
       alert: false,
       filesCount: selection.length,
+      operationId,
     });
 
     const deleteAfter = false; //Delete after finished TODO: get from settings
@@ -308,6 +319,7 @@ class FilesActionStore {
             const pbData = {
               icon: "trash",
               label: translations.deleteOperation,
+              operationId,
             };
             await this.uploadDataStore.loopFilesOperations(data, pbData);
 
@@ -326,10 +338,10 @@ class FilesActionStore {
             };
 
             if (withPaging || this.dialogsStore.isFolderActions) {
-              this.updateCurrentFolder(fileIds, folderIds, false);
+              this.updateCurrentFolder(fileIds, folderIds, false, operationId);
               showToast();
             } else {
-              this.updateFilesAfterDelete(folderIds);
+              this.updateFilesAfterDelete(operationId);
               this.filesStore.removeFiles(fileIds, folderIds, showToast);
               this.uploadDataStore.removeFiles(fileIds);
             }
@@ -352,8 +364,9 @@ class FilesActionStore {
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
+          operationId,
         });
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
         return toastr.error(err.message ? err.message : err);
       } finally {
         this.filesStore.setOperationAction(false);
@@ -379,12 +392,15 @@ class FilesActionStore {
     const folderIds = folders.map((f) => f.id);
     if (isRecycleBinFolder) addActiveItems(fileIds, folderIds);
 
+    const operationId = uniqueid("operation_");
+
     setSecondaryProgressBarData({
       icon: "trash",
       visible: true,
       percent: 0,
       label: translations.deleteOperation,
       alert: false,
+      operationId,
     });
 
     try {
@@ -394,10 +410,11 @@ class FilesActionStore {
         const pbData = {
           icon: "trash",
           label: translations.deleteOperation,
+          operationId,
         };
         await loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
-        this.updateCurrentFolder(fileIds, folderIds);
+        this.updateCurrentFolder(fileIds, folderIds, null, operationId);
         getIsEmptyTrash();
         clearActiveOperations(fileIds, folderIds);
       });
@@ -406,8 +423,9 @@ class FilesActionStore {
       setSecondaryProgressBarData({
         visible: true,
         alert: true,
+        operationId,
       });
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
       return toastr.error(err.message ? err.message : err);
     }
   };
@@ -434,7 +452,10 @@ class FilesActionStore {
       percent: 0,
       label: translations.deleteOperation,
       alert: false,
+      operationId,
     });
+
+    const operationId = uniqueid("operation_");
 
     try {
       await removeFiles(folderIds, [], true, true).then(async (res) => {
@@ -443,10 +464,11 @@ class FilesActionStore {
         const pbData = {
           icon: "trash",
           label: translations.deleteOperation,
+          operationId,
         };
         await loopFilesOperations(data, pbData);
         toastr.success(translations.successOperation);
-        this.updateCurrentFolder(null, folderIds);
+        this.updateCurrentFolder(null, folderIds, null, operationId);
         // getIsEmptyTrash();
         clearActiveOperations(null, folderIds);
       });
@@ -455,8 +477,9 @@ class FilesActionStore {
       setSecondaryProgressBarData({
         visible: true,
         alert: true,
+        operationId,
       });
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
 
       return toastr.error(err.message ? err.message : err);
     }
@@ -482,12 +505,15 @@ class FilesActionStore {
 
     this.setIsBulkDownload(true);
 
+    const operationId = uniqueid("operation_");
+
     setSecondaryProgressBarData({
       icon: "file",
       visible: true,
       percent: 0,
       label,
       alert: false,
+      operationId,
     });
 
     const fileIds = fileConvertIds.map((f) => f.key || f);
@@ -499,6 +525,7 @@ class FilesActionStore {
         const pbData = {
           icon: "file",
           label,
+          operationId,
         };
 
         const item =
@@ -519,10 +546,11 @@ class FilesActionStore {
           setSecondaryProgressBarData({
             visible: true,
             alert: true,
+            operationId,
           });
         }
 
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
         !item.url && toastr.error(translations.error, null, 0, true);
       });
     } catch (err) {
@@ -531,8 +559,9 @@ class FilesActionStore {
       setSecondaryProgressBarData({
         visible: true,
         alert: true,
+        operationId,
       });
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
       return toastr.error(err.message ? err.message : err);
     }
   };
@@ -674,16 +703,25 @@ class FilesActionStore {
       this.dialogsStore.setIsRoomDelete(isRoom);
       this.dialogsStore.setDeleteDialogVisible(true);
     } else {
+      const operationId = uniqueid("operation_");
+
       setSecondaryProgressBarData({
         icon: "trash",
         visible: true,
         percent: 0,
         label: translations?.deleteOperation,
         alert: false,
+        operationId,
       });
 
       try {
-        await this.deleteItemOperation(isFile, itemId, translations, isRoom);
+        await this.deleteItemOperation(
+          isFile,
+          itemId,
+          translations,
+          isRoom,
+          operationId
+        );
 
         const id = Array.isArray(itemId) ? itemId : [itemId];
 
@@ -693,20 +731,22 @@ class FilesActionStore {
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
+          operationId,
         });
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
         return toastr.error(err.message ? err.message : err);
       }
     }
   };
 
-  deleteItemOperation = (isFile, itemId, translations, isRoom) => {
+  deleteItemOperation = (isFile, itemId, translations, isRoom, operationId) => {
     const { addActiveItems, getIsEmptyTrash } = this.filesStore;
     const { withPaging } = this.authStore.settingsStore;
 
     const pbData = {
       icon: "trash",
       label: translations?.deleteOperation,
+      operationId,
     };
 
     this.filesStore.setOperationAction(true);
@@ -721,10 +761,10 @@ class FilesActionStore {
           await this.uploadDataStore.loopFilesOperations(data, pbData);
 
           if (withPaging) {
-            this.updateCurrentFolder([itemId]);
+            this.updateCurrentFolder([itemId], null, null, operationId);
             toastr.success(translations.successRemoveFile);
           } else {
-            this.updateFilesAfterDelete();
+            this.updateFilesAfterDelete(operationId);
             this.filesStore.removeFiles([itemId], null, () =>
               toastr.success(translations.successRemoveFile)
             );
@@ -741,7 +781,7 @@ class FilesActionStore {
           if (res[0]?.error) return Promise.reject(res[0].error);
           const data = res ? res : null;
           await this.uploadDataStore.loopFilesOperations(data, pbData);
-          this.updateCurrentFolder(null, [itemId]);
+          this.updateCurrentFolder(null, [itemId], null, operationId);
         })
         .then(() =>
           toastr.success(
@@ -762,10 +802,10 @@ class FilesActionStore {
           await this.uploadDataStore.loopFilesOperations(data, pbData);
 
           if (withPaging) {
-            this.updateCurrentFolder(null, [itemId]);
+            this.updateCurrentFolder(null, [itemId], null, operationId);
             toastr.success(translations.successRemoveFolder);
           } else {
-            this.updateFilesAfterDelete([itemId]);
+            this.updateFilesAfterDelete(operationId);
             this.filesStore.removeFiles(null, [itemId], () =>
               toastr.success(translations.successRemoveFolder)
             );
@@ -837,6 +877,7 @@ class FilesActionStore {
     item.fileExst ? fileIds.push(item.id) : folderIds.push(item.id);
     const conflictResolveType = ConflictResolveType.Duplicate;
     const deleteAfter = false; //TODO: get from settings
+    const operationId = uniqueid("operation_");
 
     setSecondaryProgressBarData({
       icon: "duplicate",
@@ -845,6 +886,7 @@ class FilesActionStore {
       label,
       alert: false,
       filesCount: filesCount + fileIds.length,
+      operationId,
     });
 
     this.filesStore.addActiveItems(fileIds, folderIds);
@@ -854,7 +896,8 @@ class FilesActionStore {
       folderIds,
       fileIds,
       conflictResolveType,
-      deleteAfter
+      deleteAfter,
+      operationId
     );
   };
 
@@ -917,7 +960,7 @@ class FilesActionStore {
 
         return Promise.all(actions)
           .then(() => {
-            this.updateCurrentFolder(null, items);
+            this.updateCurrentFolder(null, items, null, operationId);
             if (selection) {
               setSelection({ ...selection, pinned: true });
             }
@@ -931,7 +974,7 @@ class FilesActionStore {
         });
         return Promise.all(actions)
           .then(() => {
-            this.updateCurrentFolder(null, items);
+            this.updateCurrentFolder(null, items, null, operationId);
             if (selection) {
               setSelection({ ...selection, pinned: false });
             }
@@ -972,7 +1015,7 @@ class FilesActionStore {
       .catch((e) => toastr.error(e))
       .finally(() => {
         Promise.all([
-          this.updateCurrentFolder(null, [id]),
+          this.updateCurrentFolder(null, [id], null, operationId),
           this.treeFoldersStore.fetchTreeFolders(),
         ]);
       });
@@ -1005,6 +1048,8 @@ class FilesActionStore {
       return;
     }
 
+    const operationId = uniqueid("operation_");
+
     const items = Array.isArray(folders)
       ? folders.map((x) => (x?.id ? x.id : x))
       : [folders.id];
@@ -1015,6 +1060,7 @@ class FilesActionStore {
       percent: 0,
       label: "Archive room",
       alert: false,
+      operationId,
     });
 
     addActiveItems(null, items);
@@ -1031,6 +1077,7 @@ class FilesActionStore {
             const pbData = {
               icon: "move",
               label: "Archive rooms operation",
+              operationId,
             };
             const data = lastResult || null;
 
@@ -1055,7 +1102,7 @@ class FilesActionStore {
               setSelectedFolder(roomsFolder);
             }
 
-            this.updateCurrentFolder();
+            this.updateCurrentFolder(null, null, null, operationId);
           })
           .then(() => setPortalQuota())
           .then(() => {
@@ -1075,8 +1122,9 @@ class FilesActionStore {
               icon: "move",
               visible: true,
               alert: true,
+              operationId,
             });
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
             return toastr.error(err.message ? err.message : err);
           })
           .finally(() => {
@@ -1094,6 +1142,7 @@ class FilesActionStore {
             const pbData = {
               icon: "move",
               label: "Restore rooms from archive operation",
+              operationId,
             };
             const data = lastResult || null;
 
@@ -1101,7 +1150,7 @@ class FilesActionStore {
 
             await this.uploadDataStore.loopFilesOperations(data, pbData);
 
-            this.updateCurrentFolder(null, [items]);
+            this.updateCurrentFolder(null, [items], null, operationId);
           })
           .then(() => setPortalQuota())
           .then(() => {
@@ -1120,8 +1169,9 @@ class FilesActionStore {
             setSecondaryProgressBarData({
               visible: true,
               alert: true,
+              operationId,
             });
-            setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+            setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
             return toastr.error(err.message ? err.message : err);
           })
           .finally(() => {
@@ -1263,17 +1313,20 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = this.uploadDataStore.secondaryProgressDataStore;
 
+    const operationId = uniqueid("operation_");
+
     setSecondaryProgressBarData({
       icon: "file",
       label: "", //TODO: add translation if need "MarkAsRead": "Mark all as read",
       percent: 0,
       visible: true,
+      operationId,
     });
 
     return markAsRead(folderIds, fileIds)
       .then(async (res) => {
         const data = res[0] ? res[0] : null;
-        const pbData = { icon: "file" };
+        const pbData = { icon: "file", operationId };
         await this.uploadDataStore.loopFilesOperations(data, pbData);
       })
       .then(() => {
@@ -1287,7 +1340,9 @@ class FilesActionStore {
         updateFileStatus(index, item.fileStatus & ~FileStatus.IsNew);
       })
       .catch((err) => toastr.error(err))
-      .finally(() => setTimeout(() => clearSecondaryProgressData(), TIMEOUT));
+      .finally(() =>
+        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT)
+      );
   };
 
   moveDragItems = (destFolderId, folderTitle, translations) => {
@@ -1518,17 +1573,26 @@ class FilesActionStore {
       clearSecondaryProgressData,
     } = secondaryProgressDataStore;
 
+    const operationId = uniqueid("operation_");
+
     setSecondaryProgressBarData({
       icon: "trash",
       visible: true,
       percent: 0,
       label: translations?.deleteOperation,
       alert: false,
+      operationId,
     });
 
     try {
       this.setGroupMenuBlocked(true);
-      await this.deleteItemOperation(false, itemId, translations, true);
+      await this.deleteItemOperation(
+        false,
+        itemId,
+        translations,
+        true,
+        operationId
+      );
 
       const id = Array.isArray(itemId) ? itemId : [itemId];
 
@@ -1539,8 +1603,9 @@ class FilesActionStore {
       setSecondaryProgressBarData({
         visible: true,
         alert: true,
+        operationId,
       });
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
       return toastr.error(err.message ? err.message : err);
     } finally {
       this.setGroupMenuBlocked(false);
