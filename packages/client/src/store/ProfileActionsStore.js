@@ -3,8 +3,10 @@ import HotkeysReactSvgUrl from "PUBLIC_DIR/images/hotkeys.react.svg?url";
 import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
 import PaymentsReactSvgUrl from "PUBLIC_DIR/images/payments.react.svg?url";
 import HelpCenterReactSvgUrl from "PUBLIC_DIR/images/help.center.react.svg?url";
-import SupportReactSvgUrl from "PUBLIC_DIR/images/support.react.svg?url";
-import VideoGuidesReactSvgUrl from "PUBLIC_DIR/images/video.guides.react.svg?url";
+import EmailReactSvgUrl from "PUBLIC_DIR/images/email.react.svg?url";
+import LiveChatReactSvgUrl from "PUBLIC_DIR/images/support.react.svg?url";
+import BookTrainingReactSvgUrl from "PUBLIC_DIR/images/book.training.react.svg?url";
+//import VideoGuidesReactSvgUrl from "PUBLIC_DIR/images/video.guides.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import LogoutReactSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
 import { makeAutoObservable } from "mobx";
@@ -93,11 +95,22 @@ class ProfileActionsStore {
     window.open(helpUrl, "_blank");
   };
 
+  onLiveChatClick = () => {
+    //window.open(supportUrl, "_blank");
+  };
+
   onSupportClick = () => {
     const supportUrl = this.authStore.settingsStore.additionalResourcesData
       ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
+  };
+
+  onBookTraining = () => {
+    const trainingEmail = this.authStore.settingsStore.additionalResourcesData
+      ?.trainingEmail;
+
+    trainingEmail && window.open(`mailto:${trainingEmail}`, "_blank");
   };
 
   // onVideoGuidesClick = () => {
@@ -173,6 +186,29 @@ class ProfileActionsStore {
       };
     }
     // }
+
+    let liveChat = null;
+
+    if (!isMobile) {
+      liveChat = {
+        key: "user-menu-live-chat",
+        icon: LiveChatReactSvgUrl,
+        label: t("Common:LiveChat"),
+        onClick: this.onLiveChatClick,
+      };
+    }
+
+    let bookTraining = null;
+
+    if (!isMobile) {
+      bookTraining = {
+        key: "user-menu-book-training",
+        icon: BookTrainingReactSvgUrl,
+        label: t("Common:BookTraining"),
+        onClick: this.onBookTraining,
+      };
+    }
+
     const actions = [
       {
         key: "user-menu-profile",
@@ -188,16 +224,14 @@ class ProfileActionsStore {
         onClick: this.onPaymentsClick,
       },
       {
+        isSeparator: true,
+        key: "separator1",
+      },
+      {
         key: "user-menu-help-center",
         icon: HelpCenterReactSvgUrl,
         label: t("Common:HelpCenter"),
         onClick: this.onHelpCenterClick,
-      },
-      {
-        key: "user-menu-support",
-        icon: SupportReactSvgUrl,
-        label: t("Common:FeedbackAndSupport"),
-        onClick: this.onSupportClick,
       },
       // {
       //   key: "user-menu-video",
@@ -207,6 +241,18 @@ class ProfileActionsStore {
       // },
       hotkeys,
       {
+        isSeparator: true,
+        key: "separator2",
+      },
+      liveChat,
+      {
+        key: "user-menu-support",
+        icon: EmailReactSvgUrl,
+        label: t("Common:FeedbackAndSupport"),
+        onClick: this.onSupportClick,
+      },
+      bookTraining,
+      {
         key: "user-menu-about",
         icon: InfoOutlineReactSvgUrl,
         label: t("Common:AboutCompanyTitle"),
@@ -214,7 +260,7 @@ class ProfileActionsStore {
       },
       {
         isSeparator: true,
-        key: "separator",
+        key: "separator3",
       },
       {
         key: "user-menu-logout",
@@ -226,7 +272,7 @@ class ProfileActionsStore {
     ];
 
     if (debugInfo) {
-      actions.splice(3, 0, {
+      actions.splice(4, 0, {
         key: "user-menu-debug",
         icon: InfoOutlineReactSvgUrl,
         label: "Debug Info",
