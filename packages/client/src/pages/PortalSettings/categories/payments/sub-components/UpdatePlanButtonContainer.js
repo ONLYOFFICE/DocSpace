@@ -16,7 +16,8 @@ const StyledBody = styled.div`
 const MANAGER = "manager";
 let timerId = null,
   intervalId = null,
-  isWaitRequest = false;
+  isWaitRequest = false,
+  previousManagersCount = null;
 const UpdatePlanButtonContainer = ({
   setIsLoading,
   paymentLink,
@@ -48,6 +49,7 @@ const UpdatePlanButtonContainer = ({
         return;
       }
 
+      previousManagersCount = maxCountManagersByQuota;
       waitingForQuota();
     } catch (e) {
       toastr.error(t("ErrorNotification"));
@@ -57,6 +59,26 @@ const UpdatePlanButtonContainer = ({
     }
   };
 
+  const successToastr = () =>
+    toastr.success(
+      <Trans t={t} i18nKey="BusinessUpdated" ns="Payments">
+        {{ planName: currentTariffPlanTitle }}
+      </Trans>
+    );
+
+  const resetIntervalSuccess = () => {
+    intervalId && successToastr();
+
+    setIsLoading(false);
+    clearInterval(intervalId);
+    intervalId = null;
+  };
+  useEffect(() => {
+    if (intervalId && maxCountManagersByQuota !== previousManagersCount) {
+      resetIntervalSuccess();
+      return;
+    }
+  }, [maxCountManagersByQuota]);
   const waitingForQuota = () => {
     isWaitRequest = false;
 
@@ -71,18 +93,10 @@ const UpdatePlanButtonContainer = ({
 
         const managersObject = res.features.find((obj) => obj.id === MANAGER);
 
-        if (managersObject && managersObject.value === managersCount) {
+        if (managersObject && managersObject.value !== previousManagersCount) {
           setPortalQuotaValue(res);
-          intervalId &&
-            toastr.success(
-              <Trans t={t} i18nKey="BusinessUpdated" ns="Payments">
-                {{ planName: currentTariffPlanTitle }}
-              </Trans>
-            );
 
-          setIsLoading(false);
-          clearInterval(intervalId);
-          intervalId = null;
+          resetIntervalSuccess();
         }
       } catch (e) {
         setIsLoading(false);
@@ -111,6 +125,9 @@ const UpdatePlanButtonContainer = ({
     return () => {
       timerId && clearTimeout(timerId);
       timerId = null;
+
+      intervalId && clearInterval(intervalId);
+      intervalId = null;
     };
   }, []);
 
