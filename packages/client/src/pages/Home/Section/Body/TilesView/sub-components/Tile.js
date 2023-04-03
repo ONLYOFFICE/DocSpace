@@ -428,6 +428,7 @@ class Tile extends React.PureComponent {
 
     this.cm = React.createRef();
     this.tile = React.createRef();
+    this.checkboxContainerRef = React.createRef();
   }
 
   onError = () => {
@@ -503,7 +504,8 @@ class Tile extends React.PureComponent {
         e.target.nodeName !== "INPUT" &&
         e.target.nodeName !== "rect" &&
         e.target.nodeName !== "path" &&
-        e.target.nodeName !== "svg"
+        e.target.nodeName !== "svg" &&
+        !this.checkboxContainerRef.current?.contains(e.target)
       ) {
         setSelection && setSelection([]);
       }
@@ -637,7 +639,10 @@ class Tile extends React.PureComponent {
                 {renderElement && !(!fileExst && id === -1) && !isEdit && (
                   <>
                     {!inProgress ? (
-                      <div className="file-icon_container">
+                      <div
+                        className="file-icon_container"
+                        ref={this.checkboxContainerRef}
+                      >
                         <StyledElement
                           className="file-icon"
                           isRoom={isRoom}
