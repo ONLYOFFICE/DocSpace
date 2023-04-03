@@ -14,6 +14,7 @@
   "Hide": "Ocultar",
   "HideAdditionalParameters": "Ocultar configuración avanzada",
   "HideAuthPage": "Ocultar la página de autenticación",
+  "LogoutEndpointUrl": "URL del punto de conexión de cierre de sesión único IdP",
   "LogoutEndpointUrlTooltip": "La URL utilizada para el cierre de sesión único en el lado del proveedor de servicios.",
   "NameIDFormat": "Formato NameId",
   "NewCertificate": "Nuevo certificado",

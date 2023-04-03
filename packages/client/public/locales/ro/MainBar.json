@@ -1,1 +1,10 @@
-{}
+{
+  "ClickHere": "Apăsaţi aici",
+  "ConfirmEmailDescription": "Utilizaţi linkul de activare din email. Nu aţi primit un email cu link-ul de activare?",
+  "ConfirmEmailHeader": "Activați adresa de email pentru a avea acces la funcţiile DocSpace.",
+  "RequestActivation": "Solicitaţi activarea din nou",
+  "RoomQuotaDescription": "Puteţi arhiva sălile inutile sau <1>{{{click aici}}</1> pentru a găsi un abonament mai potrivit pentru spaţiul dvs DocSpace.",
+  "RoomQuotaHeader": "Cota sălilor este pe punctul de a fi depăşită: {{currentValue}} / {{maxValue}}",
+  "StorageQuotaDescription": "Puteţi elimina fişierele inutile sau <1>{{{click aici}}</1> pentru a găsi un abonament mai potrivit pentru spaţiul dvs DocSpace.",
+  "StorageQuotaHeader": "Cota spaţiului de stocare este pe punctul de a fi depăşită: {{currentValue}} / {{maxValue}}"
+}

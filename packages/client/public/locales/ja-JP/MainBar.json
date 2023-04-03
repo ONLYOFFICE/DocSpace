@@ -5,5 +5,6 @@
   "RequestActivation": "もう一度アクティベーションを要求する",
   "RoomQuotaDescription": "不要なルームをアーカイブしたり、<1>{{clickHere}}</1>して、DocSpaceにもっと適した料金プランを見つけることができます。",
   "RoomQuotaHeader": "このルームは、もうすぐ制限を超えます：{{currentValue}} / {{maxValue}}",
+  "StorageQuotaDescription": "不要なファイルを削除するか、<1>{{clickHere}}</1>して、DocSpaceに適した料金プランを見つけることができます。",
   "StorageQuotaHeader": "ストレージのスペースは、もうすぐサイズ上限を超えます：{{currentValue}} / {{maxValue}}。"
 }

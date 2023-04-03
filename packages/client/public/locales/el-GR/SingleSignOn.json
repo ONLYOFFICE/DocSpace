@@ -1,1 +1,3 @@
-{}
+{
+  "SignOnEndpointUrl": "URL des Single Sign-On Endpunkts vom IdP"
+}

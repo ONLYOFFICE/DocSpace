@@ -64,7 +64,7 @@
   "DNSSettings": "Nastavení DNS",
   "DNSSettingsDescription": "Nastavení DNS umožňuje nastavit alternativní adresu URL pro váš prostor.",
   "DNSSettingsMobile": "Pošlete svůj požadavek našemu týmu podpory a naši specialisté vám pomohou s nastavením.",
-  "DNSSettingsTooltip": "Nastavení DNS umožňuje nastavit alternativní adresu URL pro váš prostor {{ organizationName }}. Zašlete požadavek našemu týmu podpory a naši specialisté vám s nastavením pomohou.<2>{{{learnMore}}</2>",
+  "DNSSettingsTooltip": "Nastavení DNS umožňuje nastavit alternativní adresu URL pro váš prostor {{ organizationName }}. Zašlete požadavek našemu týmu podpory a naši specialisté vám s nastavením pomohou.",
   "DataBackup": "Zálohování dat",
   "Deactivate": "Deaktivace",
   "DeactivateOrDeletePortal": "Deaktivovat nebo odstranit portál.",

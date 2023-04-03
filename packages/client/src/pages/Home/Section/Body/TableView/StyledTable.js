@@ -38,10 +38,6 @@ const StyledTableRow = styled(TableRow)`
         height: 48px;
         max-height: 48px;
       }
-
-      .table-container_row-checkbox {
-        padding-left: 20px !important;
-      }
     `}
   ${(props) =>
     !props.isDragging &&
@@ -99,6 +95,9 @@ const StyledTableRow = styled(TableRow)`
   .table-container_element-wrapper,
   .table-container_row-loader {
     min-width: ${(props) => (props.isRoom ? "40px" : "36px")};
+
+    margin-left: -20px;
+    padding-left: 20px;
   }
 
   .table-container_element-container {
@@ -117,7 +116,6 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox {
-    padding-left: 20px;
     width: 16px;
   }
 

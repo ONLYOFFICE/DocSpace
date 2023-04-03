@@ -106,32 +106,27 @@ export const DNSSettingsTooltip = ({
   helpLink,
   organizationName,
 }) => {
-  const text = t("Settings:DNSSettingsTooltip");
-  const learnMore = t("Common:LearnMore");
-
   return (
     <StyledTooltip>
       <div className="font-size">
         <Trans
           ns="Settings"
           i18nKey="DNSSettingsTooltip"
-          text={text}
-          learnMore={learnMore}
+          organizationName={organizationName}
         >
           DNS Settings allow you to set an alternative URL address for your
-          {{ organizationName }} portal. Send your request to our support team,
+          {{ organizationName }} space. Send your request to our support team,
           and our specialists will help you with the settings.
-          <div className="display-inline font-size"> {{ text }}</div>
-          <Link
-            color={theme.client.settings.common.linkColorHelp}
-            className="display-block font-size"
-            isHovered={true}
-            target="_blank"
-            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
-          >
-            {{ learnMore }}
-          </Link>
         </Trans>
+        <Link
+          color={theme.client.settings.common.linkColorHelp}
+          className="display-block font-size"
+          isHovered={true}
+          target="_blank"
+          href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+        >
+          {t("Common:LearnMore")}
+        </Link>
       </div>
     </StyledTooltip>
   );

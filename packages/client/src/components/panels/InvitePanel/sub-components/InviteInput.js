@@ -281,6 +281,7 @@ const InviteInput = ({
             manualX="16px"
             showDisabledItems
             clickOutsideAction={closeInviteInputPanel}
+            eventTypes="click"
             {...dropDownMaxHeight}
           >
             {!!usersList.length ? (
