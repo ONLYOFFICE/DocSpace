@@ -343,7 +343,7 @@ public class GlobalFolder
     internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache =
         new ConcurrentDictionary<string, int>();
 
-    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory, bool createIfNotExist = true)
     {
         if (_coreBaseSettings.DisableDocSpace)
         {
@@ -352,10 +352,15 @@ public class GlobalFolder
 
         var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
 
-        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        if (DocSpaceFolderCache.TryGetValue(key, out var result))
         {
-            result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
+            return result;
+        }
 
+        result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(createIfNotExist);
+
+        if (result != default)
+        {
             DocSpaceFolderCache[key] = result;
         }
 
