@@ -5,6 +5,7 @@
   "BusinessExpired": "Ihr {{planName}}-Plan ist am {{date}} abgelaufen",
   "BusinessFinalDateInfo": "Das Abonnement wird automatisch am {{finalDate}} mit aktualisierten Preisen und Spezifikationen verlängert. Sie können es kündigen oder Ihre Rechnungsdaten in Ihrem Stripe-Kundenportal ändern.",
   "BusinessPlanPaymentOverdue": "Sie können keine neuen Benutzer hinzufügen und keine neuen Räume erstellen. Die Zahlung für den Plan {{planName}} ist überfällig.",
+  "BusinessRequestDescription": "Die Preispläne mit mehr {{peopleNumber}} Managern sind nur auf Anfrage erhältlich.",
   "BusinessSuggestion": "Passen Sie Ihren {{planName}}-Plan an",
   "BusinessTitle": "Sie verwenden den {{planName}}-Plan",
   "BusinessUpdated": "{{planName}}-Plan aktualisiert",

@@ -72,6 +72,7 @@
   "DeleteDocSpaceInfo": "Antes de eliminar el espacio, por favor, asegúrese de que la facturación automática está desactivada. Puede comprobar el estado de la facturación automática en <1>su portal de cliente de Stripe.</1>",
   "DeleteTheme": "Eliminar tema",
   "DeleteThemeForever": "¿Eliminar el tema para siempre?",
+  "DeleteThemeNotice": "El tema se eliminará definitivamente. No podrá deshacer esta acción.",
   "DeveloperTools": "Herramientas de desarrollo",
   "Disabled": "Deshabilitado",
   "DownloadCopy": "Descargar la copia",
