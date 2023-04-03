@@ -112,6 +112,16 @@ const StyledSimpleUserRow = styled(Row)`
           padding-bottom: 0.8px;
         }
       }
+
+      ${(props) =>
+        props.sectionWidth <= 500 &&
+        css`
+          .mainIcons {
+            .paid-badge {
+              margin-top: 0.8px !important;
+            }
+          }
+        `}
     }
   `}
 

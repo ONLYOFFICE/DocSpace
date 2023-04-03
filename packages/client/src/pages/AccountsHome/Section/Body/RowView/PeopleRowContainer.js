@@ -122,6 +122,20 @@ const StyledRowContainer = styled(RowContainer)`
       }
     }
   }
+
+  ${(props) =>
+    props.sectionWidth <= 500 &&
+    css`
+      .row-selected {
+        .user-row {
+          .mainIcons {
+            .paid-badge {
+              margin-top: 0.8px !important;
+            }
+          }
+        }
+      }
+    `}
 `;
 
 const PeopleRowContainer = ({
@@ -161,6 +175,7 @@ const PeopleRowContainer = ({
       itemCount={filterTotal}
       filesLength={peopleList.length}
       itemHeight={57.6}
+      sectionWidth={sectionWidth}
     >
       {peopleList.map((item) => (
         <SimpleUserRow
