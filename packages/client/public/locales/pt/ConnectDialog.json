@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Título da pasta",
   "ConnectionUrl": "Url de ligação",
   "Login": "Entrar",
-  "Reconnect": "Voltar a ligar"
+  "Reconnect": "Voltar a ligar",
+  "SuccessfulConnectionOfAThirdParty": "O serviço de terceiros foi conectado com êxito."
 }
