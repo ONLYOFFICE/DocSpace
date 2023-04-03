@@ -69,17 +69,47 @@ const StyledSimpleUserRow = styled(Row)`
     :hover {
       cursor: pointer;
       ${checkedStyle}
-      margin-top: -4px !important;
-      padding-top: 1px;
-      padding-bottom: 1px;
-      border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      border-bottom: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
 
-      .styled-checkbox-container {
-        .styled-element {
-          padding-top: 1px;
+      @media (min-width: 1024px) {
+        margin-top: -4px !important;
+        padding-top: 1px;
+        padding-bottom: 1px;
+
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        border-bottom: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+
+        .styled-checkbox-container {
+          .styled-element {
+            padding-top: 1px;
+          }
+        }
+      }
+
+      @media (max-width: 1024px) {
+        margin-top: -3px !important;
+
+        padding-top: 0.8px;
+        padding-bottom: 0.8px;
+
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        border-bottom: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+
+        .owner_icon {
+          padding-bottom: 0.8px;
+        }
+
+        .mainIcons {
+          .paid-badge {
+            margin-top: -1px;
+          }
+        }
+
+        .expandButton {
+          padding-bottom: 0.8px;
         }
       }
     }

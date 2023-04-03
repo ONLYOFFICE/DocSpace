@@ -94,6 +94,26 @@ const StyledRowContainer = styled(RowContainer)`
       }
     }
   }
+
+  @media (max-width: 1024px) {
+    .row-selected {
+      .user-row {
+        margin-top: -3px !important;
+        padding-bottom: 0.8px !important;
+        padding-top: 0.8px !important;
+
+        .expandButton {
+          padding-bottom: 0.8px;
+        }
+
+        .mainIcons {
+          .paid-badge {
+            margin-top: -1px;
+          }
+        }
+      }
+    }
+  }
 `;
 
 const PeopleRowContainer = ({
