@@ -18,9 +18,15 @@
   "LoginRegistryButton": "Liity",
   "PassworResetTitle": "Nyt voit luoda uuden salasanan.",
   "PhoneSubtitle": "Kaksiosainen todennus on käytössä lisäsuojauksen tarjoamiseksi. Anna matkapuhelinnumerosi, jos haluat jatkaa työskentelyä DocSpaceessa. Matkapuhelinnumero on annettava kansainvälisessä muodossa, jossa on maakoodi.",
+  "PortalContinueTitle": "Ole hyvä ja vahvista, että haluat aktivoida DocSpacesi uudelleen.",
+  "PortalDeactivateTitle": "Ole hyvä ja vahvista, että haluat deaktivoida DocSpacesi.",
+  "PortalRemoveTitle": "Ole hyvä ja vahvista, että haluat poistaa DocSpacesi.",
+  "Reactivate": "Aktivoida uudelleen",
   "SetAppButton": "Yhdistä sovellus",
   "SetAppDescription": "Kaksivaiheinen todennus on käytössä. Määritä autentikointisovelluksesi jatkaaksesi työskentelyä DocSpacessa. Voit käyttää Google Authenticatoria <1> Android</1> ja <4> iOS</4>-järjestelmällä tai Authenticatoria <8> Windows-puhelimella</8>.",
   "SetAppInstallDescription": "Jos haluat yhdistää sovelluksen, skannaa QR-koodi tai kirjoita salainen avaimesi <1> {{secretKey}} </1> manuaalisesti ja kirjoita sitten 6-numeroinen koodi sovelluksestasi alla olevaan kenttään.",
   "SetAppTitle": "Määritä todennussovelluksesi",
-  "WelcomeUser": "Tervetuloa DocSpaceen!\nAloita rekisteröityminen tai kirjautuminen sosiaalisen verkostoitumisen kautta."
+  "SuccessDeactivate": "Tilisi on onnistuneesti deaktivoitu. Sinut ohjataan <1>sivustolle</1> 10 sekunnissa.",
+  "SuccessReactivate": "Tilisi on onnistuneesti aktivoitu uudelleen. Sinut ohjataan <1>portaaliin</1> 10 sekunnissa.",
+  "WelcomeUser": "Tervetuloa meidän DocSpaceen!\nAloita rekisteröityminen tai kirjautuminen sosiaalisen verkostoitumisen kautta."
 }

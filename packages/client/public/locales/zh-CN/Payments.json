@@ -5,6 +5,7 @@
   "BusinessExpired": "您的 {{planName}} 版本已于 {{date}} 过期",
   "BusinessFinalDateInfo": "订阅将于 {{finalDate}} 自动按照更新后的定价和规格续期。您可在 Stripe 客户门户中取消或更改计费信息。",
   "BusinessPlanPaymentOverdue": "无法添加新用户并新建房间。{{planName}} 版本付款已逾期。",
+  "BusinessRequestDescription": "超过 {{peopleNumber}} 名用管理者定价版本仅应要求单独提供。",
   "BusinessSuggestion": "自定义您的 {{planName}} 版本",
   "BusinessTitle": "您正在使用 {{planName}} 版本",
   "BusinessUpdated": "{{planName}} 版本已更新",
