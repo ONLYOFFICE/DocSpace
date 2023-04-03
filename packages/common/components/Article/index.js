@@ -42,6 +42,7 @@ const Article = ({
   mainBarVisible,
   isBannerVisible,
   isNonProfit,
+  isTeamTrainingAlertAvailable,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -188,7 +189,9 @@ const Article = ({
                 toggleArticleOpen={toggleArticleOpen}
               />
             )}
-          {showText && <ArticleTeamTrainingAlert />}
+          {isTeamTrainingAlertAvailable && showText && (
+            <ArticleTeamTrainingAlert />
+          )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -251,6 +254,7 @@ export default inject(({ auth }) => {
     currentTariffStatusStore,
     userStore,
     isPaymentPageAvailable,
+    isTeamTrainingAlertAvailable,
     bannerStore,
   } = auth;
   const { isFreeTariff, isNonProfit } = currentQuotaStore;
@@ -288,5 +292,6 @@ export default inject(({ auth }) => {
     mainBarVisible,
     isBannerVisible,
     isNonProfit,
+    isTeamTrainingAlertAvailable,
   };
 })(observer(Article));
