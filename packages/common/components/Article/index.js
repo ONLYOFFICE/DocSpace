@@ -15,6 +15,7 @@ import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
 import ArticlePaymentAlert from "./sub-components/article-payment-alert";
+import ArticleTeamTrainingAlert from "./sub-components/article-team-training";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 import Portal from "@docspace/components/portal";
@@ -187,6 +188,7 @@ const Article = ({
                 toggleArticleOpen={toggleArticleOpen}
               />
             )}
+          {showText && <ArticleTeamTrainingAlert />}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (

@@ -11,11 +11,12 @@ import CrossReactSvg from "PUBLIC_DIR/images/cross.react.svg";
 
 import Loaders from "../Loaders";
 import { StyledAlertComponent } from "./StyledComponent";
+import Link from "@docspace/components/link";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
   margin: auto 0;
   path {
-    fill: ${(props) => props.color};
+    fill: ${(props) => props.theme.alertComponent.iconColor};
   }
 `;
 const StyledCrossIcon = styled(CrossReactSvg)`
@@ -23,6 +24,7 @@ const StyledCrossIcon = styled(CrossReactSvg)`
   right: 0px;
   margin-right: 8px;
   margin-top: 8px;
+  cursor: pointer;
 
   ${commonIconsStyles}
   path {
@@ -30,24 +32,29 @@ const StyledCrossIcon = styled(CrossReactSvg)`
   }
 `;
 
-const AlertComponent = ({
-  id,
-  description,
-  title,
-  titleFontSize,
-  additionalDescription,
-  needArrowIcon = false,
-  needCloseIcon = false,
-  link,
-  linkColor,
-  linkTitle,
-  onAlertClick,
-  onCloseClick,
-  mainColor,
-}) => {
+const AlertComponent = (props) => {
+  const {
+    id,
+    description,
+    title,
+    titleFontSize,
+    additionalDescription,
+    needArrowIcon = false,
+    needCloseIcon = false,
+    link,
+    linkColor,
+    linkTitle,
+    onAlertClick,
+    onCloseClick,
+    titleColor,
+    borderColor,
+    theme,
+  } = props;
   return (
     <StyledAlertComponent
-      mainColor={mainColor}
+      theme={theme}
+      titleColor={titleColor}
+      borderColor={borderColor}
       onClick={onAlertClick}
       needArrowIcon={needArrowIcon}
       id={id}
@@ -63,17 +70,21 @@ const AlertComponent = ({
         {additionalDescription && (
           <Text fontWeight={600}>{additionalDescription}</Text>
         )}
-        <Text noSelect fontSize="12px">
+        <Text
+          noSelect
+          fontSize="12px"
+          color={theme.alertComponent.descriptionColor}
+        >
           {description}
         </Text>
         {link && (
-          <Link type="page" href={link} noHover color={linkColor} title={email}>
+          <Link type="page" href={link} noHover color={linkColor}>
             {linkTitle}
           </Link>
         )}
       </div>
       {needCloseIcon && (
-        <StyledCrossIcon size="small" onCloseClick={onCloseClick} />
+        <StyledCrossIcon size="extraSmall" onClick={onCloseClick} />
       )}
       {needArrowIcon && (
         <StyledArrowRightIcon className="alert-component_arrow" />
@@ -84,22 +95,12 @@ const AlertComponent = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
-    const { currentTariffPlanTitle } = currentQuotaStore;
+    const { settingsStore } = auth;
 
-    const {
-      setPortalPaymentQuotas,
-      planCost,
-      tariffPlanTitle,
-    } = paymentQuotasStore;
+    const { theme } = settingsStore;
 
     return {
-      setPortalPaymentQuotas,
-      pricePerManager: planCost.value,
-
-      currencySymbol: planCost.currencySymbol,
-      currentTariffPlanTitle,
-      tariffPlanTitle,
+      theme,
     };
   })(observer(AlertComponent))
 );

@@ -68,10 +68,15 @@ const ArticlePaymentAlert = ({
     ? theme.catalog.paymentAlert.color
     : theme.catalog.paymentAlert.warningColor;
 
-  return (
+  const isShowLoader = !ready;
+
+  return isShowLoader ? (
+    <Loaders.Rectangle width="210px" height="88px" />
+  ) : (
     <AlertComponent
       id="document_catalog-payment-alert"
-      mainColor={color}
+      borderColor={color}
+      titleColor={color}
       onAlertClick={onClick}
       title={title}
       titleFontSize="11px"
