@@ -40,13 +40,27 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        margin-top: -1.6px;
-        padding-top: 0.8px;
-        padding-bottom: 0.8px;
+        margin-top: -2.2px;
+        padding-top: 1px;
+        padding-bottom: 1px;
         border-top: ${(props) =>
-          `0.8px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
         border-bottom: ${(props) =>
-          `0.8px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+
+        .row_content {
+          padding-top: 1px;
+
+          .mainIcons {
+            padding-bottom: 1px;
+          }
+        }
+
+        .styled-checkbox-container {
+          .styled-element {
+            padding-top: 1px;
+          }
+        }
       }
     `};
 
