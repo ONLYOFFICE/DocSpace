@@ -71,7 +71,7 @@ const StyledTextarea = styled(ClearTextareaAutosize).attrs(
   outline: none;
   resize: none;
   overflow: ${(props) => (props.isJSONField ? "visible !important" : "hidden")};
-  padding: ${(props) => (props.showCopyIcon ? "5px 28px 2px" : "5px 8px 2px")};
+  padding: ${(props) => (props.enableCopy ? "5px 28px 2px" : "5px 8px 2px")};
   padding-left: ${(props) => props.paddingLeftProp};
   font-size: ${(props) => props.fontSize + "px"};
   font-family: ${(props) => props.theme.fontFamily};
@@ -143,7 +143,7 @@ const Wrapper = styled.div`
   position: relative;
 
   min-width: ${(props) => (props.isJSONField ? "600px" : "none")};
-  max-width: ${(props) => (props.isLimitedWidth ? "1200px" : "none")};
+  max-width: 1200px;
 `;
 
 const Numeration = styled.pre`

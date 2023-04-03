@@ -38,10 +38,9 @@ const Textarea = ({
   areaSelect,
   isJSONField,
   copyInfoText,
-  showCopyIcon,
+  enableCopy,
   hasNumeration,
-  isFullHeight,
-  isLimitedWidth,
+  isFullHeight
 }) => {
   const areaRef = useRef(null);
   const [isError, setIsError] = useState(hasError);
@@ -92,10 +91,9 @@ const Textarea = ({
   return (
     <Wrapper
       isJSONField={isJSONField}
-      onFocus={isJSONField ? onTextareaClick : undefined}
-      isLimitedWidth={isLimitedWidth}
+      onFocus={enableCopy ? onTextareaClick : undefined}
     >
-      {showCopyIcon && (
+      {enableCopy && (
         <StyledCopyIcon
           onClick={() => {
             copy(modifiedValue);
@@ -127,7 +125,7 @@ const Textarea = ({
           id={id}
           paddingLeftProp={paddingLeftProp}
           isJSONField={isJSONField}
-          showCopyIcon={showCopyIcon}
+          enableCopy={enableCopy}
           placeholder={placeholder}
           onChange={(e) => onChange && onChange(e)}
           maxLength={maxLength}
@@ -189,13 +187,11 @@ Textarea.propTypes = {
   /** Indicates the text of toast/informational alarm */
   copyInfoText: PropTypes.string,
   /** Shows copy icon */
-  showCopyIcon: PropTypes.bool,
+  enableCopy: PropTypes.bool,
   /** Inserts numeration */
   hasNumeration: PropTypes.bool,
   /** Calculating height of content depending on number of lines */
   isFullHeight: PropTypes.bool,
-  /** Limits max width to 1200px */
-  isLimitedWidth: PropTypes.bool,
 };
 
 Textarea.defaultProps = {
@@ -212,10 +208,9 @@ Textarea.defaultProps = {
   areaSelect: false,
   isJSONField: false,
   copyInfoText: "Content was copied successfully!",
-  showCopyIcon: false,
+  enableCopy: false,
   hasNumeration: false,
   isFullHeight: false,
-  isLimitedWidth: false,
 };
 
 export default Textarea;
