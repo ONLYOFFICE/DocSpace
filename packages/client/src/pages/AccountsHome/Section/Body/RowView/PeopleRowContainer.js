@@ -102,6 +102,14 @@ const StyledRowContainer = styled(RowContainer)`
         padding-bottom: 0.8px !important;
         padding-top: 0.8px !important;
 
+        .styled-element {
+          padding-bottom: 0.8px;
+
+          .owner_icon {
+            padding-bottom: 0.8px;
+          }
+        }
+
         .expandButton {
           padding-bottom: 0.8px;
         }
