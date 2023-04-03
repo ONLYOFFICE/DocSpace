@@ -11,17 +11,10 @@ export default {
 };
 
 const Template = ({ value, onChange, ...args }) => {
-  const [valueBtn, setValue] = useState("test1");
   const [searchValue, setSearchValue] = useState(value);
 
-  const onButtonHandler = () => {
-    setValue("test");
-  };
   return (
     <>
-      <div style={{ marginBottom: "20px" }}>
-        <Button label="Change props" onClick={onButtonHandler} />
-      </div>
       <SearchInput
         {...args}
         value={searchValue}
