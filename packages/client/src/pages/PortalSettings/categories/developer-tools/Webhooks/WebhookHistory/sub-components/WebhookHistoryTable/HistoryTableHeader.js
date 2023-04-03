@@ -1,7 +1,10 @@
 import React, { useRef } from "react";
 import TableHeader from "@docspace/components/table-container/TableHeader";
+import { inject, observer } from "mobx-react";
 
-export const HistoryTableHeader = ({ sectionWidth, tableRef }) => {
+const HistoryTableHeader = (props) => {
+  const { sectionWidth, tableRef, withPaging } = props;
+
   const columns = useRef([
     {
       key: "Event ID",
@@ -27,10 +30,20 @@ export const HistoryTableHeader = ({ sectionWidth, tableRef }) => {
   return (
     <TableHeader
       columns={columns.current}
+      checkboxSize="32px"
       containerRef={tableRef}
       sectionWidth={sectionWidth}
+      // useReactWindow={!withPaging}
       showSettings={false}
       style={{ position: "absolute" }}
     />
   );
 };
+
+export default inject(({ settingsStore }) => {
+  const { withPaging } = settingsStore;
+
+  return {
+    withPaging,
+  };
+})(observer(HistoryTableHeader));
