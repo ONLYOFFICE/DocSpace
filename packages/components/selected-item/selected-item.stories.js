@@ -52,36 +52,12 @@ const AllTemplate = ({ onClose, ...args }) => {
         <SelectedItem
           text="Selected item"
           isInline={true}
-          onClose={onCloseHandler}
-        />
-        <SelectedItem
-          text="Selected item"
-          isInline={true}
-          onClose={onCloseHandler}
-        />
-        <SelectedItem
-          text="Selected item"
-          isInline={true}
+          isDisabled
           onClose={onCloseHandler}
         />
       </StyledContainerInline>
 
       <StyledContainer>
-        <SelectedItem
-          text="Selected item"
-          isInline={false}
-          onClose={onCloseHandler}
-        />
-        <SelectedItem
-          text="Selected item"
-          isInline={false}
-          onClose={onCloseHandler}
-        />
-        <SelectedItem
-          text="Selected item"
-          isInline={false}
-          onClose={onCloseHandler}
-        />
         <SelectedItem
           text="Selected item"
           isInline={false}
