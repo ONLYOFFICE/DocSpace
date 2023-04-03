@@ -26,6 +26,8 @@ const PAYMENTS_URL = combineUrl(
 
 //const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
+const LiveChatLocalStorageKey = "liveChatState";
+
 class ProfileActionsStore {
   authStore = null;
   filesStore = null;
@@ -34,6 +36,7 @@ class ProfileActionsStore {
   selectedFolderStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
+  isShowLiveChat = false;
 
   constructor(
     authStore,
@@ -48,8 +51,26 @@ class ProfileActionsStore {
     this.treeFoldersStore = treeFoldersStore;
     this.selectedFolderStore = selectedFolderStore;
 
+    this.isShowLiveChat = this.getStateLiveChat();
+
     makeAutoObservable(this);
   }
+
+  getStateLiveChat = () => {
+    const state = localStorage.getItem(LiveChatLocalStorageKey);
+
+    if (!state) return false;
+
+    return JSON.parse(state);
+  };
+
+  setStateLiveChat = (state) => {
+    if (typeof state !== "boolean") return;
+
+    localStorage.setItem(LiveChatLocalStorageKey, state.toString());
+
+    this.isShowLiveChat = state;
+  };
 
   setIsAboutDialogVisible = (visible) => {
     this.isAboutDialogVisible = visible;
@@ -96,6 +117,8 @@ class ProfileActionsStore {
   };
 
   onLiveChatClick = () => {
+    this.setStateLiveChat(!this.isShowLiveChat);
+
     //window.open(supportUrl, "_blank");
   };
 
@@ -195,6 +218,8 @@ class ProfileActionsStore {
         icon: LiveChatReactSvgUrl,
         label: t("Common:LiveChat"),
         onClick: this.onLiveChatClick,
+        checked: this.isShowLiveChat,
+        withToggle: true,
       };
     }
 
