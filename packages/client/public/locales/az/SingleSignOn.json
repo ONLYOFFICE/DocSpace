@@ -1,1 +1,21 @@
-{}
+{
+  "AddCertificate": "Sertifikat əlavə edin",
+  "AdvancedSettings": "Qabaqcıl Parametrlər",
+  "AdvancedSettingsTooltip": "Defolt doğrulama səhifəsini gizlədin və avtomatik olaraq SSO xidmətinə yönləndirin",
+  "AttributeMatching": "Atributların Xəritələnməsi",
+  "AttributeMatchingTooltip": "Birdəfəlik Giriş Atributları \"Hesablar\" bölməsindəki qeydlərə uyğundur",
+  "Binding": "Birləşdirən:",
+  "CertificateExist": "Eyni fəaliyyət növü olan sertifikat artıq mövcuddur",
+  "ConfirmationText": "Daxil etdiyiniz bütün məlumatlar itiriləcək. Davam etmək istədiyinizə əminsiniz?",
+  "CustomEntryButton": "Fərdi giriş düyməsinin başlığı",
+  "CustomEntryTooltip": "Birdəfəlik Giriş xidməti ilə domenə daxil olmaq üçün istifadə edilən düymənin adı",
+  "DownloadMetadataXML": "SP metadata XML-ni endirin",
+  "Encryption": "Şifrələmə",
+  "GenerateCertificate": "Yeni İmzalı Sertifikat yaradın",
+  "Hide": "Gizlədin",
+  "HideAdditionalParameters": "Qabaqcıl parametrləri gizlədin",
+  "HideAuthPage": "Doğrulama səhifəsini gizlədin",
+  "idpAuthRequest": "Doğrulama Cavabları İşarəsini Təsdiqləyin",
+  "idpCertificates": "IdP İctimai Sertifikatlar",
+  "idpCertificatesTooltip": "IdP-dən sorğuların və cavabların doğrulanması və ya şifrəsinin açılması (və ya hər ikisi) üçün istifadə edilən identifikasiya provayderinin ictimai sertifikatları."
+}

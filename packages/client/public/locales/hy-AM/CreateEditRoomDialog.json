@@ -1,1 +1,3 @@
-{}
+{
+  "ThirdPartyStoragePermanentSettingDescription": "Ֆայլերը պահվում են երրորդ կողմի {{{thirdpartyTitle}} պահեստում՝ «{{thirdpartyFolderName}}» պանակում:\n<strong>{{thirdpartyPath}}</strong>"
+}

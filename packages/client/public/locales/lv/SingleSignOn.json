@@ -1,1 +1,21 @@
-{}
+{
+  "AddCertificate": "Pievienot sertifikātu",
+  "AdvancedSettings": "Papildu iestatījumi",
+  "AdvancedSettingsTooltip": "Slēpt noklusējuma autentifikācijas lapu un automātiski novirzīt uz SSO pakalpojumu",
+  "AttributeMatching": "Atribūtu kartēšana",
+  "AttributeMatchingTooltip": "Vienotās pierakstīšanās atribūtu atbilstība ierakstiem sadaļā Konti (Accounts)",
+  "Binding": "Saistīšana:",
+  "CertificateExist": "Sertifikāts ar tādu pašu darbības tipu jau pastāv",
+  "ConfirmationText": "Visi ievadītie dati tiks zaudēti. Vai tiešām vēlaties turpināt?",
+  "CustomEntryButton": "Pielāgots pieteikšanās pogas paraksts",
+  "CustomEntryTooltip": "Paraksts pogai, ko izmanto, lai pieteiktos telpā, izmantojot vienotās pierakstīšanās pakalpojumu",
+  "DownloadMetadataXML": "Lejupielādēt SP metadatu XML",
+  "Encryption": "Šifrēšana",
+  "GenerateCertificate": "Ģenerēt jaunu pašparakstītu sertifikātu",
+  "Hide": "Slēpt",
+  "HideAdditionalParameters": "Slēpt papildu iestatījumus",
+  "HideAuthPage": "Slēpt autentifikācijas lapu",
+  "idpAuthRequest": "Autentifikācijas atbilžu verificēšanas parakstīšanos",
+  "idpCertificates": "IdP publiskie sertifikāti",
+  "idpCertificatesTooltip": "Identitātes nodrošinātāja publiskie sertifikāti, kas tiek izmantoti IDP pieprasījumu un atbilžu pārbaudei vai atšifrēšanai (vai abiem)"
+}

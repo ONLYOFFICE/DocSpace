@@ -1,1 +1,21 @@
-{}
+{
+  "AddCertificate": "인증서 추가",
+  "AdvancedSettings": "고급 설정",
+  "AdvancedSettingsTooltip": "기본 인증 페이지 숨기기 및 SSO 서비스로 자동 리디렉션",
+  "AttributeMatching": "속성 매핑",
+  "AttributeMatchingTooltip": "'계정' 섹션의 항목에 대한싱글 사인온 속성의 대응",
+  "Binding": "바인딩:",
+  "CertificateExist": "동일한 작업 유형의 인증서가 이미 존재합니다",
+  "ConfirmationText": "입력한 모든 데이터가 손실됩니다. 정말로 계속하시겠습니까?",
+  "CustomEntryButton": "사용자 지정 버튼 캡션",
+  "CustomEntryTooltip": "싱글 사인온 서비스로 공간에 로그인하는 데 사용되는 버튼의 캡션",
+  "DownloadMetadataXML": "SP 메타데이터 XML 다운로드",
+  "Encryption": "암호화",
+  "GenerateCertificate": "새로운 자체 서명된 인증서 생성",
+  "Hide": "숨기기",
+  "HideAdditionalParameters": "고급 설정 숨기기",
+  "HideAuthPage": "인증 페이지 숨기기",
+  "idpAuthRequest": "인증 응답 서명 확인",
+  "idpCertificates": "IdP 공인 인증서",
+  "idpCertificatesTooltip": "IdP의 요청 및 응답의 확인 또는 암호 해독(또는 둘 다)에 사용되는 ID 공급자 공용 인증서 "
+}
