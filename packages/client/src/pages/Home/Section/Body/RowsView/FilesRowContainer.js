@@ -47,6 +47,17 @@ const StyledRowContainer = styled(RowContainer)`
     }
   }
 
+  .row-hotkey-border {
+    .files-row {
+      margin-top: -3px;
+      padding-top: 2px;
+
+      .row_content {
+        padding-top: 1px;
+      }
+    }
+  }
+
   .row-selected:last-child {
     .files-row {
       border-bottom: ${(props) =>
@@ -61,10 +72,18 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -2px;
+      margin-top: -2.2px;
       padding-top: 1px;
       padding-bottom: 1px;
       ${marginStyles};
+
+      .row_content {
+        padding-top: 1px;
+
+        .mainIcons {
+          padding-bottom: 1px;
+        }
+      }
     }
   }
 `;
@@ -135,7 +154,7 @@ const FilesRowContainer = ({
       hasMoreFiles={hasMoreFiles}
       draggable
       useReactWindow={!withPaging}
-      itemHeight={59}
+      itemHeight={59.2}
     >
       {filesListNode}
     </StyledRowContainer>

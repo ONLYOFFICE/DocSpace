@@ -130,7 +130,9 @@ class AuthStore {
 
     if (!user) return false;
 
-    return !user.isAdmin && !user.isOwner && !user.isVisitor;
+    return (
+      !user.isAdmin && !user.isOwner && !user.isVisitor && !user.isCollaborator
+    );
   }
 
   get isPaymentPageAvailable() {
@@ -139,6 +141,14 @@ class AuthStore {
     if (!user) return false;
 
     return user.isOwner || user.isAdmin;
+  }
+
+  get isTeamTrainingAlertAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || user.isAdmin || this.isRoomAdmin;
   }
 
   login = async (user, hash, session = true) => {

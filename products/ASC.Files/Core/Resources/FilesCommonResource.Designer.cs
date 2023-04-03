@@ -843,6 +843,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
+        /// </summary>
+        public static string ErrorMessage_SecurityException_ArchiveRoom {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SecurityException_ArchiveRoom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You don&apos;t have permission to copy to this folder.
         /// </summary>
         public static string ErrorMessage_SecurityException_CopyToFolder {
@@ -870,11 +879,11 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You don&apos;t have enough permission to archive the room.
+        ///   Looks up a localized string similar to You don&apos;t have enough permission to unarchive the room.
         /// </summary>
-        public static string ErrorMessage_UnarchiveRoom {
+        public static string ErrorMessage_SecurityException_UnarchiveRoom {
             get {
-                return ResourceManager.GetString("ErrorMessage_UnarchiveRoom", resourceCulture);
+                return ResourceManager.GetString("ErrorMessage_SecurityException_UnarchiveRoom", resourceCulture);
             }
         }
         
