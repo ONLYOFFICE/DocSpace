@@ -9,7 +9,6 @@ import EmptyScreenFilter from "PUBLIC_DIR/images/empty_screen_filter.png";
 const StyledRowLoader = styled.div`
   width: 100%;
   height: 48px;
-  background: red;
 `;
 
 const StyledSearchLoader = styled.div`
@@ -129,7 +128,7 @@ const Template = (args) => {
       style={{
         width: "480px",
         height: args.height,
-        border: "1px solid red",
+        border: "1px solid #eee",
         margin: "auto",
       }}
     >
