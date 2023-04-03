@@ -49,7 +49,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         IFolderDao<int> folderDao,
         TempPath tempPath,
         AuthContext authContext,
-        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo> regexDaoSelectorBase)
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> regexDaoSelectorBase)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
         _crossDao = crossDao;
@@ -65,7 +65,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
     public Task<Folder<string>> GetFolderAsync(string title, string parentId)
     {
-        var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
+        var parentFolder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(parentId));
 
         return Task.FromResult(ToFolder(parentFolder.OfType<ICloudDirectoryEntry>().FirstOrDefault(x => x.Name.Equals(title, StringComparison.OrdinalIgnoreCase))));
     }
@@ -109,7 +109,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
     public IAsyncEnumerable<Folder<string>> GetFoldersAsync(string parentId)
     {
-        var parentFolder = ProviderInfo.Storage.GetFolder(MakePath(parentId));
+        var parentFolder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(parentId));
 
         return parentFolder.OfType<ICloudDirectoryEntry>().Select(ToFolder).ToAsyncEnumerable();
     }
@@ -199,7 +199,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             if (folder.Id != null)
             {
                 //Create with id
-                var savedfolder = ProviderInfo.Storage.CreateFolder(MakePath(folder.Id));
+                var savedfolder = SharpBoxProviderInfo.Storage.CreateFolder(MakePath(folder.Id));
 
                 return MakeId(savedfolder);
             }
@@ -209,7 +209,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
                 folder.Title = await GetAvailableTitleAsync(folder.Title, parentFolder, IsExistAsync);
 
-                var newFolder = ProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
+                var newFolder = SharpBoxProviderInfo.Storage.CreateFolder(folder.Title, parentFolder);
 
                 return MakeId(newFolder);
             }
@@ -289,7 +289,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         if (folder is not ErrorEntry)
         {
-            ProviderInfo.Storage.DeleteFileSystemEntry(folder);
+            SharpBoxProviderInfo.Storage.DeleteFileSystemEntry(folder);
         }
     }
 
@@ -297,7 +297,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         try
         {
-            return Task.FromResult(ProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
+            return Task.FromResult(SharpBoxProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
         }
         catch (ArgumentException)
         {
@@ -344,7 +344,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
         var oldFolderId = MakeId(entry);
 
-        if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
+        if (!SharpBoxProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
         {
             throw new Exception("Error while moving");
         }
@@ -385,7 +385,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     public Task<Folder<string>> CopyFolderAsync(string folderId, string toFolderId, CancellationToken? cancellationToken)
     {
         var folder = GetFolderById(folderId);
-        if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
+        if (!SharpBoxProviderInfo.Storage.CopyFileSystemEntry(MakePath(folderId), MakePath(toFolderId)))
         {
             throw new Exception("Error while copying");
         }
@@ -428,7 +428,7 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
         if ("/".Equals(MakePath(folder.Id)))
         {
             //It's root folder
-            await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
+            await DaoSelector.RenameProviderAsync(SharpBoxProviderInfo, newTitle);
             //rename provider customer title
         }
         else
@@ -437,20 +437,20 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             newTitle = await GetAvailableTitleAsync(newTitle, parentFolder, IsExistAsync);
 
             //rename folder
-            if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
+            if (SharpBoxProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
             {
                 //Folder data must be already updated by provider
                 //We can't search google folders by title because root can have multiple folders with the same name
-                //var newFolder = SharpBoxProviderInfo.Storage.GetFileSystemObject(newTitle, folder.Parent);
+                //var newFolder = SharpBox_providerInfo.Storage.GetFileSystemObject(newTitle, folder.Parent);
                 newId = MakeId(entry);
 
-                if (DocSpaceHelper.IsRoom(ProviderInfo.FolderType) && ProviderInfo.FolderId != null)
+                if (DocSpaceHelper.IsRoom(SharpBoxProviderInfo.FolderType) && SharpBoxProviderInfo.FolderId != null)
                 {
-                    await DaoSelector.RenameProviderAsync(ProviderInfo, newTitle);
+                    await DaoSelector.RenameProviderAsync(SharpBoxProviderInfo, newTitle);
 
-                    if (ProviderInfo.FolderId == oldId)
+                    if (SharpBoxProviderInfo.FolderId == oldId)
                     {
-                        await DaoSelector.UpdateProviderFolderId(ProviderInfo, newId);
+                        await DaoSelector.UpdateProviderFolderId(SharpBoxProviderInfo, newId);
                     }
                 }
             }
@@ -500,8 +500,8 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
     {
         var storageMaxUploadSize =
             chunkedUpload
-                ? ProviderInfo.Storage.CurrentConfiguration.Limits.MaxChunkedUploadFileSize
-                : ProviderInfo.Storage.CurrentConfiguration.Limits.MaxUploadFileSize;
+                ? SharpBoxProviderInfo.Storage.CurrentConfiguration.Limits.MaxChunkedUploadFileSize
+                : SharpBoxProviderInfo.Storage.CurrentConfiguration.Limits.MaxUploadFileSize;
 
         if (storageMaxUploadSize == -1)
         {

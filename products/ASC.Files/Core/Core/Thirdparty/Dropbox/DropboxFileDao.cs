@@ -34,13 +34,12 @@ internal class DropboxFileDao : ThirdPartyFileDao<FileMetadata, FolderMetadata, 
 
     public DropboxFileDao(UserManager userManager,
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        IDaoSelector daoSelector,
+        IDaoSelector<FileMetadata, FolderMetadata, Metadata> daoSelector,
         CrossDao crossDao,
         IFileDao<int> fileDao,
         IDaoBase<FileMetadata, FolderMetadata, Metadata> dao,
-        IProviderInfo<FileMetadata, FolderMetadata, Metadata> providerInfo,
         TempPath tempPath,
-        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, providerInfo)
+        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
     {
         _tempPath = tempPath;
         _setupInfo = setupInfo;

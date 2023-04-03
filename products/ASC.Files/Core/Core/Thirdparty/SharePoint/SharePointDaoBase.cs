@@ -29,21 +29,28 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint;
 
-internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObject, SharePointProviderInfo>
+internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObject>
 {
-    public SharePointDaoBase(
-        IServiceProvider serviceProvider,
+    internal SharePointProviderInfo SharePointProviderInfo { get; private set; }
+
+    public SharePointDaoBase(IServiceProvider serviceProvider,
         UserManager userManager,
-        TenantManager tenantManager,
+        TenantManager tenantManager, 
         TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext,
-        RegexDaoSelectorBase<File, Folder, ClientObject, SharePointProviderInfo> regexDaoSelectorBase)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
+        AuthContext authContext, 
+        RegexDaoSelectorBase<File, Folder, ClientObject> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<File, Folder, ClientObject> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        SharePointProviderInfo = providerInfo as SharePointProviderInfo;
     }
 
     protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
@@ -203,11 +210,11 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
 
     public override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
-        var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
-        var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+        var folders = await SharePointProviderInfo.GetFolderFoldersAsync(folderId);
+        var subFolders = folders.Select(x => SharePointProviderInfo.MakeId(x.ServerRelativeUrl));
 
-        var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
-        var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+        var folderFiles = await SharePointProviderInfo.GetFolderFilesAsync(folderId);
+        var files = folderFiles.Select(x => SharePointProviderInfo.MakeId(x.ServerRelativeUrl));
 
         return subFolders.Concat(files);
     }

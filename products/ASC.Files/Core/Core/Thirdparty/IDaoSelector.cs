@@ -37,11 +37,11 @@ internal interface IDaoSelector : IDisposable
 }
 
 [Scope]
-internal interface IDaoSelector<TFile, TFolder, TItem, T> : IDaoSelector
-    where T : class, IProviderInfo<TFile, TFolder, TItem>
+internal interface IDaoSelector<TFile, TFolder, TItem> : IDaoSelector
     where TFile : class, TItem
     where TFolder : class, TItem
     where TItem : class
 {
-    Task RenameProviderAsync(T provider, string newTitle);
+    Task RenameProviderAsync(IProviderInfo<TFile, TFolder, TItem> provider, string newTitle);
 }
+

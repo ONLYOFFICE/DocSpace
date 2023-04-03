@@ -27,21 +27,27 @@
 namespace ASC.Files.Thirdparty.Dropbox;
 
 [Scope]
-internal class DropboxDaoBase : ThirdPartyProviderDao<FileMetadata, FolderMetadata, Metadata, DropboxProviderInfo>, IDaoBase<FileMetadata, FolderMetadata, Metadata>
+internal class DropboxDaoBase : ThirdPartyProviderDao<FileMetadata, FolderMetadata, Metadata>, IDaoBase<FileMetadata, FolderMetadata, Metadata>
 {
-    public DropboxDaoBase(
-        IServiceProvider serviceProvider,
-        UserManager userManager,
+    private DropboxProviderInfo _providerInfo;
+    public DropboxDaoBase(IServiceProvider serviceProvider,
+        UserManager userManager, 
         TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
-        SetupInfo setupInfo,
-        FileUtility fileUtility,
+        TenantUtil tenantUtil, 
+        IDbContextFactory<FilesDbContext> dbContextFactory, 
+        SetupInfo setupInfo, 
+        FileUtility fileUtility, 
         TempPath tempPath,
-        AuthContext authContext,
-        RegexDaoSelectorBase<FileMetadata, FolderMetadata, Metadata, DropboxProviderInfo> regexDaoSelectorBase)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
+        AuthContext authContext, 
+        RegexDaoSelectorBase<FileMetadata, FolderMetadata, Metadata> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<FileMetadata, FolderMetadata, Metadata> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        _providerInfo = providerInfo as DropboxProviderInfo;
     }
 
     public string GetId(Metadata dropboxItem)
@@ -225,7 +231,7 @@ internal class DropboxDaoBase : ThirdPartyProviderDao<FileMetadata, FolderMetada
         var dropboxFolderId = MakeThirdId(folderId);
         try
         {
-            var folder = await ProviderInfo.GetFolderAsync(dropboxFolderId);
+            var folder = await _providerInfo.GetFolderAsync(dropboxFolderId);
             return folder;
         }
         catch (Exception ex)
@@ -239,7 +245,7 @@ internal class DropboxDaoBase : ThirdPartyProviderDao<FileMetadata, FolderMetada
         var dropboxFileId = MakeThirdId(fileId);
         try
         {
-            return ProviderInfo.GetFileAsync(dropboxFileId);
+            return _providerInfo.GetFileAsync(dropboxFileId);
         }
         catch (Exception ex)
         {
@@ -257,7 +263,7 @@ internal class DropboxDaoBase : ThirdPartyProviderDao<FileMetadata, FolderMetada
     public async Task<List<Metadata>> GetItemsAsync(string parentId, bool? folder = null)
     {
         var dropboxFolderId = MakeThirdId(parentId);
-        var items = await ProviderInfo.GetItemsAsync(dropboxFolderId);
+        var items = await _providerInfo.GetItemsAsync(dropboxFolderId);
 
         if (folder.HasValue)
         {

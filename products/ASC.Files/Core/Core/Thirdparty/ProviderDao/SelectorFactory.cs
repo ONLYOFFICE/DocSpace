@@ -52,17 +52,17 @@ internal class SelectorFactory
     private IDaoSelector GetSelectorInternal(string selector)
     {
         if (selector == Selectors.SharpBox.Id)
-            return _serviceProvider.GetService<IDaoSelector<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>>();
+            return _serviceProvider.GetService<IDaoSelector<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>();
         else if (selector == Selectors.SharePoint.Id)
-            return _serviceProvider.GetService<IDaoSelector<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>>();
+            return _serviceProvider.GetService<IDaoSelector<File, Folder, ClientObject>>();
         else if (selector == Selectors.GoogleDrive.Id)
-            return _serviceProvider.GetService<IDaoSelector<DriveFile, DriveFile, DriveFile, IProviderInfo<DriveFile, DriveFile, DriveFile>>>();
+            return _serviceProvider.GetService<IDaoSelector<DriveFile, DriveFile, DriveFile>>();
         else if (selector == Selectors.Box.Id)
-            return _serviceProvider.GetService<IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>>();
+            return _serviceProvider.GetService<IDaoSelector<BoxFile, BoxFolder, BoxItem>>();
         else if (selector == Selectors.Dropbox.Id)
-            return _serviceProvider.GetService<IDaoSelector<FileMetadata, FolderMetadata, Metadata, IProviderInfo<FileMetadata, FolderMetadata, Metadata>>>();
+            return _serviceProvider.GetService<IDaoSelector<FileMetadata, FolderMetadata, Metadata>>();
         else if (selector == Selectors.OneDrive.Id)
-            return _serviceProvider.GetService<IDaoSelector<Item, Item, Item, IProviderInfo<Item, Item, Item>>>();
+            return _serviceProvider.GetService<IDaoSelector<Item, Item, Item>>();
         else
             return null;
     }
@@ -70,6 +70,7 @@ internal class SelectorFactory
     public Dictionary<IDaoSelector, List<string>> GetSelectors(IEnumerable<string> ids)
     {
         var groups = ids.GroupBy(Match);
+        groups = groups.Where(g => g.Key != "");
         var dict = new Dictionary<IDaoSelector, List<string>>();
         foreach (var group in groups)
         {

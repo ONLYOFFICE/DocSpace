@@ -31,6 +31,7 @@ namespace ASC.Files.Thirdparty.OneDrive;
 internal class OneDriveProviderInfo : AbstractProviderInfo<Item, Item, Item, OneDriveLoginProvider>
 {
     public override Selector Selector { get; } = Selectors.OneDrive;
+    public override ProviderFilter ProviderFilter { get; } = ProviderFilter.OneDrive;
 
     public OneDriveProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {

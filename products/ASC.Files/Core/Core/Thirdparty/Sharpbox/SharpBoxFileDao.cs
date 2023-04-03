@@ -51,7 +51,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         IFileDao<int> fileDao,
         TempPath tempPath,
         AuthContext authContext,
-        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo> regexDaoSelectorBase)
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> regexDaoSelectorBase)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
         _tempStream = tempStream;
@@ -62,7 +62,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
     public Task InvalidateCacheAsync(string fileId)
     {
-        return ProviderInfo.InvalidateStorageAsync();
+        return SharpBoxProviderInfo.InvalidateStorageAsync();
     }
 
     public Task<File<string>> GetFileAsync(string fileId)
@@ -320,13 +320,13 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         ICloudFileSystemEntry entry = null;
         if (file.Id != null)
         {
-            entry = ProviderInfo.Storage.GetFile(MakePath(file.Id), null);
+            entry = SharpBoxProviderInfo.Storage.GetFile(MakePath(file.Id), null);
         }
         else if (file.ParentId != null)
         {
             var folder = GetFolderById(file.ParentId);
             file.Title = await GetAvailableTitleAsync(file.Title, folder, IsExistAsync);
-            entry = ProviderInfo.Storage.CreateFile(folder, file.Title);
+            entry = SharpBoxProviderInfo.Storage.CreateFile(folder, file.Title);
         }
 
         if (entry == null)
@@ -358,7 +358,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         if (file.Id != null && !entry.Name.Equals(file.Title))
         {
             file.Title = await GetAvailableTitleAsync(file.Title, entry.Parent, IsExistAsync);
-            ProviderInfo.Storage.RenameFileSystemEntry(entry, file.Title);
+            SharpBoxProviderInfo.Storage.RenameFileSystemEntry(entry, file.Title);
         }
 
         return ToFile(entry);
@@ -429,13 +429,13 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
         if (file is not ErrorEntry)
         {
-            ProviderInfo.Storage.DeleteFileSystemEntry(file);
+            SharpBoxProviderInfo.Storage.DeleteFileSystemEntry(file);
         }
     }
 
     public Task<bool> IsExistAsync(string title, object folderId)
     {
-        var folder = ProviderInfo.Storage.GetFolder(MakePath(folderId));
+        var folder = SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId));
 
         return IsExistAsync(title, folder);
     }
@@ -444,7 +444,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
     {
         try
         {
-            return Task.FromResult(ProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
+            return Task.FromResult(SharpBoxProviderInfo.Storage.GetFileSystemObject(title, folder) != null);
         }
         catch (ArgumentException)
         {
@@ -490,7 +490,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
 
         var oldFileId = MakeId(entry);
 
-        if (!ProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
+        if (!SharpBoxProviderInfo.Storage.MoveFileSystemEntry(entry, folder))
         {
             throw new Exception("Error while moving");
         }
@@ -520,7 +520,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
     public Task<File<string>> CopyFileAsync(string fileId, string toFolderId)
     {
         var file = GetFileById(fileId);
-        if (!ProviderInfo.Storage.CopyFileSystemEntry(MakePath(fileId), MakePath(toFolderId)))
+        if (!SharpBoxProviderInfo.Storage.CopyFileSystemEntry(MakePath(fileId), MakePath(toFolderId)))
         {
             throw new Exception("Error while copying");
         }
@@ -554,11 +554,11 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         var folder = GetFolderById(file.ParentId);
         newTitle = await GetAvailableTitleAsync(newTitle, folder, IsExistAsync);
 
-        if (ProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
+        if (SharpBoxProviderInfo.Storage.RenameFileSystemEntry(entry, newTitle))
         {
             //File data must be already updated by provider
             //We can't search google files by title because root can have multiple folders with the same name
-            //var newFile = SharpBoxProviderInfo.Storage.GetFileSystemObject(newTitle, file.Parent);
+            //var newFile = SharpBox_providerInfo.Storage.GetFileSystemObject(newTitle, file.Parent);
             newFileId = MakeId(entry);
         }
 
@@ -608,7 +608,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
         else
         {
             var folder = GetFolderById(file.ParentId);
-            sharpboxFile = ProviderInfo.Storage.CreateFile(folder, await GetAvailableTitleAsync(file.Title, folder, IsExistAsync));
+            sharpboxFile = SharpBoxProviderInfo.Storage.CreateFile(folder, await GetAvailableTitleAsync(file.Title, folder, IsExistAsync));
             isNewFile = true;
         }
 
@@ -651,7 +651,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             var isNewFile = uploadSession.Items.ContainsKey("IsNewFile") && uploadSession.GetItemOrDefault<bool>("IsNewFile");
             var sharpboxFile =
                 isNewFile
-                    ? ProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
+                    ? SharpBoxProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
                     : GetFileById(sharpboxSession.FileId);
 
             sharpboxFile.GetDataTransferAccessor().Transfer(sharpboxSession, stream, chunkLength);
@@ -702,7 +702,7 @@ internal class SharpBoxFileDao : SharpBoxDaoBase, IFileDao<string>
             var isNewFile = uploadSession.Items.ContainsKey("IsNewFile") && uploadSession.GetItemOrDefault<bool>("IsNewFile");
             var sharpboxFile =
                 isNewFile
-                    ? ProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
+                    ? SharpBoxProviderInfo.Storage.CreateFile(GetFolderById(sharpboxSession.ParentId), sharpboxSession.FileName)
                     : GetFileById(sharpboxSession.FileId);
             sharpboxFile.GetDataTransferAccessor().AbortResumableSession(sharpboxSession);
 

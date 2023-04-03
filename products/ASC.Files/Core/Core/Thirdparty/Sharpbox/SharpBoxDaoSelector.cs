@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Sharpbox;
 
 [Scope(Additional = typeof(SharpBoxDaoSelectorExtension))]
-internal class SharpBoxDaoSelector : RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>
+internal class SharpBoxDaoSelector : RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>
 {
     public SharpBoxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)
@@ -36,12 +36,26 @@ internal class SharpBoxDaoSelector : RegexDaoSelectorBase<ICloudFileSystemEntry,
 
     public override IFileDao<string> GetFileDao(string id)
     {
-        return _serviceProvider.GetService<SharpBoxFileDao>();
+        var fileDao = _serviceProvider.GetService<SharpBoxFileDao>();
+        var info = GetInfo(id);
+        fileDao.Init(info.PathPrefix, info.ProviderInfo);
+        return fileDao;
     }
 
     public override IFolderDao<string> GetFolderDao(string id)
     {
-        return _serviceProvider.GetService<SharpBoxFolderDao>();
+        var folderDao = _serviceProvider.GetService<SharpBoxFolderDao>();
+        var info = GetInfo(id);
+        folderDao.Init(info.PathPrefix, info.ProviderInfo);
+        return folderDao;
+    }
+    
+    public override IThirdPartyTagDao GetTagDao(string id)
+    {
+        var tagDao = _serviceProvider.GetService<SharpBoxTagDao>();
+        var info = GetInfo(id);
+        tagDao.Init(info.PathPrefix, info.ProviderInfo);
+        return tagDao;
     }
 }
 
@@ -52,7 +66,7 @@ public static class SharpBoxDaoSelectorExtension
         services.TryAdd<SharpBoxFileDao>();
         services.TryAdd<SharpBoxFolderDao>();
         services.TryAdd<IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>, SharpBoxProviderInfo>();
-        services.TryAdd<IThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>, ThirdPartyTagDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>();
-        services.TryAdd<IDaoSelector<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>>, SharpBoxDaoSelector>();
+        services.TryAdd<SharpBoxTagDao>();
+        services.TryAdd<IDaoSelector<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>, SharpBoxDaoSelector>();
     }
 }

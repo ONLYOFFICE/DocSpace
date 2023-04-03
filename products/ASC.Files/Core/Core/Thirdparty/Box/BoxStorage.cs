@@ -28,6 +28,7 @@ using BoxSDK = Box.V2;
 
 namespace ASC.Files.Thirdparty.Box;
 
+[Transient]
 internal class BoxStorage : IThirdPartyStorage<BoxFile, BoxFolder, BoxItem>
 {
     private BoxClient _boxClient;

@@ -27,20 +27,20 @@
 namespace ASC.Files.Core.Core.Thirdparty;
 
 [Scope]
-internal class ThirdPartyTagDao<TFile, TFolder, TItem> : IThirdPartyTagDao<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>>
+internal class ThirdPartyTagDao<TFile, TFolder, TItem> : IThirdPartyTagDao
     where TFile : class, TItem
     where TFolder : class, TItem
     where TItem : class
 {
     public int TenantID { get; private set; }
     private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
-    private readonly IDaoSelector<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>> _daoSelector;
+    private readonly IDaoSelector<TFile, TFolder, TItem> _daoSelector;
     private readonly IDaoBase<TFile, TFolder, TItem> _dao;
     private string PathPrefix { get; set; }
 
     public ThirdPartyTagDao(
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        IDaoSelector<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>> daoSelector,
+        IDaoSelector<TFile, TFolder, TItem> daoSelector,
         IDaoBase<TFile, TFolder, TItem> dao,
         TenantManager tenantManager
         )
@@ -51,9 +51,9 @@ internal class ThirdPartyTagDao<TFile, TFolder, TItem> : IThirdPartyTagDao<TFile
         TenantID = tenantManager.GetCurrentTenant().Id;
     }
 
-    public void Init(BaseProviderInfo<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>> providerInfo)
+    public void Init(string pathPrefix)
     {
-        PathPrefix = providerInfo.PathPrefix;
+        PathPrefix = pathPrefix;
     }
 
     public async IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)

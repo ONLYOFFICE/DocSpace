@@ -27,21 +27,27 @@
 namespace ASC.Files.Thirdparty.Box;
 
 [Scope]
-internal class BoxDaoBase : ThirdPartyProviderDao<BoxFile, BoxFolder, BoxItem, BoxProviderInfo>, IDaoBase<BoxFile, BoxFolder, BoxItem>
+internal class BoxDaoBase : ThirdPartyProviderDao<BoxFile, BoxFolder, BoxItem>, IDaoBase<BoxFile, BoxFolder, BoxItem>
 {
-    public BoxDaoBase(
-        IServiceProvider serviceProvider,
+    private BoxProviderInfo _providerInfo;
+    public BoxDaoBase(IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        TenantUtil tenantUtil, 
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
         FileUtility fileUtility,
-        TempPath tempPath,
+        TempPath tempPath, 
         AuthContext authContext,
-        RegexDaoSelectorBase<BoxFile, BoxFolder, BoxItem, BoxProviderInfo> regexDaoSelectorBase)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
+        RegexDaoSelectorBase<BoxFile, BoxFolder, BoxItem> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<BoxFile, BoxFolder, BoxItem> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        _providerInfo = providerInfo as BoxProviderInfo;
     }
 
     public string GetName(BoxItem item)
@@ -220,7 +226,7 @@ internal class BoxDaoBase : ThirdPartyProviderDao<BoxFile, BoxFolder, BoxItem, B
         var boxFolderId = MakeThirdId(folderId);
         try
         {
-            var folder = await ProviderInfo.GetFolderAsync(boxFolderId);
+            var folder = await _providerInfo.GetFolderAsync(boxFolderId);
 
             return folder;
         }
@@ -235,7 +241,7 @@ internal class BoxDaoBase : ThirdPartyProviderDao<BoxFile, BoxFolder, BoxItem, B
         var boxFileId = MakeThirdId(fileId);
         try
         {
-            var file = ProviderInfo.GetFileAsync(boxFileId);
+            var file = _providerInfo.GetFileAsync(boxFileId);
 
             return file;
         }
@@ -255,7 +261,7 @@ internal class BoxDaoBase : ThirdPartyProviderDao<BoxFile, BoxFolder, BoxItem, B
     public async Task<List<BoxItem>> GetItemsAsync(string parentId, bool? folder = null)
     {
         var boxFolderId = MakeThirdId(parentId);
-        var items = await ProviderInfo.GetItemsAsync(boxFolderId);
+        var items = await _providerInfo.GetItemsAsync(boxFolderId);
 
         if (folder.HasValue)
         {

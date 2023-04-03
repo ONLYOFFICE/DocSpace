@@ -37,13 +37,12 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
 
     public OneDriveFileDao(UserManager userManager,
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        IDaoSelector daoSelector,
+        IDaoSelector<Item, Item, Item> daoSelector,
         CrossDao crossDao,
         IFileDao<int> fileDao,
         IDaoBase<Item, Item, Item> dao,
-        IProviderInfo<Item, Item, Item> providerInfo,
         SetupInfo setupInfo,
-        TempPath tempPath) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, providerInfo)
+        TempPath tempPath) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
     {
         _setupInfo = setupInfo;
         _tempPath = tempPath;

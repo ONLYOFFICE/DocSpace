@@ -25,27 +25,27 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.Core.Thirdparty;
+[Scope]
 internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<string>
     where TFile : class, TItem
     where TFolder : class, TItem
     where TItem: class
 {
     internal IDaoBase<TFile, TFolder, TItem> Dao { get; }
-    internal IProviderInfo<TFile, TFolder, TItem> ProviderInfo { get; }
+    internal IProviderInfo<TFile, TFolder, TItem> ProviderInfo { get; private set; }
 
     private readonly UserManager _userManager;
     private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
-    private readonly IDaoSelector _daoSelector;
+    private readonly IDaoSelector<TFile, TFolder, TItem> _daoSelector;
     private readonly CrossDao _crossDao;
     private readonly IFileDao<int> _fileDao;
 
     public ThirdPartyFileDao(UserManager userManager,
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        IDaoSelector daoSelector,
+        IDaoSelector<TFile, TFolder, TItem> daoSelector,
         CrossDao crossDao,
         IFileDao<int> fileDao,
-        IDaoBase<TFile, TFolder, TItem> dao,
-        IProviderInfo<TFile, TFolder, TItem> providerInfo)
+        IDaoBase<TFile, TFolder, TItem> dao)
     {
         _userManager = userManager;
         _dbContextFactory = dbContextFactory;
@@ -53,9 +53,13 @@ internal abstract class ThirdPartyFileDao<TFile, TFolder, TItem>: IFileDao<strin
         _crossDao = crossDao;
         _fileDao = fileDao;
         Dao = dao;
-        ProviderInfo = providerInfo;
     }
 
+    public void Init(string pathPrefix, IProviderInfo<TFile, TFolder, TItem> providerInfo)
+    {
+        Dao.Init(pathPrefix, providerInfo);
+        ProviderInfo = providerInfo;
+    }
 
     public async Task InvalidateCacheAsync(string fileId)
     {

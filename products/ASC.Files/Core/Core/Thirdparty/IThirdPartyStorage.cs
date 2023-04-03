@@ -68,6 +68,7 @@ public interface IThirdPartyFolderStorage<TFolder> : IThirdPartyStorage
     public Task<TFolder> RenameFolderAsync(string folderId, string newName);
 }
 
+[Transient]
 public interface IThirdPartyStorage<TFile, TFolder, TItem> : IThirdPartyFileStorage<TFile>, IThirdPartyFolderStorage<TFolder>, IThirdPartyItemStorage<TItem>
 {
 

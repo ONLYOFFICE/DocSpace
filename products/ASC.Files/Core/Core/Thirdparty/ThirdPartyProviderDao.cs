@@ -386,8 +386,7 @@ internal abstract class ThirdPartyProviderDao
     #endregion
 }
 
-internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem, T> : ThirdPartyProviderDao, IDisposable
-    where T : class, IProviderInfo<TFile, TFolder, TItem>
+internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem> : ThirdPartyProviderDao, IDisposable
     where TFile : class, TItem
     where TFolder : class, TItem
     where TItem : class
@@ -401,9 +400,9 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem, T> : ThirdP
     protected readonly FileUtility _fileUtility;
     protected readonly TempPath _tempPath;
     protected readonly AuthContext _authContext;
-    protected RegexDaoSelectorBase<TFile, TFolder, TItem, T> DaoSelector { get; set; }
-    protected T ProviderInfo { get; set; }
-    protected string PathPrefix { get; private set; }
+    internal RegexDaoSelectorBase<TFile, TFolder, TItem> DaoSelector { get; set; }
+    protected IProviderInfo<TFile, TFolder, TItem> ProviderInfo { get; set; }
+    protected string PathPrefix { get; set; }
 
     protected string Id { get => ProviderInfo.Selector.Id; }
 
@@ -417,7 +416,7 @@ internal abstract class ThirdPartyProviderDao<TFile, TFolder, TItem, T> : ThirdP
         FileUtility fileUtility,
         TempPath tempPath,
         AuthContext authContext,
-        RegexDaoSelectorBase<TFile, TFolder, TItem, T> regexDaoSelectorBase)
+        RegexDaoSelectorBase<TFile, TFolder, TItem> regexDaoSelectorBase)
     {
         _serviceProvider = serviceProvider;
         _userManager = userManager;

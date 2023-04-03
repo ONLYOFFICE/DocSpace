@@ -646,7 +646,7 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         var sharpBoxProviderInfo = _serviceProvider.GetService<SharpBoxProviderInfo>();
-        sharpBoxProviderInfo.ID = id;
+        sharpBoxProviderInfo.ProviderId = id;
         sharpBoxProviderInfo.CustomerTitle = providerTitle;
         sharpBoxProviderInfo.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
         sharpBoxProviderInfo.ProviderKey = input.Provider;

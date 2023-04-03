@@ -33,6 +33,7 @@ namespace ASC.Files.Thirdparty.GoogleDrive;
 internal class GoogleDriveProviderInfo : AbstractProviderInfo<DriveFile, DriveFile, DriveFile, GoogleLoginProvider>
 {
     public override Selector Selector { get; } = Selectors.GoogleDrive;
+    public override ProviderFilter ProviderFilter { get; } = ProviderFilter.GoogleDrive;
 
     public GoogleDriveProviderInfo(DisposableWrapper wrapper, ProviderInfoHelper providerInfoHelper) : base(wrapper, providerInfoHelper)
     {

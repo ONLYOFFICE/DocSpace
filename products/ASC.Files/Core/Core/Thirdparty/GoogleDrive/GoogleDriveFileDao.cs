@@ -38,13 +38,12 @@ internal class GoogleDriveFileDao : ThirdPartyFileDao<DriveFile, DriveFile, Driv
 
     public GoogleDriveFileDao(UserManager userManager,
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        IDaoSelector daoSelector,
+        RegexDaoSelectorBase<DriveFile, DriveFile, DriveFile> daoSelector,
         CrossDao crossDao,
         IFileDao<int> fileDao,
         IDaoBase<DriveFile, DriveFile, DriveFile> dao,
-        IProviderInfo<DriveFile, DriveFile, DriveFile> providerInfo,
         TempPath tempPath,
-        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, providerInfo)
+        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
     {
         _tempPath = tempPath;
         _setupInfo = setupInfo;

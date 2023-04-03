@@ -27,21 +27,28 @@
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Scope]
-internal class OneDriveDaoBase : ThirdPartyProviderDao<Item, Item, Item, OneDriveProviderInfo>, IDaoBase<Item, Item, Item>
+internal class OneDriveDaoBase : ThirdPartyProviderDao<Item, Item, Item>, IDaoBase<Item, Item, Item>
 {
-    public OneDriveDaoBase(
-        IServiceProvider serviceProvider,
+    private OneDriveProviderInfo _providerInfo;
+
+    public OneDriveDaoBase(IServiceProvider serviceProvider, 
         UserManager userManager,
-        TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        TenantManager tenantManager, 
+        TenantUtil tenantUtil, 
+        IDbContextFactory<FilesDbContext> dbContextFactory, 
         SetupInfo setupInfo,
         FileUtility fileUtility,
-        TempPath tempPath,
+        TempPath tempPath, 
         AuthContext authContext,
-        RegexDaoSelectorBase<Item, Item, Item, OneDriveProviderInfo> regexDaoSelectorBase)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
+        RegexDaoSelectorBase<Item, Item, Item> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<Item, Item, Item> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        _providerInfo = providerInfo as OneDriveProviderInfo;
     }
 
     public string GetName(Item item)
@@ -221,7 +228,7 @@ internal class OneDriveDaoBase : ThirdPartyProviderDao<Item, Item, Item, OneDriv
         var onedriveId = MakeThirdId(itemId);
         try
         {
-            return await ProviderInfo.GetFileAsync(onedriveId);
+            return await _providerInfo.GetFileAsync(onedriveId);
         }
         catch (Exception ex)
         {
@@ -234,7 +241,7 @@ internal class OneDriveDaoBase : ThirdPartyProviderDao<Item, Item, Item, OneDriv
         var onedriveId = MakeThirdId(itemId);
         try
         {
-            return await ProviderInfo.GetFolderAsync(onedriveId);
+            return await _providerInfo.GetFolderAsync(onedriveId);
         }
         catch (Exception ex)
         {
@@ -252,7 +259,7 @@ internal class OneDriveDaoBase : ThirdPartyProviderDao<Item, Item, Item, OneDriv
     public async Task<List<Item>> GetItemsAsync(string parentId, bool? folder = null)
     {
         var onedriveFolderId = MakeThirdId(parentId);
-        var items = await ProviderInfo.GetItemsAsync(onedriveFolderId);
+        var items = await _providerInfo.GetItemsAsync(onedriveFolderId);
 
         if (folder.HasValue)
         {

@@ -44,6 +44,7 @@ public interface IProviderInfo : IDisposable
     Task CacheResetAsync(string id = null, bool? isFile = null);
     void UpdateTitle(string newtitle);
     Selector Selector { get; }
+    ProviderFilter ProviderFilter { get; }
 }
 
 [Transient]

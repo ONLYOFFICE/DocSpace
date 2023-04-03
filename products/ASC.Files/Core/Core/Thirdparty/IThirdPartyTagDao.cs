@@ -31,12 +31,3 @@ internal interface IThirdPartyTagDao
 {
     IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch);
 }
-
-internal interface IThirdPartyTagDao<TFile, TFolder, TItem, T> : IThirdPartyTagDao
-    where T : class, IProviderInfo<TFile, TFolder, TItem>
-    where TFile : class, TItem
-    where TFolder : class, TItem
-    where TItem : class
-{
-    void Init(BaseProviderInfo<TFile, TFolder, TItem, T> providerInfo);
-}

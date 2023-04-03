@@ -34,13 +34,12 @@ internal class BoxFileDao : ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>
 
     public BoxFileDao(UserManager userManager,
         IDbContextFactory<FilesDbContext> dbContextFactory,
-        IDaoSelector daoSelector,
+        IDaoSelector<BoxFile, BoxFolder, BoxItem> daoSelector,
         CrossDao crossDao,
         IFileDao<int> fileDao,
         IDaoBase<BoxFile, BoxFolder, BoxItem> dao,
-        IProviderInfo<BoxFile, BoxFolder, BoxItem> providerInfo,
         TempPath tempPath,
-        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao, providerInfo)
+        SetupInfo setupInfo) : base(userManager, dbContextFactory, daoSelector, crossDao, fileDao, dao)
     {
         _tempPath = tempPath;
         _setupInfo = setupInfo;

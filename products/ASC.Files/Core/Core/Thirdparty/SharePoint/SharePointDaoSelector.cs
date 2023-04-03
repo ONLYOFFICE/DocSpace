@@ -30,7 +30,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope(Additional = typeof(SharePointDaoSelectorExtension))]
-internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>
+internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, ClientObject>
 {
 
     public SharePointDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
@@ -40,12 +40,26 @@ internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, Client
 
     public override IFileDao<string> GetFileDao(string id)
     {
-        return _serviceProvider.GetService<SharePointFileDao>();
+        var fileDao = _serviceProvider.GetService<SharePointFileDao>();
+        var info = GetInfo(id);
+        fileDao.Init(info.PathPrefix, info.ProviderInfo);
+        return fileDao;
     }
 
     public override IFolderDao<string> GetFolderDao(string id)
     {
-        return _serviceProvider.GetService<SharePointFolderDao>();
+        var folderDao = _serviceProvider.GetService<SharePointFolderDao>();
+        var info = GetInfo(id);
+        folderDao.Init(info.PathPrefix, info.ProviderInfo);
+        return folderDao;
+    }
+
+    public override IThirdPartyTagDao GetTagDao(string id)
+    {
+        var tagDao = _serviceProvider.GetService<SharePointTagDao>();
+        var info = GetInfo(id);
+        tagDao.Init(info.PathPrefix, info.ProviderInfo);
+        return tagDao;
     }
 
     public override string ConvertId(string id)
@@ -73,7 +87,7 @@ public static class SharePointDaoSelectorExtension
         services.TryAdd<SharePointFileDao>();
         services.TryAdd<SharePointFolderDao>();
         services.TryAdd<IProviderInfo<File, Folder, ClientObject>, SharePointProviderInfo>();
-        services.TryAdd<IThirdPartyTagDao<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>, ThirdPartyTagDao<File, Folder, ClientObject>>();
-        services.TryAdd<IDaoSelector<File, Folder, ClientObject, IProviderInfo<File, Folder, ClientObject>>, SharePointDaoSelector>();
+        services.TryAdd<SharePointTagDao>();
+        services.TryAdd<IDaoSelector<File, Folder, ClientObject>, SharePointDaoSelector>();
     }
 }

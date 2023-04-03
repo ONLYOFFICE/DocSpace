@@ -35,26 +35,23 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     private readonly IDbContextFactory<FilesDbContext> _dbContextFactory;
     private readonly UserManager _userManager;
     private readonly CrossDao _crossDao;
-    private readonly IDaoSelector<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>> _daoSelector;
+    private readonly IDaoSelector<TFile, TFolder, TItem> _daoSelector;
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
     private readonly TempStream _tempStream;
     private readonly SetupInfo _setupInfo;
     private readonly IDaoBase<TFile, TFolder, TItem> _dao;
-    private readonly IProviderInfo<TFile, TFolder, TItem> _providerInfo;
-
-    private ProviderFilter _thirdFilter;
+    private IProviderInfo<TFile, TFolder, TItem> _providerInfo;
 
     public ThirdPartyFolderDao(IDbContextFactory<FilesDbContext> dbContextFactory,
         UserManager userManager,
         CrossDao crossDao,
-        IDaoSelector<TFile, TFolder, TItem, IProviderInfo<TFile, TFolder, TItem>> daoSelector,
+        IDaoSelector<TFile, TFolder, TItem> daoSelector,
         IFileDao<int> fileDao,
         IFolderDao<int> folderDao,
         TempStream tempStream,
         SetupInfo setupInfo,
-        IDaoBase<TFile, TFolder, TItem> dao,
-        IProviderInfo<TFile, TFolder, TItem> providerInfo)
+        IDaoBase<TFile, TFolder, TItem> dao)
     {
         _dbContextFactory = dbContextFactory;
         _userManager = userManager;
@@ -65,12 +62,12 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         _tempStream = tempStream;
         _setupInfo = setupInfo;
         _dao = dao;
-        _providerInfo = providerInfo;
     }
 
-    public void Init(ProviderFilter filter)
+    public void Init(string pathPrefix, IProviderInfo<TFile, TFolder, TItem> providerInfo)
     {
-        _thirdFilter = filter;
+        _dao.Init(pathPrefix, providerInfo);
+        _providerInfo = providerInfo;
     }
 
     public async Task<Folder<string>> GetFolderAsync(string folderId)
@@ -93,7 +90,7 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
     public async IAsyncEnumerable<Folder<string>> GetRoomsAsync(IEnumerable<string> roomsIds, FilterType filterType, IEnumerable<string> tags, Guid subjectId, string searchText, bool withSubfolders, bool withoutTags, bool excludeSubject, ProviderFilter provider,
         SubjectFilter subjectFilter, IEnumerable<string> subjectEntriesIds, IEnumerable<int> parentsIds = null)
     {
-        if (_dao.CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != _thirdFilter))//todoanton
+        if (_dao.CheckInvalidFilter(filterType) || (provider != ProviderFilter.None && provider != _providerInfo.ProviderFilter))
         {
             yield break;
         }

@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using DriveFile = Google.Apis.Drive.v3.Data.File;
+
 namespace ASC.Files.Core.Core.Thirdparty;
 
 internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> : IProviderInfo<TFile, TFolder, TItem>
@@ -33,6 +35,7 @@ internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> :
     where TProvider : Consumer, IOAuthProvider, new()
 {
     public abstract Selector Selector { get; }
+    public abstract ProviderFilter ProviderFilter { get; }
     private readonly DisposableWrapper _wrapper;
     internal readonly ProviderInfoHelper ProviderInfoHelper;
 
@@ -51,7 +54,7 @@ internal abstract class AbstractProviderInfo<TFile, TFolder, TItem, TProvider> :
     public Guid Owner { get; set; }
     public bool Private { get; set; }
     public string ProviderKey { get; set; }
-    public string RootFolderId => $"{Selector}-" + ProviderId;
+    public string RootFolderId => $"{Selector.Id}-" + ProviderId;
     public FolderType RootFolderType { get; set; }
     public OAuth20Token Token { get; set; }
     public bool StorageOpened => _wrapper.TryGetStorage(ProviderId, out var storage) && storage.IsOpened;
@@ -241,7 +244,7 @@ public class ProviderInfoHelper
     }
 }
 
-[Transient]
+[Transient(Additional = typeof(DisposableWrapperExtension))]
 public class DisposableWrapper : IDisposable
 {
     private readonly ConsumerFactory _consumerFactory;
@@ -324,5 +327,17 @@ public class DisposableWrapper : IDisposable
         _storages.TryAdd(id, storage);
 
         return storage;
+    }
+
+}
+
+public static class DisposableWrapperExtension
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<IThirdPartyStorage<BoxFile, BoxFolder, BoxItem>, BoxStorage>();
+        services.TryAdd<IThirdPartyStorage<FileMetadata, FolderMetadata, Metadata>, DropboxStorage>();
+        services.TryAdd<IThirdPartyStorage<DriveFile, DriveFile, DriveFile>, GoogleDriveStorage>();
+        services.TryAdd<IThirdPartyStorage<Item, Item, Item>, OneDriveStorage>();
     }
 }

@@ -41,13 +41,14 @@ public class SharePointProviderInfo : IProviderInfo<File, Folder, ClientObject>
     public FolderType FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string CustomerTitle { get; set; }
-    public string RootFolderId => $"{Selector}-{ID}";
+    public string RootFolderId => $"{Selector.Id}-{ID}";
     public string SpRootFolderId { get; set; } = "/Shared Documents";
     public string FolderId { get; set; }
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
 
     public Selector Selector { get; } = Selectors.SharePoint;
+    public ProviderFilter ProviderFilter { get; } = ProviderFilter.SharePoint;
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,
@@ -364,7 +365,7 @@ public class SharePointProviderInfo : IProviderInfo<File, Folder, ClientObject>
         }
     }
 
-    public int ProviderId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    public int ProviderId { get; set; }
 
     public Task<IThirdPartyStorage<File, Folder, ClientObject>> StorageAsync => throw new NotImplementedException();
 

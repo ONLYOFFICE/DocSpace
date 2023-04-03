@@ -35,8 +35,8 @@ public static class BoxDaoSelectorExtension
         services.TryAdd<ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>, BoxFileDao>();
         services.TryAdd<ThirdPartyFolderDao<BoxFile, BoxFolder, BoxItem>>();
         services.TryAdd<IProviderInfo<BoxFile, BoxFolder, BoxItem>, BoxProviderInfo>();
-        services.TryAdd<IThirdPartyTagDao<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>, ThirdPartyTagDao<BoxFile, BoxFolder, BoxItem>>();
+        services.TryAdd<ThirdPartyTagDao<BoxFile, BoxFolder, BoxItem>>();
         services.TryAdd<IDaoBase<BoxFile, BoxFolder, BoxItem>, BoxDaoBase>();
-        services.TryAdd<IDaoSelector<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>, RegexDaoSelectorBase<BoxFile, BoxFolder, BoxItem, IProviderInfo<BoxFile, BoxFolder, BoxItem>>>();
+        services.TryAdd<IDaoSelector<BoxFile, BoxFolder, BoxItem>, RegexDaoSelectorBase<BoxFile, BoxFolder, BoxItem>>();
     }
 }

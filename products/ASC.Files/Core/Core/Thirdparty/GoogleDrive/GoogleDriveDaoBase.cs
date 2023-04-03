@@ -29,21 +29,27 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
 [Scope]
-internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo>, IDaoBase<DriveFile, DriveFile, DriveFile>
+internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, DriveFile>, IDaoBase<DriveFile, DriveFile, DriveFile>
 {
-    public GoogleDriveDaoBase(
-        IServiceProvider serviceProvider,
+    private GoogleDriveProviderInfo _providerInfo;
+    public GoogleDriveDaoBase(IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        TenantUtil tenantUtil, 
+        IDbContextFactory<FilesDbContext> dbContextFactory, 
         SetupInfo setupInfo,
         FileUtility fileUtility,
         TempPath tempPath,
         AuthContext authContext,
-        RegexDaoSelectorBase<DriveFile, DriveFile, DriveFile, GoogleDriveProviderInfo> regexDaoSelectorBase)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
+        RegexDaoSelectorBase<DriveFile, DriveFile, DriveFile> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<DriveFile, DriveFile, DriveFile> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        _providerInfo = providerInfo as GoogleDriveProviderInfo;
     }
 
     public string GetName(DriveFile item)
@@ -243,7 +249,7 @@ internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, 
         var driveId = MakeThirdId(entryId);
         try
         {
-            var entry = await ProviderInfo.GetFileAsync(driveId);
+            var entry = await _providerInfo.GetFileAsync(driveId);
 
             return entry;
         }
@@ -258,7 +264,7 @@ internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, 
         var driveId = MakeThirdId(entryId);
         try
         {
-            var entry = await ProviderInfo.GetFolderAsync(driveId);
+            var entry = await _providerInfo.GetFolderAsync(driveId);
 
             return entry;
         }
@@ -280,11 +286,11 @@ internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, 
         var parentDriveId = MakeThirdId(parentId);
         if (folder == null)
         {
-            return await ProviderInfo.GetItemsAsync(parentDriveId);
+            return await _providerInfo.GetItemsAsync(parentDriveId);
         }
         else
         {
-            return await ProviderInfo.GetItemsAsync(parentDriveId, folder);
+            return await _providerInfo.GetItemsAsync(parentDriveId, folder);
         }
     }
 

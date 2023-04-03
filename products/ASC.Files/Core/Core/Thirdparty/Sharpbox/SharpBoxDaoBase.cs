@@ -26,8 +26,9 @@
 
 namespace ASC.Files.Thirdparty.Sharpbox;
 
-internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo>
+internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>
 {
+    internal SharpBoxProviderInfo SharpBoxProviderInfo { get; private set; }
     protected SharpBoxDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,
@@ -39,10 +40,17 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
         FileUtility fileUtility,
         TempPath tempPath,
         AuthContext authContext,
-        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry, SharpBoxProviderInfo> regexDaoSelectorBase)
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> regexDaoSelectorBase)
         : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
         _logger = monitor;
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        SharpBoxProviderInfo = providerInfo as SharpBoxProviderInfo;
     }
 
     protected class ErrorEntry : ICloudDirectoryEntry
@@ -265,7 +273,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
         {
             try
             {
-                path = ProviderInfo.Storage.GetFileSystemObjectPath(entry);
+                path = SharpBoxProviderInfo.Storage.GetFileSystemObjectPath(entry);
             }
             catch (Exception ex)
             {
@@ -428,7 +436,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
     private ICloudDirectoryEntry _rootFolder;
     protected ICloudDirectoryEntry RootFolder()
     {
-        return _rootFolder ??= ProviderInfo.Storage.GetRoot();
+        return _rootFolder ??= SharpBoxProviderInfo.Storage.GetRoot();
     }
 
     private string _rootFolderId;
@@ -447,7 +455,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
 
             return path == "/"
                        ? RootFolder()
-                       : ProviderInfo.Storage.GetFolder(path);
+                       : SharpBoxProviderInfo.Storage.GetFolder(path);
         }
         catch (SharpBoxException sharpBoxException)
         {
@@ -468,7 +476,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
     {
         try
         {
-            return ProviderInfo.Storage.GetFile(MakePath(fileId), null);
+            return SharpBoxProviderInfo.Storage.GetFile(MakePath(fileId), null);
         }
         catch (SharpBoxException sharpBoxException)
         {
@@ -487,12 +495,12 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystem
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(object folderId)
     {
-        return GetFolderFiles(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
+        return GetFolderFiles(SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId)));
     }
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(object folderId)
     {
-        return GetFolderSubfolders(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
+        return GetFolderSubfolders(SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId)));
     }
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(ICloudDirectoryEntry folder)
