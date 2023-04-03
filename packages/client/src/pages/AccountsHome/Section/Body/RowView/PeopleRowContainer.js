@@ -43,7 +43,8 @@ const StyledRowContainer = styled(RowContainer)`
     .user-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -3px;
+      margin-top: -4px;
+
       ${marginStyles}
     }
   }
@@ -52,7 +53,8 @@ const StyledRowContainer = styled(RowContainer)`
     .user-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -3px;
+      margin-top: -4px;
+
       ${marginStyles}
     }
   }
@@ -68,6 +70,7 @@ const StyledRowContainer = styled(RowContainer)`
       border-bottom: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
+      padding-top: 1px;
       ${marginStyles}
     }
     .user-row::after {
@@ -78,8 +81,17 @@ const StyledRowContainer = styled(RowContainer)`
     .user-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -3px;
+      margin-top: -4px;
+
       ${marginStyles}
+    }
+  }
+
+  .row-selected {
+    .user-row {
+      .styled-element {
+        padding-top: 1px;
+      }
     }
   }
 `;
@@ -120,7 +132,7 @@ const PeopleRowContainer = ({
       hasMoreFiles={hasMoreAccounts}
       itemCount={filterTotal}
       filesLength={peopleList.length}
-      itemHeight={58}
+      itemHeight={57.6}
     >
       {peopleList.map((item) => (
         <SimpleUserRow
