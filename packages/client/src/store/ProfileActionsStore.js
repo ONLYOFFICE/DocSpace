@@ -14,6 +14,8 @@ import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
+import { ZendeskAPI } from "@docspace/common/components/Zendesk";
+import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
@@ -25,8 +27,6 @@ const PAYMENTS_URL = combineUrl(
 );
 
 //const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
-
-const LiveChatLocalStorageKey = "liveChatState";
 
 class ProfileActionsStore {
   authStore = null;
@@ -57,17 +57,17 @@ class ProfileActionsStore {
   }
 
   getStateLiveChat = () => {
-    const state = localStorage.getItem(LiveChatLocalStorageKey);
+    const state = localStorage.getItem(LIVE_CHAT_LOCAL_STORAGE_KEY) === "true";
 
     if (!state) return false;
 
-    return JSON.parse(state);
+    return state;
   };
 
   setStateLiveChat = (state) => {
     if (typeof state !== "boolean") return;
 
-    localStorage.setItem(LiveChatLocalStorageKey, state.toString());
+    localStorage.setItem(LIVE_CHAT_LOCAL_STORAGE_KEY, state.toString());
 
     this.isShowLiveChat = state;
   };
@@ -118,8 +118,7 @@ class ProfileActionsStore {
 
   onLiveChatClick = () => {
     this.setStateLiveChat(!this.isShowLiveChat);
-
-    //window.open(supportUrl, "_blank");
+    ZendeskAPI("webWidget", this.isShowLiveChat ? "show" : "hide");
   };
 
   onSupportClick = () => {
@@ -212,7 +211,7 @@ class ProfileActionsStore {
 
     let liveChat = null;
 
-    if (!isMobile) {
+    if (!isMobile && this.authStore.isLiveChatAvailable) {
       liveChat = {
         key: "user-menu-live-chat",
         icon: LiveChatReactSvgUrl,
@@ -225,7 +224,7 @@ class ProfileActionsStore {
 
     let bookTraining = null;
 
-    if (!isMobile) {
+    if (!isMobile && this.authStore.isTeamTrainingAlertAvailable) {
       bookTraining = {
         key: "user-menu-book-training",
         icon: BookTrainingReactSvgUrl,
