@@ -21,7 +21,7 @@ const Template = (args) => <RoomLogo {...args} />;
 export const Default = Template.bind({});
 
 Default.args = {
-  type: "custom",
+  type: 2,
   isPrivacy: false,
   isArchive: false,
   withCheckbox: false,
