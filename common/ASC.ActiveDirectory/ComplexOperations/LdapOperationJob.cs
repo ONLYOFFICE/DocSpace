@@ -299,7 +299,7 @@ public class LdapOperationJob : DistributedTaskProgress
             {
                 _logger.DebugTurnOffLDAP();
 
-                TurnOffLDAP();
+                await TurnOffLDAP();
                 var ldapCurrentUserPhotos = _settingsManager.Load<LdapCurrentUserPhotos>().GetDefault();
                 _settingsManager.Save(ldapCurrentUserPhotos);
 
@@ -349,7 +349,7 @@ public class LdapOperationJob : DistributedTaskProgress
             : "", "");
     }
 
-    private void TurnOffLDAP()
+    private async Task TurnOffLDAP()
     {
         const double percents = 48;
 
@@ -380,7 +380,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                     _logger.DebugSaveUserInfo(existingLDAPUser.GetUserInfoString());
 
-                    _userManager.UpdateUserInfo(existingLDAPUser);
+                    await _userManager.UpdateUserInfo(existingLDAPUser);
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:
@@ -667,7 +667,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         SetProgress(20, Resource.LdapSettingsStatusRemovingOldUsers, "");
 
-        ldapUsers = RemoveOldDbUsers(ldapUsers);
+        ldapUsers = await RemoveOldDbUsers(ldapUsers);
 
         SetProgress(30,
             OperationType == LdapOperationType.Save || OperationType == LdapOperationType.SaveTest
@@ -729,7 +729,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         SetProgress(90, Resource.LdapSettingsStatusRemovingOldUsers, "");
 
-        RemoveOldDbUsers(newUniqueLdapGroupUsers);
+        await RemoveOldDbUsers(newUniqueLdapGroupUsers);
     }
 
     private async Task SyncDbGroups(Dictionary<GroupInfo, List<UserInfo>> ldapGroupsWithUsers)
@@ -1012,7 +1012,7 @@ public class LdapOperationJob : DistributedTaskProgress
     /// </summary>
     /// <param name="ldapUsers">list of actual LDAP users</param>
     /// <returns>New list of actual LDAP users</returns>
-    private List<UserInfo> RemoveOldDbUsers(List<UserInfo> ldapUsers)
+    private async Task<List<UserInfo>> RemoveOldDbUsers(List<UserInfo> ldapUsers)
     {
         var dbLdapUsers = _userManager.GetUsers(EmployeeStatus.All).Where(u => u.Sid != null).ToList();
 
@@ -1064,7 +1064,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                     _logger.DebugSaveUserInfo(removedUser.GetUserInfoString());
 
-                    _userManager.UpdateUserInfo(removedUser);
+                    await _userManager.UpdateUserInfo(removedUser);
                     break;
                 case LdapOperationType.SaveTest:
                 case LdapOperationType.SyncTest:

@@ -330,7 +330,7 @@ public class UserManager
         return findUsers.ToArray();
     }
 
-    public UserInfo UpdateUserInfo(UserInfo u)
+    public async Task<UserInfo> UpdateUserInfo(UserInfo u)
     {
         if (IsSystemUser(u.Id))
         {
@@ -351,14 +351,30 @@ public class UserManager
             throw new InvalidOperationException("User not found.");
         }
 
-        return _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+        var (name, value) = ("", -1);
+
+        if (!IsUserInGroup(oldUserData.Id, Constants.GroupUser.ID) &&
+            oldUserData.Status != u.Status)
+        {
+            (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
+            value = oldUserData.Status > u.Status ? ++value : --value;//crutch: data race
+        }
+
+        var newUserData = _userService.SaveUser(_tenantManager.GetCurrentTenant().Id, u);
+
+        if (value > 0)
+        {
+            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+        }
+
+        return newUserData;
     }
 
     public async Task<UserInfo> UpdateUserInfoWithSyncCardDavAsync(UserInfo u)
     {
         var oldUserData = _userService.GetUserByUserName(_tenantManager.GetCurrentTenant().Id, u.UserName);
 
-        var newUser = UpdateUserInfo(u);
+        var newUser = await UpdateUserInfo(u);
 
         if (_coreBaseSettings.DisableDocSpace)
         {
@@ -661,6 +677,7 @@ public class UserManager
 
         var user = GetUsers(userId);
         var isUser = IsUserInGroup(userId, Constants.GroupUser.ID);
+        var userGroups = GetUserGroups(userId);
 
         _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
@@ -682,7 +699,8 @@ public class UserManager
         }
 
         if (isUser && groupId != Constants.GroupUser.ID ||
-            !isUser && groupId == Constants.GroupUser.ID)
+            !isUser && groupId == Constants.GroupUser.ID &&
+            userGroups.Any())
         {
             var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
             await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
@@ -697,6 +715,8 @@ public class UserManager
         }
 
         var user = GetUsers(userId);
+        var isUser = IsUserInGroup(userId, Constants.GroupUser.ID);
+        var userGroups = GetUserGroups(userId);
 
         _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
@@ -705,7 +725,8 @@ public class UserManager
 
         ResetGroupCache(userId);
 
-        if (groupId != Constants.GroupUser.ID)
+        if (groupId != Constants.GroupUser.ID &&
+            !isUser && userGroups.Any())
         {
             var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
             await _quotaSocketManager.ChangeQuotaUsedValue(name, value);

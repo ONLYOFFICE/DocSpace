@@ -125,7 +125,7 @@ public class SsoController : BaseSettingsController
     /// <param name="serializeSettings">Serialized SSO settings</param>
     /// <returns>SSO settings</returns>
     [HttpPost("ssov2")]
-    public SsoSettingsV2 SaveSsoSettingsV2(SsoSettingsRequestsDto model)
+    public async Task<SsoSettingsV2> SaveSsoSettingsV2(SsoSettingsRequestsDto model)
     {
         CheckSsoPermissions();
 
@@ -187,7 +187,7 @@ public class SsoController : BaseSettingsController
 
         if (!settings.EnableSso)
         {
-            ConverSsoUsersToOrdinary();
+            await ConverSsoUsersToOrdinary();
         }
 
         var messageAction = settings.EnableSso ? MessageAction.SSOEnabled : MessageAction.SSODisabled;
@@ -206,7 +206,7 @@ public class SsoController : BaseSettingsController
     /// <category>SSO</category>
     /// <returns>Default SSO settings</returns>
     [HttpDelete("ssov2")]
-    public SsoSettingsV2 ResetSsoSettingsV2()
+    public async Task<SsoSettingsV2> ResetSsoSettingsV2()
     {
         CheckSsoPermissions();
 
@@ -217,14 +217,14 @@ public class SsoController : BaseSettingsController
             throw new Exception(Resource.SsoSettingsCantSaveSettings);
         }
 
-        ConverSsoUsersToOrdinary();
+        await ConverSsoUsersToOrdinary();
 
         _messageService.Send(MessageAction.SSODisabled);
 
         return defaultSettings;
     }
 
-    private void ConverSsoUsersToOrdinary()
+    private async Task ConverSsoUsersToOrdinary()
     {
         var ssoUsers = _userManager.GetUsers().Where(u => u.IsSSO()).ToList();
 
@@ -240,7 +240,7 @@ public class SsoController : BaseSettingsController
 
             existingSsoUser.ConvertExternalContactsToOrdinary();
 
-            _userManager.UpdateUserInfo(existingSsoUser);
+            await _userManager.UpdateUserInfo(existingSsoUser);
         }
     }
 

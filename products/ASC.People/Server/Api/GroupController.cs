@@ -281,6 +281,6 @@ public class GroupController : ControllerBase
 
         var user = _userManager.GetUsers(userId);
         await _userManager.RemoveUserFromGroup(user.Id, @group.ID);
-        _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfo(user);
     }
 }

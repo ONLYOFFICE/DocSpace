@@ -446,6 +446,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                     {
                                         await _semaphore.WaitAsync();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+
+                                        var (name, value) = await tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
+                                        await quotaSocketManager.ChangeQuotaUsedValue(name, value);
                                     }
                                     else
                                     {

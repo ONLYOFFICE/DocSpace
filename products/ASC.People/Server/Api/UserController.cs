@@ -452,7 +452,7 @@ public class UserController : PeopleControllerBase
         _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
-        _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfo(user);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
 
@@ -887,7 +887,7 @@ public class UserController : PeopleControllerBase
             }
 
             u.ActivationStatus = activationstatus;
-            _userManager.UpdateUserInfo(u);
+            await _userManager.UpdateUserInfo(u);
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }
@@ -914,7 +914,7 @@ public class UserController : PeopleControllerBase
 
                 try
                 {
-                    _userManager.UpdateUserInfo(user);
+                    await _userManager.UpdateUserInfo(user);
                 }
                 catch
                 {

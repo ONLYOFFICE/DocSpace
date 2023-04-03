@@ -168,7 +168,7 @@ public class AuthenticationController : ControllerBase
             if (_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings() && _studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
             {
                 sms = true;
-                _smsManager.ValidateSmsCode(user, inDto.Code, true);
+                await _smsManager.ValidateSmsCode(user, inDto.Code, true);
             }
             else if (_tfaAppAuthSettingsHelper.IsVisibleSettings && _tfaAppAuthSettingsHelper.TfaEnabledForUser(user.Id))
             {

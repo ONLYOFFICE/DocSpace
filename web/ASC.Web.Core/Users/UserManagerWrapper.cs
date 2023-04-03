@@ -26,6 +26,8 @@
 
 
 
+using ASC.Core.Common.Quota;
+
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Users;
@@ -51,6 +53,8 @@ public sealed class UserManagerWrapper
     private readonly CountPaidUserChecker _countPaidUserChecker;
     private readonly TenantManager _tenantManager;
     private readonly WebItemSecurityCache _webItemSecurityCache;
+    private readonly QuotaSocketManager _quotaSocketManager;
+    private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -64,7 +68,9 @@ public sealed class UserManagerWrapper
         UserFormatter userFormatter,
         CountPaidUserChecker countPaidUserChecker,
         TenantManager tenantManager,
-        WebItemSecurityCache webItemSecurityCache)
+        WebItemSecurityCache webItemSecurityCache,
+        QuotaSocketManager quotaSocketManager,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -78,6 +84,8 @@ public sealed class UserManagerWrapper
         _countPaidUserChecker = countPaidUserChecker;
         _tenantManager = tenantManager;
         _webItemSecurityCache = webItemSecurityCache;
+        _quotaSocketManager = quotaSocketManager;
+        _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
     }
 
     private bool TestUniqueUserName(string uniqueName)
@@ -147,6 +155,11 @@ public sealed class UserManagerWrapper
         if (groupId != Guid.Empty)
         {
             await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
+        }
+        else if(type == EmployeeType.RoomAdmin)
+        {
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
+            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
 
         return newUser;
@@ -269,16 +282,16 @@ public sealed class UserManagerWrapper
             }
             else if (currentType is EmployeeType.Collaborator)
             {
-                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
                 await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.User)
             {
                 await _countPaidUserChecker.CheckAppend();
-                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                 await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
@@ -308,8 +321,8 @@ public sealed class UserManagerWrapper
         else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
         {
             await _countPaidUserChecker.CheckAppend();
-            await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
+            await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
             changed = true;
         }

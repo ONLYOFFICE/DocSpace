@@ -347,7 +347,7 @@ public class SettingsController : BaseSettingsController
     [AllowNotPayment]
     [HttpPut("wizard/complete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizard(WizardRequestsDto inDto)
+    public Task<WizardSettings> CompleteWizard(WizardRequestsDto inDto)
     {
         ApiContext.AuthByClaim();
 

@@ -346,7 +346,7 @@ public abstract class BaseStorage : IDataStore
         if (QuotaController != null)
         {
             QuotaController.QuotaUsedAdd(Modulename, domain, DataList.GetData(domain), size, quotaCheckFileSize);
-            var(name, value) = await _tenantQuotaFeatureStatHelper.GetStat<MaxFileSizeFeature, long>();
+            var(name, value) = await _tenantQuotaFeatureStatHelper.GetStat<MaxTotalSizeFeature, long>();
             await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
     }
@@ -356,7 +356,7 @@ public abstract class BaseStorage : IDataStore
         if (QuotaController != null)
         {
             QuotaController.QuotaUsedDelete(Modulename, domain, DataList.GetData(domain), size);
-            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<MaxFileSizeFeature, long>();
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<MaxTotalSizeFeature, long>();
             await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
     }
