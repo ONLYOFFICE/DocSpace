@@ -61,6 +61,16 @@ const StyledSimpleFilesRow = styled(Row)`
             padding-top: 1px;
           }
         }
+
+        ${(props) =>
+          props.isSmallContainer &&
+          css`
+            .row_content {
+              .mainIcons {
+                padding-bottom: 0px;
+              }
+            }
+          `}
       }
     `};
 
