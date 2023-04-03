@@ -40,6 +40,7 @@ const Article = ({
   withSendAgain,
   mainBarVisible,
   isBannerVisible,
+  isNonProfit,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -178,6 +179,7 @@ const Article = ({
             <ArticleProfile showText={showText} />
           )}
           {isPaymentPageAvailable &&
+            !isNonProfit &&
             (isFreeTariff || isGracePeriod) &&
             showText && (
               <ArticlePaymentAlert
@@ -249,7 +251,7 @@ export default inject(({ auth }) => {
     isPaymentPageAvailable,
     bannerStore,
   } = auth;
-  const { isFreeTariff } = currentQuotaStore;
+  const { isFreeTariff, isNonProfit } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
 
   const { withSendAgain } = userStore;
@@ -283,5 +285,6 @@ export default inject(({ auth }) => {
     withSendAgain,
     mainBarVisible,
     isBannerVisible,
+    isNonProfit,
   };
 })(observer(Article));
