@@ -15,6 +15,7 @@ import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
 import ArticlePaymentAlert from "./sub-components/article-payment-alert";
+import ArticleTeamTrainingAlert from "./sub-components/article-team-training";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 import Portal from "@docspace/components/portal";
@@ -41,6 +42,7 @@ const Article = ({
   mainBarVisible,
   isBannerVisible,
   isNonProfit,
+  isTeamTrainingAlertAvailable,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -187,6 +189,9 @@ const Article = ({
                 toggleArticleOpen={toggleArticleOpen}
               />
             )}
+          {isTeamTrainingAlertAvailable && showText && (
+            <ArticleTeamTrainingAlert />
+          )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -249,6 +254,7 @@ export default inject(({ auth }) => {
     currentTariffStatusStore,
     userStore,
     isPaymentPageAvailable,
+    isTeamTrainingAlertAvailable,
     bannerStore,
   } = auth;
   const { isFreeTariff, isNonProfit } = currentQuotaStore;
@@ -286,5 +292,6 @@ export default inject(({ auth }) => {
     mainBarVisible,
     isBannerVisible,
     isNonProfit,
+    isTeamTrainingAlertAvailable,
   };
 })(observer(Article));
