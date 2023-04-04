@@ -5,13 +5,13 @@ import React from "react";
 
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { withRouter } from "react-router-dom";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { combineUrl } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
 
 const RoomNoAccessContainer = (props) => {
@@ -25,6 +25,7 @@ const RoomNoAccessContainer = (props) => {
     isEmptyPage,
     sectionWidth,
     theme,
+    history,
   } = props;
 
   const descriptionRoomNoAccess = t("NoAccessRoomDescription");
@@ -112,4 +113,4 @@ export default inject(({ auth, filesStore }) => {
     isEmptyPage,
     theme: auth.settingsStore.theme,
   };
-})(withTranslation(["Files"])(observer(RoomNoAccessContainer)));
+})(withTranslation(["Files"])(withRouter(observer(RoomNoAccessContainer))));

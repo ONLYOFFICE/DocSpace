@@ -9,7 +9,7 @@ import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import history from "@docspace/common/history";
+import { withRouter } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -33,13 +33,13 @@ const PortalRenaming = (props) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
+    history,
   } = props;
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
 
-  const portalNameDefaultFromSessionStorage = getFromSessionStorage(
-    "portalNameDefault"
-  );
+  const portalNameDefaultFromSessionStorage =
+    getFromSessionStorage("portalNameDefault");
 
   const portalNameInitially =
     portalNameFromSessionStorage === null ||
@@ -97,9 +97,8 @@ const PortalRenaming = (props) => {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -337,12 +336,8 @@ const PortalRenaming = (props) => {
 export default inject(({ auth, setup, common }) => {
   const { theme, tenantAlias } = auth.settingsStore;
   const { setPortalRename, getAllSettings } = setup;
-  const {
-    isLoaded,
-    setIsLoadedPortalRenaming,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedPortalRenaming, initSettings, setIsLoaded } =
+    common;
   return {
     theme,
     setPortalRename,
@@ -354,5 +349,9 @@ export default inject(({ auth, setup, common }) => {
     getAllSettings,
   };
 })(
-  withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))
+  withLoading(
+    withTranslation(["Settings", "Common"])(
+      withRouter(observer(PortalRenaming))
+    )
+  )
 );

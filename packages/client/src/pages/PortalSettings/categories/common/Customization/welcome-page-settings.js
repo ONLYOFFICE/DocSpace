@@ -12,7 +12,7 @@ import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import history from "@docspace/common/history";
+import { withRouter } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -124,9 +124,8 @@ class WelcomePageSettings extends React.Component {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -260,7 +259,7 @@ class WelcomePageSettings extends React.Component {
 
       if (newUrl === currentUrl) return;
 
-      history.push(newUrl);
+      this.props.history.push(newUrl);
     } else {
       this.setState({
         isCustomizationView: false,
@@ -270,16 +269,12 @@ class WelcomePageSettings extends React.Component {
 
   onClickLink = (e) => {
     e.preventDefault();
-    history.push(e.target.pathname);
+    this.props.history.push(e.target.pathname);
   };
 
   render() {
-    const {
-      t,
-      isMobileView,
-      isLoadedPage,
-      greetingSettingsIsDefault,
-    } = this.props;
+    const { t, isMobileView, isLoadedPage, greetingSettingsIsDefault } =
+      this.props;
     const {
       greetingTitle,
       isLoadingGreetingSave,
@@ -357,12 +352,8 @@ class WelcomePageSettings extends React.Component {
 }
 
 export default inject(({ auth, setup, common }) => {
-  const {
-    greetingSettings,
-    organizationName,
-    theme,
-    getSettings,
-  } = auth.settingsStore;
+  const { greetingSettings, organizationName, theme, getSettings } =
+    auth.settingsStore;
   const { setGreetingTitle, restoreGreetingTitle } = setup;
   const {
     isLoaded,
@@ -388,6 +379,8 @@ export default inject(({ auth, setup, common }) => {
   };
 })(
   withLoading(
-    withTranslation(["Settings", "Common"])(observer(WelcomePageSettings))
+    withTranslation(["Settings", "Common"])(
+      withRouter(observer(WelcomePageSettings))
+    )
   )
 );

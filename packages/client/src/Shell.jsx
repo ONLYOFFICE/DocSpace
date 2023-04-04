@@ -8,7 +8,6 @@ import PublicRoute from "@docspace/common/components/PublicRoute";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
-import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
 import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
@@ -427,7 +426,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   return (
     <Layout>
-      <Router history={history}>
+      <Router>
         {toast}
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}

@@ -13,7 +13,7 @@ import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
 import { combineUrl, setCookie } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import history from "@docspace/common/history";
+import { withRouter } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -52,13 +52,11 @@ class LanguageAndTimeZone extends React.Component {
     const { t } = props;
 
     languageFromSessionStorage = getFromSessionStorage("language");
-    languageDefaultFromSessionStorage = getFromSessionStorage(
-      "languageDefault"
-    );
+    languageDefaultFromSessionStorage =
+      getFromSessionStorage("languageDefault");
     timezoneFromSessionStorage = getFromSessionStorage("timezone");
-    timezoneDefaultFromSessionStorage = getFromSessionStorage(
-      "timezoneDefault"
-    );
+    timezoneDefaultFromSessionStorage =
+      getFromSessionStorage("timezoneDefault");
 
     setDocumentTitle(t("StudioTimeLanguageSettings"));
 
@@ -248,9 +246,8 @@ class LanguageAndTimeZone extends React.Component {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -396,7 +393,7 @@ class LanguageAndTimeZone extends React.Component {
 
       if (newUrl === currentUrl) return;
 
-      history.push(newUrl);
+      this.propshistory.push(newUrl);
     } else {
       this.setState({
         isCustomizationView: false,
@@ -406,7 +403,7 @@ class LanguageAndTimeZone extends React.Component {
 
   onClickLink = (e) => {
     e.preventDefault();
-    history.push(e.target.pathname);
+    this.props.history.push(e.target.pathname);
   };
 
   render() {
@@ -549,12 +546,8 @@ export default inject(({ auth, setup, common }) => {
   const { user } = auth.userStore;
 
   const { setLanguageAndTime } = setup;
-  const {
-    isLoaded,
-    setIsLoadedLngTZSettings,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedLngTZSettings, initSettings, setIsLoaded } =
+    common;
   return {
     theme: auth.settingsStore.theme,
     user,
@@ -577,6 +570,8 @@ export default inject(({ auth, setup, common }) => {
   };
 })(
   withLoading(
-    withTranslation(["Settings", "Common"])(observer(LanguageAndTimeZone))
+    withTranslation(["Settings", "Common"])(
+      withRouter(observer(LanguageAndTimeZone))
+    )
   )
 );
