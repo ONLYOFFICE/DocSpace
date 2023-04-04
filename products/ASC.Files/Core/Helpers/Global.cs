@@ -337,7 +337,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderProjectsAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderProjectsAsync(daoFactory));
     }
 
     internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache =
@@ -362,11 +362,6 @@ public class GlobalFolder
         return result;
     }
 
-    public async ValueTask<T> GetFolderVirtualRoomsAsync<T>(IDaoFactory daoFactory)
-    {
-        return (T)Convert.ChangeType(await GetFolderVirtualRoomsAsync(daoFactory), typeof(T));
-    }
-
     public async ValueTask<int> GetFolderArchiveAsync(IDaoFactory daoFactory)
     {
         if (_coreBaseSettings.DisableDocSpace)
@@ -386,18 +381,13 @@ public class GlobalFolder
         return result;
     }
 
-    public async ValueTask<T> GetFolderArchiveAsync<T>(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderArchiveAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderArchiveAsync(daoFactory), typeof(T));
+        return await GetFolderArchiveAsync(daoFactory);
     }
 
     internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
         new ConcurrentDictionary<string, Lazy<int>>(); /*Use SYNCHRONIZED for cross thread blocks*/
-
-    public T GetFolderMy<T>(FileMarker fileMarker, IDaoFactory daoFactory)
-    {
-        return (T)Convert.ChangeType(GetFolderMy(fileMarker, daoFactory), typeof(T));
-    }
 
     public int GetFolderMy(FileMarker fileMarker, IDaoFactory daoFactory)
     {
@@ -447,7 +437,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderCommonAsync<T>(FileMarker fileMarker, IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderCommonAsync(fileMarker, daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderCommonAsync(fileMarker, daoFactory));
     }
 
     public async ValueTask<int> GetFolderCommonAsync(FileMarker fileMarker, IDaoFactory daoFactory)
@@ -499,7 +489,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderShareAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderShareAsync(daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderShareAsync(daoFactory));
     }
 
     internal static readonly IDictionary<int, int> RecentFolderCache =
@@ -584,7 +574,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderPrivacyAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderPrivacyAsync(daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderPrivacyAsync(daoFactory));
     }
 
     public async ValueTask<int> GetFolderPrivacyAsync(IDaoFactory daoFactory)
@@ -619,27 +609,26 @@ public class GlobalFolder
     internal static readonly IDictionary<string, object> TrashFolderCache =
         new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-    public async Task<T> GetFolderTrashAsync<T>(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderTrashAsync(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderTrashAsync(daoFactory), typeof(T));
-    }
-
-    public async ValueTask<object> GetFolderTrashAsync(IDaoFactory daoFactory)
-    {
+        var id = 0;
         if (IsOutsider)
         {
-            return null;
+            return id;
         }
 
         var cacheKey = string.Format("trash/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
-
         if (!TrashFolderCache.TryGetValue(cacheKey, out var trashFolderId))
         {
-            trashFolderId = _authContext.IsAuthenticated ? await daoFactory.GetFolderDao<int>().GetFolderIDTrashAsync(true) : 0;
-            TrashFolderCache[cacheKey] = trashFolderId;
+            id = _authContext.IsAuthenticated ? await daoFactory.GetFolderDao<int>().GetFolderIDTrashAsync(true) : 0;
+            TrashFolderCache[cacheKey] = id;
+        }
+        else
+        {
+            id = (int)trashFolderId;
         }
 
-        return trashFolderId;
+        return id;
     }
 
     protected internal void SetFolderTrash(object value)
@@ -769,47 +758,37 @@ public class GlobalFolderHelper
 
     public T GetFolderMy<T>()
     {
-        return (T)Convert.ChangeType(FolderMy, typeof(T));
+        return IdConverter.Convert<T>(FolderMy);
     }
 
     public async ValueTask<T> GetFolderCommonAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderCommonAsync, typeof(T));
+        return IdConverter.Convert<T>(await FolderCommonAsync);
     }
 
     public async ValueTask<T> GetFolderProjectsAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderProjectsAsync, typeof(T));
-    }
-
-    public T GetFolderTrash<T>()
-    {
-        return (T)Convert.ChangeType(FolderTrash, typeof(T));
+        return IdConverter.Convert<T>(await FolderProjectsAsync);
     }
 
     public async ValueTask<T> GetFolderPrivacyAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderPrivacyAsync, typeof(T));
+        return IdConverter.Convert<T>(await FolderPrivacyAsync);
     }
 
-    public async ValueTask<T> GetFolderVirtualRooms<T>()
+    public async ValueTask<int> GetFolderVirtualRooms()
     {
-        return (T)Convert.ChangeType(await FolderVirtualRoomsAsync, typeof(T));
+        return await FolderVirtualRoomsAsync;
     }
 
-    public async ValueTask<T> GetFolderArchive<T>()
+    public async ValueTask<int> GetFolderArchive()
     {
-        return (T)Convert.ChangeType(await FolderArchiveAsync, typeof(T));
-    }
-
-    public void SetFolderMy<T>(T val)
-    {
-        _globalFolder.SetFolderMy(val);
+        return await FolderArchiveAsync;
     }
 
     public async ValueTask<T> GetFolderShareAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderShareAsync, typeof(T));
+        return IdConverter.Convert<T>(await FolderShareAsync);
     }
     public ValueTask<int> FolderShareAsync => _globalFolder.GetFolderShareAsync(_daoFactory);
 

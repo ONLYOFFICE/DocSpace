@@ -128,11 +128,13 @@ public class FolderDtoHelper : FileEntryDtoHelper
                 _ => null,
             };
 
-            result.ParentId = folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() :
-                folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms ? await _globalFolderHelper.GetFolderVirtualRooms<T>() : folder.ParentId;
+            if (folder.ProviderEntry && folder.RootFolderType is FolderType.VirtualRooms)
+            {
+                result.ParentId = IdConverter.Convert<T>(await _globalFolderHelper.GetFolderVirtualRooms());
 
             var isMuted = _roomsNotificationSettingsHelper.CheckMuteForRoom(result.Id.ToString());
             result.Mute = isMuted;
+            }
         }
 
         if (folder.RootFolderType == FolderType.USER

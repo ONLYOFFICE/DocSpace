@@ -28,26 +28,41 @@ using DriveFile = Google.Apis.Drive.v3.Data.File;
 
 namespace ASC.Files.Thirdparty.GoogleDrive;
 
-internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDriveProviderInfo>
+[Scope]
+internal class GoogleDriveDaoBase : ThirdPartyProviderDao<DriveFile, DriveFile, DriveFile>, IDaoBase<DriveFile, DriveFile, DriveFile>
 {
-    protected override string Id => "drive";
-
-    protected GoogleDriveDaoBase(
-        IServiceProvider serviceProvider,
+    private GoogleDriveProviderInfo _providerInfo;
+    public GoogleDriveDaoBase(IServiceProvider serviceProvider,
         UserManager userManager,
         TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        TenantUtil tenantUtil, 
+        IDbContextFactory<FilesDbContext> dbContextFactory, 
         SetupInfo setupInfo,
-        ILogger monitor,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<DriveFile, DriveFile, DriveFile> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
     }
 
-    protected static string MakeDriveId(object entryId)
+    public void Init(string pathPrefix, IProviderInfo<DriveFile, DriveFile, DriveFile> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        _providerInfo = providerInfo as GoogleDriveProviderInfo;
+    }
+
+    public string GetName(DriveFile item)
+    {
+        return item.Name;
+    }
+
+    public string GetId(DriveFile item)
+    {
+        return item.Id;
+    }
+
+    public string MakeThirdId(object entryId)
     {
         var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
 
@@ -56,14 +71,14 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
                    : id.TrimStart('/');
     }
 
-    protected static string GetParentDriveId(DriveFile driveEntry)
+    public string GetParentFolderId(DriveFile driveEntry)
     {
         return driveEntry == null || driveEntry.Parents == null || driveEntry.Parents.Count == 0
                    ? null
                    : driveEntry.Parents[0];
     }
 
-    protected string MakeId(DriveFile driveEntry)
+    public string MakeId(DriveFile driveEntry)
     {
         var path = string.Empty;
         if (driveEntry != null)
@@ -74,14 +89,14 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         return MakeId(path);
     }
 
-    protected override string MakeId(string path = null)
+    public override string MakeId(string path = null)
     {
-        var p = string.IsNullOrEmpty(path) || path == "root" || path == ProviderInfo.DriveRootId ? "" : ("-|" + path.TrimStart('/'));
+        var p = string.IsNullOrEmpty(path) || path == "root" || path == ProviderInfo.RootFolderId ? "" : ("-|" + path.TrimStart('/'));
 
         return $"{PathPrefix}{p}";
     }
 
-    protected string MakeFolderTitle(DriveFile driveFolder)
+    public string MakeFolderTitle(DriveFile driveFolder)
     {
         if (driveFolder == null || IsRoot(driveFolder))
         {
@@ -91,7 +106,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         return Global.ReplaceInvalidCharsAndTruncate(driveFolder.Name);
     }
 
-    protected string MakeFileTitle(DriveFile driveFile)
+    public string MakeFileTitle(DriveFile driveFile)
     {
         if (driveFile == null || string.IsNullOrEmpty(driveFile.Name))
         {
@@ -113,7 +128,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         return Global.ReplaceInvalidCharsAndTruncate(title);
     }
 
-    protected Folder<string> ToFolder(DriveFile driveEntry)
+    public Folder<string> ToFolder(DriveFile driveEntry)
     {
         if (driveEntry == null)
         {
@@ -136,7 +151,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         var folder = GetFolder();
 
         folder.Id = MakeId(driveEntry);
-        folder.ParentId = isRoot ? null : MakeId(GetParentDriveId(driveEntry));
+        folder.ParentId = isRoot ? null : MakeId(GetParentFolderId(driveEntry));
         folder.CreateOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.CreatedTime ?? default);
         folder.ModifiedOn = isRoot ? ProviderInfo.CreateOn : (driveEntry.ModifiedTime ?? default);
         folder.Private = ProviderInfo.Private;
@@ -158,12 +173,12 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         return folder;
     }
 
-    protected static bool IsRoot(DriveFile driveFolder)
+    public bool IsRoot(DriveFile driveFolder)
     {
-        return IsDriveFolder(driveFolder) && GetParentDriveId(driveFolder) == null;
+        return IsDriveFolder(driveFolder) && GetParentFolderId(driveFolder) == null;
     }
 
-    private static bool IsDriveFolder(DriveFile driveFolder)
+    private bool IsDriveFolder(DriveFile driveFolder)
     {
         return driveFolder != null && driveFolder.MimeType == GoogleLoginProvider.GoogleDriveMimeTypeFolder;
     }
@@ -214,7 +229,7 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         file.Id = MakeId(driveFile.Id);
         file.ContentLength = driveFile.Size.HasValue ? (long)driveFile.Size : 0;
         file.CreateOn = driveFile.CreatedTime.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.CreatedTime.Value) : default;
-        file.ParentId = MakeId(GetParentDriveId(driveFile));
+        file.ParentId = MakeId(GetParentFolderId(driveFile));
         file.ModifiedOn = driveFile.ModifiedTime.HasValue ? _tenantUtil.DateTimeFromUtc(driveFile.ModifiedTime.Value) : default;
         file.NativeAccessor = driveFile;
         file.Title = MakeFileTitle(driveFile);
@@ -224,17 +239,17 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         return file;
     }
 
-    public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+    public async Task<Folder<string>> GetRootFolderAsync()
     {
-        return ToFolder(await GetDriveEntryAsync(""));
+        return ToFolder(await GetFolderAsync(""));
     }
 
-    protected DriveFile GetDriveEntry(string entryId)
+    public async Task<DriveFile> GetFileAsync(string entryId)
     {
-        var driveId = MakeDriveId(entryId);
+        var driveId = MakeThirdId(entryId);
         try
         {
-            var entry = ProviderInfo.GetDriveEntryAsync(driveId).Result;
+            var entry = await _providerInfo.GetFileAsync(driveId);
 
             return entry;
         }
@@ -244,12 +259,12 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         }
     }
 
-    protected async Task<DriveFile> GetDriveEntryAsync(string entryId)
+    public async Task<DriveFile> GetFolderAsync(string entryId)
     {
-        var driveId = MakeDriveId(entryId);
+        var driveId = MakeThirdId(entryId);
         try
         {
-            var entry = await ProviderInfo.GetDriveEntryAsync(driveId);
+            var entry = await _providerInfo.GetFolderAsync(driveId);
 
             return entry;
         }
@@ -259,31 +274,32 @@ internal abstract class GoogleDriveDaoBase : ThirdPartyProviderDao<GoogleDrivePr
         }
     }
 
-    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
-        var entries = await GetDriveEntriesAsync(folderId);
+        var entries = await GetItemsAsync(folderId);
 
         return entries.Select(entry => MakeId(entry.Id));
     }
 
-    protected List<DriveFile> GetDriveEntries(object parentId, bool? folder = null)
+    public async Task<List<DriveFile>> GetItemsAsync(string parentId, bool? folder = null)
     {
-        var parentDriveId = MakeDriveId(parentId);
-        var entries = ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder).Result;
-
-        return entries;
+        var parentDriveId = MakeThirdId(parentId);
+        if (folder == null)
+        {
+            return await _providerInfo.GetItemsAsync(parentDriveId);
+        }
+        else
+        {
+            return await _providerInfo.GetItemsAsync(parentDriveId, folder);
+        }
     }
 
-    protected async Task<List<DriveFile>> GetDriveEntriesAsync(object parentId, bool? folder = null)
+    public Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
     {
-        var parentDriveId = MakeDriveId(parentId);
-        var entries = await ProviderInfo.GetDriveEntriesAsync(parentDriveId, folder);
-
-        return entries;
+        return Task.FromResult(requestTitle);
     }
 
-
-    protected sealed class ErrorDriveEntry : DriveFile
+    protected sealed class ErrorDriveEntry : DriveFile, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }

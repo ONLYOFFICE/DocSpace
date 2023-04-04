@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Collections.Concurrent;
 global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Text.Json;
@@ -39,6 +38,7 @@ global using ASC.Core;
 global using ASC.Core.ChunkedUploader;
 global using ASC.Core.Common;
 global using ASC.Core.Common.EF;
+global using ASC.Core.Common.EF.Context;
 global using ASC.Core.Common.Hosting;
 global using ASC.Core.Common.Hosting.Interfaces;
 global using ASC.Core.Common.Quota;
@@ -83,6 +83,7 @@ global using ASC.Web.Studio.Core;
 global using Autofac;
 
 global using Microsoft.AspNetCore.Builder;
+global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Hosting.WindowsServices;
 global using Microsoft.Extensions.Logging;
 

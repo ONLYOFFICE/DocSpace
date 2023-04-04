@@ -38,7 +38,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly SecurityContext _securityContext;
     private readonly UserManager _userManager;
     private readonly TenantManager _tenantManager;
@@ -47,7 +47,7 @@ public class NextcloudWorkspaceMigration : AbstractMigration<NCMigrationInfo, NC
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         SecurityContext securityContext,
         UserManager userManager,
         TenantManager tenantManager,

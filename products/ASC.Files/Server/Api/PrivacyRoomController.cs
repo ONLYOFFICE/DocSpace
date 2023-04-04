@@ -29,14 +29,14 @@ namespace ASC.Api.Documents;
 [ConstraintRoute("int")]
 public class PrivacyRoomControllerInternal : PrivacyRoomController<int>
 {
-    public PrivacyRoomControllerInternal(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService<int> fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
+    public PrivacyRoomControllerInternal(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
     {
     }
 }
 
 public class PrivacyRoomControllerThirdparty : PrivacyRoomController<string>
 {
-    public PrivacyRoomControllerThirdparty(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService<string> fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
+    public PrivacyRoomControllerThirdparty(SettingsManager settingsManager, EncryptionKeyPairDtoHelper encryptionKeyPairHelper, FileStorageService fileStorageService) : base(settingsManager, encryptionKeyPairHelper, fileStorageService)
     {
     }
 }
@@ -48,13 +48,13 @@ public class PrivacyRoomControllerThirdparty : PrivacyRoomController<string>
 public abstract class PrivacyRoomController<T> : ControllerBase
 {
     private readonly EncryptionKeyPairDtoHelper _encryptionKeyPairHelper;
-    private readonly FileStorageService<T> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly SettingsManager _settingsManager;
 
     public PrivacyRoomController(
         SettingsManager settingsManager,
         EncryptionKeyPairDtoHelper encryptionKeyPairHelper,
-        FileStorageService<T> fileStorageService)
+        FileStorageService fileStorageService)
     {
         _settingsManager = settingsManager;
         _encryptionKeyPairHelper = encryptionKeyPairHelper;

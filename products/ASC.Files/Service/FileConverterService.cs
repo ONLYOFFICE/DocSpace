@@ -80,15 +80,15 @@ internal class FileConverterService<T> : BackgroundService
         DocumentServiceConnector documentServiceConnector;
         EntryStatusManager entryManager;
         FileConverter fileConverter;
-        FileConverterQueue<T> fileConverterQueue;
+        FileConverterQueue fileConverterQueue;
 
-        var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue<T>>>();
+        var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue>>();
 
         try
         {
-            fileConverterQueue = scope.ServiceProvider.GetService<FileConverterQueue<T>>();
+            fileConverterQueue = scope.ServiceProvider.GetService<FileConverterQueue>();
 
-            var _conversionQueue = fileConverterQueue.GetAllTask().ToList();
+            var _conversionQueue = fileConverterQueue.GetAllTask<T>().ToList();
 
             if (_conversionQueue.Count > 0)
             {
@@ -257,7 +257,7 @@ internal class FileConverterService<T> : BackgroundService
                 logger.DebugCheckConvertFilesStatusIterationEnd();
             }
 
-            fileConverterQueue.SetAllTask(_conversionQueue);
+            fileConverterQueue.SetAllTask<T>(_conversionQueue);
 
         }
         catch (Exception exception)

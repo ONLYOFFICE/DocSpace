@@ -41,8 +41,7 @@ public class OCMigratingFiles : MigratingFiles
 
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
-    private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly OCMigratingUser _user;
     private readonly string _rootFolder;
     private List<OCFileCache> _files;
@@ -55,11 +54,10 @@ public class OCMigratingFiles : MigratingFiles
     private Dictionary<string, OCMigratingGroups> _groups;
     private Dictionary<object, int> _matchingFileId;
     private string _folderCreation;
-    public OCMigratingFiles(GlobalFolderHelper globalFolderHelper, IDaoFactory daoFactory, FileSecurity fileSecurity, FileStorageService<int> fileStorageService, OCMigratingUser user, OCStorages storages, string rootFolder, Action<string, Exception> log) : base(log)
+    public OCMigratingFiles(GlobalFolderHelper globalFolderHelper, IDaoFactory daoFactory, FileStorageService fileStorageService, OCMigratingUser user, OCStorages storages, string rootFolder, Action<string, Exception> log) : base(log)
     {
         _globalFolderHelper = globalFolderHelper;
         _daoFactory = daoFactory;
-        _fileSecurity = fileSecurity;
         _fileStorageService = fileStorageService;
         _user = user;
         _rootFolder = rootFolder;

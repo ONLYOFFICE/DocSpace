@@ -27,131 +27,22 @@
 namespace ASC.Files.Thirdparty.ProviderDao;
 
 [Scope]
-internal class ProviderTagDao : ProviderDaoBase, ITagDao<string>
+internal class ProviderTagDao : ProviderDaoBase, IThirdPartyTagDao
 {
     public ProviderTagDao(
         IServiceProvider serviceProvider,
         TenantManager tenantManager,
-        SecurityDao<string> securityDao,
-        TagDao<string> tagDao,
-        CrossDao crossDao)
-        : base(serviceProvider, tenantManager, securityDao, tagDao, crossDao)
+        CrossDao crossDao,
+        SelectorFactory selectorFactory,
+        ISecurityDao<string> securityDao)
+        : base(serviceProvider, tenantManager, crossDao, selectorFactory, securityDao)
     {
-    }
-
-    public IAsyncEnumerable<Tag> GetTagsAsync(Guid subject, TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
-    {
-        return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
-    }
-
-    public IAsyncEnumerable<Tag> GetTagsAsync(TagType tagType, IEnumerable<FileEntry<string>> fileEntries)
-    {
-        return _tagDao.GetTagsAsync(tagType, fileEntries);
     }
 
     public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
     {
-        return GetSelector(parentFolder.Id)
+        return _selectorFactory.GetSelector(parentFolder.Id)
             .GetTagDao(parentFolder.Id)
             .GetNewTagsAsync(subject, parentFolder, deepSearch);
     }
-
-    #region Only for Teamlab Documents
-
-    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, IEnumerable<FileEntry<string>> fileEntries)
-    {
-        return _tagDao.GetNewTagsAsync(subject, fileEntries);
-    }
-
-    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, FileEntry<string> fileEntry)
-    {
-        return _tagDao.GetNewTagsAsync(subject, fileEntry);
-    }
-
-    public IAsyncEnumerable<Tag> GetTagsAsync(Guid owner, TagType tagType)
-    {
-        return _tagDao.GetTagsAsync(owner, tagType);
-    }
-
-    public IAsyncEnumerable<Tag> GetTagsAsync(string name, TagType tagType)
-    {
-        return _tagDao.GetTagsAsync(name, tagType);
-    }
-
-    public IAsyncEnumerable<Tag> GetTagsAsync(string[] names, TagType tagType)
-    {
-        return _tagDao.GetTagsAsync(names, tagType);
-    }
-
-    public async Task<IEnumerable<Tag>> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default)
-    {
-        return await _tagDao.SaveTags(tag, createdBy);
-    }
-
-    public async Task<IEnumerable<Tag>> SaveTags(Tag tag)
-    {
-        return await _tagDao.SaveTags(tag);
-    }
-
-    public async Task UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default)
-    {
-        await _tagDao.UpdateNewTags(tag, createdBy);
-    }
-
-    public async Task UpdateNewTags(Tag tag)
-    {
-        await _tagDao.UpdateNewTags(tag);
-    }
-
-    public async Task RemoveTagsAsync(FileEntry<string> entry, IEnumerable<int> tagsIds)
-    {
-        await _tagDao.RemoveTagsAsync(entry, tagsIds);
-    }
-
-    public async Task RemoveTags(IEnumerable<Tag> tag)
-    {
-        await _tagDao.RemoveTags(tag);
-    }
-
-    public async Task RemoveTags(Tag tag)
-    {
-        await _tagDao.RemoveTags(tag);
-    }
-
-    public async Task<int> RemoveTagLinksAsync(string entryId, FileEntryType entryType, TagType tagType)
-    {
-        return await _tagDao.RemoveTagLinksAsync(entryId, entryType, tagType);
-    }
-
-    public IAsyncEnumerable<Tag> GetTagsAsync(string entryID, FileEntryType entryType, TagType tagType)
-    {
-        return _tagDao.GetTagsAsync(entryID, entryType, tagType);
-    }
-
-    public Task<IDictionary<object, IEnumerable<Tag>>> GetTagsAsync(Guid subject, IEnumerable<TagType> tagType, IEnumerable<FileEntry<string>> fileEntries)
-    {
-        return _tagDao.GetTagsAsync(subject, tagType, fileEntries);
-    }
-
-    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0)
-    {
-        return _tagDao.GetTagsInfoAsync(searchText, tagType, byName, from, count);
-    }
-
-    public IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names)
-    {
-        return _tagDao.GetTagsInfoAsync(names);
-    }
-
-    public Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
-    {
-        return _tagDao.SaveTagInfoAsync(tagInfo);
-    }
-
-    public Task RemoveTagsAsync(IEnumerable<int> tagsIds)
-    {
-        return _tagDao.RemoveTagsAsync(tagsIds);
-    }
-
-    #endregion
 }

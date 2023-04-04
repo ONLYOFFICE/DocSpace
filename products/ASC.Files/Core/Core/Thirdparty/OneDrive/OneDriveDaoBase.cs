@@ -26,35 +26,51 @@
 
 namespace ASC.Files.Thirdparty.OneDrive;
 
-internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProviderInfo>
+[Scope]
+internal class OneDriveDaoBase : ThirdPartyProviderDao<Item, Item, Item>, IDaoBase<Item, Item, Item>
 {
-    protected override string Id => "onedrive";
+    private OneDriveProviderInfo _providerInfo;
 
-    protected OneDriveDaoBase(
-        IServiceProvider serviceProvider,
+    public OneDriveDaoBase(IServiceProvider serviceProvider, 
         UserManager userManager,
-        TenantManager tenantManager,
-        TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        TenantManager tenantManager, 
+        TenantUtil tenantUtil, 
+        IDbContextFactory<FilesDbContext> dbContextFactory, 
         SetupInfo setupInfo,
-        ILogger monitor,
         FileUtility fileUtility,
-        TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        TempPath tempPath, 
+        AuthContext authContext,
+        RegexDaoSelectorBase<Item, Item, Item> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
     }
 
-    protected static string MakeOneDriveId(string entryId)
+    public void Init(string pathPrefix, IProviderInfo<Item, Item, Item> providerInfo)
     {
-        var id = entryId;
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        _providerInfo = providerInfo as OneDriveProviderInfo;
+    }
+
+    public string GetName(Item item)
+    {
+        return item.Name;
+    }
+
+    public string GetId(Item item)
+    {
+        return item.Id;
+    }
+
+    public string MakeThirdId(object entryId)
+    {
+        var id = Convert.ToString(entryId, CultureInfo.InvariantCulture);
 
         return string.IsNullOrEmpty(id)
                    ? string.Empty
                    : id.TrimStart('/');
     }
 
-    protected static string GetParentFolderId(Item onedriveItem)
+    public string GetParentFolderId(Item onedriveItem)
     {
         return onedriveItem == null || IsRoot(onedriveItem)
                    ? null
@@ -63,7 +79,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
                           : onedriveItem.ParentReference.Id);
     }
 
-    protected string MakeId(Item onedriveItem)
+    public string MakeId(Item onedriveItem)
     {
         var id = string.Empty;
         if (onedriveItem != null)
@@ -74,23 +90,14 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         return MakeId(id);
     }
 
-    protected override string MakeId(string id = null)
+    public override string MakeId(string id = null)
     {
         var i = string.IsNullOrEmpty(id) ? "" : ("-|" + id.TrimStart('/'));
 
         return $"{PathPrefix}{i}";
     }
 
-    public string MakeOneDrivePath(Item onedriveItem)
-    {
-        return onedriveItem == null || IsRoot(onedriveItem)
-                   ? string.Empty
-                   : OneDriveStorage.MakeOneDrivePath(
-                       new Regex("^" + OneDriveStorage.RootPath).Replace(onedriveItem.ParentReference.Path, ""),
-                       onedriveItem.Name);
-    }
-
-    protected string MakeItemTitle(Item onedriveItem)
+    public string MakeFileTitle(Item onedriveItem)
     {
         if (onedriveItem == null || IsRoot(onedriveItem))
         {
@@ -100,7 +107,17 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         return Global.ReplaceInvalidCharsAndTruncate(onedriveItem.Name);
     }
 
-    protected Folder<string> ToFolder(Item onedriveFolder)
+    public string MakeFolderTitle(Item onedriveItem)
+    {
+        if (onedriveItem == null || IsRoot(onedriveItem))
+        {
+            return ProviderInfo.CustomerTitle;
+        }
+
+        return Global.ReplaceInvalidCharsAndTruncate(onedriveItem.Name);
+    }
+
+    public Folder<string> ToFolder(Item onedriveFolder)
     {
         if (onedriveFolder == null)
         {
@@ -130,12 +147,12 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         folder.HasLogo = ProviderInfo.HasLogo;
         SetFolderType(folder, isRoot);
 
-        folder.Title = MakeItemTitle(onedriveFolder);
+        folder.Title = MakeFolderTitle(onedriveFolder);
 
         return folder;
     }
 
-    protected static bool IsRoot(Item onedriveFolder)
+    public bool IsRoot(Item onedriveFolder)
     {
         return onedriveFolder.ParentReference == null || onedriveFolder.ParentReference.Id == null;
     }
@@ -149,7 +166,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
 
         var file = GetErrorFile(new ErrorEntry(onedriveFile.Error, onedriveFile.ErrorId));
 
-        file.Title = MakeItemTitle(onedriveFile);
+        file.Title = MakeFileTitle(onedriveFile);
 
         return file;
     }
@@ -163,7 +180,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
 
         var folder = GetErrorFolder(new ErrorEntry(onedriveFolder.Error, onedriveFolder.ErrorId));
 
-        folder.Title = MakeItemTitle(onedriveFolder);
+        folder.Title = MakeFolderTitle(onedriveFolder);
 
         return folder;
     }
@@ -194,24 +211,24 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         file.ParentId = MakeId(GetParentFolderId(onedriveFile));
         file.ModifiedOn = onedriveFile.LastModifiedDateTime.HasValue ? _tenantUtil.DateTimeFromUtc(onedriveFile.LastModifiedDateTime.Value.DateTime) : default;
         file.NativeAccessor = onedriveFile;
-        file.Title = MakeItemTitle(onedriveFile);
+        file.Title = MakeFileTitle(onedriveFile);
         file.ThumbnailStatus = Thumbnail.Created;
         file.Encrypted = ProviderInfo.Private;
 
         return file;
     }
 
-    public async Task<Folder<string>> GetRootFolderAsync(string folderId)
+    public async Task<Folder<string>> GetRootFolderAsync()
     {
-        return ToFolder(await GetOneDriveItemAsync(""));
+        return ToFolder(await GetFolderAsync(""));
     }
 
-    protected Item GetOneDriveItem(string itemId)
+    public async Task<Item> GetFileAsync(string itemId)
     {
-        var onedriveId = MakeOneDriveId(itemId);
+        var onedriveId = MakeThirdId(itemId);
         try
         {
-            return ProviderInfo.GetOneDriveItemAsync(onedriveId).Result;
+            return await _providerInfo.GetFileAsync(onedriveId);
         }
         catch (Exception ex)
         {
@@ -219,12 +236,12 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         }
     }
 
-    protected async Task<Item> GetOneDriveItemAsync(string itemId)
+    public async Task<Item> GetFolderAsync(string itemId)
     {
-        var onedriveId = MakeOneDriveId(itemId);
+        var onedriveId = MakeThirdId(itemId);
         try
         {
-            return await ProviderInfo.GetOneDriveItemAsync(onedriveId);
+            return await _providerInfo.GetFolderAsync(onedriveId);
         }
         catch (Exception ex)
         {
@@ -232,17 +249,17 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         }
     }
 
-    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
-        var items = await GetOneDriveItemsAsync(folderId);
+        var items = await GetItemsAsync(folderId);
 
         return items.Select(entry => MakeId(entry.Id));
     }
 
-    protected List<Item> GetOneDriveItems(string parentId, bool? folder = null)
+    public async Task<List<Item>> GetItemsAsync(string parentId, bool? folder = null)
     {
-        var onedriveFolderId = MakeOneDriveId(parentId);
-        var items = ProviderInfo.GetOneDriveItemsAsync(onedriveFolderId).Result;
+        var onedriveFolderId = MakeThirdId(parentId);
+        var items = await _providerInfo.GetItemsAsync(onedriveFolderId);
 
         if (folder.HasValue)
         {
@@ -257,25 +274,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         return items;
     }
 
-    protected async Task<List<Item>> GetOneDriveItemsAsync(string parentId, bool? folder = null)
-    {
-        var onedriveFolderId = MakeOneDriveId(parentId);
-        var items = await ProviderInfo.GetOneDriveItemsAsync(onedriveFolderId);
-
-        if (folder.HasValue)
-        {
-            if (folder.Value)
-            {
-                return items.Where(i => i.Folder != null).ToList();
-            }
-
-            return items.Where(i => i.File != null).ToList();
-        }
-
-        return items;
-    }
-
-    protected sealed class ErrorItem : Item
+    public sealed class ErrorItem : Item, IErrorItem
     {
         public string Error { get; set; }
         public string ErrorId { get; private set; }
@@ -290,37 +289,7 @@ internal abstract class OneDriveDaoBase : ThirdPartyProviderDao<OneDriveProvider
         }
     }
 
-    protected string GetAvailableTitle(string requestTitle, string parentFolderId, Func<string, string, bool> isExist)
-    {
-        requestTitle = new Regex("\\.$").Replace(requestTitle, "_");
-        if (!isExist(requestTitle, parentFolderId))
-        {
-            return requestTitle;
-        }
-
-        var re = new Regex(@"( \(((?<index>[0-9])+)\)(\.[^\.]*)?)$");
-        var match = re.Match(requestTitle);
-
-        if (!match.Success)
-        {
-            var insertIndex = requestTitle.Length;
-            if (requestTitle.LastIndexOf('.') != -1)
-            {
-                insertIndex = requestTitle.LastIndexOf('.');
-            }
-
-            requestTitle = requestTitle.Insert(insertIndex, " (1)");
-        }
-
-        while (isExist(requestTitle, parentFolderId))
-        {
-            requestTitle = re.Replace(requestTitle, MatchEvaluator);
-        }
-
-        return requestTitle;
-    }
-
-    protected async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
+    public async Task<string> GetAvailableTitleAsync(string requestTitle, string parentFolderId, Func<string, string, Task<bool>> isExist)
     {
         requestTitle = new Regex("\\.$").Replace(requestTitle, "_");
         if (!await isExist(requestTitle, parentFolderId))

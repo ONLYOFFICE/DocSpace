@@ -46,7 +46,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly NCUser _user;
@@ -57,7 +57,7 @@ public class NCMigratingUser : MigratingUser<NCMigratingContacts, NCMigratingCal
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         TenantManager tenantManager,
         UserManager userManager,
         string key,

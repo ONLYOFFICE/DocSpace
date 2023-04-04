@@ -24,37 +24,42 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using File = Microsoft.SharePoint.Client.File;
+using Folder = Microsoft.SharePoint.Client.Folder;
+
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Scope(Additional = typeof(SharePointDaoSelectorExtension))]
-internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderInfo>, IDaoSelector
+internal class SharePointDaoSelector : RegexDaoSelectorBase<File, Folder, ClientObject>
 {
-    protected internal override string Name => "sharepoint";
-    protected internal override string Id => "spoint";
 
     public SharePointDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
         : base(serviceProvider, daoFactory)
     {
     }
 
-    public IFileDao<string> GetFileDao(string id)
+    public override IFileDao<string> GetFileDao(string id)
     {
-        return base.GetFileDao<SharePointFileDao>(id);
+        var fileDao = _serviceProvider.GetService<SharePointFileDao>();
+        var info = GetInfo(id);
+        fileDao.Init(info.PathPrefix, info.ProviderInfo);
+        return fileDao;
     }
 
-    public IFolderDao<string> GetFolderDao(string id)
+    public override IFolderDao<string> GetFolderDao(string id)
     {
-        return base.GetFolderDao<SharePointFolderDao>(id);
+        var folderDao = _serviceProvider.GetService<SharePointFolderDao>();
+        var info = GetInfo(id);
+        folderDao.Init(info.PathPrefix, info.ProviderInfo);
+        return folderDao;
     }
 
-    public ITagDao<string> GetTagDao(string id)
+    public override IThirdPartyTagDao GetTagDao(string id)
     {
-        return base.GetTagDao<SharePointTagDao>(id);
-    }
-
-    public ISecurityDao<string> GetSecurityDao(string id)
-    {
-        return base.GetSecurityDao<SharePointSecurityDao>(id);
+        var tagDao = _serviceProvider.GetService<SharePointTagDao>();
+        var info = GetInfo(id);
+        tagDao.Init(info.PathPrefix, info.ProviderInfo);
+        return tagDao;
     }
 
     public override string ConvertId(string id)
@@ -64,7 +69,8 @@ internal class SharePointDaoSelector : RegexDaoSelectorBase<SharePointProviderIn
             var match = Selector.Match(id);
             if (match.Success)
             {
-                return GetInfo(id).ProviderInfo.SpRootFolderId + match.Groups["path"].Value.Replace('|', '/');
+                //return GetInfo(id).ProviderInfo.SpRootFolderId + match.Groups["path"].Value.Replace('|', '/');
+                return "" + match.Groups["path"].Value.Replace('|', '/');
             }
 
             throw new ArgumentException("Id is not a sharepoint id");
@@ -80,7 +86,8 @@ public static class SharePointDaoSelectorExtension
     {
         services.TryAdd<SharePointFileDao>();
         services.TryAdd<SharePointFolderDao>();
+        services.TryAdd<IProviderInfo<File, Folder, ClientObject>, SharePointProviderInfo>();
         services.TryAdd<SharePointTagDao>();
-        services.TryAdd<SharePointSecurityDao>();
+        services.TryAdd<IDaoSelector<File, Folder, ClientObject>, SharePointDaoSelector>();
     }
 }

@@ -28,7 +28,7 @@ namespace ASC.Files.Core;
 
 public interface IProviderInfo : IDisposable
 {
-    int ID { get; set; }
+    int ProviderId { get; set; }
     string ProviderKey { get; }
     Guid Owner { get; }
     FolderType RootFolderType { get; }
@@ -39,10 +39,21 @@ public interface IProviderInfo : IDisposable
     string FolderId { get; set; }
     bool Private { get; }
     bool HasLogo { get; }
-
     Task<bool> CheckAccessAsync();
     Task InvalidateStorageAsync();
+    Task CacheResetAsync(string id = null, bool? isFile = null);
     void UpdateTitle(string newtitle);
+    Selector Selector { get; }
+    ProviderFilter ProviderFilter { get; }
+}
+
+[Transient]
+public interface IProviderInfo<TFile, TFolder, TItem> : IProviderInfo
+    where TFile : class, TItem
+    where TFolder : class, TItem
+    where TItem : class
+{
+    Task<IThirdPartyStorage<TFile, TFolder, TItem>> StorageAsync { get; }
 }
 
 public class ProviderInfoArgumentException : ArgumentException

@@ -28,7 +28,7 @@ using ASC.Web.Files.Classes;
 
 namespace ASC.Files.Core.Thirdparty;
 
-[Scope(Additional = typeof(CrossDaoExtension))]
+[Scope]
 internal class CrossDao //Additional SharpBox
 {
     private readonly IServiceProvider _serviceProvider;
@@ -243,18 +243,5 @@ internal class CrossDao //Additional SharpBox
         }
 
         return await toFolderDao.GetFolderAsync(toConverter(toFolderId));
-    }
-}
-
-public static class CrossDaoExtension
-{
-    public static void Register(DIHelper services)
-    {
-        services.TryAdd<SharpBoxDaoSelector>();
-        services.TryAdd<SharePointDaoSelector>();
-        services.TryAdd<OneDriveDaoSelector>();
-        services.TryAdd<GoogleDriveDaoSelector>();
-        services.TryAdd<DropboxDaoSelector>();
-        services.TryAdd<BoxDaoSelector>();
     }
 }

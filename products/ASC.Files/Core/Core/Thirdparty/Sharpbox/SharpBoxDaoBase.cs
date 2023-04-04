@@ -26,10 +26,9 @@
 
 namespace ASC.Files.Thirdparty.Sharpbox;
 
-internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProviderInfo>
+internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>
 {
-    protected override string Id => "sbox";
-
+    internal SharpBoxProviderInfo SharpBoxProviderInfo { get; private set; }
     protected SharpBoxDaoBase(
         IServiceProvider serviceProvider,
         UserManager userManager,
@@ -37,12 +36,21 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         TenantUtil tenantUtil,
         IDbContextFactory<FilesDbContext> dbContextManager,
         SetupInfo setupInfo,
-        ILogger monitor,
+        ILogger<SharpBoxDaoBase> monitor,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext,
+        RegexDaoSelectorBase<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> regexDaoSelectorBase)
+        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+        _logger = monitor;
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        SharpBoxProviderInfo = providerInfo as SharpBoxProviderInfo;
     }
 
     protected class ErrorEntry : ICloudDirectoryEntry
@@ -131,11 +139,6 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         public int Count => 0;
 
         public nChildState HasChildrens => nChildState.HasNoChilds;
-    }
-
-    protected Task<string> MappingIDAsync(string id)
-    {
-        return MappingIDAsync(id, false);
     }
 
     protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
@@ -258,7 +261,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         return $"/{id}";
     }
 
-    protected override string MakeId(string path = null)
+    public override string MakeId(string path = null)
     {
         return path;
     }
@@ -270,7 +273,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         {
             try
             {
-                path = ProviderInfo.Storage.GetFileSystemObjectPath(entry);
+                path = SharpBoxProviderInfo.Storage.GetFileSystemObjectPath(entry);
             }
             catch (Exception ex)
             {
@@ -433,10 +436,12 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
     private ICloudDirectoryEntry _rootFolder;
     protected ICloudDirectoryEntry RootFolder()
     {
-        return _rootFolder ??= ProviderInfo.Storage.GetRoot();
+        return _rootFolder ??= SharpBoxProviderInfo.Storage.GetRoot();
     }
 
     private string _rootFolderId;
+    private readonly ILogger<SharpBoxDaoBase> _logger;
+
     protected string RootFolderMakeId()
     {
         return _rootFolderId ??= MakeId(RootFolder());
@@ -450,7 +455,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
             return path == "/"
                        ? RootFolder()
-                       : ProviderInfo.Storage.GetFolder(path);
+                       : SharpBoxProviderInfo.Storage.GetFolder(path);
         }
         catch (SharpBoxException sharpBoxException)
         {
@@ -471,7 +476,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
     {
         try
         {
-            return ProviderInfo.Storage.GetFile(MakePath(fileId), null);
+            return SharpBoxProviderInfo.Storage.GetFile(MakePath(fileId), null);
         }
         catch (SharpBoxException sharpBoxException)
         {
@@ -490,12 +495,12 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(object folderId)
     {
-        return GetFolderFiles(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
+        return GetFolderFiles(SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId)));
     }
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderSubfolders(object folderId)
     {
-        return GetFolderSubfolders(ProviderInfo.Storage.GetFolder(MakePath(folderId)));
+        return GetFolderSubfolders(SharpBoxProviderInfo.Storage.GetFolder(MakePath(folderId)));
     }
 
     protected IEnumerable<ICloudFileSystemEntry> GetFolderFiles(ICloudDirectoryEntry folder)
@@ -566,7 +571,7 @@ internal abstract class SharpBoxDaoBase : ThirdPartyProviderDao<SharpBoxProvider
         return requestTitle;
     }
 
-    protected override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
         var subFolders = GetFolderSubfolders(folderId).Select(x => MakeId(x));
         var files = GetFolderFiles(folderId).Select(x => MakeId(x));

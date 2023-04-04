@@ -27,7 +27,7 @@
 namespace ASC.Files.Thirdparty.Sharpbox;
 
 [Transient]
-internal class SharpBoxProviderInfo : IProviderInfo
+internal class SharpBoxProviderInfo : IProviderInfo<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>
 {
     private nSupportedCloudConfigurations _providerKey;
     private readonly ILogger<SharpBoxProviderInfo> _logger;
@@ -45,7 +45,7 @@ internal class SharpBoxProviderInfo : IProviderInfo
     public DateTime CreateOn { get; set; }
     public FolderType FolderType { get; set; }
     public Guid Owner { get; set; }
-    public int ID { get; set; }
+    public int ProviderId { get; set; }
     public string CustomerTitle { get; set; }
     public string FolderId { get; set; }
 
@@ -55,24 +55,30 @@ internal class SharpBoxProviderInfo : IProviderInfo
         set => _providerKey = (nSupportedCloudConfigurations)Enum.Parse(typeof(nSupportedCloudConfigurations), value, true);
     }
 
-    public string RootFolderId => "sbox-" + ID;
+    public string RootFolderId => $"{Selector.Id}-{ProviderId}";
     public FolderType RootFolderType { get; set; }
+
+    public Selector Selector { get; } = Selectors.SharpBox;
+    public ProviderFilter ProviderFilter { get; } = ProviderFilter.None;
 
     internal CloudStorage Storage
     {
         get
         {
-            
-            if (!_wrapper.TryGetStorage(ID, out var storage) || !storage.IsOpened)
+
+            if (!_wrapper.TryGetStorage(ProviderId, out var storage) || !storage.IsOpened)
             {
-                return _wrapper.CreateStorage(AuthData, _providerKey, ID);
+                return _wrapper.CreateStorage(AuthData, _providerKey, ProviderId);
             }
 
             return storage;
         }
     }
 
-    internal bool StorageOpened => _wrapper.TryGetStorage(ID, out var storage) && storage.IsOpened;
+    internal bool StorageOpened => _wrapper.TryGetStorage(ProviderId, out var storage) && storage.IsOpened;
+
+    public Task<IThirdPartyStorage<ICloudFileSystemEntry, ICloudDirectoryEntry, ICloudFileSystemEntry>> StorageAsync =>
+        throw new NotImplementedException();
 
     public Task<bool> CheckAccessAsync()
     {
@@ -114,9 +120,14 @@ internal class SharpBoxProviderInfo : IProviderInfo
     {
         CustomerTitle = newtitle;
     }
+
+    public Task CacheResetAsync(string id = null, bool? isFile = null)
+    {
+        throw new NotImplementedException();
+    }
 }
 
-[Scope]
+[Transient]
 internal class SharpBoxStorageDisposableWrapper : IDisposable
 {
     private readonly ConcurrentDictionary<int, CloudStorage> _storages =

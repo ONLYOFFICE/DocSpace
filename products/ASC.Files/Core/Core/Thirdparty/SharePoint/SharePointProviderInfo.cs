@@ -30,7 +30,7 @@ using Folder = Microsoft.SharePoint.Client.Folder;
 namespace ASC.Files.Thirdparty.SharePoint;
 
 [Transient]
-public class SharePointProviderInfo : IProviderInfo
+public class SharePointProviderInfo : IProviderInfo<File, Folder, ClientObject>
 {
     private ClientContext _clientContext;
 
@@ -41,11 +41,14 @@ public class SharePointProviderInfo : IProviderInfo
     public FolderType FolderType { get; set; }
     public DateTime CreateOn { get; set; }
     public string CustomerTitle { get; set; }
-    public string RootFolderId => "spoint-" + ID;
+    public string RootFolderId => $"{Selector.Id}-{ID}";
     public string SpRootFolderId { get; set; } = "/Shared Documents";
     public string FolderId { get; set; }
     public bool Private { get; set; }
     public bool HasLogo { get; set; }
+
+    public Selector Selector { get; } = Selectors.SharePoint;
+    public ProviderFilter ProviderFilter { get; } = ProviderFilter.SharePoint;
 
     public SharePointProviderInfo(
         ILogger<SharePointProviderInfo> logger,
@@ -126,7 +129,7 @@ public class SharePointProviderInfo : IProviderInfo
 
     public async Task<File> GetFileByIdAsync(object id)
     {
-        var key = "spointf-" + MakeId(id);
+        var key = $"{Selectors.SharePoint.Id}f-" + MakeId(id);
         var file = _sharePointProviderInfoHelper.GetFile(key);
         if (file == null)
         {
@@ -205,7 +208,7 @@ public class SharePointProviderInfo : IProviderInfo
         _clientContext.Load(file.ListItemAllFields);
         _clientContext.ExecuteQuery();
 
-        _sharePointProviderInfoHelper.AddFile("spointf-" + MakeId(id), file);
+        _sharePointProviderInfoHelper.AddFile($"{Selectors.SharePoint.Id}f-" + MakeId(id), file);
         await _sharePointProviderInfoHelper.PublishFolderAsync(MakeId(GetParentFolderId(id)));
 
         return file;
@@ -350,7 +353,7 @@ public class SharePointProviderInfo : IProviderInfo
     {
         get
         {
-            var key = "spointd-" + MakeId();
+            var key = $"{Selectors.SharePoint.Id}d-" + MakeId();
             var folder = _sharePointProviderInfoHelper.GetFolder(key);
             if (folder == null)
             {
@@ -362,6 +365,10 @@ public class SharePointProviderInfo : IProviderInfo
         }
     }
 
+    public int ProviderId { get; set; }
+
+    public Task<IThirdPartyStorage<File, Folder, ClientObject>> StorageAsync => throw new NotImplementedException();
+
     private readonly ILogger<SharePointProviderInfo> _logger;
     private readonly IServiceProvider _serviceProvider;
     private readonly TenantUtil _tenantUtil;
@@ -369,7 +376,7 @@ public class SharePointProviderInfo : IProviderInfo
     private readonly TempStream _tempStream;
     public async Task<Folder> GetFolderByIdAsync(object id)
     {
-        var key = "spointd-" + MakeId(id);
+        var key = $"{Selectors.SharePoint.Id}d-" + MakeId(id);
         var folder = _sharePointProviderInfoHelper.GetFolder(key);
         if (folder == null)
         {
@@ -665,6 +672,11 @@ public class SharePointProviderInfo : IProviderInfo
             folder.FolderType = FolderType;
         }
     }
+
+    public Task CacheResetAsync(string id = null, bool? isFile = null)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 [Singletone]
@@ -686,16 +698,16 @@ public class SharePointProviderInfoHelper
         {
             if (!string.IsNullOrEmpty(i.FileKey))
             {
-                _fileCache.Remove("spointf-" + i.FileKey);
+                _fileCache.Remove($"{Selectors.SharePoint.Id}f-" + i.FileKey);
             }
             if (!string.IsNullOrEmpty(i.FolderKey))
             {
-                _folderCache.Remove("spointd-" + i.FolderKey);
+                _folderCache.Remove($"{Selectors.SharePoint.Id}d-" + i.FolderKey);
             }
             if (string.IsNullOrEmpty(i.FileKey) && string.IsNullOrEmpty(i.FolderKey))
             {
-                _fileCache.Remove(new Regex("^spointf-.*"));
-                _folderCache.Remove(new Regex("^spointd-.*"));
+                _fileCache.Remove(new Regex($"^{Selectors.SharePoint.Id}f-.*"));
+                _folderCache.Remove(new Regex($"^{Selectors.SharePoint.Id}d-.*"));
             }
         }, CacheNotifyAction.Remove);
     }
@@ -730,7 +742,7 @@ public class SharePointProviderInfoHelper
     public async Task CreateFolderAsync(string id, string parentFolderId, Folder folder)
     {
         await PublishFolderAsync(parentFolderId);
-        _folderCache.Insert("spointd-" + id, folder, DateTime.UtcNow.Add(_cacheExpiration));
+        _folderCache.Insert($"{Selectors.SharePoint.Id}d-" + id, folder, DateTime.UtcNow.Add(_cacheExpiration));
     }
 
     public Folder GetFolder(string key)

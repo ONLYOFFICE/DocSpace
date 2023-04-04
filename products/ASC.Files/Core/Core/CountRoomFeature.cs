@@ -63,7 +63,7 @@ public class CountRoomCheckerStatistic : ITenantQuotaFeatureStat<CountRoomFeatur
         var folderDao = _serviceProvider.GetService<IFolderDao<int>>();
         var globalFolderHelper = _serviceProvider.GetService<GlobalFolderHelper>();
 
-        var parentId = await globalFolderHelper.GetFolderVirtualRooms<int>();
+        var parentId = await globalFolderHelper.GetFolderVirtualRooms();
         return await folderDao.GetFoldersAsync(parentId).CountAsync();
     }
 }

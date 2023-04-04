@@ -31,19 +31,17 @@ internal interface IDaoSelector : IDisposable
     bool IsMatch(string id);
     IFileDao<string> GetFileDao(string id);
     IFolderDao<string> GetFolderDao(string id);
-    ISecurityDao<string> GetSecurityDao(string id);
-    ITagDao<string> GetTagDao(string id);
+    IThirdPartyTagDao GetTagDao(string id);
     string ConvertId(string id);
     string GetIdCode(string id);
 }
 
-internal interface IDaoSelector<T> where T : class, IProviderInfo
+[Scope]
+internal interface IDaoSelector<TFile, TFolder, TItem> : IDaoSelector
+    where TFile : class, TItem
+    where TFolder : class, TItem
+    where TItem : class
 {
-    bool IsMatch(string id);
-    IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>;
-    IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>;
-    ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ISecurityDao<string>;
-    ITagDao<string> GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ITagDao<string>;
-    string ConvertId(string id);
-    string GetIdCode(string id);
+    Task RenameProviderAsync(IProviderInfo<TFile, TFolder, TItem> provider, string newTitle);
 }
+
