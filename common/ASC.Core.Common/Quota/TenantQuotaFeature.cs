@@ -67,7 +67,7 @@ public class TenantQuotaFeature<T> : TenantQuotaFeature
         }
     }
 
-    protected virtual T Default { get; }
+    public virtual T Default { get; }
 
     public TenantQuotaFeature(TenantQuota tenantQuota)
     {
@@ -83,7 +83,7 @@ public class TenantQuotaFeature<T> : TenantQuotaFeature
 
 public class TenantQuotaFeatureCount : TenantQuotaFeature<int>
 {
-    protected override int Default => int.MaxValue;
+    public override int Default => int.MaxValue;
 
     public TenantQuotaFeatureCount(TenantQuota tenantQuota) : base(tenantQuota)
     {
@@ -105,7 +105,7 @@ public class TenantQuotaFeatureCount : TenantQuotaFeature<int>
 
 public class TenantQuotaFeatureSize : TenantQuotaFeature<long>
 {
-    protected override long Default => long.MaxValue;
+    public override long Default => long.MaxValue;
 
     public TenantQuotaFeatureSize(TenantQuota tenantQuota) : base(tenantQuota)
     {
