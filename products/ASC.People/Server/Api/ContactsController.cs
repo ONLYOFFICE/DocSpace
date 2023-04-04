@@ -43,6 +43,18 @@ public class ContactsController : PeopleControllerBase
         _employeeFullDtoHelper = employeeFullDtoHelper;
     }
 
+    /// <summary>
+    /// Deletes the contacts of the user with the ID specified in the request from the portal.
+    /// </summary>
+    /// <short>
+    /// Delete user contacts
+    /// </short>
+    /// <category>Contacts</category>
+    /// <param type="System.String, System" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts: <![CDATA[Contacts (IEnumerable&lt;Contact&gt;) - list of user contacts]]></param>
+    /// <returns>Deleted user profile with the detailed information</returns>
+    /// <path>api/2.0/people/{userid}/contacts</path>
+    /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("{userid}/contacts")]
     public async Task<EmployeeFullDto> DeleteMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
@@ -59,6 +71,18 @@ public class ContactsController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFull(user);
     }
 
+    /// <summary>
+    /// Sets the contacts of the user with the ID specified in the request replacing the current portal data with the new data.
+    /// </summary>
+    /// <short>
+    /// Set user contacts
+    /// </short>
+    /// <category>Contacts</category>
+    /// <param type="System.String, System" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts: <![CDATA[Contacts (IEnumerable&lt;Contact&gt;) - list of user contacts]]></param>
+    /// <returns>Updated user profile with the detailed information</returns>
+    /// <path>api/2.0/people/{userid}/contacts</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("{userid}/contacts")]
     public async Task<EmployeeFullDto> SetMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {
@@ -76,6 +100,18 @@ public class ContactsController : PeopleControllerBase
         return await _employeeFullDtoHelper.GetFull(user);
     }
 
+    /// <summary>
+    /// Updates the contact information of the user with the ID specified in the request merging the new data into the current portal data.
+    /// </summary>
+    /// <short>
+    /// Update user contacts
+    /// </short>
+    /// <category>Contacts</category>
+    /// <param type="System.String, System" name="userid">User ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts: <![CDATA[Contacts (IEnumerable&lt;Contact&gt;) - list of user contacts]]></param>
+    /// <returns>Updated user profile with the detailed information</returns>
+    /// <path>api/2.0/people/{userid}/contacts</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/contacts")]
     public async Task<EmployeeFullDto> UpdateMemberContacts(string userid, UpdateMemberRequestDto inDto)
     {

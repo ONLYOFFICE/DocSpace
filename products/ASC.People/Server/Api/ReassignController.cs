@@ -53,6 +53,15 @@ public class ReassignController : ApiControllerBase
         _securityContext = securityContext;
     }
 
+    /// <summary>
+    /// Returns the progress of the started data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Get the reassignment progress</short>
+    /// <param type="System.Guid, System" name="userId">User ID whose data is reassigned</param>
+    /// <category>User data</category>
+    /// <returns>Reassignment progress: reassignment item progress ID, status, exception, percentage, completed or not, the user whose data is reassigned, the user to whom this data is reassigned</returns>
+    /// <path>api/2.0/people/reassign/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("reassign/progress")]
     public ReassignProgressItem GetReassignProgress(Guid userId)
     {
@@ -61,6 +70,21 @@ public class ReassignController : ApiControllerBase
         return _queueWorkerReassign.GetProgressItemStatus(Tenant.Id, userId);
     }
 
+    /// <summary>
+    /// Starts the data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Start the data reassignment</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.StartReassignRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for starting the reassignment process: <![CDATA[
+    /// <ul>
+    ///     <li><b>FromUserId</b> (Guid) - user ID whose data will be reassigned to another user,</li>
+    ///     <li><b>ToUserId</b> (Guid) - user ID to whom all the data will be reassigned,</li>
+    ///     <li><b>DeleteProfile</b> (bool) - specifies whether to delete a profile when the data reassignment will be finished or not.</li>
+    /// </ul>
+    /// ]]></param>
+    /// <category>User data</category>
+    /// <returns>Reassignment progress: reassignment item progress ID, status, exception, percentage, completed or not, the user whose data is reassigned, the user to whom this data is reassigned</returns>
+    /// <path>api/2.0/people/reassign/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("reassign/start")]
     public ReassignProgressItem StartReassign(StartReassignRequestDto inDto)
     {
@@ -93,6 +117,15 @@ public class ReassignController : ApiControllerBase
         return _queueWorkerReassign.Start(Tenant.Id, inDto.FromUserId, inDto.ToUserId, _securityContext.CurrentAccount.ID, inDto.DeleteProfile);
     }
 
+    /// <summary>
+    /// Terminates the data reassignment for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Terminate the data reassignment</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for terminating the reassignment process: UserId (Guid) - user ID whose data is reassigned</param>
+    /// <category>User data</category>
+    /// <path>api/2.0/people/reassign/terminate</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("reassign/terminate")]
     public void TerminateReassign(TerminateRequestDto inDto)
     {

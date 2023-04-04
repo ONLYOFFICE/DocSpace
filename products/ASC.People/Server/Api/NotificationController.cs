@@ -51,6 +51,17 @@ public class NotificationController : ApiControllerBase
         _studioNotifyService = studioNotifyService;
     }
 
+    /// <summary>
+    /// Sends a notification to the user with the ID specified in the request to change their phone number.
+    /// </summary>
+    /// <short>
+    /// Send a notification to change a phone
+    /// </short>
+    /// <category>Profiles</category>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts: UserId (string) - user ID</param>
+    /// <returns>Notification</returns>
+    /// <path>api/2.0/people/phone</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("phone")]
     public object SendNotificationToChange(UpdateMemberRequestDto inDto)
     {

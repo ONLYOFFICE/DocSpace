@@ -59,6 +59,15 @@ public class RemoveUserDataController : ApiControllerBase
         _apiContext = apiContext;
     }
 
+    /// <summary>
+    /// Returns the progress of the started data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Get the deletion progress</short>
+    /// <param type="System.Guid, System" name="userId">User ID</param>
+    /// <category>User data</category>
+    /// <returns>Deletion progress: deletion item progress ID, status, exception, percentage, completed or not, the user whose data is deleted</returns>
+    /// <path>api/2.0/people/remove/progress</path>
+    /// <httpMethod>GET</httpMethod>
     [HttpGet("remove/progress")]
     public RemoveProgressItem GetRemoveProgress(Guid userId)
     {
@@ -67,6 +76,16 @@ public class RemoveUserDataController : ApiControllerBase
         return _queueWorkerRemove.GetProgressItemStatus(Tenant.Id, userId);
     }
 
+    /// <summary>
+    /// Sends instructions for deleting a user profile.
+    /// </summary>
+    /// <short>
+    /// Send the deletion instructions
+    /// </short>
+    /// <category>Profiles</category>
+    /// <returns>Information message</returns>
+    /// <path>api/2.0/people/self/delete</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("self/delete")]
     public object SendInstructionsToDelete()
     {
@@ -83,6 +102,15 @@ public class RemoveUserDataController : ApiControllerBase
         return string.Format(Resource.SuccessfullySentNotificationDeleteUserInfoMessage, "<b>" + user.Email + "</b>");
     }
 
+    /// <summary>
+    /// Starts the data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Start the data deletion</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for starting the deletion process: UserId (Guid) - user ID whose data is deleted</param>
+    /// <category>User data</category>
+    /// <returns>Deletion progress: deletion item progress ID, status, exception, percentage, completed or not, the user whose data is deleted</returns>
+    /// <path>api/2.0/people/remove/start</path>
+    /// <httpMethod>POST</httpMethod>
     [HttpPost("remove/start")]
     public RemoveProgressItem StartRemove(TerminateRequestDto inDto)
     {
@@ -103,6 +131,15 @@ public class RemoveUserDataController : ApiControllerBase
         return _queueWorkerRemove.Start(Tenant.Id, user, _securityContext.CurrentAccount.ID, true);
     }
 
+    /// <summary>
+    /// Terminates the data deletion for the user with the ID specified in the request.
+    /// </summary>
+    /// <short>Terminate the data deletion</short>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for terminating the deletion process: UserId (Guid) - user ID whose data is deleted</param>
+    /// <category>User data</category>
+    /// <path>api/2.0/people/remove/terminate</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns></returns>
     [HttpPut("remove/terminate")]
     public void TerminateRemove(TerminateRequestDto inDto)
     {
