@@ -127,7 +127,7 @@ const StyledCopyIcon = styled(CopyIcon)`
   top: 8px;
   width: 16px;
   height: 16px;
-  z-index: 2;
+  z-index: 1;
   filter: ${(props) => props.theme.textArea.copyIconFilter};
 
   :hover {
@@ -152,7 +152,6 @@ const Numeration = styled.pre`
   font-size: ${(props) => props.fontSize + "px"};
   font-family: ${(props) => props.theme.fontFamily};
   line-height: 1.5;
-  z-index: 2;
   margin: 0;
   top: 6px;
   left: 18px;
