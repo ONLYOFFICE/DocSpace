@@ -5,11 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import AlertComponent from "../../AlertComponent";
 
-const ArticleTeamTrainingAlert = ({
-  theme,
-  trainingEmail,
-  organizationName,
-}) => {
+const ArticleTeamTrainingAlert = ({ theme, trainingEmail }) => {
   const { t, ready } = useTranslation("Common");
   const [isClose, setIsClose] = useState(
     localStorage.getItem("teamTrainingAlertClose")
@@ -31,7 +27,7 @@ const ArticleTeamTrainingAlert = ({
       titleColor={theme.catalog.teamTrainingAlert.titleColor}
       linkColor={theme.catalog.teamTrainingAlert.linkColor}
       borderColor={theme.catalog.teamTrainingAlert.borderColor}
-      title={t("Common:UseLikePro", { organizationName })}
+      title={t("Common:UseLikePro")}
       description={t("Common:BookTeamTraining")}
       link={`mailto:${trainingEmail}`}
       linkTitle={t("Common:BookNow")}
@@ -45,12 +41,11 @@ export default withRouter(
   inject(({ auth }) => {
     const { settingsStore } = auth;
 
-    const { theme, additionalResourcesData, organizationName } = settingsStore;
+    const { theme, additionalResourcesData } = settingsStore;
 
     return {
       theme,
       trainingEmail: additionalResourcesData?.trainingEmail,
-      organizationName,
     };
   })(observer(ArticleTeamTrainingAlert))
 );
