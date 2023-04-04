@@ -141,6 +141,8 @@ class SettingsStore {
   standalone = false;
 
   mainBarVisible = false;
+  zendeskKey = null;
+  bookTrainingEmail = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -389,9 +391,6 @@ class SettingsStore {
 
   setAdditionalResourcesData = (data) => {
     this.additionalResourcesData = data;
-    if (!this.additionalResourcesData?.trainingEmail) {
-      this.additionalResourcesData.trainingEmail = "training@onlyoffice.com";
-    }
   };
 
   setAdditionalResourcesIsDefault = (additionalResourcesIsDefault) => {
