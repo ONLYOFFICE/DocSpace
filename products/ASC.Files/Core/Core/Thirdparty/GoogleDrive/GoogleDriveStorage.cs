@@ -582,22 +582,22 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         return InsertEntryAsync(fileStream, title, parentId);
     }
 
-    public Task<DriveFile> MoveFolderAsync(string folderId, string newFolderName, string toFolderId)
+    public async Task<DriveFile> MoveFolderAsync(string folderId, string newFolderName, string toFolderId)
     {
-        var body = FileConstructor(newFolderName, toFolderId);
-        var request = _driveService.Files.Update(body, folderId);
-        request.Fields = GoogleLoginProvider.FilesFields;
+        var folder = await GetFileAsync(folderId);
+        var newFolder = await CopyEntryAsync(toFolderId, folderId, newFolderName);
 
-        return request.ExecuteAsync();
+        await DeleteItemAsync(folder);
+        return newFolder;
     }
 
-    public Task<DriveFile> MoveFileAsync(string fileId, string newFileName, string toFolderId)
+    public async Task<DriveFile> MoveFileAsync(string fileId, string newFileName, string toFolderId)
     {
-        var body = FileConstructor(newFileName, toFolderId);
-        var request = _driveService.Files.Update(body, fileId);
-        request.Fields = GoogleLoginProvider.FilesFields;
-
-        return request.ExecuteAsync();
+        var file = await GetFileAsync(fileId);
+        var newFile = await CopyEntryAsync(toFolderId, fileId, newFileName);
+        
+        await DeleteItemAsync(file);
+        return newFile;
     }
 
     public Task<DriveFile> CopyFolderAsync(string folderId, string newFolderName, string toFolderId)

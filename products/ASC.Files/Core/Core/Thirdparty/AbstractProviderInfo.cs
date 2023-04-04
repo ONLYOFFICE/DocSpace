@@ -224,7 +224,7 @@ public class ProviderInfoHelper
 
     internal async Task<List<TItem>> GetItemsAsync<TItem>(IThirdPartyItemStorage<TItem> storage, int id, string folderId, string selector, bool? folder = null) where TItem : class
     {
-        var items = _cacheChildItems.Get<List<TItem>>($"{selector}-" + id + "-" + folderId);
+        var items = _cacheChildItems.Get<List<TItem>>($"{selector}-{folder}" + id + "-" + folderId);
 
         if (items == null)
         {

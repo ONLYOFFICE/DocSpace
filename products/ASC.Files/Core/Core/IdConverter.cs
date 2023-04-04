@@ -47,7 +47,7 @@ public static class IdConverter
     public static T Convert<T>(string s)
     {
         var type = typeof(T);
-        if (type == typeof(int))
+        if (type == typeof(string))
         {
             return (T)(object)s;
         }
