@@ -4,7 +4,6 @@ const StyledAlertComponent = styled.div`
   position: relative;
   border: ${(props) => `1px solid ${props.borderColor}`};
   border-radius: 6px;
-  margin: 32px 0px;
   padding: 12px;
   ${(props) => !!props.onClick && "cursor:pointer"};
   display: grid;

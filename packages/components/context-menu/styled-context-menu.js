@@ -36,6 +36,17 @@ export const SubMenuItem = styled.li`
   & label {
     position: static;
   }
+
+  & > a {
+    flex-grow: 1;
+  }
+
+  &:hover {
+    background-color: ${(props) =>
+      props.noHover
+        ? props.theme.dropDownItem.backgroundColor
+        : props.theme.dropDownItem.hoverBackgroundColor};
+  }
 `;
 
 const StyledContextMenu = styled.div`
