@@ -5,7 +5,7 @@ import styled from "styled-components";
 import TableContainer from "@docspace/components/table-container/TableContainer";
 import TableBody from "@docspace/components/table-container/TableBody";
 
-import { WebhooksTableRow } from "../WebhooksTableRow";
+import { WebhooksTableRow } from "./WebhooksTableRow";
 
 import { Consumer } from "@docspace/components/utils/context";
 

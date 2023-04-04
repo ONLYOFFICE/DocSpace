@@ -5,7 +5,7 @@ import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
 
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 
-import { Hint } from "../../styled-components";
+import { Hint } from "../styled-components";
 
 const Header = styled.h1`
   font-family: "Open Sans";

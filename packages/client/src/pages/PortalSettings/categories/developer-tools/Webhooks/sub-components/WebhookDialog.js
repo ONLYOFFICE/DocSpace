@@ -1,11 +1,11 @@
-﻿import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
-import { LabledInput } from "../LabledInput";
+import { LabledInput } from "./LabledInput";
 import styled from "styled-components";
-import { Hint } from "../../styled-components";
-import { SSLVerification } from "../SSLVerification";
-import { SecretKeyInput } from "../SecretKeyInput";
+import { Hint } from "../styled-components";
+import { SSLVerification } from "./SSLVerification";
+import { SecretKeyInput } from "./SecretKeyInput";
 import Link from "@docspace/components/link";
 
 import { inject, observer } from "mobx-react";

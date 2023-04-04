@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { Link, InfoText, InfoWrapper } from '../../styled-components';
+import { Link, InfoText, InfoWrapper } from "../styled-components";
 
 export const WebhookInfo = () => {
   return (

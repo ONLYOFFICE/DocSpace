@@ -4,7 +4,7 @@ import styled from "styled-components";
 import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
 import Link from "@docspace/components/link";
 
-import { Hint } from "../../styled-components";
+import { Hint } from "../styled-components";
 
 import { PasswordInput } from "@docspace/components";
 
