@@ -155,7 +155,7 @@ public sealed class UserManagerWrapper
         else if(type == EmployeeType.RoomAdmin)
         {
             var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
-            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+            _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
 
         return newUser;
@@ -272,22 +272,22 @@ public sealed class UserManagerWrapper
         {
             if (currentType is EmployeeType.RoomAdmin)
             {
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID, notifyWebSocket: false);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.Collaborator)
             {
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
                 await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.User)
             {
                 await _countPaidUserChecker.CheckAppend();
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
                 await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
@@ -317,8 +317,8 @@ public sealed class UserManagerWrapper
         else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
         {
             await _countPaidUserChecker.CheckAppend();
-            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
             await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
             changed = true;
         }

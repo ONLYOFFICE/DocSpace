@@ -519,7 +519,7 @@ public class FileStorageService<T> //: IFileStorageService
         }
 
         var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
-        await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+        _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
 
         return room;
     }
