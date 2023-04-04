@@ -4,7 +4,7 @@
   "ConfirmEmailHeader": "Please activate your email to get access to the DocSpace features.",
   "RequestActivation": "Request activation once again",
   "RoomQuotaDescription": "You can archive the unnecessary rooms or <1>{{clickHere}}</1> to find a more suitable pricing plan for your DocSpace.",
-  "RoomQuotaHeader": "Rooms is about to be exceeded: {{currentValue}} / {{maxValue}}",
+  "RoomQuotaHeader": "The number of rooms is about to be exceeded: {{currentValue}} / {{maxValue}}",
   "StorageAndRoomHeader": "Storage and rooms limits are about to be exceeded.",
   "StorageAndUserHeader": "Storage and admins/power users limits are about to be exceeded.",
   "StorageQuotaDescription": "You can remove the unnecessary files or <1>{{clickHere}}</1> to find a more suitable  pricing plan for your DocSpace.",

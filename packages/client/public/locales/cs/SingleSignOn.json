@@ -15,6 +15,7 @@
   "Hide": "Skrýt",
   "HideAdditionalParameters": "Skrýt pokročilá nastavení",
   "HideAuthPage": "Skrýt stránky pro ověření",
+  "LogoutEndpointUrl": "Adresa URL koncového bodu jednotného odhlášení IdP",
   "LogoutEndpointUrlTooltip": "Adresa URL použitá pro jednorázové odhlášení na straně poskytovatele služeb",
   "NameIDFormat": "Formát NameId",
   "NewCertificate": "Nový certifikát",
