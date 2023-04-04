@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -135,23 +134,21 @@ ChangeUserStatusDialog.propTypes = {
   userIDs: PropTypes.arrayOf(PropTypes.string).isRequired,
 };
 
-export default withRouter(
-  inject(({ peopleStore, auth }) => {
-    const setSelected = peopleStore.selectionStore.setSelected;
+export default inject(({ peopleStore, auth }) => {
+  const setSelected = peopleStore.selectionStore.setSelected;
 
-    const { getPeopleListItem, updateUserStatus } = peopleStore.usersStore;
+  const { getPeopleListItem, updateUserStatus } = peopleStore.usersStore;
 
-    const { setSelection, isVisible: infoPanelVisible } = auth.infoPanelStore;
+  const { setSelection, isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-    return {
-      updateUserStatus,
+  return {
+    updateUserStatus,
 
-      setSelected,
+    setSelected,
 
-      getPeopleListItem,
+    getPeopleListItem,
 
-      setSelection,
-      infoPanelVisible,
-    };
-  })(observer(ChangeUserStatusDialog))
-);
+    setSelection,
+    infoPanelVisible,
+  };
+})(observer(ChangeUserStatusDialog));

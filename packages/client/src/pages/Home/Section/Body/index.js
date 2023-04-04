@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 
@@ -328,9 +327,7 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withTranslation(["Files", "Common", "Translations"])(
-      withLoader(withHotkeys(observer(SectionBodyContent)))()
-    )
+  withTranslation(["Files", "Common", "Translations"])(
+    withLoader(withHotkeys(observer(SectionBodyContent)))()
   )
 );

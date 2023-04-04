@@ -8,7 +8,7 @@ import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 
 import Loaders from "@docspace/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";

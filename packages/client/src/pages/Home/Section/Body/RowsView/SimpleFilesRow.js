@@ -4,7 +4,6 @@ import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
 import Row from "@docspace/components/row";
 import FilesRowContent from "./FilesRowContent";
-import { withRouter } from "react-router-dom";
 import { isTablet, isMobile } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
@@ -366,5 +365,5 @@ const SimpleFilesRow = (props) => {
 };
 
 export default withTranslation(["Files", "Translations", "InfoPanel"])(
-  withRouter(withFileActions(withQuickButtons(SimpleFilesRow)))
+  withFileActions(withQuickButtons(SimpleFilesRow))
 );

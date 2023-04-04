@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";

@@ -7,11 +7,11 @@ import Link from "@docspace/components/link";
 import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
-import history from "@docspace/common/history";
+
 import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
 import { StyledArrowRightIcon } from "./Customization/StyledSettings";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import Badge from "@docspace/components/badge";
 
 const StyledComponent = styled.div`
@@ -68,6 +68,7 @@ const CustomizationNavbar = ({
   isLoadedPage,
   isSettingPaid,
   currentColorScheme,
+  history,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   useEffect(() => {
@@ -196,11 +197,8 @@ const CustomizationNavbar = ({
 };
 
 export default inject(({ auth, common }) => {
-  const {
-    helpUrlCommonSettings,
-    theme,
-    currentColorScheme,
-  } = auth.settingsStore;
+  const { helpUrlCommonSettings, theme, currentColorScheme } =
+    auth.settingsStore;
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,

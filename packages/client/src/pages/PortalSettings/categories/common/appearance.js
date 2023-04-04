@@ -1,7 +1,6 @@
 ﻿import CheckWhiteSvgUrl from "PUBLIC_DIR/images/check.white.svg?url";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
@@ -50,19 +49,16 @@ const Appearance = (props) => {
 
   const [showColorSchemeDialog, setShowColorSchemeDialog] = useState(false);
 
-  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] = useState(
-    headerEditTheme
-  );
+  const [headerColorSchemeDialog, setHeaderColorSchemeDialog] =
+    useState(headerEditTheme);
 
   const [currentColorAccent, setCurrentColorAccent] = useState(null);
   const [currentColorButtons, setCurrentColorButtons] = useState(null);
 
-  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] = useState(
-    false
-  );
-  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] = useState(
-    false
-  );
+  const [openHexColorPickerAccent, setOpenHexColorPickerAccent] =
+    useState(false);
+  const [openHexColorPickerButtons, setOpenHexColorPickerButtons] =
+    useState(false);
 
   const [appliedColorAccent, setAppliedColorAccent] = useState(
     defaultAppliedColorAccent
@@ -71,12 +67,10 @@ const Appearance = (props) => {
     defaultAppliedColorButtons
   );
 
-  const [changeCurrentColorAccent, setChangeCurrentColorAccent] = useState(
-    false
-  );
-  const [changeCurrentColorButtons, setChangeCurrentColorButtons] = useState(
-    false
-  );
+  const [changeCurrentColorAccent, setChangeCurrentColorAccent] =
+    useState(false);
+  const [changeCurrentColorButtons, setChangeCurrentColorButtons] =
+    useState(false);
 
   const [viewMobile, setViewMobile] = useState(false);
 
@@ -172,7 +166,7 @@ const Appearance = (props) => {
 
   useEffect(() => {
     if (!currentColorScheme) return;
-    
+
     setAppliedColorButtons(defaultAppliedColorButtons);
     setAppliedColorAccent(defaultAppliedColorAccent);
   }, [
@@ -787,8 +781,4 @@ export default inject(({ auth }) => {
     deleteAppearanceTheme,
     theme,
   };
-})(
-  withTranslation(["Profile", "Common", "Settings"])(
-    withRouter(observer(Appearance))
-  )
-);
+})(withTranslation(["Profile", "Common", "Settings"])(observer(Appearance)));

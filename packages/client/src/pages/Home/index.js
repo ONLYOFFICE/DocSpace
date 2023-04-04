@@ -1,6 +1,5 @@
 import React from "react";
 //import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
@@ -661,12 +660,8 @@ export default inject(
       itemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders } = filesActionsStore;
 
@@ -772,4 +767,4 @@ export default inject(
       isLoadedEmptyPage,
     };
   }
-)(withRouter(observer(Home)));
+)(observer(Home));

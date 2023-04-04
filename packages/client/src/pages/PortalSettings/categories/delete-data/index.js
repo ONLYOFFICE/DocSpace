@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import Submenu from "@docspace/components/submenu";
 import { inject, observer } from "mobx-react";
 import PortalDeactivationSection from "./portalDeactivation";

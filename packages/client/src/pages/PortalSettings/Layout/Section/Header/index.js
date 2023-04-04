@@ -4,7 +4,7 @@ import ActionsHeaderTouchReactSvgUrl from "PUBLIC_DIR/images/actions.header.touc
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";

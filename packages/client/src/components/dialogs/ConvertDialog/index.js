@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
@@ -157,16 +156,10 @@ export default inject(
       isFavoritesFolder,
       isShareFolder,
     } = treeFoldersStore;
-    const {
-      convertUploadedFiles,
-      convertFile,
-      setIsConvertSingleFile,
-    } = uploadDataStore;
-    const {
-      storeOriginalFiles,
-      setStoreOriginal,
-      hideConfirmConvert,
-    } = settingsStore;
+    const { convertUploadedFiles, convertFile, setIsConvertSingleFile } =
+      uploadDataStore;
+    const { storeOriginalFiles, setStoreOriginal, hideConfirmConvert } =
+      settingsStore;
     const { id: folderId } = selectedFolderStore;
     const {
       convertDialogVisible: visible,
@@ -191,4 +184,4 @@ export default inject(
       setIsConvertSingleFile,
     };
   }
-)(withRouter(observer(ConvertDialog)));
+)(observer(ConvertDialog));

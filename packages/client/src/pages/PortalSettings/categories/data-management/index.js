@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -120,11 +120,8 @@ export default inject(({ auth, setup, backup }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { toDefault } = backup;
-  const {
-    helpUrlCreatingBackup,
-    isTabletView,
-    currentColorScheme,
-  } = settingsStore;
+  const { helpUrlCreatingBackup, isTabletView, currentColorScheme } =
+    settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
   return {

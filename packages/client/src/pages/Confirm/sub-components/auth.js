@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { loginWithConfirmKey } from "@docspace/common/api/user";
@@ -35,4 +34,4 @@ const AuthPage = (props) => (
   </Section>
 );
 
-export default withRouter(AuthPage);
+export default AuthPage;

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import { withTranslation } from "react-i18next";
@@ -104,11 +103,8 @@ export default inject(
     selectedFolderStore,
     backup,
   }) => {
-    const {
-      providers,
-      setThirdPartyProviders,
-      deleteThirdParty,
-    } = settingsStore.thirdPartyStore;
+    const { providers, setThirdPartyProviders, deleteThirdParty } =
+      settingsStore.thirdPartyStore;
     const { fetchFiles } = filesStore;
     const { selectedThirdPartyAccount: backupConnectionItem } = backup;
     const {
@@ -132,9 +128,7 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withTranslation(["DeleteThirdPartyDialog", "Common", "Translations"])(
-      observer(DeleteThirdPartyDialog)
-    )
+  withTranslation(["DeleteThirdPartyDialog", "Common", "Translations"])(
+    observer(DeleteThirdPartyDialog)
   )
 );

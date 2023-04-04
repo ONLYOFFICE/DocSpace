@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import Error520 from "client/Error520";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import ModalDialog from "@docspace/components/modal-dialog";
 import { StyledDeleteDialog } from "./StyledDeleteDialog";
 import Button from "@docspace/components/button";
@@ -214,23 +213,12 @@ const DeleteDialog = withTranslation([
 
 export default inject(
   ({ filesStore, dialogsStore, filesActionsStore, treeFoldersStore, auth }) => {
-    const {
-      selection,
-      isLoading,
-      bufferSelection,
-      setBufferSelection,
-    } = filesStore;
-    const {
-      deleteAction,
-      unsubscribeAction,
-      deleteRoomsAction,
-    } = filesActionsStore;
-    const {
-      isPrivacyFolder,
-      isRecycleBinFolder,
-      isPersonalRoom,
-      isRoom,
-    } = treeFoldersStore;
+    const { selection, isLoading, bufferSelection, setBufferSelection } =
+      filesStore;
+    const { deleteAction, unsubscribeAction, deleteRoomsAction } =
+      filesActionsStore;
+    const { isPrivacyFolder, isRecycleBinFolder, isPersonalRoom, isRoom } =
+      treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
@@ -268,4 +256,4 @@ export default inject(
       isRoom,
     };
   }
-)(withRouter(observer(DeleteDialog)));
+)(observer(DeleteDialog));

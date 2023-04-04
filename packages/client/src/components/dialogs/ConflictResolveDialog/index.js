@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import ModalDialog from "@docspace/components/modal-dialog";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 import Button from "@docspace/components/button";
@@ -282,9 +281,7 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     setCopyPanelVisible,
   };
 })(
-  withRouter(
-    withTranslation(["ConflictResolveDialog", "Common"])(
-      observer(ConflictResolveDialog)
-    )
+  withTranslation(["ConflictResolveDialog", "Common"])(
+    observer(ConflictResolveDialog)
   )
 );

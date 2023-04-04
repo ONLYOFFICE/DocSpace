@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -166,10 +165,8 @@ SendInviteDialog.propTypes = {
   setSelected: PropTypes.func.isRequired,
 };
 
-export default withRouter(
-  inject(({ peopleStore }) => ({
-    selectedUsers: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    userIds: peopleStore.selectionStore.getUsersToInviteIds,
-  }))(observer(SendInviteDialog))
-);
+export default inject(({ peopleStore }) => ({
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds: peopleStore.selectionStore.getUsersToInviteIds,
+}))(observer(SendInviteDialog));

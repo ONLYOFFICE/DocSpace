@@ -1,6 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 
@@ -117,10 +116,8 @@ export default inject(({ auth, treeFoldersStore }) => {
   return { theme: auth.settingsStore.theme, isRooms };
 })(
   observer(
-    withRouter(
-      withTranslation(["Files", "Translations"])(
-        withContent(withBadges(FilesTileContent))
-      )
+    withTranslation(["Files", "Translations"])(
+      withContent(withBadges(FilesTileContent))
     )
   )
 );

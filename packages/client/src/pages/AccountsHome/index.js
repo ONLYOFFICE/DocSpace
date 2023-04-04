@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 
@@ -140,23 +140,14 @@ export default inject(
     const { settingsStore, currentTariffStatusStore } = auth;
     const { setPortalTariff } = currentTariffStatusStore;
     const { showCatalog, withPaging } = settingsStore;
-    const {
-      usersStore,
-      selectedGroupStore,
-      loadingStore,
-      viewAs,
-    } = peopleStore;
+    const { usersStore, selectedGroupStore, loadingStore, viewAs } =
+      peopleStore;
     const { getUsersList } = usersStore;
     const { selectedGroup } = selectedGroupStore;
     const { setSelectedNode } = treeFoldersStore;
     const { onClickBack } = filesActionsStore;
-    const {
-      isLoading,
-      setIsLoading,
-      setIsRefresh,
-      firstLoad,
-      setFirstLoad,
-    } = loadingStore;
+    const { isLoading, setIsLoading, setIsRefresh, firstLoad, setFirstLoad } =
+      loadingStore;
 
     return {
       setPortalTariff,

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import { StyledArticlePaymentAlert } from "../styled-article";
 import styled from "styled-components";
 import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
+
 import Loaders from "../../Loaders";
 
 const StyledArrowRightIcon = styled(ArrowRightIcon)`
@@ -31,6 +31,7 @@ const ArticlePaymentAlert = ({
   currentTariffPlanTitle,
   toggleArticleOpen,
   tariffPlanTitle,
+  history,
 }) => {
   const { t, ready } = useTranslation("Common");
 

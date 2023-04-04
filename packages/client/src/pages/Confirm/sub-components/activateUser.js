@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import TextInput from "@docspace/components/text-input";
@@ -266,9 +265,7 @@ export default inject(({ auth }) => {
     login: auth.login,
   };
 })(
-  withRouter(
-    withTranslation(["Confirm", "Common", "Wizard"])(
-      withLoader(observer(ActivateUserForm))
-    )
+  withTranslation(["Confirm", "Common", "Wizard"])(
+    withLoader(observer(ActivateUserForm))
   )
 );

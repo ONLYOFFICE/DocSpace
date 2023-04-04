@@ -6,7 +6,7 @@ import Filter from "@docspace/common/api/people/filter";
 import Loaders from "@docspace/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import { getSelectedGroup } from "../../../helpers/people-helpers";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
 import config from "PACKAGE_FILE";

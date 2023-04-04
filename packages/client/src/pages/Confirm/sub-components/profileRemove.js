@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -91,8 +90,4 @@ export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   theme: auth.settingsStore.theme,
   logout: auth.logout,
-}))(
-  withRouter(
-    withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm)))
-  )
-);
+}))(withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm))));

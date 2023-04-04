@@ -9,7 +9,6 @@ import {
   SectionFooterContent,
 } from "./Section";
 
-import { withRouter } from "react-router";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -109,40 +108,35 @@ class Profile extends React.Component {
 
 Profile.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
   language: PropTypes.string,
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore, treeFoldersStore }) => {
-    const { setDocumentTitle, language } = auth;
-    const { targetUserStore, loadingStore } = peopleStore;
-    const {
-      getTargetUser: fetchProfile,
-      targetUser: profile,
-      isEditTargetUser,
-      setIsEditTargetUser,
-    } = targetUserStore;
-    const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
-    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
-    return {
-      setDocumentTitle,
-      language,
-      fetchProfile,
-      profile,
-      setFirstLoad,
-      setIsLoading,
-      isEditTargetUser,
-      setIsEditTargetUser,
-      setLoadedProfile,
-      showCatalog: auth.settingsStore.showCatalog,
-      selectedTreeNode,
-      setSelectedNode,
-      isVisitor: auth.userStore.user.isVisitor,
-    };
-  })(
-    observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))
-  )
-);
+export default inject(({ auth, peopleStore, treeFoldersStore }) => {
+  const { setDocumentTitle, language } = auth;
+  const { targetUserStore, loadingStore } = peopleStore;
+  const {
+    getTargetUser: fetchProfile,
+    targetUser: profile,
+    isEditTargetUser,
+    setIsEditTargetUser,
+  } = targetUserStore;
+  const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
+  const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+  return {
+    setDocumentTitle,
+    language,
+    fetchProfile,
+    profile,
+    setFirstLoad,
+    setIsLoading,
+    isEditTargetUser,
+    setIsEditTargetUser,
+    setLoadedProfile,
+    showCatalog: auth.settingsStore.showCatalog,
+    selectedTreeNode,
+    setSelectedNode,
+    isVisitor: auth.userStore.user.isVisitor,
+  };
+})(observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile))));

@@ -1,6 +1,5 @@
 import React, { useCallback } from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
@@ -182,10 +181,8 @@ export default inject(({ auth, treeFoldersStore }) => {
   return { theme: auth.settingsStore.theme, isTrashFolder: isRecycleBinFolder };
 })(
   observer(
-    withRouter(
-      withTranslation(["Files", "Translations"])(
-        withContent(withBadges(FilesRowContent))
-      )
+    withTranslation(["Files", "Translations"])(
+      withContent(withBadges(FilesRowContent))
     )
   )
 );

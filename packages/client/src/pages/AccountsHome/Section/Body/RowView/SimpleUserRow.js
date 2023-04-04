@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 
 import Row from "@docspace/components/row";
@@ -142,4 +141,4 @@ const SimpleUserRow = (props) => {
   );
 };
 
-export default withRouter(withContent(SimpleUserRow));
+export default withContent(SimpleUserRow);

@@ -1,5 +1,4 @@
 ﻿import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import moment from "moment";
@@ -58,4 +57,4 @@ export default inject(({ auth, payments }) => {
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
   };
-})(withRouter(observer(PaymentsPage)));
+})(observer(PaymentsPage));

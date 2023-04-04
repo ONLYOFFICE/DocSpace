@@ -1,6 +1,6 @@
 ﻿import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
 import React from "react";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import CatalogItem from "@docspace/components/catalog-item";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";

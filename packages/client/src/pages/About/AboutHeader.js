@@ -2,7 +2,7 @@
 import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
 import { tablet } from "@docspace/components/utils/device";

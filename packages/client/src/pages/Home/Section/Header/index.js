@@ -24,7 +24,7 @@ import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?u
 import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import { withTranslation } from "react-i18next";
@@ -159,13 +159,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsPlus = () => {
-    const {
-      t,
-      isPrivacyFolder,
-      isRoomsFolder,
-      enablePlugins,
-      security,
-    } = this.props;
+    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins, security } =
+      this.props;
 
     const options = isRoomsFolder
       ? [
@@ -599,12 +594,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const {
-      t,
-      cbMenuItems,
-      getCheckboxItemLabel,
-      getCheckboxItemId,
-    } = this.props;
+    const { t, cbMenuItems, getCheckboxItemLabel, getCheckboxItemId } =
+      this.props;
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
@@ -631,12 +622,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   onClickFolder = (id, isRootRoom) => {
-    const {
-      setSelectedNode,
-      setIsLoading,
-      fetchFiles,
-      moveToRoomsPage,
-    } = this.props;
+    const { setSelectedNode, setIsLoading, fetchFiles, moveToRoomsPage } =
+      this.props;
 
     if (isRootRoom) {
       return moveToRoomsPage();
@@ -841,14 +828,8 @@ export default inject(
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
 
-    const {
-      title,
-      id,
-      roomType,
-      pathParts,
-      navigationPath,
-      security,
-    } = selectedFolderStore;
+    const { title, id, roomType, pathParts, navigationPath, security } =
+      selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
 

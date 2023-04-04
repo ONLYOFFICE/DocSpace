@@ -4,7 +4,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import ModalDialogContainer from "../ModalDialogContainer";
 import toastr from "@docspace/components/toast/toastr";
 

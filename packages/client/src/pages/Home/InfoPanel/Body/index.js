@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 
 import ViewHelper from "./helpers/ViewHelper";
@@ -207,4 +206,4 @@ export default inject(({ auth, selectedFolderStore, oformsStore }) => {
     isRootFolder,
     gallerySelected,
   };
-})(withRouter(observer(InfoPanelBodyContent)));
+})(observer(InfoPanelBodyContent));

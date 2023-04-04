@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import { inject, observer } from "mobx-react";
 import Loader from "@docspace/components/loader";
@@ -92,4 +91,4 @@ export default inject(({ auth }) => {
     changeEmail: userStore.changeEmail,
     defaultPage: settingsStore.defaultPage,
   };
-})(observer(withRouter(ChangeEmailForm)));
+})(observer(ChangeEmailForm));

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import config from "PACKAGE_FILE";
 import { RoomSearchArea } from "@docspace/common/constants";
@@ -70,9 +70,6 @@ const ArticleBodyContent = (props) => {
 
         fetchRooms,
         setAlreadyFetchingRooms,
-
-        homepage,
-        history,
       } = props;
 
       if (filesIsLoading) return;
@@ -238,9 +235,7 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withTranslation([])(
-      withLoader(observer(ArticleBodyContent))(<Loaders.ArticleFolder />)
-    )
+  withTranslation([])(
+    withLoader(observer(ArticleBodyContent))(<Loaders.ArticleFolder />)
   )
 );

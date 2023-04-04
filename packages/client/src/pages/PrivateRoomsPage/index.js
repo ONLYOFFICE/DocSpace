@@ -8,7 +8,7 @@ import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { smallTablet, tablet } from "@docspace/components/utils/device";
 import { I18nextProvider, Trans, withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 //import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import i18n from "./i18n";

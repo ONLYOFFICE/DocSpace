@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import queryString from "query-string";
-import history from "@docspace/common/history";
 import MediaViewer from "@docspace/common/components/MediaViewer";
 
 const FilesMediaViewer = (props) => {
@@ -50,6 +49,7 @@ const FilesMediaViewer = (props) => {
     resetUrl,
     firstLoad,
     setSelection,
+    history,
   } = props;
 
   useEffect(() => {
@@ -97,7 +97,7 @@ const FilesMediaViewer = (props) => {
   const onChangeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
     setCurrentId(id);
-    window.history.pushState(null, null, url);
+    history.push(url);
   };
 
   const resetSelection = () => {
@@ -169,7 +169,7 @@ const FilesMediaViewer = (props) => {
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
 
-    window.history.replaceState(null, null, url);
+    history.replace(url);
   };
 
   return (

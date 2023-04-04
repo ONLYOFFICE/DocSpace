@@ -1,7 +1,6 @@
 import React from "react";
 import { Route } from "react-router-dom";
 import { ValidationResult } from "./../helpers/constants";
-import { withRouter } from "react-router";
 import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { checkConfirmLink } from "@docspace/common/api/user"; //TODO: Move AuthStore
@@ -133,4 +132,4 @@ export default inject(({ auth }) => {
     isAuthenticated,
     logout,
   };
-})(observer(withRouter(ConfirmRoute)));
+})(observer(ConfirmRoute));

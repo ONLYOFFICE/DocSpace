@@ -3,7 +3,6 @@ import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
@@ -1444,9 +1443,10 @@ const SectionFilterContent = ({
     }
   };
 
-  useEffect(() => (!!isLoadedFilter ? showLoader() : hideLoader()), [
-    isLoadedFilter,
-  ]);
+  useEffect(
+    () => (!!isLoadedFilter ? showLoader() : hideLoader()),
+    [isLoadedFilter]
+  );
 
   if (!isLoadedFilter) {
     return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
@@ -1569,15 +1569,13 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withLayoutSize(
-      withTranslation([
-        "Files",
-        "Settings",
-        "Common",
-        "Translations",
-        "InfoPanel",
-      ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
-    )
+  withLayoutSize(
+    withTranslation([
+      "Files",
+      "Settings",
+      "Common",
+      "Translations",
+      "InfoPanel",
+    ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
   )
 );

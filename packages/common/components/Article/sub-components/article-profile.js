@@ -1,6 +1,5 @@
 import React, { useState, useRef } from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import Avatar from "@docspace/components/avatar";
 import Text from "@docspace/components/text";
@@ -106,15 +105,13 @@ const ArticleProfile = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth, profileActionsStore }) => {
-    const { getActions, getUserRole, onProfileClick } = profileActionsStore;
+export default inject(({ auth, profileActionsStore }) => {
+  const { getActions, getUserRole, onProfileClick } = profileActionsStore;
 
-    return {
-      onProfileClick,
-      user: auth.userStore.user,
-      getUserRole,
-      getActions,
-    };
-  })(observer(ArticleProfile))
-);
+  return {
+    onProfileClick,
+    user: auth.userStore.user,
+    getUserRole,
+    getActions,
+  };
+})(observer(ArticleProfile));

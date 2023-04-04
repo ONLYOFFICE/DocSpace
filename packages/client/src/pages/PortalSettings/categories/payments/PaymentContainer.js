@@ -1,7 +1,6 @@
 import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import { Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -370,4 +369,4 @@ export default inject(({ auth, payments }) => {
     portalTariffStatus,
     portalPaymentQuotas,
   };
-})(withRouter(observer(PaymentContainer)));
+})(observer(PaymentContainer));

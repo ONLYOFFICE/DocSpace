@@ -6,7 +6,7 @@ import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import IconButton from "@docspace/components/icon-button";

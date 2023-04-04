@@ -10,7 +10,6 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -363,62 +362,54 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore, dialogsStore }) => {
-    const {
-      setIsVisible: setInfoPanelIsVisible,
-      isVisible: isInfoPanelVisible,
-    } = auth.infoPanelStore;
+export default inject(({ auth, peopleStore, dialogsStore }) => {
+  const { setIsVisible: setInfoPanelIsVisible, isVisible: isInfoPanelVisible } =
+    auth.infoPanelStore;
 
-    const {
-      setInvitePanelOptions,
-      setInviteUsersWarningDialogVisible,
-    } = dialogsStore;
+  const { setInvitePanelOptions, setInviteUsersWarningDialogVisible } =
+    dialogsStore;
 
-    const { isOwner, isAdmin } = auth.userStore.user;
-    const { isGracePeriod } = auth.currentTariffStatusStore;
+  const { isOwner, isAdmin } = auth.userStore.user;
+  const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
+  const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
 
-    const {
-      isHeaderVisible,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      cbMenuItems,
-      getMenuItemId,
-      getCheckboxItemLabel,
-    } = headerMenuStore;
+  const {
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    cbMenuItems,
+    getMenuItemId,
+    getCheckboxItemLabel,
+  } = headerMenuStore;
 
-    const { setSelected } = selectionStore;
+  const { setSelected } = selectionStore;
 
-    return {
-      setSelected,
-      isHeaderVisible,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      getHeaderMenu,
-      cbMenuItems,
-      getMenuItemId,
-      getCheckboxItemLabel,
-      setInfoPanelIsVisible,
-      isInfoPanelVisible,
-      isOwner,
-      isAdmin,
-      setInvitePanelOptions,
-      isGracePeriod,
-      setInviteUsersWarningDialogVisible,
-    };
-  })(
-    withTranslation([
-      "People",
-      "Common",
-      "PeopleTranslations",
-      "Files",
-      "ChangeUserTypeDialog",
-    ])(
-      withPeopleLoader(observer(SectionHeaderContent))(
-        <Loaders.SectionHeader />
-      )
-    )
+  return {
+    setSelected,
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    getHeaderMenu,
+    cbMenuItems,
+    getMenuItemId,
+    getCheckboxItemLabel,
+    setInfoPanelIsVisible,
+    isInfoPanelVisible,
+    isOwner,
+    isAdmin,
+    setInvitePanelOptions,
+    isGracePeriod,
+    setInviteUsersWarningDialogVisible,
+  };
+})(
+  withTranslation([
+    "People",
+    "Common",
+    "PeopleTranslations",
+    "Files",
+    "ChangeUserTypeDialog",
+  ])(
+    withPeopleLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
   )
 );

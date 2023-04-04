@@ -1,5 +1,4 @@
 import React, { memo } from "react";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 
 import Button from "@docspace/components/button";
@@ -160,13 +159,11 @@ DeleteUsersDialog.propTypes = {
   removeUser: PropTypes.func.isRequired,
 };
 
-export default withRouter(
-  inject(({ peopleStore, auth }) => ({
-    filter: peopleStore.filterStore.filter,
-    removeUser: peopleStore.usersStore.removeUser,
-    selectedUsers: peopleStore.selectionStore.selection,
-    setSelected: peopleStore.selectionStore.setSelected,
-    userIds: peopleStore.selectionStore.getUsersToRemoveIds,
-    theme: auth.settingsStore.theme,
-  }))(observer(DeleteUsersDialog))
-);
+export default inject(({ peopleStore, auth }) => ({
+  filter: peopleStore.filterStore.filter,
+  removeUser: peopleStore.usersStore.removeUser,
+  selectedUsers: peopleStore.selectionStore.selection,
+  setSelected: peopleStore.selectionStore.setSelected,
+  userIds: peopleStore.selectionStore.getUsersToRemoveIds,
+  theme: auth.settingsStore.theme,
+}))(observer(DeleteUsersDialog));

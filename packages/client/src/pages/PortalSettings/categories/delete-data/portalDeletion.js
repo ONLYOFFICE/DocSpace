@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -87,4 +86,4 @@ export default inject(({ auth }) => {
     getPortalOwner,
     owner,
   };
-})(withTranslation(["Settings", "Common"])(withRouter(PortalDeletion)));
+})(withTranslation(["Settings", "Common"])(PortalDeletion));

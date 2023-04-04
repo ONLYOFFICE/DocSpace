@@ -20,7 +20,7 @@ import MainButton from "@docspace/components/main-button";
 import { withTranslation } from "react-i18next";
 import Loaders from "@docspace/common/components/Loaders";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 
 import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";

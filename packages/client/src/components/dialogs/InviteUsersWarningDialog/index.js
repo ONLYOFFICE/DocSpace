@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import moment from "moment";
 import { combineUrl } from "@docspace/common/utils";
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -132,11 +132,8 @@ const InviteUsersWarningDialog = (props) => {
 
 export default inject(({ auth, dialogsStore }) => {
   const { isPaymentPageAvailable } = auth;
-  const {
-    dueDate,
-    delayDueDate,
-    isGracePeriod,
-  } = auth.currentTariffStatusStore;
+  const { dueDate, delayDueDate, isGracePeriod } =
+    auth.currentTariffStatusStore;
   const { currentTariffPlanTitle } = auth.currentQuotaStore;
 
   const {

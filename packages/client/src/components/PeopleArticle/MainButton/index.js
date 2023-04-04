@@ -6,7 +6,7 @@ import AddGuestReactSvgUrl from "PUBLIC_DIR/images/add.guest.react.svg?url";
 import AddEmployeeReactSvgUrl from "ASSETS/images/add.employee.react.svg?url";
 import React from "react";
 //import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import MainButton from "@docspace/components/main-button";
 import InviteDialog from "../../dialogs/InviteDialog/index";
 import { withTranslation } from "react-i18next";
@@ -160,11 +160,8 @@ class ArticleMainButtonContent extends React.Component {
 
 export default withRouter(
   inject(({ auth }) => {
-    const {
-      userCaption,
-      guestCaption,
-      groupCaption,
-    } = auth.settingsStore.customNames;
+    const { userCaption, guestCaption, groupCaption } =
+      auth.settingsStore.customNames;
 
     return {
       isAdmin: auth.isAdmin,

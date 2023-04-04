@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+import { withRouter } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
@@ -257,11 +257,8 @@ const PasswordStrength = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const {
-    setPortalPasswordSettings,
-    passwordSettings,
-    helpLink,
-  } = auth.settingsStore;
+  const { setPortalPasswordSettings, passwordSettings, helpLink } =
+    auth.settingsStore;
   const { initSettings, isInit } = setup;
 
   return {

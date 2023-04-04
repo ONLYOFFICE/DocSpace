@@ -7,7 +7,6 @@ import Textarea from "@docspace/components/textarea";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
 import { StyledVersionRow } from "./StyledVersionHistory";
 import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg";
@@ -249,9 +248,7 @@ export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
     canChangeVersionFileHistory,
   };
 })(
-  withRouter(
-    withTranslation(["VersionHistory", "Common", "Translations"])(
-      observer(VersionRow)
-    )
+  withTranslation(["VersionHistory", "Common", "Translations"])(
+    observer(VersionRow)
   )
 );
