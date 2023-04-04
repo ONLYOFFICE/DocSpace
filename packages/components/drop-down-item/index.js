@@ -43,7 +43,7 @@ const DropDownItem = (props) => {
 
   const onChange = (event) => {
     stopPropagation(event);
-    if (!disabled) onClick?.();
+    onClickAction(event);
   };
 
   return (
