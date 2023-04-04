@@ -16,7 +16,7 @@ export const MessagesDetails = () => {
         {
           id: "webhookResponse",
           name: "Response",
-          content: <div>hi2</div>,
+          content: <RequestDetails />,
         },
       ]}
       startSelect={0}
