@@ -168,7 +168,10 @@ class AuthStore {
 
     if (!user) return false;
 
-    return user.isOwner || user.isAdmin || this.isRoomAdmin;
+    return (
+      !!this.settingsStore.zendeskKey &&
+      (user.isOwner || user.isAdmin || this.isRoomAdmin)
+    );
   }
 
   login = async (user, hash, session = true) => {
