@@ -136,8 +136,7 @@ class ProfileActionsStore {
   };
 
   onBookTraining = () => {
-    const trainingEmail = this.authStore.settingsStore.additionalResourcesData
-      ?.trainingEmail;
+    const trainingEmail = this.authStore.settingsStore?.bookTrainingEmail;
 
     trainingEmail && window.open(`mailto:${trainingEmail}`, "_blank");
   };

@@ -160,7 +160,10 @@ class AuthStore {
 
     if (!user) return false;
 
-    return user.isOwner || user.isAdmin || this.isRoomAdmin;
+    return (
+      !!this.settingsStore.bookTrainingEmail &&
+      (user.isOwner || user.isAdmin || this.isRoomAdmin)
+    );
   }
 
   get isLiveChatAvailable() {

@@ -7,7 +7,7 @@ import AlertComponent from "../../AlertComponent";
 
 const ArticleTeamTrainingAlert = ({
   theme,
-  trainingEmail,
+  bookTrainingEmail,
   organizationName,
 }) => {
   const { t, ready } = useTranslation("Common");
@@ -33,7 +33,7 @@ const ArticleTeamTrainingAlert = ({
       borderColor={theme.catalog.teamTrainingAlert.borderColor}
       title={t("Common:UseLikePro", { organizationName })}
       description={t("Common:BookTeamTraining")}
-      link={`mailto:${trainingEmail}`}
+      link={`mailto:${bookTrainingEmail}`}
       linkTitle={t("Common:BookNow")}
       onCloseClick={onClick}
       needCloseIcon
@@ -45,11 +45,11 @@ export default withRouter(
   inject(({ auth }) => {
     const { settingsStore } = auth;
 
-    const { theme, additionalResourcesData, organizationName } = settingsStore;
+    const { theme, bookTrainingEmail, organizationName } = settingsStore;
 
     return {
       theme,
-      trainingEmail: additionalResourcesData.trainingEmail,
+      bookTrainingEmail,
       organizationName,
     };
   })(observer(ArticleTeamTrainingAlert))
