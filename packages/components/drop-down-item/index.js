@@ -43,7 +43,7 @@ const DropDownItem = (props) => {
 
   const onChange = (event) => {
     stopPropagation(event);
-    if (!disabled) onClick?.();
+    onClickAction(event);
   };
 
   return (
@@ -86,7 +86,7 @@ const DropDownItem = (props) => {
 
       {withToggle && (
         <WrapperToggle onClick={stopPropagation}>
-          <ToggleButton isChecked={checked} onChange={onChange} />
+          <ToggleButton isChecked={checked} onChange={onChange} noAnimation />
         </WrapperToggle>
       )}
     </StyledDropdownItem>

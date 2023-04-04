@@ -16,6 +16,7 @@ import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 import { ZendeskAPI } from "@docspace/common/components/Zendesk";
 import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
@@ -116,9 +117,15 @@ class ProfileActionsStore {
     window.open(helpUrl, "_blank");
   };
 
-  onLiveChatClick = () => {
-    this.setStateLiveChat(!this.isShowLiveChat);
-    ZendeskAPI("webWidget", this.isShowLiveChat ? "show" : "hide");
+  onLiveChatClick = (t) => {
+    const isShow = !this.isShowLiveChat;
+
+    this.setStateLiveChat(isShow);
+
+    ZendeskAPI("webWidget", isShow ? "show" : "hide");
+
+    const text = isShow ? "LiveChatOn" : "LiveChatOff";
+    toastr.success(t(text));
   };
 
   onSupportClick = () => {
@@ -129,8 +136,7 @@ class ProfileActionsStore {
   };
 
   onBookTraining = () => {
-    const trainingEmail = this.authStore.settingsStore.additionalResourcesData
-      ?.trainingEmail;
+    const trainingEmail = this.authStore.settingsStore?.bookTrainingEmail;
 
     trainingEmail && window.open(`mailto:${trainingEmail}`, "_blank");
   };
@@ -216,7 +222,7 @@ class ProfileActionsStore {
         key: "user-menu-live-chat",
         icon: LiveChatReactSvgUrl,
         label: t("Common:LiveChat"),
-        onClick: this.onLiveChatClick,
+        onClick: () => this.onLiveChatClick(t),
         checked: this.isShowLiveChat,
         withToggle: true,
       };

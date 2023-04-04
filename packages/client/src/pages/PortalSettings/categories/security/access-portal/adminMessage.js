@@ -36,6 +36,7 @@ const AdminMessage = (props) => {
     initSettings,
     isInit,
     helpLink,
+    currentColorScheme,
   } = props;
   const [type, setType] = useState("");
   const [showReminder, setShowReminder] = useState(false);
@@ -124,7 +125,7 @@ const AdminMessage = (props) => {
       <LearnMoreWrapper>
         <Text className="page-subtitle">{t("AdminsMessageHelper")}</Text>
         <Link
-          color="#316DAA"
+          color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
           href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
@@ -170,7 +171,12 @@ const AdminMessage = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { enableAdmMess, setMessageSettings, helpLink } = auth.settingsStore;
+  const {
+    enableAdmMess,
+    setMessageSettings,
+    helpLink,
+    currentColorScheme,
+  } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
   return {
@@ -179,5 +185,6 @@ export default inject(({ auth, setup }) => {
     initSettings,
     isInit,
     helpLink,
+    currentColorScheme,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(AdminMessage))));
