@@ -42,7 +42,7 @@ public class FileSharingAceHelper
     private readonly FileSharingHelper _fileSharingHelper;
     private readonly FileTrackerHelper _fileTracker;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly RoomLinkService _roomLinkService;
+    private readonly InvitationLinkService _invitationLinkService;
     private readonly StudioNotifyService _studioNotifyService;
     private readonly UsersInRoomChecker _usersInRoomChecker;
     private readonly UserManagerWrapper _userManagerWrapper;
@@ -62,7 +62,7 @@ public class FileSharingAceHelper
         FileSharingHelper fileSharingHelper,
         FileTrackerHelper fileTracker,
         FilesSettingsHelper filesSettingsHelper,
-        RoomLinkService roomLinkService,
+        InvitationLinkService invitationLinkService,
         StudioNotifyService studioNotifyService,
         ILoggerProvider loggerProvider,
         UsersInRoomChecker usersInRoomChecker,
@@ -81,7 +81,7 @@ public class FileSharingAceHelper
         _fileSharingHelper = fileSharingHelper;
         _fileTracker = fileTracker;
         _filesSettingsHelper = filesSettingsHelper;
-        _roomLinkService = roomLinkService;
+        _invitationLinkService = invitationLinkService;
         _studioNotifyService = studioNotifyService;
         _usersInRoomChecker = usersInRoomChecker;
         _logger = loggerProvider.CreateLogger("ASC.Files");
@@ -226,7 +226,7 @@ public class FileSharingAceHelper
 
             if (emailInvite)
             {
-                var link = _roomLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
+                var link = _invitationLinkService.GetInvitationLink(w.Email, share, _authContext.CurrentAccount.ID);
                 _studioNotifyService.SendEmailRoomInvite(w.Email, entry.Title, link);
                 _logger.Debug(link);
             }
@@ -431,7 +431,7 @@ public class FileSharing
     private readonly IDaoFactory _daoFactory;
     private readonly FileSharingHelper _fileSharingHelper;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly RoomLinkService _roomLinkService;
+    private readonly InvitationLinkService _invitationLinkService;
 
     public FileSharing(
         Global global,
@@ -444,7 +444,7 @@ public class FileSharing
         IDaoFactory daoFactory,
         FileSharingHelper fileSharingHelper,
         FilesSettingsHelper filesSettingsHelper,
-        RoomLinkService roomLinkService)
+        InvitationLinkService invitationLinkService)
     {
         _global = global;
         _fileSecurity = fileSecurity;
@@ -456,7 +456,7 @@ public class FileSharing
         _fileSharingHelper = fileSharingHelper;
         _filesSettingsHelper = filesSettingsHelper;
         _logger = logger;
-        _roomLinkService = roomLinkService;
+        _invitationLinkService = invitationLinkService;
     }
 
     public Task<bool> CanSetAccessAsync<T>(FileEntry<T> entry)
@@ -545,7 +545,7 @@ public class FileSharing
 
             if (isRoom && r.IsLink)
             {
-                w.Link = _roomLinkService.GetInvitationLink(r.Subject, r.Owner);
+                w.Link = _invitationLinkService.GetInvitationLink(r.Subject, _authContext.CurrentAccount.ID);
                 w.SubjectGroup = true;
                 w.CanEditAccess = false;
             }
@@ -568,7 +568,7 @@ public class FileSharing
             var w = new AceWrapper
             {
                 Id = id,
-                Link = _roomLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
+                Link = _invitationLinkService.GetInvitationLink(id, _authContext.CurrentAccount.ID),
                 SubjectGroup = true,
                 Access = FileShare.Read,
                 Owner = false

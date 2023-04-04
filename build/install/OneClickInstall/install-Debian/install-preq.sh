@@ -37,7 +37,7 @@ fi
 locale-gen en_US.UTF-8
 
 # add elasticsearch repo
-ELASTIC_VERSION="7.16.3"
+ELASTIC_VERSION="7.10.0"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 curl -fsSL https://artifacts.elastic.co/GPG-KEY-elasticsearch | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg --import
 echo "deb [signed-by=/usr/share/keyrings/elastic-${ELASTIC_DIST}.x.gpg] https://artifacts.elastic.co/packages/${ELASTIC_DIST}.x/apt stable main" | tee /etc/apt/sources.list.d/elastic-${ELASTIC_DIST}.x.list
@@ -48,14 +48,11 @@ curl -sL https://deb.nodesource.com/setup_16.x | bash -
 
 #add dotnet repo
 if [ "$DIST" = "debian" ] && [ "$DISTRIB_CODENAME" = "stretch" ]; then
-	curl -sSL https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-	wget -O /etc/apt/sources.list.d/microsoft-prod.list https://packages.microsoft.com/config/debian/9/prod.list
-elif [ "$DISTRIB_CODENAME" != "jammy" ]; then
+	curl https://packages.microsoft.com/config/$DIST/10/packages-microsoft-prod.deb -O
+else
 	curl https://packages.microsoft.com/config/$DIST/$REV/packages-microsoft-prod.deb -O
-	dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
-elif dpkg -l | grep -q "packages-microsoft-prod"; then 
-	apt-get purge -y packages-microsoft-prod dotnet*
 fi
+dpkg -i packages-microsoft-prod.deb && rm packages-microsoft-prod.deb
 
 MYSQL_REPO_VERSION="$(curl https://repo.mysql.com | grep -oP 'mysql-apt-config_\K.*' | grep -o '^[^_]*' | sort --version-sort --field-separator=. | tail -n1)"
 MYSQL_PACKAGE_NAME="mysql-apt-config_${MYSQL_REPO_VERSION}_all.deb"

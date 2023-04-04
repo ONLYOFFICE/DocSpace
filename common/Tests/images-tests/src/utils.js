@@ -177,7 +177,11 @@ const findImagesIntoFiles = (fileList, imageList) => {
   const usedImages = [];
 
   imageList.forEach((i) => {
-    if (i.path.indexOf("flags") > -1 || i.path.indexOf("thirdparties") > -1)
+    if (
+      i.path.indexOf("flags") > -1 ||
+      i.path.indexOf("thirdparties") > -1 ||
+      i.path.indexOf("notifications") > -1
+    )
       return usedImages.push(i.fileName);
 
     imgCollection.push(i.fileName);

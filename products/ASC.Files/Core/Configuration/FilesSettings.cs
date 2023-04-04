@@ -108,7 +108,7 @@ public class FilesSettings : ISettings<FilesSettings>
             HideFavoritesSetting = false,
             HideTemplatesSetting = false,
             DownloadTarGzSetting = false,
-            AutomaticallyCleanUpSetting = new AutoCleanUpData { IsAutoCleanUp = true, Gap = DateToAutoCleanUp.ThirtyDays },
+            AutomaticallyCleanUpSetting = null,
             DefaultSharingAccessRightsSetting = null
         };
     }
@@ -383,7 +383,16 @@ public class FilesSettingsHelper
         get
         {
             var setting = LoadForCurrentUser().AutomaticallyCleanUpSetting;
-            return setting ?? new AutoCleanUpData();
+            
+            if (setting != null)
+            {
+                return setting;
+            }
+
+            setting = new AutoCleanUpData { IsAutoCleanUp = true, Gap = DateToAutoCleanUp.ThirtyDays };
+            AutomaticallyCleanUp = setting;
+
+            return setting;
         }
     }
 

@@ -4,7 +4,7 @@
   "EditPhoto": "Upraviť foto",
   "InterfaceTheme": "Vzhľad prostredia",
   "LightTheme": "Svetlá téma",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na e-mail <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na e-mail <strong>{{ email }}</strong>.",
   "ProviderSuccessfullyConnected": "Poskytovateľ bol úspešne pripojený",
   "ProviderSuccessfullyDisconnected": "Poskytovateľ bol úspešne odpojený",
   "ShowBackupCodes": "Zobraziť záložné kódy",

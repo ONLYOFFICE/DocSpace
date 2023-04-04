@@ -57,7 +57,7 @@ public class AuditEventDto
     public IEnumerable<string> Target { get; set; }
 
     public IEnumerable<EntryType> Entries { get; set; }
-    public string Room { get; set; }
+    public string Context { get; set; }
 
     public AuditEventDto(AuditTrail.Models.AuditEventDto auditEvent, AuditActionMapper auditActionMapper)
     {
@@ -97,16 +97,6 @@ public class AuditEventDto
             Target = auditEvent.Target.GetItems();
         }
 
-        if (maps.ProductType == ProductType.Documents)
-        {
-            var rawNotificationInfo = auditEvent.Description?.LastOrDefault();
-
-            if (!string.IsNullOrEmpty(rawNotificationInfo) && rawNotificationInfo.StartsWith('{') && rawNotificationInfo.EndsWith('}'))
-            {
-                var notificationInfo = JsonSerializer.Deserialize<AdditionalNotificationInfo>(rawNotificationInfo);
-
-                Room = auditEvent.Action == (int)MessageAction.RoomRenamed ? notificationInfo?.RoomOldTitle : notificationInfo?.RoomTitle;
-            }
-        }
+        Context = auditEvent.Context;
     }
 }

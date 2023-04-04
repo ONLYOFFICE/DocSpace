@@ -219,8 +219,7 @@ public class FilesMessageService
             RoomTitle = roomInfo.RoomTitle
         };
 
-        if (action == MessageAction.RoomRenamed
-            && (oldTitle != null || oldTitle != ""))
+        if (action == MessageAction.RoomRenamed && !string.IsNullOrEmpty(oldTitle))
         {
             info.RoomOldTitle = oldTitle;
         }
@@ -238,6 +237,13 @@ public class FilesMessageService
             info.UserIds = new List<Guid> { userid };
             info.UserRole = (int)userRole;
         }
+
+        info.RootFolderTitle = entry.RootFolderType switch
+        {
+            FolderType.USER => FilesUCResource.MyFiles,
+            FolderType.TRASH => FilesUCResource.Trash,
+            _ => string.Empty
+        };
 
         var serializedParam = JsonSerializer.Serialize(info);
 

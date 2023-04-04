@@ -5,5 +5,6 @@
   "ImageFileType": "images",
   "MailMergeFileType": "Sélectionner le fichier au format XLSX",
   "OpenSavedDocument": "Ouvrir le document enregistré dans un nouvel onglet",
-  "SelectFilesType": "Sélectionner les fichiers de type: {{fileType}}"
+  "SelectFilesType": "Sélectionner les fichiers de type: {{fileType}}",
+  "UsersWithoutAccess": "Certains utilisateurs que vous souhaitez mentionner n'ont pas accès à la salle : {{users}}"
 }

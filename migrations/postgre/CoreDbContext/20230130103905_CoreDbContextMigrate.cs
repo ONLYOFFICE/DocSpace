@@ -113,7 +113,7 @@ public partial class CoreDbContextMigrate : Migration
             schema: "onlyoffice",
             table: "tenants_quota",
             columns: new[] { "tenant", "description", "features", "name", "visible" },
-            values: new object[] { -3, null, "free,thirdparty,audit,total_size:2147483648,manager:1,room:12,usersInRoom:3", "startup", false });
+            values: new object[] { -3, null, "free,total_size:2147483648,manager:5,room:5", "startup", false });
 
         migrationBuilder.InsertData(
             schema: "onlyoffice",

@@ -80,7 +80,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
     protected override async Task DoJob(IServiceScope scope)
     {
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<int>>();
-        var messageService = scope.ServiceProvider.GetService<MessageService>();
+        var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(CurrentTenant);
         _trashId = await folderDao.GetFolderIDTrashAsync(true);
@@ -102,7 +102,9 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         {
             await DeleteFilesAsync(Files, scope);
             await DeleteFoldersAsync(Folders, scope);
-            messageService.Send(_headers, MessageAction.TrashEmptied);
+            
+            var trash = await folderDao.GetFolderAsync(_trashId);
+            _ = filesMessageService.Send(trash, _headers, MessageAction.TrashEmptied);
         }
         else
         {
@@ -124,6 +126,9 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             var folder = await FolderDao.GetFolderAsync(folderId);
             var isRoom = DocSpaceHelper.IsRoom(folder.FolderType);
 
+            var canDelete = await FilesSecurity.CanDeleteAsync(folder);
+            checkPermissions = isRoom ? !canDelete : checkPermissions;
+
             T canCalculate = default;
             if (folder == null)
             {
@@ -134,7 +139,7 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             {
                 this[Err] = FilesCommonResource.ErrorMassage_SecurityException_DeleteFolder;
             }
-            else if (!_ignoreException && checkPermissions && !await FilesSecurity.CanDeleteAsync(folder))
+            else if (!_ignoreException && checkPermissions && !canDelete)
             {
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
@@ -142,8 +147,6 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
             }
             else
             {
-                checkPermissions = isRoom ? false : checkPermissions;
-
                 canCalculate = FolderDao.CanCalculateSubitems(folderId) ? default : folderId;
 
                 await fileMarker.RemoveMarkAsNewForAllAsync(folder);

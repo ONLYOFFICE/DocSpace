@@ -63,7 +63,7 @@ if [ "${arch_name}" = "x86_64" ]; then
     docker compose -f db.yml up -d
 elif [ "${arch_name}" = "arm64" ]; then
     echo "CPU Type: arm64 -> run db.yml with arm64v8 image"
-    MYSQL_IMAGE=arm64v8/mysql:8.0.31-oracle \
+    MYSQL_IMAGE=arm64v8/mysql:8.0.32-oracle \
     docker compose -f db.yml up -d
 else
     echo "Error: Unknown CPU Type: ${arch_name}."

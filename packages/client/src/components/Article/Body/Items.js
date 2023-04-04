@@ -274,6 +274,10 @@ const Items = ({
       )
         return false;
 
+      const isArchive = draggableItems.find(
+        (f) => f.rootFolderType === FolderType.Archive
+      );
+
       if (
         item.rootFolderType === FolderType.SHARE &&
         item.access === ShareAccessRights.FullAccess
@@ -287,7 +291,7 @@ const Items = ({
             (item.pathParts[0] === myId || item.pathParts[0] === commonId)) ||
           item.rootFolderType === FolderType.USER ||
           item.rootFolderType === FolderType.COMMON ||
-          (item.rootFolderType === FolderType.TRASH && startDrag)
+          (item.rootFolderType === FolderType.TRASH && startDrag && !isArchive)
         ) {
           return true;
         }
@@ -367,7 +371,8 @@ const Items = ({
         );
       });
 
-      if (!firstLoad) items.splice(3, 0, <SettingsItem key="settings-item" />);
+      if (!firstLoad && !isVisitor)
+        items.splice(3, 0, <SettingsItem key="settings-item" />);
       if (!isVisitor && !isCollaborator)
         items.splice(3, 0, <AccountsItem key="accounts-item" />);
 
@@ -421,6 +426,7 @@ export default inject(
   }) => {
     const {
       selection,
+      bufferSelection,
       dragging,
       setDragging,
       trashIsEmpty,
@@ -459,7 +465,11 @@ export default inject(
       pathParts,
       data: treeFolders,
       selectedTreeNode,
-      draggableItems: dragging ? selection : null,
+      draggableItems: dragging
+        ? bufferSelection
+          ? [bufferSelection]
+          : selection
+        : null,
       dragging,
       setDragging,
       moveDragItems,

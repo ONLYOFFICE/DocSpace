@@ -407,10 +407,14 @@ class ContextOptionsStore {
     this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
   };
 
-  onClickDeleteSelectedFolder = (t) => {
-    const { setIsFolderActions, setDeleteDialogVisible } = this.dialogsStore;
+  onClickDeleteSelectedFolder = (t, isRoom) => {
+    const {
+      setIsFolderActions,
+      setDeleteDialogVisible,
+      setIsRoomDelete,
+    } = this.dialogsStore;
     const { confirmDelete } = this.settingsStore;
-    const { deleteAction } = this.filesActionsStore;
+    const { deleteAction, deleteRoomsAction } = this.filesActionsStore;
     const { id: selectedFolderId } = this.selectedFolderStore;
     const {
       isThirdPartySelection,
@@ -423,10 +427,26 @@ class ContextOptionsStore {
     if (confirmDelete || isThirdPartySelection) {
       getFolderInfo(selectedFolderId).then((data) => {
         setBufferSelection(data);
+        setIsRoomDelete(isRoom);
         setDeleteDialogVisible(true);
       });
+
+      return;
+    }
+
+    let translations;
+
+    if (isRoom) {
+      translations = {
+        successRemoveRoom: t("Files:RoomRemoved"),
+        successRemoveRooms: t("Files:RoomsRemoved"),
+      };
+
+      deleteRoomsAction([selectedFolderId], translations).catch((err) =>
+        toastr.error(err)
+      );
     } else {
-      const translations = {
+      translations = {
         deleteOperation: t("Translations:DeleteOperation"),
         deleteFromTrash: t("Translations:DeleteFromTrash"),
         deleteSelectedElem: t("Translations:DeleteSelectedElem"),
@@ -440,19 +460,19 @@ class ContextOptionsStore {
   };
 
   onClickDelete = (item, t) => {
-    if (item.id === this.selectedFolderStore.id) {
-      this.onClickDeleteSelectedFolder(t);
-      return;
-    }
+    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
     const {
       setRemoveItem,
       setDeleteThirdPartyDialogVisible,
     } = this.dialogsStore;
 
-    const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
+    if (id === this.selectedFolderStore.id) {
+      this.onClickDeleteSelectedFolder(t, isRoom);
 
-    console.log(providerKey, id, rootFolderId);
+      return;
+    }
+
     const isRootThirdPartyFolder = providerKey && id === rootFolderId;
 
     if (isRootThirdPartyFolder) {
@@ -512,6 +532,10 @@ class ContextOptionsStore {
           options[index].items = model[index].items.filter((item) =>
             filter.includes(item.key)
           );
+
+          if (options[index].items.length === 1) {
+            options[index] = options[index].items[0];
+          }
         }
       }
     }
@@ -883,6 +907,15 @@ class ContextOptionsStore {
         disabled: false,
         action: item.id,
       },
+      ...versionActions,
+      {
+        id: "option_link-for-room-members",
+        key: "link-for-room-members",
+        label: t("LinkForRoomMembers"),
+        icon: InvitationLinkReactSvgUrl,
+        onClick: () => this.onCopyLink(item, t),
+        disabled: false,
+      },
       {
         id: "option_room-info",
         key: "room-info",
@@ -917,14 +950,6 @@ class ContextOptionsStore {
         onClick: () => this.onClickLinkForPortal(item, t),
         disabled: false,
       },
-      {
-        id: "option_link-for-room-members",
-        key: "link-for-room-members",
-        label: t("LinkForRoomMembers"),
-        icon: InvitationLinkReactSvgUrl,
-        onClick: () => this.onCopyLink(item, t),
-        disabled: false,
-      },
       // {
       //   id: "option_send-by-email",
       //   key: "send-by-email",
@@ -932,11 +957,10 @@ class ContextOptionsStore {
       //   icon: MailReactSvgUrl,
       //   disabled: emailSendIsDisabled,
       // },
-      ...versionActions,
       {
         id: "option_show-info",
         key: "show-info",
-        label: t("InfoPanel:ViewDetails"),
+        label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
         disabled: false,
@@ -1045,7 +1069,7 @@ class ContextOptionsStore {
       {
         id: "option_archive-room",
         key: "archive-room",
-        label: t("ToArchive"),
+        label: t("MoveToArchive"),
         icon: RoomArchiveSvgUrl,
         onClick: (e) => this.onClickArchive(e),
         disabled: false,
@@ -1166,7 +1190,7 @@ class ContextOptionsStore {
       if (canArchiveRoom) {
         archiveOptions = {
           key: "archive-room",
-          label: t("ToArchive"),
+          label: t("MoveToArchive"),
           icon: RoomArchiveSvgUrl,
           onClick: (e) => this.onClickArchive(e),
           disabled: false,
@@ -1190,6 +1214,9 @@ class ContextOptionsStore {
 
       if (!isArchiveFolder) {
         options.push(pinOption);
+      }
+
+      if ((canArchiveRoom || canDelete) && !isArchiveFolder) {
         options.push({
           key: "separator0",
           isSeparator: true,

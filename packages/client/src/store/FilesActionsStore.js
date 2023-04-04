@@ -108,7 +108,11 @@ class FilesActionStore {
       resetFilterPage,
     } = this.filesStore;
 
-    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+    const {
+      isRoomsFolder,
+      isArchiveFolder,
+      isArchiveFolderRoot,
+    } = this.treeFoldersStore;
 
     let newFilter;
 
@@ -130,7 +134,7 @@ class FilesActionStore {
       updatedFolder = this.selectedFolderStore.parentId;
     }
 
-    if (isRoomsFolder || isArchiveFolder) {
+    if (isRoomsFolder || isArchiveFolder || isArchiveFolderRoot) {
       fetchRooms(
         updatedFolder,
         newFilter ? newFilter : roomsFilter.clone()
@@ -584,6 +588,7 @@ class FilesActionStore {
             id: selectedItem.id,
             isFolder: selectedItem.isFolder,
           },
+          false,
           false
         );
         break;
@@ -1287,8 +1292,12 @@ class FilesActionStore {
     const fileIds = [];
     const deleteAfter = false;
 
-    const { selection } = this.filesStore;
+    const { bufferSelection } = this.filesStore;
     const { isRootFolder } = this.selectedFolderStore;
+
+    const selection = bufferSelection
+      ? [bufferSelection]
+      : this.filesStore.selection;
 
     const isCopy = selection.findIndex((f) => f.security.Move) === -1;
 
@@ -1629,7 +1638,7 @@ class FilesActionStore {
           return {
             id: "menu-archive",
             key: "archive",
-            label: t("ToArchive"),
+            label: t("MoveToArchive"),
             iconUrl: RoomArchiveSvgUrl,
             onClick: () => this.archiveRooms("archive"),
             disabled: false,

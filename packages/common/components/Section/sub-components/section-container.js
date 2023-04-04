@@ -111,12 +111,8 @@ const StyledSectionContainer = styled.section`
 
 StyledSectionContainer.defaultProps = { theme: Base };
 
-class SectionContainer extends React.Component {
-  render() {
-    //console.log("PageLayout Section render");
-
-    return <StyledSectionContainer id="section" {...this.props} />;
-  }
-}
+const SectionContainer = React.forwardRef((props, forwardRef) => {
+  return <StyledSectionContainer ref={forwardRef} id="section" {...props} />;
+});
 
 export default SectionContainer;

@@ -73,10 +73,10 @@ public class StudioNotifySource : NotifySource
                 Actions.EnterpriseWhitelabelGuestActivationV10,
                 Actions.OpensourceGuestActivationV11,
 
-                Actions.SaasGuestWelcomeV115,
-                Actions.EnterpriseGuestWelcomeV10,
-                Actions.EnterpriseWhitelabelGuestWelcomeV10,
-                Actions.OpensourceGuestWelcomeV11,
+                Actions.SaasGuestWelcomeV1,
+                Actions.EnterpriseGuestWelcomeV1,
+                Actions.EnterpriseWhitelabelGuestWelcomeV1,
+                Actions.OpensourceGuestWelcomeV1,
 
                 Actions.EnterpriseAdminUserAppsTipsV1,
 
@@ -145,7 +145,12 @@ public class StudioNotifySource : NotifySource
                 Actions.SaasUserActivationV1,
                 Actions.EnterpriseUserActivationV1,
                 Actions.EnterpriseWhitelabelUserActivationV1,
-                Actions.OpensourceUserActivationV1
+                Actions.OpensourceUserActivationV1,
+
+                Actions.SaasOwnerPaymentWarningGracePeriodBeforeActivation,
+                Actions.SaasOwnerPaymentWarningGracePeriodActivation,
+                Actions.SaasOwnerPaymentWarningGracePeriodLastDay,
+                Actions.SaasOwnerPaymentWarningGracePeriodExpired
             );
     }
 

@@ -749,14 +749,8 @@ il team di ONLYOFFICE</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Benvenuti sul vostro web-office</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Benvenuti sul vostro web-office</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Messaggio dell'Utente agli Amministratori</value>
@@ -778,9 +772,6 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_migration_success" xml:space="preserve">
     <value>Un'altra migrazione regione portale completato con successo</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Benvenuti sul vostro web-office</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Benvenuti su ONLYOFFICE per uso personale!</value>
@@ -838,9 +829,6 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Unisciti a ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>‎Benvenuti nel vostro ONLYOFFICE‎</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} Notifica per il cambio profilo del portale </value>

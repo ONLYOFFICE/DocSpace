@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -57,14 +57,12 @@ const RestoreBackup = (props) => {
     confirmation: false,
   });
   const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const [isVisibleBackupListDialog, setIsVisibleBackupListDialog] = useState(
-    false
-  );
-  const [isVisibleSelectFileDialog, setIsVisibleSelectFileDialog] = useState(
-    false
-  );
+  const [isVisibleBackupListDialog, setIsVisibleBackupListDialog] =
+    useState(false);
+  const [isVisibleSelectFileDialog, setIsVisibleSelectFileDialog] =
+    useState(false);
 
-  useEffect(async () => {
+  const startRestoreBackup = useCallback(async () => {
     try {
       getProgress(t);
 
@@ -82,7 +80,10 @@ const RestoreBackup = (props) => {
     } catch (error) {
       toastr.error(error);
     }
+  }, []);
 
+  useEffect(() => {
+    startRestoreBackup();
     return () => {
       clearProgressInterval();
       setRestoreResource(null);

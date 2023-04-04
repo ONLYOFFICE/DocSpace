@@ -7,9 +7,10 @@ import styled from "styled-components";
 const StyledRowContent = styled(RowContent)`
   .row-main-container-wrapper {
     display: flex;
-    justify-content: space-between;
-    width: 100%;
+    justify-content: flex-start;
+    width: min-content;
   }
+  padding-bottom: 10px;
 `;
 
 export const HistoryContent = ({ sectionWidth, item }) => {
@@ -34,6 +35,7 @@ export const HistoryContent = ({ sectionWidth, item }) => {
         fontSize="12px"
         fontWeight={600}
         truncate={true}
+        color="#A3A9AE"
       >
         {dateStr}
       </Text>

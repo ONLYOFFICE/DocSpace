@@ -4,7 +4,7 @@
   "EditPhoto": "Editare foto",
   "InterfaceTheme": "Tema interfeței",
   "LightTheme": "Tema luminoasă",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <strong>{{ email }}</strong>.",
   "ProviderSuccessfullyConnected": "Furnizorul a fost conectat cu succes",
   "ProviderSuccessfullyDisconnected": "Furnizorul a fost deconectat cu succes",
   "ShowBackupCodes": "Afișare coduri de rezervă",

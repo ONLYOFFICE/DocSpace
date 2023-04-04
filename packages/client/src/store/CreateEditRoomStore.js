@@ -1,5 +1,5 @@
 import { makeAutoObservable } from "mobx";
-import { toastr } from "@docspace/components";
+import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
 
 class CreateEditRoomStore {
@@ -124,13 +124,19 @@ class CreateEditRoomStore {
           const img = new Image();
           img.onload = async () => {
             const { x, y, zoom } = roomParams.icon;
-            room = await addLogoToRoom(room.id, {
-              tmpFile: response.data,
-              ...calculateRoomLogoParams(img, x, y, zoom),
-            });
+            try {
+              room = await addLogoToRoom(room.id, {
+                tmpFile: response.data,
+                ...calculateRoomLogoParams(img, x, y, zoom),
+              });
+            } catch (e) {
+              toastr.error(e);
+              this.setIsLoading(false);
+              this.setConfirmDialogIsLoading(false);
+              this.onClose();
+            }
 
             !withPaging && this.onOpenNewRoom(room.id);
-
             URL.revokeObjectURL(img.src);
           };
           img.src = url;

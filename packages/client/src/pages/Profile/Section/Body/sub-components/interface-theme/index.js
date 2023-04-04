@@ -163,7 +163,7 @@ export default inject(({ auth }) => {
 
   return {
     changeTheme,
-    theme: user.theme,
+    theme: user.theme || "System",
     currentColorScheme,
     selectedThemeId,
   };

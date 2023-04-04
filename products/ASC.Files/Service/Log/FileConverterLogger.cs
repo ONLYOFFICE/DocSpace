@@ -39,8 +39,8 @@ public static partial class FileConverterLogger
     [LoggerMessage(Level = LogLevel.Error, Message = "Error convert {fileId} with url {url}")]
     public static partial void ErrorConvertFileWithUrl(this ILogger logger, string fileId, string url, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "{operationResultError} ConvertUrl: {convertedFileUrl} fromUrl: {fileUri}")]
-    public static partial void ErrorOperation(this ILogger logger, string operationResultError, string convertedFileUrl, string fileUri, Exception exception);
+    [LoggerMessage(Level = LogLevel.Error, Message = "{operationResultError} ConvertUrl: {convertedFileUrl} fromUrl: {fileUri} ConvertedFileType: {convertedFileType}")]
+    public static partial void ErrorOperation(this ILogger logger, string operationResultError, string convertedFileUrl, string fileUri, string convertedFileType, Exception exception);
     
     [LoggerMessage(Level = LogLevel.Error, Message = "CheckConvertFilesStatus timeout: {fileId} ({contentLengthString})")]
     public static partial void ErrorCheckConvertFilesStatus(this ILogger logger, string fileId, long contentLengthString);

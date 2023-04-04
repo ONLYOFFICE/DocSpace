@@ -3858,6 +3858,15 @@ namespace ASC.AuditTrail {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Trash emptied.
+        /// </summary>
+        public static string TrashEmptied {
+            get {
+                return ResourceManager.GetString("TrashEmptied", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Trusted mail domain settings updated.
         /// </summary>
         public static string TrustedMailDomainSettingsUpdated {

@@ -81,7 +81,7 @@ const PeopleTableRow = (props) => {
           isTextOverflow
           className="settings_unavailable"
         >
-          {item.room}
+          {item.context}
         </Text>
       </TableCell>
 

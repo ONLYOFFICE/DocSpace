@@ -79,7 +79,7 @@ if ! rpm -q mysql-community-server; then
 fi
 
 #add elasticsearch repo
-ELASTIC_VERSION="7.16.3"
+ELASTIC_VERSION="7.10.0"
 ELASTIC_DIST=$(echo $ELASTIC_VERSION | awk '{ print int($1) }')
 rpm --import https://artifacts.elastic.co/GPG-KEY-elasticsearch
 cat > /etc/yum.repos.d/elasticsearch.repo <<END

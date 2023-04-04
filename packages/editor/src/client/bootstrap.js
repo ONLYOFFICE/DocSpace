@@ -1,5 +1,5 @@
 import React from "react";
-import { hydrate } from "react-dom";
+import { hydrateRoot } from "react-dom/client";
 // import { registerSW } from "@docspace/common/sw/helper";
 import App from "./App.js";
 import pkg from "../../package.json";
@@ -11,17 +11,19 @@ const initialLanguage = window.initialLanguage;
 
 initI18n(initialI18nStoreASC);
 
-hydrate(
-  <React.Suspense fallback={<div></div>}>
-    <App
-      initialLanguage={initialLanguage}
-      initialI18nStoreASC={initialI18nStoreASC}
-      {...propsObj}
-    />
-  </React.Suspense>,
-  document.getElementById("root")
-);
-
+const container = document.getElementById("root");
+if (container) {
+  hydrateRoot(
+    container,
+    <React.Suspense fallback={<div></div>}>
+      <App
+        initialLanguage={initialLanguage}
+        initialI18nStoreASC={initialI18nStoreASC}
+        {...propsObj}
+      />
+    </React.Suspense>
+  );
+}
 if (IS_DEVELOPMENT) {
   const port = PORT || 5013;
   const socketPath = pkg.socketPath;

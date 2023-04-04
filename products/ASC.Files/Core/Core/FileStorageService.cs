@@ -83,8 +83,8 @@ public class FileStorageService //: IFileStorageService
     private readonly FileShareParamsHelper _fileShareParamsHelper;
     private readonly EncryptionLoginProvider _encryptionLoginProvider;
     private readonly CountRoomChecker _countRoomChecker;
-    private readonly RoomLinkService _roomLinkService;
-    private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
+    private readonly InvitationLinkService _invitationLinkService;
+    private readonly InvitationLinkHelper _invitationLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
     public FileStorageService(
         Global global,
@@ -138,8 +138,8 @@ public class FileStorageService //: IFileStorageService
         FileShareParamsHelper fileShareParamsHelper,
         EncryptionLoginProvider encryptionLoginProvider,
         CountRoomChecker countRoomChecker,
-        RoomLinkService roomLinkService,
-        DocSpaceLinkHelper docSpaceLinkHelper,
+        InvitationLinkService invitationLinkService,
+        InvitationLinkHelper invitationLinkHelper,
         StudioNotifyService studioNotifyService)
     {
         _global = global;
@@ -193,8 +193,8 @@ public class FileStorageService //: IFileStorageService
         _fileShareParamsHelper = fileShareParamsHelper;
         _encryptionLoginProvider = encryptionLoginProvider;
         _countRoomChecker = countRoomChecker;
-        _roomLinkService = roomLinkService;
-        _docSpaceLinkHelper = docSpaceLinkHelper;
+        _invitationLinkService = invitationLinkService;
+        _invitationLinkHelper = invitationLinkHelper;
         _studioNotifyService = studioNotifyService;
     }
 
@@ -2610,7 +2610,7 @@ public class FileStorageService //: IFileStorageService
 
         var aces = new List<AceWrapper>
         {
-            new AceWrapper
+            new()
             {
                 Access = share,
                 Id = linkId,
@@ -2618,7 +2618,7 @@ public class FileStorageService //: IFileStorageService
                 FileShareOptions = new FileShareOptions
                 {
                     Title = title,
-                    ExpirationDate = DateTime.UtcNow.Add(_docSpaceLinkHelper.ExpirationInterval)
+                    ExpirationDate = DateTime.UtcNow.Add(_invitationLinkHelper.IndividualLinkExpirationInterval)
                 }
             }
         };
@@ -3249,7 +3249,7 @@ public class FileStorageService //: IFileStorageService
                 continue;
             }
 
-            var link = _roomLinkService.GetInvitationLink(user.Email, share.Access, _authContext.CurrentAccount.ID);
+            var link = _invitationLinkService.GetInvitationLink(user.Email, share.Access, _authContext.CurrentAccount.ID);
             _studioNotifyService.SendEmailRoomInvite(user.Email, room.Title, link);
         }
     }
