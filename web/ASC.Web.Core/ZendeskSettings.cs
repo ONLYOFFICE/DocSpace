@@ -24,41 +24,24 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.ApiModels.ResponseDto;
+namespace ASC.Web.Core;
 
-public class AdditionalWhiteLabelSettingsDto: IMapFrom<AdditionalWhiteLabelSettings>
+[Serializable]
+public class ZendeskSettings : ISettings<ZendeskSettings>
 {
-    public bool StartDocsEnabled { get; set; }
+    public bool Enable { get; set; }
 
-    public bool HelpCenterEnabled { get; set; }
-
-    public bool BookTrainingEnabled { get; set; }
-
-    public bool FeedbackAndSupportEnabled { get; set; }
-
-    public string FeedbackAndSupportUrl { get; set; }
-
-    public bool UserForumEnabled { get; set; }
-
-    public string UserForumUrl { get; set; }
-
-    public bool VideoGuidesEnabled { get; set; }
-
-    public string VideoGuidesUrl { get; set; }
-
-    public string SalesEmail { get; set; }
-
-    public string BuyUrl { get; set; }
-
-    public bool LicenseAgreementsEnabled { get; set; }
-
-    public bool IsDefault { get; set; }
-
-    public string LicenseAgreementsUrl { get; set; }
-
-    public void Mapping(Profile profile)
+    [JsonIgnore]
+    public Guid ID
     {
-        profile.CreateMap<AdditionalWhiteLabelSettings, AdditionalWhiteLabelSettingsDto>()
-            .ConvertUsing<AdditionalWhiteLabelSettingsConverter>();
+        get { return new Guid("{73537E08-71F6-4706-BFDA-1417108AA7D5}"); }
+    }
+
+    public ZendeskSettings GetDefault()
+    {
+        return new ZendeskSettings()
+        {
+            Enable = false
+        };
     }
 }

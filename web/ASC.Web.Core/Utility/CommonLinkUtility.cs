@@ -513,6 +513,23 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         return GetRegionalUrl(url, inCurrentCulture ? CultureInfo.CurrentCulture.TwoLetterISOLanguageName : null);
     }
 
+    public string GetBookTrainingEmail(SettingsManager settingsManager, AdditionalWhiteLabelSettingsHelperInit additionalWhiteLabelSettingsHelper)
+    {
+        if (!settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().BookTrainingEnabled)
+        {
+            return string.Empty;
+        }
+
+        var email = additionalWhiteLabelSettingsHelper.DefaultBookTrainingEmail;
+
+        if (string.IsNullOrEmpty(email))
+        {
+            return string.Empty;
+        }
+
+        return email;
+    }
+
     public string GetFeedbackAndSupportLink(SettingsManager settingsManager, bool inCurrentCulture = true)
     {
         var settings = settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>();

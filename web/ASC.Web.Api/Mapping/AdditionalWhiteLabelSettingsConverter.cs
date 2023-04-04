@@ -45,6 +45,7 @@ public class AdditionalWhiteLabelSettingsConverter : ITypeConverter<AdditionalWh
             FeedbackAndSupportEnabled = source.FeedbackAndSupportEnabled,
             FeedbackAndSupportUrl = source.FeedbackAndSupportUrl,
             HelpCenterEnabled = source.HelpCenterEnabled,
+            BookTrainingEnabled = source.BookTrainingEnabled,
             IsDefault = _additionalWhiteLabelSettingsHelper.IsDefault(source),
             LicenseAgreementsEnabled = source.LicenseAgreementsEnabled,
             LicenseAgreementsUrl = source.LicenseAgreementsUrl,

@@ -53,6 +53,7 @@ public class SettingsDto
     public TenantStatus TenantStatus { get; set; }
     public string TenantAlias { get; set; }
     public string HelpLink { get; set; }
+    public string BookTrainigEmail { get; set; }
     public TenantDomainValidator DomainValidator { get; set; }
 
     public PluginsDto Plugins { get; set; }

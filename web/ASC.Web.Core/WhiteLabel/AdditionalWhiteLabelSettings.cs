@@ -40,6 +40,8 @@ public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettin
 
     public bool HelpCenterEnabled { get; set; }
 
+    public bool BookTrainingEnabled { get; set; }
+
     public bool FeedbackAndSupportEnabled { get; set; }
 
     public string FeedbackAndSupportUrl { get; set; }
@@ -79,6 +81,7 @@ public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettin
         {
             StartDocsEnabled = true,
             HelpCenterEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultHelpCenterUrl != null,
+            BookTrainingEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultBookTrainingEmail != null,
             FeedbackAndSupportEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl != null,
             FeedbackAndSupportUrl = AdditionalWhiteLabelSettingsHelper?.DefaultFeedbackAndSupportUrl,
             UserForumEnabled = AdditionalWhiteLabelSettingsHelper?.DefaultUserForumUrl != null,
@@ -121,6 +124,7 @@ public class AdditionalWhiteLabelSettingsHelper
 
         return settings.StartDocsEnabled == defaultSettings.StartDocsEnabled &&
                 settings.HelpCenterEnabled == defaultSettings.HelpCenterEnabled &&
+                settings.BookTrainingEnabled == defaultSettings.BookTrainingEnabled &&
                 settings.FeedbackAndSupportEnabled == defaultSettings.FeedbackAndSupportEnabled &&
                 settings.FeedbackAndSupportUrl == defaultSettings.FeedbackAndSupportUrl &&
                 settings.UserForumEnabled == defaultSettings.UserForumEnabled &&
@@ -150,6 +154,15 @@ public class AdditionalWhiteLabelSettingsHelperInit
         {
             var url = _configuration["web:help-center"];
             return string.IsNullOrEmpty(url) ? null : url;
+        }
+    }
+
+    public string DefaultBookTrainingEmail
+    {
+        get
+        {
+            var email = _configuration["web:book-training-email"];
+            return string.IsNullOrEmpty(email) ? null : email;
         }
     }
 

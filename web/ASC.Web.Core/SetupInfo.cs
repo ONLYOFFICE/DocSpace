@@ -119,7 +119,7 @@ public class SetupInfo
         StatisticTrackURL = GetAppSettings("web.track-url", string.Empty);
         UserVoiceURL = GetAppSettings("web.uservoice", string.Empty);
         DemoOrder = GetAppSettings("web.demo-order", string.Empty);
-        ZendeskKey = GetAppSettings("web.zendesk-key", string.Empty);
+        ZendeskKey = GetAppSettings("web:zendesk-key", string.Empty);
         RequestTraining = GetAppSettings("web.request-training", string.Empty);
         MainLogoURL = GetAppSettings("web.logo.main", string.Empty);
         MainLogoMailTmplURL = GetAppSettings("web.logo.mail.tmpl", string.Empty);

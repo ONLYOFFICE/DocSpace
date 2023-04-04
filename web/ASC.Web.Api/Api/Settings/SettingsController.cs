@@ -175,6 +175,7 @@ public class SettingsController : BaseSettingsController
             };
 
             settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
+            settings.BookTrainigEmail = _commonLinkUtility.GetBookTrainingEmail(_settingsManager, _additionalWhiteLabelSettingsHelper);
 
             bool debugInfo;
             if (bool.TryParse(_configuration["debug-info:enabled"], out debugInfo))
@@ -800,5 +801,34 @@ public class SettingsController : BaseSettingsController
     public void TelegramDisconnect()
     {
         _telegramHelper.Disconnect(_authContext.CurrentAccount.ID, Tenant.Id);
+    }
+    
+    [HttpGet("zendesk")]
+    public object GetZendeskKey()
+    {
+        if (string.IsNullOrEmpty(_setupInfo.ZendeskKey))
+        {
+            throw new NotSupportedException("Not available.");
+        }
+        
+        var settings = _settingsManager.Load<ZendeskSettings>();
+
+        if (!settings.Enable)
+        {
+            return string.Empty;
+        }
+
+        return _setupInfo.ZendeskKey;
+    }
+
+    [HttpPut("zendesk")]
+    public void Zendesk(ZendeskDto inDto)
+    {
+        if (string.IsNullOrEmpty(_setupInfo.ZendeskKey))
+        {
+            throw new NotSupportedException("Not available.");
+        }
+
+        _settingsManager.Save(new ZendeskSettings() { Enable = inDto.Enable });
     }
 }
