@@ -6,26 +6,26 @@ import Text from "@docspace/components/text";
 import { ToggleButton } from "@docspace/components";
 import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
-import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
-import WebhookDialog from "../WebhookDialog";
-import { DeleteWebhookDialog } from "../DeleteWebhookDialog";
-import { StatusBadge } from "../StatusBadge";
+import WebhookDialog from "../../WebhookDialog";
+import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
+import { StatusBadge } from "../../StatusBadge";
 
-export const WebhooksTableRow = ({
-  webhook,
-  toggleEnabled,
-  deleteWebhook,
-  editWebhook,
-  retryWebhookEvent,
-}) => {
+import { useHistory } from "react-router-dom";
+
+export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
+  const history = useHistory();
+
   const [isChecked, setIsChecked] = useState(webhook.isEnabled);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
   const [isDeleteOpened, setIsDeleteOpened] = useState(false);
 
   const closeSettings = () => setIsSettingsOpened(false);
   const openSettings = () => setIsSettingsOpened(true);
+  const onDeleteOpen = () => setIsDeleteOpened(true);
   const onDeleteClose = () => setIsDeleteOpened(false);
+  const redirectToHistory = () =>
+    history.push(`/portal-settings/developer/tools/webhooks/history/${webhook.id}`);
 
   const handleWebhookUpdate = (webhookInfo) => editWebhook(webhook, webhookInfo);
   const handleWebhookDelete = () => deleteWebhook(webhook);
@@ -45,14 +45,8 @@ export const WebhooksTableRow = ({
       key: "Webhook history dropdownItem",
       label: "Webhook history",
       icon: HistoryIcon,
-      onClick: () => console.log("webhooks history"),
+      onClick: redirectToHistory,
     },
-    // {
-    //   key: "Retry dropdownItem",
-    //   label: "Retry",
-    //   icon: RetryIcon,
-    //   onClick: () => retryWebhookEvent(webhook.id),
-    // },
     {
       key: "Separator dropdownItem",
       isSeparator: true,
@@ -61,7 +55,7 @@ export const WebhooksTableRow = ({
       key: "Delete webhook dropdownItem",
       label: "Delete webhook",
       icon: DeleteIcon,
-      onClick: () => setIsDeleteOpened(true),
+      onClick: onDeleteOpen,
     },
   ];
 
