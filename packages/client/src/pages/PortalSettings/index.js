@@ -21,6 +21,12 @@ const SessionLifetimePage = lazy(() =>
 const CustomizationSettings = lazy(() => import("./categories/common/index.js"));
 
 const DeveloperTools = lazy(() => import("./categories/developer-tools/index.js"));
+const WebhookHistory = lazy(() =>
+  import("./categories/developer-tools/Webhooks/WebhookHistory/index.js"),
+);
+const WebhookDetails = lazy(() =>
+  import("./categories/developer-tools/Webhooks/WebhookEventDetails/index.js"),
+);
 
 const LanguageAndTimeZoneSettings = lazy(() =>
   import("./categories/common/Customization/language-and-time-zone"),
@@ -66,6 +72,11 @@ const DEVELOPER_URLS = [
   combineUrl(PROXY_BASE_URL, "/developer/tools/webhooks/history/:id"),
   combineUrl(PROXY_BASE_URL, "/developer/tools/webhooks/history/:id/event/:eventId"),
 ];
+const WEBHOOK_HISTORY_URL = combineUrl(PROXY_BASE_URL, "/developer/tools/webhooks/history/:id");
+const WEBHOOK_DETAILS_URL = combineUrl(
+  PROXY_BASE_URL,
+  "/developer/tools/webhooks/history/:id/event/:eventId",
+);
 
 const BACKUP_URLS = [
   PROXY_BASE_URL,
@@ -76,28 +87,16 @@ const BACKUP_URLS = [
 
 const RESTORE_DATA_URL = combineUrl(PROXY_BASE_URL, "/restore");
 
-const LTZ_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/language-and-time-zone"
-);
+const LTZ_URL = combineUrl(PROXY_BASE_URL, "/customization/general/language-and-time-zone");
 const WELCOME_PAGE_SETTINGS_URL = combineUrl(
   PROXY_BASE_URL,
-  "/customization/general/welcome-page-settings"
+  "/customization/general/welcome-page-settings",
 );
 
-const DNS_SETTINGS = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/dns-settings"
-);
+const DNS_SETTINGS = combineUrl(PROXY_BASE_URL, "/customization/general/dns-settings");
 
-const PORTAL_RENAMING = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/portal-renaming"
-);
-const TEAM_TEMPLATE_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/team-template"
-);
+const PORTAL_RENAMING = combineUrl(PROXY_BASE_URL, "/customization/general/portal-renaming");
+const TEAM_TEMPLATE_URL = combineUrl(PROXY_BASE_URL, "/customization/general/team-template");
 const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
 const SECURITY_URLS = [
   combineUrl(PROXY_BASE_URL, "/security/access-rights"),
@@ -158,11 +157,13 @@ const Settings = () => {
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
 
+          <Route exact path={WEBHOOK_DETAILS_URL} component={WebhookDetails} />
+          <Route exact path={WEBHOOK_HISTORY_URL} component={WebhookHistory} />
           <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
-          <Redirect to={{pathname: ERROR_404_URL}} />
+          <Redirect to={{ pathname: ERROR_404_URL }} />
         </Switch>
       </Suspense>
     </Layout>
