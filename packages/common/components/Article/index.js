@@ -16,6 +16,7 @@ import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
 import ArticlePaymentAlert from "./sub-components/article-payment-alert";
 import ArticleTeamTrainingAlert from "./sub-components/article-team-training";
+import ArticleLiveChat from "./sub-components/article-live-chat";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
 import Portal from "@docspace/components/portal";
@@ -43,6 +44,7 @@ const Article = ({
   isBannerVisible,
   isNonProfit,
   isTeamTrainingAlertAvailable,
+  isLiveChatAvailable,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -192,6 +194,7 @@ const Article = ({
           {isTeamTrainingAlertAvailable && showText && (
             <ArticleTeamTrainingAlert />
           )}
+          {!isMobile && isLiveChatAvailable && <ArticleLiveChat />}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -255,6 +258,7 @@ export default inject(({ auth }) => {
     userStore,
     isPaymentPageAvailable,
     isTeamTrainingAlertAvailable,
+    isLiveChatAvailable,
     bannerStore,
   } = auth;
   const { isFreeTariff, isNonProfit } = currentQuotaStore;
@@ -293,5 +297,6 @@ export default inject(({ auth }) => {
     isBannerVisible,
     isNonProfit,
     isTeamTrainingAlertAvailable,
+    isLiveChatAvailable,
   };
 })(observer(Article));

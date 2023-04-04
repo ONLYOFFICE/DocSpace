@@ -14,6 +14,9 @@ import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
+import { ZendeskAPI } from "@docspace/common/components/Zendesk";
+import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
@@ -34,6 +37,7 @@ class ProfileActionsStore {
   selectedFolderStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
+  isShowLiveChat = false;
 
   constructor(
     authStore,
@@ -48,8 +52,26 @@ class ProfileActionsStore {
     this.treeFoldersStore = treeFoldersStore;
     this.selectedFolderStore = selectedFolderStore;
 
+    this.isShowLiveChat = this.getStateLiveChat();
+
     makeAutoObservable(this);
   }
+
+  getStateLiveChat = () => {
+    const state = localStorage.getItem(LIVE_CHAT_LOCAL_STORAGE_KEY) === "true";
+
+    if (!state) return false;
+
+    return state;
+  };
+
+  setStateLiveChat = (state) => {
+    if (typeof state !== "boolean") return;
+
+    localStorage.setItem(LIVE_CHAT_LOCAL_STORAGE_KEY, state.toString());
+
+    this.isShowLiveChat = state;
+  };
 
   setIsAboutDialogVisible = (visible) => {
     this.isAboutDialogVisible = visible;
@@ -95,8 +117,15 @@ class ProfileActionsStore {
     window.open(helpUrl, "_blank");
   };
 
-  onLiveChatClick = () => {
-    //window.open(supportUrl, "_blank");
+  onLiveChatClick = (t) => {
+    const isShow = !this.isShowLiveChat;
+
+    this.setStateLiveChat(isShow);
+
+    ZendeskAPI("webWidget", isShow ? "show" : "hide");
+
+    const text = isShow ? "LiveChatOn" : "LiveChatOff";
+    toastr.success(t(text));
   };
 
   onSupportClick = () => {
@@ -189,18 +218,20 @@ class ProfileActionsStore {
 
     let liveChat = null;
 
-    if (!isMobile) {
+    if (!isMobile && this.authStore.isLiveChatAvailable) {
       liveChat = {
         key: "user-menu-live-chat",
         icon: LiveChatReactSvgUrl,
         label: t("Common:LiveChat"),
-        onClick: this.onLiveChatClick,
+        onClick: () => this.onLiveChatClick(t),
+        checked: this.isShowLiveChat,
+        withToggle: true,
       };
     }
 
     let bookTraining = null;
 
-    if (!isMobile) {
+    if (!isMobile && this.authStore.isTeamTrainingAlertAvailable) {
       bookTraining = {
         key: "user-menu-book-training",
         icon: BookTrainingReactSvgUrl,

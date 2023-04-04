@@ -128,6 +128,8 @@
   "LatePayment": "Late payment",
   "LearnMore": "Learn more",
   "LiveChat": "Live chat",
+  "LiveChatOn": "Live chat was successfully connected",
+  "LiveChatOff": "Live chat was successfully disabled",
   "Load": "Load",
   "LoadingDescription": "Please wait...",
   "LoadingProcessing": "Loading...",

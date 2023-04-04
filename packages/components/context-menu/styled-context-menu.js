@@ -24,6 +24,20 @@ const styledMobileView = css`
   border-radius: ${(props) => props.theme.newContextMenu.mobileBorderRadius};
 `;
 
+export const SubMenuItem = styled.li`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  & > div {
+    margin-right: 12px;
+  }
+
+  & label {
+    position: static;
+  }
+`;
+
 const StyledContextMenu = styled.div`
   .p-contextmenu {
     position: absolute;
