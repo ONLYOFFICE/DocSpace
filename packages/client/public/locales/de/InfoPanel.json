@@ -20,7 +20,7 @@
   "FeedMoveFolder": "Ordner verschoben",
   "FeedRenameFile": "Datei umbenannt",
   "FeedRenameFolder": "Ordner umbenannt",
-  "FeedRenameRoom": "Raum <strong>\"{{oldRoomTitle}}\"</strong> umbenannt in <strong>\"{{roomTitle}}\"</strong>.",
+  "FeedRenameRoom": "Raum <strong>«{{oldRoomTitle}}»</strong> umbenannt in <strong>«{{roomTitle}}»</strong>.",
   "FeedUpdateFile": "Datei aktualisiert",
   "FeedUpdateRoom": "Icon geändert",
   "FeedUpdateUser": "hat jetzt die Rolle {{role}}",

@@ -57,7 +57,7 @@
   "Spreadsheet": "Tabuľka",
   "TooltipElementCopyMessage": "Kopírovať {{element}}",
   "TooltipElementsCopyMessage": "Kopírovať prvky {{element}}",
-  "TooltipElementsMoveMessage": "\"Presunúť prvky {{element}},",
+  "TooltipElementsMoveMessage": "Presunúť prvky {{element}}",
   "TrashEmptyDescription": "Do sekcie 'Kôš' sa presúvajú všetky zmazané súbory. V prípade chyby ich môžete obnoviť. Ak zmažete súbory zo sekcie 'Kôš', tak ich nebudete vedieť obnoviť.",
   "UnblockVersion": "Odblokovať/nahlásiť sa",
   "VersionBadge": "V.{{version}}",

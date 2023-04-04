@@ -18,7 +18,7 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Yaddaş seçin",
   "ThirdPartyStorageDescription": "Bu otaq üçün məlumat yaddaşı kimi üçüncü tərəf xidmətlərindən istifadə edin. Bu otağın məlumatlarını  saxlamaq üçün əlaqələndirilmiş yaddaşda yeni qovluq yaradılacaq.",
   "ThirdPartyStorageNoStorageAlert": "Əvvəllər \"İnteqrasiya\" bölməsində müvafiq xidməti birləşdirməlisiniz. Əks halda bağlantı mümkün olmayacaq.",
-  "ThirdPartyStoragePermanentSettingDescription": "Fayllar \"{{üçüncütərəffaylAd}}\" qovluğunda üçüncü tərəf {{üçüncütərəfAd}} deposunda saxlanılır.\n<strong>{{thirdpartyPath}}</strong>",
+  "ThirdPartyStoragePermanentSettingDescription": "Fayllar \"{{thirdpartyFolderName}}\" qovluğunda üçüncü tərəf {{thirdpartyTitle}} deposunda saxlanılır.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Üçüncü tərəfin yaddaşına qoşulmaq üçün DocSpace parametrlərinin İnteqrasiya bölməsində müvafiq xidməti əlavə etməlisiniz. İnteqrasiyanı aktivləşdirmək üçün DocSpace sahibi və ya administratorla əlaqə saxlayın.",
   "ThirdPartyStorageTitle": "Üçüncü tərəf yaddaşı",
   "ViewOnlyRoomDescription": "Hazır sənədlərə, hesabatlara, sənədləşməyə və digər fayllara baxmaq üçün paylaşın.",
