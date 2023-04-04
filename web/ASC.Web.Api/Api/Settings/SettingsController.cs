@@ -161,7 +161,8 @@ public class SettingsController : BaseSettingsController
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
             settings.SocketUrl = _configuration["web:hub:url"] ?? "";
-            settings.DomainValidator = _tenantDomainValidator;
+            settings.ZendeskKey = _setupInfo.ZendeskKey;
+            settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
 
             settings.Firebase = new FirebaseDto
             {
