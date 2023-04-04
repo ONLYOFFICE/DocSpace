@@ -49,7 +49,7 @@ export default withRouter(
 
     return {
       theme,
-      trainingEmail: additionalResourcesData.trainingEmail,
+      trainingEmail: additionalResourcesData?.trainingEmail,
       organizationName,
     };
   })(observer(ArticleTeamTrainingAlert))
