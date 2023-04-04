@@ -43,19 +43,32 @@ export const HistoryBlockItemList = ({
     };
   });
 
+  // If server returns two instances of the same item by mistake filters it out
+  const includedIds = [];
+  const filteredParsedItems = parsedItems.filter((item) => {
+    if (includedIds.indexOf(item.id) > -1) return false;
+    includedIds.push(item.id);
+    return true;
+  });
+
   return (
     <StyledHistoryBlockFilesList>
-      {parsedItems.map((item, i) => {
+      {filteredParsedItems.map((item, i) => {
+        includedIds.push(item);
         if (!isShowMore && i > 2) return null;
         return (
-          <StyledHistoryBlockFile isRoom={item.isRoom} key={i}>
+          <StyledHistoryBlockFile isRoom={item.isRoom} key={item.id + "__" + i}>
             <ReactSVG className="icon" src={getInfoPanelItemIcon(item, 24)} />
             <div className="item-title">
               {item.title ? (
                 [
-                  <span className="name">{item.title}</span>,
+                  <span className="name" key="hbil-item-name">
+                    {item.title}
+                  </span>,
                   item.fileExst && (
-                    <span className="exst">{item.fileExst}</span>
+                    <span className="exst" key="hbil-item-exst">
+                      {item.fileExst}
+                    </span>
                   ),
                 ]
               ) : (
