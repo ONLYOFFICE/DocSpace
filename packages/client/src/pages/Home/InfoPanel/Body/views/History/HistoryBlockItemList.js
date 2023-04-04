@@ -51,8 +51,16 @@ export const HistoryBlockItemList = ({
           <StyledHistoryBlockFile isRoom={item.isRoom} key={i}>
             <ReactSVG className="icon" src={getInfoPanelItemIcon(item, 24)} />
             <div className="item-title">
-              <span className="name">{item.title}</span>
-              {item.fileExst && <span className="exst">{item.fileExst}</span>}
+              {item.title ? (
+                [
+                  <span className="name">{item.title}</span>,
+                  item.fileExst && (
+                    <span className="exst">{item.fileExst}</span>
+                  ),
+                ]
+              ) : (
+                <span className="name">{item.fileExst}</span>
+              )}
             </div>
             <IconButton
               className="location-btn"
