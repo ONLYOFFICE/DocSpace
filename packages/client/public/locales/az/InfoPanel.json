@@ -8,7 +8,7 @@
   "FeedCreateFileSingle": "Fayl yaradıldı",
   "FeedCreateFolderSeveral": "Qovluqlar əlavə edildi",
   "FeedCreateFolderSingle": "Qovluq yaradıldı",
-  "FeedCreateRoom": "<güclü>«{{otaqAdı}}»</güclü> otaq yaradıldı",
+  "FeedCreateRoom": "<strong>«{{roomTitle}}»</strong> otaq yaradıldı",
   "FeedCreateRoomTag": "Teqlər əlavə edildi",
   "FeedCreateUser": "İstifadəçilər əlavə edildi",
   "FeedDeleteFile": "Fayllar silindi",
