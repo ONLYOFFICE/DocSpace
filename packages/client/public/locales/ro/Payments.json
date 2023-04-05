@@ -32,5 +32,5 @@
   "UpgradePlan": "Actualizare abonament",
   "UpgradePlanInfo": "Dacă adăugaţi noi utilizatori, va depăşi numărul maxim permis de vizitatori într-o sală conform planului tarifar al abonamentului dvs.",
   "UserNotFound": "Utilizatorul <1>{{email}}</1> nu a fost găsit.",
-  "YourPrice": "Preţul dvs."
+  "YourPrice": "Preţul dvs"
 }
