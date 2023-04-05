@@ -518,9 +518,6 @@ public class FileStorageService<T> //: IFileStorageService
             await SetAcesForPrivateRoomAsync(room, aces, notify, sharingMessage);
         }
 
-        var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
-        await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
-
         return room;
     }
 
@@ -620,6 +617,12 @@ public class FileStorageService<T> //: IFileStorageService
             var folder = await folderDao.GetFolderAsync(folderId);
 
             await _socketManager.CreateFolderAsync(folder);
+
+            if (isRoom)
+            {
+                var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
+                _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+            }
 
             _ = _filesMessageService.Send(folder, GetHttpHeaders(), isRoom ? MessageAction.RoomCreated : MessageAction.FolderCreated, folder.Title);
 

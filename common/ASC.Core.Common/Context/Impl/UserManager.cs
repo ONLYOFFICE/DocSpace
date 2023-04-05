@@ -364,7 +364,7 @@ public class UserManager
 
         if (value > 0)
         {
-            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+            _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
 
         return newUserData;
@@ -668,7 +668,7 @@ public class UserManager
         return GetUsers(employeeStatus).Where(u => IsUserInGroupInternal(u.Id, groupId, refs)).ToArray();
     }
 
-    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false)
+    public async Task AddUserIntoGroup(Guid userId, Guid groupId, bool dontClearAddressBook = false, bool notifyWebSocket = true)
     {
         if (Constants.LostUser.Id == userId || Constants.LostGroupInfo.ID == groupId)
         {
@@ -676,8 +676,8 @@ public class UserManager
         }
 
         var user = GetUsers(userId);
-        var isUser = IsUserInGroup(userId, Constants.GroupUser.ID);
-        var userGroups = GetUserGroups(userId);
+        var isUser = this.IsUser(user);
+        var isPaidUser = IsPaidUser(user);
 
         _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
@@ -685,6 +685,7 @@ public class UserManager
         _userService.SaveUserGroupRef(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
 
         ResetGroupCache(userId);
+
         if (groupId == Constants.GroupUser.ID)
         {
             var tenant = _tenantManager.GetCurrentTenant();
@@ -698,12 +699,16 @@ public class UserManager
             }
         }
 
+        if (!notifyWebSocket)
+        {
+            return;
+        }
+
         if (isUser && groupId != Constants.GroupUser.ID ||
-            !isUser && groupId == Constants.GroupUser.ID &&
-            userGroups.Any())
+            !isUser && !isPaidUser && groupId != Constants.GroupUser.ID)
         {
             var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
-            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+            _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
     }
 
@@ -715,8 +720,8 @@ public class UserManager
         }
 
         var user = GetUsers(userId);
-        var isUser = IsUserInGroup(userId, Constants.GroupUser.ID);
-        var userGroups = GetUserGroups(userId);
+        var isUserBefore = this.IsUser(user);
+        var isPaidUserBefore = IsPaidUser(user);
 
         _permissionContext.DemandPermissions(new UserGroupObject(new UserAccount(user, _tenantManager.GetCurrentTenant().Id, _userFormatter), groupId),
             Constants.Action_EditGroups);
@@ -725,11 +730,14 @@ public class UserManager
 
         ResetGroupCache(userId);
 
-        if (groupId != Constants.GroupUser.ID &&
-            !isUser && userGroups.Any())
+        var isUserAfter = this.IsUser(user);
+        var isPaidUserAfter = IsPaidUser(user);
+
+        if (isPaidUserBefore && !isPaidUserAfter && isUserAfter ||
+            isUserBefore && !isUserAfter)
         {
             var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
-            await _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+            _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
         }
     }
 
@@ -963,7 +971,7 @@ public class UserManager
         {
             return null;
         }
-
+        
         return new Group
         {
             Id = g.ID,
@@ -972,5 +980,10 @@ public class UserManager
             CategoryId = g.CategoryID,
             Sid = g.Sid
         };
+    }
+
+    private bool IsPaidUser(UserInfo userInfo)
+    {
+        return this.IsCollaborator(userInfo) || this.IsDocSpaceAdmin(userInfo);
     }
 }
