@@ -31,16 +31,20 @@ const ToggleButtonWrapper = styled.div`
   justify-content: flex-end;
 `;
 
+const FlexWrapper = styled.div`
+  display: flex;
+`;
+
 export const WebhookRowContent = ({ sectionWidth, webhook, isChecked, handleToggleEnabled }) => {
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
-        <span>
-          <Text fontWeight={600} fontSize="14px">
+        <FlexWrapper>
+          <Text fontWeight={600} fontSize="14px" style={{ marginRight: "8px" }}>
             {webhook.title}
           </Text>
           {webhook.status && <StatusBadge status={webhook.status} />}
-        </span>
+        </FlexWrapper>
         <Text fontWeight={600} fontSize="12px" color="#A3A9AE">
           {webhook.url}
         </Text>
