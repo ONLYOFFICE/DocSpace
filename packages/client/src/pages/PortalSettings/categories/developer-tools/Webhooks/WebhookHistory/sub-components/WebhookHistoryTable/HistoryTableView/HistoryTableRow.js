@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import moment from "moment";
+import { useHistory } from "react-router-dom";
 
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
@@ -11,11 +12,16 @@ import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 export const HistoryTableRow = ({ eventData }) => {
+  const history = useHistory();
+
+  const redirectToDetails = () => history.push(window.location.pathname + `/event/${eventData.id}`);
+
   const contextOptions = [
     {
       key: "Webhook details dropdownItem",
       label: "Webhook details",
       icon: InfoIcon,
+      onClick: redirectToDetails,
     },
     {
       key: "Retry dropdownItem",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { useHistory } from "react-router-dom";
 
@@ -11,11 +11,15 @@ import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 export const HistoryRow = ({ historyItem, sectionWidth }) => {
   const history = useHistory();
 
+  const redirectToDetails = () =>
+    history.push(window.location.pathname + `/event/${historyItem.id}`);
+
   const contextOptions = [
     {
       key: "Webhook details dropdownItem",
       label: "Webhook details",
       icon: InfoIcon,
+      onClick: redirectToDetails,
     },
     {
       key: "Retry dropdownItem",
