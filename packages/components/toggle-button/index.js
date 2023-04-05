@@ -5,7 +5,9 @@ import Text from "../text";
 import { motion } from "framer-motion";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-const ToggleIcon = ({ isChecked, isLoading }) => {
+const ToggleIcon = ({ isChecked, isLoading, noAnimation = false }) => {
+  const transition = noAnimation ? { duration: 0 } : {};
+
   return (
     <motion.svg
       animate={[
@@ -34,8 +36,16 @@ const ToggleIcon = ({ isChecked, isLoading }) => {
               },
             },
           },
-          checked: { cx: 20, r: 6 },
-          notChecked: { cx: 8, r: 6 },
+          checked: {
+            cx: 20,
+            r: 6,
+            transition,
+          },
+          notChecked: {
+            cx: 8,
+            r: 6,
+            transition,
+          },
         }}
       />
     </motion.svg>
@@ -65,6 +75,7 @@ class ToggleButton extends Component {
       className,
       style,
       isLoading,
+      noAnimation,
     } = this.props;
 
     //console.log("ToggleButton render");
@@ -91,7 +102,11 @@ class ToggleButton extends Component {
             disabled={isDisabled}
             onChange={onChange}
           />
-          <ToggleIcon isChecked={this.state.checked} isLoading={isLoading} />
+          <ToggleIcon
+            isChecked={this.state.checked}
+            isLoading={isLoading}
+            noAnimation={noAnimation}
+          />
           {label && (
             <Text className="toggle-button-text" as="span">
               {label}

@@ -70,9 +70,58 @@ const StyledSimpleUserRow = styled(Row)`
       cursor: pointer;
       ${checkedStyle}
 
-      margin-top: -3px;
-      border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      @media (min-width: 1024px) {
+        margin-top: -4px !important;
+        padding-top: 1px;
+        padding-bottom: 1px;
+
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        border-bottom: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+
+        .styled-checkbox-container {
+          .styled-element {
+            padding-top: 1px;
+          }
+        }
+      }
+
+      @media (max-width: 1024px) {
+        margin-top: -3px !important;
+
+        padding-top: 0.8px;
+        padding-bottom: 0.8px;
+
+        border-top: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        border-bottom: ${(props) =>
+          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+
+        .owner_icon {
+          padding-bottom: 0.8px;
+        }
+
+        .mainIcons {
+          .paid-badge {
+            margin-top: -1px;
+          }
+        }
+
+        .expandButton {
+          padding-bottom: 0.8px;
+        }
+      }
+
+      ${(props) =>
+        props.sectionWidth <= 500 &&
+        css`
+          .mainIcons {
+            .paid-badge {
+              margin-top: 0.8px !important;
+            }
+          }
+        `}
     }
   `}
 
@@ -83,12 +132,6 @@ const StyledSimpleUserRow = styled(Row)`
   .styled-element {
     height: 32px;
     margin-right: 12px;
-  }
-  .checkbox {
-    padding-right: 5px !important;
-    :hover {
-      padding-right: 5px !important;
-    }
   }
 `;
 

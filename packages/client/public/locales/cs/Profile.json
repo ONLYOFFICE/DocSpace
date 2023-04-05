@@ -15,7 +15,7 @@
   "LogoutAllActiveSessionsDescription": "Všechna aktivní připojení kromě tohoto připojení budou odhlášena, protože jsou právě používána.",
   "LogoutBtn": "Odhlášení",
   "LogoutDescription": "Poznámka. Všechna aktivní připojení kromě tohoto připojení budou odhlášena, protože jsou právě používána.",
-  "LogoutFrom": "Odhlášení z {{platformy}} {{prohlížeč}} ?",
+  "LogoutFrom": "Odhlášení z {{platform}} {{browser}} ?",
   "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny k aktivaci e-mailu byly odeslány na e-mailovou adresu <strong>{{ email }}</strong>.",
   "MyProfile": "Můj profil",
   "ProviderSuccessfullyConnected": "Poskytovatel úspěšně připojen",

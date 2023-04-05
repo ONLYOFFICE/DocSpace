@@ -98,7 +98,7 @@ class AccountsContextOptionsStore {
           return {
             key: option,
             icon: FolderReactSvgUrl,
-            label: "Room list",
+            label: t("RoomSelector:RoomList"),
             onClick: () => this.openUserRoomList(item),
           };
         case "enable":

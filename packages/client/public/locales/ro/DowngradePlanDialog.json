@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "Spaţiu de stocare actual: <1>{{size}}</1>.",
+  "DowngradePlan": "Retrogradare abonament",
+  "SaveOrChange": "Diminuați valoarea parametrului necesar sau păstraţi tariful actual.",
+  "StorageSpaceSizeAllowed": "Dimensiunea maximă a spaţiului de stocare: <1>{{size}}</1>."
+}

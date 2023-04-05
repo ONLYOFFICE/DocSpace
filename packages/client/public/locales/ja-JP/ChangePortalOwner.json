@@ -5,6 +5,10 @@
   "ChangeOwner": "DocSpaceの所有者を変更する",
   "ChangeUser": "ユーザーを変更する",
   "DeactivateOrDeletePortal": "DocSpaceを停止する、または解除する",
+  "DoTheSame": "管理者と同じように行う",
   "ManagePortal": "ポータル構成を管理する",
-  "ManageUser": "ユーザーアカウントを管理する"
+  "ManageUser": "ユーザーアカウントを管理する",
+  "NewPortalOwner": "新しいDocSpaceの所有者",
+  "PortalOwnerCan": "DocSpaceの所有者のアクセス権：",
+  "SetAccessRights": "アクセス権を設定する"
 }

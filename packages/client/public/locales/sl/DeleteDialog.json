@@ -11,6 +11,7 @@
   "MoveToTrashFolderFromPersonal": "To mapo boste izbrisali. Ste prepričani, da želite nadaljevati?",
   "MoveToTrashItems": "Izbrisali boste te elemente. Če ste jih dali v skupno rabo z drugo osebo, ji ne bodo več na voljo. Ste prepričani, da želite nadaljevati?",
   "MoveToTrashItemsFromPersonal": "Izbrisali boste te elemente. Ste prepričani, da želite nadaljevati?",
+  "MoveToTrashTitle": "Premakni v Koš?",
   "UnsubscribeButton": "Odjavi se",
   "UnsubscribeNote": "Ali ste prepričani, da se želite odjaviti od izbranih elementov iz seznama?",
   "UnsubscribeTitle": "Potrditev odjave"

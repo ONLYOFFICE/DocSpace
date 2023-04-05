@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Ti preghiamo di creare la prima stanza in Le mie stanze.",
+  "EmptyRoomsHeader": "Ancora nessuna stanza qui",
+  "RoomList": "Elenco delle stanze",
+  "SearchEmptyRoomsDescription": "Nessuna stanza corrisponde a questo filtro. Provane uno diverso o cancella il filtro per visualizzare tutte le stanze."
+}

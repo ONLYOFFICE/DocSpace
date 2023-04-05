@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Die Konfiguration der Authentifizierungs-App wird zurückgesetzt.",
-  "ResetApplicationTitle": "Konfiguration der Anwendung zurücksetzen"
+  "ResetApplicationTitle": "Konfiguration der Anwendung zurücksetzen",
+  "SuccessResetApplication": "Die Anwendungseinstellungen für die Authentifizierung wurden erfolgreich zurückgesetzt."
 }

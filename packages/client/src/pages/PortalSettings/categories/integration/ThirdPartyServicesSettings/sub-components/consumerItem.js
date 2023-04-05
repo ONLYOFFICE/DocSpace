@@ -8,6 +8,18 @@ import ConsumerToggle from "./consumerToggle";
 import { Base } from "@docspace/components/themes";
 import { thirdpartiesLogo } from "@docspace/common/utils/image-helpers";
 
+const StyledItem = styled.div`
+  .consumer-description {
+    ${(props) =>
+      !props.isThirdPartyAvailable &&
+      css`
+        color: #a3a9ae;
+      `}
+  }
+`;
+
+StyledItem.defaultProps = { theme: Base };
+
 const StyledBox = styled(Box)`
   .consumer-icon {
     ${(props) =>
@@ -29,6 +41,14 @@ const StyledBox = styled(Box)`
           }
         `}
       `}
+
+    ${(props) =>
+      !props.isThirdPartyAvailable &&
+      css`
+        path {
+          opacity: 0.5;
+        }
+      `}
   }
 `;
 
@@ -42,12 +62,13 @@ class ConsumerItem extends React.Component {
       setConsumer,
       updateConsumerProps,
       t,
+      isThirdPartyAvailable,
     } = this.props;
 
     const logo = thirdpartiesLogo.get(`${consumer.name.toLowerCase()}.svg`);
 
     return (
-      <>
+      <StyledItem isThirdPartyAvailable={isThirdPartyAvailable}>
         <Box
           displayProp="flex"
           justifyContent="space-between"
@@ -61,6 +82,7 @@ class ConsumerItem extends React.Component {
                 : false
             }
             isLinkedIn={consumer.name === "linkedin"}
+            isThirdPartyAvailable={isThirdPartyAvailable}
           >
             <ReactSVG
               src={logo}
@@ -74,12 +96,13 @@ class ConsumerItem extends React.Component {
               onModalOpen={onModalOpen}
               updateConsumerProps={updateConsumerProps}
               t={t}
+              isDisabled={!isThirdPartyAvailable}
             />
           </Box>
         </Box>
 
-        <Text>{consumer.description}</Text>
-      </>
+        <Text className="consumer-description">{consumer.description}</Text>
+      </StyledItem>
     );
   }
 }

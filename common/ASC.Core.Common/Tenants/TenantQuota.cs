@@ -222,7 +222,7 @@ public class TenantQuota : IMapFrom<DbQuota>
 
         _countUserFeature = new CountUserFeature(this) { Order = 1 };
         _countPaidUserFeature = new CountPaidUserFeature(this);
-        _usersInRoomFeature = new UsersInRoomFeature(this) { Order = 8 };
+        _usersInRoomFeature = new UsersInRoomFeature(this) { Order = 8, Visible = false };
         _countRoomFeature = new CountRoomFeature(this) { Order = 2 };
         _maxTotalSizeFeature = new MaxTotalSizeFeature(this);
         _maxFileSizeFeature = new MaxFileSizeFeature(this);

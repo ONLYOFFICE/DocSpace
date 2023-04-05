@@ -1,6 +1,6 @@
 {
   "AllowedManagerNumber": "Número de gestores permitidos: <1>{{valuesRange}}</1>.",
-  "CannotDowngradePlan": "No puede cambiar a un plan inferior, ya que la cantidad de almacenamiento/número de gestores supera las limitaciones según el plan de precios seleccionado.",
+  "CannotDowngradePlan": "No puede cambiar a un plan inferior, ya que la cantidad de almacenamiento/número de gestores supera las limitaciones según el plan de precios seleccionado:",
   "CurrentManagerNumber": "Número actual de gestores: <1>{{currentCount}}</1>.",
   "CurrentStorageSpace": "Espacio de almacenamiento actual: <1>{{size}}</1>.",
   "DowngradePlan": "Cambiar al plan anterior",

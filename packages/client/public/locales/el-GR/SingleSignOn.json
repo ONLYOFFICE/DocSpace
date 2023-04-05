@@ -1,1 +1,5 @@
-{}
+{
+  "CustomEntryTooltip": "Η λεζάντα για το κουμπί που χρησιμοποιείται για τη σύνδεση στον χώρο με την υπηρεσία ενιαίας σύνδεσης",
+  "ServiceProviderSettings": "Ρυθμίσεις παρόχου υπηρεσιών ONLYOFFICE",
+  "SignOnEndpointUrl": "URL des Single Sign-On Endpunkts vom IdP"
+}

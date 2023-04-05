@@ -18,9 +18,12 @@ const CategoryWrapper = (props) => {
 
   const tooltip = () => (
     <StyledTooltip>
-      <Text className={tooltipUrl ? "subtitle" : ""}>{tooltipTitle}</Text>
+      <Text className={tooltipUrl ? "subtitle" : ""} fontSize="12px">
+        {tooltipTitle}
+      </Text>
       {tooltipUrl && (
         <Link
+          fontSize="12px"
           target="_blank"
           isHovered
           href={tooltipUrl}

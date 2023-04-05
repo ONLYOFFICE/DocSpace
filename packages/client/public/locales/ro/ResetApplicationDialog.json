@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Setările aplicației de autentificare vor fi resetate.",
-  "ResetApplicationTitle": "Resetarea aplicației"
+  "ResetApplicationTitle": "Resetarea aplicației",
+  "SuccessResetApplication": "Setările aplicaţiei de autentificare au fost resetate cu succes."
 }

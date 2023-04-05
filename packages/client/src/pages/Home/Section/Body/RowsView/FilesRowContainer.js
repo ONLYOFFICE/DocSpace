@@ -3,11 +3,11 @@ import { inject, observer } from "mobx-react";
 import RowContainer from "@docspace/components/row-container";
 import SimpleFilesRow from "./SimpleFilesRow";
 import { isMobile } from "react-device-detect";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import marginStyles from "./CommonStyles";
 import { isTablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
-
+import { tablet } from "@docspace/components/utils/device";
 const StyledRowContainer = styled(RowContainer)`
   .row-list-item:first-child {
     .row-selected {
@@ -18,6 +18,18 @@ const StyledRowContainer = styled(RowContainer)`
         padding-top: 0px;
         padding-bottom: 1px;
         ${marginStyles};
+
+        @media ${tablet} {
+          ${(props) =>
+            !props.isSmallContainer &&
+            css`
+              .row_content {
+                .is-pinned {
+                  padding-top: 0px !important;
+                }
+              }
+            `}
+        }
       }
     }
   }
@@ -47,6 +59,39 @@ const StyledRowContainer = styled(RowContainer)`
     }
   }
 
+  .row-hotkey-border {
+    .files-row {
+      margin-top: -3px;
+      padding-top: 2px;
+
+      .row_content {
+        padding-top: 1px;
+      }
+    }
+  }
+
+  .row-selected {
+    .row_content {
+      padding-top: 1px;
+
+      .mainIcons {
+        padding-bottom: 1px;
+      }
+    }
+
+    @media ${tablet} {
+      ${(props) =>
+        !props.isSmallContainer &&
+        css`
+          .row_content {
+            .is-pinned {
+              padding-top: 0.8px !important;
+            }
+          }
+        `}
+    }
+  }
+
   .row-selected:last-child {
     .files-row {
       border-bottom: ${(props) =>
@@ -61,7 +106,7 @@ const StyledRowContainer = styled(RowContainer)`
     .files-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -2px;
+      margin-top: -2.2px;
       padding-top: 1px;
       padding-bottom: 1px;
       ${marginStyles};
@@ -85,6 +130,7 @@ const FilesRowContainer = ({
   withPaging,
   highlightFile,
 }) => {
+  const isSmallContainer = sectionWidth <= 500;
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
     // 400 - it is desktop info panel width
@@ -135,7 +181,8 @@ const FilesRowContainer = ({
       hasMoreFiles={hasMoreFiles}
       draggable
       useReactWindow={!withPaging}
-      itemHeight={59}
+      itemHeight={59.2}
+      isSmallContainer={isSmallContainer}
     >
       {filesListNode}
     </StyledRowContainer>

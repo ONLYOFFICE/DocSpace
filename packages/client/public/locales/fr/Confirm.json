@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "Le mot de passe a bien été modifié",
   "ConfirmOwnerPortalSuccessMessage": "Le propriétaire de DocSpace a été changé avec succès. Dans 10 secondes, vous serez redirigé.",
-  "ConfirmOwnerPortalTitle": "Veuillez confirmer le changement de propriétaire. Nouveau propriétaire : {{newOwner}}.",
+  "ConfirmOwnerPortalTitle": "Veuillez confirmer le changement de propriétaire de DocSpace. Nouveau propriétaire : {{newOwner}}.",
   "CurrentNumber": "Votre numéro de téléphone mobile actuel",
   "DeleteProfileBtn": "Supprimer mon compte",
   "DeleteProfileConfirmation": "Attention ! Vous êtes sur le point de supprimer ce compte.",
@@ -18,6 +18,7 @@
   "LoginRegistryButton": "S'inscrire",
   "PassworResetTitle": "Maintenant, vous pouvez créer un nouveau mot de passe.",
   "PhoneSubtitle": "L'authentification à 2 facteurs est activée pour assurer une protection supplémentaire. Entrez votre numéro de téléphone portable pour continuer le travail dans DocSpace. Le numéro de téléphone portable doit être entré en utilisant le format international avec le code du pays.",
+  "PortalContinueTitle": "Veuillez confirmer que vous souhaitez réactiver votre DocSpace.",
   "PortalDeactivateTitle": "Veuillez confirmer que vous souhaitez désactiver votre DocSpace.",
   "PortalRemoveTitle": "Veuillez confirmer que vous souhaitez supprimer votre DocSpace.",
   "Reactivate": "Réactiver",
@@ -27,5 +28,6 @@
   "SetAppTitle": "Configurez votre application d'authentification",
   "SuccessDeactivate": "Votre compte a été désactivé avec succès. Dans 10 secondes, vous serez redirigé vers le <1>site</1>.",
   "SuccessReactivate": "Votre compte a été réactivé avec succès. Dans 10 secondes, vous serez redirigé vers le <1>portail</1>.",
-  "WelcomeUser": "Bienvenue sur notre DocSpaceen !\nPour commencer, enregistrez-vous, ou connectez-vous via les réseaux sociaux."
+  "SuccessRemoved": "Votre compte a été supprimé avec succès. Dans 10 secondes, vous serez redirigé vers le <1>site</1>.",
+  "WelcomeUser": "Bienvenue sur notre DocSpace!\nPour commencer, enregistrez-vous, ou connectez-vous via les réseaux sociaux."
 }
