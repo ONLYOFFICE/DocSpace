@@ -4,5 +4,6 @@
   "EmailErrorMessage": "Էլփոստի հասցեն վավեր չէ: Դուք կարող եք խմբագրել էլփոստը՝ սեղմելով դրա վրա:",
   "InviteViaLinkDescriptionAccounts": "Ստեղծեք ունիվերսալ հղում DocSpace-ում ինքնալիազորման համար",
   "InviteViaLinkDescriptionRoom": "Ստեղծեք համընդհանուր հղում սենյակում ինքնալիազորման համար",
-  "LinkCopySuccess": "Հղումը պատճենվել է"
+  "LinkCopySuccess": "Հղումը պատճենվել է",
+  "SendInvitation": "Ուղարկել հրավոր"
 }

@@ -6,5 +6,6 @@
   "FileUploadTitle": "Ֆայլը վերբեռնում",
   "HideMessage": "Այլևս չցուցադրել այս ուղերձը",
   "InfoCreateFileIn": "Նոր ֆայլը'{{fileTitle}}' ֆայլը ստեղծվում է '{{folderTitle}}'",
+  "OpenFileMessage": "Ձեր բացած փաստաթղթի ֆայլը կվերածվի Office Open XML ձևաչափի՝ արագ դիտման և խմբագրման համար:",
   "SaveOriginalFormatMessage": "Պահպանել ֆայլի պատճենը սկզբնական ձևաչափով"
 }
