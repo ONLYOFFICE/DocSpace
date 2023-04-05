@@ -129,7 +129,7 @@
   "LearnMore": "Learn more",
   "LiveChat": "Live chat",
   "LiveChatOn": "Live chat was successfully connected",
-  "LiveChatOff": "Live chat was successfully disabled",
+  "LiveChatOff": "Live chat was successfully disconnected",
   "Load": "Load",
   "LoadingDescription": "Please wait...",
   "LoadingProcessing": "Loading...",
