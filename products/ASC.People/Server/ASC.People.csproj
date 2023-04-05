@@ -13,6 +13,7 @@
 	<ImplicitUsings>enable</ImplicitUsings>
     <Copyright>(c) Ascensio System SIA. All rights reserved</Copyright>
 	  <ImplicitUsings>enable</ImplicitUsings>
+    <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <Optimize>false</Optimize>
