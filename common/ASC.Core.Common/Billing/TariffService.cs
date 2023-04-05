@@ -218,8 +218,6 @@ public class TariffService : ITariffService
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
                         tariffId = asynctariff.Id;
-
-                        NotifyWebSocket(tariff);
                     }
                 }
                 catch (BillingNotFoundException)
@@ -247,8 +245,6 @@ public class TariffService : ITariffService
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
                         tariffId = asynctariff.Id;
-
-                        NotifyWebSocket(tariff);
                     }
                 }
                 catch (Exception error)
@@ -773,8 +769,9 @@ public class TariffService : ITariffService
                 // update tenant.LastModified to flush cache in documents
                 _tenantService.SaveTenant(_coreSettings, t);
             }
-
             ClearCache(tenant);
+
+            NotifyWebSocket(currentTariff, tariffInfo);
         }
 
         return inserted;
@@ -945,20 +942,11 @@ public class TariffService : ITariffService
         }
     }
 
-    private void NotifyWebSocket(Tariff tariff)
+    private void NotifyWebSocket(Tariff currenTariff, Tariff newTariff)
     {
         var quotaSocketManager = _serviceProvider.GetRequiredService<QuotaSocketManager>();
 
-        TenantQuota updatedQuota = null;
-        foreach (var tariffRow in tariff.Quotas)
-        {
-            var qty = tariffRow.Quantity;
-
-            var quota = _quotaService.GetTenantQuota(tariffRow.Id);
-
-            quota *= qty;
-            updatedQuota += quota;
-        }
+        var updatedQuota = GetTenantQuotaFromTariff(newTariff);
 
         var maxTotalSize = updatedQuota.MaxTotalSize;
         var maxTotalSizeFeatureName = updatedQuota.GetFeature<MaxTotalSizeFeature>().Name;
@@ -969,6 +957,37 @@ public class TariffService : ITariffService
         var maxPaidUsersFeatureName = updatedQuota.GetFeature<CountPaidUserFeature>().Name;
 
         _ = quotaSocketManager.ChangeQuotaFeatureValue(maxPaidUsersFeatureName, maxPaidUsers);
+
+        var maxRoomCount = updatedQuota.CountRoom;
+        var maxRoomCountFeatureName = updatedQuota.GetFeature<CountRoomFeature>().Name;
+
+        _ = quotaSocketManager.ChangeQuotaFeatureValue(maxRoomCountFeatureName, maxRoomCount);
+
+        var currentQuota = GetTenantQuotaFromTariff(currenTariff);
+
+        var free = updatedQuota.Free;
+        if (currentQuota.Free != free)
+        {
+            var freeFeatureName = updatedQuota.GetFeature<FreeFeature>().Name;
+
+            _ = quotaSocketManager.ChangeQuotaFeatureValue(freeFeatureName, free);
+        }
+    }
+
+    private TenantQuota GetTenantQuotaFromTariff(Tariff tariff)
+    {
+        TenantQuota result = null;
+        foreach (var tariffRow in tariff.Quotas)
+        {
+            var qty = tariffRow.Quantity;
+
+            var quota = _quotaService.GetTenantQuota(tariffRow.Id);
+
+            quota *= qty;
+            result += quota;
+        }
+
+        return result;
     }
 
     public int GetPaymentDelay()
