@@ -164,54 +164,56 @@ const Error404Route = (props) => (
   </React.Suspense>
 );
 
-class FilesContent extends React.Component {
-  constructor(props) {
-    super(props);
+const FilesContent = (props) => {
+  const pathname = window.location.pathname.toLowerCase();
+  const isEditor = pathname.indexOf("doceditor") !== -1;
+  const [isDesktopInit, setIsDesktopInit] = React.useState(false);
 
-    const pathname = window.location.pathname.toLowerCase();
-    this.isEditor = pathname.indexOf("doceditor") !== -1;
-    this.isDesktopInit = false;
-  }
+  const {
+    loadFilesInfo,
+    setIsLoaded,
+    isAuthenticated,
+    user,
+    isEncryption,
+    encryptionKeys,
+    setEncryptionKeys,
+    isLoaded,
+    isDesktop,
+    showMenu,
+    isFrame,
+    withMainButton,
+    history,
+    t,
+  } = props;
 
-  componentDidMount() {
+  React.useEffect(() => {
     loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
 
-    this.props
-      .loadFilesInfo()
+    loadFilesInfo()
       .catch((err) => toastr.error(err))
       .finally(() => {
-        this.props.setIsLoaded(true);
+        setIsLoaded(true);
 
         updateTempContent();
       });
-  }
 
-  componentWillUnmount() {
-    const script = document.getElementById("img-tiff-script");
-    document.body.removeChild(script);
-  }
+    return () => {
+      const script = document.getElementById("img-tiff-script");
+      document.body.removeChild(script);
+    };
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    const {
-      isAuthenticated,
-      user,
-      isEncryption,
-      encryptionKeys,
-      setEncryptionKeys,
-      isLoaded,
-      isDesktop,
-    } = this.props;
-    // console.log("componentDidUpdate: ", this.props);
-    if (isAuthenticated && !this.isDesktopInit && isDesktop && isLoaded) {
-      this.isDesktopInit = true;
+  React.useEffect(() => {
+    if (isAuthenticated && !isDesktopInit && isDesktop && isLoaded) {
+      setIsDesktopInit(true);
       regDesktop(
         user,
         isEncryption,
         encryptionKeys,
         setEncryptionKeys,
-        this.isEditor,
+        isEditor,
         null,
-        this.props.t
+        t
       );
       console.log(
         "%c%s",
@@ -220,25 +222,31 @@ class FilesContent extends React.Component {
         encryptionKeys
       );
     }
-  }
+  }, [
+    t,
+    isAuthenticated,
+    user,
+    isEncryption,
+    encryptionKeys,
+    setEncryptionKeys,
+    isLoaded,
+    isDesktop,
+    isDesktopInit,
+  ]);
 
-  render() {
-    const { showMenu, isFrame, withMainButton, history } = this.props;
-
-    return (
-      <>
-        <GlobalEvents />
-        <Panels />
-        {isFrame ? (
-          showMenu && <FilesArticle history={history} />
-        ) : (
-          <FilesArticle history={history} withMainButton={withMainButton} />
-        )}
-        <FilesSection withMainButton={withMainButton} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <GlobalEvents />
+      <Panels />
+      {isFrame ? (
+        showMenu && <FilesArticle history={history} />
+      ) : (
+        <FilesArticle history={history} withMainButton={withMainButton} />
+      )}
+      <FilesSection withMainButton={withMainButton} />
+    </>
+  );
+};
 
 const Files = inject(({ auth, filesStore }) => {
   const {
