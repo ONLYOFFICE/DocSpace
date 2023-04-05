@@ -82,9 +82,9 @@ Badge.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Set hovered state and effects of link */
+  /** Sets hovered state and link effects */
   isHovered: PropTypes.bool,
-  /** Disabled hover styles */
+  /** Disables hover styles */
   noHover: PropTypes.bool,
 };
 
