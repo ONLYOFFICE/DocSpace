@@ -14,7 +14,7 @@ import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
-
+import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -426,7 +426,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
 
   return (
     <Layout>
-      <Router>
+      <Router history={history}>
         {toast}
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
