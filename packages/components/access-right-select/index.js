@@ -95,7 +95,7 @@ const AccessRightSelect = ({
 };
 
 AccessRightSelect.propTypes = {
-  /** Will be triggered whenever an AccessRightSelect is selected option */
+  /** Will be triggered when the AccessRightSelect is a selected option */
   onSelect: PropTypes.func,
   /** List of advanced options */
   advancedOptions: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
