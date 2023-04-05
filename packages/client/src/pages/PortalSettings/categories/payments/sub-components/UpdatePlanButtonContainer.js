@@ -59,15 +59,11 @@ const UpdatePlanButtonContainer = ({
     }
   };
 
-  const successToastr = () =>
-    toastr.success(
-      <Trans t={t} i18nKey="BusinessUpdated" ns="Payments">
-        {{ planName: currentTariffPlanTitle }}
-      </Trans>
-    );
-
   const resetIntervalSuccess = () => {
-    intervalId && successToastr();
+    intervalId &&
+      toastr.success(
+        t("BusinessUpdated", { planName: currentTariffPlanTitle })
+      );
 
     setIsLoading(false);
     clearInterval(intervalId);
@@ -93,7 +89,7 @@ const UpdatePlanButtonContainer = ({
 
         const managersObject = res.features.find((obj) => obj.id === MANAGER);
 
-        if (managersObject && managersObject.value !== previousManagersCount) {
+        if (managersObject?.value !== previousManagersCount) {
           setPortalQuotaValue(res);
 
           resetIntervalSuccess();
