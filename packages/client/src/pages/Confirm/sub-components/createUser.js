@@ -40,7 +40,15 @@ import {
 } from "./StyledCreateUser";
 
 const CreateUserForm = (props) => {
-  const { settings, t, greetingTitle, providers, isDesktop, linkData } = props;
+  const {
+    settings,
+    t,
+    greetingTitle,
+    providers,
+    isDesktop,
+    linkData,
+    capabilities,
+  } = props;
   const inputRef = React.useRef(null);
 
   const emailFromLink = linkData.email ? linkData.email : "";
@@ -94,7 +102,7 @@ const CreateUserForm = (props) => {
   }, []);*/
 
   useEffect(() => {
-    const { isAuthenticated, logout, linkData, capabilities } = props;
+    const { isAuthenticated, logout, linkData } = props;
 
     if (isAuthenticated) {
       const path = window.location;
@@ -350,6 +358,8 @@ const CreateUserForm = (props) => {
   };
 
   const oauthDataExists = () => {
+    if (!capabilities?.oauthEnabled) return false;
+
     let existProviders = 0;
     providers && providers.length > 0;
     providers.map((item) => {
