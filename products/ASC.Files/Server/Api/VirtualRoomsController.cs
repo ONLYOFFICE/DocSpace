@@ -299,7 +299,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <summary>
     /// Sets the access rights to a virtual room with the ID specified in the request.
     /// </summary>
-    /// <short>Set the room access rights</short>
+    /// <short>Set room access rights</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.RoomInvitationRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for inviting users to a room: <![CDATA[
@@ -347,7 +347,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <summary>
     /// Returns the access rights of a virtual room with the ID specified in the request.
     /// </summary>
-    /// <short>Get the room access rights</short>
+    /// <short>Get room access rights</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
     /// <returns>Security information of room files: sharing rights, a user who has the access to the specified file, the file is locked by this user or not, this user is an owner of the specified file or not, this user can edit the access to the specified file or not</returns>
@@ -397,7 +397,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Add room tags</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for adding tags: Names (IEnumerable&lt;string&gt;) - tag names</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for adding tags: <![CDATA[Names (IEnumerable&lt;string&gt;) - tag names]]></param>
     /// <returns>Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/tags</path>
     /// <httpMethod>PUT</httpMethod>
@@ -417,7 +417,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Remove room tags</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for removing tags: Names (IEnumerable&lt;string&gt;) - tag names</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for removing tags: <![CDATA[Names (IEnumerable&lt;string&gt;) - tag names]]></param>
     /// <returns>Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/tags</path>
     /// <httpMethod>DELETE</httpMethod>
@@ -526,7 +526,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Resend room invitations</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UserInvintationRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">User invitation request parameters: UsersIds (IEnumerable&lt;Guid&gt;) - list of user IDs</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UserInvintationRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">User invitation request parameters: <![CDATA[UsersIds (IEnumerable&lt;Guid&gt;) - list of user IDs]]></param>
     /// <returns>Task awaiter</returns>
     /// <path>api/2.0/files/rooms/{id}/resend</path>
     /// <httpMethod>POST</httpMethod>
@@ -693,7 +693,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </summary>
     /// <short>Delete tags</short>
     /// <category>Virtual rooms</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Batch tags request parameters: Names (IEnumerable&lt;string&gt;) - list of tag names</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Batch tags request parameters: <![CDATA[Names (IEnumerable&lt;string&gt;) - list of tag names]]></param>
     /// <returns>Task awaiter</returns>
     /// <path>api/2.0/files/tags</path>
     /// <httpMethod>DELETE</httpMethod>

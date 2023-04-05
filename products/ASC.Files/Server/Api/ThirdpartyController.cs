@@ -151,7 +151,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Remove a third-party account</short>
     /// <category>Third-party integration</category>
     /// <returns>Third-party folder ID</returns>
-    /// <path>api/2.0/files/thirdparty/{providerId:int}</path>
+    /// <path>api/2.0/files/thirdparty/{providerId}</path>
     /// <httpMethod>DELETE</httpMethod>
     /// <exception cref="ArgumentException"></exception>
     [HttpDelete("thirdparty/{providerId:int}")]
@@ -226,7 +226,7 @@ public class ThirdpartyController : ApiControllerBase
     /// Return a backup of the connected third-party account.
     /// </summary>
     /// <category>Third-party integration</category>
-    /// <short>Get the third-party account backup</short>
+    /// <short>Get a third-party account backup</short>
     /// <returns>Folder for the third-party account backup: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/thirdparty/backup</path>
     /// <httpMethod>GET</httpMethod>
@@ -325,7 +325,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <summary>
     /// Saves a backup of the connected third-party account.
     /// </summary>
-    /// <short>Save the third-party account backup</short>
+    /// <short>Save a third-party account backup</short>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyBackupRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Third-party backup request parameters: <![CDATA[
     /// <ul>
     ///     <li><b>Url</b> (string) - connection URL for the sharepoint,</li>

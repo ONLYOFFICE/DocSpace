@@ -215,7 +215,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <ul>
     ///     <li><b>ActionLink</b> (ActionLinkConfig) - the config parameter which contains the information about the comment in the document that will be scrolled to:</li>
     ///     <ul>
-    ///         <li>Action (ActionConfig) - the information about the comment in the document that will be scrolled to (Data (string) and Type (string)).</li>
+    ///         <li><b>Action</b> (ActionConfig) - the information about the comment in the document that will be scrolled to (Data (string) and Type (string)).</li>
     ///     </ul>
     ///     <li><b>Emails</b> (List&lt;string&gt;) - a list of emails which will receive the mention message,</li>
     ///     <li><b>Message</b> (string) - the comment message.</li>

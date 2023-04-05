@@ -146,7 +146,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <summary>
     /// Returns the detailed information about a folder with the ID specified in the request.
     /// </summary>
-    /// <short>Get the folder information</short>
+    /// <short>Get folder information</short>
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
     /// <category>Folders</category>
     /// <returns>Folder parameters: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>

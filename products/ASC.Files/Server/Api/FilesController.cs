@@ -64,7 +64,7 @@ public class FilesControllerThirdparty : FilesController<string>
     /// <summary>
     /// Returns the detailed information about a third-party file with the ID specified in the request.
     /// </summary>
-    /// <short>Get the third-party file information</short>
+    /// <short>Get third-party file information</short>
     /// <param type="System.String, System" name="fileId">File ID</param>
     /// <category>Files</category>
     /// <returns>File entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
@@ -322,7 +322,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <summary>
     /// Returns the detailed information about a file with the ID specified in the request.
     /// </summary>
-    /// <short>Get the file information</short>
+    /// <short>Get file information</short>
     /// <param type="System.Int32, System" name="fileId">File ID</param>
     /// <param type="System.Int32, System" name="version">File version</param>
     /// <category>Files</category>
@@ -659,7 +659,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create thumbnails</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters: FileIds (IEnumerable&lt;JsonElement&gt;) - list of file IDs</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters: <![CDATA[FileIds (IEnumerable&lt;JsonElement&gt;) - list of file IDs]]></param>
     /// <returns>List of file IDs</returns>
     /// <path>api/2.0/files/thumbnails</path>
     /// <httpMethod>POST</httpMethod>
@@ -678,7 +678,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// <ul>
     ///     <li><b>FilesId</b> (JsonElement[]) - list of file IDs,</li>
     ///     <li><b>CreateSubfolder</b> (bool) - specifies whether to create a subfolder or not,</li>
-    ///     <li><b>FileProperties</b> (EntryPropertiesRequestDto) - file properties:</li>
+    ///     <li><b>FileProperties</b> (EntryPropertiesRequestDto) - file properties that are represented as the following object:</li>
     ///     <p><b>FormFilling</b> (FormFillingPropertiesRequestDto) - form filling properties:</p>
     ///     <ul>
     ///         <li><b>CollectFillForm</b> (bool) - specifies if the data will be collected from the filled forms or not,</li>
