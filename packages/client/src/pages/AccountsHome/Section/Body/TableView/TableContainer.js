@@ -43,6 +43,24 @@ const StyledTableContainer = styled(TableContainer)`
     .table-container_row-context-menu-wrapper {
       ${contextCss}
     }
+
+    .table-container_cell {
+      .paid-badge {
+        p {
+          padding-top: 1px;
+        }
+      }
+    }
+  }
+
+  :hover {
+    .table-container_cell {
+      .paid-badge {
+        p {
+          padding-top: 1px;
+        }
+      }
+    }
   }
 
   .table-row-selected + .table-row-selected {

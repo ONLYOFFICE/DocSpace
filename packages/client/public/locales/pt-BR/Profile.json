@@ -15,7 +15,7 @@
   "LogoutAllActiveSessionsDescription": "Todas as conexões ativas, exceto esta conexão, serão desconectadas, pois estão em uso no momento.",
   "LogoutBtn": "Sair",
   "LogoutDescription": "Observação. Todas as conexões ativas, exceto esta conexão, serão desconectadas, pois estão em uso no momento.",
-  "LogoutFrom": "Sair de {{{plataforma}} {{browser}} ?",
+  "LogoutFrom": "Sair de {{{platform}} {{browser}} ?",
   "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <strong>{{email}}</strong>.",
   "MyProfile": "Meu perfil",
   "ProviderSuccessfullyConnected": "Provedor conectado com sucesso",

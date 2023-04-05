@@ -24,6 +24,17 @@ const disabledAndHeaderStyle = css`
   }
 `;
 
+const WrapperToggle = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  width: 36px;
+
+  & label {
+    position: static;
+  }
+`;
+
 const StyledDropdownItem = styled.div`
   display: ${(props) => (props.textOverflow ? "block" : "flex")};
   width: ${(props) => props.theme.dropDownItem.width};
@@ -184,4 +195,4 @@ const IconWrapper = styled.div`
 `;
 IconWrapper.defaultProps = { theme: Base };
 
-export { StyledDropdownItem, IconWrapper };
+export { StyledDropdownItem, IconWrapper, WrapperToggle };

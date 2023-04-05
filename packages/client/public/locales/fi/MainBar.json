@@ -1,1 +1,10 @@
-{}
+{
+  "ClickHere": "Klikkaa tästä",
+  "ConfirmEmailDescription": "Käytä aktivointisähköpostissa annettua linkkiä. Etkö ole saanut aktivointilinkkiä sähköpostilla?",
+  "ConfirmEmailHeader": "Ole hyvä ja aktivoi sähköpostiosoitteesi päästäksesi käyttämään DocSpacen ominaisuuksia.",
+  "RequestActivation": "Pyydä aktivointia vielä kerran",
+  "RoomQuotaDescription": "Voit arkistoida huoneita, joita et käytä tai <1>{{clickHere}}</1> löytääksesi sopivamman hinnoitteluohjelman DocSpacellesi.",
+  "RoomQuotaHeader": "Huoneet täyttyvät pian {{currentValue}} / {{maxValue}}",
+  "StorageQuotaDescription": "Voit poistaa tarpeettomat tiedostot tai <1>{{clickHere}}</1> löytääksesi sopivamman hintaohjelman DocSpacellesi.",
+  "StorageQuotaHeader": "Tallennustilan määrä on ylittymässä: {{currentValue}} / {{maxValue}}"
+}

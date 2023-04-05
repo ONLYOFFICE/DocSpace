@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "Huidige opslagruimte: <1>{{size}}</1>.",
+  "DowngradePlan": "Downgrade plan",
+  "SaveOrChange": "Verlaag de vereiste parameter of behoud uw huidige prijsplan.",
+  "StorageSpaceSizeAllowed": "Toegestane opslagruimte grootte: <1>{{size}}</1>."
+}

@@ -57,13 +57,15 @@ const RemovePortal = (props) => {
 
           <FormWrapper>
             {isRemoved ? (
-              <Trans t={t} i18nKey="SuccessRemoved" ns="Confirm">
-                Your account has been successfully removed. In 10 seconds you
-                will be redirected to the
-                <Link isHovered href={url}>
-                  site
-                </Link>
-              </Trans>
+              <Text>
+                <Trans t={t} i18nKey="SuccessRemoved" ns="Confirm">
+                  Your account has been successfully removed. In 10 seconds you
+                  will be redirected to the
+                  <Link isHovered href={url}>
+                    site
+                  </Link>
+                </Trans>
+              </Text>
             ) : (
               <>
                 <Text className="subtitle">{t("PortalRemoveTitle")}</Text>

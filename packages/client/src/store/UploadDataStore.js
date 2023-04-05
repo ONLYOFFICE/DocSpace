@@ -21,6 +21,8 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
+import { combineUrl } from "@docspace/common/utils";
+import config from "PACKAGE_FILE";
 
 const UPLOAD_LIMIT_AT_ONCE = 5;
 
@@ -280,7 +282,7 @@ class UploadDataStore {
     this.setUploadData(newUploadData);
   };
 
-  convertFile = (file, t) => {
+  convertFile = (file, t, isOpen) => {
     this.dialogsStore.setConvertItem(null);
 
     const secondConvertingWithPassword = file.hasOwnProperty("password");
@@ -312,7 +314,7 @@ class UploadDataStore {
         this.filesToConversion.push(file);
         if (!secondConvertingWithPassword && !conversionPositionIndex)
           this.uploadedFilesHistory.push(file);
-        this.startConversion(t);
+        this.startConversion(t, isOpen);
       } else {
         this.filesToConversion.push(file);
         if (!secondConvertingWithPassword && !conversionPositionIndex)
@@ -387,7 +389,7 @@ class UploadDataStore {
     return (fileIndex / length) * 100;
   };
 
-  startConversion = async (t) => {
+  startConversion = async (t, isOpen = false) => {
     const {
       isRecentFolder,
       isFavoritesFolder,
@@ -512,6 +514,26 @@ class UploadDataStore {
 
         if (progress === 100) {
           if (!error) error = data[0].error;
+
+          if (isOpen && data && data[0]) {
+            let tab =
+              !this.authStore.settingsStore.isDesktopClient && fileInfo.fileExst
+                ? window.open(
+                    combineUrl(
+                      window.DocSpaceConfig?.proxy?.url,
+                      config.homepage,
+                      `/doceditor`
+                    ),
+                    "_blank"
+                  )
+                : null;
+
+            this.filesStore.openDocEditor(
+              fileInfo.id,
+              fileInfo.providerKey,
+              tab
+            );
+          }
 
           runInAction(() => {
             const file = this.files.find((file) => file.fileId === fileId);
@@ -1310,7 +1332,8 @@ class UploadDataStore {
     folderIds,
     fileIds,
     conflictResolveType,
-    deleteAfter
+    deleteAfter,
+    operationId
   ) => {
     const {
       setSecondaryProgressBarData,
@@ -1325,10 +1348,16 @@ class UploadDataStore {
       deleteAfter
     )
       .then((res) => {
-        if (res[0]?.error) return Promise.reject(res[0].error);
+        const pbData = { icon: "duplicate", operationId };
+        let data = null;
 
-        const data = res[0] ? res[0] : null;
-        const pbData = { icon: "duplicate" };
+        if (res && res.length > 0) {
+          if (res[res.length - 1]?.error) {
+            return Promise.reject(res[res.length - 1]);
+          }
+
+          data = res[res.length - 1] ? res[res.length - 1] : null;
+        }
 
         return this.loopFilesOperations(data, pbData)
           .then(() =>
@@ -1344,9 +1373,10 @@ class UploadDataStore {
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
+          operationId,
         });
         this.clearActiveOperations(fileIds, folderIds);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
         return Promise.reject(err);
       });
   };
@@ -1356,7 +1386,8 @@ class UploadDataStore {
     folderIds,
     fileIds,
     conflictResolveType,
-    deleteAfter
+    deleteAfter,
+    operationId
   ) => {
     const {
       setSecondaryProgressBarData,
@@ -1371,8 +1402,16 @@ class UploadDataStore {
       deleteAfter
     )
       .then((res) => {
-        const data = res[0] ? res[0] : null;
-        const pbData = { icon: "move" };
+        const pbData = { icon: "move", operationId };
+        let data = null;
+
+        if (res && res.length > 0) {
+          if (res[res.length - 1]?.error) {
+            return Promise.reject(res[res.length - 1]);
+          }
+
+          data = res[res.length - 1] ? res[res.length - 1] : null;
+        }
 
         return this.loopFilesOperations(data, pbData)
           .then(() =>
@@ -1388,9 +1427,10 @@ class UploadDataStore {
         setSecondaryProgressBarData({
           visible: true,
           alert: true,
+          operationId,
         });
         this.clearActiveOperations(fileIds, folderIds);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
         return Promise.reject(err);
       });
   };
@@ -1421,6 +1461,8 @@ class UploadDataStore {
       ? data.conflictResolveType
       : ConflictResolveType.Duplicate;
 
+    const operationId = uniqueid("operation_");
+
     this.secondaryProgressDataStore.setSecondaryProgressBarData({
       icon: isCopy ? "duplicate" : "move",
       visible: true,
@@ -1428,6 +1470,7 @@ class UploadDataStore {
       label: isCopy ? translations.copy : translations.move,
       alert: false,
       filesCount: this.secondaryProgressDataStore.filesCount + fileIds.length,
+      operationId,
     });
 
     return isCopy
@@ -1436,14 +1479,16 @@ class UploadDataStore {
           folderIds,
           fileIds,
           conflictResolveType,
-          deleteAfter
+          deleteAfter,
+          operationId
         )
       : this.moveToAction(
           destFolderId,
           folderIds,
           fileIds,
           conflictResolveType,
-          deleteAfter
+          deleteAfter,
+          operationId
         );
   };
 
@@ -1457,7 +1502,7 @@ class UploadDataStore {
     let progress = data.progress;
 
     if (!data) {
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      setTimeout(() => clearSecondaryProgressData(pbData.operationId), TIMEOUT);
       return;
     }
 
@@ -1482,6 +1527,7 @@ class UploadDataStore {
         visible: true,
         alert: false,
         currentFile: item,
+        operationId: pbData.operationId,
       });
     }
 
@@ -1518,7 +1564,10 @@ class UploadDataStore {
       if (!withPaging) {
         !isCopy && removeFiles(fileIds, folderIds);
         this.clearActiveOperations(fileIds, folderIds);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        setTimeout(
+          () => clearSecondaryProgressData(pbData.operationId),
+          TIMEOUT
+        );
         this.dialogsStore.setIsFolderActions(false);
         return;
       }
@@ -1535,7 +1584,10 @@ class UploadDataStore {
         false
       ).finally(() => {
         this.clearActiveOperations(fileIds, folderIds);
-        setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+        setTimeout(
+          () => clearSecondaryProgressData(pbData.operationId),
+          TIMEOUT
+        );
         this.dialogsStore.setIsFolderActions(false);
       });
     } else {
@@ -1546,9 +1598,10 @@ class UploadDataStore {
         percent: 100,
         visible: true,
         alert: false,
+        operationId: pbData.operationId,
       });
 
-      setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
+      setTimeout(() => clearSecondaryProgressData(pbData.operationId), TIMEOUT);
     }
   };
 

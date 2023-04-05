@@ -119,10 +119,10 @@ public class FoldersModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
             {
                 Item = SharedFolderItem,
-                ItemId = string.Format("{0}_{1}", folder.Id, shareRecord.Subject),
+                ItemId = $"{folder.Id}_{shareRecord.Subject}",
                 Product = Product,
                 Module = Name,
                 Title = folder.Title,
@@ -130,14 +130,16 @@ public class FoldersModule : FeedModule
                 ExtraLocation = folder.ParentId.ToString(),
                 Keywords = folder.Title,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, folder.ParentId.ToString()),
+                GroupId = GetGroupId(SharedFolderItem, shareRecord.Owner, shareRecord.TimeStamp, folder.ParentId.ToString()),
                 ContextId = contextId
             };
 
             return feed;
         }
 
-        return new Feed.Aggregator.Feed(folder.CreateBy, folder.CreateOn)
+        var folderCreatedUtc = folder.CreateOn.ToUniversalTime();
+
+        return new Feed.Aggregator.Feed(folder.CreateBy, folderCreatedUtc)
         {
             Item = FolderItem,
             ItemId = folder.Id.ToString(),
@@ -147,7 +149,7 @@ public class FoldersModule : FeedModule
             ExtraLocationTitle = parentFolder.Title,
             ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.ParentId.ToString()),
+            GroupId = GetGroupId(FolderItem, folder.CreateBy, folderCreatedUtc, folder.ParentId.ToString()),
             ContextId = contextId
         };
     }

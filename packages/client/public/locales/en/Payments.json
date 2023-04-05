@@ -37,7 +37,7 @@
   "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/month</3>",
   "UpgradeNow": "Upgrade now",
   "UpgradePlan": "Upgrade plan",
-  "UpgradePlanInfo": "Adding new users will exceed the maximum number of room members allowed by your current pricing plan.",
+  "UpgradePlanInfo": "By adding new users you will exceed the maximum number of room members allowed by your current pricing plan.",
   "UserNotFound": "User <1>{{email}}</1> is not found.",
   "UserNotFoundMatchingEmail": "We couldn’t find the user with the matching Stripe e-mail.",
   "YourPrice": "Your price"

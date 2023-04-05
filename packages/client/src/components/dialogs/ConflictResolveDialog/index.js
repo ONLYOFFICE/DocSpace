@@ -9,7 +9,6 @@ import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import styled from "styled-components";
-import { convertFile } from "@docspace/common/api/files";
 
 const StyledModalDialog = styled(ModalDialog)`
   .radio {

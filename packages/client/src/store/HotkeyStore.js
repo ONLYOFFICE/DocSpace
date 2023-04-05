@@ -35,7 +35,7 @@ class HotkeyStore {
   scrollToCaret = () => {
     const { offsetTop, item } = this.getItemOffset();
     const scroll = document.getElementsByClassName("section-scroll")[0];
-    const scrollRect = scroll.getBoundingClientRect();
+    const scrollRect = scroll?.getBoundingClientRect();
 
     if (item && item[0]) {
       const el = item[0];

@@ -61,10 +61,10 @@ public class QuotaHelper
         return await ToQuotaDto(quota, priceInfo, currentRegion, true, true);
     }
 
-    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false, bool visible = false)
+    private async Task<QuotaDto> ToQuotaDto(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion, bool getUsed = false, bool allFeatures = false)
     {
         var price = GetPrice(quota, priceInfo, currentRegion);
-        var features = await GetFeatures(quota, getUsed, visible).ToListAsync();
+        var features = await GetFeatures(quota, getUsed, allFeatures).ToListAsync();
 
         return new QuotaDto
         {
@@ -98,13 +98,13 @@ public class QuotaHelper
         return quota.Price;
     }
 
-    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed, bool visible)
+    private async IAsyncEnumerable<TenantQuotaFeatureDto> GetFeatures(TenantQuota quota, bool getUsed, bool all)
     {
         var assembly = GetType().Assembly;
 
         var features = quota.Features.Split(' ', ',', ';');
 
-        foreach (var feature in quota.TenantQuotaFeatures.Where(r => visible || r.Visible).OrderBy(r => r.Order))
+        foreach (var feature in quota.TenantQuotaFeatures.Where(r => all || r.Visible).OrderBy(r => r.Order))
         {
             var result = new TenantQuotaFeatureDto()
             {

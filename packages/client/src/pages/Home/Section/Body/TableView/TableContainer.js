@@ -31,6 +31,10 @@ const StyledTableContainer = styled(TableContainer)`
   .table-row-selected {
     .table-container_file-name-cell {
       ${fileNameCss}
+
+      .table-container_element-container,.additional-badges {
+        padding-top: 1px;
+      }
     }
 
     .table-container_row-context-menu-wrapper {
@@ -73,6 +77,14 @@ const StyledTableContainer = styled(TableContainer)`
       .table-container_row-context-menu-wrapper {
         border-top: unset !important;
         margin-top: 0 !important;
+      }
+    }
+  }
+
+  .table-hotkey-border {
+    .table-row {
+      .tablet-badge {
+        padding-top: 1px;
       }
     }
   }
@@ -228,7 +240,7 @@ const Table = ({
         useReactWindow={!withPaging}
         infoPanelVisible={infoPanelVisible}
         columnInfoPanelStorageName={columnInfoPanelStorageName}
-        itemHeight={49}
+        itemHeight={48.8}
       >
         {filesListNode}
       </TableBody>

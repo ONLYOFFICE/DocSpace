@@ -15,7 +15,7 @@
   "LogoutAllActiveSessionsDescription": "Toutes les connexions actives seront désactivées, à l’exception de cette connexion, car elle est en cours d’utilisation.",
   "LogoutBtn": "Se déconnecter",
   "LogoutDescription": "Remarque : toutes les connexions actives seront désactivées, à l’exception de cette connexion, car elle est en cours d’utilisation.",
-  "LogoutFrom": "Se déconnecter de {{plateforme}} {{navigateur}} ?",
+  "LogoutFrom": "Se déconnecter de {{platform}} {{browser}} ?",
   "MessageEmailActivationInstuctionsSentOnEmail": "Les instructions d'activation ont été envoyées à l'adresse <strong>{{email}}</strong>.",
   "MyProfile": "Mon profil",
   "ProviderSuccessfullyConnected": "Le fournisseur s'est connecté avec succès",
