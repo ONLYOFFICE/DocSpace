@@ -1903,9 +1903,18 @@ const Dark = {
     paymentAlert: {
       color: "#ed7309",
       warningColor: "#E06451",
-      border: "1px solid #ed7309",
-      warningBorder: "1px solid #E06451",
     },
+
+    teamTrainingAlert: {
+      titleColor: "#FFFFFF",
+      borderColor: "#388BDE",
+      linkColor: "#5299E0",
+    },
+  },
+
+  alertComponent: {
+    descriptionColor: "#ADADAD",
+    iconColor: "#ADADAD",
   },
 
   catalogItem: {

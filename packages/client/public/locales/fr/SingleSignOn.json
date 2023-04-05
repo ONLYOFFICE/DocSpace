@@ -13,6 +13,7 @@
   "Encryption": "Chiffrement",
   "GenerateCertificate": "Générer un nouveau certificat auto-signé",
   "Hide": "Masquer",
+  "HideAdditionalParameters": "Masquer les paramètres avancés",
   "HideAuthPage": "Masquer la page d’authentification",
   "LogoutEndpointUrl": "URL du point final de déconnexion unique IdP",
   "LogoutEndpointUrlTooltip": "L’URL utilisée pour la déconnexion unique du côté du fournisseur de services",

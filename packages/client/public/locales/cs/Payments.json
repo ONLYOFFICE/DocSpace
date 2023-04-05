@@ -27,7 +27,7 @@
   "StartupSuggestion": "Udělejte více díky tarifu {{planName}}",
   "StartupTitle": "Používáte bezplatný tarif {{planName}}",
   "StripeCustomerPortal": "přejít na zákaznický portál společnosti Stripe",
-  "TotalPricePerMonth": "<1>{{symbol měny}}</1><2>{{cena}}</2><3>/měsíc</3>",
+  "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/měsíc</3>",
   "UpgradeNow": "Aktualizovat nyní",
   "UpgradePlan": "Plán aktualizace",
   "UpgradePlanInfo": "Přidáním nových uživatelů překročíte maximální počet členů místnosti povolený vaším aktuálním cenovým tarifem.",

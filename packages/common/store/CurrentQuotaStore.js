@@ -207,6 +207,10 @@ class QuotasStore {
     );
   }
 
+  get isNonProfit() {
+    return this.currentPortalQuota?.nonProfit;
+  }
+
   setPortalQuotaValue = (res) => {
     this.currentPortalQuota = res;
     this.currentPortalQuotaFeatures = res.features;

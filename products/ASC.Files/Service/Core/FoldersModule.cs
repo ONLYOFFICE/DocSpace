@@ -119,7 +119,7 @@ public class FoldersModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
             {
                 Item = SharedFolderItem,
                 ItemId = $"{folder.Id}_{shareRecord.Subject}",
@@ -137,7 +137,9 @@ public class FoldersModule : FeedModule
             return feed;
         }
 
-        return new Feed.Aggregator.Feed(folder.CreateBy, folder.CreateOn)
+        var folderCreatedUtc = folder.CreateOn.ToUniversalTime();
+
+        return new Feed.Aggregator.Feed(folder.CreateBy, folderCreatedUtc)
         {
             Item = FolderItem,
             ItemId = folder.Id.ToString(),
@@ -147,7 +149,7 @@ public class FoldersModule : FeedModule
             ExtraLocationTitle = parentFolder.Title,
             ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.CreateOn, folder.ParentId.ToString()),
+            GroupId = GetGroupId(FolderItem, folder.CreateBy, folderCreatedUtc, folder.ParentId.ToString()),
             ContextId = contextId
         };
     }

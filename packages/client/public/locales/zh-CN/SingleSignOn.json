@@ -45,11 +45,17 @@
   "UploadXML": "从 XML 中加载元数据以自动填充所需字段。",
   "UploadXMLPlaceholder": "IdP 元数据 XML URL",
   "UsedFor": "用于",
+  "idpAuthRequest": "校验认证响应签名",
   "idpCertificates": "IdP 公共证书",
   "idpCertificatesTooltip": "用于对来自 IdP 的请求与信息进行验证或解密（或两者皆有）的身份供应商公共证书。",
+  "idpSignExitRequest": "校验登出请求签名",
+  "idpSignResponseRequest": "校验登出响应签名",
   "idpSigningAlgorithm": "默认签名校验算法",
+  "spAuthRequest": "签署认证请求",
   "spCertificates": "SP 证书",
   "spCertificatesTooltip": "用于对来自 SP 的请求和响应进行签名与加密的服务供应商证书",
   "spDecryptStatements": "解密断言",
+  "spSignExitRequest": "签署登出请求",
+  "spSignResponseRequest": "签署登出响应",
   "spSigningAlgorithm": "签名算法"
 }

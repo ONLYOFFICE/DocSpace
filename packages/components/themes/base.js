@@ -1912,9 +1912,18 @@ const Base = {
     paymentAlert: {
       color: "#ed7309",
       warningColor: "#F21C0E",
-      border: "1px solid #ed7309",
-      warningBorder: "1px solid #F21C0E",
     },
+
+    teamTrainingAlert: {
+      titleColor: "#388BDE",
+      borderColor: "#388BDE",
+      linkColor: "#5299E0",
+    },
+  },
+
+  alertComponent: {
+    descriptionColor: "#555F65",
+    iconColor: "#657077",
   },
 
   catalogItem: {

@@ -5,6 +5,10 @@
   "RequestActivation": "请求再次激活",
   "RoomQuotaDescription": "您可归档不需要的房间或<1>{{clickHere}}</1>了解更适合您协作空间的定价版本。",
   "RoomQuotaHeader": "房间数量即将超出限制：{{currentValue}}/{{maxValue}}",
+  "StorageAndRoomHeader": "存储和房间的限制即将被超过。",
+  "StorageAndUserHeader": "存储和管理员/高级用户的数量限制即将被超过。",
   "StorageQuotaDescription": "您可移除不需要的文件或<1>{{clickHere}}</1>了解更适合您协作空间的定价版本。",
-  "StorageQuotaHeader": "存储空间数量即将超出限制：{{currentValue}}/{{maxValue}}"
+  "StorageQuotaHeader": "存储空间数量即将超出限制：{{currentValue}}/{{maxValue}}",
+  "UserQuotaDescription": "<1>{{clickHere}}</1>，选择更适合您的定价方案。",
+  "UserQuotaHeader": "管理员/高级用户的数量限制即将被超过。 {{currentValue}} / {{maxValue}}"
 }

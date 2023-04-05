@@ -1,1 +1,15 @@
-{}
+{
+  "ChooseRoomType": "Ընտրեք սենյակի տեսակը",
+  "CollaborationRoomDescription": "Համագործակցեք մեկ կամ մի քանի փաստաթղթերի վրա ձեր թիմի հետ",
+  "CollaborationRoomTitle": "Համագործակցության սենյակ",
+  "CreateRoomConfirmation": "Շարունակե՞լ առանց պահեստը միացնելու:",
+  "CreateTagOption": "Ստեղծել պիտակ",
+  "CustomRoomDescription": "Կիրառեք ձեր սեփական կարգավորումները՝ այս սենյակը ցանկացած նպատակով օգտագործելու համար",
+  "CustomRoomTitle": "Համարեցված սենյակ",
+  "FillingFormsRoomDescription": "Ստեղծեք, համօգտագործեք և լրացրեք փաստաթղթերի ձևանմուշներ կամ աշխատեք պատրաստի նախակայումների հետ՝ ցանկացած տեսակի փաստաթղթեր արագ ստեղծելու համար",
+  "FillingFormsRoomTitle": "Ձևաթղթերի լրացման սենյակ",
+  "MakeRoomPrivateDescription": "Այս սենյակի բոլոր ֆայլերը կգաղտնագրվեն",
+  "TagsPlaceholder": "Ավելացնել պիտակ",
+  "ThirdPartyStorageNoStorageAlert": "Նախ, դուք պետք է միացնեք համապատասխան ծառայությունը \" Ամբողջացում \" բաժնում: Հակառակ դեպքում կապը հնարավոր չի լինի:",
+  "ThirdPartyStoragePermanentSettingDescription": "Ֆայլերը պահվում են երրորդ կողմի {{{thirdpartyTitle}} պահեստում՝ «{{thirdpartyFolderName}}» պանակում:\n<strong>{{thirdpartyPath}}</strong>"
+}

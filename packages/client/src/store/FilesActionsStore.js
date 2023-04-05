@@ -950,6 +950,7 @@ class FilesActionStore {
     const items = Array.isArray(id) ? id : [id];
 
     const actions = [];
+    const operationId = uniqueid("operation_");
 
     switch (action) {
       case "pin":
@@ -1003,6 +1004,8 @@ class FilesActionStore {
         treeFolders[treeIndex].newItems = newCount >= 0 ? count - newCount : 0;
       } else treeFolders[treeIndex].newItems = count + newCount;
     }
+
+    const operationId = uniqueid("operation_");
 
     muteRoomNotification(id, muteStatus)
       .then(() =>

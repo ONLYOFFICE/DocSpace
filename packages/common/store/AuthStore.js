@@ -30,6 +30,7 @@ class AuthStore {
   isInit = false;
 
   isLogout = false;
+
   constructor() {
     this.userStore = new UserStore();
 
@@ -83,6 +84,7 @@ class AuthStore {
 
     return Promise.all(requests);
   };
+
   setLanguage() {
     if (this.userStore.user?.cultureName) {
       getCookie(LANGUAGE) !== this.userStore.user.cultureName &&
@@ -95,6 +97,7 @@ class AuthStore {
       });
     }
   }
+
   get isLoaded() {
     let success = false;
     if (this.isAuthenticated) {
@@ -116,6 +119,15 @@ class AuthStore {
     );
   }
 
+  get languageBaseName() {
+    try {
+      const intl = new Intl.Locale(this.language);
+      return intl.minimize().baseName;
+    } catch {
+      return "en";
+    }
+  }
+
   get isAdmin() {
     const { user } = this.userStore;
     const { currentProductId } = this.settingsStore;
@@ -130,7 +142,9 @@ class AuthStore {
 
     if (!user) return false;
 
-    return !user.isAdmin && !user.isOwner && !user.isVisitor;
+    return (
+      !user.isAdmin && !user.isOwner && !user.isVisitor && !user.isCollaborator
+    );
   }
 
   get isPaymentPageAvailable() {
@@ -139,6 +153,28 @@ class AuthStore {
     if (!user) return false;
 
     return user.isOwner || user.isAdmin;
+  }
+
+  get isTeamTrainingAlertAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return (
+      !!this.settingsStore.bookTrainingEmail &&
+      (user.isOwner || user.isAdmin || this.isRoomAdmin)
+    );
+  }
+
+  get isLiveChatAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return (
+      !!this.settingsStore.zendeskKey &&
+      (user.isOwner || user.isAdmin || this.isRoomAdmin)
+    );
   }
 
   login = async (user, hash, session = true) => {

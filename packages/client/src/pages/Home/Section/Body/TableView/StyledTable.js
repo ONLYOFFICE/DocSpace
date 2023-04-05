@@ -48,12 +48,14 @@ const StyledTableRow = styled(TableRow)`
           background: ${(props) =>
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
-          margin-top: ${(props) => (props.showHotkeyBorder ? "-2px" : "-1px")};
+          margin-top: ${(props) =>
+            props.showHotkeyBorder ? "-2px" : "-0.8px"};
+
           ${(props) =>
             !props.showHotkeyBorder &&
             css`
               border-top: ${(props) =>
-                `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+                `0.8px solid ${props.theme.filesSection.tableView.row.borderColor}`};
             `}
         }
         .table-container_file-name-cell {

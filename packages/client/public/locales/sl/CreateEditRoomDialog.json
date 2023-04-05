@@ -9,6 +9,8 @@
   "FillingFormsRoomDescription": "Oblikujte, delite in izpolnite predloge dokumentov ali delajte s pripravljenimi prednastavitvami za hitro ustvarjanje dokumentov katere koli vrste.",
   "Icon": "Ikona",
   "MakeRoomPrivateDescription": "Vse datoteke v tej sobi bodo šifrirane.",
+  "MakeRoomPrivateLimitationsWarningDescription": "S to funkcijo lahko povabite samo obstoječe uporabnike DocSpace. Ko ustvarite sobo, ne boste mogli spremeniti seznama uporabnikov.",
+  "MakeRoomPrivateTitle": "Naredi sobo zasebno",
   "ReviewRoomDescription": "Zahtevaj pregled ali komentarje dokumentov",
   "RoomEditing": "Urejanje sobe",
   "RootLabel": "Osnova",
