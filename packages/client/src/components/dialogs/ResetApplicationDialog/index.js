@@ -8,13 +8,10 @@ import { withRouter } from "react-router-dom";
 import ModalDialogContainer from "../ModalDialogContainer";
 import toastr from "@docspace/components/toast/toastr";
 
-class ResetApplicationDialogComponent extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const ResetApplicationDialogComponent = (props) => {
+  const { t, resetTfaApp, id, onClose, history, tReady, visible } = props;
 
-  resetApp = async () => {
-    const { t, resetTfaApp, id, onClose, history } = this.props;
+  const resetApp = async () => {
     onClose && onClose();
     try {
       const res = await resetTfaApp(id);
@@ -25,42 +22,37 @@ class ResetApplicationDialogComponent extends React.Component {
     }
   };
 
-  render() {
-    //console.log("Render ResetApplicationDialog");
-    const { t, tReady, visible, onClose } = this.props;
-
-    return (
-      <ModalDialogContainer
-        isLoading={!tReady}
-        visible={visible}
-        onClose={onClose}
-      >
-        <ModalDialog.Header>{t("ResetApplicationTitle")}</ModalDialog.Header>
-        <ModalDialog.Body>
-          <Text>{t("ResetApplicationDescription")}</Text>
-        </ModalDialog.Body>
-        <ModalDialog.Footer>
-          <Button
-            key="ResetSendBtn"
-            label={t("Common:ResetApplication")}
-            size="normal"
-            scale
-            primary={true}
-            onClick={this.resetApp}
-          />
-          <Button
-            key="CloseBtn"
-            label={t("Common:CancelButton")}
-            size="normal"
-            scale
-            primary={false}
-            onClick={onClose}
-          />
-        </ModalDialog.Footer>
-      </ModalDialogContainer>
-    );
-  }
-}
+  return (
+    <ModalDialogContainer
+      isLoading={!tReady}
+      visible={visible}
+      onClose={onClose}
+    >
+      <ModalDialog.Header>{t("ResetApplicationTitle")}</ModalDialog.Header>
+      <ModalDialog.Body>
+        <Text>{t("ResetApplicationDescription")}</Text>
+      </ModalDialog.Body>
+      <ModalDialog.Footer>
+        <Button
+          key="ResetSendBtn"
+          label={t("Common:ResetApplication")}
+          size="normal"
+          scale
+          primary={true}
+          onClick={resetApp}
+        />
+        <Button
+          key="CloseBtn"
+          label={t("Common:CancelButton")}
+          size="normal"
+          scale
+          primary={false}
+          onClick={onClose}
+        />
+      </ModalDialog.Footer>
+    </ModalDialogContainer>
+  );
+};
 
 const ResetApplicationDialog = withRouter(
   withTranslation(["ResetApplicationDialog", "Common"])(
