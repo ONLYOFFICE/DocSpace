@@ -159,7 +159,7 @@ public class FilesModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
             {
                 Item = SharedFileItem,
                 ItemId = $"{file.Id}_{shareRecord.Subject}",
@@ -180,8 +180,9 @@ public class FilesModule : FeedModule
         }
 
         var updated = file.Version != 1;
+        var fileModifiedUtc = file.ModifiedOn.ToUniversalTime();
 
-        return new Feed.Aggregator.Feed(file.ModifiedBy, file.ModifiedOn, true)
+        return new Feed.Aggregator.Feed(file.ModifiedBy, fileModifiedUtc)
         {
             Item = FileItem,
             ItemId = $"{file.Id}_{(file.Version > 1 ? file.Version : 0)}",
@@ -194,7 +195,7 @@ public class FilesModule : FeedModule
             AdditionalInfo = file.ContentLengthString,
             AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
             Keywords = file.Title,
-            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ModifiedOn, file.ParentId.ToString(), updated ? 1 : 0),
+            GroupId = GetGroupId(FileItem, file.ModifiedBy, fileModifiedUtc, file.ParentId.ToString(), updated ? 1 : 0),
             ContextId = contextId
         };
     }
