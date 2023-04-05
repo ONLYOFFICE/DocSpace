@@ -349,13 +349,13 @@ public class SettingsController : BaseSettingsController
     [AllowNotPayment]
     [HttpPut("wizard/complete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public Task<WizardSettings> CompleteWizard(WizardRequestsDto inDto)
+    public async Task<WizardSettings> CompleteWizard(WizardRequestsDto inDto)
     {
         ApiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _firstTimeTenantSettings.SaveData(inDto);
+        return await _firstTimeTenantSettings.SaveData(inDto);
     }
 
     ///<visible>false</visible>
