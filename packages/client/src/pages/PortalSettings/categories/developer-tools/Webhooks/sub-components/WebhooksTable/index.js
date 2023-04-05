@@ -1,9 +1,10 @@
 import React from "react";
 
+import { inject, observer } from "mobx-react";
 import { Consumer } from "@docspace/components/utils/context";
 
-import { inject, observer } from "mobx-react";
 import WebhooksTableView from "./WebhooksTableView";
+import WebhooksRowView from "./WebhooksRowView";
 
 const WebhooksTable = (props) => {
   const { webhooks, toggleEnabled, deleteWebhook, editWebhook, viewAs } = props;
@@ -20,24 +21,16 @@ const WebhooksTable = (props) => {
             sectionWidth={context.sectionWidth}
           />
         ) : (
-          <></>
+          <WebhooksRowView sectionWidth={context.sectionWidth} webhooks={webhooks} />
         )
       }
     </Consumer>
   );
 };
-
-export default inject(({ webhooksStore, setup }) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, retryWebhookEvent } = webhooksStore;
-
+export default inject(({ setup }) => {
   const { viewAs } = setup;
 
   return {
-    webhooks,
-    toggleEnabled,
-    deleteWebhook,
-    editWebhook,
-    retryWebhookEvent,
     viewAs,
   };
 })(observer(WebhooksTable));

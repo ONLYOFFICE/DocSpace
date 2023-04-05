@@ -1,4 +1,6 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
+import { inject, observer } from "mobx-react";
+import { isMobile } from "react-device-detect";
 
 import styled from "styled-components";
 
@@ -14,9 +16,19 @@ const TableWrapper = styled(TableContainer)`
 `;
 
 const WebhooksTableView = (props) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, sectionWidth } = props;
+  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, sectionWidth, viewAs, setViewAs } =
+    props;
 
   const tableRef = useRef(null);
+
+  useEffect(() => {
+    if (!sectionWidth) return;
+    if (sectionWidth < 1025 || isMobile) {
+      viewAs !== "row" && setViewAs("row");
+    } else {
+      viewAs !== "table" && setViewAs("table");
+    }
+  }, [sectionWidth]);
 
   return (
     <TableWrapper
@@ -41,4 +53,17 @@ const WebhooksTableView = (props) => {
   );
 };
 
-export default WebhooksTableView;
+export default inject(({ webhooksStore, setup }) => {
+  const { webhooks, toggleEnabled, deleteWebhook, editWebhook } = webhooksStore;
+
+  const { viewAs, setViewAs } = setup;
+
+  return {
+    webhooks,
+    toggleEnabled,
+    deleteWebhook,
+    editWebhook,
+    viewAs,
+    setViewAs,
+  };
+})(observer(WebhooksTableView));
