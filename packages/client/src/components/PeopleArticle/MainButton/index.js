@@ -24,139 +24,92 @@ import MobileView from "./MobileView";
 
 import withLoader from "../../../HOCs/withLoader";
 
-class ArticleMainButtonContent extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      dialogVisible: false,
-    };
-  }
+const ArticleMainButtonContent = (props) => {
+  const [dialogVisible, setDialogVisible] = React.useState(false);
+  const {
+    history,
+    homepage,
+    toggleShowText,
+    t,
+    isAdmin,
 
-  goToEmployeeCreate = () => {
-    const { history, homepage } = this.props;
+    userCaption,
+
+    sectionWidth,
+
+    isMobileArticle,
+  } = props;
+
+  const goToEmployeeCreate = () => {
     history.push(
       combineUrl(window.DocSpaceConfig?.proxy?.url, homepage, "/create/user")
     );
-    if (isMobile || isMobileUtils()) this.props.toggleShowText();
+    if (isMobile || isMobileUtils()) toggleShowText();
   };
 
-  // goToGuestCreate = () => {
-  //   const { history, homepage } = this.props;
-  //   history.push(
-  //     combineUrl(window.DocSpaceConfig?.proxy?.url, homepage, "/create/guest")
-  //   );
-  //   if (isMobile || isMobileUtils()) this.props.toggleShowText();
-  // };
+  const onInvitationDialogClick = () => setDialogVisible((val) => !val);
 
-  // goToGroupCreate = () => {
-  //   const { history, homepage } = this.props;
-  //   history.push(
-  //     combineUrl(window.DocSpaceConfig?.proxy?.url, homepage, "/group/create")
-  //   );
-  //   if (isMobile || isMobileUtils()) this.props.toggleShowText();
-  // };
+  const separator = {
+    key: "separator",
+    isSeparator: true,
+  };
 
-  onInvitationDialogClick = () =>
-    this.setState({ dialogVisible: !this.state.dialogVisible });
+  const menuModel = [
+    {
+      key: "create-user",
+      icon: combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        homepage,
+        AddEmployeeReactSvgUrl
+      ),
+      label: userCaption,
+      onClick: goToEmployeeCreate,
+    },
+  ];
 
-  render() {
-    //console.log("People ArticleMainButtonContent render");
-    const {
-      t,
-      isAdmin,
-      homepage,
-      userCaption,
-      // guestCaption,
-      // groupCaption,
-      sectionWidth,
+  const links = [
+    {
+      key: "invite-link",
+      icon: combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        InvitationLinkReactSvgUrl
+      ),
+      label: t("PeopleTranslations:InviteLinkTitle"),
+      onClick: onInvitationDialogClick,
+    },
+  ];
 
-      isMobileArticle,
-    } = this.props;
+  return isAdmin ? (
+    <>
+      {isMobileArticle ? (
+        <MobileView
+          labelProps={t("Common:OtherOperations")}
+          actionOptions={menuModel}
+          buttonOptions={links}
+          sectionWidth={sectionWidth}
+        />
+      ) : (
+        <MainButton
+          isDisabled={false}
+          isDropdown={true}
+          text={t("Common:Actions")}
+          model={[...menuModel, separator, ...links]}
+          className="main-button_invitation-link"
+        />
+      )}
 
-    const { dialogVisible } = this.state;
-
-    const separator = {
-      key: "separator",
-      isSeparator: true,
-    };
-
-    const menuModel = [
-      {
-        key: "create-user",
-        icon: combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          homepage,
-          AddEmployeeReactSvgUrl
-        ),
-        label: userCaption,
-        onClick: this.goToEmployeeCreate,
-      },
-      // {
-      //   key: "create-guest",
-      //   icon: combineUrl(
-      //     window.DocSpaceConfig?.proxy?.url,
-      //     homepage,
-      //     AddGuestReactSvgUrl
-      //   ),
-      //   label: guestCaption,
-      //   onClick: this.goToGuestCreate,
-      // },
-      // {
-      //   key: "create-group",
-      //   icon: combineUrl(
-      //     window.DocSpaceConfig?.proxy?.url,
-      //     homepage,
-      //     AddDepartmentReactSvgUrl
-      //   ),
-      //   label: groupCaption,
-      //   onClick: this.goToGroupCreate,
-      // },
-    ];
-
-    const links = [
-      {
-        key: "invite-link",
-        icon: combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          InvitationLinkReactSvgUrl
-        ),
-        label: t("PeopleTranslations:InviteLinkTitle"),
-        onClick: this.onInvitationDialogClick,
-      },
-    ];
-
-    return isAdmin ? (
-      <>
-        {isMobileArticle ? (
-          <MobileView
-            labelProps={t("Common:OtherOperations")}
-            actionOptions={menuModel}
-            buttonOptions={links}
-            sectionWidth={sectionWidth}
-          />
-        ) : (
-          <MainButton
-            isDisabled={false}
-            isDropdown={true}
-            text={t("Common:Actions")}
-            model={[...menuModel, separator, ...links]}
-            className="main-button_invitation-link"
-          />
-        )}
-
-        {dialogVisible && (
-          <InviteDialog
-            visible={dialogVisible}
-            onClose={this.onInvitationDialogClick}
-            onCloseButton={this.onInvitationDialogClick}
-          />
-        )}
-      </>
-    ) : (
-      <></>
-    );
-  }
-}
+      {dialogVisible && (
+        <InviteDialog
+          visible={dialogVisible}
+          onClose={onInvitationDialogClick}
+          onCloseButton={onInvitationDialogClick}
+        />
+      )}
+    </>
+  ) : (
+    <></>
+  );
+};
 
 export default withRouter(
   inject(({ auth }) => {
