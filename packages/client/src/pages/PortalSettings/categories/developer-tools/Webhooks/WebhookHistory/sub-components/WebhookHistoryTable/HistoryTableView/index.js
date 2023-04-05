@@ -1,6 +1,8 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
 import styled from "styled-components";
+
+import { isMobile } from "react-device-detect";
 
 import TableContainer from "@docspace/components/table-container/TableContainer";
 import TableBody from "@docspace/components/table-container/TableBody";
@@ -19,7 +21,7 @@ const TableWrapper = styled(TableContainer)`
 `;
 
 const HistoryTableView = (props) => {
-  const { sectionWidth, historyWebhooks } = props;
+  const { sectionWidth, historyWebhooks, viewAs, setViewAs } = props;
 
   const tableRef = useRef(null);
 

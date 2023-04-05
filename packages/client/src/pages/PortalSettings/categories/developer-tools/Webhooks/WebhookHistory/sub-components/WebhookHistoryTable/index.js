@@ -4,6 +4,7 @@ import { Consumer } from "@docspace/components/utils/context";
 
 import { inject, observer } from "mobx-react";
 import HistoryTableView from "./HistoryTableView";
+import HistoryRowView from "./HistoryRowView";
 
 const WebhookHistoryTable = (props) => {
   const { viewAs, historyWebhooks } = props;
@@ -14,15 +15,15 @@ const WebhookHistoryTable = (props) => {
         viewAs === "table" ? (
           <HistoryTableView sectionWidth={context.sectionWidth} historyWebhooks={historyWebhooks} />
         ) : (
-          <></>
+          <HistoryRowView sectionWidth={context.sectionWidth} historyWebhooks={historyWebhooks} />
         )
       }
     </Consumer>
   );
 };
 
-export default inject(({ filesStore }) => {
-  const { viewAs } = filesStore;
+export default inject(({ setup }) => {
+  const { viewAs } = setup;
 
   return {
     viewAs,
