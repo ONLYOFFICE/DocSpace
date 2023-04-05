@@ -7,6 +7,7 @@ import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 
 import AlertComponent from "../../AlertComponent";
+import Loaders from "../../Loaders";
 
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,

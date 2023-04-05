@@ -66,11 +66,23 @@ const StyledSimpleFilesRow = styled(Row)`
           props.isSmallContainer &&
           css`
             .row_content {
-              .mainIcons {
-                padding-bottom: 0px;
+              .is-pinned {
+                padding-bottom: 1px;
               }
             }
           `}
+
+        @media ${tablet} {
+          ${(props) =>
+            !props.isSmallContainer &&
+            css`
+              .row_content {
+                .is-pinned {
+                  padding-top: 0.8px !important;
+                }
+              }
+            `}
+        }
       }
     `};
 

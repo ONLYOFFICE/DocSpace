@@ -1,5 +1,6 @@
 {
   "ArchivingData": "Տվյալների արխիվացում",
+  "ChooseFromList": "Ընտրեք ցանկից",
   "ConnectingAccount": "Հաշիվը միանում է",
   "Copy": "Պատճենել",
   "CopyHere": "Պատճենել այստեղ",
@@ -37,6 +38,10 @@
   "Other": "Այլ",
   "OwnerChange": "Փոխել տնօրինողին",
   "Presentations": "Ներկայացումներ",
+  "RoleCommentator": "Մեկնաբան",
+  "RoleDocSpaceAdminDescription": "DocSpace-ի ադմինիստրատորները կարող են մուտք գործել DocSpace-ի կարգավորումներ, կառավարել և արխիվացնել սենյակները, հրավիրել նոր օգտվողներ և իրենց մակարդակից ցածր դերեր հատկացնել: Բոլոր ադմինները մուտք ունեն Անձնական բաժին:",
+  "RoleEditor": "Խմբագրիչ",
+  "RoleViewerDescription": "Ֆայլը դիտվում է",
   "Spreadsheets": "Աշխատաթերթեր",
   "SubNewForm": "Դատարկ",
   "SubNewFormFile": "Տեքստային ֆայլից",

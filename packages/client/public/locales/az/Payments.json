@@ -1,1 +1,12 @@
-{}
+{
+  "AccessingProblem": "Mövcud istifadəçisinizsə və bu sahəyə daxil olmaqda çətinlik çəkirsinizsə, administratorla əlaqə saxlayın.",
+  "AdministratorDescription": "DocSpace tənzimləməsi, otağın yaradılması və idarə edilməsi, DocSpace və virtual otaqlarda istifadəçiləri dəvət etmək və idarə etmək bacarığı, giriş hüquqlarını idarə etmək bacarığı.",
+  "Benefits": "Faydalar",
+  "BusinessExpired": "{{planName}} planınızın müddəti {{date}} tarixində başa çatıb",
+  "BusinessFinalDateInfo": "Abunəlik {{finalDate}} tarixində yenilənmiş qiymət və spesifikasiyalarla avtomatik yenilənəcək. Siz Stripe müştəri portalınızda faktura məlumatlarınızı ləğv edə və ya dəyişə bilərsiniz.",
+  "BusinessPlanPaymentOverdue": "Yeni istifadəçilər əlavə edilə bilməz və yeni otaqlar yaradıla bilməz. {{planName}} plan ödənişi gecikdi",
+  "BusinessRequestDescription": "Daha çox {{peopleNumber}} menecer ilə qiymət planları yalnız sorğu əsasında mövcuddur",
+  "BusinessSuggestion": "{{planName}} planınızı fərdiləşdirin",
+  "BusinessTitle": "Siz {{planName}} planından istifadə edirsiniz",
+  "BusinessUpdated": "{{planName}} plan yeniləndi"
+}
