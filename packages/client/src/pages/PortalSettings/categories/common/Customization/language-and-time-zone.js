@@ -393,7 +393,7 @@ class LanguageAndTimeZone extends React.Component {
 
       if (newUrl === currentUrl) return;
 
-      this.propshistory.push(newUrl);
+      this.props.history.push(newUrl);
     } else {
       this.setState({
         isCustomizationView: false,
