@@ -1,1 +1,12 @@
-{}
+{
+  "AccessingProblem": "Ja esat esošs lietotājs un jums ir problēmas piekļūt šai telpai, lūdzu, sazinieties ar administratoru.",
+  "AdministratorDescription": "DocSpace konfigurācija, telpas izveide un administrēšana, iespēja uzaicināt un pārvaldīt lietotājus DocSpace un virtuālajās telpās, iespēja pārvaldīt piekļuves tiesības.",
+  "Benefits": "Ieguvumi",
+  "BusinessExpired": "Jūsu {{planName}} plāna derīguma termiņš ir beidzies {{date}}",
+  "BusinessFinalDateInfo": "Abonements tiks automātiski atjaunots {{finalDate}} ar atjauninātām cenām un specifikācijām. Varat to atcelt vai mainīt norēķinu informāciju Stripe klientu portālā.",
+  "BusinessPlanPaymentOverdue": "Nevar pievienot jaunus lietotājus un izveidot jaunas telpas. {{planName}} plānojiet nokavēto maksājumu",
+  "BusinessRequestDescription": "Cenu plāni ar vēl {{peopleNumber}} pārvaldnieku (-iem) ir pieejami tikai pēc pieprasījuma",
+  "BusinessSuggestion": "Pielāgot savu {{planName}} plānu",
+  "BusinessTitle": "Jūs izmantojat {{planName}} plānu",
+  "BusinessUpdated": "{{planName}} plāns atjaunināts"
+}

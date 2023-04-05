@@ -21,7 +21,7 @@
   "CopyItems": "<strong>{{qty}}</strong> elementlər köçürüldü",
   "CreateRoom": "Otaq yaradın",
   "CustomRooms": "Fərdi",
-  "DaysRemaining": "Qalan günlər: {{Qalangünlər}}",
+  "DaysRemaining": "Qalan günlər: {{daysRemaining}}",
   "DisableNotifications": "Bildirişləri söndürün",
   "Document": "Sənəd",
   "EditRoom": "Otağı redaktə edin",

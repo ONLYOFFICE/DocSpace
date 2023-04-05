@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Authenticator toepassingsconfiguratie zal worden gereset.",
-  "ResetApplicationTitle": "Reset toepassing configuratie"
+  "ResetApplicationTitle": "Reset toepassing configuratie",
+  "SuccessResetApplication": "Toepassingsinstellingen voor verificatie zijn met succes gereset."
 }

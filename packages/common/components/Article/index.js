@@ -14,8 +14,7 @@ import SubArticleHeader from "./sub-components/article-header";
 import SubArticleMainButton from "./sub-components/article-main-button";
 import SubArticleBody from "./sub-components/article-body";
 import ArticleProfile from "./sub-components/article-profile";
-import ArticlePaymentAlert from "./sub-components/article-payment-alert";
-import ArticleTeamTrainingAlert from "./sub-components/article-team-training";
+import ArticleAlerts from "./sub-components/article-alerts";
 import ArticleLiveChat from "./sub-components/article-live-chat";
 import { StyledArticle } from "./styled-article";
 import HideArticleMenuButton from "./sub-components/article-hide-menu-button";
@@ -32,18 +31,14 @@ const Article = ({
 
   withMainButton,
 
-  isGracePeriod,
-
   hideProfileBlock,
-  isFreeTariff,
-  isPaymentPageAvailable,
+
   currentColorScheme,
   setArticleOpen,
   withSendAgain,
   mainBarVisible,
   isBannerVisible,
-  isNonProfit,
-  isTeamTrainingAlertAvailable,
+
   isLiveChatAvailable,
   ...rest
 }) => {
@@ -182,18 +177,9 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
-          {isPaymentPageAvailable &&
-            !isNonProfit &&
-            (isFreeTariff || isGracePeriod) &&
-            showText && (
-              <ArticlePaymentAlert
-                isFreeTariff={isFreeTariff}
-                toggleArticleOpen={toggleArticleOpen}
-              />
-            )}
-          {isTeamTrainingAlertAvailable && showText && (
-            <ArticleTeamTrainingAlert />
-          )}
+
+          <ArticleAlerts />
+
           {!isMobile && isLiveChatAvailable && <ArticleLiveChat />}
         </SubArticleBody>
       </StyledArticle>
@@ -251,18 +237,7 @@ Article.Body = () => {
 Article.Body.displayName = "Body";
 
 export default inject(({ auth }) => {
-  const {
-    settingsStore,
-    currentQuotaStore,
-    currentTariffStatusStore,
-    userStore,
-    isPaymentPageAvailable,
-    isTeamTrainingAlertAvailable,
-    isLiveChatAvailable,
-    bannerStore,
-  } = auth;
-  const { isFreeTariff, isNonProfit } = currentQuotaStore;
-  const { isGracePeriod } = currentTariffStatusStore;
+  const { settingsStore, userStore, isLiveChatAvailable, bannerStore } = auth;
 
   const { withSendAgain } = userStore;
 
@@ -287,16 +262,13 @@ export default inject(({ auth }) => {
     setIsMobileArticle,
     toggleShowText,
     toggleArticleOpen,
-    isFreeTariff,
-    isGracePeriod,
-    isPaymentPageAvailable,
+
     currentColorScheme,
     setArticleOpen,
     withSendAgain,
     mainBarVisible,
     isBannerVisible,
-    isNonProfit,
-    isTeamTrainingAlertAvailable,
+
     isLiveChatAvailable,
   };
 })(observer(Article));

@@ -3,7 +3,7 @@ import Zendesk, { ZendeskAPI } from "@docspace/common/components/Zendesk";
 import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "../../../constants";
 import { inject, observer } from "mobx-react";
 
-const ArticleLiveChat = ({ language, email }) => {
+const ArticleLiveChat = ({ language, email, zendeskKey }) => {
   // const setting = {
   //   webWidget: {
   //     //offset: { horizontal: "100px", vertical: "150px" },
@@ -44,13 +44,15 @@ const ArticleLiveChat = ({ language, email }) => {
     });
   }, [language, email]);
 
-  return (
+  return zendeskKey ? (
     <Zendesk
       defer
-      zendeskKey="d9e277ac-20cf-47a7-8010-57cd31a8d619" //"wb3DOpEFN82ZF0iJ15QwMiA2wZSJzpTB"
+      zendeskKey={zendeskKey}
       onLoaded={onZendeskLoaded}
       //{...setting}
     />
+  ) : (
+    <></>
   );
 };
 
@@ -58,7 +60,7 @@ ArticleLiveChat.displayName = "LiveChat";
 
 export default inject(({ auth }) => {
   const { settingsStore, languageBaseName, userStore } = auth;
-  const { theme } = settingsStore;
+  const { theme, zendeskKey } = settingsStore;
 
   const { user } = userStore;
   const { email } = user;
@@ -67,5 +69,6 @@ export default inject(({ auth }) => {
     email,
     language: languageBaseName,
     theme,
+    zendeskKey,
   };
 })(observer(ArticleLiveChat));
