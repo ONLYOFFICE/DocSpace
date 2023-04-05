@@ -92,7 +92,7 @@ export default withRouter(
   inject(({ auth }) => {
     const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
     const { currentTariffPlanTitle } = currentQuotaStore;
-    const { theme } = settingsStore;
+    const { theme, toggleArticleOpen } = settingsStore;
     const {
       setPortalPaymentQuotas,
       planCost,
@@ -100,6 +100,7 @@ export default withRouter(
     } = paymentQuotasStore;
 
     return {
+      toggleArticleOpen,
       setPortalPaymentQuotas,
       pricePerManager: planCost.value,
       theme,
