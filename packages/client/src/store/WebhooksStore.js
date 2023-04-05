@@ -1,4 +1,4 @@
-import { runInAction, action, makeAutoObservable } from "mobx";
+import { runInAction, makeAutoObservable } from "mobx";
 import {
   createWebhook,
   getAllWebhooks,
@@ -14,7 +14,6 @@ import {
 //       id: 0,
 //       title: "Webhook 1",
 //       responseCode: "200",
-//       responseStatus: "success",
 //       url: "https://webhook.site/3d9f41d8-30dc-4f55-8b78-1649f4118c56",
 //       isEnabled: true,
 //     },
@@ -22,7 +21,6 @@ import {
 //       id: 1,
 //       title: "Webhook 2",
 //       responseCode: "404",
-//       responseStatus: "error",
 //       url: "https://webhook.site/3d9f41d8-30dc-4f55-8b78-16",
 //       isEnabled: false,
 //     },
