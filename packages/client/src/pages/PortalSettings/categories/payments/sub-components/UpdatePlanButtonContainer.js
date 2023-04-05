@@ -64,17 +64,16 @@ const UpdatePlanButtonContainer = ({
       toastr.success(
         t("BusinessUpdated", { planName: currentTariffPlanTitle })
       );
-
-    setIsLoading(false);
     clearInterval(intervalId);
     intervalId = null;
+    setIsLoading(false);
   };
   useEffect(() => {
     if (intervalId && maxCountManagersByQuota !== previousManagersCount) {
       resetIntervalSuccess();
       return;
     }
-  }, [maxCountManagersByQuota]);
+  }, [maxCountManagersByQuota, intervalId, previousManagersCount]);
   const waitingForQuota = () => {
     isWaitRequest = false;
 
