@@ -3,7 +3,7 @@ import TableHeader from "@docspace/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
 
 const HistoryTableHeader = (props) => {
-  const { sectionWidth, tableRef, withPaging } = props;
+  const { sectionWidth, tableRef } = props;
 
   const columns = useRef([
     {
@@ -33,7 +33,6 @@ const HistoryTableHeader = (props) => {
       checkboxSize="32px"
       containerRef={tableRef}
       sectionWidth={sectionWidth}
-      // useReactWindow={!withPaging}
       showSettings={false}
       style={{ position: "absolute" }}
     />

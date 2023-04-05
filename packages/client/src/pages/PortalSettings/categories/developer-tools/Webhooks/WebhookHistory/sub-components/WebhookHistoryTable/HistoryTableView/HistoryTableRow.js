@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useMemo } from "react";
+import moment from "moment";
+
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
-import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
-import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
-
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
-import { StatusBadge } from "../../../sub-components/StatusBadge";
+import { StatusBadge } from "../../../../sub-components/StatusBadge";
+
+import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
+import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 export const HistoryTableRow = ({ eventData }) => {
   const contextOptions = [
@@ -22,11 +24,10 @@ export const HistoryTableRow = ({ eventData }) => {
     },
   ];
 
-  const onContentSelect = (boolVal, obj) => {};
-
-  const onChange = (e) => {
-    onContentSelect && onContentSelect(e.target.checked, item);
-  };
+  const formattedDelivery = useMemo(
+    () => moment(eventData.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC",
+    [eventData],
+  );
 
   return (
     <TableRow contextOptions={contextOptions}>
@@ -34,7 +35,7 @@ export const HistoryTableRow = ({ eventData }) => {
         <TableCell>
           <Checkbox
             className="table-container_row-checkbox"
-            onChange={onChange}
+            onChange={() => {}}
             isChecked={false}
             title="TitleSelectFile"
             label="abc"
@@ -48,7 +49,7 @@ export const HistoryTableRow = ({ eventData }) => {
       </TableCell>
       <TableCell>
         <Text fontWeight={600} fontSize="11px">
-          {eventData.delivery}
+          {formattedDelivery}
         </Text>
       </TableCell>
     </TableRow>
