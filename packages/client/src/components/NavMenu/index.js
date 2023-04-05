@@ -55,144 +55,122 @@ const StyledContainer = styled.header`
 
 StyledContainer.defaultProps = { theme: Base };
 
-class NavMenu extends React.Component {
-  constructor(props) {
-    super(props);
-    this.timeout = null;
+const NavMenu = (props) => {
+  const timeout = React.useRef(null);
 
-    const {
-      isBackdropVisible,
-      isNavHoverEnabled,
-      isNavOpened,
-      isAsideVisible,
-    } = props;
+  const [isBackdropVisible, setIsBackdropVisible] = React.useState(
+    props.isBackdropVisible
+  );
+  const [isNavOpened, setIsNavOpened] = React.useState(props.isNavHoverEnabled);
+  const [isAsideVisible, setIsAsideVisible] = React.useState(props.isNavOpened);
+  const [isNavHoverEnabled, setIsNavHoverEnabled] = React.useState(
+    props.isAsideVisible
+  );
 
-    this.state = {
-      isBackdropVisible,
-      isNavOpened,
-      isAsideVisible,
-      isNavHoverEnabled,
-    };
-  }
-
-  backdropClick = () => {
-    this.setState({
-      isBackdropVisible: false,
-      isNavOpened: false,
-      isAsideVisible: false,
-      isNavHoverEnabled: !this.state.isNavHoverEnabled,
-    });
+  const backdropClick = () => {
+    setIsBackdropVisible(false);
+    setIsNavOpened(false);
+    setIsAsideVisible(false);
+    setIsNavHoverEnabled((val) => !val);
   };
 
-  showNav = () => {
-    this.setState({
-      isBackdropVisible: true,
-      isNavOpened: true,
-      isAsideVisible: false,
-      isNavHoverEnabled: false,
-    });
+  const showNav = () => {
+    setIsBackdropVisible(true);
+    setIsNavOpened(true);
+    setIsAsideVisible(false);
+    setIsNavHoverEnabled(false);
   };
 
-  clearNavTimeout = () => {
-    if (this.timeout == null) return;
-    clearTimeout(this.timeout);
-    this.timeout = null;
+  const clearNavTimeout = () => {
+    if (timeout.current === null) return;
+    clearTimeout(timeout.current);
+    timeout.current = null;
   };
 
-  handleNavMouseEnter = () => {
-    if (!this.state.isNavHoverEnabled) return;
-    this.timeout = setTimeout(() => {
-      this.setState({
-        isBackdropVisible: false,
-        isNavOpened: true,
-        isAsideVisible: false,
-      });
+  const handleNavMouseEnter = () => {
+    if (!isNavHoverEnabled) return;
+    timeout.current = setTimeout(() => {
+      setIsBackdropVisible(false);
+      setIsNavOpened(true);
+      setIsAsideVisible(false);
     }, 1000);
   };
 
-  handleNavMouseLeave = () => {
-    if (!this.state.isNavHoverEnabled) return;
-    this.clearNavTimeout();
-    this.setState({
-      isBackdropVisible: false,
-      isNavOpened: false,
-      isAsideVisible: false,
-    });
+  const handleNavMouseLeave = () => {
+    if (!isNavHoverEnabled) return;
+    clearNavTimeout();
+    setIsBackdropVisible(false);
+    setIsNavOpened(false);
+    setIsAsideVisible(false);
   };
 
-  toggleAside = () => {
-    this.clearNavTimeout();
-    this.setState({
-      isBackdropVisible: true,
-      isNavOpened: false,
-      isAsideVisible: true,
-      isNavHoverEnabled: false,
-    });
+  const toggleAside = () => {
+    clearNavTimeout();
+    setIsBackdropVisible(true);
+    setIsNavOpened(false);
+    setIsAsideVisible(true);
+    setIsNavHoverEnabled(false);
   };
 
-  render() {
-    const { isBackdropVisible, isNavOpened, isAsideVisible } = this.state;
+  const {
+    isAuthenticated,
+    isLoaded,
+    asideContent,
+    history,
+    isDesktop,
+    isFrame,
+    showHeader,
+  } = props;
 
-    const {
-      isAuthenticated,
-      isLoaded,
-      asideContent,
-      history,
-      isDesktop,
-      isFrame,
-      showHeader,
-    } = this.props;
+  const isAsideAvailable = !!asideContent;
+  const hideHeader = isDesktop || (!showHeader && isFrame);
 
-    const isAsideAvailable = !!asideContent;
-    const hideHeader = isDesktop || (!showHeader && isFrame);
-    //console.log("NavMenu render", this.state, this.props);
-    const isPreparationPortal =
-      history.location.pathname === "/preparation-portal";
-    return (
-      <LayoutContextConsumer>
-        {(value) => (
-          <StyledContainer
-            isLoaded={isLoaded}
-            isVisible={value.isVisible}
-            isDesktop={hideHeader}
-          >
-            <Backdrop
-              visible={isBackdropVisible}
-              onClick={this.backdropClick}
-              withBackground={true}
-            />
+  const isPreparationPortal =
+    history.location.pathname === "/preparation-portal";
+  return (
+    <LayoutContextConsumer>
+      {(value) => (
+        <StyledContainer
+          isLoaded={isLoaded}
+          isVisible={value.isVisible}
+          isDesktop={hideHeader}
+        >
+          <Backdrop
+            visible={isBackdropVisible}
+            onClick={backdropClick}
+            withBackground={true}
+          />
 
-            {!hideHeader &&
-              (isLoaded && isAuthenticated ? (
-                <>
-                  {!isPreparationPortal && <HeaderNav />}
-                  <Header
-                    isPreparationPortal={isPreparationPortal}
-                    isNavOpened={isNavOpened}
-                    onClick={this.showNav}
-                    onNavMouseEnter={this.handleNavMouseEnter}
-                    onNavMouseLeave={this.handleNavMouseLeave}
-                    toggleAside={this.toggleAside}
-                    backdropClick={this.backdropClick}
-                  />
-                </>
-              ) : !isLoaded && isAuthenticated ? (
-                <Loaders.Header />
-              ) : (
-                <HeaderUnAuth />
-              ))}
+          {!hideHeader &&
+            (isLoaded && isAuthenticated ? (
+              <>
+                {!isPreparationPortal && <HeaderNav />}
+                <Header
+                  isPreparationPortal={isPreparationPortal}
+                  isNavOpened={isNavOpened}
+                  onClick={showNav}
+                  onNavMouseEnter={handleNavMouseEnter}
+                  onNavMouseLeave={handleNavMouseLeave}
+                  toggleAside={toggleAside}
+                  backdropClick={backdropClick}
+                />
+              </>
+            ) : !isLoaded && isAuthenticated ? (
+              <Loaders.Header />
+            ) : (
+              <HeaderUnAuth />
+            ))}
 
-            {isAsideAvailable && (
-              <Aside visible={isAsideVisible} onClick={this.backdropClick}>
-                {asideContent}
-              </Aside>
-            )}
-          </StyledContainer>
-        )}
-      </LayoutContextConsumer>
-    );
-  }
-}
+          {isAsideAvailable && (
+            <Aside visible={isAsideVisible} onClick={backdropClick}>
+              {asideContent}
+            </Aside>
+          )}
+        </StyledContainer>
+      )}
+    </LayoutContextConsumer>
+  );
+};
 
 NavMenu.propTypes = {
   isBackdropVisible: PropTypes.bool,
