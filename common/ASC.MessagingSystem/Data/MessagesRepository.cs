@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using IsolationLevel = System.Data.IsolationLevel;
-
 namespace ASC.MessagingSystem.Data;
 
 [Singletone(Additional = typeof(MessagesRepositoryExtension))]
@@ -154,43 +152,39 @@ public class MessagesRepository : IDisposable
 
         using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
-        var strategy = ef.Database.CreateExecutionStrategy();
 
-        await strategy.ExecuteAsync(async () =>
+        var dict = new Dictionary<string, ClientInfo>();
+
+        foreach (var message in events)
         {
-            using var tx = ef.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
-            var dict = new Dictionary<string, ClientInfo>();
-
-            foreach (var message in events)
+            if (!string.IsNullOrEmpty(message.UAHeader))
             {
-                if (!string.IsNullOrEmpty(message.UAHeader))
+                try
                 {
-                    try
-                    {
-                        MessageSettings.AddInfoMessage(message, dict);
-                    }
-                    catch (Exception e)
-                    {
-                        _logger.ErrorFlushCache(message.Id, e);
-                    }
+                    MessageSettings.AddInfoMessage(message, dict);
                 }
-
-                if (!ForseSave(message))
+                catch (Exception e)
                 {
-                    // messages with action code < 2000 are related to login-history
-                    if ((int)message.Action < 2000)
-                    {
-                        await AddLoginEventAsync(message, ef);
-                    }
-                    else
-                    {
-                        await AddAuditEventAsync(message, ef);
-                    }
+                    _logger.ErrorFlushCache(message.Id, e);
                 }
             }
 
-            tx.Commit();
-        });
+            if (!ForseSave(message))
+            {
+                // messages with action code < 2000 are related to login-history
+                if ((int)message.Action < 2000)
+                {
+                    var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
+                    await ef.LoginEvents.AddAsync(loginEvent);
+                }
+                else
+                {
+                    var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
+                    await ef.AuditEvents.AddAsync(auditEvent);
+                }
+            }
+        }
+        await ef.SaveChangesAsync();
     }
 
     private async Task<int> AddLoginEventAsync(EventMessage message, MessagesContext dbContext)

@@ -893,15 +893,14 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     await tagDao.RemoveTagLinksAsync(fileId, FileEntryType.File, TagType.Origin);
                 }
 
-                await filesDbContext.SaveChangesAsync();
-                await tx.CommitAsync();
-
                 foreach (var f in fromFolders)
                 {
                     await RecalculateFilesCountAsync(f);
                 }
 
                 await RecalculateFilesCountAsync(toFolderId);
+
+                await tx.CommitAsync();
             }
 
             var toUpdateFile = await q.FirstOrDefaultAsync(r => r.CurrentVersion);

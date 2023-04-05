@@ -76,26 +76,15 @@ class DbAzService : IAzService
     {
         r.Tenant = tenant;
 
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = userDbContext.Database.CreateExecutionStrategy();
-
-        await strategy.ExecuteAsync(async () =>
+        if (!await ExistEscapeRecordAsync(r))
         {
-            using var userDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await userDbContext.Database.BeginTransactionAsync();
-
-            if (!await ExistEscapeRecordAsync(r))
-            {
-                await InsertRecordAsync(r);
-            }
-            else
-            {
-                // unescape
-                await DeleteRecordAsync(r);
-            }
-
-            await tx.CommitAsync();
-        });
+            await InsertRecordAsync(r);
+        }
+        else
+        {
+            // unescape
+            await DeleteRecordAsync(r);
+        }
 
         return r;
     }
@@ -104,26 +93,15 @@ class DbAzService : IAzService
     {
         r.Tenant = tenant;
 
-        using var userDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = userDbContext.Database.CreateExecutionStrategy();
-
-        await strategy.ExecuteAsync(async () =>
+        if (await ExistEscapeRecordAsync(r))
         {
-            using var userDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await userDbContext.Database.BeginTransactionAsync();
-
-            if (await ExistEscapeRecordAsync(r))
-            {
-                // escape
-                await InsertRecordAsync(r);
-            }
-            else
-            {
-                await DeleteRecordAsync(r);
-            }
-
-            await tx.CommitAsync();
-        });
+            // escape
+            await InsertRecordAsync(r);
+        }
+        else
+        {
+            await DeleteRecordAsync(r);
+        }
 
     }
 

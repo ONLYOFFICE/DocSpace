@@ -221,7 +221,6 @@ public class DbTenantService : ITenantService
         ArgumentNullException.ThrowIfNull(tenant);
 
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
         if (!string.IsNullOrEmpty(tenant.MappedDomain))
         {
@@ -381,41 +380,32 @@ public class DbTenantService : ITenantService
     public void SetTenantSettings(int tenant, string key, byte[] data)
     {
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
-
-        strategy.Execute(() =>
+        if (data == null || data.Length == 0)
         {
-            using var tenantDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = tenantDbContext.Database.BeginTransaction();
+            var settings = tenantDbContext.CoreSettings
+                .Where(r => r.Tenant == tenant)
+                .Where(r => r.Id == key)
+                .FirstOrDefault();
 
-            if (data == null || data.Length == 0)
+            if (settings != null)
             {
-                var settings = tenantDbContext.CoreSettings
-                    .Where(r => r.Tenant == tenant)
-                    .Where(r => r.Id == key)
-                    .FirstOrDefault();
-
-                if (settings != null)
-                {
-                    tenantDbContext.CoreSettings.Remove(settings);
-                }
+                tenantDbContext.CoreSettings.Remove(settings);
             }
-            else
+        }
+        else
+        {
+            var settings = new DbCoreSettings
             {
-                var settings = new DbCoreSettings
-                {
-                    Id = key,
-                    Tenant = tenant,
-                    Value = data,
-                    LastModified = DateTime.UtcNow
-                };
+                Id = key,
+                Tenant = tenant,
+                Value = data,
+                LastModified = DateTime.UtcNow
+            };
 
-                tenantDbContext.AddOrUpdate(tenantDbContext.CoreSettings, settings);
-            }
+            tenantDbContext.AddOrUpdate(tenantDbContext.CoreSettings, settings);
+        }
 
-            tenantDbContext.SaveChanges();
-            tx.Commit();
-        });
+        tenantDbContext.SaveChanges();
     }
 
     private async Task ValidateDomainAsync(string domain, int tenantId, bool validateCharacters)

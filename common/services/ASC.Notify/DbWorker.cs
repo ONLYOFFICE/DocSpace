@@ -141,38 +141,30 @@ public class DbWorker : IDisposable
     {
         using var scope = _serviceScopeFactory.CreateScope();
         using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
-        var strategy = dbContext.Database.CreateExecutionStrategy();
 
-        await strategy.ExecuteAsync(async () =>
+        if (result == MailSendingState.Sended)
         {
-            using var scope = _serviceScopeFactory.CreateScope();
-            using var tx = await dbContext.Database.BeginTransactionAsync();
-            if (result == MailSendingState.Sended)
+            var d = await dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefaultAsync();
+            dbContext.NotifyInfo.Remove(d);
+            await dbContext.SaveChangesAsync();
+        }
+        else
+        {
+            if (result == MailSendingState.Error)
             {
-                var d = await dbContext.NotifyInfo.Where(r => r.NotifyId == id).FirstOrDefaultAsync();
-                dbContext.NotifyInfo.Remove(d);
-                await dbContext.SaveChangesAsync();
-            }
-            else
-            {
-                if (result == MailSendingState.Error)
+                var attempts = await dbContext.NotifyInfo.Where(r => r.NotifyId == id).Select(r => r.Attempts).FirstOrDefaultAsync();
+                if (_notifyServiceCfg.Process.MaxAttempts <= attempts + 1)
                 {
-                    var attempts = await dbContext.NotifyInfo.Where(r => r.NotifyId == id).Select(r => r.Attempts).FirstOrDefaultAsync();
-                    if (_notifyServiceCfg.Process.MaxAttempts <= attempts + 1)
-                    {
-                        result = MailSendingState.FatalError;
-                    }
+                    result = MailSendingState.FatalError;
                 }
-
-                await dbContext.NotifyInfo.Where(r => r.NotifyId == id)
-                .ExecuteUpdateAsync(q =>
-                    q.SetProperty(p => p.State, (int)result)
-                    .SetProperty(p => p.Attempts, p => p.Attempts + 1)
-                    .SetProperty(p => p.ModifyDate, DateTime.UtcNow));
             }
 
-            await tx.CommitAsync();
-        });
+            await dbContext.NotifyInfo.Where(r => r.NotifyId == id)
+            .ExecuteUpdateAsync(q =>
+                q.SetProperty(p => p.State, (int)result)
+                .SetProperty(p => p.Attempts, p => p.Attempts + 1)
+                .SetProperty(p => p.ModifyDate, DateTime.UtcNow));
+        }
     }
 
     public void Dispose()

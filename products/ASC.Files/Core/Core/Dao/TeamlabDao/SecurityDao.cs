@@ -64,29 +64,20 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     public async Task DeleteShareRecordsAsync(IEnumerable<FileShareRecord> records)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        await strategy.ExecuteAsync(async () =>
+        foreach (var record in records)
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            var query = await filesDbContext.Security
+            .Where(r => r.TenantId == record.TenantId)
+            .Where(r => r.EntryType == record.EntryType)
+            .Where(r => r.Subject == record.Subject)
+            .AsAsyncEnumerable()
+            .WhereAwait(async r => r.EntryId == (await MappingIDAsync(record.EntryId)).ToString())
+            .ToListAsync();
 
-            foreach (var record in records)
-            {
-                var query = await filesDbContext.Security
-                .Where(r => r.TenantId == record.TenantId)
-                .Where(r => r.EntryType == record.EntryType)
-                .Where(r => r.Subject == record.Subject)
-                .AsAsyncEnumerable()
-                .WhereAwait(async r => r.EntryId == (await MappingIDAsync(record.EntryId)).ToString())
-                .ToListAsync();
-
-                filesDbContext.RemoveRange(query);
-                await filesDbContext.SaveChangesAsync();
-            }
-
-            await tx.CommitAsync();
-        });
+            filesDbContext.RemoveRange(query);
+        }
+        await filesDbContext.SaveChangesAsync();
     }
 
     public async Task<bool> IsSharedAsync(T entryId, FileEntryType type)
@@ -108,57 +99,48 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
                 return;
             }
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-            await strategy.ExecuteAsync(async () =>
-             {
-                 using var filesDbContext = _dbContextFactory.CreateDbContext();
-                 using var tx = await filesDbContext.Database.BeginTransactionAsync();
-                 var files = new List<string>();
+            var files = new List<string>();
 
-                 if (r.EntryType == FileEntryType.Folder)
-                 {
-                     var folders = new List<string>();
-                     if (int.TryParse(entryId, out var intEntryId))
-                     {
-                         var foldersInt = await filesDbContext.Tree
-                             .Where(r => r.ParentId.ToString() == entryId)
-                             .Select(r => r.FolderId)
-                             .ToListAsync();
+            if (r.EntryType == FileEntryType.Folder)
+            {
+                var folders = new List<string>();
+                if (int.TryParse(entryId, out var intEntryId))
+                {
+                    var foldersInt = await filesDbContext.Tree
+                        .Where(r => r.ParentId.ToString() == entryId)
+                        .Select(r => r.FolderId)
+                        .ToListAsync();
 
-                         folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
-                         files.AddRange(await Query(filesDbContext.Files).Where(r => foldersInt.Contains(r.ParentId)).Select(r => r.Id.ToString()).ToListAsync());
-                     }
-                     else
-                     {
-                         folders.Add(entryId);
-                     }
+                    folders.AddRange(foldersInt.Select(folderInt => folderInt.ToString()));
+                    files.AddRange(await Query(filesDbContext.Files).Where(r => foldersInt.Contains(r.ParentId)).Select(r => r.Id.ToString()).ToListAsync());
+                }
+                else
+                {
+                    folders.Add(entryId);
+                }
 
-                     await filesDbContext.Security
-                         .Where(a => a.TenantId == r.TenantId &&
-                                     folders.Contains(a.EntryId) &&
-                                     a.EntryType == FileEntryType.Folder &&
-                                     a.Subject == r.Subject)
-                         .ExecuteDeleteAsync();
-                 }
-                 else
-                 {
-                     files.Add(entryId);
-                 }
+                filesDbContext.Security.RemoveRange(filesDbContext.Security
+                    .Where(a => a.TenantId == r.TenantId &&
+                                folders.Contains(a.EntryId) &&
+                                a.EntryType == FileEntryType.Folder &&
+                                a.Subject == r.Subject));
+            }
+            else
+            {
+                files.Add(entryId);
+            }
 
-                 if (files.Count > 0)
-                 {
-                     await filesDbContext.Security
-                         .Where(a => a.TenantId == r.TenantId &&
-                                     files.Contains(a.EntryId) &&
-                                     a.EntryType == FileEntryType.File &&
-                                     a.Subject == r.Subject)
-                         .ExecuteDeleteAsync();
-                 }
+            if (files.Count > 0)
+            {
+                filesDbContext.Security.RemoveRange(filesDbContext.Security
+                    .Where(a => a.TenantId == r.TenantId &&
+                                files.Contains(a.EntryId) &&
+                                a.EntryType == FileEntryType.File &&
+                                a.Subject == r.Subject));
+            }
 
-                 await tx.CommitAsync();
-
-             });
+            await filesDbContext.SaveChangesAsync();
         }
         else
         {
@@ -330,18 +312,10 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
     public async Task RemoveSubjectAsync(Guid subject)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
-        await strategy.ExecuteAsync(async () =>
-        {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tr = await filesDbContext.Database.BeginTransactionAsync();
+        filesDbContext.Security.RemoveRange(filesDbContext.Security.Where(r => r.Subject == subject || r.Owner == subject));
 
-            await filesDbContext.Security.Where(r => r.Subject == subject).ExecuteDeleteAsync();
-            await filesDbContext.Security.Where(r => r.Owner == subject).ExecuteDeleteAsync();
-
-            await tr.CommitAsync();
-        });
+        await filesDbContext.SaveChangesAsync();
     }
 
     private IQueryable<DbFilesSecurity> GetQuery(FilesDbContext filesDbContext, Expression<Func<DbFilesSecurity, bool>> where = null)

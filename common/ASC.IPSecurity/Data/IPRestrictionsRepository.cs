@@ -50,28 +50,19 @@ public class IPRestrictionsRepository
     public async Task<List<IpRestrictionBase>> SaveAsync(IEnumerable<IpRestrictionBase> ips, int tenant)
     {
         using var tenantDbContext = _dbContextManager.CreateDbContext();
-        var strategy = tenantDbContext.Database.CreateExecutionStrategy();
 
-        await strategy.ExecuteAsync(async () =>
+        tenantDbContext.TenantIpRestrictions.RemoveRange(tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant));
+
+        var ipsList = ips.Select(r => new TenantIpRestrictions
         {
-            using var tenantDbContext = _dbContextManager.CreateDbContext();
-            using var tx = await tenantDbContext.Database.BeginTransactionAsync();
+            Tenant = tenant,
+            Ip = r.Ip,
+            ForAdmin = r.ForAdmin
 
-            await tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant).ExecuteDeleteAsync();
-
-            var ipsList = ips.Select(r => new TenantIpRestrictions
-            {
-                Tenant = tenant,
-                Ip = r.Ip,
-                ForAdmin = r.ForAdmin
-
-            });
-
-            tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
-            await tenantDbContext.SaveChangesAsync();
-
-            await tx.CommitAsync();
         });
+
+        tenantDbContext.TenantIpRestrictions.AddRange(ipsList);
+        await tenantDbContext.SaveChangesAsync();
 
         return ips.ToList();
     }

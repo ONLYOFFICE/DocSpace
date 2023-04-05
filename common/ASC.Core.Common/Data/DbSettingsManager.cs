@@ -333,27 +333,18 @@ public class SettingsManager
 
             if (data.SequenceEqual(defaultData))
             {
-                var strategy = webstudioDbContext.Database.CreateExecutionStrategy();
-
-                await strategy.ExecuteAsync(async () =>
-                {
-                    using var tr = await webstudioDbContext.Database.BeginTransactionAsync();
-                    // remove default settings
-                    var s = await webstudioDbContext.WebstudioSettings
+                var s = await webstudioDbContext.WebstudioSettings
                         .Where(r => r.Id == settings.ID)
                         .Where(r => r.TenantId == tenantId)
                         .Where(r => r.UserId == userId)
                         .FirstOrDefaultAsync();
 
-                    if (s != null)
-                    {
-                        webstudioDbContext.WebstudioSettings.Remove(s);
-                    }
+                if (s != null)
+                {
+                    webstudioDbContext.WebstudioSettings.Remove(s);
+                }
 
-                    await webstudioDbContext.SaveChangesAsync();
-
-                    await tr.CommitAsync();
-                });
+                await webstudioDbContext.SaveChangesAsync();
             }
             else
             {
@@ -400,27 +391,18 @@ public class SettingsManager
 
             if (data.SequenceEqual(defaultData))
             {
-                var strategy = webstudioDbContext.Database.CreateExecutionStrategy();
-
-                strategy.Execute(() =>
-                {
-                    using var tr = webstudioDbContext.Database.BeginTransaction();
-                    // remove default settings
-                    var s = webstudioDbContext.WebstudioSettings
+                var s = webstudioDbContext.WebstudioSettings
                         .Where(r => r.Id == settings.ID)
                         .Where(r => r.TenantId == tenantId)
                         .Where(r => r.UserId == userId)
                         .FirstOrDefault();
 
-                    if (s != null)
-                    {
-                        webstudioDbContext.WebstudioSettings.Remove(s);
-                    }
+                if (s != null)
+                {
+                    webstudioDbContext.WebstudioSettings.Remove(s);
+                }
 
-                    webstudioDbContext.SaveChanges();
-
-                    tr.Commit();
-                });
+                webstudioDbContext.SaveChanges();
             }
             else
             {

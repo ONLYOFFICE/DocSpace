@@ -132,34 +132,26 @@ public class StatisticManager
         }
 
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = webstudioDbContext.Database.CreateExecutionStrategy();
 
-        await strategy.ExecuteAsync(async () =>
+        foreach (var v in visits)
         {
-            using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await webstudioDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
-
-            foreach (var v in visits)
+            var w = new DbWebstudioUserVisit
             {
-                var w = new DbWebstudioUserVisit
-                {
-                    TenantId = v.TenantID,
-                    ProductId = v.ProductID,
-                    UserId = v.UserID,
-                    VisitDate = v.VisitDate.Date,
-                    FirstVisitTime = v.VisitDate,
-                    VisitCount = v.VisitCount
-                };
+                TenantId = v.TenantID,
+                ProductId = v.ProductID,
+                UserId = v.UserID,
+                VisitDate = v.VisitDate.Date,
+                FirstVisitTime = v.VisitDate,
+                VisitCount = v.VisitCount
+            };
 
-                if (v.LastVisitTime.HasValue)
-                {
-                    w.LastVisitTime = v.LastVisitTime.Value;
-                }
-
-                await webstudioDbContext.WebstudioUserVisit.AddAsync(w);
-                await webstudioDbContext.SaveChangesAsync();
+            if (v.LastVisitTime.HasValue)
+            {
+                w.LastVisitTime = v.LastVisitTime.Value;
             }
-            await tx.CommitAsync();
-        });
+
+            await webstudioDbContext.WebstudioUserVisit.AddAsync(w);
+        }
+        await webstudioDbContext.SaveChangesAsync();
     }
 }
