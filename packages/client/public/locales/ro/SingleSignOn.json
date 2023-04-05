@@ -45,11 +45,17 @@
   "UploadXML": "Încărcați metadatele din XML pentru a completa automat câmpurile necesare.",
   "UploadXMLPlaceholder": "Adresa URL la fişierul de metadate XML al furnizorului ID",
   "UsedFor": "Utilizare pentru",
+  "idpAuthRequest": "Verificarea semnăturii cu răspunsul de autentificare",
   "idpCertificates": "Certificate Publice al furnizorului de identitate (IdP)",
   "idpCertificatesTooltip": "Certificatele publice ale furnizorului de identitate care sunt utilizate fie pentru verificarea, fie pentru decriptarea (sau ambele) solicitărilor şi răspunsurilor de la furnizorul de identitate.",
+  "idpSignExitRequest": "Verificarea semnăturii cu solicitarea de deconectare",
+  "idpSignResponseRequest": "Verificarea semnăturii cu răspunsul de deconectare",
   "idpSigningAlgorithm": "Algoritm implicit de verificare a semnături ",
+  "spAuthRequest": "Semnează solicitarea de autentificare",
   "spCertificates": "Certificate de furnizor de servicii",
   "spCertificatesTooltip": "Certificatele furnizorului de servicii utilizate pentru a semna şi a cripta solicitările şi răspunsurile din partea furnizorului de servicii",
   "spDecryptStatements": "Decriptare aserţiuni",
+  "spSignExitRequest": "Semnează solicitarea de deconectare",
+  "spSignResponseRequest": "Semnează răspunsuri de deconectare",
   "spSigningAlgorithm": "Algoritmul de semnare"
 }

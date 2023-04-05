@@ -1,4 +1,5 @@
 {
+  "CancelUpload": "Das Hochladen wurde unterbrochen. Einige Dateien sind nicht hochgeladen worden.",
   "EnterPassword": "Kennwort eingeben",
   "HideInput": "Ausblenden",
   "Ready": "Fertig",

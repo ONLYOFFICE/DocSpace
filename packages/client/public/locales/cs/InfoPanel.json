@@ -20,7 +20,7 @@
   "FeedMoveFolder": "Složky přesunuty",
   "FeedRenameFile": "Přejmenování souboru",
   "FeedRenameFolder": "Složka přejmenována",
-  "FeedRenameRoom": "Místnost <strong>«{{oldRoomTitle}}»</strong> přejmenována na <strong>\"{{roomTitle}}\"</strong>.",
+  "FeedRenameRoom": "Místnost <strong>«{{oldRoomTitle}}»</strong> přejmenována na <strong>«{{roomTitle}}»</strong>.",
   "FeedUpdateFile": "Soubor aktualizován",
   "FeedUpdateRoom": "Ikona se změnila",
   "FeedUpdateUser": "byla přidělena role {{role}}",

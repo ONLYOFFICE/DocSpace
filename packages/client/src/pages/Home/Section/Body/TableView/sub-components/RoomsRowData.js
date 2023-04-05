@@ -44,7 +44,6 @@ const RoomsRowDataComponent = (props) => {
           checked={checkedProps}
           element={element}
           inProgress={inProgress}
-          isRoomTable={true}
           {...props}
         />
         <StyledBadgesContainer showHotkeyBorder={showHotkeyBorder}>
