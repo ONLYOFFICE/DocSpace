@@ -17,10 +17,16 @@
   "InviteTitle": "Vabljeni ste, da se pridružite temu portalu!",
   "LoginRegistryButton": "Pridruži se",
   "PassworResetTitle": "Zdaj lahko ustvarite novo geslo.",
-  "PhoneSubtitle": "Dvofaktorska avtentikacija je omogočena za zagotavljanje dodatne varnosti. Vnesite svojo telefonsko številko za nadaljevanje dela na portalu. Vnesena mora biti mobilna številka z mednarodnim formatom s kodo države.",
+  "PhoneSubtitle": "Dvofaktorska avtentikacija je omogočena za zagotavljanje dodatne varnosti. Vnesite svojo telefonsko številko za nadaljevanje delo v DocSpace. Vnesena mora biti mobilna številka z mednarodnim formatom s kodo države.",
+  "PortalContinueTitle": "Potrdi, če želiš znova aktivirati svoj DocSpace.",
+  "PortalDeactivateTitle": "Potrdi, če želiš deaktivirati svoj DocSpace.",
+  "PortalRemoveTitle": "Potrdi, če želiš izbrisati svoj DocSpace.",
+  "Reactivate": "Ponovno aktiviraj",
   "SetAppButton": "Aplikacija za prijavo",
   "SetAppDescription": "Omogočena je dvofaktorska avtentikacija. Za nadaljevanje dela v DocSpace konfigurirajte aplikacijo za avtentikacijo. Google Authenticator lahko uporabite za <1>Android</1> in <4>iOS</4> ali Avtentikator za <8>Windows Telefon</8>.",
   "SetAppInstallDescription": "Če želite povezati aplikacijo, skenirajte kodo QR ali ročno vnesite svoj skrivni ključ <1>{{ secretKey }}</1>, nato vnesite 6-mestno kodo iz aplikacije v polje spodaj.",
   "SetAppTitle": "Konfigurirajte vašo aplikacijo za avtentikacijo",
+  "SuccessDeactivate": "Vaš račun je bil uspešno ponovno aktiviran. Čez 10 sekund boste preusmerjeni na <1>stran</1>.",
+  "SuccessReactivate": "Vaš račun je bil uspešno ponovno aktiviran. Čez 10 sekund boste preusmerjeni na <1>portal</1>.",
   "WelcomeUser": "Dobrodošli na našem DocSpace!\nZa začetek se registrirajte ali se prijavite prek družbenih omrežij."
 }

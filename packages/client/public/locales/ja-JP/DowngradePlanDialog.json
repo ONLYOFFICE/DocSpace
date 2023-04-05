@@ -1,6 +1,6 @@
 {
   "AllowedManagerNumber": "許容されるマネージャの数：<1>{{valuesRange}}</1>人",
-  "CannotDowngradePlan": "選択された料金プランに応じたストレージ量/管理者数の制限を超えるため、プランのダウングレードはできません。",
+  "CannotDowngradePlan": "選択された料金プランに応じたストレージ量/管理者数の制限を超えるため、プランのダウングレードはできません:",
   "CurrentManagerNumber": "現在のマネージャー数は、<1>{currentCount}}</1>人です。",
   "CurrentStorageSpace": "現在のストレージ領域は、<1>{{size}}</1>です。",
   "DowngradePlan": "ダウングレードのプラン",

@@ -6,11 +6,14 @@
   "EnableUserButton": "Attivare",
   "InviteLinkTitle": "Link di invito",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Modifica nome",
   "PasswordChangeButton": "Cambiare password",
   "PendingTitle": "In attesa",
   "RemoveData": "Eliminare i dati personali",
+  "ResetAuth": "Reimposta l'autenticazione",
   "SendInviteAgain": "Inviare l'invito ancora una volta",
   "SuccessChangeUserStatus": "Lo stato dell'utente è stato cambiato con successo",
   "SuccessDeletePersonalData": "I dati personali sono stati eliminati con successo",
-  "SuccessSentInvitation": "L'invito è stato inviato con successo"
+  "SuccessSentInvitation": "L'invito è stato inviato con successo",
+  "SuccessSentMultipleInvitatios": "Gli inviti sono stati inviati con successo"
 }

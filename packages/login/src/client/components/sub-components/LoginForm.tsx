@@ -78,6 +78,8 @@ const LoginForm: React.FC<ILoginFormProps> = ({
         if (redirectPath) {
           sessionStorage.removeItem("referenceUrl");
           window.location.href = redirectPath;
+        } else {
+          window.location.replace("/");
         }
       })
       .catch(() => {

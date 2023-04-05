@@ -13,20 +13,20 @@ const TagDropdown = ({
   setTagInputValue,
   createTagLabel,
   isDisabled,
+  inputRef,
+  closeDropdown,
 }) => {
   const dropdownRef = useRef(null);
 
   const [dropdownMaxHeight, setDropdownMaxHeight] = useState(0);
 
-  useEffect(() => {
-    document
-      .getElementById("shared_tags-input")
-      .addEventListener("keyup", onKeyPress);
-
-    return () => document.removeEventListener("keyup", onKeyPress);
-  });
-
   const onKeyPress = (e) => e.key === "Enter" && addNewTag();
+
+  useEffect(() => {
+    inputRef?.current?.addEventListener("keyup", onKeyPress);
+
+    return () => inputRef?.current?.removeEventListener("keyup", onKeyPress);
+  }, [onKeyPress]);
 
   const chosenTags = tagHandler.tags.map((tag) => tag.name);
 
@@ -41,12 +41,14 @@ const TagDropdown = ({
   };
 
   const onClickOutside = (e) => {
-    if (!e) return;
-    if (e.target.id === "shared_tags-input") return;
-    document.getElementById("shared_tags-input").blur();
+    /*     if (!e) return;
+    if (e.target.id === "shared_tags-input") return; */
+    // inputRef?.current?.blur();
+    closeDropdown();
   };
 
   const addNewTag = () => {
+    if (tagInputValue?.trim() === "") return;
     tagHandler.addNewTag(tagInputValue);
     setTagInputValue("");
     onClickOutside();

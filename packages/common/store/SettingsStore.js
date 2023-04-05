@@ -141,6 +141,8 @@ class SettingsStore {
   standalone = false;
 
   mainBarVisible = false;
+  zendeskKey = null;
+  bookTrainingEmail = null;
 
   constructor() {
     makeAutoObservable(this);

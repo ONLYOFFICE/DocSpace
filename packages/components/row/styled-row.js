@@ -48,8 +48,8 @@ const StyledRow = styled.div`
     css`
       .checkbox {
         display: ${(props) => (props.checked ? "flex" : "none")};
-        margin-left: 4px;
-        padding-right: 2.5px;
+        padding: 16px;
+        margin-left: 1.5px;
       }
 
       .styled-element {
@@ -93,7 +93,6 @@ const StyledCheckbox = styled.div`
           display: flex;
           opacity: 1;
           user-select: none;
-          padding-right: 2.5px;
         }
         .styled-element {
           display: none;

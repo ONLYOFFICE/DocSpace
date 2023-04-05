@@ -1,1 +1,4 @@
-{}
+{
+  "CustomEntryTooltip": "Painikkeen kuvateksti, jota käytetään tilaan sisäänkirjautumiseen kertakirjautumispalvelun avulla",
+  "ServiceProviderSettings": "ONLYOFFICE SP Asetukset"
+}

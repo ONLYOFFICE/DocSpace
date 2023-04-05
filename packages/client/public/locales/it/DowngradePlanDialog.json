@@ -1,1 +1,9 @@
-{}
+{
+  "AllowedManagerNumber": "Numero attuale di amministratori/utenti esperti: <1>{{currentCount}}</1>.",
+  "CannotDowngradePlan": "Non è possibile eseguire il declassare il piano poiché la quantità di spazio di archiviazione/amministratori/utenti esperti supera i limiti in base al piano tariffario selezionato:",
+  "CurrentManagerNumber": "Numero attuale di amministratori/utenti esperti: <1>{{currentCount}}</1>.",
+  "CurrentStorageSpace": "Spazio di archiviazione attuale: <1>{{size}}</1>.",
+  "DowngradePlan": "Declassa il pacchetto",
+  "SaveOrChange": "Riduci il parametro richiesto o mantieni il tuo attuale piano tariffario.",
+  "StorageSpaceSizeAllowed": "Dimensioni dello spazio di archiviazione consentite: <1>{{size}}</1>."
+}

@@ -144,6 +144,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         if (0 < Folders.Count)
         {
             var firstFolder = await FolderDao.GetFolderAsync(Folders[0]);
+            var isRoom = DocSpaceHelper.IsRoom(firstFolder.FolderType);
 
             if (_copy && !await FilesSecurity.CanCopyAsync(firstFolder))
             {
@@ -153,7 +154,17 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             if (!_copy && !await FilesSecurity.CanMoveAsync(firstFolder))
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+                if (isRoom)
+                {
+                    this[Err] = toFolder.FolderType == FolderType.Archive
+                        ? FilesCommonResource.ErrorMessage_SecurityException_ArchiveRoom
+                        : FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom;
+
+                }
+                else
+                {
+                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                }
 
                 return;
             }
@@ -185,7 +196,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
         if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
         {
-            this[Err] = FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
+            this[Err] = toFolder.FolderType == FolderType.VirtualRooms ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
+                toFolder.FolderType == FolderType.Archive ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
+                FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
 
             return;
         }
@@ -270,7 +283,16 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (!copy && checkPermissions && !canMoveOrCopy)
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                if (isRoom)
+                {
+                    this[Err] = toFolder.FolderType == FolderType.Archive
+                        ? FilesCommonResource.ErrorMessage_SecurityException_ArchiveRoom
+                        : FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom;
+                }
+                else
+                {
+                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                }
             }
             else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
@@ -278,7 +300,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (isRoom && toFolder.FolderType != FolderType.VirtualRooms && toFolder.FolderType != FolderType.Archive)
             {
-                this[Err] = FilesCommonResource.ErrorMessage_UnarchiveRoom;
+                this[Err] = FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom;
             }
             else if (!isRoom && folder.Private && !await CompliesPrivateRoomRulesAsync(folder, toFolderParents))
             {

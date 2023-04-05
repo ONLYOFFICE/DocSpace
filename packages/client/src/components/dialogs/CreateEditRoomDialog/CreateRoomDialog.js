@@ -90,6 +90,10 @@ const CreateRoomDialog = ({
 
   const isRoomTitleChanged = roomParams.title.trim() !== "" ? false : true;
 
+  const onKeyUpHandler = (e) => {
+    if (e.keyCode === 13) onCreateRoom();
+  };
+
   const onCreateRoom = async () => {
     if (!roomParams.title.trim()) {
       setIsValidTitle(false);
@@ -154,6 +158,7 @@ const CreateRoomDialog = ({
             isValidTitle={isValidTitle}
             setIsValidTitle={setIsValidTitle}
             enableThirdParty={enableThirdParty}
+            onKeyUp={onKeyUpHandler}
           />
         )}
       </ModalDialog.Body>

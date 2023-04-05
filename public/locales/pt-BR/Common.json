@@ -165,7 +165,7 @@
   "PasswordLimitSpecialSymbols": "caracteres especiais",
   "PasswordLimitUpperCase": "letras maiúsculas",
   "PasswordMinimumLength": "Comprimento mínimo",
-  "PayBeforeTheEndGracePeriod": "Certifique-se de fazer o pagamento antes do vencimento do período de carência",
+  "PayBeforeTheEndGracePeriod": "Certifique-se de fazer o pagamento antes do vencimento do período de carência.",
   "PaymentsTitle": "Pagamentos",
   "People": "Pessoas",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> por administrador/mês",

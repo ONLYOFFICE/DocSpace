@@ -15,7 +15,7 @@
   "LogoutAllActiveSessionsDescription": "Todas las conexiones activas excepto esta conexión se desconectarán, ya que está actualmente en uso.",
   "LogoutBtn": "Cerrar sesión",
   "LogoutDescription": "Aviso. Todas las conexiones activas excepto esta conexión se desconectarán, ya que está actualmente en uso.",
-  "LogoutFrom": "¿Cerrar sesión en {{plataforma}} {{navegador}} ? ",
+  "LogoutFrom": "¿Cerrar sesión en {{platform}} {{browser}} ? ",
   "MessageEmailActivationInstuctionsSentOnEmail": "Las instrucciones de activación se han enviado a la dirección de email <strong>{{ email }}</strong>.",
   "MyProfile": "Mi perfil",
   "ProviderSuccessfullyConnected": "El proveedor se ha conectado correctamente",

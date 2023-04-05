@@ -1,1 +1,6 @@
-{}
+{
+  "CurrentStorageSpace": "Tämänhetkinen muistin tila:  <1>{{koko}}</1>",
+  "DowngradePlan": "Alenna ohjelman tasoa",
+  "SaveOrChange": "Vähennä vaadittua parametriä tai säilytä nykyinen hinnoitteluohjelma.",
+  "StorageSpaceSizeAllowed": "Sallittu säilytystilan koko: <1>{{koko}}</1>."
+}

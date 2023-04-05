@@ -1,1 +1,10 @@
-{}
+{
+  "ClickHere": "点击此处",
+  "ConfirmEmailDescription": "使用激活邮件中提供的链接。没有收到包含激活链接的邮件？",
+  "ConfirmEmailHeader": "请激活邮件以访问协作空间功能。",
+  "RequestActivation": "请求再次激活",
+  "RoomQuotaDescription": "您可归档不需要的房间或<1>{{clickHere}}</1>了解更适合您协作空间的定价版本。",
+  "RoomQuotaHeader": "房间数量即将超出限制：{{currentValue}}/{{maxValue}}",
+  "StorageQuotaDescription": "您可移除不需要的文件或<1>{{clickHere}}</1>了解更适合您协作空间的定价版本。",
+  "StorageQuotaHeader": "存储空间数量即将超出限制：{{currentValue}}/{{maxValue}}"
+}
