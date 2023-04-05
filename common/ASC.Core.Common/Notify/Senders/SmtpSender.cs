@@ -312,7 +312,7 @@ public class SmtpSender : INotifySender
             {
                 ContentId = attachment.ContentId,
                 Content = new MimeContent(new MemoryStream(attachment.Content)),
-                ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                ContentDisposition = new ContentDisposition(ContentDisposition.Inline),
                 ContentTransferEncoding = ContentEncoding.Base64,
                 FileName = attachment.FileName
             };

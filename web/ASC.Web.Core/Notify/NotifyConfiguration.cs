@@ -367,67 +367,19 @@ public class NotifyTransferRequest : INotifyEngineAction
 
     private void AddLetterLogo(NotifyRequest request)
     {
-        if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
+        try
         {
-            try
+            var attachment = _tenantLogoManager.GetMailLogoAsAttacment().Result;
+
+            if (attachment != null)
             {
-                var logoData = _tenantLogoManager.GetMailLogoDataFromCache();
-
-                if (logoData == null)
-                {
-                    var logoStream = _tenantLogoManager.GetWhitelabelMailLogo().Result;
-                    logoData = ReadStreamToByteArray(logoStream) ?? GetDefaultMailLogo();
-
-                    if (logoData != null)
-                    {
-                        _tenantLogoManager.InsertMailLogoDataToCache(logoData);
-                    }
-                }
-
-                if (logoData != null)
-                {
-                    var attachment = new NotifyMessageAttachment
-                    {
-                        FileName = "logo.png",
-                        Content = logoData,
-                        ContentId = MimeUtils.GenerateMessageId()
-                    };
-
-                    request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                    request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-                    return;
-                }
-            }
-            catch (Exception error)
-            {
-                _log.ErrorAddLetterLogo(error);
+                request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
+                request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
             }
         }
-
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(_tenantLogoManager.GetLogoDark(false).Result);
-
-        request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
-    }
-
-    private static byte[] ReadStreamToByteArray(Stream inputStream)
-    {
-        if (inputStream == null)
+        catch (Exception error)
         {
-            return null;
+            _log.ErrorAddLetterLogo(error);
         }
-
-        using (inputStream)
-        {
-            using var memoryStream = new MemoryStream();
-            inputStream.CopyTo(memoryStream);
-            return memoryStream.ToArray();
-        }
-    }
-
-    private static byte[] GetDefaultMailLogo()
-    {
-        var filePath = CrossPlatform.PathCombine(AppDomain.CurrentDomain.BaseDirectory, "skins", "default", "images", "logo", "dark_general.png");
-
-        return File.Exists(filePath) ? File.ReadAllBytes(filePath) : null;
     }
 }

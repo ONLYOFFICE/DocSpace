@@ -197,6 +197,9 @@ class PaymentStore {
   };
 
   get allowedStorageSizeByQuota() {
+    if (this.managersCount > this.maxAvailableManagersCount)
+      return this.maxAvailableManagersCount * this.stepByQuotaForTotalSize;
+
     return this.managersCount * this.stepByQuotaForTotalSize;
   }
 

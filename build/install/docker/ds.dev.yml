@@ -1,4 +1,4 @@
-version: "3.6"
+version: "3.8"
 services:
   onlyoffice-document-server:
     image: "${DOCUMENT_SERVER_IMAGE_NAME}"
@@ -19,5 +19,5 @@ services:
 
 networks:
   default:
-    external:
-      name: ${NETWORK_NAME}
+    name: ${NETWORK_NAME}
+    external: true

@@ -1,1 +1,9 @@
-{}
+{
+  "AllowedManagerNumber": "Número de gerentes permitidos: <1>{{valuesRange}}</1>.",
+  "CannotDowngradePlan": "Você não pode fazer downgrade do seu plano, pois a quantidade de armazenamento/números do gerenciador excedem as limitações de acordo com o plano de preços selecionado.",
+  "CurrentManagerNumber": "Número atual de administradores: <1>{{currentCount}}</1>.",
+  "CurrentStorageSpace": "Espaço de armazenamento atual: <1>{{size}}</1>.",
+  "DowngradePlan": "Plano de rebaixamento",
+  "SaveOrChange": "Reduza o parâmetro necessário ou preserve seu plano de preços atual.",
+  "StorageSpaceSizeAllowed": "Tamanho do espaço de armazenamento permitido: <1>{{size}}</1>."
+}

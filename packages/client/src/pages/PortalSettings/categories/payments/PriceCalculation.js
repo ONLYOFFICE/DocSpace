@@ -74,7 +74,7 @@ const PriceCalculation = ({
   isFreeAfterPaidPeriod,
   managersCount,
 }) => {
-  useEffect(async () => {
+  useEffect(() => {
     initializeInfo();
 
     return () => {

@@ -78,7 +78,7 @@ public class FilesMessageService
 
     public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, List<AceWrapper> aces, MessageAction action, params string[] description)
     {
-        if(action == MessageAction.RoomDeleted)
+        if (action == MessageAction.RoomDeleted)
         {
             var userId = _authContext.CurrentAccount.ID;
             _notifyClient.SendRoomRemoved(entry, aces, userId);
@@ -99,7 +99,7 @@ public class FilesMessageService
 
     public async Task Send<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, FileShare userRole, Guid userId, params string[] description)
     {
-        description = description.Append(FileStorageService<T>.GetAccessString(userRole)).ToArray();
+        description = description.Append(FileStorageService.GetAccessString(userRole)).ToArray();
         await Send(entry, headers, action, null, userRole, userId, description);
     }
 
@@ -219,8 +219,7 @@ public class FilesMessageService
             RoomTitle = roomInfo.RoomTitle
         };
 
-        if (action == MessageAction.RoomRenamed
-            && (oldTitle != null || oldTitle != ""))
+        if (action == MessageAction.RoomRenamed && !string.IsNullOrEmpty(oldTitle))
         {
             info.RoomOldTitle = oldTitle;
         }
@@ -238,6 +237,13 @@ public class FilesMessageService
             info.UserIds = new List<Guid> { userid };
             info.UserRole = (int)userRole;
         }
+
+        info.RootFolderTitle = entry.RootFolderType switch
+        {
+            FolderType.USER => FilesUCResource.MyFiles,
+            FolderType.TRASH => FilesUCResource.Trash,
+            _ => string.Empty
+        };
 
         var serializedParam = JsonSerializer.Serialize(info);
 

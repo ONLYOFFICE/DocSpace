@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
@@ -34,13 +34,17 @@ const ArticlePaymentAlert = ({
 }) => {
   const { t, ready } = useTranslation("Common");
 
-  useEffect(async () => {
+  const getQuota = useCallback(async () => {
     if (isFreeTariff)
       try {
         await setPortalPaymentQuotas();
       } catch (e) {
         console.error(e);
       }
+  }, []);
+
+  useEffect(() => {
+    getQuota();
   }, []);
 
   const onClick = () => {
@@ -106,11 +110,8 @@ export default withRouter(
     const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
     const { currentTariffPlanTitle } = currentQuotaStore;
     const { theme } = auth;
-    const {
-      setPortalPaymentQuotas,
-      planCost,
-      tariffPlanTitle,
-    } = paymentQuotasStore;
+    const { setPortalPaymentQuotas, planCost, tariffPlanTitle } =
+      paymentQuotasStore;
 
     return {
       setPortalPaymentQuotas,

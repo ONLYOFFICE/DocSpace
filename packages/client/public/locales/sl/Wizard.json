@@ -1,10 +1,10 @@
 {
-  "Desc": "Prosimo, nastavite podatke za registracijo portala.",
+  "Desc": "Prosimo, nastavite podatke za registracijo DocSpace.",
   "Domain": "Domena:",
   "ErrorEmail": "Napačen email naslov",
   "ErrorInitWizard": "Storitev trenutno ni na voljo, poskusite znova kasneje.",
   "ErrorInitWizardButton": "Poskusi znova",
-  "ErrorLicenseBody": "Licenca ni veljavna. Izberite pravo datoteko",
+  "ErrorLicenseBody": "Licenca ni veljavna. Izberite pravo datoteko.",
   "ErrorPassword": "Geslo ne ustreza zahtevam",
   "ErrorUploadLicenseFile": "Izberite licenčno datoteko",
   "GeneratePassword": "Generirajte geslo",

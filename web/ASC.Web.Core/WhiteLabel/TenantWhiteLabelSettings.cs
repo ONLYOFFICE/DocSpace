@@ -93,13 +93,13 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
     #region Logo available sizes
 
     public static readonly Size LogoLightSmallSize = new Size(422, 48);
-    public static readonly Size LogoLoginPageSize = new Size(810, 92);
+    public static readonly Size LogoLoginPageSize = new Size(772, 88);
     public static readonly Size LogoFaviconSize = new Size(32, 32);
     public static readonly Size LogoDocsEditorSize = new Size(172, 40);
     public static readonly Size LogoDocsEditorEmbedSize = new Size(172, 40);
     public static readonly Size LogoLeftMenuSize = new Size(56, 56);
-    public static readonly Size LogoAboutPageSize = new Size(810, 92);
-
+    public static readonly Size LogoAboutPageSize = new Size(442, 48);
+    public static readonly Size LogoNotificationSize = new Size(386, 44);
     public static Size GetSize(WhiteLabelLogoTypeEnum type)
     {
         return type switch
@@ -163,6 +163,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
             WhiteLabelLogoTypeEnum.DocsEditorEmbed => IsDefaultLogoDocsEditorEmbed,
             WhiteLabelLogoTypeEnum.LeftMenu => IsDefaultLogoLeftMenu,
             WhiteLabelLogoTypeEnum.AboutPage => IsDefaultLogoAboutPage,
+            WhiteLabelLogoTypeEnum.Notification => IsDefaultLogoDark,
             _ => true,
         };
     }
@@ -206,6 +207,7 @@ public class TenantWhiteLabelSettings : ISettings<TenantWhiteLabelSettings>
             WhiteLabelLogoTypeEnum.DocsEditorEmbed => LogoDocsEditorEmbedExt,
             WhiteLabelLogoTypeEnum.LeftMenu => LogoLeftMenuExt,
             WhiteLabelLogoTypeEnum.AboutPage => LogoAboutPageExt,
+            WhiteLabelLogoTypeEnum.Notification => "png",
             _ => "",
         };
     }
@@ -412,6 +414,16 @@ public class TenantWhiteLabelSettingsHelper
             if (lightData != null)
             {
                 await SetLogo(tenantWhiteLabelSettings, currentLogoType, extLight, lightData, false, storage);
+
+                if (currentLogoType == WhiteLabelLogoTypeEnum.LoginPage)
+                {
+                    var (notificationData, extNotification) = GetNotificationLogoData(lightData, extLight, tenantWhiteLabelSettings);
+
+                    if (notificationData != null)
+                    {
+                        await SetLogo(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification, extNotification, notificationData, false, storage);
+                    }
+                }
             }
 
             if (darkData != null && CanBeDark(currentLogoType))
@@ -474,6 +486,58 @@ public class TenantWhiteLabelSettingsHelper
         else
         {
             return (null, ext);
+        }
+    }
+
+    private (byte[], string) GetNotificationLogoData(byte[] logoData, string extLogo, TenantWhiteLabelSettings tenantWhiteLabelSettings)
+    {
+        var extNotification = tenantWhiteLabelSettings.GetExt(WhiteLabelLogoTypeEnum.Notification);
+
+        switch (extLogo)
+        {
+            case "png":
+                return (logoData, extNotification);
+            case "svg":
+                return (GetLogoDataFromSvg(), extNotification);
+            case "jpg":
+            case "jpeg":
+                return (GetLogoDataFromJpg(), extNotification);
+            default:
+                return (null, extNotification);
+        }
+
+        byte[] GetLogoDataFromSvg()
+        {
+            var size = GetSize(WhiteLabelLogoTypeEnum.Notification);
+            var skSize = new SKSize(size.Width, size.Height);
+
+            var svg = new SkiaSharp.Extended.Svg.SKSvg(skSize);
+
+            using (var stream = new MemoryStream(logoData))
+            {
+                svg.Load(stream);
+            }
+
+            using (var bitMap = new SKBitmap((int)svg.CanvasSize.Width, (int)svg.CanvasSize.Height))
+            using (var canvas = new SKCanvas(bitMap))
+            {
+                canvas.DrawPicture(svg.Picture);
+
+                using (var image = SKImage.FromBitmap(bitMap))
+                using (var pngData = image.Encode(SKEncodedImageFormat.Png, 100))
+                {
+                    return pngData.ToArray();
+                }
+            }
+        }
+
+        byte[] GetLogoDataFromJpg()
+        {
+            using (var image = SKImage.FromEncodedData(logoData))
+            using (var pngData = image.Encode(SKEncodedImageFormat.Png, 100))
+            {
+                return pngData.ToArray();
+            }
         }
     }
 
@@ -667,6 +731,7 @@ public class TenantWhiteLabelSettingsHelper
             WhiteLabelLogoTypeEnum.DocsEditorEmbed => TenantWhiteLabelSettings.LogoDocsEditorEmbedSize,
             WhiteLabelLogoTypeEnum.LeftMenu => TenantWhiteLabelSettings.LogoLeftMenuSize,
             WhiteLabelLogoTypeEnum.AboutPage => TenantWhiteLabelSettings.LogoAboutPageSize,
+            WhiteLabelLogoTypeEnum.Notification => TenantWhiteLabelSettings.LogoNotificationSize,
             _ => new Size(0, 0),
         };
     }

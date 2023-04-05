@@ -53,7 +53,7 @@ const Textarea = ({
   const defaultPaddingLeft = 42;
   const numberOfDigits =
     String(numberOfLines).length - 2 > 0 ? String(numberOfLines).length : 0;
-  const paddingLeft = isJSONField
+  const paddingLeftProp = isJSONField
     ? fontSize < 13
       ? `${defaultPaddingLeft + numberOfDigits * 6}px`
       : `${((defaultPaddingLeft + numberOfDigits * 4) * fontSize) / 13}px`
@@ -120,7 +120,7 @@ const Textarea = ({
 
         <StyledTextarea
           id={id}
-          paddingLeft={paddingLeft}
+          paddingLeftProp={paddingLeftProp}
           isJSONField={isJSONField}
           placeholder={placeholder}
           onChange={(e) => onChange && onChange(e)}
@@ -135,6 +135,7 @@ const Textarea = ({
           color={color}
           autoFocus={autoFocus}
           ref={areaRef}
+          heighttextarea={heightTextArea}
         />
       </ColorTheme>
     </Wrapper>

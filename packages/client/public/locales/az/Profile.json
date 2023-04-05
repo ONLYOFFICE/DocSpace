@@ -4,7 +4,7 @@
   "EditPhoto": "Şəklin redaktə olunması",
   "InterfaceTheme": "İnterfeys mövzusu",
   "LightTheme": "İşıqlı tema",
-  "MessageEmailActivationInstuctionsSentOnEmail": " <strong>{{ email }}</strong> elektron poçta emailin aktivlşdirilməsi haqqında təlimat göndərilmişdir",
+  "MessageEmailActivationInstuctionsSentOnEmail": " <strong>{{ email }}</strong> elektron poçta emailin aktivlşdirilməsi haqqında təlimat göndərilmişdir.",
   "ProviderSuccessfullyConnected": "Provayder müvəffəqiyyətlə qoşuldu",
   "ProviderSuccessfullyDisconnected": "Provayderin əlaqəsi müvəffəqiyyətlə kəsildi",
   "ShowBackupCodes": "Rezerv kodlarını göstər",

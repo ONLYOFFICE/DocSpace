@@ -3,5 +3,5 @@
   "Error403Text": "Diemžēl piekļuve liegta",
   "Error404Text": "Diemžēl resursu nevar atrast.",
   "ErrorEmptyResponse": "Tukša atbilde",
-  "ErrorOfflineText": "Interneta savienojums nav atrasts."
+  "ErrorOfflineText": "Interneta savienojums nav atrasts"
 }

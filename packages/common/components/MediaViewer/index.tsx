@@ -66,6 +66,12 @@ function MediaViewer({
   }, [props.playlist.length]);
 
   useEffect(() => {
+    return () => {
+      props.onClose();
+    };
+  }, []);
+
+  useEffect(() => {
     const { playlist, files, setBufferSelection } = props;
 
     const currentFile = playlist[playlistPos];
@@ -328,15 +334,6 @@ function MediaViewer({
         if (document.fullscreenElement) return;
 
         if (!ctrlKey) nextMedia();
-
-        break;
-
-      case KeyboardEventKeys.Space:
-        const videoPlayElement = document.getElementsByClassName(
-          "video-play"
-        )?.[0] as HTMLElement | undefined;
-
-        videoPlayElement?.click();
 
         break;
 

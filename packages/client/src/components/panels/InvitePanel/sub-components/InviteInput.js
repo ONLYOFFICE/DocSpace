@@ -6,7 +6,7 @@ import Avatar from "@docspace/components/avatar";
 import TextInput from "@docspace/components/text-input";
 import DropDownItem from "@docspace/components/drop-down-item";
 import toastr from "@docspace/components/toast/toastr";
-
+import { ShareAccessRights } from "@docspace/common/constants";
 import { parseAddresses } from "@docspace/components/utils/email";
 
 import { AddUsersPanel } from "../../index";
@@ -129,7 +129,11 @@ const InviteInput = ({
     item.access = selectedAccess;
 
     const addUser = () => {
+      if (item.isOwner || item.isAdmin)
+        item.access = ShareAccessRights.RoomManager;
+
       const items = removeExist([item, ...inviteItems]);
+
       setInviteItems(items);
       closeInviteInputPanel();
       setInputValue("");

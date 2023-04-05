@@ -12,22 +12,32 @@ import {
   getPaymentAccount,
   sendDeletePortalEmail,
 } from "@docspace/common/api/portal";
+import { isDesktop } from "@docspace/components/utils/device";
 
 const PortalDeletion = (props) => {
   const { t, getPortalOwner, owner } = props;
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [stripeUrl, setStripeUrl] = useState(null);
+  const [isDesktopView, setIsDesktopView] = useState(false);
 
   const fetchData = async () => {
+    await getPortalOwner();
     const res = await getPaymentAccount();
     setStripeUrl(res);
   };
 
   useEffect(() => {
-    setDocumentTitle(t("PortalDeletion"));
-    getPortalOwner();
+    setDocumentTitle(t("DeleteDocSpace"));
     fetchData();
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+    return () => window.removeEventListener("resize", onCheckView);
   }, []);
+
+  const onCheckView = () => {
+    if (isDesktop()) setIsDesktopView(true);
+    else setIsDesktopView(false);
+  };
 
   const onDeleteClick = async () => {
     if (stripeUrl) {
@@ -57,7 +67,7 @@ const PortalDeletion = (props) => {
         className="button"
         label={t("Common:Delete")}
         primary
-        size="normal"
+        size={isDesktopView ? "small" : "normal"}
         onClick={onDeleteClick}
       />
 

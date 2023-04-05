@@ -70,7 +70,7 @@ public class AuthenticationController : ControllerBase
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly ILogger<AuthenticationController> _logger;
-    private readonly RoomLinkService _roomLinkService;
+    private readonly InvitationLinkService _invitationLinkService;
 
     public AuthenticationController(
         UserManager userManager,
@@ -108,7 +108,7 @@ public class AuthenticationController : ControllerBase
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
         ILogger<AuthenticationController> logger,
-        RoomLinkService roomLinkService)
+        InvitationLinkService invitationLinkService)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -145,7 +145,7 @@ public class AuthenticationController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _logger = logger;
-        _roomLinkService = roomLinkService;
+        _invitationLinkService = invitationLinkService;
     }
 
     [AllowNotPayment]
@@ -321,17 +321,14 @@ public class AuthenticationController : ControllerBase
     [HttpPost("confirm")]
     public async Task<ValidationResult> CheckConfirm(EmailValidationKeyModel inDto)
     {
-        if (inDto.Type == ConfirmType.LinkInvite)
+        if (inDto.Type != ConfirmType.LinkInvite)
         {
-            var options = await _roomLinkService.GetOptionsAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default);
-
-            if (options.LinkType == LinkType.InvitationToRoom && !options.IsCorrect)
-            {
-                return ValidationResult.Invalid;
-            }
+            return _emailValidationKeyModelHelper.Validate(inDto);
         }
-        
-        return _emailValidationKeyModelHelper.Validate(inDto);
+
+        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.UiD ?? default);
+
+        return linkData.Result;
     }
 
     [AllowNotPayment]

@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Crie a primeira sala em Minhas salas.",
+  "EmptyRoomsHeader": "Ainda não há quartos aqui",
+  "RoomList": "Lista de salas",
+  "SearchEmptyRoomsDescription": "Nenhum quarto corresponde a este filtro. Tente um diferente ou limpe o filtro para ver todos os quartos."
+}

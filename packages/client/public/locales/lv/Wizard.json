@@ -4,7 +4,7 @@
   "ErrorEmail": "Nederīga e-pasta adrese",
   "ErrorInitWizard": "Pakalpojums pašlaik nav pieejams. Lūdzu, vēlāk mēģiniet vēlreiz.",
   "ErrorInitWizardButton": "Mēģiniet vēlreiz",
-  "ErrorLicenseBody": "Licence nav derīga. Pārliecinieties, ka esat izvēlējies pareizo failu",
+  "ErrorLicenseBody": "Licence nav derīga. Pārliecinieties, ka esat izvēlējies pareizo failu.",
   "ErrorPassword": "Parole neatbilst prasībām",
   "ErrorUploadLicenseFile": "Atlasiet licences failu",
   "GeneratePassword": "Ģenerēt paroli",

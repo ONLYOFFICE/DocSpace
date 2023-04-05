@@ -1,5 +1,5 @@
 {
   "LblInviteAgain": "再次邀请",
-  "MessageEmailActivationInstuctionsSentOnEmail": "邮件激活指示已发送至<1>{{email}}</1>邮件地址",
+  "MessageEmailActivationInstuctionsSentOnEmail": "邮件激活指示已发送至<1>{{email}}</1>邮件地址。",
   "UserStatus": "状态"
 }

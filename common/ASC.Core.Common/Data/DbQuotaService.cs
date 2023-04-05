@@ -95,16 +95,26 @@ class DbQuotaService : IQuotaService
         var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
         dbTenantQuotaRow.UserId = row.UserId;
 
-        if (exchange)
+        var exist = coreDbContext.QuotaRows.Find(new object[] { dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
+
+        if (exist == null)
         {
-            coreDbContext.QuotaRows
-                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == row.UserId)
-                .ExecuteUpdate(x => x.SetProperty(p => p.Counter, p => (p.Counter + row.Counter)));
+            coreDbContext.QuotaRows.Add(dbTenantQuotaRow);
+            coreDbContext.SaveChanges();
         }
         else
         {
-            coreDbContext.AddOrUpdate(coreDbContext.QuotaRows, dbTenantQuotaRow);
-            coreDbContext.SaveChanges();
+            if (exchange)
+            {
+                coreDbContext.QuotaRows
+                    .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == row.UserId)
+                    .ExecuteUpdate(x => x.SetProperty(p => p.Counter, p => (p.Counter + row.Counter)));
+            }
+            else
+            {
+                coreDbContext.AddOrUpdate(coreDbContext.QuotaRows, dbTenantQuotaRow);
+                coreDbContext.SaveChanges();
+            }
         }
     }
 

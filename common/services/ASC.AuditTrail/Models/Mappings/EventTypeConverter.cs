@@ -151,6 +151,24 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
         result.Date =  _tenantUtil.DateTimeFromUtc(result.Date);
         result.IP = result.IP.Split(':').Length > 1 ? result.IP.Split(':')[0] : result.IP;
 
+        if (map?.ProductType == ProductType.Documents)
+        {
+            var rawNotificationInfo = result.Description?.LastOrDefault();
+            
+            if (!string.IsNullOrEmpty(rawNotificationInfo) && rawNotificationInfo.StartsWith('{') && rawNotificationInfo.EndsWith('}'))
+            {
+                var notificationInfo = System.Text.Json.JsonSerializer.Deserialize<AdditionalNotificationInfo>(rawNotificationInfo);
+
+                result.Context = result.Action == (int)MessageAction.RoomRenamed ? notificationInfo.RoomOldTitle : 
+                    !string.IsNullOrEmpty(notificationInfo.RoomTitle) ? notificationInfo.RoomTitle : notificationInfo.RootFolderTitle;
+            }
+        }
+
+        if (string.IsNullOrEmpty(result.Context))
+        {
+            result.Context = result.Module;
+        }
+
         return result;
     }
 }

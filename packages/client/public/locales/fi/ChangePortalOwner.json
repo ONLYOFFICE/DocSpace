@@ -1,7 +1,5 @@
 {
   "BackupPortal": "Varmuuskopioi portaalin tiedot",
-  "ChangeOwner": "Nimeä moduulin järjestelmänvalvojat",
-  "DeactivateOrDeletePortal": "Määritä moduulien käyttöoikeudet",
   "ManagePortal": " Hallitse portaalin asetuksia",
   "ManageUser": " Hallitse käyttäjätilejä"
 }

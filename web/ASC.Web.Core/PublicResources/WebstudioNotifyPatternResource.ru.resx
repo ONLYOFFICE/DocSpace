@@ -296,20 +296,6 @@ $GreenButton
 
 Вы будете получать другие полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
   </data>
-  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Ваш гостевой профиль успешно добавлен на "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
-
-1. Редактировать свой профиль.
-2. Просматривать и комментировать контент, доступный в модулях Сообщество и Проекты.
-3. Добавлять и скачивать файлы, доступные для вас в модуле Документы.
-4. Планировать свой график с помощью встроенного Календаря.
-5. Использовать Чат для обмена мгновенным сообщениями.
-
-Чтобы получить доступ к вашему виртуальному офису, перейдите по следующей ссылке:
-$GreenButton</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 
@@ -320,19 +306,6 @@ $GreenButton
 Эта ссылка действительна только 7 дней.
 
 Вы будете получать другие полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Ваш гостевой профиль успешно добавлен на "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
-
-# Редактировать свой "профиль":"$MyStaffLink".
-# Просматривать и комментировать контент, доступный в модулях "Сообщество":"${__VirtualRootPath}/Products/Community/" и "Проекты":"${__VirtualRootPath}/Products/Projects/".
-# Добавлять и скачивать файлы, доступные для вас в модуле "Документы":"${__VirtualRootPath}/Products/Files/".
-# Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
-# Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
-
-$GreenButton</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Сообщение с портала "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -461,25 +434,6 @@ $GreenButton
 Эта ссылка действительна только 7 дней.
 
 Вы будете получать полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
-  </data>
-  <data name="pattern_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Теперь вы гость в виртуальном офисе "${__VirtualRootPath}":"${__VirtualRootPath}". Сейчас вы можете:
-
-*Представиться* команде, отредактировав свой профиль.
-
-*Просматривать доступные для вас документы*, а также скачивать их и загружать новые файлы в папки, к которым предоставлен доступ.
-
-*Просматривать и комментировать проекты*, в которые вас пригласили, а также записи в блоге и на форуме.
-
-*Обмениваться мгновенными сообщениями* и быстро делиться файлами в Чате.
-
-*Использовать персональные и общие календари* для организации встреч, настройки напоминаний и создания списков задач!
-
-Для доступа к виртуальному офису перейдите по "ссылке":"${__VirtualRootPath}".
-
-Если вы хотите создать свой собственный виртуальный офис, посетите "официальный сайт ONLYOFFICE":"https://www.onlyoffice.com/". </value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Здравствуйте, $UserName
@@ -826,25 +780,6 @@ $GreenButton
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Здравствуйте, $UserName!
-
-Ваш гостевой профиль успешно добавлен на "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
-
-1. Редактировать свой "профиль":"$MyStaffLink".
-2. Просматривать и комментировать контент, доступный в модулях "Сообщество":"${__VirtualRootPath}/Products/Community/" и "Проекты":"${__VirtualRootPath}/Products/Projects/".
-3. Добавлять и скачивать файлы, доступные для вас в модуле "Документы":"${__VirtualRootPath}/Products/Files/".
-4. Планировать свой график с помощью встроенного "Календаря":"${__VirtualRootPath}/addons/calendar/".
-5. Использовать "Чат":"${__VirtualRootPath}/addons/talk/" для обмена мгновенным сообщениями.
-
-$GreenButton
-
-Если вам требуется помощь, посетите наш "Справочный центр":"${__HelpLink}".
-
-С уважением,
-Команда ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.Оповещение об изменении профиля на портале "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -954,14 +889,8 @@ $GreenButton
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Добро пожаловать в виртуальный офис</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Добро пожаловать в виртуальный офис</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Сообщение пользователя для администраторов</value>
@@ -986,9 +915,6 @@ $GreenButton
   </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>Приглашение на портал ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Добро пожаловать в виртуальный офис</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Добро пожаловать в ONLYOFFICE для персонального использования!</value>
@@ -1046,9 +972,6 @@ $GreenButton
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Стать участником ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Добро пожаловать в ONLYOFFICE</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>Оповещение об изменении профиля на портале ${__VirtualRootPath}</value>

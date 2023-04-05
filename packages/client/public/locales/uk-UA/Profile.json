@@ -4,7 +4,7 @@
   "EditPhoto": "Редагувати фото",
   "InterfaceTheme": "Тема інтерфейсу",
   "LightTheme": "Світла тема",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Інструкції з активації електронної пошти надіслано на адресу <strong>{{ email }}</strong>",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Інструкції з активації електронної пошти надіслано на адресу <strong>{{ email }}</strong>.",
   "ProviderSuccessfullyConnected": "Провайдер успішно підключений",
   "ProviderSuccessfullyDisconnected": "Провайдер успішно відключений",
   "ShowBackupCodes": "Показати резервні коди",

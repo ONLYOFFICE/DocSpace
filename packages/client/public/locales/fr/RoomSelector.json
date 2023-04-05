@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Veuillez créer la première pièce dans Mes salles.",
+  "EmptyRoomsHeader": "Il n’y a pas encore de salles ici",
+  "RoomList": "Liste de salles",
+  "SearchEmptyRoomsDescription": "Aucune salle ne correspond à ce filtre. Essayez-en un autre ou effacez le filtre pour afficher toutes les salles."
+}

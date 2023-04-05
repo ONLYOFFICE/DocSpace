@@ -30,7 +30,7 @@ namespace ASC.Files.Api;
 public class EditorControllerInternal : EditorController<int>
 {
     public EditorControllerInternal(
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -51,7 +51,7 @@ public class EditorControllerThirdparty : EditorController<string>
     private readonly ThirdPartySelector _thirdPartySelector;
 
     public EditorControllerThirdparty(
-        FileStorageService<string> fileStorageService,
+        FileStorageService fileStorageService,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -110,7 +110,7 @@ public class EditorControllerThirdparty : EditorController<string>
 
 public abstract class EditorController<T> : ApiControllerBase
 {
-    protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly FileStorageService _fileStorageService;
     protected readonly DocumentServiceHelper _documentServiceHelper;
     protected readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
     protected readonly SettingsManager _settingsManager;
@@ -121,7 +121,7 @@ public abstract class EditorController<T> : ApiControllerBase
     private readonly FilesLinkUtility _filesLinkUtility;
 
     public EditorController(
-        FileStorageService<T> fileStorageService,
+        FileStorageService fileStorageService,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -158,14 +158,7 @@ public abstract class EditorController<T> : ApiControllerBase
     [HttpPut("file/{fileId}/saveediting")]
     public async Task<FileDto<T>> SaveEditingFromFormAsync(T fileId, [FromForm] SaveEditingRequestDto inDto)
     {
-        var file = inDto.File;
-        IEnumerable<IFormFile> files = _httpContextAccessor.HttpContext.Request.Form.Files;
-        if (files != null && files.Any())
-        {
-            file = files.First();
-        }
-
-        using var stream = file.OpenReadStream();
+        using var stream = _httpContextAccessor.HttpContext.Request.Body;
 
         return await _fileDtoHelper.GetAsync(await _fileStorageService.SaveEditingAsync(fileId, inDto.FileExtension, inDto.DownloadUri, stream, inDto.Doc, inDto.Forcesave));
     }
@@ -260,7 +253,7 @@ public abstract class EditorController<T> : ApiControllerBase
     public Task<FileReference<T>> GetReferenceDataAsync(GetReferenceDataDto<T> inDto)
     {
 
-        return  _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
+        return _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
     }
 }
 

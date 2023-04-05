@@ -120,7 +120,7 @@ const FilesRowContent = ({
         isFile={fileExst || contentLength}
       >
         <Link
-          className={`row-content-link ${isMedia ? "media-file" : ""}`}
+          className="row-content-link"
           containerWidth="55%"
           type="page"
           title={title}

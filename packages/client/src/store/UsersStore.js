@@ -122,13 +122,17 @@ class UsersStore {
         toType = EmployeeType.User;
     }
 
+    let users = null;
+
     try {
-      await api.people.updateUserType(toType, userIds);
+      users = await api.people.updateUserType(toType, userIds);
     } catch (e) {
       throw new Error(e);
     }
 
     await this.getUsersList(filter);
+
+    return users;
   };
 
   updateProfileInUsers = async (updatedProfile) => {

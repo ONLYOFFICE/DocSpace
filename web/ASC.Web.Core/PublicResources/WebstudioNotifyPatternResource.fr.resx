@@ -295,17 +295,6 @@ Ce lien est valide pendant 7 jours.
 
 Nous allons partager avec vous les astuces pour profiter pleinement des fonctionnalités du bureau web. Vous pouvez vous désinscrire ou renouveler l'inscription à tout moment dans votre profil.</value>
   </data>
-	<data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Votre profil d'invité a été ajouté avec succès au portail "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
-
-# Editer votre "profil":"$MyStaffLink".
-# Voir et commenter le contenu disponible dans les modules "Communauté":"${__VirtualRootPath}/Products/Community/" et "Projets":"${__VirtualRootPath}/Products/Projects/".
-# Ajouter et télécharger les fichiers qui sont disponibles dans le module "Documents":"${__VirtualRootPath}/Products/Files/".
-# Organiser votre agenda à l'aide du "Calendrier":"${__VirtualRootPath}/addons/calendar/".
-# Utiliser le "Chat":"${__VirtualRootPath}/addons/talk/" pour échanger à l'aide de la messagerie instantanée.</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Bonjour $UserName,
 
@@ -316,17 +305,6 @@ $GreenButton
 Ce lien est valide pendant 7 jours.
 
 Nous allons partager avec vous les astuces pour profiter pleinement des fonctionnalités du bureau web. Vous pouvez vous désinscrire ou renouveler l'inscription à tout moment dans votre profil.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Votre profil d'invité a été ajouté avec succès au portail "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
-
-# Editer votre "profil":"$MyStaffLink".
-# Voir et commenter le contenu disponible dans les modules "Communauté":"${__VirtualRootPath}/Products/Community/" et "Projets":"${__VirtualRootPath}/Products/Projects/".
-# Ajouter et télécharger les fichiers qui sont disponibles dans le module "Documents":"${__VirtualRootPath}/Products/Files/".
-# Organiser votre agenda à l'aide du "Calendrier":"${__VirtualRootPath}/addons/calendar/".
-# Utiliser le "Chat":"${__VirtualRootPath}/addons/talk/" pour échanger à l'aide de la messagerie instantanée.</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Message du portail "${__VirtualRootPath}":"${__VirtualRootPath}" 
@@ -454,24 +432,6 @@ Vous êtes invité à rejoindre "${__VirtualRootPath}":"${__VirtualRootPath}" en
 Le lien est valide 7 jours seulement.
 
 Vous allez recevoir plus d'astuces sur l'utilisation efficace du bureau digital. Vous pouvez annuler les inscriptions sur la page de votre profil à tout moment, aussi bien que les réactiver.</value>
-  </data>
-  <data name="pattern_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Bonjour, $UserName !
-
-Vous êtes dès maintenant un utilisateur invité du portail "${__VirtualRootPath}":"${__VirtualRootPath}". Vous pouvez :
-*Vous vous présenter* auprès de votre équipe en modifiant le profil.
-
-*Afficher les documents partagés*, les télécharger et charger les documents vers les dossiers partagés.
-
-*Afficher les projets, les billets de blog, les discussions dans les forums* auxquels vous avez été invité et laisser vos commentaires.
-
-*Echanger via la messagerie instantanée* et partager les fichiers rapidement via Talk.
-
-*Organiser un agenda personnel et collectif* pour fixer des rendez-vous, programmer les rappels et créer les listes des tâches à faire !
-
-Pour accéder à votre bureau digital, suivez "ce lien":"${__VirtualRootPath}".
-
-Si vous voulez créer votre propre bureau en ligne, visitez "le site web officiel de ONLYOFFICE":"https://www.onlyoffice.com/". </value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Bonjour, $UserName
@@ -815,25 +775,6 @@ Bien à vous,
 Equipe ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Bonjour $UserName,
-
-Votre compte d'invité a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Dès maintenant vous êtes en mesure de :
-
-# Modifier votre "profil":"$MyStaffLink".
-# Voir et réagir au contenu qui est disponible dans les modules "Communauté":"${__VirtualRootPath}/Products/Community/" et "Projets":"${__VirtualRootPath}/Products/Projects/".
-# Ajouter et télécharger les fichiers qui sont disponibles pour vous dans le module "Documents":"${__VirtualRootPath}/Products/Files/".
-# Organiser votre agenda grâce au module "Calendrier":"${__VirtualRootPath}/addons/calendar/".
-# Communiquer via une messagerie instantanée "Chat":"${__VirtualRootPath}/addons/talk/".
-
-$GreenButton
-
-Si vous avez besoin d'assistance, visitez notre "Centre d'Aide":"${__HelpLink}".
-
-Bien à vous,
-Equipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.Notification sur la modification du profil au portail "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -943,14 +884,8 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Inscrivez-vous sur le portail ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Bienvenue dans votre office en ligne</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Bienvenue dans votre office en ligne</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Le message d'utilisateur aux administrateurs</value>
@@ -975,9 +910,6 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Bienvenue à votre bureau en ligne</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Bienvenue sur ONLYOFFICE pour un usage personnel!</value>
@@ -1035,9 +967,6 @@ Le lien est valide pendant 7 jours.</value>
   </data>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>L'invitation à rejoindre le portail ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Bienvenue à votre ONLYOFFICE</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>Notification sur la modification du profil sur le portail ${__VirtualRootPath}</value>

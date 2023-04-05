@@ -83,7 +83,7 @@ export const StyledInfo = styled.div`
     max-width: 100%;
 
     @media ${desktop} {
-      height: 20px;
+      height: auto;
     }
 
     @media ${smallTablet} {
@@ -216,6 +216,7 @@ export const StyledInfo = styled.div`
           padding-left: 0;
           font-size: 12px !important;
           line-height: 16px !important;
+          max-width: 100%;
         }
       }
 

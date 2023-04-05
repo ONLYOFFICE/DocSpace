@@ -139,7 +139,7 @@ const DropBox = React.forwardRef(
 
       setDropBoxHeight(
         currentHeight + navHeight > sectionHeight
-          ? sectionHeight - navHeight
+          ? sectionHeight - navHeight - 20
           : currentHeight
       );
     }, [sectionHeight]);

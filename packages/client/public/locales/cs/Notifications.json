@@ -1,1 +1,12 @@
-{}
+{
+  "Badges": "Odznaky",
+  "DailyFeed": "Denní kanál DocSpace",
+  "DailyFeedDescription": "Přečtěte si novinky a události z vašeho DocSpace v denním přehledu.",
+  "ManageNotifications": "Správa",
+  "Notifications": "Oznámení",
+  "RoomsActions": "Akce se soubory v místnostech",
+  "RoomsActivity": "Činnost v místnostech",
+  "RoomsActivityDescription": "Hodinová oznámení. Dostávejte informace o všech aktivitách ve svých místnostech.",
+  "UsefulTips": "Užitečné tipy pro DocSpace",
+  "UsefulTipsDescription": "Získejte užitečné příručky o DocSpace"
+}

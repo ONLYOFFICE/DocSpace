@@ -100,7 +100,7 @@ public class EncryptionKeyPairDtoHelper
         return keyPair;
     }
 
-    public async Task<IEnumerable<EncryptionKeyPairDto>> GetKeyPairAsync<T>(T fileId, FileStorageService<T> FileStorageService)
+    public async Task<IEnumerable<EncryptionKeyPairDto>> GetKeyPairAsync<T>(T fileId, FileStorageService FileStorageService)
     {
         var fileDao = _daoFactory.GetFileDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();

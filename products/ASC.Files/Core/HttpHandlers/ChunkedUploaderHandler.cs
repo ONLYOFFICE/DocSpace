@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Text.RegularExpressions;
-
 namespace ASC.Web.Files.HttpHandlers;
 
 public class ChunkedUploaderHandler
@@ -315,7 +313,7 @@ public class ChunkedRequestHelper<T>
                 return default(T);
             }
 
-            return (T)Convert.ChangeType(queryValue[0], typeof(T));
+            return IdConverter.Convert<T>(queryValue[0]);
         }
     }
 
@@ -330,7 +328,7 @@ public class ChunkedRequestHelper<T>
                 return default(T);
             }
 
-            return (T)Convert.ChangeType(queryValue[0], typeof(T));
+            return IdConverter.Convert<T>(queryValue[0]);
         }
     }
 

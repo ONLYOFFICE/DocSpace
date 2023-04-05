@@ -329,6 +329,11 @@ public class PermissionContext
         return CheckPermissions(securityObject, null, actions);
     }
 
+    public bool CheckPermissions(IAccount account, ISecurityObject securityObject, params IAction[] actions)
+    {
+        return PermissionResolver.Check(account, securityObject, null, actions);
+    }
+
     public bool CheckPermissions(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
     {
         return PermissionResolver.Check(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);

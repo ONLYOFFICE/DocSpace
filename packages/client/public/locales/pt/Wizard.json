@@ -1,10 +1,10 @@
 {
-  "Desc": "Por favor, preencha os dados de registo do portal.",
+  "Desc": "Por favor, preencha os dados de registo do DocSpace.",
   "Domain": "Domínio:",
   "ErrorEmail": "Endereço de email inválido",
   "ErrorInitWizard": "O serviço está atualmente indisponível, por favor tente de novo mais tarde.",
   "ErrorInitWizardButton": "Tentar de novo",
-  "ErrorLicenseBody": "A licença não é válida. Certifique-se que escolheu o ficheiro correto",
+  "ErrorLicenseBody": "A licença não é válida. Certifique-se que escolheu o ficheiro correto.",
   "ErrorPassword": "A palavra-chave não cumpre com os requisitos obrigatórios",
   "ErrorUploadLicenseFile": "Selecione um ficheiro com a licença",
   "GeneratePassword": "Gerar palavra-passe",

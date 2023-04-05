@@ -3,11 +3,11 @@
   "CodeSubtitle": "Enviamos um código de 6 dígitos para {{email}}. O código tem um período de validade limitado, insira-o o mais rápido possível.",
   "CodeTitle": "O código foi enviado por e-mail para você",
   "CookieSettingsTitle": "Vida útil da sessão",
-  "ErrorInvalidHeader": "Link Vencido",
+  "ErrorInvalidHeader": "Link vencido",
   "ErrorInvalidText": "Em 10 segundos, você será redirecionado para a <1>DocSpace</1>",
-  "ExpiredCode": "Este código não é mais válido. Solicite um novo código e tente novamente",
+  "ExpiredCode": "Este código não é mais válido. Solicite um novo código e tente novamente.",
   "ForgotPassword": "Esqueceu-se da senha?",
-  "InvalidCode": "Este código é inválido. Tente novamente",
+  "InvalidCode": "Este código é inválido. Tente novamente.",
   "MessageAuthorize": "Log in para continuar",
   "MessageEmailConfirmed": "Seu email foi ativado com sucesso.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Por favor, digite o e-mail que você usou para o registro. As instruções de recuperação da senha serão enviadas a ele.",
@@ -24,5 +24,7 @@
   "RegistrationEmailWatermark": "Email",
   "Remember": "Lembre-se de mim",
   "RememberHelper": "A duração padrão da sessão é de 20 minutos. Marque esta opção para defini-la como 1 ano. Para definir seu próprio valor, vá para Configurações",
-  "ResendCode": "Reenviar código"
+  "ResendCode": "Reenviar código",
+  "SignInWithCode": "Entrar com código secreto",
+  "SignInWithPassword": "Entrar com senha"
 }

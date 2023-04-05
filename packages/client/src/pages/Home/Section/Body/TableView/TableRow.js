@@ -160,6 +160,7 @@ const FilesTableRow = (props) => {
           <RowDataComponent
             element={element}
             dragStyles={dragStyles}
+            selectionProp={selectionProp}
             {...props}
           />
         )}

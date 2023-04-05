@@ -1,7 +1,10 @@
 {
+  "AppointAdmin": "管理者の選任",
   "BackupPortal": "ポータルデータをバックアップする",
-  "ChangeOwner": "モジュール管理者を任命する",
-  "DeactivateOrDeletePortal": "モジュールのアクセス権を設定する",
+  "ChangeInstruction": "DocSpaceの所有者を変更する場合は、新しい所有者の名前を以下で選択してください。",
+  "ChangeOwner": "DocSpaceの所有者を変更する",
+  "ChangeUser": "ユーザーを変更する",
+  "DeactivateOrDeletePortal": "DocSpaceを停止する、または解除する",
   "ManagePortal": "ポータル構成を管理する",
   "ManageUser": "ユーザーアカウントを管理する"
 }
