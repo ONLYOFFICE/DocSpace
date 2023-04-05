@@ -247,6 +247,7 @@ const ArticleBodyContent = (props) => {
 
   const catalogItems = () => {
     const items = [];
+
     let resultTree = [...settingsTree];
 
     if (isNotPaidPeriod) {
@@ -265,6 +266,8 @@ const ArticleBodyContent = (props) => {
         resultTree.splice(index, 1);
       }
     }
+
+    if (selectedKeys.length === 0) return <></>;
 
     resultTree.map((item) => {
       items.push(

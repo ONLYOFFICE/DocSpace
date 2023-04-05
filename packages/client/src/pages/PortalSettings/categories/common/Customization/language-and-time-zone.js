@@ -58,7 +58,7 @@ const LanguageAndTimeZone = (props) => {
     tReady,
     setIsLoadedLngTZSettings,
     t,
-
+    setIsLoaded,
     timezone,
 
     initSettings,
@@ -149,9 +149,10 @@ const LanguageAndTimeZone = (props) => {
     }
 
     if (!languageDefaultFromSessionStorage) {
-      setState({
+      setState((val) => ({
+        ...val,
         languageDefault: languageFromSessionStorage,
-      });
+      }));
     }
 
     if (timezoneDefaultFromSessionStorage || timezone) {
@@ -262,6 +263,8 @@ const LanguageAndTimeZone = (props) => {
     state.timezoneDefault,
     state.languageDefault,
     state.hasScroll,
+    state.timezone,
+    state.language,
     i18n,
     language,
     cultureNames,
