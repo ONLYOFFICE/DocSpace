@@ -38,14 +38,14 @@ public class GwsMigratingUser : MigratingUser<GwsMigratingContacts, GwsMigrating
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly UserManager _userManager;
 
     public GwsMigratingUser(
         GlobalFolderHelper globalFolderHelper,
         IDaoFactory daoFactory,
         FileSecurity fileSecurity,
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         UserManager userManager)
     {
         _globalFolderHelper = globalFolderHelper;

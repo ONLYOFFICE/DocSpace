@@ -26,9 +26,12 @@
 
 namespace ASC.Files.Core.Thirdparty;
 
-public class BaseProviderInfo<T> where T : IProviderInfo
+public class BaseProviderInfo<TFile, TFolder, TItem>
+    where TFile : class, TItem
+    where TFolder : class, TItem
+    where TItem : class
 {
-    public T ProviderInfo { get; set; }
+    public IProviderInfo<TFile, TFolder, TItem> ProviderInfo { get; set; }
     public string Path { get; set; }
     public string PathPrefix { get; set; }
 }

@@ -24,47 +24,19 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Files.Core.Core.Thirdparty.Dropbox;
+
 namespace ASC.Files.Thirdparty.Dropbox;
-
-[Scope(Additional = typeof(DropboxDaoSelectorExtension))]
-internal class DropboxDaoSelector : RegexDaoSelectorBase<DropboxProviderInfo>, IDaoSelector
-{
-    protected internal override string Name => "Dropbox";
-    protected internal override string Id => "dropbox";
-
-    public DropboxDaoSelector(IServiceProvider serviceProvider, IDaoFactory daoFactory)
-        : base(serviceProvider, daoFactory)
-    {
-    }
-
-    public IFileDao<string> GetFileDao(string id)
-    {
-        return base.GetFileDao<DropboxFileDao>(id);
-    }
-
-    public IFolderDao<string> GetFolderDao(string id)
-    {
-        return base.GetFolderDao<DropboxFolderDao>(id);
-    }
-
-    public ITagDao<string> GetTagDao(string id)
-    {
-        return base.GetTagDao<DropboxTagDao>(id);
-    }
-
-    public ISecurityDao<string> GetSecurityDao(string id)
-    {
-        return base.GetSecurityDao<DropboxSecurityDao>(id);
-    }
-}
 
 public static class DropboxDaoSelectorExtension
 {
     public static void Register(DIHelper services)
     {
-        services.TryAdd<DropboxFileDao>();
-        services.TryAdd<DropboxFolderDao>();
-        services.TryAdd<DropboxTagDao>();
-        services.TryAdd<DropboxSecurityDao>();
+        services.TryAdd<ThirdPartyFileDao<FileMetadata, FolderMetadata, Metadata>, DropboxFileDao>();
+        services.TryAdd<ThirdPartyFolderDao<FileMetadata, FolderMetadata, Metadata>>();
+        services.TryAdd<IProviderInfo<FileMetadata, FolderMetadata, Metadata>, DropboxProviderInfo>();
+        services.TryAdd<ThirdPartyTagDao<FileMetadata, FolderMetadata, Metadata>>();
+        services.TryAdd<IDaoBase<FileMetadata, FolderMetadata, Metadata>, DropboxDaoBase>();
+        services.TryAdd<IDaoSelector<FileMetadata, FolderMetadata, Metadata>, RegexDaoSelectorBase<FileMetadata, FolderMetadata, Metadata>>();
     }
 }

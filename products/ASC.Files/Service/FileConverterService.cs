@@ -80,15 +80,15 @@ internal class FileConverterService<T> : BackgroundService
         DocumentServiceConnector documentServiceConnector;
         EntryStatusManager entryManager;
         FileConverter fileConverter;
-        FileConverterQueue<T> fileConverterQueue;
+        FileConverterQueue fileConverterQueue;
 
-        var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue<T>>>();
+        var logger = scope.ServiceProvider.GetService<ILogger<FileConverterQueue>>();
 
         try
         {
-            fileConverterQueue = scope.ServiceProvider.GetService<FileConverterQueue<T>>();
+            fileConverterQueue = scope.ServiceProvider.GetService<FileConverterQueue>();
 
-            var _conversionQueue = fileConverterQueue.GetAllTask().ToList();
+            var _conversionQueue = fileConverterQueue.GetAllTask<T>().ToList();
 
             if (_conversionQueue.Count > 0)
             {
@@ -123,6 +123,7 @@ internal class FileConverterService<T> : BackgroundService
                 var fileUri = file.Id.ToString();
 
                 string convertedFileUrl;
+                string convertedFileType;
 
                 try
                 {
@@ -147,12 +148,12 @@ internal class FileConverterService<T> : BackgroundService
 
                     fileUri = pathProvider.GetFileStreamUrl(file);
 
-                    var toExtension = fileUtility.GetInternalExtension(file.Title);
+                    var toExtension = fileUtility.GetInternalConvertExtension(file.Title);
                     var fileExtension = file.ConvertedExtension;
                     var docKey = documentServiceHelper.GetDocKey(file);
 
                     fileUri = documentServiceConnector.ReplaceCommunityAdress(fileUri);
-                    (operationResultProgress, convertedFileUrl) = await documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true);
+                    (operationResultProgress, convertedFileUrl, convertedFileType) = await documentServiceConnector.GetConvertedUriAsync(fileUri, fileExtension, toExtension, docKey, password, CultureInfo.CurrentUICulture.Name, null, null, true);
                 }
                 catch (Exception exception)
                 {
@@ -213,13 +214,13 @@ internal class FileConverterService<T> : BackgroundService
 
                 try
                 {
-                    newFile = await fileConverter.SaveConvertedFileAsync(file, convertedFileUrl);
+                    newFile = await fileConverter.SaveConvertedFileAsync(file, convertedFileUrl, convertedFileType);
                 }
                 catch (Exception e)
                 {
                     operationResultError = e.Message;
 
-                    logger.ErrorOperation(operationResultError, convertedFileUrl, fileUri, e);
+                    logger.ErrorOperation(operationResultError, convertedFileUrl, fileUri, convertedFileType, e);
 
                     continue;
                 }
@@ -256,7 +257,7 @@ internal class FileConverterService<T> : BackgroundService
                 logger.DebugCheckConvertFilesStatusIterationEnd();
             }
 
-            fileConverterQueue.SetAllTask(_conversionQueue);
+            fileConverterQueue.SetAllTask<T>(_conversionQueue);
 
         }
         catch (Exception exception)

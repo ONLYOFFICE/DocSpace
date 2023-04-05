@@ -30,8 +30,8 @@ namespace ASC.Files.Api;
 public class SecutiryControllerInternal : SecutiryController<int>
 {
     public SecutiryControllerInternal(
-        FileStorageService<int> fileStorageService,
-        SecurityControllerHelper<int> securityControllerHelper,
+        FileStorageService fileStorageService,
+        SecurityControllerHelper securityControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper)
         : base(fileStorageService, securityControllerHelper, folderDtoHelper, fileDtoHelper)
@@ -42,8 +42,8 @@ public class SecutiryControllerInternal : SecutiryController<int>
 public class SecutiryControllerThirdparty : SecutiryController<string>
 {
     public SecutiryControllerThirdparty(
-        FileStorageService<string> fileStorageService,
-        SecurityControllerHelper<string> securityControllerHelper,
+        FileStorageService fileStorageService,
+        SecurityControllerHelper securityControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper)
         : base(fileStorageService, securityControllerHelper, folderDtoHelper, fileDtoHelper)
@@ -53,10 +53,10 @@ public class SecutiryControllerThirdparty : SecutiryController<string>
 
 public abstract class SecutiryController<T> : ApiControllerBase
 {
-    private readonly FileStorageService<T> _fileStorageService;
-    private readonly SecurityControllerHelper<T> _securityControllerHelper;
+    private readonly FileStorageService _fileStorageService;
+    private readonly SecurityControllerHelper _securityControllerHelper;
 
-    public SecutiryController(FileStorageService<T> fileStorageService, SecurityControllerHelper<T> securityControllerHelper,
+    public SecutiryController(FileStorageService fileStorageService, SecurityControllerHelper securityControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
@@ -177,23 +177,17 @@ public abstract class SecutiryController<T> : ApiControllerBase
 
 public class SecutiryControllerCommon : ApiControllerBase
 {
-    private readonly FileStorageService<int> _fileStorageServiceInt;
-    private readonly FileStorageService<string> _fileStorageServiceString;
-    private readonly SecurityControllerHelper<int> _securityControllerHelperInt;
-    private readonly SecurityControllerHelper<string> _securityControllerHelperString;
+    private readonly FileStorageService _fileStorageService;
+    private readonly SecurityControllerHelper _securityControllerHelper;
 
     public SecutiryControllerCommon(
-        FileStorageService<int> fileStorageServiceInt,
-        FileStorageService<string> fileStorageServiceString,
-        SecurityControllerHelper<int> securityControllerHelperInt,
-        SecurityControllerHelper<string> securityControllerHelperString,
+        FileStorageService fileStorageService,
+        SecurityControllerHelper securityControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
-        _fileStorageServiceInt = fileStorageServiceInt;
-        _fileStorageServiceString = fileStorageServiceString;
-        _securityControllerHelperInt = securityControllerHelperInt;
-        _securityControllerHelperString = securityControllerHelperString;
+        _fileStorageService = fileStorageService;
+        _securityControllerHelper = securityControllerHelper;
     }
 
     [HttpPost("owner")]
@@ -203,8 +197,8 @@ public class SecutiryControllerCommon : ApiControllerBase
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
         var data = AsyncEnumerable.Empty<FileEntry>();
-        data = data.Concat(_fileStorageServiceInt.ChangeOwnerAsync(folderIntIds, fileIntIds, inDto.UserId));
-        data = data.Concat(_fileStorageServiceString.ChangeOwnerAsync(folderStringIds, fileStringIds, inDto.UserId));
+        data = data.Concat(_fileStorageService.ChangeOwnerAsync(folderIntIds, fileIntIds, inDto.UserId));
+        data = data.Concat(_fileStorageService.ChangeOwnerAsync(folderStringIds, fileStringIds, inDto.UserId));
 
         await foreach (var e in data)
         {
@@ -218,8 +212,8 @@ public class SecutiryControllerCommon : ApiControllerBase
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-        var internalIds = _securityControllerHelperInt.GetSecurityInfoAsync(fileIntIds, folderIntIds);
-        var thirdpartyIds = _securityControllerHelperString.GetSecurityInfoAsync(fileStringIds, folderStringIds);
+        var internalIds = _securityControllerHelper.GetSecurityInfoAsync(fileIntIds, folderIntIds);
+        var thirdpartyIds = _securityControllerHelper.GetSecurityInfoAsync(fileStringIds, folderStringIds);
 
         await foreach (var r in internalIds.Concat(thirdpartyIds))
         {
@@ -241,8 +235,8 @@ public class SecutiryControllerCommon : ApiControllerBase
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-        await _securityControllerHelperInt.RemoveSecurityInfoAsync(fileIntIds, folderIntIds);
-        await _securityControllerHelperString.RemoveSecurityInfoAsync(fileStringIds, folderStringIds);
+        await _securityControllerHelper.RemoveSecurityInfoAsync(fileIntIds, folderIntIds);
+        await _securityControllerHelper.RemoveSecurityInfoAsync(fileStringIds, folderStringIds);
 
         return true;
     }
@@ -254,8 +248,8 @@ public class SecutiryControllerCommon : ApiControllerBase
         var (folderIntIds, folderStringIds) = FileOperationsManager.GetIds(inDto.FolderIds);
         var (fileIntIds, fileStringIds) = FileOperationsManager.GetIds(inDto.FileIds);
 
-        var internalIds = _securityControllerHelperInt.SetSecurityInfoAsync(fileIntIds, folderIntIds, inDto.Share, inDto.Notify, inDto.SharingMessage);
-        var thirdpartyIds = _securityControllerHelperString.SetSecurityInfoAsync(fileStringIds, folderStringIds, inDto.Share, inDto.Notify, inDto.SharingMessage);
+        var internalIds = _securityControllerHelper.SetSecurityInfoAsync(fileIntIds, folderIntIds, inDto.Share, inDto.Notify, inDto.SharingMessage);
+        var thirdpartyIds = _securityControllerHelper.SetSecurityInfoAsync(fileStringIds, folderStringIds, inDto.Share, inDto.Notify, inDto.SharingMessage);
 
         await foreach (var s in internalIds.Concat(thirdpartyIds))
         {

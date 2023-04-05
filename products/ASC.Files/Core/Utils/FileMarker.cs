@@ -27,7 +27,7 @@
 namespace ASC.Web.Files.Utils;
 
 [Singletone]
-public class FileMarkerHelper<T>
+public class FileMarkerHelper
 {
     public const string CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME = "file_marker";
     private readonly IServiceProvider _serviceProvider;
@@ -36,7 +36,7 @@ public class FileMarkerHelper<T>
 
     public FileMarkerHelper(
         IServiceProvider serviceProvider,
-        ILogger<FileMarkerHelper<T>> logger,
+        ILogger<FileMarkerHelper> logger,
         IDistributedTaskQueueFactory queueFactory)
     {
         _serviceProvider = serviceProvider;
@@ -44,12 +44,12 @@ public class FileMarkerHelper<T>
         Tasks = queueFactory.CreateQueue(CUSTOM_DISTRIBUTED_TASK_QUEUE_NAME);
     }
 
-    internal void Add(AsyncTaskData<T> taskData)
+    internal void Add<T>(AsyncTaskData<T> taskData)
     {
         Tasks.EnqueueTask(async (d, c) => await ExecMarkFileAsNewAsync(taskData), taskData);
     }
 
-    private async Task ExecMarkFileAsNewAsync(AsyncTaskData<T> obj)
+    private async Task ExecMarkFileAsNewAsync<T>(AsyncTaskData<T> obj)
     {
         try
         {
@@ -452,7 +452,7 @@ public class FileMarker
             taskData.UserIDs = projectTeam;
         }
 
-        _serviceProvider.GetService<FileMarkerHelper<T>>().Add(taskData);
+        _serviceProvider.GetService<FileMarkerHelper>().Add(taskData);
     }
 
     public Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
@@ -685,7 +685,7 @@ public class FileMarker
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException_ViewFolder);
         }
 
-        if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.Id, await _globalFolder.GetFolderTrashAsync<T>(_daoFactory)))
+        if (folder.RootFolderType == FolderType.TRASH && !Equals(folder.Id, await _globalFolder.GetFolderTrashAsync(_daoFactory)))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_ViewTrashItem);
         }
@@ -932,7 +932,7 @@ public class FileMarker
                     }
                     else if (rootFolder.RootFolderType == FolderType.VirtualRooms)
                     {
-                        rootFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<T>(_daoFactory);
+                        rootFolderId = IdConverter.Convert<T>(await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory));
                     }
 
                     if (rootFolderId != null)
@@ -1049,9 +1049,8 @@ public static class FileMarkerExtention
     public static void Register(DIHelper services)
     {
         services.TryAdd<AsyncTaskData<int>>();
-        services.TryAdd<FileMarkerHelper<int>>();
+        services.TryAdd<FileMarkerHelper>();
 
         services.TryAdd<AsyncTaskData<string>>();
-        services.TryAdd<FileMarkerHelper<string>>();
     }
 }
