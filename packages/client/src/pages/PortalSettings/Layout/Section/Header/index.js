@@ -117,11 +117,24 @@ const StyledContainer = styled.div`
   }
 `;
 
-class SectionHeaderContent extends React.Component {
-  constructor(props) {
-    super(props);
+const SectionHeaderContent = (props) => {
+  const {
+    match,
+    location,
+    isBrandingAndCustomizationAvailable,
+    isRestoreAndAutoBackupAvailable,
+    tReady,
+    setIsLoadedSectionHeader,
+  } = props;
 
-    const { match, location } = props;
+  const [state, setState] = React.useState({
+    header: "",
+    isCategoryOrHeader: false,
+    showSelector: false,
+    isHeaderVisible: false,
+  });
+
+  React.useEffect(() => {
     const fullSettingsUrl = match.url;
     const locationPathname = location.pathname;
 
@@ -144,20 +157,14 @@ class SectionHeaderContent extends React.Component {
       "isHeader"
     );
 
-    this.state = {
+    setState((val) => ({
+      ...val,
       header,
       isCategoryOrHeader: isCategory || isHeader,
-      showSelector: false,
-      isHeaderVisible: false,
-    };
-  }
+    }));
+  }, []);
 
-  isAvailableSettings = (key) => {
-    const {
-      isBrandingAndCustomizationAvailable,
-      isRestoreAndAutoBackupAvailable,
-    } = this.props;
-
+  const isAvailableSettings = (key) => {
     switch (key) {
       case "DNSSettings":
         return isBrandingAndCustomizationAvailable;
@@ -167,12 +174,11 @@ class SectionHeaderContent extends React.Component {
         return true;
     }
   };
-  componentDidUpdate() {
-    const { tReady, setIsLoadedSectionHeader } = this.props;
 
+  React.useEffect(() => {
     if (tReady) setIsLoadedSectionHeader(true);
 
-    const arrayOfParams = this.getArrayOfParams();
+    const arrayOfParams = getArrayOfParams();
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
     const currKey = key.length > 3 ? key : key[0];
@@ -189,28 +195,33 @@ class SectionHeaderContent extends React.Component {
     );
     const isCategoryOrHeader = isCategory || isHeader;
 
-    const isNeedPaidIcon = !this.isAvailableSettings(header);
+    const isNeedPaidIcon = !isAvailableSettings(header);
 
-    this.state.isNeedPaidIcon !== isNeedPaidIcon &&
-      this.setState({ isNeedPaidIcon });
+    state.isNeedPaidIcon !== isNeedPaidIcon &&
+      setState((val) => ({ ...val, isNeedPaidIcon }));
 
-    header !== this.state.header && this.setState({ header });
+    header !== state.header && setState((val) => ({ ...val, header }));
 
-    isCategoryOrHeader !== this.state.isCategoryOrHeader &&
-      this.setState({ isCategoryOrHeader });
-  }
+    isCategoryOrHeader !== state.isCategoryOrHeader &&
+      setState((val) => ({ ...val, isCategoryOrHeader }));
+  }, [
+    tReady,
+    setIsLoadedSectionHeader,
+    getArrayOfParams,
+    isAvailableSettings,
+    state.isNeedPaidIcon,
+    state.header,
+    state.isCategoryOrHeader,
+  ]);
 
-  onBackToParent = () => {
-    let newArrayOfParams = this.getArrayOfParams();
+  const onBackToParent = () => {
+    let newArrayOfParams = getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
     const newPath = "/portal-settings/" + newArrayOfParams.join("/");
-    this.props.history.push(
-      combineUrl(window.DocSpaceConfig?.proxy?.url, newPath)
-    );
+    props.history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, newPath));
   };
 
-  getArrayOfParams = () => {
-    const { match, location } = this.props;
+  const getArrayOfParams = () => {
     const fullSettingsUrl = match.url;
     const locationPathname = location.pathname;
 
@@ -222,128 +233,126 @@ class SectionHeaderContent extends React.Component {
     return arrayOfParams;
   };
 
-  addUsers = (items) => {
-    const { addUsers } = this.props;
+  const addUsers = (items) => {
+    const { addUsers } = props;
     if (!addUsers) return;
     addUsers(items);
   };
 
-  onToggleSelector = (isOpen = !this.props.selectorIsOpen) => {
-    const { toggleSelector } = this.props;
+  const onToggleSelector = (isOpen = !props.selectorIsOpen) => {
+    const { toggleSelector } = props;
     toggleSelector(isOpen);
   };
 
-  onClose = () => {
-    const { deselectUser } = this.props;
+  const onClose = () => {
+    const { deselectUser } = props;
     deselectUser();
   };
 
-  onCheck = (checked) => {
-    const { setSelected } = this.props;
+  const onCheck = (checked) => {
+    const { setSelected } = props;
     setSelected(checked ? "all" : "close");
   };
 
-  onSelectAll = () => {
-    const { setSelected } = this.props;
+  const onSelectAll = () => {
+    const { setSelected } = props;
     setSelected("all");
   };
 
-  removeAdmins = () => {
-    const { removeAdmins } = this.props;
+  const removeAdmins = () => {
+    const { removeAdmins } = props;
     if (!removeAdmins) return;
     removeAdmins();
   };
 
-  render() {
-    const {
-      t,
-      isLoadedSectionHeader,
-      addUsers,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      isHeaderVisible,
-      selection,
-    } = this.props;
-    const { header, isCategoryOrHeader, isNeedPaidIcon } = this.state;
-    const arrayOfParams = this.getArrayOfParams();
+  const {
+    t,
+    isLoadedSectionHeader,
 
-    const menuItems = (
-      <>
-        <DropDownItem
-          key="all"
-          label={t("Common:SelectAll")}
-          data-index={1}
-          onClick={this.onSelectAll}
-        />
-      </>
-    );
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    isHeaderVisible,
+    selection,
+  } = props;
+  const { header, isCategoryOrHeader, isNeedPaidIcon } = state;
+  const arrayOfParams = getArrayOfParams();
 
-    const headerMenu = [
-      {
-        label: t("Common:Delete"),
-        disabled: !selection || !selection.length > 0,
-        onClick: this.removeAdmins,
-        iconUrl: DeleteReactSvgUrl,
-      },
-    ];
+  const menuItems = (
+    <>
+      <DropDownItem
+        key="all"
+        label={t("Common:SelectAll")}
+        data-index={1}
+        onClick={onSelectAll}
+      />
+    </>
+  );
 
-    return (
-      <StyledContainer isHeaderVisible={isHeaderVisible}>
-        {isHeaderVisible ? (
-          <div className="group-button-menu-container">
-            <TableGroupMenu
-              checkboxOptions={menuItems}
-              onChange={this.onCheck}
-              isChecked={isHeaderChecked}
-              isIndeterminate={isHeaderIndeterminate}
-              headerMenu={headerMenu}
+  const headerMenu = [
+    {
+      label: t("Common:Delete"),
+      disabled: !selection || !selection.length > 0,
+      onClick: removeAdmins,
+      iconUrl: DeleteReactSvgUrl,
+    },
+  ];
+
+  return (
+    <StyledContainer isHeaderVisible={isHeaderVisible}>
+      {isHeaderVisible ? (
+        <div className="group-button-menu-container">
+          <TableGroupMenu
+            checkboxOptions={menuItems}
+            onChange={onCheck}
+            isChecked={isHeaderChecked}
+            isIndeterminate={isHeaderIndeterminate}
+            headerMenu={headerMenu}
+          />
+        </div>
+      ) : !isLoadedSectionHeader ? (
+        <LoaderSectionHeader />
+      ) : (
+        <HeaderContainer>
+          {!isCategoryOrHeader && arrayOfParams[0] && (
+            <IconButton
+              iconName={ArrowPathReactSvgUrl}
+              size="17"
+              isFill={true}
+              onClick={onBackToParent}
+              className="arrow-button"
             />
-          </div>
-        ) : !isLoadedSectionHeader ? (
-          <LoaderSectionHeader />
-        ) : (
-          <HeaderContainer>
-            {!isCategoryOrHeader && arrayOfParams[0] && (
+          )}
+          <Headline type="content" truncate={true}>
+            <div className="settings-section_header">
+              <div className="header"> {t(header)}</div>
+              {isNeedPaidIcon ? (
+                <Badge
+                  backgroundColor="#EDC409"
+                  label={t("Common:Paid")}
+                  className="settings-section_badge"
+                  isPaidBadge={true}
+                />
+              ) : (
+                ""
+              )}
+            </div>
+          </Headline>
+          {addUsers && (
+            <div className="action-wrapper">
               <IconButton
-                iconName={ArrowPathReactSvgUrl}
+                iconName={ActionsHeaderTouchReactSvgUrl}
                 size="17"
                 isFill={true}
-                onClick={this.onBackToParent}
-                className="arrow-button"
+                onClick={onToggleSelector}
+                className="action-button"
               />
-            )}
-            <Headline type="content" truncate={true}>
-              <div className="settings-section_header">
-                <div className="header"> {t(header)}</div>
-                {isNeedPaidIcon ? (
-                  <Badge
-                    backgroundColor="#EDC409"
-                    label={t("Common:Paid")}
-                    className="settings-section_badge"
-                    isPaidBadge={true}
-                  />
-                ) : (
-                  ""
-                )}
-              </div>
-            </Headline>
-            {addUsers && (
-              <div className="action-wrapper">
-                <IconButton
-                  iconName={ActionsHeaderTouchReactSvgUrl}
-                  size="17"
-                  isFill={true}
-                  onClick={this.onToggleSelector}
-                  className="action-button"
-                />
-              </div>
-            )}
-          </HeaderContainer>
-        )}
-      </StyledContainer>
-    );
-  }
-}
+            </div>
+          )}
+        </HeaderContainer>
+      )}
+    </StyledContainer>
+  );
+};
 
 export default inject(({ auth, setup, common }) => {
   const { currentQuotaStore } = auth;
