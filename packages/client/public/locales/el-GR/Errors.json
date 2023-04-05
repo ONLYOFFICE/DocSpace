@@ -3,5 +3,6 @@
   "Error403Text": "Δυστυχώς, η πρόσβαση απορρίφθηκε.",
   "Error404Text": "Δυστυχώς, ο πόρος δεν μπορεί να βρεθεί.",
   "ErrorEmptyResponse": "Κενή απάντηση",
-  "ErrorOfflineText": "Δεν βρέθηκε σύνδεση στο διαδίκτυο."
+  "ErrorOfflineText": "Δεν βρέθηκε σύνδεση στο διαδίκτυο.",
+  "ErrorUnavailableText": "DocSpace μη διαθέσιμο"
 }

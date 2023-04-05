@@ -2,7 +2,7 @@
   "AddManually": "Add manually",
   "AddManuallyDescriptionAccounts": "Invite new users to DocSpace personally via email",
   "AddManuallyDescriptionRoom": "Add existing DocSpace users to the room using the names or invite new users personally via email",
-  "EmailErrorMessage": "Email address not valid. You can edit the email by clicking on it.",
+  "EmailErrorMessage": "Email address is not valid. You can edit the email by clicking on it.",
   "InviteAccountSearchPlaceholder": "Invite people by email",
   "InviteRoomSearchPlaceholder": "Invite people by name or email",
   "InviteViaLink": "Invite via link",

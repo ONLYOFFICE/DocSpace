@@ -64,7 +64,7 @@
   "DNSSettings": "DNS 设置",
   "DNSSettingsDescription": "DNS 设置是一种为空间设置替代 URL 的方式。",
   "DNSSettingsMobile": "您可向我们的支持团队发送请求，我们将有专员帮助您进行设置。",
-  "DNSSettingsTooltip": "DNS 设置可用于为 {{ organizationName }} 空间设置替代 URL 地址。您可向我们的支持团队发送请求，我们将有专员帮助您进行设置。<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "DNS 设置可用于为 {{ organizationName }} 空间设置替代 URL 地址。您可向我们的支持团队发送请求，我们将有专员帮助您进行设置。",
   "DataBackup": "数据备份",
   "Deactivate": "停用",
   "DeactivateOrDeletePortal": "停用或删除门户。",

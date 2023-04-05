@@ -64,7 +64,7 @@
   "DNSSettings": "Setări DNS",
   "DNSSettingsDescription": "Setări DNS este o modalitate de setare a adresei URL alternative pentru spaţiul dvs.",
   "DNSSettingsMobile": "Trimiteţi solicitarea către echipa noastră de asistenţă, care este gata să vă ajute cu setarea.",
-  "DNSSettingsTooltip": "Setări DNS vă permit să setați o adresă URL alternativă pentru spaţiul dvs. {{ organizationName }}  Trimiteţi solicitarea către echipa noastră de asistenţă, care este gata să vă ajute cu setarea.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "Setări DNS vă permit să setați o adresă URL alternativă pentru spaţiul dvs. {{ organizationName }}. Trimiteţi solicitarea către echipa noastră de asistenţă, care este gata să vă ajute cu setarea.",
   "DataBackup": "Copiere de rezervă a datelor",
   "Deactivate": "Dezactivare",
   "DeactivateOrDeletePortal": "Dezactivarea sau ștergerea portalului.",

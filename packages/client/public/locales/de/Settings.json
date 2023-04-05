@@ -64,7 +64,7 @@
   "DNSSettings": "DNS-Einstellungen",
   "DNSSettingsDescription": "Mit DNS-Einstellungen können Sie eine alternative URL für Ihren Bereich festlegen.",
   "DNSSettingsMobile": "Senden Sie Ihre Anfrage an unser Support-Team, und unsere Spezialisten werden Ihnen bei den Einstellungen helfen.",
-  "DNSSettingsTooltip": "Mit den DNS-Einstellungen können Sie eine alternative URL-Adresse für Ihren {{ organizationName }}-Bereich festlegen. Senden Sie Ihre Anfrage an unser Support-Team, und unsere Spezialisten werden Ihnen bei den Einstellungen helfen.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "Mit den DNS-Einstellungen können Sie eine alternative URL-Adresse für Ihren {{ organizationName }}-Bereich festlegen. Senden Sie Ihre Anfrage an unser Support-Team, und unsere Spezialisten werden Ihnen bei den Einstellungen helfen.",
   "DataBackup": "Datensicherung",
   "Deactivate": "Deaktivieren",
   "DeactivateOrDeletePortal": "Deaktivieren oder entfernen Sie das Portal.",
