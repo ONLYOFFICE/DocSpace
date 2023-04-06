@@ -1,1 +1,9 @@
-{}
+{
+  "ChooseNewPayer": "ເລືອກຜູ້ຈ່າຍເງິນໃໝ່",
+  "InvalidEmailWithActiveSubscription": "ການສະໝັກໃຊ້ຂອງທ່ານຍັງຄົງມີຢູ່, ແຕ່ພວກເຮົາແນະນຳໃຫ້ເລືອກຜູ້ຈ່າຍເງິນໃໝ່ທີ່ເຂົ້າເຖິງການຕັ້ງຄ່າການສະໝັກໃຊ້ໃນ DocSpace .",
+  "InvalidEmailWithActiveSubscriptionForAdmin": "ການສະໝັກໃຊ້ຂອງທ່ານຍັງຄົງມີຢູ່, ແຕ່ພວກເຮົາແນະນຳໃຫ້ຕິດຕໍ່ ເຈົ້າຂອງ DocSpace ເພື່ອເລືອກຜູ້ຈ່າຍເງິນໃໝ່.",
+  "InvalidEmailWithoutActiveSubscription": "ພວກເຮົາແນະນຳໃຫ້ເລືອກຜູ້ຈ່າຍເງິນໃໝ່ທີ່ເຂົ້າເຖິງການຕັ້ງຄ່າການສະໝັກໃຊ້ໃນ DocSpace.",
+  "InvalidEmailWithoutActiveSubscriptionByAdmin": "ພວກເຮົາແນະນຳໃຫ້ຕິດຕໍ່ ເຈົ້າຂອງ DocSpace ເພື່ອເລືອກຜູ້ຈ່າຍເງິນໃໝ່.",
+  "PowerUserDescription": "ຜູ້ໃຊ້ພະລັງງານສາມາດສ້າງ ແລະແກ້ໄຂໄຟລ໌ໃນຫ້ອງ, ແຕ່ບໍ່ສາມາດສ້າງຫ້ອງ, ຈັດການຜູ້ໃຊ້ ຫຼືເຂົ້າເຖິງການຕັ້ງຄ່າໄດ້.",
+  "UserNotFoundMatchingEmail": "ພວກເຮົາບໍ່ສາມາດຊອກຫາຜູ້ໃຊ້ທີ່ມີອີເມວ Stripe ທີ່ກົງກັນໄດ້."
+}

@@ -69,7 +69,7 @@
   "Deactivate": "Dezactivare",
   "DeactivateOrDeletePortal": "Dezactivarea sau ștergerea portalului.",
   "DeleteDocSpace": "Ștergere DocSpace",
-  "DeleteDocSpaceInfo": "Înainte să ştergeţi spaţiul, asiguraţi-vă că opţiunea de facturare automată este dezactivată. Puteţi verifica starea facturării automate în <1>portalul dvs de client Stripe.</1>",
+  "DeleteDocSpaceInfo": "Înainte să ştergeţi spaţiul, asiguraţi-vă că opţiunea de facturare automată este dezactivată. Puteţi verifica starea facturării automate în <1>portalul dvs de client Stripe</1>.",
   "DeleteTheme": "Ștergere temă",
   "DeleteThemeForever": "Doriţi să ştergeţi tema pentru totdeauna?",
   "DeleteThemeNotice": "Tema va fi ştearsă definitiv. Această acţiune nu poate fi anulată.",
