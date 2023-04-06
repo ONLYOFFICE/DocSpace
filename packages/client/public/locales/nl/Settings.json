@@ -68,7 +68,7 @@
   "Deactivate": "Deactiveer",
   "DeactivateOrDeletePortal": "Portaal deactiveren of verwijderen.",
   "DeleteDocSpace": "DocSpace verwijderen",
-  "DeleteDocSpaceInfo": "Voordat u de ruimte verwijdert, moet u ervoor zorgen dat automatische facturatie is uitgeschakeld. U kunt de status van automatische facturatie controleren in <1>uw Stripe klantenportaal.</1>",
+  "DeleteDocSpaceInfo": "Voordat u de ruimte verwijdert, moet u ervoor zorgen dat automatische facturatie is uitgeschakeld. U kunt de status van automatische facturatie controleren in <1>uw Stripe klantenportaal</1>.",
   "DeleteTheme": "Thema verwijderen",
   "DeleteThemeForever": "Thema voorgoed verwijderen?",
   "DeleteThemeNotice": "Het thema wordt definitief verwijderd. U kunt deze actie niet ongedaan maken.",

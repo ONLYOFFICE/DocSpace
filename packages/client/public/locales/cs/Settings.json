@@ -69,7 +69,7 @@
   "Deactivate": "Deaktivace",
   "DeactivateOrDeletePortal": "Deaktivovat nebo odstranit portál.",
   "DeleteDocSpace": "Odstranění prostoru DocSpace",
-  "DeleteDocSpaceInfo": "Před odstraněním místa se ujistěte, že je vypnutá automatická fakturace. Stav automatického účtování můžete zkontrolovat na <1>svém zákaznickém portálu Stripe.</1>",
+  "DeleteDocSpaceInfo": "Před odstraněním místa se ujistěte, že je vypnutá automatická fakturace. Stav automatického účtování můžete zkontrolovat na <1>svém zákaznickém portálu Stripe</1>.",
   "DeleteTheme": "Odstranit téma",
   "DeleteThemeForever": "Smazat téma navždy?",
   "DeleteThemeNotice": "Téma bude trvale odstraněno. Tuto akci nebude možné vrátit zpět.",

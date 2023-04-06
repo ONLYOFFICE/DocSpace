@@ -69,7 +69,7 @@
   "Deactivate": "Deaktivēt",
   "DeactivateOrDeletePortal": "Deaktivizēt vai dzēst portālu.",
   "DeleteDocSpace": "Izdzēst DocSpace",
-  "DeleteDocSpaceInfo": "Pirms izdzēst telpu, pārliecinieties, vai automātiska norēķināšanās ir izslēgta. Automātisko norēķinu statusu varat pārbaudīt <1> Stripe klientu portālā.</1>",
+  "DeleteDocSpaceInfo": "Pirms izdzēst telpu, pārliecinieties, vai automātiska norēķināšanās ir izslēgta. Automātisko norēķinu statusu varat pārbaudīt <1> Stripe klientu portālā</1>.",
   "DeleteTheme": "Izdzēst tēmu",
   "DeleteThemeForever": "Vai izdzēst dizainu uz visiem laikiem?",
   "DeleteThemeNotice": "Tēma tiks neatgriezeniski izdzēsta. Šo darbību nevarēs atsaukt.",
