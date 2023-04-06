@@ -78,7 +78,7 @@ const StyledAside = styled(Container)`
 StyledAside.defaultProps = { theme: Base };
 
 const StyledControlContainer = styled.div`
-  display: none;
+  display: flex;
 
   width: 17px;
   height: 17px;
@@ -89,6 +89,9 @@ const StyledControlContainer = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 450;
+
+  top: 18px;
+  left: -27px;
 
   @media ${tablet} {
     display: flex;
