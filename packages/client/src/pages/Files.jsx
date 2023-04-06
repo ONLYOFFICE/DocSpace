@@ -1,7 +1,7 @@
 import React from "react";
 //import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Routes, withRouter, Redirect, Route } from "react-router-dom";
+import { Routes, withRouter, Navigate, Route } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -89,7 +89,7 @@ const FilesSection = React.memo(({ withMainButton }) => {
         path={"/settings"}
         render={(location) => (
           <PrivateRoute location={location}>
-            <Redirect to="/settings/common" />
+            <Navigate to="/settings/common" replace />
           </PrivateRoute>
         )}
       />
@@ -99,7 +99,7 @@ const FilesSection = React.memo(({ withMainButton }) => {
         path={["/", "/rooms"]}
         render={(location) => (
           <PrivateRoute location={location}>
-            <Redirect to="/rooms/shared" />
+            <Navigate to="/rooms/shared" replace />
           </PrivateRoute>
         )}
       />

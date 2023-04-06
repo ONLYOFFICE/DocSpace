@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { Redirect, Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import toastr from "@docspace/components/toast/toastr";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
@@ -26,7 +26,7 @@ const Error404Route = (props) => (
 const HomeRedirectToFilter = () => {
   const filter = Filter.getDefault();
   const urlFilter = filter.toUrlParams();
-  return <Redirect to={`/accounts/filter?${urlFilter}`} />;
+  return <Navigate replace to={`/accounts/filter?${urlFilter}`} />;
 };
 
 const PeopleSection = React.memo(() => {

@@ -1,5 +1,5 @@
 import React, { lazy, Suspense, useEffect } from "react";
-import { Route, Routes, Redirect } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./Layout";
 import { combineUrl } from "@docspace/common/utils";
 import Panels from "../../components/FilesPanels";
@@ -225,7 +225,7 @@ const Settings = () => {
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
-          <Redirect to={{ pathname: ERROR_404_URL }} />
+          <Navigate to={{ pathname: ERROR_404_URL }} replace />
         </Routes>
       </Suspense>
     </Layout>

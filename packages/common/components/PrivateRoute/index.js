@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import AppLoader from "../AppLoader";
@@ -50,7 +50,7 @@ const PrivateRoute = ({ children, ...rest }) => {
         sessionStorage.setItem("referenceUrl", window.location.href);
       }
 
-      return <Redirect to={redirectPath} />;
+      return <Navigate replace to={redirectPath} />;
     }
 
     if (
@@ -58,7 +58,7 @@ const PrivateRoute = ({ children, ...rest }) => {
       ((!isNotPaidPeriod && isPortalUnavailableUrl) ||
         (!user.isOwner && isPortalDeletionUrl))
     ) {
-      return <Redirect to={"/"} />;
+      return <Navigate replace to={"/"} />;
     }
 
     if (
@@ -68,7 +68,8 @@ const PrivateRoute = ({ children, ...rest }) => {
       !isPortalUrl
     ) {
       return (
-        <Redirect
+        <Navigate
+          replace
           to={combineUrl(
             window.DocSpaceConfig?.proxy?.url,
             "/preparation-portal"
@@ -86,7 +87,8 @@ const PrivateRoute = ({ children, ...rest }) => {
       !isPortalDeletionUrl
     ) {
       return (
-        <Redirect
+        <Navigate
+          replace
           to={combineUrl(
             window.DocSpaceConfig?.proxy?.url,
             "/portal-settings/payments/portal-payments"
@@ -103,7 +105,8 @@ const PrivateRoute = ({ children, ...rest }) => {
       !isPortalUnavailableUrl
     ) {
       return (
-        <Redirect
+        <Navigate
+          replace
           to={combineUrl(
             window.DocSpaceConfig?.proxy?.url,
             "/portal-unavailable"
@@ -126,10 +129,10 @@ const PrivateRoute = ({ children, ...rest }) => {
     }
 
     if (restricted) {
-      return <Redirect to={"/error401"} />;
+      return <Navigate replace to={"/error401"} />;
     }
 
-    return <Redirect to={"/error404"} />;
+    return <Navigate replace to={"/error404"} />;
   };
 
   const component = renderComponent();

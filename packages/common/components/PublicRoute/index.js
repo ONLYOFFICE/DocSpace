@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Redirect, Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
 import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { TenantStatus } from "../../constants";
@@ -17,12 +17,13 @@ export const PublicRoute = ({ children, ...rest }) => {
     // }
 
     if (isAuthenticated && !isPortalRestoring) {
-      return <Redirect to={"/"} />;
+      return <Navigate replace to={"/"} />;
     }
 
     if (isAuthenticated && isPortalRestoring && !isPreparationPortalUrl) {
       return (
-        <Redirect
+        <Navigate
+          replace
           to={combineUrl(
             window.DocSpaceConfig?.proxy?.url,
             "/preparation-portal"
@@ -32,7 +33,7 @@ export const PublicRoute = ({ children, ...rest }) => {
     }
 
     if (!wizardCompleted && props.location.pathname !== "/wizard") {
-      return <Redirect to={"/wizard"} />;
+      return <Navigate replace to={"/wizard"} />;
     }
 
     if (
@@ -42,7 +43,8 @@ export const PublicRoute = ({ children, ...rest }) => {
       !isPreparationPortalUrl
     ) {
       return (
-        <Redirect
+        <Navigate
+          replace
           to={combineUrl(
             window.DocSpaceConfig?.proxy?.url,
             "/preparation-portal"
@@ -52,7 +54,7 @@ export const PublicRoute = ({ children, ...rest }) => {
     }
 
     if (wizardCompleted && !isAuthenticated && !isPortalRestoring)
-      return <Redirect to={"/login"} />;
+      return <Navigate replace to={"/login"} />;
 
     return children;
   };

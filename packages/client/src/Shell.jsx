@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Router, Routes, Route, Redirect } from "react-router-dom";
+import { Router, Routes, Route, Navigate } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
@@ -432,7 +432,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 exact
                 sensitive
                 path="/Products/Files/"
-                render={() => <Redirect to="/rooms/shared" />}
+                render={() => <Navigate to="/rooms/shared" replace />}
               />
 
               <Route
