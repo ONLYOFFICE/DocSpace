@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import authStore from "@docspace/common/store/AuthStore";
 import api from "@docspace/common/api";
 
@@ -57,7 +57,10 @@ class CommonStore {
   };
 
   getGreetingSettingsIsDefault = async () => {
-    this.greetingSettingsIsDefault = await api.settings.getGreetingSettingsIsDefault();
+    const isDefault = await api.settings.getGreetingSettingsIsDefault();
+    runInAction(() => {
+      this.greetingSettingsIsDefault = isDefault;
+    });
   };
 
   getWhiteLabelLogoUrls = async () => {

@@ -3,15 +3,16 @@
     constructor() {
       this.browser = {};
       this.unsupportedBrowsers = {
-        Chrome: 107,
-        Firefox: 107,
+        Chrome: 102,
+        Firefox: 102,
         IE: 11,
-        Edge: 107,
-        Opera: 93,
-        Safari: 13,
-        SafariMobile: 12,
+        Edge: 102,
+        Opera: 90,
+        Safari: 14,
+        SafariMobile: 13,
         AscDesktopEditor: 6,
-        SamsungBrowser: 3,
+        SamsungBrowser: 4,
+        UCBrowser: 12,
       };
 
       this.detectBrowser();
@@ -33,7 +34,7 @@
 
         if (match[1] === "Chrome") {
           temp = agent.match(
-            /\b(OPR|Edge|AscDesktopEditor|SamsungBrowser)\/(\d+)/
+            /\b(OPR|Edge|AscDesktopEditor|SamsungBrowser|UCBrowser)\/(\d+)/
           );
           if (temp != null) {
             return { name: temp[1].replace("OPR", "Opera"), version: temp[2] };
@@ -65,13 +66,13 @@
     isSupported() {
       if (this.unsupportedBrowsers.hasOwnProperty(this.browser.name)) {
         if (
-          +this.browser.version > this.unsupportedBrowsers[this.browser.name]
+          +this.browser.version < this.unsupportedBrowsers[this.browser.name]
         ) {
-          return true;
+          return false;
         }
       }
 
-      return false;
+      return true;
     }
   }
 
