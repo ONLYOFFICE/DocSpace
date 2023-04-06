@@ -214,7 +214,7 @@ const CreateUserForm = (props) => {
     const { FirstName, LastName, EMail, Serialized } = profile;
 
     const signupAccount = {
-      EmployeeType: null,
+      EmployeeType: linkData.emplType || null,
       FirstName: FirstName,
       LastName: LastName,
       Email: EMail,
@@ -287,8 +287,15 @@ const CreateUserForm = (props) => {
   };
 
   const onSocialButtonClick = useCallback((e) => {
-    const providerName = e.target.dataset.providername;
-    const url = e.target.dataset.url;
+    const { target } = e;
+    let targetElement = target;
+
+    if (!(targetElement instanceof HTMLButtonElement) && target.parentElement) {
+      targetElement = target.parentElement;
+    }
+
+    const providerName = targetElement.dataset.providername;
+    const url = targetElement.dataset.url || "";
 
     try {
       const tokenGetterWin = isDesktop

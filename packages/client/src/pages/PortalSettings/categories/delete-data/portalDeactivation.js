@@ -77,7 +77,7 @@ const PortalDeactivation = (props) => {
         />
         {notActivatedEmail && (
           <Text fontSize="12px" fontWeight="600">
-            {t("MainBar:ConfirmEmailHeader")}
+            {t("MainBar:ConfirmEmailHeader", { email: owner.email })}
             <Link
               className="request-again-link"
               color={currentColorScheme?.main?.accent}

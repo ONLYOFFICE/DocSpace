@@ -91,6 +91,10 @@ const StyledAccountContent = styled.div`
     .type-combobox {
       margin-left: -8px;
 
+      .combo-button {
+        padding-left: 8px;
+      }
+
       .backdrop-active {
         height: 100%;
         width: 100%;

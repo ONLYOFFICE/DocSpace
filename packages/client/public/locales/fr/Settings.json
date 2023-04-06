@@ -69,7 +69,7 @@
   "Deactivate": "Désactiver",
   "DeactivateOrDeletePortal": "Désactiver ou supprimer le portail.",
   "DeleteDocSpace": "Supprimer DocSpace",
-  "DeleteDocSpaceInfo": "Avant de supprimer l’espace, veuillez vous assurer que la facturation automatique est désactivée. Vous pouvez vérifier le statut de la facturation automatique dans <1>votre portail client Stripe.</1>",
+  "DeleteDocSpaceInfo": "Avant de supprimer l’espace, veuillez vous assurer que la facturation automatique est désactivée. Vous pouvez vérifier le statut de la facturation automatique dans <1>votre portail client Stripe</1>.",
   "DeleteTheme": "Supprimer le thème",
   "DeleteThemeForever": "Supprimer le thème définitivement ?",
   "DeleteThemeNotice": "Le thème sera définitivement supprimé. Vous ne pourrez pas annuler cette action.",

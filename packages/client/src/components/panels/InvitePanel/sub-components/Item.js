@@ -2,6 +2,7 @@
 import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import React, { useState, useEffect } from "react";
 import Avatar from "@docspace/components/avatar";
+import Text from "@docspace/components/text";
 
 import { parseAddresses } from "@docspace/components/utils/email";
 import { getAccessOptions } from "../utils";
@@ -14,7 +15,6 @@ import {
   StyledCrossIcon,
   StyledHelpButton,
   StyledDeleteIcon,
-  StyledText,
 } from "../StyledInvitePanel";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
 
@@ -114,9 +114,9 @@ const Item = ({
 
   const displayBody = (
     <>
-      <StyledText {...textProps} truncate noSelect>
+      <Text {...textProps} truncate noSelect>
         {inputValue}
-      </StyledText>
+      </Text>
       {hasError ? (
         <>
           <StyledHelpButton

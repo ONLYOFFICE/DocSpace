@@ -136,6 +136,13 @@ class ThirdPartyServices extends React.Component {
     const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
+    const filteredConsumers = consumers.filter(
+      (consumer) =>
+        consumer.title !== "Bitly" &&
+        consumer.title !== "WordPress" &&
+        consumer.title !== "DocuSign"
+    );
+
     return (
       <>
         <RootContainer className="RootContainer">
@@ -162,24 +169,22 @@ class ThirdPartyServices extends React.Component {
           </Box>
 
           <div className="consumers-list-container">
-            {consumers
-              .filter((consumer) => consumer.title !== "Bitly")
-              .map((consumer) => (
-                <Box className="consumer-item-wrapper" key={consumer.name}>
-                  <ConsumerItem
-                    consumer={consumer}
-                    dialogVisible={dialogVisible}
-                    isLoading={isLoading}
-                    onChangeLoading={onChangeLoading}
-                    onModalClose={onModalClose}
-                    onModalOpen={onModalOpen}
-                    setConsumer={setConsumer}
-                    updateConsumerProps={updateConsumerProps}
-                    t={t}
-                    isThirdPartyAvailable={isThirdPartyAvailable}
-                  />
-                </Box>
-              ))}
+            {filteredConsumers.map((consumer) => (
+              <Box className="consumer-item-wrapper" key={consumer.name}>
+                <ConsumerItem
+                  consumer={consumer}
+                  dialogVisible={dialogVisible}
+                  isLoading={isLoading}
+                  onChangeLoading={onChangeLoading}
+                  onModalClose={onModalClose}
+                  onModalOpen={onModalOpen}
+                  setConsumer={setConsumer}
+                  updateConsumerProps={updateConsumerProps}
+                  t={t}
+                  isThirdPartyAvailable={isThirdPartyAvailable}
+                />
+              </Box>
+            ))}
           </div>
         </RootContainer>
         {dialogVisible && (
