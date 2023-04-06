@@ -1,7 +1,7 @@
 import React from "react";
 //import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Switch, withRouter, Redirect } from "react-router-dom";
+import { Switch, withRouter, Redirect, Route } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -73,25 +73,38 @@ const FilesArticle = React.memo(({ history, withMainButton }) => {
   );
 });
 
+const Error404Route = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <Error404 {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const FilesSection = React.memo(({ withMainButton }) => {
   return (
     <Switch>
-      {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
-      {/* <PrivateRoute path={"/private"} component={PrivateRoomsPage} /> */}
-      <PrivateRoute
+      <Route
         exact
         path={"/settings"}
-        component={() => <Redirect to="/settings/common" />}
+        render={(location) => (
+          <PrivateRoute location={location}>
+            <Redirect to="/settings/common" />
+          </PrivateRoute>
+        )}
       />
-      <PrivateRoute
+
+      <Route
         exact
         path={["/", "/rooms"]}
-        component={() => <Redirect to="/rooms/shared" />}
+        render={(location) => (
+          <PrivateRoute location={location}>
+            <Redirect to="/rooms/shared" />
+          </PrivateRoute>
+        )}
       />
-      <PrivateRoute
-        restricted
-        withManager
-        withCollaborator
+
+      <Route
         path={[
           "/rooms/personal",
           "/rooms/personal/filter",
@@ -99,10 +112,19 @@ const FilesSection = React.memo(({ withMainButton }) => {
           "/files/trash",
           "/files/trash/filter",
         ]}
-        component={Home}
+        render={(location) => (
+          <PrivateRoute
+            restricted
+            withManager
+            withCollaborator
+            location={location}
+          >
+            <Home />
+          </PrivateRoute>
+        )}
       />
 
-      <PrivateRoute
+      <Route
         path={[
           "/rooms/shared",
           "/rooms/shared/filter",
@@ -114,55 +136,67 @@ const FilesSection = React.memo(({ withMainButton }) => {
           "/rooms/archived/:room",
           "/rooms/archived/:room/filter",
 
-          // "/files/favorite",
-          // "/files/favorite/filter",
-
-          // "/files/recent",
-          // "/files/recent/filter",
           "/products/files/",
         ]}
-        component={Home}
+        render={(location) => (
+          <PrivateRoute location={location}>
+            <Home />
+          </PrivateRoute>
+        )}
       />
-      {/* <PrivateRoute path={["/rooms/personal/filter"]} component={Home} /> */}
-      {/* <PrivateRoute path={"/#preview"} component={Home} /> */}
-      {/* <PrivateRoute path={"/rooms"} component={Home} /> */}
-      {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
 
-      <PrivateRoute
+      <Route
         exact
-        restricted
-        withManager
         path={["/accounts", "/accounts/filter", "/accounts/create/:type"]}
-        component={Accounts}
+        render={(location) => (
+          <PrivateRoute restricted withManager location={location}>
+            <Accounts />
+          </PrivateRoute>
+        )}
       />
 
-      <PrivateRoute
+      <Route
         exact
         path={["/accounts/view/@self", "/accounts/view/@self/notification"]}
-        component={Accounts}
+        render={(location) => (
+          <PrivateRoute location={location}>
+            <Accounts />
+          </PrivateRoute>
+        )}
       />
 
-      <PrivateRoute
+      <Route
         exact
-        restricted
         path={"/settings/admin"}
-        component={Settings}
+        render={(location) => (
+          <PrivateRoute restricted location={location}>
+            <Settings />
+          </PrivateRoute>
+        )}
       />
+
       {withMainButton && (
-        <PrivateRoute exact path={"/settings/common"} component={Settings} />
+        <Route
+          exact
+          path={"/settings/common"}
+          render={(location) => (
+            <PrivateRoute restricted location={location}>
+              <Settings />
+            </PrivateRoute>
+          )}
+        />
       )}
-      <PrivateRoute component={Error404Route} />
+
+      {/* <Route
+        render={(location) => (
+          <PrivateRoute location={location}>
+            <Error404Route />
+          </PrivateRoute>
+        )}
+      /> */}
     </Switch>
   );
 });
-
-const Error404Route = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Error404 {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
 
 const FilesContent = (props) => {
   const pathname = window.location.pathname.toLowerCase();

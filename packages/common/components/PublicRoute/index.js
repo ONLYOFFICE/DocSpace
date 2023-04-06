@@ -5,68 +5,34 @@ import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { TenantStatus } from "../../constants";
 
-export const PublicRoute = ({ component: Component, ...rest }) => {
-  const {
-    wizardCompleted,
-    isAuthenticated,
-    isLoaded,
-    personal,
-    tenantStatus,
-  } = rest;
-  const renderComponent = (props) => {
+export const PublicRoute = ({ children, ...rest }) => {
+  const { wizardCompleted, isAuthenticated, tenantStatus } = rest;
+  const renderComponent = () => {
     const isPreparationPortalUrl =
       props.location.pathname === "/preparation-portal";
     const isPortalRestoring = tenantStatus === TenantStatus.PortalRestore;
 
-    if (!isLoaded) {
-      return <AppLoader />;
-    }
-
-    if (personal) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/",
-            state: { from: props.location },
-          }}
-        />
-      );
-    }
+    // if (!isLoaded) {
+    //   return <AppLoader />;
+    // }
 
     if (isAuthenticated && !isPortalRestoring) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/",
-            state: { from: props.location },
-          }}
-        />
-      );
+      return <Redirect to={"/"} />;
     }
 
     if (isAuthenticated && isPortalRestoring && !isPreparationPortalUrl) {
       return (
         <Redirect
-          to={{
-            pathname: combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
-              "/preparation-portal"
-            ),
-            state: { from: props.location },
-          }}
+          to={combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            "/preparation-portal"
+          )}
         />
       );
     }
 
     if (!wizardCompleted && props.location.pathname !== "/wizard") {
-      return (
-        <Redirect
-          to={{
-            pathname: "/wizard",
-            state: { from: props.location },
-          }}
-        />
-      );
+      return <Redirect to={"/wizard"} />;
     }
 
     if (
@@ -77,34 +43,33 @@ export const PublicRoute = ({ component: Component, ...rest }) => {
     ) {
       return (
         <Redirect
-          to={{
-            pathname: combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
-              "/preparation-portal"
-            ),
-            state: { from: props.location },
-          }}
+          to={combineUrl(
+            window.DocSpaceConfig?.proxy?.url,
+            "/preparation-portal"
+          )}
         />
       );
     }
 
     if (wizardCompleted && !isAuthenticated && !isPortalRestoring)
-      return window.location.replace("/login");
+      return <Redirect to={"/login"} />;
 
-    return <Component {...props} {...rest} />;
+    return children;
   };
-  return <Route {...rest} render={renderComponent} />;
+
+  const component = renderComponent();
+
+  return component;
 };
 
 export default inject(({ auth }) => {
   const { settingsStore, isAuthenticated, isLoaded } = auth;
-  const { wizardCompleted, personal, tenantStatus } = settingsStore;
+  const { wizardCompleted, tenantStatus } = settingsStore;
 
   return {
     tenantStatus,
     wizardCompleted,
     isAuthenticated,
     isLoaded,
-    personal,
   };
 })(observer(PublicRoute));

@@ -444,7 +444,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 from="/Products/Files/"
                 to="/rooms/shared"
               />
-              <PrivateRoute
+              <Route
                 exact
                 path={[
                   "/",
@@ -484,32 +484,87 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/settings/common",
                   "/settings/admin",
                   "/products/files",
-                  //"/settings/connected-clouds",
                 ]}
-                component={FilesRoute}
+                render={(location) => (
+                  <PrivateRoute location={location}>
+                    <FilesRoute />
+                  </PrivateRoute>
+                )}
               />
-              <PrivateRoute
+
+              <Route
                 path={"/form-gallery/:folderId"}
-                component={FormGalleryRoute}
+                render={(location) => (
+                  <PrivateRoute location={location}>
+                    <FormGalleryRoute />
+                  </PrivateRoute>
+                )}
               />
-              <PublicRoute exact path={"/wizard"} component={WizardRoute} />
-              <PrivateRoute path={"/about"} component={AboutRoute} />
-              <Route path={"/confirm"} component={ConfirmRoute} />
-              <PrivateRoute
-                restricted
+
+              <Route
+                path={"/about"}
+                render={(location) => (
+                  <PrivateRoute location={location}>
+                    <AboutRoute />
+                  </PrivateRoute>
+                )}
+              />
+
+              <Route path={"/confirm"} render={() => <ConfirmRoute />} />
+
+              <Route
                 path={"/portal-settings"}
-                component={PortalSettingsRoute}
+                render={(location) => (
+                  <PrivateRoute restricted location={location}>
+                    <PortalSettingsRoute />
+                  </PrivateRoute>
+                )}
               />
-              <PublicRoute
-                path={"/preparation-portal"}
-                component={PreparationPortalRoute}
-              />
-              <PrivateRoute
+
+              <Route
                 path={"/portal-unavailable"}
-                component={PortalUnavailableRoute}
+                render={(location) => (
+                  <PrivateRoute location={location}>
+                    <PortalUnavailableRoute />
+                  </PrivateRoute>
+                )}
               />
-              <PrivateRoute path={"/error401"} component={Error401Route} />
-              <PrivateRoute component={Error404Route} />
+
+              <Route
+                exact
+                path={"/wizard"}
+                render={(location) => (
+                  <PublicRoute location={location}>
+                    <WizardRoute />
+                  </PublicRoute>
+                )}
+              />
+
+              <Route
+                path={"/preparation-portal"}
+                render={(location) => (
+                  <PublicRoute location={location}>
+                    <PreparationPortalRoute />
+                  </PublicRoute>
+                )}
+              />
+
+              <Route
+                path={"/error401"}
+                render={(location) => (
+                  <PrivateRoute location={location}>
+                    <Error401Route />
+                  </PrivateRoute>
+                )}
+              />
+
+              <Route
+                render={(location) => (
+                  <PrivateRoute location={location}>
+                    <Error404Route />
+                  </PrivateRoute>
+                )}
+              />
             </Switch>
           </div>
         </Main>
