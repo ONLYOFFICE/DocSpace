@@ -208,35 +208,28 @@ class PaymentStore {
     return this.managersCount * this.stepByQuotaForTotalSize;
   }
 
-  initializeInfo = () => {
-    const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost.value;
+  initTariffContainer = () => {
+    const { currentQuotaStore } = authStore;
+    const { currentPlanCost, maxCountManagersByQuota } = currentQuotaStore;
+    const currentTotalPrice = currentPlanCost.value;
 
-    this.initializeTotalPrice(currentTotalPrice);
-    this.initializeManagersCount(currentTotalPrice);
-  };
+    if (this.isAlreadyPaid) {
+      const countOnRequest =
+        maxCountManagersByQuota > this.maxAvailableManagersCount;
 
-  initializeTotalPrice = (currentTotalPrice) => {
-    if (currentTotalPrice !== 0) {
+      this.managersCount = countOnRequest
+        ? this.maxAvailableManagersCount + 1
+        : maxCountManagersByQuota;
+
       this.totalPrice = currentTotalPrice;
-    } else {
-      this.totalPrice = this.getTotalCostByFormula(
-        this.minAvailableManagersValue
-      );
-    }
-  };
 
-  initializeManagersCount = (currentTotalPrice) => {
-    const maxCountManagersByQuota =
-      authStore.currentQuotaStore.maxCountManagersByQuota;
-
-    if (maxCountManagersByQuota !== 0 && currentTotalPrice !== 0) {
-      this.managersCount =
-        maxCountManagersByQuota > this.maxAvailableManagersCount
-          ? this.maxAvailableManagersCount + 1
-          : maxCountManagersByQuota;
-    } else {
-      this.managersCount = this.minAvailableManagersValue;
+      return;
     }
+
+    this.managersCount = this.minAvailableManagersValue;
+    this.totalPrice = this.getTotalCostByFormula(
+      this.minAvailableManagersValue
+    );
   };
 
   setTotalPrice = (value) => {

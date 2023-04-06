@@ -60,7 +60,7 @@ const PriceCalculation = ({
   canUpdateTariff,
   isGracePeriod,
   isNotPaidPeriod,
-  initializeInfo,
+  initTariffContainer,
   priceManagerPerMonth,
   currencySymbol,
   isAlreadyPaid,
@@ -68,12 +68,11 @@ const PriceCalculation = ({
   managersCount,
   getPaymentLink,
 }) => {
-
   useEffect(() => {
     !isAlreadyPaid && setShoppingLink();
   }, [managersCount]);
   useEffect(async () => {
-    initializeInfo();
+    initTariffContainer();
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -189,7 +188,7 @@ export default inject(({ auth, payments }) => {
     setIsLoading,
     setManagersCount,
     maxAvailableManagersCount,
-    initializeInfo,
+    initTariffContainer,
     managersCount,
     isAlreadyPaid,
     getPaymentLink,
@@ -219,7 +218,7 @@ export default inject(({ auth, payments }) => {
 
     isGracePeriod,
     isNotPaidPeriod,
-    initializeInfo,
+    initTariffContainer,
     priceManagerPerMonth: planCost.value,
     currencySymbol: planCost.currencySymbol,
     getPaymentLink,
