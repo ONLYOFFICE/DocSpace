@@ -211,15 +211,10 @@ const CreateUserForm = (props) => {
 
   const authCallback = (profile) => {
     const { defaultPage } = props;
-    const { FirstName, LastName, EMail, Serialized } = profile;
 
     const signupAccount = {
       EmployeeType: linkData.emplType || null,
-      FirstName: FirstName,
-      LastName: LastName,
-      Email: EMail,
-      PasswordHash: "",
-      SerializedProfile: Serialized,
+      SerializedProfile: profile,
     };
 
     signupOAuth(signupAccount)
