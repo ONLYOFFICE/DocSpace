@@ -886,7 +886,7 @@ public class FileMarker
                 parentFolderTag.Count = countSubNew;
                 if (parentFolderTag.Id == -1)
                 {
-                    await tagDao.SaveTags(parentFolderTag);
+                    await tagDao.SaveTagsAsync(parentFolderTag);
                 }
                 else
                 {

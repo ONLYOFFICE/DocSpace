@@ -60,7 +60,7 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
         var selector = _selectorFactory.GetSelector(folderId);
         if (selector == null)
         {
-            return Task.FromResult<Folder<string>>(null);
+            return null;
         }
 
         return await InternalGetFolderAsync(folderId, selector);

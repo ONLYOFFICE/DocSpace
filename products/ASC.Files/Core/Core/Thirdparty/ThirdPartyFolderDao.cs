@@ -521,9 +521,9 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(string folderId, CommonChunkedUploadSession chunkedUploadSession, CommonChunkedUploadSessionHolder sessionHolder)
+    public Task<IDataWriteOperator> CreateDataWriteOperatorAsync(string folderId, CommonChunkedUploadSession chunkedUploadSession, CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+        return Task.FromResult<IDataWriteOperator>(new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder));
     }
 
     public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)

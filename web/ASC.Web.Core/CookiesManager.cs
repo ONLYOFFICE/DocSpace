@@ -269,7 +269,7 @@ public class CookiesManager
         var userId = _securityContext.CurrentAccount.ID;
         var data = new MessageUserData(tenantId, userId);
 
-        return await _messageService.SendLoginMessage(data, action);
+        return await _messageService.SendLoginMessageAsync(data, action);
     }
 
     public string GetAscCookiesName()

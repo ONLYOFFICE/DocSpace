@@ -751,7 +751,7 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (action == FilesSecurityActions.Mute && isRoom && IsAllGeneralNotificationSettingsOff())
+                if (action == FilesSecurityActions.Mute && isRoom && await IsAllGeneralNotificationSettingsOffAsync())
                 {
                     return false;
                 }
@@ -1660,13 +1660,13 @@ public class FileSecurity : IFileSecurity
         return false;
     }
 
-    private bool IsAllGeneralNotificationSettingsOff()
+    private async Task<bool> IsAllGeneralNotificationSettingsOffAsync()
     {
         var userId = _authContext.CurrentAccount.ID;
 
-        if (!_badgesSettingsHelper.GetEnabledForCurrentUser()
-            && !_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.RoomsActivity)
-            && !_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.SendWhatsNew))
+        if (!await _badgesSettingsHelper.GetEnabledForCurrentUserAsync()
+            && !await _studioNotifyHelper.IsSubscribedToNotifyAsync(userId, Actions.RoomsActivity)
+            && !await _studioNotifyHelper.IsSubscribedToNotifyAsync(userId, Actions.SendWhatsNew))
         {
             return true;
         }
