@@ -4,12 +4,9 @@ import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
 import SelectUsersCountContainer from "./sub-components/SelectUsersCountContainer";
 import TotalTariffContainer from "./sub-components/TotalTariffContainer";
-import toastr from "@docspace/components/toast/toastr";
 import axios from "axios";
-//import { combineUrl } from "@docspace/common/utils";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import { Trans } from "react-i18next";
-import { getPaymentLink } from "@docspace/common/api/portal";
 import CurrentUsersCountContainer from "./sub-components/CurrentUsersCount";
 
 const StyledBody = styled.div`
@@ -55,11 +52,9 @@ let timeout = null,
   CancelToken,
   source;
 
-const backUrl = window.location.origin;
 const PriceCalculation = ({
   t,
   theme,
-  setPaymentLink,
   setIsLoading,
   maxAvailableManagersCount,
   canUpdateTariff,
@@ -71,7 +66,12 @@ const PriceCalculation = ({
   isAlreadyPaid,
   isFreeAfterPaidPeriod,
   managersCount,
+  getPaymentLink,
 }) => {
+
+  useEffect(() => {
+    !isAlreadyPaid && setShoppingLink();
+  }, [managersCount]);
   useEffect(async () => {
     initializeInfo();
 
@@ -81,8 +81,8 @@ const PriceCalculation = ({
     };
   }, []);
 
-  const setShoppingLink = (value) => {
-    if (isAlreadyPaid || value > maxAvailableManagersCount) {
+  const setShoppingLink = () => {
+    if (managersCount > maxAvailableManagersCount) {
       timeout && clearTimeout(timeout);
       setIsLoading(false);
       return;
@@ -91,7 +91,7 @@ const PriceCalculation = ({
     setIsLoading(true);
 
     timeout && clearTimeout(timeout);
-    timeout = setTimeout(async () => {
+    timeout = setTimeout(() => {
       if (source) {
         source.cancel();
       }
@@ -99,21 +99,9 @@ const PriceCalculation = ({
       CancelToken = axios.CancelToken;
       source = CancelToken.source();
 
-      await getPaymentLink(value, backUrl, source.token)
-        .then((link) => {
-          setPaymentLink(link);
-          setIsLoading(false);
-        })
-        .catch((thrown) => {
-          setIsLoading(false);
-          if (axios.isCancel(thrown)) {
-            console.log("Request canceled", thrown.message);
-          } else {
-            console.error(thrown);
-            toastr.error(t("ErrorNotification"));
-          }
-          return;
-        });
+      getPaymentLink(source.token).finally(() => {
+        setIsLoading(false);
+      });
     }, 1000);
   };
 
@@ -179,7 +167,6 @@ const PriceCalculation = ({
         <SelectUsersCountContainer
           isNeedPlusSign={isNeedPlusSign}
           isDisabled={isDisabled}
-          setShoppingLink={setShoppingLink}
         />
       )}
 
@@ -205,6 +192,7 @@ export default inject(({ auth, payments }) => {
     initializeInfo,
     managersCount,
     isAlreadyPaid,
+    getPaymentLink,
     canUpdateTariff,
   } = payments;
   const { theme } = auth.settingsStore;
@@ -234,5 +222,6 @@ export default inject(({ auth, payments }) => {
     initializeInfo,
     priceManagerPerMonth: planCost.value,
     currencySymbol: planCost.currencySymbol,
+    getPaymentLink,
   };
 })(observer(PriceCalculation));

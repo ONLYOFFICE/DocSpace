@@ -11,6 +11,8 @@ import moment from "moment";
 import { getUserByEmail } from "@docspace/common/api/people";
 import { getPaymentLink } from "@docspace/common/api/portal";
 import { getDaysRemaining } from "../helpers/filesUtils";
+import axios from "axios";
+
 class PaymentStore {
   salesEmail = "";
   helpUrl = "https://helpdesk.onlyoffice.com";
@@ -87,8 +89,9 @@ class PaymentStore {
 
     if (!isLoaded) requests.push(setPortalPaymentQuotas());
 
-    if (this.isAlreadyPaid) requests.push(this.setPaymentAccount());
-    if (!this.isAlreadyPaid) requests.push(this.getPaymentLink());
+    this.isAlreadyPaid
+      ? requests.push(this.setPaymentAccount())
+      : requests.push(this.getPaymentLink());
 
     try {
       await Promise.all(requests);
@@ -111,17 +114,22 @@ class PaymentStore {
     this.isInitPaymentPage = true;
   };
 
-  getPaymentLink = async () => {
+  getPaymentLink = async (token = undefined) => {
     const backUrl = window.location.origin;
 
-    try {
-      const link = await getPaymentLink(this.managersCount, backUrl);
-
-      if (!link) return;
-      this.setPaymentLink(link);
-    } catch (e) {
-      console.error(e);
-    }
+    await getPaymentLink(this.managersCount, backUrl, token)
+      .then((link) => {
+        if (!link) return;
+        this.setPaymentLink(link);
+      })
+      .catch((thrown) => {
+        if (axios.isCancel(thrown)) {
+          console.log("Request canceled", thrown.message);
+        } else {
+          console.error(thrown);
+          this.isInitPaymentPage && toastr.error(thrown);
+        }
+      });
   };
   getSettingsPayment = async () => {
     try {
@@ -209,6 +217,7 @@ class PaymentStore {
     this.initializeTotalPrice(currentTotalPrice);
     this.initializeManagersCount(currentTotalPrice);
   };
+
   initializeTotalPrice = (currentTotalPrice) => {
     if (currentTotalPrice !== 0) {
       this.totalPrice = currentTotalPrice;
