@@ -1,15 +1,22 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import HistoryHeader from "./sub-components/HistoryHeader";
 import HistoryFilterHeader from "./sub-components/HistoryFilterHeader";
 import WebhookHistoryTable from "./sub-components/WebhookHistoryTable";
+import { WebhookHistoryLoader } from "../sub-components/Loaders";
 
 const WebhookWrapper = styled.div`
   width: 100%;
 `;
 
 const WebhookHistory = () => {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setTimeout(() => setIsLoading(false), 2000);
+  }, []);
+
   const historyWebhooks = [
     {
       id: 279,
@@ -44,10 +51,14 @@ const WebhookHistory = () => {
   return (
     <WebhookWrapper>
       <HistoryHeader />
-      <main>
-        <HistoryFilterHeader />
-        <WebhookHistoryTable historyWebhooks={historyWebhooks} />
-      </main>
+      {isLoading ? (
+        <WebhookHistoryLoader />
+      ) : (
+        <main>
+          <HistoryFilterHeader />
+          <WebhookHistoryTable historyWebhooks={historyWebhooks} />
+        </main>
+      )}
     </WebhookWrapper>
   );
 };
