@@ -5,6 +5,10 @@
   "RequestActivation": "Solicitaţi activarea din nou",
   "RoomQuotaDescription": "Puteţi arhiva sălile inutile sau <1>{{clickHere}}</1> pentru a găsi un abonament mai potrivit pentru spaţiul dvs DocSpace.",
   "RoomQuotaHeader": "Cota sălilor este pe punctul de a fi depăşită: {{currentValue}} / {{maxValue}}",
+  "StorageAndRoomHeader": "Limite de stocare și cota sălilor sunt pe punctul de a fi depăşiti.",
+  "StorageAndUserHeader": "Limite de stocare pentru administratori/utilizatori avansați sunt pe punctul de a fi depăşiti.",
   "StorageQuotaDescription": "Puteţi elimina fişierele inutile sau <1>{{{clickHere}}</1> pentru a găsi un abonament mai potrivit pentru spaţiul dvs DocSpace.",
-  "StorageQuotaHeader": "Cota spaţiului de stocare este pe punctul de a fi depăşită: {{currentValue}} / {{maxValue}}"
+  "StorageQuotaHeader": "Cota spaţiului de stocare este pe punctul de a fi depăşită: {{currentValue}} / {{maxValue}}",
+  "UserQuotaDescription": "<1>{{clickHere}}</1> pentru a găsi cea mai bună ofertă pentru portalul dvs.",
+  "UserQuotaHeader": "Numărul maxim de administratori/utilizatori avansați este pe punctul de a fi depăşit. {{currentValue}} / {{maxValue}}."
 }

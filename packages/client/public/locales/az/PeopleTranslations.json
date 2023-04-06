@@ -6,11 +6,14 @@
   "EnableUserButton": "İzn ver",
   "InviteLinkTitle": "Dəvət üçün link",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Adı dəyişin",
   "PasswordChangeButton": "Şifrəni dəyişdir",
   "PendingTitle": "Gözləmə",
   "RemoveData": "Şəxsi məlumatların silinməsi",
+  "ResetAuth": "Doğrulamanı sıfırlayın",
   "SendInviteAgain": "Dəvəti bir daha göndər",
   "SuccessChangeUserStatus": "İstifadəçinin statusu müvəffəqiyyətlə dəyişdirilmişdir",
   "SuccessDeletePersonalData": "Şəxsi məlumatlar müvəffəqiyyətlə silindi",
-  "SuccessSentInvitation": "Dəvətnamə müvəffəqiyyətlə göndərildi"
+  "SuccessSentInvitation": "Dəvətnamə müvəffəqiyyətlə göndərildi",
+  "SuccessSentMultipleInvitatios": "Dəvətlər uğurla göndərildi"
 }

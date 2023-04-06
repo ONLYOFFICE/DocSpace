@@ -4,7 +4,7 @@
   "ConfirmEmailHeader": "Lütfən, DocSpace xüsusiyyətlərinə daxil olmaq üçün e-poçtunuzu aktiv edin.",
   "RequestActivation": "Yenidən aktivləşdirmə tələb edin",
   "RoomQuotaDescription": "DocSpace üçün daha uyğun qiymət planı tapmaq üçün lazımsız otaqları arxivləşdirə və ya <1>{{clickHere}}</1> edə bilərsiniz.",
-  "RoomQuotaHeader": "Otaqlar keçmək üzrədir: {{currentValuer}} / {{maxValue}}",
+  "RoomQuotaHeader": "Otaqlar keçmək üzrədir: {{currentValue}} / {{maxValue}}",
   "StorageQuotaDescription": "Siz lazımsız faylları silə və ya DocSpace üçün daha uyğun qiymət planı tapmaq üçün <1>{{clickHere}}</1> edə bilərsiniz.",
   "StorageQuotaHeader": "Yaddaş sahəsinin həcmi keçmək üzrədir : {{currentValue}} / {{maxValue}}"
 }

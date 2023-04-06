@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "내 방에서 첫 번째 방을 만드세요.",
+  "EmptyRoomsHeader": "여기에 아직 방이 없습니다",
+  "RoomList": "방 목록",
+  "SearchEmptyRoomsDescription": "이 필터와 일치하는 방이 없습니다. 다른 필터를 사용하거나 모든 방을 보려면 필터를 지우세요."
+}

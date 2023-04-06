@@ -1,5 +1,10 @@
 {
   "Badges": "Տեղեկաքարտ",
   "DailyFeed": "DocSpace-ի ամենօրյա թարմացում",
-  "RoomsActions": "Գործողություններ ֆայլերի հետ Սենյակներում"
+  "DailyFeedDescription": "Կարդացեք նորություններ և իրադարձություններ ձեր DocSpace-ից ամենօրյա ակնարկով",
+  "ManageNotifications": "Կառավարել",
+  "Notifications": "Ծանուցումներ",
+  "RoomsActions": "Գործողություններ ֆայլերի հետ Սենյակներում",
+  "RoomsActivity": "Սենյակների գործունեություն",
+  "UsefulTips": "Օգտակար DocSpace խորհուրդներ"
 }

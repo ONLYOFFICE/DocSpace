@@ -6,11 +6,14 @@
   "EnableUserButton": "Inschakelen",
   "InviteLinkTitle": "Uitnodigingslink",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Naam wijzigen",
   "PasswordChangeButton": "Wijzig wachtwoord",
   "PendingTitle": "In behandeling",
   "RemoveData": "Verwijder persoonsgegevens",
+  "ResetAuth": "Authenticatie opnieuw instellen",
   "SendInviteAgain": "Stuur uitnodiging opnieuw",
   "SuccessChangeUserStatus": "De gebruikersstatus is met succes gewijzigd",
   "SuccessDeletePersonalData": "Persoonsgegevens zijn met succes verwijderd",
-  "SuccessSentInvitation": "De uitnodiging werd met succes verzonden"
+  "SuccessSentInvitation": "De uitnodiging werd met succes verzonden",
+  "SuccessSentMultipleInvitatios": "Uitnodigingen zijn succesvol verzonden"
 }
