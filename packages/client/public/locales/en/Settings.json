@@ -39,7 +39,7 @@
   "Branding": "Branding",
   "BrandingSectionDescription": "Specify your company information, add links to external resources and email addresses displayed within the DocSpace interface.",
   "BrandingSubtitle": "Use this option to provide on-brand experience to users.",
-  "BreakpointWarningText": "This section is only available in desktop version",
+  "BreakpointWarningText": "This section is only available in the desktop version",
   "BreakpointWarningTextPrompt": "Please use the desktop site to access <1>{{sectionName}}</1> settings.",
   "ButtonsColor": "Buttons",
   "ByApp": "By authenticator app",

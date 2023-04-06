@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 
+let waitingChanges: array<string[]>[] = [];
+
 const canUseDOM = (): boolean =>
   typeof window?.document?.createElement !== "undefined";
 
@@ -7,7 +9,8 @@ export const ZendeskAPI: Function = (...args: string[]) => {
   if (canUseDOM() && window?.zE) {
     window?.zE?.apply(null, args);
   } else {
-    console.warn("Zendesk is not initialized yet");
+    //console.warn("Zendesk is not initialized yet");
+    waitingChanges.push(args);
   }
 };
 
@@ -20,6 +23,11 @@ interface Props {
 
 const Zendesk = ({ zendeskKey, defer, onLoaded, ...other }: Props) => {
   const onScriptLoaded = () => {
+    if (waitingChanges.length > 0) {
+      waitingChanges.forEach((v) => ZendeskAPI(...v));
+      waitingChanges = [];
+    }
+
     if (typeof onLoaded === "function") {
       onLoaded();
     }
