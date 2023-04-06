@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import Text from "@docspace/components/text";
 import { inject, observer } from "mobx-react";
@@ -68,11 +68,15 @@ const PriceCalculation = ({
   managersCount,
   getPaymentLink,
 }) => {
+  const didMountRef = useRef(false);
+
   useEffect(() => {
-    !isAlreadyPaid && setShoppingLink();
+    didMountRef.current && !isAlreadyPaid && setShoppingLink();
   }, [managersCount]);
+
   useEffect(async () => {
     initTariffContainer();
+    didMountRef.current = true;
 
     return () => {
       timeout && clearTimeout(timeout);
@@ -184,7 +188,6 @@ const PriceCalculation = ({
 export default inject(({ auth, payments }) => {
   const {
     tariffsInfo,
-    setPaymentLink,
     setIsLoading,
     setManagersCount,
     maxAvailableManagersCount,
@@ -212,7 +215,6 @@ export default inject(({ auth, payments }) => {
     setManagersCount,
     tariffsInfo,
     theme,
-    setPaymentLink,
     setIsLoading,
     maxAvailableManagersCount,
 
