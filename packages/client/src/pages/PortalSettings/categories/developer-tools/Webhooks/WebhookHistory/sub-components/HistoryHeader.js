@@ -15,6 +15,7 @@ const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
+  height: 69px;
 
   .arrow-button {
     margin-right: 18.5px;

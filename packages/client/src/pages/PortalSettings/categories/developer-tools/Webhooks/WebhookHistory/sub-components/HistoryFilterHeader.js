@@ -19,6 +19,7 @@ const ListHeading = styled.h3`
   line-height: 22px;
   color: #333333;
   font-weight: 700;
+  margin: 0;
 `;
 
 const FilterButton = styled.div`

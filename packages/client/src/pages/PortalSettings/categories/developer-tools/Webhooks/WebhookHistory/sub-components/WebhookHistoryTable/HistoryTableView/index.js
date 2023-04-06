@@ -12,7 +12,7 @@ import { HistoryTableRow } from "./HistoryTableRow";
 import { inject, observer } from "mobx-react";
 
 const TableWrapper = styled(TableContainer)`
-  margin-top: 16px;
+  margin-top: 5px;
 
   .table-container_row-checkbox {
     padding-left: 20px;
