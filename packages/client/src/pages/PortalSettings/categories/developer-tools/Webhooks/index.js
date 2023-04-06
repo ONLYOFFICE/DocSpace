@@ -8,6 +8,7 @@ import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
 
 import styled from "styled-components";
+import { WebhookConfigsLoader } from "./sub-components/Loaders";
 
 const MainWrapper = styled.div`
   width: 100%;
@@ -39,7 +40,7 @@ const Webhooks = (props) => {
   }, []);
 
   return state === "pending" ? (
-    "loading"
+    <WebhookConfigsLoader />
   ) : state === "success" ? (
     <MainWrapper>
       <WebhookInfo />
