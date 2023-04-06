@@ -78,8 +78,30 @@ class PaymentStore {
     (isGracePeriod || isNotPaidPeriod) && setGracePeriodDays();
   };
 
+  basicSettings = async () => {
+    const { currentTariffStatusStore } = authStore;
+    const { setPortalTariff } = currentTariffStatusStore;
+    const requests = [setPortalTariff()];
+
+    this.isAlreadyPaid
+      ? requests.push(this.setPaymentAccount())
+      : requests.push(this.getPaymentLink());
+
+    try {
+      await Promise.all(requests);
+      this.setTariffDates();
+    } catch (error) {
+      toastr.error(t("Common:UnexpectedError"));
+      console.error(error);
+    }
+  };
+
   init = async (t) => {
-    if (this.isInitPaymentPage) return;
+    if (this.isInitPaymentPage) {
+      this.basicSettings();
+
+      return;
+    }
 
     const { paymentQuotasStore, currentTariffStatusStore } = authStore;
     const { setPayerInfo } = currentTariffStatusStore;
