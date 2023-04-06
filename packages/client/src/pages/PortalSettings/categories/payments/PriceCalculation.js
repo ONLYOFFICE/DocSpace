@@ -58,13 +58,11 @@ let timeout = null,
 const backUrl = window.location.origin;
 const PriceCalculation = ({
   t,
-  user,
   theme,
   setPaymentLink,
   setIsLoading,
   maxAvailableManagersCount,
-  isFreeTariff,
-  isPayer,
+  canUpdateTariff,
   isGracePeriod,
   isNotPaidPeriod,
   initializeInfo,
@@ -119,9 +117,7 @@ const PriceCalculation = ({
     }, 1000);
   };
 
-  const isDisabled = isFreeTariff
-    ? false
-    : (!user.isOwner && !user.isAdmin) || !isPayer;
+  const isDisabled = !canUpdateTariff;
 
   const priceInfoPerManager = (
     <div className="payment_price_user">
@@ -209,31 +205,30 @@ export default inject(({ auth, payments }) => {
     initializeInfo,
     managersCount,
     isAlreadyPaid,
+    canUpdateTariff,
   } = payments;
   const { theme } = auth.settingsStore;
   const {
-    userStore,
     currentTariffStatusStore,
-    currentQuotaStore,
+
     paymentQuotasStore,
   } = auth;
-  const { isFreeTariff } = currentQuotaStore;
+
   const { planCost } = paymentQuotasStore;
   const { isNotPaidPeriod, isGracePeriod } = currentTariffStatusStore;
-  const { user } = userStore;
 
   return {
+    canUpdateTariff,
     isAlreadyPaid,
     managersCount,
 
-    isFreeTariff,
     setManagersCount,
     tariffsInfo,
     theme,
     setPaymentLink,
     setIsLoading,
     maxAvailableManagersCount,
-    user,
+
     isGracePeriod,
     isNotPaidPeriod,
     initializeInfo,

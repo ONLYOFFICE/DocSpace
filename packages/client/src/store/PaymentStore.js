@@ -252,6 +252,38 @@ class PaymentStore {
     return this.managersCount < this.minAvailableManagersValue;
   }
 
+  get isPayer() {
+    const { userStore, currentTariffStatusStore } = authStore;
+    const { user } = userStore;
+
+    const { customerId } = currentTariffStatusStore;
+
+    if (!user) return false;
+
+    return user.email === customerId;
+  }
+
+  get isStripePortalAvailable() {
+    const { userStore } = authStore;
+    const { user } = userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || this.isPayer;
+  }
+
+  get canUpdateTariff() {
+    const { currentQuotaStore, userStore } = authStore;
+    const { user } = userStore;
+    const { isFreeTariff } = currentQuotaStore;
+
+    if (!user) return false;
+
+    if (isFreeTariff) return true;
+
+    return this.isPayer;
+  }
+
   setRangeStepByQuota = () => {
     const { paymentQuotasStore } = authStore;
     const {

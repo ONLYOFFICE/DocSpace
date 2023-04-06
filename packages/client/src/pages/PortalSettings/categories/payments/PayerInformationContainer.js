@@ -56,15 +56,13 @@ const PayerInformationContainer = ({
   theme,
   user,
   accountLink,
-  isPayer,
   payerInfo,
   email,
   isNotPaidPeriod,
   isFreeAfterPaidPeriod,
+  isStripePortalAvailable,
 }) => {
   const { t } = useTranslation("Payments");
-
-  const isLinkAvailable = user.isOwner || isPayer;
 
   const renderTooltip = (
     <HelpButton
@@ -102,7 +100,7 @@ const PayerInformationContainer = ({
         {unknownPayerDescription()}
       </Text>
       <div>
-        {isLinkAvailable && (
+        {isStripePortalAvailable && (
           <ColorTheme
             noSelect
             fontWeight={600}
@@ -121,7 +119,7 @@ const PayerInformationContainer = ({
 
   const payerInformation = (
     <>
-      {isLinkAvailable ? (
+      {isStripePortalAvailable ? (
         <ColorTheme
           noSelect
           fontWeight={600}
@@ -207,16 +205,18 @@ const PayerInformationContainer = ({
 
 export default inject(({ auth, payments }) => {
   const { userStore, settingsStore, currentTariffStatusStore } = auth;
-  const { accountLink, payerInfo } = payments;
+  const { accountLink, isStripePortalAvailable } = payments;
   const { theme } = settingsStore;
   const {
     customerId,
     isGracePeriod,
     isNotPaidPeriod,
+    payerInfo,
   } = currentTariffStatusStore;
   const { user } = userStore;
 
   return {
+    isStripePortalAvailable,
     theme,
     user,
     accountLink,
