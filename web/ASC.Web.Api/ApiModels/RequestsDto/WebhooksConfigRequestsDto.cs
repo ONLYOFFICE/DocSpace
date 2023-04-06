@@ -33,4 +33,5 @@ public class WebhooksConfigRequestsDto
     public string Uri { get; set; }
     public string SecretKey { get; set; }
     public bool? Enabled { get; set; }
+    public bool? SSL { get; set;}
 }

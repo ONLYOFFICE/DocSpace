@@ -45,7 +45,8 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                     tenantid = table.Column<uint>(name: "tenant_id", type: "int unsigned", nullable: false),
                     uri = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, defaultValueSql: "''")
                         .Annotation("MySql:CharSet", "utf8"),
-                    enabled = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
+                    enabled = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
+                    ssl = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")
                 },
                 constraints: table =>
                 {

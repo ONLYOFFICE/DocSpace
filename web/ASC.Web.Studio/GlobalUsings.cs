@@ -25,7 +25,7 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 global using System.Collections.Concurrent;
-global using System.Net.Security;
+global using System.Net;
 global using System.Security.Cryptography;
 global using System.Text;
 global using System.Text.Json;
@@ -37,7 +37,6 @@ global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
 global using ASC.Common.Utils;
-global using ASC.Core.Common.Settings;
 global using ASC.Data.Storage;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;

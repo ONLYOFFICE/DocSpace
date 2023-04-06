@@ -33,4 +33,18 @@ public class WebhooksConfigDto : IMapFrom<WebhooksConfig>
     public string Uri { get; set; }
     public string SecretKey { get; set; }
     public bool Enabled { get; set; }
+    public bool SSL { get; set; }
+}
+
+public class WebhooksConfigWithStatusDto : IMapFrom<WebhooksConfigWithStatus>
+{
+    public WebhooksConfigDto Configs { get; set; }
+    public int Status { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<WebhooksConfigWithStatus, WebhooksConfigWithStatusDto>()
+            .ForMember(src => src.Configs, ex => ex
+                .MapFrom(map => map.WebhooksConfig));
+    }
 }
