@@ -214,7 +214,7 @@ const CreateUserForm = (props) => {
     const { FirstName, LastName, EMail, Serialized } = profile;
 
     const signupAccount = {
-      EmployeeType: null,
+      EmployeeType: linkData.emplType || null,
       FirstName: FirstName,
       LastName: LastName,
       Email: EMail,
