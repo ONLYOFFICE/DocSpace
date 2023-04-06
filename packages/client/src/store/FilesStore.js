@@ -1253,7 +1253,9 @@ class FilesStore {
               (rootFolderType === Rooms || rootFolderType === Archive);
 
             if (parentId === rootFolderId) {
-              this.isMuteCurrentRoomNotifications = mute;
+              runInAction(() => {
+                this.isMuteCurrentRoomNotifications = mute;
+              });
             }
 
             return {
