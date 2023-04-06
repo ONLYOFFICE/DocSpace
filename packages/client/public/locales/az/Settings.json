@@ -40,7 +40,7 @@
   "BrandingSectionDescription": "Şirkət məlumatlarınızı göstərin, DocSpace interfeysində göstərilən xarici resurslara və e-poçt ünvanlarına keçidlər əlavə edin.",
   "BrandingSubtitle": "İstifadəçilərə brendlə bağlı təcrübə təmin etmək üçün bu seçimdən istifadə edin.",
   "BreakpointWarningText": "Bu bölmə yalnız masaüstü versiyada mövcuddur",
-  "BreakpointWarningTextPrompt": "Lütfən, <1>{{sectionName}}</1> parametrlərinə daxil olmaq üçün masaüstü saytından istifadə edin",
+  "BreakpointWarningTextPrompt": "Lütfən, <1>{{sectionName}}</1> parametrlərinə daxil olmaq üçün masaüstü saytından istifadə edin.",
   "ButtonsColor": "Düymələr",
   "ByApp": "Doğrulama tətbiqi vasitəsilə",
   "BySms": "Sms vasitəsilə",

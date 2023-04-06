@@ -1,7 +1,7 @@
 {
   "ClickHere": "Klik hier",
   "ConfirmEmailDescription": "Gebruik de link in de activeringsmail. Hebt u geen e-mail ontvangen met de activeringslink?",
-  "ConfirmEmailHeader": "Activeer uw e-mail om toegang te krijgen tot de DocSpace functies.",
+  "ConfirmEmailHeader": "Activeer uw e-mail ({{ email }}) om toegang te krijgen tot de DocSpace functies.",
   "RequestActivation": "Activatie opnieuw aanvragen",
   "RoomQuotaDescription": "U kunt de overbodige kamers archiveren of <1>{clickHere}}</1> om een meer geschikt prijsplan voor uw DocSpace te vinden.",
   "RoomQuotaHeader": "Kamers staat op het punt overschreden te worden: {{currentValue}} / {{maxValue}}",

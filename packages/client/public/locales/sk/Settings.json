@@ -63,7 +63,7 @@
   "DNSSettings": "Nastavenia DNS",
   "DNSSettingsDescription": "Nastavenia DNS predstavujú spôsob, ako nastaviť alternatívnu adresu URL pre váš priestor.",
   "DNSSettingsMobile": "Pošlite svoju požiadavku nášmu tímu podpory a naši špecialisti vám pomôžu s nastavením.",
-  "DNSSettingsTooltip": "Nastavenia DNS vám umožňujú nastaviť alternatívnu adresu URL pre váš priestor {{organizationName}}. Pošlite žiadosť nášmu tímu podpory a naši špecialisti vám pomôžu s nastaveniami.<2>{{learnMore}}</2>",
+  "DNSSettingsTooltip": "Nastavenia DNS vám umožňujú nastaviť alternatívnu adresu URL pre váš priestor {{organizationName}}. Pošlite žiadosť nášmu tímu podpory a naši špecialisti vám pomôžu s nastaveniami.",
   "DataBackup": "Zálohovanie dát",
   "Deactivate": "Deaktivovať",
   "DeactivateOrDeletePortal": "Deaktivovať alebo odstrániť portál.",

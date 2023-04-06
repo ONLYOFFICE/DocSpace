@@ -88,6 +88,7 @@
   "Rename": "重命名",
   "RestoreAll": "全部还原",
   "RoomCreated": "房间已创建",
+  "RoomEmptyContainerDescription": "请创建首个房间。",
   "RoomEmptyContainerDescriptionUser": "与您共享的房间将出现在这里",
   "RoomNotificationsDisabled": "房间通知禁用",
   "RoomNotificationsEnabled": "房间通知启用",
