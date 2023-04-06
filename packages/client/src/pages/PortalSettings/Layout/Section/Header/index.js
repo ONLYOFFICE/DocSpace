@@ -34,6 +34,12 @@ const HeaderContainer = styled.div`
     .settings-section_badge {
       margin-left: 8px;
     }
+
+    .header {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
   }
   .action-wrapper {
     flex-grow: 1;
@@ -308,11 +314,11 @@ class SectionHeaderContent extends React.Component {
             )}
             <Headline type="content" truncate={true}>
               <div className="settings-section_header">
-                {t(header)}
+                <div className="header"> {t(header)}</div>
                 {isNeedPaidIcon ? (
                   <Badge
                     backgroundColor="#EDC409"
-                    label="Paid"
+                    label={t("Common:Paid")}
                     className="settings-section_badge"
                     isPaidBadge={true}
                   />

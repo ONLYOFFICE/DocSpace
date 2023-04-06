@@ -61,10 +61,10 @@ const ChangeUserTypeEvent = ({
   const onChangeUserType = () => {
     onClosePanel();
     updateUserType(toType, userIDs, peopleFilter, fromType)
-      .then(() => {
+      .then((users) => {
         toastr.success(t("SuccessChangeUserType"));
 
-        successCallback && successCallback();
+        successCallback && successCallback(users);
       })
       .catch((err) => {
         toastr.error(
@@ -102,7 +102,7 @@ const ChangeUserTypeEvent = ({
       case "manager":
         return t("Common:RoomAdmin");
       case "collaborator":
-        return t("Common:Collaborator");
+        return t("Common:PowerUser");
       case "user":
       default:
         return t("Common:User");

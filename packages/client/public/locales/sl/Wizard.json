@@ -1,15 +1,10 @@
 {
-  "ChangeEmailTitle": "Spremeni email naslov",
-  "Desc": "Prosimo, nastavite podatke za registracijo portala.",
+  "Desc": "Prosimo, nastavite podatke za registracijo DocSpace.",
   "Domain": "Domena:",
   "ErrorEmail": "Napačen email naslov",
   "ErrorInitWizard": "Storitev trenutno ni na voljo, poskusite znova kasneje.",
   "ErrorInitWizardButton": "Poskusi znova",
-  "ErrorLicenseBody": "Licenca ni veljavna. Izberite pravo datoteko",
-  "ErrorLicenseRead": "Sprejmite licenčno pogodbo",
-  "ErrorLicenseTitle": "Napaka pri nalaganju",
-  "ErrorParamsBody": "Vneseni so napačni podatki:",
-  "ErrorParamsTitle": "Napaka pri registraciji",
+  "ErrorLicenseBody": "Licenca ni veljavna. Izberite pravo datoteko.",
   "ErrorPassword": "Geslo ne ustreza zahtevam",
   "ErrorUploadLicenseFile": "Izberite licenčno datoteko",
   "GeneratePassword": "Generirajte geslo",
@@ -17,6 +12,5 @@
   "LicenseLink": "Licenčne pogodbe",
   "PlaceholderLicense": "Vaša licenčna datoteka",
   "Timezone": "Časovni pas:",
-  "WelcomeTitle": "Dobrodošli na vašem portalu!",
-  "WizardTitle": "Nastavite svoj portal"
+  "WelcomeTitle": "Dobrodošli na vašem portalu!"
 }

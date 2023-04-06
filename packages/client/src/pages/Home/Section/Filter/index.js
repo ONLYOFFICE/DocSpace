@@ -1,6 +1,6 @@
 ﻿import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
 import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import { withRouter } from "react-router";
@@ -9,10 +9,10 @@ import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
 import result from "lodash/result";
 
-import { FilterGroups, FilterKeys } from "@docspace/common/constants";
-
 import { getUser } from "@docspace/common/api/people";
 import {
+  FilterGroups,
+  FilterKeys,
   FilterType,
   RoomsType,
   RoomsProviderType,
@@ -26,6 +26,7 @@ import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 
 import withLoader from "../../../../HOCs/withLoader";
 import { TableVersions } from "SRC_DIR/helpers/constants";
+import { showLoader, hideLoader } from "./FilterUtils";
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -180,7 +181,7 @@ const SectionFilterContent = ({
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isEmptyPage) {
       setIsLoadedFilter(isLoadedEmptyPage);
     }
@@ -291,6 +292,37 @@ const SectionFilterContent = ({
       selectedFolderId,
     ]
   );
+
+  const onClearFilter = useCallback(() => {
+    if (isRooms) {
+      const newFilter = roomsFilter.clone();
+      newFilter.type = null;
+      newFilter.page = 0;
+      newFilter.filterValue = "";
+
+      fetchRooms(selectedFolderId, newFilter).finally(() =>
+        setIsLoading(false)
+      );
+    } else {
+      const newFilter = filter.clone();
+      newFilter.page = 0;
+      newFilter.filterValue = "";
+
+      setIsLoading(true);
+
+      fetchFiles(selectedFolderId, newFilter).finally(() => {
+        setIsLoading(false);
+      });
+    }
+  }, [
+    isRooms,
+    setIsLoading,
+    fetchFiles,
+    fetchRooms,
+    selectedFolderId,
+    filter,
+    roomsFilter,
+  ]);
 
   const onSearch = React.useCallback(
     (data = "") => {
@@ -699,36 +731,46 @@ const SectionFilterContent = ({
             isHeader: true,
             isLast: isLastTypeOptionsRooms,
           },
-          {
-            id: "filter_type-custom",
-            key: RoomsType.CustomRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("CustomRooms"),
-          },
-          {
-            id: "filter_type-filling-form",
-            key: RoomsType.FillingFormsRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("FillingFormRooms"),
-          },
-          {
-            id: "filter_type-collaboration",
-            key: RoomsType.EditingRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("CollaborationRooms"),
-          },
-          {
-            id: "filter_type-review",
-            key: RoomsType.ReviewRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("Common:Review"),
-          },
-          {
-            id: "filter_type-view-only",
-            key: RoomsType.ReadOnlyRoom,
-            group: FilterGroups.roomFilterType,
-            label: t("ViewOnlyRooms"),
-          },
+          ...Object.values(RoomsType).map((roomType) => {
+            switch (roomType) {
+              case RoomsType.FillingFormsRoom:
+                return {
+                  id: "filter_type-filling-form",
+                  key: RoomsType.FillingFormsRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("FillingFormRooms"),
+                };
+              case RoomsType.EditingRoom:
+                return {
+                  id: "filter_type-collaboration",
+                  key: RoomsType.EditingRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("CollaborationRooms"),
+                };
+              case RoomsType.ReviewRoom:
+                return {
+                  id: "filter_type-review",
+                  key: RoomsType.ReviewRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("Common:Review"),
+                };
+              case RoomsType.ReadOnlyRoom:
+                return {
+                  id: "filter_type-view-only",
+                  key: RoomsType.ReadOnlyRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("ViewOnlyRooms"),
+                };
+              case RoomsType.CustomRoom:
+              default:
+                return {
+                  id: "filter_type-custom",
+                  key: RoomsType.CustomRoom,
+                  group: FilterGroups.roomFilterType,
+                  label: t("CustomRooms"),
+                };
+            }
+          }),
         ]
       : [
           {
@@ -1043,7 +1085,7 @@ const SectionFilterContent = ({
     const modifiedDate = {
       id: "sort-by_modified",
       key: "DateAndTime",
-      label: t("ByLastModified"),
+      label: t("Common:LastModifiedDate"),
       default: true,
     };
     const room = {
@@ -1061,7 +1103,7 @@ const SectionFilterContent = ({
     const creationDate = {
       id: "sort-by_created",
       key: "DateAndTimeCreation",
-      label: t("ByCreation"),
+      label: t("InfoPanel:CreationDate"),
       default: true,
     };
     const owner = {
@@ -1402,8 +1444,12 @@ const SectionFilterContent = ({
     }
   };
 
+  useEffect(() => (!!isLoadedFilter ? showLoader() : hideLoader()), [
+    isLoadedFilter,
+  ]);
+
   if (!isLoadedFilter) {
-    return <Loaders.Filter />;
+    return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
   }
 
   return (
@@ -1420,6 +1466,7 @@ const SectionFilterContent = ({
       onChangeViewAs={onChangeViewAs}
       getViewSettingsData={getViewSettingsData}
       onSearch={onSearch}
+      onClearFilter={onClearFilter}
       getSelectedInputValue={getSelectedInputValue}
       filterHeader={t("Common:AdvancedFilter")}
       placeholder={t("Common:Search")}
@@ -1431,6 +1478,7 @@ const SectionFilterContent = ({
       removeSelectedItem={removeSelectedItem}
       clearAll={clearAll}
       filterTitle={t("Filter")}
+      sortByTitle={t("Common:SortBy")}
       clearSearch={clearSearch}
       setClearSearch={setClearSearch}
       onSortButtonClick={onSortButtonClick}
@@ -1523,9 +1571,13 @@ export default inject(
 )(
   withRouter(
     withLayoutSize(
-      withTranslation(["Files", "Settings", "Common", "Translations"])(
-        withLoader(observer(SectionFilterContent))(<Loaders.Filter />)
-      )
+      withTranslation([
+        "Files",
+        "Settings",
+        "Common",
+        "Translations",
+        "InfoPanel",
+      ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
     )
   )
 );

@@ -6,5 +6,7 @@
   },
   "proxy": {
     "url": ""
-  }
+  },
+  "wrongPortalNameUrl": "https://teamlab.info/wrongportalname.aspx?Site_Testing=4testing",
+  "thumbnails1280x720": false
 }

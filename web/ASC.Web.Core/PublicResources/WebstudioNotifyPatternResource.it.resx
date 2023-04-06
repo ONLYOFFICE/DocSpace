@@ -691,25 +691,6 @@ Team di ONLYOFFICE
 
 [$__AuthorName]($__AuthorUrl) Ha modificato i suoi dettagli sul portale [${__VirtualRootPath}](${__VirtualRootPath})</value>
   </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Cosa c'è di nuovo sul portale "${__VirtualRootPath}":"${__VirtualRootPath}" il  $Date
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-^Se non vuoi ricevere notifiche circa nuovi eventi sul portale "${__VirtualRootPath}":"${__VirtualRootPath}", prego gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL".^</value>
-  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Messaggio di prova SMTP 
 
@@ -768,14 +749,8 @@ il team di ONLYOFFICE</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Benvenuti sul vostro web-office</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Benvenuti sul vostro web-office</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Messaggio dell'Utente agli Amministratori</value>
@@ -797,9 +772,6 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_migration_success" xml:space="preserve">
     <value>Un'altra migrazione regione portale completato con successo</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Benvenuti sul vostro web-office</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Benvenuti su ONLYOFFICE per uso personale!</value>
@@ -858,14 +830,8 @@ il team di ONLYOFFICE</value>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Unisciti a ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>‎Benvenuti nel vostro ONLYOFFICE‎</value>
-  </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} Notifica per il cambio profilo del portale </value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Novità sul tuo portale per $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>messaggio di prova SMTP</value>

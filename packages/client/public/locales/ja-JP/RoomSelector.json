@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "私のルーム」に最初のルームを作成してください。",
+  "EmptyRoomsHeader": "ここにはまだルームがありません",
+  "RoomList": "ルーム一覧",
+  "SearchEmptyRoomsDescription": "このフィルターに一致するルームはありません。別のフィルターを試すか、フィルターをクリアしてすべてのルームを表示します。"
+}

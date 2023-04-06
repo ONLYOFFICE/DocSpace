@@ -34,6 +34,33 @@ module.exports = ({ config }) => {
   //   test: /\.(png|jpe?g|gif|ico)$/i,
   //   type: "asset/resource",
   // });
+  rules.push({
+    test: /\.s[ac]ss$/i,
+    use: [
+      // Creates `style` nodes from JS strings
+      "style-loader",
+      // Translates CSS into CommonJS
+      {
+        loader: "css-loader",
+        options: {
+          url: {
+            filter: (url, resourcePath) => {
+              // resourcePath - path to css file
+
+              // Don't handle `/static` urls
+              if (url.startsWith("/static") || url.startsWith("data:")) {
+                return false;
+              }
+
+              return true;
+            },
+          },
+        },
+      },
+      // Compiles Sass to CSS
+      "sass-loader",
+    ],
+  });
 
   rules.push({
     test: /\.svg$/i,

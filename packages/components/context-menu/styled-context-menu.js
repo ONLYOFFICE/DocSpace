@@ -87,16 +87,12 @@ const StyledContextMenu = styled.div`
       .drop-down-item_icon {
         display: flex;
         align-items: center;
-
+        border-radius: 6px;
         ${(props) =>
           props.isRoom &&
           css`
             width: 100%;
             height: 100%;
-
-            svg {
-              border-radius: 6px;
-            }
           `}
       }
 

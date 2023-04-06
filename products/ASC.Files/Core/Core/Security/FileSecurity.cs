@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Actions = ASC.Web.Studio.Core.Notify.Actions;
+
 namespace ASC.Files.Core.Security;
 
 [Scope]
@@ -151,6 +153,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Copy,
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Pin,
+                    FilesSecurityActions.Mute,
                     FilesSecurityActions.EditAccess,
                     FilesSecurityActions.Duplicate,
                 }
@@ -164,6 +167,8 @@ public class FileSecurity : IFileSecurity
     private readonly GlobalFolder _globalFolder;
     private readonly FileSecurityCommon _fileSecurityCommon;
     private readonly FileUtility _fileUtility;
+    private readonly StudioNotifyHelper _studioNotifyHelper;
+    private readonly BadgesSettingsHelper _badgesSettingsHelper;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -173,7 +178,9 @@ public class FileSecurity : IFileSecurity
         AuthManager authManager,
         GlobalFolder globalFolder,
         FileSecurityCommon fileSecurityCommon,
-        FileUtility fileUtility)
+        FileUtility fileUtility,
+        StudioNotifyHelper studioNotifyHelper,
+        BadgesSettingsHelper badgesSettingsHelper)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -183,6 +190,8 @@ public class FileSecurity : IFileSecurity
         _globalFolder = globalFolder;
         _fileSecurityCommon = fileSecurityCommon;
         _fileUtility = fileUtility;
+        _studioNotifyHelper = studioNotifyHelper;
+        _badgesSettingsHelper = badgesSettingsHelper;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
@@ -735,8 +744,14 @@ public class FileSecurity : IFileSecurity
             if (action != FilesSecurityActions.Read)
             {
                 if ((action == FilesSecurityActions.Pin ||
-                     action == FilesSecurityActions.EditAccess) &&
+                     action == FilesSecurityActions.EditAccess ||
+                     action == FilesSecurityActions.Mute) &&
                     !isRoom)
+                {
+                    return false;
+                }
+
+                if (action == FilesSecurityActions.Mute && isRoom && IsAllGeneralNotificationSettingsOff())
                 {
                     return false;
                 }
@@ -917,6 +932,7 @@ public class FileSecurity : IFileSecurity
         {
             case FilesSecurityActions.Read:
             case FilesSecurityActions.Pin:
+            case FilesSecurityActions.Mute:
                 return e.Access != FileShare.Restrict;
             case FilesSecurityActions.Comment:
                 if (e.Access == FileShare.Comment ||
@@ -1239,7 +1255,7 @@ public class FileSecurity : IFileSecurity
             _ => new[] { await _globalFolder.GetFolderVirtualRoomsAsync(_daoFactory), await _globalFolder.GetFolderArchiveAsync(_daoFactory) }
         };
 
-        var rooms = await folderDao.GetRoomsAsync(rootFoldersIds, roomsIds.Keys, filterType, tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries)
+       var rooms = await folderDao.GetRoomsAsync(roomsIds.Keys, filterType, tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries, rootFoldersIds)
             .Where(r => Filter(r, roomsIds)).ToListAsync();
         var thirdPartyRooms = await folderThirdPartyDao.GetFakeRoomsAsync(rootFoldersIds.Select(id => id.ToString()), thirdPartyRoomsIds.Keys, filterType, 
                 tagNames, subjectId, search, withSubfolders, withoutTags, excludeSubject, provider, subjectFilter, subjectEntries)
@@ -1644,6 +1660,20 @@ public class FileSecurity : IFileSecurity
         return false;
     }
 
+    private bool IsAllGeneralNotificationSettingsOff()
+    {
+        var userId = _authContext.CurrentAccount.ID;
+
+        if (!_badgesSettingsHelper.GetEnabledForCurrentUser()
+            && !_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.RoomsActivity)
+            && !_studioNotifyHelper.IsSubscribedToNotify(userId, Actions.SendWhatsNew))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     private sealed class SubjectComparer : IComparer<FileShareRecord>
     {
         private readonly List<Guid> _subjects;
@@ -1693,6 +1723,7 @@ public class FileSecurity : IFileSecurity
         MoveTo,
         Move,
         Pin,
+        Mute,
         EditAccess,
         Duplicate,
     }

@@ -69,7 +69,7 @@ public class DocumentServiceConnector
         return ASC.Files.Core.Helpers.DocumentService.GenerateRevisionId(expectedKey);
     }
 
-    public async Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(string documentUri,
+    public async Task<(int ResultPercent, string ConvertedDocumentUri, string convertedFileType)> GetConvertedUriAsync(string documentUri,
                                       string fromExtension,
                                       string toExtension,
                                       string documentRevisionId,

@@ -399,26 +399,6 @@ ONLYOFFICE™ Support Team
 
 ^Pokud nechcete dostávat oznámení o aktualizacích profilu, prosím upravte Vaše "nastavení odběru":"$RecipientSubscriptionConfigURL".^</value>
   </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Co je nového na "${__VirtualRootPath}":"${__VirtualRootPath}" portálu pro $Date
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Autor*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^Pokud nechcete dostávat oznámení o nových událostech na "${__VirtualRootPath}":"${__VirtualRootPath}" portálu, prosím  upravte své "nastavení odběru":"$RecipientSubscriptionConfigURL".^</value>
-  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testovací zpráva
 
@@ -501,9 +481,6 @@ tým ONLYOFFICE</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} oznámení o změně profilu</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Co je nového na Vašem portálu ke dni $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Testovací zpráva SMTP</value>

@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import IconButton from "../icon-button";
 import Tooltip from "../tooltip";
 import { handleAnyClick } from "../utils/event";

@@ -26,24 +26,28 @@
 
 namespace ASC.Files.Thirdparty;
 
-internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : class, IProviderInfo
+[Scope]
+internal class RegexDaoSelectorBase<TFile, TFolder, TItem> : IDaoSelector<TFile, TFolder, TItem>
+    where TFile : class, TItem
+    where TFolder : class, TItem
+    where TItem : class
 {
-    private readonly IServiceProvider _serviceProvider;
+    protected readonly IServiceProvider _serviceProvider;
     private readonly IDaoFactory _daoFactory;
-    protected internal abstract string Name { get; }
-    protected internal abstract string Id { get; }
+    protected internal string Name { get => _serviceProvider.GetService<IProviderInfo<TFile, TFolder, TItem>>().Selector.Name; }
+    protected internal string Id { get => _serviceProvider.GetService<IProviderInfo<TFile, TFolder, TItem>>().Selector.Id; }
     public Regex Selector => _selector ??= new Regex(@"^" + Id + @"-(?'id'\d+)(-(?'path'.*)){0,1}$", RegexOptions.Singleline | RegexOptions.Compiled);
     private Regex _selector;
 
-    private Dictionary<string, BaseProviderInfo<T>> Providers { get; set; }
+    private Dictionary<string, BaseProviderInfo<TFile, TFolder, TItem>> Providers { get; set; }
 
-    protected RegexDaoSelectorBase(
+    public RegexDaoSelectorBase(
         IServiceProvider serviceProvider,
         IDaoFactory daoFactory)
     {
         _serviceProvider = serviceProvider;
         _daoFactory = daoFactory;
-        Providers = new Dictionary<string, BaseProviderInfo<T>>();
+        Providers = new Dictionary<string, BaseProviderInfo<TFile, TFolder, TItem>>();
     }
 
     public virtual string ConvertId(string id)
@@ -88,49 +92,41 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
         return id != null && Selector.IsMatch(id);
     }
 
-    public virtual ISecurityDao<string> GetSecurityDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ISecurityDao<string>
+    public virtual IFileDao<string> GetFileDao(string id)
     {
-        return GetDao<T1>(id);
+        var fileDao = _serviceProvider.GetService<ThirdPartyFileDao<TFile, TFolder, TItem>>();
+        var info = GetInfo(id);
+        fileDao.Init(info.PathPrefix, info.ProviderInfo);
+
+        return fileDao;
     }
 
-    public virtual IFileDao<string> GetFileDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFileDao<string>
+    public virtual IFolderDao<string> GetFolderDao(string id)
     {
-        return GetDao<T1>(id);
+        var folderDao = _serviceProvider.GetService<ThirdPartyFolderDao<TFile, TFolder, TItem>>();
+        var info = GetInfo(id);
+        folderDao.Init(info.PathPrefix, info.ProviderInfo);
+
+        return folderDao;
     }
 
-    public virtual ITagDao<string> GetTagDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, ITagDao<string>
+    public virtual IThirdPartyTagDao GetTagDao(string id)
     {
-        return GetDao<T1>(id);
-    }
-
-    public virtual IFolderDao<string> GetFolderDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>, IFolderDao<string>
-    {
-        return GetDao<T1>(id);
-    }
-
-    private T1 GetDao<T1>(string id) where T1 : ThirdPartyProviderDao<T>
-    {
-        var providerKey = $"{id}";
-        var info = Providers.Get(providerKey);
-        var res = _serviceProvider.GetService<T1>();
-
-        if (info != null)
-        {
-            res.Init(info, this);
-            return res;
-        }
-
-        info = GetInfo(id);
-        res.Init(info, this);
-
-        Providers.Add(providerKey, info);
+        var info = Providers.Get(id);
+        var res = _serviceProvider.GetService<ThirdPartyTagDao<TFile, TFolder, TItem>>();
+        res.Init(info.PathPrefix);
 
         return res;
     }
 
-    internal BaseProviderInfo<T> GetInfo(string objectId)
+    internal BaseProviderInfo<TFile, TFolder, TItem> GetInfo(string objectId)
     {
         ArgumentNullException.ThrowIfNull(objectId);
+        var info = Providers.Get(objectId);
+        if (info != null)
+        {
+            return info;
+        }
 
         var id = objectId;
         var match = Selector.Match(id);
@@ -138,37 +134,39 @@ internal abstract class RegexDaoSelectorBase<T> : IDaoSelector<T> where T : clas
         {
             var providerInfo = GetProviderInfo(Convert.ToInt32(match.Groups["id"].Value));
 
-            return new BaseProviderInfo<T>
+            info = new BaseProviderInfo<TFile, TFolder, TItem>
             {
                 Path = match.Groups["path"].Value,
                 ProviderInfo = providerInfo,
                 PathPrefix = Id + "-" + match.Groups["id"].Value
             };
+            Providers.Add(objectId, info);
+            return info;
         }
 
         throw new ArgumentException($"Id is not {Name} id");
     }
 
-    public async Task RenameProviderAsync(T provider, string newTitle)
+    public async Task RenameProviderAsync(IProviderInfo<TFile, TFolder, TItem> provider, string newTitle)
     {
         var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-        await dbDao.UpdateProviderInfoAsync(provider.ID, newTitle, null, provider.RootFolderType);
+        await dbDao.UpdateProviderInfoAsync(provider.ProviderId, newTitle, null, provider.RootFolderType);
         provider.UpdateTitle(newTitle); //This will update cached version too
     }
 
-    public async Task UpdateProviderFolderId(T provider, string id)
+    public async Task UpdateProviderFolderId(IProviderInfo<TFile, TFolder, TItem> provider, string id)
     {
         var dbDao = _serviceProvider.GetService<ProviderAccountDao>();
-        await dbDao.UpdateProviderInfoAsync(provider.ID, provider.CustomerTitle, id, provider.FolderType, provider.Private);
+        await dbDao.UpdateProviderInfoAsync(provider.ProviderId, provider.CustomerTitle, id, provider.FolderType, provider.Private);
         provider.FolderId = id;
     }
 
-    protected virtual T GetProviderInfo(int linkId)
+    protected virtual IProviderInfo<TFile, TFolder, TItem> GetProviderInfo(int linkId)
     {
         var dbDao = _daoFactory.ProviderDao;
         try
         {
-            return dbDao.GetProviderInfoAsync(linkId).Result as T;
+            return dbDao.GetProviderInfoAsync(linkId).Result as IProviderInfo<TFile, TFolder, TItem>;
         }
         catch (InvalidOperationException)
         {

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
@@ -32,10 +32,19 @@ const ArticlePaymentAlert = ({
   toggleArticleOpen,
   tariffPlanTitle,
 }) => {
-  const { t, ready } = useTranslation("Payments");
+  const { t, ready } = useTranslation("Common");
+
+  const getQuota = useCallback(async () => {
+    if (isFreeTariff)
+      try {
+        await setPortalPaymentQuotas();
+      } catch (e) {
+        console.error(e);
+      }
+  }, []);
 
   useEffect(() => {
-    isFreeTariff && setPortalPaymentQuotas();
+    getQuota();
   }, []);
 
   const onClick = () => {
@@ -61,23 +70,23 @@ const ArticlePaymentAlert = ({
       <div>
         <Text className="article-payment_border">
           {isFreeTariff ? (
-            <Trans t={t} i18nKey="FreeStartupPlan" ns="Payments">
+            <Trans t={t} i18nKey="FreeStartupPlan" ns="Common">
               {{ planName: currentTariffPlanTitle }}
             </Trans>
           ) : (
-            t("LatePayment")
+            t("Common:LatePayment")
           )}
         </Text>
         <Text fontWeight={600}>
           {isFreeTariff
-            ? t("ActivateBusinessPlan", { planName: tariffPlanTitle })
-            : t("GracePeriodActivated")}
+            ? t("Common:ActivateBusinessPlan", { planName: tariffPlanTitle })
+            : t("Common:GracePeriodActivated")}
         </Text>
         <Text noSelect fontSize={"12px"}>
           {isFreeTariff ? (
             <>
               {pricePerManager ? (
-                <Trans t={t} i18nKey="PerUserMonth" ns="Payments">
+                <Trans t={t} i18nKey="PerUserMonth" ns="Common">
                   From {{ currencySymbol }}
                   {{ price: pricePerManager }} per admin/month
                 </Trans>
@@ -86,7 +95,7 @@ const ArticlePaymentAlert = ({
               )}
             </>
           ) : (
-            t("PayBeforeTheEndGracePeriod")
+            t("Common:PayBeforeTheEndGracePeriod")
           )}
         </Text>
       </div>
@@ -101,11 +110,8 @@ export default withRouter(
     const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
     const { currentTariffPlanTitle } = currentQuotaStore;
     const { theme } = auth;
-    const {
-      setPortalPaymentQuotas,
-      planCost,
-      tariffPlanTitle,
-    } = paymentQuotasStore;
+    const { setPortalPaymentQuotas, planCost, tariffPlanTitle } =
+      paymentQuotasStore;
 
     return {
       setPortalPaymentQuotas,

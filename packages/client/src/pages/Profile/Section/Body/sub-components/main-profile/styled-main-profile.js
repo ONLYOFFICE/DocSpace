@@ -83,7 +83,7 @@ export const StyledInfo = styled.div`
     max-width: 100%;
 
     @media ${desktop} {
-      height: 20px;
+      height: auto;
     }
 
     @media ${smallTablet} {
@@ -183,6 +183,7 @@ export const StyledInfo = styled.div`
 
     .email-edit-container {
       display: flex;
+      align-items: center;
       padding-right: 16px;
     }
 
@@ -215,6 +216,7 @@ export const StyledInfo = styled.div`
           padding-left: 0;
           font-size: 12px !important;
           line-height: 16px !important;
+          max-width: 100%;
         }
       }
 
@@ -287,6 +289,10 @@ export const StyledRow = styled.div`
       & > div {
         padding-left: 8px !important;
       }
+    }
+
+    .language-combo-box {
+      margin-left: 0;
     }
   }
 `;

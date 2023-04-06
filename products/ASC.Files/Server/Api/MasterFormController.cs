@@ -30,7 +30,7 @@ namespace ASC.Files.Api;
 public class MasterFormControllerInternal : MasterFormController<int>
 {
     public MasterFormControllerInternal(
-        FileStorageService<int> fileStorageServiceString,
+        FileStorageService fileStorageServiceString,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper)
         : base(fileStorageServiceString, folderDtoHelper, fileDtoHelper)
@@ -41,22 +41,22 @@ public class MasterFormControllerInternal : MasterFormController<int>
 public class MasterFormControllerThirdparty : MasterFormController<string>
 {
     public MasterFormControllerThirdparty(
-        FileStorageService<string> fileStorageServiceString,
+        FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
-        FileDtoHelper fileDtoHelper) : base(fileStorageServiceString, folderDtoHelper, fileDtoHelper)
+        FileDtoHelper fileDtoHelper) : base(fileStorageService, folderDtoHelper, fileDtoHelper)
     {
     }
 }
 
 public abstract class MasterFormController<T> : ApiControllerBase
 {
-    private readonly FileStorageService<T> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
 
-    public MasterFormController(FileStorageService<T> fileStorageServiceString,
+    public MasterFormController(FileStorageService fileStorageService,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
-        _fileStorageService = fileStorageServiceString;
+        _fileStorageService = fileStorageService;
     }
 
     [HttpPost("masterform/{fileId}/checkfillformdraft")]

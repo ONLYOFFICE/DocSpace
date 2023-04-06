@@ -126,8 +126,8 @@
         &lt;tr border="0" cellspacing="0" cellpadding="0"&gt;
           &lt;td colspan="3" style="margin: 0; padding: 0; background-color: #fff; height: 65px; padding: 20px 0 0 30px;"&gt;
             &lt;div style="text-align: left; height: 65px; width: 570px; margin: 0; padding: 0;"&gt;
-                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 216px; height: 35px; margin: 0; padding: 0;" target="_blank"&gt;
-                    &lt;img src="%LOGO%" style="border: 0px none; width: 216px; height: 35px; margin: 0; padding: 0;" alt="%LOGOTEXT%"/&gt;
+                &lt;a href="%SITEURL%" style="text-decoration: none; display: inline-block; width: 386px; height: 44px; margin: 0; padding: 0;" target="_blank"&gt;
+                    &lt;img src="%LOGO%" style="border: 0px none; width: 386px; height: 44px; margin: 0; padding: 0;" alt="%LOGOTEXT%"/&gt;
                 &lt;/a&gt;
             &lt;/div&gt;
           &lt;/td&gt;

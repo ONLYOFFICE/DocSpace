@@ -44,6 +44,7 @@ const InvitePanel = ({
   roomsView,
   getUsersList,
   filter,
+  setPortalQuota,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
@@ -182,6 +183,8 @@ const InvitePanel = ({
       if (roomsView === "info_members") {
         setUpdateRoomMembers(true);
       }
+      setPortalQuota();
+
       onClose();
       toastr.success(t("Common:UsersInvited"));
       reloadSelectionParentRoom();
@@ -190,7 +193,7 @@ const InvitePanel = ({
       setIsLoading(false);
     } finally {
       if (roomId === -1) {
-        await getUsersList(filter , false);
+        await getUsersList(filter, false);
       }
     }
   };
@@ -284,6 +287,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     roomsView,
     filesView,
   } = auth.infoPanelStore;
+  const { setPortalQuota } = auth.currentQuotaStore;
 
   const {
     getPortalInviteLinks,
@@ -308,6 +312,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   } = filesStore;
 
   return {
+    setPortalQuota,
     folders,
     getUsersByQuery,
     getRoomSecurityInfo,

@@ -1,7 +1,7 @@
 {
   "ChangePasswordSuccess": "密码已成功更改",
-  "ConfirmOwnerPortalSuccessMessage": "门户所有者已成功更改。10秒内您将被重定向至",
-  "ConfirmOwnerPortalTitle": "请确认您是否想将门户所有者变更为{{newOwner}}",
+  "ConfirmOwnerPortalSuccessMessage": "门户所有者已成功更改。10秒内您将被重定向至。",
+  "ConfirmOwnerPortalTitle": "请确认您是否想将门户所有者变更为{{newOwner}}。",
   "CurrentNumber": "您目前的手机号码",
   "DeleteProfileBtn": "删除我的账户",
   "DeleteProfileConfirmation": "注意！您即将删除账户。",

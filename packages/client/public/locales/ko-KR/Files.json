@@ -60,7 +60,6 @@
   "TooltipElementsMoveMessage": "{{element}} 요소 이동",
   "TrashEmptyDescription": "모든 삭제 된 파일이 이동되는 위치는 '휴지통'섹션입니다. 실수로 삭제된 경우, 복원하거나 완전삭제를 할수있습니다. 참고하시기 바랍니다, '휴지통'에서 파일을 삭제하변 더 이상 복원 할수없습니다.",
   "UnblockVersion": "차단 해제/체크인",
-  "UploadToFolder": "폴더에 업로드",
   "VersionBadge": "V.{{version}}",
   "VersionHistory": "버전 기록",
   "ViewList": "목록",

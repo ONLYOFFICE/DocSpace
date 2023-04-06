@@ -140,6 +140,18 @@ public class MessageService
         await SendRequestMessageAsync(null, null, action, target, d1);
     }
 
+    public async Task SendAsync(MessageAction action, MessageTarget target, string d1, Guid userId)
+    {
+        if (TryAddNotificationParam(action, userId, out var parametr))
+        {
+            await SendRequestMessageAsync(null, null, action, target, d1, parametr);
+        }
+        else
+        {
+            await SendRequestMessageAsync(null, null, action, target, d1);
+        }
+    }
+
     public async Task SendAsync(MessageAction action, MessageTarget target, string d1, string d2)
     {
         await SendRequestMessageAsync(null, null, action, target, d1, d2);
@@ -173,6 +185,18 @@ public class MessageService
     public async Task SendAsync(MessageAction action, MessageTarget target, IEnumerable<string> d1)
     {
         await SendRequestMessageAsync(null, null, action, target, string.Join(", ", d1));
+    }
+
+    public async Task SendAsync(MessageAction action, MessageTarget target, IEnumerable<string> d1, List<Guid> userIds, EmployeeType userType)
+    {
+        if (TryAddNotificationParam(action, userIds, out var parametr, userType))
+        {
+            await SendRequestMessageAsync(null, null, action, target, string.Join(", ", d1), parametr);
+        }
+        else
+        {
+            await SendRequestMessageAsync(null, null, action, target, string.Join(", ", d1));
+        }
     }
 
     public async Task SendAsync(string loginName, MessageAction action, MessageTarget target)
@@ -253,7 +277,7 @@ public class MessageService
 
     public async Task SendAsync(IDictionary<string, StringValues> httpHeaders, MessageAction action, MessageTarget target, IEnumerable<string> d1)
     {
-       await SendHeadersMessageAsync(null, httpHeaders, action, target, d1?.ToArray());
+        await SendHeadersMessageAsync(null, httpHeaders, action, target, d1?.ToArray());
     }
 
     #endregion
@@ -307,7 +331,7 @@ public class MessageService
 
         await _sender.SendAsync(message);
     }
-    public async Task<int> SendLoginMessage(MessageUserData userData, MessageAction action)
+    public async Task<int> SendLoginMessageAsync(MessageUserData userData, MessageAction action)
     {
         if (_sender == null)
         {
@@ -322,4 +346,46 @@ public class MessageService
 
         return await _sender.SendAsync(message);
     }
+
+    private bool TryAddNotificationParam(MessageAction action, Guid userId, out string parametr)
+    {
+        return TryAddNotificationParam(action, new List<Guid> { userId }, out parametr);
+    }
+
+    private bool TryAddNotificationParam(MessageAction action, List<Guid> userIds, out string parametr, EmployeeType userType = 0)
+    {
+        parametr = "";
+
+        if (action == MessageAction.UsersUpdatedType)
+        {
+            parametr = JsonSerializer.Serialize(new AdditionalNotificationInfo
+            {
+                UserIds = userIds,
+                UserRole = (int)userType
+            });
+        }
+        else if (action == MessageAction.UserCreated || action == MessageAction.UserUpdated)
+        {
+            parametr = JsonSerializer.Serialize(new AdditionalNotificationInfo
+            {
+                UserIds = userIds
+            });
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+}
+
+public class AdditionalNotificationInfo
+{
+    public int RoomId { get; set; }
+    public string RoomTitle { get; set; }
+    public string RoomOldTitle { get; set; }
+    public string RootFolderTitle { get; set; }
+    public int UserRole { get; set; }
+    public List<Guid> UserIds { get; set; }
 }

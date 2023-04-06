@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Runtime.InteropServices;
+
 using File = System.IO.File;
 
 namespace ASC.Web.Files.Services.FFmpegService;
@@ -96,7 +98,7 @@ public class FFmpegService
         _logger = logger;
         _fFmpegPath = configuration["files:ffmpeg:value"];
         _fFmpegArgs = configuration["files:ffmpeg:args"] ?? "-i - -preset ultrafast -movflags frag_keyframe+empty_moov -f {0} -";
-        _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-ss 3 -i \"{0}\" -vf \"thumbnail\" -frames:v 1 -vsync vfr \"{1}\" -y";
+        _fFmpegThumbnailsArgs = configuration["files:ffmpeg:thumbnails:args"] ?? "-ss 3 -i \"{0}\" -frames:v 1 \"{1}\" -y";
         _fFmpegFormats = configuration.GetSection("files:ffmpeg:thumbnails:formats").Get<List<string>>() ?? FileUtility.ExtsVideo;
 
         _convertableMedia = (configuration.GetSection("files:ffmpeg:exts").Get<string[]>() ?? Array.Empty<string>()).ToList();
@@ -104,17 +106,19 @@ public class FFmpegService
         if (string.IsNullOrEmpty(_fFmpegPath))
         {
             var pathvar = Environment.GetEnvironmentVariable("PATH");
-            var folders = pathvar.Split(WorkContext.IsMono ? ':' : ';').Distinct();
+            var folders = pathvar.Split(Path.PathSeparator).Distinct();
+
             foreach (var folder in folders)
             {
                 if (!Directory.Exists(folder))
                 {
                     continue;
                 }
-
+                
                 foreach (var name in _fFmpegExecutables)
                 {
-                    var path = CrossPlatform.PathCombine(folder, WorkContext.IsMono ? name : name + ".exe");
+                    var path = CrossPlatform.PathCombine(folder, RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? name + ".exe" : name);
+
                     if (File.Exists(path))
                     {
                         _fFmpegPath = path;
@@ -185,5 +189,7 @@ public class FFmpegService
         using var process = Process.Start(startInfo);
 
         await ProcessLog(process.StandardError.BaseStream);
+
+        process.WaitForExit();
     }
 }

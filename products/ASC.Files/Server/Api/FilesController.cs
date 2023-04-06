@@ -30,8 +30,8 @@ namespace ASC.Files.Api;
 public class FilesControllerInternal : FilesController<int>
 {
     public FilesControllerInternal(
-        FilesControllerHelper<int> filesControllerHelper,
-        FileStorageService<int> fileStorageService,
+        FilesControllerHelper filesControllerHelper,
+        FileStorageService fileStorageService,
         IMapper mapper,
         FileOperationDtoHelper fileOperationDtoHelper,
         FolderDtoHelper folderDtoHelper,
@@ -47,8 +47,8 @@ public class FilesControllerThirdparty : FilesController<string>
     private readonly DocumentServiceHelper _documentServiceHelper;
 
     public FilesControllerThirdparty(
-        FilesControllerHelper<string> filesControllerHelper,
-        FileStorageService<string> fileStorageService,
+        FilesControllerHelper filesControllerHelper,
+        FileStorageService fileStorageService,
         ThirdPartySelector thirdPartySelector,
         DocumentServiceHelper documentServiceHelper,
         IMapper mapper,
@@ -76,14 +76,14 @@ public class FilesControllerThirdparty : FilesController<string>
 
 public abstract class FilesController<T> : ApiControllerBase
 {
-    protected readonly FilesControllerHelper<T> _filesControllerHelper;
-    private readonly FileStorageService<T> _fileStorageService;
+    protected readonly FilesControllerHelper _filesControllerHelper;
+    private readonly FileStorageService _fileStorageService;
     private readonly IMapper _mapper;
     private readonly FileOperationDtoHelper _fileOperationDtoHelper;
 
     public FilesController(
-        FilesControllerHelper<T> filesControllerHelper,
-        FileStorageService<T> fileStorageService,
+        FilesControllerHelper filesControllerHelper,
+        FileStorageService fileStorageService,
         IMapper mapper,
         FileOperationDtoHelper fileOperationDtoHelper,
         FolderDtoHelper folderDtoHelper,
@@ -329,9 +329,9 @@ public abstract class FilesController<T> : ApiControllerBase
 
 
     [HttpPut("{fileId}/properties")]
-    public async Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto fileProperties)
+    public Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto fileProperties)
     {
-        return await _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
+        return _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
     }
 }
 
@@ -340,22 +340,22 @@ public class FilesControllerCommon : ApiControllerBase
     private readonly IMapper _mapper;
     private readonly IServiceScopeFactory _serviceScopeFactory;
     private readonly GlobalFolderHelper _globalFolderHelper;
-    private readonly FileStorageService<string> _fileStorageServiceThirdparty;
-    private readonly FilesControllerHelper<int> _filesControllerHelperInternal;
+    private readonly FileStorageService _fileStorageService;
+    private readonly FilesControllerHelper _filesControllerHelperInternal;
 
     public FilesControllerCommon(
         IMapper mapper,
         IServiceScopeFactory serviceScopeFactory,
         GlobalFolderHelper globalFolderHelper,
-        FileStorageService<string> fileStorageServiceThirdparty,
-        FilesControllerHelper<int> filesControllerHelperInternal,
+        FileStorageService fileStorageService,
+        FilesControllerHelper filesControllerHelperInternal,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
         _mapper = mapper;
         _serviceScopeFactory = serviceScopeFactory;
         _globalFolderHelper = globalFolderHelper;
-        _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
+        _fileStorageService = fileStorageService;
         _filesControllerHelperInternal = filesControllerHelperInternal;
     }
 
@@ -432,7 +432,7 @@ public class FilesControllerCommon : ApiControllerBase
     [HttpPost("thumbnails")]
     public async Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(BaseBatchRequestDto inDto)
     {
-        return await _fileStorageServiceThirdparty.CreateThumbnailsAsync(inDto.FileIds.ToList());
+        return await _fileStorageService.CreateThumbnailsAsync(inDto.FileIds.ToList());
     }
 
 
@@ -458,7 +458,7 @@ public class FilesControllerCommon : ApiControllerBase
         async Task AddProps<T>(T fileId)
         {
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
-            var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService<T>>();
+            var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService>();
             var props = _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(batchEntryPropertiesRequestDto.FileProperties);
             if (batchEntryPropertiesRequestDto.CreateSubfolder)
             {

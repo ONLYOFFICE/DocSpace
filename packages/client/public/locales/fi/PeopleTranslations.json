@@ -1,10 +1,10 @@
 {
-  "AddMembers": "Lisää jäseniä",
   "DeleteSelfProfile": "Poista profiili",
   "DisableUserButton": "Poisteta käytöstä",
   "DisabledEmployeeStatus": "Poistettu käytöstä",
   "EmailChangeButton": "Vaihda sähköposti",
   "EnableUserButton": "Käytössä",
+  "InviteLinkTitle": "Kutsulinkki",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Vaihda salasana",
   "PendingTitle": "Odottaa",

@@ -14,7 +14,6 @@ const StyledBody = styled.div`
 
 const ButtonContainer = ({
   isNeedRequest,
-  isAlreadyPaid,
   isDisabled,
   isLoading,
   t,
@@ -43,11 +42,7 @@ const ButtonContainer = ({
       ) : isNeedRequest ? (
         <RequestButtonContainer isDisabled={isDisabled} t={t} />
       ) : (
-        <UpdatePlanButtonContainer
-          isAlreadyPaid={isAlreadyPaid}
-          t={t}
-          isDisabled={isDisabled}
-        />
+        <UpdatePlanButtonContainer t={t} isDisabled={isDisabled} />
       )}
     </StyledBody>
   );

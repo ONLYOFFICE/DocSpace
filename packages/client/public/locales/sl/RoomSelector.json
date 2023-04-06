@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Ustvari prvo sobo v Mojih sobah.",
+  "EmptyRoomsHeader": "Tukaj še ni sob",
+  "RoomList": "Spisek sob",
+  "SearchEmptyRoomsDescription": "Nobena soba ne ustreza temu filtru. Poskusite z drugim ali počistite filter za ogled vseh sob."
+}

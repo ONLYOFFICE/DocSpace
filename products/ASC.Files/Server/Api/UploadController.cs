@@ -30,7 +30,7 @@ namespace ASC.Files.Api;
 public class UploadControllerInternal : UploadController<int>
 {
     public UploadControllerInternal(
-        UploadControllerHelper<int> filesControllerHelper,
+        UploadControllerHelper filesControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(filesControllerHelper,
         folderDtoHelper,
@@ -42,7 +42,7 @@ public class UploadControllerInternal : UploadController<int>
 public class UploadControllerThirdparty : UploadController<string>
 {
     public UploadControllerThirdparty(
-        UploadControllerHelper<string> filesControllerHelper,
+        UploadControllerHelper filesControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(filesControllerHelper, folderDtoHelper, fileDtoHelper)
     {
@@ -51,9 +51,9 @@ public class UploadControllerThirdparty : UploadController<string>
 
 public abstract class UploadController<T> : ApiControllerBase
 {
-    private readonly UploadControllerHelper<T> _filesControllerHelper;
+    private readonly UploadControllerHelper _filesControllerHelper;
 
-    public UploadController(UploadControllerHelper<T> filesControllerHelper,
+    public UploadController(UploadControllerHelper filesControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {
@@ -153,11 +153,11 @@ public abstract class UploadController<T> : ApiControllerBase
 public class UploadControllerCommon : ApiControllerBase
 {
     private readonly GlobalFolderHelper _globalFolderHelper;
-    private readonly UploadControllerHelper<int> _filesControllerHelper;
+    private readonly UploadControllerHelper _filesControllerHelper;
 
     public UploadControllerCommon(
         GlobalFolderHelper globalFolderHelper,
-        UploadControllerHelper<int> filesControllerHelper,
+        UploadControllerHelper filesControllerHelper,
         FolderDtoHelper folderDtoHelper,
         FileDtoHelper fileDtoHelper) : base(folderDtoHelper, fileDtoHelper)
     {

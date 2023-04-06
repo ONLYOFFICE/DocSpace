@@ -925,4 +925,9 @@ public class TariffService : ITariffService
             }
         }
     }
+
+    public int GetPaymentDelay()
+    {
+        return _paymentDelay;
+    }
 }

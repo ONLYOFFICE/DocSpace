@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const StyledNoItemContainer = styled.div`
-  //margin: 80px auto;
+  margin: 80px auto 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -9,8 +9,6 @@ const StyledNoItemContainer = styled.div`
   gap: 32px;
 
   .no-item-text {
-    font-family: "Open Sans";
-    font-style: normal;
     font-weight: 600;
     font-size: 14px;
     line-height: 16px;
@@ -20,14 +18,10 @@ const StyledNoItemContainer = styled.div`
   .no-thumbnail-img-wrapper {
     width: 75px;
     height: 75px;
-
     img {
       width: 75px;
       height: 75px;
     }
-  }
-
-  .no-accounts {
   }
 `;
 

@@ -55,6 +55,7 @@ const FileTile = (props) => {
     withCtrlSelect,
     withShiftSelect,
     isHighlight,
+    thumbnails1280x720,
   } = props;
 
   const temporaryExtension =
@@ -75,7 +76,9 @@ const FileTile = (props) => {
       icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
-      defaultRoomIcon={item.defaultRoomIcon}
+      defaultRoomIcon={
+        item.isRoom && item.icon ? item.icon : item.defaultRoomIcon
+      }
     />
   );
 
@@ -130,6 +133,7 @@ const FileTile = (props) => {
           withCtrlSelect={withCtrlSelect}
           withShiftSelect={withShiftSelect}
           isHighlight={isHighlight}
+          thumbnails1280x720={thumbnails1280x720}
         >
           <FilesTileContent
             item={item}
@@ -145,13 +149,9 @@ const FileTile = (props) => {
 
 export default inject(
   ({ settingsStore, filesStore, treeFoldersStore }, { item }) => {
-    const { getIcon } = settingsStore;
-    const {
-      setSelection,
-      withCtrlSelect,
-      withShiftSelect,
-      highlightFile,
-    } = filesStore;
+    const { getIcon, thumbnails1280x720 } = settingsStore;
+    const { setSelection, withCtrlSelect, withShiftSelect, highlightFile } =
+      filesStore;
 
     const isHighlight =
       highlightFile.id == item?.id && highlightFile.isExst === !item?.fileExst;
@@ -167,6 +167,7 @@ export default inject(
       withCtrlSelect,
       withShiftSelect,
       isHighlight,
+      thumbnails1280x720,
     };
   }
 )(

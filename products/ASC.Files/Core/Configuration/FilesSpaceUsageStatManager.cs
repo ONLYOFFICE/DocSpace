@@ -123,7 +123,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
     {
         var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
         var my = await _globalFolder.GetFolderMyAsync(_fileMarker, _daoFactory);
-        var trash = await _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
+        var trash = await _globalFolder.GetFolderTrashAsync(_daoFactory);
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         return await filesDbContext.Files

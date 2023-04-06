@@ -287,7 +287,7 @@ public class TfaappController : BaseSettingsController
             throw new Exception(Resource.TfaAppNotAvailable);
         }
 
-        if (await _userManager.IsUserAsync(currentUser) || await _userManager.IsOutsiderAsync(currentUser))
+        if (await _userManager.IsOutsiderAsync(currentUser))
         {
             throw new NotSupportedException("Not available.");
         }

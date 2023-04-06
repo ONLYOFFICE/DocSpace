@@ -49,6 +49,7 @@ class PeopleStore {
   accessRightsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
+  isLoadedProfileSectionBody = false;
 
   constructor(authStore, setupStore, accessRightsStore, dialogsStore) {
     this.authStore = authStore;
@@ -84,6 +85,7 @@ class PeopleStore {
     //this.authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
     await this.authStore.settingsStore.getPortalPasswordSettings();
+    await this.authStore.tfaStore.getTfaType();
 
     this.loadingStore.setIsLoaded(true);
   };
@@ -297,6 +299,10 @@ class PeopleStore {
 
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
+  };
+
+  setIsLoadedProfileSectionBody = (isLoadedProfileSectionBody) => {
+    this.isLoadedProfileSectionBody = isLoadedProfileSectionBody;
   };
 }
 

@@ -67,8 +67,8 @@ public class IntegrationEventLogService : IIntegrationEventLogService
         var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
 
         using var _integrationEventLogContext = _dbContextFactory.CreateDbContext();
-        await _integrationEventLogContext.Database.UseTransactionAsync(transaction.GetDbTransaction());
-        await _integrationEventLogContext.IntegrationEventLogs.AddAsync(eventLogEntry);
+        _integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
+        _integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
 
         await _integrationEventLogContext.SaveChangesAsync();
     }
@@ -91,7 +91,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
     private async Task UpdateEventStatusAsync(Guid eventId, EventStateEnum status)
     {
         using var _integrationEventLogContext = _dbContextFactory.CreateDbContext();
-        var eventLogEntry = await _integrationEventLogContext.IntegrationEventLogs.SingleAsync(ie => ie.EventId == eventId);
+        var eventLogEntry = _integrationEventLogContext.IntegrationEventLogs.Single(ie => ie.EventId == eventId);
         eventLogEntry.State = status;
 
         if (status == EventStateEnum.InProgress)

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
@@ -8,14 +8,28 @@ import toastr from "@docspace/components/toast/toastr";
 import { MainContainer } from "./StyledDeleteData";
 import { setDocumentTitle } from "../../../../helpers/utils";
 import { sendSuspendPortalEmail } from "@docspace/common/api/portal";
+import { isDesktop } from "@docspace/components/utils/device";
 
 const PortalDeactivation = (props) => {
   const { t, getPortalOwner, owner } = props;
+  const [isDesktopView, setIsDesktopView] = useState(false);
+
+  const fetchData = async () => {
+    await getPortalOwner();
+  };
 
   useEffect(() => {
     setDocumentTitle(t("PortalDeactivation"));
-    getPortalOwner();
+    fetchData();
+    onCheckView();
+    window.addEventListener("resize", onCheckView);
+    return () => window.removeEventListener("resize", onCheckView);
   }, []);
+
+  const onCheckView = () => {
+    if (isDesktop()) setIsDesktopView(true);
+    else setIsDesktopView(false);
+  };
 
   const onDeactivateClick = async () => {
     try {
@@ -41,7 +55,7 @@ const PortalDeactivation = (props) => {
         className="button"
         label={t("Deactivate")}
         primary
-        size="normal"
+        size={isDesktopView ? "small" : "normal"}
         onClick={onDeactivateClick}
       />
     </MainContainer>

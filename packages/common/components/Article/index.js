@@ -1,7 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 
 import {
   isDesktop as isDesktopUtils,
@@ -34,9 +34,12 @@ const Article = ({
 
   hideProfileBlock,
   isFreeTariff,
-  isAvailableArticlePaymentAlert,
+  isPaymentPageAvailable,
   currentColorScheme,
   setArticleOpen,
+  withSendAgain,
+  mainBarVisible,
+  isBannerVisible,
   ...rest
 }) => {
   const [articleHeaderContent, setArticleHeaderContent] = React.useState(null);
@@ -45,6 +48,7 @@ const Article = ({
     setArticleMainButtonContent,
   ] = React.useState(null);
   const [articleBodyContent, setArticleBodyContent] = React.useState(null);
+  const [correctTabletHeight, setCorrectTabletHeight] = React.useState(null);
 
   React.useEffect(() => {
     if (isMobileOnly) {
@@ -103,8 +107,44 @@ const Article = ({
 
   const onMobileBack = React.useCallback(() => {
     //close article
+
     setArticleOpen(false);
   }, [setArticleOpen]);
+
+  // TODO: make some better
+  const onResize = React.useCallback(() => {
+    let correctTabletHeight = window.innerHeight;
+
+    if (mainBarVisible) correctTabletHeight -= 62;
+
+    const isTouchDevice =
+      "ontouchstart" in window ||
+      navigator.maxTouchPoints > 0 ||
+      navigator.msMaxTouchPoints > 0;
+
+    const path = window.location.pathname.toLowerCase();
+
+    if (
+      isBannerVisible &&
+      isMobile &&
+      isTouchDevice &&
+      (path.includes("rooms") || path.includes("files"))
+    )
+      correctTabletHeight -= 80;
+
+    setCorrectTabletHeight(correctTabletHeight);
+  }, [mainBarVisible, isBannerVisible]);
+
+  React.useEffect(() => {
+    if (isTablet) {
+      onResize();
+      window.addEventListener("resize", onResize);
+    }
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, [onResize]);
 
   const articleComponent = (
     <>
@@ -113,6 +153,7 @@ const Article = ({
         showText={showText}
         articleOpen={articleOpen}
         $withMainButton={withMainButton}
+        correctTabletHeight={correctTabletHeight}
         {...rest}
       >
         <SubArticleHeader showText={showText}>
@@ -136,7 +177,7 @@ const Article = ({
           {!hideProfileBlock && !isMobileOnly && (
             <ArticleProfile showText={showText} />
           )}
-          {isAvailableArticlePaymentAlert &&
+          {isPaymentPageAvailable &&
             (isFreeTariff || isGracePeriod) &&
             showText && (
               <ArticlePaymentAlert
@@ -205,13 +246,15 @@ export default inject(({ auth }) => {
     currentQuotaStore,
     currentTariffStatusStore,
     userStore,
+    isPaymentPageAvailable,
+    bannerStore,
   } = auth;
   const { isFreeTariff } = currentQuotaStore;
   const { isGracePeriod } = currentTariffStatusStore;
 
-  const { user } = userStore;
+  const { withSendAgain } = userStore;
 
-  const isAvailableArticlePaymentAlert = user.isOwner || user.isAdmin;
+  const { isBannerVisible } = bannerStore;
 
   const {
     showText,
@@ -222,6 +265,7 @@ export default inject(({ auth }) => {
     toggleArticleOpen,
     currentColorScheme,
     setArticleOpen,
+    mainBarVisible,
   } = settingsStore;
 
   return {
@@ -233,8 +277,11 @@ export default inject(({ auth }) => {
     toggleArticleOpen,
     isFreeTariff,
     isGracePeriod,
-    isAvailableArticlePaymentAlert,
+    isPaymentPageAvailable,
     currentColorScheme,
     setArticleOpen,
+    withSendAgain,
+    mainBarVisible,
+    isBannerVisible,
   };
 })(observer(Article));

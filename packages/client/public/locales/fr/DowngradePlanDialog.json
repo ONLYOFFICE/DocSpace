@@ -1,1 +1,9 @@
-{}
+{
+  "AllowedManagerNumber": "Nombre de gestionnaires autorisés : <1>{{valuesRange}}</1>.",
+  "CannotDowngradePlan": "Vous ne pouvez pas passer à un plan inférieur car la quantité de stockage et le nombre de gestionnaires dépassent les limites prévues par le plan tarifaire choisi.",
+  "CurrentManagerNumber": "Nombre actuel de gestionnaires : <1>{{currentCount}}</1>.",
+  "CurrentStorageSpace": "Espace de stockage actuel : <1>{{size}}</1>.",
+  "DowngradePlan": "Plan tarifaire de passage à une version antérieure",
+  "SaveOrChange": "Réduisez le paramètre requis ou conservez votre plan de tarification actuel.",
+  "StorageSpaceSizeAllowed": "Taille de l’espace de stockage autorisé : <1>{{size}}</1>."
+}

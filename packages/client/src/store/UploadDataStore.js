@@ -164,7 +164,7 @@ class UploadDataStore {
     return this.files.filter((f) => f.uniqueId === id);
   };
 
-  cancelUpload = () => {
+  cancelUpload = (t) => {
     let newFiles = [];
 
     for (let i = 0; i < this.files.length; i++) {
@@ -180,6 +180,7 @@ class UploadDataStore {
       percent: 100,
       uploaded: true,
       converted: true,
+      currentUploadNumber: 0,
     };
 
     const newHistory = this.uploadedFilesHistory.filter(
@@ -189,6 +190,8 @@ class UploadDataStore {
     if (newUploadData.files.length === 0) this.setUploadPanelVisible(false);
     this.setUploadData(newUploadData);
     this.uploadedFilesHistory = newHistory;
+
+    toastr.info(t("CancelUpload"));
   };
 
   cancelConversion = () => {
@@ -1513,7 +1516,7 @@ class UploadDataStore {
       let newFilter;
 
       if (!withPaging) {
-        removeFiles(fileIds, folderIds);
+        !isCopy && removeFiles(fileIds, folderIds);
         this.clearActiveOperations(fileIds, folderIds);
         setTimeout(() => clearSecondaryProgressData(), TIMEOUT);
         this.dialogsStore.setIsFolderActions(false);

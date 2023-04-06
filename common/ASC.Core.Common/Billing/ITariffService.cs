@@ -40,4 +40,5 @@ public interface ITariffService
     Task SetTariffAsync(int tenantId, Tariff tariff);
     Task<Uri> GetAccountLinkAsync(int tenant, string backUrl);
     Task<bool> PaymentChangeAsync(int tenant, Dictionary<string, int> quantity);
+    int GetPaymentDelay();
 }

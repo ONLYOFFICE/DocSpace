@@ -1,10 +1,10 @@
 {
-  "AddMembers": "Pievienot dalībniekus",
   "DeleteSelfProfile": "Dzēst profilu",
   "DisableUserButton": "Atspējot",
   "DisabledEmployeeStatus": "Atspējots",
   "EmailChangeButton": "Mainīt e-pastu",
   "EnableUserButton": "Iespējot",
+  "InviteLinkTitle": "Uzaicinājuma saite",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Mainīt paroli",
   "PendingTitle": "Gaida apstiprinājumu",

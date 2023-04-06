@@ -3,5 +3,5 @@
   "Error403Text": "Valitettavasti pääsy on estetty.",
   "Error404Text": "Valitettavasti resurssia ei löydy.",
   "ErrorEmptyResponse": "Tyhjä vastaus",
-  "ErrorOfflineText": "Internet-yhteyttä ei löydy."
+  "ErrorOfflineText": "Internet-yhteyttä ei löydy"
 }

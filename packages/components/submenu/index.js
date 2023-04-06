@@ -8,6 +8,9 @@ import {
   StyledSubmenuItem,
   StyledSubmenuItems,
   StyledSubmenuItemText,
+  SubmenuScroller,
+  SubmenuRoot,
+  SubmenuScrollbarSize,
 } from "./styled-submenu";
 
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
@@ -100,42 +103,48 @@ const Submenu = (props) => {
   return (
     <StyledSubmenu {...rest}>
       <div className="sticky">
-        <StyledSubmenuItems ref={submenuItemsRef} role="list">
-          {data.map((d) => {
-            const isActive = d.id === (forsedActiveItemId || currentItem.id);
+        <SubmenuRoot>
+          <SubmenuScrollbarSize />
+          <SubmenuScroller>
+            <StyledSubmenuItems ref={submenuItemsRef} role="list">
+              {data.map((d) => {
+                const isActive =
+                  d.id === (forsedActiveItemId || currentItem.id);
 
-            return (
-              <StyledSubmenuItem
-                key={d.id}
-                id={d.id}
-                onClick={(e) => {
-                  d.onClick && d.onClick();
-                  selectSubmenuItem(e);
-                }}
-              >
-                <StyledSubmenuItemText isActive={isActive}>
-                  <ColorTheme
-                    {...props}
-                    themeId={ThemeType.SubmenuText}
-                    className="item-text"
-                    fontSize="13px"
-                    fontWeight="600"
-                    truncate={false}
-                    isActive={isActive}
+                return (
+                  <StyledSubmenuItem
+                    key={d.id}
+                    id={d.id}
+                    onClick={(e) => {
+                      d.onClick && d.onClick();
+                      selectSubmenuItem(e);
+                    }}
                   >
-                    {d.name}
-                  </ColorTheme>
-                </StyledSubmenuItemText>
+                    <StyledSubmenuItemText isActive={isActive}>
+                      <ColorTheme
+                        {...props}
+                        themeId={ThemeType.SubmenuText}
+                        className="item-text"
+                        fontSize="13px"
+                        fontWeight="600"
+                        truncate={false}
+                        isActive={isActive}
+                      >
+                        {d.name}
+                      </ColorTheme>
+                    </StyledSubmenuItemText>
 
-                <ColorTheme
-                  {...props}
-                  themeId={ThemeType.SubmenuItemLabel}
-                  isActive={isActive}
-                />
-              </StyledSubmenuItem>
-            );
-          })}
-        </StyledSubmenuItems>
+                    <ColorTheme
+                      {...props}
+                      themeId={ThemeType.SubmenuItemLabel}
+                      isActive={isActive}
+                    />
+                  </StyledSubmenuItem>
+                );
+              })}
+            </StyledSubmenuItems>
+          </SubmenuScroller>
+        </SubmenuRoot>
         <StyledSubmenuBottomLine className="bottom-line" />
       </div>
       <div className="sticky-indent"></div>

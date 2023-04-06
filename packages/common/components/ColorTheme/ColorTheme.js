@@ -5,6 +5,7 @@ import {
   ButtonTheme,
   MainButtonTheme,
   CatalogItemTheme,
+  CalendarTheme,
   BadgeTheme,
   SubmenuTextTheme,
   SubmenuItemLabelTheme,
@@ -15,7 +16,6 @@ import {
   IndicatorFilterButtonTheme,
   FilterBlockItemTagTheme,
   IconWrapperTheme,
-  CalendarTheme,
   VersionBadgeTheme,
   TextareaTheme,
   InputBlockTheme,
@@ -153,15 +153,6 @@ const ColorTheme = forwardRef(
           />
         );
       }
-      case ThemeType.Calendar: {
-        return (
-          <CalendarTheme
-            {...props}
-            $currentColorScheme={currentColorScheme}
-            ref={ref}
-          />
-        );
-      }
       case ThemeType.VersionBadge: {
         return (
           <VersionBadgeTheme
@@ -193,6 +184,15 @@ const ColorTheme = forwardRef(
       case ThemeType.TextInput: {
         return (
           <TextInputTheme
+            {...props}
+            $currentColorScheme={currentColorScheme}
+            ref={ref}
+          />
+        );
+      }
+      case ThemeType.Calendar: {
+        return (
+          <CalendarTheme
             {...props}
             $currentColorScheme={currentColorScheme}
             ref={ref}

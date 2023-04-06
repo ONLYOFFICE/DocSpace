@@ -68,13 +68,6 @@ Ce courriel est pour vous informer que tous les signataires ont signé "$Documen
 
 Pour en savoir plus, connectez-vous à votre compte.</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__AuthorName":"$__AuthorUrl" vous a mentionné dans le commentaire du document
-
-Ce courriel vous est envoyé parce que vous avez été mentionné par "$__AuthorName":"$__AuthorUrl" dans le commentaire du document "$DocumentTitle":"$DocumentURL" :
-
-$Message</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Diffusion terminée
 
@@ -104,9 +97,6 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>[OnlyOffice - Documents] Le statut de la signature modifié</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>[OnlyOffice - Documents] Vous avez été mentionné dans un document</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>[OnlyOffice - Documents] Diffusion est terminée. </value>

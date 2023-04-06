@@ -33,23 +33,35 @@ public class FilesMessageService
     private readonly MessageTarget _messageTarget;
     private readonly MessageService _messageService;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IDaoFactory _daoFactory;
+    private readonly NotifyClient _notifyClient;
+    private readonly AuthContext _authContext;
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
-        MessageService messageService)
+        MessageService messageService,
+        IDaoFactory daoFactory,
+        NotifyClient notifyClient,
+        AuthContext authContext)
     {
         _logger = options.CreateLogger("ASC.Messaging");
         _messageTarget = messageTarget;
         _messageService = messageService;
+        _daoFactory = daoFactory;
+        _notifyClient = notifyClient;
+        _authContext = authContext;
     }
 
     public FilesMessageService(
         ILoggerProvider options,
         MessageTarget messageTarget,
         MessageService messageService,
-        IHttpContextAccessor httpContextAccessor)
-        : this(options, messageTarget, messageService)
+        IHttpContextAccessor httpContextAccessor,
+        IDaoFactory daoFactory,
+        NotifyClient notifyClient,
+        AuthContext authContext)
+        : this(options, messageTarget, messageService, daoFactory, notifyClient, authContext)
     {
         _httpContextAccessor = httpContextAccessor;
     }
@@ -61,9 +73,48 @@ public class FilesMessageService
 
     public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, params string[] description)
     {
+        await SendAsync(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+    }
+
+    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, List<AceWrapper> aces, MessageAction action, params string[] description)
+    {
+        if (action == MessageAction.RoomDeleted)
+        {
+            var userId = _authContext.CurrentAccount.ID;
+            _notifyClient.SendRoomRemoved(entry, aces, userId);
+        }
+
+        await SendAsync(entry, headers, action, null, FileShare.None, Guid.Empty, description);
+    }
+
+    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, string oldTitle, MessageAction action, params string[] description)
+    {
+        await SendAsync(entry, headers, action, oldTitle, FileShare.None, Guid.Empty, description);
+    }
+
+    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, Guid userId, params string[] description)
+    {
+        await SendAsync(entry, headers, action, null, FileShare.None, userId, description);
+    }
+
+    public async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, FileShare userRole, Guid userId, params string[] description)
+    {
+        description = description.Append(FileStorageService.GetAccessString(userRole)).ToArray();
+        await SendAsync(entry, headers, action, null, userRole, userId, description);
+    }
+
+    private async Task SendAsync<T>(FileEntry<T> entry, IDictionary<string, StringValues> headers, MessageAction action, string oldTitle, FileShare userRole, Guid userId, params string[] description)
+    {
         if (entry == null)
         {
             return;
+        }
+
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action, oldTitle, userId, userRole);
+
+        if (additionalParam != "")
+        {
+            description = description.Append(additionalParam).ToArray();
         }
 
         await SendHeadersMessageAsync(headers, action, _messageTarget.Create(entry.Id), description);
@@ -74,6 +125,13 @@ public class FilesMessageService
         if (entry1 == null || entry2 == null)
         {
             return;
+        }
+
+        var additionalParams = await GetAdditionalNotificationParamAsync(entry1, action);
+
+        if (!string.IsNullOrEmpty(additionalParams))
+        {
+            description = description.Append(additionalParams).ToArray();
         }
 
         await SendHeadersMessageAsync(headers, action, _messageTarget.CreateFromGroupValues(new[] { entry1.Id.ToString(), entry2.Id.ToString() }), description);
@@ -105,7 +163,16 @@ public class FilesMessageService
             return;
         }
 
-        await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), description);
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action);
+
+        if (additionalParam != "")
+        {
+            await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), description, additionalParam);
+        }
+        else
+        {
+            await _messageService.SendAsync(action, _messageTarget.Create(entry.Id), description);
+        }
     }
 
     public async Task SendAsync<T>(FileEntry<T> entry, MessageAction action, string d1, string d2)
@@ -131,6 +198,55 @@ public class FilesMessageService
             return;
         }
 
+        var additionalParam = await GetAdditionalNotificationParamAsync(entry, action);
+
+        if (additionalParam != "")
+        {
+            description = description.Append(additionalParam).ToArray();
+        }
+
         await _messageService.SendAsync(initiator, action, _messageTarget.Create(entry.Id), description);
+    }
+
+    private async Task<string> GetAdditionalNotificationParamAsync<T>(FileEntry<T> entry, MessageAction action, string oldTitle = null, Guid userid = default(Guid), FileShare userRole = FileShare.None)
+    {
+        var folderDao = _daoFactory.GetFolderDao<int>();
+        var roomInfo = await folderDao.GetParentRoomInfoFromFileEntryAsync(entry);
+
+        var info = new AdditionalNotificationInfo
+        {
+            RoomId = roomInfo.RoomId,
+            RoomTitle = roomInfo.RoomTitle
+        };
+
+        if (action == MessageAction.RoomRenamed && !string.IsNullOrEmpty(oldTitle))
+        {
+            info.RoomOldTitle = oldTitle;
+        }
+
+        if ((action == MessageAction.RoomCreateUser || action == MessageAction.RoomRemoveUser)
+            && userid != Guid.Empty)
+        {
+            info.UserIds = new List<Guid> { userid };
+        }
+
+        if (action == MessageAction.RoomUpdateAccessForUser
+            && (userRole != FileShare.None)
+            && userid != Guid.Empty)
+        {
+            info.UserIds = new List<Guid> { userid };
+            info.UserRole = (int)userRole;
+        }
+
+        info.RootFolderTitle = entry.RootFolderType switch
+        {
+            FolderType.USER => FilesUCResource.MyFiles,
+            FolderType.TRASH => FilesUCResource.Trash,
+            _ => string.Empty
+        };
+
+        var serializedParam = JsonSerializer.Serialize(info);
+
+        return serializedParam;
     }
 }

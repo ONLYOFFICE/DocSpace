@@ -389,23 +389,6 @@ $GreenButton
 
 ^Ако не искате да получавате известия за актуализации на потребителския профил, моля, управлявайте "настройките си за абонамент":"$RecipientSubscriptionConfigURL". ^</value>
   </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Нов на "${__VirtualRootPath}":"${__VirtualRootPath}" портал за $Date
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Автор*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action : $whatsNewActivity.Date.ToShortTimeString()
-
-#end
-#end
-
-^Ако не искате да получавате известия за новите събития в портала "${__VirtualRootPath}":"${__VirtualRootPath}", моля, управлявайте своите "настройки за абонамент":"$RecipientSubscriptionConfigURL".^</value>
-  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP тестово съобщение Това съобщение е генерирано автоматично за тестване на вашите SMTP настройки. Ако го преглеждате, това означава, че настройките са правилни и можете да ги използвате в портала си. С най-добри пожелания, Екипът на ONLYOFFICE</value>
   </data>
@@ -512,9 +495,6 @@ h2.$activity.Key
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} известие за промяна на профила на портала</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Какво е новото на вашия портал за $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP тестово съобщение</value>

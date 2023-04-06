@@ -407,26 +407,6 @@ ONLYOFFICE™客服团队
 
 ^如果您不想收到关于档案更新的通知，请管理您的 "订阅设置":"$RecipientSubscriptionConfigURL"。^</value>
   </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}"门户$Date新闻
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^您收到此电邮，因为您是 "${__VirtualRootPath}":"${__VirtualRootPath}" 门户的注册用户。如果您不想接受在 "${__VirtualRootPath}":"${__VirtualRootPath}" 门户接收关于新活动的通知，请管理您的 "订阅设置":"$RecipientSubscriptionConfigURL"。^</value>
-  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP测试消息
 
@@ -509,9 +489,6 @@ ONLYOFFICE团队</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath}门户档案更改通知</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>您的门户在$Date有什么新闻</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP测试消息</value>

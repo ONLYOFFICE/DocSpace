@@ -29,10 +29,14 @@ namespace ASC.Web.Core.WhiteLabel;
 [Scope]
 public class TenantLogoManager
 {
+    private string CacheKey
+    {
+        get { return "letterlogodata" + _tenantManager.GetCurrentTenant().Id; }
+    }
+
     public bool WhiteLabelEnabled { get; private set; }
 
-    private readonly ICache _cache;
-    private readonly ICacheNotify<TenantLogoCacheItem> _cacheNotify;
+    private readonly IDistributedCache _distributedCache;
 
     public TenantLogoManager(
         TenantWhiteLabelSettingsHelper tenantWhiteLabelSettingsHelper,
@@ -41,8 +45,7 @@ public class TenantLogoManager
         TenantManager tenantManager,
         AuthContext authContext,
         IConfiguration configuration,
-        ICacheNotify<TenantLogoCacheItem> cacheNotify,
-        ICache cache)
+        IDistributedCache distributedCache)
     {
         _tenantWhiteLabelSettingsHelper = tenantWhiteLabelSettingsHelper;
         _settingsManager = settingsManager;
@@ -52,8 +55,7 @@ public class TenantLogoManager
         _configuration = configuration;
         var hideSettings = (_configuration["web:hide-settings"] ?? "").Split(new[] { ',', ';', ' ' });
         WhiteLabelEnabled = !hideSettings.Contains("WhiteLabel", StringComparer.CurrentCultureIgnoreCase);
-        _cache = cache;
-        _cacheNotify = cacheNotify;
+        _distributedCache = distributedCache;
     }
 
     public async Task<string> GetFaviconAsync(bool timeParam, bool dark)
@@ -166,12 +168,12 @@ public class TenantLogoManager
     /// <summary>
     /// Get logo stream or null in case of default logo
     /// </summary>
-    public async Task<Stream> GetWhitelabelMailLogo()
+    public async Task<Stream> GetWhitelabelMailLogoAsync()
     {
         if (WhiteLabelEnabled)
         {
             var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
-            return await _tenantWhiteLabelSettingsHelper.GetWhitelabelLogoData(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LoginPage, true);
+            return await _tenantWhiteLabelSettingsHelper.GetWhitelabelLogoData(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification);
         }
 
         /*** simple scheme ***/
@@ -179,24 +181,76 @@ public class TenantLogoManager
         /***/
     }
 
-
-    public async Task<byte[]> GetMailLogoDataFromCacheAsync()
+    public async Task<NotifyMessageAttachment> GetMailLogoAsAttacmentAsync()
     {
-        return _cache.Get<byte[]>(await GetCacheKeyAsync());
-    }
+        var logoData = await GetMailLogoDataFromCacheAsync();
 
-    public async Task InsertMailLogoDataToCacheAsync(byte[] data)
-    {
-        _cache.Insert(await GetCacheKeyAsync(), data, DateTime.UtcNow.Add(TimeSpan.FromDays(1)));
+        if (logoData == null)
+        {
+            var logoStream = await GetWhitelabelMailLogoAsync();
+            logoData = await ReadStreamToByteArrayAsync(logoStream) ?? await GetDefaultMailLogoAsync();
+
+            if (logoData != null)
+            {
+                await InsertMailLogoDataToCacheAsync(logoData);
+            }
+        }
+
+        if (logoData != null)
+        {
+            var attachment = new NotifyMessageAttachment
+            {
+                FileName = "logo.png",
+                Content = logoData,
+                ContentId = MimeUtils.GenerateMessageId()
+            };
+
+            return attachment;
+        }
+
+        return null;
     }
 
     public async Task RemoveMailLogoDataFromCacheAsync()
     {
-        _cacheNotify.Publish(new TenantLogoCacheItem() { Key = await GetCacheKeyAsync() }, CacheNotifyAction.Remove);
+        await _distributedCache.RemoveAsync(CacheKey);
     }
 
-    private async Task<string> GetCacheKeyAsync()
+
+    private async Task<byte[]> GetMailLogoDataFromCacheAsync()
     {
-        return "letterlogodata" + (await _tenantManager.GetCurrentTenantAsync()).Id;
+        return await _distributedCache.GetAsync(CacheKey);
+    }
+
+    private async Task InsertMailLogoDataToCacheAsync(byte[] data)
+    {
+        await _distributedCache.SetAsync(CacheKey, data, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.UtcNow.Add(TimeSpan.FromDays(1))
+        });
+    }
+
+    private static async Task<byte[]> ReadStreamToByteArrayAsync(Stream inputStream)
+    {
+        if (inputStream == null)
+        {
+            return null;
+        }
+
+        using (inputStream)
+        {
+            using var memoryStream = new MemoryStream();
+            await inputStream.CopyToAsync(memoryStream);
+            return memoryStream.ToArray();
+        }
+    }
+
+    private static async Task<byte[]> GetDefaultMailLogoAsync()
+    {
+        var myAssembly = Assembly.GetExecutingAssembly();
+        using var stream = myAssembly.GetManifestResourceStream("ASC.Web.Core.PublicResources.logo.png");
+        using var memoryStream = new MemoryStream();
+        await stream.CopyToAsync(memoryStream);
+        return memoryStream.ToArray();
     }
 }

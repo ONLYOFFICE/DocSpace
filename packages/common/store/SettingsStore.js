@@ -140,6 +140,8 @@ class SettingsStore {
   whiteLabelLogoUrls = [];
   standalone = false;
 
+  mainBarVisible = false;
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -148,8 +150,88 @@ class SettingsStore {
     this.tenantStatus = tenantStatus;
   };
 
-  get urlAuthKeys() {
-    return `${this.helpLink}/installation/groups-authorization-keys.aspx`;
+  get docspaceSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx`;
+  }
+
+  get integrationSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#AdjustingIntegrationSettings_block`;
+  }
+
+  get docuSignUrl() {
+    return `${this.helpLink}/administration/connect-docusign-docspace.aspx`;
+  }
+
+  get dropboxUrl() {
+    return `${this.helpLink}/administration/connect-dropbox-docspace.aspx`;
+  }
+
+  get boxUrl() {
+    return `${this.helpLink}/administration/connect-box-docspace.aspx`;
+  }
+
+  get mailRuUrl() {
+    return `${this.helpLink}/administration/connect-mail-ru-docspace.aspx`;
+  }
+
+  get oneDriveUrl() {
+    return `${this.helpLink}/administration/connect-onedrive-docspace.aspx`;
+  }
+
+  get microsoftUrl() {
+    return `${this.helpLink}/administration/connect-microsoft-docspace.aspx`;
+  }
+
+  get googleUrl() {
+    return `${this.helpLink}/administration/connect-google-docspace.aspx`;
+  }
+
+  get facebookUrl() {
+    return `${this.helpLink}/administration/connect-facebook-docspace.aspx`;
+  }
+
+  get linkedinUrl() {
+    return `${this.helpLink}/administration/connect-linkedin-docspace.aspx`;
+  }
+
+  get clickatellUrl() {
+    return `${this.helpLink}/administration/connect-clickatell-docspace.aspx`;
+  }
+
+  get smsclUrl() {
+    return `${this.helpLink}/administration/connect-smsc-docspace.aspx`;
+  }
+
+  get firebaseUrl() {
+    return `${this.helpLink}/administration/connect-firebase-docspace.aspx`;
+  }
+
+  get appleIDUrl() {
+    return `${this.helpLink}/administration/connect-apple-docspace.aspx`;
+  }
+
+  get telegramUrl() {
+    return `${this.helpLink}/administration/connect-telegram-docspace.aspx`;
+  }
+
+  get wordpressUrl() {
+    return `${this.helpLink}/administration/connect-wordpress-docspace.aspx`;
+  }
+
+  get awsUrl() {
+    return `${this.helpLink}/administration/connect-amazon-docspace.aspx`;
+  }
+
+  get googleCloudUrl() {
+    return `${this.helpLink}/administration/connect-google-cloud-storage-docspace.aspx`;
+  }
+
+  get rackspaceUrl() {
+    return `${this.helpLink}/administration/connect-rackspace-docspace.aspx`;
+  }
+
+  get selectelUrl() {
+    return `${this.helpLink}/administration/connect-selectel-docspace.aspx`;
   }
 
   get wizardCompleted() {
@@ -163,6 +245,10 @@ class SettingsStore {
   get helpUrlCreatingBackup() {
     return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
   }
+
+  setMainBarVisible = (visible) => {
+    this.mainBarVisible = visible;
+  };
 
   setValue = (key, value) => {
     this[key] = value;
@@ -188,12 +274,12 @@ class SettingsStore {
     this.greetingSettings = greetingSettings;
   };
 
-  getSettings = async (withPassword) => {
+  getSettings = async () => {
     let newSettings = null;
 
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
       newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
-    else newSettings = await api.settings.getSettings(withPassword);
+    else newSettings = await api.settings.getSettings(true);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(
@@ -242,9 +328,9 @@ class SettingsStore {
     const origSettings = await this.getSettings().catch((err) => {
       if (err?.response?.status === 404) {
         // portal not found
-        return window.location.replace(
-          `${wrongPortalNameUrl}?url=${window.location.hostname}`
-        );
+        const url = new URL(wrongPortalNameUrl);
+        url.searchParams.append("url", window.location.hostname);
+        return window.location.replace(url);
       }
     });
 

@@ -70,6 +70,7 @@ public class AuthenticationController : ControllerBase
     private readonly EmailValidationKeyProvider _emailValidationKeyProvider;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly ILogger<AuthenticationController> _logger;
+    private readonly InvitationLinkService _invitationLinkService;
 
     public AuthenticationController(
         UserManager userManager,
@@ -106,7 +107,8 @@ public class AuthenticationController : ControllerBase
         BruteForceLoginManager bruteForceLoginManager,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        ILogger<AuthenticationController> logger)
+        ILogger<AuthenticationController> logger,
+        InvitationLinkService invitationLinkService)
     {
         _userManager = userManager;
         _tenantManager = tenantManager;
@@ -143,6 +145,7 @@ public class AuthenticationController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _emailValidationKeyProvider = emailValidationKeyProvider;
         _logger = logger;
+        _invitationLinkService = invitationLinkService;
     }
 
     [AllowNotPayment]
@@ -156,7 +159,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost("{code}", Order = 1)]
     public async Task<AuthenticationTokenDto> AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
     {
-        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenant = _tenantManager.GetCurrentTenant().Id;
         var user = (await GetUserAsync(inDto)).UserInfo;
         var sms = false;
 
@@ -250,7 +253,7 @@ public class AuthenticationController : ControllerBase
             };
         }
 
-        if (_tfaAppAuthSettingsHelper.IsVisibleSettings && await _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
+        if (_tfaAppAuthSettingsHelper.IsVisibleSettings &&await  _tfaAppAuthSettingsHelper.TfaEnabledForUserAsync(user.Id))
         {
             if (!await TfaAppUserSettings.EnableForUserAsync(_settingsManager, user.Id))
             {
@@ -298,7 +301,7 @@ public class AuthenticationController : ControllerBase
     [AllowNotPayment]
     [HttpPost("logout")]
     [HttpGet("logout")]// temp fix
-    public async Task Logout()
+    public async Task LogoutAsync()
     {
         var cookie = _cookiesManager.GetCookies(CookiesType.AuthKey);
         var loginEventId = _cookieStorage.GetLoginEventIdFromCookie(cookie);
@@ -316,9 +319,16 @@ public class AuthenticationController : ControllerBase
 
     [AllowNotPayment, AllowSuspended]
     [HttpPost("confirm")]
-    public async Task<ValidationResult> CheckConfirmAsync(EmailValidationKeyModel inDto)
+    public async Task<ValidationResult> CheckConfirm(EmailValidationKeyModel inDto)
     {
-        return await _emailValidationKeyModelHelper.ValidateAsync(inDto);
+        if (inDto.Type != ConfirmType.LinkInvite)
+        {
+            return await _emailValidationKeyModelHelper.ValidateAsync(inDto);
+        }
+
+        var linkData = await _invitationLinkService.GetProcessedLinkDataAsync(inDto.Key, inDto.Email, inDto.EmplType ?? default, inDto.UiD ?? default);
+
+        return linkData.Result;
     }
 
     [AllowNotPayment]
@@ -327,7 +337,7 @@ public class AuthenticationController : ControllerBase
     public async Task<AuthenticationTokenDto> SaveMobilePhoneAsync(MobileRequestsDto inDto)
     {
         await _apiContext.AuthByClaimAsync();
-        var user = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
+        var user = _userManager.GetUsers(_authContext.CurrentAccount.ID);
         inDto.MobilePhone = await _smsManager.SaveMobilePhoneAsync(user, inDto.MobilePhone);
         await _messageService.SendAsync(MessageAction.UserUpdatedMobileNumber, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper), inDto.MobilePhone);
 
@@ -468,16 +478,16 @@ public class AuthenticationController : ControllerBase
 
             var userInfo = Constants.LostUser;
 
-            var userId = await GetUserByHashAsync(loginProfile.HashId);
-            if (userId != Guid.Empty)
+            (var succ, var userId) = await TryGetUserByHashAsync(loginProfile.HashId);
+            if (succ)
             {
-                userInfo = await _userManager.GetUsersAsync(userId);
+                userInfo = _userManager.GetUsers(userId);
             }
 
             var isNew = false;
             if (_coreBaseSettings.Personal)
             {
-                if (await _userManager.UserExistsAsync(userInfo.Id) && SetupInfo.IsSecretEmail(userInfo.Email))
+                if (_userManager.UserExists(userInfo.Id) && SetupInfo.IsSecretEmail(userInfo.Email))
                 {
                     try
                     {
@@ -491,7 +501,7 @@ public class AuthenticationController : ControllerBase
                     }
                 }
 
-                if (!await _userManager.UserExistsAsync(userInfo.Id))
+                if (!_userManager.UserExists(userInfo.Id))
                 {
                     userInfo = await JoinByThirdPartyAccount(loginProfile);
 
@@ -547,7 +557,7 @@ public class AuthenticationController : ControllerBase
         }
 
         var userInfo = await _userManager.GetUserByEmailAsync(loginProfile.EMail);
-        if (!await _userManager.UserExistsAsync(userInfo.Id))
+        if (!_userManager.UserExists(userInfo.Id))
         {
             var newUserInfo = ProfileToUserInfo(loginProfile);
 
@@ -587,7 +597,7 @@ public class AuthenticationController : ControllerBase
             Email = loginProfile.EMail,
             Title = string.Empty,
             Location = string.Empty,
-            CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name,
+            CultureName = _coreBaseSettings.CustomMode ? "ru-RU" : Thread.CurrentThread.CurrentUICulture.Name,
             ActivationStatus = EmployeeActivationStatus.Activated,
         };
 
@@ -600,12 +610,12 @@ public class AuthenticationController : ControllerBase
         return userInfo;
     }
 
-    private async Task<Guid> GetUserByHashAsync(string hashId)
+    private async Task<(bool, Guid)> TryGetUserByHashAsync(string hashId)
     {
         var userId = Guid.Empty;
         if (string.IsNullOrEmpty(hashId))
         {
-            return userId;
+            return (false, userId);
         }
 
         var linkedProfiles = await _accountLinker.GetLinkedObjectsByHashIdAsync(hashId);
@@ -615,7 +625,7 @@ public class AuthenticationController : ControllerBase
             userId = tmp;
         }
 
-        return userId;
+        return (true, userId);
     }
 }
 

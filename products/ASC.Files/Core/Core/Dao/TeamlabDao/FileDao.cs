@@ -40,7 +40,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
     private readonly Global _global;
     private readonly IDaoFactory _daoFactory;
     private readonly ChunkedUploadSessionHolder _chunkedUploadSessionHolder;
-    private readonly ProviderFolderDao _providerFolderDao;
+    private readonly SelectorFactory _selectorFactory;
     private readonly CrossDao _crossDao;
     private readonly Settings _settings;
     private readonly IMapper _mapper;
@@ -68,7 +68,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         Global global,
         IDaoFactory daoFactory,
         ChunkedUploadSessionHolder chunkedUploadSessionHolder,
-        ProviderFolderDao providerFolderDao,
+        SelectorFactory selectorFactory,
         CrossDao crossDao,
         Settings settings,
         IMapper mapper,
@@ -96,7 +96,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         _global = global;
         _daoFactory = daoFactory;
         _chunkedUploadSessionHolder = chunkedUploadSessionHolder;
-        _providerFolderDao = providerFolderDao;
+        _selectorFactory = selectorFactory;
         _crossDao = crossDao;
         _settings = settings;
         _mapper = mapper;
@@ -359,7 +359,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 }
                 break;
         }
-
+        
         await foreach (var e in FromQuery(filesDbContext, q).AsAsyncEnumerable())
         {
             yield return _mapper.Map<DbFileQuery, File<int>>(e);
@@ -521,7 +521,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 .SetProperty(p => p.ModifiedOn, _tenantUtil.DateTimeToUtc(file.ModifiedOn))
                 .SetProperty(p => p.ModifiedBy, file.ModifiedBy)
                 );
-        }
+            }
 
         toInsert.Folders = parentFolders;
 
@@ -664,7 +664,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                 .SetProperty(p => p.ModifiedOn, _tenantUtil.DateTimeToUtc(file.ModifiedOn))
                 .SetProperty(p => p.ModifiedBy, file.ModifiedBy)
                 );
-        }
+            }
 
         toUpdate.Folders = parentFolders;
         _semaphore.Release();
@@ -825,12 +825,12 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         if (toFolderId is int tId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tId), typeof(TTo));
+            return IdConverter.Convert<TTo>(await MoveFileAsync(fileId, tId));
         }
 
         if (toFolderId is string tsId)
         {
-            return (TTo)Convert.ChangeType(await MoveFileAsync(fileId, tsId), typeof(TTo));
+            return IdConverter.Convert<TTo>(await MoveFileAsync(fileId, tsId));
         }
 
         throw new NotImplementedException();
@@ -848,7 +848,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     private async Task<int> InternalMoveFileAsync(int fileId, int toFolderId)
     {
-        var trashIdTask = _globalFolder.GetFolderTrashAsync<int>(_daoFactory);
+        var trashIdTask = _globalFolder.GetFolderTrashAsync(_daoFactory);
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
@@ -868,9 +868,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
             {
                 var trashId = await trashIdTask;
                 var oldParentId = (await q.FirstOrDefaultAsync())?.ParentId;
-
-                if (trashId.Equals(toFolderId))
-                {
+                
+                    if (trashId.Equals(toFolderId))
+                    {
                     await q.ExecuteUpdateAsync(f => f
                     .SetProperty(p => p.ParentId, toFolderId)
                     .SetProperty(p => p.ModifiedBy, _authContext.CurrentAccount.ID)
@@ -908,9 +908,9 @@ internal class FileDao : AbstractDao, IFileDao<int>
             if (toUpdateFile != null)
             {
                 toUpdateFile.Folders = await filesDbContext.Tree
-                    .Where(r => r.FolderId == toFolderId)
-                    .OrderByDescending(r => r.Level)
-                    .ToListAsync();
+                .Where(r => r.FolderId == toFolderId)
+                .OrderByDescending(r => r.Level)
+                .ToListAsync();
 
                 _factoryIndexer.Update(toUpdateFile, UpdateAction.Replace, w => w.Folders);
             }
@@ -921,7 +921,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task<string> MoveFileAsync(int fileId, string toFolderId)
     {
-        var toSelector = _providerFolderDao.GetSelector(toFolderId);
+        var toSelector = _selectorFactory.GetSelector(toFolderId);
 
         var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
             fileId, this, r => r,
@@ -973,7 +973,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     await (await _globalStore.GetStoreAsync()).CopyAsync(String.Empty,
                                          GetUniqThumbnailPath(file, size.Width, size.Height),
                                          String.Empty,
-                                         GetUniqThumbnailPath(copy, size.Width, size.Height));
+                                         GetUniqThumbnailPath(copy, size.Width, size.Height));                 
                 }
 
                 await SetThumbnailStatusAsync(copy, Thumbnail.Created);
@@ -988,7 +988,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
 
     public async Task<File<string>> CopyFileAsync(int fileId, string toFolderId)
     {
-        var toSelector = _providerFolderDao.GetSelector(toFolderId);
+        var toSelector = _selectorFactory.GetSelector(toFolderId);
 
         var moved = await _crossDao.PerformCrossDaoFileCopyAsync(
             fileId, this, r => r,
@@ -1042,7 +1042,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Where(r => r.Id == fileId)
             .Where(r => r.Version > fileVersion)
             .ExecuteUpdateAsync(f => f.SetProperty(p => p.VersionGroup, p => p.VersionGroup + 1));
-    }
+        }
 
     public async Task ContinueVersionAsync(int fileId, int fileVersion)
     {
@@ -1196,7 +1196,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
             .Where(r => r.CurrentVersion)
             .Where(r => fileIds.Contains(r.Id))
             .ExecuteUpdateAsync(p => p.SetProperty(f => f.CreateBy, newOwnerId));
-    }
+        }
 
     public IAsyncEnumerable<File<int>> GetFilesAsync(IEnumerable<int> parentIds, FilterType filterType, bool subjectGroup, Guid subjectID, string searchText, bool searchInContent)
     {

@@ -29,7 +29,7 @@ using Folder = Microsoft.OneDrive.Sdk.Folder;
 namespace ASC.Files.Thirdparty.OneDrive;
 
 [Transient]
-internal class OneDriveStorage
+internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
 {
     private OAuth20Token _token;
 
@@ -128,7 +128,7 @@ internal class OneDriveStorage
         }
     }
 
-    public async Task<List<Item>> GetItemsAsync(string folderId, int limit = 500)
+    public async Task<List<Item>> GetItemsAsync(string folderId)
     {
         return new List<Item>(await GetItemRequest(folderId).Children.Request().GetAsync());
     }
@@ -377,6 +377,51 @@ internal class OneDriveStorage
         {
             return null;
         }
+    }
+
+    public Task<Item> GetFolderAsync(string folderId)
+    {
+        return GetItemAsync(folderId);
+    }
+
+    public Task<Item> GetFileAsync(string fileId)
+    {
+        return GetItemAsync(fileId);
+    }
+
+    public Task<Item> MoveFolderAsync(string folderId, string newFolderName, string toFolderId)
+    {
+        return MoveItemAsync(folderId, newFolderName, toFolderId);
+    }
+
+    public Task<Item> MoveFileAsync(string fileId, string newFileName, string toFolderId)
+    {
+        return MoveItemAsync(fileId, newFileName, toFolderId);
+    }
+
+    public Task<Item> CopyFolderAsync(string folderId, string newFolderName, string toFolderId)
+    {
+        return CopyItemAsync(folderId, newFolderName, toFolderId);
+    }
+
+    public Task<Item> CopyFileAsync(string fileId, string newFileName, string toFolderId)
+    {
+        return CopyItemAsync(fileId, newFileName, toFolderId);
+    }
+
+    public Task<Item> RenameFolderAsync(string folderId, string newName)
+    {
+        return RenameItemAsync(folderId, newName);
+    }
+
+    public Task<Item> RenameFileAsync(string fileId, string newName)
+    {
+        return RenameItemAsync(fileId, newName);
+    }
+
+    public Task<long> GetMaxUploadSizeAsync()
+    {
+        return Task.FromResult(MaxChunkedUploadFileSize);
     }
 }
 

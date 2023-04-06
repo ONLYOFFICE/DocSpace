@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
@@ -251,7 +251,7 @@ const TfaActivationWrapper = (props) => {
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState(null);
 
-  useEffect(async () => {
+  const getSecretKeyAndQRAction = useCallback(async () => {
     try {
       setIsLoading(true);
       const confirmKey = linkData.confirmHeader;
@@ -267,6 +267,10 @@ const TfaActivationWrapper = (props) => {
 
     setIsLoaded(true);
     setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    getSecretKeyAndQRAction();
   }, []);
 
   return error ? (

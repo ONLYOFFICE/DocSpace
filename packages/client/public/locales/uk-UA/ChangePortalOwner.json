@@ -1,7 +1,5 @@
 {
   "BackupPortal": "Робить резервну копію даних DocSpace",
-  "ChangeOwner": "Призначає адміністраторів модулів",
-  "DeactivateOrDeletePortal": "Налаштовує права доступу до модулів",
   "ManagePortal": "Керує конфігурацією DocSpace",
   "ManageUser": "Керує обліковими записами користувачів"
 }

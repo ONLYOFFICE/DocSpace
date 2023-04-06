@@ -55,6 +55,7 @@ public class DbWorker : IDisposable
             using var tx = await dbContext.Database.BeginTransactionAsync(IsolationLevel.ReadCommitted);
 
             var notifyQueue = _mapper.Map<NotifyMessage, NotifyQueue>(m);
+            notifyQueue.Attachments = JsonConvert.SerializeObject(m.Attachments);
 
             notifyQueue = (await dbContext.NotifyQueue.AddAsync(notifyQueue)).Entity;
 

@@ -126,6 +126,7 @@ public class StudioPeriodicNotify
                 var toadmins = false;
                 var tousers = false;
                 var toowner = false;
+                var topayer = false;
 
                 Func<string> greenButtonText = () => string.Empty;
                 var greenButtonUrl = string.Empty;
@@ -215,9 +216,61 @@ public class StudioPeriodicNotify
                 {
                     #region Payment warning letters
 
+                    #region 3 days before grace period
+
+                    if (dueDateIsNotMax && dueDate.AddDays(-3) == nowDate)
+                    {
+                        action = Actions.SaasOwnerPaymentWarningGracePeriodBeforeActivation;
+                        toowner = true;
+                        topayer = true;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
+                    }
+
+                    #endregion
+
+                    #region grace period activation
+
+                    else if (dueDateIsNotMax && dueDate == nowDate)
+                    {
+                        action = Actions.SaasOwnerPaymentWarningGracePeriodActivation;
+                        toowner = true;
+                        topayer = true;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
+                    }
+
+                    #endregion
+
+                    #region grace period last day
+
+                    else if (tariff.State == TariffState.Delay && delayDueDateIsNotMax && delayDueDate.AddDays(-1) == nowDate)
+                    {
+                        action = Actions.SaasOwnerPaymentWarningGracePeriodLastDay;
+                        toowner = true;
+                        topayer = true;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
+                    }
+
+                    #endregion
+
+                    #region grace period expired
+
+                    else if (tariff.State == TariffState.Delay && delayDueDateIsNotMax && delayDueDate == nowDate)
+                    {
+                        action = Actions.SaasOwnerPaymentWarningGracePeriodExpired;
+                        toowner = true;
+                        topayer = true;
+                        greenButtonText = () => WebstudioNotifyPatternResource.ButtonVisitPaymentsSection;
+                        greenButtonUrl = _commonLinkUtility.GetFullAbsolutePath("~/portal-settings/payments/portal-payments");
+                    }
+
+                    #endregion
+
                     #region 6 months after SAAS PAID expired
 
-                    if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
+                    else if (tariff.State == TariffState.NotPaid && dueDateIsNotMax && dueDate.AddMonths(6) == nowDate)
                     {
                         action = Actions.SaasAdminTrialWarningAfterHalfYearV1;
                         toowner = true;
@@ -257,7 +310,18 @@ public class StudioPeriodicNotify
                                     ? new List<UserInfo> { await _userManager.GetUsersAsync(tenant.OwnerId) }
                                     : await _studioNotifyHelper.GetRecipientsAsync(toadmins, tousers, false);
 
-                await foreach (var u in users.ToAsyncEnumerable().WhereAwait(async u => paymentMessage || await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
+                if (topayer)
+                {
+                    var payerId = (await _tariffService.GetTariffAsync(tenant.Id)).CustomerId;
+                    var payer = await _userManager.GetUserByEmailAsync(payerId);
+
+                    if (payer.Id != ASC.Core.Users.Constants.LostUser.Id && !users.Any(u => u.Id == payer.Id))
+                    {
+                        users = users.Concat(new[] { payer });
+                    }
+                }
+                var asyncUsers = users.ToAsyncEnumerable();
+                await foreach (var u in asyncUsers.WhereAwait(async u => paymentMessage || await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                 {
                     var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
                     CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
@@ -275,6 +339,7 @@ public class StudioPeriodicNotify
                         new TagValue(Tags.DueDate, dueDate.ToLongDateString()),
                         new TagValue(Tags.DelayDueDate, (delayDueDateIsNotMax ? delayDueDate : dueDate).ToLongDateString()),
                         TagValues.GreenButton(greenButtonText, greenButtonUrl),
+                        new TagValue(Tags.PaymentDelay, _tariffService.GetPaymentDelay()),
                         new TagValue(CommonTags.Footer, await _userManager.IsDocSpaceAdminAsync(u) ? "common" : "social"));
                 }
             }

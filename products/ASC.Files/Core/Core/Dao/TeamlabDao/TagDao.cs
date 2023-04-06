@@ -26,13 +26,12 @@
 
 namespace ASC.Files.Core.Data;
 
-[Scope]
-internal class TagDao<T> : AbstractDao, ITagDao<T>
+internal abstract class BaseTagDao<T> : AbstractDao
 {
     private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
     private readonly IMapper _mapper;
 
-    public TagDao(
+    public BaseTagDao(
         UserManager userManager,
         IDbContextFactory<FilesDbContext> dbContextManager,
         TenantManager tenantManager,
@@ -69,7 +68,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.Id);
+            var idObj = f.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(f.Id);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -117,7 +116,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.Id);
+            var idObj = f.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(f.Id);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -150,7 +149,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         await foreach (var f in fileEntries)
         {
-            var idObj = await MappingIDAsync(f.Id);
+            var idObj = f.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(f.Id);
             var id = idObj.ToString();
             if (f.FileEntryType == FileEntryType.File)
             {
@@ -182,7 +181,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public async IAsyncEnumerable<Tag> GetTagsAsync(T entryID, FileEntryType entryType, TagType tagType)
     {
-        var mappedId = (await MappingIDAsync(entryID)).ToString();
+        var mappedId = (entryID is int fid ? MappingIDAsync(fid) : await MappingIDAsync(entryID)).ToString();
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag)
@@ -205,7 +204,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         return InternalGetTagsAsync(names, tagType);
     }
 
-    public async IAsyncEnumerable<Tag> InternalGetTagsAsync(string[] names, TagType tagType)
+    private async IAsyncEnumerable<Tag> InternalGetTagsAsync(string[] names, TagType tagType)
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
         var q = Query(filesDbContext.Tag)
@@ -546,7 +545,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .SetProperty(p => p.CreateOn, createOn)
             .SetProperty(p => p.Count, tag.Count)
             );
-    }
+        }
 
     public async Task RemoveTags(IEnumerable<Tag> tags)
     {
@@ -611,7 +610,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
     public async Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds)
     {
-        var entryId = (await MappingIDAsync(entry.Id)).ToString();
+        var entryId = (entry.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(entry.Id)).ToString();
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         await Query(filesDbContext.TagLink)
@@ -679,7 +678,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         if (id != 0)
         {
-            var entryId = (await MappingIDAsync(tag.EntryId)).ToString();
+            var entryId = (tag.EntryId is int fid ? MappingIDAsync(fid) : await MappingIDAsync(tag.EntryId)).ToString();
 
             await Query(filesDbContext.TagLink)
                 .Where(r => r.TagId == id &&
@@ -697,7 +696,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         }
     }
 
-    static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForFilesQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForFilesQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, List<string> where) =>
         ctx.Tag
         .AsNoTracking()
@@ -718,7 +717,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         .Distinct()
         );
 
-    static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForFoldersQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForFoldersQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, List<string> monitorFolderIdsStrings) =>
         ctx.Tag
         .AsNoTracking()
@@ -735,7 +734,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         .Where(r => r.Link.EntryType == FileEntryType.Folder)
         );
 
-    static readonly Func<FilesDbContext, int, Guid, FolderType, IAsyncEnumerable<TagLinkData>> _tmpShareFileTagsQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, FolderType, IAsyncEnumerable<TagLinkData>> _tmpShareFileTagsQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
         ctx.Tag
         .AsNoTracking()
@@ -767,7 +766,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         .Distinct()
         );
 
-    static readonly Func<FilesDbContext, int, Guid, FolderType, IAsyncEnumerable<TagLinkData>> _tmpShareFolderTagsQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, FolderType, IAsyncEnumerable<TagLinkData>> _tmpShareFolderTagsQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, FolderType folderType) =>
             ctx.Tag
             .AsNoTracking()
@@ -800,7 +799,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 .Distinct()
             );
 
-    static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _tmpShareSboxTagsQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _tmpShareSboxTagsQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject) =>
             ctx.Tag
             .AsNoTracking()
@@ -819,18 +818,13 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Join(ctx.ThirdpartyAccount, r => r.mapping.TenantId, r => r.TenantId, (tagLinkMapping, account) => new { tagLinkMapping.tagLink, tagLinkMapping.mapping, account })
             .Where(r => r.account.UserId != subject &&
                         r.account.FolderType == FolderType.USER &&
-                        (r.mapping.Id.StartsWith("sbox-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("box-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("dropbox-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("spoint-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("drive-" + r.account.Id) ||
-                        r.mapping.Id.StartsWith("onedrive-" + r.account.Id))
+                        Selectors.All.Any(s => r.mapping.Id.StartsWith($"{s.Id}-" + r.account.Id))
                 )
                 .Select(r => r.tagLink)
                 .Distinct()
             );
 
-    static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _projectsQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _projectsQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject) =>
             ctx.Tag
             .AsNoTracking()
@@ -851,7 +845,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                 .Distinct()
             );
 
-    static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForSBoxQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, List<string>, IAsyncEnumerable<TagLinkData>> _newTagsForSBoxQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject, List<string> thirdpartyFolderIds) =>
             ctx.Tag
             .AsNoTracking()
@@ -873,7 +867,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
                     .Distinct()
             );
 
-    static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _newTagsThirdpartyRoomsQuery =
+    protected static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<TagLinkData>> _newTagsThirdpartyRoomsQuery =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, Guid subject) =>
             ctx.Tag
             .AsNoTracking()
@@ -893,14 +887,14 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             .Select(r => r.tagLinkData.tagLink).Distinct()
             );
 
-    static readonly Func<FilesDbContext, List<int>, bool, IAsyncEnumerable<int>> _getFolderQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, List<int> monitorFolderIdsInt, bool deepSearch) =>
+    protected static readonly Func<FilesDbContext, List<int>, bool, IAsyncEnumerable<int>> _getFolderQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, List<int> monitorFolderIdsInt, bool deepSearch) =>
           ctx.Tree
               .AsNoTracking()
               .Where(r => monitorFolderIdsInt.Contains(r.ParentId))
               .Where(r => deepSearch || r.Level == 1)
               .Select(r => r.FolderId));
 
-    static readonly Func<FilesDbContext, int, FolderType, Guid, IAsyncEnumerable<int>> _getThirdpartyAccountQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, FolderType folderType, Guid subject) =>
+    protected static readonly Func<FilesDbContext, int, FolderType, Guid, IAsyncEnumerable<int>> _getThirdpartyAccountQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery((FilesDbContext ctx, int tenantId, FolderType folderType, Guid subject) =>
           ctx.ThirdpartyAccount
                 .Where(r => r.TenantId == tenantId)
                 .Where(r => r.FolderType == folderType)
@@ -922,7 +916,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
 
         foreach (var r in fileEntries)
         {
-            var idObj = await MappingIDAsync(r.Id);
+            var idObj = r.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(r.Id);
             var id = idObj.ToString();
             var entryType = (r.FileEntryType == FileEntryType.File) ? FileEntryType.File : FileEntryType.Folder;
 
@@ -961,9 +955,62 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         yield break;
     }
 
-    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
+    protected async IAsyncEnumerable<Tag> FromQueryAsync(IAsyncEnumerable<TagLinkData> dbFilesTags)
     {
-        if (parentFolder == null || EqualityComparer<T>.Default.Equals(parentFolder.Id, default(T)))
+        await foreach (var file in dbFilesTags)
+        {
+            yield return await ToTagAsync(file);
+        }
+    }
+
+    protected async ValueTask<Tag> ToTagAsync(TagLinkData r)
+    {
+        var result = _mapper.Map<DbFilesTag, Tag>(r.Tag);
+        _mapper.Map(r.Link, result);
+
+        result.EntryId = await MappingIDAsync(r.Link.EntryId);
+
+        return result;
+    }
+}
+
+
+[Scope]
+internal class TagDao : BaseTagDao<int>, ITagDao<int>
+{
+    public TagDao(
+        UserManager userManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        SetupInfo setupInfo,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
+        CoreBaseSettings coreBaseSettings,
+        CoreConfiguration coreConfiguration,
+        SettingsManager settingsManager,
+        AuthContext authContext,
+        IServiceProvider serviceProvider,
+        ICache cache,
+        IMapper mapper)
+        : base(userManager,
+              dbContextManager,
+              tenantManager,
+              tenantUtil,
+              setupInfo,
+              maxTotalSizeStatistic,
+              coreBaseSettings,
+              coreConfiguration,
+              settingsManager,
+              authContext,
+              serviceProvider,
+              cache,
+              mapper)
+    {
+    }
+
+    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<int> parentFolder, bool deepSearch)
+    {
+        if (parentFolder == null || EqualityComparer<int>.Default.Equals(parentFolder.Id, 0))
         {
             throw new ArgumentException("folderId");
         }
@@ -971,7 +1018,7 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         return InternalGetNewTagsAsync(subject, parentFolder, deepSearch);
     }
 
-    private async IAsyncEnumerable<Tag> InternalGetNewTagsAsync(Guid subject, Folder<T> parentFolder, bool deepSearch)
+    private async IAsyncEnumerable<Tag> InternalGetNewTagsAsync(Guid subject, Folder<int> parentFolder, bool deepSearch)
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
@@ -1039,12 +1086,12 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
         {
             var folderIds = await _getThirdpartyAccountQuery(filesDbContext, tenantId, parentFolder.FolderType, subject).ToListAsync();
 
-            var thirdpartyFolderIds = folderIds.ConvertAll(r => "sbox-" + r)
-                                                .Concat(folderIds.ConvertAll(r => $"box-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"dropbox-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"spoint-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"drive-{r}"))
-                                                .Concat(folderIds.ConvertAll(r => $"onedrive-{r}"))
+            var thirdpartyFolderIds = folderIds.ConvertAll(r => $"{Selectors.SharpBox.Id}-" + r)
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.Box.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.Dropbox.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.SharePoint.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.GoogleDrive.Id}-{r}"))
+                                                .Concat(folderIds.ConvertAll(r => $"{Selectors.OneDrive.Id}-{r}"))
                                                 .ToList();
 
             if (thirdpartyFolderIds.Count > 0)
@@ -1063,23 +1110,47 @@ internal class TagDao<T> : AbstractDao, ITagDao<T>
             yield return await ToTagAsync(e);
         }
     }
+}
 
-    protected async IAsyncEnumerable<Tag> FromQueryAsync(IAsyncEnumerable<TagLinkData> dbFilesTags)
+[Scope]
+internal class ThirdPartyTagDao : BaseTagDao<string>, ITagDao<string>
+{
+    private readonly IThirdPartyTagDao _thirdPartyTagDao;
+    public ThirdPartyTagDao(
+        UserManager userManager,
+        IDbContextFactory<FilesDbContext> dbContextManager,
+        TenantManager tenantManager,
+        TenantUtil tenantUtil,
+        SetupInfo setupInfo,
+        MaxTotalSizeStatistic maxTotalSizeStatistic,
+        CoreBaseSettings coreBaseSettings,
+        CoreConfiguration coreConfiguration,
+        SettingsManager settingsManager,
+        AuthContext authContext,
+        IServiceProvider serviceProvider,
+        ICache cache,
+        IMapper mapper,
+        IThirdPartyTagDao thirdPartyTagDao)
+        : base(userManager,
+              dbContextManager,
+              tenantManager,
+              tenantUtil,
+              setupInfo,
+              maxTotalSizeStatistic,
+              coreBaseSettings,
+              coreConfiguration,
+              settingsManager,
+              authContext,
+              serviceProvider,
+              cache,
+              mapper)
     {
-        await foreach (var file in dbFilesTags)
-        {
-            yield return await ToTagAsync(file);
-        }
+        _thirdPartyTagDao = thirdPartyTagDao;
     }
 
-    private async ValueTask<Tag> ToTagAsync(TagLinkData r)
+    public IAsyncEnumerable<Tag> GetNewTagsAsync(Guid subject, Folder<string> parentFolder, bool deepSearch)
     {
-        var result = _mapper.Map<DbFilesTag, Tag>(r.Tag);
-        _mapper.Map(r.Link, result);
-
-        result.EntryId = await MappingIDAsync(r.Link.EntryId);
-
-        return result;
+        return _thirdPartyTagDao.GetNewTagsAsync(subject, parentFolder, deepSearch);
     }
 }
 

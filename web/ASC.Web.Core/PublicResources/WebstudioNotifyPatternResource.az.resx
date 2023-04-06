@@ -308,19 +308,6 @@ Link yalnız 7 gün ərzində etibarlıdır.
 
 Siz veb-ofisinizdən necə istifadə etmək barədə daha çox məsləhət əldə edəcəksiniz. İstənilən vaxt Profil səhifənizdə abunəlikləri ləğv edə və onları yenidən aktivləşdirə bilərsiniz.</value>
   </data>
-  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Qonaq profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" -a əlavə edildi. İndi edə bilərsiniz:
-
-# "Profilinizi":"$MyStaffLink" redaktə edin.
-# "İcma":"${__VirtualRootPath}/Products/Community/" da mövcud olan məzmuna baxın və şərh verin və "Layihələr":"${__VirtualRootPath}/Products/Projects/".
-# "Sənədlər":"${__VirtualRootPath}/Products/Files/" də sizin üçün mövcud olan faylları əlavə edin və endirin.
-# Daxili "Təqvim":"${__VirtualRootPath}/addons/calendar/" ilə cədvəlinizi təşkil edin.
-# Ani mesaj mübadiləsi üçün "Söhbət":"${__VirtualRootPath}/addons/talk/" istifadə edin.
-
-$GreenButton</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Salam, $UserName!
 
@@ -331,19 +318,6 @@ $GreenButton
 Link yalnız 7 gün ərzində etibarlıdır.
 
 Siz veb-ofisinizdən necə istifadə etmək barədə daha çox məsləhət əldə edəcəksiniz. İstənilən vaxt Profil səhifənizdə abunəlikləri ləğv edə və onları yenidən aktivləşdirə bilərsiniz.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Qonaq profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" -a əlavə edildi. İndi edə bilərsiniz:
-
-# "Profilinizi":"$MyStaffLink" redaktə edin.
-# "İcma":"${__VirtualRootPath}/Products/Community/" da mövcud olan məzmuna baxın və şərh verin və "Layihələr":"${__VirtualRootPath}/Products/Projects/".
-# "Sənədlər":"${__VirtualRootPath}/Products/Files/" də sizin üçün mövcud olan faylları əlavə edin və endirin.
-# Daxili "Təqvim":"${__VirtualRootPath}/addons/calendar/" ilə cədvəlinizi təşkil edin.
-# Ani mesaj mübadiləsi üçün "Söhbət":"${__VirtualRootPath}/addons/talk/" istifadə edin.
-
-$GreenButton</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalından mesaj:
@@ -474,25 +448,6 @@ Siz qonaq istifadəçi kimi "${__VirtualRootPath}":"${__VirtualRootPath}" proqra
 Link yalnız 7 gün ərzində etibarlıdır.
 
 Siz veb-ofisinizdən necə istifadə etmək barədə daha çox məsləhətlər alacaqsınız. İstənilən vaxt Profil səhifənizdə abunəlikləri ləğv edə və onları yenidən aktivləşdirə bilərsiniz.</value>
-  </data>
-  <data name="pattern_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Siz indi "${__VirtualRootPath}":"${__VirtualRootPath}" ünvanında qonaq istifadəçisiniz. İndi edə bilərsiniz:
-
-*Profilinizi redaktə edərək komandaya özünüzü təqdim edin*.
-
-*Paylaşılan sənədlərə baxın*, həmçinin onları endirin və paylaşılan qovluqlara yeni faylları yükləyin.
-
-*Dəvət olunduğunuz layihələrə*, həmçinin blog və forum yazılarına baxın və şərh verin.
-
-*Ani mesajlar mübadiləsi* və Söhbətdən istifadə edərək faylları daha sürətli şəkildə paylaşın.
-
-Görüşlər təşkil etmək, xatırladıcılar qurmaq və görüləcək işlər siyahıları yaratmaq üçün *Şəxsi və paylaşılan təqvimlərdən* istifadə edin!
-
-Veb-ofisinizə daxil olmaq üçün "link":"${__VirtualRootPath}" ə daxil olun.
-
-Öz veb-ofisinizi yaratmaq istəyirsinizsə, "ONLYOFFICE rəsmi internet saytına":"https://www.onlyoffice.com/" daxil olun.</value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Salam, $UserName
@@ -853,25 +808,6 @@ Hörmətlə,
 ONLYOFFICE Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Salam, $UserName!
-
-Qonaq profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" -a əlavə edildi. İndi edə bilərsiniz:
-
-# "Profilinizi":"$MyStaffLink" redaktə edin.
-# "İcma":"${__VirtualRootPath}/Products/Community/" da mövcud olan məzmuna baxın və şərh verin və "Layihələr":"${__VirtualRootPath}/Products/Projects/".
-# "Sənədlər":"${__VirtualRootPath}/Products/Files/" də sizin üçün mövcud olan faylları əlavə edin və endirin.
-# Daxili "Təqvim":"${__VirtualRootPath}/addons/calendar/" ilə cədvəlinizi təşkil edin.
-# Ani mesaj mübadiləsi üçün "Söhbət":"${__VirtualRootPath}/addons/talk/" istifadə edin.
-
-$GreenButton
-
-Əgər köməyə ehtiyacınız varsa, "Yardım Mərkəzimiz":"${__HelpLink}" ə nəzər salın.
-
-Hörmətlə,
-ONLYOFFICE Komandası
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" Portal profilinin dəyişdirilməsi barədə bildiriş:
 
@@ -882,26 +818,6 @@ ONLYOFFICE Komandası
   <data name="pattern_self_profile_updated_tg" xml:space="preserve">
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) portal profilinin dəyişdirilməsi haqqında bildiriş
 [$__AuthorName]($__AuthorUrl), [${__VirtualRootPath}](${__VirtualRootPath}) portalında profil detallarını dəyişib.</value>
-  </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalında yeniliklər: $Date üçün 
-
-#foreach($activity in $Activities)
-
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^"${__VirtualRootPath}":"${__VirtualRootPath}" portalında yeni hadisələr haqqında bildirişlər almaq istəmirsinizsə, zəhmət olmasa, "abunəlik parametrlərinizi idarə edin":"$RecipientSubscriptionConfigURL^</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP test mesajı
@@ -1003,14 +919,8 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Veb ofisinizə xoş gəlmisiniz</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Veb ofisinizə xoş gəlmisiniz</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>İnzibatçılara istifadəçi mesajı</value>
@@ -1035,9 +945,6 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Veb ofisinizə xoş gəlmisiniz</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Şəxsi istifadə üçün ONLYOFFICE-a xoş gəlmisiniz!</value>
@@ -1099,14 +1006,8 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>ONLYOFFICE-inizə xoş gəlmisiniz</value>
-  </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portalının profilinin dəyişdirilməsi ilə bağlı bildiriş</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>$Date üçün portalınızdakı yeniliklər</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>SMTP test mesajı</value>

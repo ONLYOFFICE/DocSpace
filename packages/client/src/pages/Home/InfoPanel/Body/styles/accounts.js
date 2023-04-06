@@ -1,4 +1,4 @@
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { Base } from "@docspace/components/themes";
 import { hugeMobile, tablet } from "@docspace/components/utils/device";
 
@@ -6,12 +6,10 @@ const StyledAccountsItemTitle = styled.div`
   min-height: 80px;
   height: 80px;
   max-height: 104px;
-
   display: flex;
   align-items: center;
   justify-content: start;
   gap: 16px;
-
   position: fixed;
   margin-top: -80px;
   margin-left: -20px;
@@ -25,10 +23,6 @@ const StyledAccountsItemTitle = styled.div`
     padding: 24px 20px 24px 20px;
   }
 
-  @media (max-width: 549px) {
-    width: calc(100vw - 69px - 40px);
-  }
-
   @media ${hugeMobile} {
     width: calc(100vw - 32px);
     padding: 24px 0 24px 16px;
@@ -40,10 +34,8 @@ const StyledAccountsItemTitle = styled.div`
 
   .info-panel__info-text {
     padding-top: 24px;
-
     display: flex;
     flex-direction: ${(props) => (props.isPending ? "row" : "column")};
-
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -69,7 +61,6 @@ const StyledAccountsItemTitle = styled.div`
 
   .context-button {
     padding-top: 24px;
-
     margin-left: auto;
   }
 `;
@@ -77,6 +68,8 @@ const StyledAccountsItemTitle = styled.div`
 StyledAccountsItemTitle.defaultProps = { theme: Base };
 
 const StyledAccountContent = styled.div`
+  margin: 80px auto 0;
+
   .data__header {
     width: 100%;
     padding: 24px 0;
@@ -92,9 +85,7 @@ const StyledAccountContent = styled.div`
     display: grid;
     grid-template-rows: 28px 28px 28px 28px;
     grid-template-columns: 80px 1fr;
-
     grid-gap: 0 24px;
-
     align-items: center;
 
     .type-combobox {

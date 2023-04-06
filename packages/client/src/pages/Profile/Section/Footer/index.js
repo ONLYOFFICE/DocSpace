@@ -11,6 +11,8 @@ import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import HelpButton from "@docspace/components/help-button";
 import toastr from "@docspace/components/toast/toastr";
+import Loaders from "@docspace/common/components/Loaders";
+import withPeopleLoader from "../../../../HOCs/withPeopleLoader";
 
 import {
   LogoutConnectionDialog,
@@ -36,7 +38,7 @@ const tickIcon = (
 
 const ActiveSessions = ({
   t,
-  culture,
+  locale,
   getAllSessions,
   removeAllSessions,
   removeSession,
@@ -106,7 +108,7 @@ const ActiveSessions = ({
   };
 
   const convertTime = (date) => {
-    return new Date(date).toLocaleString(culture);
+    return new Date(date).toLocaleString(locale);
   };
 
   return (
@@ -239,6 +241,9 @@ const ActiveSessions = ({
 
 export default inject(({ auth, setup }) => {
   const { culture } = auth.settingsStore;
+  const { user } = auth.userStore;
+  const locale = (user && user.cultureName) || culture || "en";
+
   const {
     getAllSessions,
     removeAllSessions,
@@ -250,7 +255,7 @@ export default inject(({ auth, setup }) => {
     removeAllExecptThis,
   } = setup;
   return {
-    culture,
+    locale,
     getAllSessions,
     removeAllSessions,
     removeSession,
@@ -260,4 +265,12 @@ export default inject(({ auth, setup }) => {
     setLogoutAllVisible,
     removeAllExecptThis,
   };
-})(observer(withTranslation(["Profile", "Common"])(ActiveSessions)));
+})(
+  observer(
+    withTranslation(["Profile", "Common"])(
+      withPeopleLoader(ActiveSessions)(
+        <Loaders.ProfileFooter isProfileFooter />
+      )
+    )
+  )
+);

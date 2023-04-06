@@ -106,7 +106,7 @@ const TfaAuthForm = withLoader((props) => {
                     id="code"
                     name="code"
                     type="text"
-                    size="huge"
+                    size="large"
                     scale
                     isAutoFocussed
                     tabIndex={1}
@@ -150,7 +150,7 @@ const TfaAuthForm = withLoader((props) => {
 const TfaAuthFormWrapper = (props) => {
   const { setIsLoaded, setIsLoading } = props;
 
-  useEffect(async () => {
+  useEffect(() => {
     setIsLoaded(true);
     setIsLoading(false);
   }, []);

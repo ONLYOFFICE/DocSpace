@@ -13,6 +13,7 @@ const getDefaultStyles = ({
   color,
   theme,
   isPaidBadge,
+  isMutedBadge,
 }) =>
   $currentColorScheme &&
   !isVersionBadge &&
@@ -26,19 +27,25 @@ const getDefaultStyles = ({
     }
 
     ${StyledInner} {
-      background-color: ${backgroundColor
+      background-color: ${isMutedBadge
+        ? theme.badge.disableBackgroundColor
+        : backgroundColor
         ? backgroundColor
         : $currentColorScheme.main.accent};
 
       &:hover {
-        background-color: ${backgroundColor
+        background-color: ${isMutedBadge
+          ? theme.badge.disableBackgroundColor
+          : backgroundColor
           ? backgroundColor
           : $currentColorScheme.main.accent};
       }
     }
 
     &:hover {
-      border-color: ${backgroundColor
+      border-color: ${isMutedBadge
+        ? theme.badge.disableBackgroundColor
+        : backgroundColor
         ? backgroundColor
         : $currentColorScheme.main.accent};
     }

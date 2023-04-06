@@ -1005,7 +1005,7 @@ public class EntryManager
         folder.FolderType = FolderType.DEFAULT;
         folder.ModifiedBy = providerInfo.Owner;
         folder.ModifiedOn = providerInfo.CreateOn;
-        folder.ProviderId = providerInfo.ID;
+        folder.ProviderId = providerInfo.ProviderId;
         folder.ProviderKey = providerInfo.ProviderKey;
         folder.RootCreateBy = providerInfo.Owner;
         folder.RootId = providerInfo.RootFolderId;
@@ -1255,8 +1255,7 @@ public class EntryManager
             {
                 throw new Exception(FilesCommonResource.ErrorMassage_BadRequest);
             }
-
-            var folderId = (TSource)Convert.ChangeType(properties.FormFilling.ToFolderId, typeof(TSource));
+            var folderId = IdConverter.Convert<TSource>(properties.FormFilling.ToFolderId);
             if (!Equals(folderId, default(TSource)))
             {
                 var folder = await folderSourceDao.GetFolderAsync(folderId);
@@ -1286,7 +1285,7 @@ public class EntryManager
 
                     await _socketManager.CreateFolderAsync(folder);
 
-                    await _filesMessageService.SendAsync(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
+                    _ = _filesMessageService.SendAsync(folder, MessageInitiator.DocsService, MessageAction.FolderCreated, folder.Title);
                 }
 
                 folderId = folder.Id;
@@ -1311,7 +1310,7 @@ public class EntryManager
                 submitFile = await fileSourceDao.SaveFileAsync(submitFile, stream);
             }
 
-            await _filesMessageService.SendAsync(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
+            _ = _filesMessageService.SendAsync(submitFile, MessageInitiator.DocsService, MessageAction.FileCreated, submitFile.Title);
 
             await _fileMarker.MarkAsNewAsync(submitFile);
 

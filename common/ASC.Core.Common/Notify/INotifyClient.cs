@@ -36,6 +36,7 @@ public interface INotifyClient
     void RemoveInterceptor(string name);
     Task SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, bool checkSubscription, params ITagValue[] args);
     Task SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, params ITagValue[] args);
+    Task SendNoticeAsync(INotifyAction action, string objectID, IRecipient recipient, string senderNames, params ITagValue[] args);
     Task SendNoticeAsync(int tenantId, INotifyAction action, string objectID, params ITagValue[] args);
     Task SendNoticeToAsync(INotifyAction action, IRecipient[] recipients, string[] senderNames, params ITagValue[] args);
     Task SendNoticeToAsync(INotifyAction action, string objectID, IRecipient[] recipients, bool checkSubscription, params ITagValue[] args);

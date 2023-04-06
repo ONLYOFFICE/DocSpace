@@ -52,7 +52,7 @@ const RenameEvent = ({
     if (isSameTitle) {
       setStartValue(originalTitle);
 
-      onClose();
+      onCancel();
 
       return completeAction(item, type);
     } else {
@@ -81,7 +81,7 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations([item.id]);
 
-            onClose();
+            onCancel();
           })
       : renameFolder(item.id, value)
           .then(() => completeAction(item, type))
@@ -105,15 +105,16 @@ const RenameEvent = ({
             timerId = null;
             clearActiveOperations(null, [item.id]);
 
-            onClose();
+            onCancel();
           });
   }, []);
 
   const onCancel = React.useCallback(
     (e) => {
-      onClose && onClose();
+      onClose && onClose(e);
+      setEventDialogVisible(false);
     },
-    [onClose]
+    [onClose, setEventDialogVisible]
   );
 
   return (
@@ -124,7 +125,7 @@ const RenameEvent = ({
       startValue={startValue}
       onSave={onUpdate}
       onCancel={onCancel}
-      onClose={onClose}
+      onClose={onCancel}
     />
   );
 };

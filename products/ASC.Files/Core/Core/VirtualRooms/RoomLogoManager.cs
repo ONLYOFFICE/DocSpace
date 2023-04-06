@@ -117,7 +117,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            await _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoCreated, room.Title);
+            _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoCreated, room.Title);
         }
 
         return room;
@@ -151,7 +151,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                await _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
+                _ = _filesMessageService.SendAsync(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
             }
         }
         catch (Exception e)
@@ -324,14 +324,14 @@ public class RoomLogoManager
             return room.Id.ToString();
         }
 
-        if (room.Id.ToString()!.Contains("sbox"))
+        if (room.Id.ToString()!.Contains(Selectors.SharpBox.Id))
         {
-            return $"sbox-{room.ProviderId}";
+            return $"{Selectors.SharpBox.Id}-{room.ProviderId}";
         }
 
-        if (room.Id.ToString()!.Contains("spoint"))
+        if (room.Id.ToString()!.Contains(Selectors.SharePoint.Id))
         {
-            return $"spoint-{room.ProviderId}";
+            return $"{Selectors.SharePoint.Id}-{room.ProviderId}";
         }
 
         return room.Id.ToString();

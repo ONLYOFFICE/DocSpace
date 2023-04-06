@@ -214,7 +214,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
             return;
         }
 
-        _client.Instance.Index(data, idx => GetMeta(idx, data, immediately));
+        await _client.Instance.IndexAsync(data, idx => GetMeta(idx, data, immediately));
     }
 
     internal async Task IndexAsync(List<T> data, bool immediately = true)

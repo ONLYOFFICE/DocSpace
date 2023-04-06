@@ -329,6 +329,11 @@ public class PermissionContext
         return await CheckPermissionsAsync(securityObject, null, actions);
     }
 
+    public async Task<bool> CheckPermissionsAsync(IAccount account, ISecurityObject securityObject, params IAction[] actions)
+    {
+        return await PermissionResolver.CheckAsync(account, securityObject, null, actions);
+    }
+
     public async Task<bool> CheckPermissionsAsync(ISecurityObjectId objectId, ISecurityObjectProvider securityObjProvider, params IAction[] actions)
     {
         return await PermissionResolver.CheckAsync(AuthContext.CurrentAccount, objectId, securityObjProvider, actions);

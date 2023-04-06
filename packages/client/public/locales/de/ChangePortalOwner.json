@@ -1,7 +1,5 @@
 {
-  "BackupPortal": "Backup von Portaldaten erstellen",
-  "ChangeOwner": "Moduladministratoren bestimmen",
-  "DeactivateOrDeletePortal": "Modulzugriffsrechte bestimmen",
-  "ManagePortal": "Portal einrichten",
+  "BackupPortal": "Backup von DocSpace-Daten erstellen",
+  "ManagePortal": "DocSpace einrichten",
   "ManageUser": "Benutzerprofile verwalten"
 }

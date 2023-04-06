@@ -61,6 +61,7 @@ export const StyledSubmenuItems = styled.div`
   flex-direction: row;
   gap: 4px;
 
+  width: max-content;
   overflow: hidden;
   &::-webkit-scrollbar {
     display: none;
@@ -83,7 +84,7 @@ export const StyledSubmenuItem = styled.div.attrs((props) => ({
 `;
 
 export const StyledSubmenuItemText = styled.div`
-  width: 100%;
+  width: max-content;
   display: flex;
 
   .item-text {
@@ -109,3 +110,37 @@ export const StyledSubmenuItemLabel = styled.div`
 `;
 
 StyledSubmenuItemLabel.defaultProps = { theme: Base };
+
+export const SubmenuScroller = styled.div`
+  position: relative;
+  display: inline-block;
+  flex: 1 1 auto;
+  white-space: nowrap;
+  scrollbar-width: none; // Firefox
+  &::-webkit-scrollbar {
+    display: none; // Safari + Chrome
+  },
+  overflow-x: auto;
+  overflow-y: hidden;
+`;
+
+export const SubmenuRoot = styled.div`
+  overflow: hidden;
+  min-height: 32px;
+  // Add iOS momentum scrolling for iOS < 13.0
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+`;
+
+export const SubmenuScrollbarSize = styled.div`
+  height: 32;
+  position: absolute;
+  top: -9999;
+  overflow-x: auto;
+  overflow-y: hidden;
+  // Hide dimensionless scrollbar on macOS
+  scrollbar-width: none; // Firefox
+  &::-webkit-scrollbar{
+    display: none; // Safari + Chrome
+  },
+`;

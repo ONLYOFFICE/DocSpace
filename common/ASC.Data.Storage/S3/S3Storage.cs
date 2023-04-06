@@ -230,18 +230,15 @@ public class S3Storage : BaseStorage
             request.ServerSideEncryptionKeyManagementServiceKeyId = kmsKeyId;
         }
 
-        if (!WorkContext.IsMono) //  System.Net.Sockets.SocketException: Connection reset by peer
+        switch (acl)
         {
-            switch (acl)
-            {
-                case ACL.Auto:
-                    request.CannedACL = GetDomainACL(domain);
-                    break;
-                case ACL.Read:
-                case ACL.Private:
-                    request.CannedACL = GetS3Acl(acl);
-                    break;
-            }
+            case ACL.Auto:
+                request.CannedACL = GetDomainACL(domain);
+                break;
+            case ACL.Read:
+            case ACL.Private:
+                request.CannedACL = GetS3Acl(acl);
+                break;
         }
 
         if (!string.IsNullOrEmpty(contentDisposition))

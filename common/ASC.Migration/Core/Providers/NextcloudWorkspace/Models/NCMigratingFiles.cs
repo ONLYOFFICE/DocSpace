@@ -42,7 +42,7 @@ public class NCMigratingFiles : MigratingFiles
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
-    private readonly FileStorageService<int> _fileStorageService;
+    private readonly FileStorageService _fileStorageService;
     private readonly NCMigratingUser _user;
     private readonly string _rootFolder;
     private List<NCFileCache> _files;
@@ -55,7 +55,7 @@ public class NCMigratingFiles : MigratingFiles
     private Dictionary<string, NCMigratingGroups> _groups;
     private Dictionary<object, int> _matchingFileId;
     private string _folderCreation;
-    public NCMigratingFiles(GlobalFolderHelper globalFolderHelper, IDaoFactory daoFactory, FileSecurity fileSecurity, FileStorageService<int> fileStorageService, NCMigratingUser user, NCStorages storages, string rootFolder, Action<string, Exception> log) : base(log)
+    public NCMigratingFiles(GlobalFolderHelper globalFolderHelper, IDaoFactory daoFactory, FileSecurity fileSecurity, FileStorageService fileStorageService, NCMigratingUser user, NCStorages storages, string rootFolder, Action<string, Exception> log) : base(log)
     {
         _globalFolderHelper = globalFolderHelper;
         _daoFactory = daoFactory;

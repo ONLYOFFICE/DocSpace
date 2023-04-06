@@ -98,12 +98,11 @@ class DbQuotaService : IQuotaService
                 var counter = await coreDbContext.QuotaRows
                 .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == userId)
                 .Select(r => r.Counter)
-                .Take(1)
                 .FirstOrDefaultAsync();
 
                 dbTenantQuotaRow.Counter = counter + row.Counter;
             }
-            
+
             await coreDbContext.AddOrUpdateAsync(q => q.QuotaRows, dbTenantQuotaRow);
             await coreDbContext.SaveChangesAsync();
         }

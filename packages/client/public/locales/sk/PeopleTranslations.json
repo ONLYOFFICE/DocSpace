@@ -1,10 +1,10 @@
 {
-  "AddMembers": "Pridať členov",
   "DeleteSelfProfile": "Odstrániť profil",
   "DisableUserButton": "Deaktivovať",
   "DisabledEmployeeStatus": "Deaktivovaný",
   "EmailChangeButton": "Zmeniť e-mail",
   "EnableUserButton": "Aktivovať",
+  "InviteLinkTitle": "Odkaz na pozvánku",
   "LDAPLbl": "LDAP",
   "PasswordChangeButton": "Zmeniť heslo",
   "PendingTitle": "Nevybavené",

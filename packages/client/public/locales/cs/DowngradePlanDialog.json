@@ -1,1 +1,9 @@
-{}
+{
+  "AllowedManagerNumber": "Počet povolených manažerů: <1>{{valuesRange}}</1>.",
+  "CannotDowngradePlan": "Tarif nelze snížit, protože množství úložišť/počet správců překračuje omezení podle zvoleného cenového tarifu.",
+  "CurrentManagerNumber": "Aktuální počet manažerů: <1>{{currentCount}}</1>.",
+  "CurrentStorageSpace": "Aktuální úložný prostor: <1>{{size}}</1>.",
+  "DowngradePlan": "Plán snížení úrovně",
+  "SaveOrChange": "Snižte požadovaný parametr nebo zachovejte stávající cenový tarif.",
+  "StorageSpaceSizeAllowed": "Povolená velikost úložného prostoru: <1>{{size}}</1>."
+}

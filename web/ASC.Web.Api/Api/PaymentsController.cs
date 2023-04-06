@@ -149,7 +149,7 @@ public class PaymentController : ControllerBase
     [HttpGet("payment/quotas")]
     public async Task<IEnumerable<QuotaDto>> GetQuotasAsync()
     {
-        return await _quotaHelper.GetQuotasAsync();
+        return await _quotaHelper.GetQuotasAsync().ToListAsync();
     }
 
     [HttpGet("payment/quota")]

@@ -72,7 +72,7 @@ public class CrossModuleTransferUtility
         else
         {
             var session = new CommonChunkedUploadSession(stream.Length);
-            var holder = new CommonChunkedUploadSessionHolder(_tempPath, _logger, _destination, destDomain);
+            var holder = new CommonChunkedUploadSessionHolder(_tempPath, _destination, destDomain);
             await holder.InitAsync(session);
             try
             {
