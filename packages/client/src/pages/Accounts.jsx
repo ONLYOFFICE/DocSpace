@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { Redirect, Switch, Route } from "react-router-dom";
+import { Redirect, Routes, Route } from "react-router-dom";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import toastr from "@docspace/components/toast/toastr";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
@@ -31,7 +31,7 @@ const HomeRedirectToFilter = () => {
 
 const PeopleSection = React.memo(() => {
   return (
-    <Switch>
+    <Routes>
       <Route
         exact
         path={["/accounts/view/@self"]}
@@ -79,7 +79,7 @@ const PeopleSection = React.memo(() => {
           </PrivateRoute>
         )}
       />
-    </Switch>
+    </Routes>
   );
 });
 

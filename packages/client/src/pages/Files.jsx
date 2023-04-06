@@ -1,7 +1,7 @@
 import React from "react";
 //import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Switch, withRouter, Redirect, Route } from "react-router-dom";
+import { Routes, withRouter, Redirect, Route } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -83,7 +83,7 @@ const Error404Route = (props) => (
 
 const FilesSection = React.memo(({ withMainButton }) => {
   return (
-    <Switch>
+    <Routes>
       <Route
         exact
         path={"/settings"}
@@ -194,7 +194,7 @@ const FilesSection = React.memo(({ withMainButton }) => {
           </PrivateRoute>
         )}
       />
-    </Switch>
+    </Routes>
   );
 });
 

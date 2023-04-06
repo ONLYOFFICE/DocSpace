@@ -1,6 +1,6 @@
 import React from "react";
 import Login from "./components/Login";
-import { Switch, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import InvalidRoute from "./components/Invalid";
 import CodeLogin from "./components/CodeLogin";
 import initLoginStore from "../store";
@@ -34,7 +34,7 @@ const App: React.FC<ILoginProps> = (props) => {
   return (
     <MobxProvider {...loginStore}>
       <SimpleNav {...props} />
-      <Switch>
+      <Routes>
         <Route path="/login/error">
           <InvalidRoute />
         </Route>
@@ -44,7 +44,7 @@ const App: React.FC<ILoginProps> = (props) => {
         <Route path="/login">
           <Login {...props} />
         </Route>
-      </Switch>
+      </Routes>
     </MobxProvider>
   );
 };
