@@ -515,7 +515,7 @@ class UploadDataStore {
         if (progress === 100) {
           if (!error) error = data[0].error;
 
-          if (isOpen && data && data[0]) {
+          if (!error && isOpen && data && data[0]) {
             let tab =
               !this.authStore.settingsStore.isDesktopClient && fileInfo.fileExst
                 ? window.open(
