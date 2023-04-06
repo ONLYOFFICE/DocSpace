@@ -17,11 +17,14 @@ const PaymentsPage = ({
   isInitPaymentPage,
   init,
   isUpdatingTariff,
+  isUpdatingBasicSettings,
+  resetTariffContainerToBasic,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
   useEffect(() => {
     moment.locale(language);
+    return () => resetTariffContainerToBasic();
   }, []);
 
   useEffect(() => {
@@ -34,7 +37,10 @@ const PaymentsPage = ({
     init(t);
   }, [isLoadedTariffStatus, isLoadedCurrentQuota, ready]);
 
-  return !isInitPaymentPage || !ready || isUpdatingTariff ? (
+  return !isInitPaymentPage ||
+    !ready ||
+    isUpdatingTariff ||
+    isUpdatingBasicSettings ? (
     <Loaders.PaymentsLoader />
   ) : (
     <PaymentContainer t={t} />
@@ -55,14 +61,21 @@ export default inject(({ auth, payments }) => {
 
   const { isLoaded: isLoadedCurrentQuota } = currentQuotaStore;
   const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
-  const { isInitPaymentPage, init } = payments;
+  const {
+    isInitPaymentPage,
+    init,
+    isUpdatingBasicSettings,
+    resetTariffContainerToBasic,
+  } = payments;
 
   return {
+    resetTariffContainerToBasic,
     isUpdatingTariff,
     init,
     isInitPaymentPage,
     language,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
+    isUpdatingBasicSettings,
   };
 })(withRouter(observer(PaymentsPage)));

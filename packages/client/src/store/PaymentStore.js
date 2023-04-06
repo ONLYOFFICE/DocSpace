@@ -27,6 +27,7 @@ class PaymentStore {
   paymentLink = null;
   accountLink = null;
   isLoading = false;
+  isUpdatingBasicSettings = false;
   totalPrice = 30;
   managersCount = 1;
   maxAvailableManagersCount = 999;
@@ -78,9 +79,15 @@ class PaymentStore {
     (isGracePeriod || isNotPaidPeriod) && setGracePeriodDays();
   };
 
+  setIsUpdatingBasicSettings = (isUpdatingBasicSettings) => {
+    this.isUpdatingBasicSettings = isUpdatingBasicSettings;
+  };
   basicSettings = async () => {
     const { currentTariffStatusStore } = authStore;
     const { setPortalTariff } = currentTariffStatusStore;
+
+    this.setIsUpdatingBasicSettings(true);
+
     const requests = [setPortalTariff()];
 
     this.isAlreadyPaid
@@ -90,10 +97,13 @@ class PaymentStore {
     try {
       await Promise.all(requests);
       this.setTariffDates();
+      this.setBasicTariffContainer();
     } catch (error) {
       toastr.error(t("Common:UnexpectedError"));
       console.error(error);
     }
+
+    this.setIsUpdatingBasicSettings(false);
   };
 
   init = async (t) => {
@@ -120,6 +130,7 @@ class PaymentStore {
       await Promise.all(requests);
       this.setRangeStepByQuota();
       this.setTariffDates();
+      this.setBasicTariffContainer();
 
       if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
     } catch (error) {
@@ -230,7 +241,10 @@ class PaymentStore {
     return this.managersCount * this.stepByQuotaForTotalSize;
   }
 
-  initTariffContainer = () => {
+  resetTariffContainerToBasic = () => {
+    this.setBasicTariffContainer();
+  };
+  setBasicTariffContainer = () => {
     const { currentQuotaStore } = authStore;
     const { currentPlanCost, maxCountManagersByQuota } = currentQuotaStore;
     const currentTotalPrice = currentPlanCost.value;

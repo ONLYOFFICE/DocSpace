@@ -60,7 +60,7 @@ const PriceCalculation = ({
   canUpdateTariff,
   isGracePeriod,
   isNotPaidPeriod,
-  initTariffContainer,
+
   priceManagerPerMonth,
   currencySymbol,
   isAlreadyPaid,
@@ -75,9 +75,7 @@ const PriceCalculation = ({
   }, [managersCount]);
 
   useEffect(async () => {
-    initTariffContainer();
     didMountRef.current = true;
-
     return () => {
       timeout && clearTimeout(timeout);
       timeout = null;
@@ -90,7 +88,6 @@ const PriceCalculation = ({
       setIsLoading(false);
       return;
     }
-
     setIsLoading(true);
 
     timeout && clearTimeout(timeout);
@@ -191,7 +188,7 @@ export default inject(({ auth, payments }) => {
     setIsLoading,
     setManagersCount,
     maxAvailableManagersCount,
-    initTariffContainer,
+
     managersCount,
     isAlreadyPaid,
     getPaymentLink,
@@ -220,7 +217,7 @@ export default inject(({ auth, payments }) => {
 
     isGracePeriod,
     isNotPaidPeriod,
-    initTariffContainer,
+
     priceManagerPerMonth: planCost.value,
     currencySymbol: planCost.currencySymbol,
     getPaymentLink,
