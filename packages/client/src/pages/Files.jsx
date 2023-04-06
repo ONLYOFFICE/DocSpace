@@ -187,13 +187,13 @@ const FilesSection = React.memo(({ withMainButton }) => {
         />
       )}
 
-      {/* <Route
+      <Route
         render={(location) => (
           <PrivateRoute location={location}>
             <Error404Route />
           </PrivateRoute>
         )}
-      /> */}
+      />
     </Switch>
   );
 });

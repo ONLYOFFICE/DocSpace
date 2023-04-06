@@ -38,7 +38,7 @@ const Wizard = React.lazy(() => import("./pages/Wizard"));
 const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
-// const MyProfile = React.lazy(() => import("./pages/My"));
+
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
 const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
@@ -118,14 +118,6 @@ const WizardRoute = (props) => (
   </React.Suspense>
 );
 
-// const MyProfileRoute = (props) => (
-//   <React.Suspense fallback={<AppLoader />}>
-//     <ErrorBoundary>
-//       <MyProfile {...props} />
-//     </ErrorBoundary>
-//   </React.Suspense>
-// );
-
 const FormGalleryRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -133,8 +125,6 @@ const FormGalleryRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
-
-// const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -438,12 +428,13 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           {!isMobileOnly && <MainBar />}
           <div className="main-container">
             <Switch>
-              <Redirect
+              <Route
                 exact
                 sensitive
-                from="/Products/Files/"
-                to="/rooms/shared"
+                path="/Products/Files/"
+                render={() => <Redirect to="/rooms/shared" />}
               />
+
               <Route
                 exact
                 path={[
