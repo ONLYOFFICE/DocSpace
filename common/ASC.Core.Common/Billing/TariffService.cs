@@ -430,6 +430,27 @@ public class TariffService : ITariffService
 
     public async Task<Uri> GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null)
     {
+        List<TenantQuota> newQuotas = new();
+
+        if (_billingClient.Configured)
+        {
+            var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible).ToList();
+            newQuotas = quantity.Select(item => allQuotas.FirstOrDefault(q => q.Name == item.Key)).ToList();
+
+            TenantQuota updatedQuota = null;
+            foreach (var addedQuota in newQuotas)
+            {
+                var qty = quantity[addedQuota.Name];
+
+                var quota = addedQuota;
+
+                quota *= qty;
+                updatedQuota += quota;
+            }
+
+            await updatedQuota.Check(_serviceProvider);
+        }
+
         var hasQuantity = quantity != null && quantity.Any();
         var key = "shopingurl_" + (hasQuantity ? string.Join('_', quantity.Keys.ToArray()) : "all");
         var url = _cache.Get<string>(key);
@@ -438,22 +459,6 @@ public class TariffService : ITariffService
             url = string.Empty;
             if (_billingClient.Configured)
             {
-                var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible);
-                var newQuotas = quantity.Select(item => allQuotas.FirstOrDefault(q => q.Name == item.Key));
-
-                TenantQuota updatedQuota = null;
-                foreach (var addedQuota in newQuotas)
-                {
-                    var qty = quantity[addedQuota.Name];
-
-                    var quota = addedQuota;
-
-                    quota *= qty;
-                    updatedQuota += quota;
-                }
-
-                await updatedQuota.Check(_serviceProvider);
-
                 var productIds = newQuotas.Select(q => q.ProductId);
 
                 try
