@@ -305,6 +305,15 @@ class PaymentStore {
     return this.isPayer;
   }
 
+  get canPayTariff() {
+    const { currentQuotaStore } = authStore;
+    const { addedManagersCount } = currentQuotaStore;
+
+    if (this.managersCount >= addedManagersCount) return true;
+
+    return false;
+  }
+
   setRangeStepByQuota = () => {
     const { paymentQuotasStore } = authStore;
     const {

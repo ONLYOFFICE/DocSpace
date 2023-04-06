@@ -30,8 +30,9 @@ const UpdatePlanButtonContainer = ({
   isLessCountThanAcceptable,
   currentTariffPlanTitle,
   t,
+  canPayTariff,
 }) => {
-  const updateMethod = async () => {
+  const onUpdateTariff = async () => {
     try {
       timerId = setTimeout(() => {
         setIsLoading(true);
@@ -105,12 +106,7 @@ const UpdatePlanButtonContainer = ({
     }, 2000);
   };
 
-  const onUpdateTariff = () => {
-    if (isAlreadyPaid) {
-      updateMethod();
-      return;
-    }
-
+  const goToStripePortal = () => {
     paymentLink
       ? window.open(paymentLink, "_blank")
       : toastr.error(t("ErrorNotification"));
@@ -126,18 +122,20 @@ const UpdatePlanButtonContainer = ({
     };
   }, []);
 
-  const switchPlanButton = (
+  const payTariffButton = (
     <Button
       label={t("UpgradeNow")}
       size={"medium"}
       primary
-      isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
-      onClick={onUpdateTariff}
+      isDisabled={
+        isLessCountThanAcceptable || !canPayTariff || isLoading || isDisabled
+      }
+      onClick={goToStripePortal}
       isLoading={isLoading}
     />
   );
 
-  const updatingPlanButton = () => {
+  const updatingCurrentTariffButton = () => {
     const isDowngradePlan = managersCount < maxCountManagersByQuota;
     const isTheSameCount = managersCount === maxCountManagersByQuota;
 
@@ -163,7 +161,7 @@ const UpdatePlanButtonContainer = ({
 
   return (
     <StyledBody>
-      {isAlreadyPaid ? updatingPlanButton() : switchPlanButton}
+      {isAlreadyPaid ? updatingCurrentTariffButton() : payTariffButton}
     </StyledBody>
   );
 };
@@ -187,9 +185,11 @@ export default inject(({ auth, payments }) => {
     isLessCountThanAcceptable,
     accountLink,
     isAlreadyPaid,
+    canPayTariff,
   } = payments;
 
   return {
+    canPayTariff,
     isAlreadyPaid,
     setIsLoading,
     paymentLink,
