@@ -145,15 +145,6 @@ public class TariffService : ITariffService
         _cache = _tariffServiceStorage.Cache;
         _notify = _tariffServiceStorage.Notify;
         _dbContextFactory = coreDbContextManager;
-        //var range = (_configuration["core.payment-user-range"] ?? "").Split('-');
-        //if (!int.TryParse(range[0], out _activeUsersMin))
-        //{
-        //    _activeUsersMin = 0;
-        //}
-        //if (range.Length < 2 || !int.TryParse(range[1], out _activeUsersMax))
-        //{
-        //    _activeUsersMax = constants.MaxEveryoneCount;
-        //}
     }
 
     public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
@@ -190,8 +181,9 @@ public class TariffService : ITariffService
 
                     var asynctariff = CreateDefault(true);
                     string email = null;
+                    TenantQuota updatedQuota = null;
 
-                    foreach (var currentPayment in currentPayments)
+                    foreach (var currentPayment in currentPayments.OrderBy(r => r.EndDate))
                     {
                         var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
                         if (quota == null)
@@ -206,7 +198,12 @@ public class TariffService : ITariffService
 
                         asynctariff.Quotas.Add(new Quota(quota.Tenant, currentPayment.Quantity));
                         email = currentPayment.PaymentEmail;
+
+                        quota *= currentPayment.Quantity;
+                        updatedQuota += quota;
                     }
+
+                    updatedQuota.Check(_serviceProvider).Wait();
 
                     if (!string.IsNullOrEmpty(email))
                     {
@@ -219,8 +216,22 @@ public class TariffService : ITariffService
                         tariff = asynctariff;
                         tariffId = asynctariff.Id;
                     }
+
                 }
-                catch (BillingNotFoundException)
+                catch (Exception error)
+                {
+                    if (tariff.Id != 0)
+                    {
+                        tariffId = tariff.Id;
+                    }
+
+                    if (error is not BillingNotFoundException)
+                    {
+                        LogError(error, tenantId.ToString());
+                    }
+                }
+
+                if (!tariffId.HasValue || tariffId.Value == 0)
                 {
                     var freeTariff = tariff.Quotas.FirstOrDefault(tariffRow =>
                     {
@@ -246,10 +257,6 @@ public class TariffService : ITariffService
                         tariff = asynctariff;
                         tariffId = asynctariff.Id;
                     }
-                }
-                catch (Exception error)
-                {
-                    LogError(error, tenantId.ToString());
                 }
             }
         }
