@@ -51,6 +51,10 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
   let assets: assetsType;
   let standalone = false;
 
+  if (url === "/health") {
+    return res.send({ status: "Healthy" });
+  }
+
   initSSR(headers);
 
   try {

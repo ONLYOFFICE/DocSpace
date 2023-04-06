@@ -1984,7 +1984,7 @@ class FilesActionStore {
         .finally(() => setIsLoading(false));
     } else {
       if (canConvert) {
-        setConvertItem(item);
+        setConvertItem({ ...item, isOpen: true });
         setConvertDialogVisible(true);
         return;
       }

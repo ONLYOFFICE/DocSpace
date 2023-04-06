@@ -1,7 +1,7 @@
 {
   "ClickHere": "Click here",
   "ConfirmEmailDescription": "Use the link provided in the activation email. Haven't received an email with the activation link?",
-  "ConfirmEmailHeader": "Please activate your email to get access to the DocSpace features.",
+  "ConfirmEmailHeader": "Please activate your email ({{ email }}) to get access to the DocSpace features.",
   "RequestActivation": "Request activation once again",
   "RoomQuotaDescription": "You can archive the unnecessary rooms or <1>{{clickHere}}</1> to find a more suitable pricing plan for your DocSpace.",
   "RoomQuotaHeader": "The number of rooms is about to be exceeded: {{currentValue}} / {{maxValue}}",
