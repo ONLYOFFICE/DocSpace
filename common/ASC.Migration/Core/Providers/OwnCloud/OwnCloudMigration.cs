@@ -126,7 +126,7 @@ public class OwnCloudMigration : AbstractMigration<OCMigrationInfo, OCMigratingU
                     {
                         var userName = item.Data.DisplayName.Split(' ');
                         item.Data.DisplayName = userName.Length > 1 ? string.Format("{0} {1}", userName[0], userName[1]).Trim() : userName[0].Trim();
-                        var user = new OCMigratingUser(_globalFolderHelper, _daoFactory, _fileSecurity, _fileStorageService, _tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
+                        var user = new OCMigratingUser(_globalFolderHelper, _daoFactory, _fileStorageService, _tenantManager, _userManager, item.Uid, item, Directory.GetDirectories(_tmpFolder)[0], Log);
                         user.Parse();
                         foreach (var element in user.ModulesList)
                         {

@@ -47,7 +47,7 @@ public class UserCommands : CommandContext
             return;
         }
 
-        return await InternalStartCommandAsync(token);
+        await InternalStartCommandAsync(token);
     }
 
     private async Task InternalStartCommandAsync(string token)
