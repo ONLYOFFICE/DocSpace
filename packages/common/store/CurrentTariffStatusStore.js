@@ -1,10 +1,12 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "../api";
 import { TariffState } from "../constants";
+import { getUserByEmail } from "../api/people";
 
 class CurrentTariffStatusStore {
   portalTariffStatus = {};
   isLoaded = false;
+  payerInfo = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -54,6 +56,16 @@ class CurrentTariffStatusStore {
     return this.portalTariffStatus.portalStatus;
   }
 
+  setPayerInfo = async () => {
+    try {
+      const result = await getUserByEmail(this.customerId);
+      if (!result) return;
+
+      this.payerInfo = result;
+    } catch (e) {
+      console.error(e);
+    }
+  };
   setPortalTariff = async () => {
     const res = await api.portal.getPortalTariff();
 

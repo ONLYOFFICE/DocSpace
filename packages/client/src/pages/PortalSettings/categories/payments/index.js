@@ -16,6 +16,7 @@ const PaymentsPage = ({
   isLoadedCurrentQuota,
   isInitPaymentPage,
   init,
+  isUpdatingTariff,
 }) => {
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
@@ -33,7 +34,7 @@ const PaymentsPage = ({
     init(t);
   }, [isLoadedTariffStatus, isLoadedCurrentQuota, ready]);
 
-  return !isInitPaymentPage || !ready ? (
+  return !isInitPaymentPage || !ready || isUpdatingTariff ? (
     <Loaders.PaymentsLoader />
   ) : (
     <PaymentContainer t={t} />
@@ -45,13 +46,19 @@ PaymentsPage.propTypes = {
 };
 
 export default inject(({ auth, payments }) => {
-  const { language, currentQuotaStore, currentTariffStatusStore } = auth;
+  const {
+    language,
+    currentQuotaStore,
+    currentTariffStatusStore,
+    isUpdatingTariff,
+  } = auth;
 
   const { isLoaded: isLoadedCurrentQuota } = currentQuotaStore;
   const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
   const { isInitPaymentPage, init } = payments;
 
   return {
+    isUpdatingTariff,
     init,
     isInitPaymentPage,
     language,

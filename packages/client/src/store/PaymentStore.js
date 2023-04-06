@@ -81,8 +81,9 @@ class PaymentStore {
   init = async (t) => {
     if (this.isInitPaymentPage) return;
 
-    const { currentTariffStatusStore, paymentQuotasStore } = authStore;
-    const { customerId } = currentTariffStatusStore;
+    const { paymentQuotasStore, currentTariffStatusStore } = authStore;
+    const { setPayerInfo } = currentTariffStatusStore;
+
     const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
 
     const requests = [this.getSettingsPayment()];
@@ -105,11 +106,7 @@ class PaymentStore {
       return;
     }
 
-    try {
-      if (this.isAlreadyPaid) this.payerInfo = await getUserByEmail(customerId);
-    } catch (e) {
-      console.error(e);
-    }
+    if (this.isAlreadyPaid) await setPayerInfo();
 
     this.isInitPaymentPage = true;
   };

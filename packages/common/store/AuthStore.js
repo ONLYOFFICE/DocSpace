@@ -30,6 +30,7 @@ class AuthStore {
   isInit = false;
 
   isLogout = false;
+  isUpdatingTariff = false;
 
   constructor() {
     this.userStore = new UserStore();
@@ -58,11 +59,32 @@ class AuthStore {
       console.log(`[WS] change-quota-feature-value ${featureId}:${value}`);
 
       runInAction(() => {
+        if (featureId === "free") {
+          this.updateTariff();
+          return;
+        }
+
         this.currentQuotaStore.updateQuotaFeatureValue(featureId, value);
       });
     });
   }
 
+  setIsUpdatingTariff = (isUpdatingTariff) => {
+    this.isUpdatingTariff = isUpdatingTariff;
+  };
+
+  updateTariff = async () => {
+    this.setIsUpdatingTariff(true);
+
+    await Promise.all([
+      this.currentQuotaStore.setPortalQuota(),
+      this.currentTariffStatusStore.setPortalTariff(),
+    ]);
+
+    await this.currentTariffStatusStore.setPayerInfo();
+
+    this.setIsUpdatingTariff(false);
+  };
   init = async (skipRequest = false) => {
     if (this.isInit) return;
     this.isInit = true;
