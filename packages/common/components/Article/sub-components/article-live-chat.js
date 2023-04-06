@@ -1,55 +1,82 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Zendesk, { ZendeskAPI } from "@docspace/common/components/Zendesk";
 import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "../../../constants";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
-const ArticleLiveChat = ({ language, email, zendeskKey }) => {
-  // const setting = {
-  //   webWidget: {
-  //     //offset: { horizontal: "100px", vertical: "150px" },
-  //     // mobile: {
-  //     //   horizontal: "230px",
-  //     //   vertical: "100px",
-  //     // },
-  //     chat: {
-  //       connectOnPageLoad: false,
-  //     },
-  //   },
-  //   // color: {
-  //   //   theme: "#000",
-  //   // },
-  //   // launcher: {
-  //   //   chatLabel: {
-  //   //     "en-US": "Need Help",
-  //   //   },
-  //   // },
-  //   contactForm: {
-  //     fields: [{ id: "email", prefill: { "*": email } }],
-  //   },
-  // };
+const ArticleLiveChat = ({
+  languageBaseName,
+  email,
+  displayName,
+  currentColorScheme,
+  withMainButton,
+  isMobileArticle,
+  zendeskKey,
+}) => {
+  const { t, ready } = useTranslation("Common");
+  useEffect(() => {
+    //console.log("Zendesk useEffect", { withMainButton, isMobileArticle });
+    ZendeskAPI("webWidget", "updateSettings", {
+      offset:
+        withMainButton && isMobileArticle
+          ? { horizontal: "68px", vertical: "11px" }
+          : { horizontal: "4px", vertical: "11px" },
+    });
+  }, [withMainButton, isMobileArticle]);
 
-  const onZendeskLoaded = React.useCallback(() => {
-    console.log("Zendesk is loaded", { email, language });
+  useEffect(() => {
+    //console.log("Zendesk useEffect", { languageBaseName });
+    ZendeskAPI("webWidget", "setLocale", languageBaseName);
 
+    ready &&
+      ZendeskAPI("webWidget", "updateSettings", {
+        launcher: {
+          label: {
+            "*": t("Common:Support"),
+          },
+          chatLabel: {
+            "*": t("Common:Support"),
+          },
+        },
+      });
+  }, [languageBaseName, ready]);
+
+  useEffect(() => {
+    //console.log("Zendesk useEffect", { currentColorScheme });
+    ZendeskAPI("webWidget", "updateSettings", {
+      color: {
+        theme: currentColorScheme?.main?.accent,
+      },
+    });
+  }, [currentColorScheme?.main?.accent]);
+
+  useEffect(() => {
+    //console.log("Zendesk useEffect", { email, displayName });
+    ZendeskAPI("webWidget", "prefill", {
+      email: {
+        value: email,
+        //readOnly: true, // optional
+      },
+      name: {
+        value: displayName ? displayName.trim() : "",
+        //readOnly: true, // optional
+      },
+    });
+  }, [email, displayName]);
+
+  const onZendeskLoaded = () => {
     const isShowLiveChat =
       localStorage.getItem(LIVE_CHAT_LOCAL_STORAGE_KEY) === "true" || false;
 
     ZendeskAPI("webWidget", isShowLiveChat ? "show" : "hide");
-    ZendeskAPI("webWidget", "setLocale", language);
-    ZendeskAPI("webWidget", "prefill", {
-      email: {
-        value: email,
-        //creadOnly: true, // optional
-      },
-    });
-  }, [language, email]);
+  };
 
   return zendeskKey ? (
     <Zendesk
       defer
       zendeskKey={zendeskKey}
       onLoaded={onZendeskLoaded}
-      //{...setting}
+      zIndex={99}
     />
   ) : (
     <></>
@@ -60,15 +87,17 @@ ArticleLiveChat.displayName = "LiveChat";
 
 export default inject(({ auth }) => {
   const { settingsStore, languageBaseName, userStore } = auth;
-  const { theme, zendeskKey } = settingsStore;
+  const { theme, zendeskKey, isMobileArticle } = settingsStore;
 
   const { user } = userStore;
-  const { email } = user;
+  const { email, displayName } = user;
 
   return {
     email,
-    language: languageBaseName,
+    displayName,
+    languageBaseName,
     theme,
     zendeskKey,
+    isMobileArticle,
   };
 })(observer(ArticleLiveChat));
