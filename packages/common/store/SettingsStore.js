@@ -122,6 +122,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  bookTrainingEmail = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
 
@@ -548,9 +549,13 @@ class SettingsStore {
     this.currentProductId = currentProductId;
   };
 
+  setPortalOwner = (owner) => {
+    this.owner = owner;
+  };
+
   getPortalOwner = async () => {
     const owner = await api.people.getUserById(this.ownerId);
-    this.owner = owner;
+    this.setPortalOwner(owner);
     return owner;
   };
 

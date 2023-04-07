@@ -1253,7 +1253,9 @@ class FilesStore {
               (rootFolderType === Rooms || rootFolderType === Archive);
 
             if (parentId === rootFolderId) {
-              this.isMuteCurrentRoomNotifications = mute;
+              runInAction(() => {
+                this.isMuteCurrentRoomNotifications = mute;
+              });
             }
 
             return {
@@ -1801,6 +1803,7 @@ class FilesStore {
 
       let roomOptions = [
         "select",
+        "open",
         "separator0",
         "link-for-room-members",
         "reconnect-storage",

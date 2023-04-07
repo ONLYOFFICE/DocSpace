@@ -7,6 +7,7 @@ import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 
 import AlertComponent from "../../AlertComponent";
+import Loaders from "../../Loaders";
 
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
@@ -91,7 +92,7 @@ export default withRouter(
   inject(({ auth }) => {
     const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
     const { currentTariffPlanTitle } = currentQuotaStore;
-    const { theme } = settingsStore;
+    const { theme, toggleArticleOpen } = settingsStore;
     const {
       setPortalPaymentQuotas,
       planCost,
@@ -99,6 +100,7 @@ export default withRouter(
     } = paymentQuotasStore;
 
     return {
+      toggleArticleOpen,
       setPortalPaymentQuotas,
       pricePerManager: planCost.value,
       theme,

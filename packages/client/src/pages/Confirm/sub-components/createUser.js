@@ -40,7 +40,15 @@ import {
 } from "./StyledCreateUser";
 
 const CreateUserForm = (props) => {
-  const { settings, t, greetingTitle, providers, isDesktop, linkData } = props;
+  const {
+    settings,
+    t,
+    greetingTitle,
+    providers,
+    isDesktop,
+    linkData,
+    capabilities,
+  } = props;
   const inputRef = React.useRef(null);
 
   const emailFromLink = linkData.email ? linkData.email : "";
@@ -94,7 +102,7 @@ const CreateUserForm = (props) => {
   }, []);*/
 
   useEffect(() => {
-    const { isAuthenticated, logout, linkData, capabilities } = props;
+    const { isAuthenticated, logout, linkData } = props;
 
     if (isAuthenticated) {
       const path = window.location;
@@ -203,15 +211,10 @@ const CreateUserForm = (props) => {
 
   const authCallback = (profile) => {
     const { defaultPage } = props;
-    const { FirstName, LastName, EMail, Serialized } = profile;
 
     const signupAccount = {
-      EmployeeType: null,
-      FirstName: FirstName,
-      LastName: LastName,
-      Email: EMail,
-      PasswordHash: "",
-      SerializedProfile: Serialized,
+      EmployeeType: linkData.emplType || null,
+      SerializedProfile: profile,
     };
 
     signupOAuth(signupAccount)
@@ -279,8 +282,15 @@ const CreateUserForm = (props) => {
   };
 
   const onSocialButtonClick = useCallback((e) => {
-    const providerName = e.target.dataset.providername;
-    const url = e.target.dataset.url;
+    const { target } = e;
+    let targetElement = target;
+
+    if (!(targetElement instanceof HTMLButtonElement) && target.parentElement) {
+      targetElement = target.parentElement;
+    }
+
+    const providerName = targetElement.dataset.providername;
+    const url = targetElement.dataset.url || "";
 
     try {
       const tokenGetterWin = isDesktop
@@ -350,6 +360,8 @@ const CreateUserForm = (props) => {
   };
 
   const oauthDataExists = () => {
+    if (!capabilities?.oauthEnabled) return false;
+
     let existProviders = 0;
     providers && providers.length > 0;
     providers.map((item) => {

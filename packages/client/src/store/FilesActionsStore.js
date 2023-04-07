@@ -1454,9 +1454,9 @@ class FilesActionStore {
 
     switch (option) {
       case "copy":
-        const canCopy = selection.map((s) => s.security?.Copy).filter((s) => s);
+        const canCopy = selection.every((s) => s.security?.Copy);
 
-        return hasSelection && canCopy.length > 0;
+        return hasSelection && canCopy;
       case "showInfo":
       case "download":
         return hasSelection;
@@ -1474,18 +1474,13 @@ class FilesActionStore {
 
       case "archive":
       case "unarchive":
-        const canArchive = selection
-          .map((s) => s.security?.Move)
-          .filter((s) => s);
+        const canArchive = selection.every((s) => s.security?.Move);
 
-        return canArchive.length > 0;
+        return canArchive;
       case "delete-room":
-        const canRemove = selection
-          .map((s) => s.security?.Delete)
-          .filter((r) => r);
+        const canRemove = selection.every((s) => s.security?.Delete);
 
-        return canRemove.length > 0;
-
+        return canRemove;
       case "delete":
         const canDelete = selection.every((s) => s.security?.Delete);
 
@@ -1988,7 +1983,7 @@ class FilesActionStore {
         .finally(() => setIsLoading(false));
     } else {
       if (canConvert) {
-        setConvertItem(item);
+        setConvertItem({ ...item, isOpen: true });
         setConvertDialogVisible(true);
         return;
       }

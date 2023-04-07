@@ -4,6 +4,7 @@ import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 
 import AlertComponent from "../../AlertComponent";
+import Loaders from "../../Loaders";
 
 const ArticleTeamTrainingAlert = ({ theme, bookTrainingEmail }) => {
   const { t, ready } = useTranslation("Common");

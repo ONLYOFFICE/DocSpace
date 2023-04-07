@@ -1,4 +1,5 @@
 {
+  "CancelUpload": "上传已中断。一些文件未上传成功。",
   "EnterPassword": "输入密码",
   "HideInput": "隐藏",
   "Ready": "完成",

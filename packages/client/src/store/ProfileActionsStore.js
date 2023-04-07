@@ -94,8 +94,9 @@ class ProfileActionsStore {
   onProfileClick = () => {
     //TODO: add check manager
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { isRoomAdmin } = this.authStore;
 
-    if (isAdmin || isOwner) {
+    if (isAdmin || isOwner || isRoomAdmin) {
       this.selectedFolderStore.setSelectedFolder(null);
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }

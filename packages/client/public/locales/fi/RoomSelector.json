@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Ole hyvä ja luo ensimmäinen huone Minun huoneet-osioon.",
+  "EmptyRoomsHeader": "Täällä ei ole vielä huoneita",
+  "RoomList": "Huonelista",
+  "SearchEmptyRoomsDescription": "Tätä suodatinta vastaavia huoneita ei ole. Kokeile erilaista tai tyhjennä suodatin nähdäksesi kaikki huoneet."
+}

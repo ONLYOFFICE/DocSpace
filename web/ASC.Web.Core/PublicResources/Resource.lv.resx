@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Validācijas koda lauks nedrīkst būt tukšs</value>
@@ -121,6 +121,9 @@
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Attēla faila izmērs ir pārāk liels</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Piekļuve portālam ierobežota</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Jūsu maksājumu plāns neatbalsta šo iespēju</value>
   </data>
@@ -169,11 +172,122 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Links jūsu akaunta apstiprinājumam tika nosūtīts uz noradītu e-pastu</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Vārds</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Uzvārds</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Savienojuma kļūda</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Lietotājus neizdevās izveidot, saņemtie dati nav pareizi.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Serverim neizdevās iegūt iestatījumus</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Serverim neizdevās noglabāt iestatījumus.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Nepareizs logins vai paroli.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP domēns nav atrasts.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Nav atrastas grupas.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Nederīga lietotāja filtra vērtība</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Nezināma kļūda</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Neizdevās atrast lietotājus</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Neizdevās iegūt grupas atribūtu vienai vai vairākām grupām.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Nepareizs grupas filtrs.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Neizdevās iegūt grupas atribūtu vienai vai vairākām grupām.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Neizdevās iegūt pieslēgšanās atribūtu vienam vai vairākiem lietotājiem.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Neizdevās pieslēgties LDAP serverim. Lūdzu, pārbaudiet, vai servera adrese un porta numurs ir pareizi.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Neizdevās iegūt lietotāja atribūtu vienam vai vairākiem lietotājiem.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Iekšēja servera kļūda.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>LDAP lietotāju pārveidošana par parastiem portāla lietotājiem</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>lietotāja pievienošana</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Sertifikāta pārbaude</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>LDAP atbalsta uzstādījumu pārbaude</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP atvienošana</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Atjaunot grupu sarakstu no LDAP servera</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Iegūt lietotāju sarakstu no LDAP servera</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>LDAP bāzes informācijas ielāde</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>lietotāja noņemšana</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Novecojušu grupu noņemšana, kuras ir iepriekš ielādētas ar LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Novecojušu profilu atspējošana, kuri ir ielādēti iepriekš ar LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Grupu saglabāšana</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Saglabāšanas uzstādījumi</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Lietotāju saglabāšana</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Lietotāju sinhronizācija</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Ir nepieciešams drošās autentifikācijas veids. Lūdzu, izmantojiet šifrēto savienojumu vai iespējojiet autentifikāciju serverī.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Ir sasniegts šībrīža cenu plāna lietotāju limits.</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>Šībrīža LDAP serveris neatbalsta StartTLS</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Par daudz LDAP darbību</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Neizdevās iegūt lietotāja/grupas objektu unikālo ID. Sistēma pēc noklusējuma mēģinās saskaņot vienu no šādiem identifikatoriem: entryUUID, nsuniqueid, GUID, objectSid. Ja neviens no atribūtiem neatbilst jūsu LDAP serverim, lūdzu, precizējiet nepieciešamo atribūtu ldap.unique.id iestatījumā web.appsettings.config failā.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Licence nav pareiza</value>
@@ -201,6 +315,9 @@
   </data>
   <data name="Owner" xml:space="preserve">
     <value>Īpašnieks</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Portāla nosaukums</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Piekļuve portālam</value>

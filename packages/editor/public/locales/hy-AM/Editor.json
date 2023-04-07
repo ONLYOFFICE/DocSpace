@@ -5,5 +5,6 @@
   "ImageFileType": "Պատկերներ",
   "MailMergeFileType": "Ընտրել ֆայլը XLSX ձևաչափով",
   "OpenSavedDocument": "Բացել պահպանված փաստաթուղթը նոր ներդիրում",
-  "SelectFilesType": "Ընտրեք տեսակի ֆայլեր՝ {{fileType}}"
+  "SelectFilesType": "Ընտրեք տեսակի ֆայլեր՝ {{fileType}}",
+  "UsersWithoutAccess": "Որոշ օգտատերեր, որոնց ցանկանում եք նշել, մուտք չունեն սենյակ. {{users}}"
 }

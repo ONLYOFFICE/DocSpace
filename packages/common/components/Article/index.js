@@ -159,6 +159,7 @@ const Article = ({
         <SubArticleHeader showText={showText}>
           {articleHeaderContent ? articleHeaderContent.props.children : null}
         </SubArticleHeader>
+
         {articleMainButtonContent &&
         withMainButton &&
         !isMobileOnly &&
@@ -167,6 +168,7 @@ const Article = ({
             {articleMainButtonContent.props.children}
           </SubArticleMainButton>
         ) : null}
+
         <SubArticleBody showText={showText}>
           {articleBodyContent ? articleBodyContent.props.children : null}
           <HideArticleMenuButton
@@ -180,7 +182,12 @@ const Article = ({
 
           <ArticleAlerts />
 
-          {!isMobile && isLiveChatAvailable && <ArticleLiveChat />}
+          {!isMobile && isLiveChatAvailable && (
+            <ArticleLiveChat
+              currentColorScheme={currentColorScheme}
+              withMainButton={withMainButton && !!articleMainButtonContent}
+            />
+          )}
         </SubArticleBody>
       </StyledArticle>
       {articleOpen && (isMobileOnly || window.innerWidth <= 375) && (
@@ -188,6 +195,7 @@ const Article = ({
           <SubArticleBackdrop onClick={toggleArticleOpen} />
         </>
       )}
+
       {articleMainButtonContent && (isMobileOnly || isMobileUtils()) ? (
         <SubArticleMainButton showText={showText}>
           {articleMainButtonContent.props.children}
@@ -207,6 +215,11 @@ const Article = ({
       />
     );
   };
+
+  // console.log("Article render", {
+  //   articleMainButton: !!articleMainButtonContent,
+  //   withMainButton,
+  // });
 
   return isMobileOnly ? renderPortalArticle() : articleComponent;
 };

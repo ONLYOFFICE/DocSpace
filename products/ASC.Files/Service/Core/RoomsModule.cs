@@ -37,18 +37,21 @@ public class RoomsModule : FeedModule
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
     private readonly FileSecurity _fileSecurity;
+    private readonly TenantUtil _tenantUtil;
 
     public RoomsModule(
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory)
+        IDaoFactory daoFactory,
+        TenantUtil tenantUtil)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
+        _tenantUtil = tenantUtil;
     }
 
     public override string Name => Constants.RoomsModule;
@@ -111,7 +114,9 @@ public class RoomsModule : FeedModule
 
         if (shareRecord == null)
         {
-            return new Feed.Aggregator.Feed(room.CreateBy, room.CreateOn)
+            var roomCreatedUtc = _tenantUtil.DateTimeToUtc(room.CreateOn);
+            
+            return new Feed.Aggregator.Feed(room.CreateBy, roomCreatedUtc)
             {
                 Item = RoomItem,
                 ItemId = room.Id.ToString(),
@@ -123,7 +128,7 @@ public class RoomsModule : FeedModule
                 Keywords = room.Title,
                 AdditionalInfo = ((int)room.FolderType).ToString(),
                 AdditionalInfo4 = room.Private ? "private" : null,
-                GroupId = GetGroupId(RoomItem, room.CreateBy, room.CreateOn, room.ParentId.ToString())
+                GroupId = GetGroupId(RoomItem, room.CreateBy, roomCreatedUtc, room.ParentId.ToString())
             };
         }
 

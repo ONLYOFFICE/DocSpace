@@ -6,11 +6,14 @@
   "EnableUserButton": "Etkinleştir",
   "InviteLinkTitle": "Davet Bağlantısı",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "İsmi değiştir",
   "PasswordChangeButton": "Şifreyi değiştir",
   "PendingTitle": "Bekliyor",
   "RemoveData": "Kişisel bilgileri sil",
+  "ResetAuth": "Kimlik doğrulamayı sıfırlayın",
   "SendInviteAgain": "Bir kez daha davetiye gönder",
   "SuccessChangeUserStatus": "Kullanıcı durumu başarıyla değiştirildi",
   "SuccessDeletePersonalData": "Kişisel veriler başarıyla silindi",
-  "SuccessSentInvitation": "Davetiye başarıyla gönderildi"
+  "SuccessSentInvitation": "Davetiye başarıyla gönderildi",
+  "SuccessSentMultipleInvitatios": "Davetiyeler başarıyla gönderildi"
 }
