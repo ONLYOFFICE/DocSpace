@@ -318,6 +318,7 @@ export default inject(({ auth, profileActionsStore }) => {
 
   return {
     isAdmin: user?.isAdmin,
+    userEmail: user?.email,
     withActivationBar,
     sendActivationLink,
 
@@ -338,6 +339,5 @@ export default inject(({ auth, profileActionsStore }) => {
 
     currentColorScheme,
     setMainBarVisible,
-    userEmail: user.email,
   };
 })(withTranslation(["Profile", "Common"])(withRouter(observer(Bar))));
