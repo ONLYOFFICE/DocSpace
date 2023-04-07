@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Billing;
-
 namespace ASC.Core.Caching;
 
 [Singletone]
@@ -94,19 +92,13 @@ class CachedQuotaService : IQuotaService
         var quotas = Cache.Get<IEnumerable<TenantQuota>>(QuotaServiceCache.KeyQuota);
         if (quotas == null)
         {
-            return await GetTenantQuotasInternalAsync();
+            quotas = await Service.GetTenantQuotasAsync();
+            if (QuotaServiceCache.QuotaCacheEnabled)
+            {
+                Cache.Insert(QuotaServiceCache.KeyQuota, quotas, DateTime.UtcNow.Add(_cacheExpiration));
+            }
         }
 
-        return quotas;
-    }
-
-    private async Task<IEnumerable<TenantQuota>> GetTenantQuotasInternalAsync()
-    {
-        var quotas = await Service.GetTenantQuotasAsync();
-        if (QuotaServiceCache.QuotaCacheEnabled)
-        {
-            Cache.Insert(QuotaServiceCache.KeyQuota, quotas, DateTime.UtcNow.Add(_cacheExpiration));
-        }
         return quotas;
     }
 
