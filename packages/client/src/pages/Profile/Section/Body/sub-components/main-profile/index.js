@@ -53,6 +53,7 @@ const MainProfile = (props) => {
     sendActivationLink,
     currentColorScheme,
     updateProfileCulture,
+    documentationEmail,
   } = props;
 
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
@@ -83,19 +84,17 @@ const MainProfile = (props) => {
     ? profile.avatarMax
     : DefaultUserAvatarMax;
 
-  const supportEmail = "documentation@onlyoffice.com";
-
   const tooltipLanguage = (
     <Text fontSize="13px">
       <Trans t={t} i18nKey="NotFoundLanguage" ns="Common">
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
         <Link
-          href={`mailto:${supportEmail}`}
+          href={`mailto:${documentationEmail}`}
           isHovered={true}
           color={theme.profileInfo.tooltipLinkColor}
         >
-          {{ supportEmail }}
+          {{ supportEmail: documentationEmail }}
         </Link>
         to take part in the translation and get up to 1 year free of charge."
       </Trans>{" "}
@@ -431,7 +430,13 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const { theme, helpLink, culture, currentColorScheme } = auth.settingsStore;
+  const {
+    theme,
+    helpLink,
+    culture,
+    currentColorScheme,
+    documentationEmail,
+  } = auth.settingsStore;
   const { setIsLoading } = peopleStore.loadingStore;
 
   const {
@@ -465,5 +470,6 @@ export default inject(({ auth, peopleStore }) => {
     sendActivationLink,
     currentColorScheme,
     updateProfileCulture,
+    documentationEmail,
   };
 })(withCultureNames(observer(MainProfile)));

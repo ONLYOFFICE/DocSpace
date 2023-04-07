@@ -122,6 +122,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  documentationEmail = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
 
