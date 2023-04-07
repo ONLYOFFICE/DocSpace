@@ -149,6 +149,10 @@ const StyledTableRow = styled(TableRow)`
     }
   }
 
+  .item-file-name {
+    padding: 12px 12px 12px 0px;
+  }
+
   ${(props) =>
     props.showHotkeyBorder &&
     css`

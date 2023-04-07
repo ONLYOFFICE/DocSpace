@@ -54,6 +54,10 @@ const SimpleFilesTileContent = styled(TileContent)`
     }
   }
 
+  .item-file-name {
+    padding: 12px 12px 12px 0px;
+  }
+
   ${({ isRooms }) =>
     isRooms &&
     css`
