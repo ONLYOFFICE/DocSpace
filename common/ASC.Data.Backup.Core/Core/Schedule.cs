@@ -40,12 +40,12 @@ public class Schedule
         _tenantUtil = tenantUtil;
     }
 
-    public bool IsToBeProcessed(BackupSchedule backupSchedule)
+    public async Task<bool> IsToBeProcessedAsync(BackupSchedule backupSchedule)
     {
         try
         {
             var cron = new CronExpression(backupSchedule.Cron);
-            var tenant = _tenantManager.GetTenant(backupSchedule.TenantId);
+            var tenant = await _tenantManager.GetTenantAsync(backupSchedule.TenantId);
             var tenantTimeZone = tenant.TimeZone;
             var culture = tenant.GetCulture();
             CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;

@@ -92,7 +92,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
         _logger.DebugStartedToSchedule();
 
-        var backupsToSchedule = (await backupRepository.GetBackupSchedulesAsync()).Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
+        var backupsToSchedule = await (await backupRepository.GetBackupSchedulesAsync()).ToAsyncEnumerable().WhereAwait(async schedule => await backupSchedule.IsToBeProcessedAsync(schedule)).ToListAsync();
 
         _logger.DebugBackupsSchedule(backupsToSchedule.Count);
 
