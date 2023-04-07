@@ -378,15 +378,15 @@ DropDownContainer.propTypes = {
   directionY: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Accepts id */
   id: PropTypes.string,
-  /** Required if you need to specify the exact width of the component, for example 100% */
+  /** Required for specifying the exact width of the component, for example, 100% */
   manualWidth: PropTypes.string,
-  /** Required if you need to specify the exact distance from the parent component */
+  /** Required for specifying the exact distance from the parent component */
   manualX: PropTypes.string,
-  /** Required if you need to specify the exact distance from the parent component */
+  /** Required for specifying the exact distance from the parent component */
   manualY: PropTypes.string,
   /** Required if the scrollbar is displayed */
   maxHeight: PropTypes.number,
-  /** Tells when the dropdown should be opened */
+  /** Sets the dropdown to be opened */
   open: PropTypes.bool,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
@@ -394,16 +394,16 @@ DropDownContainer.propTypes = {
   withBackdrop: PropTypes.bool,
   /** Count of columns */
   columnCount: PropTypes.number,
-  /** Display disabled items or not */
+  /** Sets the disabled items to display */
   showDisabledItems: PropTypes.bool,
   forwardedRef: PropTypes.shape({ current: PropTypes.any }),
-  /** Defines the operation mode of the component, by default with the portal */
+  /** Sets the operation mode of the component. The default option is set to portal mode */
   isDefaultMode: PropTypes.bool,
-  /** Needed to open correctly people and group selector when the section width is small */
+  /** Used to open people and group selectors correctly when the section width is small */
   smallSectionWidth: PropTypes.bool,
-  /** It is necessary when we explicitly set the direction, disables check position */
+  /** Disables check position. Used to set the direction explicitly */
   fixedDirection: PropTypes.bool,
-  /**Enable blur for backdrop */
+  /**Enables blur for backdrop */
   withBlur: PropTypes.bool,
 
   offsetLeft: PropTypes.number,
