@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Navigate, Route } from "react-router-dom";
+import { Navigate, Route, useLocation } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import AppLoader from "../AppLoader";
@@ -18,13 +18,15 @@ const PrivateRoute = ({ children, ...rest }) => {
     user,
 
     wizardCompleted,
-    location,
+
     tenantStatus,
     isNotPaidPeriod,
     withManager,
     withCollaborator,
     isLogout,
   } = rest;
+
+  const location = useLocation();
 
   const renderComponent = () => {
     const isPortalUrl = location.pathname === "/preparation-portal";

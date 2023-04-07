@@ -26,58 +26,56 @@ const Error404Route = (props) => (
 const HomeRedirectToFilter = () => {
   const filter = Filter.getDefault();
   const urlFilter = filter.toUrlParams();
+  console.log("call");
   return <Navigate replace to={`/accounts/filter?${urlFilter}`} />;
 };
 
 const PeopleSection = React.memo(() => {
+  console.log("call 2");
   return (
     <Routes>
       <Route
-        exact
-        path={["/accounts/view/@self"]}
-        render={(location) => (
+        path="/view/@self"
+        element={
           <PrivateRoute location={location}>
             <Profile />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        exact
-        path={["/accounts/view/@self/notification"]}
-        render={(location) => (
+        path="/view/@self/notification"
+        element={
           <PrivateRoute location={location}>
             <NotificationComponent />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        exact
-        path={["/accounts"]}
-        render={(location) => (
+        path="/"
+        element={
           <PrivateRoute restricted withManager location={location}>
             <HomeRedirectToFilter />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        exact
-        path={"/accounts/filter"}
-        render={(location) => (
+        path="/filter"
+        element={
           <PrivateRoute restricted withManager location={location}>
             <Home />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        render={(location) => (
+        element={
           <PrivateRoute location={location}>
             <Error404Route />
           </PrivateRoute>
-        )}
+        }
       />
     </Routes>
   );

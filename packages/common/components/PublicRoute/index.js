@@ -1,15 +1,17 @@
 /* eslint-disable react/prop-types */
 import React from "react";
-import { Navigate, Route } from "react-router-dom";
+import { Navigate, Route, useLocation } from "react-router-dom";
 import AppLoader from "../AppLoader";
 import { inject, observer } from "mobx-react";
 import { TenantStatus } from "../../constants";
 
 export const PublicRoute = ({ children, ...rest }) => {
   const { wizardCompleted, isAuthenticated, tenantStatus } = rest;
+
+  const location = useLocation();
+
   const renderComponent = () => {
-    const isPreparationPortalUrl =
-      props.location.pathname === "/preparation-portal";
+    const isPreparationPortalUrl = location.pathname === "/preparation-portal";
     const isPortalRestoring = tenantStatus === TenantStatus.PortalRestore;
 
     // if (!isLoaded) {
@@ -32,7 +34,7 @@ export const PublicRoute = ({ children, ...rest }) => {
       );
     }
 
-    if (!wizardCompleted && props.location.pathname !== "/wizard") {
+    if (!wizardCompleted && location.pathname !== "/wizard") {
       return <Navigate replace to={"/wizard"} />;
     }
 

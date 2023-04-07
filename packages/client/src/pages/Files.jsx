@@ -84,34 +84,35 @@ const FilesSection = React.memo(({ withMainButton }) => {
   return (
     <Routes>
       <Route
-        exact
         path={"/settings"}
-        render={(location) => (
+        element={
           <PrivateRoute location={location}>
             <Navigate to="/settings/common" replace />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        exact
-        path={["/", "/rooms"]}
-        render={(location) => (
+        path="/"
+        element={
           <PrivateRoute location={location}>
             <Navigate to="/rooms/shared" replace />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        path={[
-          "/rooms/personal",
-          "/rooms/personal/filter",
+        path="/rooms"
+        element={
+          <PrivateRoute location={location}>
+            <Navigate to="/rooms/shared" replace />
+          </PrivateRoute>
+        }
+      />
 
-          "/files/trash",
-          "/files/trash/filter",
-        ]}
-        render={(location) => (
+      <Route
+        path="/rooms/personal/*"
+        element={
           <PrivateRoute
             restricted
             withManager
@@ -120,78 +121,103 @@ const FilesSection = React.memo(({ withMainButton }) => {
           >
             <Home />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        path={[
-          "/rooms/shared",
-          "/rooms/shared/filter",
-          "/rooms/shared/:room",
-          "/rooms/shared/:room/filter",
+        path="/files/trash/*"
+        element={
+          <PrivateRoute
+            restricted
+            withManager
+            withCollaborator
+            location={location}
+          >
+            <Home />
+          </PrivateRoute>
+        }
+      />
 
-          "/rooms/archived",
-          "/rooms/archived/filter",
-          "/rooms/archived/:room",
-          "/rooms/archived/:room/filter",
-
-          "/products/files/",
-        ]}
-        render={(location) => (
+      <Route
+        path="/rooms/shared/*"
+        element={
           <PrivateRoute location={location}>
             <Home />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        exact
-        path={["/accounts", "/accounts/filter", "/accounts/create/:type"]}
-        render={(location) => (
+        path="/rooms/archived/*"
+        element={
+          <PrivateRoute location={location}>
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/products/files/"
+        element={
+          <PrivateRoute location={location}>
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/accounts/*"
+        element={
           <PrivateRoute restricted withManager location={location}>
             <Accounts />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        exact
-        path={["/accounts/view/@self", "/accounts/view/@self/notification"]}
-        render={(location) => (
+        path="/accounts/create/:type"
+        element={
+          <PrivateRoute restricted withManager location={location}>
+            <Accounts />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/accounts/view/@self/*"
+        element={
           <PrivateRoute location={location}>
             <Accounts />
           </PrivateRoute>
-        )}
+        }
       />
 
       <Route
-        exact
         path={"/settings/admin"}
-        render={(location) => (
+        element={
           <PrivateRoute restricted location={location}>
             <Settings />
           </PrivateRoute>
-        )}
+        }
       />
 
       {withMainButton && (
         <Route
-          exact
           path={"/settings/common"}
-          render={(location) => (
+          element={
             <PrivateRoute restricted location={location}>
               <Settings />
             </PrivateRoute>
-          )}
+          }
         />
       )}
 
       <Route
-        render={(location) => (
+        element={
           <PrivateRoute location={location}>
             <Error404Route />
           </PrivateRoute>
-        )}
+        }
       />
     </Routes>
   );

@@ -434,136 +434,95 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           <div className="main-container">
             <Routes>
               <Route
-                exact
                 sensitive
                 path="/Products/Files/"
-                render={() => <Navigate to="/rooms/shared" replace />}
+                element={<Navigate to="/rooms/shared" replace />}
               />
 
               <Route
-                exact
-                path={[
-                  "/",
-
-                  "/rooms/personal",
-                  "/rooms/personal/filter",
-
-                  "/rooms/shared",
-                  "/rooms/shared/filter",
-                  "/rooms/shared/:room",
-                  "/rooms/shared/:room/filter",
-
-                  "/rooms/archived",
-                  "/rooms/archived/filter",
-                  "/rooms/archived/:room",
-                  "/rooms/archived/:room/filter",
-
-                  "/files/favorite",
-                  "/files/favorite/filter",
-
-                  "/files/recent",
-                  "/files/recent/filter",
-
-                  "/files/trash",
-                  "/files/trash/filter",
-
-                  "/accounts",
-                  "/accounts/filter",
-
-                  "/accounts/create/:type",
-                  "/accounts/edit/:userId",
-                  "/accounts/view/:userId",
-                  "/accounts/view/@self",
-                  "/accounts/view/@self/notification",
-
-                  "/settings",
-                  "/settings/common",
-                  "/settings/admin",
-                  "/products/files",
-                ]}
-                render={(location) => (
-                  <PrivateRoute location={location}>
+                path="/*"
+                element={
+                  <PrivateRoute>
                     <FilesRoute />
                   </PrivateRoute>
-                )}
+                }
               />
 
               <Route
                 path={"/form-gallery/:folderId"}
-                render={(location) => (
-                  <PrivateRoute location={location}>
+                element={
+                  <PrivateRoute>
                     <FormGalleryRoute />
                   </PrivateRoute>
-                )}
+                }
               />
 
               <Route
                 path={"/about"}
-                render={(location) => (
-                  <PrivateRoute location={location}>
+                element={
+                  <PrivateRoute>
                     <AboutRoute />
                   </PrivateRoute>
-                )}
+                }
               />
 
-              <Route path={"/confirm"} render={() => <ConfirmRoute />} />
+              <Route path={"/confirm"} element={<ConfirmRoute />} />
 
               <Route
                 path={"/portal-settings"}
-                render={(location) => (
-                  <PrivateRoute restricted location={location}>
+                element={
+                  <PrivateRoute restricted>
                     <PortalSettingsRoute />
                   </PrivateRoute>
-                )}
+                }
               />
 
               <Route
                 path={"/portal-unavailable"}
-                render={(location) => (
-                  <PrivateRoute location={location}>
+                element={
+                  <PrivateRoute>
                     <PortalUnavailableRoute />
                   </PrivateRoute>
-                )}
+                }
               />
 
               <Route
-                exact
                 path={"/wizard"}
-                render={(location) => (
-                  <PublicRoute location={location}>
+                element={
+                  <PublicRoute>
                     <WizardRoute />
                   </PublicRoute>
-                )}
+                }
               />
 
               <Route
                 path={"/preparation-portal"}
-                render={(location) => (
-                  <PublicRoute location={location}>
+                element={
+                  <PublicRoute>
                     <PreparationPortalRoute />
                   </PublicRoute>
-                )}
+                }
               />
 
               <Route
                 path={"/error401"}
-                render={(location) => (
-                  <PrivateRoute location={location}>
+                element={
+                  <PrivateRoute>
                     <Error401Route />
                   </PrivateRoute>
-                )}
+                }
               />
 
               <Route
-                render={(location) => (
-                  <PrivateRoute location={location}>
+                element={
+                  <PrivateRoute>
                     <Error404Route />
                   </PrivateRoute>
-                )}
+                }
               />
             </Routes>
           </div>
-        </Main>{" "}
+        </Main>
       </Layout>
     </Router>
   );

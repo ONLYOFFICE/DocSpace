@@ -45,7 +45,7 @@ const PureHome = ({
   onClickBack,
   setPortalTariff,
 }) => {
-  const { pathname } = useLocation;
+  const location = useLocation();
 
   //console.log("People Home render");
 
@@ -58,7 +58,7 @@ const PureHome = ({
   }, []);
 
   useEffect(() => {
-    if (pathname.indexOf("/accounts/filter") > -1) {
+    if (location.pathname.indexOf("/accounts/filter") > -1) {
       setSelectedNode(["accounts", "filter"]);
       setIsLoading(true);
       setIsRefresh(true);
@@ -74,7 +74,7 @@ const PureHome = ({
           setIsRefresh(false);
         });
     }
-  }, [pathname, location, setSelectedNode]);
+  }, [location, setSelectedNode]);
 
   useEffect(() => {
     if (isMobile) {
