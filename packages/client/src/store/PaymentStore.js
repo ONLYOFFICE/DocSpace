@@ -87,6 +87,7 @@ class PaymentStore {
     const { setPortalTariff } = currentTariffStatusStore;
 
     this.setIsUpdatingBasicSettings(true);
+    this.setBasicTariffContainer();
 
     const requests = [setPortalTariff()];
 
@@ -97,7 +98,6 @@ class PaymentStore {
     try {
       await Promise.all(requests);
       this.setTariffDates();
-      this.setBasicTariffContainer();
     } catch (error) {
       toastr.error(t("Common:UnexpectedError"));
       console.error(error);
@@ -112,6 +112,8 @@ class PaymentStore {
 
       return;
     }
+
+    this.setBasicTariffContainer();
 
     const { paymentQuotasStore, currentTariffStatusStore } = authStore;
     const { setPayerInfo } = currentTariffStatusStore;
@@ -130,7 +132,6 @@ class PaymentStore {
       await Promise.all(requests);
       this.setRangeStepByQuota();
       this.setTariffDates();
-      this.setBasicTariffContainer();
 
       if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
     } catch (error) {
@@ -246,7 +247,11 @@ class PaymentStore {
   };
   setBasicTariffContainer = () => {
     const { currentQuotaStore } = authStore;
-    const { currentPlanCost, maxCountManagersByQuota } = currentQuotaStore;
+    const {
+      currentPlanCost,
+      maxCountManagersByQuota,
+      addedManagersCount,
+    } = currentQuotaStore;
     const currentTotalPrice = currentPlanCost.value;
 
     if (this.isAlreadyPaid) {
@@ -262,10 +267,8 @@ class PaymentStore {
       return;
     }
 
-    this.managersCount = this.minAvailableManagersValue;
-    this.totalPrice = this.getTotalCostByFormula(
-      this.minAvailableManagersValue
-    );
+    this.managersCount = addedManagersCount;
+    this.totalPrice = this.getTotalCostByFormula(addedManagersCount);
   };
 
   setTotalPrice = (value) => {
