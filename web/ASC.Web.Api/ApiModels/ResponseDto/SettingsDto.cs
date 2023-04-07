@@ -56,6 +56,7 @@ public class SettingsDto
     public TenantDomainValidator DomainValidator { get; set; }
     public string ZendeskKey { get; set; }
     public string BookTrainingEmail { get; set; }
+    public string DocumentationEmail { get; set; }
 
     public PluginsDto Plugins { get; set; }
 

@@ -164,6 +164,7 @@ public class SettingsController : BaseSettingsController
             settings.DomainValidator = _tenantDomainValidator;
             settings.ZendeskKey = _setupInfo.ZendeskKey;
             settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
+            settings.DocumentationEmail = _setupInfo.DocumentationEmail;
 
             settings.Firebase = new FirebaseDto
             {
