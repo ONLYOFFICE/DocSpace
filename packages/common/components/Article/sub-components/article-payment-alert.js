@@ -23,17 +23,19 @@ const ArticlePaymentAlert = ({
   currentTariffPlanTitle,
   toggleArticleOpen,
   tariffPlanTitle,
+  isQuotaLoaded,
+  isQuotasLoaded,
 }) => {
   const { t, ready } = useTranslation("Common");
 
   useEffect(async () => {
-    if (isFreeTariff)
+    if (isFreeTariff && isQuotaLoaded)
       try {
         await setPortalPaymentQuotas();
       } catch (e) {
         console.error(e);
       }
-  }, []);
+  }, [isQuotaLoaded]);
 
   const onClick = () => {
     const paymentPageUrl = combineUrl(
@@ -71,6 +73,9 @@ const ArticlePaymentAlert = ({
 
   const isShowLoader = !ready;
 
+  if (!isQuotaLoaded) return <></>;
+  if (isFreeTariff && !isQuotasLoaded) return <></>;
+
   return isShowLoader ? (
     <Loaders.Rectangle width="210px" height="88px" />
   ) : (
@@ -91,12 +96,16 @@ const ArticlePaymentAlert = ({
 export default withRouter(
   inject(({ auth }) => {
     const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
-    const { currentTariffPlanTitle } = currentQuotaStore;
+    const {
+      currentTariffPlanTitle,
+      isLoaded: isQuotaLoaded,
+    } = currentQuotaStore;
     const { theme, toggleArticleOpen } = settingsStore;
     const {
       setPortalPaymentQuotas,
       planCost,
       tariffPlanTitle,
+      isLoaded: isQuotasLoaded,
     } = paymentQuotasStore;
 
     return {
@@ -107,6 +116,8 @@ export default withRouter(
       currencySymbol: planCost.currencySymbol,
       currentTariffPlanTitle,
       tariffPlanTitle,
+      isQuotaLoaded,
+      isQuotasLoaded,
     };
   })(observer(ArticlePaymentAlert))
 );
