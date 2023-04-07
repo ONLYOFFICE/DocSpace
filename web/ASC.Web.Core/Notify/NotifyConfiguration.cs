@@ -370,7 +370,7 @@ public class NotifyTransferRequest : INotifyEngineAction
     {
         try
         {
-            var attachment = _tenantLogoManager.GetMailLogoAsAttacmentAsync().Result;
+            var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
 
             if (attachment != null)
             {

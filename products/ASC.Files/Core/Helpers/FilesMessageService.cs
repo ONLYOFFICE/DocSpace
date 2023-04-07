@@ -81,7 +81,7 @@ public class FilesMessageService
         if (action == MessageAction.RoomDeleted)
         {
             var userId = _authContext.CurrentAccount.ID;
-            _notifyClient.SendRoomRemoved(entry, aces, userId);
+            await _notifyClient.SendRoomRemovedAsync(entry, aces, userId);
         }
 
         await SendAsync(entry, headers, action, null, FileShare.None, Guid.Empty, description);
