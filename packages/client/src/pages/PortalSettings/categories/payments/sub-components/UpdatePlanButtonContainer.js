@@ -77,9 +77,21 @@ const UpdatePlanButtonContainer = ({
   }, [maxCountManagersByQuota, intervalId, previousManagersCount]);
   const waitingForQuota = () => {
     isWaitRequest = false;
-
+    let requestsCount = 0;
     intervalId = setInterval(async () => {
       try {
+        if (requestsCount === 30) {
+          setIsLoading(false);
+
+          intervalId && toastr.error(t("ErrorNotification"));
+          clearInterval(intervalId);
+          intervalId = null;
+
+          return;
+        }
+
+        requestsCount++;
+
         if (isWaitRequest) {
           return;
         }
