@@ -1803,6 +1803,7 @@ class FilesStore {
 
       let roomOptions = [
         "select",
+        "open",
         "separator0",
         "link-for-room-members",
         "reconnect-storage",
