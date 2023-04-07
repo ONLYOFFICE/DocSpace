@@ -43,19 +43,22 @@ public class FilesModule : FeedModule
     private readonly IFileDao<int> _fileDao;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
+    private readonly TenantUtil _tenantUtil;
 
     public FilesModule(
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory)
+        IDaoFactory daoFactory,
+        TenantUtil tenantUtil)
         : base(tenantManager, webItemSecurity)
     {
         _fileDao = daoFactory.GetFileDao<int>();
         _folderDao = daoFactory.GetFolderDao<int>();
         _userManager = userManager;
         _fileSecurity = fileSecurity;
+        _tenantUtil = tenantUtil;
     }
 
     public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
@@ -180,7 +183,7 @@ public class FilesModule : FeedModule
         }
 
         var updated = file.Version != 1;
-        var fileModifiedUtc = file.ModifiedOn.ToUniversalTime();
+        var fileModifiedUtc = _tenantUtil.DateTimeToUtc(file.ModifiedOn);
 
         return new Feed.Aggregator.Feed(file.ModifiedBy, fileModifiedUtc)
         {

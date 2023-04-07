@@ -221,9 +221,9 @@ class QuotasStore {
 
       if (!res) return;
 
-      this.setIsLoaded(true);
-
       this.setPortalQuotaValue(res);
+
+      this.setIsLoaded(true);
     } catch (e) {
       toastr.error(e);
     }
