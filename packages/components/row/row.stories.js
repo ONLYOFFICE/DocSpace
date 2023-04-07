@@ -77,6 +77,7 @@ const Template = ({
     <Row
       {...args}
       key="1"
+      style={{ width: "20%" }}
       {...checkedProps}
       {...elementProps}
       contextOptions={
