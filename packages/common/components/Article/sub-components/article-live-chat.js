@@ -76,7 +76,7 @@ const ArticleLiveChat = ({
       defer
       zendeskKey={zendeskKey}
       onLoaded={onZendeskLoaded}
-      zIndex={99}
+      zIndex={201}
     />
   ) : (
     <></>
