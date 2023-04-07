@@ -42,18 +42,21 @@ public class FoldersModule : FeedModule
     private readonly FileSecurity _fileSecurity;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
+    private readonly TenantUtil _tenantUtil;
 
     public FoldersModule(
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory)
+        IDaoFactory daoFactory,
+        TenantUtil tenantUtil)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
+        _tenantUtil = tenantUtil;
     }
 
     public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
@@ -137,7 +140,7 @@ public class FoldersModule : FeedModule
             return feed;
         }
 
-        var folderCreatedUtc = folder.CreateOn.ToUniversalTime();
+        var folderCreatedUtc = _tenantUtil.DateTimeToUtc(folder.CreateOn);
 
         return new Feed.Aggregator.Feed(folder.CreateBy, folderCreatedUtc)
         {
