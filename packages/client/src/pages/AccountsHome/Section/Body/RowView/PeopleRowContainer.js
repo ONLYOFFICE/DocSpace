@@ -43,7 +43,7 @@ const StyledRowContainer = styled(RowContainer)`
     .user-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -4px;
+      margin-top: -3px;
 
       ${marginStyles}
     }
@@ -53,7 +53,7 @@ const StyledRowContainer = styled(RowContainer)`
     .user-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -4px;
+      margin-top: -3px;
 
       ${marginStyles}
     }
@@ -70,7 +70,7 @@ const StyledRowContainer = styled(RowContainer)`
       border-bottom: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
-      padding-top: 1px;
+
       ${marginStyles}
     }
     .user-row::after {
@@ -81,61 +81,11 @@ const StyledRowContainer = styled(RowContainer)`
     .user-row {
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -4px;
+      margin-top: -3px;
 
       ${marginStyles}
     }
   }
-
-  .row-selected {
-    .user-row {
-      .styled-element {
-        padding-top: 1px;
-      }
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .row-selected {
-      .user-row {
-        margin-top: -3px !important;
-        padding-bottom: 0.8px !important;
-        padding-top: 0.8px !important;
-
-        .styled-element {
-          padding-bottom: 0.8px;
-
-          .owner_icon {
-            padding-bottom: 0.8px;
-          }
-        }
-
-        .expandButton {
-          padding-bottom: 0.8px;
-        }
-
-        .mainIcons {
-          .paid-badge {
-            margin-top: -1px;
-          }
-        }
-      }
-    }
-  }
-
-  ${(props) =>
-    props.sectionWidth <= 500 &&
-    css`
-      .row-selected {
-        .user-row {
-          .mainIcons {
-            .paid-badge {
-              margin-top: 0.8px !important;
-            }
-          }
-        }
-      }
-    `}
 `;
 
 const PeopleRowContainer = ({
@@ -174,8 +124,7 @@ const PeopleRowContainer = ({
       hasMoreFiles={hasMoreAccounts}
       itemCount={filterTotal}
       filesLength={peopleList.length}
-      itemHeight={57.6}
-      sectionWidth={sectionWidth}
+      itemHeight={58}
     >
       {peopleList.map((item) => (
         <SimpleUserRow
