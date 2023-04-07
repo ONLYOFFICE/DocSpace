@@ -432,11 +432,19 @@ public class TenantManager
 
     public async Task SetTenantQuotaRowAsync(TenantQuotaRow row, bool exchange)
     {
-        await _semaphore.WaitAsync();
-
-        await QuotaService.SetTenantQuotaRowAsync(row, exchange);
-
-        _semaphore.Release();
+        try
+        {
+            await _semaphore.WaitAsync();
+            await QuotaService.SetTenantQuotaRowAsync(row, exchange);
+        }
+        catch
+        {
+            throw;
+        }
+        finally
+        {
+            _semaphore.Release();
+        }
     }
 
     public async Task<List<TenantQuotaRow>> FindTenantQuotaRowsAsync(int tenantId)

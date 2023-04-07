@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Runtime.CompilerServices;
-
 namespace ASC.Core.Caching;
 
 [Singletone]
@@ -201,6 +199,7 @@ class CachedTenantService : ITenantService
     {
         return await _service.GetTenantsAsync(from, active);
     }
+
     public async Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids)
     {
         return await _service.GetTenantsAsync(ids);

@@ -85,26 +85,29 @@ class DbQuotaService : IQuotaService
         ArgumentNullException.ThrowIfNull(row);
 
         using var coreDbContext = _dbContextFactory.CreateDbContext();
+        var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
+        dbTenantQuotaRow.UserId = row.UserId;
 
-        await AddQuotaAsync(coreDbContext, row.UserId);
-
-        async Task AddQuotaAsync(CoreDbContext coreDbContext, Guid userId)
+        var exist = await coreDbContext.QuotaRows.FindAsync(new object[] { dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
+        
+        if (exist == null)
         {
-            var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
-            dbTenantQuotaRow.UserId = userId;
-
+            await coreDbContext.QuotaRows.AddAsync(dbTenantQuotaRow);
+            await coreDbContext.SaveChangesAsync();
+        }
+        else
+        {
             if (exchange)
             {
-                var counter = await coreDbContext.QuotaRows
-                .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == userId)
-                .Select(r => r.Counter)
-                .FirstOrDefaultAsync();
-
-                dbTenantQuotaRow.Counter = counter + row.Counter;
+                await coreDbContext.QuotaRows
+                    .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == row.UserId)
+                    .ExecuteUpdateAsync(x => x.SetProperty(p => p.Counter, p => (p.Counter + row.Counter)));
             }
-
-            await coreDbContext.AddOrUpdateAsync(q => q.QuotaRows, dbTenantQuotaRow);
-            await coreDbContext.SaveChangesAsync();
+            else
+            {
+                await coreDbContext.AddOrUpdateAsync(q => q.QuotaRows, dbTenantQuotaRow);
+                await coreDbContext.SaveChangesAsync();
+            }
         }
     }
 
