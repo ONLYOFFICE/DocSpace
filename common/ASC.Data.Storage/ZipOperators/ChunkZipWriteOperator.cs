@@ -102,7 +102,7 @@ public class ChunkZipWriteOperator : IDataWriteOperator
                 theMemStream.Position = 0;
                 if (bytesRead == chunkUploadSize || last)
                 {
-                    if (_fileStream.Position == _fileStream.Length)
+                    if (_fileStream.Position == _fileStream.Length && last)
                     {
                         _chunkedUploadSession.LastChunk = true;
                     }
