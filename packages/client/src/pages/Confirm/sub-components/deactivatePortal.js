@@ -33,7 +33,7 @@ const DeactivatePortal = (props) => {
     try {
       await suspendPortal(linkData.confirmHeader);
       setIsDeactivate(true);
-      setTimeout(() => (location.href = url), 10000);
+      setTimeout(() => (window.location.href = url), 10000);
     } catch (e) {
       toastr.error(e);
     }

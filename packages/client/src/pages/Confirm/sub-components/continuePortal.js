@@ -29,7 +29,7 @@ const ContinuePortal = (props) => {
     try {
       await continuePortal(linkData.confirmHeader);
       setIsReactivate(true);
-      setTimeout(() => (location.href = "/"), 10000);
+      setTimeout(() => (window.location.href = "/"), 10000);
     } catch (e) {
       toastr.error(e);
     }

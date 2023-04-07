@@ -466,7 +466,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 }
               />
 
-              <Route path={"/confirm"} element={<ConfirmRoute />} />
+              <Route path={"/confirm/*"} element={<ConfirmRoute />} />
 
               <Route
                 path={"/portal-settings"}

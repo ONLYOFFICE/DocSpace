@@ -42,7 +42,7 @@ const CreateUserForm = (props) => {
   const { settings, t, greetingTitle, providers, isDesktop, linkData } = props;
   const inputRef = React.useRef(null);
 
-  const emailFromLink = linkData.email ? linkData.email : "";
+  const emailFromLink = linkData?.email ? linkData.email : "";
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
@@ -634,10 +634,6 @@ const CreateUserForm = (props) => {
       </StyledContent>
     </StyledPage>
   );
-};
-
-CreateUserForm.propTypes = {
-  location: PropTypes.object.isRequired,
 };
 
 export default inject(({ auth }) => {

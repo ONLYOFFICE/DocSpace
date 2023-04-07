@@ -71,7 +71,6 @@ class ChangeEmail extends React.PureComponent {
 }
 
 ChangeEmail.propTypes = {
-  location: PropTypes.object.isRequired,
   changeEmail: PropTypes.func.isRequired,
 };
 const ChangeEmailForm = (props) => (
