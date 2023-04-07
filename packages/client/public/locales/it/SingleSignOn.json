@@ -55,5 +55,7 @@
   "spCertificates": "Certificati SP",
   "spCertificatesTooltip": "I certificati del fornitore di servizi utilizzati per firmare e crittografare le richieste e le risposte dall’SP",
   "spDecryptStatements": "Decrittografare le asserzioni",
+  "spSignExitRequest": "Firma le richieste di Logout",
+  "spSignResponseRequest": "Firma le risposte di Logout",
   "spSigningAlgorithm": "Algoritmo di firma"
 }
