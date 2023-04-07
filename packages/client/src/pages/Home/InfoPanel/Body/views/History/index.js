@@ -7,6 +7,7 @@ import { StyledHistoryList, StyledHistorySubtitle } from "../../styles/history";
 import Loaders from "@docspace/common/components/Loaders";
 import { getRelativeDateDay } from "./../../helpers/HistoryHelper";
 import HistoryBlock from "./HistoryBlock";
+import NoHistory from "../NoItem/NoHistory";
 
 const History = ({
   t,
@@ -100,7 +101,8 @@ const History = ({
   }, [selection]);
 
   if (showLoader) return <Loaders.InfoPanelViewLoader view="history" />;
-  if (!history) return null;
+  if (history?.feeds.length === 0) return <NoHistory t={t} />;
+  if (!history) return <></>;
 
   return (
     <>
