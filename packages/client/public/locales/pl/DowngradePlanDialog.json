@@ -1,4 +1,7 @@
 {
+  "AllowedManagerNumber": "Dozwolona liczba administratorów/użytkowników z większą liczbą uprawnień: <1>{{valuesRange}}</1>.",
+  "CannotDowngradePlan": "Nie można zmienić planu na tańszy, ponieważ ilość pamięci/liczba administratorów/użytkowników z większą liczbą uprawnień przekracza limity zgodnie z wybranym planem cenowym:",
+  "CurrentManagerNumber": "Aktualna liczba administratorów/użytkowników z większą liczbą uprawnień: <1>{{currentCount}}</1>.",
   "CurrentStorageSpace": "Dostępna pamięć: <1>{{size}}</1>.",
   "DowngradePlan": "Zmień plan na tańszy",
   "SaveOrChange": "Zredukuj wymagany parametr lub zachowaj aktualny plan cenowy.",
