@@ -132,7 +132,6 @@ const StyledBody = styled.div`
 
 const SelectUsersCountContainer = ({
   managersCount,
-  setShoppingLink,
   theme,
   isDisabled,
   isLoading,
@@ -146,16 +145,12 @@ const SelectUsersCountContainer = ({
   addedManagersCountTitle,
   isNeedPlusSign,
 }) => {
-  const { t } = useTranslation("Payments");
-
   const onSliderChange = (e) => {
     const count = parseFloat(e.target.value);
     if (count > minAvailableManagersValue) {
-      setShoppingLink(count);
       setManagersCount(count);
       setTotalPrice(count);
     } else {
-      setShoppingLink(minAvailableManagersValue);
       setManagersCount(minAvailableManagersValue);
       setTotalPrice(minAvailableManagersValue);
     }
@@ -182,7 +177,6 @@ const SelectUsersCountContainer = ({
     }
 
     if (value !== +managersCount) {
-      setShoppingLink(value);
       setManagersCount(value);
       setTotalPrice(value);
     }
@@ -204,7 +198,6 @@ const SelectUsersCountContainer = ({
       return;
     }
 
-    setShoppingLink(numberValue);
     setManagersCount(numberValue);
     setTotalPrice(numberValue);
   };

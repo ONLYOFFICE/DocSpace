@@ -228,7 +228,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _maxFileSizeFeature = new MaxFileSizeFeature(this);
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
-        _freeFeature = new TenantQuotaFeatureFlag(this) { Name = "free", Visible = false };
+        _freeFeature = new FreeFeature(this) { Visible = false };
         _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
         _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
         _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };

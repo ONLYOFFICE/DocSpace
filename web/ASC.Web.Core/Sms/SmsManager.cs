@@ -143,7 +143,7 @@ public class SmsManager
         }
     }
 
-    public void ValidateSmsCode(UserInfo user, string code, bool isEntryPoint = false)
+    public async Task ValidateSmsCode(UserInfo user, string code, bool isEntryPoint = false)
     {
         if (!_studioSmsNotificationSettingsHelper.IsVisibleAndAvailableSettings()
             || !_studioSmsNotificationSettingsHelper.TfaEnabledForUser(user.Id))
@@ -182,7 +182,7 @@ public class SmsManager
         if (user.MobilePhoneActivationStatus == MobilePhoneActivationStatus.NotActivated)
         {
             user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.Activated;
-            _userManager.UpdateUserInfo(user);
+            await _userManager.UpdateUserInfo(user);
         }
     }
 }
