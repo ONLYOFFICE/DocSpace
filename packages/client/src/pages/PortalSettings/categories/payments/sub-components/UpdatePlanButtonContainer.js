@@ -107,6 +107,10 @@ const UpdatePlanButtonContainer = ({
   };
 
   const goToStripePortal = () => {
+    if (!canPayTariff) {
+      return;
+    }
+
     paymentLink
       ? window.open(paymentLink, "_blank")
       : toastr.error(t("ErrorNotification"));
@@ -127,9 +131,7 @@ const UpdatePlanButtonContainer = ({
       label={t("UpgradeNow")}
       size={"medium"}
       primary
-      isDisabled={
-        isLessCountThanAcceptable || !canPayTariff || isLoading || isDisabled
-      }
+      isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
       onClick={goToStripePortal}
       isLoading={isLoading}
     />

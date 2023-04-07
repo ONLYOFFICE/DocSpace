@@ -123,8 +123,8 @@ class PaymentStore {
 
       if (!link) return;
       this.setPaymentLink(link);
-    } catch (e) {
-      console.error(thrown);
+    } catch (err) {
+      console.error(err);
     }
   };
   getPaymentLink = async (token = undefined) => {
@@ -135,12 +135,15 @@ class PaymentStore {
         if (!link) return;
         this.setPaymentLink(link);
       })
-      .catch((thrown) => {
-        if (axios.isCancel(thrown)) {
-          console.log("Request canceled", thrown.message);
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          console.log("Request canceled", err.message);
         } else {
-          console.error(thrown);
-          this.isInitPaymentPage && toastr.error(thrown);
+          console.error(err);
+          if (err?.response?.status === 402) {
+            return;
+          }
+          this.isInitPaymentPage && toastr.error(err);
         }
       });
   };
