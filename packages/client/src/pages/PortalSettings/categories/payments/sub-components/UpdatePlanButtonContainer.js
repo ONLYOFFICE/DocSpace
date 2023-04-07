@@ -119,10 +119,6 @@ const UpdatePlanButtonContainer = ({
   };
 
   const goToStripePortal = () => {
-    if (!canPayTariff) {
-      return;
-    }
-
     paymentLink
       ? window.open(paymentLink, "_blank")
       : toastr.error(t("ErrorNotification"));
@@ -138,16 +134,24 @@ const UpdatePlanButtonContainer = ({
     };
   }, []);
 
-  const payTariffButton = (
-    <Button
-      label={t("UpgradeNow")}
-      size={"medium"}
-      primary
-      isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
-      onClick={goToStripePortal}
-      isLoading={isLoading}
-    />
-  );
+  const payTariffButton = () => {
+    return canPayTariff ? (
+      <Button
+        label={t("UpgradeNow")}
+        size={"medium"}
+        primary
+        isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
+        onClick={goToStripePortal}
+        isLoading={isLoading}
+      />
+    ) : (
+      <DowngradePlanButtonContainer
+        buttonLabel={t("UpgradeNow")}
+        onUpdateTariff={goToStripePortal}
+        isDisabled={isDisabled}
+      />
+    );
+  };
 
   const updatingCurrentTariffButton = () => {
     const isDowngradePlan = managersCount < maxCountManagersByQuota;
@@ -156,8 +160,8 @@ const UpdatePlanButtonContainer = ({
     return isDowngradePlan ? (
       <DowngradePlanButtonContainer
         onUpdateTariff={onUpdateTariff}
-        t={t}
         isDisabled={isDisabled}
+        buttonLabel={t("DowngradeNow")}
       />
     ) : (
       <Button
@@ -175,7 +179,7 @@ const UpdatePlanButtonContainer = ({
 
   return (
     <StyledBody>
-      {isAlreadyPaid ? updatingCurrentTariffButton() : payTariffButton}
+      {isAlreadyPaid ? updatingCurrentTariffButton() : payTariffButton()}
     </StyledBody>
   );
 };

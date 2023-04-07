@@ -316,6 +316,17 @@ class PaymentStore {
     return false;
   }
 
+  get canDowngradeTariff() {
+    const { currentQuotaStore } = authStore;
+    const { addedManagersCount, usedTotalStorageSizeCount } = currentQuotaStore;
+
+    if (addedManagersCount > this.managersCount) return false;
+    if (usedTotalStorageSizeCount > this.allowedStorageSizeByQuota)
+      return false;
+
+    return true;
+  }
+
   setRangeStepByQuota = () => {
     const { paymentQuotasStore } = authStore;
     const {
