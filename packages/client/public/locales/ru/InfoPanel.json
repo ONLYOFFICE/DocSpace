@@ -26,6 +26,7 @@
   "FeedUpdateUser": "назначена роль {{role}}",
   "FileExtension": "Расширение файла",
   "FilesEmptyScreenText": "Здесь будут представлены свойства файлов и папок",
+  "HistoryEmptyScreenText": "Здесь будет отображаться история активности",
   "ItemsSelected": "Выбрано элементов",
   "LastModifiedBy": "Автор последнего корректива",
   "PendingInvitations": "Приглашения в ожидании",
