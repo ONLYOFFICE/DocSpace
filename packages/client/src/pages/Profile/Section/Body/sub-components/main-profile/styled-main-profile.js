@@ -167,6 +167,10 @@ export const StyledInfo = styled.div`
     }
   }
 
+  .profile-language {
+    display: flex;
+  }
+
   @media ${smallTablet} {
     .rows-container {
       display: none;
@@ -264,7 +268,7 @@ export const StyledInfo = styled.div`
 `;
 
 export const StyledLabel = styled(Text)`
-  display: flex;
+  display: block;
   align-items: center;
   gap: 4px;
 
@@ -273,6 +277,9 @@ export const StyledLabel = styled(Text)`
   line-height: 20px;
   white-space: nowrap;
   color: ${(props) => props.theme.profile.main.descriptionTextColor};
+
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   margin-top: ${({ marginTopProp }) => (marginTopProp ? marginTopProp : 0)};
 `;

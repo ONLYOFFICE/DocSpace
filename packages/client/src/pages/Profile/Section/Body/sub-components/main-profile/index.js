@@ -164,7 +164,11 @@ const MainProfile = (props) => {
               {t("Common:Password")}
             </StyledLabel>
 
-            <StyledLabel as="div" marginTopProp="15px">
+            <StyledLabel
+              as="div"
+              className="profile-language"
+              marginTopProp="15px"
+            >
               {t("Common:Language")}
               <HelpButton
                 size={12}
