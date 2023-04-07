@@ -958,7 +958,7 @@ public class TariffService : ITariffService
 
         _ = quotaSocketManager.ChangeQuotaFeatureValue(maxPaidUsersFeatureName, maxPaidUsers);
 
-        var maxRoomCount = updatedQuota.CountRoom;
+        var maxRoomCount = updatedQuota.CountRoom == int.MaxValue ? -1 : updatedQuota.CountRoom;
         var maxRoomCountFeatureName = updatedQuota.GetFeature<CountRoomFeature>().Name;
 
         _ = quotaSocketManager.ChangeQuotaFeatureValue(maxRoomCountFeatureName, maxRoomCount);
