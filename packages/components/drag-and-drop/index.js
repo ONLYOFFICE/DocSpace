@@ -50,7 +50,7 @@ DragAndDrop.propTypes = {
   className: PropTypes.string,
   /** Sets the component as a dropzone */
   isDropZone: PropTypes.bool,
-  /** Show that the item is being dragged now. */
+  /** Shows that the item is being dragged now. */
   dragging: PropTypes.bool,
   /** Occurs when the mouse button is pressed */
   onMouseDown: PropTypes.func,

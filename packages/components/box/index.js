@@ -88,26 +88,26 @@ Box.propTypes = {
   /** sets all background style properties at once, such as color,
    * image, origin and size, or repeat method.  */
   backgroundProp: PropTypes.string,
-  /** sets an element's border. It sets the values of border-width,
+  /** sets the element's border. It sets the values of border-width,
    * border-style, and border-color. */
   borderProp: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  /** sets whether an element is treated as a block or inline element and
+  /** sets whether the element is treated as a block or inline element and
    * the layout used for its children, such as flow layout, grid or flex. */
   displayProp: PropTypes.string,
-  /** sets the initial main size of a flex item. It sets the size of the content
+  /** sets the initial main size of the flex item. It sets the size of the content
    * box unless otherwise set with box-sizing. */
   flexBasis: PropTypes.string,
   /** sets how flex items are placed in the flex container defining the main axis and
    * the direction (normal or reversed) */
   flexDirection: PropTypes.string,
-  /** sets how a flex item will grow or shrink to fit the space available in its
+  /** sets how the flex item will grow or shrink to fit the space available in its
    * flex container. It is a shorthand for flex-grow, flex-shrink, and flex-basis. */
   flexProp: PropTypes.string,
   /** sets whether flex items are forced onto one line or can wrap onto multiple lines.
    * If wrapping is allowed, it sets the direction that lines are stacked. */
   flexWrap: PropTypes.string,
   /** is a shorthand property for grid-row-start, grid-column-start, grid-row-end and
-   * grid-column-end, specifying a grid item’s size and location within the grid by
+   * grid-column-end, specifying the size of the grid item and location within the grid by
    * contributing a line, a span, or nothing (automatic) to its grid placement,
    * thereby specifying the edges of its grid area. */
   gridArea: PropTypes.string,
@@ -119,20 +119,20 @@ Box.propTypes = {
   /** defines the default justify-self for all items of the box, giving them all
    * a default way of justifying each box along the appropriate axis. */
   justifyItems: PropTypes.string,
-  /** sets the way a box is justified inside its alignment container along the appropriate axis. */
+  /** sets the way the box is justified inside its alignment container along the appropriate axis. */
   justifySelf: PropTypes.string,
   /** sets the margin area on all four sides of an element. It is a shorthand for margin-top,
    * margin-right, margin-bottom, and margin-left. */
   marginProp: PropTypes.string,
   /** sets what to do when an element's content is too big to fit in its block formatting context. */
   overflowProp: PropTypes.string,
-  /** sets the padding area on all four sides of an element. It is a shorthand for padding-top,
+  /** sets the padding area on all four sides of the element. It is a shorthand for padding-top,
    * padding-right, padding-bottom, and padding-left */
   paddingProp: PropTypes.string,
   /** sets the horizontal alignment of a block element or table-cell box.
    * This means it works like vertical-align but in the horizontal direction  */
   textAlign: PropTypes.string,
-  /** defines the width of the border of the element area. */
+  /** Defines the border width of the element area. */
   widthProp: PropTypes.string,
 };
 
