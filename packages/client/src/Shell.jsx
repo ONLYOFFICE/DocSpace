@@ -1,5 +1,10 @@
 import React, { useEffect } from "react";
-import { Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
@@ -14,7 +19,7 @@ import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
 import { Provider as MobxProvider } from "mobx-react";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
-import history from "@docspace/common/history";
+
 import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
@@ -415,8 +420,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 
   return (
-    <Layout>
-      <Router history={history}>
+    <Router>
+      <Layout>
         {toast}
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
@@ -558,9 +563,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               />
             </Routes>
           </div>
-        </Main>
-      </Router>
-    </Layout>
+        </Main>{" "}
+      </Layout>
+    </Router>
   );
 };
 

@@ -3,7 +3,7 @@ import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
 import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
 import React, { useEffect } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
@@ -71,9 +71,10 @@ const RootFolderContainer = (props) => {
     sectionWidth,
     setIsLoadedEmptyPage,
     security,
-    history,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
+
+  const navigate = useNavigate();
 
   const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
@@ -139,13 +140,7 @@ const RootFolderContainer = (props) => {
 
         const pathname = `${url}?${filterParamsStr}`;
 
-        history.push(
-          combineUrl(
-            window.DocSpaceConfig?.proxy?.url,
-            config.homepage,
-            pathname
-          )
-        );
+        navigate(pathname);
       })
       .finally(() => {
         setIsLoading(false);
@@ -425,4 +420,4 @@ export default inject(
       security,
     };
   }
-)(withTranslation(["Files"])(withRouter(observer(RootFolderContainer))));
+)(withTranslation(["Files"])(observer(RootFolderContainer)));

@@ -1,12 +1,14 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { MainContainer } from "../StyledSecurity";
 import MobileCategoryWrapper from "../sub-components/mobile-category-wrapper";
 
 const MobileView = (props) => {
-  const { t, history } = props;
+  const { t } = props;
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     setDocumentTitle(t("PortalAccess"));
@@ -14,7 +16,7 @@ const MobileView = (props) => {
 
   const onClickLink = (e) => {
     e.preventDefault();
-    history.push(e.target.pathname);
+    navigate(e.target.pathname);
   };
 
   return (
@@ -59,4 +61,4 @@ const MobileView = (props) => {
   );
 };
 
-export default withTranslation("Settings")(withRouter(MobileView));
+export default withTranslation("Settings")(MobileView);

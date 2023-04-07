@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Link as LinkWithoutRedirect } from "react-router-dom";
 import { isMobileOnly, isMobile } from "react-device-detect";
-import { withRouter } from "react-router-dom";
+import { UNSAFE_NavigationContext, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { isDesktop, tablet, mobile } from "@docspace/components/utils/device";
 import { combineUrl } from "@docspace/common/utils";
@@ -121,10 +121,13 @@ const HeaderComponent = ({
   theme,
   toggleArticleOpen,
   logoUrl,
-  history,
+
   ...props
 }) => {
   const { t } = useTranslation("Common");
+
+  const navigation = React.useContext(UNSAFE_NavigationContext).navigator;
+  const location = useLocation();
   //const isNavAvailable = mainModules.length > 0;
 
   // const onLogoClick = () => {
@@ -191,13 +194,13 @@ const HeaderComponent = ({
   });
 
   const [isFormGallery, setIsFormGallery] = useState(
-    history.location.pathname.includes("/form-gallery")
+    location.pathname.includes("/form-gallery")
   );
   useEffect(() => {
-    return history.listen((location) => {
-      setIsFormGallery(location.pathname.includes("/form-gallery"));
+    return navigation.listen((locationListener) => {
+      setIsFormGallery(locationListener.pathname.includes("/form-gallery"));
     });
-  }, [history]);
+  }, [navigation]);
 
   const logo = getLogoFromPath(
     !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light
@@ -363,4 +366,4 @@ export default inject(({ auth }) => {
     toggleArticleOpen,
     //currentProductName: (product && product.title) || "",
   };
-})(withRouter(observer(HeaderComponent)));
+})(observer(HeaderComponent));

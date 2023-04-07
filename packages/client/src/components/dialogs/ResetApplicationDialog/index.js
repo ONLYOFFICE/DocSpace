@@ -4,19 +4,21 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import ModalDialogContainer from "../ModalDialogContainer";
 import toastr from "@docspace/components/toast/toastr";
 
 const ResetApplicationDialogComponent = (props) => {
-  const { t, resetTfaApp, id, onClose, history, tReady, visible } = props;
+  const { t, resetTfaApp, id, onClose, tReady, visible } = props;
+
+  const navigate = useNavigate();
 
   const resetApp = async () => {
     onClose && onClose();
     try {
       const res = await resetTfaApp(id);
       toastr.success(t("SuccessResetApplication"));
-      if (res) history.push(res.replace(window.location.origin, ""));
+      if (res) navigate(res.replace(window.location.origin, ""));
     } catch (e) {
       toastr.error(e);
     }
@@ -54,11 +56,10 @@ const ResetApplicationDialogComponent = (props) => {
   );
 };
 
-const ResetApplicationDialog = withRouter(
-  withTranslation(["ResetApplicationDialog", "Common"])(
-    ResetApplicationDialogComponent
-  )
-);
+const ResetApplicationDialog = withTranslation([
+  "ResetApplicationDialog",
+  "Common",
+])(ResetApplicationDialogComponent);
 
 ResetApplicationDialog.propTypes = {
   visible: PropTypes.bool.isRequired,

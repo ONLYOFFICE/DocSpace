@@ -12,7 +12,7 @@ import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -42,6 +42,8 @@ const WelcomePageSettings = (props) => {
     getSettings,
     getGreetingSettingsIsDefault,
   } = props;
+
+  const navigate = useNavigate();
 
   const [state, setState] = React.useState({
     isLoading: false,
@@ -282,7 +284,7 @@ const WelcomePageSettings = (props) => {
 
       if (newUrl === currentUrl) return;
 
-      props.history.push(newUrl);
+      navigate(newUrl);
     } else {
       setState((val) => ({ ...val, isCustomizationView: false }));
     }
@@ -290,7 +292,7 @@ const WelcomePageSettings = (props) => {
 
   const onClickLink = (e) => {
     e.preventDefault();
-    props.history.push(e.target.pathname);
+    navigate(e.target.pathname);
   };
 
   const tooltipCustomTitlesTooltip = <CustomTitlesTooltip t={t} />;
@@ -387,8 +389,6 @@ export default inject(({ auth, setup, common }) => {
   };
 })(
   withLoading(
-    withTranslation(["Settings", "Common"])(
-      withRouter(observer(WelcomePageSettings))
-    )
+    withTranslation(["Settings", "Common"])(observer(WelcomePageSettings))
   )
 );

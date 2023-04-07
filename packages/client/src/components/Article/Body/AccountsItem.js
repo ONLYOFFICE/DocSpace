@@ -1,12 +1,11 @@
 ﻿import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CatalogItem from "@docspace/components/catalog-item";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { combineUrl } from "@docspace/common/utils";
+
 import withLoader from "../../../HOCs/withLoader";
-import config from "PACKAGE_FILE";
 
 const iconUrl = CatalogAccountsReactSvgUrl;
 
@@ -16,21 +15,17 @@ const PureAccountsItem = ({
   selectedTreeNode,
   setSelectedNode,
   toggleArticleOpen,
-  history,
+
   t,
 }) => {
+  const navigate = useNavigate();
+
   const onClick = React.useCallback(() => {
     setSelectedFolder(null);
 
     setSelectedNode(["accounts", "filter"]);
 
-    history.push(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/accounts"
-      )
-    );
+    navigate("/accounts");
     toggleArticleOpen();
   }, [setSelectedFolder, setSelectedNode, history]);
 
@@ -50,7 +45,7 @@ const PureAccountsItem = ({
 };
 
 const AccountsItem = withTranslation(["FilesSettings", "Common"])(
-  withRouter(withLoader(PureAccountsItem)(<></>))
+  withLoader(PureAccountsItem)(<></>)
 );
 
 export default inject(({ auth, treeFoldersStore, selectedFolderStore }) => {

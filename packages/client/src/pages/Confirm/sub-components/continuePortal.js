@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Trans, withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -20,8 +20,10 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 
 const ContinuePortal = (props) => {
-  const { t, greetingTitle, linkData, history } = props;
+  const { t, greetingTitle, linkData } = props;
   const [isReactivate, setIsReactivate] = useState(false);
+
+  const navigate = useNavigate();
 
   const onRestoreClick = async () => {
     try {
@@ -34,7 +36,7 @@ const ContinuePortal = (props) => {
   };
 
   const onCancelClick = () => {
-    history.push("/");
+    navigate("/");
   };
 
   return (
@@ -88,7 +90,5 @@ export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   theme: auth.settingsStore.theme,
 }))(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(withLoader(observer(ContinuePortal)))
-  )
+  withTranslation(["Confirm", "Common"])(withLoader(observer(ContinuePortal)))
 );

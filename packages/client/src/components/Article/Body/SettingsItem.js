@@ -1,11 +1,9 @@
 ﻿import CatalogSettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CatalogItem from "@docspace/components/catalog-item";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
 import withLoader from "../../../HOCs/withLoader";
 import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
@@ -13,17 +11,17 @@ import { isMobileOnly } from "react-device-detect";
 const iconUrl = CatalogSettingsReactSvgUrl;
 
 const PureSettingsItem = ({
-  match,
   expandedSetting,
   setSelectedNode,
   setExpandSettingsTree,
   setSelectedFolder,
-  history,
+
   t,
   showText,
   toggleArticleOpen,
 }) => {
-  const { setting } = match.params;
+  const { setting } = useParams();
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     setSelectedNode([setting]);
@@ -39,19 +37,12 @@ const PureSettingsItem = ({
     setSelectedNode(["common"]);
     setExpandSettingsTree(["common"]);
     if (isMobile() || isMobileOnly) toggleArticleOpen();
-    history.push(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/settings/common"
-      )
-    );
+    navigate("/settings/common");
   }, [
     setSelectedFolder,
     setSelectedNode,
     setExpandSettingsTree,
     toggleArticleOpen,
-    history,
   ]);
 
   const isActive = window.location.pathname.includes("settings");
@@ -70,7 +61,7 @@ const PureSettingsItem = ({
 };
 
 const SettingsItem = withTranslation(["FilesSettings", "Common"])(
-  withRouter(withLoader(PureSettingsItem)(<></>))
+  withLoader(PureSettingsItem)(<></>)
 );
 
 export default inject(

@@ -95,7 +95,7 @@ export const onItemClick = (e) => {
     return window.open(link, "_blank");
   }
 
-  history.push(link);
+  history.navigate(link);
 };
 
 export const getPasswordErrorMessage = (t, settings) => {

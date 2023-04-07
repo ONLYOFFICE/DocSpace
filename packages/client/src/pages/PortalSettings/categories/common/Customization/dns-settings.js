@@ -8,7 +8,7 @@ import Button from "@docspace/components/button";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -32,11 +32,11 @@ const DNSSettings = (props) => {
     initSettings,
     setIsLoaded,
     isSettingPaid,
-    history,
   } = props;
   const [hasScroll, setHasScroll] = useState(false);
   const isLoadedSetting = isLoaded && tReady;
   const [isCustomizationView, setIsCustomizationView] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setDocumentTitle(t("DNSSettings"));
@@ -89,7 +89,7 @@ const DNSSettings = (props) => {
 
       if (newUrl === currentUrl) return;
 
-      history.push(newUrl);
+      navigate(newUrl);
     } else {
       setIsCustomizationView(false);
     }
@@ -182,8 +182,4 @@ export default inject(({ auth, common }) => {
     setIsLoaded,
     isSettingPaid: isBrandingAndCustomizationAvailable,
   };
-})(
-  withLoading(
-    withRouter(withTranslation(["Settings", "Common"])(observer(DNSSettings)))
-  )
-);
+})(withLoading(withTranslation(["Settings", "Common"])(observer(DNSSettings))));

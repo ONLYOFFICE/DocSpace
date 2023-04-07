@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
-import { combineUrl } from "@docspace/common/utils";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
 import { getDaysRemaining } from "../../../helpers/filesUtils";
 
-const PROXY_BASE_URL = combineUrl(
-  window.DocSpaceConfig?.proxy?.url,
-  "/portal-settings"
-);
-
 const InviteUsersWarningDialog = (props) => {
   const {
     t,
     tReady,
-    history,
+
     language,
     dueDate,
     delayDueDate,
@@ -29,6 +23,8 @@ const InviteUsersWarningDialog = (props) => {
     currentTariffPlanTitle,
     isPaymentPageAvailable,
   } = props;
+
+  const navigate = useNavigate();
 
   const [datesData, setDatesData] = useState({});
 
@@ -56,11 +52,9 @@ const InviteUsersWarningDialog = (props) => {
   const onUpgradePlan = () => {
     onClose();
 
-    const paymentPageUrl = combineUrl(
-      PROXY_BASE_URL,
-      "/payments/portal-payments"
-    );
-    history.push(paymentPageUrl);
+    const paymentPageUrl = "/portal-settings/payments/portal-payments";
+
+    navigate(paymentPageUrl);
   };
 
   return (
@@ -151,10 +145,4 @@ export default inject(({ auth, dialogsStore }) => {
     delayDueDate,
     isGracePeriod,
   };
-})(
-  observer(
-    withTranslation(["Payments", "Common"])(
-      withRouter(InviteUsersWarningDialog)
-    )
-  )
-);
+})(observer(withTranslation(["Payments", "Common"])(InviteUsersWarningDialog)));

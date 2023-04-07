@@ -1082,7 +1082,7 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    history.push(newUrl);
+    history.navigate(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
@@ -2679,12 +2679,8 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Trans, withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
@@ -94,13 +94,15 @@ const TfaActivationForm = withLoader((props) => {
     qrCode,
     loginWithCode,
     loginWithCodeAndCookie,
-    history,
+
     location,
   } = props;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const onSubmit = async () => {
     try {
@@ -111,10 +113,10 @@ const TfaActivationForm = withLoader((props) => {
 
       if (user && hash) {
         const url = await loginWithCode(user, hash, code);
-        history.push(url || "/");
+        navigate(url || "/");
       } else {
         const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
-        history.push("/");
+        navigate("/");
       }
     } catch (err) {
       let errorMessage = "";
@@ -289,8 +291,4 @@ export default inject(({ auth, confirm }) => ({
   tfaAndroidAppUrl: auth.tfaStore.tfaAndroidAppUrl,
   tfaIosAppUrl: auth.tfaStore.tfaIosAppUrl,
   tfaWinAppUrl: auth.tfaStore.tfaWinAppUrl,
-}))(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(observer(TfaActivationWrapper))
-  )
-);
+}))(withTranslation(["Confirm", "Common"])(observer(TfaActivationWrapper)));

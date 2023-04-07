@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
@@ -31,9 +31,10 @@ const ArticlePaymentAlert = ({
   currentTariffPlanTitle,
   toggleArticleOpen,
   tariffPlanTitle,
-  history,
 }) => {
   const { t, ready } = useTranslation("Common");
+
+  const navigate = useNavigate();
 
   const getQuota = useCallback(async () => {
     if (isFreeTariff)
@@ -53,7 +54,7 @@ const ArticlePaymentAlert = ({
       PROXY_BASE_URL,
       "/payments/portal-payments"
     );
-    history.push(paymentPageUrl);
+    navigate(paymentPageUrl);
     toggleArticleOpen();
   };
 
@@ -106,21 +107,19 @@ const ArticlePaymentAlert = ({
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
-    const { currentTariffPlanTitle } = currentQuotaStore;
-    const { theme } = auth;
-    const { setPortalPaymentQuotas, planCost, tariffPlanTitle } =
-      paymentQuotasStore;
+export default inject(({ auth }) => {
+  const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
+  const { currentTariffPlanTitle } = currentQuotaStore;
+  const { theme } = auth;
+  const { setPortalPaymentQuotas, planCost, tariffPlanTitle } =
+    paymentQuotasStore;
 
-    return {
-      setPortalPaymentQuotas,
-      pricePerManager: planCost.value,
-      theme,
-      currencySymbol: planCost.currencySymbol,
-      currentTariffPlanTitle,
-      tariffPlanTitle,
-    };
-  })(observer(ArticlePaymentAlert))
-);
+  return {
+    setPortalPaymentQuotas,
+    pricePerManager: planCost.value,
+    theme,
+    currencySymbol: planCost.currencySymbol,
+    currentTariffPlanTitle,
+    tariffPlanTitle,
+  };
+})(observer(ArticlePaymentAlert));

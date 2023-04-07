@@ -9,7 +9,7 @@ import { ReactSVG } from "react-svg";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
-import { withRouter } from "react-router-dom";
+import { useMatch, useNavigate } from "react-router-dom";
 
 import {
   StyledTile,
@@ -30,8 +30,7 @@ const Tile = (props) => {
     t,
     thumbnailClick,
     item,
-    match,
-    history,
+
     setIsInfoPanelVisible,
     categoryType,
     isInfoPanelVisible,
@@ -45,6 +44,9 @@ const Tile = (props) => {
     showHotkeyBorder,
     getIcon,
   } = props;
+
+  const match = useMatch();
+  const navigate = useNavigate();
 
   const onError = () => {
     setErrorLoadSrc(true);
@@ -102,7 +104,7 @@ const Tile = (props) => {
 
     setIsInfoPanelVisible(false);
 
-    history.push(
+    navigate(
       combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
     );
   };
@@ -209,4 +211,4 @@ export default inject(
       categoryType,
     };
   }
-)(withTranslation(["FormGallery", "Common"])(withRouter(observer(Tile))));
+)(withTranslation(["FormGallery", "Common"])(observer(Tile)));

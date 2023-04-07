@@ -4,7 +4,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import IconButton from "@docspace/components/icon-button";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useMatch } from "react-router-dom";
 import {
   StyledHeadline,
   StyledContainer,
@@ -18,13 +18,15 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 const SectionHeaderContent = (props) => {
   const {
     t,
-    history,
-    match,
+
     isInfoPanelVisible,
     setIsInfoPanelVisible,
     setGallerySelected,
     categoryType,
   } = props;
+
+  const navigate = useNavigate();
+  const match = useMatch();
 
   const onBackToFiles = () => {
     setGallerySelected(null);
@@ -39,7 +41,7 @@ const SectionHeaderContent = (props) => {
 
     const pathname = `${url}?${filterParamsStr}`;
 
-    history.push(
+    navigate(
       combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
     );
   };
@@ -86,4 +88,4 @@ export default inject(({ auth, filesStore, oformsStore }) => {
     setGallerySelected,
     categoryType,
   };
-})(withTranslation("Common")(withRouter(observer(SectionHeaderContent))));
+})(withTranslation("Common")(observer(SectionHeaderContent)));

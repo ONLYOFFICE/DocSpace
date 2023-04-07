@@ -4,7 +4,7 @@ import ActionsHeaderTouchReactSvgUrl from "PUBLIC_DIR/images/actions.header.touc
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
@@ -127,6 +127,8 @@ const SectionHeaderContent = (props) => {
     setIsLoadedSectionHeader,
   } = props;
 
+  const navigate = useNavigate();
+
   const [state, setState] = React.useState({
     header: "",
     isCategoryOrHeader: false,
@@ -218,7 +220,7 @@ const SectionHeaderContent = (props) => {
     let newArrayOfParams = getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
     const newPath = "/portal-settings/" + newArrayOfParams.join("/");
-    props.history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, newPath));
+    navigate(combineUrl(window.DocSpaceConfig?.proxy?.url, newPath));
   };
 
   const getArrayOfParams = () => {
@@ -395,8 +397,6 @@ export default inject(({ auth, setup, common }) => {
   };
 })(
   withLoading(
-    withRouter(
-      withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
-    )
+    withTranslation(["Settings", "Common"])(observer(SectionHeaderContent))
   )
 );

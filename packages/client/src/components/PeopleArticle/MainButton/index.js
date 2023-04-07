@@ -6,7 +6,7 @@ import AddGuestReactSvgUrl from "PUBLIC_DIR/images/add.guest.react.svg?url";
 import AddEmployeeReactSvgUrl from "ASSETS/images/add.employee.react.svg?url";
 import React from "react";
 //import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import MainButton from "@docspace/components/main-button";
 import InviteDialog from "../../dialogs/InviteDialog/index";
 import { withTranslation } from "react-i18next";
@@ -27,7 +27,6 @@ import withLoader from "../../../HOCs/withLoader";
 const ArticleMainButtonContent = (props) => {
   const [dialogVisible, setDialogVisible] = React.useState(false);
   const {
-    history,
     homepage,
     toggleShowText,
     t,
@@ -40,8 +39,10 @@ const ArticleMainButtonContent = (props) => {
     isMobileArticle,
   } = props;
 
+  const navigate = useNavigate();
+
   const goToEmployeeCreate = () => {
-    history.push(
+    navigate(
       combineUrl(window.DocSpaceConfig?.proxy?.url, homepage, "/create/user")
     );
     if (isMobile || isMobileUtils()) toggleShowText();
@@ -111,24 +112,22 @@ const ArticleMainButtonContent = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { userCaption, guestCaption, groupCaption } =
-      auth.settingsStore.customNames;
+export default inject(({ auth }) => {
+  const { userCaption, guestCaption, groupCaption } =
+    auth.settingsStore.customNames;
 
-    return {
-      isAdmin: auth.isAdmin,
-      homepage: config.homepage,
-      userCaption,
-      guestCaption,
-      groupCaption,
-      toggleShowText: auth.settingsStore.toggleShowText,
-      isMobileArticle: auth.settingsStore.isMobileArticle,
-      showText: auth.settingsStore.showText,
-    };
-  })(
-    withTranslation(["Article", "Common", "PeopleTranslations"])(
-      withLoader(observer(ArticleMainButtonContent))(<Loaders.ArticleButton />)
-    )
+  return {
+    isAdmin: auth.isAdmin,
+    homepage: config.homepage,
+    userCaption,
+    guestCaption,
+    groupCaption,
+    toggleShowText: auth.settingsStore.toggleShowText,
+    isMobileArticle: auth.settingsStore.isMobileArticle,
+    showText: auth.settingsStore.showText,
+  };
+})(
+  withTranslation(["Article", "Common", "PeopleTranslations"])(
+    withLoader(observer(ArticleMainButtonContent))(<Loaders.ArticleButton />)
   )
 );

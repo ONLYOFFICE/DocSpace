@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useLocation, useMatch } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import { withTranslation } from "react-i18next";
@@ -97,9 +97,7 @@ const getTreeItems = (data, path, t) => {
 const ArticleBodyContent = (props) => {
   const {
     t,
-    match,
-    location,
-    history,
+
     tReady,
     setIsLoadedArticleBody,
     toggleArticleOpen,
@@ -112,6 +110,10 @@ const ArticleBodyContent = (props) => {
   const [selectedKeys, setSelectedKeys] = React.useState([]);
 
   const prevLocation = React.useRef(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  const match = useMatch();
 
   React.useEffect(() => {
     prevLocation.current = location;
@@ -201,7 +203,7 @@ const ArticleBodyContent = (props) => {
 
     if (newPath === currentUrl) return;
 
-    history.push(newPath);
+    navigate(newPath);
   };
 
   const mapKeys = (tKey) => {
@@ -311,8 +313,6 @@ export default inject(({ auth, common }) => {
   };
 })(
   withLoading(
-    withRouter(
-      withTranslation(["Settings", "Common"])(observer(ArticleBodyContent))
-    )
+    withTranslation(["Settings", "Common"])(observer(ArticleBodyContent))
   )
 );

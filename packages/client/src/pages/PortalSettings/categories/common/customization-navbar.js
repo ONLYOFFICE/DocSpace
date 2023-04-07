@@ -11,7 +11,7 @@ import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
 import { StyledArrowRightIcon } from "./Customization/StyledSettings";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Badge from "@docspace/components/badge";
 
 const StyledComponent = styled.div`
@@ -68,16 +68,17 @@ const CustomizationNavbar = ({
   isLoadedPage,
   isSettingPaid,
   currentColorScheme,
-  history,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isLoadedSetting) setIsLoadedCustomizationNavbar(isLoadedSetting);
   }, [isLoadedSetting]);
 
   const onClickLink = (e) => {
     e.preventDefault();
-    history.push(e.target.pathname);
+    navigate(e.target.pathname);
   };
 
   return !isLoadedPage ? (
@@ -208,9 +209,7 @@ export default inject(({ auth, common }) => {
     currentColorScheme,
   };
 })(
-  withRouter(
-    withCultureNames(
-      observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
-    )
+  withCultureNames(
+    observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
   )
 );

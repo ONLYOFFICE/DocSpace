@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 
@@ -26,7 +26,7 @@ import {
 
 const PureHome = ({
   isLoading,
-  history,
+
   getUsersList,
   setIsLoading,
   setIsRefresh,
@@ -45,8 +45,8 @@ const PureHome = ({
   onClickBack,
   setPortalTariff,
 }) => {
-  const { location } = history;
-  const { pathname } = location;
+  const { pathname } = useLocation;
+
   //console.log("People Home render");
 
   useEffect(() => {
@@ -169,4 +169,4 @@ export default inject(
       onClickBack,
     };
   }
-)(observer(withRouter(Home)));
+)(observer(Home));

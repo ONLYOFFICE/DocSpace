@@ -8,7 +8,7 @@ import Header from "./sub-components/header";
 import HeaderNav from "./sub-components/header-nav";
 import HeaderUnAuth from "./sub-components/header-unauth";
 import { I18nextProvider, withTranslation } from "react-i18next";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import Loaders from "@docspace/common/components/Loaders";
 import { LayoutContextConsumer } from "../Layout/context";
@@ -57,6 +57,9 @@ StyledContainer.defaultProps = { theme: Base };
 
 const NavMenu = (props) => {
   const timeout = React.useRef(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [isBackdropVisible, setIsBackdropVisible] = React.useState(
     props.isBackdropVisible
@@ -116,7 +119,7 @@ const NavMenu = (props) => {
     isAuthenticated,
     isLoaded,
     asideContent,
-    history,
+
     isDesktop,
     isFrame,
     showHeader,
@@ -125,8 +128,7 @@ const NavMenu = (props) => {
   const isAsideAvailable = !!asideContent;
   const hideHeader = isDesktop || (!showHeader && isFrame);
 
-  const isPreparationPortal =
-    history.location.pathname === "/preparation-portal";
+  const isPreparationPortal = location.pathname === "/preparation-portal";
   return (
     <LayoutContextConsumer>
       {(value) => (
@@ -209,7 +211,7 @@ const NavMenuWrapper = inject(({ auth }) => {
     showHeader: frameConfig?.showHeader,
     isFrame,
   };
-})(observer(withTranslation(["NavMenu", "Common"])(withRouter(NavMenu))));
+})(observer(withTranslation(["NavMenu", "Common"])(NavMenu)));
 
 export default () => (
   <I18nextProvider i18n={i18n}>

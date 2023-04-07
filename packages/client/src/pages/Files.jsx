@@ -1,7 +1,7 @@
 import React from "react";
 //import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Routes, withRouter, Navigate, Route } from "react-router-dom";
+import { Routes, useLocation, Navigate, Route } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -49,10 +49,9 @@ import Accounts from "./Accounts";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 
-const FilesArticle = React.memo(({ history, withMainButton }) => {
-  const isFormGallery = history.location.pathname
-    .split("/")
-    .includes("form-gallery");
+const FilesArticle = React.memo(({ withMainButton }) => {
+  const location = useLocation();
+  const isFormGallery = location.pathname.split("/").includes("form-gallery");
 
   return !isFormGallery ? (
     <Article withMainButton={withMainButton}>
@@ -216,7 +215,7 @@ const FilesContent = (props) => {
     showMenu,
     isFrame,
     withMainButton,
-    history,
+
     t,
   } = props;
 
@@ -273,9 +272,9 @@ const FilesContent = (props) => {
       <GlobalEvents />
       <Panels />
       {isFrame ? (
-        showMenu && <FilesArticle history={history} />
+        showMenu && <FilesArticle />
       ) : (
-        <FilesArticle history={history} withMainButton={withMainButton} />
+        <FilesArticle withMainButton={withMainButton} />
       )}
       <FilesSection withMainButton={withMainButton} />
     </>
@@ -314,6 +313,6 @@ const Files = inject(({ auth, filesStore }) => {
       //auth.setProductVersion(config.version);
     },
   };
-})(withTranslation("Common")(observer(withRouter(FilesContent))));
+})(withTranslation("Common")(observer(FilesContent)));
 
 export default () => <Files />;

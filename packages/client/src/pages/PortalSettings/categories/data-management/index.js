@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -20,11 +20,13 @@ const DataManagementWrapper = (props) => {
     helpUrlCreatingBackup,
     buttonSize,
     t,
-    history,
+
     isNotPaidPeriod,
     currentColorScheme,
     toDefault,
   } = props;
+
+  const navigate = useNavigate();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +95,7 @@ const DataManagementWrapper = (props) => {
   }, []);
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -134,8 +136,4 @@ export default inject(({ auth, setup, backup }) => {
     currentColorScheme,
     toDefault,
   };
-})(
-  withTranslation(["Settings", "Common"])(
-    withRouter(observer(DataManagementWrapper))
-  )
-);
+})(withTranslation(["Settings", "Common"])(observer(DataManagementWrapper)));

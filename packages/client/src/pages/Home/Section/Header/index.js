@@ -24,7 +24,7 @@ import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?u
 import React from "react";
 import copy from "copy-to-clipboard";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import toastr from "@docspace/components/toast/toastr";
 import Loaders from "@docspace/common/components/Loaders";
 import { withTranslation } from "react-i18next";
@@ -97,6 +97,8 @@ const StyledContainer = styled.div`
 const SectionHeaderContent = (props) => {
   const [navigationItems, setNavigationItems] = React.useState([]);
 
+  const navigate = useNavigate();
+
   const onCreate = (format) => {
     const event = new Event(Events.CREATE);
 
@@ -133,8 +135,8 @@ const SectionHeaderContent = (props) => {
   };
 
   const onShowGallery = () => {
-    const { history, currentFolderId } = props;
-    history.push(
+    const { currentFolderId } = props;
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -951,9 +953,5 @@ export default inject(
     "InfoPanel",
     "SharingPanel",
     "Article",
-  ])(
-    withLoader(withRouter(observer(SectionHeaderContent)))(
-      <Loaders.SectionHeader />
-    )
-  )
+  ])(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
 );

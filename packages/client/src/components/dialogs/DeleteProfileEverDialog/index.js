@@ -1,5 +1,5 @@
 import React from "react";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import Button from "@docspace/components/button";
@@ -18,25 +18,22 @@ const { deleteUser } = api.people; //TODO: Move to action
 const { Filter } = api;
 
 const DeleteProfileEverDialogComponent = (props) => {
-  const { user, t, history, homepage, setFilter, onClose, tReady, visible } =
-    props;
+  const { user, t, homepage, setFilter, onClose, tReady, visible } = props;
   const [isRequestRunning, setIsRequestRunning] = React.useState(false);
+
+  const navigate = useNavigate();
 
   const onDeleteProfileEver = () => {
     const filter = Filter.getDefault();
     const params = filter.toUrlParams();
 
-    const url = combineUrl(
-      window.DocSpaceConfig?.proxy?.url,
-      homepage,
-      `/accounts/filter?${params}`
-    );
+    const url = `/accounts/filter?${params}`;
 
     setIsRequestRunning(true);
     deleteUser(user.id)
       .then((res) => {
         toastr.success(t("SuccessfullyDeleteUserInfoMessage"));
-        history.push(url, params);
+        navigate(url, params);
         setFilter(filter);
         return;
       })
@@ -94,9 +91,7 @@ DeleteProfileEverDialog.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default withRouter(
-  inject(({ peopleStore }) => ({
-    homepage: config.homepage,
-    setFilter: peopleStore.filterStore.setFilterParams,
-  }))(observer(DeleteProfileEverDialog))
-);
+export default inject(({ peopleStore }) => ({
+  homepage: config.homepage,
+  setFilter: peopleStore.filterStore.setFilterParams,
+}))(observer(DeleteProfileEverDialog));

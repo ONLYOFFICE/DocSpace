@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
@@ -23,7 +23,7 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t, history, initSettings, isInit, setIsInit, helpLink } = props;
+  const { t, initSettings, isInit, setIsInit, helpLink } = props;
   const [type, setType] = useState("none");
 
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -31,6 +31,9 @@ const TwoFactorAuth = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const getSettings = () => {
     const { tfaSettings, smsAvailable, appAvailable } = props;
@@ -78,8 +81,8 @@ const TwoFactorAuth = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("tfa") &&
-      history.push("/portal-settings/security/access-portal");
+      location.pathname.includes("tfa") &&
+      navigate("/portal-settings/security/access-portal");
   };
 
   const onSelectTfaType = (e) => {
@@ -103,7 +106,7 @@ const TwoFactorAuth = (props) => {
 
       if (res) {
         setIsInit(false);
-        history.push(res.replace(window.location.origin, ""));
+        navigate(res.replace(window.location.origin, ""));
       }
     } catch (error) {
       toastr.error(error);
@@ -200,6 +203,4 @@ export default inject(({ auth, setup }) => {
     setIsInit,
     helpLink,
   };
-})(
-  withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))
-);
+})(withTranslation(["Settings", "Common"])(observer(TwoFactorAuth)));

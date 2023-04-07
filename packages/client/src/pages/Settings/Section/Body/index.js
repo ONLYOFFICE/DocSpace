@@ -1,7 +1,7 @@
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Error520 from "client/Error520";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
@@ -25,8 +25,10 @@ const StyledContainer = styled.div`
   `}
 `;
 
-const SectionBodyContent = ({ isErrorSettings, history, user }) => {
+const SectionBodyContent = ({ isErrorSettings, user }) => {
   const { t } = useTranslation(["FilesSettings", "Common"]);
+
+  const navigate = useNavigate();
 
   const setting = window.location.pathname.endsWith("/settings/common")
     ? "common"
@@ -52,7 +54,7 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
 
       if (id === setting) return;
 
-      history.push(
+      navigate(
         combineUrl(
           window.DocSpaceConfig?.proxy?.url,
           config.homepage,
@@ -60,7 +62,7 @@ const SectionBodyContent = ({ isErrorSettings, history, user }) => {
         )
       );
     },
-    [setting, history]
+    [setting, navigate]
   );
 
   const showAdminSettings = user.isAdmin || user.isOwner;
@@ -93,4 +95,4 @@ export default inject(({ auth, settingsStore }) => {
     settingsIsLoaded,
     user: auth.userStore.user,
   };
-})(withRouter(observer(SectionBodyContent)));
+})(observer(SectionBodyContent));

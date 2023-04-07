@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
@@ -40,13 +40,16 @@ const MainContainer = styled.div`
 const PasswordStrength = (props) => {
   const {
     t,
-    history,
+
     setPortalPasswordSettings,
     passwordSettings,
     initSettings,
     isInit,
     helpLink,
   } = props;
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
@@ -118,8 +121,8 @@ const PasswordStrength = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("password") &&
-      history.push("/portal-settings/security/access-portal");
+      location.pathname.includes("password") &&
+      navigate("/portal-settings/security/access-portal");
   };
 
   const onSliderChange = (e) => {
@@ -268,8 +271,4 @@ export default inject(({ auth, setup }) => {
     isInit,
     helpLink,
   };
-})(
-  withTranslation(["Settings", "Common"])(
-    withRouter(observer(PasswordStrength))
-  )
-);
+})(withTranslation(["Settings", "Common"])(observer(PasswordStrength)));

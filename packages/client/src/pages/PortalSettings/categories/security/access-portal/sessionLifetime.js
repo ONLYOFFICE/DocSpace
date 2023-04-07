@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
@@ -31,7 +31,7 @@ const MainContainer = styled.div`
 const SessionLifetime = (props) => {
   const {
     t,
-    history,
+
     lifetime,
     setSessionLifetimeSettings,
     initSettings,
@@ -42,6 +42,9 @@ const SessionLifetime = (props) => {
   const [showReminder, setShowReminder] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const getSettings = () => {
     const currentSettings = getFromSessionStorage(
@@ -108,8 +111,8 @@ const SessionLifetime = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("lifetime") &&
-      history.push("/portal-settings/security/access-portal");
+      location.pathname.includes("lifetime") &&
+      navigate("/portal-settings/security/access-portal");
   };
 
   const onSelectType = (e) => {
@@ -225,6 +228,4 @@ export default inject(({ auth, setup }) => {
     initSettings,
     isInit,
   };
-})(
-  withTranslation(["Settings", "Common"])(withRouter(observer(SessionLifetime)))
-);
+})(withTranslation(["Settings", "Common"])(observer(SessionLifetime)));

@@ -9,7 +9,7 @@ import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -33,8 +33,9 @@ const PortalRenaming = (props) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
-    history,
   } = props;
+
+  const navigate = useNavigate();
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
 
@@ -127,7 +128,7 @@ const PortalRenaming = (props) => {
         setPortalName(portalName);
         setPortalNameDefault(portalName);
 
-        history.push(res);
+        navigate(res);
       })
       .catch((error) => {
         let errorMessage = "";
@@ -258,7 +259,7 @@ const PortalRenaming = (props) => {
 
       if (newUrl === currentUrl) return;
 
-      history.push(newUrl);
+      navigate(newUrl);
     } else {
       setIsCustomizationView(false);
     }
@@ -349,9 +350,5 @@ export default inject(({ auth, setup, common }) => {
     getAllSettings,
   };
 })(
-  withLoading(
-    withTranslation(["Settings", "Common"])(
-      withRouter(observer(PortalRenaming))
-    )
-  )
+  withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))
 );

@@ -13,7 +13,7 @@ import { LANGUAGE, COOKIE_EXPIRATION_YEAR } from "@docspace/common/constants";
 import { LanguageTimeSettingsTooltip } from "../sub-components/common-tooltips";
 import { combineUrl, setCookie } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import { withRouter } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -63,6 +63,8 @@ const LanguageAndTimeZone = (props) => {
 
     initSettings,
   } = props;
+
+  const navigate = useNavigate();
 
   const [state, setState] = React.useState({
     isLoading: false,
@@ -399,7 +401,7 @@ const LanguageAndTimeZone = (props) => {
 
       if (newUrl === currentUrl) return;
 
-      props.history.push(newUrl);
+      navigate(newUrl);
     } else {
       setState((val) => ({ ...val, isCustomizationView: false }));
     }
@@ -407,7 +409,7 @@ const LanguageAndTimeZone = (props) => {
 
   const onClickLink = (e) => {
     e.preventDefault();
-    props.history.push(e.target.pathname);
+    navigate(e.target.pathname);
   };
 
   const {
@@ -568,8 +570,6 @@ export default inject(({ auth, setup, common }) => {
   };
 })(
   withLoading(
-    withTranslation(["Settings", "Common"])(
-      withRouter(observer(LanguageAndTimeZone))
-    )
+    withTranslation(["Settings", "Common"])(observer(LanguageAndTimeZone))
   )
 );

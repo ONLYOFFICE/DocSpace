@@ -48,8 +48,9 @@ const RestoreBackup = (props) => {
     isEnableRestore,
     setRestoreResource,
     buttonSize,
-    history,
   } = props;
+
+  const navigate = useNavigate();
 
   const [radioButtonState, setRadioButtonState] = useState(LOCAL_FILE);
   const [checkboxState, setCheckboxState] = useState({
@@ -236,7 +237,6 @@ const RestoreBackup = (props) => {
           isVisibleDialog={isVisibleBackupListDialog}
           onModalClose={onModalClose}
           isNotify={checkboxState.notification}
-          history={history}
         />
       )}
       <Checkbox
@@ -265,7 +265,6 @@ const RestoreBackup = (props) => {
         radioButtonState={radioButtonState}
         isCheckedThirdPartyStorage={radioButtonState === STORAGE_SPACE}
         isCheckedLocalFile={radioButtonState === LOCAL_FILE}
-        history={history}
         t={t}
         buttonSize={buttonSize}
       />
