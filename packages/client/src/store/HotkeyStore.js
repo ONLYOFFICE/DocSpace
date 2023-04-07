@@ -51,7 +51,7 @@ class HotkeyStore {
         //console.log("element is not visible");
       }
     } else {
-      scroll.scrollTo(0, this.elemOffset - scrollRect.height / 2);
+      scroll?.scrollTo(0, this.elemOffset - scrollRect.height / 2);
     }
   };
 

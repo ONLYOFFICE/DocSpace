@@ -7,7 +7,7 @@ import styled, { css } from "styled-components";
 import marginStyles from "./CommonStyles";
 import { isTablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
-import { tablet } from "@docspace/components/utils/device";
+
 const StyledRowContainer = styled(RowContainer)`
   .row-list-item:first-child {
     .row-selected {
