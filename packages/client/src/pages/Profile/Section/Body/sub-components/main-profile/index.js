@@ -29,6 +29,7 @@ import {
 import { StyledWrapper, StyledInfo, StyledLabel } from "./styled-main-profile";
 import { HelpButton, Tooltip } from "@docspace/components";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
+import { isSmallTablet } from "@docspace/components/utils/device";
 
 const MainProfile = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
