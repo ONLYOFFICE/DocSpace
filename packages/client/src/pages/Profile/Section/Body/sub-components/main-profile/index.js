@@ -53,7 +53,7 @@ const MainProfile = (props) => {
     sendActivationLink,
     currentColorScheme,
     updateProfileCulture,
-    documentationEmail,
+    bookTrainingEmail,
   } = props;
 
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
@@ -90,11 +90,11 @@ const MainProfile = (props) => {
         "In case you cannot find your language in the list of the available
         ones, feel free to write to us at
         <Link
-          href={`mailto:${documentationEmail}`}
+          href={`mailto:${bookTrainingEmail}`}
           isHovered={true}
           color={theme.profileInfo.tooltipLinkColor}
         >
-          {{ supportEmail: documentationEmail }}
+          {{ supportEmail: bookTrainingEmail }}
         </Link>
         to take part in the translation and get up to 1 year free of charge."
       </Trans>{" "}
@@ -233,7 +233,7 @@ const MainProfile = (props) => {
                 </div>
               )}
             </div>
-            <div className="profile-block-field" style={{ marginTop: 16 }}>
+            <div className="profile-block-field profile-block-password">
               <Text fontWeight={600}>********</Text>
               <IconButton
                 className="edit-button"
@@ -435,7 +435,7 @@ export default inject(({ auth, peopleStore }) => {
     helpLink,
     culture,
     currentColorScheme,
-    documentationEmail,
+    bookTrainingEmail,
   } = auth.settingsStore;
   const { setIsLoading } = peopleStore.loadingStore;
 
@@ -470,6 +470,6 @@ export default inject(({ auth, peopleStore }) => {
     sendActivationLink,
     currentColorScheme,
     updateProfileCulture,
-    documentationEmail,
+    bookTrainingEmail,
   };
 })(withCultureNames(observer(MainProfile)));

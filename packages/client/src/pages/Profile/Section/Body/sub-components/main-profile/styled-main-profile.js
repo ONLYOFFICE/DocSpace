@@ -66,6 +66,10 @@ export const StyledInfo = styled.div`
         line-height: 20px;
       }
 
+      .profile-block-password {
+        margin-top: 16px;
+      }
+
       .email-container {
         margin-top: 16px;
 
