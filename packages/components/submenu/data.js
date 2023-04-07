@@ -8,9 +8,6 @@ export const data = [
   {
     id: "Overview",
     name: "Overview",
-    onClick: function () {
-      alert("Overview");
-    },
     content: (
       <FileInput
         accept=".doc, .docx"
@@ -24,17 +21,11 @@ export const data = [
   {
     id: "Documents",
     name: "Documents",
-    onClick: function () {
-      alert("Documents");
-    },
     content: <p>Documents</p>,
   },
   {
     id: "Milestones",
     name: "Milestones",
-    onClick: function () {
-      alert("Milestones");
-    },
     content: (
       <Row
         key="1"
