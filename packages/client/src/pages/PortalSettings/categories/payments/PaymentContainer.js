@@ -353,19 +353,16 @@ export default inject(({ auth, payments }) => {
     isGracePeriod,
     customerId,
     portalTariffStatus,
+    paymentDate,
+    gracePeriodEndDate,
+    delayDaysCount,
   } = currentTariffStatusStore;
 
   const { planCost, tariffPlanTitle, portalPaymentQuotas } = paymentQuotasStore;
 
   const { theme } = auth.settingsStore;
 
-  const {
-    gracePeriodEndDate,
-    delayDaysCount,
-
-    isAlreadyPaid,
-    paymentDate,
-  } = payments;
+  const { isAlreadyPaid } = payments;
 
   const { user } = userStore;
 

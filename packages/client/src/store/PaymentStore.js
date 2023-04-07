@@ -7,10 +7,7 @@ import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
 import toastr from "@docspace/components/toast/toastr";
 import authStore from "@docspace/common/store/AuthStore";
-import moment from "moment";
-import { getUserByEmail } from "@docspace/common/api/people";
 import { getPaymentLink } from "@docspace/common/api/portal";
-import { getDaysRemaining } from "../helpers/filesUtils";
 import axios from "axios";
 
 class PaymentStore {
@@ -38,13 +35,6 @@ class PaymentStore {
 
   isInitPaymentPage = false;
 
-  paymentDate = "";
-
-  gracePeriodEndDate = "";
-  delayDaysCount = "";
-
-  payerInfo = null;
-
   constructor() {
     makeAutoObservable(this);
   }
@@ -56,28 +46,6 @@ class PaymentStore {
 
     return customerId?.length !== 0 || !isFreeTariff;
   }
-
-  setTariffDates = () => {
-    const { currentTariffStatusStore } = authStore;
-    const {
-      isGracePeriod,
-      isNotPaidPeriod,
-      delayDueDate,
-      dueDate,
-    } = currentTariffStatusStore;
-
-    const setGracePeriodDays = () => {
-      const delayDueDateByMoment = moment(delayDueDate);
-
-      this.gracePeriodEndDate = delayDueDateByMoment.format("LL");
-
-      this.delayDaysCount = getDaysRemaining(delayDueDateByMoment);
-    };
-
-    this.paymentDate = moment(dueDate).format("LL");
-
-    (isGracePeriod || isNotPaidPeriod) && setGracePeriodDays();
-  };
 
   setIsUpdatingBasicSettings = (isUpdatingBasicSettings) => {
     this.isUpdatingBasicSettings = isUpdatingBasicSettings;
@@ -97,7 +65,6 @@ class PaymentStore {
 
     try {
       await Promise.all(requests);
-      this.setTariffDates();
       this.setBasicTariffContainer();
     } catch (error) {
       toastr.error(t("Common:UnexpectedError"));
@@ -134,7 +101,6 @@ class PaymentStore {
     try {
       await Promise.all(requests);
       this.setRangeStepByQuota();
-      this.setTariffDates();
       this.setBasicTariffContainer();
 
       if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
