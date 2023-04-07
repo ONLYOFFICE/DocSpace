@@ -16,10 +16,8 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import {
-  getDaysRemaining,
-  openDocEditor as openEditor,
-} from "@docspace/client/src/helpers/filesUtils";
+import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import { getDaysRemaining } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,

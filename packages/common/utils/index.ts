@@ -15,6 +15,8 @@ import BackgroundPatternPurpleReactSvgUrl from "PUBLIC_DIR/images/background.pat
 import BackgroundPatternLightBlueReactSvgUrl from "PUBLIC_DIR/images/background.pattern.lightBlue.react.svg?url";
 import BackgroundPatternBlackReactSvgUrl from "PUBLIC_DIR/images/background.pattern.black.react.svg?url";
 
+import moment from "moment";
+
 import { LANGUAGE } from "../constants";
 import sjcl from "sjcl";
 import { isMobile } from "react-device-detect";
@@ -509,4 +511,13 @@ export const getLogoFromPath = (path) => {
   }
 
   return path;
+};
+
+export const getDaysRemaining = (autoDelete) => {
+  let daysRemaining = moment(autoDelete)
+    .startOf("day")
+    .diff(moment().startOf("day"), "days");
+
+  if (daysRemaining <= 0) return "<1";
+  return "" + daysRemaining;
 };
