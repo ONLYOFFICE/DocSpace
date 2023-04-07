@@ -83,21 +83,22 @@ class PaymentStore {
     this.isUpdatingBasicSettings = isUpdatingBasicSettings;
   };
   basicSettings = async () => {
-    const { currentTariffStatusStore } = authStore;
+    const { currentTariffStatusStore, currentQuotaStore } = authStore;
     const { setPortalTariff } = currentTariffStatusStore;
+    const { addedManagersCount } = currentQuotaStore;
 
     this.setIsUpdatingBasicSettings(true);
-    this.setBasicTariffContainer();
 
     const requests = [setPortalTariff()];
 
     this.isAlreadyPaid
       ? requests.push(this.setPaymentAccount())
-      : requests.push(this.getPaymentLink());
+      : requests.push(this.getBasicPaymentLink(addedManagersCount));
 
     try {
       await Promise.all(requests);
       this.setTariffDates();
+      this.setBasicTariffContainer();
     } catch (error) {
       toastr.error(t("Common:UnexpectedError"));
       console.error(error);
@@ -113,11 +114,13 @@ class PaymentStore {
       return;
     }
 
-    this.setBasicTariffContainer();
-
-    const { paymentQuotasStore, currentTariffStatusStore } = authStore;
+    const {
+      paymentQuotasStore,
+      currentTariffStatusStore,
+      currentQuotaStore,
+    } = authStore;
     const { setPayerInfo } = currentTariffStatusStore;
-
+    const { addedManagersCount } = currentQuotaStore;
     const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
 
     const requests = [this.getSettingsPayment()];
@@ -126,12 +129,13 @@ class PaymentStore {
 
     this.isAlreadyPaid
       ? requests.push(this.setPaymentAccount())
-      : requests.push(this.getPaymentLink());
+      : requests.push(this.getBasicPaymentLink(addedManagersCount));
 
     try {
       await Promise.all(requests);
       this.setRangeStepByQuota();
       this.setTariffDates();
+      this.setBasicTariffContainer();
 
       if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
     } catch (error) {
@@ -145,6 +149,18 @@ class PaymentStore {
     this.isInitPaymentPage = true;
   };
 
+  getBasicPaymentLink = async (managersCount) => {
+    const backUrl = window.location.origin;
+
+    try {
+      const link = await getPaymentLink(managersCount, backUrl);
+
+      if (!link) return;
+      this.setPaymentLink(link);
+    } catch (e) {
+      console.error(thrown);
+    }
+  };
   getPaymentLink = async (token = undefined) => {
     const backUrl = window.location.origin;
 
