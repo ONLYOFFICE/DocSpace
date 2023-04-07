@@ -36,7 +36,6 @@ const FileNameCell = ({
           className="table-container_element-wrapper"
           hasAccess={true}
           checked={checked}
-          style={{ borderBottom: "none" }}
         >
           <div className="table-container_element-container">
             <div className="table-container_element">{element}</div>

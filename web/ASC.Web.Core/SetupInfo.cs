@@ -39,6 +39,7 @@ public class SetupInfo
     public string RequestTraining { get; private set; }
     public string ZendeskKey { get; private set; }
     public string BookTrainingEmail { get; private set; }
+    public string DocumentationEmail { get; private set; }
     public string UserVoiceURL { get; private set; }
     public string MainLogoURL { get; private set; }
     public string MainLogoMailTmplURL { get; private set; }
@@ -122,6 +123,7 @@ public class SetupInfo
         DemoOrder = GetAppSettings("web.demo-order", string.Empty);
         ZendeskKey = GetAppSettings("web:zendesk-key", string.Empty);
         BookTrainingEmail = GetAppSettings("web:book-training-email", string.Empty);
+        DocumentationEmail = GetAppSettings("web:documentation-email", string.Empty);
         RequestTraining = GetAppSettings("web.request-training", string.Empty);
         MainLogoURL = GetAppSettings("web.logo.main", string.Empty);
         MainLogoMailTmplURL = GetAppSettings("web.logo.mail.tmpl", string.Empty);
