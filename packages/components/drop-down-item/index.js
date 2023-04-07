@@ -69,21 +69,21 @@ const DropDownItem = (props) => {
 };
 
 DropDownItem.propTypes = {
-  /** Tells when the dropdown item should display like separator */
+  /** Sets the dropdown item to display as a separator */
   isSeparator: PropTypes.bool,
-  /** Tells when the dropdown item should display like header */
+  /** Sets the dropdown to display as a header */
   isHeader: PropTypes.bool,
   /** Accepts tab-index */
   tabIndex: PropTypes.number,
   /** Dropdown item text */
   label: PropTypes.string,
-  /** Tells when the dropdown item should display like disabled */
+  /** Sets the dropdown item to display as disabled */
   disabled: PropTypes.bool,
   /** Dropdown item icon */
   icon: PropTypes.string,
-  /** Disable default style hover effect */
+  /** Disables default style hover effect */
   noHover: PropTypes.bool,
-  /** What the dropdown item will trigger when clicked */
+  /** Sets an action that will be triggered when the dropdown item is clicked */
   onClick: PropTypes.func,
   /** Children elements */
   children: PropTypes.any,
