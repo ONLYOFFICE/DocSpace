@@ -181,11 +181,11 @@ public class TariffService : ITariffService
 
                     var asynctariff = CreateDefault(true);
                     string email = null;
-                    TenantQuota updatedQuota = null;
+                    var tenantQuotas = _quotaService.GetTenantQuotas();
 
                     foreach (var currentPayment in currentPayments.OrderBy(r => r.EndDate))
                     {
-                        var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
+                        var quota = tenantQuotas.SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
                         if (quota == null)
                         {
                             throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
@@ -196,11 +196,19 @@ public class TariffService : ITariffService
                         var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
                         asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
+                        asynctariff.Quotas = asynctariff.Quotas.Where(r => r.Id != quota.Tenant).ToList();
                         asynctariff.Quotas.Add(new Quota(quota.Tenant, currentPayment.Quantity));
                         email = currentPayment.PaymentEmail;
+                    }
 
-                        quota *= currentPayment.Quantity;
-                        updatedQuota += quota;
+                    TenantQuota updatedQuota = null;
+
+                    foreach (var quota in asynctariff.Quotas)
+                    {
+                        var tenantQuota = tenantQuotas.SingleOrDefault(q => q.Tenant == quota.Id);
+
+                        tenantQuota *= quota.Quantity;
+                        updatedQuota += tenantQuota;
                     }
 
                     updatedQuota.Check(_serviceProvider).Wait();
@@ -256,6 +264,10 @@ public class TariffService : ITariffService
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
                         tariffId = asynctariff.Id;
+                    }
+                    else
+                    {
+                        tariffId = tariff.Id;
                     }
                 }
             }
@@ -694,6 +706,7 @@ public class TariffService : ITariffService
         }
 
         var tariff = CreateDefault(true);
+        tariff.Id = r.Id;
         tariff.DueDate = r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue;
         tariff.CustomerId = r.CustomerId;
 
