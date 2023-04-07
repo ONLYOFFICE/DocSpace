@@ -1,7 +1,7 @@
 {
   "ClickHere": "Apăsaţi aici",
   "ConfirmEmailDescription": "Utilizaţi linkul de activare din email. Nu aţi primit un email cu link-ul de activare?",
-  "ConfirmEmailHeader": "Activați adresa de email pentru a avea acces la funcţiile DocSpace.",
+  "ConfirmEmailHeader": "Activați adresa de email ({{ email }}) pentru a avea acces la funcţiile DocSpace.",
   "RequestActivation": "Solicitaţi activarea din nou",
   "RoomQuotaDescription": "Puteţi arhiva sălile inutile sau <1>{{clickHere}}</1> pentru a găsi un abonament mai potrivit pentru spaţiul dvs DocSpace.",
   "RoomQuotaHeader": "Cota sălilor este pe punctul de a fi depăşită: {{currentValue}} / {{maxValue}}",

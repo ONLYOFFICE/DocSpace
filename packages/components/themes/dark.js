@@ -1610,6 +1610,7 @@ const Dark = {
     button: {
       height: "18px",
       heightWithBorder: "30px",
+      heightModernView: "28px",
 
       paddingLeft: "16px",
       paddingRightNoArrow: "16px",

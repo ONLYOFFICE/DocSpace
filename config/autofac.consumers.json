@@ -152,38 +152,6 @@
 	  }
     },
 	{
-      "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "docuSign",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "docuSign",
-		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "docuSign",
-		  "order": "1",
-		  "props": {
-			"docuSignClientId": "",
-			"docuSignClientSecret": "",
-			"docuSignHost": ""
-		  },
-		  "additional": {
-			"docuSignRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
-	{
       "type": "ASC.FederatedLogin.LoginProviders.DropboxLoginProvider, ASC.FederatedLogin",
       "services": [
         {
@@ -336,37 +304,6 @@
 		  },
 		  "additional": {
 			"linkedInRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
-		{
-      "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "mailru",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "mailru",
-		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "mailru",
-		  "order": "4",
-		  "props": {
-			"mailRuClientId": "",
-			"mailRuClientSecret": ""
-		  },
-		  "additional": {
-			"mailRuRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },

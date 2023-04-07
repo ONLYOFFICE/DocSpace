@@ -1,7 +1,7 @@
 {
   "ClickHere": "Buraya tıklayın",
   "ConfirmEmailDescription": "Aktivasyon e-postasında verilen bağlantıyı kullanın. Etkinleştirme bağlantısını içeren bir e-posta almadınız mı?",
-  "ConfirmEmailHeader": "DocSpace özelliklerine erişmek için lütfen e-postanızı etkinleştirin",
+  "ConfirmEmailHeader": "DocSpace özelliklerine erişmek için lütfen e-postanızı ({{ email }}) etkinleştirin.",
   "RequestActivation": "Tekrar aktivasyon iste",
   "RoomQuotaDescription": "Gereksiz odaları arşivleyebilirsiniz veya <1>{{clickHere}}</1> ile DocSpace'iniz için daha uygun bir fiyatlandırma planı bulabilirsiniz.",
   "RoomQuotaHeader": "Odalar aşılmak üzere: {{currentValue}} / {{maxValue}}",

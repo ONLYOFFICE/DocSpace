@@ -63,7 +63,7 @@
   "DNSSettings": "DNS instellingen",
   "DNSSettingsDescription": "DNS Instellingen is een manier om een alternatieve URL voor uw ruimte in te stellen.",
   "DNSSettingsMobile": "Stuur uw verzoek naar ons ondersteuningsteam, en onze specialisten zullen u helpen met de instellingen.",
-  "DNSSettingsTooltip": "Met DNS Instellingen kunt u een alternatief URL-adres instellen voor uw {{ organizationName }} ruimte. Stuur uw verzoek naar ons ondersteuningsteam, en onze specialisten zullen u helpen met de instellingen.<2>{learnMore}}</2>",
+  "DNSSettingsTooltip": "Met DNS Instellingen kunt u een alternatief URL-adres instellen voor uw {{ organizationName }} ruimte. Stuur uw verzoek naar ons ondersteuningsteam, en onze specialisten zullen u helpen met de instellingen.",
   "DataBackup": "Data backup",
   "Deactivate": "Deactiveer",
   "DeactivateOrDeletePortal": "Portaal deactiveren of verwijderen.",
