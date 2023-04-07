@@ -42,18 +42,21 @@ public class FoldersModule : FeedModule
     private readonly FileSecurity _fileSecurity;
     private readonly IFolderDao<int> _folderDao;
     private readonly UserManager _userManager;
+    private readonly TenantUtil _tenantUtil;
 
     public FoldersModule(
         TenantManager tenantManager,
         UserManager userManager,
         WebItemSecurity webItemSecurity,
         FileSecurity fileSecurity,
-        IDaoFactory daoFactory)
+        IDaoFactory daoFactory,
+        TenantUtil tenantUtil)
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
         _fileSecurity = fileSecurity;
         _folderDao = daoFactory.GetFolderDao<int>();
+        _tenantUtil = tenantUtil;
     }
 
     public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
@@ -119,7 +122,7 @@ public class FoldersModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
             {
                 Item = SharedFolderItem,
                 ItemId = $"{folder.Id}_{shareRecord.Subject}",
@@ -137,7 +140,9 @@ public class FoldersModule : FeedModule
             return feed;
         }
 
-        return new Feed.Aggregator.Feed(folder.CreateBy, folder.CreateOn)
+        var folderCreatedUtc = _tenantUtil.DateTimeToUtc(folder.CreateOn);
+
+        return new Feed.Aggregator.Feed(folder.CreateBy, folderCreatedUtc)
         {
             Item = FolderItem,
             ItemId = folder.Id.ToString(),
@@ -147,7 +152,7 @@ public class FoldersModule : FeedModule
             ExtraLocationTitle = parentFolder.Title,
             ExtraLocation = folder.ParentId.ToString(),
             Keywords = folder.Title,
-            GroupId = GetGroupId(FolderItem, folder.CreateBy, folder.CreateOn, folder.ParentId.ToString()),
+            GroupId = GetGroupId(FolderItem, folder.CreateBy, folderCreatedUtc, folder.ParentId.ToString()),
             ContextId = contextId
         };
     }

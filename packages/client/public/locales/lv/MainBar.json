@@ -1,7 +1,7 @@
 {
   "ClickHere": "Noklikšķiniet šeit",
   "ConfirmEmailDescription": "Izmantojiet aktivizēšanas e-pasta ziņojumā norādīto saiti. Vai neesat saņēmis e-pasta ziņojumu ar aktivizēšanas saiti?",
-  "ConfirmEmailHeader": "Lūdzu, aktivizējiet savu e-pastu, lai piekļūtu DocSpace funkcijām.",
+  "ConfirmEmailHeader": "Lūdzu, aktivizējiet savu e-pastu ({{ email }}), lai piekļūtu DocSpace funkcijām.",
   "RequestActivation": "Vēreiz pieprasīt aktivizāciju",
   "RoomQuotaDescription": "Varat arhivēt nevajadzīgās telpas vai <1>{{clickHere}}</1>, lai atrastu savam DocSpace piemērotāku cenu plānu.",
   "RoomQuotaHeader": "Tūlīt tiks pārsniegtas telpas: {{currentValue}} / {{maxValue}}",

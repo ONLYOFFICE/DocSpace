@@ -29,12 +29,6 @@ const StyledPeopleRow = styled(TableRow)`
       border-top: ${(props) =>
         `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       margin-top: -1px;
-
-      .paid-badge {
-        p {
-          padding-top: 1px;
-        }
-      }
     }
 
     .table-container_user-name-cell {
@@ -344,7 +338,6 @@ const PeopleTableRow = (props) => {
             hasAccess={true}
             className="table-container_row-checkbox-wrapper"
             checked={isChecked}
-            style={{ borderBottom: "none" }}
           >
             <div className="table-container_element">{element}</div>
             <Checkbox

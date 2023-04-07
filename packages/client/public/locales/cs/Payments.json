@@ -11,6 +11,7 @@
   "BusinessUpdated": "Tarif {{planName}} aktualizován",
   "ChooseNewPlan": "Chcete si vybrat nový cenový tarif?",
   "ContactUs": "V případě dotazů týkajících se prodeje nás kontaktujte na adrese",
+  "DelayedPayment": "Opožděná platba tarifu {{planName}} ze dne {{date}}",
   "DowngradeNow": "Snížit úroveň nyní",
   "ErrorNotification": "Nepodařilo se aktualizovat tarifní plán. Zkuste to později nebo kontaktujte obchodní oddělení.",
   "GracePeriodActivatedDescription": "Během období odkladu nemohou správci vytvářet nové místnosti a přidávat nové uživatele. Po uplynutí doby odkladu platby se DocSpace stane nedostupným, dokud nebude provedena platba.",

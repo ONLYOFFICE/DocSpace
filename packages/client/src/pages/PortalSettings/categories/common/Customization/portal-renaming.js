@@ -128,7 +128,7 @@ const PortalRenaming = (props) => {
         setPortalName(portalName);
         setPortalNameDefault(portalName);
 
-        history.push(res);
+        window.location.href = res;
       })
       .catch((error) => {
         let errorMessage = "";

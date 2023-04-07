@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Código de validação não pode estar vazio</value>
@@ -138,6 +138,12 @@
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>O link para confirmar a sua conta foi enviado para o e-mail especificado</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Primeiro nome</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Último nome</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>As instruções de alteração de e-mail foram enviadas para o endereço de email {0}</value>

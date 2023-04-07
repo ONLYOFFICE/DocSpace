@@ -48,14 +48,13 @@ const StyledTableRow = styled(TableRow)`
           background: ${(props) =>
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
-          margin-top: ${(props) =>
-            props.showHotkeyBorder ? "-2px" : "-0.8px"};
+          margin-top: ${(props) => (props.showHotkeyBorder ? "-2px" : "-1px")};
 
           ${(props) =>
             !props.showHotkeyBorder &&
             css`
               border-top: ${(props) =>
-                `0.8px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+                `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
             `}
         }
         .table-container_file-name-cell {
@@ -148,6 +147,10 @@ const StyledTableRow = styled(TableRow)`
       width: 12px;
       height: 12px;
     }
+  }
+
+  .item-file-name {
+    padding: 12px 12px 12px 0px;
   }
 
   ${(props) =>

@@ -85,6 +85,8 @@
   "Download": "Lataa",
   "DropzoneTitleExsts": "(JPG tai PNG)",
   "DropzoneTitleLink": "Valitse uusi kuva",
+  "DropzoneTitleSecondary": "tai raahaa tiedosto tähän",
+  "Duplicate": "Duplikaatti",
   "EditButton": "Muokkaa",
   "Email": "Sähköposti",
   "EmptyEmail": "Yhtään sähköpostia ei ole jäsennelty",
@@ -218,6 +220,7 @@
   "SortBy": "Lajitteluperuste",
   "SpacesInLocalPart": "Paikallinen osa ei voi sisältää välilyöntejä",
   "Standard": "Vakio",
+  "Support": "Tuki",
   "SwitchToThumbnails": "Vaihda pikkukuvanäkymään",
   "SwitchViewToCompact": "Suppeat tiedot",
   "Tags": "Tunnisteet",
@@ -236,5 +239,6 @@
   "View": "Näkymä",
   "WantToContinue": "Haluatko varmasti jatkaa?",
   "Warning": "Varoitus",
-  "Website": "Sivusto"
+  "Website": "Sivusto",
+  "Yesterday": "Eilen"
 }
