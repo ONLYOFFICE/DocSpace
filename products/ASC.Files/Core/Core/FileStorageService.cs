@@ -86,6 +86,8 @@ public class FileStorageService<T> //: IFileStorageService
     private readonly InvitationLinkService _invitationLinkService;
     private readonly InvitationLinkHelper _invitationLinkHelper;
     private readonly StudioNotifyService _studioNotifyService;
+    private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
+    private readonly QuotaSocketManager _quotaSocketManager;
     public FileStorageService(
         Global global,
         GlobalStore globalStore,
@@ -140,7 +142,9 @@ public class FileStorageService<T> //: IFileStorageService
         CountRoomChecker countRoomChecker,
         InvitationLinkService invitationLinkService,
         InvitationLinkHelper invitationLinkHelper,
-        StudioNotifyService studioNotifyService)
+        StudioNotifyService studioNotifyService,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
     {
         _global = global;
         _globalStore = globalStore;
@@ -196,6 +200,8 @@ public class FileStorageService<T> //: IFileStorageService
         _invitationLinkService = invitationLinkService;
         _invitationLinkHelper = invitationLinkHelper;
         _studioNotifyService = studioNotifyService;
+        _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
+        _quotaSocketManager = quotaSocketManager;
     }
 
     public async Task<Folder<T>> GetFolderAsync(T folderId)
@@ -611,6 +617,12 @@ public class FileStorageService<T> //: IFileStorageService
             var folder = await folderDao.GetFolderAsync(folderId);
 
             await _socketManager.CreateFolderAsync(folder);
+
+            if (isRoom)
+            {
+                var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
+                _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+            }
 
             _ = _filesMessageService.Send(folder, GetHttpHeaders(), isRoom ? MessageAction.RoomCreated : MessageAction.FolderCreated, folder.Title);
 

@@ -7,10 +7,9 @@ import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
 import toastr from "@docspace/components/toast/toastr";
 import authStore from "@docspace/common/store/AuthStore";
-import moment from "moment";
-import { getUserByEmail } from "@docspace/common/api/people";
 import { getPaymentLink } from "@docspace/common/api/portal";
-import { getDaysRemaining } from "../helpers/filesUtils";
+import axios from "axios";
+
 class PaymentStore {
   salesEmail = "";
   helpUrl = "https://helpdesk.onlyoffice.com";
@@ -25,6 +24,7 @@ class PaymentStore {
   paymentLink = null;
   accountLink = null;
   isLoading = false;
+  isUpdatingBasicSettings = false;
   totalPrice = 30;
   managersCount = 1;
   maxAvailableManagersCount = 999;
@@ -34,13 +34,6 @@ class PaymentStore {
   minAvailableTotalSizeValue = 107374182400;
 
   isInitPaymentPage = false;
-
-  paymentDate = "";
-
-  gracePeriodEndDate = "";
-  delayDaysCount = "";
-
-  payerInfo = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -54,46 +47,61 @@ class PaymentStore {
     return customerId?.length !== 0 || !isFreeTariff;
   }
 
-  setTariffDates = () => {
-    const { currentTariffStatusStore } = authStore;
-    const {
-      isGracePeriod,
-      isNotPaidPeriod,
-      delayDueDate,
-      dueDate,
-    } = currentTariffStatusStore;
+  setIsUpdatingBasicSettings = (isUpdatingBasicSettings) => {
+    this.isUpdatingBasicSettings = isUpdatingBasicSettings;
+  };
+  basicSettings = async () => {
+    const { currentTariffStatusStore, currentQuotaStore } = authStore;
+    const { setPortalTariff } = currentTariffStatusStore;
+    const { addedManagersCount } = currentQuotaStore;
 
-    const setGracePeriodDays = () => {
-      const delayDueDateByMoment = moment(delayDueDate);
+    this.setIsUpdatingBasicSettings(true);
 
-      this.gracePeriodEndDate = delayDueDateByMoment.format("LL");
+    const requests = [setPortalTariff()];
 
-      this.delayDaysCount = getDaysRemaining(delayDueDateByMoment);
-    };
+    this.isAlreadyPaid
+      ? requests.push(this.setPaymentAccount())
+      : requests.push(this.getBasicPaymentLink(addedManagersCount));
 
-    this.paymentDate = moment(dueDate).format("LL");
+    try {
+      await Promise.all(requests);
+      this.setBasicTariffContainer();
+    } catch (error) {
+      toastr.error(t("Common:UnexpectedError"));
+      console.error(error);
+    }
 
-    (isGracePeriod || isNotPaidPeriod) && setGracePeriodDays();
+    this.setIsUpdatingBasicSettings(false);
   };
 
   init = async (t) => {
-    if (this.isInitPaymentPage) return;
+    if (this.isInitPaymentPage) {
+      this.basicSettings();
 
-    const { currentTariffStatusStore, paymentQuotasStore } = authStore;
-    const { customerId } = currentTariffStatusStore;
+      return;
+    }
+
+    const {
+      paymentQuotasStore,
+      currentTariffStatusStore,
+      currentQuotaStore,
+    } = authStore;
+    const { setPayerInfo } = currentTariffStatusStore;
+    const { addedManagersCount } = currentQuotaStore;
     const { setPortalPaymentQuotas, isLoaded } = paymentQuotasStore;
 
     const requests = [this.getSettingsPayment()];
 
     if (!isLoaded) requests.push(setPortalPaymentQuotas());
 
-    if (this.isAlreadyPaid) requests.push(this.setPaymentAccount());
-    if (!this.isAlreadyPaid) requests.push(this.getPaymentLink());
+    this.isAlreadyPaid
+      ? requests.push(this.setPaymentAccount())
+      : requests.push(this.getBasicPaymentLink(addedManagersCount));
 
     try {
       await Promise.all(requests);
       this.setRangeStepByQuota();
-      this.setTariffDates();
+      this.setBasicTariffContainer();
 
       if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
     } catch (error) {
@@ -102,26 +110,42 @@ class PaymentStore {
       return;
     }
 
-    try {
-      if (this.isAlreadyPaid) this.payerInfo = await getUserByEmail(customerId);
-    } catch (e) {
-      console.error(e);
-    }
+    if (this.isAlreadyPaid) await setPayerInfo();
 
     this.isInitPaymentPage = true;
   };
 
-  getPaymentLink = async () => {
+  getBasicPaymentLink = async (managersCount) => {
     const backUrl = window.location.origin;
 
     try {
-      const link = await getPaymentLink(this.managersCount, backUrl);
+      const link = await getPaymentLink(managersCount, backUrl);
 
       if (!link) return;
       this.setPaymentLink(link);
-    } catch (e) {
-      console.error(e);
+    } catch (err) {
+      console.error(err);
     }
+  };
+  getPaymentLink = async (token = undefined) => {
+    const backUrl = window.location.origin;
+
+    await getPaymentLink(this.managersCount, backUrl, token)
+      .then((link) => {
+        if (!link) return;
+        this.setPaymentLink(link);
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) {
+          console.log("Request canceled", err.message);
+        } else {
+          console.error(err);
+          if (err?.response?.status === 402) {
+            return;
+          }
+          this.isInitPaymentPage && toastr.error(err);
+        }
+      });
   };
   getSettingsPayment = async () => {
     try {
@@ -203,34 +227,33 @@ class PaymentStore {
     return this.managersCount * this.stepByQuotaForTotalSize;
   }
 
-  initializeInfo = () => {
-    const currentTotalPrice = authStore.currentQuotaStore.currentPlanCost.value;
-
-    this.initializeTotalPrice(currentTotalPrice);
-    this.initializeManagersCount(currentTotalPrice);
+  resetTariffContainerToBasic = () => {
+    this.setBasicTariffContainer();
   };
-  initializeTotalPrice = (currentTotalPrice) => {
-    if (currentTotalPrice !== 0) {
+  setBasicTariffContainer = () => {
+    const { currentQuotaStore } = authStore;
+    const {
+      currentPlanCost,
+      maxCountManagersByQuota,
+      addedManagersCount,
+    } = currentQuotaStore;
+    const currentTotalPrice = currentPlanCost.value;
+
+    if (this.isAlreadyPaid) {
+      const countOnRequest =
+        maxCountManagersByQuota > this.maxAvailableManagersCount;
+
+      this.managersCount = countOnRequest
+        ? this.maxAvailableManagersCount + 1
+        : maxCountManagersByQuota;
+
       this.totalPrice = currentTotalPrice;
-    } else {
-      this.totalPrice = this.getTotalCostByFormula(
-        this.minAvailableManagersValue
-      );
-    }
-  };
 
-  initializeManagersCount = (currentTotalPrice) => {
-    const maxCountManagersByQuota =
-      authStore.currentQuotaStore.maxCountManagersByQuota;
-
-    if (maxCountManagersByQuota !== 0 && currentTotalPrice !== 0) {
-      this.managersCount =
-        maxCountManagersByQuota > this.maxAvailableManagersCount
-          ? this.maxAvailableManagersCount + 1
-          : maxCountManagersByQuota;
-    } else {
-      this.managersCount = this.minAvailableManagersValue;
+      return;
     }
+
+    this.managersCount = addedManagersCount;
+    this.totalPrice = this.getTotalCostByFormula(addedManagersCount);
   };
 
   setTotalPrice = (value) => {
@@ -250,6 +273,58 @@ class PaymentStore {
 
   get isLessCountThanAcceptable() {
     return this.managersCount < this.minAvailableManagersValue;
+  }
+
+  get isPayer() {
+    const { userStore, currentTariffStatusStore } = authStore;
+    const { user } = userStore;
+
+    const { customerId } = currentTariffStatusStore;
+
+    if (!user) return false;
+
+    return user.email === customerId;
+  }
+
+  get isStripePortalAvailable() {
+    const { userStore } = authStore;
+    const { user } = userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || this.isPayer;
+  }
+
+  get canUpdateTariff() {
+    const { currentQuotaStore, userStore } = authStore;
+    const { user } = userStore;
+    const { isFreeTariff } = currentQuotaStore;
+
+    if (!user) return false;
+
+    if (isFreeTariff) return true;
+
+    return this.isPayer;
+  }
+
+  get canPayTariff() {
+    const { currentQuotaStore } = authStore;
+    const { addedManagersCount } = currentQuotaStore;
+
+    if (this.managersCount >= addedManagersCount) return true;
+
+    return false;
+  }
+
+  get canDowngradeTariff() {
+    const { currentQuotaStore } = authStore;
+    const { addedManagersCount, usedTotalStorageSizeCount } = currentQuotaStore;
+
+    if (addedManagersCount > this.managersCount) return false;
+    if (usedTotalStorageSizeCount > this.allowedStorageSizeByQuota)
+      return false;
+
+    return true;
   }
 
   setRangeStepByQuota = () => {

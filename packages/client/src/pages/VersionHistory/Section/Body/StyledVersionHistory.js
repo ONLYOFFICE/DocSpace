@@ -193,15 +193,18 @@ const StyledVersionRow = styled(Row)`
   }
 
   .version_text {
-    display: ${(props) => (props.showEditPanel ? "none" : "block")};
     margin-left: -7px;
     margin-top: 5px;
 
     @media ${tablet} {
-      display: ${(props) => (props.showEditPanel ? "none" : "inline-block")};
       margin-left: -7px;
       margin-top: 5px;
     }
+
+    display: ${(props) => (props.showEditPanel ? "none" : "-webkit-box")};
+    overflow: hidden;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
   }
 
   .version-comment-wrapper {

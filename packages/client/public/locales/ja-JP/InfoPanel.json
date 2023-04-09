@@ -26,6 +26,7 @@
   "FeedUpdateUser": "は、{{role}}の役割が割り当てられています",
   "FileExtension": "ファイル拡張子",
   "FilesEmptyScreenText": "ファイルやフォルダの詳細はこちら",
+  "HistoryEmptyScreenText": "アクティビティ履歴はこちらに表示されます",
   "ItemsSelected": "選択されているアイテム",
   "LastModifiedBy": "最終更新者",
   "PendingInvitations": "保留中の招待",
