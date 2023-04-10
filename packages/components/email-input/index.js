@@ -139,7 +139,7 @@ EmailInput.propTypes = {
   name: PropTypes.string,
   /** Placeholder text for the input  */
   placeholder: PropTypes.string,
-  /** Indicates the input field has scale */
+  /** Indicates that the input field has scale */
   scale: PropTypes.bool,
 };
 
