@@ -127,7 +127,6 @@ const Section = (props) => {
     clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(() => {
-      console.log("call resize");
       if (!containerRef.current) return;
 
       const computedStyles = window.getComputedStyle(
