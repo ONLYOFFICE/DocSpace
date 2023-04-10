@@ -147,7 +147,8 @@ public class SettingsController : BaseSettingsController
             Version = _configuration["version:number"] ?? "",
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
-            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid()
+            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid(),
+            LegalTerms = _setupInfo.LegalTerms
         };
 
         if (_authContext.IsAuthenticated)
