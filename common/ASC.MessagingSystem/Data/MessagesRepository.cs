@@ -63,7 +63,7 @@ public class MessagesRepository : IDisposable
 
     ~MessagesRepository()
     {
-        FlushCacheAsync(true).Wait();
+        FlushCache();
     }
 
     private bool ForseSave(EventMessage message)
@@ -128,11 +128,11 @@ public class MessagesRepository : IDisposable
         await FlushCacheAsync(false);
     }
 
-    private async Task FlushCacheAsync(bool isDisposed = false)
+    private async Task FlushCacheAsync()
     {
         List<EventMessage> events = null;
 
-        if (DateTime.UtcNow > _lastSave.Add(_cacheTime) || _cache.Count > _cacheLimit || isDisposed)
+        if (DateTime.UtcNow > _lastSave.Add(_cacheTime) || _cache.Count > _cacheLimit)
         {
             lock (_cache)
             {
@@ -185,6 +185,62 @@ public class MessagesRepository : IDisposable
             }
         }
         await ef.SaveChangesAsync();
+    }
+
+    private void FlushCache()
+    {
+        List<EventMessage> events = null;
+
+        lock (_cache)
+        {
+            _timer.Change(-1, -1);
+            _timerStarted = false;
+
+            events = new List<EventMessage>(_cache.Values);
+            _cache.Clear();
+            _lastSave = DateTime.UtcNow;
+        }
+
+        if (events == null)
+        {
+            return;
+        }
+
+        using var scope = _serviceScopeFactory.CreateScope();
+        using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
+
+        var dict = new Dictionary<string, ClientInfo>();
+
+        foreach (var message in events)
+        {
+            if (!string.IsNullOrEmpty(message.UAHeader))
+            {
+                try
+                {
+                    MessageSettings.AddInfoMessage(message, dict);
+                }
+                catch (Exception e)
+                {
+                    _logger.ErrorFlushCache(message.Id, e);
+                }
+            }
+
+            if (!ForseSave(message))
+            {
+                // messages with action code < 2000 are related to login-history
+                if ((int)message.Action < 2000)
+                {
+                    var loginEvent = _mapper.Map<EventMessage, LoginEvent>(message);
+                    ef.LoginEvents.Add(loginEvent);
+                }
+                else
+                {
+                    var auditEvent = _mapper.Map<EventMessage, AuditEvent>(message);
+                    ef.AuditEvents.Add(auditEvent);
+                }
+            }
+        }
+        ef.SaveChanges();
     }
 
     private async Task<int> AddLoginEventAsync(EventMessage message, MessagesContext dbContext)

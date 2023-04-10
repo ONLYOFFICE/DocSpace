@@ -96,7 +96,6 @@ public class UsersQuotaSyncJob : DistributedTaskProgress
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
 
-
     private int? _tenantId;
     public int TenantId
     {

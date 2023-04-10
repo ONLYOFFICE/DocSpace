@@ -620,7 +620,7 @@ public class TenantWhiteLabelSettingsHelper
 
     public async Task<string> GetAbsoluteDefaultLogoPathAsync(WhiteLabelLogoTypeEnum type, bool dark)
     {
-        var partnerLogoPath = await GetPartnerStorageLogoPath(type, dark);
+        var partnerLogoPath = await GetPartnerStorageLogoPathAsync(type, dark);
         if (!string.IsNullOrEmpty(partnerLogoPath))
         {
             return partnerLogoPath;
@@ -635,7 +635,7 @@ public class TenantWhiteLabelSettingsHelper
         return _webImageSupplier.GetAbsoluteWebPath($"logo/" + BuildLogoFileName(type, ext, dark));
     }
 
-    private async Task<string> GetPartnerStorageLogoPath(WhiteLabelLogoTypeEnum type, bool dark)
+    private async Task<string> GetPartnerStorageLogoPathAsync(WhiteLabelLogoTypeEnum type, bool dark)
     {
         var partnerSettings = await _settingsManager.LoadForDefaultTenantAsync<TenantWhiteLabelSettings>();
 

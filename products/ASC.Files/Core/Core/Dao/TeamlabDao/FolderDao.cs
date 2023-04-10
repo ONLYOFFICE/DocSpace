@@ -1328,16 +1328,11 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
     }
 
-    public async IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<int> entriesIds)
+    public IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<int> entriesIds)
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var data = _getOriginsDataQuery(filesDbContext, entriesIds, TenantID);
-
-        await foreach (var d in data)
-        {
-            yield return d;
-        }
+        return _getOriginsDataQuery(filesDbContext, entriesIds, TenantID);
     }
 
     #endregion

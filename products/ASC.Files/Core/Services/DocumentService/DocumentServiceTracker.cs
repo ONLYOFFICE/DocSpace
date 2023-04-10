@@ -200,7 +200,7 @@ public class DocumentServiceTrackerHelper
         var callbackUrl = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath
                                                                 + "?" + FilesLinkUtility.Action + "=track"
                                                                 + "&" + FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId.ToString())
-                                                                + "&" + FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKeyAsync(fileId.ToString()));
+                                                                + "&" + FilesLinkUtility.AuthKey + "=" + await _emailValidationKeyProvider.GetEmailKeyAsync(fileId.ToString()));
         callbackUrl = await _documentServiceConnector.ReplaceCommunityAdressAsync(callbackUrl);
 
         return callbackUrl;
@@ -211,7 +211,7 @@ public class DocumentServiceTrackerHelper
         var callbackUrl = _baseCommonLinkUtility.GetFullAbsolutePath(_filesLinkUtility.FileHandlerPath
                                                                 + "?" + FilesLinkUtility.Action + "=track"
                                                                 + "&" + FilesLinkUtility.FileId + "=" + HttpUtility.UrlEncode(fileId.ToString())
-                                                                + "&" + FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKeyAsync(fileId.ToString()));
+                                                                + "&" + FilesLinkUtility.AuthKey + "=" + _emailValidationKeyProvider.GetEmailKey(fileId.ToString()));
         callbackUrl = _documentServiceConnector.ReplaceCommunityAdress(callbackUrl);
 
         return callbackUrl;

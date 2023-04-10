@@ -38,6 +38,7 @@ global using System.Xml.Linq;
 global using System.Xml.XPath;
 
 global using ASC.Api.Utils;
+global using ASC.Web.Files.Utils;
 global using ASC.Common;
 global using ASC.Common.Caching;
 global using ASC.Common.Log;
@@ -74,6 +75,7 @@ global using ASC.EventBus.Events;
 global using ASC.Files.Core;
 global using ASC.MessagingSystem.Core;
 global using ASC.Notify.Cron;
+global using ASC.Notify.Engine;
 global using ASC.Notify.Model;
 global using ASC.Notify.Patterns;
 global using ASC.Notify.Recipients;
