@@ -83,13 +83,20 @@ public class DbWorker
         return toAdd;
     }
 
-    public async IAsyncEnumerable<WebhooksConfig> GetTenantWebhooks()
+    public async IAsyncEnumerable<WebhooksConfigWithStatus> GetTenantWebhooksWithStatus()
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var q = webhooksDbContext.WebhooksConfigs
+        var q =  webhooksDbContext.WebhooksConfigs
             .AsNoTracking()
             .Where(it => it.TenantId == Tenant)
+            .GroupJoin(webhooksDbContext.WebhooksLogs, c => c.Id, l => l.ConfigId, (configs, logs) => new { configs, logs })
+            .Select(it =>
+                new WebhooksConfigWithStatus
+                {
+                    WebhooksConfig = it.configs,
+                    Status = it.logs.OrderBy(it => it.Delivery).LastOrDefault().Status
+                })
             .AsAsyncEnumerable();
 
         await foreach (var webhook in q)
@@ -107,7 +114,7 @@ public class DbWorker
             .AsAsyncEnumerable();
     }
 
-    public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string name, string uri, string key, bool? enabled)
+    public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string name, string uri, string key, bool? enabled, bool? ssl)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
@@ -137,6 +144,11 @@ public class DbWorker
                 updateObj.Enabled = enabled.Value;
             }
 
+            if (ssl.HasValue)
+            {
+                updateObj.Enabled = ssl.Value;
+            }
+
             webhooksDbContext.WebhooksConfigs.Update(updateObj);
             await webhooksDbContext.SaveChangesAsync();
         }
@@ -163,7 +175,7 @@ public class DbWorker
         return removeObj;
     }
 
-    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? delivery, string hookUri, int hookId)
+    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, WebhookGroupStatus? webhookGroupStatus)
     {
         var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
@@ -171,10 +183,16 @@ public class DbWorker
             .AsNoTracking()
             .Where(r => r.TenantId == Tenant);
 
-        if (delivery.HasValue)
+        if (deliveryFrom.HasValue)
         {
-            var date = delivery.Value;
-            q = q.Where(r => r.Delivery == date);
+            var from = deliveryFrom.Value;
+            q = q.Where(r => r.Delivery >= from);
+        }
+
+        if (deliveryTo.HasValue)
+        {
+            var to = deliveryTo.Value;
+            q = q.Where(r => r.Delivery <= to);
         }
 
         if (!string.IsNullOrEmpty(hookUri))
@@ -182,9 +200,38 @@ public class DbWorker
             q = q.Where(r => r.Config.Uri == hookUri);
         }
 
-        if (hookId != 0)
+        if (hookId != null)
         {
             q = q.Where(r => r.WebhookId == hookId);
+        }
+
+        if (configId != null)
+        {
+            q = q.Where(r => r.ConfigId == configId);
+        }
+
+        if(webhookGroupStatus != null)
+        {
+            if ((webhookGroupStatus & WebhookGroupStatus.NotSent) != WebhookGroupStatus.NotSent)
+            {
+                q = q.Where(r => r.Status != 0);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status2xx) != WebhookGroupStatus.Status2xx)
+            {
+                q = q.Where(r => r.Status < 200 && r.Status >= 300);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status3xx) != WebhookGroupStatus.Status3xx)
+            {
+                q = q.Where(r => r.Status < 300 && r.Status >= 400);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status4xx) != WebhookGroupStatus.Status4xx)
+            {
+                q = q.Where(r => r.Status < 400 && r.Status >= 500);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status5xx) != WebhookGroupStatus.Status5xx)
+            {
+                q = q.Where(r => r.Status < 500);
+            }
         }
 
         if (startIndex != 0)
@@ -288,4 +335,14 @@ public class DbWorker
 
         return _mapper.Map<DbWebhook, Webhook>(webHook);
     }
+}
+
+[Flags]
+public enum WebhookGroupStatus
+{
+    NotSent = 0x0,
+    Status2xx = 0x1,
+    Status3xx = 0x2,
+    Status4xx = 0x4,
+    Status5xx = 0x8
 }

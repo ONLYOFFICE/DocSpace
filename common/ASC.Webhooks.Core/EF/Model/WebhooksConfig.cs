@@ -34,6 +34,7 @@ public class WebhooksConfig : BaseEntity
     public int TenantId { get; set; }
     public string Uri { get; set; }
     public bool Enabled { get; set; }
+    public bool SSL { get; set; }
 
     public override object[] GetKeys()
     {
@@ -90,6 +91,11 @@ public static class WebhooksConfigExtension
                 .HasColumnName("enabled")
                 .HasDefaultValueSql("'1'")
                 .HasColumnType("tinyint(1)");
+
+            entity.Property(e => e.SSL)
+                .HasColumnName("ssl")
+                .HasDefaultValueSql("'1'")
+                .HasColumnType("tinyint(1)");
         });
     }
 
@@ -131,6 +137,16 @@ public static class WebhooksConfigExtension
             entity.Property(e => e.Enabled)
                 .HasColumnName("enabled")
                 .HasDefaultValueSql("true");
+
+            entity.Property(e => e.SSL)
+                .HasColumnName("ssl")
+                .HasDefaultValueSql("true");
         });
     }
+}
+
+public class WebhooksConfigWithStatus
+{
+    public WebhooksConfig WebhooksConfig { get; set; }
+    public int? Status { get; set; }
 }
