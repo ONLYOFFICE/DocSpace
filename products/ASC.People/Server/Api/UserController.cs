@@ -688,6 +688,7 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvites(UpdateMembersRequestDto inDto)
     {
@@ -871,6 +872,7 @@ public class UserController : PeopleControllerBase
         return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
     }
 
+    [AllowNotPayment]
     [HttpPut("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)
