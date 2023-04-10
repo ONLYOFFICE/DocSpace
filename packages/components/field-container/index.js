@@ -110,12 +110,12 @@ FieldContainer.propTypes = {
   isRequired: PropTypes.bool,
   /** Indicates that the field is incorrect */
   hasError: PropTypes.bool,
-  /** Sets visibility of field label section */
+  /** Sets visibility of the field label section */
   labelVisible: PropTypes.bool,
   /** Field label text or element */
   labelText: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
   icon: PropTypes.string,
-  /** Renders help button inline instead of separate div*/
+  /** Renders the help button inline instead of the separate div*/
   inlineHelpButton: PropTypes.bool,
   /** Children elements */
   children: PropTypes.oneOfType([
