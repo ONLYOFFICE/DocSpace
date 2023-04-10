@@ -6,11 +6,14 @@
   "EnableUserButton": "Ενεργοποίηση",
   "InviteLinkTitle": "Σύνδεσμος πρόσκλησης",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Αλλαγή ονόματος",
   "PasswordChangeButton": "Αλλαγή κωδικού πρόσβασης",
   "PendingTitle": "Εκκρεμεί",
   "RemoveData": "Διαγραφή προσωπικών δεδομένων",
+  "ResetAuth": "Επαναφορά ελέγχου ταυτότητας",
   "SendInviteAgain": "Αποστολή πρόσκλησης ακόμα μια φορά",
   "SuccessChangeUserStatus": "Η κατάσταση του χρήστη άλλαξε επιτυχώς",
   "SuccessDeletePersonalData": "Τα προσωπικά δεδομένα έχουν διαγραφεί επιτυχώς",
-  "SuccessSentInvitation": "Η πρόσκληση στάλθηκε με επιτυχία"
+  "SuccessSentInvitation": "Η πρόσκληση στάλθηκε με επιτυχία",
+  "SuccessSentMultipleInvitatios": "Οι προσκλήσεις εστάλησαν με επιτυχία"
 }
