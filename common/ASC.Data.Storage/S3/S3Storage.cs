@@ -67,8 +67,10 @@ public class S3Storage : BaseStorage
         ILoggerProvider factory,
         ILogger<S3Storage> options,
         IHttpClientFactory clientFactory,
-        IConfiguration configuration)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory)
+        IConfiguration configuration,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory, tenantQuotaFeatureStatHelper, quotaSocketManager)
     {
         _configuration = configuration;
     }

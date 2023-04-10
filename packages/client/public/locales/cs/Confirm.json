@@ -18,9 +18,15 @@
   "LoginRegistryButton": "Připojit se",
   "PassworResetTitle": "Nyní si můžete vytvořit nové heslo.",
   "PhoneSubtitle": "Dvoufázová autentizace je povolena, aby poskytla ještě větší bezpečnost. Zadejte Vaše telefonní číslo, abyste mohli pokračovat v práci na DocSpace. Číslo mobilního telefonu musí být zadáno v mezinárodním formátu včetně kódu země.",
+  "PortalContinueTitle": "Potvrďte prosím, že chcete znovu aktivovat svůj prostor DocSpace.",
+  "PortalDeactivateTitle": "Potvrďte prosím, že chcete deaktivovat svůj DocSpace.",
+  "PortalRemoveTitle": "Potvrďte, že chcete odstranit svůj prostor DocSpace.",
+  "Reactivate": "Znovu aktivovat",
   "SetAppButton": "Připojit aplikaci",
   "SetAppDescription": "Dvoufázové ověřování je povoleno. Nakonfigurujte aplikaci autentizátoru, abyste mohli pokračovat v práci v DocSpace. Můžete použít aplikaci Google Authenticator pro <1>Android</1> a <4>iOS</4> nebo Authenticator pro <8>Windows Phone</8>.",
   "SetAppInstallDescription": "Chcete-li aplikaci připojit, naskenujte kód QR nebo ručně zadejte svůj tajný klíč <1>{{{ secretKey }}</1> a poté zadejte šestimístný kód z aplikace do pole níže.",
   "SetAppTitle": "Nastavení aplikace autentizačního zařízení",
+  "SuccessDeactivate": "Váš účet byl úspěšně deaktivován. Za 10 sekund budete přesměrováni na <1>stránku</1>.",
+  "SuccessReactivate": "Váš účet byl úspěšně reaktivován. Za 10 sekund budete přesměrováni na <1>portál</1>.",
   "WelcomeUser": "Vítejte na našem DocSpace!\nChcete-li začít, zaregistrujte se nebo se přihlaste prostřednictvím sociálních sítí."
 }

@@ -75,8 +75,10 @@ public class DiscDataStore : BaseStorage
         ILogger<DiscDataStore> logger,
         EncryptionSettingsHelper encryptionSettingsHelper,
         EncryptionFactory encryptionFactory,
-        IHttpClientFactory clientFactory)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, clientFactory)
+        IHttpClientFactory clientFactory,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, clientFactory, tenantQuotaFeatureStatHelper, quotaSocketManager)
     {
         _encryptionSettingsHelper = encryptionSettingsHelper;
         _encryptionFactory = encryptionFactory;
@@ -143,10 +145,10 @@ public class DiscDataStore : BaseStorage
     {
         return SaveAsync(domain, path, stream);
     }
-        private bool EnableQuotaCheck(string domain)
-        {
-            return (QuotaController != null) && !domain.EndsWith("_temp");
-        }
+    private bool EnableQuotaCheck(string domain)
+    {
+        return (QuotaController != null) && !domain.EndsWith("_temp");
+    }
 
     public override async Task<Uri> SaveAsync(string domain, string path, Stream stream)
     {
@@ -758,7 +760,7 @@ public class DiscDataStore : BaseStorage
     {
         ArgumentNullException.ThrowIfNull(path);
 
-        var target = GetTarget(domain, path);              
+        var target = GetTarget(domain, path);
         var lastModificationDate = File.Exists(target) ? File.GetLastWriteTimeUtc(target) : throw new FileNotFoundException("File not found" + target);
         var etag = '"' + lastModificationDate.Ticks.ToString("X8", CultureInfo.InvariantCulture) + '"';
 

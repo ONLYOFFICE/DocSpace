@@ -48,8 +48,10 @@ public class GoogleCloudStorage : BaseStorage
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider factory,
         ILogger<GoogleCloudStorage> options,
-        IHttpClientFactory clientFactory)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory)
+        IHttpClientFactory clientFactory,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, factory, options, clientFactory, tenantQuotaFeatureStatHelper, quotaSocketManager)
     {
     }
 

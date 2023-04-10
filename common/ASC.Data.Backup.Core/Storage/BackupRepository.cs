@@ -60,7 +60,7 @@ public class BackupRepository : IBackupRepository
     public async Task<List<BackupRecord>> GetExpiredBackupRecordsAsync()
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await backupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToListAsync();
+        return await backupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow && b.Removed == false).ToListAsync();
     }
 
     public async Task<List<BackupRecord>> GetScheduledBackupRecordsAsync()

@@ -58,11 +58,7 @@ const StyledDropdown = styled.div`
   box-shadow: ${(props) => props.theme.dropDown.boxShadow};
   -moz-box-shadow: ${(props) => props.theme.dropDown.boxShadow};
   -webkit-box-shadow: ${(props) => props.theme.dropDown.boxShadow};
-  padding: ${(props) =>
-    !props.maxHeight &&
-    props.children &&
-    props.children.length > 1 &&
-    `4px 0px`};
+  padding: ${(props) => !props.maxHeight && props.itemCount > 1 && `4px 0px`};
   ${(props) =>
     props.columnCount &&
     `

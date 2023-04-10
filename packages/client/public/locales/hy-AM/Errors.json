@@ -3,5 +3,6 @@
   "Error403Text": "Ներողություն, մատչումն արգելված է.",
   "Error404Text": "Ներողություն, ռեսուրսը հնարավոր չէ գտնել:",
   "ErrorEmptyResponse": "Դատարկ պատասխան",
-  "ErrorOfflineText": "Ինտերնետ կապ չի գտնվել"
+  "ErrorOfflineText": "Ինտերնետ կապ չի գտնվել",
+  "ErrorUnavailableText": "DocSpace-ը առկա չէ"
 }

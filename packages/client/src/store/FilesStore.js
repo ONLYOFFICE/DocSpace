@@ -16,10 +16,8 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import {
-  getDaysRemaining,
-  openDocEditor as openEditor,
-} from "@docspace/client/src/helpers/filesUtils";
+import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import { getDaysRemaining } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,
@@ -152,7 +150,7 @@ class FilesStore {
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
-    const { socketHelper, withPaging } = authStore.settingsStore;
+    const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
@@ -293,7 +291,7 @@ class FilesStore {
       }
 
       //To update a file version
-      if (foundIndex > -1 && !withPaging) {
+      if (foundIndex > -1 && !this.authStore.settingsStore.withPaging) {
         this.getFileInfo(file.id);
         this.checkSelection(file);
       }
@@ -307,7 +305,10 @@ class FilesStore {
 
       const newFiles = [fileInfo, ...this.files];
 
-      if (newFiles.length > this.filter.pageCount && withPaging) {
+      if (
+        newFiles.length > this.filter.pageCount &&
+        this.authStore.settingsStore.withPaging
+      ) {
         newFiles.pop(); // Remove last
       }
 
@@ -317,6 +318,7 @@ class FilesStore {
       runInAction(() => {
         this.setFilter(newFilter);
         this.setFiles(newFiles);
+        this.treeFoldersStore.fetchTreeFolders();
       });
     } else if (opt?.type === "folder" && opt?.id) {
       const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
@@ -344,7 +346,10 @@ class FilesStore {
 
       const newFolders = [folderInfo, ...this.folders];
 
-      if (newFolders.length > this.filter.pageCount && withPaging) {
+      if (
+        newFolders.length > this.filter.pageCount &&
+        this.authStore.settingsStore.withPaging
+      ) {
         newFolders.pop(); // Remove last
       }
 
@@ -1247,7 +1252,9 @@ class FilesStore {
               (rootFolderType === Rooms || rootFolderType === Archive);
 
             if (parentId === rootFolderId) {
-              this.isMuteCurrentRoomNotifications = mute;
+              runInAction(() => {
+                this.isMuteCurrentRoomNotifications = mute;
+              });
             }
 
             return {
@@ -1795,6 +1802,7 @@ class FilesStore {
 
       let roomOptions = [
         "select",
+        "open",
         "separator0",
         "link-for-room-members",
         "reconnect-storage",
@@ -3102,17 +3110,16 @@ class FilesStore {
     preview = false
   ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
-    if (foundIndex !== -1 && !preview) {
-      this.updateSelectionStatus(
-        id,
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
-        true
-      );
+    if (
+      foundIndex !== -1 &&
+      !preview &&
+      this.files[foundIndex].rootFolderType !== FolderType.Archive
+    ) {
+      const newStatus =
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing;
 
-      this.updateFileStatus(
-        foundIndex,
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing
-      );
+      this.updateSelectionStatus(id, newStatus, true);
+      this.updateFileStatus(foundIndex, newStatus);
     }
 
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;

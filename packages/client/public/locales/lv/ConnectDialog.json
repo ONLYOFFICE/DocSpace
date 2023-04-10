@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Mapes nosaukums",
   "ConnectionUrl": "Savienojuma vietrādis URL",
   "Login": "Piesakieties",
-  "Reconnect": "Atkārtoti izveidojiet savienojumu"
+  "Reconnect": "Atkārtoti izveidojiet savienojumu",
+  "SuccessfulConnectionOfAThirdParty": "Trešās puses pakalpojums tika veiksmīgi savienots."
 }

@@ -23,6 +23,7 @@ const CurrentUsersCountContainer = (props) => {
     t,
     isDisabled,
     theme,
+    addedManagersCountTitle,
   } = props;
   return (
     <StyledCurrentUsersContainer isDisabled={isDisabled} theme={theme}>
@@ -32,7 +33,7 @@ const CurrentUsersCountContainer = (props) => {
         textAlign="center"
         className="current-admins-number"
       >
-        {t("NumberOfAdmins")}
+        {addedManagersCountTitle}
       </Text>
       <Text
         fontSize="44px"
@@ -49,11 +50,13 @@ const CurrentUsersCountContainer = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, currentQuotaStore } = auth;
+  const { settingsStore, currentQuotaStore, paymentQuotasStore } = auth;
   const { maxCountManagersByQuota } = currentQuotaStore;
+  const { addedManagersCountTitle } = paymentQuotasStore;
   const { theme } = settingsStore;
   return {
     theme,
     maxCountManagersByQuota,
+    addedManagersCountTitle,
   };
 })(observer(CurrentUsersCountContainer));

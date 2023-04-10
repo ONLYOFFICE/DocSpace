@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Kimlik doğrulayıcı uygulama yapılandırması sıfırlanacak.",
-  "ResetApplicationTitle": "Uygulama yapılandırmasını sıfırla"
+  "ResetApplicationTitle": "Uygulama yapılandırmasını sıfırla",
+  "SuccessResetApplication": "Kimlik doğrulama için uygulama ayarları başarıyla sıfırlandı."
 }

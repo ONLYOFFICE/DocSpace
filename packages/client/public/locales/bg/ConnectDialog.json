@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Заглавие на папката",
   "ConnectionUrl": "Свързващ url",
   "Login": "Вписване",
-  "Reconnect": "Повторно свързване"
+  "Reconnect": "Повторно свързване",
+  "SuccessfulConnectionOfAThirdParty": "Услугата на трета страна бе успешно свързана."
 }

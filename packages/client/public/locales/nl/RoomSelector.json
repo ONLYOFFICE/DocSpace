@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Maak de eerste kamer aan in Mijn kamers.",
+  "EmptyRoomsHeader": "Er zijn hier nog geen kamers",
+  "RoomList": "Kamerlijst",
+  "SearchEmptyRoomsDescription": "Er komen geen kamers overeen met dit filter. Probeer een andere of wis het filter om alle kamers te bekijken."
+}

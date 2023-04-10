@@ -534,6 +534,10 @@ public class UserPhotoManager
                 throw;
             }
         }
+        catch (DirectoryNotFoundException e)
+        {
+            _log.ErrorRemovePhoto(e);
+        }
 
         await _userManager.SaveUserPhotoAsync(idUser, null);
         _userPhotoManagerCache.ClearCache(idUser, _tenant.Id);

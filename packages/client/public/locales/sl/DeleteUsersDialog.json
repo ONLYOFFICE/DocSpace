@@ -1,4 +1,5 @@
 {
   "DeleteGroupUsersSuccessMessage": "Uporabniki so bili uspešno izbrisani.",
+  "DeleteUsers": "Izbriši uporabnike",
   "DeleteUsersMessage": "Izbrani onemogočeni uporabniki bodo izbrisani iz DocSpace. Osebni dokumenti teh uporabnikov, ki so na voljo drugim, bodo izbrisani."
 }

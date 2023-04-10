@@ -48,6 +48,22 @@ const StyledTooltip = styled.div`
   .__react_component_tooltip.place-bottom::after {
     border-bottom: none !important;
   }
+
+  .__react_component_tooltip.place-left::before{
+    background: none; !important;
+  }
+
+  .__react_component_tooltip.place-right::before{
+    background: none; !important;
+  }
+
+  .__react_component_tooltip.place-top::before {
+    background: none; !important;
+  }
+
+  .__react_component_tooltip.place-bottom::before {
+    background: none; !important;
+  }
 `;
 
 StyledTooltip.defaultProps = {

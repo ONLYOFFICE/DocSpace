@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Creaţi prima sala în secţiunea Sălile mele.",
+  "EmptyRoomsHeader": "Nicio sală deocamdată aici",
+  "RoomList": "Listă de săli",
+  "SearchEmptyRoomsDescription": "Filtru de sală nu a produs rezultate. Încercaţi un alt filtru sau ştergeţi filtrul pentru a vedea toate sălile."
+}

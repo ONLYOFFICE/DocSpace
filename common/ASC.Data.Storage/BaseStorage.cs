@@ -48,6 +48,9 @@ public abstract class BaseStorage : IDataStore
     protected readonly ILoggerProvider _options;
     protected readonly IHttpClientFactory _clientFactory;
 
+    private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
+    private readonly QuotaSocketManager _quotaSocketManager;
+
     public BaseStorage(
         TempStream tempStream,
         TenantManager tenantManager,
@@ -56,7 +59,9 @@ public abstract class BaseStorage : IDataStore
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider options,
         ILogger logger,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
     {
 
         _tempStream = tempStream;
@@ -67,6 +72,8 @@ public abstract class BaseStorage : IDataStore
         _clientFactory = clientFactory;
         Logger = logger;
         _httpContextAccessor = httpContextAccessor;
+        _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
+        _quotaSocketManager = quotaSocketManager;
     }
 
     public TimeSpan GetExpire(string domain)
@@ -339,6 +346,8 @@ public abstract class BaseStorage : IDataStore
         if (QuotaController != null)
         {
             await QuotaController.QuotaUsedAddAsync(Modulename, domain, DataList.GetData(domain), size, quotaCheckFileSize);
+            var(name, value) = await _tenantQuotaFeatureStatHelper.GetStatAsync<MaxTotalSizeFeature, long>();
+            _ = _quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
         }
     }
 
@@ -347,6 +356,8 @@ public abstract class BaseStorage : IDataStore
         if (QuotaController != null)
         {
             await QuotaController.QuotaUsedDeleteAsync(Modulename, domain, DataList.GetData(domain), size);
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStatAsync<MaxTotalSizeFeature, long>();
+            _ = _quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
         }
     }
 

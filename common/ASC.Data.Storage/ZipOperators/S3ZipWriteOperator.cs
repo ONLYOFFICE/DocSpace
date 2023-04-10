@@ -89,12 +89,47 @@ public class S3ZipWriteOperator : IDataWriteOperator
         {
             var fs = _fileStream;
             _fileStream = null;
-            Computehash(fs, false);
-            Upload(fs);
+            SplitAndUpload(fs);
         }
     }
 
-    private void Computehash(Stream stream, bool last)
+    private void SplitAndUpload(Stream stream, bool last = false)
+    {
+        stream.Position = 0;
+        var buffer = new byte[_sessionHolder.MaxChunkUploadSize];
+
+        int bytesRead;
+
+        while ((bytesRead = stream.Read(buffer, 0, (int)_sessionHolder.MaxChunkUploadSize)) > 0)
+        {
+            var tempStream = _tempStream.Create();
+
+            tempStream.Write(buffer, 0, bytesRead);
+            if (tempStream.Length == _sessionHolder.MaxChunkUploadSize)
+            {
+                tempStream.Position = 0;
+                ComputeHash(tempStream, false);
+                Upload(tempStream);
+            }
+            else
+            {
+                if (last)
+                {
+                    ComputeHash(tempStream, last);
+                    Upload(tempStream);
+                }
+                else
+                {
+                    tempStream.Position = tempStream.Length;
+                    _fileStream = tempStream;
+                    _gZipOutputStream.baseOutputStream_ = _fileStream;
+                }
+            }
+        }
+        stream.Dispose();
+    }
+
+    private void ComputeHash(Stream stream, bool last)
     {
         stream.Position = 0;
         var buffer = new byte[_sessionHolder.MaxChunkUploadSize];
@@ -134,8 +169,7 @@ public class S3ZipWriteOperator : IDataWriteOperator
         _tarOutputStream.Close();
         _tarOutputStream.Dispose();
 
-        Computehash(_fileStream, true);
-        Upload(_fileStream);
+        SplitAndUpload(_fileStream, true);
 
         Task.WaitAll(_tasks.ToArray());
 

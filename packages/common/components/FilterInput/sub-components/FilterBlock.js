@@ -349,6 +349,7 @@ const FilterBlock = ({
         <>
           <StyledFilterBlock>
             <PeopleSelector
+              withOutCurrentAuthorizedUser
               className="people-selector"
               isMultiSelect={false}
               onAccept={selectOption}

@@ -128,9 +128,10 @@ const TfaActivationForm = withLoader((props) => {
         errorMessage = err;
       }
       setError(errorMessage);
-      toastr.error(e);
+      toastr.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const onKeyPress = (target) => {

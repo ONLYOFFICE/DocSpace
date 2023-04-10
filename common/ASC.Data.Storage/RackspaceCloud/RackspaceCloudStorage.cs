@@ -55,8 +55,10 @@ public class RackspaceCloudStorage : BaseStorage
         IHttpContextAccessor httpContextAccessor,
         ILoggerProvider options,
         ILogger<RackspaceCloudStorage> logger,
-        IHttpClientFactory httpClient)
-        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, httpClient)
+        IHttpClientFactory httpClient,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
+        QuotaSocketManager quotaSocketManager)
+        : base(tempStream, tenantManager, pathUtils, emailValidationKeyProvider, httpContextAccessor, options, logger, httpClient, tenantQuotaFeatureStatHelper, quotaSocketManager)
     {
         _logger = logger;
         TempPath = tempPath;

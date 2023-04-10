@@ -216,7 +216,7 @@ public class UserController : PeopleControllerBase
 
         if (linkData != null)
         { 
-            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, linkData.EmployeeType) ,Constants.Action_AddRemoveUser);
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, linkData.EmployeeType), Constants.Action_AddRemoveUser);
         }
         else
         {
@@ -1117,7 +1117,7 @@ public class UserController : PeopleControllerBase
             yield return await _employeeFullDtoHelper.GetFullAsync(user);
         }
     }
-    
+
     [HttpGet("recalculatequota")]
     public async Task RecalculateQuotaAsync()
     {
@@ -1333,7 +1333,7 @@ public class UserController : PeopleControllerBase
                     includeGroups.Add(new List<Guid> { Constants.GroupAdmin.ID });
                     break;
                 case EmployeeType.RoomAdmin:
-                    excludeGroups.Add(Constants.GroupUser.ID); 
+                    excludeGroups.Add(Constants.GroupUser.ID);
                     excludeGroups.Add(Constants.GroupAdmin.ID);
                     excludeGroups.Add(Constants.GroupCollaborator.ID);
                     break;

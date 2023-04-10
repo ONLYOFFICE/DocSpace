@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Users;
@@ -51,6 +49,8 @@ public sealed class UserManagerWrapper
     private readonly CountPaidUserChecker _countPaidUserChecker;
     private readonly TenantManager _tenantManager;
     private readonly WebItemSecurityCache _webItemSecurityCache;
+    private readonly QuotaSocketManager _quotaSocketManager;
+    private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -64,7 +64,9 @@ public sealed class UserManagerWrapper
         UserFormatter userFormatter,
         CountPaidUserChecker countPaidUserChecker,
         TenantManager tenantManager,
-        WebItemSecurityCache webItemSecurityCache)
+        WebItemSecurityCache webItemSecurityCache,
+        QuotaSocketManager quotaSocketManager,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -78,6 +80,8 @@ public sealed class UserManagerWrapper
         _countPaidUserChecker = countPaidUserChecker;
         _tenantManager = tenantManager;
         _webItemSecurityCache = webItemSecurityCache;
+        _quotaSocketManager = quotaSocketManager;
+        _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
     }
 
     private async Task<bool> TestUniqueUserNameAsync(string uniqueName)
@@ -147,6 +151,11 @@ public sealed class UserManagerWrapper
         if (groupId != Guid.Empty)
         {
             await _userManager.AddUserIntoGroupAsync(newUser.Id, groupId, true);
+        }
+        else if(type == EmployeeType.RoomAdmin)
+        {
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStatAsync<CountPaidUserFeature, int>();
+            _ = _quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
         }
 
         return newUser;
@@ -263,7 +272,7 @@ public sealed class UserManagerWrapper
         {
             if (currentType is EmployeeType.RoomAdmin)
             {
-                await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.AddUserIntoGroupAsync(user.Id, Constants.GroupAdmin.ID, notifyWebSocket: false);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }

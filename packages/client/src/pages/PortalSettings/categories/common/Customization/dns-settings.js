@@ -16,9 +16,9 @@ import { DNSSettingsTooltip } from "../sub-components/common-tooltips";
 import { StyledSettingsComponent, StyledScrollbar } from "./StyledSettings";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
-import Textarea from "@docspace/components/textarea";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Badge from "@docspace/components/badge";
+
 const DNSSettings = (props) => {
   const {
     t,
@@ -108,10 +108,10 @@ const DNSSettings = (props) => {
         labelText={`${t("YourCurrentDomain")}`}
         isVertical={true}
       >
-        <Textarea
+        <TextInput
           id="textInputContainerDNSSettings"
           className="dns-textarea"
-          heightTextArea={30}
+          scale={true}
           tabIndex={8}
           isDisabled={true}
           value={location.hostname}

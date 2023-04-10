@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Autentifikasiya üçün tətbiq sıfırlanacaq.",
-  "ResetApplicationTitle": "Tətbiq konfiqurasiyasını sıfırla"
+  "ResetApplicationTitle": "Tətbiq konfiqurasiyasını sıfırla",
+  "SuccessResetApplication": "Doğrulama üçün proqram parametrləri uğurla sıfırlandı"
 }

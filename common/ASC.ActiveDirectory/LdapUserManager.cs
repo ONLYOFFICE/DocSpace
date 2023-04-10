@@ -344,8 +344,10 @@ public class LdapUserManager
         }
 
         _logger.DebugSyncUserLdapUpdaiting(ldapUserInfo.Sid, ldapUserInfo.UserName);
-        (var success, var uf) = await TryUpdateUserWithLDAPInfoAsync(userToUpdate, ldapUserInfo, onlyGetChanges);
-        if (!success)
+
+        var (updated, uf) = await TryUpdateUserWithLDAPInfoAsync(userToUpdate, ldapUserInfo, onlyGetChanges);
+
+        if (!updated)
         {
             if (onlyGetChanges)
             {
@@ -379,7 +381,7 @@ public class LdapUserManager
 
         var newContacts = new List<string>(ldapUser.ContactsList);
 
-        for (int i = 0; i < portalUserContacts.Count; i += 2)
+        for (var i = 0; i < portalUserContacts.Count; i += 2)
         {
             if (portalUserContacts[i] == EXT_MOB_PHONE || portalUserContacts[i] == EXT_MAIL
                 || portalUserContacts[i] == EXT_PHONE || portalUserContacts[i] == EXT_SKYPE)
