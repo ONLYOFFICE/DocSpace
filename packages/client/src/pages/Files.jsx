@@ -30,6 +30,8 @@ import {
 
 import GlobalEvents from "../components/GlobalEvents";
 import Accounts from "./Accounts";
+import Profile from "./Profile";
+import NotificationComponent from "./Notifications";
 
 // const homepage = config.homepage;
 
@@ -184,10 +186,19 @@ const FilesSection = React.memo(({ withMainButton }) => {
       />
 
       <Route
-        path="/accounts/view/@self/*"
+        path="/accounts/view/@self"
         element={
           <PrivateRoute location={location}>
-            <Accounts />
+            <Profile />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="accounts/view/@self/notification"
+        element={
+          <PrivateRoute location={location}>
+            <NotificationComponent />
           </PrivateRoute>
         }
       />
@@ -316,6 +327,8 @@ const Files = inject(({ auth, filesStore }) => {
     setEncryptionKeys,
     isEncryptionSupport,
   } = auth.settingsStore;
+
+  if (!auth.userStore.user) return;
 
   const { isVisitor } = auth.userStore.user;
 

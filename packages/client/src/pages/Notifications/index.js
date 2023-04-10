@@ -8,10 +8,11 @@ import SectionBodyContent from "./Section/Body/index";
 import SectionHeaderContent from "./Section/Header/index";
 
 const NotificationComponent = (props) => {
-  const { setSelectedNode } = props;
+  const { setSelectedNode, setFirstLoad } = props;
   const { t, ready } = useTranslation("Notifications");
 
   useEffect(() => {
+    setFirstLoad(false);
     setSelectedNode(["accounts"]);
   }, []);
 
@@ -28,10 +29,11 @@ const NotificationComponent = (props) => {
   );
 };
 
-export default inject(({ treeFoldersStore }) => {
+export default inject(({ treeFoldersStore, filesStore }) => {
   const { setSelectedNode } = treeFoldersStore;
-
+  const { setFirstLoad } = filesStore;
   return {
+    setFirstLoad,
     setSelectedNode,
   };
 })(observer(NotificationComponent));

@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { Navigate, Routes, Route } from "react-router-dom";
+import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import toastr from "@docspace/components/toast/toastr";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
 import Home from "./AccountsHome";
-import Profile from "./Profile";
-import NotificationComponent from "./Notifications";
 
 import Filter from "@docspace/common/api/people/filter";
 import { showLoader, hideLoader } from "@docspace/common/utils";
@@ -26,32 +24,13 @@ const Error404Route = (props) => (
 const HomeRedirectToFilter = () => {
   const filter = Filter.getDefault();
   const urlFilter = filter.toUrlParams();
-  console.log("call");
+
   return <Navigate replace to={`/accounts/filter?${urlFilter}`} />;
 };
 
 const PeopleSection = React.memo(() => {
-  console.log("call 2");
   return (
     <Routes>
-      <Route
-        path="/view/@self"
-        element={
-          <PrivateRoute location={location}>
-            <Profile />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
-        path="/view/@self/notification"
-        element={
-          <PrivateRoute location={location}>
-            <NotificationComponent />
-          </PrivateRoute>
-        }
-      />
-
       <Route
         path="/"
         element={
