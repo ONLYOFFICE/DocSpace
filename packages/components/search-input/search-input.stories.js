@@ -17,6 +17,7 @@ const Template = ({ value, onChange, ...args }) => {
     <>
       <SearchInput
         {...args}
+        style={{ width: "20%" }}
         value={searchValue}
         onChange={(value) => {
           onChange(value);
