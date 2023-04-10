@@ -1,0 +1,125 @@
+FROM        ubuntu:20.04 AS base
+
+WORKDIR     /tmp/workdir
+
+RUN     apt-get -yqq update && \
+        apt-get install -yq --no-install-recommends ca-certificates expat libgomp1 && \
+        apt-get autoremove -y && \
+        apt-get clean -y
+
+FROM base as build
+
+ENV FFMPEG_VERSION=6.0 \
+    X264_VERSION=20170226-2245-stable \
+    X265_VERSION=3.4 \
+    VPX_VERSION=1.8.0 \
+    SRC=/usr/local
+
+RUN buildDeps="autoconf \
+               automake \
+               cmake \
+               curl \
+               bzip2 \
+               libexpat1-dev \
+               g++ \
+               gcc \
+               git \
+               gperf \
+               libtool \
+               make \
+               meson \
+               nasm \
+               perl \
+               pkg-config \
+               python \
+               libssl-dev \
+               yasm \
+               zlib1g-dev" && \
+        apt-get -yqq update && \
+        apt-get install -yq --no-install-recommends ${buildDeps}
+## x264
+RUN \
+        DIR=/tmp/x264 && \
+        mkdir -p ${DIR} && \
+        cd ${DIR} && \
+        curl -sL https://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-${X264_VERSION}.tar.bz2 | \
+        tar -jx --strip-components=1 && \
+        ./configure --prefix="${PREFIX}" --enable-shared --enable-pic --disable-cli && \
+        make && \
+        make install && \
+        rm -rf ${DIR}
+### x265
+RUN \
+        DIR=/tmp/x265 && \
+        mkdir -p ${DIR} && \
+        cd ${DIR} && \
+        curl -sL https://github.com/videolan/x265/archive/refs/tags/${X265_VERSION}.tar.gz | \
+        tar -zx && \
+        cd x265-${X265_VERSION}/build/linux && \
+        sed -i "/-DEXTRA_LIB/ s/$/ -DCMAKE_INSTALL_PREFIX=\${PREFIX}/" multilib.sh && \
+        sed -i "/^cmake/ s/$/ -DENABLE_CLI=OFF/" multilib.sh && \
+        ./multilib.sh && \
+        make -C 8bit install && \
+        rm -rf ${DIR}
+### libvpx
+RUN \
+        DIR=/tmp/vpx && \
+        mkdir -p ${DIR} && \
+        cd ${DIR} && \
+        curl -sL https://codeload.github.com/webmproject/libvpx/tar.gz/v${VPX_VERSION} | \
+        tar -zx --strip-components=1 && \
+        ./configure --prefix="${PREFIX}" --enable-vp8 --enable-vp9 --enable-vp9-highbitdepth --enable-pic --enable-shared \
+        --disable-debug --disable-examples --disable-docs --disable-install-bins  && \
+        make && \
+        make install && \
+        rm -rf ${DIR}
+## Download ffmpeg
+RUN  \
+        DIR=/tmp/ffmpeg && mkdir -p ${DIR} && cd ${DIR} && \
+        curl -sLO https://ffmpeg.org/releases/ffmpeg-${FFMPEG_VERSION}.tar.bz2 && \
+        tar -jx --strip-components=1 -f ffmpeg-${FFMPEG_VERSION}.tar.bz2 && \
+        ./configure     --disable-debug  --disable-doc    --disable-ffplay   --enable-shared --enable-gpl  --extra-libs=-ldl && \
+        make ;  make install
+## Build ffmpeg
+RUN  \
+        DIR=/tmp/ffmpeg && cd ${DIR} && \
+        ./configure \
+        --disable-debug \
+        --disable-doc \
+        --disable-ffplay \
+        --enable-gpl \
+        --enable-libx264 \
+        --enable-libx265 \
+        --enable-libvpx \
+        --extra-cflags="-I${PREFIX}/include" \
+        --extra-ldflags="-L${PREFIX}/lib" \
+        --extra-libs=-ldl \
+        --extra-libs=-lpthread \
+        --prefix="${PREFIX}" && \
+        make clean && \
+        make && \
+        make install && \
+        make distclean && \
+        hash -r && \
+        cd tools && \
+        make qt-faststart && cp qt-faststart ${PREFIX}/bin/
+
+## cleanup
+RUN \
+        ldd ${PREFIX}/bin/ffmpeg | grep opt/ffmpeg | cut -d ' ' -f 3 | xargs -i cp {} /usr/local/lib/ && \
+        for lib in /usr/local/lib/*.so.*; do ln -s "${lib##*/}" "${lib%%.so.*}".so; done && \
+        cp ${PREFIX}/bin/* /usr/local/bin/ && \
+        cp -r ${PREFIX}/share/ffmpeg /usr/local/share/ && \
+        LD_LIBRARY_PATH=/usr/local/lib ffmpeg -buildconf && \
+        cp -r ${PREFIX}/include/libav* ${PREFIX}/include/libpostproc ${PREFIX}/include/libsw* /usr/local/include && \
+        mkdir -p /usr/local/lib/pkgconfig && \
+        for pc in ${PREFIX}/lib/pkgconfig/libav*.pc ${PREFIX}/lib/pkgconfig/libpostproc.pc ${PREFIX}/lib/pkgconfig/libsw*.pc; do \
+          sed "s:${PREFIX}:/usr/local:g" <"$pc" >/usr/local/lib/pkgconfig/"${pc##*/}"; \
+        done
+
+FROM        base AS release
+ENV         LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64
+
+COPY --from=build /usr/local /usr/local/
+
+ENTRYPOINT  ["bash"]
