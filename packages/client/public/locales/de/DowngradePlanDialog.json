@@ -1,9 +1,4 @@
 {
-  "AllowedManagerNumber": "Anzahl der zugelassenen Administratoren/Benutzer: <1>{{valuesRange}}</1>.",
   "CannotDowngradePlan": "Sie können Ihren Plan nicht herabstufen, da die Anzahl der Speicherplätze/Admins/Power-User die Grenzen des gewählten Preisplans überschreitet:",
-  "CurrentManagerNumber": "Aktuelle Anzahl der Admins/Power-User: <1>{{currentCount}}</1>.",
-  "CurrentStorageSpace": "Aktueller Speicherplatz: <1>{{size}}</1>.",
-  "DowngradePlan": "Plan herabstufen",
-  "SaveOrChange": "Verringern Sie den erforderlichen Parameter oder behalten Sie Ihren aktuellen Preisplan bei.",
-  "StorageSpaceSizeAllowed": "Erlaubte Speicherplatzgröße: <1>{{size}}</1>."
+  "SaveOrChange": "Verringern Sie den erforderlichen Parameter oder behalten Sie Ihren aktuellen Preisplan bei."
 }

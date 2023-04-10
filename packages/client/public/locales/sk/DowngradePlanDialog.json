@@ -1,5 +1,3 @@
 {
-  "DowngradePlan": "Prejsť na nižší plán",
-  "SaveOrChange": "Znížte požadovaný parameter alebo zachovajte aktuálny cenový plán.",
-  "StorageSpaceSizeAllowed": "Povolená veľkosť úložného priestoru: <1>{{size}}</1>"
+  "SaveOrChange": "Znížte požadovaný parameter alebo zachovajte aktuálny cenový plán."
 }
