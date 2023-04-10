@@ -22,6 +22,7 @@ const Bar = (props) => {
     firstLoad,
 
     isAdmin,
+    userEmail,
     setMaintenanceExist,
     withActivationBar,
     sendActivationLink,
@@ -277,6 +278,7 @@ const Bar = (props) => {
     />
   ) : withActivationBar && barVisible.confirmEmail && tReady ? (
     <ConfirmEmailBar
+      userEmail={userEmail}
       currentColorScheme={currentColorScheme}
       onLoad={onLoad}
       onClick={sendActivationLinkAction}
@@ -316,6 +318,7 @@ export default inject(({ auth, profileActionsStore }) => {
 
   return {
     isAdmin: user?.isAdmin,
+    userEmail: user?.email,
     withActivationBar,
     sendActivationLink,
 

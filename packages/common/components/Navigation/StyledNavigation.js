@@ -67,13 +67,6 @@ const StyledContainer = styled.div`
     grid-template-columns: ${(props) =>
       props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
   }
-
-  ${isMobile &&
-  css`
-    width: 100%;
-    grid-template-columns: ${(props) =>
-      props.isRootFolder ? "1fr auto" : "49px 1fr auto"};
-  `}
 `;
 
 export default StyledContainer;

@@ -19,7 +19,7 @@ import { StyledWrapper } from "./styled-social-networks";
 
 const SocialNetworks = (props) => {
   const { t } = useTranslation(["Profile", "Common"]);
-  const { providers, setProviders } = props;
+  const { providers, setProviders, isOAuthAvailable } = props;
 
   const fetchData = async () => {
     try {
@@ -113,6 +113,7 @@ const SocialNetworks = (props) => {
       );
     });
 
+  if (!isOAuthAvailable) return <></>;
   if (providers.length === 0) return <></>;
 
   return (
@@ -125,12 +126,15 @@ const SocialNetworks = (props) => {
   );
 };
 
-export default inject(({ peopleStore }) => {
+export default inject(({ auth, peopleStore }) => {
   const { usersStore } = peopleStore;
   const { providers, setProviders } = usersStore;
+  const { currentQuotaStore } = auth;
+  const { isOAuthAvailable } = currentQuotaStore;
 
   return {
     providers,
     setProviders,
+    isOAuthAvailable,
   };
 })(observer(SocialNetworks));

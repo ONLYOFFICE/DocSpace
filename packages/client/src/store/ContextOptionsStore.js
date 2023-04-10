@@ -306,7 +306,7 @@ class ContextOptionsStore {
     const canConvert = item.viewAccessability?.Convert;
 
     if (canConvert) {
-      setConvertItem(item);
+      setConvertItem({ ...item, isOpen: true });
       setConvertDialogVisible(true);
     } else {
       this.gotoDocEditor(false, item);
@@ -1156,18 +1156,17 @@ class ContextOptionsStore {
     if (isRoomsFolder || isArchiveFolder) {
       const isPinOption = selection.filter((item) => !item.pinned).length > 0;
 
-      const canDelete =
-        selection.findIndex((k) => k.contextOptions.includes("delete")) !== -1;
+      const canDelete = selection.every((k) =>
+        k.contextOptions.includes("delete")
+      );
 
-      const canArchiveRoom =
-        selection.findIndex((k) =>
-          k.contextOptions.includes("archive-room")
-        ) !== -1;
+      const canArchiveRoom = selection.every((k) =>
+        k.contextOptions.includes("archive-room")
+      );
 
-      const canRestoreRoom =
-        selection.findIndex((k) =>
-          k.contextOptions.includes("unarchive-room")
-        ) !== -1;
+      const canRestoreRoom = selection.every((k) =>
+        k.contextOptions.includes("unarchive-room")
+      );
 
       let archiveOptions;
 

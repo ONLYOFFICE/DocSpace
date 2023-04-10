@@ -6,11 +6,14 @@
   "EnableUserButton": "Iespējot",
   "InviteLinkTitle": "Uzaicinājuma saite",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Mainīt vārdu",
   "PasswordChangeButton": "Mainīt paroli",
   "PendingTitle": "Gaida apstiprinājumu",
   "RemoveData": "Dzēst personas datus",
+  "ResetAuth": "Atiestatīt autentifikāciju",
   "SendInviteAgain": "Nosūtiet ielūgumu vēlreiz",
   "SuccessChangeUserStatus": "Lietotāja statuss tika veiksmīgi mainīts",
   "SuccessDeletePersonalData": "Personas dati ir veiksmīgi izdzēsti",
-  "SuccessSentInvitation": "Uzaicinājums tika veiksmīgi nosūtīts"
+  "SuccessSentInvitation": "Uzaicinājums tika veiksmīgi nosūtīts",
+  "SuccessSentMultipleInvitatios": "Uzaicinājumi tika veiksmīgi nosūtīti"
 }

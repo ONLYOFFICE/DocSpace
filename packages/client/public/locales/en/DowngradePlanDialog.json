@@ -1,9 +1,7 @@
 {
-  "AllowedManagerNumber": "Number of managers allowed: <1>{{valuesRange}}</1>.",
-  "CannotDowngradePlan": "You cannot downgrade your plan as the storage amount/manager numbers exceeds limitations according to the pricing plan selected.",
-  "CurrentManagerNumber": "Current number of managers: <1>{{currentCount}}</1>.",
-  "CurrentStorageSpace": "Current storage space:  <1>{{size}}</1>.",
-  "DowngradePlan": "Downgrade plan",
-  "SaveOrChange": "Reduce the required parameter or preserve your current pricing plan.",
-  "StorageSpaceSizeAllowed": "Storage space size allowed:  <1>{{size}}</1>."
+  "CannotChangePlan": "You cannot change your plan because the used storage volume or the number of admins/power users exceeds the limitations of the selected plan:",
+  "ChangePricingPlan": "Change pricing plan",
+  "PlanStorageLimit": "New tariff's limitation is <1>{{storageValue}}</1> of storage, and your current used storage is <1>{{currentStorageValue}}</1>.",
+  "PlanUsersLimit": "You wish to downgrade the team to <1>{{usersCount}}</1> admins/power users, and current number of such users in your DocSpace is <1>{{currentUsersCount}}</1>.",
+  "SaveOrChange": "Please eliminate the mismatch in the conflicting parameter to proceed or keep your active pricing plan."
 }

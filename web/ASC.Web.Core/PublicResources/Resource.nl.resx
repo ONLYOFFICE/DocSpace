@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Veld met validatiecode mag niet leeg zijn</value>
@@ -121,6 +121,9 @@
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>De bestandsgrootte van de afbeelding is te groot</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>De toegang tot het portaal is beperkt</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Uw abonnement ondersteunt deze optie niet</value>
   </data>
@@ -169,11 +172,116 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>De link om uw account te bevestigen is verstuurd naar de gespecificeerde e-mail</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Voornaam</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Familienaam</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Verbindingsfout</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Gebruikers konden niet worden aangemaakt, de ontvangen data is onjuist.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>De server kon de instellingen niet ophalen.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>De server kon de instellingen niet opslaan.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Onjuiste gebruikersnaam of wachtwoord.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP-domein niet gevonden.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Er konden geen groepen worden gevonden.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Ongeldige waarde voor Gebruikersfilter.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Onbekende fout.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Er konden geen gebruikers worden gevonden.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Kon Groepsattribuut niet ophalen voor een of meerdere groepen.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Onjuiste Groepsfilter</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Kon Groepsnaamattribuut niet ophalen voor een of meerdere groepen.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Kon Loginattribuut niet ophalen voor een of meerdere gebruikers.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Kan geen verbinding maken met LDAP-server. Controleer of het serveradres en poortnummer correct zijn.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Kon Gebruikersattribuut niet ophalen voor een of meerdere gebruikers.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Interne serverfout.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>LDAP-gebruikers aanpassen op gewone portaalgebruikers</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>gebruiker toevoegen</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Certificaatverificatie</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Controleer de LDAP-ondersteuningsinstellingen</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>De groepslijst ophalen van de LDAP-server</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>De gebruikerslijst ophalen van de LDAP-server</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>LDAP-basisinformatie laden</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>gebruiker verwijderen</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Verouderde groepen verwijderen die eerder via LDAP zijn geladen</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Verouderde gebruikersprofielen verwijderen die eerder via LDAP zijn geladen</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Groepen opslaan</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Instellingen opslaan</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Gebruikers opslaan</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Een veiliger authenticatietype is vereist. Gebruik alstublieft een versleutelde verbinding of schakel gewone authenticatie op de server in.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>De gebruikerslimiet van het huidige abonnement is bereikt</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS niet ondersteund voor huidige LDAP-server.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Teveel LDAP acties.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Unieke ID voor gebruikers-/groepsobjecten kon niet worden opgehaald. Standaard probeert het systeem een van de volgende identificaties te combineren: entryUUID, nsuniqueid, GUID, objectSid. Als geen van de attributen overeenkomt met uw LDAP-server, geef dan alstublieft het benodigde attribuut op in de instelling ldap.unique.id van het bestand web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Licentie is niet correct</value>
@@ -201,6 +309,9 @@
   </data>
   <data name="Owner" xml:space="preserve">
     <value>Eigenaar</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Portaalnaam</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portaaltoegang</value>

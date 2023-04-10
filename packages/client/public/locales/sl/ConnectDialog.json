@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Naslov mape",
   "ConnectionUrl": "Url povezave",
   "Login": "Prijava",
-  "Reconnect": "Ponovno povezovanje"
+  "Reconnect": "Ponovno povezovanje",
+  "SuccessfulConnectionOfAThirdParty": "Storitev tretje osebe je bila uspešno povezana."
 }

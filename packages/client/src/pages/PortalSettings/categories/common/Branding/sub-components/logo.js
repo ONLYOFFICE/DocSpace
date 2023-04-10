@@ -22,7 +22,11 @@ const Logo = (props) => {
     <div>
       <div className="logo-item">
         {title && (
-          <Text fontSize="13px" fontWeight="600">
+          <Text
+            fontSize="13px"
+            fontWeight="600"
+            className="settings_unavailable"
+          >
             {title}
           </Text>
         )}

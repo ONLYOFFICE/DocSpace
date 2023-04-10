@@ -16,6 +16,7 @@ const ViewSelector = ({
   const onChangeViewHandler = (e) => {
     if (isDisabled) return;
     const el = e.target.closest(".view-selector-icon");
+    if (!el) return;
 
     const view = el.dataset.view;
     if (view !== viewAs) {

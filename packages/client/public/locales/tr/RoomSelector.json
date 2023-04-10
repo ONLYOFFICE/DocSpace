@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Lütfen Odalarım'daki ilk odayı oluşturun.",
+  "EmptyRoomsHeader": "Burada henüz oda yok",
+  "RoomList": "Oda listesi",
+  "SearchEmptyRoomsDescription": "Bu filtreyle eşleşen oda yok. Başka bir tane seçin veya tüm odaları görmek için filtreyi temizleyin."
+}

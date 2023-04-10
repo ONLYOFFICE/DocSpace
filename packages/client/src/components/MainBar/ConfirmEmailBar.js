@@ -13,11 +13,12 @@ const ConfirmEmailBar = ({
   onClose,
   onLoad,
   currentColorScheme,
+  userEmail,
 }) => {
   return (
     tReady && (
       <SnackBar
-        headerText={t("ConfirmEmailHeader")}
+        headerText={t("ConfirmEmailHeader", { email: userEmail })}
         text={
           <>
             {t("ConfirmEmailDescription")}{" "}

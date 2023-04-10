@@ -213,7 +213,9 @@ const StyledDeleteIcon = styled(DeleteIcon)`
 
 StyledDeleteIcon.defaultProps = { theme: Base };
 
-const StyledHelpButton = styled(HelpButton)``;
+const StyledHelpButton = styled(HelpButton)`
+  margin-right: 8px;
+`;
 
 const StyledButtons = styled(Box)`
   padding: 16px 16px 16px 16px;
@@ -239,10 +241,6 @@ const StyledToggleButton = styled(ToggleButton)`
   margin-top: -4px;
 `;
 
-const StyledText = styled(Text)`
-  flex-basis: 72%;
-`;
-
 export {
   StyledBlock,
   StyledHeading,
@@ -265,6 +263,5 @@ export {
   ScrollList,
   StyledAccessSelector,
   StyledToggleButton,
-  StyledText,
   StyledDescription,
 };

@@ -3,6 +3,7 @@
   "CodeSubtitle": "Codul din 6 cifre a fost trimis la adresa {{email}}. Codul este cu valabilitatea limitată, trebuie să-l introduceți cât mai curând posibil.",
   "CodeTitle": "Codul v-a fost trimis",
   "CookieSettingsTitle": "Durata sesiunii",
+  "ErrorInvalidHeader": "Link expirat",
   "ErrorInvalidText": "Veţi fi redirecționat în 10 secunde către <1>DocSpace</1>",
   "ExpiredCode": "Codul nu mai este valabil. Solicitați un nou cod și încercați din nou.",
   "ForgotPassword": "Ați uitat parola?",
@@ -23,5 +24,7 @@
   "RegistrationEmailWatermark": "E-mail",
   "Remember": "Reține-mă",
   "RememberHelper": "Durata sesiunii implicită este de 20 de minute. Bifați caseta de selectare pentru a prelungi durata până la un an. Pentru stabilirea perioadei personalizate, accesați Setările.",
-  "ResendCode": "Retrimite codul"
+  "ResendCode": "Retrimite codul",
+  "SignInWithCode": "Conectare prin codul de verificare",
+  "SignInWithPassword": "Conectare prin parolă"
 }

@@ -21,12 +21,6 @@ const StyledInfoPanelToggleWrapper = styled.div`
     margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
   }
 
-  ${isMobile &&
-  css`
-    display: none;
-    margin-left: ${(props) => (props.isRootFolder ? "auto" : "0")};
-  `}
-
   .info-panel-toggle-bg {
     height: 32px;
     width: 32px;
