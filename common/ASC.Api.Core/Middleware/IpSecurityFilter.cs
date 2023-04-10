@@ -48,13 +48,13 @@ public class IpSecurityFilter : IResourceFilter
 
     public void OnResourceExecuted(ResourceExecutedContext context) { }
 
-    public async void OnResourceExecuting(ResourceExecutingContext context)
+    public void OnResourceExecuting(ResourceExecutingContext context)
     {
         if (_authContext.IsAuthenticated)
         {
-            var enable = (await _settingsManager.LoadAsync<IPRestrictionsSettings>()).Enable;
+            var enable = _settingsManager.Load<IPRestrictionsSettings>().Enable;
 
-            if (enable && !await _iPSecurity.VerifyAsync())
+            if (enable && !_iPSecurity.VerifyAsync().GetAwaiter().GetResult())
             {
                 context.Result = new ObjectResult(Resource.ErrorIpSecurity)
                 {
