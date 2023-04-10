@@ -125,8 +125,7 @@ class ProfileActionsStore {
 
     ZendeskAPI("webWidget", isShow ? "show" : "hide");
 
-    const text = isShow ? "LiveChatOn" : "LiveChatOff";
-    toastr.success(t(text));
+    toastr.success(isShow ? t("LiveChatOn") : t("LiveChatOff"));
   };
 
   onSupportClick = () => {
