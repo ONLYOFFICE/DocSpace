@@ -323,7 +323,7 @@ public class TenantQuota : IMapFrom<DbQuota>
             return quota;
         }
 
-        var newQuota = new TenantQuota(quota);
+        var newQuota = new TenantQuota(old);
         newQuota.Price += quota.Price;
         newQuota.Visible &= quota.Visible;
         newQuota.ProductId = "";
@@ -336,11 +336,31 @@ public class TenantQuota : IMapFrom<DbQuota>
             }
             else if (f is TenantQuotaFeatureCount count)
             {
-                count.Value += quota.GetFeature<int>(f.Name).Value;
+                var currentValue = count.Value;
+                var newValue = quota.GetFeature<int>(f.Name).Value;
+
+                if (currentValue == count.Default && newValue != currentValue)
+                {
+                    count.Value = newValue;
+                }
+                else if (currentValue != count.Default && newValue != count.Default)
+                {
+                    count.Value += newValue;
+                }
             }
             else if (f is TenantQuotaFeatureSize length)
             {
-                length.Value += quota.GetFeature<long>(f.Name).Value;
+                var currentValue = length.Value;
+                var newValue = quota.GetFeature<long>(f.Name).Value;
+
+                if (currentValue == length.Default && newValue != currentValue)
+                {
+                    length.Value = newValue;
+                }
+                else
+                {
+                    length.Value += newValue;
+                }
             }
             else if (f is TenantQuotaFeatureFlag flag)
             {
