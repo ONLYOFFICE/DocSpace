@@ -195,6 +195,7 @@ const SelectUsersCountContainer = ({
 
     if (numberValue === 0) {
       setManagersCount(minAvailableManagersValue);
+      setTotalPrice(minAvailableManagersValue);
       return;
     }
 

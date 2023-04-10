@@ -188,7 +188,7 @@ export const StyledInfo = styled.div`
 
       .mobile-profile-row {
         gap: 8px;
-        background: rgb(248, 249, 249);
+        background: ${(props) => props.theme.profile.main.mobileRowBackground};
         padding: 12px 16px;
         border-radius: 6px;
         display: flex;
