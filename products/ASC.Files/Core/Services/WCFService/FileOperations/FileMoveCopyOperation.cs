@@ -461,16 +461,16 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         await countRoomChecker.CheckAppend();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
 
-                                        var (name, value) = await tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
-                                        _ = quotaSocketManager.ChangeQuotaUsedValue(name, value);
+                                        var (name, value) = await tenantQuotaFeatureStatHelper.GetStatAsync<CountRoomFeature, int>();
+                                        _ = quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
                                     }
                                     else if (isRoom && toFolder.FolderType == FolderType.Archive)
                                     {
                                         await _semaphore.WaitAsync();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
 
-                                        var (name, value) = await tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
-                                        _ =  quotaSocketManager.ChangeQuotaUsedValue(name, value);
+                                        var (name, value) = await tenantQuotaFeatureStatHelper.GetStatAsync<CountRoomFeature, int>();
+                                        _ =  quotaSocketManager.ChangeQuotaUsedValueAsync(name, value);
                                     }
                                     else
                                     {

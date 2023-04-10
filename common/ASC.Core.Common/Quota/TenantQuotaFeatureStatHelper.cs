@@ -33,7 +33,7 @@ public class TenantQuotaFeatureStatHelper
     {
         _serviceProvider = serviceProvider;
     }
-    public async Task<(string Name, T1 Value)> GetStat<T, T1>() where T : TenantQuotaFeature
+    public async Task<(string Name, T1 Value)> GetStatAsync<T, T1>() where T : TenantQuotaFeature
     {
         var statisticProvider = (ITenantQuotaFeatureStat<T1>)_serviceProvider.GetService(typeof(ITenantQuotaFeatureStat<,>).MakeGenericType(typeof(T), typeof(T1)));
 
@@ -42,7 +42,7 @@ public class TenantQuotaFeatureStatHelper
 
         if (statisticProvider != null)
         {
-            return (name, await statisticProvider.GetValue());
+            return (name, await statisticProvider.GetValueAsync());
         }
 
         return (name, default(T1));
