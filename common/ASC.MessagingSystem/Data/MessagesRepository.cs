@@ -125,7 +125,7 @@ public class MessagesRepository : IDisposable
     }
     private async Task FlushCacheAsync(object state)
     {
-        await FlushCacheAsync(false);
+        await FlushCacheAsync();
     }
 
     private async Task FlushCacheAsync()
