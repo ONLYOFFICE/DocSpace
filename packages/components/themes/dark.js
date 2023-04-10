@@ -3095,6 +3095,8 @@ const Dark = {
 
       descriptionTextColor: "#858585",
       pendingEmailTextColor: "#858585",
+
+      mobileRowBackground: "#3D3D3D",
     },
     themePreview: {
       descriptionColor: "#ADADAD",

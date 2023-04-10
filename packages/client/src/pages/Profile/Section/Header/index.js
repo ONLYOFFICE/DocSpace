@@ -14,6 +14,7 @@ import ContextMenuButton from "@docspace/components/context-menu-button";
 import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
 import { DeleteSelfProfileDialog } from "SRC_DIR/components/dialogs";
+import { DeleteOwnerProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
@@ -25,9 +26,11 @@ const Header = (props) => {
   const {
     t,
     history,
+
     isAdmin,
     isVisitor,
     isCollaborator,
+
     filter,
 
     setFilter,
@@ -38,10 +41,14 @@ const Header = (props) => {
     setChangePasswordVisible,
     setChangeAvatarVisible,
   } = props;
+
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
+  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] = useState(
+    false
+  );
 
   const getUserContextOptions = () => {
-    return [
+    const options = [
       {
         key: "change-email",
         label: t("PeopleTranslations:EmailChangeButton"),
@@ -67,11 +74,16 @@ const Header = (props) => {
       {
         key: "delete-profile",
         label: t("PeopleTranslations:DeleteSelfProfile"),
-        onClick: () => setDeleteSelfProfileDialog(true),
+        onClick: () =>
+          profile?.isOwner
+            ? setDeleteOwnerProfileDialog(true)
+            : setDeleteSelfProfileDialog(true),
         disabled: false,
         icon: CatalogTrashReactSvgUrl,
       },
     ];
+
+    return options;
   };
 
   const onClickBack = () => {
@@ -122,6 +134,13 @@ const Header = (props) => {
           visible={deleteSelfProfileDialog}
           onClose={() => setDeleteSelfProfileDialog(false)}
           email={profile.email}
+        />
+      )}
+
+      {deleteOwnerProfileDialog && (
+        <DeleteOwnerProfileDialog
+          visible={deleteOwnerProfileDialog}
+          onClose={() => setDeleteOwnerProfileDialog(false)}
         />
       )}
     </StyledHeader>

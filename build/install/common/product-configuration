@@ -219,17 +219,10 @@ set_core_machinekey () {
 }
 
 install_json() {
-
 	if [ ! -e /usr/bin/json ]; then
 		echo -n "Install json package... "
 		npm i json -g >/dev/null 2>&1
 		echo "OK"
-	fi
-
-	#Creating a user-defined .json
-	if [ ! -e $USER_CONF ]; then
-		echo "{}" >> $USER_CONF
-		chown ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $USER_CONF
 	fi
 }
 
@@ -485,7 +478,7 @@ setup_docs() {
 	local JSON_DSCONF="$JSON $DS_CONF -e"
 
 	#Changing the Docs port in nginx conf
-	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DS_PORT}'\3\4/' -i $NGINX_CONF/ds.conf 
+	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i $NGINX_CONF/ds.conf 
 	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf 	
 
 	#Enable JWT validation for Docs
@@ -600,6 +593,17 @@ setup_rabbitmq() {
 
 product_configuration(){
 	echo -n "Configuring ${PRODUCT}... "
+
+	#Creating environment configuration files 
+	enviromentFiles=("appsettings.$ENVIRONMENT.json" "apisystem.$ENVIRONMENT.json" "elastic.$ENVIRONMENT.json" "rabbitmq.$ENVIRONMENT.json")
+
+	for i in "${!enviromentFiles[@]}";
+	do
+		if [ ! -e "$APP_DIR/${enviromentFiles[$i]}" ]; then
+			echo "{}" >> "$APP_DIR/${enviromentFiles[$i]}"
+			chown ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} "$APP_DIR/${enviromentFiles[$i]}"
+		fi
+	done
 
 	$JSON $APP_DIR/plugins.json -e "this.pluginsConf={'path': \"$PRODUCT_DIR/Tools/radicale/plugins/\" }" >/dev/null 2>&1 
 	set_core_machinekey
