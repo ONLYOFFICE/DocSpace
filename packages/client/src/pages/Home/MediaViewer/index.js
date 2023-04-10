@@ -164,6 +164,8 @@ const FilesMediaViewer = (props) => {
 
     const url = localStorage.getItem("isFirstUrl");
 
+    console.log(url);
+
     if (!url) {
       return;
     }

@@ -434,7 +434,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
           <div className="main-container">
             <Routes>
               <Route
-                sensitive
+                caseSensitive
                 path="/Products/Files/"
                 element={<Navigate to="/rooms/shared" replace />}
               />
