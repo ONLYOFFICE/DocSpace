@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation, useMatch } from "react-router-dom";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import { withTranslation } from "react-i18next";
@@ -113,18 +113,15 @@ const ArticleBodyContent = (props) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const match = useMatch();
 
   React.useEffect(() => {
     prevLocation.current = location;
   }, [location]);
 
   React.useEffect(() => {
-    const fullSettingsUrl = match.url;
     const locationPathname = location.pathname;
 
-    const fullSettingsUrlLength = fullSettingsUrl.length;
-    const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
+    const resultPath = locationPathname;
     const arrayOfParams = resultPath.split("/");
 
     let link = "";
@@ -198,7 +195,7 @@ const ArticleBodyContent = (props) => {
     }
 
     const settingsPath = getSelectedLinkByKey(value + "-0", settingsTree);
-    const newPath = match.path + settingsPath;
+    const newPath = location.pathname + settingsPath;
     const currentUrl = window.location.href.replace(window.location.origin, "");
 
     if (newPath === currentUrl) return;

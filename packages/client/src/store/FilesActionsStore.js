@@ -1901,7 +1901,7 @@ class FilesActionStore {
           "isFirstUrl",
           `${window.location.pathname}${window.location.search}`
         );
-        console.log(window.location.search);
+
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;

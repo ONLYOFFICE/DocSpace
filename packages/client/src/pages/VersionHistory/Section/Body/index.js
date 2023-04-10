@@ -20,8 +20,9 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
-    const { match, setFirstLoad } = this.props;
-    const fileId = match.params.fileId || this.props.fileId;
+    const { setFirstLoad } = this.props;
+
+    const fileId = this.props.fileId;
 
     if (fileId && fileId !== this.props.fileId) {
       this.getFileVersions(fileId, this.props.fileSecurity);

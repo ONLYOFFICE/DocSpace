@@ -9,7 +9,7 @@ import { ReactSVG } from "react-svg";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import FilesFilter from "@docspace/common/api/files/filter";
-import { useMatch, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import {
   StyledTile,
@@ -45,7 +45,7 @@ const Tile = (props) => {
     getIcon,
   } = props;
 
-  const match = useMatch();
+  const params = useParams();
   const navigate = useNavigate();
 
   const onError = () => {
@@ -94,7 +94,7 @@ const Tile = (props) => {
   const onCreateForm = () => {
     const filter = FilesFilter.getDefault();
 
-    filter.folder = match.params.folderId;
+    filter.folder = params.folderId;
 
     const filterParamsStr = filter.toUrlParams();
 

@@ -137,12 +137,9 @@ const SectionHeaderContent = (props) => {
   });
 
   React.useEffect(() => {
-    const fullSettingsUrl = match.url;
     const locationPathname = location.pathname;
 
-    const fullSettingsUrlLength = fullSettingsUrl.length;
-
-    const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
+    const resultPath = locationPathname;
     const arrayOfParams = resultPath.split("/");
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
@@ -224,11 +221,9 @@ const SectionHeaderContent = (props) => {
   };
 
   const getArrayOfParams = () => {
-    const fullSettingsUrl = match.url;
     const locationPathname = location.pathname;
 
-    const fullSettingsUrlLength = fullSettingsUrl.length;
-    const resultPath = locationPathname.slice(fullSettingsUrlLength + 1);
+    const resultPath = locationPathname;
     const arrayOfParams = resultPath.split("/").filter((param) => {
       return param !== "filter";
     });

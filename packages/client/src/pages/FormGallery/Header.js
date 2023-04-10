@@ -4,7 +4,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import IconButton from "@docspace/components/icon-button";
 import { withTranslation } from "react-i18next";
-import { useNavigate, useMatch } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   StyledHeadline,
   StyledContainer,
@@ -26,14 +26,14 @@ const SectionHeaderContent = (props) => {
   } = props;
 
   const navigate = useNavigate();
-  const match = useMatch();
+  const params = useParams();
 
   const onBackToFiles = () => {
     setGallerySelected(null);
 
     const filter = FilesFilter.getDefault();
 
-    filter.folder = match.params.folderId;
+    filter.folder = params.folderId;
 
     const filterParamsStr = filter.toUrlParams();
 
