@@ -26,6 +26,8 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public enum RoomType
 {
     FillingFormsRoom = 1,
@@ -35,6 +37,8 @@ public enum RoomType
     CustomRoom = 5
 }
 
+/// <summary>
+/// </summary>
 public enum RoomFilterType
 {
     FillingFormsRoomOnly = 1,
@@ -45,12 +49,25 @@ public enum RoomFilterType
     FoldersOnly = 6,
 }
 
+/// <summary>
+/// </summary>
 public class CreateRoomRequestDto
 {
+    /// <summary>Room name</summary>
     public string Title { get; set; }
+
+    /// <summary>Room type: FillingFormsRoom (1), EditingRoom (2), ReviewRoom (3), ReadOnlyRoom (4), CustomRoom (5)</summary>
     public RoomType RoomType { get; set; }
+
+    /// <summary>Private room or not</summary>
     public bool Private { get; set; }
+
+    /// <summary>Collection of sharing parameters</summary>
     public IEnumerable<FileShareParams> Share { get; set; }
+
+    /// <summary>Notifies users about the shared room or not</summary>
     public bool Notify { get; set; }
+
+    /// <summary>Message to send when notifying about the shared room</summary>
     public string SharingMessage { get; set; }
 }

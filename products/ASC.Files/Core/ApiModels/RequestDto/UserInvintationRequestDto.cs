@@ -26,7 +26,10 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class UserInvintationRequestDto
 {
+    /// <summary>List of user IDs</summary>
     public IEnumerable<Guid> UsersIds { get; set; }
 }

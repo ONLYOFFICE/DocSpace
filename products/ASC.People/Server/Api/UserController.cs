@@ -958,7 +958,7 @@ public class UserController : PeopleControllerBase
     /// <category>Profiles</category>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating portal users: <![CDATA[
     /// <ul>
-    ///     <li><b>UserIds</b> (IEnumerable&lt;Guid&lt;) - list of user IDs,</li>
+    ///     <li><b>UserIds</b> (IEnumerable&lt;Guid&gt;) - list of user IDs,</li>
     ///     <li><b>ResendAll</b> (bool) - specifies whether to resend invitation letters to all the users or not.</li>
     /// </ul>
     /// ]]></param>

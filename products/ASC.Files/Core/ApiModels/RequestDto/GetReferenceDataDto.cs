@@ -25,10 +25,20 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
+
+/// <summary>
+/// </summary>
 public class GetReferenceDataDto<T>
 {
+    /// <summary>The unique document identifier used by the service to get a link to the file</summary>
     public T FileKey { get; set; }
+
+    /// <summary>The unique system identifier</summary>
     public string InstanceId { get; set; }
+
+    /// <summary>Source file ID</summary>
     public T SourceFileId { get; set; }
+
+    /// <summary>The file name or relative path for the formula editor</summary>
     public string Path { get; set; }
 }

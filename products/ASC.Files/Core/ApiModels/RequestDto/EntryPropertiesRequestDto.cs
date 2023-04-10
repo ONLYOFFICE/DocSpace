@@ -25,8 +25,11 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
+/// <summary>
+/// </summary>
 public class EntryPropertiesRequestDto : IMapFrom<EntryProperties>
 {
+    /// <summary>Form filling request parameters</summary>
     public FormFillingPropertiesRequestDto FormFilling { get; set; }
 
     public void Mapping(AutoMapper.Profile profile)
@@ -36,12 +39,23 @@ public class EntryPropertiesRequestDto : IMapFrom<EntryProperties>
     }
 }
 
+/// <summary>
+/// </summary>
 public class FormFillingPropertiesRequestDto : IMapFrom<FormFillingProperties>
 {
+    /// <summary>Specifies if the data will be collected from the filled forms or not</summary>
     public bool CollectFillForm { get; set; }
+
+    /// <summary>Folder ID where a file will be saved</summary>
     public string ToFolderId { get; set; }
+
+    /// <summary>Folder path where a file will be saved</summary>
     public string ToFolderPath { get; set; }
+
+    /// <summary>New folder title</summary>
     public string CreateFolderTitle { get; set; }
+
+    /// <summary>File name mask</summary>
     public string CreateFileMask { get; set; }
 
     public void Mapping(AutoMapper.Profile profile)
@@ -51,9 +65,16 @@ public class FormFillingPropertiesRequestDto : IMapFrom<FormFillingProperties>
     }
 }
 
+/// <summary>
+/// </summary>
 public class BatchEntryPropertiesRequestDto
 {
+    /// <summary>List of file IDs</summary>
     public JsonElement[] FilesId { get; set; }
+
+    /// <summary>Specifies whether to create a subfolder or not</summary>
     public bool CreateSubfolder { get; set; }
+
+    /// <summary>File properties that are represented as the EntryPropertiesRequestDto object</summary>
     public EntryPropertiesRequestDto FileProperties { get; set; }
 }

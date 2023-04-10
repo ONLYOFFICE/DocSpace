@@ -57,8 +57,8 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Change the third-party settings access</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/thirdparty</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("thirdparty")]
@@ -72,8 +72,8 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Confirm the file deletion</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/changedeleteconfrim</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("changedeleteconfrim")]
@@ -86,9 +86,9 @@ public class SettingsController : ApiControllerBase
     /// Changes the format of the downloaded archive from .zip to .tar.gz. This method uses the body parameters.
     /// </summary>
     /// <short>Change the archive format (using body parameters)</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Archive</returns>
+    /// <returns type="ASC.Web.Files.Core.Compress.ICompress, ASC.Web.Files.Core.Compress">Archive</returns>
     /// <path>api/2.0/files/settings/downloadtargz</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("settings/downloadtargz")]
@@ -101,11 +101,12 @@ public class SettingsController : ApiControllerBase
     /// Changes the format of the downloaded archive from .zip to .tar.gz. This method uses the form parameters.
     /// </summary>
     /// <short>Change the archive format (using form parameters)</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Archive</returns>
+    /// <returns type="ASC.Web.Files.Core.Compress.ICompress, ASC.Web.Files.Core.Compress">Archive</returns>
     /// <path>api/2.0/files/settings/downloadtargz</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <visible>false</visible>
     [HttpPut("settings/downloadtargz")]
     public ICompress ChangeDownloadZipFromForm([FromForm] DisplayRequestDto inDto)
     {
@@ -116,9 +117,9 @@ public class SettingsController : ApiControllerBase
     /// Displays the "Favorites" folder.
     /// </summary>
     /// <short>Display the "Favorites" folder</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the parameter is enabled</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/settings/favorites</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("settings/favorites")]
@@ -131,9 +132,9 @@ public class SettingsController : ApiControllerBase
     /// Displays the "Recent" folder.
     /// </summary>
     /// <short>Display the "Recent" folder</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the parameter is enabled</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/displayRecent</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("displayRecent")]
@@ -146,9 +147,9 @@ public class SettingsController : ApiControllerBase
     /// Displays the "Templates" folder.
     /// </summary>
     /// <short>Display the "Templates" folder</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the parameter is enabled</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/settings/templates</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("settings/templates")]
@@ -161,9 +162,9 @@ public class SettingsController : ApiControllerBase
     /// Changes the ability to share a file externally.
     /// </summary>
     /// <short>Change the external sharing ability</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the parameter is enabled</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/settings/external</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("settings/external")]
@@ -176,9 +177,9 @@ public class SettingsController : ApiControllerBase
     /// Changes the ability to share a file externally on social networks.
     /// </summary>
     /// <short>Change the external sharing ability on social networks</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the parameter is enabled</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
     /// <path>api/2.0/files/settings/externalsocialmedia</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("settings/externalsocialmedia")]
@@ -192,8 +193,8 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Change the forcasaving ability</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/forcesave</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("forcesave")]
@@ -207,7 +208,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Get file settings</short>
     /// <category>Settings</category>
-    /// <returns>File settings</returns>
+    /// <returns type="ASC.Web.Files.Classes.FilesSettingsHelper, ASC.Web.Files.Classes">File settings</returns>
     /// <path>api/2.0/files/settings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("settings")]
@@ -221,7 +222,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Get the Documents information</short>
     /// <category>Settings</category>
-    /// <returns>Module information: ID, product class name, title, description, icon URL, large icon URL, start URL, primary or nor, help URL</returns>
+    /// <returns type="ASC.Api.Core.Module, ASC.Api.Core">Module information: ID, product class name, title, description, icon URL, large icon URL, start URL, primary or nor, help URL</returns>
     /// <path>api/2.0/files/info</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("info")]
@@ -235,9 +236,9 @@ public class SettingsController : ApiControllerBase
     /// Hides the confirmation dialog for saving the file copy in the original format when converting a file.
     /// </summary>
     /// <short>Hide the confirmation dialog when converting</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.HideConfirmConvertRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for hiding the confirmation dialog: Save (bool) - specifies whether to set the specified settings or not</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.HideConfirmConvertRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for hiding the confirmation dialog</param>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/hideconfirmconvert</path>
     /// <httpMethod>PUT</httpMethod>
     /// <visible>false</visible>
@@ -252,7 +253,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Check the Private Room availability</short>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the Private Room settings are available</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the Private Room settings are available</returns>
     /// <path>api/2.0/files/@privacy/available</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@privacy/available")]
@@ -266,8 +267,8 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Change the ability to store the forcesaved files</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/storeforcesave</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("storeforcesave")]
@@ -281,8 +282,8 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Change the ability to upload original formats</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/storeoriginal</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("storeoriginal")]
@@ -292,13 +293,13 @@ public class SettingsController : ApiControllerBase
     }
 
     /// <summary>
-    /// Updates a file version if a file with such a name already exists.
+    /// Specifies whether to ask a user for a file name on creation or not.
     /// </summary>
-    /// <short>Update a file version if it exists</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters: Set (bool) - specifies whether to set the specified settings or not</param>
+    /// <short>Ask a new file name</short>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns>Boolean value: true if the parameter is enabled</returns>
-    /// <path>api/2.0/files/updateifexist</path>
+    /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
+    /// <path>api/2.0/files/keepnewfilename</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("keepnewfilename")]
     public bool KeepNewFileName(SettingsRequestDto inDto)
@@ -307,10 +308,14 @@ public class SettingsController : ApiControllerBase
     }
 
     /// <summary>
-    /// 
+    /// Updates a file version if a file with such a name already exists.
     /// </summary>
-    /// <param name="inDto"></param>
-    /// <returns></returns>
+    /// <short>Update a file version if it exists</short>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SettingsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Settings request parameters</param>
+    /// <category>Settings</category>
+    /// <returns type="System.Boolean, System">Boolean value: true if the parameter is enabled</returns>
+    /// <path>api/2.0/files/updateifexist</path>
+    /// <httpMethod>PUT</httpMethod>
     [HttpPut("updateifexist")]
     public bool UpdateIfExist(SettingsRequestDto inDto)
     {
@@ -321,14 +326,9 @@ public class SettingsController : ApiControllerBase
     /// Updates the trash bin auto-clearing setting.
     /// </summary>
     /// <short>Update the trash bin auto-clearing setting</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.AutoCleanupRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Auto-clearing request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Set</b> (bool) - enables the auto-clearing or not,</li>
-    ///     <li><b>Gap</b> (DateToAutoCleanUp) - a time interval when the auto-clearing will be performed (OneWeek, TwoWeeks, OneMonth, TwoMonths, ThreeMonths).</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.AutoCleanupRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Auto-clearing request parameters</param>
     /// <category>Settings</category>
-    /// <returns>The auto-clearing setting properties: auto-clearing or not, a time interval when the auto-clearing will be performed</returns>
+    /// <returns type="ASC.Files.Core.AutoCleanUpData, ASC.Files.Core">The auto-clearing setting properties: auto-clearing or not, a time interval when the auto-clearing will be performed</returns>
     /// <path>api/2.0/files/settings/autocleanup</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("settings/autocleanup")]
@@ -342,7 +342,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Get the auto-clearing setting properties</short>
     /// <category>Settings</category>
-    /// <returns>The auto-clearing setting properties: auto-clearing or not, a time interval when the auto-clearing will be performed</returns>
+    /// <returns type="ASC.Files.Core.AutoCleanUpData, ASC.Files.Core">The auto-clearing setting properties: auto-clearing or not, a time interval when the auto-clearing will be performed</returns>
     /// <path>api/2.0/files/settings/autocleanup</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("settings/autocleanup")]
@@ -357,9 +357,10 @@ public class SettingsController : ApiControllerBase
     /// <short>Change the default access rights</short>
     /// <param type="System.Collections.Generic.List{ASC.Files.Core.Security.FileShare}, System.Collections.Generic" name="value">Sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing)</param>
     /// <category>Settings</category>
-    /// <returns>Updated sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing)</returns>
+    /// <returns type="System.Collections.Generic.List{SC.Files.Core.Security.FileShare}, System.Collections.Generic">Updated sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing)</returns>
     /// <path>api/2.0/files/settings/dafaultaccessrights</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("settings/dafaultaccessrights")]
     public List<FileShare> ChangeDafaultAccessRights(List<FileShare> value)
     {

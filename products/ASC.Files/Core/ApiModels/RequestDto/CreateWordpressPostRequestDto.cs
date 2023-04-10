@@ -26,9 +26,16 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CreateWordpressPostRequestDto
 {
+    /// <summary>Post title</summary>
     public string Title { get; set; }
+
+    /// <summary>Post contents</summary>
     public string Content { get; set; }
+
+    /// <summary>Operation status</summary>
     public int Status { get; set; }
 }

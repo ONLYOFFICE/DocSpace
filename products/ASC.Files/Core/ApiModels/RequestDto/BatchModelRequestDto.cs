@@ -26,9 +26,14 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class BaseBatchRequestDto
 {
+    /// <summary>List of folder IDs</summary>
     public IEnumerable<JsonElement> FolderIds { get; set; }
+
+    /// <summary>List of file IDs</summary>
     public IEnumerable<JsonElement> FileIds { get; set; }
 
     public BaseBatchRequestDto()
@@ -38,8 +43,11 @@ public class BaseBatchRequestDto
     }
 }
 
+/// <summary>
+/// </summary>
 public class DownloadRequestDto : BaseBatchRequestDto
 {
+    /// <summary>List of file IDs which will be converted</summary>
     public IEnumerable<ItemKeyValuePair<JsonElement, string>> FileConvertIds { get; set; }
 
     public DownloadRequestDto() : base()
@@ -48,21 +56,38 @@ public class DownloadRequestDto : BaseBatchRequestDto
     }
 }
 
+/// <summary>
+/// </summary>
 public class DeleteBatchRequestDto : BaseBatchRequestDto
 {
+    /// <summary>Specifies whether to delete a file after the editing session is finished or not</summary>
     public bool DeleteAfter { get; set; }
+
+    /// <summary>Specifies whether to move a file to the "Trash" folder or delete it immediately</summary>
     public bool Immediately { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class DeleteRequestDto
 {
+    /// <summary>Specifies whether to delete a file after the editing session is finished or not</summary>
     public bool DeleteAfter { get; set; }
+
+    /// <summary>Specifies whether to move a file to the "Trash" folder or delete it immediately</summary>
     public bool Immediately { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class BatchRequestDto : BaseBatchRequestDto
 {
+    /// <summary>Destination folder ID</summary>
     public JsonElement DestFolderId { get; set; }
+
+    /// <summary>Overwriting behavior: Skip (0), Overwrite (1), or Duplicate (2)</summary>
     public FileConflictResolveType ConflictResolveType { get; set; }
+
+    /// <summary>Specifies whether to delete a folder after the editing session is finished or not</summary>
     public bool DeleteAfter { get; set; }
 }

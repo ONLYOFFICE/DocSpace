@@ -26,8 +26,13 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class UpdateCommentRequestDto
 {
+    /// <summary>File version</summary>
     public int Version { get; set; }
+
+    /// <summary>Comment text</summary>
     public string Comment { get; set; }
 }

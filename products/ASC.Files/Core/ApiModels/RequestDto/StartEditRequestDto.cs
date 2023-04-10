@@ -26,8 +26,13 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class StartEditRequestDto
 {
+    /// <summary>Specifies whether to share a file with other users for editing or not</summary>
     public bool EditingAlone { get; set; }
+
+    /// <summary>Shared token</summary>
     public string Doc { get; set; }
 }

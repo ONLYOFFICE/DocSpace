@@ -25,8 +25,13 @@
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
+/// <summary>
+/// </summary>
 public class AutoCleanupRequestDto
 {
+    /// <summary>Enables the auto-clearing or not</summary>
     public bool Set { get; set; }
+
+    /// <summary>A time interval when the auto-clearing will be performed</summary>
     public DateToAutoCleanUp Gap { get; set; }
 }

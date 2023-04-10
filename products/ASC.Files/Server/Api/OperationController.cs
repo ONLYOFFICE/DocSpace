@@ -48,17 +48,12 @@ public class OperationController : ApiControllerBase
     /// Starts the download process of files and folders with the IDs specified in the request.
     /// </summary>
     /// <short>Bulk download</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DownloadRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for downloading files: <![CDATA[
-    /// <ul>
-    ///     <li><b>FileConvertIds</b> (IEnumerable&lt;ItemKeyValuePair&lt;JsonElement, string&gt;&gt;) - list of file IDs which will be converted,</li>
-    ///     <li><b>FileIds</b> (IEnumerable&lt;JsonElement&gt;) - list of file IDs,</li>
-    ///     <li><b>FolderIds</b> (IEnumerable&lt;JsonElement&gt;) - list of folder IDs.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DownloadRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for downloading files</param>
     /// <category>Operations</category>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops/bulkdownload</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("fileops/bulkdownload")]
     public async IAsyncEnumerable<FileOperationDto> BulkDownload(DownloadRequestDto inDto)
     {
@@ -91,18 +86,11 @@ public class OperationController : ApiControllerBase
     /// </summary>
     /// <short>Copy to a folder</short>
     /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for copying files: <![CDATA[
-    /// <ul>
-    ///     <li><b>DestFolderId</b> (JsonElement) - destination folder ID,</li>
-    ///     <li><b>ConflictResolveType</b> (FileConflictResolveType) - overwriting behavior: Skip (0), Overwrite (1), or Duplicate (2),</li>
-    ///     <li><b>DeleteAfter</b> (bool) - specifies whether to delete a folder after the editing session is finished or not,</li>
-    ///     <li><b>FileIds</b> (IEnumerable&lt;JsonElement&gt;) - list of file IDs,</li>
-    ///     <li><b>FolderIds</b> (IEnumerable&lt;JsonElement&gt;) - list of folder IDs.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for copying files</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops/copy</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("fileops/copy")]
     public async IAsyncEnumerable<FileOperationDto> CopyBatchItems(BatchRequestDto inDto)
     {
@@ -115,19 +103,13 @@ public class OperationController : ApiControllerBase
     /// <summary>
     /// Deletes the files and folders with the IDs specified in the request.
     /// </summary>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting files: <![CDATA[
-    /// <ul>
-    ///     <li><b>DeleteAfter</b> (bool) - specifies whether to delete a file after the editing session is finished or not,</li>
-    ///     <li><b>Immediately</b> (bool) - specifies whether to move a file to the "Trash" folder or delete it immediately,</li>
-    ///     <li><b>FileIds</b> (IEnumerable&lt;JsonElement&gt;) - list of file IDs,</li>
-    ///     <li><b>FolderIds</b> (IEnumerable&lt;JsonElement&gt;) - list of folder IDs.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting files</param>
     /// <short>Delete files and folders</short>
     /// <category>Operations</category>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops/delete</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("fileops/delete")]
     public async IAsyncEnumerable<FileOperationDto> DeleteBatchItems(DeleteBatchRequestDto inDto)
     {
@@ -144,9 +126,10 @@ public class OperationController : ApiControllerBase
     /// </summary>
     /// <short>Empty the "Trash" folder</short>
     /// <category>Operations</category>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops/emptytrash</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("fileops/emptytrash")]
     public async IAsyncEnumerable<FileOperationDto> EmptyTrashAsync()
     {
@@ -163,9 +146,10 @@ public class OperationController : ApiControllerBase
     /// </summary>
     /// <short>Get active operations</short>
     /// <category>Operations</category>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("fileops")]
     public async IAsyncEnumerable<FileOperationDto> GetOperationStatuses()
     {
@@ -180,15 +164,11 @@ public class OperationController : ApiControllerBase
     /// </summary>
     /// <short>Mark as read</short>
     /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>FileIds</b> (IEnumerable&lt;JsonElement&gt;) - list of file IDs,</li>
-    ///     <li><b>FolderIds</b> (IEnumerable&lt;JsonElement&gt;) - list of folder IDs.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops/markasread</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("fileops/markasread")]
     public async IAsyncEnumerable<FileOperationDto> MarkAsRead(BaseBatchRequestDto inDto)
     {
@@ -203,18 +183,11 @@ public class OperationController : ApiControllerBase
     /// </summary>
     /// <short>Move to a folder</short>
     /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for moving files and folders: <![CDATA[
-    /// <ul>
-    ///     <li><b>DestFolderId</b> (JsonElement) - destination folder ID,</li>
-    ///     <li><b>ConflictResolveType</b> (FileConflictResolveType) - overwriting behavior: Skip (0), Overwrite (1), or Duplicate (2),</li>
-    ///     <li><b>DeleteAfter</b> (bool) - specifies whether to delete a folder after the editing session is finished or not,</li>
-    ///     <li><b>FileIds</b> (IEnumerable&lt;JsonElement&gt;) - list of file IDs,</li>
-    ///     <li><b>FolderIds</b> (IEnumerable&lt;JsonElement&gt;) - list of folder IDs.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for moving files and folders</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops/move</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("fileops/move")]
     public async IAsyncEnumerable<FileOperationDto> MoveBatchItems(BatchRequestDto inDto)
     {
@@ -230,16 +203,11 @@ public class OperationController : ApiControllerBase
     /// </summary>
     /// <short>Check files and folders for conflicts</short>
     /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for checking files and folders for conflicts: <![CDATA[
-    /// <ul>
-    ///     <li><b>DestFolderId</b> (JsonElement) - destination folder ID,</li>
-    ///     <li><b>FileIds</b> (IEnumerable&lt;JsonElement&gt;) - list of file IDs,</li>
-    ///     <li><b>FolderIds</b> (IEnumerable&lt;JsonElement&gt;) - list of folder IDs.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>List of file entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for checking files and folders for conflicts</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic">List of file entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
     /// <path>api/2.0/files/fileops/move</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("fileops/move")]
     public async IAsyncEnumerable<FileEntryDto> MoveOrCopyBatchCheckAsync([ModelBinder(BinderType = typeof(BatchModelBinder))] BatchRequestDto inDto)
     {
@@ -269,9 +237,10 @@ public class OperationController : ApiControllerBase
     /// </summary>
     /// <short>Finish active operations</short>
     /// <category>Operations</category>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/fileops/terminate</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("fileops/terminate")]
     public async IAsyncEnumerable<FileOperationDto> TerminateTasks()
     {

@@ -26,9 +26,16 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class SecurityInfoRequestDto : BaseBatchRequestDto
 {
+    /// <summary>Collection of sharing parameters</summary>
     public IEnumerable<FileShareParams> Share { get; set; }
+
+    /// <summary>Notifies users about the shared file or not</summary>
     public bool Notify { get; set; }
+
+    /// <summary>Message to send when notifying about the shared file</summary>
     public string SharingMessage { get; set; }
 }

@@ -26,10 +26,19 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CreateFileRequestDto<T>
 {
+    /// <summary>File title</summary>
     public string Title { get; set; }
+
+    /// <summary>Template file ID</summary>
     public T TemplateId { get; set; }
+
+    /// <summary>Specifies whether to allow the creation of external extension files or not</summary>
     public bool EnableExternalExt { get; set; }
+
+    /// <summary>Form ID</summary>
     public int FormId { get; set; }
 }

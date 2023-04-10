@@ -43,9 +43,16 @@ public class MentionWrapper
     }
 }
 
+/// <summary>
+/// </summary>
 public class MentionMessageWrapper
 {
+    /// <summary>The config parameter which contains the information about the comment in the document that will be scrolled to</summary>
     public ActionLinkConfig ActionLink { get; set; }
+
+    /// <summary>A list of emails which will receive the mention message</summary>
     public List<string> Emails { get; set; }
+
+    /// <summary>The comment message</summary>
     public string Message { get; set; }
 }

@@ -26,12 +26,23 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CheckFillFormDraftRequestDto
 {
+    /// <summary>File version</summary>
     public int Version { get; set; }
+
+    /// <summary>Shared token</summary>
     public string Doc { get; set; }
+
+    /// <summary>Action with a form</summary>
     public string Action { get; set; }
+
+    /// <summary>Specifies whether to request a form for viewing or not</summary>
     public bool RequestView => (Action ?? "").Equals("view", StringComparison.InvariantCultureIgnoreCase);
+
+    /// <summary>Specifies whether to request an embedded form or not</summary>
     public bool RequestEmbedded => (Action ?? "").Equals("embedded", StringComparison.InvariantCultureIgnoreCase)
                 && !string.IsNullOrEmpty(Doc);
 }

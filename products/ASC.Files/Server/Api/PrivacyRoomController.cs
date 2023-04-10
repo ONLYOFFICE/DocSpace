@@ -69,10 +69,11 @@ public abstract class PrivacyRoomController<T> : ControllerBase
     /// Returns all the key pairs of the users who have access to the file with the ID specified in the request.
     /// </summary>
     /// <short>Get file key pairs</short>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <returns>List of encryption key pairs: private key, public key, user ID</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Files.Core.Entries.EncryptionKeyPairDto}, System.Collections.Generic">List of encryption key pairs: private key, public key, user ID</returns>
     /// <path>api/2.0/privacyroom/access/{fileId}</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     /// <visible>false</visible>
     [HttpGet("access/{fileId}")]
     public Task<IEnumerable<EncryptionKeyPairDto>> GetPublicKeysWithAccess(T fileId)
@@ -119,7 +120,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// Returns a key pair for the current user.
     /// </summary>
     /// <short>Get encryption keys</short>
-    /// <returns>Encryption key pair: private key, public key, user ID</returns>
+    /// <returns type="ASC.Web.Files.Core.Entries.EncryptionKeyPairDto, ASC.Web.Files.Core.Entries">Encryption key pair: private key, public key, user ID</returns>
     /// <path>api/2.0/privacyroom/keys</path>
     /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
@@ -141,7 +142,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// Checks if the Private Room settings are enabled or not.
     /// </summary>
     /// <short>Check the Private Room settings</short>
-    /// <returns>Boolean value: true - the Private Room settings are enabled, false - the Private Room settings are disabled</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true - the Private Room settings are enabled, false - the Private Room settings are disabled</returns>
     /// <path>api/2.0/privacyroom</path>
     /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
@@ -157,14 +158,8 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// Sets the key pair for the current user.
     /// </summary>
     /// <short>Set encryption keys</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for setting encryption keys: <![CDATA[
-    /// <ul>
-    ///     <li><b>PublicKey</b> (string) - public key,</li>
-    ///     <li><b>PrivateKeyEnc</b> (string) - private key,</li>
-    ///     <li><b>Update</b> (bool) - encryption keys need to be updated or not.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Boolean value: true - the key pair is set</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for setting encryption keys</param>
+    /// <returns type="System.Object, System">Boolean value: true - the key pair is set</returns>
     /// <path>api/2.0/privacyroom/keys</path>
     /// <httpMethod>PUT</httpMethod>
     /// <visible>false</visible>
@@ -201,8 +196,8 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// Enables the Private Room settings.
     /// </summary>
     /// <short>Enable the Private Room settings</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for setting encryption keys: Enable (bool) - specifies whether to enable the Private Room settings or not</param>
-    /// <returns>Boolean value: true - the Private Room settings are enabled, false - the Private Room settings are disabled</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for setting encryption keys</param>
+    /// <returns type="System.Boolean, System">Boolean value: true - the Private Room settings are enabled, false - the Private Room settings are disabled</returns>
     /// <path>api/2.0/privacyroom</path>
     /// <httpMethod>PUT</httpMethod>
     /// <visible>false</visible>

@@ -26,10 +26,19 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CopyAsRequestDto<T>
 {
+    /// <summary>Destination file title</summary>
     public string DestTitle { get; set; }
+
+    /// <summary>Destination folder ID</summary>
     public T DestFolderId { get; set; }
+
+    /// <summary>Specifies whether to allow the creation of external extension files or not</summary>
     public bool EnableExternalExt { get; set; }
+
+    /// <summary>Password</summary>
     public string Password { get; set; }
 }

@@ -26,7 +26,10 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class ChangeOwnerRequestDto : BaseBatchRequestDto
 {
+    /// <summary>New file owner ID</summary>
     public Guid UserId { get; set; }
 }

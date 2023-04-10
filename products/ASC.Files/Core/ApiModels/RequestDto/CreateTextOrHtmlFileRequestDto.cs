@@ -26,8 +26,13 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CreateTextOrHtmlFileRequestDto
 {
+    /// <summary>File title</summary>
     public string Title { get; set; }
+
+    /// <summary>File contents</summary>
     public string Content { get; set; }
 }

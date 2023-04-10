@@ -26,15 +26,34 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class ThirdPartyRequestDto
 {
+    /// <summary>Connection URL for the sharepoint</summary>
     public string Url { get; set; }
+
+    /// <summary>Login</summary>
     public string Login { get; set; }
+
+    /// <summary>Password</summary>
     public string Password { get; set; }
+
+    /// <summary>Authentication token</summary>
     public string Token { get; set; }
+
+    /// <summary>Specifies if this is a corporate account or not</summary>
     public bool IsCorporate { get; set; }
+
+    /// <summary>Specifies if this is a room storage or not</summary>
     public bool IsRoomsStorage { get; set; }
+
+    /// <summary>Customer title</summary>
     public string CustomerTitle { get; set; }
+
+    /// <summary>Provider key</summary>
     public string ProviderKey { get; set; }
+
+    /// <summary>Provider ID</summary>
     public string ProviderId { get; set; }
 }

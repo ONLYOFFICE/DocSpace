@@ -26,8 +26,13 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class UpdateFileRequestDto
 {
+    /// <summary>File title</summary>
     public string Title { get; set; }
+
+    /// <summary>Number of the latest file version</summary>
     public int LastVersion { get; set; }
 }

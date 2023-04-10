@@ -26,9 +26,16 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class RoomInvitationRequestDto
 {
+    /// <summary>Collection of invitation parameters</summary>
     public IEnumerable<RoomInvitation> Invitations { get; set; }
+
+    /// <summary>Notifies users about the shared room or not</summary>
     public bool Notify { get; set; }
+
+    /// <summary>Message to send when notifying about the shared room</summary>
     public string Message { get; set; }
 }

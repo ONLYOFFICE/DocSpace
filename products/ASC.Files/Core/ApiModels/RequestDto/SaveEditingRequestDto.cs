@@ -26,11 +26,22 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class SaveEditingRequestDto : IModelWithFile
 {
+    /// <summary>File extension</summary>
     public string FileExtension { get; set; }
+
+    /// <summary>URI to download a file</summary>
     public string DownloadUri { get; set; }
+
+    /// <summary>Request file stream</summary>
     public IFormFile File { get; set; }
+
+    /// <summary>Shared token</summary>
     public string Doc { get; set; }
+
+    /// <summary>Specifies whether to force save a file or not</summary>
     public bool Forcesave { get; set; }
 }

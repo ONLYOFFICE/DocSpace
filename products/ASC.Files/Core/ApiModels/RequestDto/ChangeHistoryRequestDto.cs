@@ -26,8 +26,13 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class ChangeHistoryRequestDto
 {
+    /// <summary>File version</summary>
     public int Version { get; set; }
+
+    /// <summary>Marks as a version or revision</summary>
     public bool ContinueVersion { get; set; }
 }

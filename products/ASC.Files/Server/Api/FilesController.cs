@@ -65,9 +65,9 @@ public class FilesControllerThirdparty : FilesController<string>
     /// Returns the detailed information about a third-party file with the ID specified in the request.
     /// </summary>
     /// <short>Get third-party file information</short>
-    /// <param type="System.String, System" name="fileId">File ID</param>
+    /// <param type="System.String, System" method="url" name="fileId">File ID</param>
     /// <category>Files</category>
-    /// <returns>File entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core.ApiModels.ResponseDto">File entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
     /// <path>api/2.0/files/file/app-{fileId}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("file/app-{fileId}", Order = 1)]
@@ -106,17 +106,13 @@ public abstract class FilesController<T> : ApiControllerBase
     /// Changes the version history of a file with the ID specified in the request.
     /// </summary>
     /// <short>Change version history</short>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ChangeHistoryRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for changing version history: <![CDATA[
-    /// <ul>
-    ///     <li><b>Version</b> (integer) - file version,</li>
-    ///     <li><b>ContinueVersion</b> (bool) - marks as a version or revision.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ChangeHistoryRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for changing version history</param>
     /// <category>Files</category>
-    /// <returns>Updated information about file versions: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileDto}, System.Collections.Generic">Updated information about file versions: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/history</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("file/{fileId}/history")]
     public IAsyncEnumerable<FileDto<T>> ChangeHistoryAsync(T fileId, ChangeHistoryRequestDto inDto)
     {
@@ -128,11 +124,12 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Get conversion status</short>
     /// <category>Operations</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <param type="System.Boolean, System" name="start">Specifies if a conversion operation is started or not</param>
-    /// <returns>Conversion result: operation ID, operation result, operation progress, source file, resulting file, error, processed or not</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.ConversationResultDto}, System.Collections.Generic">Conversion result: operation ID, operation result, operation progress, source file, resulting file, error, processed or not</returns>
     /// <path>api/2.0/files/file/{fileId}/checkconversion</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("file/{fileId}/checkconversion")]
     public async IAsyncEnumerable<ConversationResultDto<T>> CheckConversionAsync(T fileId, bool start)
     {
@@ -151,8 +148,8 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Get file download link</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <returns>File download link</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <returns type="System.String, System">File download link</returns>
     /// <path>api/2.0/files/file/{fileId}/presigneduri</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("file/{fileId}/presigneduri")]
@@ -166,15 +163,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Copy a file</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CopyAsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for copying a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>DestTitle</b> (string) - destination file title,</li>
-    ///     <li><b>DestFolderId</b> (T) - destination folder ID,</li>
-    ///     <li><b>Password</b> (string) - password.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Copied file entry information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CopyAsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for copying a file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core.ApiModels.ResponseDto">Copied file entry information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/copyas</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("file/{fileId}/copyas")]
@@ -197,17 +188,10 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Create a file</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>TemplateId</b> (T) - template file ID,</li>
-    ///     <li><b>EnableExternalExt</b> (bool) - specifies whether to allow the creation of external extension files or not,</li>
-    ///     <li><b>FormId</b> (integer) - form ID.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a file</param>
     /// <remarks>If a file extension is different from DOCX/XLSX/PPTX and refers to one of the known text, spreadsheet, or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not specified or is unknown, the DOCX extension will be added to the file title.</remarks>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/{folderId}/file</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/file")]
@@ -221,14 +205,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Create an HTML file</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>Content</b> (string) - file contents.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/{folderId}/html</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/html")]
@@ -242,14 +221,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Create a txt file</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>Content</b> (string) - file contents.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/{folderId}/text</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/text")]
@@ -263,16 +237,12 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Delete a file</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>DeleteAfter</b> (bool) - specifies whether to delete a file after the editing session is finished or not,</li>
-    ///     <li><b>Immediately</b> (bool) - specifies whether to move a file to the "Trash" folder or delete it immediately.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting a file</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/file/{fileId}</path>
     /// <httpMethod>DELETE</httpMethod>
+    /// <collection>list</collection>
     [HttpDelete("file/{fileId}")]
     public async IAsyncEnumerable<FileOperationDto> DeleteFile(T fileId, [FromBody] DeleteRequestDto inDto)
     {
@@ -287,10 +257,10 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Get changes URL</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <param type="System.Int32, System" name="version">File version</param>
     /// <param type="System.String, System" name="doc">Shared token</param>
-    /// <returns>File version history data: URL to the file changes, key, previous version, token, file URL, file version, file type</returns>
+    /// <returns type="ASC.Files.Core.EditHistoryDataDto, ASC.Files.Core">File version history data: URL to the file changes, key, previous version, token, file URL, file version, file type</returns>
     /// <path>api/2.0/files/file/{fileId}/edit/diff</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -306,12 +276,13 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Get version history</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <param type="System.String, System" name="doc">Shared token</param>
-    /// <returns>Version history data: file ID, key, file version, version group, a user who updated a file, creation time, history changes in the string format, list of history changes, server version</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.EditHistoryDto}, System.Collections.Generic">Version history data: file ID, key, file version, version group, a user who updated a file, creation time, history changes in the string format, list of history changes, server version</returns>
     /// <path>api/2.0/files/file/{fileId}/edit/history</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
     [AllowAnonymous]
     [HttpGet("file/{fileId}/edit/history")]
     public IAsyncEnumerable<EditHistoryDto> GetEditHistoryAsync(T fileId, string doc = null)
@@ -323,10 +294,10 @@ public abstract class FilesController<T> : ApiControllerBase
     /// Returns the detailed information about a file with the ID specified in the request.
     /// </summary>
     /// <short>Get file information</short>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <param type="System.Int32, System" name="version">File version</param>
     /// <category>Files</category>
-    /// <returns>File information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">File information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("file/{fileId}")]
@@ -341,10 +312,11 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Get file versions</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <returns>Information about file versions: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileDto}, System.Collections.Generic">Information about file versions: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/history</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("file/{fileId}/history")]
     public IAsyncEnumerable<FileDto<T>> GetFileVersionInfoAsync(T fileId)
     {
@@ -356,9 +328,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Lock a file</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LockFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for locking a file: LockFile (bool) - specifies whether to lock a file or not</param>
-    /// <returns>Locked file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LockFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for locking a file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">Locked file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/lock</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("file/{fileId}/lock")]
@@ -372,14 +344,15 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Restore a file version</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <param type="System.Int32, System" name="version">File version</param>
     /// <param type="System.String, System" name="url">File version URL</param>
     /// <param type="System.String, System" name="doc">Shared token</param>
-    /// <returns>Version history data: file ID, key, file version, version group, a user who updated a file, creation time, history changes in the string format, list of history changes, server version</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.EditHistoryDto}, System.Collections.Generic">Version history data: file ID, key, file version, version group, a user who updated a file, creation time, history changes in the string format, list of history changes, server version</returns>
     /// <path>api/2.0/files/file/{fileId}/restoreversion</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
     [AllowAnonymous]
     [HttpGet("file/{fileId}/restoreversion")]
     public IAsyncEnumerable<EditHistoryDto> RestoreVersionAsync(T fileId, int version = 0, string url = null, string doc = null)
@@ -392,19 +365,12 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Start file conversion</short>
     /// <category>Operations</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CheckConversionRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for starting file conversion: <![CDATA[
-    /// <ul>
-    ///     <li><b>FileId</b> (T) - file ID,</li>
-    ///     <li><b>Sync</b> (bool) - specifies if the conversion process is synchronous or not,</li>
-    ///     <li><b>StartConvert</b> (bool) - specifies whether to start a conversion process or not,</li>
-    ///     <li><b>Version</b> (integer) - file version,</li>
-    ///     <li><b>Password</b> (string) - password.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Conversion result: operation ID, operation result, operation progress, source file, resulting file, error, processed or not</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CheckConversionRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for starting file conversion</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.ConversationResultDto}, System.Collections.Generic">Conversion result: operation ID, operation result, operation progress, source file, resulting file, error, processed or not</returns>
     /// <path>api/2.0/files/file/{fileId}/checkconversion</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("file/{fileId}/checkconversion")]
     public IAsyncEnumerable<ConversationResultDto<T>> StartConversion(T fileId, [FromBody(EmptyBodyBehavior = Microsoft.AspNetCore.Mvc.ModelBinding.EmptyBodyBehavior.Allow)] CheckConversionRequestDto<T> inDto)
     {
@@ -422,14 +388,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Update a comment</short>
     /// <category>Operations</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateCommentRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a comment: <![CDATA[
-    /// <ul>
-    ///     <li><b>Version</b> (integer) - file version,</li>
-    ///     <li><b>Comment</b> (string) - comment text.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Updated comment</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateCommentRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a comment</param>
+    /// <returns type="System.Object, System">Updated comment</returns>
     /// <path>api/2.0/files/file/{fileId}/comment</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("file/{fileId}/comment")]
@@ -443,14 +404,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Update a file</short>
     /// <category>Files</category>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>LastVersion</b> (integer) - number of the latest file version.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("file/{fileId}")]
@@ -465,17 +421,10 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Update file contents</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.FileStreamRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating file contents: <![CDATA[
-    /// <ul>
-    ///     <li><b>File</b> (IFormFile) - request input stream,</li>
-    ///     <li><b>Encrypted</b> (bool) - specifies whether to encrypt a file or not,</li>
-    ///     <li><b>Forcesave</b> (bool) - specifies whether to force save a file or not,</li>
-    ///     <li><b>FileExtension</b> (string) - file extension.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.FileStreamRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating file contents</param>
     /// <path>api/2.0/files/{fileId}/update</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns>Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <visible>false</visible>
     [HttpPut("{fileId}/update")]
     public Task<FileDto<T>> UpdateFileStreamFromFormAsync(T fileId, [FromForm] FileStreamRequestDto inDto)
@@ -487,9 +436,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// Returns file properties of the specified file.
     /// </summary>
     /// <short>Get file properties</short>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <category>Files</category>
-    /// <returns>File properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto">File properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
     /// <path>api/2.0/files/{fileId}/properties</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("{fileId}/properties")]
@@ -503,21 +452,10 @@ public abstract class FilesController<T> : ApiControllerBase
     /// Saves file properties to the specified file.
     /// </summary>
     /// <short>Save file properties to a file</short>
-    /// <param type="System.Int32, System" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="fileProperties">File properties request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>FormFilling</b> (FormFillingPropertiesRequestDto) - form filling request parameters:</li>
-    ///     <ul>
-    ///         <li><b>CollectFillForm</b> (bool) - specifies if the data will be collected from the filled forms or not,</li>
-    ///         <li><b>ToFolderId</b> (string) - folder ID where a file will be saved,</li>
-    ///         <li><b>ToFolderPath</b> (string) - folder path where a file will be saved,</li>
-    ///         <li><b>CreateFolderTitle</b> (string) - new folder title,</li>
-    ///         <li><b>CreateFileMask</b> (string) - file name mask.</li>
-    ///     </ul>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="fileProperties">File properties request parameters</param>
     /// <category>Files</category>
-    /// <returns>File properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
+    /// <returns type="ASC.Files.Core.EntryProperties, ASC.Files.Core">File properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
     /// <path>api/2.0/files/{fileId}/properties</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{fileId}/properties")]
@@ -556,16 +494,9 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create a file in the "My documents" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>TemplateId</b> (T) - template file ID,</li>
-    ///     <li><b>EnableExternalExt</b> (bool) - specifies whether to allow the creation of external extension files or not,</li>
-    ///     <li><b>FormId</b> (integer) - form ID.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a file</param>
     /// <remarks>If a file extension is different from DOCX/XLSX/PPTX and refers to one of the known text, spreadsheet, or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not specified or is unknown, the DOCX extension will be added to the file title.</remarks>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@my/file</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/file")]
@@ -579,13 +510,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create an HTML file in the "Common" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>Content</b> (string) - file contents.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@common/html</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@common/html")]
@@ -599,13 +525,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create an HTML file in the "My documents" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>Content</b> (string) - file contents.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@my/html</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/html")]
@@ -619,13 +540,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create a text file in the "Common" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>Content</b> (string) - file contents.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@common/text</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@common/text")]
@@ -639,13 +555,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create a text file in the "My documents" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Title</b> (string) - file title,</li>
-    ///     <li><b>Content</b> (string) - file contents.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@my/text</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/text")]
@@ -659,10 +570,11 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create thumbnails</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters: <![CDATA[FileIds (IEnumerable&lt;JsonElement&gt;) - list of file IDs]]></param>
-    /// <returns>List of file IDs</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters</param>
+    /// <returns type="System.Collections.Generic.IEnumerable{System.Text.Json.JsonElement}, System.Collections.Generic">List of file IDs</returns>
     /// <path>api/2.0/files/thumbnails</path>
     /// <httpMethod>POST</httpMethod>
+    /// <collection>list</collection>
     [HttpPost("thumbnails")]
     public Task<IEnumerable<JsonElement>> CreateThumbnailsAsync(BaseBatchRequestDto inDto)
     {
@@ -674,25 +586,12 @@ public class FilesControllerCommon : ApiControllerBase
     /// Saves file properties to the specified files.
     /// </summary>
     /// <short>Save file properties to files</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchEntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="batchEntryPropertiesRequestDto">Batch entry properties request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>FilesId</b> (JsonElement[]) - list of file IDs,</li>
-    ///     <li><b>CreateSubfolder</b> (bool) - specifies whether to create a subfolder or not,</li>
-    ///     <li><b>FileProperties</b> (EntryPropertiesRequestDto) - file properties that are represented as the following object:</li>
-    ///     <p><b>FormFilling</b> (FormFillingPropertiesRequestDto) - form filling properties:</p>
-    ///     <ul>
-    ///         <li><b>CollectFillForm</b> (bool) - specifies if the data will be collected from the filled forms or not,</li>
-    ///         <li><b>ToFolderId</b> (string) - folder ID where a file will be saved,</li>
-    ///         <li><b>ToFolderPath</b> (string) - folder path where a file will be saved,</li>
-    ///         <li><b>CreateFolderTitle</b> (string) - new folder title,</li>
-    ///         <li><b>CreateFileMask</b> (string) - file name mask.</li>
-    ///     </ul>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchEntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="batchEntryPropertiesRequestDto">Batch entry properties request parameters</param>
     /// <category>Files</category>
-    /// <returns>List of file properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
+    /// <returns type="System.Collections.Generic.List{ASC.Files.Core.EntryProperties}, System.Collections.Generic">List of file properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
     /// <path>api/2.0/files/batch/properties</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("batch/properties")]
     public async Task<List<EntryProperties>> SetProperties(BatchEntryPropertiesRequestDto batchEntryPropertiesRequestDto)
     {

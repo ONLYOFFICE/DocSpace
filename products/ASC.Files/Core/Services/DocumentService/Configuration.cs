@@ -35,8 +35,11 @@ public enum EditorType
     External,
 }
 
+/// <summary>
+/// </summary>
 public class ActionLinkConfig
 {
+    /// <summary>The information about the comment in the document that will be scrolled to</summary>
     [JsonPropertyName("action")]
     public ActionConfig Action { get; set; }
 
@@ -45,11 +48,15 @@ public class ActionLinkConfig
         return JsonSerializer.Serialize(actionLinkConfig);
     }
 
+    /// <summary>
+    /// </summary>
     public class ActionConfig
     {
+        /// <summary>Comment data</summary>
         [JsonPropertyName("data")]
         public string Data { get; set; }
 
+        /// <summary>Action type</summary>
         [JsonPropertyName("type")]
         public string Type { get; set; }
     }

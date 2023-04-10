@@ -26,7 +26,10 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class ArchiveRoomRequestDto
 {
+    /// <summary>Specifies whether to archive a room after the editing session is finished or not</summary>
     public bool DeleteAfter { get; set; }
 }

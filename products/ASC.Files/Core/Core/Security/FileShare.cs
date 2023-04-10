@@ -27,6 +27,8 @@
 namespace ASC.Files.Core.Security;
 
 [EnumExtensions]
+/// <summary>
+/// </summary>
 public enum FileShare
 {
     None,

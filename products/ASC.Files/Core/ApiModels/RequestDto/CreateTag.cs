@@ -26,7 +26,10 @@
 
 namespace ASC.Files.Core.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class CreateTagRequestDto
 {
+    /// <summary>Tag name</summary>
     public string Name { get; set; }
 }
