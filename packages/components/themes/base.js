@@ -3095,6 +3095,8 @@ const Base = {
 
       descriptionTextColor: "#A3A9AE",
       pendingEmailTextColor: "#A3A9AE",
+
+      mobileRowBackground: "#F8F9F9",
     },
     themePreview: {
       descriptionColor: "#A3A9AE",
