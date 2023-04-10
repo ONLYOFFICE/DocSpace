@@ -124,6 +124,7 @@ public class UserPhotoManagerCache
 
             _cacheNotify.Subscribe(async (data) =>
             {
+                CustomSynchronizationContext.CreateContext();
                 ConcurrentDictionary<CacheSize, string> removedValue;
 
                 if (_photofiles.TryRemove(new Guid(data.UserId), out removedValue))
@@ -136,7 +137,7 @@ public class UserPhotoManagerCache
 
                     try
                     {
-                        storage.DeleteFilesAsync("", data.UserId + "*.*", false).Wait();
+                        await storage.DeleteFilesAsync("", data.UserId + "*.*", false);
                     }
                     catch (Exception ex)
                     {
