@@ -1,4 +1,3 @@
 {
-  "CannotDowngradePlan": "No puede cambiar a un plan inferior, ya que la cantidad de almacenamiento/número de gestores supera las limitaciones según el plan de precios seleccionado:",
   "SaveOrChange": "Reduzca el parámetro requerido o conserve su plan de precios actual."
 }
