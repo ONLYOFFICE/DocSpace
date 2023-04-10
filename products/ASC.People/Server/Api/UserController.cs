@@ -215,8 +215,8 @@ public class UserController : PeopleControllerBase
         }
 
         if (linkData != null)
-        { 
-            _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, linkData.EmployeeType) ,Constants.Action_AddRemoveUser);
+        {
+            _permissionContext.DemandPermissions(new UserSecurityProvider(Guid.Empty, linkData.EmployeeType), Constants.Action_AddRemoveUser);
         }
         else
         {
@@ -452,7 +452,7 @@ public class UserController : PeopleControllerBase
         _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
-        _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfo(user);
         var userName = user.DisplayUserName(false, _displayUserSettingsHelper);
         _messageService.Send(MessageAction.UsersUpdatedStatus, _messageTarget.Create(user.Id), userName);
 
@@ -887,7 +887,7 @@ public class UserController : PeopleControllerBase
             }
 
             u.ActivationStatus = activationstatus;
-            _userManager.UpdateUserInfo(u);
+            await _userManager.UpdateUserInfo(u);
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }
@@ -914,7 +914,7 @@ public class UserController : PeopleControllerBase
 
                 try
                 {
-                    _userManager.UpdateUserInfo(user);
+                    await _userManager.UpdateUserInfo(user);
                 }
                 catch
                 {
@@ -1019,7 +1019,7 @@ public class UserController : PeopleControllerBase
         if (!self && !inDto.IsUser && _userManager.IsUser(user))
         {
             await _countPaidUserChecker.CheckAppend();
-            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
         }
 
@@ -1108,17 +1108,17 @@ public class UserController : PeopleControllerBase
             {
                 updatedUsers.Add(user);
             }
-                }
-        
-            _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.CreateFromGroupValues(users.Select(x => x.Id.ToString())),
-            users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)), users.Select(x => x.Id).ToList(), type);
-        
+        }
+
+        _messageService.Send(MessageAction.UsersUpdatedType, _messageTarget.CreateFromGroupValues(users.Select(x => x.Id.ToString())),
+        users.Select(x => x.DisplayUserName(false, _displayUserSettingsHelper)), users.Select(x => x.Id).ToList(), type);
+
         foreach (var user in users)
         {
             yield return await _employeeFullDtoHelper.GetFull(user);
         }
     }
-    
+
     [HttpGet("recalculatequota")]
     public void RecalculateQuota()
     {
@@ -1185,7 +1185,7 @@ public class UserController : PeopleControllerBase
         var managerGroups = new List<Guid>();
         foreach (var groupInfo in groups)
         {
-            _userManager.RemoveUserFromGroup(user.Id, groupInfo.ID);
+            await _userManager.RemoveUserFromGroup(user.Id, groupInfo.ID);
             var managerId = _userManager.GetDepartmentManager(groupInfo.ID);
             if (managerId == user.Id)
             {
@@ -1335,7 +1335,7 @@ public class UserController : PeopleControllerBase
                     includeGroups.Add(new List<Guid> { Constants.GroupAdmin.ID });
                     break;
                 case EmployeeType.RoomAdmin:
-                    excludeGroups.Add(Constants.GroupUser.ID); 
+                    excludeGroups.Add(Constants.GroupUser.ID);
                     excludeGroups.Add(Constants.GroupAdmin.ID);
                     excludeGroups.Add(Constants.GroupCollaborator.ID);
                     break;

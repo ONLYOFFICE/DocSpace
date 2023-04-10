@@ -44,7 +44,6 @@ const InvitePanel = ({
   roomsView,
   getUsersList,
   filter,
-  setPortalQuota,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
@@ -183,7 +182,6 @@ const InvitePanel = ({
       if (roomsView === "info_members") {
         setUpdateRoomMembers(true);
       }
-      setPortalQuota();
 
       onClose();
       toastr.success(t("Common:UsersInvited"));
@@ -287,7 +285,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     roomsView,
     filesView,
   } = auth.infoPanelStore;
-  const { setPortalQuota } = auth.currentQuotaStore;
 
   const {
     getPortalInviteLinks,
@@ -312,7 +309,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   } = filesStore;
 
   return {
-    setPortalQuota,
     folders,
     getUsersByQuery,
     getRoomSecurityInfo,
