@@ -444,11 +444,11 @@ public class UserController : PeopleControllerBase
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (user.IsLDAP())
+        if (user.IsLDAP() || user.IsOwner(Tenant))
         {
             throw new SecurityException();
         }
-
+        
         _securityContext.AuthenticateMeWithoutCookie(Core.Configuration.Constants.CoreSystem);
         user.Status = EmployeeStatus.Terminated;
 
