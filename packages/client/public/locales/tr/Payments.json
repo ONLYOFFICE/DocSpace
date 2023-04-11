@@ -5,6 +5,7 @@
   "BusinessExpired": "{{planName}} planınızın süresi {{date}} tarihinde doldu",
   "BusinessFinalDateInfo": "Abonelik, güncellenmiş fiyatlandırma ve spesifikasyonlarla {{finalDate}} tarihinde otomatik olarak yenilenecektir. Stripe müşteri portalınızda aboneliği iptal edebilir veya fatura bilgilerinizi değiştirebilirsiniz.",
   "BusinessPlanPaymentOverdue": "Yeni kullanıcılar eklenemez ve yeni odalar oluşturulamaz. {{planName}} plan ödemesi gecikti.",
+  "BusinessRequestDescription": "{{peopleNumber}} yönetici/uzman kullanıcı sayısından daha fazlasını içeren fiyatlandırma planları yalnızca istek üzerine sunulur.",
   "BusinessSuggestion": "{{planName}} planınızı özelleştirin",
   "BusinessTitle": "{{planName}} planını kullanıyorsunuz",
   "BusinessUpdated": "{{planName}} planı güncellendi",

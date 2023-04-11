@@ -5,7 +5,7 @@
   "BusinessExpired": "Вашият абонаментен план {{planName}} е изтекъл на {{date}}",
   "BusinessFinalDateInfo": "Абонаментът ще бъде автоматично подновен на {{finalDate}} с актуализирани цени и спецификации. Можете да го анулирате или да промените информацията си за фактуриране в портала за клиенти на Stripe",
   "BusinessPlanPaymentOverdue": "Не могат да се добавят нови потребители и да се създават нови стаи. Просрочено плащане по план {{planName}}.",
-  "BusinessRequestDescription": "Ценовите планове с повече {{peopleNumber}} мениджъри са достъпни само при заявка.",
+  "BusinessRequestDescription": "Ценовите планове с повече от {{peopleNumber}} администратори/опитни потребители са достъпни само при заявка.",
   "BusinessSuggestion": "Персонализирайте плана си {{planName}}",
   "BusinessTitle": "Използвате план {{planName}}",
   "BusinessUpdated": "Планът {{planName}} е актуализиран",

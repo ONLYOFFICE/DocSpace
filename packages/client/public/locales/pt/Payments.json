@@ -5,7 +5,7 @@
   "BusinessExpired": "O seu plano {{planName}} expirou a {{date}}",
   "BusinessFinalDateInfo": "A subscrição será automaticamente renovada em {{finalDate}} com preços e especificações atualizadas. Pode cancelá-la ou alterar as suas informações de faturação no seu portal de clientes Stripe.",
   "BusinessPlanPaymentOverdue": "Não é possível adicionar novos utilizadores e criar novas salas. {{planName}} o prazo de pagamento para o seu plano expirou.",
-  "BusinessRequestDescription": "Os planos de preços com mais de {{peopleNumber}} gestores apenas estão disponíveis por pedido.",
+  "BusinessRequestDescription": "Os planos de preços com mais {{peopleNumber}} administradores/utilizadores com poder só estão disponíveis sob pedido.",
   "BusinessSuggestion": "Personalize o plano {{planName}}",
   "BusinessTitle": "Está a utilizar o plano {{planName}}",
   "BusinessUpdated": "{{planName}} plano atualizado",

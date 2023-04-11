@@ -5,7 +5,7 @@
   "BusinessExpired": "Jūsu {{planName}} plāna derīguma termiņš ir beidzies {{date}}",
   "BusinessFinalDateInfo": "Abonements tiks automātiski atjaunots {{finalDate}} ar atjauninātām cenām un specifikācijām. Varat to atcelt vai mainīt norēķinu informāciju Stripe klientu portālā.",
   "BusinessPlanPaymentOverdue": "Nevar pievienot jaunus lietotājus un izveidot jaunas telpas. {{planName}} plānojiet nokavēto maksājumu",
-  "BusinessRequestDescription": "Cenu plāni ar vēl {{peopleNumber}} pārvaldnieku (-iem) ir pieejami tikai pēc pieprasījuma",
+  "BusinessRequestDescription": "Cenu plāni ar vairāk {{peopleNumber}} administratoriem/pieredzējušiem lietotājiem ir pieejami tikai pēc pieprasījuma.",
   "BusinessSuggestion": "Pielāgot savu {{planName}} plānu",
   "BusinessTitle": "Jūs izmantojat {{planName}} plānu",
   "BusinessUpdated": "{{planName}} plāns atjaunināts",

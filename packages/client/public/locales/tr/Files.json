@@ -88,6 +88,7 @@
   "Rename": "Yeniden adlandır",
   "RestoreAll": "Her şeyi eski haline getir",
   "RoomCreated": "Oda oluşturuldu",
+  "RoomEmptyContainerDescription": "Lütfen ilk odayı oluşturun.",
   "RoomEmptyContainerDescriptionUser": "Sizinle paylaşılan odalar burada görünecek",
   "RoomNotificationsDisabled": "Oda bildirimleri devre dışı bırakıldı",
   "RoomNotificationsEnabled": "Oda bildirimleri etkinleştirildi",
