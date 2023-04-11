@@ -102,10 +102,11 @@ public class ThirdpartyController : ApiControllerBase
     /// <param type="System.Boolean, System" name="settingsView">Specifies whether to return URLs in the format that is used on the Settings page</param>
     /// <param type="System.String, System" name="clientCallback">Method that is called after authorization</param>
     /// <param type="System.String, System" name="fromOnly">Provider name if the response only from this provider is needed</param>
-    /// <returns>List of third-party accounts: provider, URL, linked or not</returns>
+    /// <returns type="System.Collections.Generic.ICollection{ASC.People.ApiModels.ResponseDto.AccountInfoDto}, System.Collections.Generic">List of third-party accounts: provider, URL, linked or not</returns>
     /// <path>api/2.0/people/thirdparty/providers</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
     [AllowAnonymous, AllowNotPayment]
     [HttpGet("thirdparty/providers")]
     public ICollection<AccountInfoDto> GetAuthProviders(bool inviteView, bool settingsView, string clientCallback, string fromOnly)
@@ -154,7 +155,7 @@ public class ThirdpartyController : ApiControllerBase
     /// Link a third-pary account
     /// </short>
     /// <category>Third-party accounts</category>
-    /// <param type="ASC.People.ApiModels.RequestDto.LinkAccountRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for linking accounts: SerializedProfile (string) - third-party profile in the serialized format</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.LinkAccountRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for linking accounts</param>
     /// <path>api/2.0/people/thirdparty/linkaccount</path>
     /// <httpMethod>PUT</httpMethod>
     /// <returns></returns>
@@ -190,19 +191,10 @@ public class ThirdpartyController : ApiControllerBase
     /// Create a third-pary account
     /// </short>
     /// <category>Third-party accounts</category>
-    /// <param type="ASC.People.ApiModels.RequestDto.SignupAccountRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for creating a third-party account: <![CDATA[
-    /// <ul>
-    ///     <li><b>EmplType</b> (EmployeeType?) - employee type (All, RoomAdmin, User, DocSpaceAdmin, Collaborator),</li>
-    ///     <li><b>FirstName</b> (string) - first name,</li>
-    ///     <li><b>LastName</b> (string) - last name,</li>
-    ///     <li><b>Email</b> (string) - email address,</li>
-    ///     <li><b>PasswordHash</b> (string) - password hash,</li>
-    ///     <li><b>SerializedProfile</b> (string) - third-party profile in the serialized format.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.People.ApiModels.RequestDto.SignupAccountRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for creating a third-party account</param>
     /// <path>api/2.0/people/thirdparty/signup</path>
     /// <httpMethod>POST</httpMethod>
-    /// <returns>Task awaiter</returns>
+    /// <returns></returns>
     /// <requiresAuthorization>false</requiresAuthorization>
     [AllowAnonymous]
     [HttpPost("thirdparty/signup")]

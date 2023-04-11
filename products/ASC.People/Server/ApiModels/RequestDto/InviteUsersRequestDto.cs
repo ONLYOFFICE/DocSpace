@@ -26,13 +26,21 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class InviteUsersRequestDto
 {
+    /// <summary>List of user invitations</summary>
     public IEnumerable<UserInvitation> Invitations { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class UserInvitation
 {
+    /// <summary>Email address</summary>
     public string Email { get; set; }
+
+    /// <summary>Employee type (All, RoomAdmin, User, DocSpaceAdmin, Collaborator)</summary>
     public EmployeeType Type { get; set; }
 }

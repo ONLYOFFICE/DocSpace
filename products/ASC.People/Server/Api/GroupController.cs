@@ -64,12 +64,13 @@ public class GroupController : ControllerBase
     /// <short>
     /// Get groups
     /// </short>
-    /// <returns>List of groups: ID, name, manager</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.Models.GroupSummaryDto}, System.Collections.Generic">List of groups: ID, name, manager</returns>
     /// <remarks>
     /// This method returns partial group information.
     /// </remarks>
     /// <path>api/2.0/group</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet]
     public IEnumerable<GroupSummaryDto> GetAll()
     {
@@ -88,12 +89,13 @@ public class GroupController : ControllerBase
     /// <short>
     /// Get groups information
     /// </short>
-    /// <returns>List of groups with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.People.ApiModels.ResponseDto.GroupDto}, System.Collections.Generic">List of groups with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <remarks>
     /// This method returns full group information.
     /// </remarks>
     /// <path>api/2.0/group/full</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("full")]
     public async IAsyncEnumerable<GroupDto> GetAllWithMembers()
     {
@@ -116,9 +118,10 @@ public class GroupController : ControllerBase
     /// Get groups by a group name
     /// </short>
     /// <param type="System.String, System" name="groupName">Group name</param>
-    /// <returns>List of groups: ID, name, manager</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.Models.GroupSummaryDto}, System.Collections.Generic">List of groups: ID, name, manager</returns>
     /// <path>api/2.0/group/search</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("search")]
     public IEnumerable<GroupSummaryDto> GetTagsByName(string groupName)
     {
@@ -140,8 +143,8 @@ public class GroupController : ControllerBase
     /// <short>
     /// Get a group
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID</param>
-    /// <returns>Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <remarks>
     /// This method returns full group information.
     /// </remarks>
@@ -159,10 +162,11 @@ public class GroupController : ControllerBase
     /// <short>
     /// Get user groups
     /// </short>
-    /// <param type="System.Guid, System" name="userid">User ID</param>
-    /// <returns>List of groups: ID, name, manager</returns>
+    /// <param type="System.Guid, System" method="url" name="userid">User ID</param>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.Models.GroupSummaryDto}, System.Collections.Generic">List of groups: ID, name, manager</returns>
     /// <path>api/2.0/group/user/{userid}</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("user/{userid}")]
     public IEnumerable<GroupSummaryDto> GetByUserId(Guid userid)
     {
@@ -175,14 +179,8 @@ public class GroupController : ControllerBase
     /// <short>
     /// Add a new group
     /// </short>
-    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>GroupManager</b> (Guid) - group manager ID,</li>
-    ///     <li><b>GroupName</b> (string) - group name,</li>
-    ///     <li><b>Members</b> (IEnumerable&lt;Guid&gt;) - list of group member IDs.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Newly created group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Newly created group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost]
@@ -213,15 +211,9 @@ public class GroupController : ControllerBase
     /// <short>
     /// Update a group
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>GroupManager</b> (Guid) - group manager ID,</li>
-    ///     <li><b>GroupName</b> (string) - group name,</li>
-    ///     <li><b>Members</b> (IEnumerable&lt;Guid&gt;) - list of group member IDs.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Updated group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Updated group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group/{groupid}</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{groupid}")]
@@ -260,8 +252,8 @@ public class GroupController : ControllerBase
     /// <short>
     /// Delete a group
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID</param>
-    /// <returns>Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group/{groupid}</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("{groupid}")]
@@ -284,9 +276,9 @@ public class GroupController : ControllerBase
     /// <short>
     /// Move group members
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID to move from</param>
-    /// <param type="System.Guid, System" name="newgroupid">Group ID to move to</param>
-    /// <returns>Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID to move from</param>
+    /// <param type="System.Guid, System" method="url" name="newgroupid">Group ID to move to</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group/{groupid}/members/{newgroupid}</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{groupid}/members/{newgroupid}")]
@@ -313,9 +305,9 @@ public class GroupController : ControllerBase
     /// <short>
     /// Replace group members
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters: <![CDATA[Members (IEnumerable&lt;Guid&gt;) - list of group member IDs]]></param>
-    /// <returns>Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group/{groupid}/members</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{groupid}/members")]
@@ -333,9 +325,9 @@ public class GroupController : ControllerBase
     /// <short>
     /// Add group members
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters: <![CDATA[Members (IEnumerable&lt;Guid&gt;) - list of group member IDs]]></param>
-    /// <returns>Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group/{groupid}/members</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{groupid}/members")]
@@ -359,9 +351,9 @@ public class GroupController : ControllerBase
     /// <short>
     /// Set a group manager
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.SetManagerRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for setting a group manager: UserId (Guid) - user ID</param>
-    /// <returns>Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.SetManagerRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for setting a group manager</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group/{groupid}/manager</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{groupid}/manager")]
@@ -386,8 +378,9 @@ public class GroupController : ControllerBase
     /// <short>
     /// Remove group members
     /// </short>
-    /// <param type="System.Guid, System" name="groupid">Group ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters: <![CDATA[Members (IEnumerable&lt;Guid&gt;) - list of group members IDs]]></param>
+    /// <param type="System.Guid, System" method="url" name="groupid">Group ID</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.GroupRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Group request parameters</param>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.GroupDto, ASC.People.ApiModels.ResponseDto">Group with the following parameters: description, name, category, parent, ID, manager, members</returns>
     /// <path>api/2.0/group/{groupid}/members</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("{groupid}/members")]

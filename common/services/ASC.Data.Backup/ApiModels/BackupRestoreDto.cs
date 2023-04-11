@@ -26,10 +26,19 @@
 
 namespace ASC.Data.Backup.ApiModels;
 
+/// <summary>
+/// </summary>
 public class BackupRestoreDto
 {
+    /// <summary>Backup ID</summary>
     public string BackupId { get; set; }
+
+    /// <summary>Storage type</summary>
     public object StorageType { get; set; }
+
+    /// <summary>Storage parameters</summary>
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
+
+    /// <summary>Notifies users about portal restoring process or not</summary>
     public bool Notify { get; set; }
 }

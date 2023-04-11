@@ -26,8 +26,13 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class UpdateMembersRequestDto
 {
+    /// <summary>List of user IDs</summary>
     public IEnumerable<Guid> UserIds { get; set; }
+
+    /// <summary>Specifies whether to resend invitation letters to all the users or not</summary>
     public bool ResendAll { get; set; }
 }

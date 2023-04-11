@@ -55,7 +55,7 @@ public class BackupController : ControllerBase
     /// Returns the backup schedule of the current portal.
     /// </summary>
     /// <short>Get the backup schedule</short>
-    /// <returns>Backup schedule: storage type, storage parameters, cron parameters, maximum number of the stored backup copies, last backup creation time</returns>
+    /// <returns type="ASC.Data.Backup.BackupAjaxHandler.Schedule, ASC.Data.Backup">Backup schedule: storage type, storage parameters, cron parameters, maximum number of the stored backup copies, last backup creation time</returns>
     /// <httpMethod>GET</httpMethod>
     /// <path>api/2.0/backup/getbackupschedule</path>
     [HttpGet("getbackupschedule")]
@@ -68,20 +68,8 @@ public class BackupController : ControllerBase
     /// Creates the backup schedule of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Create the backup schedule</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup.ApiModels" name="backupSchedule">Backup schedule parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>StorageType</b> (string) - storage type,</li>
-    ///     <li><b>StorageParams</b> (IEnumerable&lt;ItemKeyValuePair&lt;object, object&gt;&gt;) - storage parameters,</li>
-    ///     <li><b>BackupsStored</b> (string) - maximum number of the stored backup copies,</li>
-    ///     <li><b>CronParams</b> (Cron) - cron parameters:</li>
-    ///     <ul>
-    ///         <li><b>Period</b> (string) - period,</li>
-    ///         <li><b>Hour</b> (string) - hour,</li>
-    ///         <li><b>Day</b> (string) - day.</li>
-    ///     </ul>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup.ApiModels" name="backupSchedule">Backup schedule parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/createbackupschedule</path>
     [HttpPost("createbackupschedule")]
@@ -104,7 +92,7 @@ public class BackupController : ControllerBase
     /// Deletes the backup schedule of the current portal.
     /// </summary>
     /// <short>Delete the backup schedule</short>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <httpMethod>DELETE</httpMethod>
     /// <path>api/2.0/backup/deletebackupschedule</path>
     [HttpDelete("deletebackupschedule")]
@@ -119,13 +107,8 @@ public class BackupController : ControllerBase
     /// Starts the backup of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Start the backup</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup.ApiModels" name="backup">Backup parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>StorageType</b> (string) - storage type,</li>
-    ///     <li><b>StorageParams</b> (IEnumerable&lt;ItemKeyValuePair&lt;object, object&gt;&gt;) - storage parameters.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup.ApiModels" name="backup">Backup parameters</param>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/startbackup</path>
     [AllowNotPayment]
@@ -149,7 +132,7 @@ public class BackupController : ControllerBase
     /// Returns the progress of the started backup.
     /// </summary>
     /// <short>Get the backup progress</short>
-    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>GET</httpMethod>
     /// <path>api/2.0/backup/getbackupprogress</path>
     [AllowNotPayment]
@@ -163,9 +146,10 @@ public class BackupController : ControllerBase
     /// Returns the history of the started backup.
     /// </summary>
     /// <short>Get the backup history</short>
-    /// <returns>List of backup history records: backup ID, file name, storage type, creation date, expiration date</returns>
+    /// <returns type="System.Collections.Generic.List{ASC.Data.Backup.Contracts.BackupHistoryRecord}, System.Collections.Generic">List of backup history records: backup ID, file name, storage type, creation date, expiration date</returns>
     /// <httpMethod>GET</httpMethod>
     /// <path>api/2.0/backup/getbackuphistory</path>
+    /// <collection>list</collection>
     [HttpGet("getbackuphistory")]
     public async Task<List<BackupHistoryRecord>> GetBackupHistory()
     {
@@ -176,8 +160,8 @@ public class BackupController : ControllerBase
     /// Deletes the backup with the ID specified in the request.
     /// </summary>
     /// <short>Delete the backup</short>
-    /// <param type="System.Guid, System" name="id">Backup ID</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="System.Guid, System" method="url" name="id">Backup ID</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <httpMethod>DELETE</httpMethod>
     /// <path>api/2.0/backup/deletebackup/{id}</path>
     [HttpDelete("deletebackup/{id}")]
@@ -191,7 +175,7 @@ public class BackupController : ControllerBase
     /// Deletes the backup history of the current portal.
     /// </summary>
     /// <short>Delete the backup history</short>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <httpMethod>DELETE</httpMethod>
     /// <path>api/2.0/backup/deletebackuphistory</path>
     [HttpDelete("deletebackuphistory")]
@@ -205,15 +189,8 @@ public class BackupController : ControllerBase
     /// Starts the data restoring process of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Start the restoring process</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup.ApiModels" name="backupRestore">Restoring parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>BackupId</b> (string) - backup ID,</li>
-    ///     <li><b>StorageType</b> (object) - storage type,</li>
-    ///     <li><b>StorageParams</b> (IEnumerable&lt;ItemKeyValuePair&lt;object, object&gt;&gt;) - storage parameters,</li>
-    ///     <li><b>Notify</b> (bool) - notifies users about portal restoring process or not.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup.ApiModels" name="backupRestore">Restoring parameters</param>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/startrestore</path>
     [HttpPost("startrestore")]
@@ -238,7 +215,7 @@ public class BackupController : ControllerBase
     /// Returns the progress of the started restoring process.
     /// </summary>
     /// <short>Get the restoring progress</short>
-    /// <returns>Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
+    /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>GET</httpMethod>
     /// <path>api/2.0/backup/getrestoreprogress</path>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -254,7 +231,7 @@ public class BackupController : ControllerBase
     /// Returns a path to the temporary folder with the stored backup.
     /// </summary>
     /// <short>Get the temporary backup folder</short>
-    /// <returns>Path to the temporary folder with the stored backup</returns>
+    /// <returns type="System.Object, System">Path to the temporary folder with the stored backup</returns>
     /// <httpMethod>GET</httpMethod>
     /// <path>api/2.0/backup/backuptmp</path>
     ///<visible>false</visible>

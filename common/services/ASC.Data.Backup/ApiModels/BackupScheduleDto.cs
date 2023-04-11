@@ -26,17 +26,33 @@
 
 namespace ASC.Data.Backup.ApiModels;
 
+/// <summary>
+/// </summary>
 public class BackupScheduleDto
 {
+    /// <summary>Storage type</summary>
     public string StorageType { get; set; }
+
+    /// <summary>Storage parameters</summary>
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
+
+    /// <summary>Maximum number of the stored backup copies</summary>
     public string BackupsStored { get; set; }
+
+    /// <summary>Cron parameters</summary>
     public Cron CronParams { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class Cron
 {
+    /// <summary>Period</summary>
     public string Period { get; set; }
+
+    /// <summary>Hour</summary>
     public string Hour { get; set; }
+
+    /// <summary>Day</summary>
     public string Day { get; set; }
 }

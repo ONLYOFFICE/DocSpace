@@ -58,8 +58,8 @@ public class NotificationController : ApiControllerBase
     /// Send a notification to change a phone
     /// </short>
     /// <category>Profiles</category>
-    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts: UserId (string) - user ID</param>
-    /// <returns>Notification</returns>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts</param>
+    /// <returns type="System.Object, System">Notification</returns>
     /// <path>api/2.0/people/phone</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("phone")]

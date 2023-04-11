@@ -26,32 +26,78 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class MemberRequestDto
 {
+    /// <summary>Employee type (All, RoomAdmin, User, DocSpaceAdmin, Collaborator)</summary>
     public EmployeeType Type { get; set; }
+
+    /// <summary>Specifies if this is a guest or a user</summary>
     public bool IsUser { get; set; }
+
+    /// <summary>Email</summary>
     public string Email { get; set; }
+
+    /// <summary>First name</summary>
     public string Firstname { get; set; }
+
+    /// <summary>Last name</summary>
     public string Lastname { get; set; }
+
+    /// <summary>List of user departments</summary>
     public Guid[] Department { get; set; }
+
+    /// <summary>Title</summary>
     public string Title { get; set; }
+
+    /// <summary>Location</summary>
     public string Location { get; set; }
+
+    /// <summary>Sex (male or female)</summary>
     public string Sex { get; set; }
+
+    /// <summary>Birthday</summary>
     public ApiDateTime Birthday { get; set; }
+
+    /// <summary>Registration date (if it is not specified, then the current date will be set)</summary>
     public ApiDateTime Worksfrom { get; set; }
+
+    /// <summary>Comment</summary>
     public string Comment { get; set; }
+   
+    /// <summary>List of user contacts</summary>
     public IEnumerable<Contact> Contacts { get; set; }
+
+    /// <summary>Avatar photo URL</summary>
     public string Files { get; set; }
+
+    /// <summary>Password</summary>
     public string Password { get; set; }
+
+    /// <summary>Password hash</summary>
     public string PasswordHash { get; set; }
+
+    /// <summary>Specifies if the user is added via the invitation link or not</summary>
     public bool FromInviteLink { get; set; }
+
+    /// <summary>Key</summary>
     public string Key { get; set; }
+
+    /// <summary>Language</summary>
     public string CultureName { get; set; }
+
+    /// <summary>Target</summary>
     public Guid Target { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class UpdateMemberRequestDto : MemberRequestDto
 {
+    /// <summary>User ID</summary>
     public string UserId { get; set; }
+
+    /// <summary>Specifies whether to disable a user or not</summary>
     public bool? Disable { get; set; }
 }

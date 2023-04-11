@@ -26,7 +26,10 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class SetManagerRequestDto
 {
+    /// <summary>User ID</summary>
     public Guid UserId { get; set; }
 }

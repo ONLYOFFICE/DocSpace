@@ -26,7 +26,10 @@
 
 namespace ASC.People.ApiModels.RequestDto;
 
+/// <summary>
+/// </summary>
 public class TerminateRequestDto
 {
+    /// <summary>User ID whose data is reassigned/removed</summary>
     public Guid UserId { get; set; }
 }
