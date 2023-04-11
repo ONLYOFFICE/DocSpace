@@ -5,7 +5,7 @@
   "CurrentNumber": "Jūsu pašreizējais mobilā tālruņa numurs",
   "DeleteProfileBtn": "Dzēst manu kontu",
   "DeleteProfileConfirmation": "Uzmanību! Jūs gatavojaties izdzēst savu kontu.",
-  "DeleteProfileConfirmationInfo": "Noklikšķinot uz \"Dzēst manu kontu\", jūs piekrītat mūsu konfidencialitātes politikai.",
+  "DeleteProfileConfirmationInfo": "Noklikšķinot uz \"Dzēst manu kontu\", jūs piekrītat mūsu <1>konfidencialitātes politikai.</1>",
   "DeleteProfileSuccessMessage": "Jūsu konts ir veiksmīgi izdzēsts.",
   "DeleteProfileSuccessMessageInfo": "Skatiet mūsu konfidencialitātes politiku, lai uzzinātu vairāk par sava konta un ar to saistīto datu dzēšanu.",
   "EmailAndPasswordCopiedToClipboard": "E-pasts un parole ir kopēti starpliktuvē",

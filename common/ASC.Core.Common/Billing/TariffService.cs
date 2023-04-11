@@ -272,6 +272,10 @@ public class TariffService : ITariffService
                 }
             }
         }
+        else
+        {
+            tariff = CalculateTariff(tenantId, tariff);
+        }
 
         if (tariffId.HasValue && tariffId.Value != 0)
         {

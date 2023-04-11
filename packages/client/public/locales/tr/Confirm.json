@@ -5,7 +5,7 @@
   "CurrentNumber": "Güncel mobil telefon numaranız",
   "DeleteProfileBtn": "Hesabımı sil",
   "DeleteProfileConfirmation": "Dikkat! Hesabınızı silmek üzeresiniz.",
-  "DeleteProfileConfirmationInfo": "\"Hesabımı sil\"e tıklayarak Gizlilik politikamızı kabul etmiş olursunuz.",
+  "DeleteProfileConfirmationInfo": "\"Hesabımı sil\"e tıklayarak <1>Gizlilik politikamızı kabul etmiş olursunuz.</1>",
   "DeleteProfileSuccessMessage": "Hesabınız başarıyla silindi.",
   "DeleteProfileSuccessMessageInfo": "Hesabınızı ve onunla ilgili bilgileri silmekle alakalı daha fazla bilgi almak için Gizlilik politikamıza göz atın.",
   "EmailAndPasswordCopiedToClipboard": "E-posta ve şifre panoya kopyalandı",

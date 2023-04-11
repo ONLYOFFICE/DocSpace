@@ -5,7 +5,7 @@
   "CurrentNumber": "Vaša trenutna številka mobilnega telefona",
   "DeleteProfileBtn": "Izbriši moj račun",
   "DeleteProfileConfirmation": "Pozor! Izbrisali boste svoj račun.",
-  "DeleteProfileConfirmationInfo": "S klikom na \"izbriši moj račun\" se strinjate z našo Politiko zasebnosti.",
+  "DeleteProfileConfirmationInfo": "S klikom na \"izbriši moj račun\" se strinjate z našo <1>Politiko zasebnosti.</1>",
   "DeleteProfileSuccessMessage": "Vaš račun je bil uspešno izbrisan.",
   "DeleteProfileSuccessMessageInfo": "Oglejte si naš pravilnik o zasebnosti, če želite izvedeti več o brisanju računa in podatkov, povezanih z njim.",
   "EmailAndPasswordCopiedToClipboard": "Email in geslo sta kopirana v odložišče",
