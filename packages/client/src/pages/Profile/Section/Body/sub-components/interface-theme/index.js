@@ -11,7 +11,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { ThemeKeys } from "@docspace/common/constants";
 
 import { smallTablet } from "@docspace/components/utils/device";
-import { showLoader, hideLoader } from "@docspace/common/utils";
+import { showLoader } from "@docspace/common/utils";
 
 import ThemePreview from "./theme-preview";
 
