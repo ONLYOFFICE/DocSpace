@@ -1083,7 +1083,7 @@ public class LocalesTest
     [Category("Locales")]
     public void WrongTranslationVariablesTest()
     {
-        var message = $"Next keys have wrong variables:\r\n\r\n";
+        var message = $"Next keys have wrong or empty variables:\r\n\r\n";
         var regVariables = new Regex("\\{\\{([^\\{].?[^\\}]+)\\}\\}", RegexOptions.Compiled | RegexOptions.Multiline);
 
         var groupedByLng = TranslationFiles
@@ -1093,7 +1093,7 @@ public class LocalesTest
                 Language = g.Key,
                 TranslationsWithVariables = g.ToList()
                     .SelectMany(t => t.Translations)
-                    .Where(k => k.Value.IndexOf("{{") != -1)
+                    //.Where(k => k.Value.IndexOf("{{") != -1)
                     .Select(t => new
                     {
                         t.Key,
@@ -1109,6 +1109,7 @@ public class LocalesTest
         var enWithVariables = groupedByLng
             .Where(t => t.Language == "en")
             .SelectMany(t => t.TranslationsWithVariables)
+            .Where(t => t.Variables.Count > 0)
             .ToList();
 
         var otherLanguagesWithVariables = groupedByLng
@@ -1118,11 +1119,129 @@ public class LocalesTest
         var i = 0;
         var errorsCount = 0;
 
-        foreach (var lng in otherLanguagesWithVariables)
+        foreach (var enKeyWithVariables in enWithVariables)
         {
-            foreach (var t in lng.TranslationsWithVariables)
+            foreach (var lng in otherLanguagesWithVariables)
             {
-                var enKey = enWithVariables
+                var lngKey = lng.TranslationsWithVariables
+                    .Where(t => t.Key == enKeyWithVariables.Key)
+                    .FirstOrDefault();
+
+                if (lngKey == null)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{enKeyWithVariables.Key}' not found\r\n\r\n";
+                    errorsCount++;
+                    continue;
+                }
+
+                if (enKeyWithVariables.Variables.Count != lngKey.Variables.Count)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has less variables then 'en' language have " +
+                        $"(en={enKeyWithVariables.Variables.Count}|{lng.Language}={lngKey.Variables.Count})\r\n" +
+                        $"'en': '{enKeyWithVariables.Value}'\r\n'{lng.Language}': '{lngKey.Value}'\r\n\r\n";
+                    errorsCount++;
+                }
+
+                if (!lngKey.Variables.All(v => enKeyWithVariables.Variables.Contains(v)))
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has not equals variables of 'en' language have \r\n" +
+                        $"'{enKeyWithVariables.Value}' Variables=[{string.Join(",", enKeyWithVariables.Variables)}]\r\n" +
+                        $"'{lngKey.Value}' Variables=[{string.Join(",", lngKey.Variables)}]\r\n\r\n";
+                    errorsCount++;
+                }
+            }
+        }
+
+        Assert.AreEqual(0, errorsCount, message);
+    }
+
+    [Test]
+    [Category("Locales")]
+    public void WrongTranslationTagsTest()
+    {
+        var message = $"Next keys have wrong or empty translation's html tags:\r\n\r\n";
+        var regString = "<([^>]*)>(\\s*(.+?)\\s*)</([^>/]*)>";
+
+        var regTags = new Regex(regString, RegexOptions.Compiled | RegexOptions.Multiline);
+
+        var groupedByLng = TranslationFiles
+            .GroupBy(t => t.Language)
+            .Select(g => new
+            {
+                Language = g.Key,
+                TranslationsWithTags = g.ToList()
+                    .SelectMany(t => t.Translations)
+                    //.Where(k => k.Value.IndexOf("<") != -1)
+                    .Select(t => new
+                    {
+                        t.Key,
+                        t.Value,
+                        Tags = regTags.Matches(t.Value)
+                                    .Select(m => m.Groups[1]?.Value?.Trim())
+                                    .ToList()
+                    })
+                    .ToList()
+            })
+            .ToList();
+
+        var enWithTags = groupedByLng
+            .Where(t => t.Language == "en")
+            .SelectMany(t => t.TranslationsWithTags)
+            .Where(t => t.Tags.Count > 0)
+            .ToList();
+
+        var otherLanguagesWithTags = groupedByLng
+            .Where(t => t.Language != "en")
+            .ToList();
+
+        var i = 0;
+        var errorsCount = 0;
+
+        foreach (var enKeyWithTags in enWithTags)
+        {
+            foreach (var lng in otherLanguagesWithTags)
+            {
+                var lngKey = lng.TranslationsWithTags
+                    .Where(t => t.Key == enKeyWithTags.Key)
+                    .FirstOrDefault();
+
+                if (lngKey == null)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{enKeyWithTags.Key}' not found\r\n\r\n";
+                    errorsCount++;
+                    continue;
+                }
+
+                if (enKeyWithTags.Tags.Count != lngKey.Tags.Count)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has less tags then 'en' language have " +
+                        $"(en={enKeyWithTags.Tags.Count}|{lng.Language}={lngKey.Tags.Count})\r\n" +
+                        $"'en': '{enKeyWithTags.Value}'\r\n'{lng.Language}': '{lngKey.Value}'\r\n\r\n";
+                    errorsCount++;
+                }
+
+                if (!lngKey.Tags.All(v => enKeyWithTags.Tags.Contains(v)))
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has not equals tags of 'en' language have \r\n" +
+                        $"'{enKeyWithTags.Value}' Tags=[{string.Join(",", enKeyWithTags.Tags)}]\r\n" +
+                        $"'{lngKey.Value}' Tags=[{string.Join(",", lngKey.Tags)}]\r\n\r\n";
+                    errorsCount++;
+                }
+            }
+
+        }
+
+        /*foreach (var lng in otherLanguagesWithTags)
+        {
+            foreach (var t in lng.TranslationsWithTags)
+            {
+                var enKey = enWithTags
                     .Where(en => en.Key == t.Key)
                     .FirstOrDefault();
 
@@ -1134,25 +1253,25 @@ public class LocalesTest
                     continue;
                 }
 
-                if (enKey.Variables.Count != t.Variables.Count)
+                if (enKey.Tags.Count != t.Tags.Count)
                 {
                     // wrong
-                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has less variables then 'en' language have " +
-                        $"(en={enKey.Variables.Count}|{lng.Language}={t.Variables.Count})\r\n" +
+                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has less tags then 'en' language have " +
+                        $"(en={enKey.Tags.Count}|{lng.Language}={t.Tags.Count})\r\n" +
                         $"'en': '{enKey.Value}'\r\n'{lng.Language}': '{t.Value}'\r\n\r\n";
                     errorsCount++;
                 }
 
-                if (!t.Variables.All(v => enKey.Variables.Contains(v)))
+                if (!t.Tags.All(v => enKey.Tags.Contains(v)))
                 {
                     // wrong
                     errorsCount++;
-                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has not equals variables of 'en' language have\r\n\r\n" +
-                        $"Have to be:\r\n'{enKey.Value}'\r\n\r\n{string.Join("\r\n", enKey.Variables)}\r\n\r\n" +
-                        $"But in real:\r\n'{t.Value}'\r\n\r\n{string.Join("\r\n", t.Variables)} \r\n\r\n";
+                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has not equals tags of 'en' language have\r\n\r\n" +
+                        $"Have to be:\r\n'{enKey.Value}'\r\n\r\n{string.Join("\r\n", enKey.Tags)}\r\n\r\n" +
+                        $"But in real:\r\n'{t.Value}'\r\n\r\n{string.Join("\r\n", t.Tags)} \r\n\r\n";
                 }
             }
-        }
+        }*/
 
         Assert.AreEqual(0, errorsCount, message);
     }
