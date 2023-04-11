@@ -59,6 +59,8 @@ class CurrentTariffStatusStore {
 
   setPayerInfo = async () => {
     try {
+      if (!this.customerId || !this.customerId?.length) return;
+
       const result = await getUserByEmail(this.customerId);
       if (!result) return;
 
