@@ -32,7 +32,7 @@ const PeopleSection = React.memo(() => {
   return (
     <Routes>
       <Route
-        path="/"
+        path="/*"
         element={
           <PrivateRoute restricted withManager location={location}>
             <HomeRedirectToFilter />
