@@ -2655,6 +2655,8 @@ const Dark = {
 
       itemOwnerColor: "#858585",
 
+      backgroundButtons: "#333333",
+
       dropdownColor: grayMaxLight,
 
       loader: {
