@@ -87,7 +87,7 @@ const InterfaceTheme = (props) => {
   const isSystemTheme = currentTheme === ThemeKeys.SystemStr;
   const systemThemeValue =
     window.matchMedia &&
-    window.matchMedia("(prefers-color-scheme: dark)").matches
+      window.matchMedia("(prefers-color-scheme: dark)").matches
       ? ThemeKeys.DarkStr
       : ThemeKeys.BaseStr;
 
@@ -111,7 +111,6 @@ const InterfaceTheme = (props) => {
       <div className="themes-container">
         <ThemePreview
           label={t("LightTheme")}
-          isDisabled={isSystemTheme}
           theme="Light"
           accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
@@ -124,7 +123,6 @@ const InterfaceTheme = (props) => {
         />
         <ThemePreview
           label={t("DarkTheme")}
-          isDisabled={isSystemTheme}
           theme="Dark"
           accentColor={currentColorScheme.main.accent}
           themeId={selectedThemeId}
