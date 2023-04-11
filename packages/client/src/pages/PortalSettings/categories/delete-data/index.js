@@ -12,7 +12,7 @@ import config from "../../../../../package.json";
 const DeleteData = (props) => {
   const { t, isNotPaidPeriod } = props;
 
-  const navigate = useNavigate;
+  const navigate = useNavigate();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);

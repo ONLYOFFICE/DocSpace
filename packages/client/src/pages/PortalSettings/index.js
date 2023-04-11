@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import React, { lazy } from "react";
 import { Route, Routes, Navigate } from "react-router-dom";
 import Layout from "./Layout";
 import { combineUrl } from "@docspace/common/utils";
@@ -34,6 +34,7 @@ const DeveloperTools = lazy(() =>
 const LanguageAndTimeZoneSettings = lazy(() =>
   import("./categories/common/Customization/language-and-time-zone")
 );
+
 const WelcomePageSettings = lazy(() =>
   import("./categories/common/Customization/welcome-page-settings")
 );
@@ -67,107 +68,6 @@ const WhiteLabel = lazy(() =>
 );
 
 const Branding = lazy(() => import("./categories/common/branding"));
-const PROXY_BASE_URL = combineUrl(
-  window.DocSpaceConfig?.proxy?.url,
-  "/portal-settings"
-);
-
-const CUSTOMIZATION_URLS = [
-  PROXY_BASE_URL,
-  combineUrl(PROXY_BASE_URL, "/customization"),
-  combineUrl(PROXY_BASE_URL, "/customization/general"),
-  combineUrl(PROXY_BASE_URL, "/customization/branding"),
-  combineUrl(PROXY_BASE_URL, "/customization/appearance"),
-];
-
-const DEVELOPER_URLS = [
-  PROXY_BASE_URL,
-  combineUrl(PROXY_BASE_URL, "/developer"),
-  combineUrl(PROXY_BASE_URL, "/developer/tools"),
-];
-
-const BACKUP_URLS = [
-  PROXY_BASE_URL,
-  combineUrl(PROXY_BASE_URL, "/backup"),
-  combineUrl(PROXY_BASE_URL, "/backup/data-backup"),
-  combineUrl(PROXY_BASE_URL, "/backup/auto-backup"),
-];
-
-const RESTORE_DATA_URL = combineUrl(PROXY_BASE_URL, "/restore");
-
-const LTZ_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/language-and-time-zone"
-);
-const WELCOME_PAGE_SETTINGS_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/welcome-page-settings"
-);
-
-const DNS_SETTINGS = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/dns-settings"
-);
-
-const PORTAL_RENAMING = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/portal-renaming"
-);
-const TEAM_TEMPLATE_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/customization/general/team-template"
-);
-const WHITELABEL_URL = combineUrl(PROXY_BASE_URL, "/common/whitelabel");
-const SECURITY_URLS = [
-  combineUrl(PROXY_BASE_URL, "/security/access-rights"),
-  combineUrl(PROXY_BASE_URL, "/security/access-portal"),
-  combineUrl(PROXY_BASE_URL, "/security/login-history"),
-  combineUrl(PROXY_BASE_URL, "/security/audit-trail"),
-];
-const TFA_PAGE_URL = combineUrl(PROXY_BASE_URL, "/security/access-portal/tfa");
-const PASSWORD_PAGE_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/security/access-portal/password"
-);
-const TRUSTED_MAIL_PAGE_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/security/access-portal/trusted-mail"
-);
-const IP_SECURITY_PAGE_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/security/access-portal/ip"
-);
-const ADMIN_MESSAGE_PAGE_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/security/access-portal/admin-message"
-);
-const SESSION_LIFETIME_PAGE_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/security/access-portal/lifetime"
-);
-
-const ADMINS_URL = combineUrl(PROXY_BASE_URL, "/security/access-rights/admins");
-
-const INTEGRATION_URLS = [
-  combineUrl(PROXY_BASE_URL, "/integration/third-party-services"),
-  combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
-  combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
-  combineUrl(PROXY_BASE_URL, "/integration/plugins"),
-];
-
-const PAYMENTS_URL = combineUrl(PROXY_BASE_URL, "/payments/portal-payments");
-
-const THIRD_PARTY_URL = combineUrl(
-  PROXY_BASE_URL,
-  "/integration/third-party-services"
-);
-
-const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
-
-const DELETE_DATA_URLS = [
-  combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),
-  combineUrl(PROXY_BASE_URL, "/delete-data/deactivation"),
-];
 
 const ERROR_404_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
@@ -178,56 +78,66 @@ const Settings = () => {
   return (
     <Layout key="1">
       <Panels />
-      <Suspense fallback={null}>
-        <Routes>
-          <Route
-            exact
-            path={CUSTOMIZATION_URLS}
-            component={CustomizationSettings}
-          />
-          <Route exact path={LTZ_URL} component={LanguageAndTimeZoneSettings} />
-          <Route
-            exact
-            path={WELCOME_PAGE_SETTINGS_URL}
-            component={WelcomePageSettings}
-          />
-          <Route exact path={DNS_SETTINGS} component={DNSSettings} />
-          <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
-          <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
-          <Route exact path={SECURITY_URLS} component={SecuritySettings} />
-          <Route exact path={TFA_PAGE_URL} component={TfaPage} />
-          <Route
-            exact
-            path={PASSWORD_PAGE_URL}
-            component={PasswordStrengthPage}
-          />
-          <Route
-            exact
-            path={TRUSTED_MAIL_PAGE_URL}
-            component={TrustedMailPage}
-          />
-          <Route exact path={IP_SECURITY_PAGE_URL} component={IpSecurityPage} />
-          <Route
-            exact
-            path={ADMIN_MESSAGE_PAGE_URL}
-            component={AdminMessagePage}
-          />
-          <Route
-            exact
-            path={SESSION_LIFETIME_PAGE_URL}
-            component={SessionLifetimePage}
-          />
-          <Route exact path={INTEGRATION_URLS} component={Integration} />
-          <Route exact path={PAYMENTS_URL} component={Payments} />
-          <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
-          <Route exact path={SSO_URL} component={SingleSignOn} />
-          <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
-          <Route exact path={BACKUP_URLS} component={Backup} />
-          <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
-          <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
-          <Navigate to={{ pathname: ERROR_404_URL }} replace />
-        </Routes>
-      </Suspense>
+      <Routes>
+        <Route path={"/*"} element={<CustomizationSettings />} />
+        <Route path={"/customization/*"} element={<CustomizationSettings />} />
+        <Route
+          path={"/customization/general/language-and-time-zone"}
+          element={<LanguageAndTimeZoneSettings />}
+        />
+        <Route
+          path={"/customization/general/welcome-page-settings"}
+          element={<WelcomePageSettings />}
+        />
+
+        <Route
+          path={"/customization/general/dns-settings"}
+          element={<DNSSettings />}
+        />
+        <Route
+          path={"/customization/general/portal-renaming"}
+          element={<PortalRenaming />}
+        />
+        <Route path={"/common/whitelabel"} element={<WhiteLabel />} />
+        <Route path={"/security/*"} element={<SecuritySettings />} />
+        <Route path={"security/access-portal"} element={<SecuritySettings />} />
+        <Route path={"/security/access-portal/tfa"} element={<TfaPage />} />
+        <Route
+          path={"/security/access-portal/password"}
+          element={<PasswordStrengthPage />}
+        />
+        <Route
+          path={"/security/access-portal/trusted-mail"}
+          element={<TrustedMailPage />}
+        />
+        <Route
+          path={"/security/access-portal/ip"}
+          element={<IpSecurityPage />}
+        />
+        <Route
+          path={"/security/access-portal/admin-message"}
+          element={<AdminMessagePage />}
+        />
+        <Route
+          path={"/security/access-portal/lifetime"}
+          element={<SessionLifetimePage />}
+        />
+        <Route path={"/integration/*"} element={<Integration />} />
+        <Route path={"/payments/portal-payments"} element={<Payments />} />
+        <Route
+          path={"/integration/third-party-services"}
+          element={<ThirdParty />}
+        />
+        <Route
+          path={"/integration/single-sign-on"}
+          element={<SingleSignOn />}
+        />
+        <Route path={"/developer/*"} element={<DeveloperTools />} />
+        <Route path={"/backup/*"} element={<Backup />} />
+        <Route path={"/delete-data/*"} element={<DeleteDataPage />} />
+        <Route path={"/restore/*"} element={<RestoreBackup />} />
+        <Route element={<Navigate to={ERROR_404_URL} replace />} />
+      </Routes>
     </Layout>
   );
 };

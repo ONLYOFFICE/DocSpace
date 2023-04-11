@@ -50,13 +50,15 @@ const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
 
-const PortalSettingsRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <PortalSettings {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const PortalSettingsRoute = (props) => {
+  return (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <PortalSettings {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
 
 const Error404Route = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -469,7 +471,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               <Route path={"/confirm/*"} element={<ConfirmRoute />} />
 
               <Route
-                path={"/portal-settings"}
+                path={"/portal-settings/*"}
                 element={
                   <PrivateRoute restricted>
                     <PortalSettingsRoute />

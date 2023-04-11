@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 import {
   getBackupStorage,
@@ -49,8 +48,6 @@ const RestoreBackup = (props) => {
     setRestoreResource,
     buttonSize,
   } = props;
-
-  const navigate = useNavigate();
 
   const [radioButtonState, setRadioButtonState] = useState(LOCAL_FILE);
   const [checkboxState, setCheckboxState] = useState({

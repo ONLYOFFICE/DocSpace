@@ -149,6 +149,7 @@ const ArticleBodyContent = (props) => {
 
   React.useEffect(() => {
     if (tReady) setIsLoadedArticleBody(true);
+
     if (prevLocation.current.pathname !== location.pathname) {
       if (location.pathname.includes("common")) {
         setSelectedKeys(["0-0"]);
@@ -182,25 +183,27 @@ const ArticleBodyContent = (props) => {
         setSelectedKeys(["7-0"]);
       }
     }
-  }, [tReady, setIsLoadedArticleBody]);
+  }, [tReady, setIsLoadedArticleBody, location.pathname]);
 
   const onSelect = (value) => {
     if (isArrayEqual([value], selectedKeys)) {
       return;
     }
+
     setSelectedKeys([value + "-0"]);
 
     if (isMobileOnly || isMobile()) {
       toggleArticleOpen();
     }
 
-    const settingsPath = getSelectedLinkByKey(value + "-0", settingsTree);
-    const newPath = location.pathname + settingsPath;
-    const currentUrl = window.location.href.replace(window.location.origin, "");
+    const settingsPath = `/portal-settings${getSelectedLinkByKey(
+      value + "-0",
+      settingsTree
+    )}`;
 
-    if (newPath === currentUrl) return;
+    if (settingsPath === location.pathname) return;
 
-    navigate(newPath);
+    navigate(`${settingsPath}`, { relative: false });
   };
 
   const mapKeys = (tKey) => {

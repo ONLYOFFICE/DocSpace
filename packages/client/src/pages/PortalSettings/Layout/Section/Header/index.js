@@ -4,7 +4,7 @@ import ActionsHeaderTouchReactSvgUrl from "PUBLIC_DIR/images/actions.header.touc
 import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
@@ -119,8 +119,6 @@ const StyledContainer = styled.div`
 
 const SectionHeaderContent = (props) => {
   const {
-    match,
-    location,
     isBrandingAndCustomizationAvailable,
     isRestoreAndAutoBackupAvailable,
     tReady,
@@ -128,6 +126,7 @@ const SectionHeaderContent = (props) => {
   } = props;
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [state, setState] = React.useState({
     header: "",
@@ -137,12 +136,10 @@ const SectionHeaderContent = (props) => {
   });
 
   React.useEffect(() => {
-    const locationPathname = location.pathname;
-
-    const resultPath = locationPathname;
-    const arrayOfParams = resultPath.split("/");
+    const arrayOfParams = location.pathname.split("/");
 
     const key = getKeyByLink(arrayOfParams, settingsTree);
+
     const currKey = key.length > 3 ? key : key[0];
     const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
@@ -161,7 +158,7 @@ const SectionHeaderContent = (props) => {
       header,
       isCategoryOrHeader: isCategory || isHeader,
     }));
-  }, []);
+  }, [location.pathname]);
 
   const isAvailableSettings = (key) => {
     switch (key) {
@@ -179,7 +176,7 @@ const SectionHeaderContent = (props) => {
 
     const arrayOfParams = getArrayOfParams();
 
-    const key = getKeyByLink(arrayOfParams, settingsTree);
+    const key = getKeyByLink(arrayOfParams, settingsTree, 2);
     const currKey = key.length > 3 ? key : key[0];
     const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(

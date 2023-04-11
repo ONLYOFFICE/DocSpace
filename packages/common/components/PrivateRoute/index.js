@@ -29,6 +29,8 @@ const PrivateRoute = ({ children, ...rest }) => {
   const location = useLocation();
 
   const renderComponent = () => {
+    if (!user) return null;
+
     const isPortalUrl = location.pathname === "/preparation-portal";
 
     const isPaymentsUrl =
@@ -129,6 +131,8 @@ const PrivateRoute = ({ children, ...rest }) => {
     ) {
       return children;
     }
+
+    console.log("tut 4to-li?", user);
 
     if (restricted) {
       return <Navigate replace to={"/error401"} />;
