@@ -9,6 +9,7 @@ import toastr from "@docspace/components/toast/toastr";
 import authStore from "@docspace/common/store/AuthStore";
 import { getPaymentLink } from "@docspace/common/api/portal";
 import axios from "axios";
+import { combineUrl } from "@docspace/common/utils";
 
 class PaymentStore {
   salesEmail = "";
@@ -116,7 +117,10 @@ class PaymentStore {
   };
 
   getBasicPaymentLink = async (managersCount) => {
-    const backUrl = window.location.origin;
+    const backUrl = combineUrl(
+      window.location.origin,
+      "/portal-settings/payments/portal-payments?complete=true"
+    );
 
     try {
       const link = await getPaymentLink(managersCount, backUrl);
@@ -128,7 +132,10 @@ class PaymentStore {
     }
   };
   getPaymentLink = async (token = undefined) => {
-    const backUrl = window.location.origin;
+    const backUrl = combineUrl(
+      window.location.origin,
+      "/portal-settings/payments/portal-payments?complete=true"
+    );
 
     await getPaymentLink(this.managersCount, backUrl, token)
       .then((link) => {
