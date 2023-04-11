@@ -992,14 +992,17 @@ public class TariffService : ITariffService
 
         _ = quotaSocketManager.ChangeQuotaFeatureValue(maxRoomCountFeatureName, maxRoomCount);
 
-        var currentQuota = GetTenantQuotaFromTariff(currenTariff);
-
-        var free = updatedQuota.Free;
-        if (currentQuota.Free != free)
+        if (currenTariff != null)
         {
-            var freeFeatureName = updatedQuota.GetFeature<FreeFeature>().Name;
+            var currentQuota = GetTenantQuotaFromTariff(currenTariff);
 
-            _ = quotaSocketManager.ChangeQuotaFeatureValue(freeFeatureName, free);
+            var free = updatedQuota.Free;
+            if (currentQuota.Free != free)
+            {
+                var freeFeatureName = updatedQuota.GetFeature<FreeFeature>().Name;
+
+                _ = quotaSocketManager.ChangeQuotaFeatureValue(freeFeatureName, free);
+            }
         }
     }
 
