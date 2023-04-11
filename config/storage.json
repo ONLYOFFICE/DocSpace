@@ -8,25 +8,13 @@
     ],
     "handler": [
       {
-        "name": "S3",
-        "type": "ASC.Data.Storage.S3.S3Storage, ASC.Data.Storage",
+        "name": "disc",
+        "type": "ASC.Data.Storage.DiscStorage.DiscDataStore, ASC.Data.Storage",
         "property": [
           {
-            "name": "acesskey",
-            "value": "AKIAQYJDILMU6EE4WZ5D"
-          },
-          {
-            "name": "secretaccesskey",
-            "value": "NI3j5gBaCahBtscl6Te0bfiuqAZmQjE3rXWClaHY"
-          },
-          {
-            "name": "bucket",
-            "value": "portals-manual"
-          },
-          {
-            "name": "region",
-            "value": "us-east-1"
-          },
+            "name": "$STORAGE_ROOT",
+            "value": "..\\Data\\"
+          }
         ]
       }
     ],
@@ -34,7 +22,7 @@
       {
         "name": "files",
         "data": "e67be73d-f9ae-4ce1-8fec-1880cb518cb4",
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Products\\Files",
         "expires": "0:16:0",
         "domain": [
@@ -51,14 +39,14 @@
       {
         "name": "room_logos",
         "data": "00000000-0000-0000-0000-000000000000",
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Products\\Files\\logos\\{0}",
         "domain": [
           {
             "name": "logos_temp",
             "visible": false,
             "data": "00000000-0000-0000-0000-000000000000",
-            "type": "S3",
+            "type": "disc",
             "path": "$STORAGE_ROOT\\Products\\Files\\logos\\{0}\\temp"
           }
         ]
@@ -67,7 +55,7 @@
         "name": "files_template",
         "visible": false,
         "data": "00000000-0000-0000-0000-000000000000",
-        "type": "S3",
+        "type": "disc",
         "path": "DocStore",
         "virtualpath": "~/products/files/docstore",
         "appendTenantId": false,
@@ -78,7 +66,7 @@
       {
         "name": "certs",
         "visible": "false",
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\certs\\",
         "appendTenantId": false,
 		"disableEncryption": true
@@ -86,7 +74,7 @@
       {
         "name": "logo",
         "data": "00000000-0000-0000-0000-000000000000",
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Studio\\{0}\\logo",
         "virtualpath": "~/studio/{0}/logo",
         "public": true
@@ -94,7 +82,7 @@
       {
         "name": "whitelabel",
         "data": "00000000-0000-0000-0000-000000000000",
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Studio\\{0}\\CoBranding",
         "virtualpath": "~/studio/{0}/cobranding",
         "public": true
@@ -102,7 +90,7 @@
       {
         "name": "backup",
         "visible": false,
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Studio\\{0}\\backup",
         "virtualpath": "~/studio/{0}/backup",
         "expires": "0:10:0",
@@ -111,7 +99,7 @@
 	  {
         "name": "backup_temp",
         "visible": false,
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Studio\\{0}\\temp\\backup",
         "expires": "0:10:0",
 		"disableEncryption": true
@@ -119,7 +107,7 @@
       {
         "name": "customnavigation",
         "data": "00000000-0000-0000-0000-000000000000",
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Studio\\{0}\\customnavigation",
         "virtualpath": "~/studio/{0}/customnavigation"
       },
@@ -127,7 +115,7 @@
         "name": "userPhotos",
         "count": false,
         "data": "00000000-0000-0000-0000-000000000000",
-        "type": "S3",
+        "type": "disc",
         "path": "$STORAGE_ROOT\\Studio\\{0}\\userphotos",
         "virtualpath": "~/studio/{0}/userphotos",
         "domain": [
