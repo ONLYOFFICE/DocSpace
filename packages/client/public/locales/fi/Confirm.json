@@ -5,7 +5,7 @@
   "CurrentNumber": "Nykyinen matkapuhelinnumerosi",
   "DeleteProfileBtn": "Poista tilini",
   "DeleteProfileConfirmation": "Huomio! Olet poistamassa tilisi.",
-  "DeleteProfileConfirmationInfo": "Napsauttamalla \"Poista tilini\", hyväksyt yksityisyyskäytäntömme.",
+  "DeleteProfileConfirmationInfo": "Napsauttamalla \"Poista tilini\", hyväksyt <1>yksityisyyskäytäntömme.</1>",
   "DeleteProfileSuccessMessage": "Tilisi poistaminen onnistui.",
   "DeleteProfileSuccessMessageInfo": "Katso yksityisyyskäytäntömme jos haluat lisätietoja tilisi ja siihen liittyvien tietojen poistamisesta.",
   "EmailAndPasswordCopiedToClipboard": "Sähköposti ja salasana oon kopioitu leikepöydälle",

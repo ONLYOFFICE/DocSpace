@@ -5,7 +5,7 @@
   "CurrentNumber": "Вашият текущ мобилен телефон",
   "DeleteProfileBtn": "Изтрий моя профил",
   "DeleteProfileConfirmation": "Внимание! На път сте да изтриете профила си.",
-  "DeleteProfileConfirmationInfo": "Като натиснете \"Изтрий профила ми\", се съгласявате с нашата Политика за поверителност.",
+  "DeleteProfileConfirmationInfo": "Като натиснете \"Изтрий профила ми\", се съгласявате с нашата <1>Политика за поверителност.</1>",
   "DeleteProfileSuccessMessage": "Профилът Ви беше изтрит успешно.",
   "DeleteProfileSuccessMessageInfo": "Вижте Политиката ни за поверителност, за да научите повече за изтриването на профила Ви и данните, свързани с него.",
   "EmailAndPasswordCopiedToClipboard": "Имейлът и паролата са копирани в клипборда",

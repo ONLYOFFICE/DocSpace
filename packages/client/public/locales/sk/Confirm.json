@@ -5,7 +5,7 @@
   "CurrentNumber": "Vaše aktuálne číslo mobilného telefónu",
   "DeleteProfileBtn": "Vymazať môj účet",
   "DeleteProfileConfirmation": "Pozor! Idete si zmazať účet.",
-  "DeleteProfileConfirmationInfo": "Odkliknutím \"Vymazať môj účet\" súhlasíte s našou politikou Ochrany súkromia.",
+  "DeleteProfileConfirmationInfo": "Odkliknutím \"Vymazať môj účet\" súhlasíte s našou <1>politikou Ochrany súkromia.</1>",
   "DeleteProfileSuccessMessage": "Váš účet bol úspešne odstránený.",
   "DeleteProfileSuccessMessageInfo": "Viac informácií o odstránení účtu a údajov s ním spojených nájdete v našich pravidlách ochrany osobných údajov.",
   "EmailAndPasswordCopiedToClipboard": "E-mail a heslo boli skopírované do schránky",
