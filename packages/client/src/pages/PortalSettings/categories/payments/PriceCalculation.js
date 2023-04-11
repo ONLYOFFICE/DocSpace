@@ -23,10 +23,10 @@ const StyledBody = styled.div`
   .payment_main-title {
     margin-bottom: 24px;
     ${(props) =>
-      props.isDisabled &&
-      css`
+    props.isDisabled &&
+    css`
         color: ${props.theme.client.settings.payment.priceContainer
-          .disableColor};
+        .disableColor};
       `}
   }
   .payment_price_user {
@@ -34,7 +34,7 @@ const StyledBody = styled.div`
     align-items: center;
     justify-content: center;
     background: ${(props) =>
-      props.theme.client.settings.payment.priceContainer.backgroundText};
+    props.theme.client.settings.payment.priceContainer.backgroundText};
     margin-top: 24px;
     min-height: 38px;
     border-radius: 6px;
@@ -74,7 +74,7 @@ const PriceCalculation = ({
     didMountRef.current && !isAlreadyPaid && setShoppingLink();
   }, [managersCount]);
 
-  useEffect(async () => {
+  useEffect(() => {
     didMountRef.current = true;
     return () => {
       timeout && clearTimeout(timeout);
@@ -100,8 +100,8 @@ const PriceCalculation = ({
       source = CancelToken.source();
 
       getPaymentLink(source.token).finally(() => {
-          setIsLoading(false);
-        });
+        setIsLoading(false);
+      });
     }, 1000);
   };
 
