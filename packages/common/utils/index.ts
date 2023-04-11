@@ -192,8 +192,8 @@ export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-        "=([^;]*)"
+      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+      "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -262,7 +262,12 @@ export function toCommunityHostname(hostname) {
   return communityHostname;
 }
 
-export function getProviderTranslation(provider, t) {
+export function getProviderTranslation(provider, t, linked = false) {
+  const capitalizeProvider = provider.charAt(0).toUpperCase() + provider.slice(1);
+  if (linked) {
+    return `${t("Common:Disconnect")} ${capitalizeProvider}`
+  }
+
   switch (provider) {
     case "google":
       return t("Common:SignInWithGoogle");
@@ -359,7 +364,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-      (window.innerHeight || document.documentElement.clientHeight) &&
+    (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
