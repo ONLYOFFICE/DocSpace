@@ -153,9 +153,9 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("payment/quota")]
-    public async Task<QuotaDto> GetQuota()
+    public async Task<QuotaDto> GetQuota(bool refresh)
     {
-        return await _quotaHelper.GetCurrentQuota();
+        return await _quotaHelper.GetCurrentQuota(refresh);
     }
 
     [HttpPost("payment/request")]

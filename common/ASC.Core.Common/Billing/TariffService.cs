@@ -147,7 +147,7 @@ public class TariffService : ITariffService
         _dbContextFactory = coreDbContextManager;
     }
 
-    public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
+    public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true, bool refresh = false)
     {
         //single tariff for all portals
         if (_coreBaseSettings.Standalone)
@@ -155,7 +155,7 @@ public class TariffService : ITariffService
             tenantId = -1;
         }
 
-        var tariff = GetTariffFromCache(tenantId);
+        var tariff = refresh ? null : GetTariffFromCache(tenantId);
         int? tariffId = null;
 
         if (tariff == null)
@@ -170,7 +170,6 @@ public class TariffService : ITariffService
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
-
                 try
                 {
                     var currentPayments = _billingClient.GetCurrentPayments(GetPortalId(tenantId));
