@@ -47,6 +47,10 @@ class PaymentStore {
     return customerId?.length !== 0 || !isFreeTariff;
   }
 
+  setIsInitPaymentPage = (value) => {
+    this.isInitPaymentPage = value
+  }
+
   setIsUpdatingBasicSettings = (isUpdatingBasicSettings) => {
     this.isUpdatingBasicSettings = isUpdatingBasicSettings;
   };
@@ -103,7 +107,7 @@ class PaymentStore {
       this.setRangeStepByQuota();
       this.setBasicTariffContainer();
 
-      if (!this.isAlreadyPaid) this.isInitPaymentPage = true;
+      if (!this.isAlreadyPaid) this.setIsInitPaymentPage(true);
     } catch (error) {
       toastr.error(t("Common:UnexpectedError"));
       console.error(error);
@@ -112,7 +116,7 @@ class PaymentStore {
 
     if (this.isAlreadyPaid) await setPayerInfo();
 
-    this.isInitPaymentPage = true;
+    this.setIsInitPaymentPage(true);
   };
 
   getBasicPaymentLink = async (managersCount) => {
