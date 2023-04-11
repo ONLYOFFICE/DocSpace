@@ -39,5 +39,6 @@
   "UpgradePlan": "Päivitä ohjelma",
   "UpgradePlanInfo": "Uusien käyttäjien lisääminen ylittää huoneen jäsenien maksimimäärän, jonka tämänhetkinen hinnoitteluohjelma sallii.",
   "UserNotFound": "Käyttäjän <1>{{email}}</1> ei löydy.",
+  "UserNotFoundMatchingEmail": "Käyttäjää vastaavalla Stripe-sähköpostilla ei löytynyt.",
   "YourPrice": "Hintasi"
 }

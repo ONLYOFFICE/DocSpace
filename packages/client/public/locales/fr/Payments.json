@@ -28,7 +28,7 @@
   "PaymentOverdue": "Impossible d’ajouter de nouveaux utilisateurs.",
   "PowerUserDescription": "Les utilisateurs avancés peuvent créer et modifier des fichiers dans la salle, mais ne peuvent pas créer de salles, gérer les utilisateurs ou accéder aux paramètres.",
   "PriceCalculation": "Calculez votre prix",
-  "QuotaPaidUserLimitError": "La limite d’utilisateurs payants a été atteinte. <1>Payments</1>",
+  "QuotaPaidUserLimitError": "La limite d’utilisateurs payants a été atteinte. <1>Payements</1>",
   "RenewSubscription": "Renouveler l’abonnement au plan tarifaire {{planName}}",
   "RoomManagerDescription": "Administration et archivage des salles, invitation et gestion des utilisateurs. Plusieurs administrateurs peuvent être affectés à la salle.",
   "StartupSuggestion": "Faites plus avec le plan tarifaire {{planName}}",

@@ -38,7 +38,7 @@
   "UpgradeNow": "今すぐアップグレードする",
   "UpgradePlan": "プランのアップグレード",
   "UpgradePlanInfo": "新しいユーザーを追加すると、現在の料金プランで許可されているルームメンバーの最大数を超えます。",
-  "UserNotFound": "<1>{{email}}</1>ユーザーが見つかりません",
+  "UserNotFound": "<1>{{email}}</1>ユーザーが見つかりません。",
   "UserNotFoundMatchingEmail": "我们无法找到与Stripe电子邮件匹配的用户。",
   "YourPrice": "価格"
 }
