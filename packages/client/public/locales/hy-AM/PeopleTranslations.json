@@ -14,5 +14,6 @@
   "SendInviteAgain": "Ուղարկեք հրավեր ևս մեկ անգամ",
   "SuccessChangeUserStatus": "Օգտատիրոջ կարգավիճակը հաջողությամբ փոխվել է",
   "SuccessDeletePersonalData": "Անձնական տվյալները հաջողությամբ ջնջվել են",
-  "SuccessSentInvitation": "Հրավերը հաջողությամբ ուղարկվեց"
+  "SuccessSentInvitation": "Հրավերը հաջողությամբ ուղարկվեց",
+  "SuccessSentMultipleInvitatios": "Հրավերները հաջողությամբ ուղարկվեցին"
 }

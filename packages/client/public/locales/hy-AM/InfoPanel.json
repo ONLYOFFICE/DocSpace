@@ -22,6 +22,8 @@
   "FeedRenameFolder": "Թղթապանակը վերանվանվել է։",
   "FeedRenameRoom": "Սենյակը <strong>«{{oldRoomTitle}}»</strong> վերանվանվել է <strong>«{{roomTitle}}»</strong>:",
   "FeedUpdateFile": "Ֆայլը արդիացվեց",
+  "FeedUpdateRoom": "Պատկերակը փոխվել է",
+  "FeedUpdateUser": "նշանակվել է դեր {{դեր}}",
   "FileExtension": "ֆայլի ընդլայնում",
   "FilesEmptyScreenText": "Ֆայլի և պանակի մանրամասները տես այստեղ",
   "ItemsSelected": "Ընտրված միավորները",
@@ -32,6 +34,7 @@
   "SelectedUsers": "Ընտրել էջ",
   "StorageType": "Պահպանման տեսակը",
   "SubmenuDetails": "Մանրամասներ",
+  "SubmenuHistory": "Պատմություն",
   "SystemProperties": "Համակարգի հատկություններ",
   "UsersInRoom": "Օգտագործողները սենյակում",
   "Versions": "Տարբերակներ"
