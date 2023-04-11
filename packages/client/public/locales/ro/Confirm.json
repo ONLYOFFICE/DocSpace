@@ -5,7 +5,7 @@
   "CurrentNumber": "Numărul dvs. de telefon mobil curent",
   "DeleteProfileBtn": "Șterge contul meu",
   "DeleteProfileConfirmation": "Atenție! Dumneavoastră sunteți pe cale de a șterge contul dvs.",
-  "DeleteProfileConfirmationInfo": "Apăsând Șterge contul meu, acceptați că sunteți de acord cu Politica de confidențialitate a companiei.",
+  "DeleteProfileConfirmationInfo": "Apăsând Șterge contul meu, acceptați că sunteți de acord cu <1>Politica de confidențialitate a companiei.</1>",
   "DeleteProfileSuccessMessage": "Contul dvs a fost șters cu succes.",
   "DeleteProfileSuccessMessageInfo": "Vă invităm să luați la cunoștință Politica de confidențialitate ca să aflați mai multe despre suprimarea contului și datelor asociate contului.",
   "EmailAndPasswordCopiedToClipboard": "Adresa de e-mail și parola sunt copiate în clipboard  ",

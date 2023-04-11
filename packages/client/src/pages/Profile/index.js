@@ -9,6 +9,8 @@ import {
   SectionFooterContent,
 } from "./Section";
 
+import Dialogs from "../AccountsHome/Section/Body/Dialogs";
+
 import { withRouter } from "react-router";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";
@@ -90,19 +92,22 @@ class Profile extends React.Component {
     const { profile, showCatalog } = this.props;
 
     return (
-      <Section withBodyAutoFocus viewAs="profile">
-        <Section.SectionHeader>
-          <SectionHeaderContent profile={profile} />
-        </Section.SectionHeader>
+      <>
+        <Section withBodyAutoFocus viewAs="profile">
+          <Section.SectionHeader>
+            <SectionHeaderContent profile={profile} />
+          </Section.SectionHeader>
 
-        <Section.SectionBody>
-          <SectionBodyContent profile={profile} />
-        </Section.SectionBody>
+          <Section.SectionBody>
+            <SectionBodyContent profile={profile} />
+          </Section.SectionBody>
 
-        <Section.SectionFooter>
-          <SectionFooterContent profile={profile} />
-        </Section.SectionFooter>
-      </Section>
+          <Section.SectionFooter>
+            <SectionFooterContent profile={profile} />
+          </Section.SectionFooter>
+        </Section>
+        <Dialogs />
+      </>
     );
   }
 }

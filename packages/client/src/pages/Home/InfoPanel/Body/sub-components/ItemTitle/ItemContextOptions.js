@@ -73,7 +73,11 @@ const ItemContextOptions = ({
         <ContextMenuButton
           id="info-options"
           className="expandButton"
-          title={"Show item actions"}
+          title={
+            selection.isFolder
+              ? t("Translations:TitleShowFolderActions")
+              : t("Translations:TitleShowActions")
+          }
           onClick={onContextMenu}
           getData={getData}
           directionX="right"
