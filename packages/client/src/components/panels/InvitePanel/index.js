@@ -50,6 +50,11 @@ const InvitePanel = ({
   const [shareLinks, setShareLinks] = useState([]);
   const [roomUsers, setRoomUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [externalLinksVisible, setExternalLinksVisible] = useState(false);
+
+  const onChangeExternalLinksVisible = (visible) => {
+    setExternalLinksVisible(visible);
+  };
 
   const selectRoom = () => {
     const room = folders.find((folder) => folder.id === roomId);
@@ -222,6 +227,8 @@ const InvitePanel = ({
           shareLinks={shareLinks}
           getInfo={getInfo}
           roomType={roomType}
+          onChangeExternalLinksVisible={onChangeExternalLinksVisible}
+          externalLinksVisible={externalLinksVisible}
         />
 
         <InviteInput
@@ -233,7 +240,13 @@ const InvitePanel = ({
 
         {!!inviteItems.length && (
           <>
-            <ItemsList t={t} setHasErrors={setHasErrors} roomType={roomType} />
+            <ItemsList
+              t={t}
+              setHasErrors={setHasErrors}
+              roomType={roomType}
+              externalLinksVisible={externalLinksVisible}
+            />
+
             <StyledButtons>
               <Button
                 scale={true}
