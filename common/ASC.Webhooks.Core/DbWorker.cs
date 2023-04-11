@@ -146,7 +146,7 @@ public class DbWorker
 
             if (ssl.HasValue)
             {
-                updateObj.Enabled = ssl.Value;
+                updateObj.SSL = ssl.Value;
             }
 
             webhooksDbContext.WebhooksConfigs.Update(updateObj);
