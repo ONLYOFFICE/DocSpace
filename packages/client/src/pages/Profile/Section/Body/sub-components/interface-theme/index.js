@@ -20,13 +20,17 @@ const StyledWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
 
+  .system-theme-checkbox{
+    display:inline-flex;
+  }
+
   .checkbox {
     height: 20px;
     margin-right: 8px !important;
   }
 
   .system-theme-description {
-    padding: 4px 0 4px 24px;
+    padding: 0px 0 4px 24px;
     max-width: 295px;
     color: ${(props) => props.theme.profile.themePreview.descriptionColor};
   }
@@ -99,6 +103,7 @@ const InterfaceTheme = (props) => {
 
       <div>
         <Checkbox
+          className="system-theme-checkbox"
           value={ThemeKeys.SystemStr}
           label={t("SystemTheme")}
           isChecked={isSystemTheme}
