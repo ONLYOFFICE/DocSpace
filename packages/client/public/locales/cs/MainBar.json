@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "Limity pro úložiště a správce/oprávněné uživatele budou brzy překročeny.",
   "StorageQuotaDescription": "Nepotřebné soubory můžete odstranit nebo <1>{{clickHere}}}</1> pro nalezení vhodnějšího cenového tarifu pro váš DocSpace.",
   "StorageQuotaHeader": "Množství úložného prostoru bude brzy překročeno: {{currentValue}} / {{maxValue}}.",
-  "UserQuotaDescription": "<1>{{clickHere}}</1> a najděte lepší cenový tarif pro svůj portál.",
+  "UserQuotaDescription": "<1>{{clickHere}}</1> a najděte lepší cenový tarif pro svůj DocSpace.",
   "UserQuotaHeader": "Počet administrátorů/přístupných uživatelů bude brzy překročen: {{currentValue}} / {{maxValue}}."
 }

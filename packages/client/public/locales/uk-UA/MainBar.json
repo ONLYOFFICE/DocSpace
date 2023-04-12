@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "Обмеження сховища та обмеження для адміністраторів / досвідчених користувачів скоро буде перевищено.",
   "StorageQuotaDescription": "Ви можете видалити непотрібні файли, або <1>{{clickHere}}</1>, щоб знайти більш підходящий тарифний план для вашого DocSpace.",
   "StorageQuotaHeader": "Обсяг сховища скоро буде перевищено: {{currentValue}}/{{maxValue}}",
-  "UserQuotaDescription": "<1>{{clickHere}}</1>, щоб знайти кращий тарифний план для вашого порталу.",
+  "UserQuotaDescription": "<1>{{clickHere}}</1>, щоб знайти кращий тарифний план для вашого DocSpace.",
   "UserQuotaHeader": "Кількість адміністраторів / досвідчених користувачів скоро буде перевищено: {{currentValue}}/{{maxValue}}."
 }
