@@ -28,7 +28,7 @@
   "Folders": "Foldery",
   "FormTemplates": "Szablony formularza",
   "LinkCopySuccess": "Link został skopiowany do schowka",
-  "LinkValidTime": "Link jest ważny tylko przez {{days_count}} dni",
+  "LinkValidTime": "Link jest ważny tylko przez {{days_count}} dni.",
   "MobileAndroid": "Pobierz ONLYOFFICE Documents z Google Play",
   "MobileIos": "Pobierz ONLYOFFICE Documents z App Store",
   "MobileLinux": "Pobierz ONLYOFFICE Desktop Editors dla Linux",

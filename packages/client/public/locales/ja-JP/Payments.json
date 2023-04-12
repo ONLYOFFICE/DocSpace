@@ -5,7 +5,7 @@
   "BusinessExpired": "{{planName}}プランは{{date}}で期限切れとなりました。",
   "BusinessFinalDateInfo": "サブスクリプションは、価格と仕様を更新して{{finalDate}}日に自動更新されます。Stripeカスタマーポータルでキャンセルまたは請求先情報を変更することができます。",
   "BusinessPlanPaymentOverdue": "新規ユーザーの追加や新規ルームの作成ができません。{planName}}プランの支払い期限を過ぎています。",
-  "BusinessRequestDescription": "{{peopleNumber}}人より多くのマネージャー数を持つ料金プランは、リクエストに応じてご提供します。",
+  "BusinessRequestDescription": " より多くの{{peopleNumber}}管理者/パワーユーザー用料金プランは、リクエストに応じて提供いたします。",
   "BusinessSuggestion": "{{planName}}のプランをカスタマイズする",
   "BusinessTitle": "{{planName}}プランをご利用いただいています。",
   "BusinessUpdated": "{{planName}} プランがアップデートされました",
@@ -38,7 +38,7 @@
   "UpgradeNow": "今すぐアップグレードする",
   "UpgradePlan": "プランのアップグレード",
   "UpgradePlanInfo": "新しいユーザーを追加すると、現在の料金プランで許可されているルームメンバーの最大数を超えます。",
-  "UserNotFound": "<1>{{email}}</1>ユーザーが見つかりません",
+  "UserNotFound": "<1>{{email}}</1>ユーザーが見つかりません。",
   "UserNotFoundMatchingEmail": "我们无法找到与Stripe电子邮件匹配的用户。",
   "YourPrice": "価格"
 }

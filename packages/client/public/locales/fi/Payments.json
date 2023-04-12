@@ -5,7 +5,7 @@
   "BusinessExpired": "{{planName}} on vanhentunut {{date}}",
   "BusinessFinalDateInfo": "Tilaus uusitaan automaattisesti {{finalDate}} päivitetyllä hinnalla ja teknisillä tiedoilla. Voit peruuttaa sen tai vaihtaa maksutietojasi Stripe-asiakasportaalissa.",
   "BusinessPlanPaymentOverdue": "Et voi lisätä uusia käyttäjiä tai luoda uusia huoneita. {{planName}} ohjelman maksu myöhässä",
-  "BusinessRequestDescription": "Hinnoitteluohjelmat, joissa on enemmän {{peopleNumber}} johtajia, ovat saatavilla vain pyynnöstä.",
+  "BusinessRequestDescription": "Hinnoitteluohjelmat, jotka sisältävät enemmän {{peopleNumber}} ylläpitäjät ovat saatavilla vain pyynnöstä.",
   "BusinessSuggestion": "Mukauta {{planName}} ohjelmaa",
   "BusinessTitle": "Käytät {{planName}}-ohjelmaa",
   "BusinessUpdated": "{{planName}} ohjelma päivitetty",
@@ -39,5 +39,6 @@
   "UpgradePlan": "Päivitä ohjelma",
   "UpgradePlanInfo": "Uusien käyttäjien lisääminen ylittää huoneen jäsenien maksimimäärän, jonka tämänhetkinen hinnoitteluohjelma sallii.",
   "UserNotFound": "Käyttäjän <1>{{email}}</1> ei löydy.",
+  "UserNotFoundMatchingEmail": "Käyttäjää vastaavalla Stripe-sähköpostilla ei löytynyt.",
   "YourPrice": "Hintasi"
 }

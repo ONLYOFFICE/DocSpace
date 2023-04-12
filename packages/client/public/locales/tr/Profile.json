@@ -12,7 +12,7 @@
   "LogoutActiveConnection": "Aktif bağlantıdan çıkış yap",
   "LogoutAllActiveConnections": "Tüm aktif bağlantılardan çıkış yap",
   "LogoutAllActiveSessions": "Tüm etkin oturumlardan çıkış yap",
-  "LogoutAllActiveSessionsDescription": "Not. Şu anda kullanımda olduğundan, bu bağlantı dışındaki tüm aktif bağlantıların oturumu kapatılacaktır.",
+  "LogoutAllActiveSessionsDescription": "Şu anda kullanımda olduğundan, bu bağlantı dışındaki tüm aktif bağlantıların oturumu kapatılacaktır.",
   "LogoutBtn": "Çıkış Yap",
   "LogoutDescription": "Not. Şu anda kullanımda olduğundan, bu bağlantı dışındaki tüm aktif bağlantıların oturumu kapatılacaktır.",
   "LogoutFrom": "{{platform}} {{browser}} oturumu kapatılsın mı?",

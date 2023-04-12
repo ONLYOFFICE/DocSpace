@@ -88,6 +88,7 @@
   "Rename": "Nimeä uudelleen",
   "RestoreAll": "Palauta kaikki",
   "RoomCreated": "Huone luotu",
+  "RoomEmptyContainerDescription": "Ole hyvä ja luo ensimmäinen huone.",
   "RoomEmptyContainerDescriptionUser": "Huoneet, jotka on jaettu sinulle näkyvät tässä",
   "RoomNotificationsDisabled": "Huoneen ilmoitukset pois käytöstä",
   "RoomNotificationsEnabled": "Huoneen ilmoitukset käytössä",

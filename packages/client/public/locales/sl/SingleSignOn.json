@@ -41,7 +41,7 @@
   "SsoIntro": "Razdelek z enkratno prijavo vam omogoča, da omogočite/onemogočite avtentikacijo tretjih oseb z uporabo SAML, s čimer zagotovite hitrejši, lažji in varnejši način dostopa do prostora za uporabnike.",
   "StandardDecryptionAlgorithm": "Privzeti algoritem za dešifriranje",
   "TurnOnSSO": "Omogoči preverjanje pristnosti enkratne prijave",
-  "TurnOnSSOCaption": "Omogočite to možnost, če želite samodejno dodati uporabnike iz storitve SSO v svoj prostor",
+  "TurnOnSSOCaption": "Omogočite to možnost, če želite samodejno dodati uporabnike iz storitve SSO v svoj prostor.",
   "UploadXML": "Naloži metapodatke iz XML, da se samodejno izpolnijo zahtevana polja.",
   "UploadXMLPlaceholder": "URL do IdP Meta podatkov XML",
   "UsedFor": "Uporabi za",

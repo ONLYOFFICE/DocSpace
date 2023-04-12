@@ -48,6 +48,7 @@
   "Characters": "{{length}} znak(i/ów)",
   "ClearBackupList": "Usuń wszystkie kopie zapasowe",
   "CompanyInfoSettings": "Ustawienia informacji o firmie",
+  "CompanyInfoSettingsDescription": "Dana informacja wyświetli się w oknie <1>{{link}}</1>.",
   "ConfirmEmailSended": "Wiadomość e-mail z potwierdzeniem została wysłana do {{ownerName}}",
   "Custom": "Niestandardowy",
   "CustomDomains": "Własne domeny",

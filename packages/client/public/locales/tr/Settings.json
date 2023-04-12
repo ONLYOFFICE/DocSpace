@@ -48,6 +48,7 @@
   "Characters": "{{length}} karakter",
   "ClearBackupList": "Tüm yedekleri sil",
   "CompanyInfoSettings": "Şirket bilgileri ayarları",
+  "CompanyInfoSettingsDescription": "Bu bilgi <1>{{link}}</1> penceresinde görüntülenecektir.",
   "ConfirmEmailSended": "Onay e-postası şu kişiye gönderildi {{ownerName}}",
   "Custom": "Özel",
   "CustomDomains": "Özel alan adları",

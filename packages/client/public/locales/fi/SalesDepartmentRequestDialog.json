@@ -1,5 +1,7 @@
 {
   "RequestDetails": "Ole hyvä ja kuvaile pyyntösi yksityiskohdat tässä.",
+  "SalesDepartmentRequest": "Pyyntö myyntiosastolle",
+  "SuccessfullySentMessage": "Viestisi lähetettiin onnistuneesti. Sinuun otetaan yhteyttä Myyntiosastolta.",
   "YouWillBeContacted": "Myyntitiimi ottaa sinuun yhteyttä pyynnön luomisen jälkeen.",
   "YourName": "Nimesi"
 }

@@ -8,7 +8,7 @@
   "StorageAndRoomHeader": "Os limites de armazenamento e salas estão prestes a ser excedidos.",
   "StorageAndUserHeader": "Os limites de armazenamento e administradores/usuários avançados estão prestes a ser excedidos.",
   "StorageQuotaDescription": "Você pode remover os arquivos desnecessários ou <1>{{clickHere}}</1> para encontrar um plano de preços mais adequado para o seu DocSpace.",
-  "StorageQuotaHeader": "A quantidade de espaço de armazenamento está prestes a ser excedida: {{currentValue}} / {{maxValue}}.",
+  "StorageQuotaHeader": "A quantidade de espaço de armazenamento está prestes a ser excedida: {{currentValue}} / {{maxValue}}",
   "UserQuotaDescription": "<1>{{clickHere}}</1> para encontrar um plano de preços melhor para o seu portal.",
   "UserQuotaHeader": "O número de administradores/usuários avançados está prestes a ser excedido: {{currentValue}} / {{maxValue}}."
 }
