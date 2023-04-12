@@ -123,6 +123,7 @@ const ArticleBodyContent = (props) => {
 
     const resultPath = locationPathname;
     const arrayOfParams = resultPath.split("/");
+    arrayOfParams.splice(0, 2);
 
     let link = "";
     const selectedItem = arrayOfParams[arrayOfParams.length - 1];
@@ -135,6 +136,7 @@ const ArticleBodyContent = (props) => {
     } else if (selectedItem === "accessrights") {
       link = `/${resultPath}/owner`;
     }
+
     const CurrentSettingsCategoryKey = getCurrentSettingsCategory(
       arrayOfParams,
       settingsTree
@@ -183,7 +185,7 @@ const ArticleBodyContent = (props) => {
         setSelectedKeys(["7-0"]);
       }
     }
-  }, [tReady, setIsLoadedArticleBody, location.pathname]);
+  }, [tReady, setIsLoadedArticleBody, location.pathname, selectedKeys]);
 
   const onSelect = (value) => {
     if (isArrayEqual([value], selectedKeys)) {
