@@ -353,7 +353,7 @@ const PortalIntegration = (props) => {
               <TextInput
                 scale={true}
                 onChange={onChangeAuthor}
-                placeholder={t("EnterName")}
+                placeholder={t("Common:EnterName")}
                 value={config.authorType}
               />
             </ControlsGroup>
