@@ -17,6 +17,8 @@
   "ErrorNotification": "Niet gelukt om tariefplan bij te werken. Probeer het later nog eens of neem contact op met de verkoopafdeling.",
   "GracePeriodActivatedDescription": "Tijdens de wachtperiode kunnen beheerders geen nieuwe ruimtes aanmaken en geen nieuwe gebruikers toevoegen. Na de vervaldatum van de wachtperiode wordt DocSpace onbeschikbaar totdat de betaling is verricht.",
   "GracePeriodActivatedInfo": "De wachtperiode is van kracht <1>van {{fromDate}} tot {{byDate}}</1> (resterende dagen: {{delayDaysCount}}).",
+  "InvalidEmailWithActiveSubscription": "Uw abonnement blijft actief, maar wij raden u aan een nieuwe betaler te kiezen die toegang krijgt tot de abonnementsinstellingen in DocSpace.",
+  "InvalidEmailWithActiveSubscriptionForAdmin": "Uw abonnement blijft actief, maar wij raden u aan contact op te nemen met de DocSpace eigenaar om een nieuwe Betaler te kiezen.",
   "InvalidEmailWithoutActiveSubscription": "Wij raden aan een nieuwe Betaler te kiezen die toegang krijgt tot de abonnementsinstellingen in DocSpace.",
   "InvalidEmailWithoutActiveSubscriptionByAdmin": "Wij raden u aan contact op te nemen met de DocSpace eigenaar om een nieuwe Betaler te kiezen.",
   "ManagerTypesDescription": "Beheerder accounts en hun rechten",

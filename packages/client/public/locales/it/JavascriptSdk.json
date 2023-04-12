@@ -1,0 +1,22 @@
+{
+  "Ascending": "Ascendente",
+  "CopyWindowCode": "Copia il codice di incorporamento della finestra",
+  "DataDisplay": "Impostazioni di visualizzazione dei dati",
+  "Descending": "Discendente",
+  "Destroy": "Distruggere",
+  "EnterCount": "Inserisci conteggio",
+  "EnterHeight": "Immettere l'altezza",
+  "EnterId": "Immettere l'ID",
+  "EnterPage": "Inserisci il numero di pagina",
+  "EnterWidth": "Inserisci la larghezza",
+  "FolderId": "Id Cartella",
+  "FrameId": "ID telaio",
+  "Header": "Intestazione",
+  "ItemsCount": "Gli elementi contano",
+  "JavascriptSdk": "SDK Javascript",
+  "Menu": "Menu",
+  "Page": "Pagina",
+  "SearchTerm": "Termine di ricerca",
+  "SortOrder": "Ordinamento",
+  "WindowParameters": "Parametri della finestra"
+}

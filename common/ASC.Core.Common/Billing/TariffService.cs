@@ -156,7 +156,6 @@ public class TariffService : ITariffService
         }
 
         var tariff = refresh ? null : GetTariffFromCache(tenantId);
-        int? tariffId = null;
 
         if (tariff == null)
         {
@@ -165,11 +164,13 @@ public class TariffService : ITariffService
 
             if (string.IsNullOrEmpty(_cache.Get<string>(GetTariffNeedToUpdateCacheKey(tenantId))))
             {
-                tariffId = tariff.Id;
+                UpdateCache(tariff.Id);
             }
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
+                var paymentFound = false;
+
                 try
                 {
                     var currentPayments = _billingClient.GetCurrentPayments(GetPortalId(tenantId));
@@ -221,24 +222,21 @@ public class TariffService : ITariffService
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
-                        tariffId = asynctariff.Id;
                     }
 
+                    UpdateCache(tariff.Id);
+
+                    paymentFound = true;
                 }
                 catch (Exception error)
                 {
-                    if (tariff.Id != 0)
-                    {
-                        tariffId = tariff.Id;
-                    }
-
                     if (error is not BillingNotFoundException)
                     {
                         LogError(error, tenantId.ToString());
                     }
                 }
 
-                if (!tariffId.HasValue || tariffId.Value == 0)
+                if (!paymentFound)
                 {
                     var freeTariff = tariff.Quotas.FirstOrDefault(tariffRow =>
                     {
@@ -262,12 +260,9 @@ public class TariffService : ITariffService
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
-                        tariffId = asynctariff.Id;
                     }
-                    else
-                    {
-                        tariffId = tariff.Id;
-                    }
+
+                    UpdateCache(tariff.Id);
                 }
             }
         }
@@ -276,12 +271,12 @@ public class TariffService : ITariffService
             tariff = CalculateTariff(tenantId, tariff);
         }
 
-        if (tariffId.HasValue && tariffId.Value != 0)
-        {
-            _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId.Value }, CacheNotifyAction.Insert);
-        }
-
         return tariff;
+
+        void UpdateCache(int tariffId)
+        {
+            _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId }, CacheNotifyAction.Insert);
+        }
     }
 
     public async Task<bool> PaymentChange(int tenantId, Dictionary<string, int> quantity)
@@ -755,6 +750,7 @@ public class TariffService : ITariffService
                     if (efTariff.Id == default)
                     {
                         efTariff.Id = (-tenant);
+                        tariffInfo.Id = efTariff.Id;
                     }
 
                     if (efTariff.CustomerId == default)

@@ -1,0 +1,22 @@
+{
+  "Ascending": "上升",
+  "CopyWindowCode": "复制窗口嵌入代码",
+  "DataDisplay": "数据显示设置",
+  "Descending": "降序",
+  "Destroy": "破坏",
+  "EnterCount": "输入计数",
+  "EnterHeight": "输入身高",
+  "EnterId": "输入ID",
+  "EnterPage": "输入号码页面",
+  "EnterWidth": "输入宽度",
+  "FolderId": "文件夹编号",
+  "FrameId": "框架编号",
+  "Header": "头",
+  "ItemsCount": "项目计数",
+  "JavascriptSdk": "Javascript SDK",
+  "Menu": "菜单",
+  "Page": "页",
+  "SearchTerm": "搜索词",
+  "SortOrder": "排序",
+  "WindowParameters": "窗口参数"
+}

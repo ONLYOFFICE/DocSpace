@@ -1,0 +1,22 @@
+{
+  "Ascending": "Oplopend",
+  "CopyWindowCode": "Kopieer de insluitcode van het venster",
+  "DataDisplay": "Instellingen voor gegevensweergave",
+  "Descending": "Aflopend",
+  "Destroy": "Vernietigen",
+  "EnterCount": "Voer het aantal in",
+  "EnterHeight": "Voer Hoogte in",
+  "EnterId": "Voer ID in",
+  "EnterPage": "Voer nummerpagina in",
+  "EnterWidth": "Voer de breedte in",
+  "FolderId": "Map-ID",
+  "FrameId": "Frame-ID",
+  "Header": "Hoofd",
+  "ItemsCount": "Artikelen tellen",
+  "JavascriptSdk": "Javascript-sdk",
+  "Menu": "Menu",
+  "Page": "Pagina",
+  "SearchTerm": "Zoekterm",
+  "SortOrder": "Sorteervolgorde",
+  "WindowParameters": "Venster parameters"
+}

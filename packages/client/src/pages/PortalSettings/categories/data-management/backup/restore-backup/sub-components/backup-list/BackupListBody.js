@@ -48,7 +48,6 @@ const BackupListBody = ({
                 fontSize="13px"
                 fontWeight="400"
                 value=""
-                label=""
                 isChecked={isChecked}
                 onClick={onSelectFile}
                 name={`${index}_${fileId}`}
