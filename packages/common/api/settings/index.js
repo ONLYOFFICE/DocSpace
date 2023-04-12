@@ -699,11 +699,11 @@ export function removeActiveSession(eventId) {
   });
 }
 
-export function createWebhook(name, url, secretKey) {
+export function createWebhook(name, uri, secretKey, ssl) {
   return request({
     method: "post",
     url: `/settings/webhook`,
-    data: { name, uri: url, secretKey },
+    data: { name, uri, secretKey, ssl },
   });
 }
 
@@ -714,11 +714,11 @@ export function getAllWebhooks() {
   });
 }
 
-export function updateWebhook(id, name, url, secretKey) {
+export function updateWebhook(id, name, uri, secretKey, ssl) {
   return request({
     method: "put",
     url: `/settings/webhook`,
-    data: { id, name, uri: url, secretKey },
+    data: { id, name, uri, secretKey, ssl },
   });
 }
 
@@ -729,7 +729,7 @@ export function toggleEnabledWebhook(webhook) {
     data: {
       id: webhook.id,
       name: webhook.name,
-      uri: webhook.url,
+      uri: webhook.uri,
       secretKey: webhook.secretKey,
       enabled: !webhook.enabled,
     },
@@ -743,10 +743,13 @@ export function removeWebhook(id) {
   });
 }
 
-export function getWebhooksJournal(hookname, logCount) {
+export function getWebhooksJournal(logCount, startIndex) {
+  const logCountParam = logCount ? `count=${logCount}&` : "";
+  const startIndexParam = startIndex ? `startIndex=${startIndex}&` : "";
+
   return request({
     method: "get",
-    url: `/settings/webhooks/log?count=${logCount}`,
+    url: `/settings/webhooks/log?${logCountParam}${startIndexParam}`,
     data: { hookname },
   });
 }
