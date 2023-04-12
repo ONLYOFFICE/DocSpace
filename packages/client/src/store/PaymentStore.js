@@ -53,7 +53,7 @@ class PaymentStore {
   };
   basicSettings = async () => {
     const { currentTariffStatusStore, currentQuotaStore } = authStore;
-    const { setPortalTariff } = currentTariffStatusStore;
+    const { setPortalTariff, setPayerInfo } = currentTariffStatusStore;
     const { addedManagersCount } = currentQuotaStore;
 
     this.setIsUpdatingBasicSettings(true);
@@ -71,6 +71,8 @@ class PaymentStore {
       toastr.error(t("Common:UnexpectedError"));
       console.error(error);
     }
+
+    if (this.isAlreadyPaid) await setPayerInfo();
 
     this.setIsUpdatingBasicSettings(false);
   };

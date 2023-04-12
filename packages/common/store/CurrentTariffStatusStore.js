@@ -59,13 +59,20 @@ class CurrentTariffStatusStore {
 
   setPayerInfo = async () => {
     try {
-      if (!this.customerId || !this.customerId?.length) return;
+      if (!this.customerId || !this.customerId?.length) {
+        this.payerInfo = null;
+        return;
+      }
 
       const result = await getUserByEmail(this.customerId);
-      if (!result) return;
+      if (!result) {
+        this.payerInfo = null;
+        return;
+      }
 
       this.payerInfo = result;
     } catch (e) {
+      this.payerInfo = null;
       console.error(e);
     }
   };
