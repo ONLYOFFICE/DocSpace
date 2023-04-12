@@ -214,7 +214,7 @@ public class PhotoController : PeopleControllerBase
                     result.Data =
                         new
                         {
-                            main = await mainPhoto + $"?hash={cacheKey}",
+                            main = (await mainPhoto).Item1 + $"?hash={cacheKey}",
                             retina = await _userPhotoManager.GetRetinaPhotoURL(userId) + $"?hash={cacheKey}",
                             max = await _userPhotoManager.GetMaxPhotoURL(userId) + $"?hash={cacheKey}",
                             big = await _userPhotoManager.GetBigPhotoURL(userId) + $"?hash={cacheKey}",
