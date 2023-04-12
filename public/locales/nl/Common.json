@@ -170,7 +170,7 @@
   "PayBeforeTheEndGracePeriod": "Zorg ervoor dat u betaalt voordat de wachtperiode is verstreken.",
   "PaymentsTitle": "Betalingen",
   "People": "Mensen",
-  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per beheerder/maand",
+  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per beheerder/power user /maand",
   "Petabyte": "PB",
   "Phone": "Telefoon",
   "Plugin": "Plug-in",

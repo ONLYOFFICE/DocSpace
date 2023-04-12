@@ -227,14 +227,12 @@ CMD ["ASC.Files.dll", "ASC.Files"]
 
 ## ASC.Files.Service ##
 FROM dotnetrun AS files_services
-RUN apt-get -y update && \
-    apt-get install -yq ffmpeg &&\
-    rm -rf /var/lib/apt/lists/*
-
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
 COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Files.Service/service/ .
+COPY --from=onlyoffice/ffvideo:6.0 --chown=onlyoffice:onlyoffice /usr/local /usr/local/
 
 CMD ["ASC.Files.Service.dll", "ASC.Files.Service", "core:eventBus:subscriptionClientName=asc_event_bus_files_service_queue"]
 

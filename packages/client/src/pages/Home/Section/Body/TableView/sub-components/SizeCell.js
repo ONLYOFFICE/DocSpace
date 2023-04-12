@@ -9,15 +9,17 @@ const SizeCell = ({ t, item, sideColor }) => {
     filesCount,
     foldersCount,
   } = item;
+  const date = fileExst || contentLength ? contentLength : "—";
+
   return (
     <StyledText
       color={sideColor}
       fontSize="12px"
       fontWeight={600}
-      title=""
+      title={date}
       truncate
     >
-      {fileExst || contentLength ? contentLength : "—"}
+      {date}
     </StyledText>
   );
 };
