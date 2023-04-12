@@ -146,7 +146,7 @@ public static class ServiceCollectionExtension
                 var logger = sp.GetRequiredService<ILogger<DefaultActiveMQPersistentConnection>>();
 
                 var factory = new Apache.NMS.NMSConnectionFactory(activeMQConfiguration.Uri);
-             
+
                 var retryCount = 5;
 
                 if (!string.IsNullOrEmpty(cfg["core:eventBus:connectRetryCount"]))
@@ -195,10 +195,8 @@ public static class ServiceCollectionExtension
     /// Add a IHostedService for given type. 
     /// Only one copy of this instance type will active in multi process architecture.
     /// </remarks>
-    public static void AddActivePassiveHostedService<T>(this IServiceCollection services) where T : class, IHostedService
+    public static void AddActivePassiveHostedService<T>(this IServiceCollection services, DIHelper diHelper) where T : class, IHostedService
     {
-        var diHelper = new DIHelper(services);
-
         diHelper.TryAdd<IRegisterInstanceDao<T>, RegisterInstanceDao<T>>();
         diHelper.TryAdd<IRegisterInstanceManager<T>, RegisterInstanceManager<T>>();
 
