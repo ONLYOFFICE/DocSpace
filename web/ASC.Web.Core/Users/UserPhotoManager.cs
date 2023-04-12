@@ -192,7 +192,7 @@ public class UserPhotoManagerCache
         {
             return null;
         }
-        else
+        else if (String.IsNullOrEmpty(fileName))
         {
             fileName = val.Values.FirstOrDefault(x => !string.IsNullOrEmpty(x) && x.Contains("_orig_"));
         }

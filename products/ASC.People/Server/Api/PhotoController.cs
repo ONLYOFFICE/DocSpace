@@ -103,7 +103,7 @@ public class PhotoController : PeopleControllerBase
 
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserUpdatedAvatarThumbnails, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
-        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
     [HttpDelete("{userid}/photo")]
@@ -122,7 +122,7 @@ public class PhotoController : PeopleControllerBase
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserDeletedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
     [HttpGet("{userid}/photo")]
@@ -135,7 +135,7 @@ public class PhotoController : PeopleControllerBase
             throw new SecurityException();
         }
 
-        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
     [HttpPut("{userid}/photo")]
@@ -156,7 +156,7 @@ public class PhotoController : PeopleControllerBase
         await _userManager.UpdateUserInfoWithSyncCardDavAsync(user);
         _messageService.Send(MessageAction.UserAddedAvatar, _messageTarget.Create(user.Id), user.DisplayUserName(false, _displayUserSettingsHelper));
 
-        return await ThumbnailsDataDto.Create(user.Id, _userPhotoManager);
+        return await ThumbnailsDataDto.Create(user, _userPhotoManager);
     }
 
     [HttpPost("{userid}/photo")]
