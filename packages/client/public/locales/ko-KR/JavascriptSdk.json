@@ -1,0 +1,22 @@
+{
+  "Ascending": "오름차순",
+  "CopyWindowCode": "창 임베드 코드 복사",
+  "DataDisplay": "데이터 표시 설정",
+  "Descending": "내림차순",
+  "Destroy": "파괴하다",
+  "EnterCount": "개수 입력",
+  "EnterHeight": "높이 입력",
+  "EnterId": "아이디 입력",
+  "EnterPage": "번호 입력 페이지",
+  "EnterWidth": "폭 입력",
+  "FolderId": "폴더 아이디",
+  "FrameId": "프레임 ID",
+  "Header": "머리글",
+  "ItemsCount": "항목 수",
+  "JavascriptSdk": "자바스크립트 SDK",
+  "Menu": "메뉴",
+  "Page": "페이지",
+  "SearchTerm": "검색어",
+  "SortOrder": "정렬 순서",
+  "WindowParameters": "창 매개변수"
+}
