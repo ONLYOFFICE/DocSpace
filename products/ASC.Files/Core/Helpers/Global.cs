@@ -673,6 +673,7 @@ public class GlobalFolder
                 try
                 {
                     var storeTemplate = _globalStore.GetStoreTemplate();
+                    var store = _globalStore.GetStore();
 
                     var culture = my ? _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture() : _tenantManager.GetCurrentTenant().GetCulture();
                     var path = FileConstant.StartDocPath + culture + "/";
@@ -684,7 +685,7 @@ public class GlobalFolder
 
                     path += my ? "my/" : "corporate/";
 
-                    await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, id, path, storeTemplate);
+                    await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, id, path, storeTemplate, store);
                 }
                 catch (Exception ex)
                 {
@@ -696,12 +697,20 @@ public class GlobalFolder
         return id;
     }
 
-    private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
+    private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate, IDataStore store)
     {
-        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
-        foreach (var file in files)
+        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false)
+            .Where(f => FileUtility.GetFileTypeByFileName(f) is not (FileType.Audio or FileType.Video))
+            .ToListAsync();
+
+        if (store is DiscDataStore)
         {
-            await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files);
+            await Task.WhenAll(files.Select(file => SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files)));
+        }
+        else
+        {
+            await Parallel.ForEachAsync(files, new ParallelOptions {MaxDegreeOfParallelism = 3},
+                async (file, _) => await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files));
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
@@ -712,7 +721,7 @@ public class GlobalFolder
 
             var subFolderId = await folderDao.SaveFolderAsync(folder);
 
-            await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
+            await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate, store);
         }
     }
 
