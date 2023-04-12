@@ -10,21 +10,6 @@ import {
   retryWebhooks,
 } from "@docspace/common/api/settings";
 
-// {
-//       id: 0,
-//       title: "Webhook 1",
-//       responseCode: "200",
-//       url: "https://webhook.site/3d9f41d8-30dc-4f55-8b78-1649f4118c56",
-//       isEnabled: true,
-//     },
-//     {
-//       id: 1,
-//       title: "Webhook 2",
-//       responseCode: "404",
-//       url: "https://webhook.site/3d9f41d8-30dc-4f55-8b78-16",
-//       isEnabled: false,
-//     },
-
 class WebhooksStore {
   webhooks = [];
   state = "pending"; // "pending", "done" or "error"
@@ -38,10 +23,13 @@ class WebhooksStore {
       const webhooksData = await getAllWebhooks();
       runInAction(() => {
         this.webhooks = webhooksData.map((data) => ({
-          ...data,
-          url: data.uri,
-          title: data.name,
-          isEnabled: data.enabled,
+          id: data.configs.id,
+          name: data.configs.name,
+          uri: data.configs.uri,
+          secretKey: data.configs.secretKey,
+          enabled: data.configs.enabled,
+          ssl: data.configs.ssl,
+          status: data.status,
         }));
         this.state = "success";
       });
@@ -52,16 +40,22 @@ class WebhooksStore {
   };
 
   addWebhook = async (webhook) => {
-    const webhookData = await createWebhook(webhook.title, webhook.url, webhook.secretKey);
+    const webhookData = await createWebhook(
+      webhook.name,
+      webhook.uri,
+      webhook.secretKey,
+      webhook.ssl,
+    );
 
     this.webhooks = [
       ...this.webhooks,
       {
         id: webhookData.id,
-        url: webhookData.uri,
-        title: webhookData.name,
-        isEnabled: webhookData.enabled,
+        uri: webhookData.uri,
+        name: webhookData.name,
+        enabled: webhookData.enabled,
         secretKey: webhookData.secretKey,
+        ssl: webhookData.ssl,
       },
     ];
   };
@@ -73,7 +67,7 @@ class WebhooksStore {
   toggleEnabled = async (desiredWebhook) => {
     await toggleEnabledWebhook(desiredWebhook);
     const index = this.webhooks.findIndex((webhook) => webhook.id === desiredWebhook.id);
-    this.webhooks[index].isEnabled = !this.webhooks[index].isEnabled;
+    this.webhooks[index].enabled = !this.webhooks[index].enabled;
   };
 
   deleteWebhook = async (webhook) => {
@@ -84,9 +78,10 @@ class WebhooksStore {
   editWebhook = async (prevWebhook, webhookInfo) => {
     await updateWebhook(
       prevWebhook.id,
-      webhookInfo.title,
-      webhookInfo.url,
+      webhookInfo.name,
+      webhookInfo.uri,
       webhookInfo.secretKey || prevWebhook.secretKey,
+      webhookInfo.ssl,
     );
     this.webhooks = this.webhooks.map((webhook) =>
       webhook.id === prevWebhook.id ? { ...prevWebhook, ...webhookInfo } : webhook,
@@ -101,8 +96,8 @@ class WebhooksStore {
     return await retryWebhooks(ids);
   };
 
-  getWebhookHistory = async (hookname, logCount) => {
-    return await getWebhooksJournal(hookname, logCount);
+  getWebhookHistory = async (logCount, startIndex) => {
+    return await getWebhooksJournal(logCount, startIndex);
   };
 
   get isWebhooksEmpty() {
