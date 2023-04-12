@@ -1,11 +1,11 @@
-name: ffmpeg build
+name: ffvideo build
 
 on:
   push:
     branches: 
      - release/v1.0.0
     paths:
-      - 'build/install/docker/**.ffmpeg'
+      - 'build/install/docker/**.ffvideo'
 
 jobs:
   build:
@@ -34,7 +34,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ./build/install/docker/Dockerfile.ffmpeg
+          file: ./build/install/docker/Dockerfile.ffvideo
           push: true
-          tags: onlyoffice/4testing-ffmpeg:6.0
+          tags: onlyoffice/ffvideo:6.0
 

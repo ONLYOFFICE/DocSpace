@@ -17,6 +17,12 @@ ENV FFMPEG_VERSION=6.0 \
     VPX_VERSION=1.8.0 \
     SRC=/usr/local
 
+ARG LD_LIBRARY_PATH=/opt/ffmpeg/lib
+ARG MAKEFLAGS="-j2"
+ARG PKG_CONFIG_PATH="/opt/ffmpeg/share/pkgconfig:/opt/ffmpeg/lib/pkgconfig:/opt/ffmpeg/lib64/pkgconfig"
+ARG PREFIX=/opt/ffmpeg
+ARG LD_LIBRARY_PATH="/opt/ffmpeg/lib:/opt/ffmpeg/lib64"    
+
 RUN buildDeps="autoconf \
                automake \
                cmake \
@@ -39,30 +45,6 @@ RUN buildDeps="autoconf \
                zlib1g-dev" && \
         apt-get -yqq update && \
         apt-get install -yq --no-install-recommends ${buildDeps}
-## x264
-RUN \
-        DIR=/tmp/x264 && \
-        mkdir -p ${DIR} && \
-        cd ${DIR} && \
-        curl -sL https://download.videolan.org/pub/videolan/x264/snapshots/x264-snapshot-${X264_VERSION}.tar.bz2 | \
-        tar -jx --strip-components=1 && \
-        ./configure --prefix="${PREFIX}" --enable-shared --enable-pic --disable-cli && \
-        make && \
-        make install && \
-        rm -rf ${DIR}
-### x265
-RUN \
-        DIR=/tmp/x265 && \
-        mkdir -p ${DIR} && \
-        cd ${DIR} && \
-        curl -sL https://github.com/videolan/x265/archive/refs/tags/${X265_VERSION}.tar.gz | \
-        tar -zx && \
-        cd x265-${X265_VERSION}/build/linux && \
-        sed -i "/-DEXTRA_LIB/ s/$/ -DCMAKE_INSTALL_PREFIX=\${PREFIX}/" multilib.sh && \
-        sed -i "/^cmake/ s/$/ -DENABLE_CLI=OFF/" multilib.sh && \
-        ./multilib.sh && \
-        make -C 8bit install && \
-        rm -rf ${DIR}
 ### libvpx
 RUN \
         DIR=/tmp/vpx && \
@@ -90,8 +72,6 @@ RUN  \
         --disable-doc \
         --disable-ffplay \
         --enable-gpl \
-        --enable-libx264 \
-        --enable-libx265 \
         --enable-libvpx \
         --extra-cflags="-I${PREFIX}/include" \
         --extra-ldflags="-L${PREFIX}/lib" \
