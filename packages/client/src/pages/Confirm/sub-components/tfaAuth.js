@@ -161,7 +161,7 @@ const TfaAuthForm = withLoader((props) => {
 const TfaAuthFormWrapper = (props) => {
   const { setIsLoaded, setIsLoading } = props;
 
-  useEffect(async () => {
+  useEffect(() => {
     setIsLoaded(true);
     setIsLoading(false);
   }, []);

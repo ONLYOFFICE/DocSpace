@@ -265,7 +265,7 @@ const TfaActivationWrapper = (props) => {
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState(null);
 
-  useEffect(async () => {
+  const fetchData = async () => {
     try {
       setIsLoading(true);
       const confirmKey = linkData.confirmHeader;
@@ -278,9 +278,12 @@ const TfaActivationWrapper = (props) => {
       setError(e.error);
       toastr.error(e);
     }
-
     setIsLoaded(true);
     setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return error ? (
