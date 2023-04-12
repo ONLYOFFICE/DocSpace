@@ -282,7 +282,12 @@ const Wizard = (props) => {
       <StyledContent>
         <WizardContainer>
           <DocspaceLogo className="docspace-logo" />
-          <Text fontWeight={700} fontSize="23px" className="welcome-text">
+          <Text
+            as="div"
+            fontWeight={700}
+            fontSize="23px"
+            className="welcome-text"
+          >
             {t("WelcomeTitle")}
           </Text>
           <FormWrapper>
@@ -409,6 +414,7 @@ const Wizard = (props) => {
                 {t("Timezone")}
               </Text>
               <ComboBox
+                textOverflow
                 withoutPadding
                 directionY="both"
                 options={timezones}

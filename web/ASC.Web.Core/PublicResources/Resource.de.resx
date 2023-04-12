@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Das Feld mit dem Prüfcode darf nicht leer sein</value>
@@ -450,10 +450,10 @@
     <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
-    <value>Zugriffstoken</value>
+    <value>Client ID</value>
   </data>
   <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
-    <value>Geheimer Zugriffstoken</value>
+    <value>Client Secret</value>
   </data>
   <data name="ConsumersTwitterDescription" xml:space="preserve">
     <value>Verbinden Sie die Anwendung, um sich ins Portal via Twitter anzumelden und Kontakte zu suchen.</value>
@@ -465,10 +465,10 @@
     <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Twitter und Import von Twitter-Kontakten ins CRM-Modul zu ermöglichen. {0}Öffnen Sie das Twitter-Portal für Entwickler (Twitter Developer) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
-    <value>Twitter ID</value>
+    <value>API Key</value>
   </data>
   <data name="ConsumersTwitterSecret" xml:space="preserve">
-    <value>Twitter-Schlüssel</value>
+    <value>API Key Secret</value>
   </data>
   <data name="Consumersusername" xml:space="preserve">
     <value>Rackspace-Benutzername</value>
@@ -593,6 +593,9 @@
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Falscher Vor- oder Nachname</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Der Zugriff aufs Portal ist beschränkt</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Ihr Zahlungsplan unterstützt diese Option nicht</value>
   </data>
@@ -606,10 +609,10 @@
     <value>Das Feld "Kennwort" ist leer.</value>
   </data>
   <data name="ErrorPasswordLength" xml:space="preserve">
-    <value>von{0} bis zu{1}Sonderzeichen</value>
+    <value>von {0} bis zu {1} Sonderzeichen</value>
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
-    <value>Das Kennwort muss enthalten:</value>
+    <value>Das Kennwort muss enthalten</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>Zahlen</value>
@@ -656,11 +659,143 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Der Link zum Bestätigen Ihres Kontos wurde an die angegebene E-Mail-Adresse geschickt</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Vorname</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Nachname</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Verbindungsfehler</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Die Benutzer können nicht erstellt werden, die empfangenen Daten können falsch sein.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Fehler des Servers beim Abrufen der Einstellungsdaten</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Fehler des Servers beim Speichern der Einstellungsdaten</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Ungültiges Login oder Kennwort.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP Domain ist nicht gefunden.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Die Gruppen können nicht gefunden werden.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Ungültiger Wert des Benutzerfilters</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Sie haben versucht, Administratorrechte sich selbst wegzunehmen. Ihre Administratorrechte waren nicht betroffen.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Ihr Konto ist nicht mit dem LDAP-Verzeichnis verknüpft und Ihr LDAP-Kennwort ist nicht mehr aktiv. Ändern Sie das Kennwort auf der Seite mit den Profileinstellungen oder legen Sie das Kennwort für Ihr Konto fest.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Unbekannter Fehler.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Die Benutzer können nicht gefunden werden.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Ungültiger Wert vom Attribut der Gruppe oder mehrere Gruppen.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Falscher Gruppenfilter.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Es gelang nicht Attribut des Gruppennamens für eine oder mehrere Gruppen zu erhalten.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Ungültiger Wert vom Attribut des Benutzernamens.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Verbindung mit dem LDAP-Server kann nicht hergestellt werden. Bitte prüfen Sie, ob die Serveradresse und die Port-Nummer richtig sind. </value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Ungültiger Wert vom Attribut des Benutzers.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Interner Serverfehler.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Ändern von LDAP-Benutzer auf normale Portal-Benutzer </value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>Benutzer wird hinzugefügt</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Zertifikatsprüfung</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Überprüfung der Support-Einstellungen von LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP wird getrennt</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Abruf der Liste der Gruppen vom LDAP-Server</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Abruf der Liste der Benutzer vom LDAP-Server</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Benutzer {0} als {1} Admin festlegen</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Laden der LDAP-Datenbank Information</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>Benutzer wird entfernt</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Entfernen der veralteten Gruppen, die zuvor über LDAP geladen wurden</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Veraltete Zugriffsrechte entfernen, die zuvor über LDAP geladen wurden</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Deaktivierung veralteter Benutzerprofile, die zuvor über LDAP geladen wurden</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Gruppen werden gespeichert</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Einstellungen werden gespeichert</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Bild speichern </value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Benutzer werden gespeichert</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Synchronisiere Benutzer</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Aktualisierung von Zugriffsrechte der Benutzer</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Aktualisierung von Benutzer-Bilder</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Ein sichererer Authentifizierungstyp ist erforderlich. Bitte verwenden Sie verschlüsselte Verbindung oder aktivieren Sie eine normale Authentifizierung auf dem Server.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Das Benutzerlimit für den aktuellen Zahlungsplan wurde erreicht.</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS zur aktuellen LDAP-Server ist nicht unterstützt.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Zu viele LDAP-Operationen.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Es gelingt unikaler Identifikator der Objekte von Benutzer/Gruppen nicht zu erhalten. Standardmäßig versucht das System einen der folgenden Identifikators: entryUUID, nsuniqueid, GUID, objectSid auszuwählen. Falls keine diese Attribute Ihren LDAP-Server entsprechen, geben Sie bitte das gewünschte Attribut in der Einstellung ldap.unique.id in der Datei web.appsettings.config an.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Lizenz ist nicht korrekt</value>
@@ -700,6 +835,9 @@
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Der verfügbare Speicherplatz ist überschritten</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Portalname</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Zugang zum Portal</value>

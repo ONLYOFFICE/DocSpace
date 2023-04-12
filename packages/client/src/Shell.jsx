@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
@@ -33,6 +34,7 @@ import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
+import queryString from "query-string";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
@@ -75,6 +77,15 @@ const Error401Route = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const ErrorUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <ErrorUnavailable {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const FilesRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -132,6 +143,20 @@ const FormGalleryRoute = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const ConfirmNavigate = () => {
+  const location = useLocation();
+
+  const type = queryString.parse(location.search).type;
+
+  return (
+    <Navigate
+      to={`/confirm/${type}`}
+      search={location.search}
+      state={{ from: location }}
+    />
+  );
+};
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -191,6 +216,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     socketHelper.emit({
       command: "subscribe",
       data: { roomParts: "backup-restore" },
+    });
+    socketHelper.emit({
+      command: "subscribe",
+      data: { roomParts: "quota" },
     });
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
@@ -460,6 +489,15 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               />
 
               <Route
+                path={"/wizard"}
+                element={
+                  <PublicRoute>
+                    <WizardRoute />
+                  </PublicRoute>
+                }
+              />
+
+              <Route
                 path={"/about"}
                 element={
                   <PrivateRoute>
@@ -468,7 +506,9 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 }
               />
 
-              <Route path={"/confirm/*"} element={<ConfirmRoute />} />
+              <Route path={"/confirm/:type"} element={<ConfirmRoute />} />
+              <Route path={"/confirm/*"} element={<ConfirmNavigate />} />
+              <Route path={"/confirm.aspx/*"} element={<ConfirmNavigate />} />
 
               <Route
                 path={"/portal-settings/*"}
@@ -487,22 +527,20 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   </PrivateRoute>
                 }
               />
-
-              <Route
-                path={"/wizard"}
-                element={
-                  <PublicRoute>
-                    <WizardRoute />
-                  </PublicRoute>
-                }
-              />
-
               <Route
                 path={"/preparation-portal"}
                 element={
                   <PublicRoute>
                     <PreparationPortalRoute />
                   </PublicRoute>
+                }
+              />
+              <Route
+                path={"/unavailable"}
+                element={
+                  <PrivateRoute>
+                    <ErrorUnavailableRoute />
+                  </PrivateRoute>
                 }
               />
 

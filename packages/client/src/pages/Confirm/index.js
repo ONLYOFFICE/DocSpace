@@ -1,7 +1,6 @@
 import React, { lazy } from "react";
 import { Routes, Route } from "react-router-dom";
 import ConfirmRoute from "../../helpers/confirmRoute";
-import ConfirmWrapper from "./ConfirmWrapper";
 
 const ActivateUserForm = lazy(() => import("./sub-components/activateUser"));
 const CreateUserForm = lazy(() => import("./sub-components/createUser"));
@@ -21,6 +20,7 @@ const DeactivatePortal = lazy(() =>
 );
 const ContinuePortal = lazy(() => import("./sub-components/continuePortal"));
 const Auth = lazy(() => import("./sub-components/auth"));
+const Error404 = lazy(() => import("../Errors/404"));
 
 const Confirm = () => {
   //console.log("Confirm render");

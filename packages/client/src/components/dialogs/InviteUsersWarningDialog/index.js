@@ -7,7 +7,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
-import { getDaysRemaining } from "../../../helpers/filesUtils";
+import { getDaysRemaining } from "@docspace/common/utils";
 
 const InviteUsersWarningDialog = (props) => {
   const {

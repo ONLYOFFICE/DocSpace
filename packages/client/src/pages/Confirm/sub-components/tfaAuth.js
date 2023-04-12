@@ -71,11 +71,22 @@ const TfaAuthForm = withLoader((props) => {
         const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
         navigate(url || "/");
       }
-    } catch (e) {
-      setError(e);
-      toastr.error(e);
+    } catch (err) {
+      let errorMessage = "";
+      if (typeof err === "object") {
+        errorMessage =
+          err?.response?.data?.error?.message ||
+          err?.statusText ||
+          err?.message ||
+          "";
+      } else {
+        errorMessage = err;
+      }
+      setError(errorMessage);
+      toastr.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const onKeyPress = (target) => {

@@ -20,7 +20,7 @@
   "ThirdPartyStorageComboBoxPlaceholder": "ストレージの選択",
   "ThirdPartyStorageDescription": "このルームのデータ保存先として、サードパーティーのサービスを利用します。接続されたストレージに、このルームのデータを保存するための新しいフォルダが作成されます。",
   "ThirdPartyStorageNoStorageAlert": "事前に、「統合」で対応するサービスを接続しておく必要があります。そうでない場合は、接続ができません。",
-  "ThirdPartyStoragePermanentSettingDescription": "ファイルは、{{thirdpartyTitle}} サードパーティのストレージの「{{thirdpartyFolderName}}」フォルダーに保存されています。",
+  "ThirdPartyStoragePermanentSettingDescription": "ファイルは、{{thirdpartyTitle}} サードパーティのストレージの「{{thirdpartyFolderName}}」フォルダーに保存されています。\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "サードパーティーのストレージを接続するには、DocSpace設定の「統合」セクションに対応するサービスを追加する必要があります。統合を有効にするには、DocSpaceの所有者または管理者にご連絡ください。",
   "ThirdPartyStorageTitle": "サードパーティのストレージ",
   "ViewOnlyRoomDescription": "準備の整った文書、レポート、ドキュメントなどのファイルを共有し、閲覧することができます。",

@@ -53,6 +53,17 @@ const SimpleFilesTileContent = styled(TileContent)`
     }
   }
 
+  .item-file-name {
+    max-height: 100%;
+    line-height: 20px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+
   ${({ isRooms }) =>
     isRooms &&
     css`

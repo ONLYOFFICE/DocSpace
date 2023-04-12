@@ -19,6 +19,7 @@ import {
   mobile,
   isTablet,
   isMobile as isMobileUtils,
+  isSmallTablet,
   isDesktop,
 } from "@docspace/components/utils/device";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
@@ -38,7 +39,7 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     width: calc(100% + 40px);
-    height: 68px;
+    height: 67px;
 
     @media ${tablet} {
       height: 60px;
@@ -137,11 +138,6 @@ const StyledInfoPanelToggleWrapper = styled.div`
   @media ${tablet} {
     display: none;
   }
-
-  ${isMobile &&
-  css`
-    display: none;
-  `}
 
   align-items: center;
   justify-content: center;
@@ -336,12 +332,7 @@ const SectionHeaderContent = (props) => {
             />
             {!isInfoPanelVisible && (
               <StyledInfoPanelToggleWrapper>
-                {!(
-                  isTablet() ||
-                  isMobile ||
-                  isMobileUtils() ||
-                  !isDesktop()
-                ) && (
+                {!(isTablet() || isSmallTablet() || !isDesktop()) && (
                   <div className="info-panel-toggle-bg">
                     <IconButton
                       id="info-panel-toggle--open"

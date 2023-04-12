@@ -5,5 +5,6 @@
   "ImageFileType": "obrázky",
   "MailMergeFileType": "Vybrat soubor vo formátu XLSX",
   "OpenSavedDocument": "Otevřít uložený dokument na nové kartě",
-  "SelectFilesType": "Vybrat soubory typu: {{fileType}}"
+  "SelectFilesType": "Vybrat soubory typu: {{fileType}}",
+  "UsersWithoutAccess": "Niektorí používatelia, ktorých chcete označiť, nemajú prístup do miestnosti: {{users}}"
 }

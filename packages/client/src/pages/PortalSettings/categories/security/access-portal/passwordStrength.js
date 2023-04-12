@@ -46,6 +46,7 @@ const PasswordStrength = (props) => {
     initSettings,
     isInit,
     helpLink,
+    currentColorScheme,
   } = props;
 
   const navigate = useNavigate();
@@ -191,7 +192,7 @@ const PasswordStrength = (props) => {
           {t("SettingPasswordStrengthHelper")}
         </Text>
         <Link
-          color="#316DAA"
+          color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
           href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
@@ -260,8 +261,12 @@ const PasswordStrength = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { setPortalPasswordSettings, passwordSettings, helpLink } =
-    auth.settingsStore;
+  const {
+    setPortalPasswordSettings,
+    passwordSettings,
+    helpLink,
+    currentColorScheme,
+  } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
   return {
@@ -270,5 +275,6 @@ export default inject(({ auth, setup }) => {
     initSettings,
     isInit,
     helpLink,
+    currentColorScheme,
   };
 })(withTranslation(["Settings", "Common"])(observer(PasswordStrength)));

@@ -18,9 +18,15 @@
   "LoginRegistryButton": "Qoşulun",
   "PassworResetTitle": "İndi yeni şifrə yarada bilərsiniz.",
   "PhoneSubtitle": "Əlavə təhlükəsizliyini təmin etmək üçün iki faktorlu autentifikasiya işə salınıb. DocSpace işə davam etmək üçün mobil telefon nömrənizi daxil edin. Mobil telefon nömrəsi ölkə kodu ilə beynəlxalq formatda daxil edilməlidir.",
+  "PortalContinueTitle": "Lütfən, DocSpace-i yenidən aktivləşdirmək istədiyinizi təsdiqləyin.",
+  "PortalDeactivateTitle": "Lütfən, DocSpace-i deaktiv etmək istədiyinizi təsdiqləyin.",
+  "PortalRemoveTitle": "Lütfən, DocSpace-i silmək istədiyinizi təsdiqləyin.",
+  "Reactivate": "Yenidən aktivləşdirin",
   "SetAppButton": "Tətbiqə qoşulun",
   "SetAppDescription": "İki faktorlu avtorizasiya kodu aktivləşdirildi. DocSpace-də işləməyə davam etmək üçün doğrulama tətbiqini quraşdırın. Doğrulama tətbiqini <1>Android</1> və <4>iOS</4> və ya <8>Windows Phone</8> üçün istifadə edə bilərsiniz.",
   "SetAppInstallDescription": "Tətbiqə qoşulmaq üçün QR kodu skan edin və ya manual olaraq öz gizli açarınızı <1>{{ secretKey }}</1>, daha sonra isə aşağıdakı xanada tətbiqdən əldə etdiyiz 6 rəqəmli kodu daxil edin.",
   "SetAppTitle": "Doğrulama tətbiqini quraşdırın",
+  "SuccessDeactivate": "Hesabınız uğurla deaktiv edildi. 10 saniyə ərzində <1>sayt</1>a yönləndiriləcəksiniz.",
+  "SuccessReactivate": "Hesabınız uğurla yenidən aktivləşdirildi. 10 saniyəyə <1>portala</1> yönləndiriləcəksiniz.",
   "WelcomeUser": "DocSpace-ə xoş gəlmisiniz!\nBaşlamaq üçün qeydiyyatdan keçin və ya sosial şəbəkə vasitəsilə giriş edin."
 }

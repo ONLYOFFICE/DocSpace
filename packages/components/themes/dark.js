@@ -1379,6 +1379,7 @@ const Dark = {
     backgroundColor: black,
     hoverBackgroundColor: "#3D3D3D",
     hoverDisabledBackgroundColor: black,
+    selectedBackgroundColor: "#282828",
     fontWeight: "600",
     fontSize: "13px",
     width: "100%",
@@ -1604,6 +1605,7 @@ const Dark = {
     button: {
       height: "18px",
       heightWithBorder: "30px",
+      heightModernView: "28px",
 
       paddingLeft: "16px",
       paddingRightNoArrow: "16px",
@@ -1845,9 +1847,18 @@ const Dark = {
     paymentAlert: {
       color: "#ed7309",
       warningColor: "#E06451",
-      border: "1px solid #ed7309",
-      warningBorder: "1px solid #E06451",
     },
+
+    teamTrainingAlert: {
+      titleColor: "#FFFFFF",
+      borderColor: "#388BDE",
+      linkColor: "#5299E0",
+    },
+  },
+
+  alertComponent: {
+    descriptionColor: "#ADADAD",
+    iconColor: "#ADADAD",
   },
 
   catalogItem: {
@@ -3027,6 +3038,8 @@ const Dark = {
 
       descriptionTextColor: "#858585",
       pendingEmailTextColor: "#858585",
+
+      mobileRowBackground: "#3D3D3D",
     },
     themePreview: {
       descriptionColor: "#ADADAD",

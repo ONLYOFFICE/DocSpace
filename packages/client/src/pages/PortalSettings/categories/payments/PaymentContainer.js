@@ -80,26 +80,28 @@ const StyledBody = styled.div`
   }
 `;
 
-const PaymentContainer = ({
-  isFreeTariff,
-  isGracePeriod,
-  theme,
-  isNotPaidPeriod,
-  payerEmail,
-  user,
-  isPaidPeriod,
-  currencySymbol,
-  startValue,
-  currentTariffPlanTitle,
-  tariffPlanTitle,
-  expandArticle,
-  gracePeriodEndDate,
-  delayDaysCount,
+const PaymentContainer = (props) => {
+  const {
+    isFreeTariff,
+    isGracePeriod,
+    theme,
+    isNotPaidPeriod,
+    payerEmail,
+    user,
+    isPaidPeriod,
+    currencySymbol,
+    startValue,
+    currentTariffPlanTitle,
+    tariffPlanTitle,
+    expandArticle,
+    gracePeriodEndDate,
+    delayDaysCount,
 
-  isAlreadyPaid,
-  paymentDate,
-  t,
-}) => {
+    isAlreadyPaid,
+    paymentDate,
+    t,
+    isNonProfit,
+  } = props;
   const renderTooltip = () => {
     return (
       <>
@@ -115,6 +117,9 @@ const PaymentContainer = ({
               <br />
               <Text isBold>{t("Common:RoomAdmin")}</Text>
               <Text>{t("RoomManagerDescription")}</Text>
+              <br />
+              <Text isBold>{t("Common:PowerUser")}</Text>
+              <Text>{t("PowerUserDescription")}</Text>
             </>
           }
         />
@@ -160,6 +165,8 @@ const PaymentContainer = ({
   };
 
   const planSuggestion = () => {
+    if (isNonProfit) return;
+
     if (isFreeTariff) {
       return (
         <Text
@@ -224,7 +231,41 @@ const PaymentContainer = ({
     return;
   };
 
-  const isPayer = user.email === payerEmail;
+  const planDescription = () => {
+    if (isFreeTariff || isNonProfit) return;
+
+    if (isGracePeriod)
+      return (
+        <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
+          <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
+            Grace period activated
+            <strong>
+              from {{ fromDate: paymentDate }} to
+              {{ byDate: gracePeriodEndDate }}
+            </strong>
+            (days remaining: {{ delayDaysCount }})
+          </Trans>{" "}
+          <Text as="span" fontSize="14px" lineHeight="16px">
+            {t("GracePeriodActivatedDescription")}
+          </Text>
+        </Text>
+      );
+
+    if (isPaidPeriod)
+      return (
+        <Text
+          noSelect
+          fontSize={"14px"}
+          lineHeight={"16px"}
+          className="payment-info_managers-price"
+        >
+          <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
+            {{ finalDate: paymentDate }}
+          </Trans>
+        </Text>
+      );
+  };
+
   const isFreeAfterPaidPeriod = isFreeTariff && payerEmail?.length !== 0;
 
   return (
@@ -240,9 +281,8 @@ const PaymentContainer = ({
             ? expiredTitleSubscriptionWarning()
             : currentPlanTitle()}
 
-          {isAlreadyPaid && (
+          {!isNonProfit && isAlreadyPaid && (
             <PayerInformationContainer
-              isPayer={isPayer}
               isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
             />
           )}
@@ -250,59 +290,36 @@ const PaymentContainer = ({
           <CurrentTariffContainer />
 
           {planSuggestion()}
+          {planDescription()}
 
-          {isGracePeriod && (
-            <Text noSelect fontSize={"14px"} lineHeight={"16px"}>
-              <Trans t={t} i18nKey="GracePeriodActivatedInfo" ns="Payments">
-                Grace period activated
-                <strong>
-                  from {{ fromDate: paymentDate }} to
-                  {{ byDate: gracePeriodEndDate }}
-                </strong>
-                (days remaining: {{ delayDaysCount }})
-              </Trans>{" "}
-              <Text as="span" fontSize="14px" lineHeight="16px">
-                {t("GracePeriodActivatedDescription")}
-              </Text>
-            </Text>
-          )}
+          {!isNonProfit &&
+            !isGracePeriod &&
+            !isNotPaidPeriod &&
+            !isFreeAfterPaidPeriod && (
+              <div className="payment-info_wrapper">
+                <Text
+                  noSelect
+                  fontWeight={600}
+                  fontSize={"14px"}
+                  className="payment-info_managers-price"
+                >
+                  <Trans t={t} i18nKey="PerUserMonth" ns="Common">
+                    From {{ currencySymbol }}
+                    {{ price: startValue }} per admin/power user /month
+                  </Trans>
+                </Text>
 
-          {isPaidPeriod && !isFreeTariff && (
-            <Text
-              noSelect
-              fontSize={"14px"}
-              lineHeight={"16px"}
-              className="payment-info_managers-price"
-            >
-              <Trans t={t} i18nKey="BusinessFinalDateInfo" ns="Payments">
-                {{ finalDate: paymentDate }}
-              </Trans>
-            </Text>
-          )}
+                {renderTooltip()}
+              </div>
+            )}
 
-          {!isGracePeriod && !isNotPaidPeriod && !isFreeAfterPaidPeriod && (
-            <div className="payment-info_wrapper">
-              <Text
-                noSelect
-                fontWeight={600}
-                fontSize={"14px"}
-                className="payment-info_managers-price"
-              >
-                <Trans t={t} i18nKey="PerUserMonth" ns="Common">
-                  From {{ currencySymbol }}
-                  {{ price: startValue }} per admin/month
-                </Trans>
-              </Text>
-
-              {renderTooltip()}
-            </div>
-          )}
           <div className="payment-info">
-            <PriceCalculation
-              t={t}
-              isPayer={isPayer}
-              isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
-            />
+            {!isNonProfit && (
+              <PriceCalculation
+                t={t}
+                isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
+              />
+            )}
 
             <BenefitsContainer t={t} />
           </div>
@@ -323,26 +340,28 @@ export default inject(({ auth, payments }) => {
   } = auth;
   const { showText: expandArticle } = settingsStore;
 
-  const { isFreeTariff, currentTariffPlanTitle } = currentQuotaStore;
+  const {
+    isFreeTariff,
+    currentTariffPlanTitle,
+    isNonProfit,
+  } = currentQuotaStore;
+
   const {
     isNotPaidPeriod,
     isPaidPeriod,
     isGracePeriod,
     customerId,
     portalTariffStatus,
+    paymentDate,
+    gracePeriodEndDate,
+    delayDaysCount,
   } = currentTariffStatusStore;
 
   const { planCost, tariffPlanTitle, portalPaymentQuotas } = paymentQuotasStore;
 
   const { theme } = auth.settingsStore;
 
-  const {
-    gracePeriodEndDate,
-    delayDaysCount,
-
-    isAlreadyPaid,
-    paymentDate,
-  } = payments;
+  const { isAlreadyPaid } = payments;
 
   const { user } = userStore;
 
@@ -368,5 +387,6 @@ export default inject(({ auth, payments }) => {
     currentTariffPlanTitle,
     portalTariffStatus,
     portalPaymentQuotas,
+    isNonProfit,
   };
 })(observer(PaymentContainer));

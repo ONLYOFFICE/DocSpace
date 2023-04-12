@@ -1,6 +1,5 @@
 {
   "ChangeUserStatusDialog": "Користувача зі статусом '{{ userStatus }}' буде {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Змінити статус користувача",
-  "ChangeUserStatusDialogMessage": "Ви не можете змінити статус власника DocSpace та свій статус.",
-  "ChangeUsersStatusButton": "Змінити статус користувача"
+  "ChangeUserStatusDialogHeader": "Змінити статус",
+  "ChangeUserStatusDialogMessage": "Ви не можете змінити статус власника DocSpace та свій статус."
 }

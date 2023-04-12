@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Lütfən, Otaqlarımda ilk otağı yaradın.",
+  "EmptyRoomsHeader": "Burada hələ otaq yoxdur",
+  "RoomList": "Otaq siyahısı",
+  "SearchEmptyRoomsDescription": "Bu filtrə uyğun otaq yoxdur. Bütün otaqlara baxmaq üçün fərqli filtri və ya təmiz filtri sınayın."
+}

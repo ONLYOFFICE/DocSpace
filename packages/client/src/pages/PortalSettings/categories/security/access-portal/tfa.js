@@ -23,7 +23,8 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t, initSettings, isInit, setIsInit, helpLink } = props;
+  const { t, initSettings, isInit, setIsInit, helpLink, currentColorScheme } =
+    props;
   const [type, setType] = useState("none");
 
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -92,7 +93,7 @@ const TwoFactorAuth = (props) => {
   };
 
   const onSaveClick = async () => {
-    const { t, setTfaSettings, getTfaConfirmLink, history } = props;
+    const { t, setTfaSettings, getTfaConfirmLink } = props;
 
     setIsSaving(true);
 
@@ -128,7 +129,7 @@ const TwoFactorAuth = (props) => {
       <LearnMoreWrapper>
         <Text className="learn-subtitle">{t("TwoFactorAuthHelper")}</Text>
         <Link
-          color="#316DAA"
+          color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
           href={`${helpLink}/administration/two-factor-authentication.aspx`}
@@ -190,7 +191,7 @@ export default inject(({ auth, setup }) => {
   } = auth.tfaStore;
 
   const { isInit, initSettings, setIsInit } = setup;
-  const { helpLink } = auth.settingsStore;
+  const { helpLink, currentColorScheme } = auth.settingsStore;
 
   return {
     setTfaSettings,
@@ -202,5 +203,6 @@ export default inject(({ auth, setup }) => {
     initSettings,
     setIsInit,
     helpLink,
+    currentColorScheme,
   };
 })(withTranslation(["Settings", "Common"])(observer(TwoFactorAuth)));

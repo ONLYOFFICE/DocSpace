@@ -1,1 +1,6 @@
-{}
+{
+  "EmptyRoomsDescription": "Bitte erstellen Sie den ersten Raum in Meine Räume.",
+  "EmptyRoomsHeader": "Noch keine Räume vorhanden",
+  "RoomList": "Raumliste",
+  "SearchEmptyRoomsDescription": "Keine Räume entsprechen diesem Filter. Versuchen Sie einen anderen Filter oder löschen Sie den Filter, um alle Räume anzuzeigen."
+}

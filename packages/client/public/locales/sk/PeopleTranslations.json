@@ -6,11 +6,14 @@
   "EnableUserButton": "Aktivovať",
   "InviteLinkTitle": "Odkaz na pozvánku",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Zmeniť meno",
   "PasswordChangeButton": "Zmeniť heslo",
   "PendingTitle": "Nevybavené",
   "RemoveData": "Odstrániť osobné údaje",
+  "ResetAuth": "Obnoviť autentifikáciu",
   "SendInviteAgain": "Poslať pozvánku ešte raz",
   "SuccessChangeUserStatus": "Stav používateľa bol úspešne zmenený",
   "SuccessDeletePersonalData": "Osobné údaje boli úspešne odstránené",
-  "SuccessSentInvitation": "Pozvánka bola úspešne odoslaná"
+  "SuccessSentInvitation": "Pozvánka bola úspešne odoslaná",
+  "SuccessSentMultipleInvitatios": "Pozvánky boli úspešne odoslané"
 }

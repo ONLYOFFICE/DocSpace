@@ -1,4 +1,5 @@
 {
+  "ChooseRoomType": "Escolha o tipo de quarto",
   "CollaborationRoomDescription": "Colabore em um ou vários documentos com sua equipe",
   "CollaborationRoomTitle": "Sala de colaboração",
   "CreateRoomConfirmation": "Continuar sem conectar o armazenamento?\nVocê selecionou uma opção de armazenamento de terceiros que ainda não está conectada. Se você continuar sem conectar o serviço, esta opção não será adicionada.",
@@ -19,7 +20,7 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Selecione o armazenamento",
   "ThirdPartyStorageDescription": "Use serviços de terceiros como armazenamento de dados para esta sala. Uma nova pasta para armazenar os dados desta sala será criada no armazenamento conectado.",
   "ThirdPartyStorageNoStorageAlert": "Antes, você precisa conectar o serviço correspondente na seção “Integração”. Caso contrário, a conexão não será possível.",
-  "ThirdPartyStoragePermanentSettingDescription": "Os arquivos são armazenados em um armazenamento {{thirdpartyTitle}} de terceiros na pasta \"{{thirdpartyFolderName}}\".",
+  "ThirdPartyStoragePermanentSettingDescription": "Os arquivos são armazenados em um armazenamento {{thirdpartyTitle}} de terceiros na pasta \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Para conectar um armazenamento de terceiros, você precisa adicionar o serviço correspondente na seção Integração das configurações do DocSpace. Entre em contato com o proprietário ou administrador do DocSpace para ativar a integração.",
   "ThirdPartyStorageTitle": "Armazenamento de terceiros",
   "ViewOnlyRoomDescription": "Compartilhe quaisquer documentos, relatórios, documentação e outros arquivos prontos para visualização.",

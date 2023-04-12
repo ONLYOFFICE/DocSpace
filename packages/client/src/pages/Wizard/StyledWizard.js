@@ -46,6 +46,10 @@ export const StyledContent = styled.div`
   margin: 0 auto;
   -webkit-box-orient: vertical;
   -webkit-box-direction: normal;
+
+  @media ${hugeMobile} {
+    min-height: 100%;
+  }
 `;
 
 export const WizardContainer = styled.div`
@@ -61,8 +65,7 @@ export const WizardContainer = styled.div`
   }
 
   @media ${hugeMobile} {
-    margin-top: 32px;
-    width: calc(100% - 32px);
+    margin: 32px auto;
   }
 
   .docspace-logo {
@@ -74,6 +77,10 @@ export const WizardContainer = styled.div`
 
   .welcome-text {
     padding-bottom: 32px;
+
+    @media ${hugeMobile} {
+      max-width: 343px;
+    }
   }
 
   .form-header {

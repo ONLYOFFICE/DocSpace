@@ -121,6 +121,33 @@ const PrivateRoute = ({ children, ...rest }) => {
 
     // if (!isLoaded) {
     //   return <AppLoader />;
+    if (tenantStatus === TenantStatus.PortalDeactivate) {
+      return (
+        <Navigate
+          to={combineUrl(window.DocSpaceConfig?.proxy?.url, "/unavailable")}
+          state={{ from: location }}
+        />
+      );
+    }
+
+    if (!isLoaded) {
+      return <AppLoader />;
+    }
+
+    // const userLoaded = !isEmpty(user);
+    // if (!userLoaded) {
+    //   return <Component {...props} />;
+    // }
+
+    // if (!userLoaded) {
+    //   console.log("PrivateRoute render Loader", rest);
+    //   return (
+    //     <Section>
+    //       <Section.SectionBody>
+    //         <Loader className="pageLoader" type="rombs" size="40px" />
+    //       </Section.SectionBody>
+    //     </Section>
+    //   );
     // }
 
     if (
@@ -131,8 +158,6 @@ const PrivateRoute = ({ children, ...rest }) => {
     ) {
       return children;
     }
-
-    console.log("tut 4to-li?", user);
 
     if (restricted) {
       return <Navigate replace to={"/error401"} />;

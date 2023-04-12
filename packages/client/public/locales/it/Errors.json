@@ -3,5 +3,6 @@
   "Error403Text": "Spiacente, accesso negato.",
   "Error404Text": "Spiacente, impossibile trovare la risorsa.",
   "ErrorEmptyResponse": "Risposta vuota",
-  "ErrorOfflineText": "Nessuna connessione a internet trovata"
+  "ErrorOfflineText": "Nessuna connessione a internet trovata",
+  "ErrorUnavailableText": "DocSpace non disponibile"
 }

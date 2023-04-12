@@ -1,4 +1,5 @@
 {
+  "AdditionalSections": "Secções Adicionais",
   "ConnectEmpty": "Não há nada aqui",
   "DisplayFavorites": "Mostrar Favoritos",
   "DisplayNotification": "Mostrar notificação ao mover itens para a Lixo",
@@ -8,5 +9,8 @@
   "KeepIntermediateVersion": "Manter versões intermediárias ao editar",
   "OriginalCopy": "Guardar a cópia do ficheiro também no formato original",
   "StoringFileVersion": "Armazenamento de versões de ficheiros",
-  "UpdateOrCreate": "Atualizar a versão do ficheiro existente com o mesmo nome. Caso contrário, será criada uma cópia do ficheiro."
+  "ThirdPartyAccounts": "Contas de terceiros",
+  "ThirdPartyBtn": "Permitir a conexão de a",
+  "UpdateOrCreate": "Atualizar a versão do ficheiro existente com o mesmo nome. Caso contrário, será criada uma cópia do ficheiro.",
+  "UploadPluginsHere": "Carregue plugins aqui"
 }
