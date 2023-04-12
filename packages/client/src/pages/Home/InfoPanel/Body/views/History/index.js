@@ -89,7 +89,7 @@ const History = ({
     return { ...fetchedHistory, feedsByDays: parsedFeeds };
   };
 
-  useEffect(async () => {
+  useEffect(() => {
     if (!isMount.current) return;
 
     if (selection.history) {
@@ -101,7 +101,8 @@ const History = ({
   }, [selection]);
 
   if (showLoader) return <Loaders.InfoPanelViewLoader view="history" />;
-  if (!history || history?.feeds.length === 0) return <NoHistory t={t} />;
+  if (!history) return <></>;
+  if (history?.feeds?.length === 0) return <NoHistory t={t} />;
 
   return (
     <>
