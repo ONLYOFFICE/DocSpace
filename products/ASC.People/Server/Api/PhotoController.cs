@@ -214,12 +214,12 @@ public class PhotoController : PeopleControllerBase
                     result.Data =
                         new
                         {
-                            main = mainPhoto + $"?hash={cacheKey}",
-                            retina = _userPhotoManager.GetRetinaPhotoURL(userId) + $"?hash={cacheKey}",
-                            max = _userPhotoManager.GetMaxPhotoURL(userId) + $"?hash={cacheKey}",
-                            big = _userPhotoManager.GetBigPhotoURL(userId) + $"?hash={cacheKey}",
-                            medium = _userPhotoManager.GetMediumPhotoURL(userId) + $"?hash={cacheKey}",
-                            small = _userPhotoManager.GetSmallPhotoURL(userId) + $"?hash={cacheKey}"
+                            main = await mainPhoto + $"?hash={cacheKey}",
+                            retina = await _userPhotoManager.GetRetinaPhotoURL(userId) + $"?hash={cacheKey}",
+                            max = await _userPhotoManager.GetMaxPhotoURL(userId) + $"?hash={cacheKey}",
+                            big = await _userPhotoManager.GetBigPhotoURL(userId) + $"?hash={cacheKey}",
+                            medium = await _userPhotoManager.GetMediumPhotoURL(userId) + $"?hash={cacheKey}",
+                            small = await _userPhotoManager.GetSmallPhotoURL(userId) + $"?hash={cacheKey}"
                         };
                 }
                 else
