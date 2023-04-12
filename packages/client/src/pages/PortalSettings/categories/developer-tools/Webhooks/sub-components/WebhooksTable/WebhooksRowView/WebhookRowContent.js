@@ -41,12 +41,12 @@ export const WebhookRowContent = ({ sectionWidth, webhook, isChecked, handleTogg
       <ContentWrapper>
         <FlexWrapper>
           <Text fontWeight={600} fontSize="14px" style={{ marginRight: "8px" }}>
-            {webhook.title}
+            {webhook.name}
           </Text>
           {webhook.status && <StatusBadge status={webhook.status} />}
         </FlexWrapper>
         <Text fontWeight={600} fontSize="12px" color="#A3A9AE">
-          {webhook.url}
+          {webhook.uri}
         </Text>
       </ContentWrapper>
 

@@ -21,7 +21,7 @@ export const WebhookRow = ({
 }) => {
   const history = useHistory();
 
-  const [isChecked, setIsChecked] = useState(webhook.isEnabled);
+  const [isChecked, setIsChecked] = useState(webhook.enabled);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
   const [isDeleteOpened, setIsDeleteOpened] = useState(false);
 

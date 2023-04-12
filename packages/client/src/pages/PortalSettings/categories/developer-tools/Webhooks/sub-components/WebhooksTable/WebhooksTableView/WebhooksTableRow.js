@@ -16,7 +16,7 @@ import { useHistory } from "react-router-dom";
 export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
   const history = useHistory();
 
-  const [isChecked, setIsChecked] = useState(webhook.isEnabled);
+  const [isChecked, setIsChecked] = useState(webhook.enabled);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
   const [isDeleteOpened, setIsDeleteOpened] = useState(false);
 
@@ -64,13 +64,13 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
       <TableRow contextOptions={contextOptions}>
         <TableCell>
           <Text as="span" fontWeight={600}>
-            {webhook.title}{" "}
+            {webhook.name}{" "}
           </Text>
-          <StatusBadge status={webhook.responseCode} />
+          <StatusBadge status={webhook.status} />
         </TableCell>
         <TableCell>
           <Text as="span" fontSize="11px" color="#A3A9AE" fontWeight={600}>
-            {webhook.url}
+            {webhook.uri}
           </Text>
         </TableCell>
         <TableCell>
