@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
@@ -7,6 +7,7 @@ import Link from "@docspace/components/link";
 import { Hint } from "../styled-components";
 
 import { PasswordInput } from "@docspace/components";
+import { inject, observer } from "mobx-react";
 
 const Header = styled.h1`
   font-family: "Open Sans";
@@ -48,20 +49,21 @@ const ReadMore = styled.a`
   color: #333333;
 `;
 
-export const SecretKeyInput = ({
-  isResetVisible,
-  name,
-  value,
-  onChange,
-  passwordSettings,
-  isPasswordValid,
-  setIsPasswordValid,
-  isFormBlank,
-  setIsFormBlank,
-  secretKeyInputRef,
-  generatePassword,
-}) => {
+const SecretKeyInput = (props) => {
+  const {
+    isResetVisible,
+    name,
+    value,
+    onChange,
+    passwordSettings,
+    isPasswordValid,
+    setIsPasswordValid,
+    setIsResetVisible,
+  } = props;
+
   const [isHintVisible, setIsHintVisible] = useState(false);
+
+  const secretKeyInputRef = useRef(null);
 
   const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
 
@@ -69,17 +71,28 @@ export const SecretKeyInput = ({
     setIsPasswordValid(isValid);
   };
 
+  const generatePassword = () => {
+    secretKeyInputRef.current.onGeneratePassword();
+  };
+
   const handleHintDisapear = () => {
     toggleHint();
+  };
+
+  const handleOnChange = (e) => {
+    onChange({ target: { name, value: e.target.value } });
+  };
+
+  const hideReset = () => {
     generatePassword();
+    setIsResetVisible(false);
   };
 
   useEffect(() => {
-    if (secretKeyInputRef.current && isFormBlank) {
-      generatePassword();
-      setIsFormBlank(false);
+    if (!isResetVisible) {
+      onChange({ target: { name, value: secretKeyInputRef.current.state.inputValue } });
     }
-  }, [isFormBlank]);
+  }, [isResetVisible]);
 
   return (
     <div>
@@ -91,9 +104,24 @@ export const SecretKeyInput = ({
         Setting a webhook secret allows you to verify requests sent to the payload URL. <br />
         <ReadMore href="">Read more</ReadMore>
       </InfoHint>
+      {isResetVisible && (
+        <InfoHint>
+          You cannot retrieve your secret key again once it has been saved. If you've lost or
+          forgotten this secret key, you can reset it, but all integrations using this secret will
+          need to be updated. <br />
+          <Link
+            type="action"
+            fontWeight={600}
+            isHovered={true}
+            onClick={hideReset}
+            style={{ marginTop: "6px", display: "inline-block" }}>
+            Reset key
+          </Link>
+        </InfoHint>
+      )}
       <div hidden={isResetVisible}>
         <PasswordInput
-          onChange={onChange}
+          onChange={handleOnChange}
           value={value}
           inputName={name}
           placeholder="Enter secret key"
@@ -117,3 +145,11 @@ export const SecretKeyInput = ({
     </div>
   );
 };
+
+export default inject(({ settingsStore }) => {
+  const { passwordSettings } = settingsStore;
+
+  return {
+    passwordSettings,
+  };
+})(observer(SecretKeyInput));
