@@ -164,7 +164,6 @@ const FilesRowContent = ({
           className="row-content-text"
           fontSize="12px"
           fontWeight={400}
-          title=""
           truncate={true}
         >
           {isRooms
