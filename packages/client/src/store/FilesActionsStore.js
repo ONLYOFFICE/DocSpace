@@ -95,9 +95,8 @@ class FilesActionStore {
   };
 
   updateCurrentFolder = (fileIds, folderIds, clearSelection, operationId) => {
-    const {
-      clearSecondaryProgressData,
-    } = this.uploadDataStore.secondaryProgressDataStore;
+    const { clearSecondaryProgressData } =
+      this.uploadDataStore.secondaryProgressDataStore;
 
     const {
       filter,
@@ -1006,18 +1005,8 @@ class FilesActionStore {
 
     const { setSelectedFolder } = this.selectedFolderStore;
 
-<<<<<<< HEAD
     const { roomsFolder, isRoomsFolder, archiveRoomsId, myRoomsId } =
       this.treeFoldersStore;
-    const { setPortalQuota } = this.authStore.currentQuotaStore;
-=======
-    const {
-      roomsFolder,
-      isRoomsFolder,
-      archiveRoomsId,
-      myRoomsId,
-    } = this.treeFoldersStore;
->>>>>>> develop
 
     const { secondaryProgressDataStore, clearActiveOperations } =
       this.uploadDataStore;
