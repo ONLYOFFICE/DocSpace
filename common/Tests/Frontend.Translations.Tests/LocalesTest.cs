@@ -61,6 +61,7 @@ public class LocalesTest
     public List<JavaScriptFile> JavaScriptFiles { get; set; }
     public List<ModuleFolder> ModuleFolders { get; set; }
     public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
+    public List<KeyValuePair<string, string>> NotTranslatedProps { get; set; }
     public List<LanguageItem> CommonTranslations { get; set; }
     public List<ParseJsonError> ParseJsonErrors { get; set; }
     public static string ConvertPathToOS { get; private set; }
@@ -201,7 +202,10 @@ public class LocalesTest
             "|(?<=toastr.success\\([\"`\'])(.*)(?=[\"\'`])" +
             "|(?<=toastr.warn\\([\"`\'])(.*)(?=[\"\'`])", RegexOptions.Multiline | RegexOptions.ECMAScript);
 
+        var notTranslatedPropsRegex = new Regex("<[\\w\\n][^>]* (title|placeholder|label|text)={?[\\\"\\'](.*)[\\\"\\']}?", RegexOptions.Multiline | RegexOptions.ECMAScript);
+
         NotTranslatedToasts = new List<KeyValuePair<string, string>>();
+        NotTranslatedProps = new List<KeyValuePair<string, string>>();
 
         foreach (var path in javascriptFiles)
         {
@@ -216,6 +220,18 @@ public class LocalesTest
                     var found = toastMatch.Value;
                     if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
                         NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                }
+            }
+
+            var propsMatches = notTranslatedPropsRegex.Matches(jsFileText).ToList();
+
+            if (propsMatches.Any())
+            {
+                foreach (var propsMatch in propsMatches)
+                {
+                    var found = propsMatch.Value;
+                    if (!string.IsNullOrEmpty(found) && !NotTranslatedProps.Exists(t => t.Value == found))
+                        NotTranslatedProps.Add(new KeyValuePair<string, string>(path, found));
                 }
             }
 
@@ -1077,6 +1093,29 @@ public class LocalesTest
             });
 
         Assert.AreEqual(0, NotTranslatedToasts.Count, message);
+    }
+
+    [Test]
+    [Category("Locales")]
+    public void NotTranslatedPropsTest()
+    {
+        var message = $"Next text not translated props (title, placeholder, label, text):\r\n\r\n";
+
+        var i = 0;
+
+        NotTranslatedProps.GroupBy(t => t.Key)
+            .Select(g => new
+            {
+                FilePath = g.Key,
+                Values = g.ToList()
+            })
+            .ToList()
+            .ForEach(t =>
+            {
+                message += $"{++i}. Path='{t.FilePath}'\r\n\r\n{string.Join("\r\n", t.Values.Select(v => v.Value))}\r\n\r\n";
+            });
+
+        Assert.AreEqual(0, NotTranslatedProps.Count, message);
     }
 
     [Test]
