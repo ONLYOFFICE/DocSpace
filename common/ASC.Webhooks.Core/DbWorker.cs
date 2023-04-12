@@ -175,7 +175,7 @@ public class DbWorker
         return removeObj;
     }
 
-    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, WebhookGroupStatus? webhookGroupStatus)
+    public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, int? eventId, WebhookGroupStatus? webhookGroupStatus)
     {
         var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
@@ -210,7 +210,12 @@ public class DbWorker
             q = q.Where(r => r.ConfigId == configId);
         }
 
-        if(webhookGroupStatus != null)
+        if (eventId != null)
+        {
+            q = q.Where(r => r.Id == eventId);
+        }
+
+        if (webhookGroupStatus != null)
         {
             if ((webhookGroupStatus & WebhookGroupStatus.NotSent) != WebhookGroupStatus.NotSent)
             {
