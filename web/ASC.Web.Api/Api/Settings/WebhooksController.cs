@@ -112,7 +112,7 @@ public class WebhooksController : BaseSettingsController
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.DeliveryFrom, model.DeliveryTo, model.HookUri, model.WebhookId, model.ConfigId, model.GroupStatus))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.DeliveryFrom, model.DeliveryTo, model.HookUri, model.WebhookId, model.ConfigId, model.EventId, model.GroupStatus))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
         }

@@ -33,5 +33,6 @@ public class WebhooksLogRequest
     public string HookUri { get; set; }
     public int? WebhookId { get; set; }
     public int? ConfigId { get; set; }
+    public int? EventId { get; set; }
     public WebhookGroupStatus? GroupStatus { get; set; }
 }
