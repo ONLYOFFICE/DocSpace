@@ -750,6 +750,7 @@ public class TariffService : ITariffService
                     if (efTariff.Id == default)
                     {
                         efTariff.Id = (-tenant);
+                        tariffInfo.Id = efTariff.Id;
                     }
 
                     if (efTariff.CustomerId == default)
