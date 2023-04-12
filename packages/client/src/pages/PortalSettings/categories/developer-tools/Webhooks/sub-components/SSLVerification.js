@@ -37,8 +37,12 @@ const InfoHint = styled(Hint)`
   width: 320px;
 `;
 
-export const SSLVerification = () => {
+export const SSLVerification = ({ onChange, value }) => {
   const [isHintVisible, setIsHintVisible] = useState(false);
+
+  const handleOnChange = (e) => {
+    onChange({ target: { name: e.target.name, value: e.target.value === "true" } });
+  };
 
   const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
   return (
@@ -54,19 +58,19 @@ export const SSLVerification = () => {
       <RadioButtonGroup
         fontSize="13px"
         fontWeight="400"
-        name="group"
-        onClick={() => {}}
+        name="ssl"
+        onClick={handleOnChange}
         options={[
           {
             label: "Enable SSL verification",
-            value: "enable",
+            value: "true",
           },
           {
             label: "Disable (not recommended)",
-            value: "disable",
+            value: "false",
           },
         ]}
-        selected="enable"
+        selected={value ? "true" : "false"}
         width="100%"
         orientation="vertical"
         spacing="8px"
