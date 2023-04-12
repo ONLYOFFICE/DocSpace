@@ -70,7 +70,6 @@ class PureVersionHistoryPanel extends React.Component {
                   className="loader-version-history"
                   height="28"
                   width="688"
-                  title="version-history-header-loader"
                 />
               )}
             </StyledHeaderContent>
