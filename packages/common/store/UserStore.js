@@ -24,6 +24,8 @@ class UserStore {
     else user = await api.people.getUser();
 
     this.setUser(user);
+
+    return user;
   };
 
   init = async () => {
@@ -111,6 +113,13 @@ class UserStore {
         </Trans>
       );
     });
+  };
+
+  updateAvatarInfo = (avatar, avatarSmall, avatarMedium, avatarMax) => {
+    this.user.avatar = avatar;
+    this.user.avatarSmall = avatarSmall;
+    this.user.avatarMedium = avatarMedium;
+    this.user.avatarMax = avatarMax;
   };
 
   get withActivationBar() {
