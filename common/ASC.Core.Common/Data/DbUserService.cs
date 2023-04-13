@@ -26,6 +26,8 @@
 
 using ASC.Core.Common.EF;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Core.Data;
 
 [Scope]
@@ -550,53 +552,45 @@ public class EFUserService : IUserService
     public void SetUserPhoto(int tenant, Guid id, byte[] photo)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = userDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        var userPhoto = userDbContext.Photos.FirstOrDefault(r => r.UserId == id && r.Tenant == tenant);
+
+        if (photo != null && photo.Length != 0)
         {
-            using var userDbContext = _dbContextFactory.CreateDbContext();
-            using var tr = await userDbContext.Database.BeginTransactionAsync();
-
-            var userPhoto = await userDbContext.Photos.FirstOrDefaultAsync(r => r.UserId == id && r.Tenant == tenant);
-
-            if (photo != null && photo.Length != 0)
+            if (userPhoto == null)
             {
-                if (userPhoto == null)
+                userPhoto = new UserPhoto
                 {
-                    userPhoto = new UserPhoto
-                    {
-                        Tenant = tenant,
-                        UserId = id,
-                        Photo = photo
-                    };
-                }
-                else
-                {
-                    userPhoto.Photo = photo;
-                }
-
-
-                await userDbContext.AddOrUpdateAsync(r => userDbContext.Photos, userPhoto);
-
-                var userEntity = new User
-                {
-                    Id = id,
-                    LastModified = DateTime.UtcNow,
-                    Tenant = tenant
+                    Tenant = tenant,
+                    UserId = id,
+                    Photo = photo
                 };
-
-                userDbContext.Entry(userEntity).Property(x => x.LastModified).IsModified = true;
-
             }
-            else if (userPhoto != null)
+            else
             {
-                userDbContext.Photos.Remove(userPhoto);
+                userPhoto.Photo = photo;
             }
 
-            await userDbContext.SaveChangesAsync();
-            await tr.CommitAsync();
-        }).GetAwaiter()
-          .GetResult();
+
+            userDbContext.AddOrUpdate(userDbContext.Photos, userPhoto);
+
+            var userEntity = new User
+            {
+                Id = id,
+                LastModified = DateTime.UtcNow,
+                Tenant = tenant
+            };
+
+            userDbContext.Users.Attach(userEntity);
+            userDbContext.Entry(userEntity).Property(x => x.LastModified).IsModified = true;
+
+        }
+        else if (userPhoto != null)
+        {
+            userDbContext.Photos.Remove(userPhoto);
+        }
+
+        userDbContext.SaveChanges();
     }
 
     private IQueryable<User> GetUserQuery(UserDbContext userDbContext, int tenant)

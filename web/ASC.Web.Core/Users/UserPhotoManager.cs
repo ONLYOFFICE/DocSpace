@@ -546,7 +546,7 @@ public class UserPhotoManager
         data = TryParseImage(data, -1, OriginalFotoSize, out _, out var width, out var height);
         _userManager.SaveUserPhoto(userID, data);
         SetUserPhotoThumbnailSettings(userID, width, height);
-        _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+     //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
     }
 
 
@@ -561,8 +561,7 @@ public class UserPhotoManager
         {
             _userManager.SaveUserPhoto(userID, data);
             SetUserPhotoThumbnailSettings(userID, width, height);
-            _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
-
+        //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
         }
 
         var store = GetDataStore();
