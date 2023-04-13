@@ -30,6 +30,9 @@ import toastr from "@docspace/components/toast/toastr";
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
 import { EmployeeType } from "@docspace/common/constants";
 import { resendInvitesAgain } from "@docspace/common/api/people";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+
+
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -49,7 +52,7 @@ const StyledContainer = styled.div`
     }
 
     ${isMobile &&
-    css`
+  css`
       height: 60px;
       margin: 0 0 0 -16px;
       width: calc(100% + 32px);
@@ -62,7 +65,7 @@ const StyledContainer = styled.div`
     }
 
     ${isMobileOnly &&
-    css`
+  css`
       height: 52px;
       margin: 0 0 0 -16px;
       width: calc(100% + 32px);
@@ -87,7 +90,7 @@ const StyledContainer = styled.div`
     }
 
     ${isMobile &&
-    css`
+  css`
       grid-template-columns: 1fr auto;
     `}
 
@@ -100,7 +103,7 @@ const StyledContainer = styled.div`
       }
 
       ${isMobile &&
-      css`
+  css`
         line-height: 28px;
       `}
 
@@ -109,7 +112,7 @@ const StyledContainer = styled.div`
       }
 
       ${isMobile &&
-      css`
+  css`
         line-height: 24px;
       `}
     }
@@ -122,7 +125,7 @@ const StyledContainer = styled.div`
       }
 
       ${isMobile &&
-      css`
+  css`
         display: none;
       `}
     }
@@ -131,27 +134,9 @@ const StyledContainer = styled.div`
 
 StyledContainer.defaultProps = { theme: Base };
 
-const StyledInfoPanelToggleWrapper = styled.div`
-  display: flex;
-
+const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
   margin-left: auto;
-
-  @media ${tablet} {
-    display: none;
-  }
-
-  align-items: center;
-  justify-content: center;
-
-  .info-panel-toggle-bg {
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    margin-bottom: 1px;
-  }
+  padding: 0;
 `;
 
 const SectionHeaderContent = (props) => {
@@ -236,8 +221,8 @@ const SectionHeaderContent = (props) => {
       .catch((err) => toastr.error(err));
   }, [resendInvitesAgain]);
 
-  const onSetInfoPanelVisible = () => {
-    setInfoPanelIsVisible(true);
+  const infoPanelVisibleToggle = () => {
+    setInfoPanelIsVisible(!isInfoPanelVisible);
   };
 
   const getContextOptions = () => {
@@ -307,7 +292,7 @@ const SectionHeaderContent = (props) => {
             isIndeterminate={isHeaderIndeterminate}
             headerMenu={headerMenu}
             isInfoPanelVisible={isInfoPanelVisible}
-            toggleInfoPanel={onSetInfoPanelVisible}
+            toggleInfoPanel={infoPanelVisibleToggle}
             withoutInfoPanelToggler={false}
           />
         </div>
@@ -331,22 +316,23 @@ const SectionHeaderContent = (props) => {
               getData={getContextOptions}
               isDisabled={false}
             />
-            {!isInfoPanelVisible && (
-              <StyledInfoPanelToggleWrapper>
-                {!(isTablet() || isSmallTablet() || !isDesktop()) && (
-                  <div className="info-panel-toggle-bg">
-                    <IconButton
-                      id="info-panel-toggle--open"
-                      className="info-panel-toggle"
-                      iconName={PanelReactSvgUrl}
-                      size="16"
-                      isFill={true}
-                      onClick={onSetInfoPanelVisible}
-                    />
-                  </div>
-                )}
-              </StyledInfoPanelToggleWrapper>
-            )}
+            <StyledInfoPanelToggleColorThemeWrapper
+              themeId={ThemeType.InfoPanelToggle}
+              isInfoPanelVisible={isInfoPanelVisible}
+            >
+              {!(isTablet() || isSmallTablet() || !isDesktop()) && (
+                <div className="info-panel-toggle-bg">
+                  <IconButton
+                    id="info-panel-toggle"
+                    className="info-panel-toggle"
+                    iconName={PanelReactSvgUrl}
+                    size="16"
+                    isFill={true}
+                    onClick={infoPanelVisibleToggle}
+                  />
+                </div>
+              )}
+            </StyledInfoPanelToggleColorThemeWrapper>
           </>
         </div>
       )}
