@@ -139,7 +139,7 @@
   "PortalRenamingDescription": "Tu môžete zmeniť adresu portálu.",
   "PortalRenamingLabelText": "Nový názov portálu",
   "PortalRenamingMobile": "Zadajte časť, ktorá sa zobrazí vedľa adresy portálu onlyoffice.com/onlyoffice.eu. \nUpozornenie: Po kliknutí na tlačidlo Uložiť bude Vaša stará adresa portálu dostupná novým používateľom.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0>Zadajte časť, ktorá sa zobrazí vedľa adresy portálu onlyoffice.io.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0>Zadajte časť, ktorá sa zobrazí vedľa adresy portálu {{domain}}.",
   "ProductUserOpportunities": "Zobraziť profily a skupiny",
   "RecoveryFileNotSelected": "Vyskytla sa chyba. Nie je vybratý zálohový súbor.",
   "RestoreBackup": "Obnova dát",

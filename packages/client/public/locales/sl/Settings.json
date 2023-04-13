@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "Tukaj lahko spremenite naslov vašega portala.",
   "PortalRenamingLabelText": "Novo ime portala",
   "PortalRenamingMobile": "Vnesite del, ki se bo pojavil poleg naslova portala onlyoffice.com/onlyoffice.eu. Upoštevajte: vaš stari naslov portala bo na voljo novim uporabnikom takoj, ko kliknete gumb Shrani.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Vnesite del, ki se bo pojavil poleg naslova portala onlyoffice.io.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Vnesite del, ki se bo pojavil poleg naslova portala {{domain}}.",
   "ProductUserOpportunities": "Oglejte si profile in skupine",
   "RecoveryFileNotSelected": "Napaka pri obnovitvi. Datoteka za obnovitev ni izbrana.",
   "RestoreBackup": "Obnovitev podatkov",

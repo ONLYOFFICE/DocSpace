@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "Тут ви можете змінити адресу вашого порталу.",
   "PortalRenamingLabelText": "Нове ім'я порталу",
   "PortalRenamingMobile": "Введіть частину, яка з'явиться біля адресою порталу onlyoffice.com/onlyoffice.eu. Зверніть увагу: ваша стара адреса порталу стане доступною для нових користувачів, коли ви натиснете кнопку Зберегти.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Введіть частину, яка з'явиться біля адресою порталу onlyoffice.io.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Введіть частину, яка з'явиться біля адресою порталу {{domain}}.",
   "ProductUserOpportunities": "Перегляд профілів та груп",
   "RecoveryFileNotSelected": "Помилка відновлення. Файл відновлення не вибрано.",
   "RestoreBackup": "Відновити дані",

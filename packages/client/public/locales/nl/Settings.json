@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "Hier kunt u uw portaaladres veranderen.",
   "PortalRenamingLabelText": "Nieuwe portaalnaam",
   "PortalRenamingMobile": "Voer het deel in dat zal verschijnen naast het onlyoffice.com/onlyoffice.eu portaaladres. Let alstublieft op: uw oude portaaladres zal beschikbaar worden voor nieuwe gebruikers zodra u klikt op de knop Opslaan.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Voer het deel in dat zal verschijnen naast het onlyoffice.io portaaladres.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Voer het deel in dat zal verschijnen naast het {{domain}} portaaladres.",
   "ProductUserOpportunities": "Bekijk profielen en groepen",
   "RecoveryFileNotSelected": "Herstelfout. Herstelbestand niet geselecteerd.",
   "RestoreBackup": "Dataherstel",

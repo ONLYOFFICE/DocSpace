@@ -137,6 +137,14 @@ export const PortalRenamingTooltip = ({ t }) => {
   const pleaseNote = t("Settings:PleaseNote");
   const save = t("Common:SaveButton");
 
+  const hostname = window.location.hostname;
+  const domainParts = hostname.split(".");
+  let domain = "onlyoffice.io";
+
+  if (domainParts?.length === 3) {
+    domain = domainParts.shift().join(".");
+  }
+
   return (
     <StyledTooltip>
       <div className="font-size">
@@ -144,10 +152,11 @@ export const PortalRenamingTooltip = ({ t }) => {
           ns="Settings"
           i18nKey="PortalRenamingSettingsTooltip"
           text={text}
+          domain={domain}
         >
           <div className="display-inline font-size"> {{ text }}</div>
           Enter the part that will appear next to the
-          onlyoffice.com/onlyoffice.eu portal address.
+          {{ domain }} portal address.
         </Trans>
       </div>
       <div className="font-size">

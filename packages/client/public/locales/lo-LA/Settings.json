@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "ທີ່ນີ້ທ່ານສາມາດປ່ຽນທີ່ຢູ່ປະຕູຂອງເຈົ້າໄດ້.",
   "PortalRenamingLabelText": "ໃໝ່ ປະຕູ ຊື່ ",
   "PortalRenamingMobile": "ໃສ່​ສ່ວນ​ທີ່​ຈະ​ປະ​ກົດ​ຢູ່​ຕໍ່​ໄປ​ທີ່​ຢູ່​ປະ​ຕູ onlyoffice.com/onlyoffice.eu. ກະ​ລຸ​ນາ​ບັນ​ທຶກ: ທີ່​ຢູ່​ຂອງ​ປະ​ຕູ​ເກົ່າ​ຂອງ​ທ່ານ​ຈະ​ກາຍ​ເປັນ​ມີ​ໃຫ້​ກັບ​ຜູ້​ໃຊ້ ໃຫມ່ ​ຄັ້ງ​ທີ່​ທ່ານ​ຄລິກ​ໃສ່​ປຸ່ມ​ບັນ​ທຶກ ",
-  "PortalRenamingSettingsTooltip": "<0 >{{text}}</0> ໃສ່ສ່ວນທີ່ຈະປາກົດຖັດຈາກທີ່ຢູ່ປະຕູ onlyoffice.io.",
+  "PortalRenamingSettingsTooltip": "<0 >{{text}}</0> ໃສ່ສ່ວນທີ່ຈະປາກົດຖັດຈາກທີ່ຢູ່ປະຕູ {{domain}}.",
   "ProductUserOpportunities": "ເບິ່ງໂປຣໄຟລ໌ແລະກຸ່ມ",
   "RecoveryFileNotSelected": "ການ​ຟື້ນ​ຕົວ​ຄວາມ​ຜິດ​ພາດ​. ການ​ຟື້ນ​ຕົວ​ໄຟລ​໌​ບໍ່​ໄດ້​ເລືອກ.",
   "RestoreBackup": "ຂໍ້ມູນ ຟື້ນຟູ",

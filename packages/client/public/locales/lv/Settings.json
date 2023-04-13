@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "Šeit jūs varat mainīt savu portāla adresi.",
   "PortalRenamingLabelText": "Jauns portāla nosaukums",
   "PortalRenamingMobile": "Ievadiet daļu, kas parādīsies blakus onlyoffice.com/onlyoffice.eu portāla adresei. Lūdzu, ņemiet vērā: jūsu vecā portāla adrese kļūs pieejama jaunajiem lietotājiem, ja nospiedīsit Saglabāt.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Ievadiet daļu, kas parādīsies blakus onlyoffice.io portāla adresei.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Ievadiet daļu, kas parādīsies blakus {{domain}} portāla adresei.",
   "ProductUserOpportunities": "Skatiet profilus un grupas",
   "RecoveryFileNotSelected": "Atkopšanas kļūda. Atkopšanas fails nav atlasīts.",
   "RestoreBackup": "Datu atjaunošana",
