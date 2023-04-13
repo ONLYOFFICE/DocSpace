@@ -16,7 +16,6 @@
   "LogoutBtn": "Abmelden",
   "LogoutDescription": "Hinweis. Alle aktiven Verbindungen mit Ausnahme dieser Verbindung werden abgemeldet, da sie gerade in Gebrauch ist.",
   "LogoutFrom": "Abmelden von {{platform}} {{browser}} ?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Die Hinweise für die Aktivierung wurden an <strong>{{ email }}</strong> versandt.",
   "MyProfile": "Mein Profil",
   "ProviderSuccessfullyConnected": "Anbieter erfolgreich verbunden",
   "ProviderSuccessfullyDisconnected": "Anbieter erfolgreich getrennt",
