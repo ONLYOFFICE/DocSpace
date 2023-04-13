@@ -74,7 +74,7 @@ const PriceCalculation = ({
     didMountRef.current && !isAlreadyPaid && setShoppingLink();
   }, [managersCount]);
 
-  useEffect(async () => {
+  useEffect(() => {
     didMountRef.current = true;
     return () => {
       timeout && clearTimeout(timeout);
@@ -100,8 +100,8 @@ const PriceCalculation = ({
       source = CancelToken.source();
 
       getPaymentLink(source.token).finally(() => {
-          setIsLoading(false);
-        });
+        setIsLoading(false);
+      });
     }, 1000);
   };
 
