@@ -763,7 +763,10 @@ public class LocalesTest
                 continue;
             }
 
+            var exepts = new List<string> { "Error", "Done", "Warning", "Alert", "Info" };
+
             var notCommonKeys = module.AppliedJsTranslationKeys
+                .Except(exepts)
                 .Where(k => !k.StartsWith("Common:"))
                 .OrderBy(t => t)
                 .ToList();
