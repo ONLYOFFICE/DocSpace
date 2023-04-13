@@ -49,7 +49,7 @@ const getItems = (count) => {
       key: `user_${i}`,
       id: `user_${i}`,
       label: makeName() + " " + i,
-      avatar: ArchiveSvgUrl,
+      icon: CustomSvgUrl,
     });
   }
 
