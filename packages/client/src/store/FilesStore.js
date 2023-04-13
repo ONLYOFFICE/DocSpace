@@ -8,7 +8,6 @@ import {
   FileStatus,
   RoomsType,
   RoomsProviderType,
-  RoomSearchArea,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";

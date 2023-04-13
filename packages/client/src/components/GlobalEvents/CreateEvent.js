@@ -125,7 +125,7 @@ const CreateEvent = ({
     const isPaymentRequiredError = (err) => {
       if (err?.response?.status === 402) setPortalTariff();
     };
-    console.log("window.location", window.location);
+
     if (!extension) {
       createFolder(parentId, newValue)
         .then((folder) => {
