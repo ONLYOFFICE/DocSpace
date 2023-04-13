@@ -28,6 +28,7 @@ const RenameEvent = ({
   selectedFolderId,
 
   setSelectedFolder,
+  roomsRedirectOnDeniedAccess,
 }) => {
   const [startValue, setStartValue] = React.useState("");
 
@@ -75,6 +76,9 @@ const RenameEvent = ({
           .catch((err) => {
             toastr.error(err);
             completeAction(item, type);
+            if (err?.response?.status === 403) {
+              roomsRedirectOnDeniedAccess();
+            }
           })
           .finally(() => {
             clearTimeout(timerId);
@@ -99,6 +103,9 @@ const RenameEvent = ({
           .catch((err) => {
             toastr.error(err);
             completeAction(item, type);
+            if (err?.response?.status === 403) {
+              roomsRedirectOnDeniedAccess();
+            }
           })
           .finally(() => {
             clearTimeout(timerId);
@@ -143,6 +150,7 @@ export default inject(
       addActiveItems,
       updateFile,
       renameFolder,
+      roomsRedirectOnDeniedAccess,
     } = filesStore;
 
     const { id, setSelectedFolder } = selectedFolderStore;
@@ -153,6 +161,7 @@ export default inject(
     const { setEventDialogVisible, eventDialogVisible } = dialogsStore;
 
     return {
+      roomsRedirectOnDeniedAccess,
       setIsLoading,
       addActiveItems,
       updateFile,

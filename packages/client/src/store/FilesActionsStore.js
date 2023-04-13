@@ -838,6 +838,9 @@ class FilesActionStore {
       });
     } catch (err) {
       toastr.error(err);
+      if (err?.response?.status === 403) {
+        this.filesStore.roomsRedirectOnDeniedAccess();
+      }
     } finally {
       clearTimeout(timer);
     }
@@ -858,6 +861,9 @@ class FilesActionStore {
       });
     } catch (err) {
       toastr.error(err);
+      if (err?.response?.status === 403) {
+        this.filesStore.roomsRedirectOnDeniedAccess();
+      }
     } finally {
       clearTimeout(timer);
     }

@@ -8,6 +8,7 @@ import {
   FileStatus,
   RoomsType,
   RoomsProviderType,
+  RoomSearchArea,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
@@ -1302,6 +1303,11 @@ class FilesStore {
       })
       .catch((err) => {
         console.error(err);
+        if (err?.response?.status === 403) {
+          toastr.error(err);
+          this.roomsRedirectOnDeniedAccess();
+          return;
+        }
 
         if (err?.response?.status === 402)
           this.authStore.currentTariffStatusStore.setPortalTariff();
@@ -3423,6 +3429,24 @@ class FilesStore {
   get roomsForDelete() {
     return this.folders.filter((f) => f.security.Delete);
   }
+
+  roomsRedirectOnDeniedAccess = () => {
+    const {
+      isArchiveFolder,
+      isArchiveFolderRoot,
+      archiveFolderId,
+      roomsFolderId,
+    } = this.treeFoldersStore;
+
+    const filter = RoomsFilter.getDefault();
+
+    const archiveRoom = isArchiveFolder || isArchiveFolderRoot;
+    filter.searchArea = archiveRoom
+      ? RoomSearchArea.Archive
+      : RoomSearchArea.Active;
+
+    this.fetchRooms(archiveRoom ? archiveFolderId : roomsFolderId, filter);
+  };
 }
 
 export default FilesStore;
