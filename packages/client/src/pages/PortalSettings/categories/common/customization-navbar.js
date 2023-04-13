@@ -30,6 +30,9 @@ const StyledComponent = styled.div`
         padding-bottom: 5px;
       }
       .category-item_paid {
+        .paid-badge {
+          height: 16px;
+        }
         display: flex;
         svg {
           margin-top: auto;
@@ -152,6 +155,7 @@ const CustomizationNavbar = ({
                 backgroundColor="#EDC409"
                 label={t("Common:Paid")}
                 isPaidBadge={true}
+                className="paid-badge"
               />
             )}
             <StyledArrowRightIcon size="small" color="#333333" />

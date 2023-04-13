@@ -144,7 +144,7 @@ public class FilesModule : FeedModule
 
         return files.Select(f => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(f, folders.FirstOrDefault(r => r.Id.Equals(f.File.ParentId)),
             roomsIds.GetValueOrDefault(f.File.ParentId)), f));
-        }
+    }
 
     public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
@@ -159,10 +159,10 @@ public class FilesModule : FeedModule
 
         if (shareRecord != null)
         {
-            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp, true)
+            var feed = new Feed.Aggregator.Feed(shareRecord.Owner, shareRecord.TimeStamp)
             {
                 Item = SharedFileItem,
-                ItemId = string.Format("{0}_{1}", file.Id, shareRecord.Subject),
+                ItemId = $"{file.Id}_{shareRecord.Subject}",
                 Product = Product,
                 Module = Name,
                 Title = file.Title,
@@ -172,7 +172,7 @@ public class FilesModule : FeedModule
                 AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
                 Keywords = file.Title,
                 Target = shareRecord.Subject,
-                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, file.ParentId.ToString()),
+                GroupId = GetGroupId(SharedFileItem, shareRecord.Owner, shareRecord.TimeStamp, file.ParentId.ToString()),
                 ContextId = contextId
             };
 
@@ -180,11 +180,12 @@ public class FilesModule : FeedModule
         }
 
         var updated = file.Version != 1;
+        var fileModifiedUtc = file.ModifiedOn.ToUniversalTime();
 
-        return new Feed.Aggregator.Feed(file.ModifiedBy, file.ModifiedOn, true)
+        return new Feed.Aggregator.Feed(file.ModifiedBy, fileModifiedUtc)
         {
             Item = FileItem,
-            ItemId = string.Format("{0}_{1}", file.Id, file.Version > 1 ? 1 : 0),
+            ItemId = $"{file.Id}_{(file.Version > 1 ? file.Version : 0)}",
             Product = Product,
             Module = Name,
             Action = updated ? FeedAction.Updated : FeedAction.Created,
@@ -194,7 +195,7 @@ public class FilesModule : FeedModule
             AdditionalInfo = file.ContentLengthString,
             AdditionalInfo2 = file.Encrypted ? "Encrypted" : string.Empty,
             Keywords = file.Title,
-            GroupId = GetGroupId(FileItem, file.ModifiedBy, file.ParentId.ToString(), updated ? 1 : 0),
+            GroupId = GetGroupId(FileItem, file.ModifiedBy, fileModifiedUtc, file.ParentId.ToString(), updated ? 1 : 0),
             ContextId = contextId
         };
     }

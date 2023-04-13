@@ -17,10 +17,16 @@
   "InviteTitle": "Bu portala katılmaya davet edildiniz!",
   "LoginRegistryButton": "Katıl",
   "PassworResetTitle": "Şimdi yeni şifre oluşturabilirsiniz.",
-  "PhoneSubtitle": "İki aşamalı doğrulama ekstra güvenliği sağlamak için etkinleştirilmiştir. Portalda çalışmaya devam etmek için mobil telefon numaranızı giriniz. Mobil telefon numarası ülke koduyla girilmelidir.",
+  "PhoneSubtitle": "İki aşamalı doğrulama ekstra güvenliği sağlamak için etkinleştirilmiştir. DocSpace'te çalışmaya devam etmek için mobil telefon numaranızı giriniz. Mobil telefon numarası ülke koduyla girilmelidir.",
+  "PortalContinueTitle": "Lütfen DocSpace'inizi yeniden etkinleştirmek istediğinizi onaylayın.",
+  "PortalDeactivateTitle": "Lütfen DocSpace'inizi devre dışı bırakmak istediğinizi onaylayın.",
+  "PortalRemoveTitle": "Lütfen DocSpace'inizi silmek istediğinizi onaylayın.",
+  "Reactivate": "Yeniden etkinleştir",
   "SetAppButton": "Uygulamaya bağlan",
   "SetAppDescription": "İki faktörlü kimlik doğrulama etkinleştirildi. DocSpace üzerinde çalışmaya devam etmek için kimlik doğrulama uygulamanızı yapılandırın. <1>Android</1> ve <4>iOS</4> için Google Authenticator'ı veya <8>Windows Phone</8> için Authenticator'ı kullanabilirsiniz.",
   "SetAppInstallDescription": "Uygulamayı bağlamak için QR kodunu tarayın veya gizli anahtarınızı <1>{{ secretKey }}</1> manuel olarak girin ve ardından uygulamanızdan 6 haneli bir kodu aşağıdaki alana girin.",
   "SetAppTitle": "Kimlik doğrulama uygulamanızı yapılandırın",
+  "SuccessDeactivate": "Hesabınız başarıyla devre dışı bırakıldı. 10 saniye içinde <1>siteye</1> yönlendirileceksiniz",
+  "SuccessReactivate": "Hesabınız başarıyla yeniden etkinleştirildi. 10 saniye içinde <1>portal</1>'a yönlendirileceksiniz.",
   "WelcomeUser": "Portalımıza hoş geldiniz!\nBaşlamak için kaydolun veya sosyal ağ üzerinden giriş yapın."
 }

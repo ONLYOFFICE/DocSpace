@@ -190,7 +190,7 @@ public class WhitelabelController : BaseSettingsController
     /// <requiresAuthorization>false</requiresAuthorization>
     /// <collection>list</collection>
     /// <visible>false</visible>
-    [AllowNotPayment, AllowAnonymous]
+    [AllowNotPayment, AllowAnonymous, AllowSuspended]
     [HttpGet("whitelabel/logos")]
     public async IAsyncEnumerable<WhiteLabelItemDto> GetWhiteLabelLogos([FromQuery] WhiteLabelQueryRequestsDto inDto)
     {

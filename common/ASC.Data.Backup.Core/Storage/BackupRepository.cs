@@ -60,7 +60,7 @@ public class BackupRepository : IBackupRepository
     public List<BackupRecord> GetExpiredBackupRecords()
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return backupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
+        return backupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow && b.Removed == false).ToList();
     }
 
     public List<BackupRecord> GetScheduledBackupRecords()

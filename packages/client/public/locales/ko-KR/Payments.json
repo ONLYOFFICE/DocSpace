@@ -1,1 +1,12 @@
-{}
+{
+  "AccessingProblem": "기존 사용자인데 이 스페이스에 액세스하는 데 문제가 있는 경우 관리자에게 문의하시기 바랍니다.",
+  "AdministratorDescription": "DocSpace 구성, 방 생성 및 관리, DocSpace 및 가상 방에서 사용자를 초대하고 관리하는 기능, 액세스 권한을 관리하는 기능.",
+  "Benefits": "혜택",
+  "BusinessExpired": "{{planName}} 요금제가 {{date}}에 만료됩니다",
+  "BusinessFinalDateInfo": "구독이 {{finalDate}}에 업데이트된 요금 및 사양으로 자동 갱신됩니다. Stripe 고객 포털에서 취소하거나 청구 정보를 변경할 수 있습니다.",
+  "BusinessPlanPaymentOverdue": "새 사용자를 추가하고 새 방을 만들 수 없습니다. {{planName}} 요금제가 연체되었습니다",
+  "BusinessRequestDescription": "{{peopleNumber}}명 이상의 관리자가 포함된 요금제는 요청 시에만 제공됩니다",
+  "BusinessSuggestion": "{{planName}} 요금제를 사용자 지정하세요",
+  "BusinessTitle": "{{planName}} 요금제를 사용 중입니다",
+  "BusinessUpdated": "{{planName}} 요금제가 업데이트되었습니다"
+}

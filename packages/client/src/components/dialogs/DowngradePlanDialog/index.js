@@ -99,7 +99,7 @@ const DowngradePlanDialog = ({
       </ModalDialog.Header>
       <ModalDialog.Body>
         <Text fontSize="13px" isBold className="cannot-downgrade-plan">
-          {t("CannotDowngradePlan")} {":"}
+          {t("CannotDowngradePlan")}
         </Text>
         {allowedManagersCountByQuotaComponent}
         {currentAddedManagersCountComponent}

@@ -68,7 +68,7 @@ public class UsersModule : FeedModule
     {
         var fullName = _displayUserSettingsHelper.GetFullUserName(u);
 
-        var feed = new Feed.Aggregator.Feed(u.Id, u.LastModified, true)
+        var feed = new Feed.Aggregator.Feed(u.Id, u.LastModified.ToUniversalTime(), true)
         {
             Item = UserItem,
             ItemId = u.Id.ToString(),

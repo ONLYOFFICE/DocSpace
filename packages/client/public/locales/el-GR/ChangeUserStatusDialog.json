@@ -1,4 +1,6 @@
 {
   "ChangeUserStatusDialog": "Οι χρήστες με κατάσταση '{{ userStatus }}' θα είναι {{ status }}.",
-  "ChangeUserStatusDialogHeader": "Αλλαγή κατάστασης χρήστη"
+  "ChangeUserStatusDialogHeader": "Αλλαγή κατάστασης χρήστη",
+  "ChangeUsersActiveStatus": "eνεργοποιημένο",
+  "ChangeUsersDisableStatus": "aπενεργοποίηση"
 }
