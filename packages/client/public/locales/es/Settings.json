@@ -55,7 +55,7 @@
   "CustomTitles": "Títulos personalizados",
   "CustomTitlesFrom": "De",
   "CustomTitlesSettingsDescription": "Ajustes de bienvenida es un modo de cambiar el título predeterminado en la Página de bienvenida de su portal. El mismo nombre se usa en el campo De para las notificaciones electrónicas de su portal.",
-  "CustomTitlesSettingsTooltip": "<0>{{welcomeText}}</0> es un modo de cambiar el título predeterminado en la <2>{{text}}</2> de su portal. El mismo nombre se usa en el campo <4>{{ from }}</4> para las notificaciones electrónicas de su portal.",
+  "CustomTitlesSettingsTooltip": "<0>{{welcomeText}}</0> es un modo de cambiar el título predeterminado en la <2>{{ text }}</2> de su portal. El mismo nombre se usa en el campo <4>{{ from }}</4> para las notificaciones electrónicas de su portal.",
   "CustomTitlesSettingsTooltipDescription": "Introduzca el nombre necesario en el campo <1>{{ header }}</1>.",
   "CustomTitlesText": "Página de bienvenida",
   "CustomTitlesWelcome": "Ajustes de bienvenida",

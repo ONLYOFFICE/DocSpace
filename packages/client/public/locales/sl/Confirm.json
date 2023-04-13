@@ -7,7 +7,7 @@
   "DeleteProfileConfirmation": "Pozor! Izbrisali boste svoj račun.",
   "DeleteProfileConfirmationInfo": "S klikom na \"izbriši moj račun\" se strinjate z našo <1>Politiko zasebnosti.</1>",
   "DeleteProfileSuccessMessage": "Vaš račun je bil uspešno izbrisan.",
-  "DeleteProfileSuccessMessageInfo": "Oglejte si naš pravilnik o zasebnosti, če želite izvedeti več o brisanju računa in podatkov, povezanih z njim.",
+  "DeleteProfileSuccessMessageInfo": "Oglejte si naš <1>pravilnik o zasebnosti</1>, če želite izvedeti več o brisanju računa in podatkov, povezanih z njim.",
   "EmailAndPasswordCopiedToClipboard": "Email in geslo sta kopirana v odložišče",
   "EnterAppCodeDescription": "Vnesite 6-mestno generirano kodo iz aplikacije. Če nimate dostopa do telefona, uporabite nadomestne kode.",
   "EnterAppCodeTitle": "Vnesite kodo iz aplikacije avtentikacijo",

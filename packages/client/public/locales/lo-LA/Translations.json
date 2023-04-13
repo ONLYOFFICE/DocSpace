@@ -28,7 +28,7 @@
   "Folders": "ໂຟນເດີ",
   "FormTemplates": "ຮູບແບບແບບຟອມ",
   "LinkCopySuccess": "ລິ້ງໄດ້ຖືກສໍາເນົາໄປ clipboard",
-  "LinkValidTime": "ລິ້ງນີ້ໃຊ້ໄດ້ເປັນເວລາ {{day_count}} ມື້ເທົ່ານັ້ນ.",
+  "LinkValidTime": "ລິ້ງນີ້ໃຊ້ໄດ້ເປັນເວລາ {{days_count}} ມື້ເທົ່ານັ້ນ.",
   "MobileAndroid": "ເອົາ ເອ ກະສານສະເພາະ ໃນ Google Play",
   "MobileIos": "ດາວໂຫລດ ເອກະສານ ONLYOFFICE ໃນ App Store",
   "MobileLinux": "ດາວໂຫລດ ONLYOFFICE Desktop Editors ສໍາລັບ Linux",

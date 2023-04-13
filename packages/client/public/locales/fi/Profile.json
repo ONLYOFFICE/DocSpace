@@ -16,7 +16,7 @@
   "LogoutBtn": "Kirjaudu ulos",
   "LogoutDescription": "Huom. Kaikki aktiiviset yhteydet paitsi tämä yhteys kirjataan ulos, koska se on tällä hetkellä käytössä oleva.",
   "LogoutFrom": "Kirjaudu ulos {{platform}} {{browser}} ?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{{email}}</strong>.",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Sähköpostin aktivointiohjeet on lähetetty sähköpostiosoitteeseen <strong>{ {email }}</strong>.",
   "MyProfile": "Profiilini",
   "ProviderSuccessfullyConnected": "Palveluntarjoajan yhdistäminen onnistui",
   "ProviderSuccessfullyDisconnected": "Yhteys palveluntarjoajaan katkaistu",

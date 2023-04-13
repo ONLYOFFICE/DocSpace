@@ -48,6 +48,7 @@
   "Characters": "{{length}} tekens",
   "ClearBackupList": "Verwijder alle back-ups",
   "CompanyInfoSettings": "Bedrijfsinformatie instellingen",
+  "CompanyInfoSettingsDescription": "Deze informatie wordt weergegeven in het venster <1>{link}}</1>.",
   "ConfirmEmailSended": "Bevestiging e-mail is gestuurd naar {{ownerName}}",
   "Custom": "Aangepast",
   "CustomDomains": "Aangepaste domeinen",

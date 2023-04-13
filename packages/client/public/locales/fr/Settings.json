@@ -55,7 +55,7 @@
   "CustomTitles": "Titres personnalisés",
   "CustomTitlesFrom": "De",
   "CustomTitlesSettingsDescription": "Les paramètres de la page d'accueil est un moyen de changer le titre du portail par défaut qui s'affiche sur la Page d'accueil de votre portail.Ce titre est également utilisé pour le champ De des notifications par courrier électronique.",
-  "CustomTitlesSettingsTooltip": "Les <0>{{ welcomeText }}</0> est un moyen de changer le titre du portail par défaut qui s'affiche sur la <2>{{text }}</2> de votre portail.Ce titre est également utilisé pour le champ <4>{{from }}</4> des notifications par courrier électronique.",
+  "CustomTitlesSettingsTooltip": "Les <0>{{ welcomeText }}</0> est un moyen de changer le titre du portail par défaut qui s'affiche sur la <2>{{ text }}</2> de votre portail.Ce titre est également utilisé pour le champ <4>{{ from }}</4> des notifications par courrier électronique.",
   "CustomTitlesSettingsTooltipDescription": "Entrez le nom dans le champ <1>{{ header }}</1>.",
   "CustomTitlesText": "Page d'accueil",
   "CustomTitlesWelcome": "Paramètres de la page d'accueil",
