@@ -91,17 +91,17 @@ const Paging = (props) => {
 };
 
 Paging.propTypes = {
-  /** Label for previous button */
+  /** Label for the previous button */
   previousLabel: PropTypes.string,
-  /** Label for next button */
+  /** Label for the next button */
   nextLabel: PropTypes.string,
-  /** Action for previous button */
+  /** Action for the previous button */
   previousAction: PropTypes.func,
-  /** Action for next button */
+  /** Action for the next button */
   nextAction: PropTypes.func,
-  /** Set previous button disabled */
+  /** Sets previous button disabled */
   disablePrevious: PropTypes.bool,
-  /** Set next button disabled */
+  /** Sets the next button disabled */
   disableNext: PropTypes.bool,
   disableHover: PropTypes.bool,
   /** Initial value for pageItems */

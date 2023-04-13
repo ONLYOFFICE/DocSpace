@@ -162,13 +162,13 @@ FileInput.propTypes = {
   placeholder: PropTypes.string,
   /** Supported size of the input fields */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
-  /** Indicates the input field has scale */
+  /** Indicates that the input field has scale */
   scale: PropTypes.bool,
   /** Accepts class */
   className: PropTypes.string,
-  /** Indicates the input field has an error */
+  /** Indicates that the input field has an error */
   hasError: PropTypes.bool,
-  /** Indicates the input field has a warning */
+  /** Indicates that the input field has a warning */
   hasWarning: PropTypes.bool,
   /** Used as HTML `id` property */
   id: PropTypes.string,
