@@ -148,7 +148,7 @@ const Badges = ({
     : {};
 
   return fileExst ? (
-    <div className="badges additional-badges temp-badges">
+    <div className="badges additional-badges">
       {isEditing && (
         <ColorTheme
           themeId={ThemeType.IconButton}
