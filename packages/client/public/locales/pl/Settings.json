@@ -178,7 +178,6 @@
   "ThirdPartyPropsDeactivated": "Dezaktywowano pomyślnie",
   "ThirdPartyResource": "Zasób strony trzeciej",
   "ThirdPartyResourceDescription": "Kopię zapasową możesz zapisać na koncie w innej usłudze, np. Dropbox, Box.com, OneDrive lub Google Drive. Zanim jednak będziesz w stanie to zrobić, pamiętaj, aby podłączyć swoje konto Dropbox, Box.com, OneDrive lub Google Drive.",
-  "ThirdPartyStorage": "Przechowywanie przez strony trzecie",
   "ThirdPartyStorageDescription": "Kopia zapasowa może być przechowywana przez strony trzecie. Najpierw musisz jednak podłączyć odpowiednią usługę w sekcji 'Integracja'. W przeciwnym razie niniejsze ustawienia będą nieaktywne.",
   "ThirdPartyTitleDescription": "Klucze autoryzacji umożliwiają połączenie usług stron trzecich ze swoim portalem. Dzięki nim z łatwością zalogujesz się poprzez Facebooka, Google lub LinkedIn, bądź dodasz konto Dropbox, OneDrive itp., aby rozpocząć pracę z przechowywanymi tam plikami bezpośrednio z poziomu modułu Dokumentów.",
   "TimeZone": "Strefa czasowa",
