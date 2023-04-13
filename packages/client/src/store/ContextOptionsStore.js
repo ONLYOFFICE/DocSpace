@@ -609,8 +609,7 @@ class ContextOptionsStore {
   };
 
   onShowEditingToast = (t) => {
-    // const FilesIsEditing = "File is editing"
-    toastr.error(t("Files:FilesIsEditing"));
+    toastr.error(t("Files:DocumentEdited"));
   };
 
   onClickMute = (e, item, t) => {

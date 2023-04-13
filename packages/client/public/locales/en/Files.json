@@ -115,5 +115,6 @@
   "ViewList": "List",
   "ViewOnlyRooms": "View-only",
   "ViewTiles": "Tiles",
-  "WithSubfolders": "With subfolders"
+  "WithSubfolders": "With subfolders",
+  "DocumentEdited": "Cannot perform the action because the document is being edited."
 }
