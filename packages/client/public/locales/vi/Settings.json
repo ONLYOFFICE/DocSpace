@@ -75,7 +75,7 @@
   "PortalRenamingDescription": "Ở đây bạn có thể thay đổi địa chỉ cổng thông tin của bạn.",
   "PortalRenamingLabelText": "Tên cổng thông tin mới",
   "PortalRenamingMobile": "Nhập phần sẽ xuất hiện bên cạnh địa chỉ cổng thông tin onlyoffice.com/onlyoffice.eu. Lưu ý: địa chỉ cổng thông tin cũ của bạn sẽ khả dụng cho người dùng mới ngay khi bạn bấm vào nút Lưu.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Nhập phần sẽ xuất hiện bên cạnh địa chỉ cổng thông tin onlyoffice.io.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Nhập phần sẽ xuất hiện bên cạnh địa chỉ cổng thông tin {{domain}}.",
   "ProductUserOpportunities": "Xem hồ sơ và nhóm",
   "RecoveryFileNotSelected": "Lỗi khôi phục. Tập tin khôi phục không được chọn.",
   "RestoreBackup": "Khôi phục dữ liệu",

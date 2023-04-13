@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "Ici vous pouvez changer l'adresse du portail.",
   "PortalRenamingLabelText": "Nouveau nom du portail",
   "PortalRenamingMobile": "Entrez la partie de l'adresse du portail qui va apparaître à côté de onlyoffice.com/onlyoffice.eu. Remarque : votre ancienne adresse du portail sera disponible pour les nouveaux utilisateurs une fois que vous cliquez sur le bouton Enregistrer.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Entrez la partie de l'adresse du portail qui va apparaître à côté de onlyoffice.io.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Entrez la partie de l'adresse du portail qui va apparaître à côté de {{domain}}.",
   "ProductUserOpportunities": "Afficher les profils et groupes",
   "RecoveryFileNotSelected": "Erreur de récupération. Fichier de récupération non sélectionné.",
   "RestoreBackup": "Restauration des données",

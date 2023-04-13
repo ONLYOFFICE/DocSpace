@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "여기에서 포털 주소를 변경할 수 있습니다.",
   "PortalRenamingLabelText": "새 포털 이름",
   "PortalRenamingMobile": "onlyoffice.com/onlyoffice.eu 포털 주소 옆에 표시될 부분을 입력하세요. 참고: 저장 버튼을 클릭하면 새로운 사용자가 이전 포털 주소를 이용할 수 있게 됩니다.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> onlyoffice.io 포털 주소 옆에 표시될 부분을 입력하세요.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> {{domain}} 포털 주소 옆에 표시될 부분을 입력하세요.",
   "ProductUserOpportunities": "프로필 및 그룹 보기",
   "RecoveryFileNotSelected": "복원 오류입니다. 복원 파일이 선택되지 않았습니다",
   "RestoreBackup": "데이터 복원",
