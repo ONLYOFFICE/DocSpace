@@ -201,6 +201,7 @@
   "SaveButton": "Tallenna",
   "SaveHereButton": "Tallenna tähän",
   "Search": "Haku",
+  "SearchEmptyRoomsDescription": "Tätä suodatinta vastaavia huoneita ei ole. Kokeile erilaista tai tyhjennä suodatin nähdäksesi kaikki huoneet.",
   "SelectAction": "Valitse",
   "SelectAll": "Valitse kaikki",
   "SelectDOCXFormat": "Valitse tiedosto .DOCX-muodossa",

@@ -201,6 +201,7 @@
   "SaveButton": "Зберегти",
   "SaveHereButton": "Зберегти тут",
   "Search": "Пошук",
+  "SearchEmptyRoomsDescription": "Немає кімнат, які відповідають цьому фільтру. Спробуйте інший або очистіть фільтр, щоб побачити всі кімнати.",
   "SelectAction": "Виберіть",
   "SelectAll": "Вибрати всі",
   "SelectDOCXFormat": "Вибрати файл в форматі .DOCX",

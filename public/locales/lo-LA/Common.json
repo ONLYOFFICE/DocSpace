@@ -201,6 +201,7 @@
   "SaveButton": "ບັນທຶກ",
   "SaveHereButton": "ບັນທຶກ ນີ້",
   "Search": "ຄົ້ນຫາ",
+  "SearchEmptyRoomsDescription": "ບໍ່ມີຫ້ອງໃດກົງກັບຕົວກອງນີ້. ລອງໃຊ້ອັນອື່ນ ຫຼືຕົວກັ່ນຕອງທີ່ຈະແຈ້ງເພື່ອເບິ່ງທຸກຫ້ອງ.",
   "SelectAction": "ເລືອກ",
   "SelectAll": "ເລືອກທັງໝົດ",
   "SelectDOCXFormat": "ເລືອກໄຟລ໌ໃນ . ຮູບແບບ DOCX",

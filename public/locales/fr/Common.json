@@ -205,6 +205,7 @@
   "SaveButton": "Enregistrer",
   "SaveHereButton": "Sauvegarder ici",
   "Search": "Recherche",
+  "SearchEmptyRoomsDescription": "Aucune salle ne correspond à ce filtre. Essayez-en un autre ou effacez le filtre pour afficher toutes les salles.",
   "SelectAction": "Sélectionner",
   "SelectAll": "Sélectionner tout",
   "SelectDOCXFormat": "Sélectionner le fichier au format .DOCX",

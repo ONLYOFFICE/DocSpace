@@ -201,6 +201,7 @@
   "SaveButton": "Запази",
   "SaveHereButton": "Запази тук",
   "Search": "Търсене",
+  "SearchEmptyRoomsDescription": "Няма стаи, които отговарят на този филтър. Опитайте с други филтри или ги махнете, за да видите всички стаи.",
   "SelectAction": "Избери",
   "SelectAll": "Избери всички",
   "SelectDOCXFormat": "Избери файл във формат .DOCX",

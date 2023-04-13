@@ -205,6 +205,7 @@
   "SaveButton": "Salva",
   "SaveHereButton": "Salvare qui",
   "Search": "Cerca",
+  "SearchEmptyRoomsDescription": "Nessuna stanza corrisponde a questo filtro. Provane uno diverso o cancella il filtro per visualizzare tutte le stanze.",
   "SelectAction": "Seleziona",
   "SelectAll": "Seleziona tutto",
   "SelectDOCXFormat": "Selezionare file in formato .DOCX",

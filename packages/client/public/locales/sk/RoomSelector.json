@@ -1,6 +1,5 @@
 {
   "EmptyRoomsDescription": "Vytvorte prvú miestnosť v Moje miestnosti.",
   "EmptyRoomsHeader": "Zatiaľ tu nie sú žiadne miestnosti",
-  "RoomList": "Zoznam miestností",
-  "SearchEmptyRoomsDescription": "Tomuto filtru nezodpovedá žiadna miestnosť. Ak chcete zobraziť všetky miestnosti, skúste iný filter alebo zrušte ho."
+  "RoomList": "Zoznam miestností"
 }

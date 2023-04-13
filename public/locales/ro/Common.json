@@ -205,6 +205,7 @@
   "SaveButton": "Salvează",
   "SaveHereButton": "Salvează aici",
   "Search": "Căutare",
+  "SearchEmptyRoomsDescription": "Filtru de sală nu a produs rezultate. Încercaţi un alt filtru sau ştergeţi filtrul pentru a vedea toate sălile.",
   "SelectAction": "Selectare",
   "SelectAll": "Selectare total",
   "SelectDOCXFormat": "Selectare fișier format.DOCX",

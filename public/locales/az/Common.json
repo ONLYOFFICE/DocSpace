@@ -201,6 +201,7 @@
   "SaveButton": "Yadda saxlayın",
   "SaveHereButton": "Burada yadda saxlayın",
   "Search": "Axtarın",
+  "SearchEmptyRoomsDescription": "Bu filtrə uyğun otaq yoxdur. Bütün otaqlara baxmaq üçün fərqli filtri və ya təmiz filtri sınayın.",
   "SelectAction": "Seçmək",
   "SelectAll": "Hamısını seçin",
   "SelectDOCXFormat": ".DOCX formatlı faylı seçin",
