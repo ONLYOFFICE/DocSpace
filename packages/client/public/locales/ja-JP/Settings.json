@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "ここではポータルアドレスを変更できます。",
   "PortalRenamingLabelText": "新のポータル名",
   "PortalRenamingMobile": "「onlyoffice.com/onlyoffice.eu」の前に表示される部分を入力してください。ご注意ください：保存ボタンをクリックすると、古いポータルアドレスが新しいユーザに使用できるようになります。",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0>「onlyoffice.com/onlyoffice.eu」の前に表示される部分を入力してください。",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0>「onlyoffice.io」の前に表示される部分を入力してください。",
   "ProductUserOpportunities": "プロフィールやグループの閲覧",
   "RecoveryFileNotSelected": "回復エラー。回復ファイルが選択されていません。",
   "RestoreBackup": "データ復元",

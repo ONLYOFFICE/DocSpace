@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "在此处，您可以更改您的门户地址。",
   "PortalRenamingLabelText": "新门户名称",
   "PortalRenamingMobile": "输入将出现在onlyoffice.com/onlyoffice.eu门户地址旁边的部分。请注意：点击保存按钮后，您的旧门户网站地址将可用于新的用户。",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0>输入将出现在onlyoffice.com/onlyoffice.eu门户地址旁边的部分。",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> 输入将出现在onlyoffice.io门户地址旁边的部分。",
   "ProductUserOpportunities": "查看档案与群组",
   "RecoveryFileNotSelected": "恢复错误。未选择恢复文件",
   "RestoreBackup": "数据恢复",
