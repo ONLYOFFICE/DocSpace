@@ -7,7 +7,7 @@
   "DeleteProfileConfirmation": "Chú ý! Bạn sắp xóa tài khoản của mình.",
   "DeleteProfileConfirmationInfo": "Với việc nhấp vào\"Xóa tài khoản của tôi\"bạn đồng ý với <1>Chính sách Bảo mật của chúng tôi.</1>",
   "DeleteProfileSuccessMessage": "Tài khoản của bạn đã được xóa thành công.",
-  "DeleteProfileSuccessMessageInfo": "Hãy xem chính sách Bảo mật của chúng tôi để tìm hiểu thêm về cách xóa tài khoản của bạn và dữ liệu liên quan đến tài khoản đó.",
+  "DeleteProfileSuccessMessageInfo": "Hãy xem <1>chính sách Bảo mật</1> của chúng tôi để tìm hiểu thêm về cách xóa tài khoản của bạn và dữ liệu liên quan đến tài khoản đó.",
   "EmailAndPasswordCopiedToClipboard": "Đã sao chép email và mật khẩu vào bộ nhớ tạm",
   "EnterAppCodeDescription": "Nhập mã gồm 6 chữ số được tạo từ ứng dụng của bạn. Nếu bạn không có quyền truy cập vào điện thoại của mình, hãy sử dụng mã dự phòng.",
   "EnterAppCodeTitle": "Nhập mã từ ứng dụng xác thực",

@@ -16,7 +16,7 @@
   "LogoutBtn": "Terminar sessão",
   "LogoutDescription": "Nota. Todas as ligações ativas exceto esta ligação terão a sua sessão terminada, tal como está configurado atualmente.",
   "LogoutFrom": "Terminar a sessão na {{platform}} {{browser}}?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <strong>{{{ email }}</strong>.",
+  "MessageEmailActivationInstuctionsSentOnEmail": "As instruções de ativação de e-mail foram enviadas para o endereço de e-mail <strong>{{ email }}</strong>.",
   "MyProfile": "O meu perfil",
   "ProviderSuccessfullyConnected": "Operadora ligada com êxito",
   "ProviderSuccessfullyDisconnected": "Operadora desligada com êxito",

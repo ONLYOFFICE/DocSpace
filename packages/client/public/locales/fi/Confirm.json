@@ -7,7 +7,7 @@
   "DeleteProfileConfirmation": "Huomio! Olet poistamassa tilisi.",
   "DeleteProfileConfirmationInfo": "Napsauttamalla \"Poista tilini\", hyväksyt <1>yksityisyyskäytäntömme.</1>",
   "DeleteProfileSuccessMessage": "Tilisi poistaminen onnistui.",
-  "DeleteProfileSuccessMessageInfo": "Katso yksityisyyskäytäntömme jos haluat lisätietoja tilisi ja siihen liittyvien tietojen poistamisesta.",
+  "DeleteProfileSuccessMessageInfo": "Katso <1>yksityisyyskäytäntömme</1> jos haluat lisätietoja tilisi ja siihen liittyvien tietojen poistamisesta.",
   "EmailAndPasswordCopiedToClipboard": "Sähköposti ja salasana oon kopioitu leikepöydälle",
   "EnterAppCodeDescription": "Anna sovelluksesi luoma 6-numeroinen koodi. Jos sinulla ei ole pääsyä puhelimeesi, käytä varakoodeja.",
   "EnterAppCodeTitle": "Anna koodi todentamissovelluksesta",

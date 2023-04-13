@@ -21,7 +21,7 @@
   "CopyItems": "<strong>{{qty}}</strong> ອົງປະກອບທີ່ຖືກຄັດລອກ",
   "CreateRoom": "ສ້າງຫ້ອງ",
   "CustomRooms": "ກຳນົດເອງ",
-  "DaysRemaining": "ມື້ທີ່ຍັງເຫຼືອ: {{ daysRemaning }}",
+  "DaysRemaining": "ມື້ທີ່ຍັງເຫຼືອ: {{daysRemaining}}",
   "DisableNotifications": "ປິດການແຈ້ງເຕືອນ",
   "Document": "ເອກະສານ",
   "EditRoom": "ແກ້ໄຂຫ້ອງ",

@@ -54,7 +54,7 @@
   "CustomTitles": "Vlastné názvy",
   "CustomTitlesFrom": "Od",
   "CustomTitlesSettingsDescription": "Nastavenia úvodnej stránky je spôsob, ako zmeniť predvolený názov portálu, ktorý sa má zobraziť na Uvítacia stránka Vášho portálu. Rovnaký názov sa používa aj v poli Od v e-mailových oznámeniach portálu.",
-  "CustomTitlesSettingsTooltip": "<0>{{welcomeText }}</0> je spôsob, ako zmeniť predvolený názov portálu, ktorý sa má zobraziť na <2>{{ text }}</2> Vášho portálu. Rovnaký názov sa používa aj v poli <4>{{ from }}</4> v e-mailových oznámeniach portálu.",
+  "CustomTitlesSettingsTooltip": "<0>{{ welcomeText }}</0> je spôsob, ako zmeniť predvolený názov portálu, ktorý sa má zobraziť na <2>{{ text }}</2> Vášho portálu. Rovnaký názov sa používa aj v poli <4>{{ from }}</4> v e-mailových oznámeniach portálu.",
   "CustomTitlesSettingsTooltipDescription": "Do poľa <1>{{ header }}</1> zadajte požadovaný názov.",
   "CustomTitlesText": "Uvítacia stránka",
   "CustomTitlesWelcome": "Nastavenia úvodnej stránky",

@@ -20,7 +20,7 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Vyberte úložiště",
   "ThirdPartyStorageDescription": "Jako úložiště dat pro tuto místnost použijte služby třetích stran. V připojeném úložišti bude vytvořena nová složka pro ukládání dat této místnosti.",
   "ThirdPartyStorageNoStorageAlert": "Předtím je třeba připojit příslušnou službu v části „Integrace“. V opačném případě nebude připojení možné.",
-  "ThirdPartyStoragePermanentSettingDescription": "Soubory jsou uloženy v úložišti třetí strany {{thirdpartyTitle}} ve složce „{{thirdpartyFolderName}}“.\n<strong>{{thirdpartyPath}}</strong>",
+  "ThirdPartyStoragePermanentSettingDescription": "Soubory jsou uloženy v úložišti třetí strany {{thirdpartyTitle}} ve složce \"{{thirdpartyFolderName}}“.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Chcete-li připojit úložiště třetí strany, musíte přidat příslušnou službu v části Integrace v nastavení služby DocSpace. Pro povolení integrace se obraťte na vlastníka nebo správce služby DocSpace.",
   "ThirdPartyStorageTitle": "Úložiště třetích stran",
   "ViewOnlyRoomDescription": "Sdílejte připravené dokumenty, zprávy, dokumentaci a další soubory k prohlížení.",

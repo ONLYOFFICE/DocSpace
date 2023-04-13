@@ -16,7 +16,7 @@
   "DowngradeNow": "ດາວເກຣດດຽວນີ້",
   "ErrorNotification": "ລົ້ມເຫລວໃນການປັບປຸງແຜນພາສີ. ກະລຸນາລອງໃໝ່ໃນພາຍຫຼັງ ຫຼືຕິດຕໍ່ຝ່າຍຂາຍ.",
   "GracePeriodActivatedDescription": "ໃນລະຫວ່າງໄລຍະເວລາຜ່ອນຜັນ, ຜູ້ເບິ່ງແຍງບໍ່ສາມາດສ້າງຫ້ອງໃໝ່ ແລະເພີ່ມຜູ້ໃຊ້ໃໝ່ໄດ້. ຫຼັງຈາກຄົບກຳນົດໄລຍະເວລາຜ່ອນຜັນ, DocSpace ຈະບໍ່ສາມາດໃຊ້ໄດ້ຈົນກວ່າຈະມີການຈ່າຍເງິນ.",
-  "GracePeriodActivatedInfo": "ໄລຍະເວລາຜ່ອນຜັນມີຜົນ <1>ຈາກ {{ fromDate }} ຫາ {{ byDate } }< /1> (ມື້ທີ່ຍັງເຫຼືອ: {{ delayDaysCount }}).",
+  "GracePeriodActivatedInfo": "ໄລຍະເວລາຜ່ອນຜັນມີຜົນ <1>ຈາກ {{fromDate}} ຫາ {{byDate}}</1> (ມື້ທີ່ຍັງເຫຼືອ: {{delayDaysCount}}).",
   "InvalidEmailWithActiveSubscription": "ການສະໝັກໃຊ້ຂອງທ່ານຍັງຄົງມີຢູ່, ແຕ່ພວກເຮົາແນະນຳໃຫ້ເລືອກຜູ້ຈ່າຍເງິນໃໝ່ທີ່ເຂົ້າເຖິງການຕັ້ງຄ່າການສະໝັກໃຊ້ໃນ DocSpace .",
   "InvalidEmailWithActiveSubscriptionForAdmin": "ການສະໝັກໃຊ້ຂອງທ່ານຍັງຄົງມີຢູ່, ແຕ່ພວກເຮົາແນະນຳໃຫ້ຕິດຕໍ່ ເຈົ້າຂອງ DocSpace ເພື່ອເລືອກຜູ້ຈ່າຍເງິນໃໝ່.",
   "InvalidEmailWithoutActiveSubscription": "ພວກເຮົາແນະນຳໃຫ້ເລືອກຜູ້ຈ່າຍເງິນໃໝ່ທີ່ເຂົ້າເຖິງການຕັ້ງຄ່າການສະໝັກໃຊ້ໃນ DocSpace.",
