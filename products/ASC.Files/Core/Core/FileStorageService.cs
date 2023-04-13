@@ -2976,7 +2976,14 @@ public class FileStorageService<T> //: IFileStorageService
             message = message.Substring(0, maxMessageLength) + "...";
         }
 
-        _ = _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
+        try
+        {
+            await _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
+        }
+        catch(Exception ex)
+        {
+            _logger.ErrorWithException(ex);
+        }
 
         return showSharingSettings ? await GetSharedInfoShortFileAsync(fileId) : null;
     }
