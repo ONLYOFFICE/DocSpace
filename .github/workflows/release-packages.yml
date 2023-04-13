@@ -1,0 +1,72 @@
+name: Release RPM DEB
+on:
+  push: 
+    tags: 
+      - '*'
+
+jobs:
+
+  create_relese:
+    name: Create release 
+    runs-on: ubuntu-latest
+    permissions:
+        contents: write
+    steps: 
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+          name: Release v-${{ github.run_number }}
+          tag_name: "${{ github.event.release.tag_name }}"
+          body: |
+            Release plugin packages for ONLYOFFICE Document Server:           
+            - .deb
+            - .rpm
+          draft: false
+  
+
+  build_deb:
+    name: Build .deb package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Get files from repository. Path /home/runner/work/onlyoffice.github.io/onlyoffice.github.io
+        uses: actions/checkout@v2
+        
+      - name: INSTALL tools
+        run: sudo apt install dh-make
+        
+      - name: BUILD package DEB
+        run: |
+          cd sdkjs-plugins/packages/deb/     
+          dpkg-buildpackage -b -uc -us -d -j4
+        
+      - name: Upload assets DEB
+        uses: softprops/action-gh-release@v1
+        with:
+          files: /home/runner/work/onlyoffice.github.io/onlyoffice.github.io/sdkjs-plugins/packages/*.deb
+          
+
+  build_rpm:
+    name: Build .rpm package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        plug_name: ["-chess"]    
+    steps:
+      - name: Get files from repository. Path /home/runner/work/onlyoffice.github.io/onlyoffice.github.io
+        uses: actions/checkout@v2
+        
+      - name: INSTALL tools & BUILD package RPM
+        run: |
+          sudo apt-get install rpm
+          rpmbuild -bb sdkjs-plugins/packages/rpm/onlyoffice-documentserver-plugin${{ matrix.plug_name }}.spec
+  
+      - name: Upload assets RPM 
+        uses: softprops/action-gh-release@v1
+        with:
+          files: /home/runner/rpmbuild/RPMS/noarch/onlyoffice-documentserver-plugin${{ matrix.plug_name }}*.rpm
