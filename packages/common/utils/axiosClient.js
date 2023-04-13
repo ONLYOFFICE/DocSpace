@@ -150,6 +150,19 @@ class AxiosClient {
               // window.location.href = this.paymentsURL;
             }
             break;
+          case 403:
+            const pathname = window.location.pathname;
+            const isRooms =
+              pathname.indexOf("/rooms/shared") !== -1 ||
+              pathname.indexOf("/rooms/archived") !== -1;
+
+            if (!isRooms) return;
+
+            setTimeout(() => {
+              window.location.replace("/");
+            }, 1000);
+
+            break;
           default:
             break;
         }

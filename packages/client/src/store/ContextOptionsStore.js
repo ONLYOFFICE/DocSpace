@@ -222,9 +222,6 @@ class ContextOptionsStore {
   finalizeVersion = (id) => {
     this.filesActionsStore.finalizeVersionAction(id).catch((err) => {
       toastr.error(err);
-      if (err?.response?.status === 403) {
-        this.filesStore.roomsRedirectOnDeniedAccess();
-      }
     });
   };
 

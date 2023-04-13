@@ -50,7 +50,6 @@ const CreateEvent = ({
   eventDialogVisible,
   keepNewFileName,
   setPortalTariff,
-  roomsRedirectOnDeniedAccess,
 }) => {
   const [headerTitle, setHeaderTitle] = React.useState(null);
   const [startValue, setStartValue] = React.useState("");
@@ -126,7 +125,7 @@ const CreateEvent = ({
     const isPaymentRequiredError = (err) => {
       if (err?.response?.status === 402) setPortalTariff();
     };
-
+    console.log("window.location", window.location);
     if (!extension) {
       createFolder(parentId, newValue)
         .then((folder) => {
@@ -139,10 +138,6 @@ const CreateEvent = ({
         .catch((e) => {
           isPaymentRequiredError(e);
           toastr.error(e);
-
-          if (e?.response?.status === 403) {
-            roomsRedirectOnDeniedAccess();
-          }
         })
         .finally(() => {
           const folderIds = [+id];
@@ -164,10 +159,6 @@ const CreateEvent = ({
           })
           .then(() => completeAction(item, type))
           .catch((err) => {
-            if (err?.response?.status === 403) {
-              roomsRedirectOnDeniedAccess();
-            }
-
             isPaymentRequiredError(e);
 
             let errorMessage = "";
@@ -232,10 +223,6 @@ const CreateEvent = ({
           .catch((e) => {
             isPaymentRequiredError(e);
             toastr.error(e);
-
-            if (e?.response?.status === 403) {
-              roomsRedirectOnDeniedAccess();
-            }
           })
           .finally(() => {
             const fileIds = [+id];
@@ -275,9 +262,6 @@ const CreateEvent = ({
           .catch((e) => {
             isPaymentRequiredError(e);
             toastr.error(e);
-            if (e?.response?.status === 403) {
-              roomsRedirectOnDeniedAccess();
-            }
           })
           .finally(() => {
             const fileIds = [+id];
@@ -326,7 +310,6 @@ export default inject(
       openDocEditor,
       setIsUpdatingRowItem,
       setCreatedItem,
-      roomsRedirectOnDeniedAccess,
     } = filesStore;
 
     const { gallerySelected, setGallerySelected } = oformsStore;
@@ -359,7 +342,6 @@ export default inject(
     const { keepNewFileName } = settingsStore;
 
     return {
-      roomsRedirectOnDeniedAccess,
       setPortalTariff,
       setEventDialogVisible,
       eventDialogVisible,
