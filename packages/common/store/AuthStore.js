@@ -76,11 +76,8 @@ class AuthStore {
   updateTariff = async () => {
     this.setIsUpdatingTariff(true);
 
-    await Promise.all([
-      this.currentQuotaStore.setPortalQuota(),
-      this.currentTariffStatusStore.setPortalTariff(),
-    ]);
-
+    await this.currentQuotaStore.setPortalQuota();
+    await this.currentTariffStatusStore.setPortalTariff();
     await this.currentTariffStatusStore.setPayerInfo();
 
     this.setIsUpdatingTariff(false);
