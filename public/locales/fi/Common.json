@@ -170,7 +170,7 @@
   "PayBeforeTheEndGracePeriod": "Suorita maksu ennen kuin lisäaika päättyy.",
   "PaymentsTitle": "Maksut",
   "People": "Ihmiset",
-  "PerUserMonth": "<1>{{valuuttaSymboli}}</1><1>{{hinta}}</1> per ylläpitäjä/tehokäyttäjä /kuukausi",
+  "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> per ylläpitäjä/tehokäyttäjä /kuukausi",
   "Petabyte": "PB",
   "Phone": "Puhelin",
   "Plugin": "Kytkentä",

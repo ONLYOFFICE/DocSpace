@@ -23,7 +23,7 @@
   "FeedRenameRoom": "Սենյակը <strong>«{{oldRoomTitle}}»</strong> վերանվանվել է <strong>«{{roomTitle}}»</strong>:",
   "FeedUpdateFile": "Ֆայլը արդիացվեց",
   "FeedUpdateRoom": "Պատկերակը փոխվել է",
-  "FeedUpdateUser": "նշանակվել է դեր {{դեր}}",
+  "FeedUpdateUser": "նշանակվել է դեր {{role}}",
   "FileExtension": "ֆայլի ընդլայնում",
   "FilesEmptyScreenText": "Ֆայլի և պանակի մանրամասները տես այստեղ",
   "ItemsSelected": "Ընտրված միավորները",

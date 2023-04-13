@@ -40,7 +40,7 @@
   "BrandingSectionDescription": "DocSpaceのインターフェイス内に表示される企業情報、外部リソースへのリンク、メールアドレスの追加を指定してください。",
   "BrandingSubtitle": "このオプションを使用すると、ユーザーにオンブランドのエクスペリエンスを提供することができます。",
   "BreakpointWarningText": "このセクションはデスクトップ版でのみ利用可能です",
-  "BreakpointWarningTextPrompt": "<1>{sectionName}</1>の設定にアクセスするには、デスクトップサイトをご利用ください。",
+  "BreakpointWarningTextPrompt": "<1>{{sectionName}}</1>の設定にアクセスするには、デスクトップサイトをご利用ください。",
   "ButtonsColor": "ボタン",
   "ByApp": "認証アプリで",
   "BySms": "smsで",

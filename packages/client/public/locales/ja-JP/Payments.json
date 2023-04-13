@@ -4,7 +4,7 @@
   "Benefits": "メリット",
   "BusinessExpired": "{{planName}}プランは{{date}}で期限切れとなりました。",
   "BusinessFinalDateInfo": "サブスクリプションは、価格と仕様を更新して{{finalDate}}日に自動更新されます。Stripeカスタマーポータルでキャンセルまたは請求先情報を変更することができます。",
-  "BusinessPlanPaymentOverdue": "新規ユーザーの追加や新規ルームの作成ができません。{planName}}プランの支払い期限を過ぎています。",
+  "BusinessPlanPaymentOverdue": "新規ユーザーの追加や新規ルームの作成ができません。{{planName}}プランの支払い期限を過ぎています。",
   "BusinessRequestDescription": " より多くの{{peopleNumber}}管理者/パワーユーザー用料金プランは、リクエストに応じて提供いたします。",
   "BusinessSuggestion": "{{planName}}のプランをカスタマイズする",
   "BusinessTitle": "{{planName}}プランをご利用いただいています。",
