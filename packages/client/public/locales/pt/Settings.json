@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "Aqui pode mudar o endereço do seu portal.",
   "PortalRenamingLabelText": "Novo nome de portal",
   "PortalRenamingMobile": "Introduza a parte que irá aparecer junto ao endereço do portal onlyoffice.com/onlyoffice.eu portal. Por favor, note: o seu antigo endereço ficará disponível para novos utilizadores assim que clicar no botão de Guardar.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Introduza a parte que irá aparecer junto ao endereço do portal onlyoffice.com/onlyoffice.eu.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Introduza a parte que irá aparecer junto ao endereço do portal onlyoffice.io.",
   "ProductUserOpportunities": "Ver perfis e grupos",
   "RecoveryFileNotSelected": "Erro na recuperação. O ficheiro de Recuperação não foi selecionado.",
   "RestoreBackup": "Restaurar Dados",

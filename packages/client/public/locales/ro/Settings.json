@@ -140,7 +140,7 @@
   "PortalRenamingDescription": "Aici puteți schimba adresa de portal dvs.",
   "PortalRenamingLabelText": "O nouă denumire de portal",
   "PortalRenamingMobile": "Introduceți acea parte care va apărea pe lângă adresă de portal onlyoffice.com/onlyoffice.eu. Vă rugăm să rețineți: adresa dvs. de portal veche va deveni disponibilă pentru utilizatorii odată ce faceți clic pe butonul Salvare.",
-  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Introduceți acea parte care va apărea pe lângă adresă de portal onlyoffice.com/onlyoffice.eu.",
+  "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Introduceți acea parte care va apărea pe lângă adresă de portal onlyoffice.io.",
   "ProductUserOpportunities": "Afișați profile și grupe",
   "RecoveryFileNotSelected": "Eroare la recuperarea. Fișierul de recuperare nu a fost selectat.",
   "RestoreBackup": "Restaurarea datelor",
