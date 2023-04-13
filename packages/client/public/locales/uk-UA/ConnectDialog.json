@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Заголовок папки",
   "ConnectionUrl": "URL-адреса підключення",
   "Login": "Вхід",
-  "Reconnect": "Перепідключитися"
+  "Reconnect": "Перепідключитися",
+  "SuccessfulConnectionOfAThirdParty": "Сторонню службу успішно підключено."
 }

@@ -49,10 +49,17 @@ const TypeCell = ({ t, item, sideColor }) => {
 
   const type = item.isRoom ? getRoomType() : getItemType();
   const Exst = fileExst ? fileExst.slice(1).toUpperCase() : "";
+  const data = `${type} ${Exst}`;
 
   return (
-    <StyledText fontSize="12px" fontWeight="600" color={sideColor} truncate>
-      {type} {Exst}
+    <StyledText
+      fontSize="12px"
+      fontWeight="600"
+      color={sideColor}
+      truncate
+      title={data}
+    >
+      {data}
     </StyledText>
   );
 };

@@ -53,7 +53,7 @@ public class ApiSystemHelper
         using var hasher = new HMACSHA1(_skey);
         var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-        return $"ASC {pkey}:{now}:{hash}";
+        return $"ASC {pkey}:{now}:{hash}1"; //hack for .net
     }
 
     #region system

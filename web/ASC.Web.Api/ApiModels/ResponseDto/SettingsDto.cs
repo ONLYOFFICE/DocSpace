@@ -57,6 +57,7 @@ public class SettingsDto
     public string ZendeskKey { get; set; }
     public string BookTrainingEmail { get; set; }
     public string DocumentationEmail { get; set; }
+    public string LegalTerms { get; set; }
 
     public PluginsDto Plugins { get; set; }
 

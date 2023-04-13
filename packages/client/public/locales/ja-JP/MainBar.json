@@ -8,7 +8,7 @@
   "StorageAndRoomHeader": "ストレージやルームの制限を超えそうです。",
   "StorageAndUserHeader": "ストレージと管理者/パワーユーザーの制限を超えそうです。",
   "StorageQuotaDescription": "不要なファイルを削除するか、<1>{{clickHere}}</1>して、DocSpaceに適した料金プランを見つけることができます。",
-  "StorageQuotaHeader": "ストレージのスペースは、もうすぐサイズ上限を超えます：{{currentValue}} / {{maxValue}}。",
-  "UserQuotaDescription": "お使いのポータルに適した料金プランを探すには、<1>{{clickHere}}</1>。",
+  "StorageQuotaHeader": "ストレージのスペースは、もうすぐサイズ上限を超えます：{{currentValue}} / {{maxValue}}",
+  "UserQuotaDescription": "お使いのDocSpaceに適した料金プランを選択するには、<1>{{clickHere}}</1>。",
   "UserQuotaHeader": "管理者/パワーユーザー数を超えそうです：{{currentValue}} / {{maxValue}}"
 }

@@ -42,7 +42,7 @@
   "StandardDecryptionAlgorithm": "Algoritmo Predefinido de Desencriptação",
   "TurnOnSSO": "Permitir o Início de Sessão Único",
   "TurnOnSSOCaption": "Ative esta opção se quiser adicionar automaticamente utilizadores do serviço SSO ao seu espaço.",
-  "UploadXML": "Carregue os metadados através de um XML para preencher os campos obrigatórios automaticamente",
+  "UploadXML": "Carregue os metadados através de um XML para preencher os campos obrigatórios automaticamente.",
   "UploadXMLPlaceholder": "URL para o XML com os metadados do IdP",
   "UsedFor": "Utilizar para",
   "idpAuthRequest": "Sinal para Verificar Respostas de Autenticação ",

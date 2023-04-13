@@ -225,7 +225,6 @@ CMD ["ASC.Files.dll", "ASC.Files"]
 FROM dotnetrun AS files_services
 RUN apt-get -y update && \
     apt-get install -yq ffmpeg
-
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py

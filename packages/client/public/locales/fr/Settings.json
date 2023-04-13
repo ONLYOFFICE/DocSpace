@@ -180,7 +180,7 @@
   "ThirdPartyResourceDescription": "La sauvegarde peut être enregistrée sur votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive). Il vous faut connecter votre compte tiers (Dropbox, Box.com, OneDrive ou Google Drive) avant de pouvoir y enregistrer votre sauvegarde.",
   "ThirdPartyStorage": "Moteur de stockage tiers",
   "ThirdPartyStorageDescription": "La sauvegarde peut être enregistrée sur un stockage tiers. Auparavant, il faut vous connecter le service correspondant dans la section 'Intégration'. Sinon, les paramètres suivants seront désactivés.",
-  "ThirdPartyTitleDescription": "Avec les clés d'autorisation, vous pouvez connecter des services tiers à votre portail. Connectez vous facilement à Facebook, Twitter ou LinkedIn; travaillez avec des fichiers stockés sur Dropbox, Onedrive etc. depuis le module Documents.",
+  "ThirdPartyTitleDescription": "Avec les clés d'autorisation, vous pouvez connecter des services tiers à votre portail. Connectez vous facilement à Facebook, Google ou LinkedIn; travaillez avec des fichiers stockés sur Dropbox, Onedrive etc. depuis le module Documents.",
   "TimeZone": "Fuseau horaire",
   "TrustedMail": "Paramètres de domaines de messagerie autorisés",
   "TrustedMailDescription": "Les paramètres de domaine de messagerie de confiance permettent de spécifier les serveurs de messagerie utilisés pour l'auto-enregistrement des utilisateurs.",

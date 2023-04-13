@@ -5,7 +5,7 @@
   "CurrentNumber": "Vaše aktuální číslo mobilního telefonu",
   "DeleteProfileBtn": "Smazat můj účet",
   "DeleteProfileConfirmation": "Pozor! Chystáte se smazat svůj účet.",
-  "DeleteProfileConfirmationInfo": "Kliknutím na \"Smazat můj účet\" souhlasíte s našimi Zásadami ochrany osobních údajů.",
+  "DeleteProfileConfirmationInfo": "Kliknutím na \"Smazat můj účet\" souhlasíte s našimi <1>Zásadami ochrany osobních údajů.</1>",
   "DeleteProfileSuccessMessage": "Váš účet byl úspěšně smazán.",
   "DeleteProfileSuccessMessageInfo": "Více informací o vymazání vašeho účtu a údajů s ním spojených naleznete v našich Zásadách ochrany osobních údajů.",
   "EmailAndPasswordCopiedToClipboard": "Email a heslo zkopírované do schránky",
@@ -28,5 +28,6 @@
   "SetAppTitle": "Nastavení aplikace autentizačního zařízení",
   "SuccessDeactivate": "Váš účet byl úspěšně deaktivován. Za 10 sekund budete přesměrováni na <1>stránku</1>.",
   "SuccessReactivate": "Váš účet byl úspěšně reaktivován. Za 10 sekund budete přesměrováni na <1>portál</1>.",
+  "SuccessRemoved": "Váš účet byl úspěšně odstraněn. Za 10 sekund budete přesměrováni na <1>stránku</1>.",
   "WelcomeUser": "Vítejte na našem DocSpace!\nChcete-li začít, zaregistrujte se nebo se přihlaste prostřednictvím sociálních sítí."
 }

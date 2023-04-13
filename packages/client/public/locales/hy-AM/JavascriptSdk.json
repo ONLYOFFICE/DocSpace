@@ -1,0 +1,22 @@
+{
+  "Ascending": "Բարձրանալով",
+  "CopyWindowCode": "Պատճենել պատուհանի ներդրման կոդը",
+  "DataDisplay": "Տվյալների ցուցադրման կարգավորումներ",
+  "Descending": "Նվազող",
+  "Destroy": "Ոչնչացնել",
+  "EnterCount": "Մուտքագրեք հաշվարկը",
+  "EnterHeight": "Մուտքագրեք բարձրությունը",
+  "EnterId": "Մուտքագրեք ID-ն",
+  "EnterPage": "Մուտքագրեք համարի էջը",
+  "EnterWidth": "Մուտքագրեք լայնությունը",
+  "FolderId": "Թղթապանակի ID",
+  "FrameId": "Շրջանակի ID",
+  "Header": "Վերնագիր",
+  "ItemsCount": "Նյութերը հաշվում են",
+  "JavascriptSdk": "Javascript sdk",
+  "Menu": "ՄԵՆՈՒ",
+  "Page": "Էջ",
+  "SearchTerm": "Որոնման տերմին",
+  "SortOrder": "Տեսակավորելու կարգը",
+  "WindowParameters": "Պատուհանների պարամետրեր"
+}

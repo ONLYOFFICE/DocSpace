@@ -1,0 +1,22 @@
+{
+  "Ascending": "Aufsteigend",
+  "CopyWindowCode": "Fenster-Einbettungscode kopieren",
+  "DataDisplay": "Einstellungen für die Datenanzeige",
+  "Descending": "Absteigend",
+  "Destroy": "Zerstören",
+  "EnterCount": "Anzahl eingeben",
+  "EnterHeight": "Höhe eingeben",
+  "EnterId": "ID eingeben",
+  "EnterPage": "Nummernseite eingeben",
+  "EnterWidth": "Breite eingeben",
+  "FolderId": "Ordner-ID",
+  "FrameId": "Frame-ID",
+  "Header": "Header",
+  "ItemsCount": "Artikel zählen",
+  "JavascriptSdk": "Javascript-SDK",
+  "Menu": "Speisekarte",
+  "Page": "Seite",
+  "SearchTerm": "Suchbegriff",
+  "SortOrder": "Sortierreihenfolge",
+  "WindowParameters": "Fensterparameter"
+}

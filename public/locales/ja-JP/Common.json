@@ -171,7 +171,7 @@
   "PasswordLimitSpecialSymbols": "特殊な文字",
   "PasswordLimitUpperCase": "大文字",
   "PasswordMinimumLength": "最小の長さ",
-  "PayBeforeTheEndGracePeriod": "猶予期間内に必ずお支払いください",
+  "PayBeforeTheEndGracePeriod": "猶予期間内に必ずお支払いください。",
   "PaymentsTitle": "お支払い",
   "People": "方々",
   "PerUserMonth": "<1>{{currencySymbol}}</1><1>{{price}}</1> 每个管理员/高级用户/月",

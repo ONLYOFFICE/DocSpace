@@ -5,7 +5,7 @@
   "CurrentNumber": "Twój aktualny numer telefonu komórkowego",
   "DeleteProfileBtn": "Usuń moje konto",
   "DeleteProfileConfirmation": "Uwaga! Zamierzasz usunąć swoje konto.",
-  "DeleteProfileConfirmationInfo": "Klikając przycisk \"Usuń moje konto\", wyrażasz zgodę na zasady naszej Polityki prywatności.",
+  "DeleteProfileConfirmationInfo": "Klikając przycisk \"Usuń moje konto\", wyrażasz zgodę na zasady naszej <1>Polityki prywatności.</1>",
   "DeleteProfileSuccessMessage": "Twoje konto zostało pomyślnie usunięte.",
   "DeleteProfileSuccessMessageInfo": "Zapoznaj się z naszą Polityką prywatności, aby dowiedzieć się więcej na temat usunięcia swojego konta oraz powiązanych z nim danych.",
   "EmailAndPasswordCopiedToClipboard": "E-mail i hasło zostały skopiowane do schowka",

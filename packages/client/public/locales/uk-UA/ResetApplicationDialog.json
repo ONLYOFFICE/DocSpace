@@ -1,4 +1,5 @@
 {
   "ResetApplicationDescription": "Буде скинута конфігурація програми автентифікації",
-  "ResetApplicationTitle": "Скинути конфігурацію програми"
+  "ResetApplicationTitle": "Скинути конфігурацію програми",
+  "SuccessResetApplication": "Параметри застосунку, що використовуються для автентифікації, успішно скинуто."
 }
