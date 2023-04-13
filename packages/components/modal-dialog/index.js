@@ -129,20 +129,20 @@ ModalDialog.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   children: PropTypes.any,
 
-  /** Display dialog or not */
+  /** Sets the dialog to display */
   visible: PropTypes.bool,
-  /** Will be triggered when a close button is clicked */
+  /** Sets a callback function that is triggered when the close button is clicked */
   onClose: PropTypes.func,
 
-  /** Display type */
+  /** Displays type */
   displayType: PropTypes.oneOf(["modal", "aside"]),
   /** Detailed display type for each dimension */
   displayTypeDetailed: PropTypes.object,
 
-  /** Show loader in body */
+  /** Shows loader in body */
   isLoading: PropTypes.bool,
 
-  /**The displayed dialog can be closed or not */
+  /** Sets the displayed dialog to be closed or open */
   isCloseable: PropTypes.bool,
 
   /** **`MODAL-ONLY`**  
@@ -172,7 +172,7 @@ ModalDialog.propTypes = {
 
   /** **`ASIDE-ONLY`**  
 
-  Gets bool to lock or unlock body scroll */
+  Enables body scroll */
   isScrollLocked: PropTypes.bool,
 
   /** **`ASIDE-ONLY`**  
