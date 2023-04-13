@@ -26,13 +26,26 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class AuthServiceRequestsDto
 {
+    /// <summary>Name</summary>
     public string Name { get; set; }
+
+    /// <summary>Title</summary>
     public string Title { get; set; }
+
+    /// <summary>Description</summary>
     public string Description { get; set; }
+
+    /// <summary>Instruction</summary>
     public string Instruction { get; set; }
+
+    /// <summary>Can be set or not</summary>
     public bool CanSet { get; set; }
+
+    /// <summary>List of authorization keys.</summary>
     public List<AuthKey> Props { get; set; }
 
     public AuthServiceRequestsDto()

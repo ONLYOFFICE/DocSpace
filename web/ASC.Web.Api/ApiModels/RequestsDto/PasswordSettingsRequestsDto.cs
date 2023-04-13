@@ -26,25 +26,27 @@
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class PasswordSettingsRequestsDto
 {
     /// <summary>
-    /// Minimal length password has
+    /// Minimum password length
     /// </summary>
     public int MinLength { get; set; }
 
     /// <summary>
-    /// Password must contains upper case
+    /// Includes uppercase letters or not
     /// </summary>
     public bool UpperCase { get; set; }
 
     /// <summary>
-    /// Password must contains digits
+    /// Includes digits or not
     /// </summary>
     public bool Digits { get; set; }
 
     /// <summary>
-    /// Password must contains special symbols
+    /// Includes special symbols or not
     /// </summary>
     public bool SpecSymbols { get; set; }
 }

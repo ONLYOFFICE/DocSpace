@@ -26,31 +26,65 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class AuthRequestsDto
 {
+    /// <summary>Username / email</summary>
     public string UserName { get; set; }
+
+    /// <summary>Password</summary>
     public string Password { get; set; }
+
+    /// <summary>Password hash</summary>
     public string PasswordHash { get; set; }
+
+    /// <summary>Provider type</summary>
     public string Provider { get; set; }
+
+    /// <summary>Provider access token</summary>
     public string AccessToken { get; set; }
+
+    /// <summary>Serialized user profile</summary>
     public string SerializedProfile { get; set; }
+
+    /// <summary>Two-factor authentication code</summary>
     public string Code { get; set; }
+
+    /// <summary>Code for getting a token</summary>
     public string CodeOAuth { get; set; }
+
+    /// <summary>Session based authentication or not</summary>
     public bool Session { get; set; }
 
+    /// <summary>Confirmation data</summary>
     public ConfirmData ConfirmData { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class MobileRequestsDto
 {
+    /// <summary>Mobile phone</summary>
     public string MobilePhone { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class ConfirmData
 {
+    /// <summary>Email address</summary>
     public string Email { get; set; }
+
+    /// <summary>Module</summary>
     public string Module { get; set; }
+
+    /// <summary>Access an account for the first time or not</summary>
     public bool? First { get; set; }
+
+    /// <summary>Sends SMS code or not</summary>
     public bool? Sms { get; set; }
+
+    /// <summary>Key</summary>
     public string Key { get; set; }
 }

@@ -26,11 +26,16 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class WebhooksLogRequest
 {
+    /// <summary>Time when a webhook was delivered</summary>
     public DateTime? Delivery { get; set; }
 
+    /// <summary>Hook URI</summary>
     public string HookUri { get; set; }
 
+    /// <summary>Webhook ID</summary>
     public int WebhookId { get; set; }
 }

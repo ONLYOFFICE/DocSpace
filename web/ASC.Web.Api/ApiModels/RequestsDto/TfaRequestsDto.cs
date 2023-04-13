@@ -26,16 +26,33 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class TfaRequestsDto
 {
+    /// <summary>TFA type (None, Sms, or App)</summary>
     public string Type { get; set; }
+
+    /// <summary>User ID</summary>
+    /// <example>"9924256A-739C-462b-AF15-E652A3B1B6EB"</example>
     public Guid? Id { get; set; }
+
+    /// <summary>List of trusted IP addresses</summary>
     public List<string> TrustedIps { get; set; }
+
+    /// <summary>List of users who must use the TFA verification</summary>
+    /// <example>["9924256A-739C-462b-AF15-E652A3B1B6EB"]</example>
     public List<Guid> MandatoryUsers { get; set; }
+
+    /// <summary>List of groups who must use the TFA verification</summary>
+    /// <example>["9924256A-739C-462b-AF15-E652A3B1B6EB"]</example>
     public List<Guid> MandatoryGroups { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class TfaValidateRequestsDto
 {
+    /// <summary>TFA code</summary>
     public string Code { get; set; }
 }

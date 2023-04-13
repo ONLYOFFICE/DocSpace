@@ -31,9 +31,11 @@ namespace ASC.Data.Backup.ApiModels;
 public class BackupScheduleDto
 {
     /// <summary>Storage type</summary>
+    /// <example>"Documents"</example>
     public string StorageType { get; set; }
 
     /// <summary>Storage parameters</summary>
+    /// <example>[{"Key": "some text", "Value": "some text"}]</example>
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
 
     /// <summary>Maximum number of the stored backup copies</summary>
@@ -48,11 +50,14 @@ public class BackupScheduleDto
 public class Cron
 {
     /// <summary>Period</summary>
+    /// <example>0</example>
     public string Period { get; set; }
 
     /// <summary>Hour</summary>
+    /// <example>0</example>
     public string Hour { get; set; }
 
     /// <summary>Day</summary>
+    /// <example>0</example>
     public string Day { get; set; }
 }

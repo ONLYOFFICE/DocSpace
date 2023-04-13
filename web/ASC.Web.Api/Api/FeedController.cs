@@ -93,7 +93,7 @@ public class FeedController : ControllerBase
     /// <param type="System.Nullable{System.Boolean}, System" name="onlyNew">Displays only fresh feeds</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withRelated">Includes the associated feeds related to the entity with the specified ID</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="timeReaded">Time when the feeds were read</param>
-    /// <returns>List of filtered feeds with the dates when they were read</returns>
+    /// <returns type="System.Object, System">List of filtered feeds with the dates when they were read</returns>
     /// <path>api/2.0/feed/filter</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("filter")]
@@ -176,7 +176,7 @@ public class FeedController : ControllerBase
     /// <short>
     /// Count fresh feeds
     /// </short>
-    /// <returns>Number of fresh feeds</returns>
+    /// <returns type="System.Object, System">Number of fresh feeds</returns>
     /// <path>api/2.0/feed/newfeedscount</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("newfeedscount")]

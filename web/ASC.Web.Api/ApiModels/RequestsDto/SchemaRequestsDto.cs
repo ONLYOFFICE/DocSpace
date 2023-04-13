@@ -26,17 +26,40 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class SchemaRequestsDto
 {
+    /// <summary>Team template ID</summary>
     public string Id { get; set; }
+
+    /// <summary>Team template name</summary>
     public string Name { get; set; }
+
+    /// <summary>User caption</summary>
     public string UserCaption { get; set; }
+
+    /// <summary>Users caption</summary>
     public string UsersCaption { get; set; }
+
+    /// <summary>Group caption</summary>
     public string GroupCaption { get; set; }
+
+    /// <summary>Groups caption</summary>
     public string GroupsCaption { get; set; }
+
+    /// <summary>User status caption</summary>
     public string UserPostCaption { get; set; }
+
+    /// <summary>Registration date caption</summary>
     public string RegDateCaption { get; set; }
+
+    /// <summary>Group lead caption</summary>
     public string GroupHeadCaption { get; set; }
+
+    /// <summary>Guest caption</summary>
     public string GuestCaption { get; set; }
+
+    /// <summary>Guests caption</summary>
     public string GuestsCaption { get; set; }
 }

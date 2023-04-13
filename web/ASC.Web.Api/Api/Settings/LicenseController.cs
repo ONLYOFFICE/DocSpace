@@ -77,7 +77,7 @@ public class LicenseController : BaseSettingsController
     /// </summary>
     /// <short>Refresh the license</short>
     /// <category>License</category>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/license/refresh</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("license/refresh")]
@@ -100,7 +100,7 @@ public class LicenseController : BaseSettingsController
     /// Activate a license
     /// </short>
     /// <category>License</category>
-    /// <returns>Message about the result of activating license</returns>
+    /// <returns type="System.Object, System">Message about the result of activating license</returns>
     /// <path>api/2.0/settings/license/accept</path>
     /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]
@@ -146,7 +146,7 @@ public class LicenseController : BaseSettingsController
     /// Activate a trial license
     /// </short>
     /// <category>License</category>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/license/trial</path>
     /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
@@ -214,7 +214,7 @@ public class LicenseController : BaseSettingsController
     /// Request a license
     /// </short>
     /// <category>License</category>
-    /// <returns>Boolean value: true if the license is required</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the license is required</returns>
     /// <path>api/2.0/settings/license/required</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -233,9 +233,9 @@ public class LicenseController : BaseSettingsController
     /// <short>
     /// Upload a license
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters to upload a license: <![CDATA[Files (IEnumerable&lt;IFormFile&gt;) - license attachments]]></param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters to upload a license</param>
     /// <category>License</category>
-    /// <returns>License</returns>
+    /// <returns type="System.Object, System">License</returns>
     /// <path>api/2.0/settings/license</path>
     /// <httpMethod>POST</httpMethod>
     [AllowNotPayment]

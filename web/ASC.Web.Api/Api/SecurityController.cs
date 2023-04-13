@@ -83,9 +83,10 @@ public class SecurityController : ControllerBase
     /// Get login history
     /// </short>
     /// <category>Login history</category>
-    /// <returns>List of login events</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto}, System.Collections.Generic">List of login events</returns>
     /// <path>api/2.0/security/audit/login/last</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("audit/login/last")]
     public IEnumerable<LoginEventDto> GetLastLoginEvents()
     {
@@ -103,9 +104,10 @@ public class SecurityController : ControllerBase
     /// Get audit trail data
     /// </short>
     /// <category>Audit trail data</category>
-    /// <returns>List of audit trail data</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.AuditEventDto}, System.Collections.Generic">List of audit trail data</returns>
     /// <path>api/2.0/security/audit/events/last</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("audit/events/last")]
     public IEnumerable<AuditEventDto> GetLastAuditEvents()
     {
@@ -127,9 +129,10 @@ public class SecurityController : ControllerBase
     /// <param type="ASC.MessagingSystem.Core.MessageAction, ASC.MessagingSystem.Core" name="action">Action</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Start date</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">End date</param>
-    /// <returns>List of filtered login events</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto}, System.Collections.Generic">List of filtered login events</returns>
     /// <path>api/2.0/security/audit/login/filter</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("/audit/login/filter")]
     public IEnumerable<LoginEventDto> GetLoginEventsByFilter(Guid userId,
     MessageAction action,
@@ -172,9 +175,10 @@ public class SecurityController : ControllerBase
     /// <param type="System.String, System" name="target">Target</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Start date</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">End date</param>
-    /// <returns>List of filtered audit trail data</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.AuditEventDto}, System.Collections.Generic">List of filtered audit trail data</returns>
     /// <path>api/2.0/security/audit/events/filter</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("/audit/events/filter")]
     public IEnumerable<AuditEventDto> GetAuditEventsByFilter(Guid userId,
             ProductType productType,
@@ -213,7 +217,7 @@ public class SecurityController : ControllerBase
     /// Get audit trail types
     /// </short>
     /// <category>Audit trail data</category>
-    /// <returns>Audit trail types</returns>
+    /// <returns type="System.Object, System">Audit trail types</returns>
     /// <path>api/2.0/security/audit/types</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -240,7 +244,7 @@ public class SecurityController : ControllerBase
     /// <category>Audit trail data</category>
     /// <param type="System.Nullable{ASC.AuditTrail.Types.ProductType}, System" name="productType">Product</param>
     /// <param type="System.Nullable{ASC.AuditTrail.Types.ModuleType}, System" name="moduleType">Module</param>
-    /// <returns>Audit trail mappers</returns>
+    /// <returns type="System.Object, System">Audit trail mappers</returns>
     /// <path>api/2.0/security/audit/mappers</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -275,7 +279,7 @@ public class SecurityController : ControllerBase
     /// Generate the login history report
     /// </short>
     /// <category>Login history</category>
-    /// <returns>URL to the xlsx report file</returns>
+    /// <returns type="System.Object, System">URL to the xlsx report file</returns>
     /// <path>api/2.0/security/audit/login/report</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/login/report")]
@@ -307,7 +311,7 @@ public class SecurityController : ControllerBase
     /// Generate the audit trail report
     /// </short>
     /// <category>Audit trail data</category>
-    /// <returns>URL to the xlsx report file</returns>
+    /// <returns type="System.Object, System">URL to the xlsx report file</returns>
     /// <path>api/2.0/security/audit/events/report</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/events/report")]
@@ -342,7 +346,7 @@ public class SecurityController : ControllerBase
     /// Get the audit trail settings
     /// </short>
     /// <category>Audit trail data</category>
-    /// <returns>Audit settings</returns>
+    /// <returns type="ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Tenants">Audit settings</returns>
     /// <path>api/2.0/security/audit/settings/lifetime</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("audit/settings/lifetime")]
@@ -362,16 +366,8 @@ public class SecurityController : ControllerBase
     /// Set the audit trail settings
     /// </short>
     /// <category>Audit trail data</category>
-    /// <param type="ASC.Core.Tenants.TenantAuditSettingsWrapper, ASC.Core.Tenants" name="wrapper">Audit trail settings: <![CDATA[
-    /// <ul>
-    ///     <li><b>Settings</b> (TenantAuditSettings) - audit trail settings:</li>
-    ///     <ul>
-    ///         <li><b>LoginHistoryLifeTime</b> (integer) - login history lifetime,</li>
-    ///         <li><b>AuditTrailLifeTime</b> (integer) - audit trail lifetime.</li>
-    ///     </ul>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Audit trail settings</returns>
+    /// <param type="ASC.Core.Tenants.TenantAuditSettingsWrapper, ASC.Core.Tenants" name="wrapper">Audit trail settings</param>
+    /// <returns type="ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Tenants">Audit trail settings</returns>
     /// <path>api/2.0/security/audit/settings/lifetime</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/settings/lifetime")]

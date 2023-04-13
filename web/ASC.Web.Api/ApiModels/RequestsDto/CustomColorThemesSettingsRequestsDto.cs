@@ -26,8 +26,13 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class CustomColorThemesSettingsRequestsDto
 {
+    /// <summary>Custom color theme settings</summary>
     public CustomColorThemesSettingsItem Theme { get; set; }
+
+    /// <summary>Selected or not</summary>
     public int? Selected { get; set; }
 }

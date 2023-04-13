@@ -26,38 +26,56 @@
 
 namespace ASC.Web.Core.WhiteLabel;
 
+/// <summary>
+/// </summary>
 public class AdditionalWhiteLabelSettingsWrapper
 {
+    /// <summary>Additional white label settings</summary>
     public AdditionalWhiteLabelSettings Settings { get; set; }
 }
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class AdditionalWhiteLabelSettings : ISettings<AdditionalWhiteLabelSettings>
 {
+    /// <summary>Additional white label settings helper</summary>
     public AdditionalWhiteLabelSettingsHelperInit AdditionalWhiteLabelSettingsHelper;
 
+    /// <summary>Specifies if the start document is enabled or not</summary>
     public bool StartDocsEnabled { get; set; }
 
+    /// <summary>Specifies if the help center is enabled or not</summary>
     public bool HelpCenterEnabled { get; set; }
 
+    /// <summary>Specifies if feedback and support are available or not</summary>
     public bool FeedbackAndSupportEnabled { get; set; }
 
+    /// <summary>Feedback and support URL</summary>
     public string FeedbackAndSupportUrl { get; set; }
 
+    /// <summary>Specifies if the user forum is enabled or not</summary>
     public bool UserForumEnabled { get; set; }
 
+    /// <summary>User forum URL</summary>
     public string UserForumUrl { get; set; }
 
+    /// <summary>Specifies if the video guides are enabled or not</summary>
     public bool VideoGuidesEnabled { get; set; }
 
+    /// <summary>Video guides URL</summary>
     public string VideoGuidesUrl { get; set; }
 
+    /// <summary>Sales email</summary>
     public string SalesEmail { get; set; }
 
+    /// <summary>URL to pay for the portal</summary>
     public string BuyUrl { get; set; }
 
+    /// <summary>Specifies if the license agreements are enabled or not</summary>
     public bool LicenseAgreementsEnabled { get; set; }
 
+    /// <summary>License agreements URL</summary>
     public string LicenseAgreementsUrl { get; set; }
 
     [JsonIgnore]

@@ -26,9 +26,14 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class WhiteLabelRequestsDto
 {
+    /// <summary>Logo text</summary>
     public string LogoText { get; set; }
+
+    /// <summary>Tenant IDs with their logos (light or dark)</summary>
     public IEnumerable<ItemKeyValuePair<string, LogoRequestsDto>> Logo { get; set; }
 }
 
@@ -38,7 +43,10 @@ public class LogoRequestsDto
     public string Dark { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class WhiteLabelQueryRequestsDto
 {
+    /// <summary>Specifies if the logo is for a dark theme or not</summary>
     public bool? IsDark { get; set; }
 }

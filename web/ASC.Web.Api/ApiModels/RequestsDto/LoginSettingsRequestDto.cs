@@ -26,11 +26,16 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class LoginSettingsRequestDto
 {
+    /// <summary>Maximum number of the user attempts to log in</summary>
     public int AttemptCount { get; set; }
 
+    /// <summary>The duration of the account suspension for unsuccessful login attempts</summary>
     public int BlockTime { get; set; }
 
+    /// <summary>Expected server response time</summary>
     public int CheckPeriod { get; set; }
 }

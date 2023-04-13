@@ -101,9 +101,10 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get storages</short>
-    /// <returns>List of storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
+    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.ApiModel.ResponseDto.StorageDto}, System.Collections.Generic">List of storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
     /// <path>api/2.0/settings/storage</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage")]
     public List<StorageDto> GetAllStorages()
     {
@@ -124,7 +125,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get the storage progress</short>
-    /// <returns>Storage progress</returns>
+    /// <returns type="System.Double, System">Storage progress</returns>
     /// <path>api/2.0/settings/storage/progress</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
@@ -148,8 +149,8 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <short>Start the storage encryption process</short>
     /// <category>Encryption</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageEncryptionRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Storage encryption request parameters: NotifyUsers (bool) - specifies if the users will be notified about the encryption process or not</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageEncryptionRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Storage encryption request parameters</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/encryption/start</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("encryption/start")]
@@ -276,7 +277,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <short>Get the storage encryption settings</short>
     /// <category>Encryption</category>
-    /// <returns>Storage encryption settings: password, status, notify users or not</returns>
+    /// <returns type="ASC.Core.Encryption.EncryptionSettings, ASC.Core.Encryption">Storage encryption settings: password, status, notify users or not</returns>
     /// <path>api/2.0/settings/encryption/settings</path>
     /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
@@ -320,7 +321,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <short>Get the storage encryption progress</short>
     /// <category>Encryption</category>
-    /// <returns>Storage encryption progress</returns>
+    /// <returns type="System.Nullable{System.Double}, System">Storage encryption progress</returns>
     /// <path>api/2.0/settings/encryption/progress</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("encryption/progress")]
@@ -349,13 +350,8 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Update a storage</short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, AASC.Web.Api.ApiModel.RequestsDto" name="inDto">Storage settings request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Module</b> (string) - storage name,</li>
-    ///     <li><b>Props</b> (IEnumerable&lt;ItemKeyValuePair&lt;string, string&gt;&gt;) - new storage properties.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Updated storage settings: module, properties</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, AASC.Web.Api.ApiModel.RequestsDto" name="inDto">Storage settings request parameters</param>
+    /// <returns type="ASC.Data.Storage.Configuration.StorageSettings, ASC.Data.Storage.Configuration">Updated storage settings: module, properties</returns>
     /// <path>api/2.0/settings/storage</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage")]
@@ -435,9 +431,10 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get the CDN storages</short>
-    /// <returns>List of the CDN storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
+    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.ApiModel.ResponseDto.StorageDto}, System.Collections.Generic">List of the CDN storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
     /// <path>api/2.0/settings/storage/cdn</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage/cdn")]
     public List<StorageDto> GetAllCdnStorages()
     {
@@ -458,13 +455,8 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Update the CDN storage</short>
-    /// <returns>Updated CDN storage: module, properties</returns>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, AASC.Web.Api.ApiModel.RequestsDto" name="inDto">CDN storage settings request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Module</b> (string) - CDN storage name,</li>
-    ///     <li><b>Props</b> (IEnumerable&lt;ItemKeyValuePair&lt;string, string&gt;&gt;) - new CDN storage properties.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <returns type="ASC.Data.Storage.Configuration.CdnStorageSettings, ASC.Data.Storage.Configuration">Updated CDN storage: module, properties</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageRequestsDto, AASC.Web.Api.ApiModel.RequestsDto" name="inDto">CDN storage settings request parameters</param>
     /// <path>api/2.0/settings/storage/cdn</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("storage/cdn")]
@@ -531,9 +523,10 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get the backup storages</short>
-    /// <returns>List of the backup storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
+    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.ApiModel.ResponseDto.StorageDto}, System.Collections.Generic">List of the backup storages with the following parameters: ID, title, list of authentication keys, current storage or not, storage can be set or not</returns>
     /// <path>api/2.0/settings/storage/backup</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("storage/backup")]
     public List<StorageDto> GetAllBackupStorages()
     {
@@ -568,7 +561,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <category>Storage</category>
     /// <short>Get Amazon regions</short>
-    /// <returns>List of the Amazon regions</returns>
+    /// <returns type="System.Object, System">List of the Amazon regions</returns>
     /// <path>api/2.0/settings/storage/s3/regions</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("storage/s3/regions")]

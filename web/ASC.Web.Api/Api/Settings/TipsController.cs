@@ -62,8 +62,8 @@ public class TipsController : BaseSettingsController
     /// </summary>
     /// <short>Update the tip settings</short>
     /// <category>Tips</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters: Show (bool) - specifies whether to show tips for the user or not</param>
-    /// <returns>Updated tip settings</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters</param>
+    /// <returns type="ASC.Web.Studio.Core.TipsSettings, ASC.Web.Studio.Core">Updated tip settings</returns>
     /// <path>api/2.0/settings/tips</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("tips")]
@@ -107,7 +107,7 @@ public class TipsController : BaseSettingsController
     /// </summary>
     /// <short>Update the tip subscription</short>
     /// <category>Tips</category>
-    /// <returns>Boolean value: true if the user is subscribed to the tips</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the user is subscribed to the tips</returns>
     /// <path>api/2.0/settings/tips/change/subscription</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("tips/change/subscription")]
@@ -121,7 +121,7 @@ public class TipsController : BaseSettingsController
     /// </summary>
     /// <short>Check the tip subscription</short>
     /// <category>Tips</category>
-    /// <returns>Boolean value: true if the user is subscribed to the tips</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the user is subscribed to the tips</returns>
     /// <path>api/2.0/settings/tips/subscription</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("tips/subscription")]

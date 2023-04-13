@@ -46,8 +46,8 @@ public class ThirdPartyController : ControllerBase
     /// Returns a request to get the confirmation code from URL.
     /// </summary>
     /// <short>Get the code request</short>
-    /// <param type="ASC.FederatedLogin.LoginProviders.LoginProviderEnum, ASC.FederatedLogin.LoginProviders" name="provider">Provider</param>
-    /// <returns>Code request</returns>
+    /// <param type="ASC.FederatedLogin.LoginProviders.LoginProviderEnum, ASC.FederatedLogin.LoginProviders" method="url" name="provider">Provider</param>
+    /// <returns type="System.Object, System">Code request</returns>
     /// <remarks>List of providers: Google, Dropbox, Docusign, Box, OneDrive, Wordpress.</remarks>
     /// <path>api/2.0/thirdparty/{provider}</path>
     /// <httpMethod>GET</httpMethod>
@@ -107,9 +107,9 @@ public class ThirdPartyController : ControllerBase
     /// </summary>
     /// <short>Get the confirmation code</short>
     /// <param type="System.String, System" name="redirect">URL where the user will be redirected to after they have granted the application access</param>
-    /// <param type="System.String, System" name="code">Confirmation code that can be exchanged for an OAuth token</param>
+    /// <param type="System.String, System" method="url" name="code">Confirmation code that can be exchanged for an OAuth token</param>
     /// <param type="System.String, System" name="error">Error</param>
-    /// <returns>Confirmation code</returns>
+    /// <returns type="System.Object, System">Confirmation code</returns>
     /// <path>api/2.0/thirdparty/{provider}/code</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("{provider}/code")]

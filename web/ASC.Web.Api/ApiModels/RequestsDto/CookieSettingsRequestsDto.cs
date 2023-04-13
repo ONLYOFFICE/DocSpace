@@ -26,7 +26,10 @@
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class CookieSettingsRequestsDto
 {
+    /// <summary>Lifetime value in minutes</summary>
     public int LifeTime { get; set; }
 }

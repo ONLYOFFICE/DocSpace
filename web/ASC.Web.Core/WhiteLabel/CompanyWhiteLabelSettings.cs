@@ -26,26 +26,38 @@
 
 namespace ASC.Web.Core.WhiteLabel;
 
+/// <summary>
+/// </summary>
 public class CompanyWhiteLabelSettingsWrapper
 {
+    /// <summary>Company white label settings</summary>
     public CompanyWhiteLabelSettings Settings { get; set; }
 }
 
+/// <summary>
+/// </summary>
 [Serializable]
 public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 {
+    /// <summary>Core settings</summary>
     public CoreSettings CoreSettings;
 
+    /// <summary>Company name</summary>
     public string CompanyName { get; set; }
 
+    /// <summary>Site</summary>
     public string Site { get; set; }
 
+    /// <summary>Email address</summary>
     public string Email { get; set; }
 
+    /// <summary>Address</summary>
     public string Address { get; set; }
 
+    /// <summary>Phone</summary>
     public string Phone { get; set; }
 
+    /// <summary>Licensor or not</summary>
     [JsonPropertyName("IsLicensor")]
     public bool IsLicensor { get; set; }
 

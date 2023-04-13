@@ -26,10 +26,19 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class WebhooksConfigRequestsDto
 {
+    /// <summary>ID</summary>
     public int Id { get; set; }
+
+    /// <summary>URI</summary>
     public string Uri { get; set; }
+
+    /// <summary>Secret key</summary>
     public string SecretKey { get; set; }
+
+    /// <summary>Enabled or not</summary>
     public bool? Enabled { get; set; }
 }

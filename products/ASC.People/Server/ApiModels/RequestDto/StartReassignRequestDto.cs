@@ -31,11 +31,14 @@ namespace ASC.People.ApiModels.RequestDto;
 public class StartReassignRequestDto
 {
     /// <summary>User ID whose data will be reassigned to another user</summary>
+    /// <example>"9924256A-739C-462b-AF15-E652A3B1B6EB"</example>
     public Guid FromUserId { get; set; }
 
     /// <summary>User ID to whom all the data will be reassigned</summary>
+    /// <example>"9924256A-739C-462b-AF15-E652A3B1B6EB"</example>
     public Guid ToUserId { get; set; }
 
     /// <summary>Specifies whether to delete a profile when the data reassignment will be finished or not</summary>
+    /// <example>true</example>
     public bool DeleteProfile { get; set; }
 }

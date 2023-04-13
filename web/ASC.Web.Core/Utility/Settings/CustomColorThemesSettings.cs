@@ -60,11 +60,20 @@ public class CustomColorThemesSettings : ISettings<CustomColorThemesSettings>
     }
 }
 
+/// <summary>
+/// </summary>
 public class CustomColorThemesSettingsItem
 {
+    /// <summary>Theme ID</summary>
     public int Id { get; set; }
+
+    /// <summary>Theme name</summary>
     public string Name { get; set; }
+
+    /// <summary>Main colors</summary>
     public CustomColorThemesSettingsColorItem Main { get; set; }
+
+    /// <summary>Text colors</summary>
     public CustomColorThemesSettingsColorItem Text { get; set; }
 
     public static List<CustomColorThemesSettingsItem> Default => new List<CustomColorThemesSettingsItem>
@@ -162,8 +171,13 @@ public class CustomColorThemesSettingsItem
     };
 }
 
+/// <summary>
+/// </summary>
 public class CustomColorThemesSettingsColorItem
 {
+    /// <summary>Accent color</summary>
     public string Accent { get; set; }
+
+    /// <summary>Button color</summary>
     public string Buttons { get; set; }
 }

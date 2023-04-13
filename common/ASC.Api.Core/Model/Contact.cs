@@ -26,9 +26,16 @@
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class Contact
 {
+    /// <summary>Contact type</summary>
+    /// <example>"GTalk"</example>
     public string Type { get; set; }
+
+    /// <summary>Contact value</summary>
+    /// <example>"my@gmail.com"</example>
     public string Value { get; set; }
 
     //For binder

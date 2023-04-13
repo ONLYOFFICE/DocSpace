@@ -73,13 +73,8 @@ public class WhitelabelController : BaseSettingsController
     /// Save the white label settings
     /// </short>
     /// <category>Rebranding</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for white label settings: <![CDATA[
-    /// <ul>
-    ///     <li><b>LogoText</b> (string) - logo text,</li>
-    ///     <li><b>Logo</b> (IEnumerable&lt;ItemKeyValuePair&lt;string, LogoRequestsDto&gt;&gt;) - tenant IDs with their logos (light or dark).</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Boolean value: true if the operation is sucessful</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is sucessful</returns>
     /// <path>api/2.0/settings/whitelabel/save</path>
     /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
@@ -119,7 +114,7 @@ public class WhitelabelController : BaseSettingsController
     /// Save the white label settings from files
     /// </short>
     /// <category>Rebranding</category>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/whitelabel/savefromfiles</path>
     /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
@@ -188,11 +183,12 @@ public class WhitelabelController : BaseSettingsController
     /// Get the white label logos
     /// </short>
     /// <category>Rebranding</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelQueryRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">White label request parameters: IsDark (bool?) - specifies if the logo is for a dark theme or not</param>
-    /// <returns>White label logos: file name, size, path</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelQueryRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">White label request parameters</param>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.WhiteLabelItemDto}, System.Collections.Generic">White label logos: file name, size, path</returns>
     /// <path>api/2.0/settings/whitelabel/logos</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
+    /// <collection>list</collection>
     /// <visible>false</visible>
     [AllowNotPayment, AllowAnonymous]
     [HttpGet("whitelabel/logos")]
@@ -255,7 +251,7 @@ public class WhitelabelController : BaseSettingsController
     /// Get the white label logo text
     /// </short>
     /// <category>Rebranding</category>
-    /// <returns>Logo text</returns>
+    /// <returns type="System.Object, System">Logo text</returns>
     /// <path>api/2.0/settings/whitelabel/logotext</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -278,7 +274,7 @@ public class WhitelabelController : BaseSettingsController
     /// Restore the white label options
     /// </short>
     /// <category>Rebranding</category>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/whitelabel/restore</path>
     /// <httpMethod>PUT</httpMethod>
     /// <visible>false</visible>
@@ -304,9 +300,10 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <short>Get the licensor data</short>
     /// <category>Rebranding</category>
-    /// <returns>List of company white label settings: company name, site, email, address, phone, licensor or not</returns>
+    /// <returns type="System.Collections.Generic.List{ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings}, System.Collections.Generic">List of company white label settings: company name, site, email, address, phone, licensor or not</returns>
     /// <path>api/2.0/settings/companywhitelabel</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     /// <visible>false</visible>
     [HttpGet("companywhitelabel")]
     public List<CompanyWhiteLabelSettings> GetLicensorData()
@@ -330,20 +327,8 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Save the company white label settings</short>
-    /// <param type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettingsWrapper, ASC.Web.Core.WhiteLabel" name="companyWhiteLabelSettingsWrapper">Company white label settings: <![CDATA[
-    /// <ul>
-    ///     <li><b>Settings</b> (CompanyWhiteLabelSettings) - company white label settings:</li>
-    ///     <ul>
-    ///         <li><b>CompanyName</b> (string) - company name,</li>
-    ///         <li><b>Site</b> (string) - site,</li>
-    ///         <li><b>Email</b> (bool) - email,</li>
-    ///         <li><b>Address</b> (bool) - address,</li>
-    ///         <li><b>Phone</b> (string) - phone,</li>
-    ///         <li><b>IsLicensor</b> (bool) - licensor or not.</li>
-    ///     </ul>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettingsWrapper, ASC.Web.Core.WhiteLabel" name="companyWhiteLabelSettingsWrapper">Company white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/rebranding/company</path>
     /// <httpMethod>POST</httpMethod>
     /// <visible>false</visible>
@@ -370,7 +355,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Get the company white label settings</short>
-    /// <returns>Company white label settings: company name, site, email, address, phone, licensor or not, default setings or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CompanyWhiteLabelSettingsDtov, ASC.Web.Api.ApiModels.ResponseDto">Company white label settings: company name, site, email, address, phone, licensor or not, default setings or not</returns>
     /// <path>api/2.0/settings/rebranding/company</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -386,7 +371,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Delete the company white label settings</short>
-    /// <returns>Default company white label settings: company name, site, email, address, phone, licensor or not</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core.WhiteLabel">Default company white label settings: company name, site, email, address, phone, licensor or not</returns>
     /// <path>api/2.0/settings/rebranding/company</path>
     /// <httpMethod>DELETE</httpMethod>
     /// <visible>false</visible>
@@ -408,26 +393,8 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Save the additional white label settings</short>
-    /// <param type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettingsWrapper, ASC.Web.Core.WhiteLabel" name="wrapper">Additional white label settings: <![CDATA[
-    /// <ul>
-    ///     <li><b>Settings</b> (AdditionalWhiteLabelSettings) - additional white label settings:</li>
-    ///     <ul>
-    ///         <li><b>StartDocsEnabled</b> (bool) - specifies if the start document is enabled or not,</li>
-    ///         <li><b>HelpCenterEnabled</b> (bool) - specifies if the help center is enabled or not,</li>
-    ///         <li><b>FeedbackAndSupportEnabled</b> (bool) - specifies if feedback and support are available or not,</li>
-    ///         <li><b>FeedbackAndSupportUrl</b> (string) - feedback and support URL,</li>
-    ///         <li><b>UserForumEnabled</b> (bool) - specifies if the user forum is enabled or not,</li>
-    ///         <li><b>UserForumUrl</b> (string) - user forum URL,</li>
-    ///         <li><b>VideoGuidesEnabled</b> (bool) - specifies if the video guides are enabled or not,</li>
-    ///         <li><b>VideoGuidesUrl</b> (string) - video guides URL,</li>
-    ///         <li><b>SalesEmail</b> (string) - sales email,</li>
-    ///         <li><b>BuyUrl</b> (string) - URL to pay for the portal,</li>
-    ///         <li><b>LicenseAgreementsEnabled</b> (bool) - specifies if the license agreements are enabled or not,</li>
-    ///         <li><b>LicenseAgreementsUrl</b> (string) - license agreements URL.</li>
-    ///     </ul>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettingsWrapper, ASC.Web.Core.WhiteLabel" name="wrapper">Additional white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/rebranding/additional</path>
     /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
@@ -452,7 +419,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Get the additional white label settings</short>
-    /// <returns>Additional white label settings: start document is enabled or not, the help center is enabled or not, feedback and support are available or not, feedback and support URL, the user forum is enabled or not, user forum URL, the video guides are enabled or not, video guides URL, sales email, URL to pay for the portal, the license agreements are enabled or not, license agreements URL, default settings or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.AdditionalWhiteLabelSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Additional white label settings: start document is enabled or not, the help center is enabled or not, feedback and support are available or not, feedback and support URL, the user forum is enabled or not, user forum URL, the video guides are enabled or not, video guides URL, sales email, URL to pay for the portal, the license agreements are enabled or not, license agreements URL, default settings or not</returns>
     /// <path>api/2.0/settings/rebranding/additional</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -468,7 +435,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Delete the additional white label settings</short>
-    /// <returns>Default additional white label settings: start document is enabled or not, the help center is enabled or not, feedback and support are available or not, feedback and support URL, the user forum is enabled or not, user forum URL, the video guides are enabled or not, video guides URL, sales email, URL to pay for the portal, the license agreements are enabled or not, license agreements URL</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettings, ASC.Web.Core.WhiteLabel">Default additional white label settings: start document is enabled or not, the help center is enabled or not, feedback and support are available or not, feedback and support URL, the user forum is enabled or not, user forum URL, the video guides are enabled or not, video guides URL, sales email, URL to pay for the portal, the license agreements are enabled or not, license agreements URL</returns>
     /// <path>api/2.0/settings/rebranding/additional</path>
     /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
@@ -490,21 +457,8 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Save the mail white label settings</short>
-    /// <param type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core.WhiteLabel" name="settings">Mail white label settings: <![CDATA[
-    /// <ul>
-    ///     <li><b>Settings</b> (AdditionalWhiteLabelSettings) - additional white label settings:</li>
-    ///     <ul>
-    ///         <li><b>FooterEnabled</b> (bool) - specifies if the mail footer is enabled or not,</li>
-    ///         <li><b>FooterSocialEnabled</b> (bool) - specifies if the footer with social media contacts is enabled or not,</li>
-    ///         <li><b>SupportUrl</b> (string) - support URL,</li>
-    ///         <li><b>SupportEmail</b> (string) - support email,</li>
-    ///         <li><b>SalesEmail</b> (string) - sales email,</li>
-    ///         <li><b>DemoUrl</b> (string) - demo URL,</li>
-    ///         <li><b>SiteUrl</b> (string) - site URL.</li>
-    ///     </ul>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core.WhiteLabel" name="settings">Mail white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/rebranding/mail</path>
     /// <httpMethod>POST</httpMethod>
     ///<visible>false</visible>
@@ -525,8 +479,8 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Update the mail white label settings</short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailWhiteLabelSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for mail white label settings: FooterEnabled (bool) - specifies if the mail footer will be enabled or not</param>
-    /// <returns>Boolean value: true if the operation is successful</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailWhiteLabelSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for mail white label settings</param>
+    /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/rebranding/mail</path>
     /// <httpMethod>PUT</httpMethod>
     ///<visible>false</visible>
@@ -549,7 +503,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Get the mail white label settings</short>
-    /// <returns>Mail white label settings: the mail footer is enabled or not, the footer with social media contacts is enabled or not, support URL, support email, sales email, demo URL, site URL</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core.WhiteLabel">Mail white label settings: the mail footer is enabled or not, the footer with social media contacts is enabled or not, support URL, support email, sales email, demo URL, site URL</returns>
     /// <path>api/2.0/settings/rebranding/mail</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -564,7 +518,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Delete the mail white label settings</short>
-    /// <returns>Default mail white label settings: the mail footer is enabled or not, the footer with social media contacts is enabled or not, support URL, support email, sales email, demo URL, site URL</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core.WhiteLabel">Default mail white label settings: the mail footer is enabled or not, the footer with social media contacts is enabled or not, support URL, support email, sales email, demo URL, site URL</returns>
     /// <path>api/2.0/settings/rebranding/mail</path>
     /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
@@ -586,7 +540,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Check the white label availability</short>
-    /// <returns>Boolean value: true if the white label is enabled</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the white label is enabled</returns>
     /// <path>api/2.0/settings/enableWhitelabel</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>

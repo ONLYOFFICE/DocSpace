@@ -162,12 +162,23 @@ public class EmailValidationKeyProvider
     }
 }
 
+/// <summary>
+/// </summary>
 public class EmailValidationKeyModel
 {
+    /// <summary>Key</summary>
     public string Key { get; set; }
+
+    /// <summary>Employee type (All, RoomAdmin, User, DocSpaceAdmin)</summary>
     public EmployeeType? EmplType { get; set; }
+
+    /// <summary>Email</summary>
     public string Email { get; set; }
+
+    /// <summary>User ID</summary>
     public Guid? UiD { get; set; }
+
+    /// <summary>Confirmation email type</summary>
     public ConfirmType? Type { get; set; }
 
     public void Deconstruct(out string key, out EmployeeType? emplType, out string email, out Guid? uiD, out ConfirmType? type)

@@ -26,8 +26,13 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class StorageRequestsDto
 {
+    /// <summary>Storage name</summary>
     public string Module { get; set; }
+
+    /// <summary>Storage properties</summary>
     public IEnumerable<ItemKeyValuePair<string, string>> Props { get; set; }
 }

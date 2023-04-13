@@ -50,9 +50,10 @@ public class ModulesController : ControllerBase
     /// <short>
     /// Get modules
     /// </short>
-    /// <returns>List of modules</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic">List of modules</returns>
     /// <path>api/2.0/modules</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet]
     public IEnumerable<string> GetAll()
     {
@@ -72,9 +73,10 @@ public class ModulesController : ControllerBase
     /// <short>
     /// Get modules information
     /// </short>
-    /// <returns>List of modules with their information: ID, product class name, title, description, icon URL, large icon URL, start URL, primary or nor, help URL</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Api.Core.Module}, System.Collections.Generic">List of modules with their information: ID, product class name, title, description, icon URL, large icon URL, start URL, primary or nor, help URL</returns>
     /// <path>api/2.0/modules/info</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("info")]
     public IEnumerable<Module> GetAllWithInfo()
     {

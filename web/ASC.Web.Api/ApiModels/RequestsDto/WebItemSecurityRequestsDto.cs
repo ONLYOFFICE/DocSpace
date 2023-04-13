@@ -26,10 +26,21 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class WebItemSecurityRequestsDto
 {
+    /// <summary>Module ID</summary>
     public string Id { get; set; }
+
+    /// <summary>Specifies if the module security settings are enabled or not</summary>
     public bool Enabled { get; set; }
+
+    /// <summary>List of user/group IDs with the access to the module</summary>
+    /// <example>["9924256A-739C-462b-AF15-E652A3B1B6EB"]</example>
     public IEnumerable<Guid> Subjects { get; set; }
+
+    /// <summary>Products with security information</summary>
+    /// <example>[{"Key": "one", "Value": true}]</example>
     public IEnumerable<ItemKeyValuePair<string, bool>> Items { get; set; }
 }

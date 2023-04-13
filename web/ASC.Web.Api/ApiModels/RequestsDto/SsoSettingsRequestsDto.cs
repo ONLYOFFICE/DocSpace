@@ -26,7 +26,10 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class SsoSettingsRequestsDto
 {
+    /// <summary>Serialized SSO settings</summary>
     public string SerializeSettings { get; set; }
 }

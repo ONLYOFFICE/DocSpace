@@ -26,7 +26,10 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class UploadLicenseRequestsDto
 {
+    /// <summary>License attachments</summary>
     public IEnumerable<IFormFile> Files { get; set; }
 }

@@ -28,6 +28,8 @@ using System.Runtime.InteropServices;
 
 namespace ASC.ActiveDirectory.Base.Settings;
 
+/// <summary>
+/// </summary>
 [Scope]
 [Serializable]
 public class LdapSettings : ISettings<LdapSettings>, ICloneable
@@ -44,6 +46,7 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
         AccessRights = new Dictionary<AccessRight, string>();
     }
 
+    /// <summary>LDAP settings mapping</summary>
     public enum MappingFields
     {
         FirstNameAttribute,
@@ -64,6 +67,7 @@ public class LdapSettings : ISettings<LdapSettings>, ICloneable
         UserQuotaLimit
     }
 
+    /// <summary>Accecss rights</summary>
     public enum AccessRight
     {
         FullAccess,

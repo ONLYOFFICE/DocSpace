@@ -26,13 +26,28 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class SettingsRequestsDto
 {
+    /// <summary>Default product ID</summary>
     public Guid DefaultProductID { get; set; }
+
+    /// <summary>Language</summary>
     public string Lng { get; set; }
+
+    /// <summary>Time zone ID</summary>
     public string TimeZoneID { get; set; }
+
+    /// <summary>Theme</summary>
     public string Theme { get; set; }
+
+    /// <summary>Specifies whether to show tips for the user or not</summary>
     public bool Show { get; set; } //tips
+
+    /// <summary>Version ID</summary>
     public int VersionId { get; set; }
+
+    /// <summary>Owner ID</summary>
     public Guid OwnerId { get; set; }
 }

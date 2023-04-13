@@ -142,7 +142,7 @@ public class PortalController : ControllerBase
     /// Get a portal
     /// </short>
     /// <category>Settings</category>
-    /// <returns>Current portal information</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.TenantDto, ASC.Web.Api.ApiModels.ResponseDto">Current portal information</returns>
     /// <path>api/2.0/portal</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("")]
@@ -158,8 +158,8 @@ public class PortalController : ControllerBase
     /// Get a user by ID
     /// </short>
     /// <category>Users</category>
-    /// <param type="System.Guid, System" name="userID">User ID</param>
-    /// <returns>User information</returns>
+    /// <param type="System.Guid, System" method="url" name="userID">User ID</param>
+    /// <returns type="ASC.Core.Users.UserInfo, ASC.Core.Users">User information</returns>
     /// <path>api/2.0/portal/users/{userID}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("users/{userID}")]
@@ -174,9 +174,9 @@ public class PortalController : ControllerBase
     /// <short>
     /// Get an invitation link
     /// </short>
-    /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Users" name="employeeType">Employee type (All, RoomAdmin, User, DocSpaceAdmin)</param>
+    /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Users" method="url" name="employeeType">Employee type (All, RoomAdmin, User, DocSpaceAdmin)</param>
     /// <category>Users</category>
-    /// <returns>Invitation link</returns>
+    /// <returns type="System.Object, System">Invitation link</returns>
     /// <path>api/2.0/portal/users/invite/{employeeType}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("users/invite/{employeeType}")]
@@ -196,8 +196,8 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Get a shortened link</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.ShortenLinkRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Shortened link request parameters: Link (string) - link</param>
-    /// <returns>Shortened link</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.ShortenLinkRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Shortened link request parameters</param>
+    /// <returns type="System.Object, System">Shortened link</returns>
     /// <path>api/2.0/portal/getshortenlink</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("getshortenlink")]
@@ -221,7 +221,7 @@ public class PortalController : ControllerBase
     /// Get an extra tenant license
     /// </short>
     /// <category>Quota</category>
-    /// <returns>Extra tenant license information</returns>
+    /// <returns type="System.Object, System">Extra tenant license information</returns>
     /// <path>api/2.0/portal/tenantextra</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("tenantextra")]
@@ -253,7 +253,7 @@ public class PortalController : ControllerBase
     /// Get the used portal space
     /// </short>
     /// <category>Quota</category>
-    /// <returns>Used portal space</returns>
+    /// <returns type="System.Double, System">Used portal space</returns>
     /// <path>api/2.0/portal/usedspace</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("usedspace")]
@@ -273,7 +273,7 @@ public class PortalController : ControllerBase
     /// Get a number of portal users
     /// </short>
     /// <category>Users</category>
-    /// <returns>Number of portal users</returns>
+    /// <returns type="System.Int64, System">Number of portal users</returns>
     /// <path>api/2.0/portal/userscount</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("userscount")]
@@ -289,7 +289,7 @@ public class PortalController : ControllerBase
     /// Get a portal tariff
     /// </short>
     /// <category>Quota</category>
-    /// <returns>Current portal tariff</returns>
+    /// <returns type="ASC.Core.Billing.Tariff, ASC.Core.Billing">Current portal tariff</returns>
     /// <path>api/2.0/portal/tariff</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
@@ -306,7 +306,7 @@ public class PortalController : ControllerBase
     /// Get a portal quota
     /// </short>
     /// <category>Quota</category>
-    /// <returns>Current portal quota: tenant, name, price, product ID, visible or not, tenant quota features</returns>
+    /// <returns type="ASC.Core.Tenants.TenantQuota, ASC.Core.Tenants">Current portal quota: tenant, name, price, product ID, visible or not, tenant quota features</returns>
     /// <path>api/2.0/portal/quota</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
@@ -323,7 +323,7 @@ public class PortalController : ControllerBase
     /// Get the recommended quota
     /// </short>
     /// <category>Quota</category>
-    /// <returns>Recommended portal quota</returns>
+    /// <returns type="ASC.Core.Tenants.TenantQuota, ASC.Core.Tenants">Recommended portal quota</returns>
     /// <path>api/2.0/portal/quota/right</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("quota/right")]
@@ -347,7 +347,7 @@ public class PortalController : ControllerBase
     /// </short>
     /// <category>Settings</category>
     /// <param type="System.String, System" name="virtualPath">Portal virtual path</param>
-    /// <returns>Portal path</returns>
+    /// <returns type="System.Object, System">Portal path</returns>
     /// <path>api/2.0/portal/path</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("path")]
@@ -364,7 +364,7 @@ public class PortalController : ControllerBase
     /// </short>
     /// <category>Settings</category>
     /// <param type="System.String, System" name="url">Bookmark URL</param>
-    /// <returns>Thumbnail</returns>
+    /// <returns type="Microsoft.AspNetCore.Mvc.FileResult, Microsoft.AspNetCore.Mvc">Thumbnail</returns>
     /// <path>api/2.0/portal/thumb</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("thumb")]
@@ -433,7 +433,7 @@ public class PortalController : ControllerBase
     /// Register the mobile app installation
     /// </short>
     /// <category>Settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileAppRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Mobile app request parameters: Type (MobileAppType) - mobile app type (IosProjects, AndroidProjects, IosDocuments, AndroidDocuments, or DesktopEditor)</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileAppRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Mobile app request parameters</param>
     /// <returns></returns>
     /// <path>api/2.0/portal/mobile/registration</path>
     /// <httpMethod>POST</httpMethod>
@@ -468,8 +468,8 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Update a portal name</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.PortalRenameRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters for portal renaming: Alias (string) - new portal name</param>
-    /// <returns>Confirmation email about authentication to the portal with a new name</returns>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.PortalRenameRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters for portal renaming</param>
+    /// <returns type="System.Object, System">Confirmation email about authentication to the portal with a new name</returns>
     /// <path>api/2.0/portal/portalrename</path>
     /// <httpMethod>PUT</httpMethod>
     /// <visible>false</visible>
@@ -554,7 +554,7 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Delete a portal immediately</short>
     /// <category>Settings</category>
-    /// <returns>Task awaiter</returns>
+    /// <returns></returns>
     /// <path>api/2.0/portal/deleteportalimmediately</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("deleteportalimmediately")]
@@ -686,7 +686,7 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Delete a portal</short>
     /// <category>Settings</category>
-    /// <returns>URL to the feedback form about removing a portal</returns>
+    /// <returns type="System.Object, System">URL to the feedback form about removing a portal</returns>
     /// <path>api/2.0/portal/delete</path>
     /// <httpMethod>DELETE</httpMethod>
     [AllowNotPayment]
@@ -745,12 +745,7 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Send congratulations</short>
     /// <category>Users</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SendCongratulationsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Congratulations request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Userid</b> (Guid) - user ID,</li>
-    ///     <li><b>Key</b> (string) - email key.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SendCongratulationsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Congratulations request parameters</param>
     /// <returns></returns>
     /// <path>api/2.0/portal/sendcongratulations</path>
     /// <httpMethod>POST</httpMethod>

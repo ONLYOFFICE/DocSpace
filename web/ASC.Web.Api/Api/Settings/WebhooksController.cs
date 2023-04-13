@@ -66,7 +66,8 @@ public class WebhooksController : BaseSettingsController
     /// <category>Webhooks</category>
     /// <path>api/2.0/settings/webhook</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns>List of tenant webhooks with their config parameters (URI, secret key, enabled or not)</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto}, System.Collections.Generic">List of tenant webhooks with their config parameters (URI, secret key, enabled or not)</returns>
+    /// <collection>list</collection>
     [HttpGet("webhook")]
     public async IAsyncEnumerable<WebhooksConfigDto> GetTenantWebhooks()
     {
@@ -85,16 +86,10 @@ public class WebhooksController : BaseSettingsController
     /// Create a webhook
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Webhook request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Name</b> (string) - name,</li>
-    ///     <li><b>Uri</b> (string) - URI,</li>
-    ///     <li><b>SecretKey</b> (string) - secret key.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Webhook request parameters</param>
     /// <path>api/2.0/settings/webhook</path>
     /// <httpMethod>POST</httpMethod>
-    /// <returns>Tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api.ApiModels.ResponseDto">Tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
     [HttpPost("webhook")]
     public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto model)
     {
@@ -115,18 +110,10 @@ public class WebhooksController : BaseSettingsController
     /// Update a webhook
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">New webhook request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Id</b> (integer) - ID,</li>    
-    ///     <li><b>Name</b> (string) - name,</li>
-    ///     <li><b>Uri</b> (string) - URI,</li>
-    ///     <li><b>Enabled</b> (bool?) - enabled or not,</li>
-    ///     <li><b>SecretKey</b> (string) - secret key.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">New webhook request parameters</param>
     /// <path>api/2.0/settings/webhook</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns>Updated tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api.ApiModels.ResponseDto">Updated tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
     [HttpPut("webhook")]
     public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto model)
     {
@@ -147,10 +134,10 @@ public class WebhooksController : BaseSettingsController
     /// Remove a webhook
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="System.Int32, System" name="id">Webhook ID</param>
+    /// <param type="System.Int32, System" method="url" name="id">Webhook ID</param>
     /// <path>api/2.0/settings/webhook</path>
     /// <httpMethod>DELETE</httpMethod>
-    /// <returns>Tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api.ApiModels.ResponseDto">Tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
     [HttpDelete("webhook/{id}")]
     public async Task<WebhooksConfigDto> RemoveWebhook(int id)
     {
@@ -168,10 +155,11 @@ public class WebhooksController : BaseSettingsController
     /// Get webhook logs
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="System.Nullable{System.DateTime}, System" name="model">Time when a webhook was delivered, Hook name, Webhook route</param>
+    /// <param type="System.Nullable{System.DateTime}, System" name="model">Webhook log request parameters</param>
     /// <path>api/2.0/settings/webhooks/log</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns>Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto}, System.Collections.Generic">Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
+    /// <collection>list</collection>
     [HttpGet("webhooks/log")]
     public async IAsyncEnumerable<WebhooksLogDto> GetJournal(WebhooksLogRequest model)
     {
@@ -192,10 +180,10 @@ public class WebhooksController : BaseSettingsController
     /// Retry a webhook
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="System.Int32, System" name="id">Webhook ID</param>
+    /// <param type="System.Int32, System" method="url" name="id">Webhook ID</param>
     /// <path>api/2.0/settings/webhook/{id}/retry</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns>Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto, ASC.Web.Api.ApiModels.ResponseDto">Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
     [HttpPut("webhook/{id}/retry")]
     public async Task<WebhooksLogDto> RetryWebhook(int id)
     {
@@ -230,10 +218,11 @@ public class WebhooksController : BaseSettingsController
     /// Retry webhooks
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhookRetryRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters to retry webhooks: <![CDATA[Ids (List&lt;int&gt;) - list of webhook IDs]]></param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhookRetryRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters to retry webhooks</param>
     /// <path>api/2.0/settings/webhook/retry</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns>Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto}, System.Collections.Generic">Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
+    /// <collection>list</collection>
     [HttpPut("webhook/retry")]
     public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto model)
     {
@@ -254,6 +243,16 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Returns the webhook SSL settings.
+    /// </summary>
+    /// <short>
+    /// Get webhook SSL settings
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <path>api/2.0/settings/webhook/ssl</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksSslSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Webhook SSL settings: SSL certificate is enabled or not</returns>
     [HttpGet("webhook/ssl")]
     public WebhooksSslSettingsDto GetSslSettings()
     {
@@ -264,6 +263,17 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
 
+    /// <summary>
+    /// Sets the webhook SSL settings.
+    /// </summary>
+    /// <short>
+    /// Set webhook SSL settings
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="System.Boolean, System" method="url" name="isEnabled">Specifies if the SSL certificate is enabled or not</param>
+    /// <path>api/2.0/settings/webhook/ssl/{isEnabled}</path>
+    /// <httpMethod>POST</httpMethod>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksSslSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Webhook SSL settings: SSL certificate is enabled or not</returns>
     [HttpPost("webhook/ssl/{isEnabled}")]
     public WebhooksSslSettingsDto SetSslSettings(bool isEnabled)
     {
@@ -276,6 +286,17 @@ public class WebhooksController : BaseSettingsController
         return _mapper.Map<WebhooksSslSettingsDto>(settings);
     }
 
+    /// <summary>
+    /// Returns settings of all webhooks.
+    /// </summary>
+    /// <short>
+    /// Get webhook settings
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <path>api/2.0/settings/webhooks</path>
+    /// <httpMethod>GET</httpMethod>
+    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Webhooks.Core.Webhook}, System.Collections.Generic">List of webhook settings: ID, route, method, disabled or not, name, description, endpoint</returns>
+    /// <collection>list</collection>
     [HttpGet("webhooks")]
     public async IAsyncEnumerable<Webhook> Settings()
     {
@@ -288,6 +309,17 @@ public class WebhooksController : BaseSettingsController
         }
     }
 
+    /// <summary>
+    /// Disables a webhook with the ID specified in the request.
+    /// </summary>
+    /// <short>
+    /// Disable a webhook
+    /// </short>
+    /// <category>Webhooks</category>
+    /// <param type="System.Int32, System" method="url" name="id">Webhook ID</param>
+    /// <path>api/2.0/settings/webhook/{id}</path>
+    /// <httpMethod>PUT</httpMethod>
+    /// <returns type="ASC.Webhooks.Core.Webhook, ASC.Webhooks.Core">Webhook settings: ID, route, method, disabled or not, name, description, endpoint</returns>
     [HttpPut("webhook/{id}")]
     public async Task<Webhook> DisableWebHook(int id)
     {

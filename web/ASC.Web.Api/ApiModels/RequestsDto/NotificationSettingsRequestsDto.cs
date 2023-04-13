@@ -28,10 +28,15 @@ using ASC.Web.Core.Notify;
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class NotificationSettingsRequestsDto
-{ 
+{
+    /// <summary>Notification type (Badges, RoomsActivity, DailyFeed, UsefullTips)</summary>
     public NotificationType Type { get; set; }
 
+
+    /// <summary>Specifies if the notification type is enabled or not</summary>
     public bool IsEnabled { get; set; }
 }
 

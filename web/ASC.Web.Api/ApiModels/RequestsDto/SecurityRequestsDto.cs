@@ -26,9 +26,16 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class SecurityRequestsDto
 {
+    /// <summary>Product ID</summary>
     public Guid ProductId { get; set; }
+
+    /// <summary>User ID</summary>
     public Guid UserId { get; set; }
+
+    /// <summary>Administrator or not</summary>
     public bool Administrator { get; set; }
 }

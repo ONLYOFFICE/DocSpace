@@ -26,7 +26,10 @@
 
 namespace ASC.Web.Api.ApiModel.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class ShortenLinkRequestsDto
 {
+    /// <summary>Link</summary>
     public string Link { get; set; }
 }

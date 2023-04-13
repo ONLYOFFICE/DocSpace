@@ -95,9 +95,10 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Get the TFA settings</short>
     /// <category>TFA settings</category>
-    /// <returns>TFA settings: ID, title, enabled or not, available or not, list of trusted IP addresses, list of users who must use the TFA verification, list of groups who must use the TFA verification</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.RequestsDto.TfaSettingsDto}, System.Collections.Generic">TFA settings: ID, title, enabled or not, available or not, list of trusted IP addresses, list of users who must use the TFA verification, list of groups who must use the TFA verification</returns>
     ///<path>api/2.0/settings/tfaapp</path>
     ///<httpMethod>GET</httpMethod>
+    ///<collection>list</collection>
     [HttpGet("tfaapp")]
     public IEnumerable<TfaSettingsDto> GetTfaSettings()
     {
@@ -146,8 +147,8 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Validate the TFA code</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaValidateRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA validation request parameters: Code (string) - TFA code</param>
-    /// <returns>True if the code is valid</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaValidateRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA validation request parameters</param>
+    /// <returns type="System.Boolean, System">True if the code is valid</returns>
     ///<path>api/2.0/settings/tfaapp/validate</path>
     ///<httpMethod>POST</httpMethod>
     [HttpPost("tfaapp/validate")]
@@ -165,7 +166,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Get confirmation email</short>
     /// <category>TFA settings</category>
-    /// <returns>Confirmation email URL</returns>
+    /// <returns type="System.Object, System">Confirmation email URL</returns>
     ///<path>api/2.0/settings/tfaapp/confirm</path>
     ///<httpMethod>GET</httpMethod>
     [HttpGet("tfaapp/confirm")]
@@ -200,15 +201,8 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Update the TFA settings</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Type</b> (string) - TFA type (None, Sms, or App),</li>
-    ///     <li><b>TrustedIps</b> (List&lt;string&gt;) - list of trusted IP addresses,</li>
-    ///     <li><b>MandatoryUsers</b> (List&lt;Guid&gt;) - list of users who must use the TFA verification,</li>
-    ///     <li><b>MandatoryGroups</b> (List&lt;Guid&gt;) - list of groups who must use the TFA verification.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>True if the operation is successful</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Boolean, System">True if the operation is successful</returns>
     ///<path>api/2.0/settings/tfaapp</path>
     ///<httpMethod>PUT</httpMethod>
     [HttpPut("tfaapp")]
@@ -308,15 +302,8 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Get confirmation email for updating TFA settings</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Type</b> (string) - TFA type (None, Sms, or App),</li>
-    ///     <li><b>TrustedIps</b> (List&lt;string&gt;) - list of trusted IP addresses,</li>
-    ///     <li><b>MandatoryUsers</b> (List&lt;Guid&gt;) - list of users who must use the TFA verification,</li>
-    ///     <li><b>MandatoryGroups</b> (List&lt;Guid&gt;) - list of groups who must use the TFA verification.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Confirmation email URL</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Object, System">Confirmation email URL</returns>
     /// <path>api/2.0/settings/tfaappwithlink</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("tfaappwithlink")]
@@ -335,7 +322,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Generate setup code</short>
     /// <category>TFA settings</category>
-    /// <returns>Setup code</returns>
+    /// <returns type="Google.Authenticator.SetupCode, Google.Authenticator">Setup code</returns>
     /// <path>api/2.0/settings/tfaapp/setup</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("tfaapp/setup")]
@@ -365,9 +352,10 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Get the TFA codes</short>
     /// <category>TFA settings</category>
-    /// <returns>List of TFA application codes</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{System.Object}, System.Collections.Generic">List of TFA application codes</returns>
     /// <path>api/2.0/settings/tfaappcodes</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("tfaappcodes")]
     public IEnumerable<object> TfaAppGetCodes()
     {
@@ -391,9 +379,10 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Update the TFA codes</short>
     /// <category>TFA settings</category>
-    /// <returns>New backup codes</returns>
+    /// <returns type="System.Collections.Generic.IEnumerable{System.Object}, System.Collections.Generic">New backup codes</returns>
     /// <path>api/2.0/settings/tfaappnewcodes</path>
     /// <httpMethod>PUT</httpMethod>
+    /// <collection>list</collection>
     [HttpPut("tfaappnewcodes")]
     public IEnumerable<object> TfaAppRequestNewCodes()
     {
@@ -419,8 +408,8 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Unlink the TFA application</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters: Id (Guid?) - user ID</param>
-    /// <returns>Login URL</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters</param>
+    /// <returns type="System.Object, System">Login URL</returns>
     /// <path>api/2.0/settings/tfaappnewapp</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("tfaappnewapp")]

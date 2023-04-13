@@ -59,7 +59,7 @@ public class SmtpSettingsController : ControllerBase
     /// <short>
     /// Get the SMTP settings
     /// </short>
-    /// <returns>SMTP settings</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("smtp")]
@@ -79,19 +79,8 @@ public class SmtpSettingsController : ControllerBase
     /// <short>
     /// Save the SMTP settings
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto" name="inDto">SMTP settings: <![CDATA[
-    /// <ul>
-    ///     <li><b>Host</b> (string) - host,</li>
-    ///     <li><b>Port</b> (int?) - port,</li>
-    ///     <li><b>SenderAddress</b> (string) - sender address,</li>
-    ///     <li><b>SenderDisplayName</b> (string) - sender display name,</li>
-    ///     <li><b>CredentialsUserName</b> (string) - credentials username,</li>
-    ///     <li><b>CredentialsUserPassword</b> (string) - credentials user password,</li>
-    ///     <li><b>EnableSSL</b> (bool) - enable SSL or not,</li>
-    ///     <li><b>EnableAuth</b> (bool) - enable authentication or not.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>SMTP settings</returns>
+    /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto" name="inDto">SMTP settings</param>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("smtp")]
@@ -121,7 +110,7 @@ public class SmtpSettingsController : ControllerBase
     /// <short>
     /// Reset the SMTP settings
     /// </short>
-    /// <returns>Default SMTP settings</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">Default SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("smtp")]
@@ -149,7 +138,7 @@ public class SmtpSettingsController : ControllerBase
     // <short>
     // Test the SMTP settings
     // </short>
-    // <returns>SMTP operation status</returns>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatus, ASC.Api.Settings.Smtp">SMTP operation status</returns>
     // <path>api/2.0/smtpsettings/smtp/test</path>
     // <httpMethod>GET</httpMethod>
     //[HttpGet("smtp/test")]
@@ -173,7 +162,7 @@ public class SmtpSettingsController : ControllerBase
     // <short>
     // Get the SMTP test process status
     // </short>
-    // <returns>SMTP operation status</returns>
+    // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatus, ASC.Api.Settings.Smtp">SMTP operation status</returns>
     // <path>api/2.0/smtpsettings/smtp/test/status</path>
     // <httpMethod>GET</httpMethod>
     //[HttpGet("smtp/test/status")]

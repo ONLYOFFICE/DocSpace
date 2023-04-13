@@ -56,7 +56,7 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Get greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <returns>Greeting settings: tenant name</returns>
+    /// <returns type="System.Object, System">Greeting settings: tenant name</returns>
     /// <path>api/2.0/settings/greetingsettings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings")]
@@ -70,7 +70,7 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Check the default greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <returns>Boolean value: true if the greeting settings of the current portal are set to default</returns>
+    /// <returns type="System.Boolean, System">Boolean value: true if the greeting settings of the current portal are set to default</returns>
     /// <path>api/2.0/settings/greetingsettings/isdefault</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("greetingsettings/isdefault")]
@@ -84,8 +84,8 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save the greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.GreetingSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Greeting settings: Title (string) - tenant name</param>
-    /// <returns>Message about saving greeting settings successfully</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.GreetingSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Greeting settings</param>
+    /// <returns type="System.Object, System">Message about saving greeting settings successfully</returns>
     /// <path>api/2.0/settings/greetingsettings</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("greetingsettings")]
@@ -106,7 +106,7 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Restore the greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <returns>Greeting settings: tenant name</returns>
+    /// <returns type="System.Object, System">Greeting settings: tenant name</returns>
     /// <path>api/2.0/settings/greetingsettings/restore</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("greetingsettings/restore")]

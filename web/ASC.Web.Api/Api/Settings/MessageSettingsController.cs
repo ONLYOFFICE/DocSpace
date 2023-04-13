@@ -83,9 +83,9 @@ public class MessageSettingsController : BaseSettingsController
     /// <short>
     /// Enable the administrator message settings
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings: TurnOn (bool) - specifies if the administrator messages are enabled or not</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings</param>
     /// <category>Messages</category>
-    /// <returns>Message about the result of saving new settings</returns>
+    /// <returns type="System.Object, System">Message about the result of saving new settings</returns>
     /// <path>api/2.0/settings/messagesettings</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("messagesettings")]
@@ -107,7 +107,7 @@ public class MessageSettingsController : BaseSettingsController
     /// Get cookies lifetime
     /// </short>
     /// <category>Cookies</category>
-    /// <returns>Lifetime value in minutes</returns>
+    /// <returns type="System.Int32, System">Lifetime value in minutes</returns>
     /// <path>api/2.0/settings/cookiesettings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("cookiesettings")]
@@ -123,8 +123,8 @@ public class MessageSettingsController : BaseSettingsController
     /// Update cookies lifetime
     /// </short>
     /// <category>Cookies</category>
-    /// <param type="ASC.Web.Api.Models.CookieSettingsRequestsDto, ASC.Web.Api.Models" name="model">Cookies settings request parameters: LifeTime (integer) - new lifetime value in minutes</param>
-    /// <returns>Message about the result of saving new settings</returns>
+    /// <param type="ASC.Web.Api.Models.CookieSettingsRequestsDto, ASC.Web.Api.Models" name="model">Cookies settings request parameters</param>
+    /// <returns type="System.Object, System">Message about the result of saving new settings</returns>
     /// <path>api/2.0/settings/cookiesettings</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("cookiesettings")]
@@ -150,14 +150,9 @@ public class MessageSettingsController : BaseSettingsController
     /// <short>
     /// Send a message to the administrator
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings: <![CDATA[
-    /// <ul>
-    ///     <li><b>Email</b> (string) - email,</li>
-    ///     <li><b>Message</b> (string) - message.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings</param>
     /// <category>Messages</category>
-    /// <returns>Message about the result of sending a message</returns>
+    /// <returns type="System.Object, System">Message about the result of sending a message</returns>
     /// <path>api/2.0/settings/sendadmmail</path>
     /// <httpMethod>POST</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -197,9 +192,9 @@ public class MessageSettingsController : BaseSettingsController
     /// <short>
     /// Sends an invitation email
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings: Email (string) - email</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings</param>
     /// <category>Messages</category>
-    /// <returns>Message about sending a link to confirm joining the DocSpace</returns>
+    /// <returns type="System.Object, System">Message about sending a link to confirm joining the DocSpace</returns>
     /// <path>api/2.0/settings/sendjoininvite</path>
     /// <httpMethod>POST</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>

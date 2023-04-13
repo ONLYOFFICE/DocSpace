@@ -26,9 +26,16 @@
 
 namespace ASC.Web.Api.ApiModels.RequestsDto;
 
+/// <summary>
+/// </summary>
 public class SalesRequestsDto
 {
+    /// <summary>Username</summary>
     public string UserName { get; set; }
+
+    /// <summary>Email address</summary>
     public string Email { get; set; }
+
+    /// <summary>Message</summary>
     public string Message { get; set; }
 }

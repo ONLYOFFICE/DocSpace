@@ -54,9 +54,10 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Get the custom navigation items</short>
     /// <category>Custom navigation</category>
-    /// <returns>List of the custom navigation items</returns>
+    /// <returns type="System.Collections.Generic.List{ASC.Web.Studio.Core.CustomNavigationItem}, System.Collections.Generic">List of the custom navigation items</returns>
     /// <path>api/2.0/settings/customnavigation/getall</path>
     /// <httpMethod>GET</httpMethod>
+    /// <collection>list</collection>
     [HttpGet("customnavigation/getall")]
     public List<CustomNavigationItem> GetCustomNavigationItems()
     {
@@ -68,7 +69,7 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Get a custom navigation item sample</short>
     /// <category>Custom navigation</category>
-    /// <returns>Custom navigation item</returns>
+    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core">Custom navigation item</returns>
     /// <path>api/2.0/settings/customnavigation/getsample</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("customnavigation/getsample")]
@@ -82,8 +83,8 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Get a custom navigation item by ID</short>
     /// <category>Custom navigation</category>
-    /// <param type="System.Guid, System" name="id">Custom navigation item ID</param>
-    /// <returns>Custom navigation item</returns>
+    /// <param type="System.Guid, System" method="url" name="id">Custom navigation item ID</param>
+    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core">Custom navigation item</returns>
     /// <path>api/2.0/settings/customnavigation/get/{id}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("customnavigation/get/{id}")]
@@ -97,18 +98,8 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Add a custom navigation item</short>
     /// <category>Custom navigation</category>
-    /// <param type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core" name="item">Custom navigation parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>Id</b> (Guid) - ID,</li>
-    ///     <li><b>Label</b> (string) - label,</li>
-    ///     <li><b>Url</b> (string) - URL,</li>
-    ///     <li><b>BigImg</b> (string) - big image,</li>
-    ///     <li><b>SmallImg</b> (string) - small image,</li>
-    ///     <li><b>ShowInMenu</b> (bool) - show in menu or not,</li>
-    ///     <li><b>ShowOnHomePage</b> (bool) - show on home page or not.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Custom navigation item</returns>
+    /// <param type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core" name="item">Custom navigation parameters</param>
+    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core">Custom navigation item</returns>
     /// <path>api/2.0/settings/customnavigation/create</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("customnavigation/create")]
@@ -169,10 +160,10 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Delete a custom navigation item</short>
     /// <category>Custom navigation</category>
-    /// <param type="System.Guid, System" name="id">Custom navigation item ID</param>
+    /// <param type="System.Guid, System" method="url" name="id">Custom navigation item ID</param>
     /// <path>api/2.0/settings/customnavigation/delete/{id}</path>
     /// <httpMethod>DELETE</httpMethod>
-    /// <returns>Task awaiter</returns>
+    /// <returns></returns>
     [HttpDelete("customnavigation/delete/{id}")]
     public async Task DeleteCustomNavigationItem(Guid id)
     {

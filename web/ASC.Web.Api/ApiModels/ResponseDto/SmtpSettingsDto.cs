@@ -28,13 +28,36 @@ namespace ASC.Web.Api.ApiModel.ResponseDto;
 
 public class SmtpSettingsDto : IMapFrom<SmtpSettings>
 {
+    /// <summary>Host</summary>
+    /// <example>"mail.example.com"</example>
     public string Host { get; set; }
+
+    /// <summary>Port</summary>
+    /// <example>25</example>
     public int? Port { get; set; }
+
+    /// <summary>Sender address</summary>
+    /// <example>"notify@example.com"</example>
     public string SenderAddress { get; set; }
+
+    /// <summary>Sender display name</summary>
+    /// <example>"Postman"</example>
     public string SenderDisplayName { get; set; }
+
+    /// <summary>Credentials username</summary>
+    /// <example>"notify@example.com"</example>
     public string CredentialsUserName { get; set; }
+
+    /// <summary>Credentials user password</summary>
+    /// <example>"{password}"</example>
     public string CredentialsUserPassword { get; set; }
+
+    /// <summary>Enables SSL or not</summary>
+    /// <example>true</example>
     public bool EnableSSL { get; set; }
+
+    /// <summary>Enables authentication or not</summary>
+    /// <example>false</example>
     public bool EnableAuth { get; set; }
 
     public static SmtpSettingsDto GetSample()
