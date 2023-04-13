@@ -1,7 +1,7 @@
 {
   "AddCertificate": "Certificaat toevoegen",
   "AdvancedSettings": "Geavanceerde Instellingen",
-  "AdvancedSettingsTooltip": "Standaard authenticatiepagina verbergen en automatisch doorverwijzen naar SSO-dienst",
+  "AdvancedSettingsTooltip": "Standaard authenticatiepagina verbergen en automatisch doorverwijzen naar SSO-dienst.",
   "AttributeMatching": "Attribute Mapping",
   "AttributeMatchingTooltip": "De correspondentie van de Single Sign-On attributen met de items van de \"Accounts\" sectie.",
   "Binding": "Binding:",

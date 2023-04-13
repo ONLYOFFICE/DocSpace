@@ -2597,6 +2597,8 @@ const Base = {
 
       itemOwnerColor: "rgb(163, 169, 174)",
 
+      backgroundButtons: "#FFFFFF",
+
       dropdownColor: black,
 
       loader: {

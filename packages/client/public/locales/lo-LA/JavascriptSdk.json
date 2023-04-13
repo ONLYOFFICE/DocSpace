@@ -1,0 +1,22 @@
+{
+  "Ascending": "ຕັ້ງຊັນຂຶ້ນ",
+  "CopyWindowCode": "ສຳເນົາລະຫັດຝັງໜ້າຕ່າງ",
+  "DataDisplay": "ການຕັ້ງຄ່າການສະແດງຂໍ້ມູນ",
+  "Descending": "ລົງມາ",
+  "Destroy": "ທໍາລາຍ",
+  "EnterCount": "ເຂົ້ານັບ",
+  "EnterHeight": "ໃສ່ຄວາມສູງ",
+  "EnterId": "ໃສ່ id",
+  "EnterPage": "ໃສ່ໜ້າເລກ",
+  "EnterWidth": "ໃສ່ຄວາມກວ້າງ",
+  "FolderId": "ID ໂຟນເດີ",
+  "FrameId": "ID ກອບ",
+  "Header": "ຫົວ",
+  "ItemsCount": "ຈໍານວນລາຍການ",
+  "JavascriptSdk": "Javascript sdk",
+  "Menu": "ເມນູ",
+  "Page": "ໜ້າ",
+  "SearchTerm": "ຄຳສັບຊອກຫາ",
+  "SortOrder": "ຮຽງລຳດັບ",
+  "WindowParameters": "ຕົວກໍານົດການປ່ອງຢ້ຽມ"
+}

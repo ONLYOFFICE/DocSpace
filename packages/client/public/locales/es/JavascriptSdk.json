@@ -1,0 +1,22 @@
+{
+  "Ascending": "Ascendente",
+  "CopyWindowCode": "Copiar el código de incrustación de la ventana",
+  "DataDisplay": "Configuración de visualización de datos",
+  "Descending": "Descendiendo",
+  "Destroy": "Destruir",
+  "EnterCount": "Ingresar cuenta",
+  "EnterHeight": "Ingrese la altura",
+  "EnterId": "Ingrese ID",
+  "EnterPage": "Introduzca el número de página",
+  "EnterWidth": "Introducir ancho",
+  "FolderId": "Identificación de la carpeta",
+  "FrameId": "Identificación del marco",
+  "Header": "Encabezamiento",
+  "ItemsCount": "Cuenta de artículos",
+  "JavascriptSdk": "SDK de Javascript",
+  "Menu": "Menú",
+  "Page": "Página",
+  "SearchTerm": "Término de búsqueda",
+  "SortOrder": "Orden de clasificación",
+  "WindowParameters": "Parámetros de la ventana"
+}

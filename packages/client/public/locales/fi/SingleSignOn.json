@@ -27,7 +27,7 @@
   "SPAssertionConsumerURL": "SP Assertion Consumer URL (POST-tuki ja uudelleenohjausvelvoite)",
   "SPAssertionConsumerURLTooltip": "Palveluntarjoajan URL-osoite, jossa se vastaanottaa ja käsittelee palveluntarjoajan väitteitä",
   "SPEntityId": "SP Entity Id (linkki metadata XML:ään)",
-  "SPEntityIdTooltip": "Palveluntarjoajan XML URL-osoite, joka voidaan ladata ja käyttää identiteetin tarjoajan toimesta tunnistaakseen SP:n yksiselitteisesti.",
+  "SPEntityIdTooltip": "Palveluntarjoajan XML URL-osoite, joka voidaan ladata ja käyttää identiteetin tarjoajan toimesta tunnistaakseen SP:n yksiselitteisesti",
   "SPSingleLogoutURL": "SP yksittäinen uloskirjautuminen URL (POST-tuki ja uudelleenohjausvelvoite)",
   "SPSingleLogoutURLTooltip": "Kertakirjautumisessa käytetty URL identiteetintarjoajan puolella",
   "ServiceProviderSettings": "ONLYOFFICE SP Asetukset",

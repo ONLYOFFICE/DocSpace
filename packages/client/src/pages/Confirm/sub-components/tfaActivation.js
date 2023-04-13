@@ -96,6 +96,7 @@ const TfaActivationForm = withLoader((props) => {
     loginWithCodeAndCookie,
     history,
     location,
+    currentColorScheme,
   } = props;
 
   const [code, setCode] = useState("");
@@ -153,15 +154,27 @@ const TfaActivationForm = withLoader((props) => {
               portal security. Configure your authenticator application to
               continue work on the portal. For example you could use Google
               Authenticator for
-              <Link isHovered href={props.tfaAndroidAppUrl} target="_blank">
+              <Link
+                color={currentColorScheme?.main?.accent}
+                href={props.tfaAndroidAppUrl}
+                target="_blank"
+              >
                 Android
               </Link>
               and{" "}
-              <Link isHovered href={props.tfaIosAppUrl} target="_blank">
+              <Link
+                color={currentColorScheme?.main?.accent}
+                href={props.tfaIosAppUrl}
+                target="_blank"
+              >
                 iOS
               </Link>{" "}
               or Authenticator for{" "}
-              <Link isHovered href={props.tfaWinAppUrl} target="_blank">
+              <Link
+                color={currentColorScheme?.main?.accent}
+                href={props.tfaWinAppUrl}
+                target="_blank"
+              >
                 Windows Phone
               </Link>{" "}
               .
@@ -265,10 +278,9 @@ const TfaActivationWrapper = (props) => {
       setError(e.error);
       toastr.error(e);
     }
-
     setIsLoaded(true);
     setIsLoading(false);
-  }, []);
+  });
 
   useEffect(() => {
     getSecretKeyAndQRAction();
@@ -290,6 +302,7 @@ export default inject(({ auth, confirm }) => ({
   tfaAndroidAppUrl: auth.tfaStore.tfaAndroidAppUrl,
   tfaIosAppUrl: auth.tfaStore.tfaIosAppUrl,
   tfaWinAppUrl: auth.tfaStore.tfaWinAppUrl,
+  currentColorScheme: auth.settingsStore.currentColorScheme,
 }))(
   withRouter(
     withTranslation(["Confirm", "Common"])(observer(TfaActivationWrapper))

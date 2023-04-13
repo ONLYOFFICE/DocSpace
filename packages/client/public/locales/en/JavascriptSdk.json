@@ -1,0 +1,22 @@
+{
+  "Ascending": "Ascending",
+  "CopyWindowCode": "Copy window embed code",
+  "DataDisplay": "Data display settings",
+  "Descending": "Descending",
+  "Destroy": "Destroy",
+  "EnterCount": "Enter count",
+  "EnterHeight": "Enter height",
+  "EnterId": "Enter id",
+  "EnterPage": "Enter number page",
+  "EnterWidth": "Enter width",
+  "FolderId": "Folder id",
+  "FrameId": "Frame id",
+  "Header": "Header",
+  "ItemsCount": "Items count",
+  "JavascriptSdk": "Javascript sdk",
+  "Menu": "Menu",
+  "Page": "Page",
+  "SearchTerm": "Search term",
+  "SortOrder": "Sort order",
+  "WindowParameters": "Window parameters"
+}

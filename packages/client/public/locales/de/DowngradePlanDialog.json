@@ -1,3 +1,7 @@
 {
-  "SaveOrChange": "Verringern Sie den erforderlichen Parameter oder behalten Sie Ihren aktuellen Preisplan bei."
+  "CannotChangePlan": "Sie können Ihren Tarif nicht ändern, weil das verwendete Speichervolumen oder die Anzahl der Admins/Power-Benutzer Limits des gewählten Tarifs überschreitet:",
+  "ChangePricingPlan": "Preisplan ändern",
+  "PlanStorageLimit": "Die Beschränkung des neuen Tarifs ist <1>{{StorageValue}}</1> an Speicherplatz, und Ihr aktuell verwendeter Speicherplatz ist <1>{{currentStorageValue}}</1>.",
+  "PlanUsersLimit": "Sie möchten das Team auf <1>{{usersCount}}</1> Admins/Power-Benutzer herabstufen, und die aktuelle Anzahl solcher Benutzer in Ihrem DocSpace ist <1>{{currentUsersCount}}</1>.",
+  "SaveOrChange": "Bitte beseitigen Sie die Diskrepanz in den widersprüchlichen Parametern, um fortzufahren oder Ihren aktiven Preisplan beizubehalten."
 }

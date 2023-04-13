@@ -226,7 +226,7 @@ const StyledButtons = styled(Box)`
   position: absolute;
   bottom: 0px;
   width: 100%;
-
+  background: ${(props) => props.theme.filesPanels.sharing.backgroundButtons};
   border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 `;
 

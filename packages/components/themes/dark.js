@@ -291,11 +291,12 @@ const Dark = {
 
     background: black,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
-    connectBackground: "#3B72A7",
+    connectBackground:
+      "linear-gradient(0deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), #333333",
     hoverBackground: "#292929",
-    hoverConnectBackground: "#265A8F",
+    hoverConnectBackground: "#FFFFFF",
     activeBackground: "#292929",
-    hoverBorder: "#292929",
+    hoverBorder: "#858585",
 
     boxShadow: "none",
     hoverBoxShadow: "none",
@@ -317,7 +318,7 @@ const Dark = {
       whiteSpace: "nowrap",
       color: grayMaxLight,
       hoverColor: grayMaxLight,
-      connectColor: white,
+      connectColor: darkBlack,
     },
 
     svg: {
@@ -326,7 +327,7 @@ const Dark = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
-      fill: white,
+      fill: darkBlack,
     },
   },
 
@@ -1370,6 +1371,7 @@ const Dark = {
     borderRadius: "6px",
     boxShadow:
       "0px 16px 16px rgba(0, 0, 0, 0.16), 0px 8.1px 6.975px rgba(0, 0, 0, 0.108), 0px 3.2px 2.6px rgba(0, 0, 0, 0.08), 0px 0.7px 0.925px rgba(0, 0, 0, 0.052)",
+    boxShadowMobile: "0px -4px 60px rgba(0, 0, 0, 0.25)",
     border: "1px solid #474747",
   },
 
@@ -2597,6 +2599,8 @@ const Dark = {
       itemBorder: "1px dashed #333333",
 
       itemOwnerColor: "#858585",
+
+      backgroundButtons: "#333333",
 
       dropdownColor: grayMaxLight,
 

@@ -5,7 +5,7 @@
   "CurrentNumber": "Il tuo attuale numero di cellulare",
   "DeleteProfileBtn": "Cancella il mio account",
   "DeleteProfileConfirmation": "Attenzione! Stai per eliminare il tuo account.",
-  "DeleteProfileConfirmationInfo": "Facendo clic su \"Elimina il mio account\" accetti la nostra politica sulla privacy.",
+  "DeleteProfileConfirmationInfo": "Facendo clic su \"Elimina il mio account\" accetti la nostra <1>politica sulla privacy.</1>",
   "DeleteProfileSuccessMessage": "Il tuo account è stato eliminato con successo.",
   "DeleteProfileSuccessMessageInfo": "Consulta la nostra Informativa sulla privacy per saperne di più sull'eliminazione del tuo account e dei dati ad esso associati.",
   "EmailAndPasswordCopiedToClipboard": "Email e password copiate negli appunti",

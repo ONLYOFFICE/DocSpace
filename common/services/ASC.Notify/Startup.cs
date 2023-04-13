@@ -53,8 +53,8 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<NotifyInvokeSendMethodRequestedIntegrationEventHandler>();
         DIHelper.TryAdd<NotifySendMessageRequestedIntegrationEventHandler>();
 
-        services.AddActivePassiveHostedService<NotifySenderService>();
-        services.AddActivePassiveHostedService<NotifyCleanerService>();
+        services.AddActivePassiveHostedService<NotifySenderService>(DIHelper);
+        services.AddActivePassiveHostedService<NotifyCleanerService>(DIHelper);
 
         services.AddBaseDbContextPool<NotifyDbContext>();
     }
