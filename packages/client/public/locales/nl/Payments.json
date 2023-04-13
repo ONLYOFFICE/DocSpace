@@ -6,7 +6,7 @@
   "BusinessFinalDateInfo": "Het abonnement wordt automatisch verlengd op {{finalDate}} met bijgewerkte prijzen en specificaties. U kunt deze opzeggen of uw facturatiegegevens wijzigen op uw Stripe klantenportaal.",
   "BusinessPlanPaymentOverdue": "Kan geen nieuwe gebruikers toevoegen en nieuwe kamers aanmaken. {{planName}} plan betaling is te laat.",
   "BusinessRequestDescription": "De prijsplannen met meer {{peopleNumber}} beheerders/power users zijn alleen beschikbaar op aanvraag.",
-  "BusinessSuggestion": "Pas uw {planName} plan aan",
+  "BusinessSuggestion": "Pas uw {{planName}} plan aan",
   "BusinessTitle": "U gebruikt {{planName}} plan",
   "BusinessUpdated": "{{planName}} plan bijgewerkt",
   "ChooseNewPayer": "Kies een nieuwe Betaler",

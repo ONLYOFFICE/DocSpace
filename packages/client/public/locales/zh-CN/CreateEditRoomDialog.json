@@ -20,7 +20,7 @@
   "ThirdPartyStorageComboBoxPlaceholder": "选择存储空间",
   "ThirdPartyStorageDescription": "为此房间的数据存储使用第三方服务。将在已连接的存储空间中创建一个用于存储此房间数据的新文件夹。",
   "ThirdPartyStorageNoStorageAlert": "您需要在此之前于“集成”部分中连接相应服务。否则将无法建立连接。",
-  "ThirdPartyStoragePermanentSettingDescription": "文件已存储在第三方 {{thirdpartyTitle}} 存储空间的“{{thirdpartyFolderName}}”文件夹中。\n<strong>{{thirdpartyPath}}</strong>",
+  "ThirdPartyStoragePermanentSettingDescription": "文件已存储在第三方 {{thirdpartyTitle}} 存储空间的\"{{thirdpartyFolderName}}\"文件夹中。\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "如需连接第三方存储空间，您需要在协作空间设置的集成部分中添加相应服务。联系协作空间所有者或管理员以启用集成。",
   "ThirdPartyStorageTitle": "第三方存储",
   "ViewOnlyRoomDescription": "共享任意现有文档、报告以及其他文件以供查看。",
