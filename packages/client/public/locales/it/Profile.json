@@ -16,7 +16,7 @@
   "LogoutBtn": "Esci",
   "LogoutDescription": "Ti preghiamo di notare. Tutte le connessioni attive tranne questa connessione verranno disconnesse, poiché è attualmente in uso.",
   "LogoutFrom": "Vuoi uscire da {{platform}} {{browser}} ?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Le istruzioni per l'attivazione sono state inviate all'indirizzo email <strong>{{email}}</strong>.",
+  "MessageEmailActivationInstuctionsSentOnEmail": "Le istruzioni per l'attivazione sono state inviate all'indirizzo email <strong>{{ email }}</strong>.",
   "MyProfile": "Il mio profilo",
   "ProviderSuccessfullyConnected": "Il fornitore è stato collegato con successo",
   "ProviderSuccessfullyDisconnected": "Il fornitore è stato scollegato con successo",

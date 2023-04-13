@@ -38,7 +38,7 @@
   "UpgradeNow": "Actualizar ahora",
   "UpgradePlan": "Actualizar plan",
   "UpgradePlanInfo": "La adición de nuevos usuarios excederá el número máximo de miembros de la sala permitidos por su plan de precios actual.",
-  "UserNotFound": "No se ha encontrado el usuario <1>{{email}}</1.",
+  "UserNotFound": "No se ha encontrado el usuario <1>{{email}}</1>.",
   "UserNotFoundMatchingEmail": "No hemos podido encontrar al usuario con el correo electrónico de Stripe correspondiente.",
   "YourPrice": "Su precio"
 }

@@ -20,7 +20,7 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Виберіть сховище",
   "ThirdPartyStorageDescription": "Використовуйте сторонні служби як сховище даних для цієї кімнати. У під’єднаному сховищі буде створено нову папку для зберігання даних цієї кімнати.",
   "ThirdPartyStorageNoStorageAlert": "Перед цим необхідно ввімкнути відповідну службу в розділі «Інтеграція». В іншому випадку з’єднання буде неможливим.",
-  "ThirdPartyStoragePermanentSettingDescription": "Файли зберігаються в сторонньому сховищі {{thirdpartyTitle}} у папці \"{{thirdpartyFolderName}}\".",
+  "ThirdPartyStoragePermanentSettingDescription": "Файли зберігаються в сторонньому сховищі {{thirdpartyTitle}} у папці \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Щоб під’єднати стороннє сховище, необхідно додати відповідну службу в розділі «Інтеграція» в параметрах DocSpace. Щоб увімкнути інтеграцію, зверніться до власника чи адміністратора DocSpace.",
   "ThirdPartyStorageTitle": "Стороннє сховище",
   "ViewOnlyRoomDescription": "Діліться готовими документами, звітами, документацією та іншими файлами для перегляду.",
