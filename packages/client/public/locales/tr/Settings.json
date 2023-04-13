@@ -178,7 +178,6 @@
   "ThirdPartyPropsDeactivated": "Başarıyla devre dışı bırakıldı",
   "ThirdPartyResource": "Üçüncü taraf kaynak",
   "ThirdPartyResourceDescription": "Yedekleme, üçüncü taraf hesabınıza (Dropbox, Box.com, OneDrive veya Google Drive) kaydedilebilir. Üçüncü taraf hesabınızı öncelikle (Dropbox, Box.com, OneDrive veya Google Drive) bağlamanız gerekir, böylelikle yedeğinizi oraya kaydedebileceksiniz.",
-  "ThirdPartyStorage": "Üçüncü taraf depolama",
   "ThirdPartyStorageDescription": "Yedekleme üçüncü taraf bir depolama alanına kaydedilebilir. Öncesinde, 'Entegrasyon' bölümünde ilgili hizmeti bağlamanız gerekir. Aksi halde aşağıdaki ayarlar etkin olmayacaktır.",
   "ThirdPartyTitleDescription": "Yetkilendirme anahtarları ile üçüncü taraf hizmetleri portalınıza bağlayabilirsiniz. Facebook, Google veya LinkedIn ile kolayca oturum açın; Belgeler modülünden orada depolanan dosyalarla çalışmak için Dropbox, OneDrive vb. ekleyin.",
   "TimeZone": "Zaman Dilimi",

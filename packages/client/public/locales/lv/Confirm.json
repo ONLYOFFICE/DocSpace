@@ -7,7 +7,7 @@
   "DeleteProfileConfirmation": "Uzmanību! Jūs gatavojaties izdzēst savu kontu.",
   "DeleteProfileConfirmationInfo": "Noklikšķinot uz \"Dzēst manu kontu\", jūs piekrītat mūsu <1>konfidencialitātes politikai.</1>",
   "DeleteProfileSuccessMessage": "Jūsu konts ir veiksmīgi izdzēsts.",
-  "DeleteProfileSuccessMessageInfo": "Skatiet mūsu konfidencialitātes politiku, lai uzzinātu vairāk par sava konta un ar to saistīto datu dzēšanu.",
+  "DeleteProfileSuccessMessageInfo": "Skatiet mūsu <1>konfidencialitātes politiku</1>, lai uzzinātu vairāk par sava konta un ar to saistīto datu dzēšanu.",
   "EmailAndPasswordCopiedToClipboard": "E-pasts un parole ir kopēti starpliktuvē",
   "EnterAppCodeDescription": "Ievadiet sešu ciparu ģenerētu kodu no savas lietotnes. Ja jums nav piekļuves tālrunim, izmantojiet rezerves kodus.",
   "EnterAppCodeTitle": "Ievadiet kodu no autentifikācijas lietotnes",

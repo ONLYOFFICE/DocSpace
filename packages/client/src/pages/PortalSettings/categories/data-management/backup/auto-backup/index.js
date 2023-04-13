@@ -518,7 +518,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
-                label={t("ThirdPartyStorage")}
+                label={t("Common:ThirdPartyStorage")}
                 name={`${StorageModuleType}`}
                 isChecked={isCheckedThirdPartyStorage}
                 isDisabled={isLoadingData}

@@ -20,7 +20,7 @@
   "FeedMoveFolder": "Kansiot siirretty",
   "FeedRenameFile": "Tiedosto nimetty uudelleen",
   "FeedRenameFolder": "Kansio nimetty uudelleen",
-  "FeedRenameRoom": "Huone<strong>«{{oldRoomTitle}}»</strong> nimetty uudestaan<sktrong>«{{roomTitle}}»</strong>.",
+  "FeedRenameRoom": "Huone<strong>«{{oldRoomTitle}}»</strong> nimetty uudestaan<strong>«{{roomTitle}}»</strong>.",
   "FeedUpdateFile": "Tiedosto päivitetty",
   "FeedUpdateRoom": "Kuvake vaihdettu",
   "FeedUpdateUser": "on määrätty rooliin {{role}}",
