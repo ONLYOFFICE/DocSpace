@@ -26,7 +26,6 @@
   "Payer": "Plătitor",
   "PayerDescription": "Acest utilizator are acces la detalii de plată şi este singurul utilizator care poate seta cota şi efectua plăţi. Proprietarul DocSpace, precum şi mesagerul plătitor, pot reatribui rolul de manager plătitor folosind portalul de client Stripe.",
   "PaymentOverdue": "Imposibil de adăugat utilizatori noi.",
-  "PowerUserDescription": "Utilizatori avansați pot crea și modifica fişiere în sală, dar nu pot crea săli, gestiona utilizatorii sau accesa setările.",
   "PriceCalculation": "Calculaţi preţul",
   "QuotaPaidUserLimitError": "S-a atins limita maximă de utilizatori cu plată. <1>Plăţi</1>",
   "RenewSubscription": "Reînnoiți abonamentul {{planName}}",
