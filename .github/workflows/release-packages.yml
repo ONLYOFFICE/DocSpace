@@ -37,21 +37,17 @@ jobs:
         
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
         run: |
-          pwd && ls -la
-          sudo su
           sudo apt install -y dh-make nginx mysql-server rename curl
           curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          sudo apt update && sudo apt install -y yarn
           sudo apt-get remove libnode72
           sudo apt-get clean
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt-get update && sudo apt-get install -y nodejs
           declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
           wget https://packages.microsoft.com/config/ubuntu/$repo_version/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           sudo apt update
-          sudo apt install -y dotnet-sdk-7.0
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs
           sudo npm install -g json
           
       - name: BUILD package DEB
@@ -90,16 +86,12 @@ jobs:
         
       - name: INSTALL tools & Prepare build
         run: |
-          # pwd && ls -la
-          # sudo su
           sudo apt install -y rpm nginx mysql-server rename curl
           curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          # sudo apt update && sudo apt install -y yarn
           sudo apt-get remove libnode72
           sudo apt-get clean
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          # sudo apt-get update && sudo apt-get install -y nodejs
           declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
           wget https://packages.microsoft.com/config/ubuntu/$repo_version/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
@@ -111,8 +103,6 @@ jobs:
     
       - name: BUILD package RPM
         run: |
-          # pwd && ls -la
-          # sudo su
           cd build/install/rpm/SPECS
           mv ./SOURCES/product.rpmlintrc ./SOURCES/docspace.rpmlintrc
           
@@ -125,7 +115,7 @@ jobs:
           cat <<EOT >> build-DocSpace_rpm.sh
           set -x
           sed -i -e '/BuildRequires/d' product.spec
-          # GIT_BRANCH=release/v1.0.0
+          GIT_BRANCH=release
           rename 's/product/docspace/g' ../../common/*.sh
           rpmbuild -D "GIT_BRANCH release-v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release 999" -ba product.spec
           EOT
