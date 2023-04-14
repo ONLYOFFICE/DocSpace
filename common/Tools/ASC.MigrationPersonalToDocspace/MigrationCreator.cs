@@ -97,7 +97,7 @@ public class MigrationCreator
         await using (var writer = new ZipWriteOperator(_tempStream, path))
         {
             await DoMigrationDb(id, writer);
-            DoMigrationStorage(id, writer);
+            await DoMigrationStorage(id, writer);
         }
         return fileName;
     }
