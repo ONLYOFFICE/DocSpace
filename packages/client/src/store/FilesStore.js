@@ -376,7 +376,13 @@ class FilesStore {
       const folder = JSON.parse(opt?.data);
       if (!folder || !folder.id) return;
 
-      this.getFolderInfo(folder.id);
+      api.files
+        .getFolderInfo(folder.id)
+        .then(() => this.setFolder(folderInfo))
+        .catch(() => {
+          // console.log("Folder deleted")
+        });
+
       console.log("[WS] update folder", folder.id, folder.title);
 
       if (this.selection?.length) {
