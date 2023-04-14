@@ -115,6 +115,12 @@ jobs:
           cd build/install/rpm/SPECS
           mv ./SOURCES/product.rpmlintrc ./SOURCES/docspace.rpmlintrc
           
+          curl https://github.com/ONLYOFFICE/docspace/archive/release/v1.0.0.tar.gz
+          curl https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz
+          curl https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz#/dictionaries-master.tar.gz
+          
+          cp *.tar.gz ./SOURCES
+          
           cat <<EOT >> build-DocSpace_rpm.sh
           set -x
           sed -i -e '/BuildRequires/d' product.spec
