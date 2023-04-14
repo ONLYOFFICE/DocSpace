@@ -118,9 +118,9 @@ jobs:
           cat <<EOT >> build-DocSpace_rpm.sh
           set -x
           sed -i -e '/BuildRequires/d' product.spec
-          GIT_BRANCH=release/v1.0.0
+          # GIT_BRANCH=release/v1.0.0
           rename 's/product/docspace/g' ../../common/*.sh
-          rpmbuild -D "GIT_BRANCH ${GIT_BRANCH//\//-}" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release 999" -ba product.spec
+          rpmbuild -D "GIT_BRANCH release/v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release 999" -ba product.spec
           EOT
           
           chmod +x build-DocSpace_rpm.sh
