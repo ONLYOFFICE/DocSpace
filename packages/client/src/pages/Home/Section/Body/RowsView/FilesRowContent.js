@@ -1,10 +1,9 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
-import moment from "moment";
 
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
@@ -112,17 +111,13 @@ const FilesRowContent = ({
     fileExst,
     filesCount,
     foldersCount,
-    autoDelete,
     providerKey,
     title,
     isRoom,
     daysRemaining,
-    viewAccessability,
     fileType,
     tags,
   } = item;
-
-  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   const contentComponent = () => {
     switch (filterSortBy) {
