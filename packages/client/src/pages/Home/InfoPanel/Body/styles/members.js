@@ -98,6 +98,10 @@ const StyledUser = styled.div`
       }
     }
   }
+
+  .access-right-select-wrapper {
+    margin: 0;
+  }
 `;
 
 StyledUserTypeHeader.defaultProps = { theme: Base };

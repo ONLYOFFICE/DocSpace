@@ -12,9 +12,12 @@ const AccessSelector = ({
   containerRef,
   defaultAccess,
   isOwner,
+  onAccessSelectorClick,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
-  const width = containerRef?.current?.offsetWidth - 32;
+  const width = onAccessSelectorClick
+    ? containerRef?.current?.offsetWidth
+    : containerRef?.current?.offsetWidth - 32;
 
   const accessOptions = getAccessOptions(t, roomType, false, true, isOwner);
 
@@ -45,7 +48,10 @@ const AccessSelector = ({
     : {};
 
   return (
-    <StyledAccessSelector>
+    <StyledAccessSelector
+      className="access-right-select-wrapper"
+      onClick={onAccessSelectorClick}
+    >
       <AccessRightSelect
         selectedOption={selectedOption}
         onSelect={onSelectAccess}
