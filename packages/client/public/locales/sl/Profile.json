@@ -16,7 +16,6 @@
   "LogoutBtn": "Odjava",
   "LogoutDescription": "Opomba. Vse aktivne povezave bodo odjavljene, razen te, ki je trenutno v uporabi.",
   "LogoutFrom": "Odjava iz {{platform}} {{browser}} ?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Navodila za aktivacijo e-mail naslova so bila poslana na <strong>{{ email }}</strong> email naslov.",
   "MyProfile": "Moj profil",
   "ProviderSuccessfullyConnected": "Ponudnik je uspešno povezan",
   "ProviderSuccessfullyDisconnected": "Ponudnik je bil uspešno odklopljen",

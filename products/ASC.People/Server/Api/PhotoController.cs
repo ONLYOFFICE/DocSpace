@@ -207,14 +207,14 @@ public class PhotoController : PeopleControllerBase
                         throw new ImageSizeLimitException();
                     }
 
-                    var mainPhoto = _userPhotoManager.SaveOrUpdatePhoto(userId, data);
+                    var mainPhoto = await _userPhotoManager.SaveOrUpdatePhoto(userId, data);
                     var userInfo = _userManager.GetUsers(userId);
                     var cacheKey = Math.Abs(userInfo.LastModified.GetHashCode());
 
                     result.Data =
                         new
                         {
-                            main = (await mainPhoto).Item1 + $"?hash={cacheKey}",
+                            main = mainPhoto.Item1 + $"?hash={cacheKey}",
                             retina = await _userPhotoManager.GetRetinaPhotoURL(userId) + $"?hash={cacheKey}",
                             max = await _userPhotoManager.GetMaxPhotoURL(userId) + $"?hash={cacheKey}",
                             big = await _userPhotoManager.GetBigPhotoURL(userId) + $"?hash={cacheKey}",

@@ -7,7 +7,7 @@
   "DeleteProfileConfirmation": "Pozor! Chystáte se smazat svůj účet.",
   "DeleteProfileConfirmationInfo": "Kliknutím na \"Smazat můj účet\" souhlasíte s našimi <1>Zásadami ochrany osobních údajů.</1>",
   "DeleteProfileSuccessMessage": "Váš účet byl úspěšně smazán.",
-  "DeleteProfileSuccessMessageInfo": "Více informací o vymazání vašeho účtu a údajů s ním spojených naleznete v našich Zásadách ochrany osobních údajů.",
+  "DeleteProfileSuccessMessageInfo": "Více informací o vymazání vašeho účtu a údajů s ním spojených naleznete v našich <1>Zásadách ochrany</1> osobních údajů.",
   "EmailAndPasswordCopiedToClipboard": "Email a heslo zkopírované do schránky",
   "EnterAppCodeDescription": "Zadejte šestimístný kód vygenerovaný z vaší aplikace. Pokud nemáte přístup k telefonu, použijte záložní kódy.",
   "EnterAppCodeTitle": "Zadejte kód z ověřovací aplikace",

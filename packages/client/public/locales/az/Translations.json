@@ -28,7 +28,7 @@
   "Folders": "Qovluqlar",
   "FormTemplates": "Anket şablonları",
   "LinkCopySuccess": "Link buferə köçürüldü",
-  "LinkValidTime": "Bu link yalnız {{gün_sayı}} gün ərzində etibarlıdır.",
+  "LinkValidTime": "Bu link yalnız {{days_count}} gün ərzində etibarlıdır.",
   "MobileAndroid": "Google Play-dən ONLYOFFICE Sənədlərini əldə edin",
   "MobileIos": "App Store-da ONLYOFFICE Sənədləri endirin",
   "MobileLinux": "Linux üçün ONLYOFFICE Masaüstü Redaktorları endirin",

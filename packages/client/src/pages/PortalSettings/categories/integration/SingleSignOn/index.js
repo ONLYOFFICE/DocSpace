@@ -34,7 +34,7 @@ const SingleSignOn = (props) => {
 
       <HideButton
         text={t("ServiceProviderSettings")}
-        label="serviceProviderSettings"
+        label={t("ServiceProviderSettings")}
         value={serviceProviderSettings}
         isDisabled={!isSSOAvailable}
       />
@@ -55,7 +55,7 @@ const SingleSignOn = (props) => {
 
       <HideButton
         text={t("SpMetadata")}
-        label="spMetadata"
+        label={t("SpMetadata")}
         value={spMetadata}
         isDisabled={!isSSOAvailable}
       />
