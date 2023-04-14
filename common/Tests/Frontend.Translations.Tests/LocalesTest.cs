@@ -69,11 +69,16 @@ public class LocalesTest
     //public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
 
     private static readonly string _md5ExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../md5-excludes.json"));
+    private static readonly string _spellCheckCommonExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../spellcheck-excludes-common.json"));
 
     //private static string _encodingExcludesPath = "../../../encoding-excludes.json";
 
     private static readonly List<string> _md5Excludes = File.Exists(_md5ExcludesPath)
         ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_md5ExcludesPath))
+        : new List<string>();
+
+    private static readonly List<string> _spellCheckCommonExcludes = File.Exists(_spellCheckCommonExcludesPath)
+        ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_spellCheckCommonExcludesPath))
         : new List<string>();
 
     //private static List<string> encodingExcludes = File.Exists(_encodingExcludesPath)
@@ -336,6 +341,8 @@ public class LocalesTest
 
         TestContext.Progress.WriteLine($"Found _md5Excludes = {_md5Excludes.Count()} Path to file '{_md5ExcludesPath}'");
 
+        TestContext.Progress.WriteLine($"Found _spellCheckCommonExcludes = {_spellCheckCommonExcludes.Count()} Path to file '{_spellCheckCommonExcludesPath}'");
+
     }
 
     [Test]
@@ -407,7 +414,19 @@ public class LocalesTest
 
                             if (result.HasProblems)
                             {
-                                message += $"{++i}. lng='{group.Language}' file='{g.FilePath}'\r\nkey='{item.Key}' value='{item.Value}'\r\nIncorrect words:\r\n{string.Join("\r\n", result.SpellIssues.Select(issue => $"'{issue.Word}' Suggestion: '{issue.Suggestions.FirstOrDefault()}'"))}\r\n\r\n";
+                                var incorrectWords = result.SpellIssues
+                                    .Where(t => !_spellCheckCommonExcludes
+                                    .Exists(e => e.Equals(t.Word, StringComparison.InvariantCultureIgnoreCase)))
+                                    .Select(issue => $"'{issue.Word}' " +
+                                $"Suggestion: '{issue.Suggestions.FirstOrDefault()}'")
+                                    .ToList();
+
+                                if (!incorrectWords.Any())
+                                    continue;
+
+                                message += $"{++i}. lng='{group.Language}' file='{g.FilePath}'\r\nkey='{item.Key}' " +
+                                $"value='{item.Value}'\r\nIncorrect words:\r\n" +
+                                $"{string.Join("\r\n", incorrectWords)}\r\n\r\n";
                                 errorsCount++;
 
 
