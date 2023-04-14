@@ -115,9 +115,9 @@ jobs:
           cd build/install/rpm/SPECS
           mv ./SOURCES/product.rpmlintrc ./SOURCES/docspace.rpmlintrc
           
-          wget https://github.com/ONLYOFFICE/docspace/archive/release/v1.0.0.tar.gz
-          wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz
-          wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz#/dictionaries-master.tar.gz
+          wget https://github.com/ONLYOFFICE/docspace/archive/release/v1.0.0.tar.gz -O DocSpace-release-v1.0.0.tar.gz
+          wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
+          wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           ls -la
           cp *.tar.gz ./SOURCES
           
