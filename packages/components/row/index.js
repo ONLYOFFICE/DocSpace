@@ -188,30 +188,30 @@ class Row extends React.Component {
 }
 
 Row.propTypes = {
-  /** Required to host the Checkbox component. Its location is fixed and it is always the first.
+  /** Required for hosting the Checkbox component. Its location is always fixed in the first position.
    * If there is no value, the occupied space is distributed among the other child elements. */
   checked: PropTypes.bool,
   children: PropTypes.element,
   /** Accepts class */
   className: PropTypes.string,
   contentElement: PropTypes.any,
-  /** Required for the width task of the ContextMenuButton component. */
+  /** Sets the width of the ContextMenuButton component. */
   contextButtonSpacerWidth: PropTypes.string,
-  /** Required to host the ContextMenuButton component. It is always located near the right border of the container,
+  /** Required for hosting the ContextMenuButton component. It is always located near the right border of the container,
    * regardless of the contents of the child elements. If there is no value, the occupied space is distributed among the other child elements. */
   contextOptions: PropTypes.array,
   /** Current row item information. */
   data: PropTypes.object,
-  /** Required to host some component. It has a fixed order of location, if the Checkbox component is specified,
-   * then it follows, otherwise it occupies the first position. If there is no value, the occupied space is distributed among the other child elements. */
+  /** In case Checkbox component is specified, it is located in a fixed order,
+   * otherwise it is located in the first position. If there is no value, the occupied space is distributed among the other child elements. */
   element: PropTypes.element,
   /** Accepts id  */
   id: PropTypes.string,
   /** If true, this state is shown as a rectangle in the checkbox */
   indeterminate: PropTypes.bool,
-  /** when selecting row element. Returns data value. */
+  /** Sets a callback function that is triggered when a row element is selected. Returns data value. */
   onSelect: PropTypes.func,
-  /** On click anywhere in the row, except the checkbox and context menu */
+  /** Sets a callback function that is triggered when any element except the checkbox and context menu is clicked. */
   onRowClick: PropTypes.func,
   rowContextClick: PropTypes.func,
   /** Accepts css style  */
