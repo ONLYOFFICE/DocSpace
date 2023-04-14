@@ -15,6 +15,8 @@ import withBadges from "../../../../../HOCs/withBadges";
 import { Base } from "@docspace/components/themes";
 import { RoomsTypeTranslations } from "@docspace/common/constants";
 import { desktop } from "@docspace/components/utils/device";
+import { getFileTypeName } from "../../../../../helpers/filesUtils";
+import { SortByFieldName } from "../../../../../helpers/constants";
 
 const SimpleFilesRowContent = styled(RowContent)`
   .row-main-container-wrapper {
@@ -101,6 +103,9 @@ const FilesRowContent = ({
   theme,
   isRooms,
   isTrashFolder,
+  filterSortBy,
+  createdDate,
+  fileOwner,
 }) => {
   const {
     contentLength,
@@ -113,9 +118,42 @@ const FilesRowContent = ({
     isRoom,
     daysRemaining,
     viewAccessability,
+    fileType,
+    tags,
   } = item;
 
   const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
+
+  const contentComponent = () => {
+    switch (filterSortBy) {
+      case SortByFieldName.Size:
+        if (!contentLength) return "—";
+        return contentLength;
+
+      case SortByFieldName.CreationDate:
+        return createdDate;
+
+      case SortByFieldName.Author:
+        return fileOwner;
+
+      case SortByFieldName.Type:
+        return getFileTypeName(fileType);
+
+      case SortByFieldName.Tags:
+        if (tags?.length === 0) return "—";
+        return tags?.map((elem) => {
+          return elem;
+        });
+
+      default:
+        if (isTrashFolder)
+          return t("Files:DaysRemaining", {
+            daysRemaining,
+          });
+
+        return updatedDate;
+    }
+  };
 
   return (
     <>
@@ -150,11 +188,7 @@ const FilesRowContent = ({
           // color={sideColor}
           className="row_update-text"
         >
-          {isTrashFolder
-            ? t("Files:DaysRemaining", {
-                daysRemaining,
-              })
-            : updatedDate && updatedDate}
+          {contentComponent()}
         </Text>
 
         <Text
@@ -181,9 +215,19 @@ const FilesRowContent = ({
   );
 };
 
-export default inject(({ auth, treeFoldersStore }) => {
-  const { isRecycleBinFolder } = treeFoldersStore;
-  return { theme: auth.settingsStore.theme, isTrashFolder: isRecycleBinFolder };
+export default inject(({ auth, treeFoldersStore, filesStore }) => {
+  const { filter, roomsFilter } = filesStore;
+  const { isRecycleBinFolder, isRoomsFolder, isArchiveFolder } =
+    treeFoldersStore;
+
+  const isRooms = isRoomsFolder || isArchiveFolder;
+  const filterSortBy = isRooms ? roomsFilter.sortBy : filter.sortBy;
+
+  return {
+    filterSortBy,
+    theme: auth.settingsStore.theme,
+    isTrashFolder: isRecycleBinFolder,
+  };
 })(
   observer(
     withRouter(
