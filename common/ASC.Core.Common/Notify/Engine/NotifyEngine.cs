@@ -100,6 +100,25 @@ public class NotifyEngine : INotifyEngine, IDisposable
         _methodsEvent.Set();
     }
 
+    internal void RegisterSendMethod(Func<DateTime, Task> method, string cron)
+    {
+        ArgumentNullException.ThrowIfNull(method);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(cron);
+
+        var w = new SendMethodWrapper(method, cron, _logger);
+        lock (_sendMethods)
+        {
+            if (!_notifyScheduler.IsAlive)
+            {
+                _notifyScheduler.Start();
+            }
+
+            _sendMethods.Remove(w);
+            _sendMethods.Add(w);
+        }
+        _methodsEvent.Set();
+    }
+
     internal void UnregisterSendMethod(Action<DateTime> method)
     {
         ArgumentNullException.ThrowIfNull(method);
@@ -124,7 +143,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
                     copy = _sendMethods.ToList();
                 }
 
-                foreach(var w in copy)
+                foreach (var w in copy)
                 {
                     if (!w.ScheduleDate.HasValue)
                     {
@@ -590,6 +609,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         private readonly SemaphoreSlim _semaphore;
         private readonly CronExpression _cronExpression;
         private readonly Action<DateTime> _method;
+        private readonly Func<DateTime, Task> _asyncMethod;
         private readonly ILogger _logger;
 
         public DateTime? ScheduleDate { get; private set; }
@@ -606,6 +626,11 @@ public class NotifyEngine : INotifyEngine, IDisposable
             }
 
             UpdateScheduleDate(DateTime.UtcNow);
+        }
+
+        public SendMethodWrapper(Func<DateTime, Task> method, string cron, ILogger log) : this((Action<DateTime>)null, cron, log)
+        {
+            _asyncMethod = method;
         }
 
         public void UpdateScheduleDate(DateTime d)
@@ -626,11 +651,18 @@ public class NotifyEngine : INotifyEngine, IDisposable
         public async Task InvokeSendMethod(DateTime d)
         {
             await _semaphore.WaitAsync();
-            await Task.Run(() =>
+            await Task.Run(async () =>
             {
                 try
                 {
-                    _method(d);
+                    if (_method != null)
+                    {
+                        _method(d);
+                    }
+                    else if (_asyncMethod != null)
+                    {
+                        await _asyncMethod(d);
+                    }
                 }
                 catch (Exception e)
                 {
@@ -642,7 +674,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
 
         public override bool Equals(object obj)
         {
-            return obj is SendMethodWrapper w && _method.Equals(w._method);
+            return obj is SendMethodWrapper w && ((_method != null && _method.Equals(w._method)) || (_asyncMethod != null && _asyncMethod.Equals(w._asyncMethod)));
         }
 
         public override int GetHashCode()
