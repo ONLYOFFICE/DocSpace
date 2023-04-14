@@ -139,7 +139,7 @@
   "PortalRenaming": "Zmiana nazwy portalu",
   "PortalRenamingDescription": "Tutaj możesz zmienić adres portalu.",
   "PortalRenamingLabelText": "Nowa nazwa portalu",
-  "PortalRenamingMobile": "Wpisz część, która pojawi się obok adresu internetowego onlyoffice.com/onlyoffice.eu.  Uwaga: stary adres portalu będzie dostępny dla nowych użytkowników po kliknięciu przycisku Zapisz.",
+  "PortalRenamingMobile": "Wpisz część, która pojawi się obok adresu internetowego {{domain}}.  Uwaga: stary adres portalu będzie dostępny dla nowych użytkowników po kliknięciu przycisku Zapisz.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Wpisz część, która pojawi się obok adresu internetowego {{domain}}.",
   "ProductUserOpportunities": "Zobacz profile i grupy",
   "RecoveryFileNotSelected": "Błąd odzyskiwania. Nie wybrano pliku odzyskiwania.",

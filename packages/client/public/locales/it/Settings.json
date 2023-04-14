@@ -139,7 +139,7 @@
   "PortalRenaming": "Ridenominazione del portale",
   "PortalRenamingDescription": "Qui tu puoi cambiare il tuo indirizzo portale.",
   "PortalRenamingLabelText": "Nome del portale nuovo",
-  "PortalRenamingMobile": "Inserisci la parte che apparirà accanto all'indirizzo portale onlyoffice.com/onlyoffice.eu. Nota: il tuo vecchio indirizzo portale sarà disponibile per i nuovi utenti una volta che tu fai clic sul pulsante Salva.",
+  "PortalRenamingMobile": "Inserisci la parte che apparirà accanto all'indirizzo portale {{domain}}. Nota: il tuo vecchio indirizzo portale sarà disponibile per i nuovi utenti una volta che tu fai clic sul pulsante Salva.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Inserisci la parte che apparirà accanto all'indirizzo portale {{domain}}.",
   "ProductUserOpportunities": "Visualizza profili e gruppi",
   "RecoveryFileNotSelected": "Errore di ripristino. File di ripristino non selezionato.",

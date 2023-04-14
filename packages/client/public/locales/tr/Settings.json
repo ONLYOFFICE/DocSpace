@@ -139,7 +139,7 @@
   "PortalRenaming": "Portal Yeniden Adlandırma",
   "PortalRenamingDescription": "Buradan portal adresinizi değiştirebilirsiniz.",
   "PortalRenamingLabelText": "Yeni portal adı",
-  "PortalRenamingMobile": "onlyoffice.com/onlyoffice.eu portal adresinin yanında beliren bölümü giriniz. Lütfen dikkat: Kaydet tuşuna tıkladığınız takdirde eski portal adresiniz yeni kullanıcılarına erişilebilir olacaktır.",
+  "PortalRenamingMobile": "{{domain}} portal adresinin yanında beliren bölümü giriniz. Lütfen dikkat: Kaydet tuşuna tıkladığınız takdirde eski portal adresiniz yeni kullanıcılarına erişilebilir olacaktır.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> {{domain}} portal adresinin yanında beliren bölümü giriniz.",
   "ProductUserOpportunities": "Profilleri ve grupları görüntüle",
   "RecoveryFileNotSelected": "Kurtarma hatası. Kurtarma dosyası seçilmedi.",

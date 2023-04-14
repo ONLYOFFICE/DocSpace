@@ -139,7 +139,7 @@
   "PortalRenaming": "Portaalin uudelleennimeäminen",
   "PortalRenamingDescription": "Tässä voit vaihtaa portaalisi osoitteen.",
   "PortalRenamingLabelText": "Uusi portaalin nimi",
-  "PortalRenamingMobile": "Syötä osa joka ilimaantuu onlyoffice.com/onlyoffice.eu portaalin osoitteen oheen. Huom: portaalisi osoite tulee saataville uusille käyttäjille sen jälkeen kun klikkaat Tallenna painiketta.",
+  "PortalRenamingMobile": "Syötä osa joka ilimaantuu {{domain}} portaalin osoitteen oheen. Huom: portaalisi osoite tulee saataville uusille käyttäjille sen jälkeen kun klikkaat Tallenna painiketta.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Syötä osa joka ilmaantuu {{domain}} portaalin osoitteen oheen.",
   "ProductUserOpportunities": "Tarkastele profiileja ja ryhmiä",
   "RecoveryFileNotSelected": "Palautusvirhe. Palautustiedostoa ei ole valittu.",

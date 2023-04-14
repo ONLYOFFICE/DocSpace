@@ -132,18 +132,10 @@ export const DNSSettingsTooltip = ({
   );
 };
 
-export const PortalRenamingTooltip = ({ t }) => {
+export const PortalRenamingTooltip = ({ t, domain }) => {
   const text = t("Settings:PortalRenamingDescription");
   const pleaseNote = t("Settings:PleaseNote");
   const save = t("Common:SaveButton");
-
-  const hostname = window.location.hostname;
-  const domainParts = hostname.split(".");
-  let domain = "onlyoffice.io";
-
-  if (domainParts?.length === 3) {
-    domain = domainParts.shift().join(".");
-  }
 
   return (
     <StyledTooltip>

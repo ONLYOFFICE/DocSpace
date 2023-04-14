@@ -139,7 +139,7 @@
   "PortalRenaming": "Přejmenování portálu",
   "PortalRenamingDescription": "Zde můžete změnit Vaši adresu portálu.",
   "PortalRenamingLabelText": "Nový název portálu",
-  "PortalRenamingMobile": "Vložte část, která se objeví vedle onlyoffice.com/onlyoffice.eu portálové adresy. Upozornění: Vaše stará portálová adresa bude dostupná pouze pro uživatele poté, co kliknete na tlačítko Uložit.",
+  "PortalRenamingMobile": "Vložte část, která se objeví vedle {{domain}} portálové adresy. Upozornění: Vaše stará portálová adresa bude dostupná pouze pro uživatele poté, co kliknete na tlačítko Uložit.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Vložte část, která se objeví vedle {{domain}} portálové adresy.",
   "ProductUserOpportunities": "Zobrazit profily a skupiny",
   "RecoveryFileNotSelected": "Chyba při obnově. Soubor pro obnovení nebyl vybrán.",
