@@ -379,7 +379,7 @@ class FilesStore {
       this.getFolderInfo(folder.id);
       console.log("[WS] update folder", folder.id, folder.title);
 
-      if (this.selection) {
+      if (this.selection?.length) {
         const foundIndex = this.selection?.findIndex((x) => x.id === folder.id);
         if (foundIndex > -1) {
           runInAction(() => {
