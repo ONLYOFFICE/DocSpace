@@ -146,6 +146,7 @@ class SettingsStore {
   bookTrainingEmail = null;
   legalTerms = null;
   baseDomain = "onlyoffice.io";
+  documentationEmail = null;
 
   constructor() {
     makeAutoObservable(this);
