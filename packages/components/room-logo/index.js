@@ -87,19 +87,19 @@ RoomLogo.defaultProps = {
 };
 
 RoomLogo.propTypes = {
-  /** Accepts type of the room */
+  /** Accepts room type */
   type: PropTypes.oneOf([2, 5]),
-  /** Add privacy icon  */
+  /** Adds privacy icon  */
   isPrivacy: PropTypes.bool,
-  /** Add archive icon  */
+  /** Adds archive icon  */
   isArchive: PropTypes.bool,
-  /** Add checkbox when row/tile is hovered or checked  */
+  /** Adds checkbox when row/tile is hovered or checked  */
   withCheckbox: PropTypes.bool,
-  /** Add checked state to checkbox  */
+  /** Sets a checked state of the checkbox  */
   isChecked: PropTypes.bool,
-  /** Add indeterminate state to checkbox  */
+  /** Sets an indeterminate state of the checkbox  */
   isIndeterminate: PropTypes.bool,
-  /** Add onChange checkbox callback function  */
+  /** Sets onChange checkbox callback function */
   onChange: PropTypes.func,
   /** Accepts id  */
   id: PropTypes.string,
