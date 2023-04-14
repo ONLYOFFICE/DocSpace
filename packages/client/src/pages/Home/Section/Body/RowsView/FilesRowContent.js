@@ -156,6 +156,7 @@ const FilesRowContent = ({
         sectionWidth={sectionWidth}
         isMobile={isMobile}
         isFile={fileExst || contentLength}
+        sideColor={theme.filesSection.rowView.sideColor}
       >
         <Link
           className="row-content-link"
@@ -180,7 +181,6 @@ const FilesRowContent = ({
           containerWidth="15%"
           fontSize="12px"
           fontWeight={400}
-          // color={sideColor}
           className="row_update-text"
         >
           {contentComponent()}
