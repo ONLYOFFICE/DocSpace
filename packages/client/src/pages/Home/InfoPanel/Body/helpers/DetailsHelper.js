@@ -240,7 +240,7 @@ class DetailsHelper {
     return text(
       this.item.isRoom
         ? getDefaultRoomName(this.item.roomType, this.t)
-        : getFileTypeName(this.item.fileType, this.t)
+        : getFileTypeName(this.item.fileType)
     );
   };
 
