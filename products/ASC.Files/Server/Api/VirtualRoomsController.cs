@@ -544,7 +544,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </summary>
     /// <short>Get rooms</short>
     /// <category>Virtual rooms</category>
-    /// <param type="System.Nullable{ASC.Files.Core.ApiModels.RequestDto.RoomFilterType}, System" name="type">Filter by room type (FillingFormsRoomOnly - 1, EditingRoomOnly - 2, ReviewRoomOnly - 3, ReadOnlyRoomOnly - 4, CustomRoomOnly - 5, FoldersOnly - 6)</param>
+    /// <param type="System.Nullable{ASC.Files.Core.ApiModels.RequestDto.RoomFilterType}, System" name="type">Filter by room type</param>
     /// <param type="System.String, System" name="subjectId">Filter by user ID</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withSubfolders">Specifies whether to return sections with or without subfolders</param>

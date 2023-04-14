@@ -59,6 +59,7 @@ public class SmtpSettingsController : ControllerBase
     /// <short>
     /// Get the SMTP settings
     /// </short>
+    /// <category>SMTP settings</category>
     /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>GET</httpMethod>
@@ -79,6 +80,7 @@ public class SmtpSettingsController : ControllerBase
     /// <short>
     /// Save the SMTP settings
     /// </short>
+    /// <category>SMTP settings</category>
     /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto" name="inDto">SMTP settings</param>
     /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
@@ -110,6 +112,7 @@ public class SmtpSettingsController : ControllerBase
     /// <short>
     /// Reset the SMTP settings
     /// </short>
+    /// <category>SMTP settings</category>
     /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">Default SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>DELETE</httpMethod>
@@ -138,6 +141,7 @@ public class SmtpSettingsController : ControllerBase
     // <short>
     // Test the SMTP settings
     // </short>
+    // <category>SMTP settings</category>
     // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatus, ASC.Api.Settings.Smtp">SMTP operation status</returns>
     // <path>api/2.0/smtpsettings/smtp/test</path>
     // <httpMethod>GET</httpMethod>
@@ -162,6 +166,7 @@ public class SmtpSettingsController : ControllerBase
     // <short>
     // Get the SMTP test process status
     // </short>
+    // <category>SMTP settings</category>
     // <returns type="ASC.Api.Settings.Smtp.SmtpOperationStatus, ASC.Api.Settings.Smtp">SMTP operation status</returns>
     // <path>api/2.0/smtpsettings/smtp/test/status</path>
     // <httpMethod>GET</httpMethod>

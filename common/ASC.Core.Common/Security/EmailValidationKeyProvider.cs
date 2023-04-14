@@ -169,7 +169,7 @@ public class EmailValidationKeyModel
     /// <summary>Key</summary>
     public string Key { get; set; }
 
-    /// <summary>Employee type (All, RoomAdmin, User, DocSpaceAdmin)</summary>
+    /// <summary>Employee type</summary>
     public EmployeeType? EmplType { get; set; }
 
     /// <summary>Email</summary>

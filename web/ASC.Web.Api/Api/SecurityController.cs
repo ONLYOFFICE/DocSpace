@@ -167,11 +167,11 @@ public class SecurityController : ControllerBase
     /// </short>
     /// <category>Audit trail data</category>
     /// <param type="System.Guid, System" name="userId">User ID</param>
-    /// <param type="ASC.AuditTrail.Types.ProductType, ASC.AuditTrail.Types" name="productType">Product (None, CRM, Documents, Login, Others, People, Projects, Settings)</param>
-    /// <param type="ASC.AuditTrail.Types.ModuleType, ASC.AuditTrail.Types" name="moduleType">Module (None, Files, Folders, DocumentsSettings, Companies, Persons, Contacts, CrmTasks, Opportunities, Invoices, Cases, CommonCrmSettings, ContactsSettings, ContactTypes, InvoiceSettings, OtherCrmSettings, Users, Groups, Projects, Milestones, Tasks, Discussions, TimeTracking, Reports, ProjectsSettings, General, Products, Rooms)</param>
-    /// <param type="ASC.AuditTrail.Types.ActionType, ASC.AuditTrail.Types" name="actionType">Action type (None, Create, Update, Delete, Link, Unlink, Attach, Detach, Send, Import, Export, UpdateAccess, Download, Upload, Copy, Move, Reassigns, Follow, Unfollow, Logout)</param>
+    /// <param type="ASC.AuditTrail.Types.ProductType, ASC.AuditTrail.Types" name="productType">Product</param>
+    /// <param type="ASC.AuditTrail.Types.ModuleType, ASC.AuditTrail.Types" name="moduleType">Module</param>
+    /// <param type="ASC.AuditTrail.Types.ActionType, ASC.AuditTrail.Types" name="actionType">Action type</param>
     /// <param type="ASC.MessagingSystem.Core.MessageAction, ASC.MessagingSystem.Core" name="action">Action</param>
-    /// <param type="ASC.AuditTrail.Types.EntryType, ASC.AuditTrail.Types" name="entryType">Entry (None, File, Folder, Project, Contact, Milestone, Task, Comment, SubTask, Message, TimeSpend, ReportTemplate, Template, Relationship, CRMTask, Opportunity, Invoice, Case, ListItem, InvoiceItem, InvoiceTax, FieldDescription, OpportunityMilestone, User, Group, Room, Tag)</param>
+    /// <param type="ASC.AuditTrail.Types.EntryType, ASC.AuditTrail.Types" name="entryType">Entry</param>
     /// <param type="System.String, System" name="target">Target</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Start date</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">End date</param>

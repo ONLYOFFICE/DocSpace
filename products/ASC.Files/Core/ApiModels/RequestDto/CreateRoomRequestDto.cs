@@ -56,7 +56,7 @@ public class CreateRoomRequestDto
     /// <summary>Room name</summary>
     public string Title { get; set; }
 
-    /// <summary>Room type: FillingFormsRoom (1), EditingRoom (2), ReviewRoom (3), ReadOnlyRoom (4), CustomRoom (5)</summary>
+    /// <summary>Room type</summary>
     public RoomType RoomType { get; set; }
 
     /// <summary>Private room or not</summary>

@@ -30,7 +30,7 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 /// </summary>
 public class MailDomainSettingsRequestsDto
 {
-    /// <summary>Trusted domain type (None, Custom, All)</summary>
+    /// <summary>Trusted domain type</summary>
     public TenantTrustedDomainsType Type { get; set; }
 
     /// <summary>List of trusted domains</summary>

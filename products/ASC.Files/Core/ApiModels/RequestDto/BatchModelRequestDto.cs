@@ -85,7 +85,7 @@ public class BatchRequestDto : BaseBatchRequestDto
     /// <summary>Destination folder ID</summary>
     public JsonElement DestFolderId { get; set; }
 
-    /// <summary>Overwriting behavior: Skip (0), Overwrite (1), or Duplicate (2)</summary>
+    /// <summary>Overwriting behavior</summary>
     public FileConflictResolveType ConflictResolveType { get; set; }
 
     /// <summary>Specifies whether to delete a folder after the editing session is finished or not</summary>
