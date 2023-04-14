@@ -25,9 +25,9 @@ const StyledPeopleRow = styled(TableRow)`
     .table-container_cell {
       cursor: pointer;
       background: ${(props) =>
-        `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+    `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
       border-top: ${(props) =>
-        `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+    `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       margin-top: -1px;
     }
 
@@ -46,8 +46,8 @@ const StyledPeopleRow = styled(TableRow)`
     max-height: 48px;
 
     background: ${(props) =>
-      (props.checked || props.isActive) &&
-      `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+    (props.checked || props.isActive) &&
+    `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
   }
 
   .table-container_row-checkbox-wrapper {
@@ -130,6 +130,7 @@ const PeopleTableRow = (props) => {
     isActive,
     isSeveralSelection,
     canChangeUserType,
+    hideColumns,
   } = props;
 
   const {
@@ -317,11 +318,12 @@ const PeopleTableRow = (props) => {
     onContentRowClick && onContentRowClick(!isChecked, item);
   };
 
+  console.log({ contextOptionsProps })
+
   return (
     <StyledWrapper
-      className={`user-item ${
-        isChecked || isActive ? "table-row-selected" : ""
-      }`}
+      className={`user-item ${isChecked || isActive ? "table-row-selected" : ""
+        }`}
     >
       <StyledPeopleRow
         key={item.id}
@@ -331,6 +333,7 @@ const PeopleTableRow = (props) => {
         isActive={isActive}
         onClick={onRowClick}
         fileContextClick={onRowContextClick}
+        hideColumns={hideColumns}
         {...contextOptionsProps}
       >
         <TableCell className={"table-container_user-name-cell"}>
@@ -360,8 +363,8 @@ const PeopleTableRow = (props) => {
             {statusType === "pending"
               ? email
               : displayName?.trim()
-              ? displayName
-              : email}
+                ? displayName
+                : email}
           </Link>
           <Badges statusType={statusType} isPaid={!isVisitor} />
         </TableCell>
