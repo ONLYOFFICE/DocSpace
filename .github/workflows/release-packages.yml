@@ -1,8 +1,6 @@
 name: Release RPM DEB
 on:
   push: 
-      branches:
-      - 'feature/DocSpace-release-packages'
       tags: 
         - '*'
 
@@ -58,7 +56,7 @@ jobs:
           
       - name: BUILD package DEB
         run: |
-          cd DocSpace/build/install/deb/debian
+          cd build/install/deb/debian
           cat <<EOT >> build-DocSpace_deb.sh
           PRODUCT=docspace
           TAG=1.0.0
