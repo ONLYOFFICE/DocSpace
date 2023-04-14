@@ -168,6 +168,7 @@ Checkbox.propTypes = {
   truncate: PropTypes.bool,
   /** Renders the help button */
   helpButton: PropTypes.any,
+  /** Checkbox tab index */
   tabIndex: PropTypes.number,
   hasError: PropTypes.bool,
 };
