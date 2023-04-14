@@ -120,7 +120,7 @@ jobs:
           EOT
           
           chmod +x build-DocSpace_rpm.sh
-          ./build-DocSpace_rpm.sh
+          sudo bash ./build-DocSpace_rpm.sh
           
         
         
