@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Migrations.PostgreSql.Migrations
 {
-    public partial class UrlShortenerFakeDbContextMigrate : Migration
+    public partial class UrlShortenerDbContextMigrate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

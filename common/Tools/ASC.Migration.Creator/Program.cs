@@ -51,7 +51,7 @@ builder.Services.AddBaseDbContext<WebhooksDbContext>();
 builder.Services.AddBaseDbContext<BackupsContext>();
 builder.Services.AddBaseDbContext<FilesDbContext>();
 builder.Services.AddBaseDbContext<NotifyDbContext>();
-builder.Services.AddBaseDbContext<UrlShortenerFakeDbContext>();
+builder.Services.AddBaseDbContext<UrlShortenerDbContext>();
 builder.Services.AddBaseDbContext<FirebaseDbContext>();
 builder.Services.AddBaseDbContext<TeamlabSiteContext>();
 

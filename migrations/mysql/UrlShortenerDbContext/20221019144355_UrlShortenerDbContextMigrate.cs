@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ASC.Migrations.MySql.Migrations
 {
-    public partial class UrlShortenerFakeDbContextMigrate : Migration
+    public partial class UrlShortenerDbContextMigrate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

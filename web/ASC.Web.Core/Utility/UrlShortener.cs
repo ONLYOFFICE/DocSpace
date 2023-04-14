@@ -81,9 +81,9 @@ public class BitLyShortener : IUrlShortener
 [Scope]
 public class OnlyoShortener : IUrlShortener
 {
-    private readonly IDbContextFactory<CustomDbContext> _contextFactory;
+    private readonly IDbContextFactory<UrlShortenerDbContext> _contextFactory;
     private readonly CommonLinkUtility _commonLinkUtility;
-    public OnlyoShortener(IDbContextFactory<CustomDbContext> contextFactory,
+    public OnlyoShortener(IDbContextFactory<UrlShortenerDbContext> contextFactory,
         CommonLinkUtility commonLinkUtility)
     {
         _contextFactory = contextFactory;

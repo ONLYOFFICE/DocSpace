@@ -61,7 +61,7 @@ public static class ShortLinksExtension
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd()
-                .HasColumnType("bigint(20)");
+                .HasColumnType("bigint(19)");
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")
@@ -95,7 +95,7 @@ public static class ShortLinksExtension
             entity.Property(e => e.Id)
                 .HasColumnName("id")
                 .ValueGeneratedOnAdd()
-                .HasColumnType("bigint(20)");
+                .HasColumnType("bigint(19)");
 
             entity.Property(e => e.Short)
                 .HasColumnName("short")

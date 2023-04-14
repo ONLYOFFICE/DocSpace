@@ -34,7 +34,7 @@ public class UrlShortRewriter
          
     }
 
-    public async Task InvokeAsync(HttpContext httpContext, IDbContextFactory<CustomDbContext> dbContextFactory)
+    public async Task InvokeAsync(HttpContext httpContext, IDbContextFactory<UrlShortenerDbContext> dbContextFactory)
     {
         var path = httpContext.Request.Path.ToString();
         path = path.Substring(BasePath.Length);

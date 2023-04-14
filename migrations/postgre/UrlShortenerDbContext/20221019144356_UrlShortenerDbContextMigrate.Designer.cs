@@ -10,9 +10,9 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace ASC.Migrations.PostgreSql.Migrations
 {
-    [DbContext(typeof(UrlShortenerFakeDbContext))]
-    [Migration("20221019144356_UrlShortenerFakeDbContextMigrate")]
-    partial class UrlShortenerFakeDbContextMigrate
+    [DbContext(typeof(UrlShortenerDbContext))]
+    [Migration("20221019144356_UrlShortenerDbContextMigrate")]
+    partial class UrlShortenerDbContextMigrate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
