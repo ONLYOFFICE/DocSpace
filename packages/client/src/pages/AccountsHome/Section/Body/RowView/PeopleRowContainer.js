@@ -42,7 +42,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected + .row-wrapper:not(.row-selected) {
     .user-row {
       border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
       ${marginStyles}
@@ -52,7 +52,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-wrapper:not(.row-selected) + .row-selected {
     .user-row {
       border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
       ${marginStyles}
@@ -68,7 +68,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected:last-child {
     .user-row {
       border-bottom: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
 
       ${marginStyles}
@@ -80,7 +80,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected:first-child {
     .user-row {
       border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
       ${marginStyles}
@@ -102,11 +102,14 @@ const PeopleRowContainer = ({
   withPaging,
 }) => {
   useEffect(() => {
+
+    const width = window.innerWidth;
+
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
     // 400 - it is desktop info panel width
     if (
-      (sectionWidth < 1025 && !infoPanelVisible) ||
-      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+      (width < 1025 && !infoPanelVisible) ||
+      ((width < 625 || (viewAs === "row" && width < 1025)) &&
         infoPanelVisible) ||
       isMobile
     ) {

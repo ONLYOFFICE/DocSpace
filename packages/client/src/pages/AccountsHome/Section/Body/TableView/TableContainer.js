@@ -83,7 +83,7 @@ const StyledTableContainer = styled(TableContainer)`
       .table-container_user-name-cell,
       .table-container_row-context-menu-wrapper {
         border-bottom: ${(props) =>
-          `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+    `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
   }
@@ -110,13 +110,16 @@ const Table = ({
   canChangeUserType,
 }) => {
   const ref = useRef(null);
-
+  const [hideColumns, setHideColumns] = React.useState(false);
   useEffect(() => {
+
+    const width = window.innerWidth;
+
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
     // 400 - it is desktop info panel width
     if (
-      (sectionWidth < 1025 && !infoPanelVisible) ||
-      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+      (width < 1025 && !infoPanelVisible) ||
+      ((width < 625 || (viewAs === "row" && width < 1025)) &&
         infoPanelVisible) ||
       isMobile
     ) {
@@ -136,6 +139,7 @@ const Table = ({
         columnInfoPanelStorageName={columnInfoPanelStorageName}
         sectionWidth={sectionWidth}
         containerRef={ref}
+        setHideColumns={setHideColumns}
       />
       <TableBody
         infoPanelVisible={infoPanelVisible}
@@ -158,6 +162,7 @@ const Table = ({
             changeUserType={changeType}
             userId={userId}
             canChangeUserType={canChangeUserType}
+            hideColumns={hideColumns}
           />
         ))}
       </TableBody>
