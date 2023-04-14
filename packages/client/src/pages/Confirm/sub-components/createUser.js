@@ -123,7 +123,7 @@ const CreateUserForm = (props) => {
     };
 
     fetchData();
-  }, []);
+  }, [props.isAuthenticated]);
 
   const onSubmit = () => {
     const { defaultPage, linkData, hashSettings } = props;
