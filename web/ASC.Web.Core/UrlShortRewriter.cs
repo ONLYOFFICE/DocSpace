@@ -24,24 +24,41 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.EF.Context;
-
-public class CustomDbContext : DbContext
+namespace ASC.Web.Core;
+public class UrlShortRewriter
 {
-    public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
-    public DbSet<DbipLocation> DbipLocation { get; set; }
-    public DbSet<Regions> Regions { get; set; }
-    public DbSet<ShortLink> ShortLinks { get; set; }
+    public const string BasePath = "/sh/";
 
-    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options) { }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public UrlShortRewriter(RequestDelegate next)
     {
-        ModelBuilderWrapper
-               .From(modelBuilder, Database)
-               .AddMobileAppInstall()
-               .AddDbipLocation()
-               .AddRegions()
-               .AddShortLinks();
+         
+    }
+
+    public async Task InvokeAsync(HttpContext httpContext, IDbContextFactory<CustomDbContext> dbContextFactory)
+    {
+        var path = httpContext.Request.Path.ToString();
+        path = path.Substring(BasePath.Length);
+
+        var id = ShortUrl.Decode(path);
+
+        var context = dbContextFactory.CreateDbContext();
+        var link = await context.ShortLinks.FindAsync(id);
+
+        if (link != null)
+        {
+            httpContext.Response.Redirect(link.Link);
+        }
+        else
+        {
+            throw new ArgumentException("Bad Request");
+        }
+    }
+}
+
+public static class UrlShortRewriterExtensions
+{
+    public static IApplicationBuilder UseUrlShortRewriter(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<UrlShortRewriter>();
     }
 }

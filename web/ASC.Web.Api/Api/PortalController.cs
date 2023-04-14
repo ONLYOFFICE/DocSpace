@@ -38,7 +38,7 @@ public class PortalController : ControllerBase
     protected readonly TenantManager _tenantManager;
     protected readonly ITariffService _tariffService;
     private readonly CommonLinkUtility _commonLinkUtility;
-    private readonly UrlShortener _urlShortener;
+    private readonly IUrlShortener _urlShortener;
     private readonly AuthContext _authContext;
     private readonly WebItemSecurity _webItemSecurity;
     protected readonly SecurityContext _securityContext;
@@ -72,7 +72,7 @@ public class PortalController : ControllerBase
         TenantManager tenantManager,
         ITariffService tariffService,
         CommonLinkUtility commonLinkUtility,
-        UrlShortener urlShortener,
+        IUrlShortener urlShortener,
         AuthContext authContext,
         WebItemSecurity webItemSecurity,
         SecurityContext securityContext,
@@ -160,7 +160,7 @@ public class PortalController : ControllerBase
     {
         try
         {
-            return await _urlShortener.Instance.GetShortenLinkAsync(inDto.Link);
+            return await _urlShortener.GetShortenLinkAsync(inDto.Link);
         }
         catch (Exception ex)
         {

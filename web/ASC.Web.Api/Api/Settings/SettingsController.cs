@@ -51,7 +51,6 @@ public class SettingsController : BaseSettingsController
     private readonly IConfiguration _configuration;
     private readonly SetupInfo _setupInfo;
     private readonly StatisticManager _statisticManager;
-    private readonly UrlShortener _urlShortener;
     private readonly PasswordHasher _passwordHasher;
     private readonly ILogger _log;
     private readonly TelegramHelper _telegramHelper;
@@ -88,7 +87,6 @@ public class SettingsController : BaseSettingsController
         ProviderManager providerManager,
         FirstTimeTenantSettings firstTimeTenantSettings,
         TelegramHelper telegramHelper,
-        UrlShortener urlShortener,
         PasswordHasher passwordHasher,
         IHttpContextAccessor httpContextAccessor,
         DnsSettings dnsSettings,
@@ -121,7 +119,6 @@ public class SettingsController : BaseSettingsController
         _setupInfo = setupInfo;
         _statisticManager = statisticManager;
         _passwordHasher = passwordHasher;
-        _urlShortener = urlShortener;
         _telegramHelper = telegramHelper;
         _dnsSettings = dnsSettings;
         _additionalWhiteLabelSettingsHelper = additionalWhiteLabelSettingsHelper;
@@ -687,21 +684,6 @@ public class SettingsController : BaseSettingsController
         var consumer = _consumerFactory.GetByKey<Consumer>(inDto.Name);
 
         var validateKeyProvider = consumer as IValidateKeysProvider;
-
-        if (validateKeyProvider != null)
-        {
-            try
-            {
-                if (validateKeyProvider is BitlyLoginProvider bitly)
-                {
-                    _urlShortener.Instance = null;
-                }
-            }
-            catch (Exception e)
-            {
-                _log.ErrorSaveAuthKeys(e);
-            }
-        }
 
         if (inDto.Props.All(r => string.IsNullOrEmpty(r.Value)))
         {
