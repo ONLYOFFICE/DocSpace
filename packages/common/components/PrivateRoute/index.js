@@ -29,7 +29,7 @@ const PrivateRoute = ({ children, ...rest }) => {
   const location = useLocation();
 
   const renderComponent = () => {
-    if (!user) return null;
+    if (!user && isAuthenticated) return null;
 
     const isPortalUrl = location.pathname === "/preparation-portal";
 
@@ -47,6 +47,8 @@ const PrivateRoute = ({ children, ...rest }) => {
     if (isLoaded && !isAuthenticated) {
       // console.log("PrivateRoute render Redirect to login", rest);
       const redirectPath = wizardCompleted ? "/login" : "/wizard";
+
+      if (location.pathname === redirectPath) return null;
 
       const isHomeUrl = location.pathname === "/";
 

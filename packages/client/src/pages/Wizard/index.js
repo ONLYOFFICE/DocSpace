@@ -256,7 +256,11 @@ const Wizard = (props) => {
       );
       setWizardComplete();
       getPortalSettings();
-      navigate(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+      // navigate(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+
+      window.location.replace(
+        combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+      );
     } catch (error) {
       console.error(error);
       setIsCreated(false);

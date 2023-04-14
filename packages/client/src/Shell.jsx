@@ -506,7 +506,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 }
               />
 
-              <Route path={"/confirm/:type"} element={<ConfirmRoute />} />
+              <Route path={"/confirm/:type/*"} element={<ConfirmRoute />} />
               <Route path={"/confirm/*"} element={<ConfirmNavigate />} />
               <Route path={"/confirm.aspx/*"} element={<ConfirmNavigate />} />
 
