@@ -172,6 +172,7 @@ CatalogItem.propTypes = {
   isHeader: PropTypes.bool,
   /** Disables margin top for catalog item header */
   isFirstHeader: PropTypes.bool,
+  /** Accepts folder id */
   folderId: PropTypes.string,
 };
 
