@@ -93,7 +93,7 @@ jobs:
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
           sudo apt update && sudo apt install -y yarn
           sudo apt-get remove libnode72
-          sudo apt apt-get clean
+          sudo apt-get clean
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt-get update && sudo apt-get install -y nodejs
           declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
