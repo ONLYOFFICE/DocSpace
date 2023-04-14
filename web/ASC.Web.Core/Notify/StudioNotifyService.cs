@@ -786,7 +786,7 @@ public class StudioNotifyService
                 notifyAction = Actions.SaasAdminActivationV1;
             }
 
-            var userId = _authContext.CurrentAccount.ID;
+            var userId = u.Id;
             var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation, null, userId);
             confirmationUrl += "&first=true";
 

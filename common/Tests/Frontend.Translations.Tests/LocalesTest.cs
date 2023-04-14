@@ -56,6 +56,20 @@ public class LocalesTest
         }
     }
 
+    public static bool Save
+    {
+        get
+        {
+            bool save;
+            if (bool.TryParse(Environment.GetEnvironmentVariable("SAVE"), out save))
+            {
+                return save;
+            }
+
+            return false;
+        }
+    }
+
     public List<string> Workspaces { get; set; }
     public List<TranslationFile> TranslationFiles { get; set; }
     public List<JavaScriptFile> JavaScriptFiles { get; set; }
@@ -70,14 +84,15 @@ public class LocalesTest
 
     private static readonly string _md5ExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../md5-excludes.json"));
     private static readonly string _spellCheckCommonExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../spellcheck-excludes-common.json"));
+    private static readonly string _spellCheckExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../spellcheck-excludes.json"));
 
     //private static string _encodingExcludesPath = "../../../encoding-excludes.json";
 
-    private static readonly List<string> _md5Excludes = File.Exists(_md5ExcludesPath)
+    private static readonly List<string> Md5Excludes = File.Exists(_md5ExcludesPath)
         ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_md5ExcludesPath))
         : new List<string>();
 
-    private static readonly List<string> _spellCheckCommonExcludes = File.Exists(_spellCheckCommonExcludesPath)
+    private static readonly List<string> SpellCheckCommonExcludes = File.Exists(_spellCheckCommonExcludesPath)
         ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_spellCheckCommonExcludesPath))
         : new List<string>();
 
@@ -339,9 +354,11 @@ public class LocalesTest
 
         TestContext.Progress.WriteLine($"Found CommonTranslations = {CommonTranslations.Count()}. First path is '{CommonTranslations.FirstOrDefault()?.Path}'");
 
-        TestContext.Progress.WriteLine($"Found _md5Excludes = {_md5Excludes.Count()} Path to file '{_md5ExcludesPath}'");
+        TestContext.Progress.WriteLine($"Found Md5Excludes = {Md5Excludes.Count} Path to file '{_md5ExcludesPath}'");
 
-        TestContext.Progress.WriteLine($"Found _spellCheckCommonExcludes = {_spellCheckCommonExcludes.Count()} Path to file '{_spellCheckCommonExcludesPath}'");
+        TestContext.Progress.WriteLine($"Found SpellCheckCommonExcludes = {SpellCheckCommonExcludes.Count} Path to file '{_spellCheckCommonExcludesPath}'");
+
+        TestContext.Progress.WriteLine($"Save spell check excludes = {Save} Path to file '{_spellCheckExcludesPath}'");
 
     }
 
@@ -382,7 +399,7 @@ public class LocalesTest
         var errorsCount = 0;
         var message = $"Next keys have spell check issues:\r\n\r\n";
 
-        //var list = new List<SpellCheckExclude>();
+        var list = new List<SpellCheckExclude>();
 
         var groupByLng = TranslationFiles
         .GroupBy(t => t.Language)
@@ -399,7 +416,7 @@ public class LocalesTest
             {
                 var dicPaths = SpellCheck.GetDictionaryPaths(group.Language);
 
-                //var spellCheckExclude = new SpellCheckExclude(group.Language);
+                var spellCheckExclude = new SpellCheckExclude(group.Language);
 
                 using (var dictionaryStream = File.OpenRead(dicPaths.DictionaryPath))
                 using (var affixStream = File.OpenRead(dicPaths.AffixPath))
@@ -415,7 +432,7 @@ public class LocalesTest
                             if (result.HasProblems)
                             {
                                 var incorrectWords = result.SpellIssues
-                                    .Where(t => !_spellCheckCommonExcludes
+                                    .Where(t => !SpellCheckCommonExcludes
                                     .Exists(e => e.Equals(t.Word, StringComparison.InvariantCultureIgnoreCase)))
                                     .Select(issue => $"'{issue.Word}' " +
                                 $"Suggestion: '{issue.Suggestions.FirstOrDefault()}'")
@@ -429,24 +446,29 @@ public class LocalesTest
                                 $"{string.Join("\r\n", incorrectWords)}\r\n\r\n";
                                 errorsCount++;
 
-
-                                /*foreach (var word in result.SpellIssues
+                                if (Save)
+                                {
+                                    foreach (var word in result.SpellIssues
                                     .Where(issue => issue.Suggestions.Any())
                                     .Select(issue => issue.Word))
-                                {
-                                    if (!spellCheckExclude.Excludes.Contains(word))
                                     {
-                                        spellCheckExclude.Excludes.Add(word);
+                                        if (!spellCheckExclude.Excludes.Contains(word))
+                                        {
+                                            spellCheckExclude.Excludes.Add(word);
+                                        }
                                     }
-                                }*/
+                                }
                             }
                         }
                     }
                 }
 
-                //spellCheckExclude.Excludes.Sort();
+                if (Save)
+                {
+                    spellCheckExclude.Excludes.Sort();
 
-                //list.Add(spellCheckExclude);
+                    list.Add(spellCheckExclude);
+                }
             }
             catch (NotSupportedException)
             {
@@ -455,8 +477,12 @@ public class LocalesTest
             }
         }
 
-        //string json = JsonConvert.SerializeObject(list, Formatting.Indented);
-        //File.WriteAllText("../../../spellcheck-excludes.json", json, Encoding.UTF8);
+        if (Save)
+        {
+            string json = JsonConvert.SerializeObject(list, Formatting.Indented);
+            File.WriteAllText(_spellCheckExcludesPath, json, Encoding.UTF8);
+            TestContext.Progress.WriteLine($"File spellcheck-excludes.json has been saved to '{_spellCheckExcludesPath}'");
+        }
 
         Assert.AreEqual(0, errorsCount, message);
     }
@@ -478,7 +504,7 @@ public class LocalesTest
     {
         var duplicatesByMD5 = TranslationFiles
             .Where(t => t.Language != "pt-BR")
-            .Where(t => !_md5Excludes.Contains(t.Md5Hash))
+            .Where(t => !Md5Excludes.Contains(t.Md5Hash))
             .GroupBy(t => t.Md5Hash)
             .Where(grp => grp.Count() > 1)
             .Select(grp => new { Key = grp.Key, Count = grp.Count(), Paths = grp.ToList().Select(f => f.FilePath) })
