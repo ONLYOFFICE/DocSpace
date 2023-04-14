@@ -19,7 +19,7 @@ import CampaignsBanner from "@docspace/components/campaigns-banner";
 | `headerLabel` |    `string`    |    ✅    |   -    |    -    |                   |
 | `textLabel`   |    `string`    |    ✅    |   -    |    -    |                   |
 | `img`         |    `string`    |    ✅    |   -    |    -    |                   |
-| `btnLabel`    |    `string`    |    ✅    |   -    |    -    |                   |
+| `buttonLabel` |    `string`    |    ✅    |   -    |    -    |                   |
 | `btnLink`     |    `string`    |    ✅    |   -    |    -    |                   |
 | `className`   |    `string`    |    -     |   -    |    -    | Accepts class     |
 | `id`          |    `string`    |    -     |   -    |    -    | Accepts id        |

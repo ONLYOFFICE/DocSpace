@@ -11,7 +11,7 @@ const onButtonClick = (url) => {
 };
 
 const CampaignsBanner = (props) => {
-  const { headerLabel, subHeaderLabel, img, btnLabel, link } = props;
+  const { headerLabel, subHeaderLabel, img, buttonLabel, link } = props;
   const [imageLoad, setImageLoad] = useState(false);
 
   const handleImageLoaded = () => {
@@ -51,7 +51,7 @@ const CampaignsBanner = (props) => {
         size="small"
         isDisabled={false}
         disableHover={true}
-        label={btnLabel}
+        label={buttonLabel}
         onClick={() => onButtonClick(link)}
       />
     </BannerWrapper>
@@ -59,13 +59,16 @@ const CampaignsBanner = (props) => {
 };
 
 CampaignsBanner.propTypes = {
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.object,
   headerLabel: PropTypes.string,
   subHeaderLabel: PropTypes.string,
   img: PropTypes.string,
-  btnLabel: PropTypes.string,
+  buttonLabel: PropTypes.string,
   link: PropTypes.string,
 };
 
