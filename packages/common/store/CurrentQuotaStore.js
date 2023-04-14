@@ -228,7 +228,17 @@ class QuotasStore {
   };
   setPortalQuota = async () => {
     try {
-      const res = await api.portal.getPortalQuota();
+      let refresh = false;
+      if (window.location.search === "?complete=true") {
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+        refresh = true;
+      }
+
+      const res = await api.portal.getPortalQuota(refresh);
 
       if (!res) return;
 

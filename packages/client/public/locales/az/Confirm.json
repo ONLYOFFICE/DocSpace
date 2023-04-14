@@ -5,9 +5,9 @@
   "CurrentNumber": "Cari mobil telefon nömrəniz",
   "DeleteProfileBtn": "Hesabımı silin",
   "DeleteProfileConfirmation": "Diqqət! Hesabınızı silmək üzrəsiniz.",
-  "DeleteProfileConfirmationInfo": "\"Hesabımı silin\" seçiminə klikləməklə bizim Məxfilik siyasətimizlə razılaşırsınız.",
+  "DeleteProfileConfirmationInfo": "\"Hesabımı silin\" seçiminə klikləməklə bizim <1>Məxfilik siyasətimizlə razılaşırsınız.</1>",
   "DeleteProfileSuccessMessage": "Hesabınız uğurla silinmişdir.",
-  "DeleteProfileSuccessMessageInfo": "Hesabınızın və onunla bağlı məlumatların silinməsi haqqında daha ətraflı öyrənmək üçün bizim Məxfilik Siyasətimizə nəzər yetirin.",
+  "DeleteProfileSuccessMessageInfo": "Hesabınızın və onunla bağlı məlumatların silinməsi haqqında daha ətraflı öyrənmək üçün bizim <1>Məxfilik Siyasətimizə</1> nəzər yetirin.",
   "EmailAndPasswordCopiedToClipboard": "E-poçt ünvanı və şifrə mübadilə buferinə kopyalandı.",
   "EnterAppCodeDescription": "Öz tətbiqinizdən əldə etdiyiniz 6 rəqəmli kodu daxil edin. Əgər telefonunuz əlçatan deyilsə, o zaman ehtiyat kodlarından istifadə edin.",
   "EnterAppCodeTitle": "Doğrulama tətbiqindən kodu daxil edin",
@@ -28,5 +28,6 @@
   "SetAppTitle": "Doğrulama tətbiqini quraşdırın",
   "SuccessDeactivate": "Hesabınız uğurla deaktiv edildi. 10 saniyə ərzində <1>sayt</1>a yönləndiriləcəksiniz.",
   "SuccessReactivate": "Hesabınız uğurla yenidən aktivləşdirildi. 10 saniyəyə <1>portala</1> yönləndiriləcəksiniz.",
+  "SuccessRemoved": "Hesabınız uğurla silindi. 10 saniyə ərzində <1>sayt</1>a yönləndiriləcəksiniz.",
   "WelcomeUser": "DocSpace-ə xoş gəlmisiniz!\nBaşlamaq üçün qeydiyyatdan keçin və ya sosial şəbəkə vasitəsilə giriş edin."
 }

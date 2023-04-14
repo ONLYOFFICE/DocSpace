@@ -5,7 +5,7 @@
   "BusinessExpired": "Su plan {{planName}} expiró el {{date}}",
   "BusinessFinalDateInfo": "La suscripción se renovará automáticamente el {{finalDate}} con precios y especificaciones actualizados. Puede cancelarla o cambiar sus datos de facturación en su portal de cliente de Stripe.",
   "BusinessPlanPaymentOverdue": "No se puede añadir nuevos usuarios y crear nuevas salas. El pago para el plan {{planName}} está vencido.",
-  "BusinessRequestDescription": "Los planes de precios con más {{peopleNumber}} gerentes están disponibles solo bajo petición.",
+  "BusinessRequestDescription": "Los planes de precios con más de {{peopleNumber}} administradores/usuarios avanzados solo están disponibles bajo solicitud.",
   "BusinessSuggestion": "Personalice su plan {{planName}}",
   "BusinessTitle": "Está utilizando el plan {{planName}}",
   "BusinessUpdated": "El plan {{planName}} se ha actualizado",
@@ -38,7 +38,7 @@
   "UpgradeNow": "Actualizar ahora",
   "UpgradePlan": "Actualizar plan",
   "UpgradePlanInfo": "La adición de nuevos usuarios excederá el número máximo de miembros de la sala permitidos por su plan de precios actual.",
-  "UserNotFound": "No se ha encontrado el usuario <1>{{email}}</1.",
+  "UserNotFound": "No se ha encontrado el usuario <1>{{email}}</1>.",
   "UserNotFoundMatchingEmail": "No hemos podido encontrar al usuario con el correo electrónico de Stripe correspondiente.",
   "YourPrice": "Su precio"
 }

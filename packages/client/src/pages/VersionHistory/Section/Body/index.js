@@ -129,7 +129,7 @@ class SectionBodyContent extends React.Component {
           </div>
         ) : (
           <div className="loader-history-rows">
-            <Loaders.HistoryRows title="version-history-body-loader" />
+            <Loaders.HistoryRows />
           </div>
         )}
       </StyledBody>

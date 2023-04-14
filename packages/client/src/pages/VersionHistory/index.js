@@ -28,7 +28,7 @@ class PureVersionHistory extends React.Component {
               onClickBack={this.redirectToHomepage}
             />
           ) : (
-            <Loaders.SectionHeader title="version-history-title-loader" />
+            <Loaders.SectionHeader />
           )}
         </Section.SectionHeader>
 

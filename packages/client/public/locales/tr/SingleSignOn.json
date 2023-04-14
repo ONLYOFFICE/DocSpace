@@ -1,7 +1,7 @@
 {
   "AddCertificate": "Sertifika ekle",
   "AdvancedSettings": "Gelişmiş Ayarlar",
-  "AdvancedSettingsTooltip": "Varsayılan kimlik doğrulama sayfasını gizle ve otomatik olarak SSO hizmetine yönlendir",
+  "AdvancedSettingsTooltip": "Varsayılan kimlik doğrulama sayfasını gizle ve otomatik olarak SSO hizmetine yönlendir.",
   "AttributeMatching": "Nitelik Haritalama",
   "AttributeMatchingTooltip": "Tekli Oturum Açma öznitelikleri 'Hesaplar' bölümündeki girişlere karşılık gelir.",
   "Binding": "Bağlayıcı:",

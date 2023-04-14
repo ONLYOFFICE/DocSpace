@@ -162,7 +162,7 @@ class GroupButton extends React.Component {
             {label}
           </StyledDropdownToggle>
         )}
-        {isSeparator && <Separator title="" />}
+        {isSeparator && <Separator />}
       </StyledGroupButton>
     );
   }

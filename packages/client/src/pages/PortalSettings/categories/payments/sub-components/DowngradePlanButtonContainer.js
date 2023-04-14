@@ -26,7 +26,6 @@ const DowngradePlanButtonContainer = ({
   ] = useState(false);
 
   const isPassedByQuota = () => {
-    console.log("canDowngradeTariff", canDowngradeTariff, isAlreadyPaid);
     return isAlreadyPaid ? canDowngradeTariff : canPayTariff;
   };
   const onDowngradeTariff = () => {

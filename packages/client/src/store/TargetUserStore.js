@@ -80,11 +80,24 @@ class TargetUserStore {
   };
 
   updateCreatedAvatar = (avatar) => {
-    const { big, max, medium, small } = avatar;
-    this.targetUser.avatarMax = max;
-    this.targetUser.avatarMedium = medium;
+    const { big, small, medium, max } = avatar;
+
     this.targetUser.avatar = big;
     this.targetUser.avatarSmall = small;
+    this.targetUser.avatarMedium = medium;
+    this.targetUser.avatarMax = max;
+
+    this.peopleStore.authStore.userStore.updateAvatarInfo(
+      big,
+      small,
+      medium,
+      max
+    );
+
+    console.log("updateCreatedAvatar", {
+      targetUser: this.targetUser,
+      user: this.peopleStore.authStore.userStore.user,
+    });
   };
 
   updateProfileCulture = async (id, culture) => {

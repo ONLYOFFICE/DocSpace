@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "I limiti di spazio di archiviazione e amministratori/utenti esperti stanno per essere superati.",
   "StorageQuotaDescription": "Puoi rimuovere i file non necessari o <1>{{clickHere}}</1> per trovare un piano tariffario più adatto per il tuo DocSpace.",
   "StorageQuotaHeader": "Lo spazio di archiviazione sta per essere esaurito: {{currentValue}} / {{maxValue}}",
-  "UserQuotaDescription": "<1>{{clickHere}}</1> per trovare un piano tariffario migliore per il tuo portale.",
+  "UserQuotaDescription": "<1>{{clickHere}}</1> per trovare un piano tariffario migliore per il tuo DocSpace.",
   "UserQuotaHeader": "Il numero di amministratori/utenti esperti sta per essere superato: {{currentValue}} / {{maxValue}}."
 }
