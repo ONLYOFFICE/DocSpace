@@ -56,7 +56,6 @@ jobs:
           
       - name: BUILD package DEB
         run: |
-          cd build/install/deb/debian
           cat <<EOT >> build-DocSpace_deb.sh
           PRODUCT=docspace
           TAG=1.0.0
