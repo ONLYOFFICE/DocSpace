@@ -48,6 +48,7 @@
   "Characters": "{{length}} znakov",
   "ClearBackupList": "Odstrániť všetky zálohované údaje",
   "CompanyInfoSettings": "Nastavenia informácií o spoločnosti",
+  "CompanyInfoSettingsDescription": "Tieto informácie sa zobrazia v okne <1>{{link}}</1>.",
   "ConfirmEmailSended": "Potvrdzujúci mail bol odoslaný {{ownerName}}",
   "Custom": "Vlastné",
   "CustomDomains": "Vlastné domény",
