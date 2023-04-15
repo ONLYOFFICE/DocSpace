@@ -15,7 +15,7 @@
   "LogoutAllActiveSessionsDescription": "Todas as conexões ativas, exceto esta conexão, serão desconectadas, pois estão em uso no momento.",
   "LogoutBtn": "Sair",
   "LogoutDescription": "Observação. Todas as conexões ativas, exceto esta conexão, serão desconectadas, pois estão em uso no momento.",
-  "LogoutFrom": "Sair de {{{platform}} {{browser}} ?",
+  "LogoutFrom": "Sair de {{platform}} {{browser}} ?",
   "MyProfile": "Meu perfil",
   "ProviderSuccessfullyConnected": "Provedor conectado com sucesso",
   "ProviderSuccessfullyDisconnected": "Provedor desconectado com sucesso",
