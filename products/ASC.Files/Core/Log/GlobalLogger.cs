@@ -33,9 +33,12 @@ internal static partial class GlobalLogger
     [LoggerMessage(Level = LogLevel.Critical, Message = "ClearCache subscribe")]
     public static partial void CriticalClearCacheSubscribe(this ILogger logger, Exception exception);
 
-    [LoggerMessage(Level = LogLevel.Error, Message = "GetFolderIdAndProccessFirstVisit")]
-    public static partial void ErrorGetFolderIdAndProccessFirstVisit(this ILogger logger, Exception exception); 
+    [LoggerMessage(Level = LogLevel.Error, Message = "CreateSampleDocuments")]
+    public static partial void ErrorCreateSampleDocuments(this ILogger logger, Exception exception); 
     
-    [LoggerMessage(Level = LogLevel.Error, Message = "SaveFile")]
-    public static partial void ErrorSaveFile(this ILogger logger, Exception exception);
+    [LoggerMessage(Level = LogLevel.Error, Message = "SaveSampleFile")]
+    public static partial void ErrorSaveSampleFile(this ILogger logger, Exception exception);
+
+    [LoggerMessage(Level = LogLevel.Error, Message = "SaveSampleFolder")]
+    public static partial void ErrorSaveSampleFolder(this ILogger logger, Exception exception);
 }
