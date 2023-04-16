@@ -100,7 +100,7 @@ class ChangeUserStatusDialogComponent extends React.Component {
         <ModalDialog.Footer>
           <Button
             id="change-user-status-modal_submit"
-            label={t("ChangeUsersStatusButton")}
+            label={t("Common:ChangeButton")}
             size="normal"
             primary
             scale

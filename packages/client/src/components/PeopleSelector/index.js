@@ -51,6 +51,7 @@ const PeopleSelector = ({
   excludeItems,
   currentUserId,
   theme,
+  withOutCurrentAuthorizedUser,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -131,6 +132,10 @@ const PeopleSelector = ({
     return listUser;
   };
 
+  const removeCurrentUserFromList = (listUser) => {
+    return listUser.filter((user) => user.id !== currentUserId);
+  };
+
   const loadNextPage = (startIndex, search = searchValue) => {
     const pageCount = 100;
 
@@ -163,9 +168,15 @@ const PeopleSelector = ({
           })
           .map((item) => toListItem(item));
 
-        newItems = moveCurrentUserToTopOfList([...newItems, ...items]);
+        const tempItems = [...newItems, ...items];
 
-        const newTotal = response.total - totalDifferent;
+        newItems = withOutCurrentAuthorizedUser
+          ? removeCurrentUserFromList(tempItems)
+          : moveCurrentUserToTopOfList(tempItems);
+
+        const newTotal = withOutCurrentAuthorizedUser
+          ? response.total - totalDifferent - 1
+          : response.total - totalDifferent;
 
         setHasNextPage(newItems.length < newTotal);
         setItemsList(newItems);

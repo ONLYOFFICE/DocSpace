@@ -49,6 +49,7 @@ const SetRoomParams = ({
   isDisabled,
   isValidTitle,
   setIsValidTitle,
+  onKeyUp,
   enableThirdParty,
 }) => {
   const [previewIcon, setPreviewIcon] = React.useState(null);
@@ -98,6 +99,7 @@ const SetRoomParams = ({
         isDisabled={isDisabled}
         isValidTitle={isValidTitle}
         errorMessage={t("Common:RequiredField")}
+        onKeyUp={onKeyUp}
         isAutoFocussed={true}
       />
       <TagInput

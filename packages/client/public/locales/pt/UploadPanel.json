@@ -1,4 +1,5 @@
 {
+  "CancelUpload": "O carregamento foi interrompido. Alguns ficheiros não foram carregados.",
   "EnterPassword": "Introduzir palavra-passe",
   "HideInput": "Esconder",
   "Ready": "Concluído",

@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Titlul dosarului",
   "ConnectionUrl": "Adresă URL de conectare",
   "Login": "Login",
-  "Reconnect": "Reconectare"
+  "Reconnect": "Reconectare",
+  "SuccessfulConnectionOfAThirdParty": "Serviciu terț conectat cu succes."
 }

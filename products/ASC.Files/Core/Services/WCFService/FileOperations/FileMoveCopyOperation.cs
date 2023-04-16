@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Web.Files.Classes;
-
 namespace ASC.Web.Files.Services.WCFService.FileOperations;
 
 [Transient]
@@ -146,6 +144,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         if (0 < Folders.Count)
         {
             var firstFolder = await FolderDao.GetFolderAsync(Folders[0]);
+            var isRoom = DocSpaceHelper.IsRoom(firstFolder.FolderType);
 
             if (_copy && !await FilesSecurity.CanCopyAsync(firstFolder))
             {
@@ -155,7 +154,17 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             if (!_copy && !await FilesSecurity.CanMoveAsync(firstFolder))
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFile;
+                if (isRoom)
+                {
+                    this[Err] = toFolder.FolderType == FolderType.Archive
+                        ? FilesCommonResource.ErrorMessage_SecurityException_ArchiveRoom
+                        : FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom;
+
+                }
+                else
+                {
+                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                }
 
                 return;
             }
@@ -187,7 +196,9 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         }
         if (!_copy && !await fileSecurity.CanMoveToAsync(toFolder))
         {
-            this[Err] = FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
+            this[Err] = toFolder.FolderType == FolderType.VirtualRooms ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
+                toFolder.FolderType == FolderType.Archive ? FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom : 
+                FilesCommonResource.ErrorMessage_SecurityException_MoveToFolder;
 
             return;
         }
@@ -242,6 +253,8 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
         var folderDao = scope.ServiceProvider.GetService<IFolderDao<TTo>>();
         var countRoomChecker = scope.ServiceProvider.GetRequiredService<CountRoomChecker>();
         var socketManager = scope.ServiceProvider.GetService<SocketManager>();
+        var tenantQuotaFeatureStatHelper = scope.ServiceProvider.GetService<TenantQuotaFeatureStatHelper>();
+        var quotaSocketManager = scope.ServiceProvider.GetService<QuotaSocketManager>();
 
         var toFolderId = toFolder.Id;
         var isToFolder = Equals(toFolderId, _daoFolderId);
@@ -270,7 +283,16 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (!copy && checkPermissions && !canMoveOrCopy)
             {
-                this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                if (isRoom)
+                {
+                    this[Err] = toFolder.FolderType == FolderType.Archive
+                        ? FilesCommonResource.ErrorMessage_SecurityException_ArchiveRoom
+                        : FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom;
+                }
+                else
+                {
+                    this[Err] = FilesCommonResource.ErrorMassage_SecurityException_MoveFolder;
+                }
             }
             else if (!isRoom && (toFolder.FolderType == FolderType.VirtualRooms || toFolder.RootFolderType == FolderType.Archive))
             {
@@ -278,7 +300,7 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
             }
             else if (isRoom && toFolder.FolderType != FolderType.VirtualRooms && toFolder.FolderType != FolderType.Archive)
             {
-                this[Err] = FilesCommonResource.ErrorMessage_UnarchiveRoom;
+                this[Err] = FilesCommonResource.ErrorMessage_SecurityException_UnarchiveRoom;
             }
             else if (!isRoom && folder.Private && !await CompliesPrivateRoomRulesAsync(folder, toFolderParents))
             {
@@ -438,11 +460,17 @@ class FileMoveCopyOperation<T> : FileOperation<FileMoveCopyOperationData<T>, T>
                                         await _semaphore.WaitAsync();
                                         await countRoomChecker.CheckAppend();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+
+                                        var (name, value) = await tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
+                                        _ = quotaSocketManager.ChangeQuotaUsedValue(name, value);
                                     }
                                     else if (isRoom && toFolder.FolderType == FolderType.Archive)
                                     {
                                         await _semaphore.WaitAsync();
                                         newFolderId = await FolderDao.MoveFolderAsync(folder.Id, toFolderId, CancellationToken);
+
+                                        var (name, value) = await tenantQuotaFeatureStatHelper.GetStat<CountRoomFeature, int>();
+                                        _ =  quotaSocketManager.ChangeQuotaUsedValue(name, value);
                                     }
                                     else
                                     {

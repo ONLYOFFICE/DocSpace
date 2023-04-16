@@ -20,8 +20,9 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Sélectionner le stockage",
   "ThirdPartyStorageDescription": "Utilisez des services tiers pour stocker les données de cette salle. Un nouveau dossier pour le stockage des données de cette salle sera créé dans l’espace de stockage connecté.",
   "ThirdPartyStorageNoStorageAlert": "Auparavant, vous devez connecter le service correspondant dans la section \"Intégration\". Dans le cas contraire, la connexion ne sera pas possible.",
-  "ThirdPartyStoragePermanentSettingDescription": "Les fichiers sont stockés dans un espace de stockage tiers {{thirdpartyTitle}} dans le dossier \"{{thirdpartyFolderName}}\".",
+  "ThirdPartyStoragePermanentSettingDescription": "Les fichiers sont stockés dans un espace de stockage tiers {{thirdpartyTitle}} dans le dossier \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Pour connecter un stockage tiers, vous devez ajouter le service correspondant dans la section Intégration des paramètres de DocSpace. Contactez le propriétaire ou l’administrateur de DocSpace pour activer l’intégration.",
   "ThirdPartyStorageTitle": "Stockage tiers",
+  "ViewOnlyRoomDescription": "Partagez des documents, des rapports, de la documentation et d’autres fichiers prêts à être consultés.",
   "ViewOnlyRoomTitle": "Salle de lecture seule"
 }

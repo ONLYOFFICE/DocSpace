@@ -122,6 +122,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  bookTrainingEmail = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
 
@@ -141,6 +142,9 @@ class SettingsStore {
   standalone = false;
 
   mainBarVisible = false;
+  zendeskKey = null;
+  bookTrainingEmail = null;
+  legalTerms = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -232,6 +236,14 @@ class SettingsStore {
 
   get selectelUrl() {
     return `${this.helpLink}/administration/connect-selectel-docspace.aspx`;
+  }
+
+  get yandexUrl() {
+    return `${this.helpLink}/administration/connect-yandex-docspace.aspx`;
+  }
+
+  get vkUrl() {
+    return `${this.helpLink}/administration/connect-vk-docspace.aspx`;
   }
 
   get wizardCompleted() {
@@ -538,9 +550,13 @@ class SettingsStore {
     this.currentProductId = currentProductId;
   };
 
+  setPortalOwner = (owner) => {
+    this.owner = owner;
+  };
+
   getPortalOwner = async () => {
     const owner = await api.people.getUserById(this.ownerId);
-    this.owner = owner;
+    this.setPortalOwner(owner);
     return owner;
   };
 

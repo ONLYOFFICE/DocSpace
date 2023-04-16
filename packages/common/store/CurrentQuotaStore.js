@@ -116,6 +116,22 @@ class QuotasStore {
     return result?.value;
   }
 
+  get isOAuthAvailable() {
+    const result = this.currentPortalQuotaFeatures.find(
+      (obj) => obj.id === "oauth"
+    );
+
+    return result?.value;
+  }
+
+  get isThirdPartyAvailable() {
+    const result = this.currentPortalQuotaFeatures.find(
+      (obj) => obj.id === "thirdparty"
+    );
+
+    return result?.value;
+  }
+
   get isSSOAvailable() {
     const result = this.currentPortalQuotaFeatures.find(
       (obj) => obj.id === "sso"
@@ -191,19 +207,44 @@ class QuotasStore {
     );
   }
 
+  get isNonProfit() {
+    return this.currentPortalQuota?.nonProfit;
+  }
+
   setPortalQuotaValue = (res) => {
     this.currentPortalQuota = res;
     this.currentPortalQuotaFeatures = res.features;
   };
+
+  updateQuotaUsedValue = (featureId, value) => {
+    this.currentPortalQuotaFeatures.forEach((elem) => {
+      if (elem.id === featureId && elem.used) elem.used.value = value;
+    });
+  };
+  updateQuotaFeatureValue = (featureId, value) => {
+    this.currentPortalQuotaFeatures.forEach((elem) => {
+      if (elem.id === featureId) elem.value = value;
+    });
+  };
   setPortalQuota = async () => {
     try {
-      const res = await api.portal.getPortalQuota();
+      let refresh = false;
+      if (window.location.search === "?complete=true") {
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname
+        );
+        refresh = true;
+      }
+
+      const res = await api.portal.getPortalQuota(refresh);
 
       if (!res) return;
 
-      this.setIsLoaded(true);
-
       this.setPortalQuotaValue(res);
+
+      this.setIsLoaded(true);
     } catch (e) {
       toastr.error(e);
     }

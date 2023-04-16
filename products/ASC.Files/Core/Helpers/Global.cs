@@ -343,7 +343,7 @@ public class GlobalFolder
     internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache =
         new ConcurrentDictionary<string, int>();
 
-    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory, bool createIfNotExist = true)
     {
         if (_coreBaseSettings.DisableDocSpace)
         {
@@ -352,10 +352,15 @@ public class GlobalFolder
 
         var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
 
-        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        if (DocSpaceFolderCache.TryGetValue(key, out var result))
         {
-            result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
+            return result;
+        }
 
+        result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(createIfNotExist);
+
+        if (result != default)
+        {
             DocSpaceFolderCache[key] = result;
         }
 
@@ -401,9 +406,9 @@ public class GlobalFolder
             return default;
         }
 
-        var cacheKey = string.Format("my/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
+        var cacheKey = $"my/{_tenantManager.GetCurrentTenant().Id}/{_authContext.CurrentAccount.ID}";
 
-        var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, true).Result));
+        var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProcessFirstVisitAsync(fileMarker, daoFactory, true).Result));
 
         return myFolderId.Value;
     }
@@ -447,14 +452,17 @@ public class GlobalFolder
             return default;
         }
 
-        if (!CommonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
+        if (CommonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
         {
-            commonFolderId = await GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, false);
+            return commonFolderId;
+        }
+
+        commonFolderId = await GetFolderIdAndProcessFirstVisitAsync(fileMarker, daoFactory, false);
+        
             if (!Equals(commonFolderId, 0))
             {
                 CommonFolderCache[_tenantManager.GetCurrentTenant().Id] = commonFolderId;
             }
-        }
 
         return commonFolderId;
     }
@@ -637,14 +645,14 @@ public class GlobalFolder
         TrashFolderCache.Remove(cacheKey);
     }
 
-    private async Task<int> GetFolderIdAndProccessFirstVisitAsync(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
+    private async Task<int> GetFolderIdAndProcessFirstVisitAsync(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
     {
         var folderDao = (FolderDao)daoFactory.GetFolderDao<int>();
         var fileDao = (FileDao)daoFactory.GetFileDao<int>();
 
         var id = my ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
 
-        if (Equals(id, 0)) //TODO: think about 'null'
+        if (Equals(id, 0))
         {
             id = my ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
 
@@ -654,6 +662,7 @@ public class GlobalFolder
                 try
                 {
                     var storeTemplate = _globalStore.GetStoreTemplate();
+                    var store = _globalStore.GetStore();
 
                     var culture = my ? _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture() : _tenantManager.GetCurrentTenant().GetCulture();
                     var path = FileConstant.StartDocPath + culture + "/";
@@ -665,7 +674,7 @@ public class GlobalFolder
 
                     path += my ? "my/" : "corporate/";
 
-                    await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, id, path, storeTemplate);
+                    await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, id, path, storeTemplate, store);
                 }
                 catch (Exception ex)
                 {
@@ -677,12 +686,20 @@ public class GlobalFolder
         return id;
     }
 
-    private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
+    private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate, IDataStore store)
     {
-        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
-        foreach (var file in files)
+        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false)
+            .Where(f => FileUtility.GetFileTypeByFileName(f) is not (FileType.Audio or FileType.Video))
+            .ToListAsync();
+
+        if (store is DiscDataStore)
         {
-            await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files);
+            await Task.WhenAll(files.Select(file => SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files)));
+        }
+        else
+        {
+            await Parallel.ForEachAsync(files, new ParallelOptions {MaxDegreeOfParallelism = 3},
+                async (file, _) => await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files));
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
@@ -693,7 +710,7 @@ public class GlobalFolder
 
             var subFolderId = await folderDao.SaveFolderAsync(folder);
 
-            await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
+            await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate, store);
         }
     }
 

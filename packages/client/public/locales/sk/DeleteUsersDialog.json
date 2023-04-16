@@ -1,3 +1,5 @@
 {
-  "DeleteGroupUsersSuccessMessage": "Používatelia boli úspešne odstránení."
+  "DeleteGroupUsersSuccessMessage": "Používatelia boli úspešne odstránení.",
+  "DeleteUsers": "Vymazať používateľov",
+  "DeleteUsersMessage": "Vybratí vypnutí používatelia budú z DocSpace vymazaní. Osobné dokumenty týchto používateľov, ktoré sú dostupné ostatným, budú vymazané."
 }

@@ -230,8 +230,10 @@ export function getPortalPaymentQuotas() {
   return request({ method: "get", url: "/portal/payment/quotas" });
 }
 
-export function getPortalQuota() {
-  return request({ method: "get", url: "/portal/payment/quota" });
+export function getPortalQuota(refresh = false) {
+  const params = refresh ? { refresh: true } : {};
+  console.log("getPortalQuota", { params });
+  return request({ method: "get", url: "/portal/payment/quota", params });
 }
 
 export function getPortalTariff() {

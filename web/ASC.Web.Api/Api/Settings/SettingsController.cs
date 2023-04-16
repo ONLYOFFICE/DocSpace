@@ -147,7 +147,8 @@ public class SettingsController : BaseSettingsController
             Version = _configuration["version:number"] ?? "",
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
-            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid()
+            EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid(),
+            LegalTerms = _setupInfo.LegalTerms
         };
 
         if (_authContext.IsAuthenticated)
@@ -162,6 +163,9 @@ public class SettingsController : BaseSettingsController
             settings.NameSchemaId = _customNamingPeople.Current.Id;
             settings.SocketUrl = _configuration["web:hub:url"] ?? "";
             settings.DomainValidator = _tenantDomainValidator;
+            settings.ZendeskKey = _setupInfo.ZendeskKey;
+            settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
+            settings.DocumentationEmail = _setupInfo.DocumentationEmail;
 
             settings.Firebase = new FirebaseDto
             {
@@ -347,13 +351,13 @@ public class SettingsController : BaseSettingsController
     [AllowNotPayment]
     [HttpPut("wizard/complete")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Wizard")]
-    public WizardSettings CompleteWizard(WizardRequestsDto inDto)
+    public async Task<WizardSettings> CompleteWizard(WizardRequestsDto inDto)
     {
         ApiContext.AuthByClaim();
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        return _firstTimeTenantSettings.SaveData(inDto);
+        return await _firstTimeTenantSettings.SaveData(inDto);
     }
 
     ///<visible>false</visible>

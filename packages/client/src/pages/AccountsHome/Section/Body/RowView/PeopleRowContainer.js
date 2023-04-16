@@ -44,6 +44,7 @@ const StyledRowContainer = styled(RowContainer)`
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
+
       ${marginStyles}
     }
   }
@@ -53,6 +54,7 @@ const StyledRowContainer = styled(RowContainer)`
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
+
       ${marginStyles}
     }
   }
@@ -68,6 +70,7 @@ const StyledRowContainer = styled(RowContainer)`
       border-bottom: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
+
       ${marginStyles}
     }
     .user-row::after {
@@ -79,6 +82,7 @@ const StyledRowContainer = styled(RowContainer)`
       border-top: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
+
       ${marginStyles}
     }
   }

@@ -1,0 +1,22 @@
+{
+  "Ascending": "Висхідний",
+  "CopyWindowCode": "Скопіюйте код вбудовування вікна",
+  "DataDisplay": "Налаштування відображення даних",
+  "Descending": "Спускається",
+  "Destroy": "Знищити",
+  "EnterCount": "Введіть кількість",
+  "EnterHeight": "Введіть висоту",
+  "EnterId": "Введіть id",
+  "EnterPage": "Введіть номер сторінки",
+  "EnterWidth": "Введіть ширину",
+  "FolderId": "Ідентифікатор папки",
+  "FrameId": "Ідентифікатор кадру",
+  "Header": "Заголовок",
+  "ItemsCount": "Кількість елементів",
+  "JavascriptSdk": "Javascript SDK",
+  "Menu": "Меню",
+  "Page": "Сторінка",
+  "SearchTerm": "Пошуковий термін",
+  "SortOrder": "Порядок сортування",
+  "WindowParameters": "Параметри вікна"
+}

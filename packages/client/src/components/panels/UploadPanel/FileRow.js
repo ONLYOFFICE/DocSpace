@@ -237,6 +237,7 @@ class FileRow extends Component {
       isMediaActive,
       downloadInCurrentTab,
     } = this.props;
+
     const { showPasswordInput, password, passwordValid } = this.state;
 
     const fileExtension = ext ? (
@@ -246,6 +247,8 @@ class FileRow extends Component {
     ) : (
       <></>
     );
+
+    const onMediaClick = () => this.onMediaClick(item.fileId);
 
     return (
       <>
@@ -266,11 +269,12 @@ class FileRow extends Component {
                 <Link
                   className="upload-panel_file-row-link"
                   fontWeight="600"
-                  color={item.error ? "#A3A9AE" : ""}
+                  color={item.error && "#A3A9AE"}
                   truncate
-                  onClick={() => this.onMediaClick(item.fileId)}
+                  onClick={onMediaClick}
                 >
-                  {item.file.name}
+                  {name}
+                  {fileExtension}
                 </Link>
               ) : (
                 <div className="upload-panel_file-name">
@@ -350,17 +354,24 @@ export default inject(
     let ext;
     let name;
     let splitted;
+
     if (item.file) {
-      const exst = item?.fileInfo?.fileExst;
+      const infoExt = item?.fileInfo?.fileExst;
       splitted = item.file.name.split(".");
 
-      ext = exst ? exst : splitted.length > 1 ? "." + splitted.pop() : "";
-      name = splitted[0];
+      if (!!infoExt) {
+        ext = infoExt;
+        splitted.splice(-1);
+      } else {
+        ext = splitted.length > 1 ? "." + splitted.pop() : "";
+      }
     } else {
       ext = item.fileInfo.fileExst;
       splitted = item.fileInfo.title.split(".");
-      name = splitted[0];
     }
+
+    name = splitted.join(".");
+
     const { personal, theme } = auth.settingsStore;
     const { canViewedDocs, getIconSrc, isArchive } = settingsStore;
     const {

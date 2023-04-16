@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import styled from "styled-components";
-import DowngradePlanDialog from "../../../../../components/dialogs/DowngradePlanDialog";
+import ChangePricingPlanDialog from "../../../../../components/dialogs/ChangePricingPlanDialog";
 
 const StyledBody = styled.div`
   button {
@@ -14,30 +14,27 @@ const DowngradePlanButtonContainer = ({
   isDisabled,
   isLoading,
   isLessCountThanAcceptable,
-  t,
+  isAlreadyPaid,
   onUpdateTariff,
-  addedManagersCount,
-  usedTotalStorageSizeCount,
-  allowedStorageSizeByQuota,
-  managersCount,
+  canDowngradeTariff,
+  canPayTariff,
+  buttonLabel,
 }) => {
   const [
     isVisibleDowngradePlanDialog,
     setIsVisibleDowngradePlanDialog,
   ] = useState(false);
 
-  const isPassesByQuota = () => {
-    if (addedManagersCount > managersCount) return false;
-    if (usedTotalStorageSizeCount > allowedStorageSizeByQuota) return false;
-    return true;
+  const isPassedByQuota = () => {
+    return isAlreadyPaid ? canDowngradeTariff : canPayTariff;
   };
   const onDowngradeTariff = () => {
-    if (!isPassesByQuota()) {
-      setIsVisibleDowngradePlanDialog(true);
+    if (isPassedByQuota()) {
+      onUpdateTariff && onUpdateTariff();
       return;
     }
 
-    onUpdateTariff && onUpdateTariff();
+    setIsVisibleDowngradePlanDialog(true);
   };
 
   const onClose = () => {
@@ -47,13 +44,13 @@ const DowngradePlanButtonContainer = ({
   return (
     <StyledBody>
       {isVisibleDowngradePlanDialog && (
-        <DowngradePlanDialog
+        <ChangePricingPlanDialog
           visible={isVisibleDowngradePlanDialog}
           onClose={onClose}
         />
       )}
       <Button
-        label={t("DowngradeNow")}
+        label={buttonLabel}
         size={"medium"}
         primary
         isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
@@ -64,21 +61,21 @@ const DowngradePlanButtonContainer = ({
   );
 };
 
-export default inject(({ auth, payments }) => {
-  const { currentQuotaStore } = auth;
+export default inject(({ payments }) => {
   const {
     isLoading,
     isLessCountThanAcceptable,
-    allowedStorageSizeByQuota,
-    managersCount,
+    canDowngradeTariff,
+    canPayTariff,
+
+    isAlreadyPaid,
   } = payments;
-  const { addedManagersCount, usedTotalStorageSizeCount } = currentQuotaStore;
+
   return {
     isLoading,
     isLessCountThanAcceptable,
-    addedManagersCount,
-    usedTotalStorageSizeCount,
-    allowedStorageSizeByQuota,
-    managersCount,
+    canDowngradeTariff,
+    canPayTariff,
+    isAlreadyPaid,
   };
 })(observer(DowngradePlanButtonContainer));
