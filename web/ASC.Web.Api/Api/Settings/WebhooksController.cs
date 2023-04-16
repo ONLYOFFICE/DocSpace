@@ -62,7 +62,7 @@ public class WebhooksController : BaseSettingsController
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        await foreach(var webhook in _webhookDbWorker.GetTenantWebhooksWithStatus())
+        await foreach (var webhook in _webhookDbWorker.GetTenantWebhooksWithStatus())
         {
             yield return _mapper.Map<WebhooksConfigWithStatusDto>(webhook);
         }
@@ -77,7 +77,7 @@ public class WebhooksController : BaseSettingsController
         ArgumentNullException.ThrowIfNull(model.SecretKey);
         ArgumentNullException.ThrowIfNull(model.Name);
 
-        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.Name, model.SecretKey);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.Name, model.SecretKey, model.Enabled, model.SSL);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -106,13 +106,13 @@ public class WebhooksController : BaseSettingsController
     }
 
     [HttpGet("webhooks/log")]
-    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(WebhooksLogRequest model)
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? webhookId, int? configId, int? eventId, WebhookGroupStatus? groupStatus)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.DeliveryFrom, model.DeliveryTo, model.HookUri, model.WebhookId, model.ConfigId, model.EventId, model.GroupStatus))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
         }

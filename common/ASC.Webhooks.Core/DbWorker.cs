@@ -56,7 +56,7 @@ public class DbWorker
         _mapper = mapper;
     }
 
-    public async Task<WebhooksConfig> AddWebhookConfig(string uri, string name, string secretKey)
+    public async Task<WebhooksConfig> AddWebhookConfig(string uri, string name, string secretKey, bool? enabled, bool? ssl)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
@@ -74,7 +74,9 @@ public class DbWorker
             TenantId = Tenant,
             Uri = uri,
             SecretKey = secretKey,
-            Name = name
+            Name = name,
+            Enabled = enabled ?? true,
+            SSL = ssl ?? true
         };
 
         toAdd = await webhooksDbContext.AddOrUpdateAsync(r => r.WebhooksConfigs, toAdd);
