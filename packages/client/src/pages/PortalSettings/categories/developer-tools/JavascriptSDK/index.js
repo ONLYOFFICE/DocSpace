@@ -76,43 +76,22 @@ const Preview = styled(Box)`
 const PortalIntegration = (props) => {
   const { t, setDocumentTitle } = props;
 
-  setDocumentTitle(t("PortalIntegration"));
+  setDocumentTitle(t("JavascriptSdk"));
 
   const scriptUrl = `${window.location.origin}/static/scripts/api.js`;
 
   const dataSortBy = [
-    { key: "DateAndTime", label: "Last modified date", default: true },
-    { key: "AZ", label: "Title" },
-    { key: "Type", label: "Type" },
-    { key: "Size", label: "Size" },
-    { key: "DateAndTimeCreation", label: "Creation date" },
-    { key: "Author", label: "Author" },
-  ];
-
-  const dataFilterType = [
-    { key: 0, label: "None", default: true },
-    { key: 1, label: "Files" },
-    { key: 2, label: "Folders" },
-    { key: 3, label: "Documents" },
-    { key: 4, label: "Presentations" },
-    { key: 5, label: "Spreadsheets" },
-    { key: 7, label: "Images" },
-    { key: 8, label: "By user" },
-    { key: 9, label: "By department" },
-    { key: 10, label: "Archive" },
-    { key: 11, label: "By Extension" },
-    { key: 12, label: "Media" },
+    { key: "DateAndTime", label: t("Common:LastModifiedDate"), default: true },
+    { key: "AZ", label: t("Common:Title") },
+    { key: "Type", label: t("Common:Type") },
+    { key: "Size", label: t("Common:Size") },
+    { key: "DateAndTimeCreation", label: t("Files:ByCreation") },
+    { key: "Author", label: t("Files:ByAuthor") },
   ];
 
   const dataSortOrder = [
-    { key: "descending", label: "Descending", default: true },
-    { key: "ascending", label: "Ascending" },
-  ];
-
-  const dataDisplayType = [
-    { key: "row", label: "Row", default: true },
-    { key: "table", label: "Table" },
-    { key: "tile", label: "Tile" },
+    { key: "descending", label: t("Descending"), default: true },
+    { key: "ascending", label: t("Ascending") },
   ];
 
   const [config, setConfig] = useState({
@@ -127,8 +106,6 @@ const PortalIntegration = (props) => {
 
   const [sortBy, setSortBy] = useState(dataSortBy[0]);
   const [sortOrder, setSortOrder] = useState(dataSortOrder[0]);
-  const [filterType, setFilterType] = useState(dataFilterType[0]);
-  const [displayType, setDisplayType] = useState(dataDisplayType[0]);
   const [withSubfolders, setWithSubfolders] = useState(false);
 
   const params = objectToGetParams(config);
@@ -269,141 +246,119 @@ const PortalIntegration = (props) => {
   return (
     <>
       {isMobile ? (
-        <BreakpointWarning sectionName={t("Settings:Branding")} />
+        <BreakpointWarning sectionName={t("JavascriptSdk")} />
       ) : (
         <Container>
           <Controls>
             <Heading level={1} size="small">
-              Frame options
+              {t("WindowParameters")}
             </Heading>
             <ControlsGroup>
-              <Label className="label" text="Frame id" />
+              <Label className="label" text={t("FrameId")} />
               <TextInput
                 scale={true}
                 onChange={onChangeFrameId}
-                placeholder="Frame id"
+                placeholder={t("EnterId")}
                 value={config.frameId}
               />
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Frame width" />
+              <Label className="label" text={t("EmbeddingPanel:Width")} />
               <TextInput
                 scale={true}
                 onChange={onChangeWidth}
-                placeholder="Frame width"
+                placeholder={t("EnterWidth")}
                 value={config.width}
               />
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Frame height" />
+              <Label className="label" text={t("EmbeddingPanel:Height")} />
               <TextInput
                 scale={true}
                 onChange={onChangeHeight}
-                placeholder="Frame height"
+                placeholder={t("EnterHeight")}
                 value={config.height}
               />
             </ControlsGroup>
-            {/* <ControlsGroup>
-          <Label className="label" text="Display mode: " />
-          <ComboBox
-            scale={true}
-            onSelect={onChangeDisplayType}
-            options={dataDisplayType}
-            scaled={true}
-            selectedOption={displayType}
-            displaySelectedOption
-          />
-        </ControlsGroup> */}
             <Checkbox
-              label="Show header"
+              label={t("Header")}
               onChange={onChangeShowHeader}
               isChecked={config.showHeader}
             />
             <Checkbox
-              label="Show title"
+              label={t("Common:Title")}
               onChange={onChangeShowTitle}
               isChecked={config.showTitle}
             />
             <Checkbox
-              label="Show article"
+              label={t("Menu")}
               onChange={onChangeShowArticle}
               isChecked={config.showArticle}
             />
             <Checkbox
-              label="Show filter"
+              label={t("Files:Filter")}
               onChange={onChangeShowFilter}
               isChecked={config.showFilter}
             />
             <Heading level={1} size="small">
-              Filter options
+              {t("DataDisplay")}
             </Heading>
             <ControlsGroup>
-              <Label className="label" text="Folder id" />
+              <Label className="label" text={t("FolderId")} />
               <TextInput
                 scale={true}
                 onChange={onChangeFolderId}
-                placeholder="Folder id"
+                placeholder={t("EnterId")}
                 value={config.folder}
               />
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Items count" />
+              <Label className="label" text={t("ItemsCount")} />
               <TextInput
                 scale={true}
                 onChange={onChangeCount}
-                placeholder="Items count"
+                placeholder={t("EnterCount")}
                 value={config.count}
               />
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Page" />
+              <Label className="label" text={t("Page")} />
               <TextInput
                 scale={true}
                 onChange={onChangePage}
-                placeholder="Page"
+                placeholder={t("EnterPage")}
                 value={config.page}
               />
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Search term" />
+              <Label className="label" text={t("SearchTerm")} />
               <Box
                 style={{ flexDirection: "row", display: "flex", gap: "16px" }}
               >
                 <TextInput
                   scale={true}
                   onChange={onChangeSearch}
-                  placeholder="Search term"
+                  placeholder={t("Common:Search")}
                   value={config.search}
                 />
                 <Checkbox
-                  label="With subfolders"
+                  label={t("Files:WithSubfolders")}
                   onChange={onChangeWithSubfolders}
                   isChecked={withSubfolders}
                 />
               </Box>
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Author" />
+              <Label className="label" text={t("Files:ByAuthor")} />
               <TextInput
                 scale={true}
                 onChange={onChangeAuthor}
-                placeholder="Author"
+                placeholder={t("Common:EnterName")}
                 value={config.authorType}
               />
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Filter type:" />
-              <ComboBox
-                onSelect={onChangeFilterType}
-                options={dataFilterType}
-                scaled={true}
-                selectedOption={filterType}
-                displaySelectedOption
-                directionY="top"
-              />
-            </ControlsGroup>
-            <ControlsGroup>
-              <Label className="label" text="Sort by:" />
+              <Label className="label" text={t("Common:SortBy")} />
               <ComboBox
                 onSelect={onChangeSortBy}
                 options={dataSortBy}
@@ -414,7 +369,7 @@ const PortalIntegration = (props) => {
               />
             </ControlsGroup>
             <ControlsGroup>
-              <Label className="label" text="Sort order:" />
+              <Label className="label" text={t("SortOrder")} />
               <ComboBox
                 onSelect={onChangeSortOrder}
                 options={dataSortOrder}
@@ -428,7 +383,7 @@ const PortalIntegration = (props) => {
           <Preview>
             <Frame>
               <Box id={frameId} className="frameStyle">
-                Frame content
+                {t("Common:Preview")}
               </Box>
             </Frame>
 
@@ -442,13 +397,13 @@ const PortalIntegration = (props) => {
               <Button
                 primary
                 size="normal"
-                label="Destroy"
+                label={t("Destroy")}
                 onClick={destroyFrame}
               />
             </Buttons>
 
             <Heading level={1} size="xsmall">
-              Paste this code block on page:
+              {t("CopyWindowCode")}
             </Heading>
 
             <Textarea value={codeBlock} />
@@ -467,4 +422,8 @@ export default inject(({ setup, auth }) => {
     theme,
     setDocumentTitle,
   };
-})(withTranslation(["Settings", "Common"])(observer(PortalIntegration)));
+})(
+  withTranslation(["JavascriptSdk", "Files", "EmbeddingPanel", "Common"])(
+    observer(PortalIntegration)
+  )
+);
