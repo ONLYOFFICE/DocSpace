@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
 import { useParams } from "react-router-dom";
+import { inject, observer } from "mobx-react";
 
 import { Text } from "@docspace/components";
 
@@ -18,12 +19,22 @@ const EventDetailsHeader = styled.header`
   padding: 20px 0;
 `;
 
-const WebhookEventDetails = () => {
-  const { id } = useParams();
+const WebhookEventDetails = (props) => {
+  const { getWebhookHistory } = props;
+
+  const { id, eventId } = useParams();
+
   const [isLoading, setIsLoading] = useState(true);
 
+  const [webhookDetails, setWebhookDetails] = useState({});
+
   useEffect(() => {
-    setTimeout(() => setIsLoading(false), 2000);
+    (async () => {
+      const [webhookDetailsData] = await getWebhookHistory({ eventId });
+      setWebhookDetails(webhookDetailsData);
+      console.log(webhookDetailsData);
+      setIsLoading(false);
+    })();
   }, []);
 
   return (
@@ -35,13 +46,17 @@ const WebhookEventDetails = () => {
         <main>
           <EventDetailsHeader>
             <Text fontWeight={600}>Webhook {id}</Text>
-            <DetailsBar />
+            <DetailsBar webhookDetails={webhookDetails} />
           </EventDetailsHeader>
-          <MessagesDetails />
+          <MessagesDetails webhookDetails={webhookDetails} />
         </main>
       )}
     </DetailsWrapper>
   );
 };
 
-export default WebhookEventDetails;
+export default inject(({ webhooksStore }) => {
+  const { getWebhookHistory } = webhooksStore;
+
+  return { getWebhookHistory };
+})(observer(WebhookEventDetails));
