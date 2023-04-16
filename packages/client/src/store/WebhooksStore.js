@@ -96,8 +96,8 @@ class WebhooksStore {
     return await retryWebhooks(ids);
   };
 
-  getWebhookHistory = async (configId, eventId, logCount, startIndex) => {
-    return await getWebhooksJournal(configId, eventId, logCount, startIndex);
+  getWebhookHistory = async (params) => {
+    return await getWebhooksJournal(params);
   };
 
   get isWebhooksEmpty() {

@@ -743,7 +743,7 @@ export function removeWebhook(id) {
   });
 }
 
-export function getWebhooksJournal(configId, eventId, logCount, startIndex) {
+export function getWebhooksJournal({configId, eventId, logCount, startIndex}) {
   const params = {};
 
   configId && (params.configId = configId);
