@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
+import moment from "moment";
 import styled from "styled-components";
-
-import { useParams } from "react-router-dom";
 
 import { Text } from "@docspace/components";
 import { StatusBadge } from "../../sub-components/StatusBadge";
@@ -38,15 +37,22 @@ const FlexWrapper = styled.div`
   align-items: center;
 `;
 
-export const DetailsBar = () => {
-  const { eventId } = useParams();
+export const DetailsBar = ({ webhookDetails }) => {
+  const formattedDelivery = useMemo(
+    () => moment(webhookDetails.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC",
+    [webhookDetails],
+  );
+  const formattedCreationTime = useMemo(
+    () => moment(webhookDetails.creationTime).format("MMM D, YYYY, h:mm:ss A") + " UTC",
+    [webhookDetails],
+  );
 
   return (
     <BarWrapper>
       <BarItem>
         <BarItemHeader>Status</BarItemHeader>
         <FlexWrapper>
-          <StatusBadge status={"404"} />
+          <StatusBadge status={webhookDetails.status} />
           <Text isInline fontWeight={600}>
             {" "}
             Client Error - Not Found
@@ -56,19 +62,19 @@ export const DetailsBar = () => {
       <BarItem>
         <BarItemHeader>Event ID</BarItemHeader>
         <Text isInline fontWeight={600}>
-          {eventId}
+          {webhookDetails.id}
         </Text>
       </BarItem>
       <BarItem>
         <BarItemHeader>Event time</BarItemHeader>
         <Text isInline fontWeight={600}>
-          Nov 15, 2022, 11:10:00 PM
+          {formattedCreationTime}
         </Text>
       </BarItem>
       <BarItem>
         <BarItemHeader>Delivery time</BarItemHeader>
         <Text isInline fontWeight={600}>
-          Nov 15, 2022, 11:10:00 PM
+          {formattedDelivery}
         </Text>
       </BarItem>
     </BarWrapper>
