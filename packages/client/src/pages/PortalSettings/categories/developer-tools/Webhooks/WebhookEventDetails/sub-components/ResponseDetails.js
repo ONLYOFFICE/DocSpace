@@ -6,29 +6,25 @@ const DetailsWrapper = styled.div`
   width: 100%;
 `;
 
-export const RequestDetails = ({ webhookDetails }) => {
+export const ResponseDetails = ({ webhookDetails }) => {
+  const responsePayload = webhookDetails.responsePayload.trim();
+
   return (
     <DetailsWrapper>
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px" }}>
-        Request post header
+        Response post header
       </Text>
       <Textarea
-        value={webhookDetails.requestHeaders}
+        value={webhookDetails.responseHeaders}
         enableCopy
         hasNumeration
         isFullHeight
         isJSONField
       />
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
-        Request post body
+        Response post body
       </Text>
-      <Textarea
-        value={webhookDetails.requestPayload}
-        isJSONField
-        enableCopy
-        hasNumeration
-        isFullHeight
-      />
+      <Textarea value={responsePayload} isJSONField enableCopy hasNumeration isFullHeight />
     </DetailsWrapper>
   );
 };

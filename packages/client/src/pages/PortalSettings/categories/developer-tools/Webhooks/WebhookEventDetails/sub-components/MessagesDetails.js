@@ -3,6 +3,7 @@ import styled from "styled-components";
 import Submenu from "@docspace/components/submenu";
 
 import { RequestDetails } from "./RequestDetails";
+import { ResponseDetails } from "./ResponseDetails";
 
 const SubmenuWrapper = styled.div`
   .sticky {
@@ -10,7 +11,7 @@ const SubmenuWrapper = styled.div`
   }
 `;
 
-export const MessagesDetails = () => {
+export const MessagesDetails = ({ webhookDetails }) => {
   return (
     <SubmenuWrapper>
       <Submenu
@@ -18,12 +19,12 @@ export const MessagesDetails = () => {
           {
             id: "webhookRequest",
             name: "Request",
-            content: <RequestDetails />,
+            content: <RequestDetails webhookDetails={webhookDetails} />,
           },
           {
             id: "webhookResponse",
             name: "Response",
-            content: <RequestDetails />,
+            content: <ResponseDetails webhookDetails={webhookDetails} />,
           },
         ]}
         startSelect={0}
