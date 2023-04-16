@@ -38,11 +38,11 @@ export const HistoryTableRow = ({ eventData }) => {
   return (
     <TableRow contextOptions={contextOptions}>
       <TableCell>
-        <TableCell>
+        <TableCell checked>
           <Checkbox
             className="table-container_row-checkbox"
             onChange={() => {}}
-            isChecked={false}
+            isChecked={true}
             title="TitleSelectFile"
             label="abc"
           />
