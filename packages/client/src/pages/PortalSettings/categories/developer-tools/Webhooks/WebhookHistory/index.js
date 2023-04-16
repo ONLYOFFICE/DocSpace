@@ -6,15 +6,23 @@ import HistoryFilterHeader from "./sub-components/HistoryFilterHeader";
 import WebhookHistoryTable from "./sub-components/WebhookHistoryTable";
 import { WebhookHistoryLoader } from "../sub-components/Loaders";
 
+import { inject, observer } from "mobx-react";
+
 const WebhookWrapper = styled.div`
   width: 100%;
 `;
 
-const WebhookHistory = () => {
+const WebhookHistory = (props) => {
+  const { getWebhookHistory } = props;
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     setTimeout(() => setIsLoading(false), 2000);
+    (async () => {
+      const webhookHistoryData = await getWebhookHistory(1, 1, 10, 10);
+      console.log(webhookHistoryData);
+    })();
   }, []);
 
   const historyWebhooks = [
@@ -63,4 +71,8 @@ const WebhookHistory = () => {
   );
 };
 
-export default WebhookHistory;
+export default inject(({ webhooksStore }) => {
+  const { getWebhookHistory } = webhooksStore;
+
+  return { getWebhookHistory };
+})(observer(WebhookHistory));
