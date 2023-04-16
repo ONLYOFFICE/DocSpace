@@ -743,14 +743,18 @@ export function removeWebhook(id) {
   });
 }
 
-export function getWebhooksJournal(logCount, startIndex) {
-  const logCountParam = logCount ? `count=${logCount}&` : "";
-  const startIndexParam = startIndex ? `startIndex=${startIndex}&` : "";
+export function getWebhooksJournal(configId, eventId, logCount, startIndex) {
+  const params = {};
+
+  configId && (params.configId = configId);
+  eventId && (params.eventId = eventId);
+  logCount && (params.logCount = logCount);
+  startIndex && (params.startIndex = startIndex);
 
   return request({
     method: "get",
-    url: `/settings/webhooks/log?${logCountParam}${startIndexParam}`,
-    data: { hookname },
+    url: "/settings/webhooks/log?",
+    params,
   });
 }
 
