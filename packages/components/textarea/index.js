@@ -155,11 +155,11 @@ Textarea.propTypes = {
   hasError: PropTypes.bool,
   /** Indicates the input field has scale */
   heightScale: PropTypes.bool,
-  /** Max Length of value */
+  /** Max value length */
   maxLength: PropTypes.number,
   /** Used as HTML `name` property  */
   name: PropTypes.string,
-  /** Allow you to handle changing events of component */
+  /** Sets a callback function that allows handling the component's changing events */
   onChange: PropTypes.func,
   /** Placeholder for Textarea  */
   placeholder: PropTypes.string,
@@ -167,11 +167,11 @@ Textarea.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Used as HTML `tabindex` property */
   tabIndex: PropTypes.number,
-  /** Value for Textarea */
+  /** Textarea value */
   value: PropTypes.string,
-  /** Value for font-size */
+  /** Font-size value */
   fontSize: PropTypes.number,
-  /** Value for height text-area */
+  /** Text-area height value */
   heightTextArea: PropTypes.number,
   /** Specifies the text color */
   color: PropTypes.string,
