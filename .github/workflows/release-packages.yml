@@ -59,10 +59,10 @@ jobs:
           PRODUCT="docspace"
           TAG="1.0.0" 
           BUILD_NUMBER="999" 
-          sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets \ 
-          sudo rename -f -v "s/product([^\/]*)$/${PRODUCT}\$1/g" debian/* ../common/* ../common/logrotate/* \
-          sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT}/g" {} ';' \
-          sudo sed -i "s/{{package_header_tag_version}}/${TAG}.${BUILD_NUMBER}/g" debian/changelog debian/control \
+          sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets  
+          sudo rename -f -v "s/product([^\/]*)$/${PRODUCT}\$1/g" debian/* ../common/* ../common/logrotate/* 
+          sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT}/g" {} ';' 
+          sudo sed -i "s/{{package_header_tag_version}}/${TAG}.${BUILD_NUMBER}/g" debian/changelog debian/control 
           dpkg-buildpackage -us -uc
           EOF
           chmod +x build-DocSpace_deb.sh
