@@ -155,6 +155,7 @@ Avatar.propTypes = {
   source: PropTypes.string,
   /** Allows to display a user name as initials when `source` is set to blank */
   userName: PropTypes.string,
+  /** Enables avatar editing */
   editing: PropTypes.bool,
   /** Allows to display as a default icon when `source` is set to blank */
   isDefaultSource: PropTypes.bool,
