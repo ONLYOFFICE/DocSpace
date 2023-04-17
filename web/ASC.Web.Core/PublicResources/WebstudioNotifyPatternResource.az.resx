@@ -308,7 +308,29 @@ Link yalnız 7 gün ərzində etibarlıdır.
 
 Siz veb-ofisinizdən necə istifadə etmək barədə daha çox məsləhət əldə edəcəksiniz. İstənilən vaxt Profil səhifənizdə abunəlikləri ləğv edə və onları yenidən aktivləşdirə bilərsiniz.</value>
   </data>
-  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+ </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Salam, $UserName!
+
+ONLYOFFICE DocSpace-ə xoş gəlmisiniz! İstifadəçi profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" üzərinə əlavə edildi. İndi edə bilərsiniz:
+
+*#* Dəvət olunduğunuz otaqda digər istifadəçilərlə əməkdaşlıq edin: *real vaxtda birgə müəlliflik üçün əməkdaşlıq otaqları və ya istənilən məqsəd üçün çevik parametrləri olan şəxsi otaqlar*.
+
+*# Müxtəlif formatlı fayllarla işləmək*: mətn sənədləri, cədvəllər, təqdimatlar, rəqəmsal formalar, PDF-lər, elektron kitablar, multimedia.
+
+*# İkili birgə redaktə rejimi* ilə sənədlər üzərində əməkdaşlıq edin: real vaxt və ya paraqrafın kilidlənməsi. Dəyişiklikləri izləyin, daxili söhbətdən istifadə edərək real vaxtda ünsiyyət qurun və ya audio və video zənglər edin. 
+
+*# İstənilən bulud yaddaşını* birləşdirin və proqramları dəyişmədən işləyin. 
+
+$GreenButton
+
+Köməyə ehtiyacınız varsa, "Dəstək Mərkəzimizə":"https://helpcenter.onlyoffice.com/" nəzər salın və ya "dəstək komandamızdan":"https://www.onlyoffice.com/support-contact-form.aspx" soruşun.
+
+Hörmətlə, 
+ONLYOFFICE Komandası
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+ <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Salam, $UserName!
 
 $__AuthorName sizi "${__VirtualRootPath}":"${__VirtualRootPath}" üçün qonaq istifadəçi kimi dəvət etdi. Linkə klikləməklə dəvəti qəbul edin:
@@ -318,6 +340,27 @@ $GreenButton
 Link yalnız 7 gün ərzində etibarlıdır.
 
 Siz veb-ofisinizdən necə istifadə etmək barədə daha çox məsləhət əldə edəcəksiniz. İstənilən vaxt Profil səhifənizdə abunəlikləri ləğv edə və onları yenidən aktivləşdirə bilərsiniz.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Salam, $UserName!
+
+ONLYOFFICE DocSpace-ə xoş gəlmisiniz! İstifadəçi profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" üzərinə əlavə edildi. İndi edə bilərsiniz:
+
+*#* Dəvət olunduğunuz otaqda digər istifadəçilərlə əməkdaşlıq edin: *real vaxtda birgə müəlliflik üçün əməkdaşlıq otaqları və ya istənilən məqsəd üçün çevik parametrləri olan şəxsi otaqlar*.
+
+*# Müxtəlif formatlı fayllarla işləmək*: mətn sənədləri, cədvəllər, təqdimatlar, rəqəmsal formalar, PDF-lər, elektron kitablar, multimedia.
+
+*# İkili birgə redaktə rejimi* ilə sənədlər üzərində əməkdaşlıq edin: real vaxt və ya paraqrafın kilidlənməsi. Dəyişiklikləri izləyin, daxili söhbətdən istifadə edərək real vaxtda ünsiyyət qurun və ya audio və video zənglər edin. 
+
+*# İstənilən bulud yaddaşını* birləşdirin və proqramları dəyişmədən işləyin. 
+
+$GreenButton
+
+Köməyə ehtiyacınız varsa, "Dəstək Mərkəzimizə":"https://helpcenter.onlyoffice.com/" nəzər salın və ya "dəstək komandamızdan":"https://www.onlyoffice.com/support-contact-form.aspx" soruşun.
+
+Hörmətlə, 
+ONLYOFFICE Komandası
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalından mesaj:
@@ -449,6 +492,27 @@ Link yalnız 7 gün ərzində etibarlıdır.
 
 Siz veb-ofisinizdən necə istifadə etmək barədə daha çox məsləhətlər alacaqsınız. İstənilən vaxt Profil səhifənizdə abunəlikləri ləğv edə və onları yenidən aktivləşdirə bilərsiniz.</value>
   </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Salam, $UserName!
+
+ONLYOFFICE DocSpace-ə xoş gəlmisiniz! İstifadəçi profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" üzərinə əlavə edildi. İndi edə bilərsiniz:
+
+*#* Dəvət olunduğunuz otaqda digər istifadəçilərlə əməkdaşlıq edin: *real vaxtda birgə müəlliflik üçün əməkdaşlıq otaqları və ya istənilən məqsəd üçün çevik parametrləri olan şəxsi otaqlar*.
+
+*# Müxtəlif formatlı fayllarla işləmək*: mətn sənədləri, cədvəllər, təqdimatlar, rəqəmsal formalar, PDF-lər, elektron kitablar, multimedia.
+
+*# İkili birgə redaktə rejimi* ilə sənədlər üzərində əməkdaşlıq edin: real vaxt və ya paraqrafın kilidlənməsi. Dəyişiklikləri izləyin, daxili söhbətdən istifadə edərək real vaxtda ünsiyyət qurun və ya audio və video zənglər edin. 
+
+*# İstənilən bulud yaddaşını* birləşdirin və proqramları dəyişmədən işləyin. 
+
+$GreenButton
+
+Köməyə ehtiyacınız varsa, "Dəstək Mərkəzimizə":"https://helpcenter.onlyoffice.com/" nəzər salın və ya "dəstək komandamızdan":"https://www.onlyoffice.com/support-contact-form.aspx" soruşun.
+
+Hörmətlə, 
+ONLYOFFICE Komandası
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Salam, $UserName
 Siz ONLYOFFICE Personal-da"${__VirtualRootPath}":"${__VirtualRootPath}" uğurla qeydiyyatdan keçmisiniz.
@@ -808,16 +872,48 @@ Hörmətlə,
 ONLYOFFICE Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
+</data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Salam, $UserName!
+
+ONLYOFFICE DocSpace-ə xoş gəlmisiniz! İstifadəçi profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}" üzərinə əlavə edildi. İndi edə bilərsiniz:
+
+*#* Dəvət olunduğunuz otaqda digər istifadəçilərlə əməkdaşlıq edin: *real vaxtda birgə müəlliflik üçün əməkdaşlıq otaqları və ya istənilən məqsəd üçün çevik parametrləri olan şəxsi otaqlar*.
+
+*# Müxtəlif formatlı fayllarla işləmək*: mətn sənədləri, cədvəllər, təqdimatlar, rəqəmsal formalar, PDF-lər, elektron kitablar, multimedia.
+
+*# İkili birgə redaktə rejimi* ilə sənədlər üzərində əməkdaşlıq edin: real vaxt və ya paraqrafın kilidlənməsi. Dəyişiklikləri izləyin, daxili söhbətdən istifadə edərək real vaxtda ünsiyyət qurun və ya audio və video zənglər edin. 
+
+*# İstənilən bulud yaddaşını* birləşdirin və proqramları dəyişmədən işləyin. 
+
+$GreenButton
+
+Köməyə ehtiyacınız varsa, "Dəstək Mərkəzimizə":"https://helpcenter.onlyoffice.com/" nəzər salın və ya "dəstək komandamızdan":"https://www.onlyoffice.com/support-contact-form.aspx" soruşun.
+
+Hörmətlə, 
+ONLYOFFICE Komandası
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" Portal profilinin dəyişdirilməsi barədə bildiriş:
 
 "$__AuthorName":"$__AuthorUrl", "${__VirtualRootPath}":"${__VirtualRootPath}" portalındakı öz profil məlumatlarını dəyişdi.
 
+
 ^Əgər profil dəyişiklikləri ilə bağlı bildirişlər almaq istəmirsinizsə, "abunəlik parametrlərinizi idarə edin":"$RecipientSubscriptionConfigURL". ^</value>
   </data>
   <data name="pattern_self_profile_updated_tg" xml:space="preserve">
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) portal profilinin dəyişdirilməsi haqqında bildiriş
+
 [$__AuthorName]($__AuthorUrl), [${__VirtualRootPath}](${__VirtualRootPath}) portalında profil detallarını dəyişib.</value>
+  </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.$Date tarixində DocSpace-də olan yeniliklər buradadır
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP test mesajı
@@ -919,7 +1015,10 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
-  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace-ə xoş gəlmisiniz!</value>
+  </data>
+ <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
@@ -945,6 +1044,9 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace-ə xoş gəlmisiniz!</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Şəxsi istifadə üçün ONLYOFFICE-a xoş gəlmisiniz!</value>
@@ -1006,6 +1108,9 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace-ə xoş gəlmisiniz!</value>
+  </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} portalının profilinin dəyişdirilməsi ilə bağlı bildiriş</value>
   </data>
@@ -1036,4 +1141,46 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>Siz ${__VirtualRootPath} proqramına qoşulmağa dəvət olundunuz</value>
   </data>
-</root>
+   <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; yeni sənəd yaradıldı: &lt;a href={1}&gt;{2}&lt;/a&gt; otaqda: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; sənəd versiyasına yeni şərh əlavə edildi: &lt;a href={1}&gt;{2}&lt;/a&gt; otaqda: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; yeni sənəd yükləndi: &lt;a href={1}&gt;{2}&lt;/a&gt; otaqda: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; otağın adı dəyişdirildi: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; yeni otaq yaradıldı: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; otaqdan silindi: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; sənəd redaktə edildi: &lt;a href={1}&gt;{2}&lt;/a&gt; otaqda: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; otaq silindi: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; otağa əlavə edildi: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; otağı köçürdü: &lt;a href={1}&gt;{2}&lt;/a&gt; arxivə - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; rolu təyin edildi &lt;b&gt;{1}&lt;/b&gt; otaqda: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Yeni DocSpace istifadəçi əlavə edildi: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; istifadəçilərin giriş səviyyəsini dəyişdi &lt;b&gt;{1}&lt;/b&gt; &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace istifadəçisi yeniləndi: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+ </root>
