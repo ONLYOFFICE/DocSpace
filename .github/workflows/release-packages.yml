@@ -51,9 +51,7 @@ jobs:
           sudo npm install -g json
           rename --version
           sudo apt-cache show rename
-          sudo apt-get update rename
-          rename --version
-          sudo apt-cache show rename
+ 
 
       - name: BUILD package DEB
         run: |
@@ -68,7 +66,7 @@ jobs:
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets  
           cd build/install/deb
           pwd
-          # rename -f -v "s/product([^\/]*)$/$PRODUCT_11\$1/g" debian/* ../common/* ../common/logrotate
+          perl-rename -f -v "s/product([^\/]*)$/$PRODUCT_11\$1/g" debian/* ../common/* ../common/logrotate
           perl-rename -f -v "s/product([^\/]*)$/${PRODUCT_11}\$1/g" debian/* ../common/* ../common/logrotate/* 
           sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT_11}/g" {} ';'
           sudo sed -i "s/{{package_header_tag_version}}/${TAG}.${BUILD_NUMBER}/g" debian/changelog debian/control 
