@@ -248,16 +248,40 @@ class SettingsStore {
     return `${this.helpLink}/administration/connect-vk-docspace.aspx`;
   }
 
+  get languageAndTimeZoneSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`;
+  }
+
+  get dnsSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#alternativeurl`;
+  }
+
+  get passwordStrengthSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#passwordstrength`;
+  }
+
+  get tfaSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-two-factor-authentication.aspx`;
+  }
+
+  get trustedMailDomainSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
+  }
+
+  get administratorMessageSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#administratormessage`;
+  }
+
+  get dataBackupUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#CreatingBackup_block`;
+  }
+
+  get automaticBackupUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#AutoBackup`;
+  }
+
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
-  }
-
-  get helpUrlCommonSettings() {
-    return `${this.helpLink}/administration/configuration.aspx#CustomizingPortal_block`;
-  }
-
-  get helpUrlCreatingBackup() {
-    return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
   }
 
   setMainBarVisible = (visible) => {

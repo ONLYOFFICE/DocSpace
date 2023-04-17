@@ -17,7 +17,8 @@ import AutoBackup from "./backup/auto-backup";
 
 const DataManagementWrapper = (props) => {
   const {
-    helpUrlCreatingBackup,
+    dataBackupUrl,
+    automaticBackupUrl,
     buttonSize,
     t,
     history,
@@ -37,6 +38,9 @@ const DataManagementWrapper = (props) => {
   }, []);
 
   const renderTooltip = (helpInfo) => {
+    const isAutoBackupPage = window.location.pathname.includes(
+      "portal-settings/backup/auto-backup"
+    );
     return (
       <>
         <HelpButton
@@ -50,7 +54,7 @@ const DataManagementWrapper = (props) => {
               <div>
                 <Link
                   as="a"
-                  href={helpUrlCreatingBackup}
+                  href={isAutoBackupPage ? automaticBackupUrl : dataBackupUrl}
                   target="_blank"
                   color={currentColorScheme.main.accent}
                   isBold
@@ -121,7 +125,8 @@ export default inject(({ auth, setup, backup }) => {
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { toDefault } = backup;
   const {
-    helpUrlCreatingBackup,
+    dataBackupUrl,
+    automaticBackupUrl,
     isTabletView,
     currentColorScheme,
   } = settingsStore;
@@ -131,7 +136,8 @@ export default inject(({ auth, setup, backup }) => {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    helpUrlCreatingBackup,
+    dataBackupUrl,
+    automaticBackupUrl,
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,
