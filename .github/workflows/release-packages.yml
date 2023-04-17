@@ -53,16 +53,17 @@ jobs:
       - name: BUILD package DEB
         run: |
           dotnet --version
-          cd build/install/deb/debian
+          pwd && ls -la
+          # cd build/install/deb/debian
           cat << EOF >> build-DocSpace_deb.sh
           set -x
           PRODUCT="docspace"
-          TAG="1.0.0" 
-          BUILD_NUMBER="999" 
+          TAG="1.0.0"
+          BUILD_NUMBER="999"
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets  
+          cd build/install/deb
           sudo rename -f -v "s/product([^\/]*)$/${PRODUCT}\$1/g" debian/* ../common/* ../common/logrotate/* 
-          sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT}/g" {} ';' 
-          cd /home/runner/DocSpace/DocSpace/build/install/deb/debian
+          sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT}/g" {} ';'
           sudo sed -i "s/{{package_header_tag_version}}/${TAG}.${BUILD_NUMBER}/g" debian/changelog debian/control 
           dpkg-buildpackage -us -uc
           EOF
