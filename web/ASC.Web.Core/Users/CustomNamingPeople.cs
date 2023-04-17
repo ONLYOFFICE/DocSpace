@@ -179,8 +179,13 @@ public class CustomNamingPeople
 
     public string Substitute<T>(string resourceKey) where T : class
     {
-        var text = (string)typeof(T).GetProperty(resourceKey, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic).GetValue(null, null);
-        return Substitute(text);
+        var prop = typeof(T).GetProperty(resourceKey, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+        if (prop != null)
+        {
+            var text = (string)prop.GetValue(null, null);
+            return Substitute(text);
+        }
+        return null;
     }
 
     public string Substitute(string text)
