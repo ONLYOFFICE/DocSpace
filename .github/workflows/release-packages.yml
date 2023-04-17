@@ -53,6 +53,7 @@ jobs:
       - name: BUILD package DEB
         run: |
           cat <<EOT >> build-DocSpace_deb.sh
+          set -x
           PRODUCT=docspace
           TAG=1.0.0
           BUILD_NUMBER=999
