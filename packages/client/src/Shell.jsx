@@ -376,14 +376,18 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       });
   };
 
-  useEffect(async () => {
-    if (!userId) return;
+  const initIndexedDb = React.useCallback(async () => {
     await indexedDbHelper.init(userId, [IndexedDBStores.images]);
+  }, [userId]);
+
+  useEffect(() => {
+    if (!userId) return;
+    initIndexedDb();
 
     return () => {
       indexedDbHelper.deleteDatabase(userId);
     };
-  }, [userId]);
+  }, [userId, initIndexedDb]);
 
   useEffect(() => {
     if (!isLoaded) return;
