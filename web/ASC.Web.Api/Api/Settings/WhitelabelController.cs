@@ -264,7 +264,8 @@ public class WhitelabelController : BaseSettingsController
     public bool SaveCompanyWhiteLabelSettings(CompanyWhiteLabelSettingsWrapper companyWhiteLabelSettingsWrapper)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+
+        DemandRebrandingPermission();
 
         if (companyWhiteLabelSettingsWrapper.Settings == null)
         {
@@ -277,6 +278,7 @@ public class WhitelabelController : BaseSettingsController
 
         return true;
     }
+
     [AllowNotPayment]
     ///<visible>false</visible>
     [HttpGet("rebranding/company")]
@@ -290,7 +292,8 @@ public class WhitelabelController : BaseSettingsController
     public CompanyWhiteLabelSettings DeleteCompanyWhiteLabelSettings()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+
+        DemandRebrandingPermission();
 
         var defaultSettings = _settingsManager.GetDefault<CompanyWhiteLabelSettings>();
 
@@ -304,7 +307,8 @@ public class WhitelabelController : BaseSettingsController
     public bool SaveAdditionalWhiteLabelSettings(AdditionalWhiteLabelSettingsWrapper wrapper)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+
+        DemandRebrandingPermission();
 
         if (wrapper.Settings == null)
         {
@@ -328,7 +332,8 @@ public class WhitelabelController : BaseSettingsController
     public AdditionalWhiteLabelSettings DeleteAdditionalWhiteLabelSettings()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+
+        DemandRebrandingPermission();
 
         var defaultSettings = _settingsManager.GetDefault<AdditionalWhiteLabelSettings>();
 
@@ -342,7 +347,8 @@ public class WhitelabelController : BaseSettingsController
     public bool SaveMailWhiteLabelSettings(MailWhiteLabelSettings settings)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+
+        DemandRebrandingPermission();
 
         ArgumentNullException.ThrowIfNull(settings);
 
@@ -355,7 +361,8 @@ public class WhitelabelController : BaseSettingsController
     public bool UpdateMailWhiteLabelSettings(MailWhiteLabelSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+
+        DemandRebrandingPermission();
 
         _settingsManager.Manage<MailWhiteLabelSettings>(settings =>
         {
@@ -377,7 +384,8 @@ public class WhitelabelController : BaseSettingsController
     public MailWhiteLabelSettings DeleteMailWhiteLabelSettings()
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        DemandWhiteLabelPermission();
+
+        DemandRebrandingPermission();
 
         var defaultSettings = _settingsManager.GetDefault<MailWhiteLabelSettings>();
 
@@ -400,6 +408,15 @@ public class WhitelabelController : BaseSettingsController
         if (!_coreBaseSettings.Standalone && (!_tenantLogoManager.WhiteLabelEnabled || !_tenantLogoManager.WhiteLabelPaid))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "WhiteLabel");
+        }
+    }
+
+    private void DemandRebrandingPermission()
+    {
+        DemandWhiteLabelPermission();
+        if (!_coreBaseSettings.Standalone || _coreBaseSettings.CustomMode)
+        {
+            throw new SecurityException(Resource.ErrorAccessDenied);
         }
     }
 }
