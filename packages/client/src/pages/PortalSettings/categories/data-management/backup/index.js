@@ -12,7 +12,7 @@ import config from "PACKAGE_FILE";
 import { removeLocalStorage } from "../../../utils";
 
 const Backup = ({
-  helpUrlCreatingBackup,
+  automaticBackupUrl,
   buttonSize,
   t,
   history,
@@ -33,7 +33,7 @@ const Backup = ({
               <div>
                 <Link
                   as="a"
-                  href={helpUrlCreatingBackup}
+                  href={automaticBackupUrl}
                   target="_blank"
                   color={currentColorScheme.main.accent}
                   isBold
@@ -88,7 +88,7 @@ export default inject(({ auth }) => {
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
   const {
-    helpUrlCreatingBackup,
+    automaticBackupUrl,
     isTabletView,
     currentColorScheme,
   } = settingsStore;
@@ -96,7 +96,7 @@ export default inject(({ auth }) => {
   const buttonSize = isTabletView ? "normal" : "small";
 
   return {
-    helpUrlCreatingBackup,
+    automaticBackupUrl,
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,
