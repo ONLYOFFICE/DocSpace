@@ -53,7 +53,7 @@ jobs:
       - name: BUILD package DEB
         run: |
           dotnet --version
-          cd build/install/deb/debian
+          cd build/install/deb/
           cat << EOF >> build-DocSpace_deb.sh
           set -x
           PRODUCT="docspace"
