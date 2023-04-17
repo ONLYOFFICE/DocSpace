@@ -63,6 +63,7 @@ jobs:
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets  
           cd build/install/deb
           pwd
+          rename --version
           # rename -f -v "s/product([^\/]*)$/$PRODUCT_11\$1/g" debian/* ../common/* ../common/logrotate
           rename -f -v "s/product([^\/]*)$/${PRODUCT_11}\$1/g" debian/* ../common/* ../common/logrotate/* 
           sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT_11}/g" {} ';'
