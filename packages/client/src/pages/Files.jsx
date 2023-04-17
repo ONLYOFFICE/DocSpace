@@ -86,15 +86,6 @@ const FilesSection = React.memo(({ withMainButton }) => {
   return (
     <Routes>
       <Route
-        path={"/settings"}
-        element={
-          <PrivateRoute location={location}>
-            <Navigate to="/settings/common" replace />
-          </PrivateRoute>
-        }
-      />
-
-      <Route
         path="/"
         element={
           <PrivateRoute location={location}>
@@ -204,24 +195,22 @@ const FilesSection = React.memo(({ withMainButton }) => {
       />
 
       <Route
-        path={"/settings/admin"}
+        path={"/settings"}
         element={
-          <PrivateRoute restricted location={location}>
-            <Settings />
+          <PrivateRoute withCollaborator restricted location={location}>
+            <Navigate to="/settings/common" replace />
           </PrivateRoute>
         }
       />
 
-      {withMainButton && (
-        <Route
-          path={"/settings/common"}
-          element={
-            <PrivateRoute restricted location={location}>
-              <Settings />
-            </PrivateRoute>
-          }
-        />
-      )}
+      <Route
+        path={"/settings/*"}
+        element={
+          <PrivateRoute withCollaborator restricted location={location}>
+            <Settings />
+          </PrivateRoute>
+        }
+      />
 
       <Route
         element={
