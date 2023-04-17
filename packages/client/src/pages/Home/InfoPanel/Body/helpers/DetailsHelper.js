@@ -69,6 +69,7 @@ class DetailsHelper {
     this.personal = props.personal;
     this.culture = props.culture;
     this.isVisitor = props.isVisitor;
+    this.isCollaborator = props.isCollaborator;
   }
 
   getPropertyList = () => {
@@ -113,38 +114,38 @@ class DetailsHelper {
 
   getNeededProperties = () => {
     return (this.item.isRoom
-      ? [
-          "Owner",
-          this.item.providerKey && "Storage Type",
-          "Type",
-          "Content",
-          "Date modified",
-          "Last modified by",
-          "Creation date",
-          this.item.tags.length && "Tags",
-        ]
-      : this.item.isFolder
-      ? [
-          "Owner",
-          //"Location",
-          "Type",
-          "Content",
-          "Date modified",
-          "Last modified by",
-          "Creation date",
-        ]
-      : [
-          "Owner",
-          //"Location",
-          "Type",
-          "File extension",
-          "Size",
-          "Date modified",
-          "Last modified by",
-          "Creation date",
-          "Versions",
-          "Comments",
-        ]
+        ? [
+            "Owner",
+            this.item.providerKey && "Storage Type",
+            "Type",
+            "Content",
+            "Date modified",
+            "Last modified by",
+            "Creation date",
+            this.item.tags.length && "Tags",
+          ]
+        : this.item.isFolder
+        ? [
+            "Owner",
+            //"Location",
+            "Type",
+            "Content",
+            "Date modified",
+            "Last modified by",
+            "Creation date",
+          ]
+        : [
+            "Owner",
+            //"Location",
+            "Type",
+            "File extension",
+            "Size",
+            "Date modified",
+            "Last modified by",
+            "Creation date",
+            "Versions",
+            "Comments",
+          ]
     ).filter((nP) => !!nP);
   };
 
@@ -227,7 +228,7 @@ class DetailsHelper {
   getItemOwner = () => {
     const onOpenUser = () => this.openUser(this.item.createdBy, this.history);
 
-    return this.personal || this.isVisitor
+    return this.personal || this.isVisitor || this.isCollaborator
       ? text(decode(this.item.createdBy?.displayName))
       : link(decode(this.item.createdBy?.displayName), onOpenUser);
   };
@@ -279,7 +280,7 @@ class DetailsHelper {
   getItemLastModifiedBy = () => {
     const onOpenUser = () => this.openUser(this.item.updatedBy, this.history);
 
-    return this.personal || this.isVisitor
+    return this.personal || this.isVisitor || this.isCollaborator
       ? text(decode(this.item.updatedBy?.displayName))
       : link(decode(this.item.updatedBy?.displayName), onOpenUser);
   };
