@@ -316,9 +316,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Īpašnieks</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Portāla nosaukums</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Piekļuve portālam</value>
   </data>
