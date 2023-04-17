@@ -52,10 +52,11 @@ jobs:
           
       - name: BUILD package DEB
         run: |
-          ls -la 
-          pwd
           # cat <<EOT >> build-DocSpace_deb.sh
           # set -x
+          cd build/install/deb/ \
+          ls -la 
+          pwd
           PRODUCT="docspace" \
           TAG="1.0.0" \
           BUILD_NUMBER="999" \
