@@ -85,7 +85,6 @@ jobs:
         with:
           files: /home/runner/DocSpace/DocSpace/build/install/deb/debian/*.deb
           
-
   build_rpm:
     name: Build .rpm package
     runs-on: ubuntu-latest
