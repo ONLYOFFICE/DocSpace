@@ -20,12 +20,12 @@ export const useThemeDetector = () => {
     if (isDesktopClient) return;
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-    mediaQuery.addListener(systemThemeListener);
+    mediaQuery.addEventListener("change", systemThemeListener);
 
     return () => {
       if (isDesktopClient) return;
 
-      mediaQuery.removeListener(systemThemeListener);
+      mediaQuery.removeEventListener(systemThemeListener);
     };
   }, []);
 
