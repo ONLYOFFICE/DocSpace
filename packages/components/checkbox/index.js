@@ -170,6 +170,7 @@ Checkbox.propTypes = {
   helpButton: PropTypes.any,
   /** Checkbox tab index */
   tabIndex: PropTypes.number,
+  /** Notifies if the error occurs */
   hasError: PropTypes.bool,
 };
 
