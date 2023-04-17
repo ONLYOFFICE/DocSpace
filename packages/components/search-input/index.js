@@ -137,16 +137,16 @@ SearchInput.propTypes = {
   className: PropTypes.string,
   /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge"]),
-  /** Value of the input */
+  /** Input value */
   value: PropTypes.string,
-  /** Indicates the input field has scale  */
+  /** Indicates that the input field has scale  */
   scale: PropTypes.bool,
   /** Placeholder text for the input */
   placeholder: PropTypes.string,
-  /** Called with the new value. Required when input is not read only. Parent should pass it back as `value` */
+  /** Sets a callback function that allows handling the component's changing events */
   onChange: PropTypes.func,
   onClearSearch: PropTypes.func,
-  /** Indicates that the field cannot be used (e.g not authorized, or changes not saved) */
+  /** Indicates that the field cannot be used (e.g not authorized, or the changes have not been saved) */
   isDisabled: PropTypes.bool,
   showClearButton: PropTypes.bool,
   refreshTimeout: PropTypes.number,

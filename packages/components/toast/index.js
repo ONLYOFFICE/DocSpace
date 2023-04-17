@@ -67,7 +67,7 @@ Toast.propTypes = {
   text: PropTypes.string,
   /** Title inside a toast */
   title: PropTypes.string,
-  /** Define color and icon of toast */
+  /** Sets the color and icon of the toast */
   type: PropTypes.oneOf(["success", "error", "warning", "info"]).isRequired,
 };
 
