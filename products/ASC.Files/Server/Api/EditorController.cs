@@ -30,7 +30,7 @@ namespace ASC.Files.Api;
 public class EditorControllerInternal : EditorController<int>
 {
     public EditorControllerInternal(
-        FileStorageService<int> fileStorageService,
+        FileStorageService fileStorageService,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -51,7 +51,7 @@ public class EditorControllerThirdparty : EditorController<string>
     private readonly ThirdPartySelector _thirdPartySelector;
 
     public EditorControllerThirdparty(
-        FileStorageService<string> fileStorageService,
+        FileStorageService fileStorageService,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,
@@ -110,7 +110,7 @@ public class EditorControllerThirdparty : EditorController<string>
 
 public abstract class EditorController<T> : ApiControllerBase
 {
-    protected readonly FileStorageService<T> _fileStorageService;
+    protected readonly FileStorageService _fileStorageService;
     protected readonly DocumentServiceHelper _documentServiceHelper;
     protected readonly EncryptionKeyPairDtoHelper _encryptionKeyPairDtoHelper;
     protected readonly SettingsManager _settingsManager;
@@ -121,7 +121,7 @@ public abstract class EditorController<T> : ApiControllerBase
     private readonly FilesLinkUtility _filesLinkUtility;
 
     public EditorController(
-        FileStorageService<T> fileStorageService,
+        FileStorageService fileStorageService,
         DocumentServiceHelper documentServiceHelper,
         EncryptionKeyPairDtoHelper encryptionKeyPairDtoHelper,
         SettingsManager settingsManager,

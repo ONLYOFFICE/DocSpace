@@ -37,7 +37,6 @@ const FilesListRow = ({
             fontSize="13px"
             fontWeight="400"
             name={`${index}`}
-            label=""
             isChecked={isChecked}
             onClick={onFileClick}
             value=""

@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import RowContainer from "@docspace/components/row-container";
 import SimpleFilesRow from "./SimpleFilesRow";
 import { isMobile } from "react-device-detect";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import marginStyles from "./CommonStyles";
 import { isTablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";

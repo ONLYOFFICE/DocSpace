@@ -76,7 +76,9 @@ const FileTile = (props) => {
       icon={item.icon}
       fileExst={item.fileExst}
       isRoom={item.isRoom}
-      defaultRoomIcon={item.defaultRoomIcon}
+      defaultRoomIcon={
+        item.isRoom && item.icon ? item.icon : item.defaultRoomIcon
+      }
     />
   );
 
@@ -148,12 +150,8 @@ const FileTile = (props) => {
 export default inject(
   ({ settingsStore, filesStore, treeFoldersStore }, { item }) => {
     const { getIcon, thumbnails1280x720 } = settingsStore;
-    const {
-      setSelection,
-      withCtrlSelect,
-      withShiftSelect,
-      highlightFile,
-    } = filesStore;
+    const { setSelection, withCtrlSelect, withShiftSelect, highlightFile } =
+      filesStore;
 
     const isHighlight =
       highlightFile.id == item?.id && highlightFile.isExst === !item?.fileExst;

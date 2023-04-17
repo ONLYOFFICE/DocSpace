@@ -82,38 +82,20 @@ public abstract class FeedModule : IFeedModule
         }
     }
 
-    protected string GetGroupId(string item, Guid author, string rootId = null, int action = -1)
+    protected string GetGroupId(string item, Guid author, DateTime date, string rootId = null, int action = -1)
     {
-        const int interval = 2;
-
-        var now = DateTime.UtcNow;
-        var hours = now.Hour;
-        var groupIdHours = hours - (hours % interval);
+        var time = date.ToString("g");
 
         if (rootId == null)
         {
-            // groupId = {item}_{author}_{date}
-            return string.Format("{0}_{1}_{2}",
-                                 item,
-                                 author,
-                                 now.ToString("yyyy.MM.dd.") + groupIdHours);
+            return $"{item}_{author}_{time}";
         }
+        
         if (action == -1)
         {
-            // groupId = {item}_{author}_{date}_{rootId}_{action}
-            return string.Format("{0}_{1}_{2}_{3}",
-                                 item,
-                                 author,
-                                 now.ToString("yyyy.MM.dd.") + groupIdHours,
-                                 rootId);
+            return $"{item}_{author}_{time}_{rootId}";
         }
-
-        // groupId = {item}_{author}_{date}_{rootId}_{action}
-        return string.Format("{0}_{1}_{2}_{3}_{4}",
-                             item,
-                             author,
-                             now.ToString("yyyy.MM.dd.") + groupIdHours,
-                             rootId,
-                             action);
+        
+        return $"{item}_{author}_{time}_{rootId}_{action}";
     }
 }

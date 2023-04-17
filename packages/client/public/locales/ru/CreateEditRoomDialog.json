@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Предварительно необходимо подключить соответствующую услугу в разделе «Интеграция». В противном случае подключение будет невозможно.",
   "ThirdPartyStoragePermanentSettingDescription": "Файлы хранятся в стороннем хранилище {{thirdpartyTitle}} в папке \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Для подключения стороннего хранилища необходимо добавить соответствующий сервис в разделе «Интеграция» настроек DocSpace. Свяжитесь с владельцем или администратором DocSpace, чтобы включить интеграцию.",
-  "ThirdPartyStorageTitle": "Стороннее хранилище",
   "ViewOnlyRoomDescription": "Предоставляйте доступ к любым готовым документам, отчетам, документации и другим файлам для просмотра.",
   "ViewOnlyRoomTitle": "Комната для просмотра"
 }

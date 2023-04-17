@@ -6,11 +6,14 @@
   "EnableUserButton": "Activează",
   "InviteLinkTitle": "Link-ul de invitație",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Modificare nume",
   "PasswordChangeButton": "Schimbare parola",
   "PendingTitle": "În așteptare",
   "RemoveData": "Șterge datele cu caracter personal",
+  "ResetAuth": "Reinițializarea autentificării",
   "SendInviteAgain": "Trimiteți invitația din nou",
   "SuccessChangeUserStatus": "Statutul utilizatorului a fost schimbat cu succes",
   "SuccessDeletePersonalData": "Datele cu caracter personal au fost șterse cu succes",
-  "SuccessSentInvitation": "Invitația a fost trimisă cu succes"
+  "SuccessSentInvitation": "Invitația a fost trimisă cu succes",
+  "SuccessSentMultipleInvitatios": "Invitaţiile au fost trimise cu succes"
 }

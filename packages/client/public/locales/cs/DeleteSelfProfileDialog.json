@@ -1,4 +1,5 @@
 {
+  "DeleteOwnerRestrictionText": "Pokud jste vlastníkem tohoto prostoru DocSpace, musíte před odstraněním svého účtu převést vlastnictví na jiného uživatele. Chcete-li pokračovat, zvolte nového vlastníka.",
   "DeleteProfileInfo": "Odeslat pokyny ke smazání profilu na e-mailovou adresu",
   "DeleteProfileTitle": "Dialogové okno pro odstranění profilu"
 }

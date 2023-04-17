@@ -33,6 +33,7 @@ public class UsersModule : FeedModule
 {
     private readonly UserManager _userManager;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
+    private readonly TenantUtil _tenantUtil;
 
     private const string UserItem = Constants.UserItem;
 
@@ -40,11 +41,13 @@ public class UsersModule : FeedModule
         TenantManager tenantManager,
         WebItemSecurity webItemSecurity,
         UserManager userManager,
-        DisplayUserSettingsHelper displayUserSettingsHelper) 
+        DisplayUserSettingsHelper displayUserSettingsHelper,
+        TenantUtil tenantUtil) 
         : base(tenantManager, webItemSecurity)
     {
         _userManager = userManager;
         _displayUserSettingsHelper = displayUserSettingsHelper;
+        _tenantUtil = tenantUtil;
     }
 
     public override string Name => Constants.UsersModule;
@@ -68,7 +71,7 @@ public class UsersModule : FeedModule
     {
         var fullName = _displayUserSettingsHelper.GetFullUserName(u);
 
-        var feed = new Feed.Aggregator.Feed(u.Id, u.LastModified, true)
+        var feed = new Feed.Aggregator.Feed(u.Id, _tenantUtil.DateTimeToUtc(u.LastModified), true)
         {
             Item = UserItem,
             ItemId = u.Id.ToString(),

@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Trường mã xác nhận không được để trống</value>
@@ -121,6 +121,9 @@
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Kích thước file hình ảnh quá lớn</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Truy cập vào cổng này bị giới hạn</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Gói của bạn không hỗ trợ tùy chọn này</value>
   </data>
@@ -170,11 +173,122 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Liên kết để xác nhận tài khoản của bạn đã được gửi tới email chỉ định</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Họ</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Họ</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Lỗi kết nối</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Không thể tạo người dùng, dữ liệu nhận được không chính xác.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Server không thể nhận cài đặt.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Server không thể lưu cài đặt.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Tên đăng nhập hoặc mật khẩu không chính xác.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>Không tìm thấy tên miền LDAP.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Không tìm thấy nhóm nào.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Giá trị Lọc Người dùng không hợp lệ.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Lỗi không xác định.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Không tìm thấy người dùng.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Không thể gán Thuộc tính nhóm cho một hoặc nhiều nhóm.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Lọc Nhóm không chính xác.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Không thể gán Thuộc tính Tên Nhóm cho một hoặc nhiều nhóm.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Không thể gán Thuộc tính Đăng nhập cho một hoặc nhiều người dùng.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Không thể kết nối với LDAP server. Vui lòng kiểm tra tính chính xác của địa chỉ server và số cổng.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Không thể gán Thuộc tính Người dùng cho một hoặc nhiều người dùng.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Lỗi nội bộ server.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Điều chỉnh người dùng LDAP thành người dùng cổng thông thường</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>đang thêm người dùng</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Xác minh chứng chỉ</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Kiểm tra thiết lập hỗ trợ LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Ngắt kết nối LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Đang truy xuất danh sách nhóm từ LDAP server</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Đang truy xuất danh sách người dùng từ LDAP server</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Đang tải thông tin cơ bản về LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>đang xóa người dùng</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Đang loại bỏ các nhóm đã lỗi thời được tải qua LDAP trước đó</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Đang loại bỏ hồ sơ người dùng đã lỗi thời được tải qua LDAP trước đó</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Đang lưu nhóm</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Đang lưu cài đặt</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Đang lưu người dùng</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Đang đồng bộ người dùng</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Yêu cầu hình thức xác thực bảo mật hơn. Vui lòng sử dụng kết nối được mã hóa hoặc cho phép xác thực cơ bản trên server.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Đã đạt đến giới hạn số người dùng của gói hiện tại</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>Server LDAP hiện tại không được hỗ trợ StartTLS.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Quá nhiều hoạt động từ LDAP.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Không thể lấy ID duy nhất cho đối tượng người dùng/nhóm. Theo mặc định, hệ thống sẽ cố gắng khớp với một trong những cách nhận dạng sau: entryUUID, nsuniqueid, GUID, objectSid. Nếu không có thuộc tính nào tương ứng với LDAP server của bạn, vui lòng chỉ rõ thuộc tính cần thiết trong cài đặt ldap.unique.id của file web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Giấy phép không đúng</value>
@@ -202,6 +316,9 @@
   </data>
   <data name="Owner" xml:space="preserve">
     <value>Người sở hữu</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Tên Cổng</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Truy cập Cổng</value>

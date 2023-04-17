@@ -213,7 +213,9 @@ const StyledDeleteIcon = styled(DeleteIcon)`
 
 StyledDeleteIcon.defaultProps = { theme: Base };
 
-const StyledHelpButton = styled(HelpButton)``;
+const StyledHelpButton = styled(HelpButton)`
+  margin-right: 8px;
+`;
 
 const StyledButtons = styled(Box)`
   padding: 16px 16px 16px 16px;
@@ -224,7 +226,7 @@ const StyledButtons = styled(Box)`
   position: absolute;
   bottom: 0px;
   width: 100%;
-
+  background: ${(props) => props.theme.filesPanels.sharing.backgroundButtons};
   border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 `;
 
@@ -237,10 +239,6 @@ StyledButtons.defaultProps = { theme: Base };
 const StyledToggleButton = styled(ToggleButton)`
   right: 8px;
   margin-top: -4px;
-`;
-
-const StyledText = styled(Text)`
-  flex-basis: 72%;
 `;
 
 export {
@@ -265,6 +263,5 @@ export {
   ScrollList,
   StyledAccessSelector,
   StyledToggleButton,
-  StyledText,
   StyledDescription,
 };

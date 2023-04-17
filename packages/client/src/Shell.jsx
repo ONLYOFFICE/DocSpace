@@ -31,6 +31,7 @@ import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
 import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
 import { IndexedDBStores } from "@docspace/common/constants";
+import queryString from "query-string";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
@@ -71,6 +72,15 @@ const Error401Route = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const ErrorUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <ErrorUnavailable {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const FilesRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -198,6 +208,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     socketHelper.emit({
       command: "subscribe",
       data: { roomParts: "backup-restore" },
+    });
+    socketHelper.emit({
+      command: "subscribe",
+      data: { roomParts: "quota" },
     });
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
@@ -507,7 +521,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               />
               <PublicRoute exact path={"/wizard"} component={WizardRoute} />
               <PrivateRoute path={"/about"} component={AboutRoute} />
-              <Route path={"/confirm"} component={ConfirmRoute} />
+              <Route path={"/confirm/:type"} component={ConfirmRoute} />
+              <Route
+                path={["/confirm", "/confirm.aspx"]}
+                component={({ location }) => {
+                  const type = queryString.parse(location.search).type;
+
+                  return (
+                    <Redirect
+                      to={{
+                        pathname: `/confirm/${type}`,
+                        search: location.search,
+                        state: { from: location },
+                      }}
+                    />
+                  );
+                }}
+              />
               <PrivateRoute
                 restricted
                 path={"/portal-settings"}
@@ -521,6 +551,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-unavailable"}
                 component={PortalUnavailableRoute}
               />
+              <Route path={"/unavailable"} component={ErrorUnavailableRoute} />
               <PrivateRoute path={"/error401"} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
             </Switch>

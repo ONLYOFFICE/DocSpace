@@ -3,5 +3,6 @@
   "Error403Text": "Przepraszamy, odmówiono dostępu.",
   "Error404Text": "Przepraszamy, nie znaleziono zasobu.",
   "ErrorEmptyResponse": "Pusta odpowiedź",
-  "ErrorOfflineText": "Brak połączenia z Internetem"
+  "ErrorOfflineText": "Brak połączenia z Internetem",
+  "ErrorUnavailableText": "Oprogramowanie DocSpace jest niedostępne"
 }

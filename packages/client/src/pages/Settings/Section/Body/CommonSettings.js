@@ -83,6 +83,7 @@ const PersonalSettings = ({
     [setIsLoadingRecent, setRecentSetting]
   );
 
+  const thumbnailsSizeLabel = "Thumbnails 1280x720";
   return (
     <StyledSettings
       showTitle={showTitle}
@@ -96,7 +97,7 @@ const PersonalSettings = ({
         )}
         <ToggleButton
           className="toggle-btn"
-          label={"Thumbnails 1280x720"}
+          label={thumbnailsSizeLabel}
           onChange={onChangeThumbnailsSize}
           isChecked={thumbnails1280x720}
           style={{ display: "none" }}

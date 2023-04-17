@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Threading.Channels;
-
 namespace ASC.Files.Service;
 public class Startup : BaseWorkerStartup
 {
@@ -67,11 +65,11 @@ public class Startup : BaseWorkerStartup
 
         services.AddHostedService<FeedCleanerService>();
         DIHelper.TryAdd<FeedCleanerService>();
-         
-        services.AddActivePassiveHostedService<FileConverterService<int>>();
+
+        services.AddActivePassiveHostedService<FileConverterService<int>>(DIHelper);
         DIHelper.TryAdd<FileConverterService<int>>();
 
-        services.AddActivePassiveHostedService<FileConverterService<string>>();
+        services.AddActivePassiveHostedService<FileConverterService<string>>(DIHelper);
         DIHelper.TryAdd<FileConverterService<string>>();
 
         services.AddHostedService<ThumbnailBuilderService>();
@@ -92,7 +90,7 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<TenantManager>();
         DIHelper.TryAdd<UserManager>();
         DIHelper.TryAdd<SocketServiceClient>();
-        DIHelper.TryAdd<FileStorageService<int>>();
+        DIHelper.TryAdd<FileStorageService>();
         DIHelper.TryAdd<Builder<int>>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
@@ -113,6 +111,6 @@ public class Startup : BaseWorkerStartup
         services.AddSingleton(Channel.CreateUnbounded<FileData<int>>());
         services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Reader);
         services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Writer);
-    }
+        }
 
-}
+    }

@@ -36,8 +36,8 @@
   "devDependencies": {
     "auto-changelog": "file:./packages/auto-changelog-2.3.1.tgz",
     "he": "^1.2.0",
-    "shx": "^0.3.3",
-    "terser": "^5.8.0"
+    "shx": "^0.3.4",
+    "terser": "^5.16.6"
   },
   "packageManager": "yarn@3.2.4"
 }

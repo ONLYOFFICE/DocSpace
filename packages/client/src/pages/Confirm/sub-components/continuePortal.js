@@ -48,13 +48,15 @@ const ContinuePortal = (props) => {
 
           <FormWrapper>
             {isReactivate ? (
-              <Trans t={t} i18nKey="SuccessReactivate" ns="Confirm">
-                Your account has been successfully reactivated. In 10 seconds
-                you will be redirected to the
-                <Link isHovered href="/">
-                  portal
-                </Link>
-              </Trans>
+              <Text>
+                <Trans t={t} i18nKey="SuccessReactivate" ns="Confirm">
+                  Your account has been successfully reactivated. In 10 seconds
+                  you will be redirected to the
+                  <Link isHovered href="/">
+                    portal
+                  </Link>
+                </Trans>
+              </Text>
             ) : (
               <>
                 <Text className="subtitle">{t("PortalContinueTitle")}</Text>

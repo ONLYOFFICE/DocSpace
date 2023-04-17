@@ -1,0 +1,22 @@
+{
+  "Ascending": "Rosnąco",
+  "CopyWindowCode": "Skopiuj kod osadzania okna",
+  "DataDisplay": "Ustawienia wyświetlania danych",
+  "Descending": "Malejąco",
+  "Destroy": "Zniszczyć",
+  "EnterCount": "Wpisz liczbę",
+  "EnterHeight": "Wprowadź wysokość",
+  "EnterId": "Wprowadź identyfikator",
+  "EnterPage": "Wprowadź numer strony",
+  "EnterWidth": "Wprowadź szerokość",
+  "FolderId": "Identyfikator folderu",
+  "FrameId": "Identyfikator ramki",
+  "Header": "Nagłówek",
+  "ItemsCount": "Liczba przedmiotów",
+  "JavascriptSdk": "SDK JavaScript",
+  "Menu": "Menu",
+  "Page": "Strona",
+  "SearchTerm": "Szukany termin",
+  "SortOrder": "Kolejność sortowania",
+  "WindowParameters": "Parametry okna"
+}

@@ -1,4 +1,5 @@
 {
+  "AdditionalSections": "Dodatočné sekcie",
   "ConnectEmpty": "Nič tu nie je",
   "DisplayFavorites": "Zobraziť obľúbené položky",
   "DisplayNotification": "Zobraziť upozornenie pri presúvaní položiek do koša",
@@ -8,5 +9,8 @@
   "KeepIntermediateVersion": "Pri úprave ponechať priebežné verzie",
   "OriginalCopy": "Uložte kópiu súboru aj v pôvodnom formáte",
   "StoringFileVersion": "Ukladanie verzií súborov",
-  "UpdateOrCreate": "Aktualizujte verziu súboru pre existujúci súbor s rovnakým názvom. V opačnom prípade sa vytvorí kópia súboru."
+  "ThirdPartyAccounts": "Účty tretej strany",
+  "ThirdPartyBtn": "Povoliť pripojenie úložísk od tretích strán",
+  "UpdateOrCreate": "Aktualizujte verziu súboru pre existujúci súbor s rovnakým názvom. V opačnom prípade sa vytvorí kópia súboru.",
+  "UploadPluginsHere": "Tu nahrajte pluginy"
 }

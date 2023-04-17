@@ -1,4 +1,5 @@
 {
+  "DisconnectCloudMessage": "Ali ste prepričani, da želite odstraniti {{service}}? To na noben način ne bo vplivalo na vaš račun {{account}}.",
   "DisconnectCloudTitle": "Prekini povezavo z oblakom",
   "SuccessDeleteThirdParty": "Tretja oseba {{service}} je izbrisana"
 }

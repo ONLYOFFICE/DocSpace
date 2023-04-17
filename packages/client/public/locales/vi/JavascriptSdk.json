@@ -1,0 +1,22 @@
+{
+  "Ascending": "Tăng dần",
+  "CopyWindowCode": "Sao chép mã nhúng cửa sổ",
+  "DataDisplay": "Cài đặt hiển thị dữ liệu",
+  "Descending": "Giảm dần",
+  "Destroy": "Hủy hoại",
+  "EnterCount": "Nhập số lượng",
+  "EnterHeight": "Nhập chiều cao",
+  "EnterId": "Nhập ID",
+  "EnterPage": "Nhập số trang",
+  "EnterWidth": "Nhập chiều rộng",
+  "FolderId": "ID thư mục",
+  "FrameId": "Id khung",
+  "Header": "Tiêu đề",
+  "ItemsCount": "Số lượng mặt hàng",
+  "JavascriptSdk": "Sdk Javascript",
+  "Menu": "Thực đơn",
+  "Page": "Trắng",
+  "SearchTerm": "Cụm từ tìm kiếm",
+  "SortOrder": "Thứ tự sắp xếp",
+  "WindowParameters": "Thông số cửa sổ"
+}

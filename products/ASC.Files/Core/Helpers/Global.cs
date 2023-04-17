@@ -337,13 +337,13 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderProjectsAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderProjectsAsync(daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderProjectsAsync(daoFactory));
     }
 
     internal static readonly ConcurrentDictionary<string, int> DocSpaceFolderCache =
         new ConcurrentDictionary<string, int>();
 
-    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderVirtualRoomsAsync(IDaoFactory daoFactory, bool createIfNotExist = true)
     {
         if (_coreBaseSettings.DisableDocSpace)
         {
@@ -352,19 +352,19 @@ public class GlobalFolder
 
         var key = $"vrooms/{_tenantManager.GetCurrentTenant().Id}";
 
-        if (!DocSpaceFolderCache.TryGetValue(key, out var result))
+        if (DocSpaceFolderCache.TryGetValue(key, out var result))
         {
-            result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(true);
+            return result;
+        }
 
+        result = await daoFactory.GetFolderDao<int>().GetFolderIDVirtualRooms(createIfNotExist);
+
+        if (result != default)
+        {
             DocSpaceFolderCache[key] = result;
         }
 
         return result;
-    }
-
-    public async ValueTask<T> GetFolderVirtualRoomsAsync<T>(IDaoFactory daoFactory)
-    {
-        return (T)Convert.ChangeType(await GetFolderVirtualRoomsAsync(daoFactory), typeof(T));
     }
 
     public async ValueTask<int> GetFolderArchiveAsync(IDaoFactory daoFactory)
@@ -386,18 +386,13 @@ public class GlobalFolder
         return result;
     }
 
-    public async ValueTask<T> GetFolderArchiveAsync<T>(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderArchiveAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderArchiveAsync(daoFactory), typeof(T));
+        return await GetFolderArchiveAsync(daoFactory);
     }
 
     internal static readonly ConcurrentDictionary<string, Lazy<int>> UserRootFolderCache =
         new ConcurrentDictionary<string, Lazy<int>>(); /*Use SYNCHRONIZED for cross thread blocks*/
-
-    public T GetFolderMy<T>(FileMarker fileMarker, IDaoFactory daoFactory)
-    {
-        return (T)Convert.ChangeType(GetFolderMy(fileMarker, daoFactory), typeof(T));
-    }
 
     public int GetFolderMy(FileMarker fileMarker, IDaoFactory daoFactory)
     {
@@ -411,9 +406,9 @@ public class GlobalFolder
             return default;
         }
 
-        var cacheKey = string.Format("my/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
+        var cacheKey = $"my/{_tenantManager.GetCurrentTenant().Id}/{_authContext.CurrentAccount.ID}";
 
-        var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, true).Result));
+        var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProcessFirstVisitAsync(daoFactory, true).Result));
 
         return myFolderId.Value;
     }
@@ -447,7 +442,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderCommonAsync<T>(FileMarker fileMarker, IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderCommonAsync(fileMarker, daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderCommonAsync(fileMarker, daoFactory));
     }
 
     public async ValueTask<int> GetFolderCommonAsync(FileMarker fileMarker, IDaoFactory daoFactory)
@@ -457,14 +452,17 @@ public class GlobalFolder
             return default;
         }
 
-        if (!CommonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
+        if (CommonFolderCache.TryGetValue(_tenantManager.GetCurrentTenant().Id, out var commonFolderId))
         {
-            commonFolderId = await GetFolderIdAndProccessFirstVisitAsync(fileMarker, daoFactory, false);
+            return commonFolderId;
+        }
+
+        commonFolderId = await GetFolderIdAndProcessFirstVisitAsync(daoFactory, false);
+        
             if (!Equals(commonFolderId, 0))
             {
                 CommonFolderCache[_tenantManager.GetCurrentTenant().Id] = commonFolderId;
             }
-        }
 
         return commonFolderId;
     }
@@ -499,7 +497,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderShareAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderShareAsync(daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderShareAsync(daoFactory));
     }
 
     internal static readonly IDictionary<int, int> RecentFolderCache =
@@ -584,7 +582,7 @@ public class GlobalFolder
 
     public async ValueTask<T> GetFolderPrivacyAsync<T>(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderPrivacyAsync(daoFactory), typeof(T));
+        return IdConverter.Convert<T>(await GetFolderPrivacyAsync(daoFactory));
     }
 
     public async ValueTask<int> GetFolderPrivacyAsync(IDaoFactory daoFactory)
@@ -619,27 +617,26 @@ public class GlobalFolder
     internal static readonly IDictionary<string, object> TrashFolderCache =
         new ConcurrentDictionary<string, object>(); /*Use SYNCHRONIZED for cross thread blocks*/
 
-    public async Task<T> GetFolderTrashAsync<T>(IDaoFactory daoFactory)
+    public async ValueTask<int> GetFolderTrashAsync(IDaoFactory daoFactory)
     {
-        return (T)Convert.ChangeType(await GetFolderTrashAsync(daoFactory), typeof(T));
-    }
-
-    public async ValueTask<object> GetFolderTrashAsync(IDaoFactory daoFactory)
-    {
+        var id = 0;
         if (IsOutsider)
         {
-            return null;
+            return id;
         }
 
         var cacheKey = string.Format("trash/{0}/{1}", _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount.ID);
-
         if (!TrashFolderCache.TryGetValue(cacheKey, out var trashFolderId))
         {
-            trashFolderId = _authContext.IsAuthenticated ? await daoFactory.GetFolderDao<int>().GetFolderIDTrashAsync(true) : 0;
-            TrashFolderCache[cacheKey] = trashFolderId;
+            id = _authContext.IsAuthenticated ? await daoFactory.GetFolderDao<int>().GetFolderIDTrashAsync(true) : 0;
+            TrashFolderCache[cacheKey] = id;
+        }
+        else
+        {
+            id = (int)trashFolderId;
         }
 
-        return trashFolderId;
+        return id;
     }
 
     protected internal void SetFolderTrash(object value)
@@ -648,99 +645,142 @@ public class GlobalFolder
         TrashFolderCache.Remove(cacheKey);
     }
 
-    private async Task<int> GetFolderIdAndProccessFirstVisitAsync(FileMarker fileMarker, IDaoFactory daoFactory, bool my)
+    private async Task<int> GetFolderIdAndProcessFirstVisitAsync(IDaoFactory daoFactory, bool isMy)
     {
         var folderDao = (FolderDao)daoFactory.GetFolderDao<int>();
-        var fileDao = (FileDao)daoFactory.GetFileDao<int>();
 
-        var id = my ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
+        var id = isMy ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
 
-        if (Equals(id, 0)) //TODO: think about 'null'
+        if (!Equals(id, 0))
         {
-            id = my ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
-
-            //Copy start document
-            if (_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
-            {
-                try
-                {
-                    var storeTemplate = _globalStore.GetStoreTemplate();
-
-                    var culture = my ? _userManager.GetUsers(_authContext.CurrentAccount.ID).GetCulture() : _tenantManager.GetCurrentTenant().GetCulture();
-                    var path = FileConstant.StartDocPath + culture + "/";
-
-                    if (!await storeTemplate.IsDirectoryAsync(path))
-                    {
-                        path = FileConstant.StartDocPath + "en-US/";
-                    }
-
-                    path += my ? "my/" : "corporate/";
-
-                    await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, id, path, storeTemplate);
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorGetFolderIdAndProccessFirstVisit(ex);
-                }
-            }
+            return id;
         }
 
+        id = isMy ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
+        
+        if (!_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
+        {
+            return id;
+        }
+        
+        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var userId = _authContext.CurrentAccount.ID;
+        
+        _ = Task.Run(() => CreateSampleDocumentsAsync(_serviceProvider, tenantId, userId, id, isMy).GetAwaiter().GetResult());
+        
         return id;
     }
-
-    private async Task SaveStartDocumentAsync(FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, int folderId, string path, IDataStore storeTemplate)
+    
+    private static async Task CreateSampleDocumentsAsync(IServiceProvider serviceProvider, int tenantId, Guid userId, int folderId, bool my)
     {
-        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
-        foreach (var file in files)
+        await using var scope = serviceProvider.CreateAsyncScope();
+        var logger = scope.ServiceProvider.GetRequiredService<ILoggerProvider>().CreateLogger("ASC.Files");
+
+        try
         {
-            await SaveFileAsync(fileMarker, fileDao, folderId, path + file, storeTemplate, files);
+            var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
+            var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
+
+            tenantManager.SetCurrentTenant(tenantId);
+            securityContext.AuthenticateMeWithoutCookie(userId);
+        
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
+            var culture = my ? userManager.GetUsers(userId).GetCulture() : tenantManager.GetCurrentTenant().GetCulture();
+
+            Thread.CurrentThread.CurrentCulture = culture;
+        
+            var globalStore = scope.ServiceProvider.GetRequiredService<GlobalStore>();
+            var storeTemplate = globalStore.GetStoreTemplate();
+            
+            var path = FileConstant.StartDocPath + culture + "/";
+            
+            if (!await storeTemplate.IsDirectoryAsync(path))
+            {
+                path = FileConstant.StartDocPath + "en-US/";
+            }
+        
+            path += my ? "my/" : "corporate/";
+
+            var fileMarker = scope.ServiceProvider.GetRequiredService<FileMarker>();
+            var fileDao = (FileDao)scope.ServiceProvider.GetRequiredService<IFileDao<int>>();
+            var folderDao = (FolderDao)scope.ServiceProvider.GetRequiredService<IFolderDao<int>>();
+            var socketManager = scope.ServiceProvider.GetRequiredService<SocketManager>();
+
+            await SaveSampleDocumentsAsync(scope.ServiceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path, storeTemplate, logger);
+        }
+        catch (Exception e)
+        {
+            logger.ErrorCreateSampleDocuments(e);
+        }
+    }
+    
+    private static async Task SaveSampleDocumentsAsync(IServiceProvider serviceProvider, FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, SocketManager socketManager, 
+        int folderId, string path, IDataStore storeTemplate, ILogger logger)
+    { 
+        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false)
+            .Where(f => FileUtility.GetFileTypeByFileName(f) is not (FileType.Audio or FileType.Video))
+            .ToListAsync();
+        
+        foreach (var file in files) 
+        {
+            try
+            {
+                var filePath = path + file; 
+                var fileName = Path.GetFileName(filePath);
+            
+                foreach (var ext in Enum.GetValues<ThumbnailExtension>()) 
+                { 
+                    if (FileUtility.GetFileExtension(filePath) == "." + ext
+                        && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
+                    {
+                        return;
+                    }
+                }
+
+                var newFile = serviceProvider.GetRequiredService<File<int>>();
+
+                newFile.Title = fileName;
+                newFile.ParentId = folderId;
+                newFile.Comment = FilesCommonResource.CommentCreate;
+
+                await using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
+                {
+                    newFile.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync("", filePath);
+                    newFile = await fileDao.SaveFileAsync(newFile, stream, false);
+                }
+
+                await fileMarker.MarkAsNewAsync(newFile);
+                await socketManager.CreateFileAsync(newFile);
+            }
+            catch (Exception e)
+            {
+                logger.ErrorSaveSampleFile(e);
+            }
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
         {
-            var folder = _serviceProvider.GetService<Folder<int>>();
-            folder.Title = folderName;
-            folder.ParentId = folderId;
+            try
+            {
+                var folder = serviceProvider.GetRequiredService<Folder<int>>();
+                folder.Title = folderName;
+                folder.ParentId = folderId;
 
-            var subFolderId = await folderDao.SaveFolderAsync(folder);
-
-            await SaveStartDocumentAsync(fileMarker, folderDao, fileDao, subFolderId, path + folderName + "/", storeTemplate);
+                var subFolderId = await folderDao.SaveFolderAsync(folder);
+                    
+                var subFolder = await folderDao.GetFolderAsync(subFolderId);
+                await socketManager.CreateFolderAsync(subFolder);
+                    
+                await SaveSampleDocumentsAsync(serviceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path + folderName + "/", storeTemplate, logger);
+            }
+            catch (Exception e)
+            {
+                logger.ErrorSaveSampleFolder(e);
+            }
         }
     }
 
-    private async Task SaveFileAsync(FileMarker fileMarker, FileDao fileDao, int folder, string filePath, IDataStore storeTemp, IEnumerable<string> files)
-    {
-        try
-        {
-            var fileName = Path.GetFileName(filePath);
-            foreach (var ext in Enum.GetValues<ThumbnailExtension>())
-            {
-                if (FileUtility.GetFileExtension(filePath) == "." + ext
-                    && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
-                    return;
-            }
-
-            var file = _serviceProvider.GetService<File<int>>();
-
-            file.Title = fileName;
-            file.ParentId = folder;
-            file.Comment = FilesCommonResource.CommentCreate;
-
-            using (var stream = await storeTemp.GetReadStreamAsync("", filePath))
-            {
-                file.ContentLength = stream.CanSeek ? stream.Length : await storeTemp.GetFileSizeAsync("", filePath);
-                file = await fileDao.SaveFileAsync(file, stream, false);
-            }
-
-            await fileMarker.MarkAsNewAsync(file);
-        }
-        catch (Exception ex)
-        {
-            _logger.ErrorSaveFile(ex);
-        }
-    }
-
-    public bool IsOutsider => _userManager.IsOutsider(_authContext.CurrentAccount.ID);
+    private bool IsOutsider => _userManager.IsOutsider(_authContext.CurrentAccount.ID);
 }
 
 [Scope]
@@ -769,47 +809,37 @@ public class GlobalFolderHelper
 
     public T GetFolderMy<T>()
     {
-        return (T)Convert.ChangeType(FolderMy, typeof(T));
+        return IdConverter.Convert<T>(FolderMy);
     }
 
     public async ValueTask<T> GetFolderCommonAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderCommonAsync, typeof(T));
+        return IdConverter.Convert<T>(await FolderCommonAsync);
     }
 
     public async ValueTask<T> GetFolderProjectsAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderProjectsAsync, typeof(T));
-    }
-
-    public T GetFolderTrash<T>()
-    {
-        return (T)Convert.ChangeType(FolderTrash, typeof(T));
+        return IdConverter.Convert<T>(await FolderProjectsAsync);
     }
 
     public async ValueTask<T> GetFolderPrivacyAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderPrivacyAsync, typeof(T));
+        return IdConverter.Convert<T>(await FolderPrivacyAsync);
     }
 
-    public async ValueTask<T> GetFolderVirtualRooms<T>()
+    public async ValueTask<int> GetFolderVirtualRooms()
     {
-        return (T)Convert.ChangeType(await FolderVirtualRoomsAsync, typeof(T));
+        return await FolderVirtualRoomsAsync;
     }
 
-    public async ValueTask<T> GetFolderArchive<T>()
+    public async ValueTask<int> GetFolderArchive()
     {
-        return (T)Convert.ChangeType(await FolderArchiveAsync, typeof(T));
-    }
-
-    public void SetFolderMy<T>(T val)
-    {
-        _globalFolder.SetFolderMy(val);
+        return await FolderArchiveAsync;
     }
 
     public async ValueTask<T> GetFolderShareAsync<T>()
     {
-        return (T)Convert.ChangeType(await FolderShareAsync, typeof(T));
+        return IdConverter.Convert<T>(await FolderShareAsync);
     }
     public ValueTask<int> FolderShareAsync => _globalFolder.GetFolderShareAsync(_daoFactory);
 

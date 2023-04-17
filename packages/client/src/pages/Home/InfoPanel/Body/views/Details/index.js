@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -37,7 +37,7 @@ const Details = ({
     culture,
   });
 
-  useEffect(async () => {
+  const createThumbnailAction = useCallback(async () => {
     setItemProperties(detailsHelper.getPropertyList());
 
     if (
@@ -51,6 +51,10 @@ const Details = ({
       await createThumbnail(selection.id);
     }
   }, [selection]);
+
+  useEffect(() => {
+    createThumbnailAction();
+  }, [selection, createThumbnailAction]);
 
   const currentIcon =
     !selection.isArchive && selection?.logo?.large

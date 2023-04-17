@@ -15,6 +15,7 @@ import { login } from "@docspace/common/utils/loginUtils";
 import toastr from "@docspace/components/toast/toastr";
 import { thirdPartyLogin } from "@docspace/common/api/user";
 import { setWithCredentialsStatus } from "@docspace/common/api/client";
+import { isMobileOnly } from "react-device-detect";
 
 interface ILoginFormProps {
   isLoading: boolean;
@@ -101,8 +102,12 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     message && setErrorText(message);
     confirmedEmail && setIdentifier(confirmedEmail);
 
-    confirmedEmail &&
-      toastr.success(`${t("MessageEmailConfirmed")} ${t("MessageAuthorize")}`);
+    const messageEmailConfirmed = t("MessageEmailConfirmed");
+    const messageAuthorize = t("MessageAuthorize");
+
+    const text = `${messageEmailConfirmed} ${messageAuthorize}`;
+
+    confirmedEmail && toastr.success(text);
 
     focusInput();
 
@@ -308,10 +313,12 @@ const LoginForm: React.FC<ILoginFormProps> = ({
                       <HelpButton
                         id="login_remember-hint"
                         className="help-button"
+                        offsetRight={0}
                         helpButtonHeaderContent={t("CookieSettingsTitle")}
                         tooltipContent={
                           <Text fontSize="12px">{t("RememberHelper")}</Text>
                         }
+                        tooltipMaxWidth={isMobileOnly ? "240px" : "340px"}
                       />
                     )
                   }

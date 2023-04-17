@@ -32,8 +32,9 @@ const ExternalLinks = ({
   setInvitationLinks,
   isOwner,
   getInfo,
+  onChangeExternalLinksVisible,
+  externalLinksVisible,
 }) => {
-  const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
   const [activeLink, setActiveLink] = useState({});
 
@@ -54,12 +55,12 @@ const ExternalLinks = ({
     } else {
       link = shareLinks[0];
 
-      !linksVisible ? editLink() : disableLink();
+      !externalLinksVisible ? editLink() : disableLink();
     }
 
-    setLinksVisible(!linksVisible);
+    onChangeExternalLinksVisible(!externalLinksVisible);
 
-    if (!linksVisible && withCopy) copyLink(link?.shareLink);
+    if (!externalLinksVisible && withCopy) copyLink(link?.shareLink);
   };
 
   const disableLink = () => {
@@ -185,14 +186,17 @@ const ExternalLinks = ({
             </DropDown>
           </div>
         )}
-        <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
+        <StyledToggleButton
+          isChecked={externalLinksVisible}
+          onChange={toggleLinks}
+        />
       </StyledSubHeader>
       <StyledDescription>
         {roomId === -1
           ? t("InviteViaLinkDescriptionAccounts")
           : t("InviteViaLinkDescriptionRoom")}
       </StyledDescription>
-      {linksVisible && (
+      {externalLinksVisible && (
         <StyledInviteInputContainer key={activeLink.id}>
           <StyledInviteInput>
             <InputBlock

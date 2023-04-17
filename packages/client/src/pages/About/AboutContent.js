@@ -185,7 +185,7 @@ const AboutContent = (props) => {
 
         <div className="row">
           <Text className="address-title" fontSize="13px">
-            {t("AboutCompanyAddressTitle")}:{" "}
+            {t("Common:Address")}:{" "}
           </Text>
           <Text className="address-title select-el" fontSize="13px">
             {address}
@@ -236,7 +236,7 @@ const AboutContent = (props) => {
             href={site}
             enableUserSelect
           >
-            &nbsp;{site.replace(/^https?\:\/\//i, "")}
+            &nbsp;{site?.replace(/^https?\:\/\//i, "")}
           </ColorTheme>
         </div>
       </StyledAboutBody>

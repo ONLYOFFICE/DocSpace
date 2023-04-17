@@ -523,7 +523,7 @@ internal class ProviderAccountDao : IProviderDao
             }
 
             var box = _serviceProvider.GetService<BoxProviderInfo>();
-            box.ID = id;
+            box.ProviderId = id;
             box.CustomerTitle = providerTitle;
             box.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             box.ProviderKey = input.Provider;
@@ -546,7 +546,7 @@ internal class ProviderAccountDao : IProviderDao
             }
 
             var drop = _serviceProvider.GetService<DropboxProviderInfo>();
-            drop.ID = id;
+            drop.ProviderId = id;
             drop.CustomerTitle = providerTitle;
             drop.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             drop.ProviderKey = input.Provider;
@@ -569,7 +569,7 @@ internal class ProviderAccountDao : IProviderDao
             }
 
             var sh = _serviceProvider.GetService<SharePointProviderInfo>();
-            sh.ID = id;
+            sh.ProviderId = id;
             sh.CustomerTitle = providerTitle;
             sh.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             sh.ProviderKey = input.Provider;
@@ -592,7 +592,7 @@ internal class ProviderAccountDao : IProviderDao
             }
 
             var gd = _serviceProvider.GetService<GoogleDriveProviderInfo>();
-            gd.ID = id;
+            gd.ProviderId = id;
             gd.CustomerTitle = providerTitle;
             gd.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             gd.ProviderKey = input.Provider;
@@ -615,7 +615,7 @@ internal class ProviderAccountDao : IProviderDao
             }
 
             var od = _serviceProvider.GetService<OneDriveProviderInfo>();
-            od.ID = id;
+            od.ProviderId = id;
             od.CustomerTitle = providerTitle;
             od.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
             od.ProviderKey = input.Provider;
@@ -646,7 +646,7 @@ internal class ProviderAccountDao : IProviderDao
         }
 
         var sharpBoxProviderInfo = _serviceProvider.GetService<SharpBoxProviderInfo>();
-        sharpBoxProviderInfo.ID = id;
+        sharpBoxProviderInfo.ProviderId = id;
         sharpBoxProviderInfo.CustomerTitle = providerTitle;
         sharpBoxProviderInfo.Owner = owner == Guid.Empty ? _securityContext.CurrentAccount.ID : owner;
         sharpBoxProviderInfo.ProviderKey = input.Provider;

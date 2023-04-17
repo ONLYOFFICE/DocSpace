@@ -45,7 +45,7 @@ public class TenantManager
     internal CoreBaseSettings CoreBaseSettings { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
-    private readonly static object _lock = new object();
+    private static readonly object _lock = new object();
 
     static TenantManager()
     {
@@ -283,17 +283,17 @@ public class TenantManager
         return QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
     }
 
-    public TenantQuota GetCurrentTenantQuota()
+    public TenantQuota GetCurrentTenantQuota(bool refresh = false)
     {
-        return GetTenantQuota(GetCurrentTenant().Id);
+        return GetTenantQuota(GetCurrentTenant().Id, refresh);
     }
 
-    public TenantQuota GetTenantQuota(int tenant)
+    public TenantQuota GetTenantQuota(int tenant, bool refresh = false)
     {
         var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
         if (defaultQuota.Tenant != tenant && TariffService != null)
         {
-            var tariff = TariffService.GetTariff(tenant);
+            var tariff = TariffService.GetTariff(tenant, refresh: refresh);
 
             TenantQuota currentQuota = null;
             foreach (var tariffRow in tariff.Quotas)

@@ -1,0 +1,22 @@
+{
+  "Ascending": "Artan",
+  "CopyWindowCode": "Pəncərə yerləşdirmə kodunu kopyalayın",
+  "DataDisplay": "Məlumatların göstərilməsi parametrləri",
+  "Descending": "Azalan",
+  "Destroy": "Məhv etmək",
+  "EnterCount": "Sayını daxil edin",
+  "EnterHeight": "Hündürlüyü daxil edin",
+  "EnterId": "ID daxil edin",
+  "EnterPage": "Nömrə səhifəsini daxil edin",
+  "EnterWidth": "Genişliyi daxil edin",
+  "FolderId": "Qovluq id",
+  "FrameId": "Çərçivə id",
+  "Header": "Başlıq",
+  "ItemsCount": "Maddələr sayılır",
+  "JavascriptSdk": "Javascript SDK",
+  "Menu": "Menyu",
+  "Page": "Səhifə",
+  "SearchTerm": "Axtarış termini",
+  "SortOrder": "Sırala",
+  "WindowParameters": "Pəncərə parametrləri"
+}

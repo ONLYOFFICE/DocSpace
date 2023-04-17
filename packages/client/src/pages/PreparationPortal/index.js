@@ -23,13 +23,8 @@ let timerId = null,
   prevProgress;
 
 const PreparationPortal = (props) => {
-  const {
-    multiplicationFactor,
-    t,
-    withoutHeader,
-    style,
-    clearLocalStorage,
-  } = props;
+  const { multiplicationFactor, t, withoutHeader, style, clearLocalStorage } =
+    props;
 
   const [percent, setPercent] = useState(0);
   const [errorMessage, setErrorMessage] = useState("");
@@ -189,7 +184,7 @@ const PreparationPortal = (props) => {
       setErrorMessage(errorMessage(err));
     }
   };
-  useEffect(async () => {
+  useEffect(() => {
     setTimeout(() => {
       getRecoveryProgress();
     }, 4000);

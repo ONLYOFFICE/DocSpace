@@ -137,10 +137,6 @@ const LoginContainer = styled.div`
     @media ${tablet} {
       width: 100%;
     }
-    @media ${hugeMobile} {
-      margin: 32px 0 0 0;
-      width: 100%;
-    }
 
     .field-body {
       input,
