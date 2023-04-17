@@ -206,8 +206,113 @@
 $GreenButton
 
 *Забележка*: тази връзка е валидна само за 7 дни. Моля, завършете процеса на промяна на адреса на портала в рамките на този период.</value>
+</data>
+<data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Здравейте, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+*#* Работете с други потребители в стаята, в която сте поканени: *стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+*# Работете с файлове от различни формати*: текстови документи, електронни таблици, презентации, формуляри, PDF файлове, електронни книги, мултимедия.
+
+*# Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+*# Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data> 
+ <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Здравейте, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+*#* Работете с други потребители в стаята, в която сте поканени: *стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+*# Работете с файлове от различни формати*: текстови документи, електронни таблици, презентации, формуляри, PDF файлове, електронни книги, мултимедия.
+
+*# Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+*# Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data> 
+ <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Здравейте, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+*#* Работете с други потребители в стаята, в която сте поканени: *стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+*# Работете с файлове от различни формати*: текстови документи, електронни таблици, презентации, формуляри, PDF файлове, електронни книги, мултимедия.
+
+*# Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+*# Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+ <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+   <value>Здравейте, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+*#* Работете с други потребители в стаята, в която сте поканени: *стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+*# Работете с файлове от различни формати*: текстови документи, електронни таблици, презентации, формуляри, PDF файлове, електронни книги, мултимедия.
+
+*# Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+*# Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+   <value>Здравейте, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+*#* Работете с други потребители в стаята, в която сте поканени: *стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+*# Работете с файлове от различни формати*: текстови документи, електронни таблици, презентации, формуляри, PDF файлове, електронни книги, мултимедия.
+
+*# Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+*# Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
-  <data name="pattern_for_admin_notify" xml:space="preserve">
+    <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>Съобщение от портала "${__VirtualRootPath}":"${__VirtualRootPath}" Имейл: $UserEmail $Body</value>
   </data>
   <data name="pattern_join" xml:space="preserve">
@@ -389,6 +494,12 @@ $GreenButton
 
 ^Ако не искате да получавате известия за актуализации на потребителския профил, моля, управлявайте "настройките си за абонамент":"$RecipientSubscriptionConfigURL". ^</value>
   </data>
+   <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Ето какво е новото във вашия DocSpace за $Date
+
+#foreach($activity in $Activities)
+$activity
+  
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP тестово съобщение Това съобщение е генерирано автоматично за тестване на вашите SMTP настройки. Ако го преглеждате, това означава, че настройките са правилни и можете да ги използвате в портала си. С най-добри пожелания, Екипът на ONLYOFFICE</value>
   </data>
@@ -402,6 +513,47 @@ $GreenButton
   </data>
   <data name="subject_backup_created" xml:space="preserve">
     <value>${LetterLogoText}. ${__VirtualRootPath} архивът на портала е създаден</value>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; създаде нов документ: &lt;a href={1}&gt;{2}&lt;/a&gt; в стаята: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; добави нов коментар към версията на документа: &lt;a href={1}&gt;{2}&lt;/a&gt; в стаята: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; качи нов документ: &lt;a href={1}&gt;{2}&lt;/a&gt; в стаята: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; преименува стаята: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; създаде нова стая: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; беше премахнат от стаята: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; редактира документа: &lt;a href={1}&gt;{2}&lt;/a&gt; в стаята: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; изтри стаята: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; беше добавен към стаята: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; премести стаята: &lt;a href={1}&gt;{2}&lt;/a&gt; в архива - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; получи ролята на &lt;b&gt;{1}&lt;/b&gt; в стаята: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Добавен е нов потребител на DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; промени нивото на достъп за потребителите &lt;b&gt;{1}&lt;/b&gt; до &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace потребителя е актуализиран: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
   <data name="subject_change_password" xml:space="preserve">
     <value>Помощ за парола за ${LetterLogoText}</value>
@@ -418,7 +570,19 @@ $GreenButton
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Промяна на адреса на портала</value>
   </data>
-  <data name="subject_for_admin_notify" xml:space="preserve">
+ <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+ <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Съобщение на потребителя до администраторите</value>
   </data>
   <data name="subject_join" xml:space="preserve">
