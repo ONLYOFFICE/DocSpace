@@ -799,9 +799,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Cuota de espacio en disco excedida </value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Nombre de portal</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Acceso a portal</value>
   </data>
