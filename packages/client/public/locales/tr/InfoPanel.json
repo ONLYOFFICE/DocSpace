@@ -26,6 +26,7 @@
   "FeedUpdateUser": "{{role}} rolü atandı",
   "FileExtension": "Dosya uzantısı",
   "FilesEmptyScreenText": "Dosya ve klasör ayrıntılarını burada görebilirsiniz",
+  "HistoryEmptyScreenText": "Etkinlik geçmişi burada gösterilecek",
   "ItemsSelected": "Seçili öğeler",
   "LastModifiedBy": "Son Düzenleyen",
   "PendingInvitations": "Bekleyen davetler",

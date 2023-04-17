@@ -94,7 +94,7 @@ const ThirdPartyStorage = ({
     <StyledThirdPartyStorage>
       <ToggleParam
         id="shared_third-party-storage-toggle"
-        title={t("ThirdPartyStorageTitle")}
+        title={t("Common:ThirdPartyStorage")}
         description={t("ThirdPartyStorageDescription")}
         isChecked={storageLocation.isThirdparty}
         onCheckedChange={onChangeIsThirdparty}

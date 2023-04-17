@@ -16,7 +16,6 @@
   "LogoutBtn": "Izrakstīties",
   "LogoutDescription": "Piezīme. Visi aktīvie savienojumi, izņemot šo savienojumu, tiks izrakstīti, jo tas pašlaik tiek lietots.",
   "LogoutFrom": "Vai izrakstīties no {{platform}} {{browser}} ?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Norādījumi par e-pasta aktivizēšanu ir nosūtīti uz <strong>{{ email }}</strong> e-pasta adresi.",
   "MyProfile": "Mans profils",
   "ProviderSuccessfullyConnected": "Piegādātājs ir veiksmīgi savienots",
   "ProviderSuccessfullyDisconnected": "Piegādātājs ir veiksmīgi atvienots",

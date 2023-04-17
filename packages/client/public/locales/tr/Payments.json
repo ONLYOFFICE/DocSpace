@@ -26,7 +26,6 @@
   "Payer": "Ödeyen",
   "PayerDescription": "Bu kullanıcının ödeme detaylarına erişimi vardır ve kotayı ayarlayıp ödeme yapabilen tek kullanıcıdır. DocSpace sahibi ve ödeme yöneticisinin kendisi, Stripe müşteri portalını kullanarak ödeme yöneticisi rolünü yeniden atayabilir.",
   "PaymentOverdue": "Yeni kullanıcılar eklenemiyor.",
-  "PowerUserDescription": "Uzman kullanıcılar odada dosya oluşturabilir ve düzenleyebilirler fakat oda oluşturamaz, kullanıcıları yönetemez veya ayarlara erişemezler.",
   "PriceCalculation": "Fiyatını hesapla",
   "QuotaPaidUserLimitError": "Ücretli kullanıcı sınırına ulaşıldı. <1>Ödemeler</1>",
   "RenewSubscription": "{{planName}} planı aboneliğini yenile",

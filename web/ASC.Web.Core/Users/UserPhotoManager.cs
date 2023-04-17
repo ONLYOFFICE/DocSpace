@@ -122,28 +122,11 @@ public class UserPhotoManagerCache
 
             _cacheNotify.Subscribe((data) =>
             {
-                ConcurrentDictionary<CacheSize, string> removedValue;
-
-                if (_photofiles.TryRemove(new Guid(data.UserId), out removedValue))
+                if (_photofiles.TryRemove(new Guid(data.UserId), out _))
                 {
-                    using var scope = _serviceScopeFactory.CreateScope();
-                    scope.ServiceProvider.GetRequiredService<TenantManager>().SetCurrentTenant(data.TenantId);
-                    var storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
 
-                    var storage = storageFactory.GetStorage(data.TenantId, "userPhotos");
-
-                    try
-                    {
-                        storage.DeleteFilesAsync("", data.UserId + "*.*", false).Wait();
-                    }
-                    catch (Exception ex)
-                    {
-                        scope.ServiceProvider.GetRequiredService<ILogger<UserPhotoManagerCache>>().ErrorWithException("Trying remove and add photos in same time", ex);
-                    }
-
-
-                    SetCacheLoadedForTenant(false, data.TenantId);
                 }
+
             }, CacheNotifyAction.Remove);
         }
         catch (Exception)
@@ -219,9 +202,6 @@ public class UserPhotoManager
     private readonly UserPhotoManagerCache _userPhotoManagerCache;
     private readonly SettingsManager _settingsManager;
     private readonly ILogger<UserPhotoManager> _log;
-
-//    private Tenant _tenant;
-//    public Tenant Tenant { get { return _tenant ??= _tenantManager.GetCurrentTenant(); } }
 
     //note: using auto stop queue
     private readonly DistributedTaskQueue _resizeQueue;//TODO: configure
@@ -546,7 +526,7 @@ public class UserPhotoManager
         data = TryParseImage(data, -1, OriginalFotoSize, out _, out var width, out var height);
         _userManager.SaveUserPhoto(userID, data);
         SetUserPhotoThumbnailSettings(userID, width, height);
-        _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+     //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
     }
 
 
@@ -561,8 +541,7 @@ public class UserPhotoManager
         {
             _userManager.SaveUserPhoto(userID, data);
             SetUserPhotoThumbnailSettings(userID, width, height);
-            _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
-
+          // _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
         }
 
         var store = GetDataStore();

@@ -48,6 +48,7 @@ const CreateUserForm = (props) => {
     isDesktop,
     linkData,
     capabilities,
+    currentColorScheme,
   } = props;
   const inputRef = React.useRef(null);
 
@@ -445,7 +446,7 @@ const CreateUserForm = (props) => {
                       type="action"
                       fontSize="13px"
                       fontWeight="600"
-                      color="#3B72A7"
+                      color={currentColorScheme?.main?.accent}
                       className="more-label"
                       onClick={moreAuthOpen}
                     >
@@ -672,6 +673,7 @@ export default inject(({ auth }) => {
     defaultPage,
     getSettings,
     getPortalPasswordSettings,
+    currentColorScheme,
   } = settingsStore;
 
   return {
@@ -687,6 +689,7 @@ export default inject(({ auth }) => {
     thirdPartyLogin,
     providers,
     capabilities,
+    currentColorScheme,
   };
 })(
   withRouter(

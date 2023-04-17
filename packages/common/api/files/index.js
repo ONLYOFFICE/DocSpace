@@ -549,7 +549,7 @@ export function startUploadSession(
   const data = { fileName, fileSize, relativePath, encrypted, createOn };
   return request({
     method: "post",
-    url: `/files/${folderId}/upload/create_session.json`,
+    url: `/files/${folderId}/upload/create_session`,
     data,
   });
 }
@@ -575,7 +575,7 @@ export function checkFileConflicts(destFolderId, folderIds, fileIds) {
 
   return request({
     method: "get",
-    url: `/files/fileops/move.json?destFolderId=${destFolderId}${paramsString}`,
+    url: `/files/fileops/move?destFolderId=${destFolderId}${paramsString}`,
   });
 }
 
@@ -879,7 +879,7 @@ export function setRecentSetting(set) {
 export function hideConfirmConvert(save) {
   return request({
     method: "put",
-    url: "/files/hideconfirmconvert.json",
+    url: "/files/hideconfirmconvert",
     data: { save },
   });
 }

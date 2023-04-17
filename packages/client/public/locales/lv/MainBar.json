@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "Tūlīt tiks pārsniegti krātuves un administratoru/prasmīgo lietotāju ierobežojumi.",
   "StorageQuotaDescription": "Varat noņemt nevajadzīgos failus vai <1>{{clickHere}}</1>, lai atrastu savam DocSpace piemērotāku cenu plānu.",
   "StorageQuotaHeader": "Tūlīt tiks pārsniegts krātuves vietas apjoms: {{currentValue}} / {{maxValue}}",
-  "UserQuotaDescription": "<1>{{clickHere}}</1>, lai atrastu labāku cenu plānu savam portālam.",
+  "UserQuotaDescription": "<1>{{clickHere}}</1>, lai atrastu labāku cenu plānu savam DocSpace.",
   "UserQuotaHeader": "Tūlīt tiks pārsniegts administratoru/prasmīgo lietotāju skaits:{{currentValue}}/{{maxValue}}."
 }

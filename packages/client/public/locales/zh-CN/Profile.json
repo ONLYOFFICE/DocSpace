@@ -16,7 +16,6 @@
   "LogoutBtn": "注销",
   "LogoutDescription": "注意，由于此连接当前正在使用，故除此之外的所有活动连接都将被注销。",
   "LogoutFrom": "从 {{platform}} {{browser}} 中注销？",
-  "MessageEmailActivationInstuctionsSentOnEmail": "邮件激活指示已发送至<strong>{{ email }}</strong>邮件地址。",
   "MyProfile": "我的档案",
   "ProviderSuccessfullyConnected": "供应方成功连接",
   "ProviderSuccessfullyDisconnected": "供应方成功断开连接",

@@ -26,7 +26,7 @@ const EmptyFilterContainer = ({
 }) => {
   const subheadingText = t("EmptyFilterSubheadingText");
   const descriptionText = isRooms
-    ? t("EmptyFilterDescriptionTextRooms")
+    ? t("Common:SearchEmptyRoomsDescription")
     : t("EmptyFilterDescriptionText");
 
   const onResetFilter = () => {

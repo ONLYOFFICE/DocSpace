@@ -310,9 +310,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Eigenaar</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Portaalnaam</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portaaltoegang</value>
   </data>

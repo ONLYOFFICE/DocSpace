@@ -67,9 +67,7 @@ public class UserManager
     private readonly UserFormatter _userFormatter;
     private readonly QuotaSocketManager _quotaSocketManager;
     private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
-
-    private Tenant _tenant;
-    private Tenant Tenant => _tenant ??= _tenantManager.GetCurrentTenant();
+    private Tenant Tenant => _tenantManager.GetCurrentTenant();
 
     public UserManager()
     {
@@ -971,7 +969,7 @@ public class UserManager
         {
             return null;
         }
-        
+
         return new Group
         {
             Id = g.ID,

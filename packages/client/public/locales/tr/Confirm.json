@@ -7,7 +7,7 @@
   "DeleteProfileConfirmation": "Dikkat! Hesabınızı silmek üzeresiniz.",
   "DeleteProfileConfirmationInfo": "\"Hesabımı sil\"e tıklayarak <1>Gizlilik politikamızı kabul etmiş olursunuz.</1>",
   "DeleteProfileSuccessMessage": "Hesabınız başarıyla silindi.",
-  "DeleteProfileSuccessMessageInfo": "Hesabınızı ve onunla ilgili bilgileri silmekle alakalı daha fazla bilgi almak için Gizlilik politikamıza göz atın.",
+  "DeleteProfileSuccessMessageInfo": "Hesabınızı ve onunla ilgili bilgileri silmekle alakalı daha fazla bilgi almak için <1>Gizlilik politikamıza</1> göz atın.",
   "EmailAndPasswordCopiedToClipboard": "E-posta ve şifre panoya kopyalandı",
   "EnterAppCodeDescription": "Uygulamanızdan oluşturulan 6 haneli kodu girin. Eğer telefonunuza erişiminiz yoksa yedek kodları kullanın.",
   "EnterAppCodeTitle": "Kimlik doğrulama uygulamasından kodu girin",
