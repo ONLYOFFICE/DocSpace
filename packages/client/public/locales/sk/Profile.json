@@ -16,7 +16,6 @@
   "LogoutBtn": "Odhlásiť sa",
   "LogoutDescription": "Poznámka. Budú odhlásené všetky aktívne pripojenia okrem tohto pripojenia, keďže sa práve používa.",
   "LogoutFrom": "Odhlásiť sa z {{platform}} {{browser}}?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Pokyny na aktiváciu e-mailu boli odoslané na e-mail <strong>{{ email }}</strong>.",
   "MyProfile": "Môj profil",
   "ProviderSuccessfullyConnected": "Poskytovateľ bol úspešne pripojený",
   "ProviderSuccessfullyDisconnected": "Poskytovateľ bol úspešne odpojený",

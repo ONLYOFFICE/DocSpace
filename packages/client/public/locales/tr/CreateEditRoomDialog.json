@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Öncesinde, \"Entegrasyon\" bölümünden ilgili hizmeti bağlamanız gerekir. Aksi durumda bağlantı mümkün olmayacaktır.",
   "ThirdPartyStoragePermanentSettingDescription": "Dosyalar, \"{{thirdpartyFolderName}}\" klasöründe bir üçüncü taraf olan {{thirdpartyTitle}} deposunda depolanır.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Bir üçüncü taraf depolama birimine bağlanmak için ilgili hizmeti DocSpace ayarlarının Entegrasyon bölümünde eklemeniz gerekir. Entegrasyonu etkinleştirmek için DocSpace sahibi veya yöneticisi ile iletişime geçin.",
-  "ThirdPartyStorageTitle": "Üçüncü taraf depolama",
   "ViewOnlyRoomDescription": "Hazır belgeleri, raporları, belgeleri ve diğer dosyaları görüntülemek için paylaşın.",
   "ViewOnlyRoomTitle": "Sadece görüntüleme odası"
 }
