@@ -126,8 +126,8 @@ const HeaderComponent = ({
 }) => {
   const { t } = useTranslation("Common");
 
-  const navigation = React.useContext(UNSAFE_NavigationContext).navigator;
   const location = useLocation();
+
   //const isNavAvailable = mainModules.length > 0;
 
   // const onLogoClick = () => {
@@ -197,10 +197,10 @@ const HeaderComponent = ({
     location.pathname.includes("/form-gallery")
   );
   useEffect(() => {
-    return navigation.listen((locationListener) => {
-      setIsFormGallery(locationListener.pathname.includes("/form-gallery"));
-    });
-  }, [navigation]);
+    return () => {
+      setIsFormGallery(location.pathname.includes("/form-gallery"));
+    };
+  }, [location]);
 
   const logo = getLogoFromPath(
     !theme.isBase ? logoUrl?.path?.dark : logoUrl?.path?.light
