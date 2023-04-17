@@ -50,7 +50,6 @@ jobs:
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs
           sudo npm install -g json
           rename --version
-          sudo apt-cache show rename
  
 
       - name: BUILD package DEB
