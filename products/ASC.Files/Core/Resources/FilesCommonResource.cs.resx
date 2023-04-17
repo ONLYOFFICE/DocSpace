@@ -289,4 +289,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Soubor je odemčen</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Správce DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrátor místnosti</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Uživatel</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Prohlížející</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Komentátor</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Vyplňování formulářů</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Recenzent</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Spolupracovník</value>
+  </data>
 </root>
