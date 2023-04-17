@@ -64,6 +64,7 @@ jobs:
           cd build/install/deb
           pwd
           rename --version
+          apt-cache show rename | head
           # rename -f -v "s/product([^\/]*)$/$PRODUCT_11\$1/g" debian/* ../common/* ../common/logrotate
           rename -f -v "s/product([^\/]*)$/${PRODUCT_11}\$1/g" debian/* ../common/* ../common/logrotate/* 
           sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT_11}/g" {} ';'
