@@ -337,11 +337,19 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       itemsSelectionLength,
       itemsSelectionTitle,
+      refreshFiles,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
+
+    if (isProgressFinished !== prevProps.isProgressFinished) {
+      setTimeout(() => {
+        console.log("render refresh", refreshFiles());
+      }, 100);
+    }
+
     if (
       isProgressFinished &&
       itemsSelectionTitle &&
