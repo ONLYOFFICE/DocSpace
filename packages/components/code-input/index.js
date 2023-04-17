@@ -98,8 +98,11 @@ CodeInput.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   handleChange: PropTypes.func,
   isDisabled: PropTypes.bool,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
