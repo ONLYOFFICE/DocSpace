@@ -25,9 +25,9 @@ const StyledPeopleRow = styled(TableRow)`
     .table-container_cell {
       cursor: pointer;
       background: ${(props) =>
-    `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+        `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
       border-top: ${(props) =>
-    `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+        `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       margin-top: -1px;
     }
 
@@ -46,8 +46,8 @@ const StyledPeopleRow = styled(TableRow)`
     max-height: 48px;
 
     background: ${(props) =>
-    (props.checked || props.isActive) &&
-    `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
+      (props.checked || props.isActive) &&
+      `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
   }
 
   .table-container_row-checkbox-wrapper {
@@ -75,6 +75,15 @@ const StyledPeopleRow = styled(TableRow)`
   .table-cell_type,
   .table-cell_room {
     margin-left: -8px;
+  }
+
+  .type-combobox {
+    visibility: ${(props) => (props.hideColumns ? "hidden" : "visible")};
+    opacity: ${(props) => (props.hideColumns ? 0 : 1)};
+
+    & > div {
+      max-width: fit-content;
+    }
   }
 
   .type-combobox,
@@ -259,7 +268,7 @@ const PeopleTableRow = (props) => {
         }
         options={typesOptions}
         onSelect={onTypeChange}
-        scaled={false}
+        scaled
         size="content"
         displaySelectedOption
         modernView
@@ -318,12 +327,13 @@ const PeopleTableRow = (props) => {
     onContentRowClick && onContentRowClick(!isChecked, item);
   };
 
-  console.log({ contextOptionsProps })
+  console.log({ contextOptionsProps });
 
   return (
     <StyledWrapper
-      className={`user-item ${isChecked || isActive ? "table-row-selected" : ""
-        }`}
+      className={`user-item ${
+        isChecked || isActive ? "table-row-selected" : ""
+      }`}
     >
       <StyledPeopleRow
         key={item.id}
@@ -363,8 +373,8 @@ const PeopleTableRow = (props) => {
             {statusType === "pending"
               ? email
               : displayName?.trim()
-                ? displayName
-                : email}
+              ? displayName
+              : email}
           </Link>
           <Badges statusType={statusType} isPaid={!isVisitor} />
         </TableCell>
