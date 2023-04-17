@@ -52,22 +52,21 @@ jobs:
           
       - name: BUILD package DEB
         run: |
-          # cat <<EOT >> build-DocSpace_deb.sh
-          # set -x
-          cd build/install/deb/ 
-          ls -la 
-          pwd
-          PRODUCT="docspace" \
-          TAG="1.0.0" \
-          BUILD_NUMBER="999" \
+          dotnet --version
+          cd build/install/deb/debian
+          cat << EOF >> build-DocSpace_deb.sh
+          set -x
+          PRODUCT="docspace"
+          TAG="1.0.0" 
+          BUILD_NUMBER="999" 
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets \ 
           sudo rename -f -v "s/product([^\/]*)$/${PRODUCT}\$1/g" debian/* ../common/* ../common/logrotate/* \
           sudo find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT}/g" {} ';' \
           sudo sed -i "s/{{package_header_tag_version}}/${TAG}.${BUILD_NUMBER}/g" debian/changelog debian/control \
           dpkg-buildpackage -us -uc
-          # EOT
-          # chmod +x build-DocSpace_deb.sh
-          # sudo bash ./build-DocSpace_deb.sh
+          EOF
+          chmod +x build-DocSpace_deb.sh
+          sudo bash ./build-DocSpace_deb.sh
         shell: bash
 
       - name: Upload assets DEB
@@ -111,16 +110,15 @@ jobs:
           wget https://github.com/ONLYOFFICE/docspace/archive/release/v1.0.0.tar.gz -O DocSpace-release-v1.0.0.tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
-          ls -la
           cp *.tar.gz ./SOURCES
           
-          cat <<EOT >> build-DocSpace_rpm.sh
+          cat << EOF >> build-DocSpace_rpm.sh
           set -x
           sed -i -e '/BuildRequires/d' product.spec
           GIT_BRANCH=release
           rename 's/product/docspace/g' ../../common/*.sh
           rpmbuild -D "GIT_BRANCH release-v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release 999" -ba product.spec
-          EOT
+          EOF
           
           chmod +x build-DocSpace_rpm.sh
           sudo bash ./build-DocSpace_rpm.sh
