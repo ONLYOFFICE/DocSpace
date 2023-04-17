@@ -247,9 +247,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Omistaja</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Sivuston nimi</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portaalin käyttöoikeus</value>
   </data>

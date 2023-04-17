@@ -3005,7 +3005,7 @@ const Dark = {
       },
 
       backup: {
-        rectangleBackgroundColor: "#292929",
+        rectangleBackgroundColor: "#3D3D3D",
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
