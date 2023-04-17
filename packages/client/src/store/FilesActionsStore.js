@@ -432,6 +432,8 @@ class FilesActionStore {
     const folderIds = roomsForDelete.map((f) => f.id);
     if (isArchiveFolder) addActiveItems(null, folderIds);
 
+    const operationId = uniqueid("operation_");
+
     setSecondaryProgressBarData({
       icon: "trash",
       visible: true,
@@ -440,8 +442,6 @@ class FilesActionStore {
       alert: false,
       operationId,
     });
-
-    const operationId = uniqueid("operation_");
 
     try {
       await removeFiles(folderIds, [], true, true).then(async (res) => {

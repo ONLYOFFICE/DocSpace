@@ -26,7 +26,6 @@
   "Payer": "Pagador",
   "PayerDescription": "Este usuário tem acesso aos detalhes de pagamento e é o único usuário que pode ajustar a cota e efetuar pagamentos. O proprietário do DocSpace, bem como o próprio gerente pagador, pode reatribuir a função de gerente pagador usando o portal do cliente Stripe.",
   "PaymentOverdue": "Não é possível adicionar novos usuários.",
-  "PowerUserDescription": "Usuários avançados podem criar e editar arquivos na sala, mas não podem criar salas, gerenciar usuários ou acessar configurações.",
   "PriceCalculation": "Calcule seu preço",
   "QuotaPaidUserLimitError": "O limite de usuários pagos foi atingido. <1>Pagamentos</1>",
   "RenewSubscription": "Renove a assinatura do plano {{planName}}",

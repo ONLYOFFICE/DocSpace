@@ -208,7 +208,7 @@ const RoomSelector = ({
         searchEmptyScreenHeader || t("Common:NotFoundTitle")
       }
       searchEmptyScreenDescription={
-        searchEmptyScreenDescription || t("SearchEmptyRoomsDescription")
+        searchEmptyScreenDescription || t("Common:SearchEmptyRoomsDescription")
       }
       totalItems={total}
       hasNextPage={hasNextPage}

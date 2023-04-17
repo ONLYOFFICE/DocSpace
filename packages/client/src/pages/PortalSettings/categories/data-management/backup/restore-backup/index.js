@@ -144,7 +144,7 @@ const RestoreBackup = (props) => {
           { value: LOCAL_FILE, label: t("LocalFile") },
           { value: BACKUP_ROOM, label: t("RoomsModule") },
           { value: DISK_SPACE, label: t("ThirdPartyResource") },
-          { value: STORAGE_SPACE, label: t("ThirdPartyStorage") },
+          { value: STORAGE_SPACE, label: t("Common:ThirdPartyStorage") },
         ]}
         onClick={onChangeRadioButton}
         selected={radioButtonState}

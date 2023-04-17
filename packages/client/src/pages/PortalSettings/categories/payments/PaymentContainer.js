@@ -119,7 +119,7 @@ const PaymentContainer = (props) => {
               <Text>{t("RoomManagerDescription")}</Text>
               <br />
               <Text isBold>{t("Common:PowerUser")}</Text>
-              <Text>{t("PowerUserDescription")}</Text>
+              <Text>{t("Translations:RolePowerUserDescription")}</Text>
             </>
           }
         />

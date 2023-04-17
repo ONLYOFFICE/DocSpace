@@ -27,7 +27,6 @@
   "EditRoom": "Modifier la salle",
   "EmptyFile": "Fichier vide",
   "EmptyFilterDescriptionText": "Aucun fichier ou dossier ne correspond à ce filtre. Essayez un autre filtre ou effacez le filtre pour afficher tous les fichiers. ",
-  "EmptyFilterDescriptionTextRooms": "Aucune salle ne correspond à ce filtre. Essayez-en un autre ou effacez le filtre pour afficher toutes les salles.",
   "EmptyFilterSubheadingText": "Aucun fichier à afficher pour ce filtre ici",
   "EmptyFolderDecription": "Faites glisser des fichiers ici ou en créez de nouveaux",
   "EmptyFolderDescriptionUser": "Les fichiers et dossiers téléchargés par les administrateurs apparaissent ici.",
