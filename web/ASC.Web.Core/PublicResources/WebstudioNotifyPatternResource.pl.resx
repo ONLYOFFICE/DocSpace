@@ -207,7 +207,7 @@ $GreenButton
 
 *Uwaga*: link ten jest ważny tylko przez 7 dni. Proszę zakończyć proces zmiany adresu portalu w tym okresie.</value>
   </data>
- <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Witaj, $UserName!
 
 Witaj w ONLYOFFICE DocSpace! Twój profil użtkownika został dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
@@ -291,27 +291,6 @@ Z poważaniem,
 Zespół ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
  </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>Witaj, $UserName!
-
-Witaj w ONLYOFFICE DocSpace! Twój profil użtkownika został dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
-
-*#* Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
-
-*# Pracuj z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
-
-*# Współpracuj nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
-
-*# Podłącz dowolną pamięć w chmurze* pracuj bez konieczności przełączania się między aplikacjami. 
-
-$GreenButton
-
-Jeśli masz pytania, sprawdź nasze "Centrum pomocy":"https://helpcenter.onlyoffice.com/" lub zapytaj nasz "zespół wsparcia":"https://www.onlyoffice.com/support-contact-form.aspx".
-
-Z poważaniem, 
-Zespół ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-</data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Wiadomość z portalu "${__VirtualRootPath}":"${__VirtualRootPath}"
 

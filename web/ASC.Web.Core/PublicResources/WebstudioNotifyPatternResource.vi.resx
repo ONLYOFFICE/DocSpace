@@ -298,27 +298,6 @@ Trân trọng,
 Nhóm ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
  </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>Xin chào, $UserName!
-
-Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
-
-*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
-
-*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
-
-*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
-
-*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
-
-$GreenButton
-
-Nếu bạn cần trợ giúp, hãy xem qua "Trung tâm trợ giúp":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
-
-Trân trọng, 
-Nhóm ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-</data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Tin nhắn từ cổng "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -658,5 +637,4 @@ Trân trọng,
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>Người dùng DocSpace đã được cập nhật: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
-
 </root>

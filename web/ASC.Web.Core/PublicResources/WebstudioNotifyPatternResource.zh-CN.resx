@@ -213,7 +213,7 @@ $GreenButton
 
 *注意*：此链接仅7天有效。请在此期限内完成门户网站地址更改流程。</value>
   </data>
- <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>您好，$UserName！
 
 欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}". 现在您可以：
@@ -293,26 +293,6 @@ $GreenButton
 
 ONLYOFFICE 团队
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
- </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>您好，$UserName！
-
-欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
-
-*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
-
-*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
-
-*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
-
-*# 连接任何云存储* ，无需在应用程序之间切换。
-
-$GreenButton
-
-如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/" 或询问我们的"支持团队":"https://www.onlyoffice.com/zh/support-contact-form.aspx"。
-
-ONLYOFFICE 团队
-"www.onlyoffice.com":"http://onlyoffice.com/"</value> 
  </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.来自 "${__VirtualRootPath}":"${__VirtualRootPath}" 门户的消息

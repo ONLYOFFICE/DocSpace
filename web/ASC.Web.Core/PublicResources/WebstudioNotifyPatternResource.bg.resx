@@ -207,7 +207,7 @@ $GreenButton
 
 *Забележка*: тази връзка е валидна само за 7 дни. Моля, завършете процеса на промяна на адреса на портала в рамките на този период.</value>
 </data>
-<data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Здравейте, $UserName!
 
 Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
@@ -227,8 +227,8 @@ $GreenButton
 С уважение, 
 Екипът на ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data> 
- <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
     <value>Здравейте, $UserName!
 
 Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
@@ -248,30 +248,9 @@ $GreenButton
 С уважение, 
 Екипът на ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data> 
- <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
     <value>Здравейте, $UserName!
-
-Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
-
-*#* Работете с други потребители в стаята, в която сте поканени: *стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
-
-*# Работете с файлове от различни формати*: текстови документи, електронни таблици, презентации, формуляри, PDF файлове, електронни книги, мултимедия.
-
-*# Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
-
-*# Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
-
-$GreenButton
-
-Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
-
-С уважение, 
-Екипът на ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
- </data>
- <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-   <value>Здравейте, $UserName!
 
 Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
 
@@ -311,8 +290,8 @@ $GreenButton
 С уважение, 
 Екипът на ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
-    <data name="pattern_for_admin_notify" xml:space="preserve">
+ </data>
+  <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>Съобщение от портала "${__VirtualRootPath}":"${__VirtualRootPath}" Имейл: $UserEmail $Body</value>
   </data>
   <data name="pattern_join" xml:space="preserve">
@@ -571,7 +550,7 @@ $activity</value>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Промяна на адреса на портала</value>
   </data>
- <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Добре дошли в ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
@@ -583,7 +562,7 @@ $activity</value>
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>Добре дошли в ONLYOFFICE DocSpace!</value>
   </data>
- <data name="subject_for_admin_notify" xml:space="preserve">
+  <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Съобщение на потребителя до администраторите</value>
   </data>
   <data name="subject_join" xml:space="preserve">

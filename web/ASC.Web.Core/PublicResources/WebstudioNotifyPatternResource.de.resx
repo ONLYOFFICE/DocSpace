@@ -870,27 +870,6 @@ Mit freundlichen Grüßen
 ONLYOFFICE-Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
- <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>Hallo, $UserName!
-
-Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
-
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
-
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
-
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
-
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
-
-$GreenButton
-
-Wenn Sie Hilfe benötigen, besuchen Sie unser "Hilfe-Center": "https://helpcenter.onlyoffice.com/de" oder fragen Sie unser "Support-Team": "https://www.onlyoffice.com/de/support-contact-form.aspx".
-
-Mit freundlichen Grüßen
-ONLYOFFICE-Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
- </data> 
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.Benachrichtigung über die Profiländerung des Portals "${__VirtualRootPath}":"${__VirtualRootPath}"
 

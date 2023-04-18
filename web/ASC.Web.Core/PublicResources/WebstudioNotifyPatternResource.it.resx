@@ -291,7 +291,7 @@ Il link è valido solo per 7 giorni.
 
 Otterrai più consigli su come usare il tuo web-office. Puoi cancellare le sottoscrizioni dalla pagina del tuo profilo in ogni momento e riabilitarle.</value>
   </data>
-<data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
 
 Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
@@ -375,27 +375,6 @@ Tanti saluti,
 Team di ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/it"</value>
  </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>Salve, $UserName!
-
-Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
-
-*#* Lavorare con altri utenti nella stanza in cui sei invitato: *stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
-
-*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, contenuti multimediali.
-
-*# Collaborare sui documenti* con due modalità di modifiche condivise: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video. 
-
-*# Collegare qualsiasi archiviazione cloud* e lavorare senza passare da un'app all'altra. 
-
-$GreenButton
-
-Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/it" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
-
-Tanti saluti, 
-Team di ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/it"</value>  
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Salve, $UserName!
 

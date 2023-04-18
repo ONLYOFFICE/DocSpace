@@ -247,7 +247,7 @@ $GreenButton
 
 *Not*: bu link 7 gün boyunca geçerli olacaktır. Lütfen portal adresi değişikliğini bu sürede tamamlayın.</value>
   </data>
-<data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Merhaba, $UserName!
 
 ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
@@ -331,27 +331,6 @@ Truly yours,
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
  </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>Merhaba, $UserName!
-
-ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
-
-*#* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
-
-*# Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
-
-*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
-
-*# Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
-
-$GreenButton
-
-Yardıma ihtiyacınız varsa "Yardım Merkezi":"https://helpcenter.onlyoffice.com/" mize göz atın veya "destek ekibi":"https://www.onlyoffice.com/support-contact-form.aspx" mize sorun.
-
-Truly yours, 
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-</data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalı mesajları
 
