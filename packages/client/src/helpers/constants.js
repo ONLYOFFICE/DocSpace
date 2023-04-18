@@ -83,6 +83,13 @@ export const BINDING_POST = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
 export const BINDING_REDIRECT =
   "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect";
 
+export const SSO_GIVEN_NAME = "givenName";
+export const SSO_SN = "sn";
+export const SSO_EMAIL = "email";
+export const SSO_LOCATION = "location";
+export const SSO_TITLE = "title";
+export const SSO_PHONE = "phone";
+
 export const DEFAULT_SELECT_TIMEZONE = {
   key: "UTC",
   label: "(UTC) Coordinated Universal Time",
