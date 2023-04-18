@@ -57,8 +57,8 @@ public class Feed
     public string ContextId { get; set; }
     public bool IsAllDayEvent { get; set; }
 
-    // это значит, что новость может обновляться (пр. добавление комментариев);
-    // следовательно и права доступа могут устаревать
+    // this means that the news can be updated (eg adding comments);
+    // hence permissions may be outdated
     public bool Variate { get; private set; }
 
     public Feed() { }

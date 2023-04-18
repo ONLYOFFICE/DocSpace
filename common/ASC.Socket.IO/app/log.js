@@ -28,7 +28,10 @@ const accessKeyId = aws.accessKeyId;
 const secretAccessKey = aws.secretAccessKey; 
 const awsRegion = aws.region; 
 const logGroupName = aws.logGroupName;
-const logStreamName = aws.logStreamName;
+const logStreamName = aws.logStreamName.replace("${hostname}", os.hostname())
+                                      .replace("${applicationContext}", "SocketIO")                  
+                                      .replace("${guid}", randomUUID())
+                                      .replace("${date}", date.format(new Date(), 'YYYY/MM/DDTHH.mm.ss'));      
 
 if (!fs.existsSync(dirName)) {
   fs.mkdirSync(dirName);
@@ -54,17 +57,7 @@ var options = {
   cloudWatch: {
     name: 'aws',
     level: "debug",
-    logStreamName: () => {
-      const hostname = os.hostname();
-      const now = new Date();
-      const guid = randomUUID();
-      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
-      
-      return logStreamName.replace("${hostname}", hostname)
-                          .replace("${applicationContext}", "SocketIO")                  
-                          .replace("${guid}", guid)
-                          .replace("${date}", dateAsString);      
-    },
+    logStreamName: logStreamName,
     logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,

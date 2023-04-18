@@ -305,7 +305,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
                 var ldapCurrentAcccessSettings = _settingsManager.Load<LdapCurrentAcccessSettings>().GetDefault();
                 _settingsManager.Save(ldapCurrentAcccessSettings);
-                //не снимать права при выключении
+                // don't remove permissions on shutdown
                 //var rights = new List<LdapSettings.AccessRight>();
                 //TakeUsersRights(rights);
 

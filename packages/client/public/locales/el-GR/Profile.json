@@ -16,7 +16,6 @@
   "LogoutBtn": "Αποσύνδεση",
   "LogoutDescription": "Σημείωση. Όλες οι ενεργές συνδέσεις θα τερματιστούν, εκτός από αυτήν τη σύνδεση, καθώς χρησιμοποιείται αυτήν τη στιγμή.",
   "LogoutFrom": "Αποσύνδεση από {{platform}} {{browser}};",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Οι οδηγίες ενεργοποίησης email έχουν σταλεί στη διεύθυνση email <strong>{{ email }}</strong>.",
   "MyProfile": "Το προφίλ μου",
   "ProviderSuccessfullyConnected": "Ο πάροχος συνδέθηκε επιτυχώς",
   "ProviderSuccessfullyDisconnected": "Ο πάροχος αποσυνδέθηκε επιτυχώς",

@@ -17,7 +17,7 @@ export function getGroupList(fake = false, searchValue) {
 export function getGroup(groupId) {
   return request({
     method: "get",
-    url: `/group/${groupId}.json`,
+    url: `/group/${groupId}`,
   });
 }
 
@@ -25,7 +25,7 @@ export function createGroup(groupName, groupManager, members) {
   const data = { groupName, groupManager, members };
   return request({
     method: "post",
-    url: "/group.json",
+    url: "/group",
     data,
   });
 }
@@ -34,7 +34,7 @@ export function updateGroup(id, groupName, groupManager, members) {
   const data = { groupId: id, groupName, groupManager, members };
   return request({
     method: "put",
-    url: `/group/${id}.json`,
+    url: `/group/${id}`,
     data,
   });
 }
@@ -42,7 +42,7 @@ export function updateGroup(id, groupName, groupManager, members) {
 export function deleteGroup(id) {
   return request({
     method: "delete",
-    url: `/group/${id}.json`,
+    url: `/group/${id}`,
   });
 }
 

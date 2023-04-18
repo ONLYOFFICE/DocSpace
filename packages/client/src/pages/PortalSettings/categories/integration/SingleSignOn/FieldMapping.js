@@ -10,6 +10,13 @@ import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import SsoFormField from "./sub-components/SsoFormField";
 
+const GIVENNAME = "givenName";
+const SN = "sn";
+const EMAIL = "email";
+const LOCATION = "location";
+const TITLE = "title";
+const PHONE = "phone";
+
 const FieldMapping = (props) => {
   const { t } = useTranslation(["SingleSignOn", "Common"]);
   const {
@@ -53,7 +60,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:FirstName")}
         name="firstName"
-        placeholder="givenName"
+        placeholder={GIVENNAME}
         tabIndex={16}
         value={firstName}
         hasError={firstNameHasError}
@@ -62,7 +69,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:LastName")}
         name="lastName"
-        placeholder="sn"
+        placeholder={SN}
         tabIndex={17}
         value={lastName}
         hasError={lastNameHasError}
@@ -71,7 +78,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:Email")}
         name="email"
-        placeholder="sn"
+        placeholder={EMAIL}
         tabIndex={18}
         value={email}
         hasError={emailHasError}
@@ -80,7 +87,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:Location")}
         name="location"
-        placeholder="sn"
+        placeholder={LOCATION}
         tabIndex={19}
         value={location}
         hasError={locationHasError}
@@ -89,7 +96,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:Title")}
         name="title"
-        placeholder="sn"
+        placeholder={TITLE}
         tabIndex={20}
         value={title}
         hasError={titleHasError}
@@ -98,7 +105,7 @@ const FieldMapping = (props) => {
       <SsoFormField
         labelText={t("Common:Phone")}
         name="phone"
-        placeholder="sn"
+        placeholder={PHONE}
         tabIndex={21}
         value={phone}
         hasError={phoneHasError}
