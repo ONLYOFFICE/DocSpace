@@ -1,7 +1,7 @@
 (function () {
   const defaultConfig = {
     src: new URL(document.currentScript.src).origin,
-    rootPath: "/rooms/personal/",
+    rootPath: "/rooms/shared/",
     width: "100%",
     height: "100%",
     name: "frameDocSpace",
@@ -18,15 +18,15 @@
     destroyText: "Frame container",
     viewAs: "row", //TODO: ["row", "table", "tile"]
     filter: {
-      folder: "@my",
-      count: 25,
-      page: 0,
+      //folder: "@my",
+      count: 100,
+      page: 1,
       sortorder: "descending", //TODO: ["descending", "ascending"]
       sortby: "DateAndTime", //TODO: ["DateAndTime", "AZ", "Type", "Size", "DateAndTimeCreation", "Author"]
-      search: "",
-      filterType: null,
-      authorType: null,
-      withSubfolders: true,
+      //search: "",
+      //filterType: null,
+      //authorType: null,
+      //withSubfolders: true,
     },
     keysForReload: [
       "src",
@@ -144,11 +144,14 @@
         data: message,
       };
 
-      if (this.#iframe)
-        this.#iframe.contentWindow.postMessage(
-          JSON.stringify(mes),
-          this.config.src
-        );
+      if (!!this.#iframe.contentWindow) {
+        setTimeout(() => {
+          this.#iframe.contentWindow.postMessage(
+            JSON.stringify(mes),
+            this.config.src
+          );
+        }, 100);
+      }
     };
 
     #onMessage = (e) => {
