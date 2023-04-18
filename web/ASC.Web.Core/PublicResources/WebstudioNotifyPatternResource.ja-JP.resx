@@ -100,7 +100,7 @@
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>DocSpaceのユーザーがアップデートされました: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
-<data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>$UserNameさん、こんにちは!
 
 ONLYOFFICE DocSpaceへようこそ！$UserNameさんのプロフィールは次のルームに追加されました："${__VirtualRootPath}":"${__VirtualRootPath}"。次の操作ができるようになりました：
@@ -180,27 +180,7 @@ $GreenButton
 ONLYOFFICE Team
 "www.onlyoffice.com":"http://onlyoffice.com/ja/"</value>
  </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>$UserNameさん、こんにちは!
-
-ONLYOFFICE DocSpaceへようこそ！$UserNameさんのプロフィールは次のルームに追加されました："${__VirtualRootPath}":"${__VirtualRootPath}"。次の操作ができるようになりました：
-
-*#* 招待されたルームで他のユーザーと一緒に作業できます： *リアルタイムで共著を行うためのコラボレーションルームや、目的に応じて柔軟に設定できるカスタムルーム*。
-
-*# さまざまな形式のファイルの操作*：テキスト文書、スプレッドシート、スライド、デジタルフォーム、PDF、電子書籍、マルチメディアなど。
-
-*# Cリアルタイムまたは段落ロックの2つの共同編集モードで、文書の共同編集*：変更点を追跡し、内蔵のチャットや音声・ビデオ通話を使用してリアルタイムでコミュニケーション。
-
-*# 任意のクラウドストレージ*を接続し、アプリを切り替えることなく作業する。
-
-$GreenButton
-
-ヘルプが必要な場合は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/"を閲覧してください。または"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
-
-ONLYOFFICE Team
-"www.onlyoffice.com":"http://onlyoffice.com/ja/"</value>
-  </data>
-<data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>ONLYOFFICE DocSpaceへようこそ!</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">

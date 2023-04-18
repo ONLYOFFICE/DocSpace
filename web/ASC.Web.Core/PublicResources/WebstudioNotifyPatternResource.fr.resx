@@ -1133,28 +1133,7 @@ Bien à vous,
 équipe ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
  </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>Bonjour, $UserName!
-
-Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
-
-*#* Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
-
-*# Travailler avec des fichiers de différents formats*: documents texte, feuilles de calcul, présentations, formulaires numériques, fichiers PDF, livres électroniques, multimedia.
-
-*# Collaborer sur des documents* avec deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivre des modifications, communiquer en temps réel via chat intégré ou organiser des appels audio et vidéo.  
-
-*# Connecter n'importe quel stockage en cloud* et travailler sans changer d'application. 
-
-$GreenButton
-
-Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/fr" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
-
-Bien à vous, 
-équipe ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-</data>
- <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>WBienvenue à ONLYOFFICE DocSpace !</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">

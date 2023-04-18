@@ -336,27 +336,6 @@ S pozdravom,
 Tím ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
  </data>
-  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
-    <value>Hello, $UserName!
-
-Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
-
-*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
-
-*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
-
-*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
-
-*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
-
-$GreenButton
-
-Ak potrebujete pomoc, navštívte naš "Centrum pomoci":"https://helpcenter.onlyoffice.com/" alebo kontaktujte našu "podporu":"https://www.onlyoffice.com/support-contact-form.aspx".
-
-S pozdravom, 
-Tím ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Správa z "${__VirtualRootPath}":"${__VirtualRootPath}" portálu
 
