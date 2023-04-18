@@ -403,9 +403,9 @@ DropDownContainer.propTypes = {
   smallSectionWidth: PropTypes.bool,
   /** Disables check position. Used to set the direction explicitly */
   fixedDirection: PropTypes.bool,
-  /**Enables blur for backdrop */
+  /** Enables blur for backdrop */
   withBlur: PropTypes.bool,
-
+  /** Specifies the offset */
   offsetLeft: PropTypes.number,
 };
 
