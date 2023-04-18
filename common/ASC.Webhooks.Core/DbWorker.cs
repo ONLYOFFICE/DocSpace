@@ -217,7 +217,7 @@ public class DbWorker
             q = q.Where(r => r.Id == eventId);
         }
 
-        if (webhookGroupStatus != null)
+        if (webhookGroupStatus != null && webhookGroupStatus != WebhookGroupStatus.None)
         {
             if ((webhookGroupStatus & WebhookGroupStatus.NotSent) != WebhookGroupStatus.NotSent)
             {
@@ -225,15 +225,15 @@ public class DbWorker
             }
             if ((webhookGroupStatus & WebhookGroupStatus.Status2xx) != WebhookGroupStatus.Status2xx)
             {
-                q = q.Where(r => r.Status < 200 && r.Status >= 300);
+                q = q.Where(r => r.Status < 200 || r.Status >= 300);
             }
             if ((webhookGroupStatus & WebhookGroupStatus.Status3xx) != WebhookGroupStatus.Status3xx)
             {
-                q = q.Where(r => r.Status < 300 && r.Status >= 400);
+                q = q.Where(r => r.Status < 300 || r.Status >= 400);
             }
             if ((webhookGroupStatus & WebhookGroupStatus.Status4xx) != WebhookGroupStatus.Status4xx)
             {
-                q = q.Where(r => r.Status < 400 && r.Status >= 500);
+                q = q.Where(r => r.Status < 400 || r.Status >= 500);
             }
             if ((webhookGroupStatus & WebhookGroupStatus.Status5xx) != WebhookGroupStatus.Status5xx)
             {
@@ -347,9 +347,10 @@ public class DbWorker
 [Flags]
 public enum WebhookGroupStatus
 {
-    NotSent = 0x0,
-    Status2xx = 0x1,
-    Status3xx = 0x2,
-    Status4xx = 0x4,
-    Status5xx = 0x8
+    None = 0,
+    NotSent = 1,
+    Status2xx = 2,
+    Status3xx = 4,
+    Status4xx = 8,
+    Status5xx = 16
 }
