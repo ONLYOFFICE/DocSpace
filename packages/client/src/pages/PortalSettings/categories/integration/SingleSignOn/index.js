@@ -17,6 +17,9 @@ import ToggleSSO from "./sub-components/ToggleSSO";
 
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
 
+const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
+const SP_METADATA = "spMetadata";
+
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
@@ -34,7 +37,7 @@ const SingleSignOn = (props) => {
 
       <HideButton
         text={t("ServiceProviderSettings")}
-        label={t("ServiceProviderSettings")}
+        label={SERVICE_PROVIDER_SETTINGS}
         value={serviceProviderSettings}
         isDisabled={!isSSOAvailable}
       />
@@ -55,7 +58,7 @@ const SingleSignOn = (props) => {
 
       <HideButton
         text={t("SpMetadata")}
-        label={t("SpMetadata")}
+        label={SP_METADATA}
         value={spMetadata}
         isDisabled={!isSSOAvailable}
       />

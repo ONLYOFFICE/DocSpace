@@ -207,6 +207,111 @@ $GreenButton
 
 *Uwaga*: link ten jest ważny tylko przez 7 dni. Proszę zakończyć proces zmiany adresu portalu w tym okresie.</value>
   </data>
+ <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Witaj w ONLYOFFICE DocSpace! Twój profil użtkownika został dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
+
+*#* Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
+
+*# Pracuj z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
+
+*# Współpracuj nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
+
+*# Podłącz dowolną pamięć w chmurze* pracuj bez konieczności przełączania się między aplikacjami. 
+
+$GreenButton
+
+Jeśli masz pytania, sprawdź nasze "Centrum pomocy":"https://helpcenter.onlyoffice.com/" lub zapytaj nasz "zespół wsparcia":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Z poważaniem, 
+Zespół ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Witaj w ONLYOFFICE DocSpace! Twój profil użtkownika został dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
+
+*#* Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
+
+*# Pracuj z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
+
+*# Współpracuj nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
+
+*# Podłącz dowolną pamięć w chmurze* pracuj bez konieczności przełączania się między aplikacjami. 
+
+$GreenButton
+
+Jeśli masz pytania, sprawdź nasze "Centrum pomocy":"https://helpcenter.onlyoffice.com/" lub zapytaj nasz "zespół wsparcia":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Z poważaniem, 
+Zespół ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Witaj w ONLYOFFICE DocSpace! Twój profil użtkownika został dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
+
+*#* Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
+
+*# Pracuj z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
+
+*# Współpracuj nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
+
+*# Podłącz dowolną pamięć w chmurze* pracuj bez konieczności przełączania się między aplikacjami. 
+
+$GreenButton
+
+Jeśli masz pytania, sprawdź nasze "Centrum pomocy":"https://helpcenter.onlyoffice.com/" lub zapytaj nasz "zespół wsparcia":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Z poważaniem, 
+Zespół ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Witaj w ONLYOFFICE DocSpace! Twój profil użtkownika został dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
+
+*#* Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
+
+*# Pracuj z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
+
+*# Współpracuj nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
+
+*# Podłącz dowolną pamięć w chmurze* pracuj bez konieczności przełączania się między aplikacjami. 
+
+$GreenButton
+
+Jeśli masz pytania, sprawdź nasze "Centrum pomocy":"https://helpcenter.onlyoffice.com/" lub zapytaj nasz "zespół wsparcia":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Z poważaniem, 
+Zespół ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj, $UserName!
+
+Witaj w ONLYOFFICE DocSpace! Twój profil użtkownika został dodany do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz możesz:
+
+*#* Pracować z innymi użytkownikami w pokoju, do którego masz dostęp: *pokój do współpracy nad dokumentami w czasie rzeczywistym lub niestandardowe pokoje z elastycznymi ustawieniami dla dowolnego celu*.
+
+*# Pracuj z plikami w różnych formatach*: dokumenty tekstowe, arkusze kalkulacyjne, prezentacje, formularze cyfrowe, pliki PDF, e-booki, multimedia.
+
+*# Współpracuj nad dokumentami* z dwoma trybami współredakcji: w czasie rzeczywistym lub częściowego ograniczenia edycji. Śledź zmiany, komunikuj się w czasie rzeczywistym za pomocą wbudowanego czatu lub połączeń audio i wideo. 
+
+*# Podłącz dowolną pamięć w chmurze* pracuj bez konieczności przełączania się między aplikacjami. 
+
+$GreenButton
+
+Jeśli masz pytania, sprawdź nasze "Centrum pomocy":"https://helpcenter.onlyoffice.com/" lub zapytaj nasz "zespół wsparcia":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Z poważaniem, 
+Zespół ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+</data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Wiadomość z portalu "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -403,6 +508,14 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" zmienił swój profil na portalu "${_
 
 ^Jeśli nie chcesz otrzymywać powiadomień o aktualizacjach profilu, proszę zmienić ustawienia subskrypcji":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Oto co nowego wydarzyło się na Twoim koncie DocSpace $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+</data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Wiadomość testowa SMTP
 
@@ -436,6 +549,18 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Zmiana adresu portalu</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Witaj w ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Komunikat użytkownika dla administratorów</value>
@@ -490,5 +615,47 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nowy użytkownik dodany do portalu ${LetterLogoText}</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; utworzył(a) nowy dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; w pokoju: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; dodał(a) nowy komentarz do wersji dokumentu: &lt;a href={1}&gt;{2}&lt;/a&gt; w pokoju: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; wgrał(a) nowy dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; w pokoju: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; zmienił(a) nazwę pokoju: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; utworzył(a) nowy pokój: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; został(a) usunięta z pokoju: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; edytował(a) dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; w pokoju: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; usunął(nęła) pokój: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; został(a) dodany(na) do pokoju: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; przeniósł(iosła) pokój: &lt;a href={1}&gt;{2}&lt;/a&gt; do archiwum - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; uzyskał(a) rolę &lt;b&gt;{1}&lt;/b&gt; w pokoju: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Nowy użytkownik DocSpace został dodany: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; zmienił(a) poziom dostępu użytkowników &lt;b&gt;{1}&lt;/b&gt; na &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Użytkownik DocSpace zaktualizował: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

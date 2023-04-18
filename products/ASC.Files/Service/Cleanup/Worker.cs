@@ -64,7 +64,9 @@ public class Worker
 
         _logger.InfoFoundUsers(activeTenantsUsers.Count);
 
-        await Parallel.ForEachAsync(activeTenantsUsers, cancellationToken, DeleteFilesAndFolders);
+        await Parallel.ForEachAsync(activeTenantsUsers,
+                                    new ParallelOptions { MaxDegreeOfParallelism = 3, CancellationToken = cancellationToken }, //System.Environment.ProcessorCount
+                                    DeleteFilesAndFolders);
     }
 
     private async ValueTask DeleteFilesAndFolders(TenantUserSettings tenantUser, CancellationToken cancellationToken)

@@ -67,6 +67,7 @@ const InputParam = React.forwardRef(
             isAutoFocussed={isAutoFocussed}
             onKeyUp={onKeyUp}
             onKeyDown={onKeyDown}
+            maxLength={170}
           />
         </FieldContainer>
       </StyledInputParam>

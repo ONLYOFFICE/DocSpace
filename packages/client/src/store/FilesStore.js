@@ -1129,8 +1129,9 @@ class FilesStore {
     return newFilter;
   };
 
-  refreshFiles = () => {
-    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  refreshFiles = async () => {
+    const res = await this.fetchFiles(this.selectedFolderStore.id, this.filter);
+    return res;
   };
 
   fetchFiles = (

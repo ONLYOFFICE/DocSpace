@@ -26,7 +26,7 @@
   "AuditSubheader": "Apakšsadaļa ļauj pārlūkot jaunāko izmaiņu sarakstu (izveide, modificēšana, dzēšana utt.), ko lietotāji veikuši jūsu DocSpace esošajās entītijās (telpas, iespējas, faili utt.).",
   "AuditTrailNav": "Audita žurnāls",
   "AutoBackup": "Automātiskā rezerves kopēšana",
-  "AutoBackupDescription": "Izmantojiet šo iespēju automātiskai portāla datu rezerves kopēšanai",
+  "AutoBackupDescription": "Izmantojiet šo iespēju automātiskai portāla datu rezerves kopēšanai.",
   "AutoBackupHelp": "<strong>Automātiskās datu rezerves kopēšanas</strong> iespēja tiek izmantota, lai automatizētu DocSpace datu rezerves kopēšanas procesu un varētu tos vēlāk noglabāt lokālajā serverī.",
   "AutoBackupHelpNote": "Izvēlieties datu uzglabāšanu, automātiskās dublēšanas periodu un maksimālo saglabāto kopiju skaitu.<br/><strong>Piezīme:</strong> Pirms jūs varēsit noglabāt rezerves datus trešās puses kontā (Dropbox, Box.com, OneDrive vai Google Drive), jums būs jāpieslēdzas šim kontam {{organizationName}} Kopīgie dokumenti mapē.",
   "AutoSavePeriod": "Automātiskās saglabāšanas periods",

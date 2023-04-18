@@ -149,7 +149,7 @@
   "RestoreBackupWarningText": "O portal vai ficar indisponível durante o processo de restauro. Após a restauração estar completa, todas as alterações feitas após a data do ponto de restauro serão perdidas.",
   "RestoreDefaultButton": "Restaurar para a Predefinição",
   "RoomsModule": "Sala de Apoio",
-  "RoomsModuleDescription": "Pode criar uma nova sala especificamente para a cópia de segurança, escolher uma das salas existentes, ou guardar a cópia na sua sala {{{roomName}}.",
+  "RoomsModuleDescription": "Pode criar uma nova sala especificamente para a cópia de segurança, escolher uma das salas existentes, ou guardar a cópia na sua sala {{roomName}}.",
   "SelectFileInGZFormat": "Selecione o ficheiro no formato .GZ",
   "SendNotificationAboutRestoring": "Enviar uma notificação sobre a restauração do portal aos utilizadores",
   "ServerSideEncryptionMethod": "Método de Encriptação do Lado do Servidor",

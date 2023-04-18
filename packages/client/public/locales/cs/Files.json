@@ -44,7 +44,7 @@
   "FinalizeVersion": "Dokončit verzi",
   "Folder": "Složka",
   "FolderRemoved": "Složka přesunuta do koše",
-  "FolderRenamed": "Složka '{{{folderTitle}}' je přejmenována na '{{newFoldedTitle}}'",
+  "FolderRenamed": "Složka '{{folderTitle}}' je přejmenována na '{{newFoldedTitle}}'",
   "Forms": "Formuláře",
   "FormsTemplates": "Šablony formulářů",
   "GoToMyRooms": "Přejít do sekce Moje místnosti",

@@ -24,7 +24,7 @@
   "ManagerTypesDescription": "Admin account types and their privileges",
   "Pay": "Pay",
   "Payer": "Payer",
-  "PayerDescription": "This user has access to payment details and is the only user who can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manger role using the Stripe customer portal.",
+  "PayerDescription": "This user has access to payment details and is the only user who can adjust the quota and make payments. The DocSpace owner, as well as the paying manager themselves, can reassign the paying manager role using the Stripe customer portal.",
   "PaymentOverdue": "Cannot add new users.",
   "PriceCalculation": "Calculate your price",
   "QuotaPaidUserLimitError": "The paid user limit has been reached. <1>Payments</1>",

@@ -35,8 +35,8 @@ const TrustedMail = (props) => {
     trustedDomainsType,
     trustedDomains,
     setMailDomainSettings,
-    helpLink,
     currentColorScheme,
+    trustedMailDomainSettingsUrl,
   } = props;
 
   const regexp = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{1,})+/; //check domain name valid
@@ -165,7 +165,7 @@ const TrustedMail = (props) => {
           color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+          href={trustedMailDomainSettingsUrl}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -230,6 +230,7 @@ export default inject(({ auth }) => {
     setMailDomainSettings,
     helpLink,
     currentColorScheme,
+    trustedMailDomainSettingsUrl,
   } = auth.settingsStore;
 
   return {
@@ -238,5 +239,6 @@ export default inject(({ auth }) => {
     setMailDomainSettings,
     helpLink,
     currentColorScheme,
+    trustedMailDomainSettingsUrl,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(TrustedMail))));

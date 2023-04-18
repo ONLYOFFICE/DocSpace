@@ -52,10 +52,10 @@ const Layout = (props) => {
     setIsTabletView(isTablet);
 
     let mediaQuery = window.matchMedia("(max-width: 1024px)");
-    mediaQuery.addListener(onWidthChange);
+    mediaQuery.addEventListener("change", onWidthChange);
 
     return () => {
-      mediaQuery.removeListener(onWidthChange);
+      mediaQuery.removeEventListener("change", onWidthChange);
       if (intervalHandler) clearInterval(intervalHandler);
       if (timeoutHandler) clearTimeout(timeoutHandler);
     };
