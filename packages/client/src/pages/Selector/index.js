@@ -6,13 +6,7 @@ import RoomSelector from "../../components/RoomSelector";
 import SelectFolderDialog from "../../components/panels/SelectFolderDialog";
 
 const Selector = ({ theme }) => {
-  return (
-    <SelectFolderDialog
-      isPanelVisible={true}
-      displayType="modal"
-      header={null}
-    />
-  );
+  return <RoomSelector />;
 };
 
 export default inject(({ auth }) => {

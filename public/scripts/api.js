@@ -101,6 +101,11 @@
           break;
         }
 
+        case "room selector": {
+          path = `/selector`;
+          break;
+        }
+
         case "editor": {
           path = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}`;
           break;
