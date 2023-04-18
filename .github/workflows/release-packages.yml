@@ -78,13 +78,14 @@ jobs:
           EOF
           chmod +x build-DocSpace_deb.sh
           sudo bash ./build-DocSpace_deb.sh
+          pwd && ls -la
           
         shell: bash
 
       - name: Upload assets DEB
         uses: softprops/action-gh-release@v1
         with:
-          files: /home/runner/DocSpace/DocSpace/build/install/deb/debian/*.deb
+          files: /home/runner/DocSpace/DocSpace/build/install/deb/*.deb
           
 
   build_rpm:
@@ -131,13 +132,13 @@ jobs:
           ls -la
           cp *.tar.gz ./SOURCES
           
-          cat <<EOT >> build-DocSpace_rpm.sh
+          cat << EOF >> build-DocSpace_rpm.sh
           set -x
           sed -i -e '/BuildRequires/d' product.spec
           # GIT_BRANCH=release/v1.0.0
           rename 's/product/docspace/g' ../../common/*.sh
           rpmbuild -D "GIT_BRANCH release-v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release 999" -ba product.spec
-          EOT
+          EOF
           
           chmod +x build-DocSpace_rpm.sh
           sudo bash ./build-DocSpace_rpm.sh
