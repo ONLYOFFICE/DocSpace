@@ -70,8 +70,8 @@ jobs:
 
           cd build/install/deb/ 
 
-          rename -f -v "s/product/${{ github.event.repository.name }}/" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/${{ github.event.repository.name }}/g" {} ';'
+          rename -f -v "s/product/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/" debian/* ../common/* ../common/logrotate/*
+          find ../ -type f -exec sed -i "s/{{product}}/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/g" {} ';'
 
           sed -i "s/{{package_header_tag_version}}/1.0.0.${{ github.run_number }}/g" debian/changelog debian/control
 
