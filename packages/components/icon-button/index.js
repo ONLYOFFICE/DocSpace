@@ -76,13 +76,8 @@ class IconButton extends React.PureComponent {
     onMouseDown && onMouseDown(e);
   }
   onMouseUp(e) {
-    const {
-      isDisabled,
-      iconHoverName,
-      iconName,
-      color,
-      onMouseUp,
-    } = this.props;
+    const { isDisabled, iconHoverName, iconName, color, onMouseUp } =
+      this.props;
 
     if (isDisabled) return;
 
@@ -222,6 +217,7 @@ IconButton.propTypes = {
   id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** The data-* attribute is used to store custom data private to the page or application. Required to display a tip over the hovered element */
   dataTip: PropTypes.string,
 };
 
