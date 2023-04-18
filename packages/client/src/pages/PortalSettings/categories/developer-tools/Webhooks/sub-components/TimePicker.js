@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import PropTypes from "prop-types";
 import moment from "moment";
 import styled from "styled-components";
 
@@ -41,12 +42,12 @@ export const TimePicker = ({ date, setDate, onChange }) => {
 
   const handleHoursChange = (time) => {
     setHours(time);
-    setDate((prevDate) => moment(prevDate.format("YYYY-MM-DD") + " " + time + ":" + minutes));
+    setDate(moment(date.format("YYYY-MM-DD") + " " + time + ":" + minutes));
     onChange(time);
   };
   const handleMinutesChange = (time) => {
     setMinutes(time);
-    setDate((prevDate) => moment(prevDate.format("YYYY-MM-DD") + " " + hours + ":" + time));
+    setDate(moment(date.format("YYYY-MM-DD") + " " + hours + ":" + time));
     onChange(time);
   };
 
@@ -135,4 +136,18 @@ export const TimePicker = ({ date, setDate, onChange }) => {
       />
     </TimeInput>
   );
+};
+
+TimePicker.propTypes = {
+  date: PropTypes.object,
+  setDate: PropTypes.func,
+
+  /** Allow you to handle changing events of component */
+  onChange: PropTypes.func,
+};
+
+TimePicker.defaultProps = {
+  date: moment(),
+  setDate: () => {},
+  onChange: () => {},
 };
