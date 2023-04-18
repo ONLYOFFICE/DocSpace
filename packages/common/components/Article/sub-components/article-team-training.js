@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+
 import { useTranslation } from "react-i18next";
 
 import AlertComponent from "../../AlertComponent";
@@ -38,15 +38,13 @@ const ArticleTeamTrainingAlert = ({ theme, bookTrainingEmail }) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { settingsStore } = auth;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
 
-    const { theme, bookTrainingEmail } = settingsStore;
+  const { theme, bookTrainingEmail } = settingsStore;
 
-    return {
-      theme,
-      bookTrainingEmail,
-    };
-  })(observer(ArticleTeamTrainingAlert))
-);
+  return {
+    theme,
+    bookTrainingEmail,
+  };
+})(observer(ArticleTeamTrainingAlert));

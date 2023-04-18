@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { observer, inject } from "mobx-react";
+import { useNavigate } from "react-router-dom";
 import { Events } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import throttle from "lodash/throttle";
@@ -9,7 +10,7 @@ const withHotkeys = (Component) => {
   const WithHotkeys = (props) => {
     const {
       t,
-      history,
+
       setSelected,
       viewAs,
       setViewAs,
@@ -59,6 +60,8 @@ const withHotkeys = (Component) => {
       isGracePeriod,
       setInviteUsersWarningDialogVisible,
     } = props;
+
+    const navigate = useNavigate();
 
     const hotkeysFilter = {
       filter: (ev) =>
@@ -330,7 +333,7 @@ const withHotkeys = (Component) => {
       "Shift+u",
       () => {
         if (folderWithNoAction) return;
-        uploadFile(false, history, t);
+        uploadFile(false, navigate, t);
       },
 
       hotkeysFilter

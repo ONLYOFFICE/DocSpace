@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+import { useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { isMobile } from "react-device-detect";
 
@@ -26,7 +26,7 @@ import {
 
 const PureHome = ({
   isLoading,
-  history,
+
   getUsersList,
   setIsLoading,
   setIsRefresh,
@@ -45,8 +45,8 @@ const PureHome = ({
   onClickBack,
   setPortalTariff,
 }) => {
-  const { location } = history;
-  const { pathname } = location;
+  const location = useLocation();
+
   //console.log("People Home render");
 
   useEffect(() => {
@@ -58,7 +58,7 @@ const PureHome = ({
   }, []);
 
   useEffect(() => {
-    if (pathname.indexOf("/accounts/filter") > -1) {
+    if (location.pathname.indexOf("/accounts/filter") > -1) {
       setSelectedNode(["accounts", "filter"]);
       setIsLoading(true);
       setIsRefresh(true);
@@ -74,7 +74,7 @@ const PureHome = ({
           setIsRefresh(false);
         });
     }
-  }, [pathname, location, setSelectedNode]);
+  }, [location, setSelectedNode]);
 
   useEffect(() => {
     if (isMobile) {
@@ -140,23 +140,14 @@ export default inject(
     const { settingsStore, currentTariffStatusStore } = auth;
     const { setPortalTariff } = currentTariffStatusStore;
     const { showCatalog, withPaging } = settingsStore;
-    const {
-      usersStore,
-      selectedGroupStore,
-      loadingStore,
-      viewAs,
-    } = peopleStore;
+    const { usersStore, selectedGroupStore, loadingStore, viewAs } =
+      peopleStore;
     const { getUsersList } = usersStore;
     const { selectedGroup } = selectedGroupStore;
     const { setSelectedNode } = treeFoldersStore;
     const { onClickBack } = filesActionsStore;
-    const {
-      isLoading,
-      setIsLoading,
-      setIsRefresh,
-      firstLoad,
-      setFirstLoad,
-    } = loadingStore;
+    const { isLoading, setIsLoading, setIsRefresh, firstLoad, setFirstLoad } =
+      loadingStore;
 
     return {
       setPortalTariff,
@@ -178,4 +169,4 @@ export default inject(
       onClickBack,
     };
   }
-)(observer(withRouter(Home)));
+)(observer(Home));
