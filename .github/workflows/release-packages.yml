@@ -59,8 +59,8 @@ jobs:
           # cd build/install/deb/debian
           cat << EOF >> build-DocSpace_deb.sh
           set -x
-          PRODUCT=docspace
-          TAG="${{ github.event.release.tag_name }}"
+          PRODUCT="${{ github.event.repository.name }}"
+          TAG="${{ github.ref_name }}"
           BUILD_NUMBER="${{ github.run_number }}"
   
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
