@@ -145,6 +145,8 @@ class SettingsStore {
   zendeskKey = null;
   bookTrainingEmail = null;
   legalTerms = null;
+  baseDomain = "onlyoffice.io";
+  documentationEmail = null;
 
   constructor() {
     makeAutoObservable(this);

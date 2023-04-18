@@ -7,7 +7,7 @@
   "DeleteProfileConfirmation": "Atenção! Está prestes a eliminar a sua conta.",
   "DeleteProfileConfirmationInfo": "Ao clicar em \"Eliminar a minha conta\" concorda com a nossa <1>política de privacidade.</1>",
   "DeleteProfileSuccessMessage": "A sua conta foi eliminada com êxito.",
-  "DeleteProfileSuccessMessageInfo": "Consulte a nossa Política de Privacidade para saber mais sobre a eliminação da sua conta e dos dados que lhe estão associados.",
+  "DeleteProfileSuccessMessageInfo": "Consulte a nossa <1>Política de Privacidade</1> para saber mais sobre a eliminação da sua conta e dos dados que lhe estão associados.",
   "EmailAndPasswordCopiedToClipboard": "Email e palavra-chave copiados para a área de transferência",
   "EnterAppCodeDescription": "Insira o código de 6 dígitos gerado através da sua app. Se não tiver acesso ao seu telemóvel, utilize os códigos de segurança.",
   "EnterAppCodeTitle": "Inserir código da aplicação de autenticação",

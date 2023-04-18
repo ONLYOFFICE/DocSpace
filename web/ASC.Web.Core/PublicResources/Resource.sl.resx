@@ -232,9 +232,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Lastnik</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Ime portala</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Dostop portala</value>
   </data>

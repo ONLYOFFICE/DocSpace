@@ -349,9 +349,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>超过磁盘空间配额</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>门户名称</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>门户访问</value>
   </data>

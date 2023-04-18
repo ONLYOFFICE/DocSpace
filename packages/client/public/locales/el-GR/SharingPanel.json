@@ -5,7 +5,7 @@
   "CopyExternalLink": "Αντιγραφή εξωτερικού συνδέσμου",
   "CustomFilter": "Προσαρμοσμένο φίλτρο",
   "DenyAccess": "Άρνηση πρόσβασης",
-  "EncryptedFileSharing": "Το αρχείο <strong>{{{title}}</strong> κοινοποιήθηκε επιτυχώς",
+  "EncryptedFileSharing": "Το αρχείο <strong>{{title}}</strong> κοινοποιήθηκε επιτυχώς",
   "ExternalLink": "Εξωτερικός σύνδεσμος",
   "FormFilling": "Συμπλήρωση εντύπων",
   "InternalLink": "Εσωτερικός σύνδεσμος",

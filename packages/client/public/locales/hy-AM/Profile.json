@@ -16,7 +16,6 @@
   "LogoutBtn": "Դուրս գալ",
   "LogoutDescription": "Նշում. Բոլոր ակտիվ կապերը, բացի այս կապից, դուրս կգրվեն, քանի որ այն ներկայումս օգտագործվում է:",
   "LogoutFrom": "Դուրս գալ {{platform}} {{browser}}-ից:",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Էլփոստի ակտիվացման հրահանգներն ուղարկվել են <strong>{{ email }}</strong> էլեկտրոնային հասցե․",
   "MyProfile": "Իմ էջը",
   "ProviderSuccessfullyConnected": "Մատակարարը հաջողությամբ միացավ",
   "ProviderSuccessfullyDisconnected": "Մատակարարը հաջողությամբ անջատվեց",
