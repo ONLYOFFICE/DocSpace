@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Le champ du code de validation ne peut pas être vide</value>
@@ -446,10 +446,10 @@
     <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
-    <value>Jeton d'accès</value>
+    <value>Client ID</value>
   </data>
   <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
-    <value>Jeton d'accès secret</value>
+    <value>Client Secret</value>
   </data>
   <data name="ConsumersTwitterDescription" xml:space="preserve">
     <value>Se connecter à l'application pour accéder au portail en utilisant le compte Twitter et rechercher des contacts.</value>
@@ -461,10 +461,10 @@
     <value>Activez cette application pour permettre aux utilisateurs de se connecter à ONLYOFFICE via leur Twitter et reliez les comptes Twitter de vos clients à votre module CRM. {0}Passez au portail des développeurs Twitter et créez une nouvelle application d'intégration ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
-    <value>ID de Twitter</value>
+    <value>API Key</value>
   </data>
   <data name="ConsumersTwitterSecret" xml:space="preserve">
-    <value>Clé de Twitter</value>
+    <value>API Key Secret</value>
   </data>
   <data name="Consumersusername" xml:space="preserve">
     <value>Rackspace nom d'utilisateur</value>
@@ -589,6 +589,9 @@
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Nom ou prénom invalide</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>L'accès au portail est limité</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Votre plan de paiement ne prend pas en charge cette option</value>
   </data>
@@ -654,11 +657,143 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Le lien pour confirmer votre compte a été envoyé à l'adresse email indiquée</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Prénom</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Nom</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Erreur de connexion</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Impossible de créer des utilisateurs, les données reçues sont incorrectes.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Le serveur n'a pas pu obtenir des paramètres.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Le serveur n'a pas pu enregistrer des paramètres.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Login ou mot de passe non valide.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>Le domaine LDAP non trouvé.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Pas de groupes trouvés</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Filtre d'utilisateur non valide.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Vous avez essayé de retirer vos droits d'administrateur. Vos droits d'administrateur n'étaient pas affectés.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Votre compte n'est pas lié au répertoire LDAP et votre mot de passe LDAP n'est plus actif. Veuillez changer ou définir un mot de passe  de votre compte sur la page de paramètres de profil.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Erreur inconnue.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Pas d'utilisateurs trouvés</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Impossible d'obtenir l'Attribut du groupe pour un ou plusieurs groupes.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Filtre de groupe est incorrect.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Impossible d'obtenir l'attribut du nom de groupe pour un ou plusieurs groupes.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Impossible d'obtenir l'Attribut de login pour un ou plusieurs utilisateurs.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Impossible de se connecter au serveur LDAP. Vérifiez si l'adresse du serveur et le numéro du port sont corrects.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Impossible d'obtenir l'Attribut d'utilisateur pour un ou plusieurs utilisateurs.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Erreur interne du serveur.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Changer les utilisateurs LDAP aux utilisateurs ordinaires du portail</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>ajouter un utilisateur</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Vérification de certificat</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Contrôle des paramètres de prise en charge de LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Déconnexion LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Récupération  de la liste de groupes du serveur LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Récupération  de la liste d'utilisateurs du serveur LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Désigner utilisateur {0} comme {1} administrateur</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Chargement des informations depuis la base LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>supprimer l'utilisateur</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Suppression de groupes anciens chargés plus tôt via LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Retrait des droits d'accès dépassés qui étaient téléchargés avec LDAP </value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Désactivation des profils d'utilisateurs obsolètes chargés plus tôt via LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Enregistrement des groupes</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Paramètres d'eregistrement </value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Sauvegarde de photo</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Enregistrement des utilisateurs</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Synchronisation des utilisateurs</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Mise à jour  des droits d'accès d'utilisateurs</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Mise à jour des photos des utilisateurs</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Un type d'authentification plus sécurisée est requise. Veuillez utiliser une connexion cryptée ou activer l'authentification simple sur le serveur.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>La limite d'utilisateur du plan tarifaire courant a été atteinte.</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS n'est pas pris en charge sur la version actuelle du serveur LDAP.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Trop d'opérations LDAP.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>L'ID unique des objets d'utilisateur/groupe ne peut pas être obtenue. Par défaut, le système va essayer de coordonner un des identifiants suivants: entryUUID, nsuniqueid, GUID, objectSid. Si aucun des attributs ne correspond à votre serveur LDAP, spécifiez l'attribut nécessaire dans la configuration ldap.unique.id dans le fichier web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>La licence n'est pas correcte</value>

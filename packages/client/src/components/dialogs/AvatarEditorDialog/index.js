@@ -7,11 +7,7 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
-import {
-  loadAvatar,
-  createThumbnailsAvatar,
-  deleteAvatar,
-} from "@docspace/common/api/people";
+import { loadAvatar, deleteAvatar } from "@docspace/common/api/people";
 import { dataUrlToFile } from "@docspace/common/utils/dataUrlToFile";
 import ImageEditor from "@docspace/components/ImageEditor";
 import AvatarPreview from "@docspace/components/ImageEditor/AvatarPreview";
@@ -40,13 +36,7 @@ const AvatarEditorDialog = (props) => {
     "CreateEditRoomDialog",
   ]);
 
-  const {
-    visible,
-    onClose,
-    profile,
-    updateProfile,
-    updateCreatedAvatar,
-  } = props;
+  const { visible, onClose, profile, updateCreatedAvatar, setHasAvatar } = props;
   const [avatar, setAvatar] = useState({
     uploadedFile: profile.hasAvatar ? profile.avatarMax : DefaultUserAvatarMax,
     x: 0.5,
@@ -62,29 +52,30 @@ const AvatarEditorDialog = (props) => {
     setIsLoading(true);
 
     if (!avatar.uploadedFile) {
-      const avatars = await deleteAvatar(profile.id);
-      updateCreatedAvatar(avatars);
-      updateProfile(profile);
+      const res = await deleteAvatar(profile.id);
+      updateCreatedAvatar(res);
+      setHasAvatar(false)
       onClose();
       return;
     }
 
     const file = await dataUrlToFile(preview);
-    let avatarData = new FormData();
+
+    const avatarData = new FormData();
     avatarData.append("file", file);
-    avatarData.append("Autosave", false);
+    avatarData.append("Autosave", true);
 
     try {
       const res = await loadAvatar(profile.id, avatarData);
-      const avatars = await createThumbnailsAvatar(profile.id, {
-        x: 0,
-        y: 0,
-        tmpFile: res.data,
-      });
-      updateCreatedAvatar(avatars);
-      updateProfile(profile);
 
-      toastr.success(t("Common:ChangesSavedSuccessfully"));
+      if (res.success) {
+        res.data && updateCreatedAvatar(res.data);
+        setHasAvatar(true)
+        toastr.success(t("Common:ChangesSavedSuccessfully"));
+      } else {
+        throw new Error(t("Common:ErrorInternalServer"));
+      }
+
       onClose();
     } catch (error) {
       console.error(error);
@@ -145,15 +136,11 @@ const AvatarEditorDialog = (props) => {
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
 
-  const {
-    targetUser: profile,
-    updateProfile,
-    updateCreatedAvatar,
-  } = targetUserStore;
+  const { targetUser: profile, updateCreatedAvatar, setHasAvatar } = targetUserStore;
 
   return {
     profile,
-    updateProfile,
+    setHasAvatar,
     updateCreatedAvatar,
   };
 })(observer(AvatarEditorDialog));

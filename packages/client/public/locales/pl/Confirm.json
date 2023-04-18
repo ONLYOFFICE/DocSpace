@@ -5,9 +5,9 @@
   "CurrentNumber": "Twój aktualny numer telefonu komórkowego",
   "DeleteProfileBtn": "Usuń moje konto",
   "DeleteProfileConfirmation": "Uwaga! Zamierzasz usunąć swoje konto.",
-  "DeleteProfileConfirmationInfo": "Klikając przycisk \"Usuń moje konto\", wyrażasz zgodę na zasady naszej Polityki prywatności.",
+  "DeleteProfileConfirmationInfo": "Klikając przycisk \"Usuń moje konto\", wyrażasz zgodę na zasady naszej <1>Polityki prywatności.</1>",
   "DeleteProfileSuccessMessage": "Twoje konto zostało pomyślnie usunięte.",
-  "DeleteProfileSuccessMessageInfo": "Zapoznaj się z naszą Polityką prywatności, aby dowiedzieć się więcej na temat usunięcia swojego konta oraz powiązanych z nim danych.",
+  "DeleteProfileSuccessMessageInfo": "Zapoznaj się z naszą <1>Polityką prywatności</1>, aby dowiedzieć się więcej na temat usunięcia swojego konta oraz powiązanych z nim danych.",
   "EmailAndPasswordCopiedToClipboard": "E-mail i hasło zostały skopiowane do schowka",
   "EnterAppCodeDescription": "Wpisz 6-cyfrowy kod wygenerowany przez Twoją aplikację. Jeśli nie masz dostępu do swojego telefonu, skorzystaj z kodów zapasowych.",
   "EnterAppCodeTitle": "Wpisz kod z aplikacji uwierzytelniającej",
@@ -28,5 +28,6 @@
   "SetAppTitle": "Skonfiguruj swoją aplikację uwierzytelniającą",
   "SuccessDeactivate": "Twoje konto zostało dezaktywowane. Za 10 sekund nastąpi przekierowanie na <1>site</1>.",
   "SuccessReactivate": "Twoje konto zostało reaktywowane. Za 10 sekund nastąpi przekierowanie do <1>portal</1>.",
+  "SuccessRemoved": "Twoje konto zostało usunięte. Za 10 sekund nastąpi przekierowanie na <1>site</1>.",
   "WelcomeUser": "Witaj na naszym DocSpace!\nAby rozpocząć pracę, zarejestruj się lub zaloguj za pośrednictwem mediów społecznościowych."
 }

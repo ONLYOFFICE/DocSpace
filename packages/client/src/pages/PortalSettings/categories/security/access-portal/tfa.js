@@ -29,8 +29,8 @@ const TwoFactorAuth = (props) => {
     initSettings,
     isInit,
     setIsInit,
-    helpLink,
     currentColorScheme,
+    tfaSettingsUrl,
   } = props;
   const [type, setType] = useState("none");
 
@@ -136,7 +136,7 @@ const TwoFactorAuth = (props) => {
           color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/two-factor-authentication.aspx`}
+          href={tfaSettingsUrl}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -195,7 +195,7 @@ export default inject(({ auth, setup }) => {
   } = auth.tfaStore;
 
   const { isInit, initSettings, setIsInit } = setup;
-  const { helpLink, currentColorScheme } = auth.settingsStore;
+  const { currentColorScheme, tfaSettingsUrl } = auth.settingsStore;
 
   return {
     setTfaSettings,
@@ -206,8 +206,8 @@ export default inject(({ auth, setup }) => {
     isInit,
     initSettings,
     setIsInit,
-    helpLink,
     currentColorScheme,
+    tfaSettingsUrl,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))

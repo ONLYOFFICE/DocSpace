@@ -1,0 +1,22 @@
+{
+  "Ascending": "По возрастанию",
+  "CopyWindowCode": "Скопировать код встраивания окна",
+  "DataDisplay": "Настройки отображения данных",
+  "Descending": "По убыванию",
+  "Destroy": "Уничтожить",
+  "EnterCount": "Введите количество",
+  "EnterHeight": "Введите высоту",
+  "EnterId": "Введите идентификатор",
+  "EnterPage": "Введите номер страницы",
+  "EnterWidth": "Введите ширину",
+  "FolderId": "Идентификатор папки",
+  "FrameId": "Идентификатор кадра",
+  "Header": "Заголовок",
+  "ItemsCount": "Количество предметов",
+  "JavascriptSdk": "Пакет SDK для Javascript",
+  "Menu": "Меню",
+  "Page": "Страница",
+  "SearchTerm": "Искать термин",
+  "SortOrder": "Порядок сортировки",
+  "WindowParameters": "Параметры окна"
+}

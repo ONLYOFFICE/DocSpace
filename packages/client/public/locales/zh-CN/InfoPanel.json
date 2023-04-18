@@ -26,6 +26,7 @@
   "FeedUpdateUser": "已被指派角色 {{role}}",
   "FileExtension": "文件扩展名",
   "FilesEmptyScreenText": "在此查看文件和文件夹的详细信息",
+  "HistoryEmptyScreenText": "活动历史记录将在这里显示",
   "ItemsSelected": "选定的项目",
   "LastModifiedBy": "上次修改时间",
   "PendingInvitations": "待定邀请",

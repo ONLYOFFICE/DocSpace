@@ -232,9 +232,9 @@ public class PaymentController : ControllerBase
     /// <path>api/2.0/portal/payment/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quota")]
-    public async Task<QuotaDto> GetQuota()
+    public async Task<QuotaDto> GetQuota(bool refresh)
     {
-        return await _quotaHelper.GetCurrentQuota();
+        return await _quotaHelper.GetCurrentQuota(refresh);
     }
 
     /// <summary>

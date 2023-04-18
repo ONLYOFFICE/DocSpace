@@ -392,7 +392,7 @@ public class GroupController : ControllerBase
 
         foreach (var userId in inDto.Members)
         {
-            RemoveUserFromDepartment(userId, group);
+            await RemoveUserFromDepartment(userId, group);
         }
 
         return await GetById(group.ID);
@@ -423,7 +423,7 @@ public class GroupController : ControllerBase
         await _userManager.AddUserIntoGroup(userId, @group.ID);
     }
 
-    private void RemoveUserFromDepartment(Guid userId, GroupInfo @group)
+    private async Task RemoveUserFromDepartment(Guid userId, GroupInfo @group)
     {
         if (!_userManager.UserExists(userId))
         {
@@ -431,7 +431,7 @@ public class GroupController : ControllerBase
         }
 
         var user = _userManager.GetUsers(userId);
-        _userManager.RemoveUserFromGroup(user.Id, @group.ID);
-        _userManager.UpdateUserInfo(user);
+        await _userManager.RemoveUserFromGroup(user.Id, @group.ID);
+        await _userManager.UpdateUserInfo(user);
     }
 }

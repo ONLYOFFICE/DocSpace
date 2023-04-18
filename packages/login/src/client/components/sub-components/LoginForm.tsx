@@ -58,7 +58,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { t } = useTranslation(["Login", "Common"]);
+  const { t, ready } = useTranslation(["Login", "Common"]);
 
   const { message, confirmedEmail } = match || {
     message: "",
@@ -102,8 +102,12 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     message && setErrorText(message);
     confirmedEmail && setIdentifier(confirmedEmail);
 
-    confirmedEmail &&
-      toastr.success(`${t("MessageEmailConfirmed")} ${t("MessageAuthorize")}`);
+    const messageEmailConfirmed = t("MessageEmailConfirmed");
+    const messageAuthorize = t("MessageAuthorize");
+
+    const text = `${messageEmailConfirmed} ${messageAuthorize}`;
+
+    confirmedEmail && ready && toastr.success(text);
 
     focusInput();
 

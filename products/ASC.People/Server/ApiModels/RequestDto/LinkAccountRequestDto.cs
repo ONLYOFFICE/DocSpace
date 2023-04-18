@@ -39,7 +39,7 @@ public class LinkAccountRequestDto
 public class SignupAccountRequestDto : LinkAccountRequestDto
 {
     /// <summary>Employee type (All, RoomAdmin, User, DocSpaceAdmin, Collaborator)</summary>
-    public EmployeeType? EmplType { get; set; }
+    public EmployeeType? EmployeeType { get; set; }
 
     /// <summary>First name</summary>
     public string FirstName { get; set; }

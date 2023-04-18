@@ -43,24 +43,6 @@ const StyledTableContainer = styled(TableContainer)`
     .table-container_row-context-menu-wrapper {
       ${contextCss}
     }
-
-    .table-container_cell {
-      .paid-badge {
-        p {
-          padding-top: 1px;
-        }
-      }
-    }
-  }
-
-  :hover {
-    .table-container_cell {
-      .paid-badge {
-        p {
-          padding-top: 1px;
-        }
-      }
-    }
   }
 
   .table-row-selected + .table-row-selected {
@@ -101,7 +83,7 @@ const StyledTableContainer = styled(TableContainer)`
       .table-container_user-name-cell,
       .table-container_row-context-menu-wrapper {
         border-bottom: ${(props) =>
-          `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+    `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
   }
@@ -121,6 +103,7 @@ const Table = ({
   userId,
   infoPanelVisible,
 
+  isLoading,
   fetchMoreAccounts,
   hasMoreAccounts,
   filterTotal,
@@ -146,6 +129,8 @@ const Table = ({
 
   const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
   const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
+
+  if (isLoading) return <></>
 
   return peopleList.length > 0 ? (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
@@ -192,6 +177,7 @@ export default inject(({ peopleStore, auth, accessRightsStore }) => {
     viewAs,
     setViewAs,
     changeType,
+    loadingStore
   } = peopleStore;
   const { theme, withPaging } = auth.settingsStore;
   const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
@@ -201,6 +187,8 @@ export default inject(({ peopleStore, auth, accessRightsStore }) => {
   const { isAdmin, isOwner, id: userId } = auth.userStore.user;
 
   const { canChangeUserType } = accessRightsStore;
+
+  const { isLoading } = loadingStore
 
   return {
     peopleList,
@@ -213,7 +201,7 @@ export default inject(({ peopleStore, auth, accessRightsStore }) => {
     userId,
     infoPanelVisible,
     withPaging,
-
+    isLoading,
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,

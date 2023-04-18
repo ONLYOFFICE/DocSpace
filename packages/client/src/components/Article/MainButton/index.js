@@ -298,9 +298,9 @@ const ArticleMainButtonContent = (props) => {
       },
     ];
 
-    const actions = isAccountsPage
+    const addAdmin = isOwner
       ? [
-          isOwner && {
+          {
             id: "invite_doc-space-administrator",
             className: "main-button_drop-down",
             icon: PersonAdminReactSvgUrl,
@@ -309,6 +309,12 @@ const ArticleMainButtonContent = (props) => {
             action: EmployeeType.Admin,
             key: "administrator",
           },
+        ]
+      : [];
+
+    const actions = isAccountsPage
+      ? [
+          ...addAdmin,
           {
             id: "invite_room-admin",
             className: "main-button_drop-down",

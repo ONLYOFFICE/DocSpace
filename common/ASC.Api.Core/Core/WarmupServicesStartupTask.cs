@@ -40,7 +40,7 @@ public class WarmupServicesStartupTask : IStartupTask
     }
 
     public Task ExecuteAsync(CancellationToken cancellationToken)
-    {      
+    {
         var processedFailed = 0;
         var processedSuccessed = 0;
         var startTime = DateTime.UtcNow;
@@ -53,12 +53,12 @@ public class WarmupServicesStartupTask : IStartupTask
             logger.TraceWarmupStarted();
 
             tenantManager.SetCurrentTenant("localhost");
-            
+
             foreach (var service in GetServices(_services))
             {
                 try
-                {      
-                    scope.ServiceProvider.GetServices(service);
+                {
+                    scope.ServiceProvider.GetService(service);
 
                     processedSuccessed++;
                 }
@@ -72,9 +72,9 @@ public class WarmupServicesStartupTask : IStartupTask
 
             var processed = processedSuccessed + processedFailed;
 
-            logger.TraceWarmupFinished(processed, 
-                                       processedSuccessed, 
-                                       processedFailed, 
+            logger.TraceWarmupFinished(processed,
+                                       processedSuccessed,
+                                       processedFailed,
                                        (DateTime.UtcNow - startTime).TotalMilliseconds);
         }
 

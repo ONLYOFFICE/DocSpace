@@ -656,19 +656,19 @@ public class GlobalFolder
         TrashFolderCache.Remove(cacheKey);
     }
 
-    private async Task<int> GetFolderIdAndProcessFirstVisitAsync(IDaoFactory daoFactory, bool isMyFolder)
+    private async Task<int> GetFolderIdAndProcessFirstVisitAsync(IDaoFactory daoFactory, bool my)
     {
-        var folderDao = daoFactory.GetFolderDao<int>();
+        var folderDao = (FolderDao)daoFactory.GetFolderDao<int>();
 
-        var id = isMyFolder ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
+        var id = my ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
 
         if (!Equals(id, 0))
         {
             return id;
         }
 
-        id = isMyFolder ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
-            
+        id = my ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
+        
         if (!_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
         {
             return id;
@@ -677,11 +677,9 @@ public class GlobalFolder
         var tenantId = _tenantManager.GetCurrentTenant().Id;
         var userId = _authContext.CurrentAccount.ID;
 
-        //Copy start document
-        var task = new Task(() => 
-            CreateSampleDocumentsAsync(_serviceProvider, tenantId, userId, id, isMyFolder).ConfigureAwait(false), 
+        var task = new Task(async () => await CreateSampleDocumentsAsync(_serviceProvider, tenantId, userId, id, my), 
             TaskCreationOptions.LongRunning);
-        
+
         _ = task.ConfigureAwait(false);
         
         task.Start();
@@ -689,11 +687,12 @@ public class GlobalFolder
         return id;
     }
     
-    private async Task CreateSampleDocumentsAsync(IServiceProvider serviceProvider, int tenantId, Guid userId, int folderId, bool isMyFolder)
+    private async Task CreateSampleDocumentsAsync(IServiceProvider serviceProvider, int tenantId, Guid userId, int folderId, bool my)
     {
         try
         {
             await using var scope = serviceProvider.CreateAsyncScope();
+            
             var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
 
@@ -701,77 +700,89 @@ public class GlobalFolder
             securityContext.AuthenticateMeWithoutCookie(userId);
 
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
-            var culture = isMyFolder ? userManager.GetUsers(userId).GetCulture() : tenantManager.GetCurrentTenant().GetCulture();
-
-            Thread.CurrentThread.CurrentCulture = culture;
+            var culture = my ? userManager.GetUsers(userId).GetCulture() : tenantManager.GetCurrentTenant().GetCulture();
 
             var globalStore = scope.ServiceProvider.GetRequiredService<GlobalStore>();
             var storeTemplate = globalStore.GetStoreTemplate();
-        
+            
             var path = FileConstant.StartDocPath + culture + "/";
-        
+            
             if (!await storeTemplate.IsDirectoryAsync(path))
             {
                 path = FileConstant.StartDocPath + "en-US/";
             }
         
-            path += isMyFolder ? "my/" : "corporate/";
-        
+            path += my ? "my/" : "corporate/";
+
             var fileMarker = scope.ServiceProvider.GetRequiredService<FileMarker>();
             var fileDao = (FileDao)scope.ServiceProvider.GetRequiredService<IFileDao<int>>();
             var folderDao = (FolderDao)scope.ServiceProvider.GetRequiredService<IFolderDao<int>>();
             var socketManager = scope.ServiceProvider.GetRequiredService<SocketManager>();
 
-            await SaveStartDocumentAsync(scope.ServiceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path, storeTemplate, isMyFolder);
+            await SaveSampleDocumentsAsync(scope.ServiceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path, storeTemplate);
         }
         catch (Exception e)
         {
-            await using var scope = serviceProvider.CreateAsyncScope();
-            var logger = scope.ServiceProvider.GetRequiredService<ILogger>();
-            logger.ErrorGetFolderIdAndProccessFirstVisit(e);
+            _logger.ErrorCreateSampleDocuments(e);
         }
     }
-
-    private async Task SaveStartDocumentAsync(IServiceProvider serviceProvider, FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, SocketManager socketManager, 
-        int folderId, string path, IDataStore storeTemplate, bool isMyFolder)
-    {
-        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false).ToListAsync();
+    
+    private async Task SaveSampleDocumentsAsync(IServiceProvider serviceProvider, FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, SocketManager socketManager, 
+        int folderId, string path, IDataStore storeTemplate)
+    { 
+        var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false)
+            .Where(f => FileUtility.GetFileTypeByFileName(f) is not (FileType.Audio or FileType.Video))
+            .ToListAsync();
+        
+        _logger.Debug($"Found {files.Count} sample documents. Path: {path}");
+        
         foreach (var file in files)
         {
-            await SaveFileAsync(serviceProvider, storeTemplate, fileMarker, fileDao, socketManager, path + file, folderId, isMyFolder, files);
+            await SaveFileAsync(serviceProvider, storeTemplate, fileMarker, fileDao, socketManager, path + file, folderId, files);
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
         {
-            var folder = serviceProvider.GetService<Folder<int>>();
-            folder.Title = folderName;
-            folder.ParentId = folderId;
+            try
+            {
+                var folder = serviceProvider.GetRequiredService<Folder<int>>();
+                folder.Title = folderName;
+                folder.ParentId = folderId;
 
-            var subFolderId = await folderDao.SaveFolderAsync(folder);
-
-            await SaveStartDocumentAsync(serviceProvider, fileMarker, folderDao, fileDao, socketManager, subFolderId, path + folderName + "/", storeTemplate, isMyFolder);
+                var subFolderId = await folderDao.SaveFolderAsync(folder);
+                    
+                var subFolder = await folderDao.GetFolderAsync(subFolderId);
+                await socketManager.CreateFolderAsync(subFolder);
+                    
+                await SaveSampleDocumentsAsync(serviceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path + folderName + "/", storeTemplate);
+            }
+            catch (Exception e)
+            {
+                _logger.ErrorSaveSampleFolder(e);
+            }   
         }
     }
 
     private async Task SaveFileAsync(IServiceProvider serviceProvider, IDataStore storeTemplate, FileMarker fileMarker, FileDao fileDao, SocketManager socketManager,
-        string filePath, int parentId, bool isMyFolder, IEnumerable<string> files)
+        string filePath, int folderId, IEnumerable<string> files)
     {
         try
         {
             var fileName = Path.GetFileName(filePath);
-            foreach (var ext in Enum.GetValues<ThumbnailExtension>())
-            {
-                if (FileUtility.GetFileExtension(filePath) == "." + ext 
+            
+            foreach (var ext in Enum.GetValues<ThumbnailExtension>()) 
+            { 
+                if (FileUtility.GetFileExtension(filePath) == "." + ext
                     && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
                 {
                     return;
                 }
             }
 
-            var newFile = serviceProvider.GetService<File<int>>();
+            var newFile = serviceProvider.GetRequiredService<File<int>>();
 
             newFile.Title = fileName;
-            newFile.ParentId = parentId;
+            newFile.ParentId = folderId;
             newFile.Comment = FilesCommonResource.CommentCreate;
 
             await using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
@@ -780,21 +791,16 @@ public class GlobalFolder
                 newFile = await fileDao.SaveFileAsync(newFile, stream, false);
             }
 
-            if (!isMyFolder)
-            {
-                await fileMarker.MarkAsNewAsync(newFile);
-            }
-
+            await fileMarker.MarkAsNewAsync(newFile);
             await socketManager.CreateFileAsync(newFile);
         }
         catch (Exception e)
         {
-            var logger = serviceProvider.GetRequiredService<ILogger>();
-            logger.ErrorSaveFile(e);
+            _logger.ErrorSaveSampleFile(e);
         }
     }
 
-    public bool IsOutsider => _userManager.IsOutsider(_authContext.CurrentAccount.ID);
+    private bool IsOutsider => _userManager.IsOutsider(_authContext.CurrentAccount.ID);
 }
 
 [Scope]

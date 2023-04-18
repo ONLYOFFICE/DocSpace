@@ -35,8 +35,8 @@ const AdminMessage = (props) => {
     setMessageSettings,
     initSettings,
     isInit,
-    helpLink,
     currentColorScheme,
+    administratorMessageSettingsUrl,
   } = props;
   const [type, setType] = useState("");
   const [showReminder, setShowReminder] = useState(false);
@@ -128,7 +128,7 @@ const AdminMessage = (props) => {
           color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+          href={administratorMessageSettingsUrl}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -174,8 +174,8 @@ export default inject(({ auth, setup }) => {
   const {
     enableAdmMess,
     setMessageSettings,
-    helpLink,
     currentColorScheme,
+    administratorMessageSettingsUrl,
   } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
@@ -184,7 +184,7 @@ export default inject(({ auth, setup }) => {
     setMessageSettings,
     initSettings,
     isInit,
-    helpLink,
     currentColorScheme,
+    administratorMessageSettingsUrl,
   };
 })(withTranslation(["Settings", "Common"])(withRouter(observer(AdminMessage))));

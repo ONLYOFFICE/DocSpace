@@ -40,7 +40,7 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     width: calc(100% + 40px);
-    height: 68px;
+    height: 67px;
 
     @media ${tablet} {
       height: 60px;

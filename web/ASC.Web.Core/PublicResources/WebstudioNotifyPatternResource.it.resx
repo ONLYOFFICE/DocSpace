@@ -291,6 +291,111 @@ Il link è valido solo per 7 giorni.
 
 Otterrai più consigli su come usare il tuo web-office. Puoi cancellare le sottoscrizioni dalla pagina del tuo profilo in ogni momento e riabilitarle.</value>
   </data>
+<data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*#* Lavorare con altri utenti nella stanza in cui sei invitato: *stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, contenuti multimediali.
+
+*# Collaborare sui documenti* con due modalità di modifiche condivise: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video. 
+
+*# Collegare qualsiasi archiviazione cloud* e lavorare senza passare da un'app all'altra. 
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/it" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
+
+Tanti saluti, 
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*#* Lavorare con altri utenti nella stanza in cui sei invitato: *stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, contenuti multimediali.
+
+*# Collaborare sui documenti* con due modalità di modifiche condivise: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video. 
+
+*# Collegare qualsiasi archiviazione cloud* e lavorare senza passare da un'app all'altra. 
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/it" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
+
+Tanti saluti, 
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*#* Lavorare con altri utenti nella stanza in cui sei invitato: *stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, contenuti multimediali.
+
+*# Collaborare sui documenti* con due modalità di modifiche condivise: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video. 
+
+*# Collegare qualsiasi archiviazione cloud* e lavorare senza passare da un'app all'altra. 
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/it" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
+
+Tanti saluti, 
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*#* Lavorare con altri utenti nella stanza in cui sei invitato: *stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, contenuti multimediali.
+
+*# Collaborare sui documenti* con due modalità di modifiche condivise: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video. 
+
+*# Collegare qualsiasi archiviazione cloud* e lavorare senza passare da un'app all'altra. 
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/it" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
+
+Tanti saluti, 
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*#* Lavorare con altri utenti nella stanza in cui sei invitato: *stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, contenuti multimediali.
+
+*# Collaborare sui documenti* con due modalità di modifiche condivise: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video. 
+
+*# Collegare qualsiasi archiviazione cloud* e lavorare senza passare da un'app all'altra. 
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/it" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
+
+Tanti saluti, 
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>  
+  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Salve, $UserName!
 
@@ -691,6 +796,14 @@ Team di ONLYOFFICE
 
 [$__AuthorName]($__AuthorUrl) Ha modificato i suoi dettagli sul portale [${__VirtualRootPath}](${__VirtualRootPath})</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Ecco cosa c'è di nuovo nel tuo DocSpace il $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+</data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Messaggio di prova SMTP 
 
@@ -748,6 +861,18 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Benvenuto in ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
@@ -859,5 +984,26 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>Sei stato invitato ad unirti su ${__VirtualRootPath}</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha eliminato la stanza: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt;  è stato aggiunto alla stanza: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha spostato la stanza: &lt;a href={1}&gt;{2}&lt;/a&gt; to archive - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; è stato assegnato il ruolo di &lt;b&gt;{1}&lt;/b&gt; nella stanza: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Aggiunto nuovo utente di DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha cambiato il livello di accesso degli utenti &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Aggiornato l'utente di DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

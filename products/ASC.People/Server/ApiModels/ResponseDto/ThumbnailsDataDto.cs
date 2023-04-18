@@ -30,16 +30,18 @@ public class ThumbnailsDataDto
 {
     private ThumbnailsDataDto() { }
 
-    public static async Task<ThumbnailsDataDto> Create(Guid userId, UserPhotoManager userPhotoManager)
+    public static async Task<ThumbnailsDataDto> Create(UserInfo userInfo, UserPhotoManager userPhotoManager)
     {
+        var cacheKey = Math.Abs(userInfo.LastModified.GetHashCode());
+
         return new ThumbnailsDataDto
         {
-            Original = await userPhotoManager.GetPhotoAbsoluteWebPath(userId),
-            Retina = await userPhotoManager.GetRetinaPhotoURL(userId),
-            Max = await userPhotoManager.GetMaxPhotoURL(userId),
-            Big = await userPhotoManager.GetBigPhotoURL(userId),
-            Medium = await userPhotoManager.GetMediumPhotoURL(userId),
-            Small = await userPhotoManager.GetSmallPhotoURL(userId)
+            Original = await userPhotoManager.GetPhotoAbsoluteWebPath(userInfo.Id) + $"?hash={cacheKey}",
+            Retina = await userPhotoManager.GetRetinaPhotoURL(userInfo.Id) + $"?hash={cacheKey}",
+            Max = await userPhotoManager.GetMaxPhotoURL(userInfo.Id) + $"?hash={cacheKey}",
+            Big = await userPhotoManager.GetBigPhotoURL(userInfo.Id) + $"?hash={cacheKey}",
+            Medium = await userPhotoManager.GetMediumPhotoURL(userInfo.Id) + $"?hash={cacheKey}",
+            Small = await userPhotoManager.GetSmallPhotoURL(userInfo.Id) + $"?hash={cacheKey}"
         };
     }
 

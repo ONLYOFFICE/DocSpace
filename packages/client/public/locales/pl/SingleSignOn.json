@@ -1,7 +1,7 @@
 {
   "AddCertificate": "Dodaj certyfikat",
   "AdvancedSettings": "Ustawienia zaawansowane",
-  "AdvancedSettingsTooltip": "Ukryj domyślną stronę uwierzytelniania i automatycznie kieruj do usługi pojedynczego logowania",
+  "AdvancedSettingsTooltip": "Ukryj domyślną stronę uwierzytelniania i automatycznie kieruj do usługi pojedynczego logowania.",
   "AttributeMatching": "Mapowanie atrybutów",
   "AttributeMatchingTooltip": "Zgodność atrybutów pojedynczego logowania z wpisami sekcji „Konta”.",
   "Binding": "Powiązanie:",

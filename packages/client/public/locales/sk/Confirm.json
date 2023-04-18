@@ -5,9 +5,9 @@
   "CurrentNumber": "Vaše aktuálne číslo mobilného telefónu",
   "DeleteProfileBtn": "Vymazať môj účet",
   "DeleteProfileConfirmation": "Pozor! Idete si zmazať účet.",
-  "DeleteProfileConfirmationInfo": "Odkliknutím \"Vymazať môj účet\" súhlasíte s našou politikou Ochrany súkromia.",
+  "DeleteProfileConfirmationInfo": "Odkliknutím \"Vymazať môj účet\" súhlasíte s našou <1>politikou Ochrany súkromia.</1>",
   "DeleteProfileSuccessMessage": "Váš účet bol úspešne odstránený.",
-  "DeleteProfileSuccessMessageInfo": "Viac informácií o odstránení účtu a údajov s ním spojených nájdete v našich pravidlách ochrany osobných údajov.",
+  "DeleteProfileSuccessMessageInfo": "Viac informácií o odstránení účtu a údajov s ním spojených nájdete v našich <1>pravidlách ochrany osobných údajov</1>.",
   "EmailAndPasswordCopiedToClipboard": "E-mail a heslo boli skopírované do schránky",
   "EnterAppCodeDescription": "Zadajte 6-miestny kód vygenerovaný z vašej aplikácie. Ak nemáte prístup k telefónu, použite záložné kódy.",
   "EnterAppCodeTitle": "Zadajte kód z aplikácie na overenie totožnosti",
@@ -28,5 +28,6 @@
   "SetAppTitle": "Nakonfigurujte si aplikáciu autentifikátora",
   "SuccessDeactivate": "Váš účet bol úspešne deaktivovaný. Po 10 sekundách budete presmerovaní na <1>webovú stránku</1>.",
   "SuccessReactivate": "Váš účet bol úspešne znovu aktivovaný. Po 10 sekundách budete presmerovaní na <1>portál</1>.",
+  "SuccessRemoved": "Váš účet bol úspešne odstránený. O 10 sekúnd budete presmerovaní na <1>webovú stránku</1>.",
   "WelcomeUser": "Vitajte na našom DocSpace!\nAk chcete začať, zaregistrujte sa alebo sa prihláste cez sociálne siete."
 }

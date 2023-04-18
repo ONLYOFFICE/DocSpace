@@ -1,5 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "../themes/base";
+import { isMobileOnly } from "react-device-detect";
 
 const StyledDropdown = styled.div`
   @media (orientation: landscape) {
@@ -58,6 +59,14 @@ const StyledDropdown = styled.div`
   box-shadow: ${(props) => props.theme.dropDown.boxShadow};
   -moz-box-shadow: ${(props) => props.theme.dropDown.boxShadow};
   -webkit-box-shadow: ${(props) => props.theme.dropDown.boxShadow};
+  ${(props) =>
+    (props.isMobileView || isMobileOnly) &&
+    css`
+      box-shadow: ${(props) => props.theme.dropDown.boxShadowMobile};
+      -moz-box-shadow: ${(props) => props.theme.dropDown.boxShadowMobile};
+      -webkit-box-shadow: ${(props) => props.theme.dropDown.boxShadowMobile};
+    `}
+
   padding: ${(props) => !props.maxHeight && props.itemCount > 1 && `4px 0px`};
   ${(props) =>
     props.columnCount &&

@@ -58,7 +58,10 @@ const accessKeyId = aws.accessKeyId;
 const secretAccessKey = aws.secretAccessKey; 
 const awsRegion = aws.region; 
 const logGroupName = aws.logGroupName;
-const logStreamName = aws.logStreamName;
+const logStreamName = aws.logStreamName.replace("${hostname}", os.hostname())
+                                      .replace("${applicationContext}", "SsoAuth")                  
+                                      .replace("${guid}", randomUUID())
+                                      .replace("${date}", date.format(new Date(), 'YYYY/MM/DDTHH.mm.ss'));      
 
 let transports = [];
 
@@ -77,17 +80,7 @@ if (aws != null && aws.accessKeyId !== '')
   transports.push(new WinstonCloudWatch({
     name: 'aws',
     level: "debug",
-    logStreamName: () => {
-      const hostname = os.hostname();
-      const now = new Date();
-      const guid = randomUUID();
-      const dateAsString = date.format(now, 'YYYY/MM/DDTHH.mm.ss');
-      
-      return logStreamName.replace("${hostname}", hostname)
-                          .replace("${applicationContext}", "SsoAuth")                  
-                          .replace("${guid}", guid)
-                          .replace("${date}", dateAsString);      
-    },
+    logStreamName: logStreamName,
     logGroupName: logGroupName,
     awsRegion: awsRegion,
     jsonMessage: true,

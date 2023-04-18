@@ -109,8 +109,8 @@ internal class FileConverterService<T> : BackgroundService
                 int operationResultProgress;
                 var password = converter.Password;
 
-                var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
-                commonLinkUtilitySettings.ServerUri = converter.ServerRootPath;
+                var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+                commonLinkUtility.ServerUri = converter.ServerRootPath;
 
                 var scopeClass = scope.ServiceProvider.GetService<FileConverterQueueScope>();
                 (_, tenantManager, userManager, securityContext, daoFactory, fileSecurity, pathProvider, setupInfo, fileUtility, documentServiceHelper, documentServiceConnector, entryManager, fileConverter) = scopeClass;

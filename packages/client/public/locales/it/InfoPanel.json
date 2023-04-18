@@ -26,6 +26,7 @@
   "FeedUpdateUser": "è stato assegnato il ruolo {{role}}",
   "FileExtension": "Estensione di file",
   "FilesEmptyScreenText": "Vedi i dettagli di file e cartelle qui",
+  "HistoryEmptyScreenText": "La cronologia delle attività verrà visualizzata qui",
   "ItemsSelected": "Elementi selezionati",
   "LastModifiedBy": "Ultima modifica di",
   "PendingInvitations": "Inviti in sospeso",

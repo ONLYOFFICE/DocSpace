@@ -1,0 +1,22 @@
+{
+  "Ascending": "昇順",
+  "CopyWindowCode": " ウィンドウの埋め込みコードをコピーする",
+  "DataDisplay": "データ表示設定",
+  "Descending": "下降",
+  "Destroy": "破棄する",
+  "EnterCount": "数を入力",
+  "EnterHeight": "高さを入力",
+  "EnterId": "IDを入力",
+  "EnterPage": "ページ数を入力",
+  "EnterWidth": "幅を入力",
+  "FolderId": "フォルダーID",
+  "FrameId": "フレームID",
+  "Header": "ヘッダー",
+  "ItemsCount": "アイテム数",
+  "JavascriptSdk": "JavaScript SDK",
+  "Menu": "メニュー",
+  "Page": "ページ",
+  "SearchTerm": "検索語句",
+  "SortOrder": "並べ替え順序",
+  "WindowParameters": "ウインドウのパラメター"
+}

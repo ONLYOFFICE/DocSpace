@@ -120,7 +120,7 @@ const PaymentContainer = (props) => {
               <Text>{t("RoomManagerDescription")}</Text>
               <br />
               <Text isBold>{t("Common:PowerUser")}</Text>
-              <Text>{t("PowerUserDescription")}</Text>
+              <Text>{t("Translations:RolePowerUserDescription")}</Text>
             </>
           }
         />
@@ -267,7 +267,6 @@ const PaymentContainer = (props) => {
       );
   };
 
-  const isPayer = user.email === payerEmail;
   const isFreeAfterPaidPeriod = isFreeTariff && payerEmail?.length !== 0;
 
   return (
@@ -285,7 +284,6 @@ const PaymentContainer = (props) => {
 
           {!isNonProfit && isAlreadyPaid && (
             <PayerInformationContainer
-              isPayer={isPayer}
               isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
             />
           )}
@@ -320,7 +318,6 @@ const PaymentContainer = (props) => {
             {!isNonProfit && (
               <PriceCalculation
                 t={t}
-                isPayer={isPayer}
                 isFreeAfterPaidPeriod={isFreeAfterPaidPeriod}
               />
             )}
@@ -344,8 +341,11 @@ export default inject(({ auth, payments }) => {
   } = auth;
   const { showText: expandArticle } = settingsStore;
 
-  const { isFreeTariff, currentTariffPlanTitle, isNonProfit } =
-    currentQuotaStore;
+  const {
+    isFreeTariff,
+    currentTariffPlanTitle,
+    isNonProfit,
+  } = currentQuotaStore;
 
   const {
     isNotPaidPeriod,
@@ -353,19 +353,16 @@ export default inject(({ auth, payments }) => {
     isGracePeriod,
     customerId,
     portalTariffStatus,
+    paymentDate,
+    gracePeriodEndDate,
+    delayDaysCount,
   } = currentTariffStatusStore;
 
   const { planCost, tariffPlanTitle, portalPaymentQuotas } = paymentQuotasStore;
 
   const { theme } = auth.settingsStore;
 
-  const {
-    gracePeriodEndDate,
-    delayDaysCount,
-
-    isAlreadyPaid,
-    paymentDate,
-  } = payments;
+  const { isAlreadyPaid } = payments;
 
   const { user } = userStore;
 

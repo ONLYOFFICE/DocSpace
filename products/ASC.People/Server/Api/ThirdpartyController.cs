@@ -200,7 +200,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpPost("thirdparty/signup")]
     public async Task SignupAccount(SignupAccountRequestDto inDto)
     {
-        var employeeType = inDto.EmplType ?? EmployeeType.RoomAdmin;
+        var employeeType = inDto.EmployeeType ?? EmployeeType.RoomAdmin;
         var passwordHash = inDto.PasswordHash;
         var mustChangePassword = false;
         if (string.IsNullOrEmpty(passwordHash))

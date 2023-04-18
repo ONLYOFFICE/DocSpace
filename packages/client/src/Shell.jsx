@@ -206,6 +206,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
       command: "subscribe",
       data: { roomParts: "backup-restore" },
     });
+    socketHelper.emit({
+      command: "subscribe",
+      data: { roomParts: "quota" },
+    });
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
     });

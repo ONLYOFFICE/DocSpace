@@ -7,6 +7,7 @@ import {
   FolderType,
   FileStatus,
   RoomsType,
+  RoomsTypeValues,
   RoomsProviderType,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
@@ -16,10 +17,8 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import {
-  getDaysRemaining,
-  openDocEditor as openEditor,
-} from "@docspace/client/src/helpers/filesUtils";
+import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import { getDaysRemaining } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,
@@ -320,6 +319,7 @@ class FilesStore {
       runInAction(() => {
         this.setFilter(newFilter);
         this.setFiles(newFiles);
+        this.treeFoldersStore.fetchTreeFolders();
       });
     } else if (opt?.type === "folder" && opt?.id) {
       const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
@@ -377,10 +377,16 @@ class FilesStore {
       const folder = JSON.parse(opt?.data);
       if (!folder || !folder.id) return;
 
-      this.getFolderInfo(folder.id);
+      api.files
+        .getFolderInfo(folder.id)
+        .then(() => this.setFolder(folderInfo))
+        .catch(() => {
+          // console.log("Folder deleted")
+        });
+
       console.log("[WS] update folder", folder.id, folder.title);
 
-      if (this.selection) {
+      if (this.selection?.length) {
         const foundIndex = this.selection?.findIndex((x) => x.id === folder.id);
         if (foundIndex > -1) {
           runInAction(() => {
@@ -1123,8 +1129,9 @@ class FilesStore {
     return newFilter;
   };
 
-  refreshFiles = () => {
-    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  refreshFiles = async () => {
+    const res = await this.fetchFiles(this.selectedFolderStore.id, this.filter);
+    return res;
   };
 
   fetchFiles = (
@@ -1253,7 +1260,9 @@ class FilesStore {
               (rootFolderType === Rooms || rootFolderType === Archive);
 
             if (parentId === rootFolderId) {
-              this.isMuteCurrentRoomNotifications = mute;
+              runInAction(() => {
+                this.isMuteCurrentRoomNotifications = mute;
+              });
             }
 
             return {
@@ -1801,6 +1810,7 @@ class FilesStore {
 
       let roomOptions = [
         "select",
+        "open",
         "separator0",
         "link-for-room-members",
         "reconnect-storage",
@@ -2685,36 +2695,18 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
 
     if (this.folders.length) {
       for (const item of this.folders) {
-        switch (item.roomType) {
-          case RoomsType.FillingFormsRoom:
-            cbMenu.push(`room-${RoomsType.FillingFormsRoom}`);
-            break;
-          case RoomsType.CustomRoom:
-            cbMenu.push(`room-${RoomsType.CustomRoom}`);
-            break;
-          case RoomsType.EditingRoom:
-            cbMenu.push(`room-${RoomsType.EditingRoom}`);
-            break;
-          case RoomsType.ReviewRoom:
-            cbMenu.push(`room-${RoomsType.ReviewRoom}`);
-            break;
-          case RoomsType.ReadOnlyRoom:
-            cbMenu.push(`room-${RoomsType.ReadOnlyRoom}`);
-            break;
-          default:
-            cbMenu.push(FilterType.FoldersOnly);
+        if (item.roomType && RoomsTypeValues[item.roomType]) {
+          cbMenu.push(`room-${RoomsTypeValues[item.roomType]}`);
+        } else {
+          cbMenu.push(FilterType.FoldersOnly);
         }
       }
     }

@@ -42,8 +42,8 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected + .row-wrapper:not(.row-selected) {
     .user-row {
       border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -4px;
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      margin-top: -3px;
 
       ${marginStyles}
     }
@@ -52,8 +52,8 @@ const StyledRowContainer = styled(RowContainer)`
   .row-wrapper:not(.row-selected) + .row-selected {
     .user-row {
       border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -4px;
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      margin-top: -3px;
 
       ${marginStyles}
     }
@@ -68,9 +68,9 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected:last-child {
     .user-row {
       border-bottom: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
-      padding-top: 1px;
+
       ${marginStyles}
     }
     .user-row::after {
@@ -80,62 +80,12 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected:first-child {
     .user-row {
       border-top: ${(props) =>
-        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-      margin-top: -4px;
+    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      margin-top: -3px;
 
       ${marginStyles}
     }
   }
-
-  .row-selected {
-    .user-row {
-      .styled-element {
-        padding-top: 1px;
-      }
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .row-selected {
-      .user-row {
-        margin-top: -3px !important;
-        padding-bottom: 0.8px !important;
-        padding-top: 0.8px !important;
-
-        .styled-element {
-          padding-bottom: 0.8px;
-
-          .owner_icon {
-            padding-bottom: 0.8px;
-          }
-        }
-
-        .expandButton {
-          padding-bottom: 0.8px;
-        }
-
-        .mainIcons {
-          .paid-badge {
-            margin-top: -1px;
-          }
-        }
-      }
-    }
-  }
-
-  ${(props) =>
-    props.sectionWidth <= 500 &&
-    css`
-      .row-selected {
-        .user-row {
-          .mainIcons {
-            .paid-badge {
-              margin-top: 0.8px !important;
-            }
-          }
-        }
-      }
-    `}
 `;
 
 const PeopleRowContainer = ({
@@ -150,6 +100,7 @@ const PeopleRowContainer = ({
   hasMoreAccounts,
   filterTotal,
   withPaging,
+  isLoading,
 }) => {
   useEffect(() => {
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -166,6 +117,9 @@ const PeopleRowContainer = ({
     }
   }, [sectionWidth]);
 
+
+  if (isLoading) return <></>
+
   return peopleList.length > 0 ? (
     <StyledRowContainer
       className="people-row-container"
@@ -174,8 +128,7 @@ const PeopleRowContainer = ({
       hasMoreFiles={hasMoreAccounts}
       itemCount={filterTotal}
       filesLength={peopleList.length}
-      itemHeight={57.6}
-      sectionWidth={sectionWidth}
+      itemHeight={58}
     >
       {peopleList.map((item) => (
         <SimpleUserRow
@@ -192,12 +145,14 @@ const PeopleRowContainer = ({
 };
 
 export default inject(({ peopleStore, auth }) => {
-  const { usersStore, filterStore, viewAs, setViewAs } = peopleStore;
+  const { usersStore, filterStore, viewAs, setViewAs, loadingStore } = peopleStore;
   const { theme, withPaging } = auth.settingsStore;
   const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
   const { filterTotal } = filterStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
+  const { isLoading } = loadingStore
 
   return {
     peopleList,
@@ -206,7 +161,7 @@ export default inject(({ peopleStore, auth }) => {
     theme,
     infoPanelVisible,
     withPaging,
-
+    isLoading,
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,

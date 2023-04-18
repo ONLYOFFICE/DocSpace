@@ -228,7 +228,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _maxFileSizeFeature = new MaxFileSizeFeature(this);
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
-        _freeFeature = new TenantQuotaFeatureFlag(this) { Name = "free", Visible = false };
+        _freeFeature = new FreeFeature(this) { Visible = false };
         _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
         _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
         _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };
@@ -323,7 +323,7 @@ public class TenantQuota : IMapFrom<DbQuota>
             return quota;
         }
 
-        var newQuota = new TenantQuota(quota);
+        var newQuota = new TenantQuota(old);
         newQuota.Price += quota.Price;
         newQuota.Visible &= quota.Visible;
         newQuota.ProductId = "";
@@ -336,11 +336,31 @@ public class TenantQuota : IMapFrom<DbQuota>
             }
             else if (f is TenantQuotaFeatureCount count)
             {
-                count.Value += quota.GetFeature<int>(f.Name).Value;
+                var currentValue = count.Value;
+                var newValue = quota.GetFeature<int>(f.Name).Value;
+
+                if (currentValue == count.Default && newValue != currentValue)
+                {
+                    count.Value = newValue;
+                }
+                else if (currentValue != count.Default && newValue != count.Default)
+                {
+                    count.Value += newValue;
+                }
             }
             else if (f is TenantQuotaFeatureSize length)
             {
-                length.Value += quota.GetFeature<long>(f.Name).Value;
+                var currentValue = length.Value;
+                var newValue = quota.GetFeature<long>(f.Name).Value;
+
+                if (currentValue == length.Default && newValue != currentValue)
+                {
+                    length.Value = newValue;
+                }
+                else
+                {
+                    length.Value += newValue;
+                }
             }
             else if (f is TenantQuotaFeatureFlag flag)
             {

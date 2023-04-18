@@ -51,6 +51,10 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
   let assets: assetsType;
   let standalone = false;
 
+  if (url === "/health") {
+    return res.send({ status: "Healthy" });
+  }
+
   initSSR(headers);
 
   try {
@@ -58,6 +62,11 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
 
     if (initialState.isAuth && url !== "/login/error") {
       res.redirect("/");
+      return next();
+    }
+
+    if (initialState?.portalSettings?.wizardToken) {
+      res.redirect("/wizard");
       return next();
     }
 

@@ -12,6 +12,8 @@
   "MakeRoomPrivateDescription": "Todos os ficheiros nesta sala serão encriptados.",
   "MakeRoomPrivateLimitationsWarningDescription": "Com esta funcionalidade, pode convidar apenas utilizadores já existentes no DocSpace. Depois de criar uma sala, não será possível alterar a lista de utilizadores.",
   "MakeRoomPrivateTitle": "Tornar a Sala Privada",
+  "ReviewRoomDescription": "Solicitar uma revisão ou comentários nos documentos",
+  "ReviewRoomTitle": "Rever salar",
   "RoomEditing": "Edição de Salas",
   "RootLabel": "Raiz",
   "TagsPlaceholder": "Adicionar uma tag",
@@ -20,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Antes de proceder, é necessário ligar o serviço correspondente na secção \"Integração\". Caso contrário, a ligação não será possível.",
   "ThirdPartyStoragePermanentSettingDescription": "Os ficheiros estão armazenados num armazenamento de terceiros {{thirdpartyTitle}} na pasta \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Para ligar um armazenamento de terceiros, é necessário adicionar o serviço correspondente na secção Integração das definições do DocSpace. Contacte o proprietário ou administrador do DocSpace para ativar a integração.",
-  "ThirdPartyStorageTitle": "Armazenamento de terceiros.",
   "ViewOnlyRoomDescription": "Partilhe quaisquer documentos, relatórios, documentação ou outros ficheiros para visualização assim que estejam prontos.",
   "ViewOnlyRoomTitle": "Sala só de visualização"
 }

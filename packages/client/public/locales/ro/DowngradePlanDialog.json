@@ -1,9 +1,7 @@
 {
-  "AllowedManagerNumber": "Numărul maxim de administratori/utilizatori avansați permişi:  <1>{{valuesRange}}</1>.",
-  "CannotDowngradePlan": "Nu puteţi retrograda abonamentul dvs. deoarece capacitatea de stocare/numărul de administratori/utilizatori avansați depăşeşte limita stabilită pentru abonamentului dvs:",
-  "CurrentManagerNumber": "Număr curent de administratori/utilizatori avansați: <1>{{currentCount}}</1>.",
-  "CurrentStorageSpace": "Spaţiu de stocare actual: <1>{{size}}</1>.",
-  "DowngradePlan": "Retrogradare abonament",
-  "SaveOrChange": "Diminuați valoarea parametrului necesar sau păstraţi tariful actual.",
-  "StorageSpaceSizeAllowed": "Dimensiunea maximă a spaţiului de stocare: <1>{{size}}</1>."
+  "CannotChangePlan": "Nu vă puteți schimba abonamentul deoarece volumul de stocare utilizat sau numărul de administratori/utilizatori avansați depășește limitele abonamentului selectat:",
+  "ChangePricingPlan": "Schimbare abonament",
+  "PlanStorageLimit": "O limită la abonamentul nou este <1>{{storageValue}}</1> de spațiu de stocare, și spațiul de stocare ocupat  este de  <1>{{currentStorageValue}}</1>.",
+  "PlanUsersLimit": "Doriți să retrogradați echipa la <1>{{usersCount}}</1> administratori/utilizatori avansați, numărul curent astfel de utilizatori din spațiul dvs DocSpace este <1>{{currentUsersCount}}</1>.",
+  "SaveOrChange": "Eliminați nepotrivirea în parametrul de conflict pentru a continua sau mențineți abonamentul dvs actual."
 }

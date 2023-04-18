@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Pole validačného kódu nemôže byť prázdne</value>
@@ -124,6 +124,9 @@
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Veľkosť súboru obrázka je príliš veľká</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Prístup do portálu je obmedzený</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Váš cenový plán túto možnosť nepodporuje</value>
   </data>
@@ -172,11 +175,126 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Odkaz na potvrdenie Vášho účtu bol odoslaný na zadaný e-mail</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Krstné meno</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Priezvisko</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Chyba pripojenia</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Používateľov sa nepodarilo vytvoriť, prijaté údaje sú nesprávne.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Server nemohol získať nastavenia.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Server nemohol uložiť nastavenia.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Nesprávne prihlasovacie meno alebo heslo.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>Doména LDAP sa nenašla.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Neboli nájdené žiadne skupiny.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Neplatná hodnota používateľského filtra.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Neznáma chyba.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Neboli nájdení žiadni používatelia.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Nepodarilo sa získať atribút skupiny pre jednu alebo viacero skupín.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Nesprávny filter skupiny.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Nepodarilo sa získať atribút názvu skupiny pre jednu alebo niekoľko skupín.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Nepodarilo sa získať atribút prihlasovania pre jedného alebo viacerých používateľov.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Nedá sa pripojiť k serveru LDAP. Skontrolujte, či je adresa servera a číslo portu správne.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Nepodarilo sa získať atribút používateľa pre jedného alebo viacerých používateľov.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Interná chyba servera.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Upraviť používateľov LDAP na bežných používateľov portálu</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>pridanie používateľa
+
+</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Overenie certifikátu</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Kontrola nastavení podpory LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Odpojenie LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Načítanie zoznamu skupín zo servera LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Načítanie zoznamu používateľov zo servera LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Načítanie základných informácií LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>odstránenie používateľa
+
+</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Odstránenie zastaraných skupín, ktoré boli skôr nahraté pomocou LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Odstránenie zastaraných používateľských profilov, ktoré boli skôr nahrané pomocou LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Ukladanie skupín</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Ukladanie nastavení</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Ukladanie používateľov</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Synchronizácia používateľov</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Je požadovaný bezpečnejší typ autentifikácie. Použite šifrované pripojenie alebo povoľte na serveri jednoduché overovanie.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Bol dosiahnutý používateľský limit aktuálneho cenového plánu</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>Služba StartTLS nie je podporovaná pre aktuálny server LDAP.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Príliš veľa LDAP operácií.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Nepodarilo sa získať jedinečné ID pre objekty používateľa/skupiny. Štandardne sa systém pokúsi o zhodu s jedným z nasledujúcich identifikátorov: entryUUID, nsuniqueid, GUID, objectSid. Ak žiadny z atribútov nezodpovedá Vášmu LDAP serveru, zadajte potrebný atribút v nastavení ldap.unique.id v súbore web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Licencia nie je správna</value>

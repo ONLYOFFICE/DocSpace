@@ -15,6 +15,13 @@ const StyledNoItemContainer = styled.div`
     text-align: center;
   }
 
+  .no-history-text {
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 22px;
+    text-align: center;
+  }
+
   .no-thumbnail-img-wrapper {
     width: 75px;
     height: 75px;

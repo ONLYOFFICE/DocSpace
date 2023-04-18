@@ -9,11 +9,6 @@ import { inject, observer } from "mobx-react";
 import { getConvertedSize } from "@docspace/common/utils";
 
 const ModalDialogContainer = styled(ModalDialog)`
-  .allowed-number-managers,
-  .current-number-managers_number,
-  .current-characteristics {
-    margin-left: 3px;
-  }
   .cannot-downgrade-plan {
     margin-bottom: 16px;
   }
@@ -26,11 +21,10 @@ const ModalDialogContainer = styled(ModalDialog)`
   }
 `;
 
-const DowngradePlanDialog = ({
+const ChangePricingPlanDialog = ({
   visible,
   onClose,
   addedManagersCount,
-  minAvailableManagersValue,
   managersCount,
   allowedStorageSizeByQuota,
   usedTotalStorageSizeCount,
@@ -44,42 +38,24 @@ const DowngradePlanDialog = ({
   const allowedStorageSpace = getConvertedSize(t, allowedStorageSizeByQuota);
   const currentStorageSpace = getConvertedSize(t, usedTotalStorageSizeCount);
 
-  const allowedManagersCountByQuotaComponent = (
+  const planUsersLimitations = (
     <Text as="span" fontSize="13px">
-      <Trans t={t} i18nKey="AllowedManagerNumber" ns="DowngradePlanDialog">
-        Number of managers allowed:
-        <strong>
-          {managersCount !== minAvailableManagersValue
-            ? { valuesRange: minAvailableManagersValue + "-" + managersCount }
-            : { valuesRange: minAvailableManagersValue }}
-        </strong>
+      <Trans t={t} i18nKey="PlanUsersLimit" ns="DowngradePlanDialog">
+        You wish to downgrade the team to
+        <strong>{{ usersCount: managersCount }}</strong>
+        admins/power users, and current number of such users in your DocSpace is
+        <strong>{{ currentUsersCount: addedManagersCount }}</strong>
       </Trans>
     </Text>
   );
 
-  const currentAddedManagersCountComponent = (
-    <Text as="span" fontSize="13px" className="current-characteristics">
-      <Trans t={t} i18nKey="CurrentManagerNumber" ns="DowngradePlanDialog">
-        Current number of managers:
-        <strong>{{ currentCount: addedManagersCount }}</strong>
-      </Trans>
-    </Text>
-  );
-
-  const allowedStorageSpaceByQuotaComponent = (
+  const storagePlanLimitations = (
     <Text as="span" fontSize="13px">
-      <Trans t={t} i18nKey="StorageSpaceSizeAllowed" ns="DowngradePlanDialog">
-        Storage space size allowed:
-        <strong>{{ size: allowedStorageSpace }}</strong>
-      </Trans>
-    </Text>
-  );
-
-  const currentStorageSpaceByQuotaComponent = (
-    <Text as="span" fontSize="13px" className="current-characteristics">
-      <Trans t={t} i18nKey="CurrentStorageSpace" ns="DowngradePlanDialog">
-        Storage space size allowed:
-        <strong>{{ size: currentStorageSpace }}</strong>
+      <Trans t={t} i18nKey="PlanStorageLimit" ns="DowngradePlanDialog">
+        New tariff's limitation is
+        <strong>{{ storageValue: allowedStorageSpace }}</strong> of storage, and
+        your current used storage is
+        <strong>{{ currentStorageValue: currentStorageSpace }}</strong>.
       </Trans>
     </Text>
   );
@@ -94,18 +70,16 @@ const DowngradePlanDialog = ({
     >
       <ModalDialog.Header>
         <Text isBold fontSize="21px">
-          {t("DowngradePlan")}
+          {t("ChangePricingPlan")}
         </Text>
       </ModalDialog.Header>
       <ModalDialog.Body>
         <Text fontSize="13px" isBold className="cannot-downgrade-plan">
-          {t("CannotDowngradePlan")}
+          {t("CannotChangePlan")}
         </Text>
-        {allowedManagersCountByQuotaComponent}
-        {currentAddedManagersCountComponent}
+        {planUsersLimitations}
         <br />
-        {allowedStorageSpaceByQuotaComponent}
-        {currentStorageSpaceByQuotaComponent}
+        {storagePlanLimitations}
 
         <Text fontSize="13px" className="save-or-change">
           {t("SaveOrChange")}
@@ -119,35 +93,24 @@ const DowngradePlanDialog = ({
           onClick={onCloseModal}
           tabIndex={3}
         />
-        <Button
-          label={t("Common:CancelButton")}
-          size="normal"
-          onClick={onCloseModal}
-          tabIndex={3}
-        />
       </ModalDialog.Footer>
     </ModalDialogContainer>
   );
 };
 
-DowngradePlanDialog.propTypes = {
+ChangePricingPlanDialog.propTypes = {
   visible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
 };
 
 export default inject(({ auth, payments }) => {
-  const {
-    minAvailableManagersValue,
-    managersCount,
-    allowedStorageSizeByQuota,
-  } = payments;
+  const { managersCount, allowedStorageSizeByQuota } = payments;
   const { currentQuotaStore } = auth;
   const { addedManagersCount, usedTotalStorageSizeCount } = currentQuotaStore;
   return {
-    minAvailableManagersValue,
     managersCount,
     addedManagersCount,
     allowedStorageSizeByQuota,
     usedTotalStorageSizeCount,
   };
-})(observer(DowngradePlanDialog));
+})(observer(ChangePricingPlanDialog));

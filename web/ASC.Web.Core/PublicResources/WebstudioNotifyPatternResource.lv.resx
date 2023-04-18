@@ -133,6 +133,111 @@
   <data name="LinkLearnMore" xml:space="preserve">
     <value>Uzzināt vairāk&gt;&gt;</value>
   </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu "Palīdzības centru":"https://helpcenter.onlyoffice.com/" vai jautājiet mūsu "atbalsta komandai": :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Jūsu, 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu "Palīdzības centru":"https://helpcenter.onlyoffice.com/" vai jautājiet mūsu "atbalsta komandai": :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Jūsu, 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu "Palīdzības centru":"https://helpcenter.onlyoffice.com/" vai jautājiet mūsu "atbalsta komandai": :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Jūsu, 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu "Palīdzības centru":"https://helpcenter.onlyoffice.com/" vai jautājiet mūsu "atbalsta komandai": :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Jūsu, 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Connect any cloud storage* and work without switching between apps. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu "Palīdzības centru":"https://helpcenter.onlyoffice.com/" vai jautājiet mūsu "atbalsta komandai": :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Jūsu, 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Aktivizējiet savu e-pastu portālā "${__VirtualRootPath}":"$InviteLink".
 
@@ -438,6 +543,14 @@ ONLYOFFICE™ komanda
 
 ^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}". Ja nevēlaties saņemt paziņojumus par profila atjauninājumiem, lūdzu, labojiet savus "abonēšanas uzstādījumus" ":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Lūk, kas jauns jūsu DocSpace šajā datumā: $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testa ziņa
 
@@ -534,4 +647,58 @@ ONLYOFFICE komanda</value>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Jauns lietotājs pievienots portālam ${LetterLogoText}</value>
   </data>
-</root>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; izveidoja jaunu dokumentu: &lt;a href={1}&gt;{2}&lt;/a&gt; telpā: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; pievienoja jaunu komentāru dokumenta versijai: &lt;a href={1}&gt;{2}&lt;/a&gt; telpā: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; augšupielādēja dokumentu: &lt;a href={1}&gt;{2}&lt;/a&gt; telpā: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; pārdēvēja telpu: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; izveidoja jaunu telpu: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; tika izņemts no telpas: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; rediģēja dokumentu: &lt;a href={1}&gt;{2}&lt;/a&gt; telpā: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; izdzēsa telpu: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; tika pievienots telpai: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; pārvietoja telpu: &lt;a href={1}&gt;{2}&lt;/a&gt; uz arhīvu - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; tika piešķirta loma &lt;b&gt;{1}&lt;/b&gt; telpā: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Pievienots jauns DocSpace lietotājs: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; mainīja lietotāju piekļuves līmeni &lt;b&gt;{1}&lt;/b&gt; uz &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace lietotājs atjaunināja: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  </root>

@@ -2654,6 +2654,8 @@ const Base = {
 
       itemOwnerColor: "rgb(163, 169, 174)",
 
+      backgroundButtons: "#FFFFFF",
+
       dropdownColor: black,
 
       loader: {
@@ -3095,6 +3097,8 @@ const Base = {
 
       descriptionTextColor: "#A3A9AE",
       pendingEmailTextColor: "#A3A9AE",
+
+      mobileRowBackground: "#F8F9F9",
     },
     themePreview: {
       descriptionColor: "#A3A9AE",

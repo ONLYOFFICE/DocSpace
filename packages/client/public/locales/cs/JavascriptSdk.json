@@ -1,0 +1,22 @@
+{
+  "Ascending": "Vzestupně",
+  "CopyWindowCode": "Kopírovat kód pro vložení okna",
+  "DataDisplay": "Nastavení zobrazení dat",
+  "Descending": "Klesající",
+  "Destroy": "Zničit",
+  "EnterCount": "Zadejte počet",
+  "EnterHeight": "Zadejte výšku",
+  "EnterId": "Zadejte ID",
+  "EnterPage": "Zadejte číselnou stránku",
+  "EnterWidth": "Zadejte šířku",
+  "FolderId": "ID složky",
+  "FrameId": "ID snímku",
+  "Header": "Záhlaví",
+  "ItemsCount": "Položky se počítají",
+  "JavascriptSdk": "Javascript sdk",
+  "Menu": "Jídelní lístek",
+  "Page": "Stránka",
+  "SearchTerm": "Hledaný výraz",
+  "SortOrder": "Seřadit objednávku",
+  "WindowParameters": "Parametry okna"
+}

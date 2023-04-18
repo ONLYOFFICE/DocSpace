@@ -69,7 +69,7 @@ export const StyledMobileCategoryWrapper = styled.div`
 
   .inherit-title-link {
     margin-right: 7px;
-    font-size: 19px;
+    font-size: 16px;
     font-weight: 600;
   }
 

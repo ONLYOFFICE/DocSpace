@@ -50,11 +50,10 @@ const EncryptedFileIcon = styled.div`
 const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
   const [showDefaultIcon, setShowDefaultIcon] = React.useState(isRoom);
 
-  const onLoadRoomIcon = () => {
+  React.useEffect(() => {
     if (!isRoom || defaultRoomIcon === icon) return;
-
     setShowDefaultIcon(false);
-  };
+  }, [isRoom, defaultRoomIcon, icon, setShowDefaultIcon]);
 
   return (
     <>
@@ -63,7 +62,6 @@ const ItemIcon = ({ icon, fileExst, isPrivacy, isRoom, defaultRoomIcon }) => {
           className={`react-svg-icon`}
           isRoom={isRoom}
           src={showDefaultIcon ? defaultRoomIcon : icon}
-          onLoad={onLoadRoomIcon}
         />
       </IconWrapper>
       {isPrivacy && fileExst && <EncryptedFileIcon isEdit={false} />}

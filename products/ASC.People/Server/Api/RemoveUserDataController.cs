@@ -91,7 +91,7 @@ public class RemoveUserDataController : ApiControllerBase
     {
         var user = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
 
-        if (user.IsLDAP())
+        if (user.IsLDAP() || user.IsOwner(Tenant))
         {
             throw new SecurityException();
         }

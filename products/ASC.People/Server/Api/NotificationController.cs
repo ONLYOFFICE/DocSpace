@@ -63,7 +63,7 @@ public class NotificationController : ApiControllerBase
     /// <path>api/2.0/people/phone</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("phone")]
-    public object SendNotificationToChange(UpdateMemberRequestDto inDto)
+    public async Task<object> SendNotificationToChange(UpdateMemberRequestDto inDto)
     {
         var user = _userManager.GetUsers(string.IsNullOrEmpty(inDto.UserId)
             ? _securityContext.CurrentAccount.ID : new Guid(inDto.UserId));
@@ -77,7 +77,7 @@ public class NotificationController : ApiControllerBase
 
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
 
-        _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfo(user);
 
         if (user.IsMe(_authContext))
         {
