@@ -178,9 +178,9 @@ FileInput.propTypes = {
   name: PropTypes.string,
   /** Called when a file is selected */
   onInput: PropTypes.func,
-  /**Specifies files visible for upload */
+  /** Specifies the files visible for upload */
   accept: PropTypes.string,
-  /**Specifies label for upload button */
+  /** Specifies the label for the upload button */
   buttonLabel: PropTypes.string,
 };
 
