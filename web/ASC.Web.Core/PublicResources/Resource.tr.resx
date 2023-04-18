@@ -316,9 +316,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Sahip</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Portal ismi</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Erişimi</value>
   </data>

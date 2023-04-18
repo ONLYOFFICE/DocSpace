@@ -7,11 +7,11 @@ import Link from "@docspace/components/link";
 import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
-import history from "@docspace/common/history";
+
 import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
 import { StyledArrowRightIcon } from "./Customization/StyledSettings";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import Badge from "@docspace/components/badge";
 
 const StyledComponent = styled.div`
@@ -73,13 +73,15 @@ const CustomizationNavbar = ({
   currentColorScheme,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isLoadedSetting) setIsLoadedCustomizationNavbar(isLoadedSetting);
   }, [isLoadedSetting]);
 
   const onClickLink = (e) => {
     e.preventDefault();
-    history.push(e.target.pathname);
+    navigate(e.target.pathname);
   };
 
   return !isLoadedPage ? (
@@ -200,11 +202,8 @@ const CustomizationNavbar = ({
 };
 
 export default inject(({ auth, common }) => {
-  const {
-    helpUrlCommonSettings,
-    theme,
-    currentColorScheme,
-  } = auth.settingsStore;
+  const { helpUrlCommonSettings, theme, currentColorScheme } =
+    auth.settingsStore;
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,
@@ -214,9 +213,7 @@ export default inject(({ auth, common }) => {
     currentColorScheme,
   };
 })(
-  withRouter(
-    withCultureNames(
-      observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
-    )
+  withCultureNames(
+    observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
   )
 );

@@ -9,7 +9,7 @@ export function login(userName, passwordHash, session) {
 
   return request({
     method: "post",
-    url: "/authentication.json",
+    url: "/authentication",
     skipLogout: true,
     data,
   });
@@ -18,7 +18,7 @@ export function login(userName, passwordHash, session) {
 export function thirdPartyLogin(SerializedProfile) {
   return request({
     method: "post",
-    url: "authentication.json",
+    url: "authentication",
     data: { SerializedProfile },
   });
 }
@@ -33,7 +33,7 @@ export function logout() {
 export function checkConfirmLink(data) {
   return request({
     method: "post",
-    url: "/authentication/confirm.json",
+    url: "/authentication/confirm",
     data,
   });
 }
@@ -67,7 +67,7 @@ export function loginWithTfaCode(userName, passwordHash, code) {
 export function loginWithConfirmKey(data) {
   return request({
     method: "post",
-    url: `/authentication.json`,
+    url: `/authentication`,
     skipLogout: true,
     data,
   });

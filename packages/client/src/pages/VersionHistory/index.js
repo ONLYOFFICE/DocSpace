@@ -1,6 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+
 import Section from "@docspace/common/components/Section";
 import Loaders from "@docspace/common/components/Loaders";
 import { withTranslation } from "react-i18next";
@@ -43,17 +42,12 @@ class PureVersionHistory extends React.Component {
 
 const VersionHistory = withTranslation("VersionHistory")(PureVersionHistory);
 
-VersionHistory.propTypes = {
-  history: PropTypes.object.isRequired,
-};
+VersionHistory.propTypes = {};
 
 export default inject(({ auth, filesStore, versionHistoryStore }) => {
   const { filter, isLoading } = filesStore;
-  const {
-    setIsVerHistoryPanel,
-    versions,
-    showProgressBar,
-  } = versionHistoryStore;
+  const { setIsVerHistoryPanel, versions, showProgressBar } =
+    versionHistoryStore;
 
   return {
     isTabletView: auth.settingsStore.isTabletView,
@@ -64,4 +58,4 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
 
     setIsVerHistoryPanel,
   };
-})(withRouter(observer(VersionHistory)));
+})(observer(VersionHistory));

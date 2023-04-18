@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
 import Text from "@docspace/components/text";
@@ -101,4 +100,4 @@ const PeopleTableRow = (props) => {
   );
 };
 
-export default withRouter(PeopleTableRow);
+export default PeopleTableRow;

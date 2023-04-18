@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -25,14 +25,14 @@ const Details = ({
   const [isThumbnailError, setIsThumbmailError] = useState(false);
   const onThumbnailError = () => setIsThumbmailError(true);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const detailsHelper = new DetailsHelper({
     isVisitor,
     t,
     item: selection,
     openUser,
-    history,
+    navigate,
     personal,
     culture,
   });

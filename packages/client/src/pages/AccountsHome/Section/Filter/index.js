@@ -1,6 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
@@ -484,43 +483,36 @@ const SectionFilterContent = ({
   );
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore }) => {
-    const {
-      loadingStore,
-      filterStore,
-      usersStore,
-      groupsStore,
-      viewAs,
-    } = peopleStore;
-    const { userStore, isLoaded, isAdmin } = auth;
-    const { user } = userStore;
-    const { groups } = groupsStore;
-    const { getUsersList: fetchPeople } = usersStore;
-    const { filter } = filterStore;
-    const { setIsLoading } = loadingStore;
+export default inject(({ auth, peopleStore }) => {
+  const { loadingStore, filterStore, usersStore, groupsStore, viewAs } =
+    peopleStore;
+  const { userStore, isLoaded, isAdmin } = auth;
+  const { user } = userStore;
+  const { groups } = groupsStore;
+  const { getUsersList: fetchPeople } = usersStore;
+  const { filter } = filterStore;
+  const { setIsLoading } = loadingStore;
 
-    return {
-      isLoaded,
-      isAdmin,
-      user,
-      groups,
-      fetchPeople,
-      filter,
-      setIsLoading,
-      viewAs,
-    };
-  })(
-    observer(
-      withLayoutSize(
-        withTranslation([
-          "People",
-          "Common",
-          "PeopleTranslations",
-          "ConnectDialog",
-          "SmartBanner",
-        ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
-      )
+  return {
+    isLoaded,
+    isAdmin,
+    user,
+    groups,
+    fetchPeople,
+    filter,
+    setIsLoading,
+    viewAs,
+  };
+})(
+  observer(
+    withLayoutSize(
+      withTranslation([
+        "People",
+        "Common",
+        "PeopleTranslations",
+        "ConnectDialog",
+        "SmartBanner",
+      ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
     )
   )
 );

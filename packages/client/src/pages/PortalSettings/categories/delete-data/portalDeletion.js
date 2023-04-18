@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -17,13 +16,8 @@ import { isDesktop } from "@docspace/components/utils/device";
 import { EmployeeActivationStatus } from "@docspace/common/constants";
 
 const PortalDeletion = (props) => {
-  const {
-    t,
-    getPortalOwner,
-    owner,
-    currentColorScheme,
-    sendActivationLink,
-  } = props;
+  const { t, getPortalOwner, owner, currentColorScheme, sendActivationLink } =
+    props;
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [stripeUrl, setStripeUrl] = useState(null);
   const [isDesktopView, setIsDesktopView] = useState(false);
@@ -123,7 +117,5 @@ export default inject(({ auth }) => {
     sendActivationLink,
   };
 })(
-  withTranslation(["Settings", "MainBar", "People", "Common"])(
-    withRouter(PortalDeletion)
-  )
+  withTranslation(["Settings", "MainBar", "People", "Common"])(PortalDeletion)
 );

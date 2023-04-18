@@ -101,15 +101,15 @@ class ProfileActionsStore {
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
 
-    history.push(PROFILE_SELF_URL);
+    history.navigate(PROFILE_SELF_URL);
   };
 
   onSettingsClick = (settingsUrl) => {
-    history.push(settingsUrl);
+    history.navigate(settingsUrl);
   };
 
   onPaymentsClick = () => {
-    history.push(PAYMENTS_URL);
+    history.navigate(PAYMENTS_URL);
   };
 
   onHelpCenterClick = () => {
@@ -129,8 +129,9 @@ class ProfileActionsStore {
   };
 
   onSupportClick = () => {
-    const supportUrl = this.authStore.settingsStore.additionalResourcesData
-      ?.feedbackAndSupportUrl;
+    const supportUrl =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
   };
@@ -153,7 +154,7 @@ class ProfileActionsStore {
     if (isDesktop || isTablet) {
       this.setIsAboutDialogVisible(true);
     } else {
-      history.push(ABOUT_URL);
+      history.navigate(ABOUT_URL);
     }
   };
 
@@ -333,12 +334,13 @@ class ProfileActionsStore {
       return actionsArray;
     }
 
-    const feedbackAndSupportEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.feedbackAndSupportEnabled;
-    const videoGuidesEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.videoGuidesEnabled;
-    const helpCenterEnabled = this.authStore.settingsStore
-      .additionalResourcesData?.helpCenterEnabled;
+    const feedbackAndSupportEnabled =
+      this.authStore.settingsStore.additionalResourcesData
+        ?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled =
+      this.authStore.settingsStore.additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(

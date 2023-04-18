@@ -123,7 +123,7 @@ public class WorkContext
             INotifySender emailSender = _notifyServiceSender;
             INotifySender telegramSender = _telegramSender;
             INotifySender pushSender = _pushSender;
-            
+
 
             var postman = _configuration["core:notify:postman"];
 
@@ -159,6 +159,11 @@ public class WorkContext
 
             _notifyStarted = true;
         }
+    }
+
+    public void RegisterSendMethod(Func<DateTime, Task> method, string cron)
+    {
+        NotifyEngine.RegisterSendMethod(method, cron);
     }
 
     public void RegisterSendMethod(Action<DateTime> method, string cron)

@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Zuvor müssen Sie den entsprechenden Dienst im Abschnitt \"Integration\" verbinden. Andernfalls wird die Verbindung nicht möglich sein.",
   "ThirdPartyStoragePermanentSettingDescription": "Die Dateien werden in einem Drittspeicher {{thirdpartyTitle}} im Ordner \"{{thirdpartyFolderName}}\" gespeichert.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Um einen Speicherplatz eines Drittanbieters zu verbinden, müssen Sie den entsprechenden Dienst im Abschnitt Integration der DocSpace-Einstellungen hinzufügen. Kontaktieren Sie den DocSpace-Besitzer oder -Administrator, um die Integration zu aktivieren.",
-  "ThirdPartyStorageTitle": "Speicherdienst von Drittanbietern",
   "ViewOnlyRoomDescription": "Teilen Sie fertige Dokumente, Berichte, Dokumentation und anderen Dateien zur Ansicht.",
   "ViewOnlyRoomTitle": "Raum nur mit Aussicht"
 }

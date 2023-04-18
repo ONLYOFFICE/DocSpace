@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Button from "@docspace/components/button";
@@ -48,11 +48,14 @@ const StyledForm = styled(Box)`
 `;
 
 const TfaAuthForm = withLoader((props) => {
-  const { t, loginWithCode, loginWithCodeAndCookie, location, history } = props;
+  const { t, loginWithCode, loginWithCodeAndCookie } = props;
 
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onSubmit = async () => {
     try {
@@ -63,10 +66,10 @@ const TfaAuthForm = withLoader((props) => {
 
       if (user && hash) {
         const url = await loginWithCode(user, hash, code);
-        history.push(url || "/");
+        navigate(url || "/");
       } else {
         const url = await loginWithCodeAndCookie(code, linkData.confirmHeader);
-        history.push(url || "/");
+        navigate(url || "/");
       }
     } catch (err) {
       let errorMessage = "";
@@ -174,8 +177,4 @@ export default inject(({ auth, confirm }) => ({
   setIsLoading: confirm.setIsLoading,
   loginWithCode: auth.loginWithCode,
   loginWithCodeAndCookie: auth.tfaStore.loginWithCodeAndCookie,
-}))(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(observer(TfaAuthFormWrapper))
-  )
-);
+}))(withTranslation(["Confirm", "Common"])(observer(TfaAuthFormWrapper)));
