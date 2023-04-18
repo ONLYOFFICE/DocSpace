@@ -1,3 +1,9 @@
-import { createBrowserHistory } from "history";
+// import { createBrowserHistory } from "history";
 
-export default createBrowserHistory();
+// export default createBrowserHistory();
+
+const history = {
+  navigate: null,
+  location: null,
+  match: null,
+};
