@@ -120,6 +120,17 @@
   </data>
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Ειδοποίηση ασφάλειας</value>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Μήνυμα χρήστη προς τους διαχειριστές</value>
@@ -145,4 +156,159 @@
   <data name="subject_storage_encryption_start" xml:space="preserve">
     <value>${LetterLogoText}. Η διαδικασία κρυπτογράφησης ξεκίνησε</value>
   </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; δημιούργησε ένα νέο έγγραφο: &lt;a href={1}&gt;{2}&lt;/a&gt; στο δωμάτιο: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; πρόσθεσε ένα νέο σχόλιο στην έκδοση του εγγράφου: &lt;a href={1}&gt;{2}&lt;/a&gt; στο δωμάτιο: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; μεταφόρτωσε ένα νέο έγγραφο: &lt;a href={1}&gt;{2}&lt;/a&gt; στο δωμάτιο: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; μετονόμασε το δωμάτιο: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; δημιούργησε ένα νέο δωμάτιο: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; αφαιρέθηκε από το δωμάτιο: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; επεξεργάστηκε το έγγραφο: &lt;a href={1}&gt;{2}&lt;/a&gt; στο δωμάτιο: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; διέγραψε το δωμάτιο: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; προστέθηκε στο δωμάτιο: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; μετέφερε το δωμάτιο: &lt;a href={1}&gt;{2}&lt;/a&gt; στο αρχείο - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>Στον χρήστη &lt;b&gt;{0}&lt;/b&gt; ανατέθηκε ο ρόλος &lt;b&gt;{1}&lt;/b&gt; στο δωμάτιο: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Προστέθηκε νέος χρήστης DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>Ο χρήστης &lt;b&gt;{0}&lt;/b&gt; άλλαξε το επίπεδο πρόσβασης των χρηστών από &lt;b&gt;{1}&lt;/b&gt; σε &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Ο χρήστης του DocSpace ενημερώθηκε: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Ακολουθούν τα νέα στο DocSpace σας στις $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+</data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Καλώς ήρθατε στο DocSpace του ONLYOFFICE! Το προφίλ χρήστη σας προστέθηκε επιτυχώς στο "${__VirtualRootPath}":"${__VirtualRootPath}". Τώρα μπορείτε:
+
+*#* Να συνεργαστείτε με άλλους χρήστες στο δωμάτιο στο οποίο έχετε προσκληθεί: *δωμάτια συνεργασίας για συν-συγγραφή σε πραγματικό χρόνο ή προσαρμοσμένα δωμάτια με ευέλικτες ρυθμίσεις για οποιονδήποτε σκοπό*.
+
+*# Να εργάζεστε με αρχεία διαφορετικών μορφοτύπων*: έγγραφα κειμένου, υπολογιστικά φύλλα, παρουσιάσεις, ψηφιακές φόρμες, PDF, ηλεκτρονικά βιβλία, πολυμέσα.
+
+*# Συνεργάζεστε σε έγγραφα* με δύο τρόπους συν-επεξεργασίας: σε πραγματικό χρόνο ή με κλείδωμα παραγράφων. Παρακολουθήστε αλλαγές, επικοινωνήστε σε πραγματικό χρόνο χρησιμοποιώντας την ενσωματωμένη συνομιλία ή πραγματοποιώντας κλήσεις ήχου και βίντεο. 
+
+*# Συνδέετε οποιοδήποτε αποθηκευτικό χώρο στο cloud* και να εργάζεστε χωρίς εναλλαγή μεταξύ εφαρμογών. 
+
+$GreenButton
+
+Αν χρειάζεστε βοήθεια, περιηγηθείτε στο "Κέντρο βοήθειας":"https://helpcenter.onlyoffice.com/" ή ρωτήστε την "ομάδα υποστήριξης":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Με εκτίμηση, 
+Η ομάδα του ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Καλώς ήρθατε στο DocSpace του ONLYOFFICE! Το προφίλ χρήστη σας προστέθηκε επιτυχώς στο "${__VirtualRootPath}":"${__VirtualRootPath}". Τώρα μπορείτε:
+
+*#* Να συνεργαστείτε με άλλους χρήστες στο δωμάτιο στο οποίο έχετε προσκληθεί: *δωμάτια συνεργασίας για συν-συγγραφή σε πραγματικό χρόνο ή προσαρμοσμένα δωμάτια με ευέλικτες ρυθμίσεις για οποιονδήποτε σκοπό*.
+
+*# Να εργάζεστε με αρχεία διαφορετικών μορφοτύπων*: έγγραφα κειμένου, υπολογιστικά φύλλα, παρουσιάσεις, ψηφιακές φόρμες, PDF, ηλεκτρονικά βιβλία, πολυμέσα.
+
+*# Συνεργάζεστε σε έγγραφα* με δύο τρόπους συν-επεξεργασίας: σε πραγματικό χρόνο ή με κλείδωμα παραγράφων. Παρακολουθήστε αλλαγές, επικοινωνήστε σε πραγματικό χρόνο χρησιμοποιώντας την ενσωματωμένη συνομιλία ή πραγματοποιώντας κλήσεις ήχου και βίντεο. 
+
+*# Συνδέετε οποιοδήποτε αποθηκευτικό χώρο στο cloud* και να εργάζεστε χωρίς εναλλαγή μεταξύ εφαρμογών. 
+
+$GreenButton
+
+Αν χρειάζεστε βοήθεια, περιηγηθείτε στο "Κέντρο βοήθειας":"https://helpcenter.onlyoffice.com/" ή ρωτήστε την "ομάδα υποστήριξης":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Με εκτίμηση, 
+Η ομάδα του ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Καλώς ήρθατε στο DocSpace του ONLYOFFICE! Το προφίλ χρήστη σας προστέθηκε επιτυχώς στο "${__VirtualRootPath}":"${__VirtualRootPath}". Τώρα μπορείτε:
+
+*#* Να συνεργαστείτε με άλλους χρήστες στο δωμάτιο στο οποίο έχετε προσκληθεί: *δωμάτια συνεργασίας για συν-συγγραφή σε πραγματικό χρόνο ή προσαρμοσμένα δωμάτια με ευέλικτες ρυθμίσεις για οποιονδήποτε σκοπό*.
+
+*# Να εργάζεστε με αρχεία διαφορετικών μορφοτύπων*: έγγραφα κειμένου, υπολογιστικά φύλλα, παρουσιάσεις, ψηφιακές φόρμες, PDF, ηλεκτρονικά βιβλία, πολυμέσα.
+
+*# Συνεργάζεστε σε έγγραφα* με δύο τρόπους συν-επεξεργασίας: σε πραγματικό χρόνο ή με κλείδωμα παραγράφων. Παρακολουθήστε αλλαγές, επικοινωνήστε σε πραγματικό χρόνο χρησιμοποιώντας την ενσωματωμένη συνομιλία ή πραγματοποιώντας κλήσεις ήχου και βίντεο. 
+
+*# Συνδέετε οποιοδήποτε αποθηκευτικό χώρο στο cloud* και να εργάζεστε χωρίς εναλλαγή μεταξύ εφαρμογών. 
+
+$GreenButton
+
+Αν χρειάζεστε βοήθεια, περιηγηθείτε στο "Κέντρο βοήθειας":"https://helpcenter.onlyoffice.com/" ή ρωτήστε την "ομάδα υποστήριξης":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Με εκτίμηση, 
+Η ομάδα του ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Καλώς ήρθατε στο DocSpace του ONLYOFFICE! Το προφίλ χρήστη σας προστέθηκε επιτυχώς στο "${__VirtualRootPath}":"${__VirtualRootPath}". Τώρα μπορείτε:
+
+*#* Να συνεργαστείτε με άλλους χρήστες στο δωμάτιο στο οποίο έχετε προσκληθεί: *δωμάτια συνεργασίας για συν-συγγραφή σε πραγματικό χρόνο ή προσαρμοσμένα δωμάτια με ευέλικτες ρυθμίσεις για οποιονδήποτε σκοπό*.
+
+*# Να εργάζεστε με αρχεία διαφορετικών μορφοτύπων*: έγγραφα κειμένου, υπολογιστικά φύλλα, παρουσιάσεις, ψηφιακές φόρμες, PDF, ηλεκτρονικά βιβλία, πολυμέσα.
+
+*# Συνεργάζεστε σε έγγραφα* με δύο τρόπους συν-επεξεργασίας: σε πραγματικό χρόνο ή με κλείδωμα παραγράφων. Παρακολουθήστε αλλαγές, επικοινωνήστε σε πραγματικό χρόνο χρησιμοποιώντας την ενσωματωμένη συνομιλία ή πραγματοποιώντας κλήσεις ήχου και βίντεο. 
+
+*# Συνδέετε οποιοδήποτε αποθηκευτικό χώρο στο cloud* και να εργάζεστε χωρίς εναλλαγή μεταξύ εφαρμογών. 
+
+$GreenButton
+
+Αν χρειάζεστε βοήθεια, περιηγηθείτε στο "Κέντρο βοήθειας":"https://helpcenter.onlyoffice.com/" ή ρωτήστε την "ομάδα υποστήριξης":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Με εκτίμηση, 
+Η ομάδα του ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Γεια σας, $UserName!
+
+Καλώς ήρθατε στο DocSpace του ONLYOFFICE! Το προφίλ χρήστη σας προστέθηκε επιτυχώς στο "${__VirtualRootPath}":"${__VirtualRootPath}". Τώρα μπορείτε:
+
+*#* Να συνεργαστείτε με άλλους χρήστες στο δωμάτιο στο οποίο έχετε προσκληθεί: *δωμάτια συνεργασίας για συν-συγγραφή σε πραγματικό χρόνο ή προσαρμοσμένα δωμάτια με ευέλικτες ρυθμίσεις για οποιονδήποτε σκοπό*.
+
+*# Να εργάζεστε με αρχεία διαφορετικών μορφοτύπων*: έγγραφα κειμένου, υπολογιστικά φύλλα, παρουσιάσεις, ψηφιακές φόρμες, PDF, ηλεκτρονικά βιβλία, πολυμέσα.
+
+*# Συνεργάζεστε σε έγγραφα* με δύο τρόπους συν-επεξεργασίας: σε πραγματικό χρόνο ή με κλείδωμα παραγράφων. Παρακολουθήστε αλλαγές, επικοινωνήστε σε πραγματικό χρόνο χρησιμοποιώντας την ενσωματωμένη συνομιλία ή πραγματοποιώντας κλήσεις ήχου και βίντεο. 
+
+*# Συνδέετε οποιοδήποτε αποθηκευτικό χώρο στο cloud* και να εργάζεστε χωρίς εναλλαγή μεταξύ εφαρμογών. 
+
+$GreenButton
+
+Αν χρειάζεστε βοήθεια, περιηγηθείτε στο "Κέντρο βοήθειας":"https://helpcenter.onlyoffice.com/" ή ρωτήστε την "ομάδα υποστήριξης":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Με εκτίμηση, 
+Η ομάδα του ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+</data>
 </root>

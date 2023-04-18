@@ -228,6 +228,110 @@ $GreenButton
 
 *Poznámka*: tento odkaz je platný pouze 48 hodin. Prosím, dokončete operaci v této době.</value>
   </data>
+ <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrý den, $UserName!
+
+Vítejte v ONLYOFFICE DocSpace! Váš uživatelský profil byl úspěšně přidán do "${__VirtualRootPath}":"${__VirtualRootPath}". Nyní můžete:
+
+*#* Pracujte s ostatními uživateli v místnosti, do které jste pozváni: *místnosti pro spolupráci pro spoluautorství v reálném čase nebo vlastní místnosti s flexibilním nastavením pro libovolný účel*.
+
+*# Pracujte se soubory různých formátů*: textové dokumenty, tabulky, prezentace, digitální formuláře, PDF, elektronické knihy, multimédia.
+
+*# Spolupracujte na dokumentech* pomocí dvou režimů spoluautorství: v reálném čase nebo s uzamčením odstavce. Sledujte změny, komunikujte v reálném čase pomocí vestavěného chatu nebo uskutečňujte audio a video hovory. 
+
+*# Připojte libovolné cloudové úložiště* a pracujte bez přepínání mezi aplikacemi. 
+
+$GreenButton
+
+Pokud potřebujete pomoc, projděte si naše "Centrum nápovědy":"https://helpcenter.onlyoffice.com/" nebo se zeptejte našeho "týmu podpory":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S přátelským pozdravem, 
+tým ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+<data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrý den, $UserName!
+
+Vítejte v ONLYOFFICE DocSpace! Váš uživatelský profil byl úspěšně přidán do "${__VirtualRootPath}":"${__VirtualRootPath}". Nyní můžete:
+
+*#* Pracujte s ostatními uživateli v místnosti, do které jste pozváni: *místnosti pro spolupráci pro spoluautorství v reálném čase nebo vlastní místnosti s flexibilním nastavením pro libovolný účel*.
+
+*# Pracujte se soubory různých formátů*: textové dokumenty, tabulky, prezentace, digitální formuláře, PDF, elektronické knihy, multimédia.
+
+*# Spolupracujte na dokumentech* pomocí dvou režimů spoluautorství: v reálném čase nebo s uzamčením odstavce. Sledujte změny, komunikujte v reálném čase pomocí vestavěného chatu nebo uskutečňujte audio a video hovory. 
+
+*# Připojte libovolné cloudové úložiště* a pracujte bez přepínání mezi aplikacemi. 
+
+$GreenButton
+
+Pokud potřebujete pomoc, projděte si naše "Centrum nápovědy":"https://helpcenter.onlyoffice.com/" nebo se zeptejte našeho "týmu podpory":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S přátelským pozdravem, 
+tým ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrý den, $UserName!
+
+Vítejte v ONLYOFFICE DocSpace! Váš uživatelský profil byl úspěšně přidán do "${__VirtualRootPath}":"${__VirtualRootPath}". Nyní můžete:
+
+*#* Pracujte s ostatními uživateli v místnosti, do které jste pozváni: *místnosti pro spolupráci pro spoluautorství v reálném čase nebo vlastní místnosti s flexibilním nastavením pro libovolný účel*.
+
+*# Pracujte se soubory různých formátů*: textové dokumenty, tabulky, prezentace, digitální formuláře, PDF, elektronické knihy, multimédia.
+
+*# Spolupracujte na dokumentech* pomocí dvou režimů spoluautorství: v reálném čase nebo s uzamčením odstavce. Sledujte změny, komunikujte v reálném čase pomocí vestavěného chatu nebo uskutečňujte audio a video hovory. 
+
+*# Připojte libovolné cloudové úložiště* a pracujte bez přepínání mezi aplikacemi. 
+
+$GreenButton
+
+Pokud potřebujete pomoc, projděte si naše "Centrum nápovědy":"https://helpcenter.onlyoffice.com/" nebo se zeptejte našeho "týmu podpory":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S přátelským pozdravem, 
+tým ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrý den, $UserName!
+
+Vítejte v ONLYOFFICE DocSpace! Váš uživatelský profil byl úspěšně přidán do "${__VirtualRootPath}":"${__VirtualRootPath}". Nyní můžete:
+
+*#* Pracujte s ostatními uživateli v místnosti, do které jste pozváni: *místnosti pro spolupráci pro spoluautorství v reálném čase nebo vlastní místnosti s flexibilním nastavením pro libovolný účel*.
+
+*# Pracujte se soubory různých formátů*: textové dokumenty, tabulky, prezentace, digitální formuláře, PDF, elektronické knihy, multimédia.
+
+*# Spolupracujte na dokumentech* pomocí dvou režimů spoluautorství: v reálném čase nebo s uzamčením odstavce. Sledujte změny, komunikujte v reálném čase pomocí vestavěného chatu nebo uskutečňujte audio a video hovory. 
+
+*# Připojte libovolné cloudové úložiště* a pracujte bez přepínání mezi aplikacemi. 
+
+$GreenButton
+
+Pokud potřebujete pomoc, projděte si naše "Centrum nápovědy":"https://helpcenter.onlyoffice.com/" nebo se zeptejte našeho "týmu podpory":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S přátelským pozdravem, 
+tým ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Dobrý den, $UserName!
+
+Vítejte v ONLYOFFICE DocSpace! Váš uživatelský profil byl úspěšně přidán do "${__VirtualRootPath}":"${__VirtualRootPath}". Nyní můžete:
+
+*#* Pracujte s ostatními uživateli v místnosti, do které jste pozváni: *místnosti pro spolupráci pro spoluautorství v reálném čase nebo vlastní místnosti s flexibilním nastavením pro libovolný účel*.
+
+*# Pracujte se soubory různých formátů*: textové dokumenty, tabulky, prezentace, digitální formuláře, PDF, elektronické knihy, multimédia.
+
+*# Spolupracujte na dokumentech* pomocí dvou režimů spoluautorství: v reálném čase nebo s uzamčením odstavce. Sledujte změny, komunikujte v reálném čase pomocí vestavěného chatu nebo uskutečňujte audio a video hovory. 
+
+*# Připojte libovolné cloudové úložiště* a pracujte bez přepínání mezi aplikacemi. 
+
+$GreenButton
+
+Pokud potřebujete pomoc, projděte si naše "Centrum nápovědy":"https://helpcenter.onlyoffice.com/" nebo se zeptejte našeho "týmu podpory":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S přátelským pozdravem, 
+tým ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data> 
   <data name="pattern_migration_error" xml:space="preserve">
     <value>h1.Chyba při migraci portálu dalšího regionu
 
@@ -487,5 +591,47 @@ tým ONLYOFFICE</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nový uživatel byl přidán ${LetterLogoText} do portálu </value>
+  </data>
+<data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; vytvořil/a nový dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v místnosti: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; přidal/a nový komentář k verzi dokumentu: &lt;a href={1}&gt;{2}&lt;/a&gt; v místnosti: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; nahrál nový dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v místnosti: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; přejmenoval/a místnost: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; vytvořil/a novou místnost: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; byl/a odstraněn z místnosti: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; upravil/a dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v místnosti: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; smazal/a místnosti: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; byl/a přidán do místnosti: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; přesunul/a místnost: &lt;a href={1}&gt;{2}&lt;/a&gt; do archivu - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; byla přidělena role &lt;b&gt;{1}&lt;/b&gt; v místnosti: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Přidán nový uživatel DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; změnil/a úroveň přístupu uživatelů &lt;b&gt;{1}&lt;/b&gt; na &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Uživatel DocSpace aktualizován: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>
