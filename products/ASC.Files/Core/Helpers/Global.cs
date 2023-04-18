@@ -668,6 +668,11 @@ public class GlobalFolder
         }
 
         id = my ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
+        
+        if (!_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
+        {
+            return id;
+        }
 
         var tenantId = _tenantManager.GetCurrentTenant().Id;
         var userId = _authContext.CurrentAccount.ID;
@@ -731,41 +736,9 @@ public class GlobalFolder
         
         _logger.Debug($"Found {files.Count} sample documents. Path: {path}");
         
-        foreach (var file in files) 
+        foreach (var file in files)
         {
-            try
-            {
-                var filePath = path + file; 
-                var fileName = Path.GetFileName(filePath);
-            
-                foreach (var ext in Enum.GetValues<ThumbnailExtension>()) 
-                { 
-                    if (FileUtility.GetFileExtension(filePath) == "." + ext
-                        && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
-                    {
-                        return;
-                    }
-                }
-
-                var newFile = serviceProvider.GetRequiredService<File<int>>();
-
-                newFile.Title = fileName;
-                newFile.ParentId = folderId;
-                newFile.Comment = FilesCommonResource.CommentCreate;
-
-                await using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
-                {
-                    newFile.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync("", filePath);
-                    newFile = await fileDao.SaveFileAsync(newFile, stream, false);
-                }
-
-                await fileMarker.MarkAsNewAsync(newFile);
-                await socketManager.CreateFileAsync(newFile);
-            }
-            catch (Exception e)
-            {
-                _logger.ErrorSaveSampleFile(e);
-            }
+            await SaveFileAsync(serviceProvider, storeTemplate, fileMarker, fileDao, socketManager, path + file, folderId, files);
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
@@ -786,7 +759,44 @@ public class GlobalFolder
             catch (Exception e)
             {
                 _logger.ErrorSaveSampleFolder(e);
+            }   
+        }
+    }
+
+    private async Task SaveFileAsync(IServiceProvider serviceProvider, IDataStore storeTemplate, FileMarker fileMarker, FileDao fileDao, SocketManager socketManager,
+        string filePath, int folderId, IEnumerable<string> files)
+    {
+        try
+        {
+            var fileName = Path.GetFileName(filePath);
+            
+            foreach (var ext in Enum.GetValues<ThumbnailExtension>()) 
+            { 
+                if (FileUtility.GetFileExtension(filePath) == "." + ext
+                    && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
+                {
+                    return;
+                }
             }
+
+            var newFile = serviceProvider.GetRequiredService<File<int>>();
+
+            newFile.Title = fileName;
+            newFile.ParentId = folderId;
+            newFile.Comment = FilesCommonResource.CommentCreate;
+
+            await using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
+            {
+                newFile.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync("", filePath);
+                newFile = await fileDao.SaveFileAsync(newFile, stream, false);
+            }
+
+            await fileMarker.MarkAsNewAsync(newFile);
+            await socketManager.CreateFileAsync(newFile);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorSaveSampleFile(e);
         }
     }
 

@@ -494,12 +494,12 @@ $GreenButton
 
 ^Ако не искате да получавате известия за актуализации на потребителския профил, моля, управлявайте "настройките си за абонамент":"$RecipientSubscriptionConfigURL". ^</value>
   </data>
-   <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Ето какво е новото във вашия DocSpace за $Date
+  <data name="pattern_send_whats_new" xml:space="preserve">
+	<value>h1.Ето какво е новото във вашия DocSpace за $Date
 
 #foreach($activity in $Activities)
-$activity
-  
+$activity</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP тестово съобщение Това съобщение е генерирано автоматично за тестване на вашите SMTP настройки. Ако го преглеждате, това означава, че настройките са правилни и можете да ги използвате в портала си. С най-добри пожелания, Екипът на ONLYOFFICE</value>
   </data>
@@ -513,6 +513,7 @@ $activity
   </data>
   <data name="subject_backup_created" xml:space="preserve">
     <value>${LetterLogoText}. ${__VirtualRootPath} архивът на портала е създаден</value>
+  </data>
   <data name="ActionFileCreated" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; създаде нов документ: &lt;a href={1}&gt;{2}&lt;/a&gt; в стаята: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
   </data>

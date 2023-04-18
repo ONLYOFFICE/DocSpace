@@ -998,4 +998,172 @@ Le lien est valide pendant 7 jours.</value>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value> Vous êtes invité à vous joindre à ${__VirtualRootPath}</value>
   </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a créé un nouveau document : &lt;a href={1}&gt;{2}&lt;/a&gt; dans la salle : &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a ajouté un nouveau commentaire à la version du document : &lt;a href={1}&gt;{2}&lt;/a&gt; dans la salle : &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a chargé un nouveau document : &lt;a href={1}&gt;{2}&lt;/a&gt; dans la salle : &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a changé le nom de la salle : &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a créé une nouvelle salle : &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a été retiré(e) de la salle : &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a modifié le document : &lt;a href={1}&gt;{2}&lt;/a&gt; dans la salle : &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a supprimé la salle : &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a été ajouté(e) à la salle : &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a déplacé la salle : &lt;a href={1}&gt;{2}&lt;/a&gt; à l'archive - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a été affecté(e) au rôle de &lt;b&gt;{1}&lt;/b&gt; dans la salle : &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Un nouvel utilisateur de DocSpace a été ajouté : &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; a changé le niveau d'accès des utilisateurs &lt;b&gt;{1}&lt;/b&gt; en &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>L'utilisateur de DocSpace mis à jour : &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Bonjour, $UserName!
+
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}" : "${__VirtualRootPath}". Maintenant vous pouvez :
+
+*#* Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
+
+*# Travailler avec des fichiers de différents formats*: documents texte, feuilles de calcul, présentations, formulaires numériques, fichiers PDF, livres électroniques, multimedia.
+
+*# Collaborer sur des documents* avec deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivre des modifications, communiquer en temps réel via chat intégré ou organiser des appels audio et vidéo. 
+
+*# Connecter n'importe quel stockage en cloud* et travailler sans changer d'application. 
+
+$GreenButton
+
+Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Bien à vous, 
+équipe ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Bonjour, $UserName!
+
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}" : "${__VirtualRootPath}". Maintenant vous pouvez :
+
+*#* Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
+
+*# Travailler avec des fichiers de différents formats*: documents texte, feuilles de calcul, présentations, formulaires numériques, fichiers PDF, livres électroniques, multimedia.
+
+*# Collaborer sur des documents* avec deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivre des modifications, communiquer en temps réel via chat intégré ou organiser des appels audio et vidéo. 
+
+*# Connecter n'importe quel stockage en cloud* et travailler sans changer d'application. 
+
+$GreenButton
+
+Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Bien à vous, 
+équipe ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Bonjour, $UserName!
+
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
+
+*#* Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
+
+*# Travailler avec des fichiers de différents formats*: documents texte, feuilles de calcul, présentations, formulaires numériques, fichiers PDF, livres électroniques, multimedia.
+
+*# Collaborer sur des documents* avec deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivre des modifications, communiquer en temps réel via chat intégré ou organiser des appels audio et vidéo.  
+
+*# Connecter n'importe quel stockage en cloud* et travailler sans changer d'application. 
+
+$GreenButton
+
+Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Bien à vous, 
+équipe ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Bonjour, $UserName!
+
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
+
+*#* Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
+
+*# Travailler avec des fichiers de différents formats*: documents texte, feuilles de calcul, présentations, formulaires numériques, fichiers PDF, livres électroniques, multimedia.
+
+*# Collaborer sur des documents* avec deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivre des modifications, communiquer en temps réel via chat intégré ou organiser des appels audio et vidéo.  
+
+*# Connecter n'importe quel stockage en cloud* et travailler sans changer d'application. 
+
+
+$GreenButton
+
+Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Bien à vous, 
+équipe ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Bonjour, $UserName!
+
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil d'utilisateur a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Maintenant vous pouvez :
+
+*#* Travailler avec d'autres utilisateurs dans la salle où vous avez une invitation : *des salles de collaboration pour la coédition en temps réel ou des salles personnalisées avec des paramètres flexibles pour tout objectif*.
+
+*# Travailler avec des fichiers de différents formats*: documents texte, feuilles de calcul, présentations, formulaires numériques, fichiers PDF, livres électroniques, multimedia.
+
+*# Collaborer sur des documents* avec deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivre des modifications, communiquer en temps réel via chat intégré ou organiser des appels audio et vidéo.  
+
+*# Connecter n'importe quel stockage en cloud* et travailler sans changer d'application. 
+
+$GreenButton
+
+Si vous avez besoin d'aide, consultez notre "Centre d'aide" :"https://helpcenter.onlyoffice.com/" ou demandez à notre "équipe de support" :"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Bien à vous, 
+équipe ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+</data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Voici ce qu'il y a de nouveau dans votre DocSpace le $Date
+
+#foreach($activity in $Activities)
+$activité
+
+#end</value>
+</data>
+<data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>WBienvenue à ONLYOFFICE DocSpace !</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Bienvenue à ONLYOFFICE DocSpace !</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Bienvenue à ONLYOFFICE DocSpace !</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Bienvenue à ONLYOFFICE DocSpace !</value>
+  </data>
 </root>
