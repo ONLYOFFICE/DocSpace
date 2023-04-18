@@ -23,6 +23,10 @@ const StyledTagList = styled.div`
     }
     .tag-icon {
       margin-left: 10px;
+      svg {
+        width: 10px;
+        height: 10px;
+      }
     }
   }
 `;

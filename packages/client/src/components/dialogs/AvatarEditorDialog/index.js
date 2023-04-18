@@ -36,7 +36,7 @@ const AvatarEditorDialog = (props) => {
     "CreateEditRoomDialog",
   ]);
 
-  const { visible, onClose, profile, updateCreatedAvatar } = props;
+  const { visible, onClose, profile, updateCreatedAvatar, setHasAvatar } = props;
   const [avatar, setAvatar] = useState({
     uploadedFile: profile.hasAvatar ? profile.avatarMax : DefaultUserAvatarMax,
     x: 0.5,
@@ -54,6 +54,7 @@ const AvatarEditorDialog = (props) => {
     if (!avatar.uploadedFile) {
       const res = await deleteAvatar(profile.id);
       updateCreatedAvatar(res);
+      setHasAvatar(false)
       onClose();
       return;
     }
@@ -69,6 +70,7 @@ const AvatarEditorDialog = (props) => {
 
       if (res.success) {
         res.data && updateCreatedAvatar(res.data);
+        setHasAvatar(true)
         toastr.success(t("Common:ChangesSavedSuccessfully"));
       } else {
         throw new Error(t("Common:ErrorInternalServer"));
@@ -134,10 +136,11 @@ const AvatarEditorDialog = (props) => {
 export default inject(({ peopleStore }) => {
   const { targetUserStore } = peopleStore;
 
-  const { targetUser: profile, updateCreatedAvatar } = targetUserStore;
+  const { targetUser: profile, updateCreatedAvatar, setHasAvatar } = targetUserStore;
 
   return {
     profile,
+    setHasAvatar,
     updateCreatedAvatar,
   };
 })(observer(AvatarEditorDialog));

@@ -16,7 +16,6 @@
   "LogoutBtn": "Uitloggen",
   "LogoutDescription": "Opmerking. Alle actieve verbindingen behalve deze verbinding worden uitgelogd, omdat deze momenteel in gebruik is.",
   "LogoutFrom": "Uitloggen van {{platform}} {{browser}} ?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "De e-mail met activatie instructies zijn verzonden naar het <strong>{{ email }}</strong> e-mailadres.",
   "MyProfile": "Mijn profiel",
   "ProviderSuccessfullyConnected": "Provider met succes verbonden",
   "ProviderSuccessfullyDisconnected": "Provider met succes losgekoppeld",

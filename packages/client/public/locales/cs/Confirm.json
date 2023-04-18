@@ -24,7 +24,7 @@
   "Reactivate": "Znovu aktivovat",
   "SetAppButton": "Připojit aplikaci",
   "SetAppDescription": "Dvoufázové ověřování je povoleno. Nakonfigurujte aplikaci autentizátoru, abyste mohli pokračovat v práci v DocSpace. Můžete použít aplikaci Google Authenticator pro <1>Android</1> a <4>iOS</4> nebo Authenticator pro <8>Windows Phone</8>.",
-  "SetAppInstallDescription": "Chcete-li aplikaci připojit, naskenujte kód QR nebo ručně zadejte svůj tajný klíč <1>{{{ secretKey }}</1> a poté zadejte šestimístný kód z aplikace do pole níže.",
+  "SetAppInstallDescription": "Chcete-li aplikaci připojit, naskenujte kód QR nebo ručně zadejte svůj tajný klíč <1>{{ secretKey }}</1> a poté zadejte šestimístný kód z aplikace do pole níže.",
   "SetAppTitle": "Nastavení aplikace autentizačního zařízení",
   "SuccessDeactivate": "Váš účet byl úspěšně deaktivován. Za 10 sekund budete přesměrováni na <1>stránku</1>.",
   "SuccessReactivate": "Váš účet byl úspěšně reaktivován. Za 10 sekund budete přesměrováni na <1>portál</1>.",

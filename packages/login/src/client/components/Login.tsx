@@ -239,7 +239,7 @@ const Login: React.FC<ILoginProps> = ({
                     type="action"
                     fontSize="13px"
                     fontWeight="600"
-                    color="#3B72A7"
+                    color={currentColorScheme?.main?.accent}
                     className="more-label"
                     onClick={moreAuthOpen}
                   >

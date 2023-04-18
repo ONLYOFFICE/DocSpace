@@ -33,6 +33,7 @@ const PortalRenaming = (props) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
+    domain,
   } = props;
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
@@ -265,13 +266,15 @@ const PortalRenaming = (props) => {
     }
   }, [isSmallTablet, setIsCustomizationView]);
 
-  const tooltipPortalRenamingTooltip = <PortalRenamingTooltip t={t} />;
+  const tooltipPortalRenamingTooltip = (
+    <PortalRenamingTooltip t={t} domain={domain} />
+  );
   const hasError = errorValue === null ? false : true;
 
   const settingsBlock = (
     <div className="settings-block">
       <div className="settings-block-description">
-        {t("PortalRenamingMobile")}
+        {t("PortalRenamingMobile", { domain })}
       </div>
       <FieldContainer
         id="fieldContainerPortalRenaming"
@@ -335,7 +338,7 @@ const PortalRenaming = (props) => {
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { theme, tenantAlias } = auth.settingsStore;
+  const { theme, tenantAlias, baseDomain } = auth.settingsStore;
   const { setPortalRename, getAllSettings } = setup;
   const {
     isLoaded,
@@ -352,6 +355,7 @@ export default inject(({ auth, setup, common }) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
+    domain: baseDomain,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

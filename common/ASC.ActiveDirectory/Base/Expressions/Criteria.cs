@@ -71,7 +71,7 @@ public class Criteria : ICloneable
     /// Add nested Criteria
     /// </summary>
     /// <param name="nested"></param>
-    /// <returns>себя</returns>
+    /// <returns>Self</returns>
     public Criteria Add(Criteria nested)
     {
         _nestedCriteras.Add(nested);

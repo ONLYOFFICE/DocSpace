@@ -16,7 +16,6 @@
   "LogoutBtn": "Wyloguj",
   "LogoutDescription": "Uwaga. Wszystkie aktywne połączenia, oprócz niniejszego zostaną wylogowane, ponieważ jest ono obecnie w użyciu.",
   "LogoutFrom": "Wylogować z {{platform}} na {{browser}} ?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Instrukcje dotyczące aktywacji adresu e-mail zostały wysłane na adres <strong>{{ email }}</strong>.",
   "MyProfile": "Mój profil",
   "ProviderSuccessfullyConnected": "Dostawca został pomyślnie podłączony",
   "ProviderSuccessfullyDisconnected": "Dostawca został pomyślnie rozłączony",

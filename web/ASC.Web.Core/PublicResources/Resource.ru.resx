@@ -832,9 +832,6 @@
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Превышена квота на размер дискового пространства</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Имя портала</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Доступ к порталу</value>
   </data>
