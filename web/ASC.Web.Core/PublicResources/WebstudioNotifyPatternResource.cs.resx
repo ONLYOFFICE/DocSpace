@@ -504,6 +504,14 @@ ONLYOFFICE™ Support Team
 
 ^Pokud nechcete dostávat oznámení o aktualizacích profilu, prosím upravte Vaše "nastavení odběru":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Zde je to, co je nového ve vašem DocSpace ke dni $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testovací zpráva
 
@@ -538,6 +546,18 @@ tým ONLYOFFICE</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Změna adresy portálu</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Vítejte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Vítejte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Vítejte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Vítejte v ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Uživatelská zpráva správcům</value>

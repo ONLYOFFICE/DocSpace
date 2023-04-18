@@ -252,6 +252,111 @@ p=. "Potvrdiť zmenu portálovej adresy":"$ConfirmDnsUpdate"
 
 *Poznámka*: tento link je platný len 7 dní. Prosím dokončite proces zmeny portálovej adresy v tomto období.</value>
   </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
+
+*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+
+*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+
+*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+
+*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+
+$GreenButton
+
+Ak potrebujete pomoc, navštívte naš "Centrum pomoci":"https://helpcenter.onlyoffice.com/" alebo kontaktujte našu "podporu":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S pozdravom, 
+Tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
+
+*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+
+*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+
+*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+
+*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+
+$GreenButton
+
+Ak potrebujete pomoc, navštívte naš "Centrum pomoci":"https://helpcenter.onlyoffice.com/" alebo kontaktujte našu "podporu":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S pozdravom, 
+Tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
+
+*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+
+*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+
+*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+
+*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+
+$GreenButton
+
+Ak potrebujete pomoc, navštívte naš "Centrum pomoci":"https://helpcenter.onlyoffice.com/" alebo kontaktujte našu "podporu":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S pozdravom, 
+Tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
+
+*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+
+*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+
+*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+
+*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+
+$GreenButton
+
+Ak potrebujete pomoc, navštívte naš "Centrum pomoci":"https://helpcenter.onlyoffice.com/" alebo kontaktujte našu "podporu":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S pozdravom, 
+Tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Hello, $UserName!
+
+Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
+
+*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+
+*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+
+*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+
+*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+
+$GreenButton
+
+Ak potrebujete pomoc, navštívte naš "Centrum pomoci":"https://helpcenter.onlyoffice.com/" alebo kontaktujte našu "podporu":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S pozdravom, 
+Tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Správa z "${__VirtualRootPath}":"${__VirtualRootPath}" portálu
 
@@ -448,6 +553,14 @@ ONLYOFFICE™ Support Team
 
 ^Ak nechcete dostávať notifikácie o aktualizáciách profilov, prosím skontrolujte si Vaše "nastavenia odberu":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Tu nájdete novinky vo vašom priestore DocSpace za $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testovacia správa 
 
@@ -482,6 +595,18 @@ ONLYOFFICE Team</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Zmena adresy portálu</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Vitajte v ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Používateľská správa správcom</value>
@@ -554,5 +679,47 @@ ONLYOFFICE Team</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nový používateľ pridaný do ${LetterLogoText} portálu</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; vytvoril nový dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v miestnosti: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; pridal nový komentár k verzii dokumentu: &lt;a href={1}&gt;{2}&lt;/a&gt; v miestnosti: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; nahral nový dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v miestnosti: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; premenoval miestnosť: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; vytvoril novú miestnosť: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; bol odstránený z miestnosti: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; upravil dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v miestnosti: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; odstránil miestnosť: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; bol pridaný do miestnosti: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; presunul miestnosť: &lt;a href={1}&gt;{2}&lt;/a&gt; do archívu - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; - bola mu pridelená úloha &lt;b&gt;{1}&lt;/b&gt; v miestnosti: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Bol pridaný nový používateľ DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; zmenil úroveň prístupu používateľov &lt;b&gt;{1}&lt;/b&gt; na &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Používateľ DocSpace bol aktualizovaný: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

@@ -543,6 +543,14 @@ ONLYOFFICE™ komanda
 
 ^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}". Ja nevēlaties saņemt paziņojumus par profila atjauninājumiem, lūdzu, labojiet savus "abonēšanas uzstādījumus" ":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Lūk, kas jauns jūsu DocSpace šajā datumā: $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testa ziņa
 
@@ -693,12 +701,4 @@ ONLYOFFICE komanda</value>
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
   </data>
-    <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Lūk, kas jauns jūsu DocSpace šajā datumā: $Date
-
-#foreach($activity in $Activities)
-$activity
-
-#end</value>
-</data>
-</root>
+  </root>

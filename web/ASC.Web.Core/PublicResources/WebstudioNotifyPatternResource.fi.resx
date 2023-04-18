@@ -127,6 +127,14 @@
   <data name="LinkLearnMore" xml:space="preserve">
     <value>Lisätietoa &gt;&gt;</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Uutta DocSpacessa $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testiviesti
 
@@ -345,14 +353,6 @@ Jos tarvitset apua, selaa "Help Centeriä":"https://helpcenter.onlyoffice.com/" 
 Ystävällisin terveisin, 
 ONLYOFFICE-Tiimi
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
-</data>
-<data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Uutta DocSpacessa $Date
-
-#foreach($activity in $Activities)
-$activity
-
-#end</value>
 </data>
   <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>

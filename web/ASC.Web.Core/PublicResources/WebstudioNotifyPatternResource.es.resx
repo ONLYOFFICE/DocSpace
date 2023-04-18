@@ -831,6 +831,14 @@ Equipo de ONLYOFFICE
 
 [$__AuthorName]($__AuthorUrl) ha cambiado los detalles de su perfil en el portal [${__VirtualRootPath}](${__VirtualRootPath}).</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Estas son las novedades de su DocSpace el $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP Mensaje de Prueba 
 
@@ -1157,13 +1165,4 @@ Equipo de ONLYOFFICE
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
   </data>
-    </data>
-  <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Estas son las novedades de su DocSpace el $Date
-
-#foreach($activity in $Activities)
-$activity
-
-#end</value>
-  </data>
-</root>
+  </root>
