@@ -147,7 +147,7 @@ jobs:
           # GIT_BRANCH=release/v1.0.0
           rename 's/product/docspace/g' ../../common/*.sh
           echo "$BRANCH"
-          rpmbuild -D "GIT_BRANCH $(git rev-parse --abbrev-ref HEAD)" -D "_topdir $(pwd)" -D "version $VERSION" -D "release $BUILD_NUMBER" -ba product.spec
+          rpmbuild -D "GIT_BRANCH release/v1.0.0" -D "_topdir $(pwd)" -D "version $VERSION" -D "release $BUILD_NUMBER" -ba product.spec
       
           EOF
           
