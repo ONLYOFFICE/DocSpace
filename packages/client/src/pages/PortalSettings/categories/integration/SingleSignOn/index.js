@@ -24,6 +24,10 @@ const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
 
+  useEffect(() => {
+    load();
+  }, []);
+
   if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
 
