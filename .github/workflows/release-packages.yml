@@ -146,8 +146,9 @@ jobs:
           sed -i -e '/BuildRequires/d' product.spec
           # GIT_BRANCH=release/v1.0.0
           rename 's/product/docspace/g' ../../common/*.sh
+          echo "$BRANCH"
           rpmbuild -D "GIT_BRANCH $BRANCH" -D "_topdir $(pwd)" -D "version $VERSION" -D "release $BUILD_NUMBER" -ba product.spec
-          
+      
           EOF
           
               ### Execute script ###
