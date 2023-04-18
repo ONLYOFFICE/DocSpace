@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+import { useLocation, useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -31,13 +31,16 @@ const MainContainer = styled.div`
 const TrustedMail = (props) => {
   const {
     t,
-    history,
+
     trustedDomainsType,
     trustedDomains,
     setMailDomainSettings,
     helpLink,
     currentColorScheme,
   } = props;
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const regexp = /^[a-zA-Z0-9][a-zA-Z0-9-]{0,61}[a-zA-Z0-9](?:\.[a-zA-Z]{1,})+/; //check domain name valid
 
@@ -91,8 +94,8 @@ const TrustedMail = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("trusted-mail") &&
-      history.push("/portal-settings/security/access-portal");
+      location.pathname.includes("trusted-mail") &&
+      navigate("/portal-settings/security/access-portal");
   };
 
   const onSelectDomainType = (e) => {
@@ -239,4 +242,4 @@ export default inject(({ auth }) => {
     helpLink,
     currentColorScheme,
   };
-})(withTranslation(["Settings", "Common"])(withRouter(observer(TrustedMail))));
+})(withTranslation(["Settings", "Common"])(observer(TrustedMail)));

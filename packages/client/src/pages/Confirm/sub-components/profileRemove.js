@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
+
 import { withTranslation, Trans } from "react-i18next";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -13,14 +13,8 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 
 const ProfileRemoveForm = (props) => {
-  const {
-    t,
-    greetingTitle,
-    linkData,
-    logout,
-    legalTerms,
-    currentColorScheme,
-  } = props;
+  const { t, greetingTitle, linkData, logout, legalTerms, currentColorScheme } =
+    props;
   const [isProfileDeleted, setIsProfileDeleted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -137,8 +131,4 @@ export default inject(({ auth }) => ({
   logout: auth.logout,
   legalTerms: auth.settingsStore.legalTerms,
   currentColorScheme: auth.settingsStore.currentColorScheme,
-}))(
-  withRouter(
-    withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm)))
-  )
-);
+}))(withTranslation("Confirm")(withLoader(observer(ProfileRemoveForm))));

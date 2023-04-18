@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import Backdrop from "@docspace/components/backdrop";
 import Heading from "@docspace/components/heading";
 import Aside from "@docspace/components/aside";
@@ -29,13 +28,8 @@ class ChangeOwnerComponent extends React.Component {
 
   onOwnerChange = () => {
     const { owner } = this.state;
-    const {
-      selection,
-      setFolder,
-      setFile,
-      setIsLoading,
-      setFilesOwner,
-    } = this.props;
+    const { selection, setFolder, setFile, setIsLoading, setFilesOwner } =
+      this.props;
     const folderIds = [];
     const fileIds = [];
     const selectedItem = selection[0];
@@ -162,4 +156,4 @@ export default inject(({ auth, filesStore, dialogsStore }) => {
     setFilesOwner,
     setBufferSelection,
   };
-})(withRouter(observer(ChangeOwnerPanel)));
+})(observer(ChangeOwnerPanel));

@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject } from "mobx-react";
@@ -110,4 +109,4 @@ export default inject(({ setup, auth }) => {
     getLoginHistoryReport,
     isAuditAvailable,
   };
-})(withTranslation("Settings")(withRouter(LoginHistory)));
+})(withTranslation("Settings")(LoginHistory));

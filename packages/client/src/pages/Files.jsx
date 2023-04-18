@@ -1,7 +1,7 @@
 import React from "react";
 //import { Provider as FilesProvider } from "mobx-react";
 import { inject, observer } from "mobx-react";
-import { Switch, withRouter, Redirect } from "react-router-dom";
+import { Routes, useLocation, Navigate, Route } from "react-router-dom";
 //import config from "PACKAGE_FILE";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
@@ -30,6 +30,8 @@ import {
 
 import GlobalEvents from "../components/GlobalEvents";
 import Accounts from "./Accounts";
+import Profile from "./Profile";
+import NotificationComponent from "./Notifications";
 
 // const homepage = config.homepage;
 
@@ -49,10 +51,9 @@ import Accounts from "./Accounts";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 
-const FilesArticle = React.memo(({ history, withMainButton }) => {
-  const isFormGallery = history.location.pathname
-    .split("/")
-    .includes("form-gallery");
+const FilesArticle = React.memo(({ withMainButton }) => {
+  const location = useLocation();
+  const isFormGallery = location.pathname.split("/").includes("form-gallery");
 
   return !isFormGallery ? (
     <Article withMainButton={withMainButton}>
@@ -73,89 +74,6 @@ const FilesArticle = React.memo(({ history, withMainButton }) => {
   );
 });
 
-const FilesSection = React.memo(({ withMainButton }) => {
-  return (
-    <Switch>
-      {/*<PrivateRoute exact path={HISTORY_URL} component={VersionHistory} />*/}
-      {/* <PrivateRoute path={"/private"} component={PrivateRoomsPage} /> */}
-      <PrivateRoute
-        exact
-        path={"/settings"}
-        component={() => <Redirect to="/settings/common" />}
-      />
-      <PrivateRoute
-        exact
-        path={["/", "/rooms"]}
-        component={() => <Redirect to="/rooms/shared" />}
-      />
-      <PrivateRoute
-        restricted
-        withManager
-        withCollaborator
-        path={[
-          "/rooms/personal",
-          "/rooms/personal/filter",
-
-          "/files/trash",
-          "/files/trash/filter",
-        ]}
-        component={Home}
-      />
-
-      <PrivateRoute
-        path={[
-          "/rooms/shared",
-          "/rooms/shared/filter",
-          "/rooms/shared/:room",
-          "/rooms/shared/:room/filter",
-
-          "/rooms/archived",
-          "/rooms/archived/filter",
-          "/rooms/archived/:room",
-          "/rooms/archived/:room/filter",
-
-          // "/files/favorite",
-          // "/files/favorite/filter",
-
-          // "/files/recent",
-          // "/files/recent/filter",
-          "/products/files/",
-        ]}
-        component={Home}
-      />
-      {/* <PrivateRoute path={["/rooms/personal/filter"]} component={Home} /> */}
-      {/* <PrivateRoute path={"/#preview"} component={Home} /> */}
-      {/* <PrivateRoute path={"/rooms"} component={Home} /> */}
-      {/* <PrivateRoute path={ROOMS_URL} component={VirtualRooms} /> */}
-
-      <PrivateRoute
-        exact
-        restricted
-        withManager
-        path={["/accounts", "/accounts/filter", "/accounts/create/:type"]}
-        component={Accounts}
-      />
-
-      <PrivateRoute
-        exact
-        path={["/accounts/view/@self", "/accounts/view/@self/notification"]}
-        component={Accounts}
-      />
-
-      <PrivateRoute
-        exact
-        restricted
-        path={"/settings/admin"}
-        component={Settings}
-      />
-      {withMainButton && (
-        <PrivateRoute exact path={"/settings/common"} component={Settings} />
-      )}
-      <PrivateRoute component={Error404Route} />
-    </Switch>
-  );
-});
-
 const Error404Route = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -164,54 +82,197 @@ const Error404Route = (props) => (
   </React.Suspense>
 );
 
-class FilesContent extends React.Component {
-  constructor(props) {
-    super(props);
+const FilesSection = React.memo(({ withMainButton }) => {
+  return (
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <PrivateRoute location={location}>
+            <Navigate to="/rooms/shared" replace />
+          </PrivateRoute>
+        }
+      />
 
-    const pathname = window.location.pathname.toLowerCase();
-    this.isEditor = pathname.indexOf("doceditor") !== -1;
-    this.isDesktopInit = false;
-  }
+      <Route
+        path="/rooms"
+        element={
+          <PrivateRoute location={location}>
+            <Navigate to="/rooms/shared" replace />
+          </PrivateRoute>
+        }
+      />
 
-  componentDidMount() {
+      <Route
+        path="/rooms/personal/*"
+        element={
+          <PrivateRoute
+            restricted
+            withManager
+            withCollaborator
+            location={location}
+          >
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/files/trash/*"
+        element={
+          <PrivateRoute
+            restricted
+            withManager
+            withCollaborator
+            location={location}
+          >
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/rooms/shared/*"
+        element={
+          <PrivateRoute location={location}>
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/rooms/archived/*"
+        element={
+          <PrivateRoute location={location}>
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/products/files/"
+        element={
+          <PrivateRoute location={location}>
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/accounts/*"
+        element={
+          <PrivateRoute restricted withManager location={location}>
+            <Accounts />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/accounts/create/:type"
+        element={
+          <PrivateRoute restricted withManager location={location}>
+            <Accounts />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/accounts/view/@self"
+        element={
+          <PrivateRoute location={location}>
+            <Profile />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="accounts/view/@self/notification"
+        element={
+          <PrivateRoute location={location}>
+            <NotificationComponent />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path={"/settings"}
+        element={
+          <PrivateRoute withCollaborator restricted location={location}>
+            <Navigate to="/settings/common" replace />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path={"/settings/*"}
+        element={
+          <PrivateRoute withCollaborator restricted location={location}>
+            <Settings />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        element={
+          <PrivateRoute location={location}>
+            <Error404Route />
+          </PrivateRoute>
+        }
+      />
+    </Routes>
+  );
+});
+
+const FilesContent = (props) => {
+  const pathname = window.location.pathname.toLowerCase();
+  const isEditor = pathname.indexOf("doceditor") !== -1;
+  const [isDesktopInit, setIsDesktopInit] = React.useState(false);
+
+  const {
+    loadFilesInfo,
+    setIsLoaded,
+    isAuthenticated,
+    user,
+    isEncryption,
+    encryptionKeys,
+    setEncryptionKeys,
+    isLoaded,
+    isDesktop,
+    showMenu,
+    isFrame,
+    withMainButton,
+
+    t,
+  } = props;
+
+  React.useEffect(() => {
     loadScript("/static/scripts/tiff.min.js", "img-tiff-script");
 
-    this.props
-      .loadFilesInfo()
+    loadFilesInfo()
       .catch((err) => toastr.error(err))
       .finally(() => {
-        this.props.setIsLoaded(true);
+        setIsLoaded(true);
 
         updateTempContent();
       });
-  }
 
-  componentWillUnmount() {
-    const script = document.getElementById("img-tiff-script");
-    document.body.removeChild(script);
-  }
+    return () => {
+      const script = document.getElementById("img-tiff-script");
+      document.body.removeChild(script);
+    };
+  }, []);
 
-  componentDidUpdate(prevProps) {
-    const {
-      isAuthenticated,
-      user,
-      isEncryption,
-      encryptionKeys,
-      setEncryptionKeys,
-      isLoaded,
-      isDesktop,
-    } = this.props;
-    // console.log("componentDidUpdate: ", this.props);
-    if (isAuthenticated && !this.isDesktopInit && isDesktop && isLoaded) {
-      this.isDesktopInit = true;
+  React.useEffect(() => {
+    if (isAuthenticated && !isDesktopInit && isDesktop && isLoaded) {
+      setIsDesktopInit(true);
       regDesktop(
         user,
         isEncryption,
         encryptionKeys,
         setEncryptionKeys,
-        this.isEditor,
+        isEditor,
         null,
-        this.props.t
+        t
       );
       console.log(
         "%c%s",
@@ -220,25 +281,31 @@ class FilesContent extends React.Component {
         encryptionKeys
       );
     }
-  }
+  }, [
+    t,
+    isAuthenticated,
+    user,
+    isEncryption,
+    encryptionKeys,
+    setEncryptionKeys,
+    isLoaded,
+    isDesktop,
+    isDesktopInit,
+  ]);
 
-  render() {
-    const { showMenu, isFrame, withMainButton, history } = this.props;
-
-    return (
-      <>
-        <GlobalEvents />
-        <Panels />
-        {isFrame ? (
-          showMenu && <FilesArticle history={history} />
-        ) : (
-          <FilesArticle history={history} withMainButton={withMainButton} />
-        )}
-        <FilesSection withMainButton={withMainButton} />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <GlobalEvents />
+      <Panels />
+      {isFrame ? (
+        showMenu && <FilesArticle />
+      ) : (
+        <FilesArticle withMainButton={withMainButton} />
+      )}
+      <FilesSection withMainButton={withMainButton} />
+    </>
+  );
+};
 
 const Files = inject(({ auth, filesStore }) => {
   const {
@@ -249,6 +316,8 @@ const Files = inject(({ auth, filesStore }) => {
     setEncryptionKeys,
     isEncryptionSupport,
   } = auth.settingsStore;
+
+  if (!auth.userStore.user) return;
 
   const { isVisitor } = auth.userStore.user;
 
@@ -272,6 +341,6 @@ const Files = inject(({ auth, filesStore }) => {
       //auth.setProductVersion(config.version);
     },
   };
-})(withTranslation("Common")(observer(withRouter(FilesContent))));
+})(withTranslation("Common")(observer(FilesContent)));
 
 export default () => <Files />;

@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
@@ -40,4 +39,4 @@ export default inject(({ payments, auth }) => {
     salesEmail,
     theme: auth.settingsStore.theme,
   };
-})(withRouter(observer(ContactContainer)));
+})(observer(ContactContainer));

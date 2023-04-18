@@ -1,6 +1,7 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React, { useEffect } from "react";
 import { withTranslation, Trans } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
 import HelpButton from "@docspace/components/help-button";
@@ -15,10 +16,12 @@ const Backup = ({
   helpUrlCreatingBackup,
   buttonSize,
   t,
-  history,
+
   isNotPaidPeriod,
   currentColorScheme,
 }) => {
+  const navigate = useNavigate();
+
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -67,7 +70,7 @@ const Backup = ({
   ];
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -87,11 +90,8 @@ export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
-  const {
-    helpUrlCreatingBackup,
-    isTabletView,
-    currentColorScheme,
-  } = settingsStore;
+  const { helpUrlCreatingBackup, isTabletView, currentColorScheme } =
+    settingsStore;
 
   const buttonSize = isTabletView ? "normal" : "small";
 

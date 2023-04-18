@@ -1,6 +1,5 @@
 ﻿import SsoReactSvgUrl from "PUBLIC_DIR/images/sso.react.svg?url";
 import React, { useEffect, useState, useCallback } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import PropTypes from "prop-types";
 import { createUser, signupOAuth } from "@docspace/common/api/people";
@@ -52,7 +51,7 @@ const CreateUserForm = (props) => {
   } = props;
   const inputRef = React.useRef(null);
 
-  const emailFromLink = linkData.email ? linkData.email : "";
+  const emailFromLink = linkData?.email ? linkData.email : "";
 
   const [moreAuthVisible, setMoreAuthVisible] = useState(false);
   const [ssoLabel, setSsoLabel] = useState("");
@@ -125,7 +124,7 @@ const CreateUserForm = (props) => {
     };
 
     fetchData();
-  }, []);
+  }, [props.isAuthenticated]);
 
   const onSubmit = () => {
     const { defaultPage, linkData, hashSettings } = props;
@@ -325,9 +324,8 @@ const CreateUserForm = (props) => {
         if (!providersData[item.provider]) return;
         if (index > 1) return;
 
-        const { icon, label, iconOptions, className } = providersData[
-          item.provider
-        ];
+        const { icon, label, iconOptions, className } =
+          providersData[item.provider];
 
         return (
           <div className="buttonWrapper" key={`${item.provider}ProviderItem`}>
@@ -651,11 +649,6 @@ const CreateUserForm = (props) => {
   );
 };
 
-CreateUserForm.propTypes = {
-  location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
-};
-
 export default inject(({ auth }) => {
   const {
     login,
@@ -692,9 +685,7 @@ export default inject(({ auth }) => {
     currentColorScheme,
   };
 })(
-  withRouter(
-    withTranslation(["Confirm", "Common", "Wizard"])(
-      withLoader(observer(CreateUserForm))
-    )
+  withTranslation(["Confirm", "Common", "Wizard"])(
+    withLoader(observer(CreateUserForm))
   )
 );
