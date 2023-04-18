@@ -8,7 +8,7 @@ import Button from "@docspace/components/button";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
-import history from "@docspace/common/history";
+import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -36,6 +36,7 @@ const DNSSettings = (props) => {
   const [hasScroll, setHasScroll] = useState(false);
   const isLoadedSetting = isLoaded && tReady;
   const [isCustomizationView, setIsCustomizationView] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setDocumentTitle(t("DNSSettings"));
@@ -53,9 +54,8 @@ const DNSSettings = (props) => {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -89,7 +89,7 @@ const DNSSettings = (props) => {
 
       if (newUrl === currentUrl) return;
 
-      history.push(newUrl);
+      navigate(newUrl);
     } else {
       setIsCustomizationView(false);
     }
@@ -169,12 +169,8 @@ const DNSSettings = (props) => {
 
 export default inject(({ auth, common }) => {
   const { theme, helpLink } = auth.settingsStore;
-  const {
-    isLoaded,
-    setIsLoadedDNSSettings,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedDNSSettings, initSettings, setIsLoaded } =
+    common;
   const { currentQuotaStore } = auth;
   const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   return {

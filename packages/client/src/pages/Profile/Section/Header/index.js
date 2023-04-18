@@ -6,7 +6,7 @@ import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import IconButton from "@docspace/components/icon-button";
@@ -25,7 +25,6 @@ import { StyledHeader } from "./StyledHeader";
 const Header = (props) => {
   const {
     t,
-    history,
 
     isAdmin,
     isVisitor,
@@ -43,9 +42,9 @@ const Header = (props) => {
   } = props;
 
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
-  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] = useState(
-    false
-  );
+  const navigate = useNavigate();
+  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] =
+    useState(false);
 
   const getUserContextOptions = () => {
     const options = [
@@ -94,7 +93,7 @@ const Header = (props) => {
       `/accounts/filter?/${url}`
     );
 
-    history.push(backUrl, url);
+    navigate(backUrl, url);
     setFilter(filter);
   };
 
@@ -147,43 +146,41 @@ const Header = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore }) => {
-    const { isAdmin } = auth;
+export default inject(({ auth, peopleStore }) => {
+  const { isAdmin } = auth;
 
-    const { isVisitor, isCollaborator } = auth.userStore.user;
+  const { isVisitor, isCollaborator } = auth.userStore.user;
 
-    const { targetUserStore, filterStore } = peopleStore;
+  const { targetUserStore, filterStore } = peopleStore;
 
-    const { filter, setFilterParams } = filterStore;
+  const { filter, setFilterParams } = filterStore;
 
-    const { targetUser, isMe } = targetUserStore;
+  const { targetUser, isMe } = targetUserStore;
 
-    const {
-      setChangeEmailVisible,
-      setChangePasswordVisible,
-      setChangeAvatarVisible,
-    } = targetUserStore;
+  const {
+    setChangeEmailVisible,
+    setChangePasswordVisible,
+    setChangeAvatarVisible,
+  } = targetUserStore;
 
-    return {
-      isAdmin,
-      isVisitor,
-      isCollaborator,
-      filter,
+  return {
+    isAdmin,
+    isVisitor,
+    isCollaborator,
+    filter,
 
-      setFilter: setFilterParams,
+    setFilter: setFilterParams,
 
-      profile: targetUser,
-      isMe,
-      setChangeEmailVisible,
-      setChangePasswordVisible,
-      setChangeAvatarVisible,
-    };
-  })(
-    observer(
-      withTranslation(["Profile", "Common", "PeopleTranslations"])(
-        withPeopleLoader(Header)(<Loaders.SectionHeader />)
-      )
+    profile: targetUser,
+    isMe,
+    setChangeEmailVisible,
+    setChangePasswordVisible,
+    setChangeAvatarVisible,
+  };
+})(
+  observer(
+    withTranslation(["Profile", "Common", "PeopleTranslations"])(
+      withPeopleLoader(Header)(<Loaders.SectionHeader />)
     )
   )
 );

@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import { isTablet } from "react-device-detect";
 import { withTranslation } from "react-i18next";
 
@@ -40,14 +39,8 @@ const UserContent = ({
   t,
   theme,
 }) => {
-  const {
-    displayName,
-    email,
-    statusType,
-    role,
-    isVisitor,
-    isCollaborator,
-  } = item;
+  const { displayName, email, statusType, role, isVisitor, isCollaborator } =
+    item;
 
   const nameColor =
     statusType === "pending" || statusType === "disabled"
@@ -120,4 +113,4 @@ const UserContent = ({
   );
 };
 
-export default withTranslation(["People", "Common"])(withRouter(UserContent));
+export default withTranslation(["People", "Common"])(UserContent);
