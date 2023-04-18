@@ -41,7 +41,7 @@
       "mode",
     ],
     events: {
-      onSelectCallback: (e) => console.log("onCloseCallback", e),
+      onSelectCallback: (e) => console.log("onSelectCallback", e),
       onCloseCallback: null,
     },
   };
@@ -173,11 +173,19 @@
           case "onMethodReturn": {
             if (this.#callbacks.length > 0) {
               const callback = this.#callbacks.shift();
-              callback && callback(frameData.methodReturnData);
+              callback && callback(frameData?.methodReturnData);
             }
 
             if (this.#tasks.length > 0) {
               this.#sendMessage(this.#tasks.shift());
+            }
+            break;
+          }
+          case "onEventReturn": {
+            if (frameData?.eventReturnData?.event in this.config.events) {
+              this.config.events[frameData?.eventReturnData.event](
+                frameData?.eventReturnData.data
+              );
             }
             break;
           }

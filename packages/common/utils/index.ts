@@ -430,6 +430,16 @@ export const frameCallbackData = (methodReturnData: any) => {
   );
 };
 
+export const frameCallEvent = (eventReturnData: any) => {
+  window.parent.postMessage(
+    JSON.stringify({
+      type: "onEventReturn",
+      eventReturnData,
+    }),
+    "*"
+  );
+};
+
 export const frameCallCommand = (commandName: string, commandData: any) => {
   window.parent.postMessage(
     JSON.stringify({
