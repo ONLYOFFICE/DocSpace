@@ -214,7 +214,7 @@ public class PaymentController : ControllerBase
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.QuotaDto}, System.Collections.Generic">List of available portal quotas</returns>
     /// <path>api/2.0/portal/payment/quotas</path>
     /// <httpMethod>GET</httpMethod>
-    /// <collection>list</collection
+    /// <collection>list</collection>
     [HttpGet("payment/quotas")]
     public IAsyncEnumerable<QuotaDto> GetQuotas()
     {

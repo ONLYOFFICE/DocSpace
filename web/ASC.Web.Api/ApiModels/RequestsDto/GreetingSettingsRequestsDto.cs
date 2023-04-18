@@ -30,6 +30,6 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 /// </summary>
 public class GreetingSettingsRequestsDto
 {
-    /// <summary>Tenant name<</summary>
+    /// <summary>Tenant name</summary>
     public string Title { get; set; }
 }

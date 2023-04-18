@@ -347,7 +347,7 @@ public class UserController : PeopleControllerBase
     /// <returns type="System.Collections.Generic.List{ASC.Web.Api.Models.EmployeeDto}, System.Collections.Generic">List of users</returns>
     /// <path>api/2.0/people/invite</path>
     /// <httpMethod>POST</httpMethod>
-    /// collection>list</collection>
+    /// <collection>list</collection>
     [HttpPost("invite")]
     public async Task<List<EmployeeDto>> InviteUsersAsync(InviteUsersRequestDto inDto)
     {
