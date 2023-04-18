@@ -114,6 +114,7 @@ FieldContainer.propTypes = {
   labelVisible: PropTypes.bool,
   /** Field label text or element */
   labelText: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  /** Icon source */
   icon: PropTypes.string,
   /** Renders the help button inline instead of the separate div*/
   inlineHelpButton: PropTypes.bool,
@@ -124,6 +125,7 @@ FieldContainer.propTypes = {
   ]),
   /** Tooltip content */
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  /** Sets the global position of the tooltip */
   place: PropTypes.string,
   /** Tooltip header content (tooltip opened in aside) */
   helpButtonHeaderContent: PropTypes.string,
@@ -139,7 +141,9 @@ FieldContainer.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Specifies the offset */
   offsetRight: PropTypes.number,
+  /** Sets the maximum width of the tooltip  */
   tooltipMaxWidth: PropTypes.string,
 };
 
