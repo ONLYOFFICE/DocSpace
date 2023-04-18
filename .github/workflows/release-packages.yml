@@ -71,7 +71,7 @@ jobs:
           rename -f -v "s/product/docspace/" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT}/g" {} ';'
 
-          sed -i "s/{{package_header_tag_version}}/${TAG}.${BUILD_NUMBER}/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/1.0.0.999/g" debian/changelog debian/control
 
           dpkg-buildpackage -us -uc
 
