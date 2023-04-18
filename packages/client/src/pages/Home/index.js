@@ -344,12 +344,6 @@ class PureHome extends React.Component {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
 
-    if (isProgressFinished !== prevProps.isProgressFinished) {
-      setTimeout(() => {
-        console.log("render refresh", refreshFiles());
-      }, 100);
-    }
-
     if (
       isProgressFinished &&
       itemsSelectionTitle &&
