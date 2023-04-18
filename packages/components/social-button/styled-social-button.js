@@ -109,9 +109,22 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
             props.theme.socialButton.disableBackgroundColor};
           color: ${(props) => props.theme.socialButton.disableColor};
 
-          svg path {
-            fill: ${(props) => props.theme.socialButton.disableColor};
+          ${
+            props.theme.isBase &&
+            css`
+              svg path {
+                opacity: 60%;
+              }
+            `
           }
+          ${
+            !props.theme.isBase &&
+            css`
+              svg path {
+                fill: ${props.theme.socialButton.disabledSvgColor};
+              }
+            `
+          }}
         `};
 
   .iconWrapper {
