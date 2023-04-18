@@ -239,7 +239,7 @@ class SsoFormStore {
     this.confirmationResetModal = false;
   };
 
-  uploadByUrl = async () => {
+  uploadByUrl = async (t) => {
     const data = { url: this.uploadXmlUrl };
 
     try {
@@ -249,7 +249,7 @@ class SsoFormStore {
       this.isLoadingXml = false;
     } catch (err) {
       this.isLoadingXml = false;
-      toastr.error(err);
+      toastr.error(t("MetadataLoadError"));
       console.error(err);
     }
   };
