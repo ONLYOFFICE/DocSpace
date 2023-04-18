@@ -69,6 +69,7 @@ const RoomSelector = ({
   acceptButtonLabel,
   onAccept,
 
+  withHeader,
   withSelectAll,
   selectAllLabel,
   selectAllIcon,
@@ -183,6 +184,7 @@ const RoomSelector = ({
       items={items}
       acceptButtonLabel={acceptButtonLabel || t("Common:SelectAction")}
       onAccept={onAccept}
+      withHeader={withHeader}
       withCancelButton={withCancelButton}
       cancelButtonLabel={cancelButtonLabel || t("Common:CancelButton")}
       onCancel={onCancel}

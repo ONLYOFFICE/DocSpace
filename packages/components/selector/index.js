@@ -47,6 +47,7 @@ const Selector = ({
   isLoading,
   searchLoader,
   rowLoader,
+  withHeader,
 }) => {
   const [footerVisible, setFooterVisible] = React.useState(false);
 
@@ -251,7 +252,12 @@ const Selector = ({
 
   return (
     <StyledSelector id={id} className={className} style={style}>
-      <Header onBackClickAction={onBackClickAction} headerLabel={headerLabel} />
+      {withHeader && (
+        <Header
+          onBackClickAction={onBackClickAction}
+          headerLabel={headerLabel}
+        />
+      )}
 
       <Body
         footerVisible={footerVisible}
@@ -317,6 +323,8 @@ Selector.propTypes = {
   /** Accepts css style */
   style: PropTypes.object,
 
+  /** Add header */
+  withHeader: PropTypes.bool,
   /** Selector header text */
   headerLabel: PropTypes.string,
   /** What the header arrow will trigger when clicked */
@@ -406,6 +414,7 @@ Selector.defaultProps = {
   withSelectAll: false,
   withAccessRights: false,
   withCancelButton: false,
+  withHeader: true,
 
   selectedItems: [],
 };
