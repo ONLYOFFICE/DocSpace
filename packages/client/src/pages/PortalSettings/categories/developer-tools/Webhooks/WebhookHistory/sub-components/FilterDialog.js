@@ -10,6 +10,7 @@ import { SelectedItem } from "@docspace/components";
 
 import { Calendar } from "@docspace/components";
 import { Button } from "@docspace/components";
+import { TimePicker } from "../../sub-components/TimePicker";
 
 const Footer = styled.div`
   width: 100%;
@@ -45,15 +46,25 @@ const RoundedButton = styled(Button)`
 export const FilterDialog = (props) => {
   const { visible, closeModal, applyFilters } = props;
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
+  const [isTimeOpen, setIsTimeOpen] = useState(false);
 
   const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
   const closeCalendar = () => setIsCalendarOpen(false);
 
+  const showTimePicker = () => setIsTimeOpen(true);
+
   const [filterSettings, setFilterSettings] = useState({
     deliveryDate: null,
-    deliveryTime: null,
+    deliveryFrom: moment().startOf("day"),
+    deliveryTo: moment().startOf("day"),
     status: [],
   });
+
+  const setDeliveryFrom = (date) =>
+    setFilterSettings((prevFilterSetting) => ({ ...prevFilterSetting, deliveryFrom: date }));
+
+  const setDeliveryTo = (date) =>
+    setFilterSettings((prevFilterSetting) => ({ ...prevFilterSetting, deliveryTo: date }));
 
   const setDeliveryDate = (date) =>
     setFilterSettings((prevFilterSetting) => ({ ...prevFilterSetting, deliveryDate: date }));
@@ -98,14 +109,12 @@ export const FilterDialog = (props) => {
               <Text isInline fontWeight={600} color="#A3A9AE">
                 Select date
               </Text>
-              {isCalendarOpen ? (
+              {isCalendarOpen && (
                 <Calendar
                   selectedDate={filterSettings.deliveryDate}
                   setSelectedDate={setDeliveryDate}
                   onChange={closeCalendar}
                 />
-              ) : (
-                <></>
               )}
             </span>
           ) : (
@@ -114,23 +123,30 @@ export const FilterDialog = (props) => {
               text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
             />
           )}
-          {/* {filterSettings.deliveryDate !== null ? (
-            <span>
-              <SelectorAddButton
-                title="add"
-                onClick={toggleCalendar}
-                style={{ marginRight: "8px" }}
-              />
-              <Text isInline fontWeight={600} color="#A3A9AE">
-                Select Delivery time
-              </Text>
-            </span>
-          ) : (
-            <SelectedItem
-              onClose={deleteSelectedDate}
-              text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
-            />
-          )} */}
+          {filterSettings.deliveryDate !== null &&
+            (isTimeOpen ? (
+              <span>
+                <Text isInline fontWeight={600} color="#A3A9AE">
+                  From
+                </Text>
+                <TimePicker date={filterSettings.deliveryFrom} setDate={setDeliveryFrom} />
+                <Text isInline fontWeight={600} color="#A3A9AE">
+                  Before
+                </Text>
+                <TimePicker date={filterSettings.deliveryTo} setDate={setDeliveryTo} />
+              </span>
+            ) : (
+              <span>
+                <SelectorAddButton
+                  title="add"
+                  onClick={showTimePicker}
+                  style={{ marginRight: "8px" }}
+                />
+                <Text isInline fontWeight={600} color="#A3A9AE">
+                  Select Delivery time
+                </Text>
+              </span>
+            ))}
         </Selectors>
         <Separator />
         <Text fontWeight={600} fontSize="15px">
