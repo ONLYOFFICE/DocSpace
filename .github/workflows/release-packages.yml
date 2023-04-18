@@ -62,16 +62,17 @@ jobs:
           PRODUCT="${{ github.event.repository.name }}"
           TAG="${{ github.ref_name }}"
           BUILD_NUMBER="${{ github.run_number }}"
+          VERSION=1.0.0
   
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           #error NETSDK1152: Found multiple publish output files with the same relative path
 
           cd build/install/deb/ 
 
-          rename -f -v "s/product/docspace/" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/docspace/g" {} ';'
+          rename -f -v "s/product/${{ github.event.repository.name }}/" debian/* ../common/* ../common/logrotate/*
+          find ../ -type f -exec sed -i "s/{{product}}/${{ github.event.repository.name }}/g" {} ';'
 
-          sed -i "s/{{package_header_tag_version}}/1.0.0.999/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/1.0.0.${{ github.run_number }}/g" debian/changelog debian/control
 
           dpkg-buildpackage -us -uc
 
