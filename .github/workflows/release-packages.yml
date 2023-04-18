@@ -60,8 +60,8 @@ jobs:
           cat << EOF >> build-DocSpace_deb.sh
           set -x
           PRODUCT=docspace
-          TAG=1.0.0
-          BUILD_NUMBER=999
+          TAG="${{ github.event.release.tag_name }}"
+          BUILD_NUMBER="${{ github.run_number }}"
   
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           #error NETSDK1152: Found multiple publish output files with the same relative path
@@ -78,14 +78,16 @@ jobs:
           EOF
           chmod +x build-DocSpace_deb.sh
           sudo bash ./build-DocSpace_deb.sh
-          pwd && ls -la
-          
+          pwd 
+          ls -ls /home/runner/work/DocSpace/DocSpace/build/install/deb/debian/
+          ls -la /home/runner/work/DocSpace/DocSpace/build/install/deb/
+          ls -la /home/runner/work/DocSpace/DocSpace/build/install
         shell: bash
 
       - name: Upload assets DEB
         uses: softprops/action-gh-release@v1
         with:
-          files: /home/runner/work/DocSpace/DocSpace/build/install/deb/*.deb
+          files: /home/runner/work/DocSpace/DocSpace/build/install/deb/debian/*.deb
           
 
   build_rpm:
@@ -135,7 +137,7 @@ jobs:
           cat << EOF >> build-DocSpace_rpm.sh
           set -x
           sed -i -e '/BuildRequires/d' product.spec
-          # GIT_BRANCH=release/v1.0.0
+          GIT_BRANCH=release/v1.0.0
           rename 's/product/docspace/g' ../../common/*.sh
           rpmbuild -D "GIT_BRANCH release-v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release 999" -ba product.spec
           EOF
