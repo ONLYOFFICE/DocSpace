@@ -18,6 +18,7 @@ import {
   SSO_LOCATION,
   SSO_TITLE,
   SSO_PHONE,
+  SSO_NAME_ID_FORMAT,
 } from "../helpers/constants";
 import isEqual from "lodash/isEqual";
 
@@ -40,7 +41,7 @@ class SsoFormStore {
   sloUrlPost = "";
   sloUrlRedirect = "";
   sloBinding = "urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST";
-  nameIdFormat = "urn:oasis:names:tc:SAML:2.0:nameid-format:transient";
+  nameIdFormat = SSO_NAME_ID_FORMAT;
 
   idpCertificate = "";
   idpPrivateKey = null;
@@ -518,6 +519,16 @@ class SsoFormStore {
     return value;
   }
 
+  includePropertyValue(obj, value) {
+    let props = Object.getOwnPropertyNames(obj);
+
+    for (let i = 0; i < props.length; i++) {
+      if (obj[props[i]] === value) return true;
+    }
+
+    return false;
+  }
+
   setFieldsFromMetaData = async (meta) => {
     if (meta.entityID) {
       this.entityId = meta.entityID || "";
@@ -552,7 +563,18 @@ class SsoFormStore {
     }
 
     if (meta.nameIDFormat) {
-      this.nameIdFormat = meta.nameIDFormat;
+      if (Array.isArray(meta.nameIDFormat)) {
+        let formats = meta.nameIDFormat.filter(function (format) {
+          return this.includePropertyValue(SSO_NAME_ID_FORMAT, format);
+        });
+        if (formats.length) {
+          this.nameIdFormat = formats[0];
+        }
+      } else {
+        if (includePropertyValue(SSO_NAME_ID_FORMAT, meta.nameIDFormat)) {
+          this.nameIdFormat = meta.nameIDFormat;
+        }
+      }
     }
 
     if (meta.certificate) {
