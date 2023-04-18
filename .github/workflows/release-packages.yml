@@ -85,7 +85,7 @@ jobs:
       - name: Upload assets DEB
         uses: softprops/action-gh-release@v1
         with:
-          files: /home/runner/DocSpace/DocSpace/build/install/deb/*.deb
+          files: /home/runner/work/DocSpace/DocSpace/build/install/deb/*.deb
           
 
   build_rpm:
