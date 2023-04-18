@@ -69,7 +69,7 @@ jobs:
           cd build/install/deb/ 
 
           rename -f -v "s/product/docspace/" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/${PRODUCT}/g" {} ';'
+          find ../ -type f -exec sed -i "s/{{product}}/docspace/g" {} ';'
 
           sed -i "s/{{package_header_tag_version}}/1.0.0.999/g" debian/changelog debian/control
 
