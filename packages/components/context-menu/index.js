@@ -417,9 +417,9 @@ ContextMenu.propTypes = {
   scaled: PropTypes.bool,
   /** Fills the icons with default colors */
   fillIcon: PropTypes.bool,
-
+  /** Function that returns an object containing the elements of the context menu */
   getContextModel: PropTypes.func,
-
+  /** Specifies the offset  */
   leftOffset: PropTypes.number,
 };
 
