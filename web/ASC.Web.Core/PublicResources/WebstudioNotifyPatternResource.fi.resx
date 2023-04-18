@@ -241,7 +241,6 @@ ONLYOFFICE Tiimi</value>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>DocSpace käyttäjä päivitetty: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
-   </data>
    <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Hei, $UserName!
 

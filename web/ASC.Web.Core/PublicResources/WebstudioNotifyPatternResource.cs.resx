@@ -248,6 +248,7 @@ Pokud potřebujete pomoc, projděte si naše "Centrum nápovědy":"https://helpc
 S přátelským pozdravem, 
 tým ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
 <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
     <value>Dobrý den, $UserName!
 

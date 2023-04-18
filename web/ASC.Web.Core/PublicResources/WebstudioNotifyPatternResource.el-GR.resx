@@ -120,6 +120,7 @@
   </data>
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Ειδοποίηση ασφάλειας</value>
+  </data>
   <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Καλώς ήρθατε στο DocSpace του ONLYOFFICE!</value>
   </data>

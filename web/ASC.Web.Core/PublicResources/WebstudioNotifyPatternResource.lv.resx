@@ -237,6 +237,7 @@ Ja nepieciešama palīdzība, pārlūkojiet mūsu "Palīdzības centru":"https:/
 Jūsu, 
 ONLYOFFICE komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Aktivizējiet savu e-pastu portālā "${__VirtualRootPath}":"$InviteLink".
 

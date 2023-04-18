@@ -395,6 +395,7 @@ Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcen
 Tanti saluti, 
 Team di ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/it"</value>  
+  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Salve, $UserName!
 
