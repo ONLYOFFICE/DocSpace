@@ -108,9 +108,9 @@ const ViewSelector = ({
 ViewSelector.propTypes = {
   /* Disables the button default functionality */
   isDisabled: PropTypes.bool,
-  /* The event triggered when the button is clicked  */
+  /* Sets a callback function that is triggered when the button is clicked */
   onChangeView: PropTypes.func,
-  /* Object containing view settings  */
+  /* Object that contains the view settings  */
   viewSettings: PropTypes.arrayOf(PropTypes.object).isRequired,
   /* Current application view */
   viewAs: PropTypes.string.isRequired,

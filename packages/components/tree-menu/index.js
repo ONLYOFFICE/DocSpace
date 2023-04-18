@@ -254,21 +254,21 @@ const TreeMenu = React.forwardRef((props, ref) => {
 });
 
 TreeMenu.propTypes = {
-  /** Whether support checked  */
+  /** Incorporates a checkbox into the TreeMenu */
   checkable: PropTypes.bool,
-  /** Whether can drag treeNode */
+  /** Specifies whether the treeNode can be dragged */
   draggable: PropTypes.bool,
-  /** Whether disabled the tree */
+  /** Disables the tree */
   disabled: PropTypes.bool,
-  /** Whether multiple select */
+  /** Enables multiple select  */
   multiple: PropTypes.bool,
-  /** Whether show icon  */
+  /** Allows showing the icon  */
   showIcon: PropTypes.bool,
-  /** Whether show line */
+  /** Allows showing the line */
   showLine: PropTypes.bool,
-  /** Expand all treeNodes */
+  /** Expands all the treeNodes */
   defaultExpandAll: PropTypes.bool,
-  /** Auto expand parent treeNodes when init  */
+  /** Automatically expands the parent treeNodes when initialized */
   defaultExpandParent: PropTypes.bool,
 
   icon: PropTypes.func,
@@ -311,13 +311,13 @@ TreeMenu.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
   disableSwitch: PropTypes.bool,
-  /** to select the selection style of the active node */
+  /** Selection style of the active node */
   isFullFillSelection: PropTypes.bool,
-  /** for setting the spacing between nodes */
+  /** Facilitates setting the spacing between nodes */
   gapBetweenNodes: PropTypes.string,
-  /** to set spacing between nodes on tablets and phones (if necessary) */
+  /** Facilitates setting the spacing between nodes on tablets and phones (if necessary) */
   gapBetweenNodesTablet: PropTypes.string,
-  /** swipe the root node to the left if there are no nested elements */
+  /** Allows swiping the root node to the left in case there are no nested elements */
   isEmptyRootNode: PropTypes.bool,
 };
 
