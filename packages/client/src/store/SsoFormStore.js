@@ -484,7 +484,7 @@ class SsoFormStore {
     }
   };
 
-  getPropValue(obj, propName) {
+  getPropValue = (obj, propName) => {
     let value = "";
 
     if (!obj) return value;
@@ -517,17 +517,15 @@ class SsoFormStore {
     }
 
     return value;
-  }
+  };
 
-  includePropertyValue(obj, value) {
+  includePropertyValue = (obj, value) => {
     let props = Object.getOwnPropertyNames(obj);
-
     for (let i = 0; i < props.length; i++) {
       if (obj[props[i]] === value) return true;
     }
-
     return false;
-  }
+  };
 
   setFieldsFromMetaData = async (meta) => {
     if (meta.entityID) {
@@ -564,14 +562,14 @@ class SsoFormStore {
 
     if (meta.nameIDFormat) {
       if (Array.isArray(meta.nameIDFormat)) {
-        let formats = meta.nameIDFormat.filter(function (format) {
+        let formats = meta.nameIDFormat.filter((format) => {
           return this.includePropertyValue(SSO_NAME_ID_FORMAT, format);
         });
         if (formats.length) {
           this.nameIdFormat = formats[0];
         }
       } else {
-        if (includePropertyValue(SSO_NAME_ID_FORMAT, meta.nameIDFormat)) {
+        if (this.includePropertyValue(SSO_NAME_ID_FORMAT, meta.nameIDFormat)) {
           this.nameIdFormat = meta.nameIDFormat;
         }
       }
