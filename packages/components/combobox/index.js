@@ -146,9 +146,8 @@ class ComboBox extends React.Component {
     let optionsCount = optionsLength;
 
     if (withAdvancedOptions) {
-      const advancedOptionsWithoutSeparator = advancedOptions.props.children.filter(
-        (option) => option.key !== "s1"
-      );
+      const advancedOptionsWithoutSeparator =
+        advancedOptions.props.children.filter((option) => option.key !== "s1");
 
       const advancedOptionsWithoutSeparatorLength =
         advancedOptionsWithoutSeparator.length;
@@ -306,19 +305,26 @@ ComboBox.propTypes = {
   isDefaultMode: PropTypes.bool,
   /** Y offset */
   offsetDropDownY: PropTypes.string,
+  /** Sets an icon that is displayed in the combo button */
   comboIcon: PropTypes.string,
+  /** Sets the precise distance from the parent */
   manualY: PropTypes.string,
+  /** Sets the precise distance from the parent */
   manualX: PropTypes.string,
   /** Dropdown manual width */
   manualWidth: PropTypes.string,
+  /** Displays the selected option */
   displaySelectedOption: PropTypes.bool,
+  /** Disables position checking. Used for explicit direction setting */
   fixedDirection: PropTypes.bool,
   /** Disables clicking on the item */
   disableItemClick: PropTypes.bool,
   /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
+  /** Used for proper positioning of the dropdown in case it is an external link */
   isExternalLink: PropTypes.bool,
   isPersonal: PropTypes.bool,
+  /** Sets the left offset for the dropdown */
   offsetLeft: PropTypes.number,
   /** Sets the combo-box to be displayed in modern view */
   modernView: PropTypes.bool,
@@ -326,6 +332,7 @@ ComboBox.propTypes = {
   advancedOptionsCount: PropTypes.number,
   /** Accepts css tab-index style */
   tabIndex: PropTypes.number,
+  /** Disables the combo box padding */
   withoutPadding: PropTypes.bool,
   /** Indicates when the component is loading */
   isLoading: PropTypes.bool,

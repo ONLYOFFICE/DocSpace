@@ -65,10 +65,15 @@ CampaignsBanner.propTypes = {
   className: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.object,
+  /** Label */
   headerLabel: PropTypes.string,
+  /** Label subheader */
   subHeaderLabel: PropTypes.string,
+  /** Image source */
   img: PropTypes.string,
+  /** Header button text */
   buttonLabel: PropTypes.string,
+  /** The link that opens when the button is clicked */
   link: PropTypes.string,
 };
 

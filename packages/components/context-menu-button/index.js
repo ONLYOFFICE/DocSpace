@@ -331,6 +331,7 @@ ContextMenuButton.propTypes = {
   /** Sets the display type */
   displayType: PropTypes.string,
   isNew: PropTypes.bool,
+  /** Closing event */
   onClose: PropTypes.func,
   usePortal: PropTypes.bool,
   dropDownClassName: PropTypes.string,
