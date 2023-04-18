@@ -56,7 +56,9 @@ DragAndDrop.propTypes = {
   onMouseDown: PropTypes.func,
   /** Occurs when the dragged element is dropped on the drop target */
   onDrop: PropTypes.func,
+  /** Sets a callback function that is triggered when a draggable selection is dragged over the target */
   onDragOver: PropTypes.func,
+  /** Sets a callback function that is triggered when a draggable selection leaves the drop target */
   onDragLeave: PropTypes.func,
 };
 
