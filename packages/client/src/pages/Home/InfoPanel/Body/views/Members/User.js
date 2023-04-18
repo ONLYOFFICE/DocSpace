@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import AtReactSvgUrl from "PUBLIC_DIR/images/@.react.svg?url";
 import { StyledUser } from "../../styles/members";
 import Avatar from "@docspace/components/avatar";
+import { ComboBox } from "@docspace/components";
 import DefaultUserPhotoUrl from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 import toastr from "@docspace/components/toast/toastr";
+import { isMobileOnly } from "react-device-detect";
 import { decode } from "he";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
 import { getUserRole } from "@docspace/common/utils";
-import AccessSelector from "../../../../../../components/panels/InvitePanel/sub-components/AccessSelector.js";
 
 const User = ({
   t,
@@ -21,7 +22,6 @@ const User = ({
   changeUserType,
   isScrollLocked,
   setIsScrollLocked,
-  getMembersContainerRef,
 }) => {
   if (!selectionParentRoom) return null;
   if (!user.displayName && !user.email) return null;
@@ -29,8 +29,6 @@ const User = ({
   //const [userIsRemoved, setUserIsRemoved] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   //if (userIsRemoved) return null;
-
-  const [containerRef, setContainerRef] = useState(null);
 
   const canChangeUserRole = user.canEditAccess;
 
@@ -119,11 +117,6 @@ const User = ({
     setIsScrollLocked(!isScrollLocked);
   };
 
-  const onAccessSelectorClick = () => {
-    const containerRef = getMembersContainerRef();
-    setContainerRef(containerRef);
-  };
-
   const userAvatar = user.hasAvatar ? user.avatar : DefaultUserPhotoUrl;
 
   const role = getUserRole(user);
@@ -157,13 +150,22 @@ const User = ({
       {userRole && userRoleOptions && (
         <div className="role-wrapper">
           {canChangeUserRole ? (
-            <AccessSelector
-              t={t}
-              roomType={selectionParentRoom.roomType}
-              defaultAccess={user.access}
-              onSelectAccess={onOptionClick}
-              containerRef={containerRef}
-              onAccessSelectorClick={onAccessSelectorClick}
+            <ComboBox
+              className="role-combobox"
+              selectedOption={userRole}
+              options={userRoleOptions}
+              onSelect={onOptionClick}
+              scaled={false}
+              withBackdrop={isMobileOnly}
+              size="content"
+              modernView
+              title={t("Common:Role")}
+              manualWidth={"fit-content"}
+              isLoading={isLoading}
+              isMobileView={isMobileOnly}
+              directionY="both"
+              toggleAction={onToggle}
+              displaySelectedOption
             />
           ) : (
             <div className="disabled-role-combobox" title={t("Common:Role")}>

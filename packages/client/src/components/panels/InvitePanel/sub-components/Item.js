@@ -16,6 +16,7 @@ import {
   StyledHelpButton,
   StyledDeleteIcon,
 } from "../StyledInvitePanel";
+import AccessSelector from "./AccessSelector";
 import { filterUserRoleOptions } from "SRC_DIR/helpers/utils";
 
 const Item = ({
@@ -27,6 +28,7 @@ const Item = ({
   setHasErrors,
   roomType,
   isOwner,
+  inputsRef,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -130,20 +132,14 @@ const Item = ({
           <StyledDeleteIcon size="medium" onClick={removeItem} />
         </>
       ) : (
-        <StyledComboBox
-          onSelect={selectItemAccess}
-          noBorder
-          options={filteredAccesses}
-          size="content"
-          scaled={false}
-          manualWidth="fit-content"
-          selectedOption={defaultAccess}
-          showDisabledItems
-          modernView
-          directionX="right"
-          directionY="bottom"
-          isDefaultMode={false}
-          fixedDirection={true}
+        <AccessSelector
+          t={t}
+          roomType={roomType}
+          defaultAccess={defaultAccess.access}
+          onSelectAccess={selectItemAccess}
+          containerRef={inputsRef}
+          isOwner={isOwner}
+          withRemove={true}
         />
       )}
     </>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -45,8 +45,6 @@ const Members = ({
 
   const [members, setMembers] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
-
-  const membersContainerRef = useRef();
 
   const security = selectionParentRoom ? selectionParentRoom.security : {};
 
@@ -169,10 +167,8 @@ const Members = ({
     (member) => member.id === selfId
   );
 
-  const getMembersContainerRef = () => membersContainerRef;
-
   return (
-    <div ref={membersContainerRef}>
+    <>
       <StyledUserTypeHeader>
         <Text className="title">
           {t("UsersInRoom")} : {members.inRoom.length}
@@ -207,7 +203,6 @@ const Members = ({
             changeUserType={changeUserType}
             isScrollLocked={isScrollLocked}
             setIsScrollLocked={setIsScrollLocked}
-            getMembersContainerRef={getMembersContainerRef}
           />
         ))}
       </StyledUserList>
@@ -246,11 +241,10 @@ const Members = ({
             changeUserType={changeUserType}
             isScrollLocked={isScrollLocked}
             setIsScrollLocked={setIsScrollLocked}
-            getMembersContainerRef={getMembersContainerRef}
           />
         ))}
       </StyledUserList>
-    </div>
+    </>
   );
 };
 
