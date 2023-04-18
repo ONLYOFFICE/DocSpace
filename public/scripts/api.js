@@ -282,6 +282,10 @@
       return this.config;
     }
 
+    getHashSettings() {
+      return this.#getMethodPromise("getHashSettings");
+    }
+
     setConfig(newConfig = {}, reload = false) {
       if (this.#oneOfExistInObject(this.config.keysForReload, newConfig))
         reload = true;
@@ -320,6 +324,10 @@
 
     setListView(type) {
       return this.#getMethodPromise("setItemsView", type);
+    }
+
+    createHash(password, hashSettings) {
+      return this.#getMethodPromise("createHash", { password, hashSettings });
     }
   }
 

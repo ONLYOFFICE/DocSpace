@@ -263,9 +263,10 @@ export function toCommunityHostname(hostname) {
 }
 
 export function getProviderTranslation(provider, t, linked = false) {
-  const capitalizeProvider = provider.charAt(0).toUpperCase() + provider.slice(1);
+  const capitalizeProvider =
+    provider.charAt(0).toUpperCase() + provider.slice(1);
   if (linked) {
-    return `${t("Common:Disconnect")} ${capitalizeProvider}`
+    return `${t("Common:Disconnect")} ${capitalizeProvider}`;
   }
 
   switch (provider) {

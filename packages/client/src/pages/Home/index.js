@@ -11,6 +11,7 @@ import {
   frameCallbackData,
   frameCallCommand,
   getObjectByLocation,
+  createPasswordHash,
 } from "@docspace/common/utils";
 import FilesFilter from "@docspace/common/api/files/filter";
 import { getGroup } from "@docspace/common/api/groups";
@@ -393,6 +394,7 @@ class PureHome extends React.Component {
       createRoom,
       refreshFiles,
       setViewAs,
+      hashSettings,
     } = this.props;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -476,6 +478,16 @@ class PureHome extends React.Component {
             setViewAs(data);
           }
           break;
+        case "createHash":
+          {
+            const { password, hashSettings } = data;
+            res = createPasswordHash(password, hashSettings);
+          }
+          break;
+        case "getHashSettings": {
+          res = hashSettings;
+          break;
+        }
         default:
           res = "Wrong method";
       }
@@ -652,6 +664,8 @@ export default inject(
       setIsPreview,
     } = filesStore;
 
+    const { hashSettings } = auth.settingsStore;
+
     const { gallerySelected } = oformsStore;
 
     const {
@@ -790,6 +804,8 @@ export default inject(
       withPaging,
       isEmptyPage,
       isLoadedEmptyPage,
+
+      hashSettings,
     };
   }
 )(withRouter(observer(Home)));
