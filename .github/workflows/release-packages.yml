@@ -59,7 +59,7 @@ jobs:
           # cd build/install/deb/debian
           cat << EOF >> build-DocSpace_deb.sh
           set -x
-          PRODUCT="${{ github.event.repository.name }}"
+          PRODUCT="echo ${{ github.event.repository.name }} |  tr '[:upper:]' '[:lower:]' "
           TAG="${{ github.ref_name }}"
           BUILD_NUMBER="${{ github.run_number }}"
           VERSION=1.0.0
