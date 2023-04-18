@@ -162,6 +162,7 @@ const StyledSocialButton = styled(ButtonWrapper).attrs((props) => ({
 
     path {
       fill: ${(props) => props.isConnect && props.theme.socialButton.svg.fill};
+      fill: ${(props) => !props.theme.isBase && !props.isConnect && "#FFFFFF"};
     }
   }
 `;
