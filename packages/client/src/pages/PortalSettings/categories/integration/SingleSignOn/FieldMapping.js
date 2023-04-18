@@ -84,7 +84,7 @@ const FieldMapping = (props) => {
         hasError={emailHasError}
       />
 
-      <SsoFormField
+      {/*<SsoFormField
         labelText={t("Common:Location")}
         name="location"
         placeholder={LOCATION}
@@ -109,7 +109,7 @@ const FieldMapping = (props) => {
         tabIndex={21}
         value={phone}
         hasError={phoneHasError}
-      />
+  />*/}
 
       <FieldContainer
         className="advanced-block"
