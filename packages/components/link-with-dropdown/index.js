@@ -205,6 +205,7 @@ LinkWithDropdown.propTypes = {
   /** Dropdown type 'alwaysDashed' always displays a dotted style and an arrow icon,
    * appearDashedAfterHover displays a dotted style and icon arrow only  on hover */
   dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]),
+  /** Displays the expander */
   withExpander: PropTypes.bool,
   /** Link font size */
   fontSize: PropTypes.string,
@@ -224,6 +225,7 @@ LinkWithDropdown.propTypes = {
   children: PropTypes.any,
   /** Accepts css class */
   className: PropTypes.string,
+  /** Sets the classNaame of the drop down */
   dropDownClassName: PropTypes.string,
   /** Accepts id */
   id: PropTypes.string,
@@ -233,6 +235,7 @@ LinkWithDropdown.propTypes = {
   isDisabled: PropTypes.bool,
   /** Sets the opening direction relative to the parent */
   directionY: PropTypes.oneOf(["bottom", "top", "both"]),
+  /** Displays the scrollbar */
   hasScroll: PropTypes.bool,
 };
 
