@@ -50,28 +50,23 @@ jobs:
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
           sudo apt-get remove libnode72
           sudo apt-get clean
-          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           declare repo_version=$(if command -v lsb_release &> /dev/null; then lsb_release -r -s; else grep -oP '(?<=^VERSION_ID=).+' /etc/os-release | tr -d '"'; fi)
           wget https://packages.microsoft.com/config/ubuntu/$repo_version/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
-          sudo apt update
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs
           sudo npm install -g json
-          rename --version
  
 
       - name: BUILD package DEB
         run: |
           
           ### Create script for DocSpace .rpm package build ###
-          cat << EOF >> build-DocSpace_deb.sh
-          set -x
-
-          # PRODUCT=$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' ) 
-          # TAG="${{ github.ref_name }}"
-          # BUILD_NUMBER="${{ github.run_number }}"
-          # VERSION=1.0.0
-  
+          # cat << EOF >> build-DocSpace_deb.sh
+          # set -x
+          
+          pwd && ls -la
+          
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           #error NETSDK1152: Found multiple publish output files with the same relative path
           cd build/install/deb/ 
@@ -81,10 +76,10 @@ jobs:
 
           dpkg-buildpackage -us -uc
 
-          EOF
+          # EOF
               ### Execute script ###
-          chmod +x build-DocSpace_deb.sh
-          sudo bash ./build-DocSpace_deb.sh
+          # chmod +x build-DocSpace_deb.sh
+          # sudo bash ./build-DocSpace_deb.sh
 
         shell: bash
 
