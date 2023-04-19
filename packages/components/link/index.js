@@ -66,7 +66,9 @@ Link.propTypes = {
   title: PropTypes.string,
   /** Link type */
   type: PropTypes.oneOf(["action", "page"]),
-
+  /** Label */
+  label: PropTypes.string,
+  /** Allows enabling UserSelect */
   enableUserSelect: PropTypes.bool,
 };
 
