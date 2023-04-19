@@ -368,6 +368,7 @@ class SettingsStore {
         // portal not found
         const url = new URL(wrongPortalNameUrl);
         url.searchParams.append("url", window.location.hostname);
+        url.searchParams.append("ref", window.location.href);
         return window.location.replace(url);
       }
     });

@@ -18,109 +18,24 @@
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 
-const fs = require("fs"),
-  http = require("http"),
+const http = require("http"),
   express = require("express"),
   morgan = require("morgan"),
   cookieParser = require("cookie-parser"),
   bodyParser = require("body-parser"),
   session = require("express-session"),
-  winston = require("winston"),
-  WinstonCloudWatch = require("winston-cloudwatch"),
+  winston = require("./app/log.js"),
   config = require("./config").get(),
   path = require("path"),
   exphbs = require("express-handlebars"),
   favicon = require("serve-favicon"),
-  cors = require("cors"),
-  { randomUUID } = require("crypto"),
-  date = require("date-and-time"),
-  os = require("os");
+  cors = require("cors");
 
-require("winston-daily-rotate-file");
+winston.stream = {
+  write: (message) => winston.info(message),
+};
 
 const app = express();
-
-let logpath = config["logPath"];
-if (logpath != null) {
-  if (!path.isAbsolute(logpath)) {
-    logpath = path.join(__dirname, logpath);
-  }
-  // ensure log directory exists
-  fs.existsSync(logpath) || fs.mkdirSync(logpath);
-}
-
-const aws = config["aws"].cloudWatch;
-
-const accessKeyId = aws.accessKeyId;
-const secretAccessKey = aws.secretAccessKey;
-const awsRegion = aws.region;
-const logGroupName = aws.logGroupName;
-const logStreamName = aws.logStreamName
-  .replace("${hostname}", os.hostname())
-  .replace("${applicationContext}", "SsoAuth")
-  .replace("${guid}", randomUUID())
-  .replace("${date}", date.format(new Date(), "YYYY/MM/DDTHH.mm.ss"));
-
-let transports = [];
-
-if (config.logger.file) {
-  let logDir = logpath
-    ? logpath
-    : config.app.logDir[0] === "."
-    ? path.join(__dirname, config.app.logDir)
-    : config.app.logDir;
-  config.logger.file.filename = path.join(logDir, config.app.logName);
-  transports.push(new winston.transports.DailyRotateFile(config.logger.file));
-}
-
-if (config.logger.console) {
-  transports.push(new winston.transports.Console(config.logger.console));
-}
-
-if (aws != null && aws.accessKeyId !== "") {
-  transports.push(
-    new WinstonCloudWatch({
-      name: "aws",
-      level: "debug",
-      logStreamName: logStreamName,
-      logGroupName: logGroupName,
-      awsRegion: awsRegion,
-      jsonMessage: true,
-      awsOptions: {
-        credentials: {
-          accessKeyId: accessKeyId,
-          secretAccessKey: secretAccessKey,
-        },
-      },
-    })
-  );
-}
-
-const customFormat = winston.format((info) => {
-  const now = new Date();
-
-  info.date = date.format(now, "YYYY-MM-DD HH:mm:ss");
-  info.applicationContext = "SsoAuth";
-  info.level = info.level.toUpperCase();
-
-  const hostname = os.hostname();
-
-  info["instance-id"] = hostname;
-
-  return info;
-})();
-
-let logger = winston.createLogger({
-  format: winston.format.combine(customFormat, winston.format.json()),
-  transports: transports,
-  exitOnError: false,
-});
-
-logger.stream = {
-  write: function (message) {
-    logger.info(message.trim());
-  },
-};
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
@@ -133,7 +48,7 @@ const machineKey = config["core"].machinekey
 
 app
   .use(favicon(path.join(__dirname, "public", "favicon.ico")))
-  .use(morgan("combined", { stream: logger.stream }))
+  .use(morgan("combined", { stream: winston.stream }))
   .use(cookieParser())
   .use(bodyParser.json())
   .use(bodyParser.urlencoded({ extended: false }))
@@ -146,15 +61,15 @@ app
   )
   .use(cors());
 
-require("./app/middleware/saml")(app, config, logger);
-require("./app/routes")(app, config, logger);
+require("./app/middleware/saml")(app, config);
+require("./app/routes")(app, config);
 
 const httpServer = http.createServer(app);
 
 httpServer.listen(config.app.port, function () {
-  logger.info(
+  winston.info(
     `Start SSO Service Provider listening on port ${config.app.port} ` +
-    `machineKey='${machineKey}' ` +
-    `appsettings path='${config.app.appsettings}'`
+      `machineKey='${machineKey}' ` +
+      `appsettings path='${config.app.appsettings}'`
   );
 });
