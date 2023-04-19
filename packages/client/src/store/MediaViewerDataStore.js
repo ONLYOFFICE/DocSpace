@@ -7,6 +7,7 @@ import {
 class MediaViewerDataStore {
   filesStore;
   settingsStore;
+  authStore;
 
   id = null;
   visible = false;
@@ -14,10 +15,11 @@ class MediaViewerDataStore {
   currentItem = null;
   prevPostionIndex = 0;
 
-  constructor(filesStore, settingsStore) {
+  constructor(filesStore, settingsStore, authStore) {
     makeAutoObservable(this);
     this.filesStore = filesStore;
     this.settingsStore = settingsStore;
+    this.authStore = authStore;
   }
 
   setMediaViewerData = (mediaData) => {

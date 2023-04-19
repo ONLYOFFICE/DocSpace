@@ -1093,7 +1093,7 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    this.authStore.settingsStore.navigate("rooms/shared");
+    this.authStore.settingsStore.navigate(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
