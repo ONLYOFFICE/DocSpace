@@ -119,7 +119,8 @@ ${package_manager} -y install epel-release \
 			rabbitmq-server$rabbitmq_version \
 			redis --enablerepo=remi \
 			SDL2 $POWERTOOLS_REPO \
-			expect
+			expect \
+			ffmpeg
 	
 py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
 if [[ $py3_version -lt 6 ]]; then

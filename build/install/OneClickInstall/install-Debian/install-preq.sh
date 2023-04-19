@@ -118,7 +118,8 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				postgresql \
 				redis-server \
 				rabbitmq-server \
-				nginx-extras 
+				nginx-extras \
+				ffmpeg 
 		
 if [ -e /etc/redis/redis.conf ]; then
  sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis/redis.conf
