@@ -61,6 +61,15 @@ jobs:
       - name: BUILD package DEB
         run: |
           
+          echo $VERSION
+          echo $TAG
+          echo $BRANCH
+          echo "${GITHUB_REF}"
+          echo $BUILD_NUMBER
+          echo "${{ github.run_number }}"
+          echo $PRODUCT
+          echo $( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' ) 
+          
           ### Create script for DocSpace .rpm package build ###
           cat << EOF >> build-DocSpace_deb.sh
           set -x
