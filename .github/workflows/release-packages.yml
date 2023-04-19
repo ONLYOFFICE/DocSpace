@@ -119,7 +119,7 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/release-v1.0.0.tar.gz -O DocSpace-release-v1.0.0.tar.gz
+          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/release/v1.0.0.tar.gz -O DocSpace-release-v1.0.0.tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
