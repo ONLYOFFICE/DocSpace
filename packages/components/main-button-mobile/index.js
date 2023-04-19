@@ -442,6 +442,7 @@ MainButtonMobile.propTypes = {
   sectionWidth: PropTypes.number,
   /** Specifies the exact width of the drop down component */
   manualWidth: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
   /** Sets the dropdown to open */
   opened: PropTypes.bool,
@@ -451,6 +452,8 @@ MainButtonMobile.propTypes = {
   onAlertClick: PropTypes.func,
   /** Enables alert click  */
   withAlertClick: PropTypes.bool,
+  /** Enables the submenu */
+  withMenu: PropTypes.bool,
 };
 
 MainButtonMobile.defaultProps = {
