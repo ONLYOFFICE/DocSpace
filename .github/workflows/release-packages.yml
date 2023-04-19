@@ -90,8 +90,6 @@ jobs:
         shell: bash
         run: |
           echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-          # echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          # echo "{environment_variable_name}={value}" >> $GITHUB_ENV
           echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
         
       - name: INSTALL tools & Prepare build
@@ -125,23 +123,10 @@ jobs:
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
-          
-              ### Create script for DocSpace .rpm package build ###
-          cat << EOF >> build-DocSpace_rpm.sh
-          
-          set -x
+
           sed -i -e '/BuildRequires/d' product.spec
-          # GIT_BRANCH=release/v1.0.0
           rename 's/product/docspace/g' ../../common/*.sh
-          echo "$BRANCH"
-          rpmbuild -D "GIT_BRANCH release-v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release 999" -ba product.spec
-      
-          EOF
-          
-              ### Execute script ###
-          chmod +x build-DocSpace_rpm.sh
-          sudo bash ./build-DocSpace_rpm.sh
-          
+          rpmbuild -D "GIT_BRANCH release-v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
       - name: Upload assets RPM 
