@@ -24,6 +24,9 @@ module.exports = (app, config, logger) => {
   const _ = require("lodash");
   const fetch = require("node-fetch");
   const routes = _.values(config.routes);
+  const machineKey = config["core"].machinekey
+  ? config["core"].machinekey
+  : config.app.machinekey;
 
   const fetchConfig = async (req, res, next) => {
     const foundRoutes =
@@ -63,7 +66,7 @@ module.exports = (app, config, logger) => {
 
       const text = await response.text();
 
-      const ssoConfig = coder.decodeData(text);
+      const ssoConfig = coder.decodeData(text, machineKey);
 
       const idp = converter.toIdp(ssoConfig);
 
