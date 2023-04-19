@@ -30,9 +30,10 @@ jobs:
             - .rpm
           draft: false
           
+      - name: Get files from repository
+        uses: actions/checkout@v2
+          
       - name: Get variables
-        id: get_variables 
-        shell: bash
         run: |
           echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
           raw_branch=$(git branch -r --contains ${{ github.ref }})
