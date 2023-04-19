@@ -36,6 +36,6 @@ public class InvintationLinkRequestDto
     /// <summary>External link name</summary>
     public string Title { get; set; }
 
-    /// <summary>Sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing)</summary>
+    /// <summary>Sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing, Collaborator)</summary>
     public FileShare Access { get; set; }
 }
