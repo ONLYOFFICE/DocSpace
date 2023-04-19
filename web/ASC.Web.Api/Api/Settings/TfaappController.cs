@@ -147,7 +147,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Validate the TFA code</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaValidateRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA validation request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaValidateRequestsDto, ASC.Web.Api" name="inDto">TFA validation request parameters</param>
     /// <returns type="System.Boolean, System">True if the code is valid</returns>
     ///<path>api/2.0/settings/tfaapp/validate</path>
     ///<httpMethod>POST</httpMethod>
@@ -201,7 +201,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Update the TFA settings</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
     /// <returns type="System.Boolean, System">True if the operation is successful</returns>
     ///<path>api/2.0/settings/tfaapp</path>
     ///<httpMethod>PUT</httpMethod>
@@ -302,7 +302,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Get confirmation email for updating TFA settings</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
     /// <returns type="System.Object, System">Confirmation email URL</returns>
     /// <path>api/2.0/settings/tfaappwithlink</path>
     /// <httpMethod>PUT</httpMethod>
@@ -408,7 +408,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Unlink the TFA application</short>
     /// <category>TFA settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">TFA settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.TfaRequestsDto, ASC.Web.Api" name="inDto">TFA settings request parameters</param>
     /// <returns type="System.Object, System">Login URL</returns>
     /// <path>api/2.0/settings/tfaappnewapp</path>
     /// <httpMethod>PUT</httpMethod>

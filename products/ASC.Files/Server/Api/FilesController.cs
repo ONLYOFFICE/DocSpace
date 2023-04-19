@@ -67,7 +67,7 @@ public class FilesControllerThirdparty : FilesController<string>
     /// <short>Get third-party file information</short>
     /// <param type="System.String, System" method="url" name="fileId">File ID</param>
     /// <category>Files</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core.ApiModels.ResponseDto">File entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core">File entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
     /// <path>api/2.0/files/file/app-{fileId}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("file/app-{fileId}", Order = 1)]
@@ -107,7 +107,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Change version history</short>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ChangeHistoryRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for changing version history</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ChangeHistoryRequestDto, ASC.Files.Core" name="inDto">Request parameters for changing version history</param>
     /// <category>Files</category>
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileDto}, System.Collections.Generic">Updated information about file versions: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/history</path>
@@ -164,8 +164,8 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Copy a file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CopyAsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for copying a file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core.ApiModels.ResponseDto">Copied file entry information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CopyAsRequestDto, ASC.Files.Core" name="inDto">Request parameters for copying a file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core">Copied file entry information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/copyas</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("file/{fileId}/copyas")]
@@ -189,9 +189,9 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Create a file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a file</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a file</param>
     /// <remarks>If a file extension is different from DOCX/XLSX/PPTX and refers to one of the known text, spreadsheet, or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not specified or is unknown, the DOCX extension will be added to the file title.</remarks>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/{folderId}/file</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/file")]
@@ -206,8 +206,8 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Create an HTML file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating an HTML file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/{folderId}/html</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/html")]
@@ -222,8 +222,8 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Create a txt file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a text file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/{folderId}/text</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/text")]
@@ -238,7 +238,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Delete a file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting a file</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRequestDto, ASC.Files.Core" name="inDto">Request parameters for deleting a file</param>
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/file/{fileId}</path>
     /// <httpMethod>DELETE</httpMethod>
@@ -297,7 +297,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <param type="System.Int32, System" name="version">File version</param>
     /// <category>Files</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">File information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">File information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("file/{fileId}")]
@@ -329,8 +329,8 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Lock a file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LockFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for locking a file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">Locked file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LockFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for locking a file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Locked file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/lock</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("file/{fileId}/lock")]
@@ -366,7 +366,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Start file conversion</short>
     /// <category>Operations</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CheckConversionRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for starting file conversion</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CheckConversionRequestDto, ASC.Files.Core" name="inDto">Request parameters for starting file conversion</param>
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.ConversationResultDto}, System.Collections.Generic">Conversion result: operation ID, operation result, operation progress, source file, resulting file, error, processed or not</returns>
     /// <path>api/2.0/files/file/{fileId}/checkconversion</path>
     /// <httpMethod>PUT</httpMethod>
@@ -389,7 +389,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Update a comment</short>
     /// <category>Operations</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateCommentRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a comment</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateCommentRequestDto, ASC.Files.Core" name="inDto">Request parameters for updating a comment</param>
     /// <returns type="System.Object, System">Updated comment</returns>
     /// <path>api/2.0/files/file/{fileId}/comment</path>
     /// <httpMethod>PUT</httpMethod>
@@ -405,8 +405,8 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Update a file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for updating a file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("file/{fileId}")]
@@ -421,10 +421,10 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Update file contents</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.FileStreamRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating file contents</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.FileStreamRequestDto, ASC.Files.Core" name="inDto">Request parameters for updating file contents</param>
     /// <path>api/2.0/files/{fileId}/update</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Updated file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <visible>false</visible>
     [HttpPut("{fileId}/update")]
     public Task<FileDto<T>> UpdateFileStreamFromFormAsync(T fileId, [FromForm] FileStreamRequestDto inDto)
@@ -438,7 +438,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Get file properties</short>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <category>Files</category>
-    /// <returns type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto">File properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core">File properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
     /// <path>api/2.0/files/{fileId}/properties</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("{fileId}/properties")]
@@ -453,7 +453,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Save file properties to a file</short>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="fileProperties">File properties request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core" name="fileProperties">File properties request parameters</param>
     /// <category>Files</category>
     /// <returns type="ASC.Files.Core.EntryProperties, ASC.Files.Core">File properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
     /// <path>api/2.0/files/{fileId}/properties</path>
@@ -494,9 +494,9 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create a file in the "My documents" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a file</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a file</param>
     /// <remarks>If a file extension is different from DOCX/XLSX/PPTX and refers to one of the known text, spreadsheet, or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not specified or is unknown, the DOCX extension will be added to the file title.</remarks>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@my/file</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/file")]
@@ -510,8 +510,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create an HTML file in the "Common" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating an HTML file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@common/html</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@common/html")]
@@ -525,8 +525,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create an HTML file in the "My documents" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating an HTML file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating an HTML file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@my/html</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/html")]
@@ -540,8 +540,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create a text file in the "Common" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a text file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@common/text</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@common/text")]
@@ -555,8 +555,8 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create a text file in the "My documents" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a text file</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTextOrHtmlFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a text file</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/@my/text</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/text")]
@@ -570,7 +570,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create thumbnails</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core" name="inDto">Base batch request parameters</param>
     /// <returns type="System.Collections.Generic.IEnumerable{System.Text.Json.JsonElement}, System.Collections.Generic">List of file IDs</returns>
     /// <path>api/2.0/files/thumbnails</path>
     /// <httpMethod>POST</httpMethod>
@@ -586,7 +586,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// Saves file properties to the specified files.
     /// </summary>
     /// <short>Save file properties to files</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchEntryPropertiesRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="batchEntryPropertiesRequestDto">Batch entry properties request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchEntryPropertiesRequestDto, ASC.Files.Core" name="batchEntryPropertiesRequestDto">Batch entry properties request parameters</param>
     /// <category>Files</category>
     /// <returns type="System.Collections.Generic.List{ASC.Files.Core.EntryProperties}, System.Collections.Generic">List of file properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
     /// <path>api/2.0/files/batch/properties</path>

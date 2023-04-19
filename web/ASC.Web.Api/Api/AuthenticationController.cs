@@ -172,10 +172,10 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Authenticate a user by code
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Authentication request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api" name="inDto">Authentication request parameters</param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/{code}</path>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api.ApiModel.ResponseDto">Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, phone number</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, phone number</returns>
     [AllowNotPayment]
     [HttpPost("{code}", Order = 1)]
     public async Task<AuthenticationTokenDto> AuthenticateMeFromBodyWithCode(AuthRequestsDto inDto)
@@ -245,10 +245,10 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Authenticate a user
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Authentication request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api" name="inDto">Authentication request parameters</param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication</path>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api.ApiModel.ResponseDto">Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, phone number, two-factor authentication key, confirmation email URL</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data: authentication token and its expiration time, authentication by SMS or two-factor authentication app, phone number, two-factor authentication key, confirmation email URL</returns>
     [AllowNotPayment]
     [HttpPost]
     public async Task<AuthenticationTokenDto> AuthenticateMeAsync(AuthRequestsDto inDto)
@@ -387,10 +387,10 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Set a mobile phone
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Mobile phone request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MobileRequestsDto, ASC.Web.Api" name="inDto">Mobile phone request parameters</param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/setphone</path>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api.ApiModel.ResponseDto">Authentication data: authentication by SMS or not, phone number, SMS expiration time</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data: authentication by SMS or not, phone number, SMS expiration time</returns>
     [AllowNotPayment]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "PhoneActivation")]
     [HttpPost("setphone")]
@@ -415,10 +415,10 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Send SMS code
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Authentication request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthRequestsDto, ASC.Web.Api" name="inDto">Authentication request parameters</param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/sendsms</path>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api.ApiModel.ResponseDto">Authentication data: authentication by SMS or not, phone number, SMS expiration time</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuthenticationTokenDto, ASC.Web.Api">Authentication data: authentication by SMS or not, phone number, SMS expiration time</returns>
     [AllowNotPayment]
     [HttpPost("sendsms")]
     public async Task<AuthenticationTokenDto> SendSmsCodeAsync(AuthRequestsDto inDto)

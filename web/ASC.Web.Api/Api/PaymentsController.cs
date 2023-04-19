@@ -85,7 +85,7 @@ public class PaymentController : ControllerBase
     /// Get the payment page URL
     /// </short>
     /// <category>Payment</category>
-    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api.Models" name="inDto">Payment URL request parameters</param>
+    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api" name="inDto">Payment URL request parameters</param>
     /// <returns type="System.Uri, System">The URL to the payment page</returns>
     /// <path>api/2.0/portal/payment/url</path>
     /// <httpMethod>PUT</httpMethod>
@@ -114,7 +114,7 @@ public class PaymentController : ControllerBase
     /// Update the payment quantity
     /// </short>
     /// <category>Payment</category>
-    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api.Models" name="inDto">Payment URL request parameters</param>
+    /// <param type="ASC.Web.Api.Models.PaymentUrlRequestsDto, ASC.Web.Api" name="inDto">Payment URL request parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/portal/payment/update</path>
     /// <httpMethod>PUT</httpMethod>
@@ -228,7 +228,7 @@ public class PaymentController : ControllerBase
     /// Get quota payment information
     /// </short>
     /// <category>Payment</category>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api.ApiModels.ResponseDto">Payment information about the current portal quota: ID, title, price, nonprofit or not, free or not, trial or not, tenant quota features</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api">Payment information about the current portal quota: ID, title, price, nonprofit or not, free or not, trial or not, tenant quota features</returns>
     /// <path>api/2.0/portal/payment/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quota")]
@@ -244,7 +244,7 @@ public class PaymentController : ControllerBase
     /// Send a payment request
     /// </short>
     /// <category>Payment</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SalesRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Portal payment request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.SalesRequestsDto, ASC.Web.Api" name="inDto">Portal payment request parameters</param>
     /// <returns></returns>
     /// <path>api/2.0/portal/payment/request</path>
     /// <httpMethod>POST</httpMethod>

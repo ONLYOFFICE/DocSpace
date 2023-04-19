@@ -233,7 +233,7 @@ public class LicenseController : BaseSettingsController
     /// <short>
     /// Upload a license
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters to upload a license</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UploadLicenseRequestsDto, ASC.Web.Api" name="inDto">Request parameters to upload a license</param>
     /// <category>License</category>
     /// <returns type="System.Object, System">License</returns>
     /// <path>api/2.0/settings/license</path>

@@ -84,7 +84,7 @@ public class GreetingSettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save the greeting settings</short>
     /// <category>Greeting settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.GreetingSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Greeting settings</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.GreetingSettingsRequestsDto, ASC.Web.Api" name="inDto">Greeting settings</param>
     /// <returns type="System.Object, System">Message about saving greeting settings successfully</returns>
     /// <path>api/2.0/settings/greetingsettings</path>
     /// <httpMethod>POST</httpMethod>

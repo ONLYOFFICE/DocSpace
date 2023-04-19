@@ -74,7 +74,7 @@ public class VersionController : BaseSettingsController
     /// <category>Versions</category>
     /// <path>api/2.0/settings/version</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.TenantVersionDto, ASC.Web.Api.ApiModel.ResponseDto">List of availibe portal versions including the current version</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.TenantVersionDto, ASC.Web.Api">List of availibe portal versions including the current version</returns>
     [HttpGet("version")]
     public TenantVersionDto GetVersions()
     {
@@ -88,10 +88,10 @@ public class VersionController : BaseSettingsController
     /// Change the portal version
     /// </short>
     /// <category>Versions</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
     /// <path>api/2.0/settings/version</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.TenantVersionDto, ASC.Web.Api.ApiModel.ResponseDto">List of availibe portal versions including the current version</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.TenantVersionDto, ASC.Web.Api">List of availibe portal versions including the current version</returns>
     [HttpPut("version")]
     public TenantVersionDto SetVersion(SettingsRequestsDto inDto)
     {

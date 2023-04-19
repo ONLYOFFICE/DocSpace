@@ -83,7 +83,7 @@ public class MessageSettingsController : BaseSettingsController
     /// <short>
     /// Enable the administrator message settings
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for administrator message settings</param>
     /// <category>Messages</category>
     /// <returns type="System.Object, System">Message about the result of saving new settings</returns>
     /// <path>api/2.0/settings/messagesettings</path>
@@ -123,7 +123,7 @@ public class MessageSettingsController : BaseSettingsController
     /// Update cookies lifetime
     /// </short>
     /// <category>Cookies</category>
-    /// <param type="ASC.Web.Api.Models.CookieSettingsRequestsDto, ASC.Web.Api.Models" name="inDto">Cookies settings request parameters</param>
+    /// <param type="ASC.Web.Api.Models.CookieSettingsRequestsDto, ASC.Web.Api" name="inDto">Cookies settings request parameters</param>
     /// <returns type="System.Object, System">Message about the result of saving new settings</returns>
     /// <path>api/2.0/settings/cookiesettings</path>
     /// <httpMethod>PUT</httpMethod>
@@ -150,7 +150,7 @@ public class MessageSettingsController : BaseSettingsController
     /// <short>
     /// Send a message to the administrator
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for administrator message settings</param>
     /// <category>Messages</category>
     /// <returns type="System.Object, System">Message about the result of sending a message</returns>
     /// <path>api/2.0/settings/sendadmmail</path>
@@ -192,7 +192,7 @@ public class MessageSettingsController : BaseSettingsController
     /// <short>
     /// Sends an invitation email
     /// </short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for administrator message settings</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AdminMessageSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for administrator message settings</param>
     /// <category>Messages</category>
     /// <returns type="System.Object, System">Message about sending a link to confirm joining the DocSpace</returns>
     /// <path>api/2.0/settings/sendjoininvite</path>

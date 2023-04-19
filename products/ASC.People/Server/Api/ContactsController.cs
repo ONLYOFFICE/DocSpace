@@ -51,8 +51,8 @@ public class ContactsController : PeopleControllerBase
     /// </short>
     /// <category>Contacts</category>
     /// <param type="System.String, System" method="url" name="userid">User ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api.Models">Deleted user profile with the detailed information</returns>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user contacts</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Deleted user profile with the detailed information</returns>
     /// <path>api/2.0/people/{userid}/contacts</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("{userid}/contacts")]
@@ -79,8 +79,8 @@ public class ContactsController : PeopleControllerBase
     /// </short>
     /// <category>Contacts</category>
     /// <param type="System.String, System" method="url" name="userid">User ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api.Models">Updated user profile with the detailed information</returns>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user contacts</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Updated user profile with the detailed information</returns>
     /// <path>api/2.0/people/{userid}/contacts</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{userid}/contacts")]
@@ -108,8 +108,8 @@ public class ContactsController : PeopleControllerBase
     /// </short>
     /// <category>Contacts</category>
     /// <param type="System.String, System" method="url" name="userid">User ID</param>
-    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for updating user contacts</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api.Models">Updated user profile with the detailed information</returns>
+    /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user contacts</param>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Updated user profile with the detailed information</returns>
     /// <path>api/2.0/people/{userid}/contacts</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/contacts")]

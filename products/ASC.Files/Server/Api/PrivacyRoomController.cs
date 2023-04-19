@@ -158,7 +158,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// Sets the key pair for the current user.
     /// </summary>
     /// <short>Set encryption keys</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for setting encryption keys</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for setting encryption keys</param>
     /// <returns type="System.Object, System">Boolean value: true - the key pair is set</returns>
     /// <path>api/2.0/privacyroom/keys</path>
     /// <httpMethod>PUT</httpMethod>
@@ -196,7 +196,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// Enables the Private Room settings.
     /// </summary>
     /// <short>Enable the Private Room settings</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for setting encryption keys</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.PrivacyRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for setting encryption keys</param>
     /// <returns type="System.Boolean, System">Boolean value: true - the Private Room settings are enabled, false - the Private Room settings are disabled</returns>
     /// <path>api/2.0/privacyroom</path>
     /// <httpMethod>PUT</httpMethod>

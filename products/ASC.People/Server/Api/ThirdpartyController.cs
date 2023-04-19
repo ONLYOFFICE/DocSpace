@@ -155,7 +155,7 @@ public class ThirdpartyController : ApiControllerBase
     /// Link a third-pary account
     /// </short>
     /// <category>Third-party accounts</category>
-    /// <param type="ASC.People.ApiModels.RequestDto.LinkAccountRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for linking accounts</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.LinkAccountRequestDto, ASC.People" name="inDto">Request parameters for linking accounts</param>
     /// <path>api/2.0/people/thirdparty/linkaccount</path>
     /// <httpMethod>PUT</httpMethod>
     /// <returns></returns>
@@ -191,7 +191,7 @@ public class ThirdpartyController : ApiControllerBase
     /// Create a third-pary account
     /// </short>
     /// <category>Third-party accounts</category>
-    /// <param type="ASC.People.ApiModels.RequestDto.SignupAccountRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for creating a third-party account</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.SignupAccountRequestDto, ASC.People" name="inDto">Request parameters for creating a third-party account</param>
     /// <path>api/2.0/people/thirdparty/signup</path>
     /// <httpMethod>POST</httpMethod>
     /// <returns></returns>

@@ -346,7 +346,7 @@ public class SecurityController : ControllerBase
     /// Get the audit trail settings
     /// </short>
     /// <category>Audit trail data</category>
-    /// <returns type="ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Tenants">Audit settings</returns>
+    /// <returns type="ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Common">Audit settings</returns>
     /// <path>api/2.0/security/audit/settings/lifetime</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("audit/settings/lifetime")]
@@ -366,8 +366,8 @@ public class SecurityController : ControllerBase
     /// Set the audit trail settings
     /// </short>
     /// <category>Audit trail data</category>
-    /// <param type="ASC.Core.Tenants.TenantAuditSettingsWrapper, ASC.Core.Tenants" name="wrapper">Audit trail settings</param>
-    /// <returns type="ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Tenants">Audit trail settings</returns>
+    /// <param type="ASC.Core.Tenants.TenantAuditSettingsWrapper, ASC.Core.Common" name="wrapper">Audit trail settings</param>
+    /// <returns type="ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Common">Audit trail settings</returns>
     /// <path>api/2.0/security/audit/settings/lifetime</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/settings/lifetime")]

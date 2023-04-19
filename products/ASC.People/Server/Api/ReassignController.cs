@@ -74,7 +74,7 @@ public class ReassignController : ApiControllerBase
     /// Starts the data reassignment for the user with the ID specified in the request.
     /// </summary>
     /// <short>Start the data reassignment</short>
-    /// <param type="ASC.People.ApiModels.RequestDto.StartReassignRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for starting the reassignment process</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.StartReassignRequestDto, ASC.People" name="inDto">Request parameters for starting the reassignment process</param>
     /// <category>User data</category>
     /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress: reassignment item progress ID, status, exception, percentage, completed or not, the user whose data is reassigned, the user to whom this data is reassigned</returns>
     /// <path>api/2.0/people/reassign/start</path>
@@ -115,7 +115,7 @@ public class ReassignController : ApiControllerBase
     /// Terminates the data reassignment for the user with the ID specified in the request.
     /// </summary>
     /// <short>Terminate the data reassignment</short>
-    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for terminating the reassignment process</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for terminating the reassignment process</param>
     /// <category>User data</category>
     /// <path>api/2.0/people/reassign/terminate</path>
     /// <httpMethod>PUT</httpMethod>

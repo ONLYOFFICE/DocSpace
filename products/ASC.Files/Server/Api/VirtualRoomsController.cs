@@ -60,8 +60,8 @@ public class VirtualRoomsInternalController : VirtualRoomsController<int>
     /// </summary>
     /// <short>Create a room</short>
     /// <category>Virtual rooms</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a room</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms")]
@@ -109,8 +109,8 @@ public class VirtualRoomsThirdPartyController : VirtualRoomsController<string>
     /// <short>Create a third-party room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.String, System" method="url" name="id">ID of the folder in the third-party storage in which the contents of the room will be stored</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a room</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/thirdparty/{id}</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms/thirdparty/{id}")]
@@ -166,7 +166,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Get room information</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("rooms/{id}")]
@@ -185,8 +185,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Rename a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for updating a virtual room</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Updated room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UpdateRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for updating a virtual room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Updated room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}")]
@@ -205,8 +205,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Remove a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting a virtual room</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core.ApiModels.ResponseDto">File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for deleting a virtual room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core">File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/rooms/{id}</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("rooms/{id}")]
@@ -226,8 +226,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Archive a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for archiving a virtual room</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core.ApiModels.ResponseDto">File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for archiving a virtual room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core">File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/rooms/{id}/archive</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/archive")]
@@ -250,8 +250,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Unarchive a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for unarchiving a virtual room</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core.ApiModels.ResponseDto">File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ArchiveRoomRequestDto, ASC.Files.Core" name="inDto">Request parameters for unarchiving a virtual room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core">File operation: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/rooms/{id}/unarchive</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/unarchive")]
@@ -274,8 +274,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Set room access rights</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.RoomInvitationRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for inviting users to a room</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.RoomSecurityDto, ASC.Files.Core.ApiModels.ResponseDto">Room security information: room members, warning</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.RoomInvitationRequestDto, ASC.Files.Core" name="inDto">Request parameters for inviting users to a room</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.RoomSecurityDto, ASC.Files.Core">Room security information: room members, warning</returns>
     /// <path>api/2.0/files/rooms/{id}/share</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/share")]
@@ -332,7 +332,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Set an external invitation link</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InvintationLinkRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Invitation link request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InvintationLinkRequestDto, ASC.Files.Core" name="inDto">Invitation link request parameters</param>
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, System.Collections.Generic">Security information of room files: sharing rights, a user who has the access to the specified file, the file is locked by this user or not, this user is an owner of the specified file or not, this user can edit the access to the specified file or not</returns>
     /// <path>api/2.0/files/rooms/{id}/links</path>
     /// <httpMethod>PUT</httpMethod>
@@ -354,8 +354,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Add room tags</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for adding tags</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core" name="inDto">Request parameters for adding tags</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/tags</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/tags")]
@@ -374,8 +374,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Remove room tags</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for removing tags</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core" name="inDto">Request parameters for removing tags</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/tags</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("rooms/{id}/tags")]
@@ -394,8 +394,8 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Create a room logo</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LogoRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Logo request parameters</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.LogoRequestDto, ASC.Files.Core" name="inDto">Logo request parameters</param>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/logo</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("rooms/{id}/logo")]
@@ -416,7 +416,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Remove a room logo</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/logo</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("rooms/{id}/logo")]
@@ -437,7 +437,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Pin a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/pin</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/pin")]
@@ -456,7 +456,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Unpin a room</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Room information: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/rooms/{id}/unpin</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("rooms/{id}/unpin")]
@@ -475,7 +475,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <short>Resend room invitations</short>
     /// <category>Virtual rooms</category>
     /// <param type="System.Int32, System" method="url" name="id">Room ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UserInvintationRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">User invitation request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UserInvintationRequestDto, ASC.Files.Core" name="inDto">User invitation request parameters</param>
     /// <returns></returns>
     /// <path>api/2.0/files/rooms/{id}/resend</path>
     /// <httpMethod>POST</httpMethod>
@@ -554,7 +554,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// <param type="System.Nullable{System.Boolean}, System" name="excludeSubject">Specifies whether to exclude a subject or not</param>
     /// <param type="System.Nullable{ASC.Files.Core.ProviderFilter}, System" name="provider">Filter by provider name (None, Box, DropBox, GoogleDrive, kDrive, OneDrive, SharePoint, WebDav, Yandex)</param>
     /// <param type="System.Nullable{ASC.Files.Core.Core.SubjectFilter}, System" name="subjectFilter">Filter by subject (Owner - 1, Member - 1)</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core.ApiModels.ResponseDto">Virtual rooms contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">Virtual rooms contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
     /// <path>api/2.0/files/rooms</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("rooms")]
@@ -603,7 +603,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </summary>
     /// <short>Create a tag</short>
     /// <category>Virtual rooms</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTagRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a tag</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateTagRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a tag</param>
     /// <returns type="System.Object, System">New tag name</returns>
     /// <path>api/2.0/files/tags</path>
     /// <httpMethod>POST</httpMethod>
@@ -643,7 +643,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </summary>
     /// <short>Delete tags</short>
     /// <category>Virtual rooms</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Batch tags request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchTagsRequestDto, ASC.Files.Core" name="inDto">Batch tags request parameters</param>
     /// <returns></returns>
     /// <path>api/2.0/files/tags</path>
     /// <httpMethod>DELETE</httpMethod>
@@ -661,7 +661,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// <short>Upload an image for room logo</short>
     /// <category>Virtual rooms</category>
     /// <param type="Microsoft.AspNetCore.Http.IFormCollection, Microsoft.AspNetCore.Http" name="formCollection">Image data</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.UploadResultDto, ASC.Files.Core.ApiModels.ResponseDto">Upload result: success or not, data, message</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.UploadResultDto, ASC.Files.Core">Upload result: success or not, data, message</returns>
     /// <path>api/2.0/files/logos</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("logos")]
@@ -715,7 +715,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </summary>
     /// <short>Accept an invitation</short>
     /// <category>Virtual rooms</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.AcceptInvitationDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for accepting invitations</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.AcceptInvitationDto, ASC.Files.Core" name="inDto">Request parameters for accepting invitations</param>
     /// <returns></returns>
     /// <path>api/2.0/files/rooms/accept</path>
     /// <httpMethod>POST</httpMethod>

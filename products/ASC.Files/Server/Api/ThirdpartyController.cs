@@ -103,7 +103,7 @@ public class ThirdpartyController : ApiControllerBase
     /// Creates a WordPress post with the parameters specified in the request.
     /// </summary>
     /// <short>Create a WordPress post</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateWordpressPostRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for creating a WordPress post</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateWordpressPostRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a WordPress post</param>
     /// <category>WordPress</category>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/wordpress</path>
@@ -224,7 +224,7 @@ public class ThirdpartyController : ApiControllerBase
     /// </summary>
     /// <category>Third-party integration</category>
     /// <short>Get a third-party account backup</short>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Folder for the third-party account backup: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <path>api/2.0/files/thirdparty/backup</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("thirdparty/backup")]
@@ -282,9 +282,9 @@ public class ThirdpartyController : ApiControllerBase
     /// Saves the third-party storage service account. For WebDav, Yandex, kDrive and SharePoint, the login and password are used for authentication. For other providers, the authentication is performed using a token received via OAuth 2.0.
     /// </summary>
     /// <short>Save a third-party account</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Third-party request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyRequestDto, ASC.Files.Core" name="inDto">Third-party request parameters</param>
     /// <category>Third-party integration</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Connected provider folder: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Connected provider folder: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <remarks>List of provider keys: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive.</remarks>
     /// <path>api/2.0/files/thirdparty</path>
     /// <httpMethod>POST</httpMethod>
@@ -311,9 +311,9 @@ public class ThirdpartyController : ApiControllerBase
     /// Saves a backup of the connected third-party account.
     /// </summary>
     /// <short>Save a third-party account backup</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyBackupRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Third-party backup request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyBackupRequestDto, ASC.Files.Core" name="inDto">Third-party backup request parameters</param>
     /// <category>Third-party integration</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core.ApiModels.ResponseDto">Folder for the third-party account backup: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive</remarks>
     /// <path>api/2.0/files/thirdparty/backup</path>
     /// <httpMethod>POST</httpMethod>
@@ -342,7 +342,7 @@ public class ThirdpartyController : ApiControllerBase
     /// Saves the user WordPress information when logging in.
     /// </summary>
     /// <short>Save the user WordPress information</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.WordpressSaveRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for saving WordPress information</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.WordpressSaveRequestDto, ASC.Files.Core" name="inDto">Request parameters for saving WordPress information</param>
     /// <category>WordPress</category>
     /// <returns type="System.Object, System">Object with the following parameters: "success" - specifies if the operation is successful or not, "data" - blog information</returns>
     /// <path>api/2.0/files/wordpress-save</path>

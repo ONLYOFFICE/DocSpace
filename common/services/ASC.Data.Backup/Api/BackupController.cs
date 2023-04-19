@@ -68,7 +68,7 @@ public class BackupController : ControllerBase
     /// Creates the backup schedule of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Create the backup schedule</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup.ApiModels" name="backupSchedule">Backup schedule parameters</param>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup" name="backupSchedule">Backup schedule parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/createbackupschedule</path>
@@ -107,7 +107,7 @@ public class BackupController : ControllerBase
     /// Starts the backup of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Start the backup</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup.ApiModels" name="backup">Backup parameters</param>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup" name="backup">Backup parameters</param>
     /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/startbackup</path>
@@ -189,7 +189,7 @@ public class BackupController : ControllerBase
     /// Starts the data restoring process of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Start the restoring process</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup.ApiModels" name="backupRestore">Restoring parameters</param>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup" name="backupRestore">Restoring parameters</param>
     /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/startrestore</path>

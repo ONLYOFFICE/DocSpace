@@ -60,7 +60,7 @@ public class SmtpSettingsController : ControllerBase
     /// Get the SMTP settings
     /// </short>
     /// <category>SMTP settings</category>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">SMTP settings</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("smtp")]
@@ -81,8 +81,8 @@ public class SmtpSettingsController : ControllerBase
     /// Save the SMTP settings
     /// </short>
     /// <category>SMTP settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto" name="inDto">SMTP settings</param>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">SMTP settings</returns>
+    /// <param type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api" name="inDto">SMTP settings</param>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("smtp")]
@@ -113,7 +113,7 @@ public class SmtpSettingsController : ControllerBase
     /// Reset the SMTP settings
     /// </short>
     /// <category>SMTP settings</category>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api.ApiModel.ResponseDto">Default SMTP settings</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SmtpSettingsDto, ASC.Web.Api">Default SMTP settings</returns>
     /// <path>api/2.0/smtpsettings/smtp</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("smtp")]

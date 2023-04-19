@@ -73,7 +73,7 @@ public class OwnerController : BaseSettingsController
     /// Send the owner change instructions
     /// </short>
     /// <category>Owner</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
     /// <returns type="System.Object, System">Message about changing the portal owner</returns>
     /// <path>api/2.0/settings/owner</path>
     /// <httpMethod>POST</httpMethod>
@@ -112,7 +112,7 @@ public class OwnerController : BaseSettingsController
     /// Update the portal owner
     /// </short>
     /// <category>Owner</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
     /// <returns></returns>
     /// <path>api/2.0/settings/owner</path>
     /// <httpMethod>PUT</httpMethod>

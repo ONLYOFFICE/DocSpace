@@ -73,7 +73,7 @@ public abstract class TagsController<T> : ApiControllerBase
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <short>Add a file to the "Recent" section</short>
     /// <category>Files</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core.ApiModels.ResponseDto">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
     /// <path>api/2.0/files/file/{fileId}/recent</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("file/{fileId}/recent")]
@@ -123,7 +123,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Add favorite files and folders</short>
     /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core" name="inDto">Base batch request parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/favorites</path>
     /// <httpMethod>POST</httpMethod>
@@ -144,7 +144,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Add template files</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.TemplatesRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for adding files to the template list</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.TemplatesRequestDto, ASC.Files.Core" name="inDto">Request parameters for adding files to the template list</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/templates</path>
     /// <httpMethod>POST</httpMethod>
@@ -161,7 +161,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Delete favorite files and folders (using body parameters)</short>
     /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core" name="inDto">Base batch request parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/favorites</path>
     /// <httpMethod>DELETE</httpMethod>
@@ -177,7 +177,7 @@ public class TagsControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Delete favorite files and folders (using query parameters)</short>
     /// <category>Operations</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Base batch request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core" name="inDto">Base batch request parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/files/favorites</path>
     /// <httpMethod>DELETE</httpMethod>

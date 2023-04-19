@@ -66,7 +66,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// <short>Chunked upload</short>
     /// <category>Operations</category>
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SessionRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Session request parameters: <![CDATA[
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SessionRequestDto, ASC.Files.Core" name="inDto">Session request parameters: <![CDATA[
     /// <ul>
     ///     <li><b>FileName</b> (string) - file name,</li>
     ///     <li><b>FileSize</b> (long) - file length in bytes,</li>
@@ -138,7 +138,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// </summary>
     /// <short>Insert a file</short>
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for inserting a file: <![CDATA[
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file: <![CDATA[
     /// <ul>
     ///     <li><b>Stream</b> (Stream) - request input stream,</li>
     ///     <li><b>Title</b> (string) - file name,</li>
@@ -171,7 +171,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// </ol>]]>
     /// </remarks>
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for uploading a file: <![CDATA[
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file: <![CDATA[
     /// <ul>
     ///     <li><b>File</b> (IFormFile) - request input stream,</li>
     ///     <li><b>ContentType</b> (ContentType) - Content-Type header,</li>
@@ -212,7 +212,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// Inserts a file specified in the request to the "Common" section by single file uploading.
     /// </summary>
     /// <short>Insert a file to the "Common" section</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for inserting a file: <![CDATA[
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file: <![CDATA[
     /// <ul>
     ///     <li><b>Stream</b> (Stream) - request input stream,</li>
     ///     <li><b>Title</b> (string) - file name,</li>
@@ -234,7 +234,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// Inserts a file specified in the request to the "My documents" section by single file uploading.
     /// </summary>
     /// <short>Insert a file to the "My documents" section</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for inserting a file: <![CDATA[
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file: <![CDATA[
     /// <ul>
     ///     <li><b>Stream</b> (Stream) - request input stream,</li>
     ///     <li><b>Title</b> (string) - file name,</li>
@@ -257,7 +257,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Upload a file to the "Common" section</short>
     /// <category>Folders</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for uploading a file: <![CDATA[
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file: <![CDATA[
     /// <ul>
     ///     <li><b>File</b> (IFormFile) - request input stream,</li>
     ///     <li><b>ContentType</b> (ContentType) - Content-Type header,</li>
@@ -292,7 +292,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Upload a file to the "My documents" section</short>
     /// <category>Folders</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for uploading a file: <![CDATA[
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file: <![CDATA[
     /// <ul>
     ///     <li><b>File</b> (IFormFile) - request input stream,</li>
     ///     <li><b>ContentType</b> (ContentType) - Content-Type header,</li>

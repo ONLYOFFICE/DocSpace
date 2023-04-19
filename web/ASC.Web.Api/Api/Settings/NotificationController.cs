@@ -48,8 +48,8 @@ public class NotificationController : BaseSettingsController
     /// </summary>
     /// <category>Notifications</category>
     /// <short>Check notification availability</short>
-    /// <param type="ASC.Web.Core.Notify.NotificationType, ASC.Web.Core.Notify" method="url" name="type">Notification type (Badges, RoomsActivity, DailyFeed, UsefullTips)</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.NotificationSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Notification settings: notification type, enabled or not</returns>
+    /// <param type="ASC.Web.Core.Notify.NotificationType, ASC.Web.Core" method="url" name="type">Notification type (Badges, RoomsActivity, DailyFeed, UsefullTips)</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.NotificationSettingsDto, ASC.Web.Api">Notification settings: notification type, enabled or not</returns>
     /// <path>api/2.0/settings/notification/{type}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("notification/{type}")]
@@ -65,8 +65,8 @@ public class NotificationController : BaseSettingsController
     /// </summary>
     /// <category>Notifications</category>
     /// <short>Enable notifications</short>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.NotificationSettingsRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Notification settings request parameters</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.NotificationSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Notification settings: notification type, enabled or not</returns>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.NotificationSettingsRequestsDto, ASC.Web.Api" name="inDto">Notification settings request parameters</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.NotificationSettingsDto, ASC.Web.Api">Notification settings: notification type, enabled or not</returns>
     /// <path>api/2.0/settings/notification</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("notification")]
@@ -82,7 +82,7 @@ public class NotificationController : BaseSettingsController
     /// </summary>
     /// <category>Notifications</category>
     /// <short>Get room notification settings</short>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.RoomsNotificayionSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Room notification settings: list of rooms with the disabled notifications</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.RoomsNotificayionSettingsDto, ASC.Web.Api">Room notification settings: list of rooms with the disabled notifications</returns>
     /// <path>api/2.0/settings/notification/rooms</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("notification/rooms")]
@@ -97,8 +97,8 @@ public class NotificationController : BaseSettingsController
     /// </summary>
     /// <category>Notifications</category>
     /// <short>Set room notification status</short>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.RoomsNotificationsSettingsRequestDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Request parameters for the room notification settings</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.RoomsNotificayionSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Room notification settings: list of rooms with the disabled notifications</returns>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.RoomsNotificationsSettingsRequestDto, ASC.Web.Api" name="inDto">Request parameters for the room notification settings</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.RoomsNotificayionSettingsDto, ASC.Web.Api">Room notification settings: list of rooms with the disabled notifications</returns>
     /// <path>api/2.0/settings/notification/rooms</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("notification/rooms")]

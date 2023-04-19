@@ -69,7 +69,7 @@ public class IpRestrictionsController : BaseSettingsController
     /// </summary>
     /// <short>Save the IP restrictions</short>
     /// <category>IP restrictions</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">IP restrictions request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api" name="inDto">IP restrictions request parameters</param>
     /// <returns type="System.Collections.Generic.IEnumerable{ASC.IPSecurity.IpRestrictionBase}, System.Collections.Generic">List of updated IP restrictions: IP addresses, for admin users only or not</returns>
     /// <path>api/2.0/settings/iprestrictions</path>
     /// <httpMethod>PUT</httpMethod>
@@ -102,7 +102,7 @@ public class IpRestrictionsController : BaseSettingsController
     /// </summary>
     /// <short>Update the IP restriction settings</short>
     /// <category>IP restrictions</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">New IP restriction settings</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.IpRestrictionsRequestsDto, ASC.Web.Api" name="inDto">New IP restriction settings</param>
     /// <returns type="ASC.IPSecurity.IPRestrictionsSettings, ASC.IPSecurity">Updated IP restriction settings: IP restrictions are enabled or not</returns>
     /// <path>api/2.0/settings/iprestrictions/settings</path>
     /// <httpMethod>PUT</httpMethod>

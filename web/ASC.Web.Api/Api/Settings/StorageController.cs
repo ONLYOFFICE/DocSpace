@@ -149,7 +149,7 @@ public class StorageController : BaseSettingsController
     /// </summary>
     /// <short>Start the storage encryption process</short>
     /// <category>Encryption</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageEncryptionRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Storage encryption request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.StorageEncryptionRequestsDto, ASC.Web.Api" name="inDto">Storage encryption request parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <path>api/2.0/settings/encryption/start</path>
     /// <httpMethod>POST</httpMethod>

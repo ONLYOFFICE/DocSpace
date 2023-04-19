@@ -62,7 +62,7 @@ public class TipsController : BaseSettingsController
     /// </summary>
     /// <short>Update the tip settings</short>
     /// <category>Tips</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
     /// <returns type="ASC.Web.Studio.Core.TipsSettings, ASC.Web.Studio.Core">Updated tip settings</returns>
     /// <path>api/2.0/settings/tips</path>
     /// <httpMethod>PUT</httpMethod>

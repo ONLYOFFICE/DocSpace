@@ -106,7 +106,7 @@ public class RemoveUserDataController : ApiControllerBase
     /// Starts the data deletion for the user with the ID specified in the request.
     /// </summary>
     /// <short>Start the data deletion</short>
-    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for starting the deletion process</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for starting the deletion process</param>
     /// <category>User data</category>
     /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress: deletion item progress ID, status, exception, percentage, completed or not, the user whose data is deleted</returns>
     /// <path>api/2.0/people/remove/start</path>
@@ -135,7 +135,7 @@ public class RemoveUserDataController : ApiControllerBase
     /// Terminates the data deletion for the user with the ID specified in the request.
     /// </summary>
     /// <short>Terminate the data deletion</short>
-    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Request parameters for terminating the deletion process</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for terminating the deletion process</param>
     /// <category>User data</category>
     /// <path>api/2.0/people/remove/terminate</path>
     /// <httpMethod>PUT</httpMethod>

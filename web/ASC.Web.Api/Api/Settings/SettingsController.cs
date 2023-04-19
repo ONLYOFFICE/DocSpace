@@ -28,7 +28,7 @@ namespace ASC.Web.Api.Controllers.Settings;
 
 public class SettingsController : BaseSettingsController
 {
-    private static readonly object locked = new object();
+    private static readonly object _locked = new object();
     private Tenant Tenant { get { return ApiContext.Tenant; } }
 
     private readonly MessageService _messageService;
@@ -139,7 +139,7 @@ public class SettingsController : BaseSettingsController
     /// </short>
     /// <category>Common settings</category>
     /// <param type="System.Boolean, System" name="withpassword">Specifies if the password hasher settings will be returned or not</param>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SettingsDto, ASC.Web.Api.ApiModel.ResponseDto">Settings: time zone, trusted domains, trusted domains type, language, UTC offset, greeting settings, owner ID, team template ID, enabled to join or not, enabled to send a message to the administrator or not, enabled to connect third-party providers r not, Personal or DocSpace portal, standalone or not, Wizard token, password hash, Firebase parameters, version, ReCAPTCHA public key, send debug information or not, socket URL, tenant status, tenant alias, link to the help, domain validator, plugins</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SettingsDto, ASC.Web.Api">Settings: time zone, trusted domains, trusted domains type, language, UTC offset, greeting settings, owner ID, team template ID, enabled to join or not, enabled to send a message to the administrator or not, enabled to connect third-party providers r not, Personal or DocSpace portal, standalone or not, Wizard token, password hash, Firebase parameters, version, ReCAPTCHA public key, send debug information or not, socket URL, tenant status, tenant alias, link to the help, domain validator, plugins</returns>
     /// <path>api/2.0/settings</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -247,7 +247,7 @@ public class SettingsController : BaseSettingsController
     /// Save the mail domain settings
     /// </short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailDomainSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for mail domain settings</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.MailDomainSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for mail domain settings</param>
     /// <returns type="System.Object, System">Message about the result of saving the mail domain settings</returns>
     /// <path>api/2.0/settings/maildomainsettings</path>
     /// <httpMethod>POST</httpMethod>
@@ -294,7 +294,7 @@ public class SettingsController : BaseSettingsController
     /// Get the space usage
     /// </short>
     /// <category>Quota</category>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.QuotaUsageDto, ASC.Web.Api.ApiModel.ResponseDto">Space usage and limits for upload: storage size, maximum file size, used size, maximum number of room admins, number of room admins, available size, available number of users, storage usage, user storage size, user used size, user available size, maximum number of users, number of users</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.QuotaUsageDto, ASC.Web.Api">Space usage and limits for upload: storage size, maximum file size, used size, maximum number of room admins, number of room admins, available size, available number of users, storage usage, user storage size, user used size, user available size, maximum number of users, number of users</returns>
     /// <path>api/2.0/settings/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("quota")]
@@ -310,7 +310,7 @@ public class SettingsController : BaseSettingsController
     /// Save the user quota settings
     /// </short>
     /// <category>Quota</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UserQuotaSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for the user quota settings</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.UserQuotaSettingsRequestsDto, ASC.Web.Api" name="inDto">Request parameters for the user quota settings</param>
     /// <returns type="System.Object, System">Message about the result of saving the user quota settings</returns>
     /// <path>api/2.0/settings/userquotasettings</path>
     /// <httpMethod>POST</httpMethod>
@@ -399,7 +399,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save the DNS settings</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api.Models" name="inDto">DNS settings request parameters</param>
+    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api" name="inDto">DNS settings request parameters</param>
     /// <returns type="System.Object, System">Message about changing DNS</returns>
     /// <path>api/2.0/settings/dns</path>
     /// <httpMethod>PUT</httpMethod>
@@ -464,8 +464,8 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Complete the Wizard settings</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WizardRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Wizard settings request parameters</param>
-    /// <returns type="ASC.Web.Core.Utility.Settings.WizardSettings, ASC.Web.Core.Utility.Settings">Wizard settings: completed or not</returns>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WizardRequestsDto, ASC.Web.Api" name="inDto">Wizard settings request parameters</param>
+    /// <returns type="ASC.Web.Core.Utility.Settings.WizardSettings, ASC.Web.Core">Wizard settings: completed or not</returns>
     /// <path>api/2.0/settings/wizard/complete</path>
     /// <httpMethod>PUT</httpMethod>
     [AllowNotPayment]
@@ -510,7 +510,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Get a color theme</short>
     /// <category>Common settings</category>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Settings of the portal themes</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Settings of the portal themes</returns>
     /// <path>api/2.0/settings/colortheme</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -526,8 +526,8 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save a color theme</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.CustomColorThemesSettingsRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Portal theme settings</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Portal theme settings: custom color theme settings, selected or not, limit</returns>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.CustomColorThemesSettingsRequestsDto, ASC.Web.Api" name="inDto">Portal theme settings</param>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Portal theme settings: custom color theme settings, selected or not, limit</returns>
     /// <path>api/2.0/settings/colortheme</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("colortheme")]
@@ -538,7 +538,7 @@ public class SettingsController : BaseSettingsController
 
         if (inDto.Theme != null)
         {
-            lock (locked)
+            lock (_locked)
             {
                 var theme = inDto.Theme;
 
@@ -602,7 +602,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Delete a color theme</short>
     /// <category>Common settings</category>
     /// <param ype="System.Int32, System" name="id">Portal theme ID</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Portal theme settings: custom color theme settings, selected or not, limit</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Portal theme settings: custom color theme settings, selected or not, limit</returns>
     /// <path>api/2.0/settings/colortheme</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("colortheme")]
@@ -656,7 +656,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Set time zone and language</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
     /// <returns type="System.Object, System">Message about saving settings successfully</returns>
     /// <path>api/2.0/settings/timeandlanguage</path>
     /// <httpMethod>PUT</httpMethod>
@@ -708,7 +708,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Set the default product page</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SettingsRequestsDto, ASC.Web.Api" name="inDto">Settings request parameters</param>
     /// <returns type="System.Object, System">Message about saving settings successfully</returns>
     /// <path>api/2.0/settings/defaultpage</path>
     /// <httpMethod>PUT</httpMethod>
@@ -878,7 +878,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <category>Common settings</category>
     /// <short>Get the tenant Control Panel settings</short>
-    /// <returns type="ASC.Core.Tenants.TenantControlPanelSettings, ASC.Core.Tenants">Tenant Control Panel settings</returns>
+    /// <returns type="ASC.Core.Tenants.TenantControlPanelSettings, ASC.Core.Common">Tenant Control Panel settings</returns>
     /// <path>api/2.0/settings/controlpanel</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -912,7 +912,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <category>Authorization</category>
     /// <short>Save the authorization keys</short>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthServiceRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">Request parameters for authorization service</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.AuthServiceRequestsDto, ASC.Web.Api" name="inDto">Request parameters for authorization service</param>
     /// <path>api/2.0/settings/authservice</path>
     /// <httpMethod>POST</httpMethod>
     /// <returns type="System.Boolean, System">Boolean value: true if the authorization keys are changed</returns>
