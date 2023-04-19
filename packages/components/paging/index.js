@@ -103,13 +103,15 @@ Paging.propTypes = {
   disablePrevious: PropTypes.bool,
   /** Sets the next button disabled */
   disableNext: PropTypes.bool,
+  /** Disables the hover action for buttons */
   disableHover: PropTypes.bool,
   /** Initial value for pageItems */
   selectedPageItem: PropTypes.object,
   /** Initial value for countItems */
   selectedCountItem: PropTypes.object,
-
+  /** Sets a callback function that is triggered when the page is selected */
   onSelectPage: PropTypes.func,
+  /** Sets a callback function that is triggered when the page items are selected */
   onSelectCount: PropTypes.func,
   /** Paging combo box items */
   pageItems: PropTypes.array,
@@ -123,7 +125,7 @@ Paging.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-
+  /** Displays a combobox with the number of items per page */
   showCountItem: PropTypes.bool.isRequired,
 };
 
