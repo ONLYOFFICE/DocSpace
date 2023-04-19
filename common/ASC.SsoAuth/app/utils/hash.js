@@ -34,13 +34,7 @@ var Hash = function () {
 
         let data = Buffer.from(strHash).toString("base64");
 
-        let cnt = 0;
-        while (data.indexOf("=") !== -1) {
-          cnt++;
-          data = data.replace("=", "");
-        }
-
-        data = (data + cnt).replace(/\+/g, "-").replace(/\//g, "_");
+        data = data.replace(/\+/g, "-").replace(/\//g, "_");
 
         return data;
       } catch (ex) {
