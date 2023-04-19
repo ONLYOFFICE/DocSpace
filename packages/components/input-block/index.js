@@ -179,7 +179,7 @@ InputBlock.propTypes = {
   onBlur: PropTypes.func,
   /** The callback function that is called when the field is focused  */
   onFocus: PropTypes.func,
-  /** Focuses on the input field on the initial render */
+  /** Focuses on the input field on initial render */
   isAutoFocussed: PropTypes.bool,
   /** Indicates that the field cannot be used (e.g not authorised, or changes not saved) */
   isDisabled: PropTypes.bool,
