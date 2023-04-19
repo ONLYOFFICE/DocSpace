@@ -79,7 +79,7 @@ jobs:
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           #error NETSDK1152: Found multiple publish output files with the same relative path
           cd build/install/deb/ 
-          rename -f -v "s/product/$PRODUCT/" debian/* ../common/* ../common/logrotate/*
+          rename -f -v "s/product/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/$PRODUCT/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
 
