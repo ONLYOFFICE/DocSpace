@@ -36,15 +36,24 @@ const Selector = (props) => {
     }
   };
 
-  const onAcceptItem = useCallback(
+  const onSelect = useCallback(
     (item) => {
       frameCallEvent({ event: "onSelectCallback", data: item });
     },
     [frameCallEvent]
   );
 
+  const onClose = useCallback(() => {
+    frameCallEvent({ event: "onCloseCallback" });
+  }, [frameCallEvent]);
+
   return (
-    <RoomSelector withCancelButton withHeader={false} onAccept={onAcceptItem} />
+    <RoomSelector
+      withCancelButton
+      withHeader={false}
+      onAccept={onSelect}
+      onCancel={onClose}
+    />
   );
 };
 

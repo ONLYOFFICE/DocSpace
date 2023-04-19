@@ -41,7 +41,7 @@
       "mode",
     ],
     events: {
-      onSelectCallback: (e) => console.log("onSelectCallback", e),
+      onSelectCallback: null,
       onCloseCallback: null,
     },
   };
