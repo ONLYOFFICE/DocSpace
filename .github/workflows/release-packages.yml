@@ -119,13 +119,13 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ env.branch }}.tar.gz -O DocSpace-release-v1.0.0.tar.gz
+          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/release-v1.0.0.tar.gz -O DocSpace-release-v1.0.0.tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
 
           sed -i -e '/BuildRequires/d' product.spec
-          rename 's/product/docspace/g' ../../common/*.sh
+          rename 's/product/${{ env.product }}/g' ../../common/*.sh
           rpmbuild -D "GIT_BRANCH release-v1.0.0" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
