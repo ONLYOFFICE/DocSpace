@@ -76,7 +76,7 @@ public class EditorControllerThirdparty : EditorController<string>
     /// </short>
     /// <category>Third-party integration</category>
     /// <param type="System.String, System" method="url" name="fileId">File ID</param>
-    /// <returns type="ASC.Web.Files.Services.DocumentService.Configuration, ASC.Web.Files.Services.DocumentService">Configuration parameters: document config, document type, editor config, editor type, editor URL, token, platform type</returns>
+    /// <returns type="ASC.Web.Files.Services.DocumentService.Configuration, ASC.Files.Core">Configuration parameters: document config, document type, editor config, editor type, editor URL, token, platform type</returns>
     /// <path>api/2.0/files/file/app-{fileId}/openedit</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -295,7 +295,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <short>Get reference data</short>
     /// <category>Files</category>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.GetReferenceDataDto, ASC.Files.Core" name="inDto">Request parameters for getting reference data</param>
-    /// <returns type="ASC.Web.Files.Services.DocumentService.FileReference, ASC.Web.Files.Services.DocumentService">File reference data: error, path, URL, file type, token</returns>
+    /// <returns type="ASC.Web.Files.Services.DocumentService.FileReference, ASC.Files.Core">File reference data: error, path, URL, file type, token</returns>
     /// <path>api/2.0/files/file/referencedata</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("file/referencedata")]

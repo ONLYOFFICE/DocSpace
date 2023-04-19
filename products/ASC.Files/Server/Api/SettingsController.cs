@@ -88,7 +88,7 @@ public class SettingsController : ApiControllerBase
     /// <short>Change the archive format (using body parameters)</short>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns type="ASC.Web.Files.Core.Compress.ICompress, ASC.Web.Files.Core.Compress">Archive</returns>
+    /// <returns type="ASC.Web.Files.Core.Compress.ICompress, ASC.Files.Core">Archive</returns>
     /// <path>api/2.0/files/settings/downloadtargz</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("settings/downloadtargz")]
@@ -103,7 +103,7 @@ public class SettingsController : ApiControllerBase
     /// <short>Change the archive format (using form parameters)</short>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.DisplayRequestDto, ASC.Files.Core" name="inDto">Settings request parameters</param>
     /// <category>Settings</category>
-    /// <returns type="ASC.Web.Files.Core.Compress.ICompress, ASC.Web.Files.Core.Compress">Archive</returns>
+    /// <returns type="ASC.Web.Files.Core.Compress.ICompress, ASC.Files.Core">Archive</returns>
     /// <path>api/2.0/files/settings/downloadtargz</path>
     /// <httpMethod>PUT</httpMethod>
     /// <visible>false</visible>
@@ -208,7 +208,7 @@ public class SettingsController : ApiControllerBase
     /// </summary>
     /// <short>Get file settings</short>
     /// <category>Settings</category>
-    /// <returns type="ASC.Web.Files.Classes.FilesSettingsHelper, ASC.Web.Files.Classes">File settings</returns>
+    /// <returns type="ASC.Web.Files.Classes.FilesSettingsHelper, ASC.Files.Core">File settings</returns>
     /// <path>api/2.0/files/settings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("settings")]

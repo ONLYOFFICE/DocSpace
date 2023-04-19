@@ -194,7 +194,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// Sends a message to the users who are mentioned in the file with the ID specified in the request.
     /// </summary>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Web.Files.Services.WCFService.MentionMessageWrapper, ASC.Web.Files.Services.WCFService" name="mentionMessage">Mention message request parameters</param>
+    /// <param type="ASC.Web.Files.Services.WCFService.MentionMessageWrapper, ASC.Files.Core" name="mentionMessage">Mention message request parameters</param>
     /// <short>Send the mention message</short>
     /// <category>Sharing</category>
     /// <returns type="System.Collections.Generic.List{ASC.Web.Files.Services.WCFService.AceShortWrapper}, System.Collections.Generic">List of access rights information: user, their access rights to the file, the external link is available or not</returns>

@@ -120,7 +120,7 @@ public class PrivacyRoomControllerCommon : ControllerBase
     /// Returns a key pair for the current user.
     /// </summary>
     /// <short>Get encryption keys</short>
-    /// <returns type="ASC.Web.Files.Core.Entries.EncryptionKeyPairDto, ASC.Web.Files.Core.Entries">Encryption key pair: private key, public key, user ID</returns>
+    /// <returns type="ASC.Web.Files.Core.Entries.EncryptionKeyPairDto, ASC.Files.Core">Encryption key pair: private key, public key, user ID</returns>
     /// <path>api/2.0/privacyroom/keys</path>
     /// <httpMethod>GET</httpMethod>
     /// <visible>false</visible>
