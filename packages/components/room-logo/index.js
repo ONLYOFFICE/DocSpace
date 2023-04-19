@@ -88,7 +88,7 @@ RoomLogo.defaultProps = {
 
 RoomLogo.propTypes = {
   /** Accepts room type */
-  type: PropTypes.oneOf([2, 5]),
+  type: PropTypes.number,
   /** Adds privacy icon  */
   isPrivacy: PropTypes.bool,
   /** Adds archive icon  */
