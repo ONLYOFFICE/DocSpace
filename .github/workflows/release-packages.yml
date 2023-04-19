@@ -5,11 +5,9 @@ on:
         - '*'
 
 env:
-  # VERSION: 1.0.0
+  VERSION: 1.0.0
   TAG: "${{ github.ref_name }}"
-  # BRANCH: "${{ github.ref }}"
   BUILD_NUMBER: "${{ github.run_number }}"
-  # PRODUCT: $( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
 
 
 jobs:
@@ -31,7 +29,15 @@ jobs:
             - .deb
             - .rpm
           draft: false
-  
+          
+      - name: Get variables
+        id: get_variables 
+        shell: bash
+        run: |
+          echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
+          raw_branch=$(git branch -r --contains ${{ github.ref }})
+          echo "branch=$(echo ${raw/origin\/} | tr '/' '-' )" >> $GITHUB_ENV  
+
 
   build_deb:
     name: Build .deb package
@@ -84,18 +90,6 @@ jobs:
     steps:
       - name: Get files from repository.
         uses: actions/checkout@v2
-        
-      - name: Get variables
-        id: get_variables 
-        shell: bash
-        run: |
-          # echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-          echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          raw_branch=$(git branch -r --contains ${{ github.ref }})
-          echo "branch=$(echo ${raw/origin\/} | tr '/' '-' )" >> $GITHUB_ENV
-          echo "version="
-         
-       
         
       - name: INSTALL tools & Prepare build
         run: |
