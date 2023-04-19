@@ -71,8 +71,8 @@ jobs:
           echo "$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )"  # docspace
           
           ### Create script for DocSpace .rpm package build ###
-          cat << EOF >> build-DocSpace_deb.sh
-          set -x
+          #cat << EOF >> build-DocSpace_deb.sh
+          #set -x
           
         
           
@@ -80,15 +80,15 @@ jobs:
           #error NETSDK1152: Found multiple publish output files with the same relative path
           cd build/install/deb/ 
           rename -f -v "s/product/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/$PRODUCT/g" {} ';'
+          find ../ -type f -exec sed -i "s/{{product}}/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
 
           dpkg-buildpackage -us -uc
 
-          EOF
+          #EOF
               ### Execute script ###
-          chmod +x build-DocSpace_deb.sh
-          sudo bash ./build-DocSpace_deb.sh
+          #chmod +x build-DocSpace_deb.sh
+          #sudo bash ./build-DocSpace_deb.sh
 
         shell: bash
 
