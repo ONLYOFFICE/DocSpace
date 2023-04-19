@@ -15,7 +15,7 @@ export default {
   },
   argTypes: {
     type: {
-      description: "Property for story",
+      description: "Accepts room type",
       control: {
         type: "select",
         options: ["EditingRoom", "CustomRoom"],
