@@ -466,14 +466,21 @@ PasswordInput.propTypes = {
   inputValue: PropTypes.string,
   /** Sets a callback function that is triggered on PasswordInput */
   onChange: PropTypes.func,
+  /** Default event that is triggered when the button is already pressed but not released */
   onKeyDown: PropTypes.func,
+  /** Event that is triggered when the focused item is lost  */
   onBlur: PropTypes.func,
   /** Sets the input width manually */
   inputWidth: PropTypes.string,
+  /** Notifies if the error occurs */
   hasError: PropTypes.bool,
+  /** Notifies if the warning occurs */
   hasWarning: PropTypes.bool,
+  /** Default placeholder input */
   placeholder: PropTypes.string,
+  /** Tab index input */
   tabIndex: PropTypes.number,
+  /** Default maxLength input */
   maxLength: PropTypes.number,
   /** Accepts class */
   className: PropTypes.string,
@@ -482,6 +489,7 @@ PasswordInput.propTypes = {
   /** Sets the input disabled */
   isDisabled: PropTypes.bool,
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
+  /** Indicates that the input field has scale  */
   scale: PropTypes.bool,
   /** Allows to hide Tooltip */
   isDisableTooltip: PropTypes.bool,
@@ -507,17 +515,17 @@ PasswordInput.propTypes = {
   tooltipPasswordSpecial: PropTypes.string,
   /** Set of special characters for password generator and validator */
   generatorSpecial: PropTypes.string,
-  NewPasswordButtonVisible: PropTypes.bool,
   /** Set of settings for password generator and validator */
   passwordSettings: PropTypes.object,
   /** Sets a callback function that is triggered on PasswordInput. Returns bool value */
   onValidateInput: PropTypes.func,
   /** Sets a callback function that is triggered when the copy button is clicked. Returns formatted value */
   onCopyToClipboard: PropTypes.func,
-
+  /** Sets the tooltip offset to the left */
   tooltipOffsetLeft: PropTypes.number,
   /** Sets the password input view to simple (without tooltips, password progress bar and several additional buttons (copy and generate password) */
   simpleView: PropTypes.bool,
+  /** Sets a title of the password generation button */
   generatePasswordTitle: PropTypes.string,
 };
 
