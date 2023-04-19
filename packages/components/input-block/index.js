@@ -167,6 +167,7 @@ InputBlock.propTypes = {
   tabIndex: PropTypes.number,
   /** input text mask */
   mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
+  /** Allows to add or delete characters without changing the positions of the existing characters.*/
   keepCharPositions: PropTypes.bool,
   /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "large"]),
@@ -213,6 +214,7 @@ InputBlock.propTypes = {
   className: PropTypes.string,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Sets the classNaame of the icon button */
   iconButtonClassName: PropTypes.string,
 };
 
