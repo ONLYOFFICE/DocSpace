@@ -9,7 +9,7 @@ env:
   TAG: "${{ github.ref_name }}"
   BRANCH: "${{ github.ref }}"
   BUILD_NUMBER: "${{ github.run_number }}"
-  PRODUCT: ${{ echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' }} 
+  PRODUCT: $( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
 
 
 jobs:
@@ -67,7 +67,7 @@ jobs:
           echo "${GITHUB_REF}" # refs/tags/show
           echo $BUILD_NUMBER # 63
           echo "${{ github.run_number }}" # 63
-          echo $PRODUCT # $( echo "DocSpace" | tr '[:upper:]' '[:lower:]' )
+          echo "$PRODUCT" # $( echo "DocSpace" | tr '[:upper:]' '[:lower:]' )
           echo "$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )"  # docspace
           
           ### Create script for DocSpace .rpm package build ###
