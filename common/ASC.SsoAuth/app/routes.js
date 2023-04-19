@@ -17,10 +17,11 @@
 
 "use strict";
 
-module.exports = function (app, config, logger) {
+module.exports = function (app, config) {
   const saml = require("samlify");
   const { SamlLib: libsaml } = saml;
-  const urlResolver = require("./utils/resolver")(logger);
+  const logger = require("./log.js");
+  const urlResolver = require("./utils/resolver")();
   const coder = require("./utils/coder");
   const urn = require("samlify/build/src/urn");
   const fetch = require("node-fetch");

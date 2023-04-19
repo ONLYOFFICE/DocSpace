@@ -337,6 +337,7 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       itemsSelectionLength,
       itemsSelectionTitle,
+      setItemsSelectionTitle,
       refreshFiles,
     } = this.props;
 
@@ -360,6 +361,7 @@ class PureHome extends React.Component {
         itemsSelectionLength,
         itemsSelectionTitle
       );
+      setItemsSelectionTitle(null);
     }
   }
 
@@ -668,6 +670,7 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
       itemsSelectionLength,
       itemsSelectionTitle,
+      setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const {
@@ -732,6 +735,7 @@ export default inject(
       selectionTitle,
 
       itemsSelectionLength,
+      setItemsSelectionTitle,
       itemsSelectionTitle,
       isErrorRoomNotAvailable,
       isRoomsFolder,
