@@ -181,14 +181,22 @@ public class ProductEntryPoint : Product
             {
                 UserId = e.UserId,
                 Action = (MessageAction)e.Action,
-                Data = e.Date,
-                FileTitle = e.Description[0]
+                Data = e.Date
             };
+
+            if (e.Action != (int)MessageAction.UserFileUpdated)
+            {
+                activityInfo.FileTitle = e.Description[0];
+            }
+            else
+            {
+                activityInfo.FileTitle = e.Description[1];
+            }
 
             if (e.Action == (int)MessageAction.UserCreated
             || e.Action == (int)MessageAction.UserUpdated)
             {
-                if (docSpaceAdmin) 
+                if (docSpaceAdmin)
                 {
                     result.Add(activityInfo);
                 }
@@ -288,7 +296,7 @@ public class ProductEntryPoint : Product
     public override ProductContext Context => _productContext;
     public override string ApiURL => string.Empty;
 
-    private async Task<Dictionary<string,bool>> GetUserRoomsWithRole(Guid userId)
+    private async Task<Dictionary<string, bool>> GetUserRoomsWithRole(Guid userId)
     {
         var result = new Dictionary<string, bool>();
 
@@ -300,14 +308,14 @@ public class ProductEntryPoint : Product
 
         foreach (var record in currentUsersRecords)
         {
-            if(record.Owner == userId || record.Share == FileShare.RoomAdmin)
+            if (record.Owner == userId || record.Share == FileShare.RoomAdmin)
             {
                 result.TryAdd(record.EntryId.ToString(), true);
             }
-            else if(record.Share != FileShare.Restrict)
+            else if (record.Share != FileShare.Restrict)
             {
                 result.TryAdd(record.EntryId.ToString(), false);
-            }      
+            }
         }
 
         var virtualRoomsFolderId = await _globalFolder.GetFolderVirtualRoomsAsync<int>(_daoFactory);
