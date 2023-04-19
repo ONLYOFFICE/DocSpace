@@ -10,5 +10,5 @@
   "StorageQuotaDescription": "Bạn có thể xóa các tập tin không cần thiết hoặc <1>{{clickHere}}</1> để tìm gói dịch vụ có giá phù hợp hơn cho DocSpace của mình.",
   "StorageQuotaHeader": "Dung lượng lưu trữ sắp vượt quá:{{currentValue}} / {{maxValue}}",
   "UserQuotaDescription": "<1>{{clickHere}}</1> để tìm gói dịch vụ có giá tốt hơn cho DocSpace của bạn.",
-  "UserQuotaHeader": "<1>{{clickHere}}</1> để tìm gói dịch vụ có giá tốt hơn cho DocSpace của bạn."
+  "UserQuotaHeader": "Sắp vượt quá số lượng quản trị viên/người dùng cấp cao:{{currentValue}}/{{maxValue}}."
 }
