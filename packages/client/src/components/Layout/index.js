@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
-import history from "@docspace/common/history";
-import { useNavigate, useLocation, useMatch } from "react-router-dom";
+
 import { size } from "@docspace/components/utils/device";
 import {
   isIOS,
@@ -40,9 +39,6 @@ const Layout = (props) => {
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
-
-  history.navigate = useNavigate();
-  history.location = useLocation();
 
   const intervalTime = 100;
   const endTimeout = 300;
