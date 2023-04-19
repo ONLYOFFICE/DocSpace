@@ -87,8 +87,8 @@ jobs:
       - name: Get variables
         run: |
           echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          raw_branch=$(git branch -r --contains ${{ github.ref }})
-          echo "branch=$(echo ${raw/origin\/} | tr '/' '-' )" >> $GITHUB_ENV 
+          RawBranch=$(git branch -r --contains ${{ github.ref }})
+          echo "branch=$(echo ${RawBranch/origin\/} | tr '/' '-' )" >> $GITHUB_ENV 
         
       - name: INSTALL tools & Prepare build
         run: |
