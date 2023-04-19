@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
-
+import history from "@docspace/common/history";
+import { useNavigate, useLocation } from "react-router-dom";
 import { size } from "@docspace/components/utils/device";
 import {
   isIOS,
@@ -35,10 +36,14 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView } = props;
+  const { children, isTabletView, setIsTabletView, setNavigate, setLocation } =
+    props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
+
+  setNavigate(useNavigate());
+  setLocation(useLocation());
 
   const intervalTime = 100;
   const endTimeout = 300;
@@ -189,5 +194,7 @@ export default inject(({ auth, bannerStore }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
     setIsTabletView: auth.settingsStore.setIsTabletView,
+    setNavigate: auth.settingsStore.setNavigate,
+    setLocation: auth.settingsStore.setLocation,
   };
 })(observer(Layout));

@@ -3,7 +3,6 @@ import {
   isNullOrUndefined,
   findNearestIndex,
 } from "@docspace/common/components/MediaViewer/helpers";
-import history from "@docspace/common/history";
 
 class MediaViewerDataStore {
   filesStore;
@@ -54,7 +53,7 @@ class MediaViewerDataStore {
   changeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
 
-    history.navigate(url);
+    this.authStore.settingsStore.navigate(url);
   };
 
   nextMedia = () => {

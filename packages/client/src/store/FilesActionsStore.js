@@ -42,7 +42,7 @@ import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
 import { getObjectByLocation } from "@docspace/common/utils";
-import history from "@docspace/common/history";
+
 import uniqueid from "lodash/uniqueId";
 
 class FilesActionStore {
@@ -1970,7 +1970,7 @@ class FilesActionStore {
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;
-        history.navigate(url);
+        this.authStore.settingsStore.navigate(url);
         return;
       }
 

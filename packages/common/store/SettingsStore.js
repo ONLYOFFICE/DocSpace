@@ -148,9 +148,20 @@ class SettingsStore {
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
 
+  navigate = null;
+  location = null;
+
   constructor() {
     makeAutoObservable(this);
   }
+
+  setNavigate = (navigate) => {
+    this.navigate = navigate;
+  };
+
+  setLocation = (location) => {
+    this.location = location;
+  };
 
   setTenantStatus = (tenantStatus) => {
     this.tenantStatus = tenantStatus;
