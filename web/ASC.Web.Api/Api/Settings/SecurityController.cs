@@ -193,21 +193,21 @@ public class SecurityController : BaseSettingsController
     /// Set the password settings
     /// </short>
     /// <category>Security</category>
-    /// <param type="ASC.Web.Api.Models.PasswordSettingsRequestsDto, ASC.Web.Api.Models" name="model">Password settings</param>
+    /// <param type="ASC.Web.Api.Models.PasswordSettingsRequestsDto, ASC.Web.Api.Models" name="inDto">Password settings</param>
     /// <returns type="ASC.Web.Core.Utility.PasswordSettings, ASC.Web.Core.Utility">Password settings: minimum length, includes uppercase letters, digits and special symbols or not</returns>
     /// <path>api/2.0/settings/security/password</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("security/password")]
-    public PasswordSettings UpdatePasswordSettings(PasswordSettingsRequestsDto model)
+    public PasswordSettings UpdatePasswordSettings(PasswordSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         var userPasswordSettings = _settingsManager.Load<PasswordSettings>();
 
-        userPasswordSettings.MinLength = model.MinLength;
-        userPasswordSettings.UpperCase = model.UpperCase;
-        userPasswordSettings.Digits = model.Digits;
-        userPasswordSettings.SpecSymbols = model.SpecSymbols;
+        userPasswordSettings.MinLength = inDto.MinLength;
+        userPasswordSettings.UpperCase = inDto.UpperCase;
+        userPasswordSettings.Digits = inDto.Digits;
+        userPasswordSettings.SpecSymbols = inDto.SpecSymbols;
 
         _settingsManager.Save(userPasswordSettings);
 

@@ -1005,16 +1005,16 @@ public class UserController : PeopleControllerBase
     /// Change portal theme
     /// </short>
     /// <category>Theme</category>
-    /// <param type="ASC.People.ApiModels.RequestDto.DarkThemeSettingsRequestDto, ASC.People.ApiModels.RequestDto" name="model">Theme settings request parameters</param>
+    /// <param type="ASC.People.ApiModels.RequestDto.DarkThemeSettingsRequestDto, ASC.People.ApiModels.RequestDto" name="inDto">Theme settings request parameters</param>
     /// <returns type="ASC.Web.Core.Users.DarkThemeSettings, ASC.Web.Core.Users">Theme</returns>
     /// <path>api/2.0/people/theme</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("theme")]
-    public DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto model)
+    public DarkThemeSettings ChangeTheme(DarkThemeSettingsRequestDto inDto)
     {
         var darkThemeSettings = new DarkThemeSettings
         {
-            Theme = model.Theme
+            Theme = inDto.Theme
         };
 
         _settingsManager.SaveForCurrentUser(darkThemeSettings);

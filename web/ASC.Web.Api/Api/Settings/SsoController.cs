@@ -128,16 +128,16 @@ public class SsoController : BaseSettingsController
     /// Save the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SsoSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="model">SSO settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SsoSettingsRequestsDto, ASC.Web.Api.ApiModel.RequestsDto" name="inDto">SSO settings request parameters</param>
     /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Studio.UserControls.Management.SingleSignOnSettings">SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("ssov2")]
-    public async Task<SsoSettingsV2> SaveSsoSettingsV2(SsoSettingsRequestsDto model)
+    public async Task<SsoSettingsV2> SaveSsoSettingsV2(SsoSettingsRequestsDto inDto)
     {
         CheckSsoPermissions();
 
-        var serializeSettings = model.SerializeSettings;
+        var serializeSettings = inDto.SerializeSettings;
 
         if (string.IsNullOrEmpty(serializeSettings))
         {

@@ -100,15 +100,15 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <short>Delete a folder</short>
     /// <category>Folders</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteFolderDto, ASC.Files.Core.ApiModels.RequestDto" name="model">Request parameters for deleting a folder</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteFolderDto, ASC.Files.Core.ApiModels.RequestDto" name="inDto">Request parameters for deleting a folder</param>
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
     /// <path>api/2.0/files/folder/{folderId}</path>
     /// <httpMethod>DELETE</httpMethod>
     /// <collection>list</collection>
     [HttpDelete("folder/{folderId}")]
-    public async IAsyncEnumerable<FileOperationDto> DeleteFolder(T folderId, DeleteFolderDto model)
+    public async IAsyncEnumerable<FileOperationDto> DeleteFolder(T folderId, DeleteFolderDto inDto)
     {
-        foreach (var e in _fileStorageService.DeleteFolder("delete", folderId, false, model.DeleteAfter, model.Immediately))
+        foreach (var e in _fileStorageService.DeleteFolder("delete", folderId, false, inDto.DeleteAfter, inDto.Immediately))
         {
             yield return await _fileOperationDtoHelper.GetAsync(e);
         }

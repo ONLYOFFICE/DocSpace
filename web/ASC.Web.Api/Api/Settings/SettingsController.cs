@@ -399,14 +399,14 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Save the DNS settings</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api.Models" name="model">DNS settings request parameters</param>
+    /// <param type="ASC.Web.Api.Models.DnsSettingsRequestsDto, ASC.Web.Api.Models" name="inDto">DNS settings request parameters</param>
     /// <returns type="System.Object, System">Message about changing DNS</returns>
     /// <path>api/2.0/settings/dns</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("dns")]
-    public object SaveDnsSettings(DnsSettingsRequestsDto model)
+    public object SaveDnsSettings(DnsSettingsRequestsDto inDto)
     {
-        return _dnsSettings.SaveDnsSettings(model.DnsName, model.Enable);
+        return _dnsSettings.SaveDnsSettings(inDto.DnsName, inDto.Enable);
     }
 
     /// <summary>

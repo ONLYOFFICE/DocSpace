@@ -65,16 +65,16 @@ public class NotificationController : BaseSettingsController
     /// </summary>
     /// <category>Notifications</category>
     /// <short>Enable notifications</short>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.NotificationSettingsRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Notification settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.NotificationSettingsRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Notification settings request parameters</param>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.NotificationSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Notification settings: notification type, enabled or not</returns>
     /// <path>api/2.0/settings/notification</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("notification")]
-    public NotificationSettingsDto SetSettings(NotificationSettingsRequestsDto model)
+    public NotificationSettingsDto SetSettings(NotificationSettingsRequestsDto inDto)
     {
-        _notificationControllerHelper.SetNotificationStatus(model.Type, model.IsEnabled);
+        _notificationControllerHelper.SetNotificationStatus(inDto.Type, inDto.IsEnabled);
 
-        return _mapper.Map<NotificationSettingsDto>(model);
+        return _mapper.Map<NotificationSettingsDto>(inDto);
     }
 
     /// <summary>
@@ -97,14 +97,14 @@ public class NotificationController : BaseSettingsController
     /// </summary>
     /// <category>Notifications</category>
     /// <short>Set room notification status</short>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.RoomsNotificationsSettingsRequestDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters for the room notification settings</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.RoomsNotificationsSettingsRequestDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Request parameters for the room notification settings</param>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.RoomsNotificayionSettingsDto, ASC.Web.Api.ApiModels.ResponseDto">Room notification settings: list of rooms with the disabled notifications</returns>
     /// <path>api/2.0/settings/notification/rooms</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("notification/rooms")]
-    public RoomsNotificayionSettingsDto SetRoomsNotificationStatus(RoomsNotificationsSettingsRequestDto model)
+    public RoomsNotificayionSettingsDto SetRoomsNotificationStatus(RoomsNotificationsSettingsRequestDto inDto)
     {
-        var settings = _notificationControllerHelper.SetRoomsNotificationStatus(model.RoomsId, model.Mute);
+        var settings = _notificationControllerHelper.SetRoomsNotificationStatus(inDto.RoomsId, inDto.Mute);
         return _mapper.Map<RoomsNotificayionSettingsDto>(settings);
     }
 }

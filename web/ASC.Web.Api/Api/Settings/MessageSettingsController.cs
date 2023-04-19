@@ -123,12 +123,12 @@ public class MessageSettingsController : BaseSettingsController
     /// Update cookies lifetime
     /// </short>
     /// <category>Cookies</category>
-    /// <param type="ASC.Web.Api.Models.CookieSettingsRequestsDto, ASC.Web.Api.Models" name="model">Cookies settings request parameters</param>
+    /// <param type="ASC.Web.Api.Models.CookieSettingsRequestsDto, ASC.Web.Api.Models" name="inDto">Cookies settings request parameters</param>
     /// <returns type="System.Object, System">Message about the result of saving new settings</returns>
     /// <path>api/2.0/settings/cookiesettings</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("cookiesettings")]
-    public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto model)
+    public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -137,7 +137,7 @@ public class MessageSettingsController : BaseSettingsController
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        await _cookiesManager.SetLifeTime(model.LifeTime);
+        await _cookiesManager.SetLifeTime(inDto.LifeTime);
 
         _messageService.Send(MessageAction.CookieSettingsUpdated);
 

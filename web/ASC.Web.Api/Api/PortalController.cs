@@ -468,13 +468,13 @@ public class PortalController : ControllerBase
     /// </summary>
     /// <short>Update a portal name</short>
     /// <category>Settings</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.PortalRenameRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters for portal renaming</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.PortalRenameRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Request parameters for portal renaming</param>
     /// <returns type="System.Object, System">Confirmation email about authentication to the portal with a new name</returns>
     /// <path>api/2.0/portal/portalrename</path>
     /// <httpMethod>PUT</httpMethod>
     /// <visible>false</visible>
     [HttpPut("portalrename")]
-    public async Task<object> UpdatePortalName(PortalRenameRequestsDto model)
+    public async Task<object> UpdatePortalName(PortalRenameRequestsDto inDto)
     {
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.PortalSecurity)))
         {
@@ -488,7 +488,7 @@ public class PortalController : ControllerBase
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var alias = model.Alias;
+        var alias = inDto.Alias;
         if (string.IsNullOrEmpty(alias))
         {
             throw new ArgumentException(nameof(alias));

@@ -86,19 +86,19 @@ public class WebhooksController : BaseSettingsController
     /// Create a webhook
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Webhook request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Webhook request parameters</param>
     /// <path>api/2.0/settings/webhook</path>
     /// <httpMethod>POST</httpMethod>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api.ApiModels.ResponseDto">Tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
     [HttpPost("webhook")]
-    public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto model)
+    public async Task<WebhooksConfigDto> CreateWebhook(WebhooksConfigRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        ArgumentNullException.ThrowIfNull(model.Uri);
-        ArgumentNullException.ThrowIfNull(model.SecretKey);
+        ArgumentNullException.ThrowIfNull(inDto.Uri);
+        ArgumentNullException.ThrowIfNull(inDto.SecretKey);
 
-        var webhook = await _webhookDbWorker.AddWebhookConfig(model.Uri, model.SecretKey);
+        var webhook = await _webhookDbWorker.AddWebhookConfig(inDto.Uri, inDto.SecretKey);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -110,19 +110,19 @@ public class WebhooksController : BaseSettingsController
     /// Update a webhook
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">New webhook request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhooksConfigRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">New webhook request parameters</param>
     /// <path>api/2.0/settings/webhook</path>
     /// <httpMethod>PUT</httpMethod>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WebhooksConfigDto, ASC.Web.Api.ApiModels.ResponseDto">Updated tenant webhook with its config parameters (URI, secret key, enabled or not)</returns>
     [HttpPut("webhook")]
-    public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto model)
+    public async Task<WebhooksConfigDto> UpdateWebhook(WebhooksConfigRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        ArgumentNullException.ThrowIfNull(model.Uri);
-        ArgumentNullException.ThrowIfNull(model.SecretKey);
+        ArgumentNullException.ThrowIfNull(inDto.Uri);
+        ArgumentNullException.ThrowIfNull(inDto.SecretKey);
 
-        var webhook = await _webhookDbWorker.UpdateWebhookConfig(model.Id, model.Uri, model.SecretKey, model.Enabled);
+        var webhook = await _webhookDbWorker.UpdateWebhookConfig(inDto.Id, inDto.Uri, inDto.SecretKey, inDto.Enabled);
 
         return _mapper.Map<WebhooksConfig, WebhooksConfigDto>(webhook);
     }
@@ -155,19 +155,19 @@ public class WebhooksController : BaseSettingsController
     /// Get webhook logs
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="System.Nullable{System.DateTime}, System" name="model">Webhook log request parameters</param>
+    /// <param type="System.Nullable{System.DateTime}, System" name="inDto">Webhook log request parameters</param>
     /// <path>api/2.0/settings/webhooks/log</path>
     /// <httpMethod>GET</httpMethod>
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto}, System.Collections.Generic">Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
     /// <collection>list</collection>
     [HttpGet("webhooks/log")]
-    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(WebhooksLogRequest model)
+    public async IAsyncEnumerable<WebhooksLogDto> GetJournal(WebhooksLogRequest inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
-        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, model.Delivery, model.HookUri, model.WebhookId))
+        await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, inDto.Delivery, inDto.HookUri, inDto.WebhookId))
         {
             yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
         }
@@ -218,17 +218,17 @@ public class WebhooksController : BaseSettingsController
     /// Retry webhooks
     /// </short>
     /// <category>Webhooks</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhookRetryRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="model">Request parameters to retry webhooks</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.WebhookRetryRequestsDto, ASC.Web.Api.ApiModels.RequestsDto" name="inDto">Request parameters to retry webhooks</param>
     /// <path>api/2.0/settings/webhook/retry</path>
     /// <httpMethod>PUT</httpMethod>
     /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.WebhooksLogDto}, System.Collections.Generic">Logs of the webhook activities: ID, config name, creation time, method, route, request headers, request payload, response headers, response payload, status, delivery time</returns>
     /// <collection>list</collection>
     [HttpPut("webhook/retry")]
-    public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto model)
+    public async IAsyncEnumerable<WebhooksLogDto> RetryWebhooks(WebhookRetryRequestsDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        foreach (var id in model.Ids)
+        foreach (var id in inDto.Ids)
         {
             var item = await _webhookDbWorker.ReadJournal(id);
 
