@@ -82,6 +82,14 @@ const FilesTableRow = (props) => {
   };
 
   React.useEffect(() => {
+    window.addEventListener("keydown", onKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeydown);
+    };
+  }, []);
+
+  React.useEffect(() => {
     if (index === 0) {
       if (checkedProps || isActive) {
         setFirsElemChecked(true);
@@ -99,6 +107,11 @@ const FilesTableRow = (props) => {
   const idWithFileExst = item.fileExst
     ? `${item.id}_${item.fileExst}`
     : item.id ?? "";
+
+  const onKeydown = (e) => {
+    if (e.code !== "Tab") return;
+    e.preventDefault();
+  };
 
   return (
     <StyledDragAndDrop

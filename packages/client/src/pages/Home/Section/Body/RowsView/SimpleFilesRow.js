@@ -271,6 +271,14 @@ const SimpleFilesRow = (props) => {
     />
   );
 
+  React.useEffect(() => {
+    window.addEventListener("keydown", onKeydown);
+
+    return () => {
+      window.removeEventListener("keydown", onKeydown);
+    };
+  }, []);
+
   const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {
       setIsDragOver(dragOver);
@@ -294,6 +302,11 @@ const SimpleFilesRow = (props) => {
   const idWithFileExst = item.fileExst
     ? `${item.id}_${item.fileExst}`
     : item.id ?? "";
+
+  const onKeydown = (e) => {
+    if (e.code !== "Tab") return;
+    e.preventDefault();
+  };
 
   return (
     <StyledWrapper
