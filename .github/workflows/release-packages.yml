@@ -90,8 +90,9 @@ jobs:
         shell: bash
         run: |
           echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          # echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
+          # echo "{environment_variable_name}={value}" >> $GITHUB_ENV
           echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          echo ${{ env.product }}
         
       - name: INSTALL tools & Prepare build
         run: |
@@ -119,8 +120,8 @@ jobs:
           cd build/install/rpm/SPECS
           
               ### Preparing source directory ###
-          mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ steps.get_variables.output.product }}.rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ steps.get_variables.output.product }}/archive/${{ steps.get_variables.output.branch }}.tar.gz -O DocSpace-release-v1.0.0.tar.gz
+          mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
+          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ env.branch }}.tar.gz -O DocSpace-release-v1.0.0.tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
