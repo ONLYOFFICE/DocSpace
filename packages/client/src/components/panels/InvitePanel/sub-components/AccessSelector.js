@@ -13,6 +13,7 @@ const AccessSelector = ({
   defaultAccess,
   isOwner,
   withRemove = false,
+  filteredAccesses,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
@@ -56,7 +57,7 @@ const AccessSelector = ({
       <AccessRightSelect
         selectedOption={selectedOption}
         onSelect={onSelectAccess}
-        accessOptions={accessOptions}
+        accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
         noBorder={false}
         directionX="right"
         directionY={isMobileHorizontalOrientation ? "both" : "bottom"}

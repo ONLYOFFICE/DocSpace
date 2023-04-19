@@ -135,11 +135,12 @@ const Item = ({
         <AccessSelector
           t={t}
           roomType={roomType}
-          defaultAccess={defaultAccess.access}
+          defaultAccess={defaultAccess?.access}
           onSelectAccess={selectItemAccess}
           containerRef={inputsRef}
           isOwner={isOwner}
           withRemove={true}
+          filteredAccesses={filteredAccesses}
         />
       )}
     </>
