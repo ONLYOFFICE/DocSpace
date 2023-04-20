@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
-import history from "@docspace/common/history";
 import { useNavigate, useLocation } from "react-router-dom";
 import { size } from "@docspace/components/utils/device";
 import {
