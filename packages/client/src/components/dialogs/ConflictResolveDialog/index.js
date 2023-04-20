@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import ModalDialog from "@docspace/components/modal-dialog";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 import Button from "@docspace/components/button";
@@ -9,7 +8,6 @@ import { inject, observer } from "mobx-react";
 import { ConflictResolveType } from "@docspace/common/constants";
 import toastr from "@docspace/components/toast/toastr";
 import styled from "styled-components";
-import { convertFile } from "@docspace/common/api/files";
 
 const StyledModalDialog = styled(ModalDialog)`
   .radio {
@@ -282,9 +280,7 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     setCopyPanelVisible,
   };
 })(
-  withRouter(
-    withTranslation(["ConflictResolveDialog", "Common"])(
-      observer(ConflictResolveDialog)
-    )
+  withTranslation(["ConflictResolveDialog", "Common"])(
+    observer(ConflictResolveDialog)
   )
 );

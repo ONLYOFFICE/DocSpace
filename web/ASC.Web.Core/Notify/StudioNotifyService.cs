@@ -168,13 +168,13 @@ public class StudioNotifyService
         var auditEventDate = DateTime.UtcNow;
 
         auditEventDate = new DateTime(
-            auditEventDate.Year, 
-            auditEventDate.Month, 
-            auditEventDate.Day, 
-            auditEventDate.Hour, 
-            auditEventDate.Minute, 
-            auditEventDate.Second, 
-            0, 
+            auditEventDate.Year,
+            auditEventDate.Month,
+            auditEventDate.Day,
+            auditEventDate.Hour,
+            auditEventDate.Minute,
+            auditEventDate.Second,
+            0,
             DateTimeKind.Utc);
 
         var hash = auditEventDate.ToString("s");
@@ -786,7 +786,8 @@ public class StudioNotifyService
                 notifyAction = Actions.SaasAdminActivationV1;
             }
 
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation);
+            var userId = u.Id;
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation, null, userId);
             confirmationUrl += "&first=true";
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmEmail;

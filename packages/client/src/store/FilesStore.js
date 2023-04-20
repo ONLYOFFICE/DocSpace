@@ -7,6 +7,7 @@ import {
   FolderType,
   FileStatus,
   RoomsType,
+  RoomsTypeValues,
   RoomsProviderType,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
@@ -16,10 +17,8 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
 import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
-import {
-  getDaysRemaining,
-  openDocEditor as openEditor,
-} from "@docspace/client/src/helpers/filesUtils";
+import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
+import { getDaysRemaining } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import {
   getCategoryType,
@@ -152,7 +151,7 @@ class FilesStore {
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
-    const { socketHelper, withPaging } = authStore.settingsStore;
+    const { socketHelper } = authStore.settingsStore;
 
     socketHelper.on("s:modify-folder", async (opt) => {
       console.log("[WS] s:modify-folder", opt);
@@ -293,7 +292,7 @@ class FilesStore {
       }
 
       //To update a file version
-      if (foundIndex > -1 && !withPaging) {
+      if (foundIndex > -1 && !this.authStore.settingsStore.withPaging) {
         this.getFileInfo(file.id);
         this.checkSelection(file);
       }
@@ -307,7 +306,10 @@ class FilesStore {
 
       const newFiles = [fileInfo, ...this.files];
 
-      if (newFiles.length > this.filter.pageCount && withPaging) {
+      if (
+        newFiles.length > this.filter.pageCount &&
+        this.authStore.settingsStore.withPaging
+      ) {
         newFiles.pop(); // Remove last
       }
 
@@ -317,6 +319,7 @@ class FilesStore {
       runInAction(() => {
         this.setFilter(newFilter);
         this.setFiles(newFiles);
+        this.treeFoldersStore.fetchTreeFolders();
       });
     } else if (opt?.type === "folder" && opt?.id) {
       const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
@@ -344,7 +347,10 @@ class FilesStore {
 
       const newFolders = [folderInfo, ...this.folders];
 
-      if (newFolders.length > this.filter.pageCount && withPaging) {
+      if (
+        newFolders.length > this.filter.pageCount &&
+        this.authStore.settingsStore.withPaging
+      ) {
         newFolders.pop(); // Remove last
       }
 
@@ -371,10 +377,16 @@ class FilesStore {
       const folder = JSON.parse(opt?.data);
       if (!folder || !folder.id) return;
 
-      this.getFolderInfo(folder.id);
+      api.files
+        .getFolderInfo(folder.id)
+        .then(() => this.setFolder(folderInfo))
+        .catch(() => {
+          // console.log("Folder deleted")
+        });
+
       console.log("[WS] update folder", folder.id, folder.title);
 
-      if (this.selection) {
+      if (this.selection?.length) {
         const foundIndex = this.selection?.findIndex((x) => x.id === folder.id);
         if (foundIndex > -1) {
           runInAction(() => {
@@ -1082,7 +1094,7 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    history.push(newUrl);
+    history.navigate(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
@@ -1117,8 +1129,9 @@ class FilesStore {
     return newFilter;
   };
 
-  refreshFiles = () => {
-    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  refreshFiles = async () => {
+    const res = await this.fetchFiles(this.selectedFolderStore.id, this.filter);
+    return res;
   };
 
   fetchFiles = (
@@ -1247,7 +1260,9 @@ class FilesStore {
               (rootFolderType === Rooms || rootFolderType === Archive);
 
             if (parentId === rootFolderId) {
-              this.isMuteCurrentRoomNotifications = mute;
+              runInAction(() => {
+                this.isMuteCurrentRoomNotifications = mute;
+              });
             }
 
             return {
@@ -1795,6 +1810,7 @@ class FilesStore {
 
       let roomOptions = [
         "select",
+        "open",
         "separator0",
         "link-for-room-members",
         "reconnect-storage",
@@ -2679,36 +2695,18 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
 
     if (this.folders.length) {
       for (const item of this.folders) {
-        switch (item.roomType) {
-          case RoomsType.FillingFormsRoom:
-            cbMenu.push(`room-${RoomsType.FillingFormsRoom}`);
-            break;
-          case RoomsType.CustomRoom:
-            cbMenu.push(`room-${RoomsType.CustomRoom}`);
-            break;
-          case RoomsType.EditingRoom:
-            cbMenu.push(`room-${RoomsType.EditingRoom}`);
-            break;
-          case RoomsType.ReviewRoom:
-            cbMenu.push(`room-${RoomsType.ReviewRoom}`);
-            break;
-          case RoomsType.ReadOnlyRoom:
-            cbMenu.push(`room-${RoomsType.ReadOnlyRoom}`);
-            break;
-          default:
-            cbMenu.push(FilterType.FoldersOnly);
+        if (item.roomType && RoomsTypeValues[item.roomType]) {
+          cbMenu.push(`room-${RoomsTypeValues[item.roomType]}`);
+        } else {
+          cbMenu.push(FilterType.FoldersOnly);
         }
       }
     }
@@ -3102,17 +3100,16 @@ class FilesStore {
     preview = false
   ) => {
     const foundIndex = this.files.findIndex((x) => x.id === id);
-    if (foundIndex !== -1 && !preview) {
-      this.updateSelectionStatus(
-        id,
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing,
-        true
-      );
+    if (
+      foundIndex !== -1 &&
+      !preview &&
+      this.files[foundIndex].rootFolderType !== FolderType.Archive
+    ) {
+      const newStatus =
+        this.files[foundIndex].fileStatus | FileStatus.IsEditing;
 
-      this.updateFileStatus(
-        foundIndex,
-        this.files[foundIndex].fileStatus | FileStatus.IsEditing
-      );
+      this.updateSelectionStatus(id, newStatus, true);
+      this.updateFileStatus(foundIndex, newStatus);
     }
 
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;

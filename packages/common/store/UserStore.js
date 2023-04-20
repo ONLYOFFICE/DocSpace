@@ -1,6 +1,6 @@
 import React from "react";
 import { toastr } from "@docspace/components";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { Trans } from "react-i18next";
 import api from "../api";
 import { EmployeeActivationStatus } from "../constants";
@@ -24,6 +24,8 @@ class UserStore {
     else user = await api.people.getUser();
 
     this.setUser(user);
+
+    return user;
   };
 
   init = async () => {
@@ -80,7 +82,9 @@ class UserStore {
 
     const { theme } = await api.people.changeTheme(key);
 
-    this.user.theme = theme;
+    runInAction(() => {
+      this.user.theme = theme;
+    })
 
     this.setIsLoading(false);
 
@@ -111,6 +115,13 @@ class UserStore {
         </Trans>
       );
     });
+  };
+
+  updateAvatarInfo = (avatar, avatarSmall, avatarMedium, avatarMax) => {
+    this.user.avatar = avatar;
+    this.user.avatarSmall = avatarSmall;
+    this.user.avatarMedium = avatarMedium;
+    this.user.avatarMax = avatarMax;
   };
 
   get withActivationBar() {

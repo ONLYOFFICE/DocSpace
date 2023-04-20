@@ -1,21 +1,12 @@
 import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
-import Text from "@docspace/components/text";
-import ArrowRightIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
-import { StyledArticlePaymentAlert } from "../styled-article";
-import styled from "styled-components";
-import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
-import Loaders from "../../Loaders";
 
-const StyledArrowRightIcon = styled(ArrowRightIcon)`
-  margin: auto 0;
-  path {
-    fill: ${(props) => props.color};
-  }
-`;
+import { combineUrl } from "@docspace/common/utils";
+
+import AlertComponent from "../../AlertComponent";
+import Loaders from "../../Loaders";
 
 const PROXY_BASE_URL = combineUrl(
   window.DocSpaceConfig?.proxy?.url,
@@ -31,17 +22,21 @@ const ArticlePaymentAlert = ({
   currentTariffPlanTitle,
   toggleArticleOpen,
   tariffPlanTitle,
+  isQuotaLoaded,
+  isQuotasLoaded,
 }) => {
   const { t, ready } = useTranslation("Common");
 
+  const navigate = useNavigate();
+
   const getQuota = useCallback(async () => {
-    if (isFreeTariff)
+    if (isFreeTariff && isQuotaLoaded)
       try {
         await setPortalPaymentQuotas();
       } catch (e) {
         console.error(e);
       }
-  }, []);
+  }, [isQuotaLoaded]);
 
   useEffect(() => {
     getQuota();
@@ -52,74 +47,77 @@ const ArticlePaymentAlert = ({
       PROXY_BASE_URL,
       "/payments/portal-payments"
     );
-    history.push(paymentPageUrl);
+    navigate(paymentPageUrl);
     toggleArticleOpen();
   };
 
+  const title = isFreeTariff ? (
+    <Trans t={t} i18nKey="FreeStartupPlan" ns="Common">
+      {{ planName: currentTariffPlanTitle }}
+    </Trans>
+  ) : (
+    t("Common:LatePayment")
+  );
+
+  const description = isFreeTariff
+    ? pricePerManager && (
+        <Trans t={t} i18nKey="PerUserMonth" ns="Common">
+          From {{ currencySymbol }}
+          {{ price: pricePerManager }} per admin/power user /month
+        </Trans>
+      )
+    : t("Common:PayBeforeTheEndGracePeriod");
+
+  const additionalDescription = isFreeTariff
+    ? t("Common:ActivateBusinessPlan", { planName: tariffPlanTitle })
+    : t("Common:GracePeriodActivated");
+
+  const color = isFreeTariff
+    ? theme.catalog.paymentAlert.color
+    : theme.catalog.paymentAlert.warningColor;
+
   const isShowLoader = !ready;
+
+  if (!isQuotaLoaded) return <></>;
+  if (isFreeTariff && !isQuotasLoaded) return <></>;
 
   return isShowLoader ? (
     <Loaders.Rectangle width="210px" height="88px" />
   ) : (
-    <StyledArticlePaymentAlert
-      onClick={onClick}
-      isFreeTariff={isFreeTariff}
-      theme={theme}
+    <AlertComponent
       id="document_catalog-payment-alert"
-    >
-      <div>
-        <Text className="article-payment_border">
-          {isFreeTariff ? (
-            <Trans t={t} i18nKey="FreeStartupPlan" ns="Common">
-              {{ planName: currentTariffPlanTitle }}
-            </Trans>
-          ) : (
-            t("Common:LatePayment")
-          )}
-        </Text>
-        <Text fontWeight={600}>
-          {isFreeTariff
-            ? t("Common:ActivateBusinessPlan", { planName: tariffPlanTitle })
-            : t("Common:GracePeriodActivated")}
-        </Text>
-        <Text noSelect fontSize={"12px"}>
-          {isFreeTariff ? (
-            <>
-              {pricePerManager ? (
-                <Trans t={t} i18nKey="PerUserMonth" ns="Common">
-                  From {{ currencySymbol }}
-                  {{ price: pricePerManager }} per admin/month
-                </Trans>
-              ) : (
-                <></>
-              )}
-            </>
-          ) : (
-            t("Common:PayBeforeTheEndGracePeriod")
-          )}
-        </Text>
-      </div>
-
-      <StyledArrowRightIcon />
-    </StyledArticlePaymentAlert>
+      borderColor={color}
+      titleColor={color}
+      onAlertClick={onClick}
+      title={title}
+      titleFontSize="11px"
+      description={description}
+      additionalDescription={additionalDescription}
+      needArrowIcon
+    />
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
-    const { currentTariffPlanTitle } = currentQuotaStore;
-    const { theme } = auth;
-    const { setPortalPaymentQuotas, planCost, tariffPlanTitle } =
-      paymentQuotasStore;
+export default inject(({ auth }) => {
+  const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
+  const { currentTariffPlanTitle, isLoaded: isQuotaLoaded } = currentQuotaStore;
+  const { theme, toggleArticleOpen } = settingsStore;
+  const {
+    setPortalPaymentQuotas,
+    planCost,
+    tariffPlanTitle,
+    isLoaded: isQuotasLoaded,
+  } = paymentQuotasStore;
 
-    return {
-      setPortalPaymentQuotas,
-      pricePerManager: planCost.value,
-      theme,
-      currencySymbol: planCost.currencySymbol,
-      currentTariffPlanTitle,
-      tariffPlanTitle,
-    };
-  })(observer(ArticlePaymentAlert))
-);
+  return {
+    toggleArticleOpen,
+    setPortalPaymentQuotas,
+    pricePerManager: planCost.value,
+    theme,
+    currencySymbol: planCost.currencySymbol,
+    currentTariffPlanTitle,
+    tariffPlanTitle,
+    isQuotaLoaded,
+    isQuotasLoaded,
+  };
+})(observer(ArticlePaymentAlert));

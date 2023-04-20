@@ -1,6 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
@@ -213,12 +212,20 @@ const SectionFilterContent = ({
       {
         key: "filter-account",
         group: "filter-account",
-        label: "Account",
+        label: t("ConnectDialog:Account"),
         isHeader: true,
         isLast: true,
       },
-      { key: PaymentsType.Paid, group: "filter-account", label: "Paid" },
-      { key: PaymentsType.Free, group: "filter-account", label: "Free" },
+      {
+        key: PaymentsType.Paid,
+        group: "filter-account",
+        label: t("Common:Paid"),
+      },
+      {
+        key: PaymentsType.Free,
+        group: "filter-account",
+        label: t("SmartBanner:Price"),
+      },
     ];
 
     // const roomItems = [
@@ -346,7 +353,9 @@ const SectionFilterContent = ({
       filterValues.push({
         key: filter.payments.toString(),
         label:
-          PaymentsType.Paid === filter.payments.toString() ? "Paid" : "Free",
+          PaymentsType.Paid === filter.payments.toString()
+            ? t("Common:Paid")
+            : t("SmartBanner:Price"),
         group: "filter-account",
       });
     }
@@ -474,39 +483,36 @@ const SectionFilterContent = ({
   );
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore }) => {
-    const {
-      loadingStore,
-      filterStore,
-      usersStore,
-      groupsStore,
-      viewAs,
-    } = peopleStore;
-    const { userStore, isLoaded, isAdmin } = auth;
-    const { user } = userStore;
-    const { groups } = groupsStore;
-    const { getUsersList: fetchPeople } = usersStore;
-    const { filter } = filterStore;
-    const { setIsLoading } = loadingStore;
+export default inject(({ auth, peopleStore }) => {
+  const { loadingStore, filterStore, usersStore, groupsStore, viewAs } =
+    peopleStore;
+  const { userStore, isLoaded, isAdmin } = auth;
+  const { user } = userStore;
+  const { groups } = groupsStore;
+  const { getUsersList: fetchPeople } = usersStore;
+  const { filter } = filterStore;
+  const { setIsLoading } = loadingStore;
 
-    return {
-      isLoaded,
-      isAdmin,
-      user,
-      groups,
-      fetchPeople,
-      filter,
-      setIsLoading,
-      viewAs,
-    };
-  })(
-    observer(
-      withLayoutSize(
-        withTranslation(["People", "Common", "PeopleTranslations"])(
-          withPeopleLoader(SectionFilterContent)(<Loaders.Filter />)
-        )
-      )
+  return {
+    isLoaded,
+    isAdmin,
+    user,
+    groups,
+    fetchPeople,
+    filter,
+    setIsLoading,
+    viewAs,
+  };
+})(
+  observer(
+    withLayoutSize(
+      withTranslation([
+        "People",
+        "Common",
+        "PeopleTranslations",
+        "ConnectDialog",
+        "SmartBanner",
+      ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
     )
   )
 );

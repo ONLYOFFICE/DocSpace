@@ -5,7 +5,6 @@ import PeopleStore from "../../store/PeopleStore";
 import PropTypes from "prop-types";
 import Section from "@docspace/common/components/Section";
 import toastr from "@docspace/components/toast/toastr";
-import { withRouter } from "react-router";
 
 import { Provider as PeopleProvider, inject, observer } from "mobx-react";
 import { I18nextProvider, withTranslation } from "react-i18next";
@@ -89,25 +88,21 @@ class My extends React.Component {
 
 My.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
   match: PropTypes.object.isRequired,
   profile: PropTypes.object,
   language: PropTypes.string,
 };
 
-const MyProfile = withRouter(
-  inject(({ auth, peopleStore }) => ({
-    setDocumentTitle: auth.setDocumentTitle,
-    language: auth.language,
-    resetProfile: peopleStore.targetUserStore.resetTargetUser,
-    fetchProfile: peopleStore.targetUserStore.getTargetUser,
-    profile: peopleStore.targetUserStore.targetUser,
-    setLoadedProfile: peopleStore.loadingStore.setLoadedProfile,
-    setIsLoading: peopleStore.loadingStore.setIsLoading,
-    setFirstLoad: peopleStore.loadingStore.setFirstLoad,
-  }))(withTranslation(["Profile", "ProfileAction"])(observer(My)))
-);
-
+const MyProfile = inject(({ auth, peopleStore }) => ({
+  setDocumentTitle: auth.setDocumentTitle,
+  language: auth.language,
+  resetProfile: peopleStore.targetUserStore.resetTargetUser,
+  fetchProfile: peopleStore.targetUserStore.getTargetUser,
+  profile: peopleStore.targetUserStore.targetUser,
+  setLoadedProfile: peopleStore.loadingStore.setLoadedProfile,
+  setIsLoading: peopleStore.loadingStore.setIsLoading,
+  setFirstLoad: peopleStore.loadingStore.setFirstLoad,
+}))(withTranslation(["Profile", "ProfileAction"])(observer(My)));
 const peopleStore = new PeopleStore();
 
 export default ({ i18n, ...rest }) => {

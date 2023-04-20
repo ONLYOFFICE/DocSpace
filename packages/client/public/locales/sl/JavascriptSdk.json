@@ -1,0 +1,22 @@
+{
+  "Ascending": "Naraščajoče",
+  "CopyWindowCode": "Kopiraj kodo za vdelavo okna",
+  "DataDisplay": "Nastavitve prikaza podatkov",
+  "Descending": "Padajoče",
+  "Destroy": "Uniči",
+  "EnterCount": "Vnesi število",
+  "EnterHeight": "Vnesi višino",
+  "EnterId": "Vnesi ID",
+  "EnterPage": "Vnesi številko strani",
+  "EnterWidth": "Vnesi širino",
+  "FolderId": "ID mape",
+  "FrameId": "ID okvirja",
+  "Header": "Glava",
+  "ItemsCount": "Število elementov",
+  "JavascriptSdk": "Javascript sdk",
+  "Menu": "Meni",
+  "Page": "Stran",
+  "SearchTerm": "Išči izraz",
+  "SortOrder": "Vrstni red",
+  "WindowParameters": "Parametri oken"
+}

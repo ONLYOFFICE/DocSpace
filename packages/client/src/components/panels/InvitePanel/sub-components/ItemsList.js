@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, memo, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { FixedSizeList as List } from "react-window";
 import CustomScrollbarsVirtualList from "@docspace/components/scrollbar/custom-scrollbars-virtual-list";
-
+import useResizeObserver from "use-resize-observer";
 import Item from "./Item";
 
 import { StyledRow, ScrollList } from "../StyledInvitePanel";
@@ -48,19 +48,23 @@ const ItemsList = ({
   setHasErrors,
   roomType,
   isOwner,
+  externalLinksVisible,
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const bodyRef = useRef();
+  const { height } = useResizeObserver({ ref: bodyRef });
 
   const onBodyResize = useCallback(() => {
-    setBodyHeight(bodyRef.current.offsetHeight - FOOTER_HEIGHT);
+    const heightList = height ? height : bodyRef.current.offsetHeight;
+    setBodyHeight(heightList - FOOTER_HEIGHT);
+
     setOffsetTop(bodyRef.current.offsetTop);
-  }, [bodyRef?.current?.offsetHeight]);
+  }, [height, bodyRef?.current?.offsetHeight]);
 
   useEffect(() => {
     onBodyResize();
-  }, [bodyRef.current]);
+  }, [bodyRef.current, externalLinksVisible, height]);
 
   useEffect(() => {
     window.addEventListener("resize", onBodyResize);

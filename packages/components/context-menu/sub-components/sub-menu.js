@@ -7,7 +7,8 @@ import { CSSTransition } from "react-transition-group";
 import { ReactSVG } from "react-svg";
 import ArrowIcon from "PUBLIC_DIR/images/arrow.right.react.svg";
 import Scrollbar from "../../scrollbar";
-
+import ToggleButton from "../../toggle-button";
+import { SubMenuItem } from "../styled-context-menu";
 //import CustomScrollbarsVirtualList from "../../scrollbar/custom-scrollbars-virtual-list";
 //import { VariableSizeList } from "react-window";
 
@@ -179,6 +180,27 @@ const SubMenu = (props) => {
         item.template,
         item,
         defaultContentOptions
+      );
+    }
+
+    if (item.withToggle) {
+      return (
+        <SubMenuItem
+          id={item.id}
+          key={item.key}
+          role="none"
+          className={className}
+          style={{ ...item.style, ...style }}
+          onMouseEnter={(e) => onItemMouseEnter(e, item)}
+        >
+          {content}
+          {subMenu}
+          <ToggleButton
+            isChecked={item.checked}
+            onChange={onClick}
+            noAnimation
+          />
+        </SubMenuItem>
       );
     }
 

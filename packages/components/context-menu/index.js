@@ -339,7 +339,7 @@ class ContextMenu extends Component {
                   {isAvatarExist && (
                     <div className="avatar-wrapper">
                       <Avatar
-                        src={this.props.header.avatar}
+                        source={this.props.header.avatar}
                         size={"min"}
                         className="drop-down-item_avatar"
                       />

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import difference from "lodash/difference";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 
 import { ADS_TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 
@@ -22,6 +21,7 @@ const Bar = (props) => {
     firstLoad,
 
     isAdmin,
+    userEmail,
     setMaintenanceExist,
     withActivationBar,
     sendActivationLink,
@@ -277,6 +277,7 @@ const Bar = (props) => {
     />
   ) : withActivationBar && barVisible.confirmEmail && tReady ? (
     <ConfirmEmailBar
+      userEmail={userEmail}
       currentColorScheme={currentColorScheme}
       onLoad={onLoad}
       onClick={sendActivationLinkAction}
@@ -316,6 +317,7 @@ export default inject(({ auth, profileActionsStore }) => {
 
   return {
     isAdmin: user?.isAdmin,
+    userEmail: user?.email,
     withActivationBar,
     sendActivationLink,
 
@@ -337,4 +339,4 @@ export default inject(({ auth, profileActionsStore }) => {
     currentColorScheme,
     setMainBarVisible,
   };
-})(withTranslation(["Profile", "Common"])(withRouter(observer(Bar))));
+})(withTranslation(["Profile", "Common"])(observer(Bar)));

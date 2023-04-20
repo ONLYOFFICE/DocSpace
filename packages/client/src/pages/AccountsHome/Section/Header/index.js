@@ -10,7 +10,6 @@ import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -20,6 +19,7 @@ import {
   mobile,
   isTablet,
   isMobile as isMobileUtils,
+  isSmallTablet,
   isDesktop,
 } from "@docspace/components/utils/device";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
@@ -39,7 +39,7 @@ const StyledContainer = styled.div`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
     width: calc(100% + 40px);
-    height: 68px;
+    height: 67px;
 
     @media ${tablet} {
       height: 60px;
@@ -138,11 +138,6 @@ const StyledInfoPanelToggleWrapper = styled.div`
   @media ${tablet} {
     display: none;
   }
-
-  ${isMobile &&
-  css`
-    display: none;
-  `}
 
   align-items: center;
   justify-content: center;
@@ -337,12 +332,7 @@ const SectionHeaderContent = (props) => {
             />
             {!isInfoPanelVisible && (
               <StyledInfoPanelToggleWrapper>
-                {!(
-                  isTablet() ||
-                  isMobile ||
-                  isMobileUtils() ||
-                  !isDesktop()
-                ) && (
+                {!(isTablet() || isSmallTablet() || !isDesktop()) && (
                   <div className="info-panel-toggle-bg">
                     <IconButton
                       id="info-panel-toggle--open"
@@ -363,62 +353,54 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore, dialogsStore }) => {
-    const {
-      setIsVisible: setInfoPanelIsVisible,
-      isVisible: isInfoPanelVisible,
-    } = auth.infoPanelStore;
+export default inject(({ auth, peopleStore, dialogsStore }) => {
+  const { setIsVisible: setInfoPanelIsVisible, isVisible: isInfoPanelVisible } =
+    auth.infoPanelStore;
 
-    const {
-      setInvitePanelOptions,
-      setInviteUsersWarningDialogVisible,
-    } = dialogsStore;
+  const { setInvitePanelOptions, setInviteUsersWarningDialogVisible } =
+    dialogsStore;
 
-    const { isOwner, isAdmin } = auth.userStore.user;
-    const { isGracePeriod } = auth.currentTariffStatusStore;
+  const { isOwner, isAdmin } = auth.userStore.user;
+  const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
+  const { selectionStore, headerMenuStore, getHeaderMenu } = peopleStore;
 
-    const {
-      isHeaderVisible,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      cbMenuItems,
-      getMenuItemId,
-      getCheckboxItemLabel,
-    } = headerMenuStore;
+  const {
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    cbMenuItems,
+    getMenuItemId,
+    getCheckboxItemLabel,
+  } = headerMenuStore;
 
-    const { setSelected } = selectionStore;
+  const { setSelected } = selectionStore;
 
-    return {
-      setSelected,
-      isHeaderVisible,
-      isHeaderIndeterminate,
-      isHeaderChecked,
-      getHeaderMenu,
-      cbMenuItems,
-      getMenuItemId,
-      getCheckboxItemLabel,
-      setInfoPanelIsVisible,
-      isInfoPanelVisible,
-      isOwner,
-      isAdmin,
-      setInvitePanelOptions,
-      isGracePeriod,
-      setInviteUsersWarningDialogVisible,
-    };
-  })(
-    withTranslation([
-      "People",
-      "Common",
-      "PeopleTranslations",
-      "Files",
-      "ChangeUserTypeDialog",
-    ])(
-      withPeopleLoader(observer(SectionHeaderContent))(
-        <Loaders.SectionHeader />
-      )
-    )
+  return {
+    setSelected,
+    isHeaderVisible,
+    isHeaderIndeterminate,
+    isHeaderChecked,
+    getHeaderMenu,
+    cbMenuItems,
+    getMenuItemId,
+    getCheckboxItemLabel,
+    setInfoPanelIsVisible,
+    isInfoPanelVisible,
+    isOwner,
+    isAdmin,
+    setInvitePanelOptions,
+    isGracePeriod,
+    setInviteUsersWarningDialogVisible,
+  };
+})(
+  withTranslation([
+    "People",
+    "Common",
+    "PeopleTranslations",
+    "Files",
+    "ChangeUserTypeDialog",
+  ])(
+    withPeopleLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />)
   )
 );

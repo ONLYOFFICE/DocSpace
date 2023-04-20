@@ -5,9 +5,9 @@
   "CurrentNumber": "現在お使いの電話番号",
   "DeleteProfileBtn": "アカウントの削除",
   "DeleteProfileConfirmation": "ご注意！アカウントを削除しようとしています。",
-  "DeleteProfileConfirmationInfo": "\"Delete my account\" をクリックすると、プライバシーポリシーに同意したことになります。",
+  "DeleteProfileConfirmationInfo": "\"Delete my account\" をクリックすると、<1>プライバシーポリシー</1> に同意したことになります。",
   "DeleteProfileSuccessMessage": "お客様のアカウントは正常に削除されました。",
-  "DeleteProfileSuccessMessageInfo": "お客様のアカウントとそれに関連するデータの削除については、プライバシーポリシーをご覧ください。",
+  "DeleteProfileSuccessMessageInfo": "お客様のアカウントとそれに関連するデータの削除については、<1>プライバシーポリシー</1>をご覧ください。",
   "EmailAndPasswordCopiedToClipboard": "メールとパスワードをクリップボードにコピー",
   "EnterAppCodeDescription": "アプリから生成された6桁のコードを入力してください。携帯電話にアクセスできない場合は、バックアップコードをご利用ください。",
   "EnterAppCodeTitle": "認証アプリからコードを入力",
@@ -28,5 +28,6 @@
   "SetAppTitle": "認証アプリケーションの設定",
   "SuccessDeactivate": "お客様のアカウントは正常に無効化されました。10秒後に<1>サイト</1>にリダイレクトされます。",
   "SuccessReactivate": "お客様のアカウントは正常に再有効化されました。10秒後に<1>ポータル</1>にリダイレクトされます。",
+  "SuccessRemoved": "お客様のアカウントは正常に削除されました。10秒後に<1>site</1>にリダイレクトされます。",
   "WelcomeUser": "ポータルへようこそ！\n登録を始めるかSNSでログインしてください。"
 }

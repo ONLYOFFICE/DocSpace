@@ -127,6 +127,7 @@ const Dialog = ({
           onChange={onChange}
           onFocus={onFocus}
           isDisabled={isDisabled}
+          maxLength={165}
         />
         {isCreateDialog && extension && (
           <Box displayProp="flex" alignItems="center" paddingProp="16px 0 0">

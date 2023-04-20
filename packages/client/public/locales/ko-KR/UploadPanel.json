@@ -1,4 +1,5 @@
 {
+  "CancelUpload": "업로드가 중단되었습니다. 일부 파일이 업로드되지 않았습니다.",
   "EnterPassword": "비밀번호 입력",
   "HideInput": "숨기기",
   "Ready": "완료",

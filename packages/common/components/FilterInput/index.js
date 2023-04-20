@@ -201,7 +201,7 @@ const FilterInput = React.memo(
                 removeSelectedItem={removeSelectedItemAction}
               />
             ))}
-            {selectedItems.length > 1 && (
+            {selectedItems.filter((item) => item.label).length > 1 && (
               <Link
                 className={"clear-all-link"}
                 isHovered

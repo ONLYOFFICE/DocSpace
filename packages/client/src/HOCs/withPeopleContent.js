@@ -106,6 +106,7 @@ export default function withContent(WrappedContent) {
       "Translations",
       "Files",
       "ChangeUserTypeDialog",
+      "RoomSelector",
     ]);
 
     const contextOptionsProps = {

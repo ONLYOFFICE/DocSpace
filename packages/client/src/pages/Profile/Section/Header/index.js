@@ -6,7 +6,7 @@ import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 import React, { useState } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { inject, observer } from "mobx-react";
 
 import IconButton from "@docspace/components/icon-button";
@@ -14,6 +14,7 @@ import ContextMenuButton from "@docspace/components/context-menu-button";
 import Headline from "@docspace/common/components/Headline";
 import Loaders from "@docspace/common/components/Loaders";
 import { DeleteSelfProfileDialog } from "SRC_DIR/components/dialogs";
+import { DeleteOwnerProfileDialog } from "SRC_DIR/components/dialogs";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 
@@ -24,9 +25,11 @@ import { StyledHeader } from "./StyledHeader";
 const Header = (props) => {
   const {
     t,
-    history,
+
     isAdmin,
     isVisitor,
+    isCollaborator,
+
     filter,
 
     setFilter,
@@ -37,10 +40,14 @@ const Header = (props) => {
     setChangePasswordVisible,
     setChangeAvatarVisible,
   } = props;
+
   const [deleteSelfProfileDialog, setDeleteSelfProfileDialog] = useState(false);
+  const navigate = useNavigate();
+  const [deleteOwnerProfileDialog, setDeleteOwnerProfileDialog] =
+    useState(false);
 
   const getUserContextOptions = () => {
-    return [
+    const options = [
       {
         key: "change-email",
         label: t("PeopleTranslations:EmailChangeButton"),
@@ -66,11 +73,16 @@ const Header = (props) => {
       {
         key: "delete-profile",
         label: t("PeopleTranslations:DeleteSelfProfile"),
-        onClick: () => setDeleteSelfProfileDialog(true),
+        onClick: () =>
+          profile?.isOwner
+            ? setDeleteOwnerProfileDialog(true)
+            : setDeleteSelfProfileDialog(true),
         disabled: false,
         icon: CatalogTrashReactSvgUrl,
       },
     ];
+
+    return options;
   };
 
   const onClickBack = () => {
@@ -81,16 +93,16 @@ const Header = (props) => {
       `/accounts/filter?/${url}`
     );
 
-    history.push(backUrl, url);
+    navigate(backUrl, url);
     setFilter(filter);
   };
 
   return (
     <StyledHeader
       showContextButton={(isAdmin && !profile?.isOwner) || isMe}
-      isVisitor={isVisitor}
+      isVisitor={isVisitor || isCollaborator}
     >
-      {!isVisitor && (
+      {!(isVisitor || isCollaborator) && (
         <IconButton
           iconName={ArrowPathReactSvgUrl}
           size="17"
@@ -123,46 +135,52 @@ const Header = (props) => {
           email={profile.email}
         />
       )}
+
+      {deleteOwnerProfileDialog && (
+        <DeleteOwnerProfileDialog
+          visible={deleteOwnerProfileDialog}
+          onClose={() => setDeleteOwnerProfileDialog(false)}
+        />
+      )}
     </StyledHeader>
   );
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore }) => {
-    const { isAdmin } = auth;
+export default inject(({ auth, peopleStore }) => {
+  const { isAdmin } = auth;
 
-    const { isVisitor } = auth.userStore.user;
+  const { isVisitor, isCollaborator } = auth.userStore.user;
 
-    const { targetUserStore, filterStore } = peopleStore;
+  const { targetUserStore, filterStore } = peopleStore;
 
-    const { filter, setFilterParams } = filterStore;
+  const { filter, setFilterParams } = filterStore;
 
-    const { targetUser, isMe } = targetUserStore;
+  const { targetUser, isMe } = targetUserStore;
 
-    const {
-      setChangeEmailVisible,
-      setChangePasswordVisible,
-      setChangeAvatarVisible,
-    } = targetUserStore;
+  const {
+    setChangeEmailVisible,
+    setChangePasswordVisible,
+    setChangeAvatarVisible,
+  } = targetUserStore;
 
-    return {
-      isAdmin,
-      isVisitor,
-      filter,
+  return {
+    isAdmin,
+    isVisitor,
+    isCollaborator,
+    filter,
 
-      setFilter: setFilterParams,
+    setFilter: setFilterParams,
 
-      profile: targetUser,
-      isMe,
-      setChangeEmailVisible,
-      setChangePasswordVisible,
-      setChangeAvatarVisible,
-    };
-  })(
-    observer(
-      withTranslation(["Profile", "Common", "PeopleTranslations"])(
-        withPeopleLoader(Header)(<Loaders.SectionHeader />)
-      )
+    profile: targetUser,
+    isMe,
+    setChangeEmailVisible,
+    setChangePasswordVisible,
+    setChangeAvatarVisible,
+  };
+})(
+  observer(
+    withTranslation(["Profile", "Common", "PeopleTranslations"])(
+      withPeopleLoader(Header)(<Loaders.SectionHeader />)
     )
   )
 );

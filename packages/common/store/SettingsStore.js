@@ -122,6 +122,7 @@ class SettingsStore {
 
   tenantStatus = null;
   helpLink = null;
+  bookTrainingEmail = null;
   hotkeyPanelVisible = false;
   frameConfig = null;
 
@@ -141,6 +142,11 @@ class SettingsStore {
   standalone = false;
 
   mainBarVisible = false;
+  zendeskKey = null;
+  bookTrainingEmail = null;
+  legalTerms = null;
+  baseDomain = "onlyoffice.io";
+  documentationEmail = null;
 
   constructor() {
     makeAutoObservable(this);
@@ -234,16 +240,48 @@ class SettingsStore {
     return `${this.helpLink}/administration/connect-selectel-docspace.aspx`;
   }
 
+  get yandexUrl() {
+    return `${this.helpLink}/administration/connect-yandex-docspace.aspx`;
+  }
+
+  get vkUrl() {
+    return `${this.helpLink}/administration/connect-vk-docspace.aspx`;
+  }
+
+  get languageAndTimeZoneSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`;
+  }
+
+  get dnsSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#alternativeurl`;
+  }
+
+  get passwordStrengthSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#passwordstrength`;
+  }
+
+  get tfaSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-two-factor-authentication.aspx`;
+  }
+
+  get trustedMailDomainSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#TrustedDomain`;
+  }
+
+  get administratorMessageSettingsUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#administratormessage`;
+  }
+
+  get dataBackupUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#CreatingBackup_block`;
+  }
+
+  get automaticBackupUrl() {
+    return `${this.helpLink}/administration/docspace-settings.aspx#AutoBackup`;
+  }
+
   get wizardCompleted() {
     return this.isLoaded && !this.wizardToken;
-  }
-
-  get helpUrlCommonSettings() {
-    return `${this.helpLink}/administration/configuration.aspx#CustomizingPortal_block`;
-  }
-
-  get helpUrlCreatingBackup() {
-    return `${this.helpLink}/administration/configuration.aspx#CreatingBackup_block`;
   }
 
   setMainBarVisible = (visible) => {
@@ -330,6 +368,7 @@ class SettingsStore {
         // portal not found
         const url = new URL(wrongPortalNameUrl);
         url.searchParams.append("url", window.location.hostname);
+        url.searchParams.append("ref", window.location.href);
         return window.location.replace(url);
       }
     });
@@ -538,9 +577,13 @@ class SettingsStore {
     this.currentProductId = currentProductId;
   };
 
+  setPortalOwner = (owner) => {
+    this.owner = owner;
+  };
+
   getPortalOwner = async () => {
     const owner = await api.people.getUserById(this.ownerId);
-    this.owner = owner;
+    this.setPortalOwner(owner);
     return owner;
   };
 
