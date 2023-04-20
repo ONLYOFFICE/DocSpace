@@ -1,6 +1,7 @@
 import axios from "axios";
 import combineUrl from "./combineUrl";
 import defaultConfig from "PUBLIC_DIR/scripts/config.json";
+import history from "@docspace/common/history";
 
 let { api: apiConf, proxy: proxyConf } = defaultConfig;
 let { orign: apiOrigin, prefix: apiPrefix, timeout: apiTimeout } = apiConf;
@@ -152,14 +153,15 @@ class AxiosClient {
             break;
           case 403:
             const pathname = window.location.pathname;
+            const isArchived = pathname.indexOf("/rooms/archived") !== -1;
+
             const isRooms =
-              pathname.indexOf("/rooms/shared") !== -1 ||
-              pathname.indexOf("/rooms/archived") !== -1;
+              pathname.indexOf("/rooms/shared") !== -1 || isArchived;
 
             if (!isRooms) return;
 
             setTimeout(() => {
-              window.location.replace("/");
+              history.navigate(isArchived ? "/archived" : "/");
             }, 1000);
 
             break;

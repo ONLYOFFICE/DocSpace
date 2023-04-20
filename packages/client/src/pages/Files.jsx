@@ -95,6 +95,15 @@ const FilesSection = React.memo(({ withMainButton }) => {
       />
 
       <Route
+        path="/archived"
+        element={
+          <PrivateRoute location={location}>
+            <Navigate to="/rooms/archived" replace />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
         path="/rooms"
         element={
           <PrivateRoute location={location}>

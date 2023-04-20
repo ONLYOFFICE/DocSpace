@@ -33,6 +33,7 @@ import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
+import { RoomSearchArea } from "@docspace/common/constants";
 
 class PureHome extends React.Component {
   componentDidMount() {
@@ -100,6 +101,12 @@ class PureHome extends React.Component {
 
       if (!filterObj) {
         setIsLoading(true);
+
+        if (window.location.pathname.indexOf("/rooms/archived") !== -1) {
+          this.fetchArchiveDefaultRooms();
+
+          return;
+        }
         this.fetchDefaultRooms();
 
         return;
@@ -253,6 +260,18 @@ class PureHome extends React.Component {
     const { fetchRooms, setIsLoading, setFirstLoad } = this.props;
 
     fetchRooms().finally(() => {
+      setIsLoading(false);
+      setFirstLoad(false);
+    });
+  };
+
+  fetchArchiveDefaultRooms = () => {
+    const { fetchRooms, setIsLoading, setFirstLoad } = this.props;
+
+    const filter = RoomsFilter.getDefault();
+    filter.searchArea = RoomSearchArea.Archive;
+
+    fetchRooms(null, filter).finally(() => {
       setIsLoading(false);
       setFirstLoad(false);
     });
