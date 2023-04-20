@@ -20,11 +20,12 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
       if (tags.length === 1) {
         if (tags[0]?.isDefault || tags[0]?.isThirdParty) {
           const tag = { ...tags[0], maxWidth: `100%` };
-
+          newTags.push(tag);
+        } else if (tags[0].isThirdParty) {
+          const tag = { ...tags[0], maxWidth: `36px` };
           newTags.push(tag);
         } else {
-          const tag = { label: tags[0], maxWidth: `100%` };
-
+          const tag = { label: tags[0].label || tags[0], maxWidth: `100%` };
           newTags.push(tag);
         }
 
@@ -50,7 +51,6 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
         for (let i = 0; i < tags.length; i++) {
           if (tags[i]?.isThirdParty) {
             const tag = { ...tags[i], maxWidth: `36px` };
-
             newTags.push(tag);
           } else if (tags[i].isDefault) {
             const tag = { ...tags[i], maxWidth: `${maxWidthPercent}%` };
@@ -58,7 +58,6 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
             newTags.push(tag);
           } else {
             const tag = { label: tags[i], maxWidth: `${maxWidthPercent}%` };
-
             newTags.push(tag);
           }
         }
@@ -87,7 +86,6 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
               newTags.push(tag);
             } else {
               const tag = { label: tags[i], maxWidth: `${maxWidthPercent}%` };
-
               newTags.push(tag);
             }
           }
