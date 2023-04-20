@@ -24,6 +24,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import styled from "styled-components";
+import DeepLink from "./DeepLink";
 
 toast.configure();
 
@@ -90,6 +91,7 @@ function Editor({
   fileId,
   url,
   filesSettings,
+  logoUrls,
 }) {
   const fileInfo = config?.file;
 
@@ -721,6 +723,11 @@ function Editor({
         {selectFolderDialog}
       </>
     );
+
+  const isEnableDeepLink = true;
+
+  if (isEnableDeepLink)
+    return <DeepLink fileInfo={fileInfo} logoUrls={logoUrls} />;
 
   return (
     <EditorWrapper
