@@ -121,12 +121,15 @@ RowContent.propTypes = {
   disableSideInfo: PropTypes.bool,
   /** Accepts id */
   id: PropTypes.string,
+  /** Sets the action initiated upon clicking the button */
   onClick: PropTypes.func,
   /** Changes the side information color */
   sideColor: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Width section */
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** Converts the SideInfo */
   convertSideInfo: PropTypes.bool,
 };
 
