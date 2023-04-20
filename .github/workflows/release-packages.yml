@@ -86,9 +86,9 @@ jobs:
       - name: Get variables
         run: |
           echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          echo "branch_name=$(echo ${{ github.ref#refs/heads/ }}" >> $GITHUB_ENV 
+          echo "branch_name=$(echo "${{ github.ref#refs/heads/ }}" )" >> $GITHUB_ENV 
           echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
-
+          # ${GITHUB_REF#refs/heads/}
 
       - name: INSTALL tools & Prepare build
         run: |
