@@ -4,6 +4,8 @@ import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
 
+import { getLogoFromPath } from "@docspace/common/utils";
+
 import {
   StyledSimpleNav,
   StyledDeepLink,
@@ -12,7 +14,7 @@ import {
   StyledActionsWrapper,
 } from "./StyledDeepLink";
 
-const DeepLink = ({ fileInfo }) => {
+const DeepLink = ({ fileInfo, logoUrls }) => {
   const [isRemember, setIsRemember] = useState(false);
 
   const onChangeCheckbox = () => {
@@ -41,10 +43,12 @@ const DeepLink = ({ fileInfo }) => {
       : fileInfo.title;
   };
 
+  const logo = getLogoFromPath(logoUrls[0]?.path?.light);
+
   return (
     <>
       <StyledSimpleNav>
-        <img src="/static/images/logo/lightsmall.svg" />
+        <img src={logo} />
       </StyledSimpleNav>
       <StyledDeepLink>
         <StyledBodyWrapper>
