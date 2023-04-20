@@ -96,16 +96,10 @@ public class BaseCommonLinkUtility
     private readonly CoreSettings _coreSettings;
     protected TenantManager _tenantManager;
 
-    private string _serverRootPath;
     public string ServerRootPath
     {
         get
         {
-            if (!string.IsNullOrEmpty(_serverRootPath))
-            {
-                return _serverRootPath;
-            }
-
             UriBuilder result;
             // first, take from current request
             if (_httpContextAccessor?.HttpContext?.Request != null)
@@ -153,7 +147,7 @@ public class BaseCommonLinkUtility
                 }
             }
 
-            return _serverRootPath = result.Uri.ToString().TrimEnd('/');
+            return result.Uri.ToString().TrimEnd('/');
         }
     }
 

@@ -33,6 +33,7 @@ const HeaderContainer = styled.div`
     align-items: baseline;
     .settings-section_badge {
       margin-left: 8px;
+      cursor: auto;
     }
 
     .header {
@@ -306,7 +307,7 @@ const SectionHeaderContent = (props) => {
               )}
             </div>
           </Headline>
-          {addUsers && (
+          {props.addUsers && (
             <div className="action-wrapper">
               <IconButton
                 iconName={ActionsHeaderTouchReactSvgUrl}

@@ -135,6 +135,7 @@ const DNSSettings = (props) => {
           />
           {!isSettingPaid && (
             <Badge
+              className="paid-badge"
               backgroundColor="#EDC409"
               label={t("Common:Paid")}
               isPaidBadge={true}

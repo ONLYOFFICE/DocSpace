@@ -19,6 +19,7 @@ const Details = ({
   getInfoPanelItemIcon,
   openUser,
   isVisitor,
+  isCollaborator,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
@@ -28,6 +29,7 @@ const Details = ({
   const navigate = useNavigate();
 
   const detailsHelper = new DetailsHelper({
+    isCollaborator,
     isVisitor,
     t,
     item: selection,
@@ -127,6 +129,7 @@ export default inject(({ auth, filesStore }) => {
   const { user } = userStore;
 
   const isVisitor = user.isVisitor;
+  const isCollaborator = user.isCollaborator;
 
   return {
     personal,
@@ -136,5 +139,6 @@ export default inject(({ auth, filesStore }) => {
     getInfoPanelItemIcon,
     openUser,
     isVisitor,
+    isCollaborator,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));
