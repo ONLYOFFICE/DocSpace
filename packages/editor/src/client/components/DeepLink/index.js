@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
@@ -13,6 +13,22 @@ import {
 } from "./StyledDeepLink";
 
 const DeepLink = () => {
+  const [isRemember, setIsRemember] = useState(false);
+
+  const onChangeCheckbox = () => {
+    setIsRemember(!isRemember);
+  };
+
+  const onOpenAppClick = () => {
+    if (isRemember) localStorage.setItem("defaultOpenDocument", "app");
+    console.log("onOpenAppClick");
+  };
+
+  const onStayBrowserClick = () => {
+    if (isRemember) localStorage.setItem("defaultOpenDocument", "web");
+    console.log("onStayBrowserClick");
+  };
+
   return (
     <>
       <StyledSimpleNav>
@@ -34,8 +50,17 @@ const DeepLink = () => {
           </Text>
         </StyledBodyWrapper>
         <StyledActionsWrapper>
-          <Checkbox label={"Remember"} isChecked={false} onChange={() => {}} />
-          <Button size="medium" primary label="Open in the app" />
+          <Checkbox
+            label={"Remember"}
+            isChecked={isRemember}
+            onChange={onChangeCheckbox}
+          />
+          <Button
+            size="medium"
+            primary
+            label="Open in the app"
+            onClick={onOpenAppClick}
+          />
           <Link
             className="stay-link"
             type="action"
@@ -43,6 +68,7 @@ const DeepLink = () => {
             fontWeight="600"
             isHovered
             color="#316DAA"
+            onClick={onStayBrowserClick}
           >
             Stay in the browser
           </Link>
