@@ -6,7 +6,7 @@ import Filter from "@docspace/common/api/people/filter";
 import Loaders from "@docspace/common/components/Loaders";
 import { inject, observer } from "mobx-react";
 import { getSelectedGroup } from "../../../helpers/people-helpers";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { isMobile } from "@docspace/components/utils/device";
 import { isMobileOnly } from "react-device-detect";
 import config from "PACKAGE_FILE";
@@ -23,7 +23,7 @@ const ArticleBodyContent = ({
   toggleArticleOpen,
   showText,
   groupsCaption,
-  history,
+
   filter,
   selectGroup,
   isVisitor,
@@ -31,6 +31,8 @@ const ArticleBodyContent = ({
   setDocumentTitle,
 }) => {
   const [groupItems, setGroupItems] = React.useState(null);
+
+  const navigate = useNavigate();
 
   const changeTitleDocument = React.useCallback(
     (id) => {
@@ -72,7 +74,7 @@ const ArticleBodyContent = ({
           config.homepage,
           `/accounts/filter?${urlFilter}`
         );
-        history.push(url);
+        navigate(url);
         if (isMobileOnly || isMobile()) toggleArticleOpen();
       }
     },
@@ -126,7 +128,7 @@ const ArticleBodyContent = ({
 };
 
 const BodyContent = withTranslation(["Article"])(
-  withRouter(withLoader(ArticleBodyContent)(<Loaders.ArticleFolder />))
+  withLoader(ArticleBodyContent)(<Loaders.ArticleFolder />)
 );
 
 export default inject(({ auth, peopleStore }) => {

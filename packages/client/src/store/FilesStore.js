@@ -7,6 +7,7 @@ import {
   FolderType,
   FileStatus,
   RoomsType,
+  RoomsTypeValues,
   RoomsProviderType,
 } from "@docspace/common/constants";
 import history from "@docspace/common/history";
@@ -1093,7 +1094,7 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    history.push(newUrl);
+    history.navigate(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
@@ -1128,8 +1129,9 @@ class FilesStore {
     return newFilter;
   };
 
-  refreshFiles = () => {
-    return this.fetchFiles(this.selectedFolderStore.id, this.filter);
+  refreshFiles = async () => {
+    const res = await this.fetchFiles(this.selectedFolderStore.id, this.filter);
+    return res;
   };
 
   fetchFiles = (
@@ -1528,10 +1530,7 @@ class FilesStore {
     const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
-    const isEditing =
-      (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    // const isFileOwner =
-    //   item.createdBy?.id === this.authStore.userStore.user?.id;
+    const isEditing = false; // (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
     const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
@@ -2693,36 +2692,18 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
 
     if (this.folders.length) {
       for (const item of this.folders) {
-        switch (item.roomType) {
-          case RoomsType.FillingFormsRoom:
-            cbMenu.push(`room-${RoomsType.FillingFormsRoom}`);
-            break;
-          case RoomsType.CustomRoom:
-            cbMenu.push(`room-${RoomsType.CustomRoom}`);
-            break;
-          case RoomsType.EditingRoom:
-            cbMenu.push(`room-${RoomsType.EditingRoom}`);
-            break;
-          case RoomsType.ReviewRoom:
-            cbMenu.push(`room-${RoomsType.ReviewRoom}`);
-            break;
-          case RoomsType.ReadOnlyRoom:
-            cbMenu.push(`room-${RoomsType.ReadOnlyRoom}`);
-            break;
-          default:
-            cbMenu.push(FilterType.FoldersOnly);
+        if (item.roomType && RoomsTypeValues[item.roomType]) {
+          cbMenu.push(`room-${RoomsTypeValues[item.roomType]}`);
+        } else {
+          cbMenu.push(FilterType.FoldersOnly);
         }
       }
     }

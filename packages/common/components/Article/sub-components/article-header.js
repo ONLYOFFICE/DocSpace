@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useHistory } from "react-router";
+import { useNavigate } from "react-router-dom";
 import Loaders from "@docspace/common/components/Loaders";
 import { isTablet as isTabletUtils } from "@docspace/components/utils/device";
 import { Link } from "react-router-dom";
@@ -22,10 +22,10 @@ const ArticleHeader = ({
   theme,
   ...rest
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
-  const onLogoClick = () => history.push("/");
+  const onLogoClick = () => navigate("/");
 
   const burgerLogo = !theme.isBase
     ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)

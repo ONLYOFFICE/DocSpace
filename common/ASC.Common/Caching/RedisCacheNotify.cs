@@ -70,7 +70,7 @@ public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 
     private string GetChannelName(CacheNotifyAction action)
     {
-        return $"asc:channel:{action}:{typeof(T).FullName}".ToLower();
+        return $"asc:channel:{action}:{typeof(T).FullName}".ToLower(CultureInfo.InvariantCulture);
     }
 
     class RedisCachePubSubItem<T0>

@@ -26,6 +26,7 @@
   "FeedUpdateUser": "on määrätty rooliin {{role}}",
   "FileExtension": "Tiedostotunniste",
   "FilesEmptyScreenText": "Katso tiedostojen ja kansioiden tiedot täältä",
+  "HistoryEmptyScreenText": "Toimintahistoria näytetään tässä",
   "ItemsSelected": "Valitut kohteet",
   "LastModifiedBy": "Viimeksi muokannut",
   "PendingInvitations": "Odottavat kutsut",

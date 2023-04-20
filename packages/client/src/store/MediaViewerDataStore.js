@@ -4,8 +4,8 @@ import {
   findNearestIndex,
   isVideo,
 } from "@docspace/common/components/MediaViewer/helpers";
+import history from "@docspace/common/history";
 import { thumbnailStatuses } from "SRC_DIR/helpers/filesConstants";
-import api from "@docspace/common/api";
 
 class MediaViewerDataStore {
   filesStore;
@@ -55,7 +55,8 @@ class MediaViewerDataStore {
 
   changeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
-    window.history.pushState(null, null, url);
+
+    history.navigate(url);
   };
 
   nextMedia = () => {

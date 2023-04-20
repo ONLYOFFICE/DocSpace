@@ -188,6 +188,7 @@ const StyledAutoBackup = styled.div`
   .auto-backup_badge {
     height: 16px;
     margin-left: 8px;
+    cursor: auto;
   }
   ${(props) => !props.isEnableAuto && UnavailableStyles}
 `;

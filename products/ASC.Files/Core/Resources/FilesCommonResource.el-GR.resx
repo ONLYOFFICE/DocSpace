@@ -278,4 +278,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Το αρχείο είναι ξεκλείδωτο</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Διαχειριστής DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Επεξεργαστής</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Διαχειριστής Δωματίου</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Χρήστης</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Προβολέας</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Σχολιαστής</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Συμπληρωτής Φόρμας</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Αξιολογητής</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Συνεργάτης</value>
+  </data>
 </root>

@@ -323,9 +323,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Majiteľ</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Názov portálu</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Prístup k portálu</value>
   </data>
