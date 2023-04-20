@@ -40,8 +40,5 @@
     "shx": "^0.3.4",
     "terser": "^5.16.6"
   },
-  "packageManager": "yarn@3.2.4",
-  "dependencies": {
-    "@loadable/component": "^5.15.3"
-  }
+  "packageManager": "yarn@3.2.4"
 }

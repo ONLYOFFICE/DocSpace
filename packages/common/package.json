@@ -40,7 +40,8 @@
     "sjcl": "^1.0.8",
     "socket.io-client": "^4.6.1",
     "styled-components": "^5.3.9",
-    "workbox-window": "^6.5.4"
+    "workbox-window": "^6.5.4",
+    "@loadable/component": "^5.15.3"
   },
   "devDependencies": {
     "@welldone-software/why-did-you-render": "^6.2.3"
