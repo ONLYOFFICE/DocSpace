@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Πριν, πρέπει να συνδέσετε την αντίστοιχη υπηρεσία στην ενότητα «Ενσωμάτωση». Διαφορετικά, η σύνδεση δεν θα είναι δυνατή.",
   "ThirdPartyStoragePermanentSettingDescription": "Τα αρχεία αποθηκεύονται σε έναν αποθηκευτικό χώρο τρίτου μέρους {{thirdpartyTitle}} στον φάκελο \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Για να συνδέσετε έναν αποθηκευτικό χώρο τρίτου μέρους, πρέπει να προσθέσετε την αντίστοιχη υπηρεσία στην ενότητα «Ενσωμάτωση» των ρυθμίσεων του DocSpace. Επικοινωνήστε με τον ιδιοκτήτη ή τον διαχειριστή του DocSpace για να ενεργοποιήσετε την ενσωμάτωση.",
-  "ThirdPartyStorageTitle": "Αποθήκευση τρίτου μέρους",
   "ViewOnlyRoomDescription": "Κοινή χρήση τυχόν έτοιμων εγγράφων, αναφορών, τεκμηρίωσης και άλλων αρχείων για προβολή.",
   "ViewOnlyRoomTitle": "Δωμάτιο μόνο για προβολή"
 }

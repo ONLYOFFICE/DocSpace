@@ -17,6 +17,7 @@
   "HideAuthPage": "Hide auth page",
   "LogoutEndpointUrl": "IdP Single Logout Endpoint URL",
   "LogoutEndpointUrlTooltip": "The URL used for the single logout on the Service provider side",
+  "MetadataLoadError": "Metadata file not transferred",
   "NameIDFormat": "NameId Format",
   "NewCertificate": "New Certificate",
   "OpenCertificate": "Public Certificate",

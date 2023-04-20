@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Predhodno morate povezati ustrezno storitev v razdelku “Integracija”. V nasprotnem primeru povezava ne bo mogoča.",
   "ThirdPartyStoragePermanentSettingDescription": "Datoteke so shranjene v shrambi tretje osebe {{thirdpartyTitle}} v mapi \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Če želite povezati shrambo tretje osebe, morate dodati ustrezno storitev v razdelku Integracija v nastavitvah DocSpace. Obrnite se na lastnika ali skrbnika DocSpace, da omogočite integracijo.",
-  "ThirdPartyStorageTitle": "Shramba tretjih oseb",
   "ViewOnlyRoomDescription": "Deli pripravljene dokumente, poročila, dokumentacijo in druge datoteke za ogled.",
   "ViewOnlyRoomTitle": "Soba samo z ogledom"
 }

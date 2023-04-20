@@ -1,45 +1,17 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
-import { Redirect, Switch } from "react-router-dom";
+import { Navigate, Routes, Route, useLocation } from "react-router-dom";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import toastr from "@docspace/components/toast/toastr";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import AppLoader from "@docspace/common/components/AppLoader";
 import { /*combineUrl,*/ updateTempContent } from "@docspace/common/utils";
 import Home from "./AccountsHome";
-import Profile from "./Profile";
-import NotificationComponent from "./Notifications";
 
 import Filter from "@docspace/common/api/people/filter";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 
 const Error404 = React.lazy(() => import("client/Error404"));
-
-const PeopleSection = React.memo(() => {
-  return (
-    <Switch>
-      <PrivateRoute exact path={["/accounts/view/@self"]} component={Profile} />
-      <PrivateRoute
-        exact
-        path={["/accounts/view/@self/notification"]}
-        component={NotificationComponent}
-      />
-      <PrivateRoute
-        exact
-		withManager
-        path={["/accounts"]}
-        component={HomeRedirectToFilter}
-      />
-      <PrivateRoute
-        path={"/accounts/filter"}
-        withManager
-        restricted
-        component={Home}
-      />
-      <PrivateRoute component={Error404Route} />
-    </Switch>
-  );
-});
 
 const Error404Route = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -49,11 +21,44 @@ const Error404Route = (props) => (
   </React.Suspense>
 );
 
-const HomeRedirectToFilter = (props) => {
+const HomeRedirectToFilter = () => {
   const filter = Filter.getDefault();
   const urlFilter = filter.toUrlParams();
-  return <Redirect to={`/accounts/filter?${urlFilter}`} />;
+
+  return <Navigate replace to={`/accounts/filter?${urlFilter}`} />;
 };
+
+const PeopleSection = React.memo(() => {
+  return (
+    <Routes>
+      <Route
+        path="/*"
+        element={
+          <PrivateRoute restricted withManager location={location}>
+            <HomeRedirectToFilter />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        path="/filter"
+        element={
+          <PrivateRoute restricted withManager location={location}>
+            <Home />
+          </PrivateRoute>
+        }
+      />
+
+      <Route
+        element={
+          <PrivateRoute location={location}>
+            <Error404Route />
+          </PrivateRoute>
+        }
+      />
+    </Routes>
+  );
+});
 
 const PeopleContent = (props) => {
   const { loadBaseInfo, isLoading, setFirstLoad } = props;

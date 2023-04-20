@@ -11,7 +11,6 @@ import {
 
 import Dialogs from "../AccountsHome/Section/Body/Dialogs";
 
-import { withRouter } from "react-router";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -21,7 +20,6 @@ class Profile extends React.Component {
     const {
       fetchProfile,
       profile,
-      location,
       t,
       setDocumentTitle,
       setFirstLoad,
@@ -31,10 +29,12 @@ class Profile extends React.Component {
       isVisitor,
       selectedTreeNode,
       setSelectedNode,
+      setFirstLoadGlobal,
     } = this.props;
     const userId = "@self";
 
     setFirstLoad(false);
+    setFirstLoadGlobal(false);
     setIsEditTargetUser(false);
 
     isVisitor
@@ -43,16 +43,16 @@ class Profile extends React.Component {
 
     setDocumentTitle(t("Common:Profile"));
     this.documentElement = document.getElementsByClassName("hidingHeader");
-    const queryString = ((location && location.search) || "").slice(1);
-    const queryParams = queryString.split("&");
-    const arrayOfQueryParams = queryParams.map((queryParam) =>
-      queryParam.split("=")
-    );
-    const linkParams = Object.fromEntries(arrayOfQueryParams);
+    // const queryString = ((location && location.search) || "").slice(1);
+    // const queryParams = queryString.split("&");
+    // const arrayOfQueryParams = queryParams.map((queryParam) =>
+    //   queryParam.split("=")
+    // );
+    // const linkParams = Object.fromEntries(arrayOfQueryParams);
 
-    if (linkParams.email_change && linkParams.email_change === "success") {
-      toastr.success(t("ChangeEmailSuccess"));
-    }
+    // if (linkParams.email_change && linkParams.email_change === "success") {
+    //   toastr.success(t("ChangeEmailSuccess"));
+    // }
     if (!profile || profile.userName !== userId) {
       setIsLoading(true);
       setLoadedProfile(false);
@@ -70,14 +70,14 @@ class Profile extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { match, fetchProfile, profile, setIsLoading } = this.props;
-    const { userId } = match.params;
-    const prevUserId = prevProps.match.params.userId;
+    const { fetchProfile, profile, setIsLoading } = this.props;
+    // const { userId } = match.params;
+    // const prevUserId = prevProps.match.params.userId;
 
-    if (userId !== undefined && userId !== prevUserId) {
-      setIsLoading(true);
-      fetchProfile(userId).finally(() => setIsLoading(false));
-    }
+    // if (userId !== undefined && userId !== prevUserId) {
+    //   setIsLoading(true);
+    //   fetchProfile(userId).finally(() => setIsLoading(false));
+    // }
 
     if (profile && this.documentElement) {
       for (var i = 0; i < this.documentElement.length; i++) {
@@ -114,40 +114,36 @@ class Profile extends React.Component {
 
 Profile.propTypes = {
   fetchProfile: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
-  match: PropTypes.object.isRequired,
   profile: PropTypes.object,
   language: PropTypes.string,
 };
 
-export default withRouter(
-  inject(({ auth, peopleStore, treeFoldersStore }) => {
-    const { setDocumentTitle, language } = auth;
-    const { targetUserStore, loadingStore } = peopleStore;
-    const {
-      getTargetUser: fetchProfile,
-      targetUser: profile,
-      isEditTargetUser,
-      setIsEditTargetUser,
-    } = targetUserStore;
-    const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
-    const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
-    return {
-      setDocumentTitle,
-      language,
-      fetchProfile,
-      profile,
-      setFirstLoad,
-      setIsLoading,
-      isEditTargetUser,
-      setIsEditTargetUser,
-      setLoadedProfile,
-      showCatalog: auth.settingsStore.showCatalog,
-      selectedTreeNode,
-      setSelectedNode,
-      isVisitor: auth.userStore.user.isVisitor,
-    };
-  })(
-    observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile)))
-  )
-);
+export default inject(({ auth, peopleStore, filesStore, treeFoldersStore }) => {
+  const { setDocumentTitle, language } = auth;
+  const { setFirstLoad: setFirstLoadGlobal } = filesStore;
+  const { targetUserStore, loadingStore } = peopleStore;
+  const {
+    getTargetUser: fetchProfile,
+    targetUser: profile,
+    isEditTargetUser,
+    setIsEditTargetUser,
+  } = targetUserStore;
+  const { setFirstLoad, setIsLoading, setLoadedProfile } = loadingStore;
+  const { selectedTreeNode, setSelectedNode } = treeFoldersStore;
+  return {
+    setFirstLoadGlobal,
+    setDocumentTitle,
+    language,
+    fetchProfile,
+    profile,
+    setFirstLoad,
+    setIsLoading,
+    isEditTargetUser,
+    setIsEditTargetUser,
+    setLoadedProfile,
+    showCatalog: auth.settingsStore.showCatalog,
+    selectedTreeNode,
+    setSelectedNode,
+    isVisitor: auth.userStore.user.isVisitor,
+  };
+})(observer(withTranslation(["Profile", "Common"])(withCultureNames(Profile))));

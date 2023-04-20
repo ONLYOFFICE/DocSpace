@@ -17,9 +17,16 @@ import ToggleSSO from "./sub-components/ToggleSSO";
 
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
 
+const SERVICE_PROVIDER_SETTINGS = "serviceProviderSettings";
+const SP_METADATA = "spMetadata";
+
 const SingleSignOn = (props) => {
   const { load, serviceProviderSettings, spMetadata, isSSOAvailable } = props;
   const { t } = useTranslation(["SingleSignOn", "Settings"]);
+
+  useEffect(() => {
+    load();
+  }, []);
 
   if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:SingleSignOn")} />;
@@ -34,7 +41,7 @@ const SingleSignOn = (props) => {
 
       <HideButton
         text={t("ServiceProviderSettings")}
-        label="serviceProviderSettings"
+        label={SERVICE_PROVIDER_SETTINGS}
         value={serviceProviderSettings}
         isDisabled={!isSSOAvailable}
       />
@@ -55,7 +62,7 @@ const SingleSignOn = (props) => {
 
       <HideButton
         text={t("SpMetadata")}
-        label="spMetadata"
+        label={SP_METADATA}
         value={spMetadata}
         isDisabled={!isSSOAvailable}
       />

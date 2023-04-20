@@ -1,6 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
@@ -225,10 +224,8 @@ export default inject(({ auth, treeFoldersStore, filesStore }) => {
   };
 })(
   observer(
-    withRouter(
-      withTranslation(["Files", "Translations"])(
-        withContent(withBadges(FilesRowContent))
-      )
+    withTranslation(["Files", "Translations"])(
+      withContent(withBadges(FilesRowContent))
     )
   )
 );

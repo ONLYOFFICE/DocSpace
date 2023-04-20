@@ -26,6 +26,7 @@ const StyledSsoPage = styled.div`
       display: flex;
       .toggle-caption_title_badge {
         margin-left: 4px;
+        cursor: auto;
       }
     }
   }

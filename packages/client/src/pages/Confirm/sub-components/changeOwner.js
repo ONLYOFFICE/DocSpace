@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -60,9 +59,5 @@ export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   defaultPage: auth.settingsStore.defaultPage,
 }))(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(
-      withLoader(observer(ChangeOwnerForm))
-    )
-  )
+  withTranslation(["Confirm", "Common"])(withLoader(observer(ChangeOwnerForm)))
 );

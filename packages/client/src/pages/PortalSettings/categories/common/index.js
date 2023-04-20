@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -15,7 +15,7 @@ import { resetSessionStorage } from "../../utils";
 const SubmenuCommon = (props) => {
   const {
     t,
-    history,
+
     tReady,
     setIsLoadedSubmenu,
     loadBaseInfo,
@@ -23,6 +23,8 @@ const SubmenuCommon = (props) => {
     getWhiteLabelLogoUrls,
   } = props;
   const [currentTab, setCurrentTab] = useState(0);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
@@ -69,7 +71,7 @@ const SubmenuCommon = (props) => {
   ];
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -106,6 +108,4 @@ export default inject(({ common }) => {
     isLoadedSubmenu,
     getWhiteLabelLogoUrls,
   };
-})(
-  withLoading(withRouter(withTranslation("Settings")(observer(SubmenuCommon))))
-);
+})(withLoading(withTranslation("Settings")(observer(SubmenuCommon))));

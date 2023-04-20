@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -113,10 +112,8 @@ export default inject(
 
     const { isArchiveFolder } = treeFoldersStore;
 
-    const {
-      emptyTrashDialogVisible: visible,
-      setEmptyTrashDialogVisible,
-    } = dialogsStore;
+    const { emptyTrashDialogVisible: visible, setEmptyTrashDialogVisible } =
+      dialogsStore;
 
     return {
       isLoading,
@@ -130,4 +127,4 @@ export default inject(
       isArchiveFolder,
     };
   }
-)(withRouter(observer(EmptyTrashDialog)));
+)(observer(EmptyTrashDialog));
