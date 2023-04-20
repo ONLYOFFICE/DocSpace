@@ -117,7 +117,7 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/elshirak/"${{ env.product }}"/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O "${{ env.product }}"-${{ env.version }}.tar.gz
+          wget https://github.com/elshirak/"${{ env.product }}"/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O "${{ env.product }}-${{ env.version }}".tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
