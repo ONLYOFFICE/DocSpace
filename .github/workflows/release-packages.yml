@@ -92,6 +92,7 @@ jobs:
           # echo "branch=$(echo ${RawBranch/origin\/} | tr '/' '-' )" >> $GITHUB_ENV 
           # echo "branch=$(git branch --show-current)" >> $GITHUB_ENV
           echo "BRANCH_NAME=${GITHUB_REF##*/}" >> $GITHUB_ENV
+          echo "${GITHUB_REF}"
 
       - name: INSTALL tools & Prepare build
         run: |
