@@ -121,7 +121,7 @@
   "PasswordMinLenght": "Minimum şifre uzunluğu",
   "Path": "Yol",
   "PleaseNote": "Lütfen dikkat",
-  "PleaseNoteDescription": "<0>{{PleaseNote}}</0>: <2>{{save}}</2> düğmesini tıkladığınızda, eski alan adresiniz yeni kullanıcılar tarafından kullanılamayacak.",
+  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> düğmesini tıkladığınızda, eski alan adresiniz yeni kullanıcılar tarafından kullanılamayacak.",
   "Plugins": "Eklentiler",
   "PortalAccess": "DocSpace erişimi",
   "PortalAccessSubTitle": "Bu bölüm, kullanıcılara alana erişmeleri için güvenli ve uygun yollar sağlamanıza olanak tanır.",

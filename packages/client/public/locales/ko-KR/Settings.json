@@ -121,7 +121,7 @@
   "PasswordMinLenght": "최소 비밀번호 길이",
   "Path": "경로",
   "PleaseNote": "참고",
-  "PleaseNoteDescription": "<0>{{PleaseNote}}</0>: <2>{{save}}</2> 버튼을 클릭하면 새 사용자가 이전 스페이스 주소를 사용할 수 없게 됩니다.",
+  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: <2>{{save}}</2> 버튼을 클릭하면 새 사용자가 이전 스페이스 주소를 사용할 수 없게 됩니다.",
   "Plugins": "플러그인",
   "PortalAccess": "DocSpace 액세스",
   "PortalAccessSubTitle": "이 섹션에서는 사용자에게 안전하고 편리한 스페이스 액세스 방법을 제공할 수 있습니다.",
