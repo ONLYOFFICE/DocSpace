@@ -77,11 +77,7 @@ public class MessageSettings
     {
         if (request != null)
         {
-            var str = request.Headers[ForwardedHeader].FirstOrDefault() ?? request.GetUserHostAddress();
-            if (str != null)
-            {
-                return str.Substring(0, str.IndexOf(':') != -1 ? str.IndexOf(':') : str.Length);
-            }
+            return request.HttpContext.Connection.RemoteIpAddress.ToString();          
         }
         return null;
     }
