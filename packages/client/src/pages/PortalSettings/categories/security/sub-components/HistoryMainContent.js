@@ -27,6 +27,10 @@ const MainContainer = styled.div`
     max-width: 700px;
   }
 
+  .paid-badge {
+    cursor: auto;
+  }
+
   .login-history-description {
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
@@ -256,6 +260,7 @@ const HistoryMainContent = (props) => {
     <MainContainer isSettingNotPaid={isSettingNotPaid}>
       {isSettingNotPaid && (
         <Badge
+          className="paid-badge"
           backgroundColor="#EDC409"
           label={t("Common:Paid")}
           isPaidBadge={true}

@@ -61,17 +61,17 @@ const IdpSettings = (props) => {
 
       <SsoFormField
         labelText={t("SignOnEndpointUrl")}
-        name={ssoBinding.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
+        name={ssoBinding?.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
         placeholder={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? "https://idpservice/SSO/POST"
             : "https://idpservice/SSO/REDIRECT"
         }
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
-        value={ssoBinding.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
+        value={ssoBinding?.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
         hasError={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? ssoUrlPostHasError
             : ssoUrlRedirectHasError
         }
@@ -101,17 +101,17 @@ const IdpSettings = (props) => {
 
       <SsoFormField
         labelText={t("LogoutEndpointUrl")}
-        name={sloBinding.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
+        name={sloBinding?.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
         placeholder={
-          sloBinding.includes("POST")
+          sloBinding?.includes("POST")
             ? "https://idpservice/SLO/POST"
             : "https://idpservice/SLO/REDIRECT"
         }
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}
-        value={sloBinding.includes("POST") ? sloUrlPost : sloUrlRedirect}
+        value={sloBinding?.includes("POST") ? sloUrlPost : sloUrlRedirect}
         hasError={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? sloUrlPostHasError
             : sloUrlRedirectHasError
         }

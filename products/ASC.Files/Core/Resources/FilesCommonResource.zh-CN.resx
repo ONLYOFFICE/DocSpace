@@ -333,4 +333,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>该文件被解锁</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>协作空间管理员</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>编辑者</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>房间管理员</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>查看者</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>评论者</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>表单填写者</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>审阅者</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>协作者</value>
+  </data>
 </root>

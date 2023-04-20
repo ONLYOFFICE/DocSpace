@@ -336,11 +336,20 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       itemsSelectionLength,
       itemsSelectionTitle,
+      setItemsSelectionTitle,
+      refreshFiles,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
+
+    if (isProgressFinished !== prevProps.isProgressFinished) {
+      setTimeout(() => {
+        refreshFiles();
+      }, 100);
+    }
+
     if (
       isProgressFinished &&
       itemsSelectionTitle &&
@@ -351,6 +360,7 @@ class PureHome extends React.Component {
         itemsSelectionLength,
         itemsSelectionTitle
       );
+      setItemsSelectionTitle(null);
     }
   }
 
@@ -659,6 +669,7 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
       itemsSelectionLength,
       itemsSelectionTitle,
+      setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const { setUploadPanelVisible, startUpload, uploaded, converted } =
@@ -719,6 +730,7 @@ export default inject(
       selectionTitle,
 
       itemsSelectionLength,
+      setItemsSelectionTitle,
       itemsSelectionTitle,
       isErrorRoomNotAvailable,
       isRoomsFolder,

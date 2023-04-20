@@ -331,4 +331,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>O arquivo está desbloqueado</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace Administrador</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrador da sala</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Usuário</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Visualizador</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Comentarista</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Preenchedor de formulário</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Revisor</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Colaborador</value>
+  </data>
 </root>

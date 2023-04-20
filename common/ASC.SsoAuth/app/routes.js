@@ -17,10 +17,11 @@
 
 "use strict";
 
-module.exports = function (app, config, logger) {
+module.exports = function (app, config) {
   const saml = require("samlify");
   const { SamlLib: libsaml } = saml;
-  const urlResolver = require("./utils/resolver")(logger);
+  const logger = require("./log.js");
+  const urlResolver = require("./utils/resolver")();
   const coder = require("./utils/coder");
   const urn = require("samlify/build/src/urn");
   const fetch = require("node-fetch");
@@ -32,8 +33,10 @@ module.exports = function (app, config, logger) {
   const UserModel = require("./model/user");
   const LogoutModel = require("./model/logout");
   const fs = require('fs');
+  
   let uploadDir = "";
   const selfSignedDomain = "myselfsigned.crt";
+  const machineKey = config["core"].machinekey ? config["core"].machinekey : config.app.machinekey;
 
   function verifySetting(req) {
     if (!req.providersInfo.settings.EnableSso) {
@@ -396,13 +399,14 @@ module.exports = function (app, config, logger) {
         req.providersInfo.mapping
       );
 
-      logger.info(`SSO User ${JSON.stringify(user)}`);
+      logger.info(`SSO User ${JSON.stringify(user)} machineKey=${machineKey}`);
 
       // Use the parseResult can do customized action
-      const data = coder.encodeData(user);
+
+      const data = coder.encodeData(user, machineKey);
 
       if (!data) {
-        logger.error("coder.encodeData", user);
+        logger.error("EncodeData response is EMPTY", user, machineKey);
         return res.redirect(
           urlResolver.getPortalAuthErrorUrl(
             req,
@@ -511,10 +515,14 @@ module.exports = function (app, config, logger) {
 
       const relayState = urlResolver.getPortalAuthUrl(req);
 
-      const userData = coder.decodeData(req.query["data"]);
+      const queryData = req.query["data"];
+
+      logger.info(`sendLogoutRequest: data: ${queryData} machineKey=${machineKey}`);
+
+      const userData = coder.decodeData(queryData, machineKey);
 
       if (!userData) {
-        logger.error(`coder.decodeData ${req.query["data"]}`);
+        logger.error("DecodeData response is EMPTY", queryData, machineKey);
         return res.redirect(urlResolver.getPortal500Url(req));
       }
 
@@ -599,11 +607,12 @@ module.exports = function (app, config, logger) {
 
   const sendPortalLogout = async (user, req) => {
     try {
-      const data = coder.encodeData(user);
+      logger.info(`sendPortalLogout: SSO User ${JSON.stringify(user)} machineKey=${machineKey}`);
+
+      const data = coder.encodeData(user, machineKey);
 
       if (!data) {
-        const errorMessage = `EncodeData is EMPTY`;
-        throw new Error(errorMessage);
+        throw new Error("EncodeData response is EMPTY", user, machineKey);
         //return res.redirect(urlResolver.getPortal500Url(req));
       }
 

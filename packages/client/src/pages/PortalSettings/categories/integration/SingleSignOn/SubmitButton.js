@@ -18,6 +18,7 @@ const SubmitResetButtons = (props) => {
     isSubmitLoading,
     hasErrors,
     hasChanges,
+    isLoadingXml,
   } = props;
 
   return (
@@ -29,7 +30,7 @@ const SubmitResetButtons = (props) => {
         primary
         size="small"
         tabIndex={23}
-        isDisabled={hasErrors || !hasChanges}
+        isDisabled={hasErrors || !hasChanges || isLoadingXml}
         isLoading={isSubmitLoading}
       />
       <Button
@@ -37,7 +38,7 @@ const SubmitResetButtons = (props) => {
         onClick={isSsoEnabled ? openResetModal : resetForm}
         size="small"
         tabIndex={24}
-        isDisabled={isSubmitLoading}
+        isDisabled={isSubmitLoading || isLoadingXml}
       />
       {confirmationResetModal && <ResetConfirmationModal />}
     </Box>
@@ -54,6 +55,7 @@ export default inject(({ ssoStore }) => {
     isSubmitLoading,
     hasErrors,
     hasChanges,
+    isLoadingXml,
   } = ssoStore;
 
   return {
@@ -65,5 +67,6 @@ export default inject(({ ssoStore }) => {
     isSubmitLoading,
     hasErrors,
     hasChanges,
+    isLoadingXml,
   };
 })(observer(SubmitResetButtons));

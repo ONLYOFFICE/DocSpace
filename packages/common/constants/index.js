@@ -106,6 +106,12 @@ export const RoomsType = Object.freeze({
   CustomRoom: 5,
 });
 
+export const RoomsTypeValues = Object.freeze(
+  Object.values(RoomsType).reduce((acc, current) => {
+    return { ...acc, [current]: current };
+  }, {})
+);
+
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",
   2: "Files:CollaborationRooms",

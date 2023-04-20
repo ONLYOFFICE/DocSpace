@@ -287,4 +287,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>File được mở khóa</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Quản trị viên DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Biên tập viên</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Quản trị viên phòng</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Người dùng</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Người xem</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Người nhận xét</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Bộ lọc biểu mẫu</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Người xem lại</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Cộng tác viên</value>
+  </data>
 </root>

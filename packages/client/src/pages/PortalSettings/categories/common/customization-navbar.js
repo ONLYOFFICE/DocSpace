@@ -64,13 +64,14 @@ StyledComponent.defaultProps = { theme: Base };
 const CustomizationNavbar = ({
   t,
   theme,
-  helpUrlCommonSettings,
   isLoaded,
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
   isSettingPaid,
   currentColorScheme,
+  languageAndTimeZoneSettingsUrl,
+  dnsSettingsUrl,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   const navigate = useNavigate();
@@ -112,7 +113,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={helpUrlCommonSettings}
+            href={languageAndTimeZoneSettingsUrl}
           >
             {t("Common:LearnMore")}
           </Link>
@@ -171,7 +172,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={helpUrlCommonSettings}
+            href={dnsSettingsUrl}
           >
             {t("Common:LearnMore")}
           </Link>
@@ -202,15 +203,20 @@ const CustomizationNavbar = ({
 };
 
 export default inject(({ auth, common }) => {
-  const { helpUrlCommonSettings, theme, currentColorScheme } =
-    auth.settingsStore;
+  const {
+    theme,
+    currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
+    dnsSettingsUrl,
+  } = auth.settingsStore;
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,
-    helpUrlCommonSettings,
     isLoaded,
     setIsLoadedCustomizationNavbar,
     currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
+    dnsSettingsUrl,
   };
 })(
   withCultureNames(
