@@ -208,6 +208,90 @@ $GreenButton
 
 *Let op*: deze link is maar 7 dagen geldig. Voltooi het proces om het portaaladres te veranderen alstublieft binnen die periode.</value>
   </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+Welkom bij ONLYOFFICE DocSpace! Uw gebruikersprofiel is toegevoegd aan "${__VirtualRootPath}":"${__VirtualRootPath}". Nu kunt u:
+
+*#* Samenwerken met andere gebruikers in de ruimte waarvoor u bent uitgenodigd: *samen werken in kamers voor real-time co-auteurschap of aangepaste kamers met flexibele instellingen voor elk doel*.
+
+*# Werken met bestanden van verschillende formaten*: tekstdocumenten, spreadsheets, presentaties, digitale formulieren, PDF's, e-books, multimedia.
+
+*# Samenwerken aan documenten* met twee modi voor samen bewerken: realtime of paragraafblokkering. Volg wijzigingen, communiceer in realtime via de ingebouwde chat of voer audio- en videogesprekken. 
+
+*# Sluit elke cloudopslag* aan en werk zonder tussen apps te schakelen. 
+
+$GreenButton
+
+Als u hulp nodig hebt, blader dan door ons "Helpcentrum":"https://helpcenter.onlyoffice.com/" of vraag het aan ons "ondersteuningsteam":"https://www.onlyoffice.com/nl/support-contact-form.aspx".
+
+Hoogachtend, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+Welkom bij ONLYOFFICE DocSpace! Uw gebruikersprofiel is toegevoegd aan "${__VirtualRootPath}":"${__VirtualRootPath}". Nu kunt u:
+
+*#* Samenwerken met andere gebruikers in de ruimte waarvoor u bent uitgenodigd: *samen werken in kamers voor real-time co-auteurschap of aangepaste kamers met flexibele instellingen voor elk doel*.
+
+*# Werken met bestanden van verschillende formaten*: tekstdocumenten, spreadsheets, presentaties, digitale formulieren, PDF's, e-books, multimedia.
+
+*# Samenwerken aan documenten* met twee modi voor samen bewerken: realtime of paragraafblokkering. Volg wijzigingen, communiceer in realtime via de ingebouwde chat of voer audio- en videogesprekken. 
+
+*# Sluit elke cloudopslag* aan en werk zonder tussen apps te schakelen. 
+
+$GreenButton
+
+Als u hulp nodig hebt, blader dan door ons "Helpcentrum":"https://helpcenter.onlyoffice.com/" of vraag het aan ons "ondersteuningsteam":"https://www.onlyoffice.com/nl/support-contact-form.aspx".
+
+Hoogachtend, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+Welkom bij ONLYOFFICE DocSpace! Uw gebruikersprofiel is toegevoegd aan "${__VirtualRootPath}":"${__VirtualRootPath}". Nu kunt u:
+
+*#* Samenwerken met andere gebruikers in de ruimte waarvoor u bent uitgenodigd: *samen werken in kamers voor real-time co-auteurschap of aangepaste kamers met flexibele instellingen voor elk doel*.
+
+*# Werken met bestanden van verschillende formaten*: tekstdocumenten, spreadsheets, presentaties, digitale formulieren, PDF's, e-books, multimedia.
+
+*# Samenwerken aan documenten* met twee modi voor samen bewerken: realtime of paragraafblokkering. Volg wijzigingen, communiceer in realtime via de ingebouwde chat of voer audio- en videogesprekken. 
+
+*# Sluit elke cloudopslag* aan en werk zonder tussen apps te schakelen. 
+
+$GreenButton
+
+Als u hulp nodig hebt, blader dan door ons "Helpcentrum":"https://helpcenter.onlyoffice.com/" of vraag het aan ons "ondersteuningsteam":"https://www.onlyoffice.com/nl/support-contact-form.aspx".
+
+Hoogachtend, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Hallo, $UserName!
+
+Welkom bij ONLYOFFICE DocSpace! Uw gebruikersprofiel is toegevoegd aan "${__VirtualRootPath}":"${__VirtualRootPath}". Nu kunt u:
+
+*#* Samenwerken met andere gebruikers in de ruimte waarvoor u bent uitgenodigd: *samen werken in kamers voor real-time co-auteurschap of aangepaste kamers met flexibele instellingen voor elk doel*.
+
+*# Werken met bestanden van verschillende formaten*: tekstdocumenten, spreadsheets, presentaties, digitale formulieren, PDF's, e-books, multimedia.
+
+*# Samenwerken aan documenten* met twee modi voor samen bewerken: realtime of paragraafblokkering. Volg wijzigingen, communiceer in realtime via de ingebouwde chat of voer audio- en videogesprekken. 
+
+*# Sluit elke cloudopslag* aan en werk zonder tussen apps te schakelen. 
+
+$GreenButton
+
+Als u hulp nodig hebt, blader dan door ons "Helpcentrum":"https://helpcenter.onlyoffice.com/" of vraag het aan ons "ondersteuningsteam":"https://www.onlyoffice.com/nl/support-contact-form.aspx".
+
+Hoogachtend, 
+ONLYOFFICE Team
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Bericht van het "${__VirtualRootPath}":"${__VirtualRootPath}" portaal
 
@@ -400,6 +484,14 @@ ONLYOFFICE™ Support Team
 
 ^Als u geen notificaties wilt ontvangen over profielupdates, kunt u dit beheren in uw "abonnementsinstellingen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Dit is wat er nieuw is in uw DocSpace op $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testbericht
 
@@ -433,6 +525,18 @@ ONLYOFFICE Team</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Verandering van Portaal adres</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Welkom bij ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Gebruikersbericht aan beheerders</value>
@@ -484,5 +588,47 @@ ONLYOFFICE Team</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Nieuwe gebruiker toegevoegd aan het ${LetterLogoText} portaal</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft een nieuw document gemaakt: &lt;a href={1}&gt;{2}&lt;/a&gt; in de kamer: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft nieuwe opmerking toegevoegd aan de documentversie: &lt;a href={1}&gt;{2}&lt;/a&gt; in de kamer: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft een nieuw document geüpload: &lt;a href={1}&gt;{2}&lt;/a&gt; in de kamer: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft de kamer hernoemd: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft een nieuwe kamer gemaakt: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; werd uit de kamer verwijderd: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft het document bewerkt: &lt;a href={1}&gt;{2}&lt;/a&gt; in de kamer: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft de kamer verwijderd: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; is toegevoegd aan de kamer: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; heeft de kamer verplaatst: &lt;a href={1}&gt;{2}&lt;/a&gt; naar archief - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; kreeg de rol van &lt;b&gt;{1}&lt;/b&gt; toegewezen in de kamer: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Nieuwe DocSpace gebruiker toegevoegd: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; het toegangsniveau van de gebruikers gewijzigd &lt;b&gt;{1}&lt;/b&gt; naar &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace gebruiker bijgewerkt: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

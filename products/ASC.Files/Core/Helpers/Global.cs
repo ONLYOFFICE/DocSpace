@@ -645,50 +645,52 @@ public class GlobalFolder
         TrashFolderCache.Remove(cacheKey);
     }
 
-    private async Task<int> GetFolderIdAndProcessFirstVisitAsync(IDaoFactory daoFactory, bool isMy)
+    private async Task<int> GetFolderIdAndProcessFirstVisitAsync(IDaoFactory daoFactory, bool my)
     {
         var folderDao = (FolderDao)daoFactory.GetFolderDao<int>();
 
-        var id = isMy ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
+        var id = my ? await folderDao.GetFolderIDUserAsync(false) : await folderDao.GetFolderIDCommonAsync(false);
 
         if (!Equals(id, 0))
         {
             return id;
         }
 
-        id = isMy ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
+        id = my ? await folderDao.GetFolderIDUserAsync(true) : await folderDao.GetFolderIDCommonAsync(true);
         
         if (!_settingsManager.LoadForDefaultTenant<AdditionalWhiteLabelSettings>().StartDocsEnabled)
         {
             return id;
         }
-        
+
         var tenantId = _tenantManager.GetCurrentTenant().Id;
         var userId = _authContext.CurrentAccount.ID;
+
+        var task = new Task(async () => await CreateSampleDocumentsAsync(_serviceProvider, tenantId, userId, id, my), 
+            TaskCreationOptions.LongRunning);
+
+        _ = task.ConfigureAwait(false);
         
-        _ = Task.Run(() => CreateSampleDocumentsAsync(_serviceProvider, tenantId, userId, id, isMy).GetAwaiter().GetResult());
-        
+        task.Start();
+
         return id;
     }
     
-    private static async Task CreateSampleDocumentsAsync(IServiceProvider serviceProvider, int tenantId, Guid userId, int folderId, bool my)
+    private async Task CreateSampleDocumentsAsync(IServiceProvider serviceProvider, int tenantId, Guid userId, int folderId, bool my)
     {
-        await using var scope = serviceProvider.CreateAsyncScope();
-        var logger = scope.ServiceProvider.GetRequiredService<ILoggerProvider>().CreateLogger("ASC.Files");
-
         try
         {
+            await using var scope = serviceProvider.CreateAsyncScope();
+            
             var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
             var securityContext = scope.ServiceProvider.GetRequiredService<SecurityContext>();
 
             tenantManager.SetCurrentTenant(tenantId);
             securityContext.AuthenticateMeWithoutCookie(userId);
-        
+
             var userManager = scope.ServiceProvider.GetRequiredService<UserManager>();
             var culture = my ? userManager.GetUsers(userId).GetCulture() : tenantManager.GetCurrentTenant().GetCulture();
 
-            Thread.CurrentThread.CurrentCulture = culture;
-        
             var globalStore = scope.ServiceProvider.GetRequiredService<GlobalStore>();
             var storeTemplate = globalStore.GetStoreTemplate();
             
@@ -706,56 +708,26 @@ public class GlobalFolder
             var folderDao = (FolderDao)scope.ServiceProvider.GetRequiredService<IFolderDao<int>>();
             var socketManager = scope.ServiceProvider.GetRequiredService<SocketManager>();
 
-            await SaveSampleDocumentsAsync(scope.ServiceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path, storeTemplate, logger);
+            await SaveSampleDocumentsAsync(scope.ServiceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path, storeTemplate);
         }
         catch (Exception e)
         {
-            logger.ErrorCreateSampleDocuments(e);
+            _logger.ErrorCreateSampleDocuments(e);
         }
     }
     
-    private static async Task SaveSampleDocumentsAsync(IServiceProvider serviceProvider, FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, SocketManager socketManager, 
-        int folderId, string path, IDataStore storeTemplate, ILogger logger)
+    private async Task SaveSampleDocumentsAsync(IServiceProvider serviceProvider, FileMarker fileMarker, FolderDao folderDao, FileDao fileDao, SocketManager socketManager, 
+        int folderId, string path, IDataStore storeTemplate)
     { 
         var files = await storeTemplate.ListFilesRelativeAsync("", path, "*", false)
             .Where(f => FileUtility.GetFileTypeByFileName(f) is not (FileType.Audio or FileType.Video))
             .ToListAsync();
         
-        foreach (var file in files) 
+        _logger.Debug($"Found {files.Count} sample documents. Path: {path}");
+        
+        foreach (var file in files)
         {
-            try
-            {
-                var filePath = path + file; 
-                var fileName = Path.GetFileName(filePath);
-            
-                foreach (var ext in Enum.GetValues<ThumbnailExtension>()) 
-                { 
-                    if (FileUtility.GetFileExtension(filePath) == "." + ext
-                        && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
-                    {
-                        return;
-                    }
-                }
-
-                var newFile = serviceProvider.GetRequiredService<File<int>>();
-
-                newFile.Title = fileName;
-                newFile.ParentId = folderId;
-                newFile.Comment = FilesCommonResource.CommentCreate;
-
-                await using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
-                {
-                    newFile.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync("", filePath);
-                    newFile = await fileDao.SaveFileAsync(newFile, stream, false);
-                }
-
-                await fileMarker.MarkAsNewAsync(newFile);
-                await socketManager.CreateFileAsync(newFile);
-            }
-            catch (Exception e)
-            {
-                logger.ErrorSaveSampleFile(e);
-            }
+            await SaveFileAsync(serviceProvider, storeTemplate, fileMarker, fileDao, socketManager, path + file, folderId, files);
         }
 
         await foreach (var folderName in storeTemplate.ListDirectoriesRelativeAsync(path, false))
@@ -771,12 +743,49 @@ public class GlobalFolder
                 var subFolder = await folderDao.GetFolderAsync(subFolderId);
                 await socketManager.CreateFolderAsync(subFolder);
                     
-                await SaveSampleDocumentsAsync(serviceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path + folderName + "/", storeTemplate, logger);
+                await SaveSampleDocumentsAsync(serviceProvider, fileMarker, folderDao, fileDao, socketManager, folderId, path + folderName + "/", storeTemplate);
             }
             catch (Exception e)
             {
-                logger.ErrorSaveSampleFolder(e);
+                _logger.ErrorSaveSampleFolder(e);
+            }   
+        }
+    }
+
+    private async Task SaveFileAsync(IServiceProvider serviceProvider, IDataStore storeTemplate, FileMarker fileMarker, FileDao fileDao, SocketManager socketManager,
+        string filePath, int folderId, IEnumerable<string> files)
+    {
+        try
+        {
+            var fileName = Path.GetFileName(filePath);
+            
+            foreach (var ext in Enum.GetValues<ThumbnailExtension>()) 
+            { 
+                if (FileUtility.GetFileExtension(filePath) == "." + ext
+                    && files.Contains(Regex.Replace(fileName, "\\." + ext + "$", "")))
+                {
+                    return;
+                }
             }
+
+            var newFile = serviceProvider.GetRequiredService<File<int>>();
+
+            newFile.Title = fileName;
+            newFile.ParentId = folderId;
+            newFile.Comment = FilesCommonResource.CommentCreate;
+
+            await using (var stream = await storeTemplate.GetReadStreamAsync("", filePath))
+            {
+                newFile.ContentLength = stream.CanSeek ? stream.Length : await storeTemplate.GetFileSizeAsync("", filePath);
+                newFile = await fileDao.SaveFileAsync(newFile, stream, false);
+            }
+
+            await fileMarker.MarkAsNewAsync(newFile);
+            await socketManager.CreateFileAsync(newFile);
+        }
+        catch (Exception e)
+        {
+            _logger.ErrorSaveSampleFile(e);
         }
     }
 
