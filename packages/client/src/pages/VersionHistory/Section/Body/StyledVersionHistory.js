@@ -201,7 +201,8 @@ const StyledVersionRow = styled(Row)`
       margin-top: 5px;
     }
 
-    display: ${(props) => props.showEditPanel && "none"};
+    word-break: break-word;
+    display: ${(props) => (props.showEditPanel ? "none" : "-webkit-box")};
     overflow: hidden;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
