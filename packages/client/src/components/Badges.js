@@ -143,6 +143,8 @@ const Badges = ({
     "data-id": id,
   };
 
+  const isArchivePage = window.location.pathname.includes("rooms/archived");
+
   const onShowVersionHistoryProp = item.security?.ReadHistory
     ? { onClick: onShowVersionHistory }
     : {};
@@ -161,7 +163,7 @@ const Badges = ({
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
-      {item.viewAccessability?.Convert && !isTrashFolder && (
+      {item.viewAccessability?.Convert && !isTrashFolder && !isArchivePage && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           onClick={setConvertDialogVisible}
