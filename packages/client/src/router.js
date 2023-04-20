@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import loadable from "@loadable/component";
 
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import PublicRoute from "@docspace/common/components/PublicRoute";
@@ -8,146 +9,146 @@ import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import AppLoader from "@docspace/common/components/AppLoader";
 
 import Root from "./Shell";
-const Client = React.lazy(() => import("./Client"));
-const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
+const Client = loadable(() => import("./Client"));
+const PortalSettings = loadable(() => import("./pages/PortalSettings"));
 
-const Home = React.lazy(() => import("./pages/Home"));
-const AccountsHome = React.lazy(() => import("./pages/AccountsHome"));
-const Settings = React.lazy(() => import("./pages/Settings"));
-const Profile = React.lazy(() => import("./pages/Profile"));
-const NotificationComponent = React.lazy(() => import("./pages/Notifications"));
-const Confirm = React.lazy(() => import("./pages/Confirm"));
+const Home = loadable(() => import("./pages/Home"));
+const AccountsHome = loadable(() => import("./pages/AccountsHome"));
+const Settings = loadable(() => import("./pages/Settings"));
+const Profile = loadable(() => import("./pages/Profile"));
+const NotificationComponent = loadable(() => import("./pages/Notifications"));
+const Confirm = loadable(() => import("./pages/Confirm"));
 
-const CustomizationSettings = React.lazy(() =>
+const CustomizationSettings = loadable(() =>
   import("./pages/PortalSettings/categories/common/index.js")
 );
-const LanguageAndTimeZoneSettings = React.lazy(() =>
+const LanguageAndTimeZoneSettings = loadable(() =>
   import(
     "./pages/PortalSettings/categories/common/Customization/language-and-time-zone"
   )
 );
-const WelcomePageSettings = React.lazy(() =>
+const WelcomePageSettings = loadable(() =>
   import(
     "./pages/PortalSettings/categories/common/Customization/welcome-page-settings"
   )
 );
-const DNSSettings = React.lazy(() =>
+const DNSSettings = loadable(() =>
   import("./pages/PortalSettings/categories/common/Customization/dns-settings")
 );
-const PortalRenaming = React.lazy(() =>
+const PortalRenaming = loadable(() =>
   import(
     "./pages/PortalSettings/categories/common/Customization/portal-renaming"
   )
 );
-const WhiteLabel = React.lazy(() =>
+const WhiteLabel = loadable(() =>
   import("./pages/PortalSettings/categories/common/Branding/whitelabel")
 );
-const SecuritySettings = React.lazy(() =>
+const SecuritySettings = loadable(() =>
   import("./pages/PortalSettings/categories/security/index.js")
 );
-const TfaPage = React.lazy(() =>
+const TfaPage = loadable(() =>
   import("./pages/PortalSettings/categories/security/access-portal/tfa")
 );
-const PasswordStrengthPage = React.lazy(() =>
+const PasswordStrengthPage = loadable(() =>
   import(
     "./pages/PortalSettings/categories/security/access-portal/passwordStrength"
   )
 );
-const TrustedMailPage = React.lazy(() =>
+const TrustedMailPage = loadable(() =>
   import("./pages/PortalSettings/categories/security/access-portal/trustedMail")
 );
-const IpSecurityPage = React.lazy(() =>
+const IpSecurityPage = loadable(() =>
   import("./pages/PortalSettings/categories/security/access-portal/ipSecurity")
 );
-const AdminMessagePage = React.lazy(() =>
+const AdminMessagePage = loadable(() =>
   import(
     "./pages/PortalSettings/categories/security/access-portal/adminMessage"
   )
 );
-const SessionLifetimePage = React.lazy(() =>
+const SessionLifetimePage = loadable(() =>
   import(
     "./pages/PortalSettings/categories/security/access-portal/sessionLifetime"
   )
 );
-const Integration = React.lazy(() =>
+const Integration = loadable(() =>
   import("./pages/PortalSettings/categories/integration")
 );
-const Payments = React.lazy(() =>
+const Payments = loadable(() =>
   import("./pages/PortalSettings/categories/payments")
 );
-const ThirdParty = React.lazy(() =>
+const ThirdParty = loadable(() =>
   import(
     "./pages/PortalSettings/categories/integration/ThirdPartyServicesSettings"
   )
 );
-const SingleSignOn = React.lazy(() =>
+const SingleSignOn = loadable(() =>
   import("./pages/PortalSettings/categories/integration/SingleSignOn")
 );
-const DeveloperTools = React.lazy(() =>
+const DeveloperTools = loadable(() =>
   import("./pages/PortalSettings/categories/developer-tools/index.js")
 );
-const Backup = React.lazy(() =>
+const Backup = loadable(() =>
   import("./pages/PortalSettings/categories/data-management/index")
 );
-const DeleteDataPage = React.lazy(() =>
+const DeleteDataPage = loadable(() =>
   import("./pages/PortalSettings/categories/delete-data")
 );
-const RestoreBackup = React.lazy(() =>
+const RestoreBackup = loadable(() =>
   import(
     "./pages/PortalSettings/categories/data-management/backup/restore-backup/index"
   )
 );
 
-const FormGallery = React.lazy(() => import("./pages/FormGallery"));
-const About = React.lazy(() => import("./pages/About"));
-const Wizard = React.lazy(() => import("./pages/Wizard"));
-const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
-const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
-const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
+const FormGallery = loadable(() => import("./pages/FormGallery"));
+const About = loadable(() => import("./pages/About"));
+const Wizard = loadable(() => import("./pages/Wizard"));
+const PreparationPortal = loadable(() => import("./pages/PreparationPortal"));
+const PortalUnavailable = loadable(() => import("./pages/PortalUnavailable"));
+const ErrorUnavailable = loadable(() => import("./pages/Errors/Unavailable"));
 
-const ActivateUserForm = React.lazy(() =>
+const ActivateUserForm = loadable(() =>
   import("./pages/Confirm/sub-components/activateUser")
 );
-const CreateUserForm = React.lazy(() =>
+const CreateUserForm = loadable(() =>
   import("./pages/Confirm/sub-components/createUser")
 );
-const ChangePasswordForm = React.lazy(() =>
+const ChangePasswordForm = loadable(() =>
   import("./pages/Confirm/sub-components/changePassword")
 );
-const ActivateEmailForm = React.lazy(() =>
+const ActivateEmailForm = loadable(() =>
   import("./pages/Confirm/sub-components/activateEmail")
 );
-const ChangeEmailForm = React.lazy(() =>
+const ChangeEmailForm = loadable(() =>
   import("./pages/Confirm/sub-components/changeEmail")
 );
-const ChangePhoneForm = React.lazy(() =>
+const ChangePhoneForm = loadable(() =>
   import("./pages/Confirm/sub-components/changePhone")
 );
-const ProfileRemoveForm = React.lazy(() =>
+const ProfileRemoveForm = loadable(() =>
   import("./pages/Confirm/sub-components/profileRemove")
 );
-const ChangeOwnerForm = React.lazy(() =>
+const ChangeOwnerForm = loadable(() =>
   import("./pages/Confirm/sub-components/changeOwner")
 );
-const TfaAuthForm = React.lazy(() =>
+const TfaAuthForm = loadable(() =>
   import("./pages/Confirm/sub-components/tfaAuth")
 );
-const TfaActivationForm = React.lazy(() =>
+const TfaActivationForm = loadable(() =>
   import("./pages/Confirm/sub-components/tfaActivation")
 );
-const RemovePortal = React.lazy(() =>
+const RemovePortal = loadable(() =>
   import("./pages/Confirm/sub-components/removePortal")
 );
-const DeactivatePortal = React.lazy(() =>
+const DeactivatePortal = loadable(() =>
   import("./pages/Confirm/sub-components/deactivatePortal")
 );
-const ContinuePortal = React.lazy(() =>
+const ContinuePortal = loadable(() =>
   import("./pages/Confirm/sub-components/continuePortal")
 );
-const Auth = React.lazy(() => import("./pages/Confirm/sub-components/auth"));
+const Auth = loadable(() => import("./pages/Confirm/sub-components/auth"));
 
-const Error404 = React.lazy(() => import("client/Error404"));
-const Error401 = React.lazy(() => import("client/Error401"));
+const Error404 = loadable(() => import("client/Error404"));
+const Error401 = loadable(() => import("client/Error401"));
 
 const confirmRoutes = [
   {
@@ -267,11 +268,9 @@ const confirmRoutes = [
 const NotFoundError = () => {
   return (
     <PrivateRoute>
-      <React.Suspense fallback={<AppLoader />}>
-        <ErrorBoundary>
-          <Error404 />
-        </ErrorBoundary>
-      </React.Suspense>
+      <ErrorBoundary>
+        <Error404 />
+      </ErrorBoundary>
     </PrivateRoute>
   );
 };
@@ -286,11 +285,9 @@ const router = createBrowserRouter([
         path: "/",
         element: (
           <PrivateRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <Client />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <Client />
+            </ErrorBoundary>
           </PrivateRoute>
         ),
         errorElement: <NotFoundError />,
@@ -445,11 +442,9 @@ const router = createBrowserRouter([
         path: "portal-settings/",
         element: (
           <PrivateRoute restricted>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <PortalSettings />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <PortalSettings />
+            </ErrorBoundary>
           </PrivateRoute>
         ),
         errorElement: <NotFoundError />,
@@ -601,11 +596,9 @@ const router = createBrowserRouter([
         path: "/form-gallery/:folderId",
         element: (
           <PrivateRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <FormGallery />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <FormGallery />
+            </ErrorBoundary>
           </PrivateRoute>
         ),
       },
@@ -613,11 +606,9 @@ const router = createBrowserRouter([
         path: "/wizard",
         element: (
           <PublicRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <Wizard />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <Wizard />
+            </ErrorBoundary>
           </PublicRoute>
         ),
       },
@@ -625,22 +616,18 @@ const router = createBrowserRouter([
         path: "/about",
         element: (
           <PrivateRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <About />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <About />
+            </ErrorBoundary>
           </PrivateRoute>
         ),
       },
       {
         path: "confirm.aspx",
         element: (
-          <React.Suspense fallback={<AppLoader />}>
-            <ErrorBoundary>
-              <Confirm />
-            </ErrorBoundary>
-          </React.Suspense>
+          <ErrorBoundary>
+            <Confirm />
+          </ErrorBoundary>
         ),
         errorElement: <NotFoundError />,
         children: [...confirmRoutes],
@@ -648,11 +635,9 @@ const router = createBrowserRouter([
       {
         path: "confirm",
         element: (
-          <React.Suspense fallback={<AppLoader />}>
-            <ErrorBoundary>
-              <Confirm />
-            </ErrorBoundary>
-          </React.Suspense>
+          <ErrorBoundary>
+            <Confirm />
+          </ErrorBoundary>
         ),
         errorElement: <NotFoundError />,
         children: [...confirmRoutes],
@@ -661,11 +646,9 @@ const router = createBrowserRouter([
         path: "/portal-unavailable",
         element: (
           <PrivateRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <PortalUnavailable />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <PortalUnavailable />
+            </ErrorBoundary>
           </PrivateRoute>
         ),
       },
@@ -673,11 +656,9 @@ const router = createBrowserRouter([
         path: "/unavailable",
         element: (
           <PrivateRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <ErrorUnavailable />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <ErrorUnavailable />
+            </ErrorBoundary>
           </PrivateRoute>
         ),
       },
@@ -685,11 +666,9 @@ const router = createBrowserRouter([
         path: "/preparation-portal",
         element: (
           <PublicRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <PreparationPortal />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <PreparationPortal />
+            </ErrorBoundary>
           </PublicRoute>
         ),
       },
@@ -697,11 +676,9 @@ const router = createBrowserRouter([
         path: "/error401",
         element: (
           <PrivateRoute>
-            <React.Suspense fallback={<AppLoader />}>
-              <ErrorBoundary>
-                <Error401 />
-              </ErrorBoundary>
-            </React.Suspense>
+            <ErrorBoundary>
+              <Error401 />
+            </ErrorBoundary>
           </PrivateRoute>
         ),
       },
