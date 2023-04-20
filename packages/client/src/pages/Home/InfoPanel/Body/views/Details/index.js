@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -19,20 +19,22 @@ const Details = ({
   getInfoPanelItemIcon,
   openUser,
   isVisitor,
+  isCollaborator,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
   const [isThumbnailError, setIsThumbmailError] = useState(false);
   const onThumbnailError = () => setIsThumbmailError(true);
 
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const detailsHelper = new DetailsHelper({
+    isCollaborator,
     isVisitor,
     t,
     item: selection,
     openUser,
-    history,
+    navigate,
     personal,
     culture,
   });
@@ -127,6 +129,7 @@ export default inject(({ auth, filesStore }) => {
   const { user } = userStore;
 
   const isVisitor = user.isVisitor;
+  const isCollaborator = user.isCollaborator;
 
   return {
     personal,
@@ -136,5 +139,6 @@ export default inject(({ auth, filesStore }) => {
     getInfoPanelItemIcon,
     openUser,
     isVisitor,
+    isCollaborator,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));

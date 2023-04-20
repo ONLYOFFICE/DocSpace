@@ -1,7 +1,7 @@
 /*
  *
  * (c) Copyright Ascensio System Limited 2010-2021
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -12,18 +12,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
-*/
-
+ */
 
 "use strict";
 
-module.exports = (app, config, logger) => {
-  const urlResolver = require("../utils/resolver")(logger);
+module.exports = (app, config) => {
+  const logger = require("../log.js");
+  const urlResolver = require("../utils/resolver")();
   const coder = require("../utils/coder");
-  const converter = require("../utils/converter")(logger);
+  const converter = require("../utils/converter")();
   const _ = require("lodash");
   const fetch = require("node-fetch");
   const routes = _.values(config.routes);
+  const machineKey = config["core"].machinekey
+    ? config["core"].machinekey
+    : config.app.machinekey;
 
   const fetchConfig = async (req, res, next) => {
     const foundRoutes =
@@ -33,9 +36,9 @@ module.exports = (app, config, logger) => {
           })
         : [];
 
-    if(req.originalUrl =="/isLife") {
-        res.sendStatus(200);
-        return;
+    if (req.originalUrl == "/isLife") {
+      res.sendStatus(200);
+      return;
     }
 
     if (!foundRoutes.length) {
@@ -63,7 +66,7 @@ module.exports = (app, config, logger) => {
 
       const text = await response.text();
 
-      const ssoConfig = coder.decodeData(text);
+      const ssoConfig = coder.decodeData(text, machineKey);
 
       const idp = converter.toIdp(ssoConfig);
 

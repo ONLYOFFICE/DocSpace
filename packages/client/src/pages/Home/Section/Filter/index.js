@@ -3,7 +3,6 @@ import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
@@ -28,6 +27,8 @@ import { getDefaultRoomName } from "@docspace/client/src/helpers/filesUtils";
 
 import withLoader from "../../../../HOCs/withLoader";
 import { TableVersions } from "SRC_DIR/helpers/constants";
+import { SortByFieldName } from "../../../../helpers/constants";
+
 import { showLoader, hideLoader } from "./FilterUtils";
 
 const getFilterType = (filterValues) => {
@@ -1079,67 +1080,67 @@ const SectionFilterContent = ({
 
     const name = {
       id: "sort-by_name",
-      key: "AZ",
+      key: SortByFieldName.Name,
       label: t("Common:Name"),
       default: true,
     };
     const modifiedDate = {
       id: "sort-by_modified",
-      key: "DateAndTime",
+      key: SortByFieldName.ModifiedDate,
       label: t("Common:LastModifiedDate"),
       default: true,
     };
     const room = {
       id: "sort-by_room",
-      key: "Room",
+      key: SortByFieldName.Room,
       label: t("Common:Room"),
       default: true,
     };
     const authorOption = {
       id: "sort-by_author",
-      key: "Author",
+      key: SortByFieldName.Author,
       label: t("ByAuthor"),
       default: true,
     };
     const creationDate = {
       id: "sort-by_created",
-      key: "DateAndTimeCreation",
+      key: SortByFieldName.CreationDate,
       label: t("InfoPanel:CreationDate"),
       default: true,
     };
     const owner = {
       id: "sort-by_owner",
-      key: "Author",
+      key: SortByFieldName.Author,
       label: t("Common:Owner"),
       default: true,
     };
     const erasure = {
       id: "sort-by_erasure",
-      key: "DateAndTime",
+      key: SortByFieldName.ModifiedDate,
       label: t("ByErasure"),
       default: true,
     };
     const tags = {
       id: "sort-by_tags",
-      key: "Tags",
+      key: SortByFieldName.Tags,
       label: t("Common:Tags"),
       default: true,
     };
     const size = {
       id: "sort-by_size",
-      key: "Size",
+      key: SortByFieldName.Size,
       label: t("Common:Size"),
       default: true,
     };
     const type = {
       id: "sort-by_type",
-      key: "Type",
+      key: SortByFieldName.Type,
       label: t("Common:Type"),
       default: true,
     };
     const roomType = {
       id: "sort-by_room-type",
-      key: "roomType",
+      key: SortByFieldName.RoomType,
       label: t("Common:Type"),
       default: true,
     };
@@ -1453,9 +1454,10 @@ const SectionFilterContent = ({
     }
   };
 
-  useEffect(() => (!!isLoadedFilter ? showLoader() : hideLoader()), [
-    isLoadedFilter,
-  ]);
+  useEffect(
+    () => (!!isLoadedFilter ? showLoader() : hideLoader()),
+    [isLoadedFilter]
+  );
 
   if (!isLoadedFilter) {
     return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
@@ -1579,15 +1581,13 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withLayoutSize(
-      withTranslation([
-        "Files",
-        "Settings",
-        "Common",
-        "Translations",
-        "InfoPanel",
-      ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
-    )
+  withLayoutSize(
+    withTranslation([
+      "Files",
+      "Settings",
+      "Common",
+      "Translations",
+      "InfoPanel",
+    ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
   )
 );

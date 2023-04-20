@@ -21,6 +21,10 @@ const RootContainer = styled(Box)`
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
+  .paid-badge {
+    cursor: auto;
+  }
+
   @media ${mobile} {
     width: calc(100% - 8px);
   }

@@ -26,7 +26,6 @@
   "Payer": "Maksaja",
   "PayerDescription": "Tällä käyttäjällä on pääsy maksutietoihin ja on ainoa käyttäjä, joka voi muokata kiintiötä ja suorittaa maksuja. DocSpacen omistaja ja maksava johtaja voivat määrätä uudelleen maksavan johtajan rooliin käyttäen Stripe-asiakasportaalia.",
   "PaymentOverdue": "Et voi lisätä uusia käyttäjiä.",
-  "PowerUserDescription": "Tehokäyttäjät voivat luoda ja muokata huoneen tiedostoja, mutta eivät voi luoda huoneita, hallita käyttäjiä ja heillä ei ole pääsyä asetuksiin.",
   "PriceCalculation": "Laske hintasi",
   "QuotaPaidUserLimitError": "Maksettu käyttäjien määrän raja on ylitetty. <1>Maksut</1>",
   "RenewSubscription": "Uusi tilaus {{planName}} ohjelmaan",

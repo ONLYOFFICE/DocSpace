@@ -100,6 +100,7 @@ const PeopleRowContainer = ({
   hasMoreAccounts,
   filterTotal,
   withPaging,
+  isLoading,
 }) => {
   useEffect(() => {
 
@@ -118,6 +119,9 @@ const PeopleRowContainer = ({
       viewAs !== "table" && setViewAs("table");
     }
   }, [sectionWidth]);
+
+
+  if (isLoading) return <></>
 
   return peopleList.length > 0 ? (
     <StyledRowContainer
@@ -144,12 +148,14 @@ const PeopleRowContainer = ({
 };
 
 export default inject(({ peopleStore, auth }) => {
-  const { usersStore, filterStore, viewAs, setViewAs } = peopleStore;
+  const { usersStore, filterStore, viewAs, setViewAs, loadingStore } = peopleStore;
   const { theme, withPaging } = auth.settingsStore;
   const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
   const { filterTotal } = filterStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+
+  const { isLoading } = loadingStore
 
   return {
     peopleList,
@@ -158,7 +164,7 @@ export default inject(({ peopleStore, auth }) => {
     theme,
     infoPanelVisible,
     withPaging,
-
+    isLoading,
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,

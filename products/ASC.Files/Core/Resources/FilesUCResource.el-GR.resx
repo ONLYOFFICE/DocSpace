@@ -58,6 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Archive" xml:space="preserve">
+    <value>Αρχείο</value>
+  </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Κοινά έγγραφα</value>
   </data>
@@ -87,5 +90,8 @@
   </data>
   <data name="Trash" xml:space="preserve">
     <value>Κάδος απορριμάτων</value>
+  </data>
+  <data name="VirtualRooms" xml:space="preserve">
+    <value>Δωμάτια</value>
   </data>
 </root>

@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 
 import TableRow from "@docspace/components/table-container/TableRow";
@@ -442,5 +441,5 @@ const PeopleTableRow = (props) => {
 };
 
 export default withTranslation(["People", "Common", "Settings"])(
-  withRouter(withContent(PeopleTableRow))
+  withContent(PeopleTableRow)
 );

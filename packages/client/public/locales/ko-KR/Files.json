@@ -27,7 +27,6 @@
   "EditRoom": "방 편집",
   "EmptyFile": "빈 파일",
   "EmptyFilterDescriptionText": "이 필터에 해당하는 파일이나 폴더가 없습니다. 다르게 시도하거나 필터를 삭제하여 모든 파일을 확인하세요.",
-  "EmptyFilterDescriptionTextRooms": "이 필터와 일치하는 방이 없습니다. 다른 필터를 사용하거나 모든 방을 보려면 필터를 지우세요.",
   "EmptyFilterSubheadingText": "이 필터에 대해 표시할 파일이 없습니다",
   "EmptyFolderDecription": "여기에 파일을 드롭하거나 새 파일을 만드세요",
   "EmptyFolderDescriptionUser": "관리자가 업로드한 파일 및 폴더가 여기에 나타납니다.",

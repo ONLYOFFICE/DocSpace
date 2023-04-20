@@ -129,13 +129,13 @@ services:
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
     container_name: ${STUDIO_HOST}
 
-  # onlyoffice-ssoauth:
-  #   <<: *x-service-base
-  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
-  #   container_name: ${SSOAUTH_HOST}
-  #   expose:
-  #     - ${SERVICE_PORT}
-  #     - "9834"
+  onlyoffice-ssoauth:
+    <<: *x-service-base
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
+    container_name: ${SSOAUTH_HOST}
+    expose:
+      - ${SERVICE_PORT}
+      - "9834"
 
   # onlyoffice-webhooks-service:
   #   <<: *x-service-base
@@ -168,7 +168,7 @@ services:
       - onlyoffice-api
       # - onlyoffice-api-system
       - onlyoffice-studio
-      # - onlyoffice-ssoauth
+      - onlyoffice-ssoauth
     environment:
       - SERVICE_BACKUP=${SERVICE_BACKUP}
       - SERVICE_FILES=${SERVICE_FILES}

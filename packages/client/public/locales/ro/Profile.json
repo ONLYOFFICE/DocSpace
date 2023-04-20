@@ -16,7 +16,6 @@
   "LogoutBtn": "Deconectare",
   "LogoutDescription": "Menţiune. Toate conexiunile active vor fi deconectate, cu excepţia acestei conexiuni, deoarece ea este în curs de utilizare.",
   "LogoutFrom": "Doriţi să vă deconectați de la {{platform}} {{browser}}?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Instrucțiunile de activare a adresei e-mail au fost trimise la <strong>{{ email }}</strong>.",
   "MyProfile": "Profilul meu",
   "ProviderSuccessfullyConnected": "Furnizorul a fost conectat cu succes",
   "ProviderSuccessfullyDisconnected": "Furnizorul a fost deconectat cu succes",

@@ -10,13 +10,6 @@ cat<<EOF
 
 EOF
 
-if [ -e /etc/redis.conf ]; then
- sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis.conf
- sed -r "/^save\s[0-9]+/d" -i /etc/redis.conf
- 
- systemctl restart redis
-fi
-
 sed "/host\s*all\s*all\s*127\.0\.0\.1\/32\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
 sed "/host\s*all\s*all\s*::1\/128\s*ident$/s|ident$|trust|" -i /var/lib/pgsql/data/pg_hba.conf
 
@@ -147,22 +140,6 @@ elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
 		-mysqlu ${MYSQL_SERVER_USER} \
 		-mysqlp ${MYSQL_ROOT_PASS}
 fi
-
-NGINX_ROOT_DIR="/etc/nginx"
-
-NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-sed 's/^worker_processes.*/'"worker_processes ${NGINX_WORKER_PROCESSES};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-sed 's/worker_connections.*/'"worker_connections ${NGINX_WORKER_CONNECTIONS};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-
-if rpm -q "firewalld"; then
-	firewall-cmd --permanent --zone=public --add-service=http
-	firewall-cmd --permanent --zone=public --add-service=https
-	systemctl restart firewalld.service
-fi
-
-systemctl restart nginx
 
 echo ""
 echo "$RES_INSTALL_SUCCESS"

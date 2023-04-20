@@ -37,6 +37,10 @@ const StyledSettingsComponent = styled.div`
     margin-right: 4px;
   }
 
+  .paid-badge {
+    cursor: auto;
+  }
+
   .dns-textarea {
     textarea {
       color: ${(props) => props.theme.text.disableColor};

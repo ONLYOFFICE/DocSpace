@@ -103,6 +103,7 @@ const Table = ({
   userId,
   infoPanelVisible,
 
+  isLoading,
   fetchMoreAccounts,
   hasMoreAccounts,
   filterTotal,
@@ -131,6 +132,8 @@ const Table = ({
 
   const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
   const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
+
+  if (isLoading) return <></>
 
   return peopleList.length > 0 ? (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
@@ -179,6 +182,7 @@ export default inject(({ peopleStore, auth, accessRightsStore }) => {
     viewAs,
     setViewAs,
     changeType,
+    loadingStore
   } = peopleStore;
   const { theme, withPaging } = auth.settingsStore;
   const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
@@ -188,6 +192,8 @@ export default inject(({ peopleStore, auth, accessRightsStore }) => {
   const { isAdmin, isOwner, id: userId } = auth.userStore.user;
 
   const { canChangeUserType } = accessRightsStore;
+
+  const { isLoading } = loadingStore
 
   return {
     peopleList,
@@ -200,7 +206,7 @@ export default inject(({ peopleStore, auth, accessRightsStore }) => {
     userId,
     infoPanelVisible,
     withPaging,
-
+    isLoading,
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,

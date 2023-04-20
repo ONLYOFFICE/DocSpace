@@ -7,11 +7,11 @@ import Link from "@docspace/components/link";
 import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
-import history from "@docspace/common/history";
+
 import { Base } from "@docspace/components/themes";
 import LoaderCustomizationNavbar from "./sub-components/loaderCustomizationNavbar";
 import { StyledArrowRightIcon } from "./Customization/StyledSettings";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import Badge from "@docspace/components/badge";
 
 const StyledComponent = styled.div`
@@ -64,22 +64,25 @@ StyledComponent.defaultProps = { theme: Base };
 const CustomizationNavbar = ({
   t,
   theme,
-  helpUrlCommonSettings,
   isLoaded,
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
   isSettingPaid,
   currentColorScheme,
+  languageAndTimeZoneSettingsUrl,
+  dnsSettingsUrl,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (isLoadedSetting) setIsLoadedCustomizationNavbar(isLoadedSetting);
   }, [isLoadedSetting]);
 
   const onClickLink = (e) => {
     e.preventDefault();
-    history.push(e.target.pathname);
+    navigate(e.target.pathname);
   };
 
   return !isLoadedPage ? (
@@ -110,7 +113,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={helpUrlCommonSettings}
+            href={languageAndTimeZoneSettingsUrl}
           >
             {t("Common:LearnMore")}
           </Link>
@@ -169,7 +172,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={helpUrlCommonSettings}
+            href={dnsSettingsUrl}
           >
             {t("Common:LearnMore")}
           </Link>
@@ -201,22 +204,22 @@ const CustomizationNavbar = ({
 
 export default inject(({ auth, common }) => {
   const {
-    helpUrlCommonSettings,
     theme,
     currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
+    dnsSettingsUrl,
   } = auth.settingsStore;
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,
-    helpUrlCommonSettings,
     isLoaded,
     setIsLoadedCustomizationNavbar,
     currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
+    dnsSettingsUrl,
   };
 })(
-  withRouter(
-    withCultureNames(
-      observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
-    )
+  withCultureNames(
+    observer(withTranslation(["Settings", "Common"])(CustomizationNavbar))
   )
 );

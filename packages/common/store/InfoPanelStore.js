@@ -216,17 +216,17 @@ class InfoPanelStore {
 
   // User link actions //
 
-  openUser = async (user, history) => {
+  openUser = async (user, navigate) => {
     if (user.id === this.authStore.userStore.user.id) {
-      this.openSelfProfile(history);
+      this.openSelfProfile(navigate);
       return;
     }
 
     const fetchedUser = await this.fetchUser(user.id);
-    this.openAccountsWithSelectedUser(fetchedUser, history);
+    this.openAccountsWithSelectedUser(fetchedUser, navigate);
   };
 
-  openSelfProfile = (history) => {
+  openSelfProfile = (navigate) => {
     const path = [
       window.DocSpaceConfig?.proxy?.url,
       config.homepage,
@@ -235,10 +235,10 @@ class InfoPanelStore {
     ];
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts", "filter"]);
-    history.push(combineUrl(...path));
+    navigate(combineUrl(...path));
   };
 
-  openAccountsWithSelectedUser = async (user, history) => {
+  openAccountsWithSelectedUser = async (user, navigate) => {
     const { getUsersList } = this.peopleStore.usersStore;
     const { setSelection } = this.peopleStore.selectionStore;
 
@@ -254,17 +254,15 @@ class InfoPanelStore {
     path.push(`filter?${newFilter.toUrlParams()}`);
     const userList = await getUsersList(newFilter);
 
-    history.push(combineUrl(...path));
+    navigate(combineUrl(...path));
     this.selectedFolderStore.setSelectedFolder(null);
     this.treeFoldersStore.setSelectedNode(["accounts"]);
     setSelection([user]);
   };
 
   fetchUser = async (userId) => {
-    const {
-      getStatusType,
-      getUserContextOptions,
-    } = this.peopleStore.usersStore;
+    const { getStatusType, getUserContextOptions } =
+      this.peopleStore.usersStore;
 
     const fetchedUser = await getUserById(userId);
     fetchedUser.role = getUserRole(fetchedUser);

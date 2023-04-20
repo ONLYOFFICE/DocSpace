@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Najprv musíte aktivovať príslušnú službu v časti „Integrácia“. V opačnom prípade nebude pripojenie možné.",
   "ThirdPartyStoragePermanentSettingDescription": "Súbory sú uložené v úložisku {{thirdpartyTitle}} tretej strany v priečinku \"{{thirdpartyFolderName}}“.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Ak chcete pripojiť úložisko od tretej strany, musíte pridať zodpovedajúcu službu v sekcii Integrácia v nastaveniach DocSpace. Ak chcete integráciu povoliť, kontaktujte vlastníka alebo administrátora DocSpace.",
-  "ThirdPartyStorageTitle": "Úložisko od tretej strany",
   "ViewOnlyRoomDescription": "Zdieľajte všetky pripravené dokumenty, správy, dokumentáciu a ďalšie súbory na prezeranie.",
   "ViewOnlyRoomTitle": "Miestnosť iba na prezeranie"
 }
