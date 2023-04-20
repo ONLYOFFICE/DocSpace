@@ -66,8 +66,7 @@ const filesStore = new FilesStore(
 
 const mediaViewerDataStore = new MediaViewerDataStore(
   filesStore,
-  settingsStore,
-  authStore
+  settingsStore
 );
 const secondaryProgressDataStore = new SecondaryProgressDataStore();
 const primaryProgressDataStore = new PrimaryProgressDataStore();
