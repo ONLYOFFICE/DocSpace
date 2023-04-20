@@ -372,6 +372,7 @@ class FilesTableHeader extends React.Component {
 
   render() {
     const {
+      t,
       containerRef,
       isHeaderChecked,
       filter,
@@ -414,6 +415,7 @@ class FilesTableHeader extends React.Component {
         useReactWindow={!withPaging}
         tagRef={tagRef}
         setHideColumns={setHideColumns}
+        settingsTitle={t("Files:TableSettingsTitle")}
       />
     );
   }

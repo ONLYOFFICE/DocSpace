@@ -116,5 +116,6 @@
   "ViewTiles": "Tiles",
   "WithSubfolders": "With subfolders",
   "MarkAsVersion": "Mark as version",
-  "MarkAsRevision": "Mark as revision"
+  "MarkAsRevision": "Mark as revision",
+  "TableSettingsTitle": "Manage displayed columns"
 }

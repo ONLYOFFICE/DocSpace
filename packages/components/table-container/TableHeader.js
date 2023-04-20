@@ -666,6 +666,7 @@ class TableHeader extends React.Component {
       infoPanelVisible,
       showSettings,
       tagRef,
+      settingsTitle,
       ...rest
     } = this.props;
 
@@ -703,7 +704,10 @@ class TableHeader extends React.Component {
             })}
 
             {showSettings && (
-              <div className="table-container_header-settings">
+              <div
+                className="table-container_header-settings"
+                title={settingsTitle}
+              >
                 <TableSettings
                   columns={columns}
                   infoPanelVisible={infoPanelVisible}

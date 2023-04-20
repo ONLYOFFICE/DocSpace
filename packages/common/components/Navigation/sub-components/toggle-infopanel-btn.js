@@ -50,6 +50,7 @@ const ToggleInfoPanelButton = ({
   isInfoPanelVisible,
   toggleInfoPanel,
   id,
+  titles,
 }) => {
   return (
     <StyledInfoPanelToggleWrapper
@@ -64,6 +65,7 @@ const ToggleInfoPanelButton = ({
           size="16"
           isFill={true}
           onClick={toggleInfoPanel}
+          title={titles?.infoPanel}
         />
       </div>
     </StyledInfoPanelToggleWrapper>
