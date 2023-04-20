@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import Submenu from "@docspace/components/submenu";
 import { inject, observer } from "mobx-react";
 import PortalDeactivationSection from "./portalDeactivation";
@@ -10,7 +10,9 @@ import { combineUrl } from "@docspace/common/utils";
 import config from "../../../../../package.json";
 
 const DeleteData = (props) => {
-  const { t, history, isNotPaidPeriod, tReady } = props;
+  const { t, isNotPaidPeriod, tReady } = props;
+
+  const navigate = useNavigate();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +38,7 @@ const DeleteData = (props) => {
   }, []);
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -64,4 +66,4 @@ export default inject(({ auth }) => {
   return {
     isNotPaidPeriod,
   };
-})(observer(withTranslation("Settings")(withRouter(DeleteData))));
+})(observer(withTranslation("Settings")(DeleteData)));

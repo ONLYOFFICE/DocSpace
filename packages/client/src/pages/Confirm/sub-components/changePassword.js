@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import PasswordInput from "@docspace/components/password-input";
@@ -191,9 +190,7 @@ export default inject(({ auth, setup }) => {
     getSettings,
   };
 })(
-  withRouter(
-    withTranslation(["Confirm", "Common", "Wizard"])(
-      withLoader(observer(ChangePasswordForm))
-    )
+  withTranslation(["Confirm", "Common", "Wizard"])(
+    withLoader(observer(ChangePasswordForm))
   )
 );

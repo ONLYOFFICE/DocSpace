@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
 
 let loadTimeout = null;
+const delayLoader = 300
+
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
     const {
@@ -29,7 +31,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
         loadTimeout = setTimeout(() => {
           //console.log("inLoad", true);
           setInLoad(true);
-        }, 500);
+        }, delayLoader);
       } else {
         cleanTimer();
         //console.log("inLoad", false);

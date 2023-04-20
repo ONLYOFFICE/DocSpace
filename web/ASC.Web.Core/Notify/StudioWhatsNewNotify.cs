@@ -45,7 +45,7 @@ public class StudioWhatsNewNotify
     private readonly WorkContext _workContext;
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
 
-    public readonly static List<MessageAction?> DailyActions = new List<MessageAction?>()
+    public static readonly List<MessageAction?> DailyActions = new List<MessageAction?>()
     {
         MessageAction.FileCreated,
         MessageAction.FileUpdatedRevisionComment,
@@ -57,7 +57,7 @@ public class StudioWhatsNewNotify
         MessageAction.UserUpdated
     };
 
-    public readonly static List<MessageAction?> RoomsActivityActions = new List<MessageAction?>()
+    public static readonly List<MessageAction?> RoomsActivityActions = new List<MessageAction?>()
     {
          MessageAction.FileUploaded,
          MessageAction.UserFileUpdated,
@@ -101,7 +101,7 @@ public class StudioWhatsNewNotify
 
     }
 
-    public void SendMsgWhatsNew(DateTime scheduleDate, WhatsNewType whatsNewType)
+    public async Task SendMsgWhatsNew(DateTime scheduleDate, WhatsNewType whatsNewType)
     {
         var products = _webItemManager.GetItemsAll<IProduct>();
 
@@ -117,7 +117,7 @@ public class StudioWhatsNewNotify
 
         foreach (var tenantid in tenants)
         {
-            SendMsgWhatsNew(tenantid, scheduleDate, whatsNewType, products);
+            await SendMsgWhatsNew(tenantid, scheduleDate, whatsNewType, products);
         }
     }
 
@@ -134,7 +134,7 @@ public class StudioWhatsNewNotify
         }
     }
 
-    private void SendMsgWhatsNew(int tenantid, DateTime scheduleDate, WhatsNewType whatsNewType, List<IProduct> products)
+    private async Task SendMsgWhatsNew(int tenantid, DateTime scheduleDate, WhatsNewType whatsNewType, List<IProduct> products)
     {
         try
         {
@@ -153,10 +153,14 @@ public class StudioWhatsNewNotify
             _log.InformationStartSendWhatsNewIn(tenant.GetTenantDomain(_coreSettings), tenantid);
             foreach (var user in _userManager.GetUsers())
             {
+                _log.Debug($"SendMsgWhatsNew start checking subscription: {user.Email}");//temp
+
                 if (!CheckSubscription(user, whatsNewType))
                 {
                     continue;
                 }
+
+                _log.Debug($"SendMsgWhatsNew checking subscription complete: {user.Email}");//temp
 
                 _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(tenant.Id, user.Id));
 
@@ -169,8 +173,10 @@ public class StudioWhatsNewNotify
 
                 foreach (var p in products)
                 {
-                    auditEvents.AddRange(p.GetAuditEventsAsync(scheduleDate, user.Id, tenant, whatsNewType).Result);
+                    auditEvents.AddRange(await p.GetAuditEventsAsync(scheduleDate, user.Id, tenant, whatsNewType));
                 }
+
+                _log.Debug($"SendMsgWhatsNew auditEvents count : {auditEvents.Count}");//temp
 
                 var userActivities = new List<string>();
 
@@ -181,6 +187,8 @@ public class StudioWhatsNewNotify
                         userActivities.Add(activityText);
                     }
                 }
+
+                _log.Debug($"SendMsgWhatsNew userActivities count : {userActivities.Count}");//temp
 
                 if (userActivities.Any())
                 {

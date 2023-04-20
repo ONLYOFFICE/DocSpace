@@ -786,7 +786,8 @@ public class StudioNotifyService
                 notifyAction = Actions.SaasAdminActivationV1;
             }
 
-            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation);
+            var userId = u.Id;
+            var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation, null, userId);
             confirmationUrl += "&first=true";
 
             static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmEmail;

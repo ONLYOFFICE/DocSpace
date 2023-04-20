@@ -316,9 +316,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Właściciel</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Nazwa portalu</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Dostęp do portalu</value>
   </data>

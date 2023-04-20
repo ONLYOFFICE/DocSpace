@@ -317,9 +317,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Người sở hữu</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Tên Cổng</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Truy cập Cổng</value>
   </data>

@@ -1,6 +1,7 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React, { useEffect } from "react";
 import { withTranslation, Trans } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
 import HelpButton from "@docspace/components/help-button";
@@ -12,13 +13,15 @@ import config from "PACKAGE_FILE";
 import { removeLocalStorage } from "../../../utils";
 
 const Backup = ({
-  helpUrlCreatingBackup,
+  automaticBackupUrl,
   buttonSize,
   t,
-  history,
+
   isNotPaidPeriod,
   currentColorScheme,
 }) => {
+  const navigate = useNavigate();
+
   const renderTooltip = (helpInfo) => {
     return (
       <>
@@ -33,7 +36,7 @@ const Backup = ({
               <div>
                 <Link
                   as="a"
-                  href={helpUrlCreatingBackup}
+                  href={automaticBackupUrl}
                   target="_blank"
                   color={currentColorScheme.main.accent}
                   isBold
@@ -67,7 +70,7 @@ const Backup = ({
   ];
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -88,7 +91,7 @@ export default inject(({ auth }) => {
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
   const {
-    helpUrlCreatingBackup,
+    automaticBackupUrl,
     isTabletView,
     currentColorScheme,
   } = settingsStore;
@@ -96,7 +99,7 @@ export default inject(({ auth }) => {
   const buttonSize = isTabletView ? "normal" : "small";
 
   return {
-    helpUrlCreatingBackup,
+    automaticBackupUrl,
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,

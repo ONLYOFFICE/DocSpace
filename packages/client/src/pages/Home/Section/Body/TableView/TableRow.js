@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
 import withContent from "../../../../../HOCs/withContent";
 import withBadges from "../../../../../HOCs/withBadges";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
@@ -170,7 +169,5 @@ const FilesTableRow = (props) => {
 };
 
 export default withTranslation(["Files", "Common", "InfoPanel"])(
-  withRouter(
-    withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow))))
-  )
+  withFileActions(withContent(withQuickButtons(withBadges(FilesTableRow))))
 );

@@ -1,17 +1,16 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import moment from "moment";
+
+import { getDaysRemaining } from "@docspace/common/utils";
+
 import api from "../api";
 import { TariffState } from "../constants";
 import { getUserByEmail } from "../api/people";
-import moment from "moment";
-import { getDaysRemaining } from "@docspace/common/utils";
+import authStore from "./AuthStore";
 class CurrentTariffStatusStore {
   portalTariffStatus = {};
   isLoaded = false;
   payerInfo = null;
-
-  paymentDate = "";
-  gracePeriodEndDate = "";
-  delayDaysCount = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -76,19 +75,21 @@ class CurrentTariffStatusStore {
       console.error(e);
     }
   };
-  setTariffDates = () => {
-    const setGracePeriodDays = () => {
-      const delayDueDateByMoment = moment(this.delayDueDate);
 
-      this.gracePeriodEndDate = delayDueDateByMoment.format("LL");
+  get paymentDate() {
+    moment.locale(authStore.language);
+    return moment(this.dueDate).format("LL");
+  }
 
-      this.delayDaysCount = getDaysRemaining(delayDueDateByMoment);
-    };
+  get gracePeriodEndDate() {
+    moment.locale(authStore.language);
+    return moment(this.delayDueDate).format("LL");
+  }
 
-    this.paymentDate = moment(this.dueDate).format("LL");
-
-    (this.isGracePeriod || this.isNotPaidPeriod) && setGracePeriodDays();
-  };
+  get delayDaysCount() {
+    moment.locale(authStore.language);
+    return getDaysRemaining(this.delayDueDate);
+  }
 
   setPortalTariff = async () => {
     const res = await api.portal.getPortalTariff();
@@ -97,8 +98,6 @@ class CurrentTariffStatusStore {
 
     runInAction(() => {
       this.portalTariffStatus = res;
-
-      this.setTariffDates();
     });
   };
 }

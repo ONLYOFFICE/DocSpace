@@ -11,7 +11,6 @@ import CustomizationNavbar from "./customization-navbar";
 import { Base } from "@docspace/components/themes";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderDescriptionCustomization from "./sub-components/loaderDescriptionCustomization";
-import { withRouter } from "react-router";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import StyledSettingsSeparator from "SRC_DIR/pages/PortalSettings/StyledSettingsSeparator";
 
@@ -115,7 +114,5 @@ export default inject(({ common }) => {
     setIsLoadedCustomization,
   };
 })(
-  withLoading(
-    withRouter(withTranslation(["Settings", "Common"])(observer(Customization)))
-  )
+  withLoading(withTranslation(["Settings", "Common"])(observer(Customization)))
 );

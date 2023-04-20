@@ -362,7 +362,7 @@ class ManualBackup extends React.Component {
         </StyledModules>
         <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
-            label={t("ThirdPartyStorage")}
+            label={t("Common:ThirdPartyStorage")}
             name={"isCheckedThirdPartyStorage"}
             key={3}
             isChecked={isCheckedThirdPartyStorage}

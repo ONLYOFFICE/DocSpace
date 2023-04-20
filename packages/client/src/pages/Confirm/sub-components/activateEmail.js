@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
@@ -57,7 +56,6 @@ class ActivateEmail extends React.PureComponent {
 
 ActivateEmail.propTypes = {
   location: PropTypes.object.isRequired,
-  history: PropTypes.object.isRequired,
 };
 const ActivateEmailForm = (props) => (
   <Section>
@@ -73,4 +71,4 @@ export default inject(({ auth }) => {
     logout,
     updateEmailActivationStatus: userStore.updateEmailActivationStatus,
   };
-})(withRouter(observer(ActivateEmailForm)));
+})(observer(ActivateEmailForm));

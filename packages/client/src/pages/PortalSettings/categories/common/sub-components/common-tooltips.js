@@ -132,7 +132,7 @@ export const DNSSettingsTooltip = ({
   );
 };
 
-export const PortalRenamingTooltip = ({ t }) => {
+export const PortalRenamingTooltip = ({ t, domain }) => {
   const text = t("Settings:PortalRenamingDescription");
   const pleaseNote = t("Settings:PleaseNote");
   const save = t("Common:SaveButton");
@@ -144,10 +144,11 @@ export const PortalRenamingTooltip = ({ t }) => {
           ns="Settings"
           i18nKey="PortalRenamingSettingsTooltip"
           text={text}
+          domain={domain}
         >
           <div className="display-inline font-size"> {{ text }}</div>
           Enter the part that will appear next to the
-          onlyoffice.com/onlyoffice.eu portal address.
+          {{ domain }} portal address.
         </Trans>
       </div>
       <div className="font-size">

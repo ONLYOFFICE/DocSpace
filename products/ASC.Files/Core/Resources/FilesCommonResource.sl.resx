@@ -202,4 +202,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Datoteka je odklenjena</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace Skrbnik</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Urednik</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Skrbnik sobe</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Uporabnik</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Gledalec</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Komentator</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Izpolnjevanje obrazcev</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Recenzent</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Sodelavec</value>
+  </data>
 </root>

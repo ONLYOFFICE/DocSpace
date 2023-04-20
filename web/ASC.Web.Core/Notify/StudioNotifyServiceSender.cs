@@ -123,16 +123,16 @@ public class StudioNotifyServiceSender
         scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
     }
 
-    public void SendMsgWhatsNew(DateTime scheduleDate)
+    public async Task SendMsgWhatsNew(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.DailyFeed);
+        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.DailyFeed);
     }
 
-    public void SendRoomsActivity(DateTime scheduleDate)
+    public async Task SendRoomsActivity(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.RoomsActivity);
+        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.RoomsActivity);
     }
 }
 

@@ -181,9 +181,17 @@ public class ProductEntryPoint : Product
             {
                 UserId = e.UserId,
                 Action = (MessageAction)e.Action,
-                Data = e.Date,
-                FileTitle = e.Description[0]
+                Data = e.Date
             };
+
+            if (e.Action != (int)MessageAction.UserFileUpdated)
+            {
+                activityInfo.FileTitle = e.Description[0];
+            }
+            else
+            {
+                activityInfo.FileTitle = e.Description[1];
+            }
 
             if (e.Action == (int)MessageAction.UserCreated
             || e.Action == (int)MessageAction.UserUpdated)
