@@ -118,4 +118,6 @@
   "MarkAsVersion": "Mark as version",
   "MarkAsRevision": "Mark as revision",
   "TableSettingsTitle": "Manage displayed columns"
+  "WithSubfolders": "With subfolders",
+  "DocumentEdited": "Cannot perform the action because the document is being edited."
 }
