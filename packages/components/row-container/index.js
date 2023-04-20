@@ -67,9 +67,13 @@ RowContainer.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Sets a callback function that is called when the list scroll positions change */
   onScroll: PropTypes.func,
+  /** The property required for the infinite loader */
   filesLength: PropTypes.number,
+  /** The property required for the infinite loader */
   itemCount: PropTypes.number,
+  /** The property required for the infinite loader */
   loadMoreItems: PropTypes.func,
+  /** The property required for the infinite loader */
   hasMoreFiles: PropTypes.bool,
 };
 
