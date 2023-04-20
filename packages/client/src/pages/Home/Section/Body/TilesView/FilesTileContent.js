@@ -1,6 +1,5 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled, { css } from "styled-components";
 
@@ -52,6 +51,17 @@ const SimpleFilesTileContent = styled(TileContent)`
       width: 14px;
       height: 14px;
     }
+  }
+
+  .item-file-name {
+    max-height: 100%;
+    line-height: 20px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
   }
 
   ${({ isRooms }) =>
@@ -117,10 +127,8 @@ export default inject(({ auth, treeFoldersStore }) => {
   return { theme: auth.settingsStore.theme, isRooms };
 })(
   observer(
-    withRouter(
-      withTranslation(["Files", "Translations"])(
-        withContent(withBadges(FilesTileContent))
-      )
+    withTranslation(["Files", "Translations"])(
+      withContent(withBadges(FilesTileContent))
     )
   )
 );

@@ -81,6 +81,10 @@ app.use(logger("dev", { stream: winston.stream }));
 if (IS_DEVELOPMENT) {
   app.use(devMiddleware);
 
+  app.get("/health", (req, res) => {
+    res.send({ status: "Healthy" });
+  });
+
   app.get("/doceditor", async (req, res) => {
     const { i18n, initialEditorState, assets } = req;
     const userLng = getLanguage(initialEditorState?.user?.cultureName) || "en";
@@ -146,6 +150,10 @@ if (IS_DEVELOPMENT) {
   } catch (e) {
     winston.error(e.message);
   }
+
+  app.get("/health", (req, res) => {
+    res.send({ status: "Healthy" });
+  });
 
   app.get("/doceditor", async (req, res) => {
     const { i18n } = req;

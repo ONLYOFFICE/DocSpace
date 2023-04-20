@@ -6,7 +6,6 @@ import DragAndDrop from "@docspace/components/drag-and-drop";
 
 import Tile from "./sub-components/Tile";
 import FilesTileContent from "./FilesTileContent";
-import { withRouter } from "react-router-dom";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
 import withQuickButtons from "../../../../../HOCs/withQuickButtons";
@@ -172,8 +171,6 @@ export default inject(
   }
 )(
   withTranslation(["Files", "InfoPanel"])(
-    withRouter(
-      withFileActions(withBadges(withQuickButtons(observer(FileTile))))
-    )
+    withFileActions(withBadges(withQuickButtons(observer(FileTile))))
   )
 );

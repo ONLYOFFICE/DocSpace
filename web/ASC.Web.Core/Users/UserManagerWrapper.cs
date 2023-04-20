@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Web.Core.Users;
@@ -51,6 +49,8 @@ public sealed class UserManagerWrapper
     private readonly CountPaidUserChecker _countPaidUserChecker;
     private readonly TenantManager _tenantManager;
     private readonly WebItemSecurityCache _webItemSecurityCache;
+    private readonly QuotaSocketManager _quotaSocketManager;
+    private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
 
     public UserManagerWrapper(
         StudioNotifyService studioNotifyService,
@@ -64,7 +64,9 @@ public sealed class UserManagerWrapper
         UserFormatter userFormatter,
         CountPaidUserChecker countPaidUserChecker,
         TenantManager tenantManager,
-        WebItemSecurityCache webItemSecurityCache)
+        WebItemSecurityCache webItemSecurityCache,
+        QuotaSocketManager quotaSocketManager,
+        TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper)
     {
         _studioNotifyService = studioNotifyService;
         _userManager = userManager;
@@ -78,6 +80,8 @@ public sealed class UserManagerWrapper
         _countPaidUserChecker = countPaidUserChecker;
         _tenantManager = tenantManager;
         _webItemSecurityCache = webItemSecurityCache;
+        _quotaSocketManager = quotaSocketManager;
+        _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
     }
 
     private bool TestUniqueUserName(string uniqueName)
@@ -148,6 +152,11 @@ public sealed class UserManagerWrapper
         {
             await _userManager.AddUserIntoGroup(newUser.Id, groupId, true);
         }
+        else if(type == EmployeeType.RoomAdmin)
+        {
+            var (name, value) = await _tenantQuotaFeatureStatHelper.GetStat<CountPaidUserFeature, int>();
+            _ = _quotaSocketManager.ChangeQuotaUsedValue(name, value);
+        }
 
         return newUser;
     }
@@ -204,7 +213,7 @@ public sealed class UserManagerWrapper
                     _studioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
                 }
 
-                if (fromInviteLink)
+                if (fromInviteLink && newUserInfo.ActivationStatus != EmployeeActivationStatus.Activated)
                 {
                     _studioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
                 }
@@ -263,13 +272,13 @@ public sealed class UserManagerWrapper
         {
             if (currentType is EmployeeType.RoomAdmin)
             {
-                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID, notifyWebSocket: false);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.Collaborator)
             {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
                 await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
@@ -277,7 +286,7 @@ public sealed class UserManagerWrapper
             else if (currentType is EmployeeType.User)
             {
                 await _countPaidUserChecker.CheckAppend();
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                 await _userManager.AddUserIntoGroup(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
@@ -287,20 +296,20 @@ public sealed class UserManagerWrapper
         {
             if (currentType is EmployeeType.DocSpaceAdmin && currentUser.IsOwner(Tenant))
             {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupAdmin.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.Collaborator)
             {
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupCollaborator.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
             else if (currentType is EmployeeType.User)
             {
                 await _countPaidUserChecker.CheckAppend();
-                _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+                await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
                 _webItemSecurityCache.ClearCache(Tenant.Id);
                 changed = true;
             }
@@ -308,7 +317,7 @@ public sealed class UserManagerWrapper
         else if (type is EmployeeType.Collaborator && currentType is EmployeeType.User)
         {
             await _countPaidUserChecker.CheckAppend();
-            _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
+            await _userManager.RemoveUserFromGroup(user.Id, Constants.GroupUser.ID);
             await _userManager.AddUserIntoGroup(user.Id, Constants.GroupCollaborator.ID);
             _webItemSecurityCache.ClearCache(Tenant.Id);
             changed = true;

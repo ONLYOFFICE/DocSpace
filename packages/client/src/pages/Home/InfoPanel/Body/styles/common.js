@@ -188,6 +188,12 @@ const StyledProperties = styled.div`
           gap: 4px;
         }
       }
+
+      .property-content {
+        overflow: hidden;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+      }
     }
   }
 `;

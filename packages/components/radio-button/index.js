@@ -116,6 +116,7 @@ RadioButton.propTypes = {
 RadioButton.defaultProps = {
   isChecked: false,
   isDisabled: false,
+  label: "",
 };
 
 export default RadioButton;

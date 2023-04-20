@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
@@ -40,13 +40,17 @@ const MainContainer = styled.div`
 const PasswordStrength = (props) => {
   const {
     t,
-    history,
+
     setPortalPasswordSettings,
     passwordSettings,
     initSettings,
     isInit,
-    helpLink,
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
   } = props;
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [passwordLen, setPasswordLen] = useState(8);
   const [useUpperCase, setUseUpperCase] = useState(false);
@@ -118,8 +122,8 @@ const PasswordStrength = (props) => {
 
   const checkWidth = () => {
     window.innerWidth > size.smallTablet &&
-      history.location.pathname.includes("password") &&
-      history.push("/portal-settings/security/access-portal");
+      location.pathname.includes("password") &&
+      navigate("/portal-settings/security/access-portal");
   };
 
   const onSliderChange = (e) => {
@@ -188,10 +192,10 @@ const PasswordStrength = (props) => {
           {t("SettingPasswordStrengthHelper")}
         </Text>
         <Link
-          color="#316DAA"
+          color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+          href={passwordStrengthSettingsUrl}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -260,7 +264,8 @@ export default inject(({ auth, setup }) => {
   const {
     setPortalPasswordSettings,
     passwordSettings,
-    helpLink,
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
   } = auth.settingsStore;
   const { initSettings, isInit } = setup;
 
@@ -269,10 +274,7 @@ export default inject(({ auth, setup }) => {
     passwordSettings,
     initSettings,
     isInit,
-    helpLink,
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
   };
-})(
-  withTranslation(["Settings", "Common"])(
-    withRouter(observer(PasswordStrength))
-  )
-);
+})(withTranslation(["Settings", "Common"])(observer(PasswordStrength)));

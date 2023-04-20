@@ -143,8 +143,6 @@ class CreateEditRoomStore {
         });
       } else !withPaging && this.onOpenNewRoom(room.id);
 
-      this.currentQuotaStore.setPortalQuota();
-
       this.roomIsCreated = true;
     } catch (err) {
       toastr.error(err);

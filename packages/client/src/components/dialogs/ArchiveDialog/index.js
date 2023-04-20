@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+
 import ModalDialogContainer from "../ModalDialogContainer";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -103,7 +103,7 @@ const ArchiveDialogComponent = (props) => {
     >
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text>{description}</Text>
+        <Text noSelect={true}>{description}</Text>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
@@ -168,4 +168,4 @@ export default inject(
       items,
     };
   }
-)(withRouter(observer(ArchiveDialog)));
+)(observer(ArchiveDialog));

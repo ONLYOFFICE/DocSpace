@@ -3,7 +3,6 @@ import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 import React, { useCallback, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
 import find from "lodash/find";
@@ -18,7 +17,9 @@ import {
   RoomsProviderType,
   RoomsProviderTypeName,
   FilterSubject,
+  RoomSearchArea,
 } from "@docspace/common/constants";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 import Loaders from "@docspace/common/components/Loaders";
 import FilterInput from "@docspace/common/components/FilterInput";
 import { withLayoutSize } from "@docspace/common/utils";
@@ -177,6 +178,7 @@ const SectionFilterContent = ({
   clearSearch,
   setClearSearch,
   setMainButtonMobileVisible,
+  isArchiveFolder,
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
   const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
@@ -295,10 +297,8 @@ const SectionFilterContent = ({
 
   const onClearFilter = useCallback(() => {
     if (isRooms) {
-      const newFilter = roomsFilter.clone();
-      newFilter.type = null;
-      newFilter.page = 0;
-      newFilter.filterValue = "";
+      const newFilter = RoomsFilter.getDefault();
+      newFilter.searchArea = roomsFilter.searchArea;
 
       fetchRooms(selectedFolderId, newFilter).finally(() =>
         setIsLoading(false)
@@ -1436,7 +1436,15 @@ const SectionFilterContent = ({
     if (isRooms) {
       setIsLoading(true);
 
-      fetchRooms(selectedFolderId).finally(() => setIsLoading(false));
+      const newFilter = RoomsFilter.getDefault();
+
+      if (isArchiveFolder) {
+        newFilter.searchArea = RoomSearchArea.Archive;
+      }
+
+      fetchRooms(selectedFolderId, newFilter).finally(() =>
+        setIsLoading(false)
+      );
     } else {
       setIsLoading(true);
 
@@ -1444,9 +1452,10 @@ const SectionFilterContent = ({
     }
   };
 
-  useEffect(() => (!!isLoadedFilter ? showLoader() : hideLoader()), [
-    isLoadedFilter,
-  ]);
+  useEffect(
+    () => (!!isLoadedFilter ? showLoader() : hideLoader()),
+    [isLoadedFilter]
+  );
 
   if (!isLoadedFilter) {
     return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
@@ -1545,6 +1554,7 @@ export default inject(
       isRecentFolder,
       isRooms,
       isTrash,
+      isArchiveFolder,
 
       setIsLoading,
       fetchFiles,
@@ -1569,15 +1579,13 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withLayoutSize(
-      withTranslation([
-        "Files",
-        "Settings",
-        "Common",
-        "Translations",
-        "InfoPanel",
-      ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
-    )
+  withLayoutSize(
+    withTranslation([
+      "Files",
+      "Settings",
+      "Common",
+      "Translations",
+      "InfoPanel",
+    ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
   )
 );

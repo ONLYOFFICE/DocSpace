@@ -76,9 +76,8 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         WebItemManagerSecurity webItemManagerSecurity,
         WebItemManager webItemManager,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        ILoggerProvider options,
-        CommonLinkUtilitySettings settings) :
-        this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options, settings)
+        ILoggerProvider options) :
+        this(null, coreBaseSettings, coreSettings, tenantManager, userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider, options)
     {
     }
 
@@ -91,9 +90,8 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         WebItemManagerSecurity webItemManagerSecurity,
         WebItemManager webItemManager,
         EmailValidationKeyProvider emailValidationKeyProvider,
-        ILoggerProvider options,
-        CommonLinkUtilitySettings settings) :
-        base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options, settings) =>
+        ILoggerProvider options) :
+        base(httpContextAccessor, coreBaseSettings, coreSettings, tenantManager, options) =>
         (_userManager, _webItemManagerSecurity, _webItemManager, _emailValidationKeyProvider) = (userManager, webItemManagerSecurity, webItemManager, emailValidationKeyProvider);
 
     public string Logout

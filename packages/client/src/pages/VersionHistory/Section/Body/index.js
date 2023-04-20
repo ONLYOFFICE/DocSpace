@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { withRouter } from "react-router";
+
 import Loaders from "@docspace/common/components/Loaders";
 import VersionRow from "./VersionRow";
 import { inject, observer } from "mobx-react";
@@ -20,8 +20,9 @@ class SectionBodyContent extends React.Component {
   }
 
   componentDidMount() {
-    const { match, setFirstLoad } = this.props;
-    const fileId = match.params.fileId || this.props.fileId;
+    const { setFirstLoad } = this.props;
+
+    const fileId = this.props.fileId;
 
     if (fileId && fileId !== this.props.fileId) {
       this.getFileVersions(fileId, this.props.fileSecurity);
@@ -128,7 +129,7 @@ class SectionBodyContent extends React.Component {
           </div>
         ) : (
           <div className="loader-history-rows">
-            <Loaders.HistoryRows title="version-history-body-loader" />
+            <Loaders.HistoryRows />
           </div>
         )}
       </StyledBody>
@@ -138,12 +139,8 @@ class SectionBodyContent extends React.Component {
 
 export default inject(({ auth, filesStore, versionHistoryStore }) => {
   const { setFirstLoad, setIsLoading, isLoading } = filesStore;
-  const {
-    versions,
-    fetchFileVersions,
-    fileId,
-    fileSecurity,
-  } = versionHistoryStore;
+  const { versions, fetchFileVersions, fileId, fileSecurity } =
+    versionHistoryStore;
 
   return {
     culture: auth.settingsStore.culture,
@@ -155,4 +152,4 @@ export default inject(({ auth, filesStore, versionHistoryStore }) => {
     setIsLoading,
     fetchFileVersions,
   };
-})(withRouter(observer(SectionBodyContent)));
+})(observer(SectionBodyContent));

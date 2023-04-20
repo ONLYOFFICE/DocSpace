@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Pole kodu walidacyjnego nie może być puste</value>
@@ -121,6 +121,9 @@
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Rozmiar obrazka jest zbyt duży</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Dostęp do portalu jest ograniczony</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Twój plan wycena nie obsługuje tej opcji</value>
   </data>
@@ -169,11 +172,122 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Link potwierdzający założenie konta został wysłany na podany e-mail.</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Imię</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Nazwisko</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Błąd połączenia</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Nie można utworzyć użytkowników, otrzymane dane są nieprawidłowe.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Serwer nie mógł uzyskać ustawień.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Serweru nie udało się zapisać ustawień.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Nieprawidłowy login lub hasło.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>Nie znaleziono domeny LDAP.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Nie znaleziono grup.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Nieprawidłowa wartość filtru użytkownika.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Nieznany błąd.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Nie znaleziono żadnych użytkowników.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Nie można uzyskać grupy atrybutów dla jednej lub kilku grup.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Nieprawidłowy filtr grupy.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Nie można uzyskać atrybutu nazwy grupy dla jednej lub kilku grup.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Nie można uzyskać atrybutu logowania dla jednego lub kilku użytkowników.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Nie można połączyć się z serwerem LDAP. Sprawdź, czy adres serwera i numer portu są poprawne.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Nie można pobrać adresu użytkownika dla jednego lub kilku użytkowników.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Błąd wewnętrzny serwera.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Modyfikowanie użytkowników LDAP zwykłych użytkowników portalu</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>dodawanie użytkownika</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Weryfikacja certyfikatu</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Sprawdzanie ustawień wsparcia LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Wyłączenie LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Pobieranie listy grup z serwera LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Pobieranie listy użytkowników z serwera LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Ładowanie informacji bazowej LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>usuwanie użytkownika</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Usuwanie przestarzałych grup, które zostały wcześniej załadowane przez LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Usuwanie nieaktualnych profili użytkowników, które zostały wcześniej załadowane przez LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Zapisywanie grup</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Zapisywanie ustawień</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Zapisywanie użytkowników</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Synchronizacja użytkowników</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Wymagany jest bardziej bezpieczny typ uwierzytelniania. Proszę używać szyfrowanego połączenia lub włączyć zwykłe uwierzytelnianie na serwerze.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Osiągnięto aktualny limit użytkownika dla planu cenowego</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS nie jest obsługiwany dla obecnego serwera LDAP.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Zbyt wiele operacji LDAP.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Nie można uzyskać unikatowego identyfikatora dla obiektów użytkownika / grupy. Domyślnie system spróbuje dopasować jeden z następujących identyfikatorów: entryUUID, nsuniqueid, GUID, objectSid. Jeśli żaden z atrybutów nie odpowiada Twojemu serwerowi LDAP, podaj niezbędny atrybut w pliku ldap.unique.id pliku web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Licencja nie jest poprawna</value>

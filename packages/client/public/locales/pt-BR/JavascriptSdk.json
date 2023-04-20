@@ -1,0 +1,22 @@
+{
+  "Ascending": "Ascendente",
+  "CopyWindowCode": "Copiar código de incorporação da janela",
+  "DataDisplay": "Configurações de exibição de dados",
+  "Descending": "Descendente",
+  "Destroy": "Destruir",
+  "EnterCount": "Digite a contagem",
+  "EnterHeight": "Insira a altura",
+  "EnterId": "Digite o id",
+  "EnterPage": "Insira a página do número",
+  "EnterWidth": "Insira a largura",
+  "FolderId": "ID da pasta",
+  "FrameId": "ID do quadro",
+  "Header": "Cabeçalho",
+  "ItemsCount": "Contagem de itens",
+  "JavascriptSdk": "Javascript sdk",
+  "Menu": "Menu",
+  "Page": "Página",
+  "SearchTerm": "Termo de pesquisa",
+  "SortOrder": "Ordem de classificação",
+  "WindowParameters": "Parâmetros da janela"
+}

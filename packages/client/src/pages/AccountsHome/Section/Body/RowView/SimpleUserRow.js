@@ -1,6 +1,5 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 
 import Row from "@docspace/components/row";
@@ -71,7 +70,10 @@ const StyledSimpleUserRow = styled(Row)`
       ${checkedStyle}
 
       margin-top: -3px;
+      padding-bottom: 1px;
       border-top: ${(props) =>
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+      border-bottom: ${(props) =>
         `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
     }
   `}
@@ -83,12 +85,6 @@ const StyledSimpleUserRow = styled(Row)`
   .styled-element {
     height: 32px;
     margin-right: 12px;
-  }
-  .checkbox {
-    padding-right: 5px !important;
-    :hover {
-      padding-right: 5px !important;
-    }
   }
 `;
 
@@ -142,4 +138,4 @@ const SimpleUserRow = (props) => {
   );
 };
 
-export default withRouter(withContent(SimpleUserRow));
+export default withContent(SimpleUserRow);

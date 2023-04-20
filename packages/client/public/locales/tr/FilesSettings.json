@@ -1,4 +1,5 @@
 {
+  "AdditionalSections": "Ek bölümler",
   "ConnectEmpty": "Burada bir şey yok",
   "DisplayFavorites": "Favorileri Görüntüle",
   "DisplayNotification": "Öğeleri Çöp Kutusuna taşırken bildirim göster",
@@ -8,5 +9,8 @@
   "KeepIntermediateVersion": "Düzenleme yaparken ara sürümleri koru",
   "OriginalCopy": "Dosya kopyasını da orijinal türünde kaydet",
   "StoringFileVersion": "Dosya sürümleri depolanıyor",
-  "UpdateOrCreate": "Aynı isme sahip mevcut dosyanın dosya sürümünü güncelleyin. Aksi halde, dosyanın bir kopyası oluşturulacaktır."
+  "ThirdPartyAccounts": "Üçüncü taraf hesapları",
+  "ThirdPartyBtn": "Üçüncü taraf depolama birimlerinin bağlanmasına izin ver",
+  "UpdateOrCreate": "Aynı isme sahip mevcut dosyanın dosya sürümünü güncelleyin. Aksi halde, dosyanın bir kopyası oluşturulacaktır.",
+  "UploadPluginsHere": "Eklentileri buraya yükle"
 }

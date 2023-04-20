@@ -284,7 +284,7 @@ public class WebItemSecurity
             if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
                 await _countPaidUserChecker.CheckAppend();
-                _userManager.RemoveUserFromGroup(userid, ASC.Core.Users.Constants.GroupUser.ID);
+                await _userManager.RemoveUserFromGroup(userid, ASC.Core.Users.Constants.GroupUser.ID);
             }
 
             if (productid == WebItemManager.PeopleProductID)
@@ -306,7 +306,7 @@ public class WebItemSecurity
 
                 foreach (var id in groups)
                 {
-                    _userManager.RemoveUserFromGroup(userid, id);
+                    await _userManager.RemoveUserFromGroup(userid, id);
                 }
             }
 
@@ -318,7 +318,7 @@ public class WebItemSecurity
                 }
             }
 
-            _userManager.RemoveUserFromGroup(userid, productid);
+            await _userManager.RemoveUserFromGroup(userid, productid);
         }
 
         _webItemSecurityCache.Publish(_tenantManager.GetCurrentTenant().Id);

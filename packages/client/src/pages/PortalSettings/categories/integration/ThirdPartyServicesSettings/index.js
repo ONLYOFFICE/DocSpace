@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
+import Badge from "@docspace/components/badge";
 import toastr from "@docspace/components/toast/toastr";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 import ConsumerItem from "./sub-components/consumerItem";
@@ -18,6 +19,10 @@ const RootContainer = styled(Box)`
 
   .third-party-description {
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
+  }
+
+  .paid-badge {
+    cursor: auto;
   }
 
   @media ${mobile} {
@@ -37,6 +42,10 @@ const RootContainer = styled(Box)`
     border-radius: 6px;
     min-height: 116px;
     padding: 12px 12px 8px 20px;
+  }
+
+  .paid-badge {
+    margin-bottom: 8px;
   }
 `;
 
@@ -126,13 +135,29 @@ class ThirdPartyServices extends React.Component {
       integrationSettingsUrl,
       theme,
       currentColorScheme,
+      isThirdPartyAvailable,
     } = this.props;
     const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
+    const filteredConsumers = consumers.filter(
+      (consumer) =>
+        consumer.title !== "Bitly" &&
+        consumer.title !== "WordPress" &&
+        consumer.title !== "DocuSign"
+    );
+
     return (
       <>
         <RootContainer className="RootContainer">
+          {!isThirdPartyAvailable && (
+            <Badge
+              backgroundColor="#EDC409"
+              label={t("Common:Paid")}
+              className="paid-badge"
+              isPaidBadge={true}
+            />
+          )}
           <Text className="third-party-description">
             {t("ThirdPartyTitleDescription")}
           </Text>
@@ -148,23 +173,22 @@ class ThirdPartyServices extends React.Component {
           </Box>
 
           <div className="consumers-list-container">
-            {consumers
-              .filter((consumer) => consumer.title !== "Bitly")
-              .map((consumer) => (
-                <Box className="consumer-item-wrapper" key={consumer.name}>
-                  <ConsumerItem
-                    consumer={consumer}
-                    dialogVisible={dialogVisible}
-                    isLoading={isLoading}
-                    onChangeLoading={onChangeLoading}
-                    onModalClose={onModalClose}
-                    onModalOpen={onModalOpen}
-                    setConsumer={setConsumer}
-                    updateConsumerProps={updateConsumerProps}
-                    t={t}
-                  />
-                </Box>
-              ))}
+            {filteredConsumers.map((consumer) => (
+              <Box className="consumer-item-wrapper" key={consumer.name}>
+                <ConsumerItem
+                  consumer={consumer}
+                  dialogVisible={dialogVisible}
+                  isLoading={isLoading}
+                  onChangeLoading={onChangeLoading}
+                  onModalClose={onModalClose}
+                  onModalOpen={onModalOpen}
+                  setConsumer={setConsumer}
+                  updateConsumerProps={updateConsumerProps}
+                  t={t}
+                  isThirdPartyAvailable={isThirdPartyAvailable}
+                />
+              </Box>
+            ))}
           </div>
         </RootContainer>
         {dialogVisible && (
@@ -194,7 +218,7 @@ ThirdPartyServices.propTypes = {
 };
 
 export default inject(({ setup, auth }) => {
-  const { settingsStore, setDocumentTitle } = auth;
+  const { settingsStore, setDocumentTitle, currentQuotaStore } = auth;
   const { integrationSettingsUrl, theme, currentColorScheme } = settingsStore;
   const {
     getConsumers,
@@ -203,6 +227,7 @@ export default inject(({ setup, auth }) => {
     setSelectedConsumer,
   } = setup;
   const { consumers } = integration;
+  const { isThirdPartyAvailable } = currentQuotaStore;
 
   return {
     theme,
@@ -213,5 +238,6 @@ export default inject(({ setup, auth }) => {
     setSelectedConsumer,
     setDocumentTitle,
     currentColorScheme,
+    isThirdPartyAvailable,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyServices)));

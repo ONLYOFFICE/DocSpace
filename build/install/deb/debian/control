@@ -63,6 +63,7 @@ Package: {{product}}-files-services
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-7.0,
+ ffmpeg,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-files-services

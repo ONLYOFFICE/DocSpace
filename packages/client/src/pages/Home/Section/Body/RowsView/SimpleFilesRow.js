@@ -4,7 +4,6 @@ import { withTranslation } from "react-i18next";
 import DragAndDrop from "@docspace/components/drag-and-drop";
 import Row from "@docspace/components/row";
 import FilesRowContent from "./FilesRowContent";
-import { withRouter } from "react-router-dom";
 import { isTablet, isMobile } from "react-device-detect";
 
 import withFileActions from "../../../../../HOCs/withFileActions";
@@ -40,16 +39,19 @@ const StyledSimpleFilesRow = styled(Row)`
         cursor: pointer;
         ${checkedStyle}
 
-        margin-top: -2px;
-        padding-top: 1px;
-        padding-bottom: 1px;
-        border-top: ${(props) =>
-          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
-        border-bottom: ${(props) =>
-          `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        ${(props) =>
+          !props.showHotkeyBorder &&
+          css`
+            margin-top: -2px;
+            padding-top: 1px;
+            padding-bottom: 1px;
+            border-top: ${(props) =>
+              `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+            border-bottom: ${(props) =>
+              `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+          `}
       }
     `};
-
   position: unset;
   cursor: ${(props) =>
     !props.isThirdPartyFolder &&
@@ -366,5 +368,5 @@ const SimpleFilesRow = (props) => {
 };
 
 export default withTranslation(["Files", "Translations", "InfoPanel"])(
-  withRouter(withFileActions(withQuickButtons(SimpleFilesRow)))
+  withFileActions(withQuickButtons(SimpleFilesRow))
 );

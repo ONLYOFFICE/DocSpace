@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -19,14 +19,9 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 
 const RemovePortal = (props) => {
-  const {
-    t,
-    greetingTitle,
-    linkData,
-    history,
-    companyInfoSettingsData,
-  } = props;
+  const { t, greetingTitle, linkData, companyInfoSettingsData } = props;
   const [isRemoved, setIsRemoved] = useState(false);
+  const navigate = useNavigate();
 
   const url = companyInfoSettingsData?.site
     ? companyInfoSettingsData.site
@@ -43,7 +38,7 @@ const RemovePortal = (props) => {
   };
 
   const onCancelClick = () => {
-    history.push("/");
+    navigate("/");
   };
 
   return (
@@ -57,13 +52,15 @@ const RemovePortal = (props) => {
 
           <FormWrapper>
             {isRemoved ? (
-              <Trans t={t} i18nKey="SuccessRemoved" ns="Confirm">
-                Your account has been successfully removed. In 10 seconds you
-                will be redirected to the
-                <Link isHovered href={url}>
-                  site
-                </Link>
-              </Trans>
+              <Text>
+                <Trans t={t} i18nKey="SuccessRemoved" ns="Confirm">
+                  Your account has been successfully removed. In 10 seconds you
+                  will be redirected to the
+                  <Link isHovered href={url}>
+                    site
+                  </Link>
+                </Trans>
+              </Text>
             ) : (
               <>
                 <Text className="subtitle">{t("PortalRemoveTitle")}</Text>
@@ -97,8 +94,4 @@ export default inject(({ auth }) => ({
   greetingTitle: auth.settingsStore.greetingSettings,
   theme: auth.settingsStore.theme,
   companyInfoSettingsData: auth.settingsStore.companyInfoSettingsData,
-}))(
-  withRouter(
-    withTranslation(["Confirm", "Common"])(withLoader(observer(RemovePortal)))
-  )
-);
+}))(withTranslation(["Confirm", "Common"])(withLoader(observer(RemovePortal))));

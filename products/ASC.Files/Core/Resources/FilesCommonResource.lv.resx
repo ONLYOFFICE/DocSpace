@@ -284,6 +284,33 @@
     <value>Uzvārds</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>The file is unlocked</value>
+    <value>Fails ir atbloķēts</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace administrators</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Redaktors</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Telpas administrators</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Lietotājs</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Skatītājs</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Komentētājs</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Veidlapas aizpildītājs</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Pārskatītājs</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Līdzstrādnieks</value>
   </data>
 </root>

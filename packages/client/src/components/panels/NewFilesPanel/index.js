@@ -1,5 +1,4 @@
 import React from "react";
-import { withRouter } from "react-router";
 import Backdrop from "@docspace/components/backdrop";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
@@ -94,11 +93,8 @@ class NewFilesPanel extends React.Component {
 
     const { id, extension: fileExst } = e.target.dataset;
 
-    const {
-      /* updateFolderBadge, */ markAsRead,
-      newFiles,
-      refreshFiles,
-    } = this.props;
+    const { /* updateFolderBadge, */ markAsRead, newFiles, refreshFiles } =
+      this.props;
     const readingFiles = this.state.readingFiles;
 
     const fileIds = fileExst ? [id] : [];
@@ -332,11 +328,8 @@ export default inject(
       refreshFiles,
     } = filesStore;
     //const { updateRootBadge } = treeFoldersStore;
-    const {
-      playlist,
-      setMediaViewerData,
-      setCurrentItem,
-    } = mediaViewerDataStore;
+    const { playlist, setMediaViewerData, setCurrentItem } =
+      mediaViewerDataStore;
     const { getIcon, getFolderIcon } = settingsStore;
     const { markAsRead } = filesActionsStore;
     const { pathParts, id: currentFolderId } = selectedFolderStore;
@@ -379,9 +372,7 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withTranslation(["NewFilesPanel", "Common"])(
-      withLoader(observer(NewFilesPanel))(<Loaders.DialogAsideLoader isPanel />)
-    )
+  withTranslation(["NewFilesPanel", "Common"])(
+    withLoader(observer(NewFilesPanel))(<Loaders.DialogAsideLoader isPanel />)
   )
 );

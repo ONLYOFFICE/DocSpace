@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 
 import TagList from "./TagList";
@@ -27,10 +27,28 @@ const StyledTagInput = styled.div`
 `;
 
 const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
+  const inputRef = useRef();
   const [tagInput, setTagInput] = useState("");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const onTagInputChange = (e) => setTagInput(e.target.value);
+  const onTagInputChange = (e) => {
+    const text = e.target.value;
+
+    if (text.trim().length > 0 && !isDropdownOpen) {
+      openDropdown();
+    } else if (text.length === 0 && isDropdownOpen) {
+      closeDropdown();
+    }
+
+    setTagInput(text);
+  };
+
+  const handleFocus = (event) => {
+    const text = event.target.value;
+    if (text.trim().length > 0) {
+      openDropdown();
+    }
+  };
 
   const openDropdown = () => {
     if (isDisabled) return;
@@ -43,28 +61,43 @@ const TagInput = ({ t, tagHandler, setIsScrollLocked, isDisabled }) => {
     setIsDropdownOpen(false);
   };
 
+  const handleKeyDown = (event) => {
+    const keyCode = event.code;
+
+    const isAcceptableEvents =
+      keyCode === "ArrowUp" || keyCode === "ArrowDown" || keyCode === "Enter";
+
+    if (isAcceptableEvents && isDropdownOpen) return;
+
+    event.stopPropagation();
+  };
+
   return (
     <StyledTagInput
       className="set_room_params-input set_room_params-tag_input"
       hasTags={!!tagHandler.tags.length}
     >
       <InputParam
+        ref={inputRef}
         id="shared_tags-input"
         title={`${t("Common:Tags")}:`}
         placeholder={t("TagsPlaceholder")}
         value={tagInput}
         onChange={onTagInputChange}
-        onFocus={openDropdown}
         onBlur={closeDropdown}
+        onFocus={handleFocus}
         isDisabled={isDisabled}
+        onKeyDown={handleKeyDown}
       />
 
       <TagDropdown
+        inputRef={inputRef}
         open={isDropdownOpen}
         tagHandler={tagHandler}
         tagInputValue={tagInput}
         setTagInputValue={setTagInput}
         createTagLabel={t("CreateTagOption")}
+        closeDropdown={closeDropdown}
       />
 
       <TagList

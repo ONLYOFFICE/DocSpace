@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import styled from "styled-components";
 import Text from "@docspace/components/text";
@@ -117,6 +116,4 @@ class PureModulesSettings extends Component {
   }
 }
 
-export default withTranslation(["Settings", "Common"])(
-  withRouter(PureModulesSettings)
-);
+export default withTranslation(["Settings", "Common"])(PureModulesSettings);

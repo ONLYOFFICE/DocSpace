@@ -38,6 +38,10 @@ const UploadXML = (props) => {
     disabled: !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml,
   };
 
+  const onUploadClick = () => {
+    uploadByUrl(t);
+  };
+
   return (
     <FieldContainer
       className="xml-input"
@@ -60,7 +64,7 @@ const UploadXML = (props) => {
           isDisabled={
             !enableSso || uploadXmlUrl.trim().length === 0 || isLoadingXml
           }
-          onClick={uploadByUrl}
+          onClick={onUploadClick}
           tabIndex={2}
         />
 

@@ -11,8 +11,10 @@ import SsoFormField from "./sub-components/SsoFormField";
 import UploadXML from "./sub-components/UploadXML";
 import { bindingOptions, nameIdOptions } from "./sub-components/constants";
 
+const PROVIDER_URL = "https://idpservice/idp";
+
 const IdpSettings = (props) => {
-  const { t } = useTranslation("SingleSignOn");
+  const { t } = useTranslation(["SingleSignOn", "Settings"]);
   const {
     ssoBinding,
     enableSso,
@@ -40,7 +42,7 @@ const IdpSettings = (props) => {
       <SsoFormField
         labelText={t("CustomEntryButton")}
         name="spLoginLabel"
-        placeholder="Single Sign-on"
+        placeholder={t("Settings:SingleSignOn")}
         tabIndex={4}
         tooltipContent={t("CustomEntryTooltip")}
         value={spLoginLabel}
@@ -50,7 +52,7 @@ const IdpSettings = (props) => {
       <SsoFormField
         labelText={t("ProviderURL")}
         name="entityId"
-        placeholder="https://idpservice/idp"
+        placeholder={PROVIDER_URL}
         tabIndex={5}
         tooltipContent={t("ProviderURLTooltip")}
         value={entityId}
@@ -59,17 +61,17 @@ const IdpSettings = (props) => {
 
       <SsoFormField
         labelText={t("SignOnEndpointUrl")}
-        name={ssoBinding.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
+        name={ssoBinding?.includes("POST") ? "ssoUrlPost" : "ssoUrlRedirect"}
         placeholder={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? "https://idpservice/SSO/POST"
             : "https://idpservice/SSO/REDIRECT"
         }
         tabIndex={7}
         tooltipContent={t("SignOnEndpointUrlTooltip")}
-        value={ssoBinding.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
+        value={ssoBinding?.includes("POST") ? ssoUrlPost : ssoUrlRedirect}
         hasError={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? ssoUrlPostHasError
             : ssoUrlRedirectHasError
         }
@@ -99,17 +101,17 @@ const IdpSettings = (props) => {
 
       <SsoFormField
         labelText={t("LogoutEndpointUrl")}
-        name={sloBinding.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
+        name={sloBinding?.includes("POST") ? "sloUrlPost" : "sloUrlRedirect"}
         placeholder={
-          sloBinding.includes("POST")
+          sloBinding?.includes("POST")
             ? "https://idpservice/SLO/POST"
             : "https://idpservice/SLO/REDIRECT"
         }
         tabIndex={9}
         tooltipContent={t("LogoutEndpointUrlTooltip")}
-        value={sloBinding.includes("POST") ? sloUrlPost : sloUrlRedirect}
+        value={sloBinding?.includes("POST") ? sloUrlPost : sloUrlRedirect}
         hasError={
-          ssoBinding.includes("POST")
+          ssoBinding?.includes("POST")
             ? sloUrlPostHasError
             : sloUrlRedirectHasError
         }

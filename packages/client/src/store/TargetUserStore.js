@@ -35,8 +35,8 @@ class TargetUserStore {
   get getDisableProfileType() {
     const res =
       this.peopleStore.authStore.userStore.user.id === this.targetUser.id ||
-      !this.peopleStore.authStore.isAdmin ||
-      this.peopleStore.isPeoplesAdmin
+        !this.peopleStore.authStore.isAdmin ||
+        this.peopleStore.isPeoplesAdmin
         ? false
         : true;
 
@@ -47,8 +47,13 @@ class TargetUserStore {
     return (
       this.targetUser &&
       this.targetUser.userName ===
-        this.peopleStore.authStore.userStore.user.userName
+      this.peopleStore.authStore.userStore.user.userName
     );
+  }
+
+  setHasAvatar = (value) => {
+    this.targetUser.hasAvatar = value;
+    this.peopleStore.authStore.userStore.user.hasAvatar = value;
   }
 
   getTargetUser = async (userName) => {
@@ -80,11 +85,24 @@ class TargetUserStore {
   };
 
   updateCreatedAvatar = (avatar) => {
-    const { big, max, medium, small } = avatar;
-    this.targetUser.avatarMax = max;
-    this.targetUser.avatarMedium = medium;
+    const { big, small, medium, max } = avatar;
+
     this.targetUser.avatar = big;
     this.targetUser.avatarSmall = small;
+    this.targetUser.avatarMedium = medium;
+    this.targetUser.avatarMax = max;
+
+    this.peopleStore.authStore.userStore.updateAvatarInfo(
+      big,
+      small,
+      medium,
+      max
+    );
+
+    console.log("updateCreatedAvatar", {
+      targetUser: this.targetUser,
+      user: this.peopleStore.authStore.userStore.user,
+    });
   };
 
   updateProfileCulture = async (id, culture) => {

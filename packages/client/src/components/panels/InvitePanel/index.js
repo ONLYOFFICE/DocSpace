@@ -44,13 +44,17 @@ const InvitePanel = ({
   roomsView,
   getUsersList,
   filter,
-  setPortalQuota,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
   const [shareLinks, setShareLinks] = useState([]);
   const [roomUsers, setRoomUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [externalLinksVisible, setExternalLinksVisible] = useState(false);
+
+  const onChangeExternalLinksVisible = (visible) => {
+    setExternalLinksVisible(visible);
+  };
 
   const selectRoom = () => {
     const room = folders.find((folder) => folder.id === roomId);
@@ -183,7 +187,6 @@ const InvitePanel = ({
       if (roomsView === "info_members") {
         setUpdateRoomMembers(true);
       }
-      setPortalQuota();
 
       onClose();
       toastr.success(t("Common:UsersInvited"));
@@ -224,6 +227,8 @@ const InvitePanel = ({
           shareLinks={shareLinks}
           getInfo={getInfo}
           roomType={roomType}
+          onChangeExternalLinksVisible={onChangeExternalLinksVisible}
+          externalLinksVisible={externalLinksVisible}
         />
 
         <InviteInput
@@ -235,7 +240,13 @@ const InvitePanel = ({
 
         {!!inviteItems.length && (
           <>
-            <ItemsList t={t} setHasErrors={setHasErrors} roomType={roomType} />
+            <ItemsList
+              t={t}
+              setHasErrors={setHasErrors}
+              roomType={roomType}
+              externalLinksVisible={externalLinksVisible}
+            />
+
             <StyledButtons>
               <Button
                 scale={true}
@@ -287,7 +298,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     roomsView,
     filesView,
   } = auth.infoPanelStore;
-  const { setPortalQuota } = auth.currentQuotaStore;
 
   const {
     getPortalInviteLinks,
@@ -312,7 +322,6 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   } = filesStore;
 
   return {
-    setPortalQuota,
     folders,
     getUsersByQuery,
     getRoomSecurityInfo,

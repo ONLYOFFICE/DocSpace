@@ -18,7 +18,7 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
       const containerWidth = tagsRef.current.offsetWidth;
 
       if (tags.length === 1) {
-        if (tags[0]?.isDefault) {
+        if (tags[0]?.isDefault || tags[0]?.isThirdParty) {
           const tag = { ...tags[0], maxWidth: `100%` };
 
           newTags.push(tag);

@@ -1,6 +1,5 @@
 import React from "react";
 //import PropTypes from "prop-types";
-import { withRouter } from "react-router";
 import { isMobile } from "react-device-detect";
 import axios from "axios";
 import toastr from "@docspace/components/toast/toastr";
@@ -337,13 +336,23 @@ class PureHome extends React.Component {
       secondaryProgressDataStoreIcon,
       itemsSelectionLength,
       itemsSelectionTitle,
+      setItemsSelectionTitle,
+      refreshFiles,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
     }
+
+    if (isProgressFinished !== prevProps.isProgressFinished) {
+      setTimeout(() => {
+        refreshFiles();
+      }, 100);
+    }
+
     if (
       isProgressFinished &&
+      itemsSelectionTitle &&
       isProgressFinished !== prevProps.isProgressFinished
     ) {
       this.showOperationToast(
@@ -351,6 +360,7 @@ class PureHome extends React.Component {
         itemsSelectionLength,
         itemsSelectionTitle
       );
+      setItemsSelectionTitle(null);
     }
   }
 
@@ -659,14 +669,11 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
       itemsSelectionLength,
       itemsSelectionTitle,
+      setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders } = filesActionsStore;
 
@@ -723,6 +730,7 @@ export default inject(
       selectionTitle,
 
       itemsSelectionLength,
+      setItemsSelectionTitle,
       itemsSelectionTitle,
       isErrorRoomNotAvailable,
       isRoomsFolder,
@@ -772,4 +780,4 @@ export default inject(
       isLoadedEmptyPage,
     };
   }
-)(withRouter(observer(Home)));
+)(observer(Home));

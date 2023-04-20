@@ -1,5 +1,11 @@
 import React, { useEffect } from "react";
-import { Router, Switch, Route, Redirect } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { inject, observer } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
@@ -8,7 +14,6 @@ import PublicRoute from "@docspace/common/components/PublicRoute";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
-import history from "@docspace/common/history";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
 import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
@@ -29,6 +34,7 @@ import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
+import queryString from "query-string";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
@@ -39,20 +45,22 @@ const Wizard = React.lazy(() => import("./pages/Wizard"));
 const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
 
 const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
-// const MyProfile = React.lazy(() => import("./pages/My"));
+
 const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
 const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
 const FormGallery = React.lazy(() => import("./pages/FormGallery"));
 
 const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
 
-const PortalSettingsRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <PortalSettings {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
+const PortalSettingsRoute = (props) => {
+  return (
+    <React.Suspense fallback={<AppLoader />}>
+      <ErrorBoundary>
+        <PortalSettings {...props} />
+      </ErrorBoundary>
+    </React.Suspense>
+  );
+};
 
 const Error404Route = (props) => (
   <React.Suspense fallback={<AppLoader />}>
@@ -69,6 +77,15 @@ const Error401Route = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const ErrorUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <ErrorUnavailable {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const FilesRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -119,14 +136,6 @@ const WizardRoute = (props) => (
   </React.Suspense>
 );
 
-// const MyProfileRoute = (props) => (
-//   <React.Suspense fallback={<AppLoader />}>
-//     <ErrorBoundary>
-//       <MyProfile {...props} />
-//     </ErrorBoundary>
-//   </React.Suspense>
-// );
-
 const FormGalleryRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -135,7 +144,19 @@ const FormGalleryRoute = (props) => (
   </React.Suspense>
 );
 
-// const RedirectToHome = () => <Redirect to={PROXY_HOMEPAGE_URL} />;
+const ConfirmNavigate = () => {
+  const location = useLocation();
+
+  const type = queryString.parse(location.search).type;
+
+  return (
+    <Navigate
+      to={`/confirm/${type}`}
+      search={location.search}
+      state={{ from: location }}
+    />
+  );
+};
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -195,6 +216,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     socketHelper.emit({
       command: "subscribe",
       data: { roomParts: "backup-restore" },
+    });
+    socketHelper.emit({
+      command: "subscribe",
+      data: { roomParts: "quota" },
     });
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
@@ -426,8 +451,8 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 
   return (
-    <Layout>
-      <Router history={history}>
+    <Router>
+      <Layout>
         {toast}
         <ReactSmartBanner t={t} ready={ready} />
         {isEditor || !isMobileOnly ? <></> : <NavMenu />}
@@ -438,84 +463,108 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
         <Main isDesktop={isDesktop}>
           {!isMobileOnly && <MainBar />}
           <div className="main-container">
-            <Switch>
-              <Redirect
-                exact
-                sensitive
-                from="/Products/Files/"
-                to="/rooms/shared"
+            <Routes>
+              <Route
+                caseSensitive
+                path="/Products/Files/"
+                element={<Navigate to="/rooms/shared" replace />}
               />
-              <PrivateRoute
-                exact
-                path={[
-                  "/",
 
-                  "/rooms/personal",
-                  "/rooms/personal/filter",
-
-                  "/rooms/shared",
-                  "/rooms/shared/filter",
-                  "/rooms/shared/:room",
-                  "/rooms/shared/:room/filter",
-
-                  "/rooms/archived",
-                  "/rooms/archived/filter",
-                  "/rooms/archived/:room",
-                  "/rooms/archived/:room/filter",
-
-                  "/files/favorite",
-                  "/files/favorite/filter",
-
-                  "/files/recent",
-                  "/files/recent/filter",
-
-                  "/files/trash",
-                  "/files/trash/filter",
-
-                  "/accounts",
-                  "/accounts/filter",
-
-                  "/accounts/create/:type",
-                  "/accounts/edit/:userId",
-                  "/accounts/view/:userId",
-                  "/accounts/view/@self",
-                  "/accounts/view/@self/notification",
-
-                  "/settings",
-                  "/settings/common",
-                  "/settings/admin",
-                  "/products/files",
-                  //"/settings/connected-clouds",
-                ]}
-                component={FilesRoute}
+              <Route
+                path="/*"
+                element={
+                  <PrivateRoute>
+                    <FilesRoute />
+                  </PrivateRoute>
+                }
               />
-              <PrivateRoute
+
+              <Route
                 path={"/form-gallery/:folderId"}
-                component={FormGalleryRoute}
+                element={
+                  <PrivateRoute>
+                    <FormGalleryRoute />
+                  </PrivateRoute>
+                }
               />
-              <PublicRoute exact path={"/wizard"} component={WizardRoute} />
-              <PrivateRoute path={"/about"} component={AboutRoute} />
-              <Route path={"/confirm"} component={ConfirmRoute} />
-              <PrivateRoute
-                restricted
-                path={"/portal-settings"}
-                component={PortalSettingsRoute}
+
+              <Route
+                path={"/wizard"}
+                element={
+                  <PublicRoute>
+                    <WizardRoute />
+                  </PublicRoute>
+                }
               />
-              <PublicRoute
-                path={"/preparation-portal"}
-                component={PreparationPortalRoute}
+
+              <Route
+                path={"/about"}
+                element={
+                  <PrivateRoute>
+                    <AboutRoute />
+                  </PrivateRoute>
+                }
               />
-              <PrivateRoute
+
+              {/* <Route path={"/confirm/:type/*"} element={<ConfirmRoute />} /> */}
+              <Route path={"/confirm/*"} element={<ConfirmRoute />} />
+              <Route path={"/confirm.aspx/*"} element={<ConfirmRoute />} />
+
+              <Route
+                path={"/portal-settings/*"}
+                element={
+                  <PrivateRoute restricted>
+                    <PortalSettingsRoute />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
                 path={"/portal-unavailable"}
-                component={PortalUnavailableRoute}
+                element={
+                  <PrivateRoute>
+                    <PortalUnavailableRoute />
+                  </PrivateRoute>
+                }
               />
-              <PrivateRoute path={"/error401"} component={Error401Route} />
-              <PrivateRoute component={Error404Route} />
-            </Switch>
+              <Route
+                path={"/preparation-portal"}
+                element={
+                  <PublicRoute>
+                    <PreparationPortalRoute />
+                  </PublicRoute>
+                }
+              />
+              <Route
+                path={"/unavailable"}
+                element={
+                  <PrivateRoute>
+                    <ErrorUnavailableRoute />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                path={"/error401"}
+                element={
+                  <PrivateRoute>
+                    <Error401Route />
+                  </PrivateRoute>
+                }
+              />
+
+              <Route
+                element={
+                  <PrivateRoute>
+                    <Error404Route />
+                  </PrivateRoute>
+                }
+              />
+            </Routes>
           </div>
         </Main>
-      </Router>
-    </Layout>
+      </Layout>
+    </Router>
   );
 };
 
