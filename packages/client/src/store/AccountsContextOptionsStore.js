@@ -305,7 +305,7 @@ class AccountsContextOptionsStore {
   };
 
   onProfileClick = () => {
-    this.authStore.settingsStore.navigate(PROFILE_SELF_URL);
+    window.DocSpace.navigate(PROFILE_SELF_URL);
   };
 
   toggleChangeNameDialog = () => {

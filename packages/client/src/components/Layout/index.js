@@ -35,14 +35,17 @@ const StyledContainer = styled.div`
 `;
 
 const Layout = (props) => {
-  const { children, isTabletView, setIsTabletView, setNavigate, setLocation } =
-    props;
+  const { children, isTabletView, setIsTabletView } = props;
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
 
-  setNavigate(useNavigate());
-  setLocation(useLocation());
+  if (window.DocSpace) {
+    window.DocSpace.navigate = useNavigate();
+    window.DocSpace.location = useLocation();
+  } else {
+    window.DocSpace = { navigate: useNavigate(), location: useLocation() };
+  }
 
   const intervalTime = 100;
   const endTimeout = 300;
@@ -193,7 +196,5 @@ export default inject(({ auth, bannerStore }) => {
   return {
     isTabletView: auth.settingsStore.isTabletView,
     setIsTabletView: auth.settingsStore.setIsTabletView,
-    setNavigate: auth.settingsStore.setNavigate,
-    setLocation: auth.settingsStore.setLocation,
   };
 })(observer(Layout));

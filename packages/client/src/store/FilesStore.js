@@ -1094,7 +1094,7 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    this.authStore.settingsStore.navigate(newUrl);
+    window.DocSpace.navigate(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {

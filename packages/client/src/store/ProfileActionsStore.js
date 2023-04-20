@@ -101,15 +101,15 @@ class ProfileActionsStore {
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
 
-    this.authStore.settingsStore.navigate(PROFILE_SELF_URL);
+    window.DocSpace.navigate(PROFILE_SELF_URL);
   };
 
   onSettingsClick = (settingsUrl) => {
-    this.authStore.settingsStore.navigate(settingsUrl);
+    window.DocSpace.navigate(settingsUrl);
   };
 
   onPaymentsClick = () => {
-    this.authStore.settingsStore.navigate(PAYMENTS_URL);
+    window.DocSpace.navigate(PAYMENTS_URL);
   };
 
   onHelpCenterClick = () => {
@@ -154,7 +154,7 @@ class ProfileActionsStore {
     if (isDesktop || isTablet) {
       this.setIsAboutDialogVisible(true);
     } else {
-      this.authStore.settingsStore.navigate(ABOUT_URL);
+      window.DocSpace.navigate(ABOUT_URL);
     }
   };
 

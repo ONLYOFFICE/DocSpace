@@ -1970,7 +1970,7 @@ class FilesActionStore {
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;
-        this.authStore.settingsStore.navigate(url);
+        window.DocSpace.navigate(url);
         return;
       }
 
