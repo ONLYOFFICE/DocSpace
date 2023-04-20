@@ -1,7 +1,7 @@
-import PortalSettingsRouter from "./portalSettings";
-import ClientRouter from "./client";
-import ConfirmRouter from "./confirm";
+import PortalSettingsRoutes from "./portalSettings";
+import ClientRoutes from "./client";
+import ConfirmRoutes from "./confirm";
 
-const routes = [...ClientRouter, PortalSettingsRouter, ...ConfirmRouter];
+const routes = [...ClientRoutes, PortalSettingsRoutes, ...ConfirmRoutes];
 
 export default routes;

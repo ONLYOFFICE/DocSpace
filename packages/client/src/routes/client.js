@@ -24,7 +24,7 @@ const PortalUnavailable = loadable(() => import("../pages/PortalUnavailable"));
 const ErrorUnavailable = loadable(() => import("../pages/Errors/Unavailable"));
 const Error401 = loadable(() => import("client/Error401"));
 
-const ClientRouter = [
+const ClientRoutes = [
   {
     path: "/",
     element: (
@@ -259,4 +259,4 @@ const ClientRouter = [
   },
 ];
 
-export default ClientRouter;
+export default ClientRoutes;

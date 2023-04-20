@@ -164,7 +164,7 @@ const confirmRoutes = [
   },
 ];
 
-const ConfirmRouter = [
+const ConfirmParentRoutes = [
   {
     path: "confirm.aspx",
     element: (
@@ -187,4 +187,4 @@ const ConfirmRouter = [
   },
 ];
 
-export default ConfirmRouter;
+export default ConfirmParentRoutes;

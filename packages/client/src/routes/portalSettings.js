@@ -91,7 +91,7 @@ const RestoreBackup = loadable(() =>
   )
 );
 
-const PortalSettingsRouter = {
+const PortalSettingsRoutes = {
   path: "portal-settings/",
   element: (
     <PrivateRoute restricted>
@@ -241,4 +241,4 @@ const PortalSettingsRouter = {
   ],
 };
 
-export default PortalSettingsRouter;
+export default PortalSettingsRoutes;
