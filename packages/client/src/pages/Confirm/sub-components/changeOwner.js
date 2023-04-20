@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
@@ -12,11 +12,41 @@ import {
 } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import FormWrapper from "@docspace/components/form-wrapper";
+import toastr from "@docspace/components/toast/toastr";
 import DocspaceLogo from "../../../DocspaceLogo";
+import { ownerChange } from "@docspace/common/api/settings";
+import { getUserFromConfirm } from "@docspace/common/api/people";
 
 const ChangeOwnerForm = (props) => {
-  const { t, greetingTitle } = props;
-  console.log(props.linkData);
+  const { t, greetingTitle, linkData, history } = props;
+  const [newOwner, setNewOwner] = useState("");
+
+  const ownerId = linkData.uid;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const confirmKey = linkData.confirmHeader;
+      const user = await getUserFromConfirm(ownerId, confirmKey);
+      setNewOwner(user?.displayName);
+    };
+
+    fetchData();
+  }, []);
+
+  const onChangeOwnerClick = async () => {
+    try {
+      await ownerChange(ownerId, linkData.confirmHeader);
+      history.push("/");
+    } catch (error) {
+      toastr.error(e);
+      console.error(error);
+    }
+  };
+
+  const onCancelClick = () => {
+    history.push("/");
+  };
+
   return (
     <StyledPage>
       <StyledContent>
@@ -28,7 +58,7 @@ const ChangeOwnerForm = (props) => {
 
           <FormWrapper>
             <Text className="subtitle">
-              {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
+              {t("ConfirmOwnerPortalTitle", { newOwner: newOwner })}
             </Text>
             <ButtonsWrapper>
               <Button
@@ -38,7 +68,7 @@ const ChangeOwnerForm = (props) => {
                 label={t("Common:SaveButton")}
                 tabIndex={2}
                 isDisabled={false}
-                //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
+                onClick={onChangeOwnerClick}
               />
               <Button
                 scale
@@ -46,7 +76,7 @@ const ChangeOwnerForm = (props) => {
                 label={t("Common:CancelButton")}
                 tabIndex={2}
                 isDisabled={false}
-                //onClick={this.onCancelClick}
+                onClick={onCancelClick}
               />
             </ButtonsWrapper>
           </FormWrapper>
