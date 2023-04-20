@@ -181,6 +181,7 @@ const Badges = ({
             {...onShowVersionHistoryProp}
             noHover={true}
             isVersionBadge={true}
+            title={t("ShowVersionHistory")}
           />
         </BadgeWrapper>
       )}

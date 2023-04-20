@@ -135,6 +135,7 @@ const ControlButtons = ({
             isFill
             getData={getContextOptionsFolder}
             isDisabled={false}
+            title={titles?.contextMenu}
           />
 
           {!isDesktop && (

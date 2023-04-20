@@ -735,6 +735,7 @@ const SectionHeaderContent = (props) => {
                     actions: isRoomsFolder
                       ? t("Files:NewRoom")
                       : t("Common:Actions"),
+                    contextMenu: t("Translations:TitleShowFolderActions"),
                   }}
                   withMenu={!isRoomsFolder}
                   onPlusClick={onCreateRoom}
