@@ -213,6 +213,87 @@ $GreenButton
 
 *注意*：此链接仅7天有效。请在此期限内完成门户网站地址更改流程。</value>
   </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>您好，$UserName！
+
+欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}". 现在您可以：
+
+*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+
+*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+
+*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+
+*# 连接任何云存储* ，无需在应用程序之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/" 或询问我们的"支持团队":"https://www.onlyoffice.com/zh/support-contact-form.aspx"。
+
+ONLYOFFICE 团队
+
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>您好，$UserName！
+
+欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}". 现在您可以：
+
+*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+
+*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+
+*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+
+*# 连接任何云存储* ，无需在应用程序之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/" 或询问我们的"支持团队":"https://www.onlyoffice.com/zh/support-contact-form.aspx"。
+
+ONLYOFFICE 团队
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>您好，$UserName！
+
+欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+
+*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+
+*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+
+*# 连接任何云存储* ，无需在应用程序之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/" 或询问我们的"支持团队":"https://www.onlyoffice.com/zh/support-contact-form.aspx"。
+
+ONLYOFFICE 团队
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>您好，$UserName！
+
+欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+
+*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+
+*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+
+*# 连接任何云存储* ，无需在应用程序之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/" 或询问我们的"支持团队":"https://www.onlyoffice.com/zh/support-contact-form.aspx"。
+
+ONLYOFFICE 团队
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.来自 "${__VirtualRootPath}":"${__VirtualRootPath}" 门户的消息
 
@@ -407,6 +488,13 @@ ONLYOFFICE™客服团队
 
 ^如果您不想收到关于档案更新的通知，请管理您的 "订阅设置":"$RecipientSubscriptionConfigURL"。^</value>
   </data>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1. $Date 您的协作空间有什么新鲜事？
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
+  </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP测试消息
 
@@ -441,6 +529,18 @@ ONLYOFFICE团队</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}。门户地址更改</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>欢迎来到 ONLYOFFICE 协作空间！</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>欢迎来到 ONLYOFFICE 协作空间！</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>欢迎来到 ONLYOFFICE 协作空间！</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>欢迎来到 ONLYOFFICE 协作空间！</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>向管理员发送的用户消息</value>
@@ -495,5 +595,47 @@ ONLYOFFICE团队</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>新用户添加到${LetterLogoText}门户</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已创建新的文档： &lt;a href={1}&gt;{2}&lt;/a&gt; ，房间： &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已添加新的评论，文档: &lt;a href={1}&gt;{2}&lt;/a&gt; ，房间： &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已上传新的文档： &lt;a href={1}&gt;{2}&lt;/a&gt; ，房间： &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已重新命名房间： &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已创建新的房间： &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已被移出房间： &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已编辑文档：&lt;a href={1}&gt;{2}&lt;/a&gt; in the room: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 已删除房间： &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt;  已被加入房间：&lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 把房间： &lt;a href={1}&gt;{2}&lt;/a&gt; 已移动至归档 - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 被任命为 &lt;b&gt;{1}&lt;/b&gt; ，房间： &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>新增协作空间的用户： &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; 改变了用户的访问级别 &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>协作空间的用户已更新： &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

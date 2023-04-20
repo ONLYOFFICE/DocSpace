@@ -420,6 +420,12 @@ setup_nginx(){
 	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
+	NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
+	NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
+
+	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES};!" -i ${NGINX_ROOT_DIR}/nginx.conf
+	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS};!" -i ${NGINX_ROOT_DIR}/nginx.conf
+
 	if [ "$DIST" = "RedHat" ]; then
 		# Remove default nginx settings
 		DELETION_LINE=$(sed -n '/server {/=' /etc/nginx/nginx.conf | head -n 1)
@@ -465,7 +471,26 @@ setup_nginx(){
 				true
 			done
 		fi
+
+		if rpm -q "firewalld"; then
+			firewall-cmd --permanent --zone=public --add-service=http
+			firewall-cmd --permanent --zone=public --add-service=https
+			systemctl restart firewalld.service
+		fi
+	elif [ "$DIST" = "Debian" ]; then
+		if ! id "nginx" &>/dev/null; then
+			systemctl stop nginx
+
+			rm -dfr /var/log/nginx/*
+			rm -dfr /var/cache/nginx/*
+			useradd -s /bin/false nginx
+
+			systemctl start nginx
+		else
+			systemctl reload nginx
+		fi
 	fi
+
     chown nginx:nginx /etc/nginx/* -R
 	systemctl enable nginx >/dev/null 2>&1
 	systemctl restart nginx
@@ -573,6 +598,11 @@ setup_redis() {
 
 	sed "s_\(\"Host\":\).*_\1 \"${REDIS_HOST}\",_" -i $APP_DIR/redis.json
 	sed "s_\(\"Port\":\).*_\1 \"${REDIS_PORT}\"_" -i $APP_DIR/redis.json
+
+	if [ -e /etc/redis/redis.conf ]; then
+		sed "s_\(^bind\).*_\1 ${REDIS_HOST}_" -i /etc/redis/redis.conf
+		sed -r "/^save\s[0-9]+/d" -i /etc/redis/redis.conf
+	fi
 
 	systemctl enable $REDIS_PACKAGE >/dev/null 2>&1
 	systemctl restart $REDIS_PACKAGE

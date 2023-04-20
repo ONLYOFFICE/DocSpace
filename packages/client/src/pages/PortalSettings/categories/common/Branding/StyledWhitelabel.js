@@ -8,6 +8,10 @@ const WhiteLabelWrapper = styled.div`
     color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
+  .paid-badge {
+    cursor: auto;
+  }
+
   .header-container {
     display: flex;
     align-items: center;

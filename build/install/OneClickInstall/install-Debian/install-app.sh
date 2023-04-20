@@ -41,26 +41,6 @@ elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
 	apt-get install -y --only-upgrade ${package_sysname}-documentserver
 fi
 
-NGINX_ROOT_DIR="/etc/nginx"
-
-NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-sed 's/^worker_processes.*/'"worker_processes ${NGINX_WORKER_PROCESSES};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-sed 's/worker_connections.*/'"worker_connections ${NGINX_WORKER_CONNECTIONS};"'/' -i ${NGINX_ROOT_DIR}/nginx.conf
-
-if ! id "nginx" &>/dev/null; then
-	systemctl stop nginx
-
-	rm -dfr /var/log/nginx/*
-	rm -dfr /var/cache/nginx/*
-	useradd -s /bin/false nginx
-
-	systemctl start nginx
-else
-	systemctl reload nginx
-fi
-
 if [ "$PRODUCT_INSTALLED" = "false" ]; then
 	echo ${product} ${product}/db-pwd select $MYSQL_SERVER_PASS | sudo debconf-set-selections
 	echo ${product} ${product}/db-user select $MYSQL_SERVER_USER | sudo debconf-set-selections

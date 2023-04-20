@@ -319,4 +319,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>ファイルがアンロックとなりました</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace 管理者</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>編集者</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>ルームの管理者</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>ユーザー</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>読み取り専用</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>コメント</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>フォームへの入力</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>レビュー</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>コラボレーター</value>
+  </data>
 </root>
