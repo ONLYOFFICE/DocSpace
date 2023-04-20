@@ -85,13 +85,10 @@ jobs:
 
       - name: Get variables
         run: |
-          git branch --show-current
           echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          # RawBranch=$(git branch -r --contains ${{ github.ref }})
-          # echo "branch=$(echo ${RawBranch/origin\/} | tr '/' '-' )" >> $GITHUB_ENV 
-          # echo "branch=$(git branch --show-current)" >> $GITHUB_ENV
-          echo "branch_name=${GITHUB_REF##*/}" >> $GITHUB_ENV
-          echo "${GITHUB_REF}"
+          echo "branch_name=$(echo ${{ github.ref#refs/heads/ }}" >> $GITHUB_ENV 
+          echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
 
       - name: INSTALL tools & Prepare build
         run: |
@@ -120,14 +117,14 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ env.branch_name }}.tar.gz -O DocSpace-${{ env.branch }}.tar.gz
+          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ env.branch_name }}.tar.gz -O DocSpace-${{ env.branch_name }}.tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
 
           sed -i -e '/BuildRequires/d' product.spec
           rename 's/product/${{ env.product }}/g' ../../common/*.sh
-          rpmbuild -D "GIT_BRANCH ${{ env.branch_name }}" -D "_topdir $(pwd)" -D "version 1.0.0" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "GIT_BRANCH ${{ env.branch_name }}" -D "_topdir $(pwd)" -D "version ${{ env.version }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
       - name: Upload assets RPM 
