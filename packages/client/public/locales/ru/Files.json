@@ -114,5 +114,7 @@
   "ViewList": "Список",
   "ViewOnlyRooms": "Просмотр",
   "ViewTiles": "Плитки",
-  "WithSubfolders": "С подпапками"
+  "WithSubfolders": "С подпапками",
+  "MarkAsVersion": "Отметить как версию",
+  "MarkAsRevision": "Отметить как ревизию"
 }

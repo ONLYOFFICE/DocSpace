@@ -114,5 +114,7 @@
   "ViewList": "List",
   "ViewOnlyRooms": "View-only",
   "ViewTiles": "Tiles",
-  "WithSubfolders": "With subfolders"
+  "WithSubfolders": "With subfolders",
+  "MarkAsVersion": "Mark as version",
+  "MarkAsRevision": "Mark as revision"
 }
