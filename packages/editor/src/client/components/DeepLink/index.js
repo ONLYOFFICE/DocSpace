@@ -12,7 +12,7 @@ import {
   StyledActionsWrapper,
 } from "./StyledDeepLink";
 
-const DeepLink = () => {
+const DeepLink = ({ fileInfo }) => {
   const [isRemember, setIsRemember] = useState(false);
 
   const onChangeCheckbox = () => {
@@ -29,6 +29,18 @@ const DeepLink = () => {
     console.log("onStayBrowserClick");
   };
 
+  const getFileIcon = () => {
+    const fileExst = fileInfo.fileExst.slice(1);
+    const iconPath = "/static/images/icons/32/";
+    return `${iconPath}${fileExst}.svg`;
+  };
+
+  const getFileTitle = () => {
+    return fileInfo.fileExst
+      ? fileInfo.title.split(".").slice(0, -1).join(".")
+      : fileInfo.title;
+  };
+
   return (
     <>
       <StyledSimpleNav>
@@ -40,9 +52,9 @@ const DeepLink = () => {
             Opening a document
           </Text>
           <StyledFileTile>
-            <img src="/static/images/icons/32/xlsx.svg" />
+            <img src={getFileIcon()} />
             <Text fontSize="14px" fontWeight="600" truncate>
-              Spreadsheet
+              {getFileTitle()}
             </Text>
           </StyledFileTile>
           <Text>
