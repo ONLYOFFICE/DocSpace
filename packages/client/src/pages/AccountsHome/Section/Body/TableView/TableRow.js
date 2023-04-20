@@ -326,8 +326,6 @@ const PeopleTableRow = (props) => {
     onContentRowClick && onContentRowClick(!isChecked, item);
   };
 
-  console.log({ contextOptionsProps });
-
   return (
     <StyledWrapper
       className={`user-item ${
