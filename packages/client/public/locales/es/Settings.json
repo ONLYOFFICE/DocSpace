@@ -139,7 +139,7 @@
   "PortalRenaming": "Cambio del nombre de portal",
   "PortalRenamingDescription": "Puede cambiar la dirección de su portal aquí.",
   "PortalRenamingLabelText": "Nombre de portal nuevo",
-  "PortalRenamingMobile": " Introduzca la parte que aparecerá junto a la dirección del espacio {{domain}}. Ojo: su antigua dirección del espacio dejará de estar disponible para los nuevos usuarios una vez que haga clic en el botón Guardar.",
+  "PortalRenamingMobile": "Introduzca la parte que aparecerá junto a la dirección del espacio {{domain}}. Ojo: su antigua dirección del espacio dejará de estar disponible para los nuevos usuarios una vez que haga clic en el botón Guardar.",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Introduzca la parte que aparecerá junto a la dirección del espacio {{domain}}.",
   "ProductUserOpportunities": "Ver perfiles y grupos",
   "RecoveryFileNotSelected": "Error de recuperación. No se ha seleccionado el archivo de recuperación.",

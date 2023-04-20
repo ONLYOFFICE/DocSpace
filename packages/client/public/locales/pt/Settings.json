@@ -121,7 +121,7 @@
   "PasswordMinLenght": "Comprimento mínimo da senha",
   "Path": "Destino",
   "PleaseNote": "Por favor, note",
-  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: o seu antigo endereço do portal ficará disponível para novos utilizadores assim que clicar no botão <2>{{save}}</2>.",
+  "PleaseNoteDescription": "<0>{{pleaseNote}}</0>: o seu antigo endereço do portal ficará indisponível para novos utilizadores assim que clicar no botão <2>{{save}}</2>.",
   "Plugins": "Plugins",
   "PortalAccess": "Acesso ao Portal",
   "PortalAccessSubTitle": "Esta secção permite-lhe fornecer aos utilizadores formas seguras e convenientes de aceder ao portal.",
