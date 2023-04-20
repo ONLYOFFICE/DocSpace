@@ -64,7 +64,7 @@ jobs:
           cd build/install/deb/ 
           rename -f -v "s/product/${{ env.product }}/" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/${{ env.version }}.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
 
@@ -118,7 +118,7 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O ${{ env.product }}-${{ steps.get_vars.outputs.branch_name }}.tar.gz
+          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O ${{ env.product }}-${{ env.version }}.tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
