@@ -198,6 +198,11 @@ public class WhitelabelController : BaseSettingsController
 
         foreach (var logoType in (WhiteLabelLogoTypeEnum[])Enum.GetValues(typeof(WhiteLabelLogoTypeEnum)))
         {
+            if (logoType == WhiteLabelLogoTypeEnum.Notification)
+            {
+                continue;
+            }
+
             var result = new WhiteLabelItemDto
             {
                 Name = logoType.ToString(),
