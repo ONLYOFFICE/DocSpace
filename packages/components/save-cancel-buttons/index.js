@@ -121,11 +121,17 @@ SaveCancelButtons.propTypes = {
   showReminder: PropTypes.bool,
   /** Sets the button to present a disabled state */
   displaySettings: PropTypes.bool,
+  /** Displays the scrollbar */
   hasScroll: PropTypes.bool,
+  /** Sets the min width of the button */
   minwidth: PropTypes.string,
+  /** Sets the Cancel button disabled by default */
   disableRestoreToDefault: PropTypes.bool,
+  /** Sets the button to present a disabled state while executing an operation after clicking the save button */
   isSaving: PropTypes.bool,
+  /** Activates the disabled button */
   cancelEnable: PropTypes.bool,
+  /** Accepts css tab-index */
   tabIndex: PropTypes.number,
 };
 
