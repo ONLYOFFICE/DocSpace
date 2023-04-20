@@ -312,7 +312,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "rooms/personal/*",
+            path: "rooms/personal",
             element: (
               <PrivateRoute restricted withManager withCollaborator>
                 <Home />
@@ -320,7 +320,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "files/trash/*",
+            path: "rooms/personal/filter",
             element: (
               <PrivateRoute restricted withManager withCollaborator>
                 <Home />
@@ -328,7 +328,23 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "rooms/shared/*",
+            path: "files/trash",
+            element: (
+              <PrivateRoute restricted withManager withCollaborator>
+                <Home />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "files/trash/filter",
+            element: (
+              <PrivateRoute restricted withManager withCollaborator>
+                <Home />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/shared",
             element: (
               <PrivateRoute>
                 <Home />
@@ -336,7 +352,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "rooms/archived/*",
+            path: "rooms/shared/filter",
             element: (
               <PrivateRoute>
                 <Home />
@@ -344,7 +360,23 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "products/files/",
+            path: "rooms/archived",
+            element: (
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "rooms/archived/filter",
+            element: (
+              <PrivateRoute>
+                <Home />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "products/files",
             element: (
               <PrivateRoute>
                 <Home />
@@ -410,7 +442,7 @@ const router = createBrowserRouter([
         ],
       },
       {
-        path: "/portal-settings/",
+        path: "portal-settings/",
         element: (
           <PrivateRoute restricted>
             <React.Suspense fallback={<AppLoader />}>
@@ -424,10 +456,22 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <CustomizationSettings />,
+            element: <Navigate to="customization/general" />,
           },
           {
             path: "customization",
+            element: <Navigate to="customization/general" />,
+          },
+          {
+            path: "customization/general",
+            element: <CustomizationSettings />,
+          },
+          {
+            path: "customization/branding",
+            element: <CustomizationSettings />,
+          },
+          {
+            path: "customization/appearance",
             element: <CustomizationSettings />,
           },
           {
@@ -446,16 +490,24 @@ const router = createBrowserRouter([
             path: "customization/general/portal-renaming",
             element: <PortalRenaming />,
           },
+          // {
+          //   path: "common/whitelabel",
+          //   element: <WhiteLabel />,
+          // },
           {
-            path: "common/whitelabel",
-            element: <WhiteLabel />,
-          },
-          {
-            path: "security/*",
-            element: <SecuritySettings />,
+            path: "security",
+            element: <Navigate to="security/access-portal" />,
           },
           {
             path: "security/access-portal",
+            element: <SecuritySettings />,
+          },
+          {
+            path: "security/login-history",
+            element: <SecuritySettings />,
+          },
+          {
+            path: "security/audit-trail",
             element: <SecuritySettings />,
           },
           {
@@ -483,8 +535,8 @@ const router = createBrowserRouter([
             element: <SessionLifetimePage />,
           },
           {
-            path: "integration/*",
-            element: <Integration />,
+            path: "integration",
+            element: <Navigate to="integration/third-party-services" />,
           },
           {
             path: "integration/third-party-services",
@@ -499,19 +551,43 @@ const router = createBrowserRouter([
             element: <Payments />,
           },
           {
-            path: "developer/*",
+            path: "developer",
+            element: <Navigate to="developer/tools" />,
+          },
+          {
+            path: "developer/tools",
             element: <DeveloperTools />,
           },
           {
-            path: "backup/*",
+            path: "backup",
+            element: <Navigate to="backup/data-backup" />,
+          },
+          {
+            path: "backup/data-backup",
             element: <Backup />,
           },
           {
-            path: "delete-data/*",
+            path: "backup/auto-backup",
+            element: <Backup />,
+          },
+          {
+            path: "delete-data",
+            element: <Navigate to="delete-data/deletion" />,
+          },
+          {
+            path: "delete-data/deletion",
             element: <DeleteDataPage />,
           },
           {
-            path: "restore/*",
+            path: "delete-data/deactivation",
+            element: <DeleteDataPage />,
+          },
+          {
+            path: "restore",
+            element: <Navigate to="restore/restore-backup" />,
+          },
+          {
+            path: "restore/restore-backup",
             element: <RestoreBackup />,
           },
         ],
@@ -558,7 +634,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "/confirm.aspx/*",
+        path: "confirm.aspx",
         element: (
           <React.Suspense fallback={<AppLoader />}>
             <ErrorBoundary>
@@ -570,7 +646,7 @@ const router = createBrowserRouter([
         children: [...confirmRoutes],
       },
       {
-        path: "/confirm/*",
+        path: "confirm",
         element: (
           <React.Suspense fallback={<AppLoader />}>
             <ErrorBoundary>
