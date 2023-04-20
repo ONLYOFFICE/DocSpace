@@ -336,4 +336,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Die Datei ist nicht gesperrt</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace-Administrator</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Redakteur</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrator des Raums</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Benutzer</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Zuschauer</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Kommentator</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Ausfüllen von Formularen</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Überprüfer</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Collaborator</value>
+  </data>
 </root>
