@@ -191,9 +191,11 @@ Row.propTypes = {
   /** Required for hosting the Checkbox component. Its location is always fixed in the first position.
    * If there is no value, the occupied space is distributed among the other child elements. */
   checked: PropTypes.bool,
+  /** Displays the child elements */
   children: PropTypes.element,
   /** Accepts class */
   className: PropTypes.string,
+  /** Required for displaying a certain element in the row */
   contentElement: PropTypes.any,
   /** Sets the width of the ContextMenuButton component. */
   contextButtonSpacerWidth: PropTypes.string,
@@ -213,13 +215,19 @@ Row.propTypes = {
   onSelect: PropTypes.func,
   /** Sets a callback function that is triggered when any element except the checkbox and context menu is clicked. */
   onRowClick: PropTypes.func,
+  /** Function that is invoked on clicking the icon button in the context-menu */
   rowContextClick: PropTypes.func,
   /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Width section */
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** Displays the loader*/
   inProgress: PropTypes.bool,
+  /** Function that returns an object containing the elements of the context menu */
   getContextModel: PropTypes.func,
+  /** Changes the row mode */
   mode: PropTypes.string,
+  /** Removes the borders */
   withoutBorder: PropTypes.bool,
 };
 
