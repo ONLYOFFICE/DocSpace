@@ -332,7 +332,7 @@ const SectionHeaderContent = (props) => {
               )}
             </div>
           </Headline>
-          {addUsers && (
+          {props.addUsers && (
             <div className="action-wrapper">
               <IconButton
                 iconName={ActionsHeaderTouchReactSvgUrl}

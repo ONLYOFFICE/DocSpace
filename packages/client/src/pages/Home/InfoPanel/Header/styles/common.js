@@ -46,6 +46,11 @@ const StyledInfoPanelHeader = styled.div`
       margin-left: 20px;
     }
   }
+
+  .info-panel-toggle-bg{
+    padding-right: 20px;
+  }
+
   .submenu {
     display: flex;
     width: 100%;
