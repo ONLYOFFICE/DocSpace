@@ -4,7 +4,9 @@ on:
   workflow_dispatch:
 
 env:
+  product: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]')
   VERSION: 1.0.0
+  version: ${GITHUB_REF##*/}
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
@@ -59,9 +61,8 @@ jobs:
         shell: bash
         run: |
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
-          #error NETSDK1152: Found multiple publish output files with the same relative path
           cd build/install/deb/ 
-          rename -f -v "s/product/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/" debian/* ../common/* ../common/logrotate/*
+          rename -f -v "s/product/${{ env.product }}/" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/$( echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
@@ -87,14 +88,12 @@ jobs:
         id: get_vars
         run: |
           echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          # echo "branch_name=${ GITHUB_REF#refs/heads/ }" >> $GITHUB_ENV 
-          echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
           echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-          # ${GITHUB_REF#refs/heads/} echo "branch=$(echo ${GITHUB_REF#refs/heads/})" >>$GITHUB_OUTPUT
+          echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
+
 
       - name: INSTALL tools & Prepare build
         run: |
-          echo "${{ env.branch_name }}"
           sudo apt install -y rpm nginx mysql-server rename curl
           curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -119,7 +118,7 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O DocSpace-${{ steps.get_vars.outputs.branch_name }}.tar.gz
+          wget https://github.com/ONLYOFFICE/${{ env.product }}/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O ${{ env.product }}-${{ steps.get_vars.outputs.branch_name }}.tar.gz
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
