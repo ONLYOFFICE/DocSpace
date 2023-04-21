@@ -29,7 +29,7 @@ jobs:
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
         run: |
-          echo ${{ steps.get_vars.outputs.VERSION }}
+          echo "${{ steps.get_vars.outputs.VERSION }}"
           echo ${{ steps.get_vars.outputs.PRODUCT }}
           echo ${{ steps.get_vars.outputs.BRANCH_NAME }}
           
@@ -49,7 +49,7 @@ jobs:
         shell: bash
         run: |
           
-          V=${{ steps.get_vars.outputs.VERSION }}
+          V="${{ steps.get_vars.outputs.VERSION }}"
           echo $V
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           cd build/install/deb/ 
