@@ -19,8 +19,9 @@ const StyledInfoPanelToggleWrapper = styled.div`
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background-color: ${(props) =>
-      props.theme.infoPanel.sectionHeaderToggleBgActive};
+    background-color: ${(props) => !props.isInfoPanelVisible
+    ? "none"
+    : props.theme.infoPanel.sectionHeaderToggleBgActive};
 
     path {
       fill: ${(props) => props.theme.infoPanel.sectionHeaderToggleIconActive};

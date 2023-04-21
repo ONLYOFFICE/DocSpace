@@ -2814,6 +2814,7 @@ __metadata:
   resolution: "@docspace/common@workspace:packages/common"
   dependencies:
     "@babel/runtime": ^7.21.0
+    "@loadable/component": ^5.15.3
     "@welldone-software/why-did-you-render": ^6.2.3
     axios: ^0.22.0
     cross-fetch: 3.1.5
