@@ -330,12 +330,17 @@ ContextMenuButton.propTypes = {
   columnCount: PropTypes.number,
   /** Sets the display type */
   displayType: PropTypes.string,
+  /** Switches to the new view mode */
   isNew: PropTypes.bool,
   /** Closing event */
   onClose: PropTypes.func,
+  /** Sets the drop down open with the portal */
   usePortal: PropTypes.bool,
+  /** Sets the class of the drop down element */
   dropDownClassName: PropTypes.string,
+  /** Sets the class of the icon button */
   iconClassName: PropTypes.string,
+  /** Enables displaying the icon borders  */
   displayIconBorder: PropTypes.bool,
 };
 
