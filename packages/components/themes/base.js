@@ -3099,6 +3099,11 @@ const Base = {
   portalUnavailable: {
     textDescriptionColor: "#A3A9AE",
   },
+
+  deepLink: {
+    navBackground: "#f8f9f9",
+    fileTileBackground: "#f3f4f4",
+  },
 };
 
 export default Base;

@@ -3101,6 +3101,11 @@ const Dark = {
   portalUnavailable: {
     textDescriptionColor: "#858585",
   },
+
+  deepLink: {
+    navBackground: "#282828",
+    fileTileBackground: "#3D3D3D",
+  },
 };
 
 export default Dark;
