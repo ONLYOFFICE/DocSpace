@@ -59,6 +59,11 @@ jobs:
       - name: BUILD package DEB
         shell: bash
         run: |
+          echo "${{ env.product }}"
+          echo "${{ env.version }}"
+          echo "${{ env.TAG }}"
+          echo "${{ env.BUILD_NUMBER }}"
+          
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           cd build/install/deb/ 
           rename -f -v "s/product/${{ env.product }}/" debian/* ../common/* ../common/logrotate/*
@@ -118,11 +123,13 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/elshirak/"${{ env.product }}"/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O DocSpace-release-v1.0.0.tar.gz
+          wget https://github.com/elshirak/"${{ env.product }}"/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O DocSpace-"${{ steps.get_vars.outputs.branch_name }}".tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
-
+          
+          echo "${{ steps.get_vars.outputs.branch_name }}"
+          
           sed -i -e '/BuildRequires/d' product.spec
           rename 's/product/"${{ env.product }}"/g' ../../common/*.sh
           rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.branch_name }}" -D "_topdir $(pwd)" -D "version ${{ env.version }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
