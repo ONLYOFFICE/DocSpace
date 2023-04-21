@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Globalization;
+
 using ASC.Notify.Engine;
 
 namespace ASC.Data.Backup;
@@ -126,7 +128,7 @@ public class NotifyHelper
             var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
             var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-            Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
+            var greenButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
 
             client.SendNoticeToAsync(
                 Actions.RestoreCompletedV115,
@@ -159,7 +161,7 @@ public class NotifyHelper
                     var hash = _authManager.GetUserPasswordStamp(user.Id).ToString("s");
                     var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-                    Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
+                    var greenButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
                     currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));
 
                     client.SendNoticeToAsync(
@@ -205,5 +207,22 @@ public class NotifyHelper
         }
 
         return args;
+    }
+
+    private CultureInfo GetCulture(UserInfo user)
+    {
+        CultureInfo culture = null;
+
+        if (!string.IsNullOrEmpty(user.CultureName))
+        {
+            culture = user.GetCulture();
+        }
+
+        if (culture == null)
+        {
+            culture = _tenantManager.GetCurrentTenant(false)?.GetCulture();
+        }
+
+        return culture;
     }
 }
