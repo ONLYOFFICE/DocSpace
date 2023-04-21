@@ -5,7 +5,7 @@ import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
 
 import { getLogoFromPath } from "@docspace/common/utils";
-import { getDeepLink } from "../../helpers/deepLinkHelper";
+import { getDeepLink, DL_URL } from "../../helpers/deepLinkHelper";
 
 import {
   StyledSimpleNav,
@@ -14,10 +14,6 @@ import {
   StyledFileTile,
   StyledActionsWrapper,
 } from "./StyledDeepLink";
-
-const DL_ANDROID = "com.onlyoffice.documents";
-const DL_IOS = "944896972";
-const DL_URL = "oodocuments://openfile";
 
 const DeepLink = ({ fileInfo, logoUrls, userEmail, setIsShowDeepLink }) => {
   const [isRemember, setIsRemember] = useState(false);

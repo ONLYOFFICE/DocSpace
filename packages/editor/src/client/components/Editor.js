@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { isMobile, isIOS, deviceType, isMobileOnly } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import { FolderType, EDITOR_ID } from "@docspace/common/constants";
@@ -23,8 +24,14 @@ import { assign } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
-import styled from "styled-components";
 import DeepLink from "./DeepLink";
+
+import {
+  getDeepLink,
+  DL_URL,
+  DL_IOS,
+  DL_ANDROID,
+} from "../helpers/deepLinkHelper";
 
 toast.configure();
 
@@ -111,6 +118,29 @@ function Editor({
 
     if (isMobileOnly && !defaultOpenDocument) {
       setIsShowDeepLink(true);
+    }
+
+    if (isMobileOnly && defaultOpenDocument === "app") {
+      const nav = navigator.userAgent;
+      const storeUrl =
+        nav.includes("iPhone;") || nav.includes("iPad;")
+          ? `https://apps.apple.com/app/id${DL_IOS}`
+          : `https://play.google.com/store/apps/details?id=${DL_ANDROID}`;
+
+      window.location = getDeepLink(
+        window.location.origin,
+        user.email,
+        fileInfo,
+        DL_URL
+      );
+
+      setTimeout(() => {
+        if (document.hasFocus()) {
+          window.location.replace(storeUrl);
+        } else {
+          history.goBack();
+        }
+      }, 3000);
     }
   }, []);
 
