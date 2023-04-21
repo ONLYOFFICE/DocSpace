@@ -5,7 +5,7 @@ export const StyledSimpleNav = styled.div`
   align-items: center;
   justify-content: center;
   padding: 12px 0;
-  background: #f8f9f9;
+  background-color: ${(props) => props.theme?.deepLink?.navBackground};
   margin-bottom: 32px;
 `;
 
@@ -26,7 +26,7 @@ export const StyledFileTile = styled.div`
   display: flex;
   gap: 16px;
   padding: 8px 16px;
-  background: #f3f4f4;
+  background-color: ${(props) => props.theme?.deepLink?.fileTileBackground};
   border-radius: 3px;
   align-items: center;
 `;

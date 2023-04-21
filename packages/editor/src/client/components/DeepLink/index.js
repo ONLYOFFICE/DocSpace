@@ -15,9 +15,15 @@ import {
   StyledActionsWrapper,
 } from "./StyledDeepLink";
 
-const DeepLink = ({ fileInfo, logoUrls, userEmail, setIsShowDeepLink }) => {
+const DeepLink = ({
+  fileInfo,
+  logoUrls,
+  userEmail,
+  setIsShowDeepLink,
+  userTheme,
+}) => {
   const [isRemember, setIsRemember] = useState(false);
-
+  console.log("theme", userTheme);
   const onChangeCheckbox = () => {
     setIsRemember(!isRemember);
   };
@@ -49,7 +55,9 @@ const DeepLink = ({ fileInfo, logoUrls, userEmail, setIsShowDeepLink }) => {
       : fileInfo.title;
   };
 
-  const logo = getLogoFromPath(logoUrls[0]?.path?.light);
+  const logoPath =
+    userTheme === "Base" ? logoUrls[0]?.path?.light : logoUrls[0]?.path?.dark;
+  const logo = getLogoFromPath(logoPath);
 
   return (
     <>
