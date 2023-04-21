@@ -17,6 +17,7 @@
   "HideAuthPage": "Skrij avtentikacijsko stran",
   "LogoutEndpointUrl": "IdP končna točka URL enkratne odjave",
   "LogoutEndpointUrlTooltip": "URL, uporabljen za enkratno odjavo na strani ponudnika storitev",
+  "MetadataLoadError": "Datoteka z metapodatki ni bila prenesen",
   "NameIDFormat": "NameId Format",
   "NewCertificate": "Nov certifikat",
   "OpenCertificate": "Javni certifikat",

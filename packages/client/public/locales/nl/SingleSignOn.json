@@ -17,6 +17,7 @@
   "HideAuthPage": "Verberg auth pagina",
   "LogoutEndpointUrl": "IdP Single Logout Eindpunt URL",
   "LogoutEndpointUrlTooltip": "De URL die wordt gebruikt voor de eenmalige afmelding aan de kant van de dienstverlener",
+  "MetadataLoadError": "Metagegevensbestand niet overgezet",
   "NameIDFormat": "NameId Formaat",
   "NewCertificate": "Nieuw Certificaat",
   "OpenCertificate": "Openbaar Certificaat",
