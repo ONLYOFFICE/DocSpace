@@ -136,31 +136,6 @@ const SectionHeaderContent = (props) => {
     isHeaderVisible: false,
   });
 
-  React.useEffect(() => {
-    const arrayOfParams = location.pathname.split("/");
-
-    const key = getKeyByLink(arrayOfParams, settingsTree);
-
-    const currKey = key.length > 3 ? key : key[0];
-    const header = getTKeyByKey(currKey, settingsTree);
-    const isCategory = checkPropertyByLink(
-      arrayOfParams,
-      settingsTree,
-      "isCategory"
-    );
-    const isHeader = checkPropertyByLink(
-      arrayOfParams,
-      settingsTree,
-      "isHeader"
-    );
-
-    setState((val) => ({
-      ...val,
-      header,
-      isCategoryOrHeader: isCategory || isHeader,
-    }));
-  }, [location.pathname]);
-
   const isAvailableSettings = (key) => {
     switch (key) {
       case "DNSSettings":
@@ -177,7 +152,7 @@ const SectionHeaderContent = (props) => {
 
     const arrayOfParams = getArrayOfParams();
 
-    const key = getKeyByLink(arrayOfParams, settingsTree, 2);
+    const key = getKeyByLink(arrayOfParams, settingsTree);
     const currKey = key.length > 3 ? key : key[0];
     const header = getTKeyByKey(currKey, settingsTree);
     const isCategory = checkPropertyByLink(
@@ -209,22 +184,22 @@ const SectionHeaderContent = (props) => {
     state.isNeedPaidIcon,
     state.header,
     state.isCategoryOrHeader,
+    location.pathname,
   ]);
 
   const onBackToParent = () => {
     let newArrayOfParams = getArrayOfParams();
     newArrayOfParams.splice(-1, 1);
-    const newPath = "/portal-settings/" + newArrayOfParams.join("/");
-    navigate(combineUrl(window.DocSpaceConfig?.proxy?.url, newPath));
+    const newPath = newArrayOfParams.join("/");
+    navigate(newPath);
   };
 
   const getArrayOfParams = () => {
-    const locationPathname = location.pathname;
-
-    const resultPath = locationPathname;
+    const resultPath = location.pathname;
     const arrayOfParams = resultPath.split("/").filter((param) => {
-      return param !== "filter";
+      return param !== "filter" && param && param !== "portal-settings";
     });
+
     return arrayOfParams;
   };
 
