@@ -76,10 +76,14 @@ jobs:
           dpkg-buildpackage -us -uc
         
 
-      - name: Upload assets DEB
-        uses: softprops/action-gh-release@v1
+      - uses: ncipollo/release-action@v1
         with:
-          files: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+          allowUpdates: true
+          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
+          tag: "${{ github.ref_name }}"
+          name: DocSpace packeges release ${BUILD_NUMBER}
+          body: Here you may find .rpm .deb packages for DocSpace 
+          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           
 
   build_rpm:
@@ -115,6 +119,7 @@ jobs:
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
           echo "VERSION=$(echo "${GITHUB_REF##*/}" )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "SOURCE_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-' )" >> $GITHUB_OUTPUT
     
       - name: BUILD package RPM
         run: |
@@ -126,11 +131,12 @@ jobs:
           echo ${{ steps.get_vars.outputs.PRODUCT }}
           echo ${{ steps.get_vars.outputs.VERSION }}
           echo ${{ steps.get_vars.outputs.BRANCH_NAME }}
+          echo ${{ steps.get_vars.outputs.SOURCE_NAME }}
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ steps.get_vars.outputs.PRODUCT }}.rpmlintrc
           ls -la ./SOURCES
-          wget https://github.com/elshirak/${{ steps.get_vars.outputs.PRODUCT }}/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O DocSpace-${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz 
+          wget https://github.com/elshirak/${{ steps.get_vars.outputs.PRODUCT }}/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O DocSpace-${{ steps.get_vars.outputs.SOURCE_NAME }}.tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
