@@ -123,10 +123,15 @@ const ModalDialog = ({
 };
 
 ModalDialog.propTypes = {
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
+  /** CSS z-index   */
   zIndex: PropTypes.number,
+  /** Accepts css */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Displays the child elements */
   children: PropTypes.any,
 
   /** Sets the dialog to display */
@@ -179,7 +184,9 @@ ModalDialog.propTypes = {
 
   Sets modal dialog size equal to window */
   scale: PropTypes.bool,
+  /** **`ASIDE-ONLY`**  
 
+  Allows you to embed a modal window as an aside dialog inside the parent container without applying a dialog layout to it */
   containerVisible: PropTypes.bool,
 };
 

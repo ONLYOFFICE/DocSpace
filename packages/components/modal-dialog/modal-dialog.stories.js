@@ -14,7 +14,7 @@ export default {
     },
   },
   argTypes: {
-    onOk: { action: "onOk" },
+    onOk: { action: "onOk", description: "Property for story" },
   },
 };
 
