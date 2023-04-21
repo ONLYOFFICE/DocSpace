@@ -271,34 +271,37 @@ TreeMenu.propTypes = {
   /** Automatically expands the parent treeNodes when initialized */
   defaultExpandParent: PropTypes.bool,
 
+  /** Click the treeNode/checkbox to fire */
+  onCheck: PropTypes.func,
+  /** Customize icon. When you pass component, whose render will receive full TreeNode props as component props */
   icon: PropTypes.func,
-  /** it execs when fire the tree's dragend event */
+  /** It execs when fire the tree's dragend event */
   onDragEnd: PropTypes.func,
-  /** it execs when fire the tree's dragenter event  */
+  /** It execs when fire the tree's dragenter event  */
   onDragEnter: PropTypes.func,
-  /** it execs when fire the tree's dragleave event */
+  /** It execs when fire the tree's dragleave event */
   onDragLeave: PropTypes.func,
-  /** it execs when fire the tree's dragover event  */
+  /** It execs when fire the tree's dragover event  */
   onDragOver: PropTypes.func,
-  /** it execs when fire the tree's dragstart event */
+  /** It execs when fire the tree's dragstart event */
   onDragStart: PropTypes.func,
-  /** it execs when fire the tree's drop event  */
+  /** It execs when fire the tree's drop event  */
   onDrop: PropTypes.func,
-  /** fire on treeNode expand or not */
+  /** Fire on treeNode expand or not */
   onExpand: PropTypes.func,
   /** Trigger when a node is loaded. If you set the loadedKeys, you must handle onLoad to avoid infinity loop */
   onLoad: PropTypes.func,
-  /** call when mouse enter a treeNode */
+  /** Call when mouse enter a treeNode */
   onMouseEnter: PropTypes.func,
-  /** call when mouse leave a treeNode */
+  /** Call when mouse leave a treeNode */
   onMouseLeave: PropTypes.func,
-  /** select current treeNode and show customized contextmenu */
+  /** Select current treeNode and show customized contextmenu */
   onRightClick: PropTypes.func,
-  /** click the treeNode to fire  */
+  /** Click the treeNode to fire  */
   onSelect: PropTypes.func,
-  /** load data asynchronously and the return value should be a promise  */
+  /** Load data asynchronously and the return value should be a promise  */
   loadData: PropTypes.func,
-  /** child elements */
+  /** Child elements */
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
