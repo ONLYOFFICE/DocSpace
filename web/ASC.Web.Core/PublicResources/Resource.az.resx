@@ -311,6 +311,63 @@
     <value>Brendləşdirmə və fərdiləşdirmə</value>
   </data>
   <data name="TariffsFeature_audit" xml:space="preserve">
-    <value>İstifadəçilərin giriş və hərəkətlərini izləmək</value>
+    <value>İstifadəçi giriş və hərəkətlərinin izlənməsi</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimum fayl ölçüsü</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Fayl ölçüsü {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Adminlərin sayı {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Adminlərin sayı</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Avtomatik ehtiyat nüsxə və bərpa</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Limitsiz sayda aktiv otaqlar</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Otaqların sayı {0}-dən çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} yaddaş sahəsi</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>İstifadə olunan yaddaş ölçüsü {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Yaddaş sahəsi</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Otaqlar:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>İstifadə olunan yaddaş sahəsi:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Otaqdakı istifadəçilər:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Limitsiz sayda istifadəçilər</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>İstifadəçilərin sayı {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Otaqdakı istifadəçilər</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Otaqdakı istifadəçilərin sayı {0}-dan çox olmamalıdır</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Admin/ekspert istifadəçilərin sayı:</value>
   </data>
 </root>

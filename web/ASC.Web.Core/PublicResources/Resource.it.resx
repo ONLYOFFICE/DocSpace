@@ -918,4 +918,7 @@
   <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
     <value>Il numero di utenti in stanza non deve superare {0}</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Il numero di amministratori/utenti esperti:</value>
+  </data>
 </root>

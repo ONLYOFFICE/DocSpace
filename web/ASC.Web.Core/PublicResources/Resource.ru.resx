@@ -958,4 +958,7 @@
   <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
     <value>Количество пользователей в комнате не должно превышать {0}</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Количество администраторов/опытных пользователей:</value>
+  </data>
 </root>

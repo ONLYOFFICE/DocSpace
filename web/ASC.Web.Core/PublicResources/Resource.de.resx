@@ -962,4 +962,7 @@
   <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
     <value>Die Anzahl der Benutzer im Raum sollte {0} nicht überschreiten</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Die Anzahl der Admins/Power-User:</value>
+  </data>
 </root>

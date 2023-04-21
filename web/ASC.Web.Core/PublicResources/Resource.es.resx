@@ -925,4 +925,7 @@
   <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
     <value>El número de usuarios en la sala no debe superar {0}</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>El número de administradores/usuarios avanzados:</value>
+  </data>
 </root>

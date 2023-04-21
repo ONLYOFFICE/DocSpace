@@ -338,4 +338,7 @@
   <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
     <value>ルーム内のユーザー数は {0} を超えないこと</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>管理者/パワーユーザー数:</value>
+  </data>
 </root>

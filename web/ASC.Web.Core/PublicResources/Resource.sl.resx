@@ -331,4 +331,7 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>Blagovna znamka &amp; prilagoditve</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Število skrbnikov/naprednih uporabnikov:</value>
+  </data>
 </root>

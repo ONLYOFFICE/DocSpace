@@ -430,4 +430,7 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>Markalaşma ve özelleştirme</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Yönetici/uzman kullanıcı sayısı:</value>
+  </data>
 </root>

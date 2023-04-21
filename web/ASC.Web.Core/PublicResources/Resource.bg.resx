@@ -490,4 +490,7 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>Брандинг и персонализиране</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Брой администратори/опитни потребители:</value>
+  </data>
 </root>

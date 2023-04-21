@@ -226,4 +226,7 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>브랜딩 &amp; 맞춤화</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>관리자/고급 사용자 수:</value>
+  </data>
 </root>

@@ -421,4 +421,7 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>Branding &amp; aanpassing</value>
   </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Het aantal beheerders/power users:</value>
+  </data>
 </root>
