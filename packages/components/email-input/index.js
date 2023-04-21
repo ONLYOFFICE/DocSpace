@@ -121,7 +121,7 @@ EmailInput.propTypes = {
   id: PropTypes.string,
   /** Function for custom handling of input changes  */
   onChange: PropTypes.func,
-
+  /** Event that is triggered when the focused item is lost  */
   onBlur: PropTypes.func,
   /** Function that validates the value, and returns the object with following parameters: `isValid`: boolean result of validating, `errors`: array of errors */
   onValidateInput: PropTypes.func,
@@ -148,7 +148,6 @@ EmailInput.defaultProps = {
   className: "",
   hasError: undefined,
   id: "",
-  /** kkkk;kk */
   isDisabled: false,
   isReadOnly: false,
   maxLength: 255,
@@ -158,9 +157,7 @@ EmailInput.defaultProps = {
   size: "base",
   title: "",
   value: "",
-  /** dfkasdfklasd;flkajs; */
   withBorder: true,
-  /** Some text */
   emailSettings: new EmailSettings(),
 };
 

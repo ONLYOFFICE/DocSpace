@@ -2,6 +2,34 @@ import React, { useState } from "react";
 import { EmailSettings } from "../utils/email";
 import EmailInput from "./";
 
+export default {
+  title: "Components/EmailInput",
+  component: EmailInput,
+  argTypes: {
+    allowDomainPunycode: {
+      description: "History property. Required to be passed into emailSettings",
+    },
+    allowLocalPartPunycode: {
+      description: "History property. Required to be passed into emailSettings",
+    },
+    allowDomainIp: {
+      description: "History property. Required to be passed into emailSettings",
+    },
+    allowStrictLocalPart: {
+      description: "History property. Required to be passed into emailSettings",
+    },
+    allowSpaces: {
+      description: "History property. Required to be passed into emailSettings",
+    },
+    allowName: {
+      description: "History property. Required to be passed into emailSettings",
+    },
+    allowLocalDomainName: {
+      description: "History property. Required to be passed into emailSettings",
+    },
+  },
+};
+
 const Template = ({
   allowDomainPunycode,
   allowLocalPartPunycode,
@@ -42,8 +70,8 @@ const Template = ({
   );
 };
 
-export const basic = Template.bind({});
-basic.args = {
+export const Default = Template.bind({});
+Default.args = {
   allowDomainPunycode: false,
   allowLocalPartPunycode: false,
   allowDomainIp: false,
