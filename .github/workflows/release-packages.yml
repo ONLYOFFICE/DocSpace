@@ -122,8 +122,8 @@ jobs:
           cd build/install/rpm/SPECS
           
               ### Preparing source directory ###
-          mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.product }}.rpmlintrc
-          wget https://github.com/elshirak/DocSpace/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O DocSpace-"${{ steps.get_vars.outputs.branch_name }}".tar.gz 
+          mv ./SOURCES/product.rpmlintrc ./SOURCES/"${{ env.product }}".rpmlintrc
+          wget https://github.com/elshirak/"${{ env.product }}"/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O "${{ env.product }}"-"${{ steps.get_vars.outputs.branch_name }}".tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
@@ -132,7 +132,7 @@ jobs:
           
           sed -i -e '/BuildRequires/d' product.spec
           rename 's/product/"${{ env.product }}"/g' ../../common/*.sh
-          rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.branch_name }}" -D "_topdir $(pwd)" -D "version ${{ env.version }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.branch_name }}" -D "_topdir $(pwd)" -D "version $version" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
       - name: Upload assets RPM 
