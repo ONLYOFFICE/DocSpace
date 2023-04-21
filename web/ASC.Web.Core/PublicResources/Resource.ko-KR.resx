@@ -166,4 +166,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>새로운 소식</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>사용자 로그인 &amp; 작업 추적</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>최대 파일 크기</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>최대 파일 크기는 {0}입니다</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>최대 관리자 수는 {0}입니다</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>관리자 수</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>자동 백업 &amp; 복구</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>활성 방 수 무제한</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>최대 방 수는 {0}입니다</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} 저장 공간</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>최대 사용 저장 공간은 {0}입니다</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>저장 공간</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>추가된 관리자:</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>방:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>사용 저장 공간:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>방 사용자:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>사용자 수 무제한</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>최대 사용자 수는 {0}입니다</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>방 사용자</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>최대 방 사용자 수는 {0}입니다</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>브랜딩 &amp; 맞춤화</value>
+  </data>
 </root>
