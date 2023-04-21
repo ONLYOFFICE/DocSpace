@@ -69,7 +69,7 @@ jobs:
           
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           cd build/install/deb/ 
-          rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/" debian/* ../common/* ../common/logrotate/*
+          rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
@@ -126,7 +126,7 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/"${{ steps.get_vars.outputs.PRODUCT }}".rpmlintrc
-          wget https://github.com/elshirak/"${{ steps.get_vars.outputs.PRODUCT }}"/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O ${{ steps.get_vars.outputs.PRODUCT }}-"${{ steps.get_vars.outputs.BRANCH_NAME }}".tar.gz 
+          wget https://github.com/elshirak/${{ steps.get_vars.outputs.PRODUCT }}/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O ${{ steps.get_vars.outputs.PRODUCT }}-"${{ steps.get_vars.outputs.BRANCH_NAME }}".tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
