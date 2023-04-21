@@ -15,6 +15,7 @@ export default {
     onBlur: { action: "onBlur" },
     onFocus: { action: "onFocus" },
     onChange: { action: "onChange" },
+    scaled: { description: "Indicates that the input field has scaled" },
   },
 };
 
