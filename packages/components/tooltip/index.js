@@ -81,7 +81,9 @@ Tooltip.propTypes = {
   place: PropTypes.oneOf(["top", "right", "bottom", "left"]),
   /** Sets a callback function that generates the tip content dynamically */
   getContent: PropTypes.func,
+  /** A function to be called after the tooltip is hidden */
   afterHide: PropTypes.func,
+  /** A function to be called after the tooltip is shown */
   afterShow: PropTypes.func,
   /** Sets the top offset for all the tooltips on the page */
   offsetTop: PropTypes.number,
@@ -101,7 +103,9 @@ Tooltip.propTypes = {
   className: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Background color of the tooltip  */
   color: PropTypes.string,
+  /** Maximum width of the tooltip */
   maxWidth: PropTypes.string,
 };
 
