@@ -196,14 +196,7 @@ public class NotifyHelper
         {
             args.Add(new TagValue(CommonTags.VirtualRootPath, url));
             args.Add(new TagValue(CommonTags.ProfileUrl, url + _commonLinkUtility.GetMyStaff()));
-
-            var attachment = _tenantLogoManager.GetMailLogoAsAttacment().Result;
-
-            if (attachment != null)
-            {
-                args.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                args.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-            }
+            args.Add(new TagValue(CommonTags.LetterLogo, _tenantLogoManager.GetLogoDark(false)));
         }
 
         return args;
