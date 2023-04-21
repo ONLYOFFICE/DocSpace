@@ -4,7 +4,7 @@ on:
   push:
 
 env:
-  VERSION: $(echo $(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' ))
+  VERSION: $(echo "$(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )" )
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
