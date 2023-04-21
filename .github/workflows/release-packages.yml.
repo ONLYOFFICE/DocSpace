@@ -1,6 +1,7 @@
 name: Release RPM DEB
 on:
   workflow_dispatch:
+  workflow_call: 
   push:
 
 env:
