@@ -5,6 +5,7 @@ import Button from "@docspace/components/button";
 import Link from "@docspace/components/link";
 
 import { getLogoFromPath } from "@docspace/common/utils";
+import { getDeepLink } from "../../helpers/deepLinkHelper";
 
 import {
   StyledSimpleNav,
@@ -14,7 +15,11 @@ import {
   StyledActionsWrapper,
 } from "./StyledDeepLink";
 
-const DeepLink = ({ fileInfo, logoUrls }) => {
+const DL_ANDROID = "com.onlyoffice.documents";
+const DL_IOS = "944896972";
+const DL_URL = "oodocuments://openfile";
+
+const DeepLink = ({ fileInfo, logoUrls, userEmail }) => {
   const [isRemember, setIsRemember] = useState(false);
 
   const onChangeCheckbox = () => {
@@ -23,7 +28,12 @@ const DeepLink = ({ fileInfo, logoUrls }) => {
 
   const onOpenAppClick = () => {
     if (isRemember) localStorage.setItem("defaultOpenDocument", "app");
-    console.log("onOpenAppClick");
+    window.location = getDeepLink(
+      window.location.origin,
+      userEmail,
+      fileInfo,
+      DL_URL
+    );
   };
 
   const onStayBrowserClick = () => {

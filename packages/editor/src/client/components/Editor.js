@@ -736,7 +736,13 @@ function Editor({
     );
 
   if (isShowDeepLink)
-    return <DeepLink fileInfo={fileInfo} logoUrls={logoUrls} />;
+    return (
+      <DeepLink
+        fileInfo={fileInfo}
+        logoUrls={logoUrls}
+        userEmail={user.email}
+      />
+    );
 
   return (
     <EditorWrapper
