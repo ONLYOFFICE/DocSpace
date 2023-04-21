@@ -28,7 +28,6 @@ const Template = (args) => {
 
 export const Default = Template.bind({});
 Default.args = {
-  displayType: "auto",
   offsetTop: 0,
   offsetRight: 0,
   offsetBottom: 0,
@@ -42,7 +41,6 @@ const AutoTemplate = (args) => {
     <div style={{ marginTop: "20px", marginLeft: "100px" }}>
       <HelpButton
         style={{ left: "20px" }}
-        displayType="auto"
         helpButtonHeaderContent="Auto position HelpButton"
         tooltipContent={
           <>
