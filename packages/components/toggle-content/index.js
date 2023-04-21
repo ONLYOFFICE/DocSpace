@@ -73,6 +73,7 @@ class ToggleContent extends React.Component {
 }
 
 ToggleContent.propTypes = {
+  /** Displays the child elements */
   children: PropTypes.any,
   /** Accepts class */
   className: PropTypes.string,
@@ -82,6 +83,7 @@ ToggleContent.propTypes = {
   isOpen: PropTypes.bool,
   /** Sets the header label */
   label: PropTypes.string.isRequired,
+  /** The change event is triggered when the element's value is modified */
   onChange: PropTypes.func,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
