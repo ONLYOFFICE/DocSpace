@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { isMobile, isIOS, deviceType } from "react-device-detect";
+import React, { useEffect, useState } from "react";
+import { isMobile, isIOS, deviceType, isMobileOnly } from "react-device-detect";
 import combineUrl from "@docspace/common/utils/combineUrl";
 import { FolderType, EDITOR_ID } from "@docspace/common/constants";
 import throttle from "lodash/throttle";
@@ -93,6 +93,8 @@ function Editor({
   filesSettings,
   logoUrls,
 }) {
+  const [isShowDeepLink, setIsShowDeepLink] = useState(false);
+
   const fileInfo = config?.file;
 
   isArchiveFolderRoot =
@@ -103,6 +105,15 @@ function Editor({
   if (fileInfo) {
     userAccessRights = fileInfo.security;
   }
+
+  useEffect(() => {
+    const defaultOpenDocument = localStorage.getItem("defaultOpenDocument");
+
+    if (isMobileOnly && !defaultOpenDocument) {
+      setIsShowDeepLink(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (error && mfReady) {
       if (error?.unAuthorized) {
@@ -724,9 +735,7 @@ function Editor({
       </>
     );
 
-  const isEnableDeepLink = true;
-
-  if (isEnableDeepLink)
+  if (isShowDeepLink)
     return <DeepLink fileInfo={fileInfo} logoUrls={logoUrls} />;
 
   return (
