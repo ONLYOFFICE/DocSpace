@@ -175,7 +175,9 @@ Textarea.propTypes = {
   heightTextArea: PropTypes.number,
   /** Specifies the text color */
   color: PropTypes.string,
+  /** Default input property */
   autoFocus: PropTypes.bool,
+  /** Allows selecting the textarea */
   areaSelect: PropTypes.bool,
   /** Prettifies Json and adds lines numeration */
   isJSONField: PropTypes.bool,
