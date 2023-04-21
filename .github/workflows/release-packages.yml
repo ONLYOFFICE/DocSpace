@@ -123,9 +123,13 @@ jobs:
           
           ls -la 
           ls -la ./SOURCES
+          echo ${{ steps.get_vars.outputs.PRODUCT }}
+          echo ${{ steps.get_vars.outputs.VERSION }}
+          echo ${{ steps.get_vars.outputs.BRANCH_NAME }}
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ steps.get_vars.outputs.PRODUCT }}.rpmlintrc
+          ls -la ./SOURCES
           wget https://github.com/elshirak/${{ steps.get_vars.outputs.PRODUCT }}/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O DocSpace-${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
