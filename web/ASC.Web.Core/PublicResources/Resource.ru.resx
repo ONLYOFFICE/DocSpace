@@ -937,9 +937,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>Дисковое пространство</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Добавлено администраторов:</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Комнат:</value>
   </data>

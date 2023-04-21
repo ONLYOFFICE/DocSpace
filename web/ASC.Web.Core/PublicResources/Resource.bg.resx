@@ -466,9 +466,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>Място за съхранение</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Добавени администратори:</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Стаи:</value>
   </data>

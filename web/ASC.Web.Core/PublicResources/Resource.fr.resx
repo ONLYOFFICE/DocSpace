@@ -939,9 +939,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>Espace de stockage</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Administrateurs ajoutés :</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Salles :</value>
   </data>

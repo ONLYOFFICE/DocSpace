@@ -406,9 +406,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>Depolama alanı</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Yöneticiler eklendi:</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Odalar:</value>
   </data>

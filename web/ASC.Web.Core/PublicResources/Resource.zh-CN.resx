@@ -445,9 +445,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>储存空间</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>当前管理员的数量：</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>房间数量：</value>
   </data>

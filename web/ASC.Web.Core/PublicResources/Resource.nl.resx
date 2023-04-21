@@ -397,9 +397,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>Opslagruimte</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Beheerders toegevoegd:</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Kamers:</value>
   </data>

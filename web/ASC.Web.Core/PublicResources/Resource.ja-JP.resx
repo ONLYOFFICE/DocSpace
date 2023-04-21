@@ -317,9 +317,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>ストレージスペース</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>追加された管理者：</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>ルーム：</value>
   </data>

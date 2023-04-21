@@ -202,9 +202,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>저장 공간</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>추가된 관리자:</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>방:</value>
   </data>

@@ -904,9 +904,6 @@
   <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
     <value>Espacio de almacenamiento</value>
   </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Administradores añadidos:</value>
-  </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Salas:</value>
   </data>
