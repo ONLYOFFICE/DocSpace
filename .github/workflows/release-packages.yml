@@ -10,26 +10,6 @@ env:
 
 jobs:
 
-  create_relese:
-    name: Create release 
-    runs-on: ubuntu-latest
-    permissions:
-        contents: write
-    steps: 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
-          name: Release v-${{ github.run_number }}
-          tag_name: "${{ github.event.release.tag_name }}"
-          body: |
-            Release packages for ONLYOFFICE DocSpace:           
-            - .deb
-            - .rpm
-          draft: false
-        
-
-
   build_deb:
     name: Build .deb package
     runs-on: ubuntu-latest
@@ -44,7 +24,7 @@ jobs:
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${{ GITHUB_REF#refs/heads/ }}" | grep  -oP '\d+\.\d+\.\d+' )" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
