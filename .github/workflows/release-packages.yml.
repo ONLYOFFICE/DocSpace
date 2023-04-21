@@ -105,12 +105,6 @@ jobs:
 
           cd build/install/rpm/SPECS
           
-          # ls -la 
-          ls -la ./SOURCES
-          echo ${{ steps.get_vars.outputs.PRODUCT }}
-          echo ${{ steps.get_vars.outputs.VERSION }}
-          echo ${{ steps.get_vars.outputs.BRANCH_NAME }}
-          echo ${{ steps.get_vars.outputs.SOURCE_NAME }}
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ steps.get_vars.outputs.PRODUCT }}.rpmlintrc
