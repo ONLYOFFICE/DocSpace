@@ -39,7 +39,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Loaders from "@docspace/common/components/Loaders";
 import Navigation from "@docspace/common/components/Navigation";
 import TrashWarning from "@docspace/common/components/Navigation/sub-components/trash-warning";
-import { Events } from "@docspace/common/constants";
+import { Events, EmployeeType } from "@docspace/common/constants";
+
+import { resendInvitesAgain } from "@docspace/common/api/people";
 
 import DropDownItem from "@docspace/components/drop-down-item";
 import { tablet, mobile } from "@docspace/components/utils/device";
@@ -180,6 +182,19 @@ const SectionHeaderContent = (props) => {
     setIsLoading,
     fetchFiles,
     moveToRoomsPage,
+    setIsInfoPanelVisible,
+
+    getAccountsHeaderMenu,
+    isAccountsHeaderVisible,
+    isAccountsHeaderIndeterminate,
+    isAccountsHeaderChecked,
+    accountsCbMenuItems,
+    getAccountsMenuItemId,
+    getAccountsCheckboxItemLabel,
+    setAccountsSelected,
+    isOwner,
+    isAdmin,
+    setInvitePanelOptions,
   } = props;
   const [navigationItems, setNavigationItems] = React.useState([]);
 
@@ -242,6 +257,60 @@ const SectionHeaderContent = (props) => {
   };
 
   const getContextOptionsPlus = () => {
+    if (isAccountsPage) {
+      return [
+        isOwner && {
+          id: "accounts-add_administrator",
+          className: "main-button_drop-down",
+          icon: PersonAdminReactSvgUrl,
+          label: t("Common:DocSpaceAdmin"),
+          onClick: onInvite,
+          "data-type": EmployeeType.Admin,
+          key: "administrator",
+        },
+        {
+          id: "accounts-add_manager",
+          className: "main-button_drop-down",
+          icon: PersonManagerReactSvgUrl,
+          label: t("Common:RoomAdmin"),
+          onClick: onInvite,
+          "data-type": EmployeeType.User,
+          key: "manager",
+        },
+        {
+          id: "accounts-add_collaborator",
+          className: "main-button_drop-down",
+          icon: PersonReactSvgUrl,
+          label: t("Common:PowerUser"),
+          onClick: onInvite,
+          "data-type": EmployeeType.Collaborator,
+          key: "collaborator",
+        },
+        {
+          id: "accounts-add_user",
+          className: "main-button_drop-down",
+          icon: PersonUserReactSvgUrl,
+          label: t("Common:User"),
+          onClick: onInvite,
+          "data-type": EmployeeType.Guest,
+          key: "user",
+        },
+        {
+          key: "separator",
+          isSeparator: true,
+        },
+        {
+          id: "accounts-add_invite-again",
+          className: "main-button_drop-down",
+          icon: InviteAgainReactSvgUrl,
+          label: t("People:LblInviteAgain"),
+          onClick: onInviteAgain,
+          "data-action": "invite-again",
+          key: "invite-again",
+        },
+      ];
+    }
+
     const options = isRoomsFolder
       ? [
           {
@@ -355,11 +424,13 @@ const SectionHeaderContent = (props) => {
     setBufferSelection(selectedFolder);
     return setMoveToPanelVisible(true);
   };
+
   const onCopyAction = () => {
     setIsFolderActions(true);
     setBufferSelection(currentFolderId);
     return setCopyPanelVisible(true);
   };
+
   const onDownloadAction = () => {
     setBufferSelection(currentFolderId);
     setIsFolderActions(true);
@@ -621,7 +692,8 @@ const SectionHeaderContent = (props) => {
 
   const onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
-    setSelected(key);
+
+    isAccountsPage ? setAccountsSelected(key) : setSelected(key);
   };
 
   const onClose = () => {
@@ -629,7 +701,23 @@ const SectionHeaderContent = (props) => {
   };
 
   const getMenuItems = () => {
-    const checkboxOptions = (
+    const checkboxOptions = isAccountsPage ? (
+      <>
+        {accountsCbMenuItems.map((key) => {
+          const label = getAccountsCheckboxItemLabel(t, key);
+          const id = getAccountsMenuItemId(key);
+          return (
+            <DropDownItem
+              id={id}
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={onSelect}
+            />
+          );
+        })}
+      </>
+    ) : (
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
@@ -651,7 +739,9 @@ const SectionHeaderContent = (props) => {
   };
 
   const onChange = (checked) => {
-    setSelected(checked ? "all" : "none");
+    isAccountsPage
+      ? setAccountsSelected(checked ? "all" : "none")
+      : setSelected(checked ? "all" : "none");
   };
 
   const onClickFolder = (id, isRootRoom) => {
@@ -666,10 +756,60 @@ const SectionHeaderContent = (props) => {
       .finally(() => setIsLoading(false));
   };
 
+  const onInvite = (e) => {
+    const type = e.item["data-type"];
+
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
+
+    setInvitePanelOptions({
+      visible: true,
+      roomId: -1,
+      hideSelector: true,
+      defaultAccess: type,
+    });
+  };
+
+  const onInviteAgain = React.useCallback(() => {
+    resendInvitesAgain()
+      .then(() =>
+        toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
+      )
+      .catch((err) => toastr.error(err));
+  }, [resendInvitesAgain]);
+
+  const isLoading = (!title && !isAccountsPage) || !tReady;
+  const headerMenu = isAccountsPage
+    ? getAccountsHeaderMenu(t)
+    : getHeaderMenu(t);
   const menuItems = getMenuItems();
-  const isLoading = !title || !tReady;
-  const headerMenu = getHeaderMenu(t);
-  const isEmptyTrash = !![...activeFiles, ...activeFolders].length;
+
+  let tableGroupMenuVisible = headerMenu.length;
+  const tableGroupMenuProps = {
+    checkboxOptions: menuItems,
+    onChange,
+    headerMenu,
+    isInfoPanelVisible,
+    toggleInfoPanel: onToggleInfoPanel,
+    isMobileView: isMobileOnly,
+  };
+
+  if (isAccountsPage) {
+    tableGroupMenuVisible =
+      isAccountsHeaderVisible &&
+      tableGroupMenuVisible &&
+      headerMenu.some((x) => !x.disabled);
+    tableGroupMenuProps.isChecked = isAccountsHeaderChecked;
+    tableGroupMenuProps.isIndeterminate = isAccountsHeaderIndeterminate;
+    tableGroupMenuProps.withoutInfoPanelToggler = false;
+  } else {
+    tableGroupMenuVisible = isHeaderVisible && tableGroupMenuVisible;
+    tableGroupMenuProps.isChecked = isHeaderChecked;
+    tableGroupMenuProps.isIndeterminate = isHeaderIndeterminate;
+    tableGroupMenuProps.isBlocked = isGroupMenuBlocked;
+  }
 
   return [
     <Consumer key="header">
@@ -678,18 +818,8 @@ const SectionHeaderContent = (props) => {
           isRecycleBinFolder={isRecycleBinFolder}
           hideContextMenuInsideArchiveRoom={hideContextMenuInsideArchiveRoom}
         >
-          {isHeaderVisible && headerMenu.length ? (
-            <TableGroupMenu
-              checkboxOptions={menuItems}
-              onChange={onChange}
-              isChecked={isHeaderChecked}
-              isIndeterminate={isHeaderIndeterminate}
-              headerMenu={headerMenu}
-              isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanel={onToggleInfoPanel}
-              isMobileView={isMobileOnly}
-              isBlocked={isGroupMenuBlocked}
-            />
+          {tableGroupMenuVisible ? (
+            <TableGroupMenu {...tableGroupMenuProps} />
           ) : (
             <div className="header-container">
               {isLoading ? (
@@ -698,9 +828,9 @@ const SectionHeaderContent = (props) => {
                 <Navigation
                   sectionWidth={context.sectionWidth}
                   showText={showText}
-                  isRootFolder={isRootFolder}
-                  canCreate={security?.Create}
-                  title={title}
+                  isRootFolder={isRootFolder || isAccountsPage}
+                  canCreate={security?.Create || isAccountsPage}
+                  title={isAccountsPage ? t("Common:Accounts") : title}
                   isDesktop={isDesktop}
                   isTabletView={isTabletView}
                   personal={personal}
@@ -735,7 +865,7 @@ const SectionHeaderContent = (props) => {
         </StyledContainer>
       )}
     </Consumer>,
-    isRecycleBinFolder && !isEmptyPage && (
+    isRecycleBinFolder && !isEmptyPage && !isAccountsPage && (
       <TrashWarning
         key="trash-warning"
         title={t("Files:TrashErasureWarning")}
@@ -749,7 +879,7 @@ export default inject(
   ({
     auth,
     filesStore,
-
+    peopleStore,
     dialogsStore,
     selectedFolderStore,
     treeFoldersStore,
@@ -758,6 +888,8 @@ export default inject(
 
     contextOptionsStore,
   }) => {
+    const { isOwner, isAdmin } = auth.userStore.user;
+
     const {
       setSelected,
 
@@ -797,6 +929,7 @@ export default inject(
       setArchiveDialogVisible,
       setRestoreAllArchive,
       setArchiveAction,
+      setInvitePanelOptions,
       setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
@@ -848,6 +981,23 @@ export default inject(
     const hideContextMenuInsideArchiveRoom = isArchiveFolderRoot
       ? !isArchiveFolder
       : false;
+
+    const {
+      selectionStore,
+      headerMenuStore,
+      getHeaderMenu: getAccountsHeaderMenu,
+    } = peopleStore;
+
+    const {
+      isHeaderVisible: isAccountsHeaderVisible,
+      isHeaderIndeterminate: isAccountsHeaderIndeterminate,
+      isHeaderChecked: isAccountsHeaderChecked,
+      cbMenuItems: accountsCbMenuItems,
+      getMenuItemId: getAccountsMenuItemId,
+      getCheckboxItemLabel: getAccountsCheckboxItemLabel,
+    } = headerMenuStore;
+
+    const { setSelected: setAccountsSelected } = selectionStore;
 
     return {
       isGracePeriod,
@@ -934,6 +1084,18 @@ export default inject(
 
       moveToRoomsPage,
       onClickBack,
+
+      getAccountsHeaderMenu,
+      isAccountsHeaderVisible,
+      isAccountsHeaderIndeterminate,
+      isAccountsHeaderChecked,
+      accountsCbMenuItems,
+      getAccountsMenuItemId,
+      getAccountsCheckboxItemLabel,
+      setAccountsSelected,
+      isOwner,
+      isAdmin,
+      setInvitePanelOptions,
     };
   }
 )(
@@ -944,5 +1106,8 @@ export default inject(
     "InfoPanel",
     "SharingPanel",
     "Article",
+    "People",
+    "PeopleTranslations",
+    "ChangeUserTypeDialog",
   ])(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
 );

@@ -12,11 +12,13 @@ import Section from "@docspace/common/components/Section";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 
 import {
-  SectionHeaderContent,
+  // SectionHeaderContent,
   SectionBodyContent,
   SectionFilterContent,
   SectionPagingContent,
 } from "./Section";
+
+import { SectionHeaderContent } from "../Home/Section";
 
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
 import {
