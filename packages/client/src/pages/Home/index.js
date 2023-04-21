@@ -34,26 +34,83 @@ import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
-class PureHome extends React.Component {
-  componentDidMount() {
-    const {
-      fetchFiles,
-      fetchRooms,
-      alreadyFetchingRooms,
-      setAlreadyFetchingRooms,
-      //homepage,
-      setIsLoading,
-      setFirstLoad,
-      setToPreviewFile,
-      playlist,
+const PureHome = (props) => {
+  const {
+    fetchFiles,
+    fetchRooms,
+    alreadyFetchingRooms,
+    setAlreadyFetchingRooms,
+    //homepage,
+    setIsLoading,
+    setFirstLoad,
+    setToPreviewFile,
+    playlist,
 
-      getFileInfo,
-      gallerySelected,
-      setIsUpdatingRowItem,
-      setIsPreview,
-      selectedFolderStore,
-    } = this.props;
+    getFileInfo,
+    gallerySelected,
+    setIsUpdatingRowItem,
+    setIsPreview,
+    selectedFolderStore,
+    t,
+    startUpload,
+    setDragging,
+    dragging,
+    uploadEmptyFolders,
+    disableDrag,
+    uploaded,
+    converted,
+    setUploadPanelVisible,
+    clearPrimaryProgressData,
+    primaryProgressDataVisible,
+    isProgressFinished,
+    secondaryProgressDataStoreIcon,
+    itemsSelectionLength,
+    itemsSelectionTitle,
+    setItemsSelectionTitle,
+    refreshFiles,
+    isHeaderVisible,
+    setHeaderVisible,
+    setFrameConfig,
+    user,
+    folders,
+    files,
+    selection,
+    filesList,
 
+    createFile,
+    createFolder,
+    createRoom,
+
+    setViewAs,
+    viewAs,
+
+    firstLoad,
+
+    isPrivacyFolder,
+    isRecycleBinFolder,
+    isErrorRoomNotAvailable,
+
+    primaryProgressDataPercent,
+    primaryProgressDataIcon,
+    primaryProgressDataAlert,
+    clearUploadedFilesHistory,
+
+    secondaryProgressDataStoreVisible,
+    secondaryProgressDataStorePercent,
+
+    secondaryProgressDataStoreAlert,
+
+    tReady,
+    isFrame,
+    showTitle,
+    showFilter,
+    frameConfig,
+    withPaging,
+    isEmptyPage,
+    isLoadedEmptyPage,
+  } = props;
+
+  React.useEffect(() => {
     if (!window.location.href.includes("#preview")) {
       localStorage.removeItem("isFirstUrl");
     }
@@ -79,7 +136,7 @@ class PureHome extends React.Component {
           })
           .catch((err) => {
             toastr.error(err);
-            this.fetchDefaultFiles();
+            fetchDefaultFiles();
           });
       }, 1);
 
@@ -100,7 +157,7 @@ class PureHome extends React.Component {
 
       if (!filterObj) {
         setIsLoading(true);
-        this.fetchDefaultRooms();
+        fetchDefaultRooms();
 
         return;
       }
@@ -109,7 +166,7 @@ class PureHome extends React.Component {
 
       if (!filterObj) {
         setIsLoading(true);
-        this.fetchDefaultFiles();
+        fetchDefaultFiles();
 
         return;
       }
@@ -235,11 +292,14 @@ class PureHome extends React.Component {
         setAlreadyFetchingRooms(false);
       });
 
-    window.addEventListener("message", this.handleMessage, false);
-  }
+    window.addEventListener("message", handleMessage, false);
 
-  fetchDefaultFiles = () => {
-    const { fetchFiles, setIsLoading, setFirstLoad } = this.props;
+    return () => {
+      window.removeEventListener("message", handleMessage, false);
+    };
+  }, []);
+
+  const fetchDefaultFiles = () => {
     const filterObj = FilesFilter.getDefault();
     const folderId = filterObj.folder;
 
@@ -249,24 +309,14 @@ class PureHome extends React.Component {
     });
   };
 
-  fetchDefaultRooms = () => {
-    const { fetchRooms, setIsLoading, setFirstLoad } = this.props;
-
+  const fetchDefaultRooms = () => {
     fetchRooms().finally(() => {
       setIsLoading(false);
       setFirstLoad(false);
     });
   };
 
-  onDrop = (files, uploadToFolder) => {
-    const {
-      t,
-      startUpload,
-      setDragging,
-      dragging,
-      uploadEmptyFolders,
-      disableDrag,
-    } = this.props;
+  const onDrop = (files, uploadToFolder) => {
     dragging && setDragging(false);
 
     if (disableDrag) return;
@@ -283,8 +333,7 @@ class PureHome extends React.Component {
     }
   };
 
-  showOperationToast = (type, qty, title) => {
-    const { t } = this.props;
+  const showOperationToast = (type, qty, title) => {
     switch (type) {
       case "move":
         if (qty > 1) {
@@ -317,34 +366,24 @@ class PureHome extends React.Component {
     }
   };
 
-  showUploadPanel = () => {
-    const {
-      uploaded,
-      converted,
-      setUploadPanelVisible,
-      clearPrimaryProgressData,
-      primaryProgressDataVisible,
-    } = this.props;
+  const showUploadPanel = () => {
     setUploadPanelVisible(true);
 
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
   };
-  componentDidUpdate(prevProps) {
-    const {
-      isProgressFinished,
-      secondaryProgressDataStoreIcon,
-      itemsSelectionLength,
-      itemsSelectionTitle,
-      setItemsSelectionTitle,
-      refreshFiles,
-    } = this.props;
 
-    if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
-      this.props.setHeaderVisible(this.props.isHeaderVisible);
+  const prevProps = React.useRef({
+    isHeaderVisible: null,
+    isProgressFinished: null,
+  });
+
+  React.useEffect(() => {
+    if (isHeaderVisible !== prevProps.current.isHeaderVisible) {
+      setHeaderVisible(isHeaderVisible);
     }
 
-    if (isProgressFinished !== prevProps.isProgressFinished) {
+    if (isProgressFinished !== prevProps.current.isProgressFinished) {
       setTimeout(() => {
         refreshFiles();
       }, 100);
@@ -353,37 +392,31 @@ class PureHome extends React.Component {
     if (
       isProgressFinished &&
       itemsSelectionTitle &&
-      isProgressFinished !== prevProps.isProgressFinished
+      isProgressFinished !== prevProps.current.isProgressFinished
     ) {
-      this.showOperationToast(
+      showOperationToast(
         secondaryProgressDataStoreIcon,
         itemsSelectionLength,
         itemsSelectionTitle
       );
       setItemsSelectionTitle(null);
     }
-  }
+  }, [
+    isHeaderVisible,
+    setHeaderVisible,
+    isProgressFinished,
+    refreshFiles,
+    itemsSelectionTitle,
+    showOperationToast,
+    setItemsSelectionTitle,
+  ]);
 
-  componentWillUnmount() {
-    window.removeEventListener("message", this.handleMessage, false);
-  }
+  React.useEffect(() => {
+    prevProps.current.isHeaderVisible = isHeaderVisible;
+    prevProps.current.isProgressFinished = isProgressFinished;
+  }, [isHeaderVisible, isProgressFinished]);
 
-  handleMessage = async (e) => {
-    const {
-      setFrameConfig,
-      user,
-      folders,
-      files,
-      selection,
-      filesList,
-      selectedFolderStore,
-      createFile,
-      createFolder,
-      createRoom,
-      refreshFiles,
-      setViewAs,
-    } = this.props;
-
+  const handleMessage = async (e) => {
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
 
     if (eventData.data) {
@@ -473,123 +506,89 @@ class PureHome extends React.Component {
     }
   };
 
-  render() {
-    //console.log("Home render");
-    const {
-      viewAs,
-
-      firstLoad,
-      isHeaderVisible,
-      isPrivacyFolder,
-      isRecycleBinFolder,
-      isErrorRoomNotAvailable,
-
-      primaryProgressDataVisible,
-      primaryProgressDataPercent,
-      primaryProgressDataIcon,
-      primaryProgressDataAlert,
-      clearUploadedFilesHistory,
-
-      secondaryProgressDataStoreVisible,
-      secondaryProgressDataStorePercent,
-      secondaryProgressDataStoreIcon,
-      secondaryProgressDataStoreAlert,
-
-      dragging,
-      tReady,
-      isFrame,
-      showTitle,
-      showFilter,
-      frameConfig,
-      withPaging,
-      isEmptyPage,
-      isLoadedEmptyPage,
-    } = this.props;
-
-    if (window.parent && !frameConfig) {
-      frameCallCommand("setConfig");
-    }
-
-    return (
-      <>
-        <MediaViewer />
-        <DragTooltip />
-        <SelectionArea />
-
-        <Section
-          withPaging={withPaging}
-          dragging={dragging}
-          withBodyScroll
-          withBodyAutoFocus={!isMobile}
-          uploadFiles
-          onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
-          showPrimaryProgressBar={primaryProgressDataVisible}
-          primaryProgressBarValue={primaryProgressDataPercent}
-          primaryProgressBarIcon={primaryProgressDataIcon}
-          showPrimaryButtonAlert={primaryProgressDataAlert}
-          showSecondaryProgressBar={secondaryProgressDataStoreVisible}
-          secondaryProgressBarValue={secondaryProgressDataStorePercent}
-          secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
-          showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
-          clearUploadedFilesHistory={clearUploadedFilesHistory}
-          viewAs={viewAs}
-          hideAside={
-            primaryProgressDataVisible || secondaryProgressDataStoreVisible //TODO: use hideArticle action
-          }
-          isLoaded={!firstLoad}
-          isHeaderVisible={isHeaderVisible}
-          onOpenUploadPanel={this.showUploadPanel}
-          firstLoad={firstLoad}
-          isEmptyPage={isEmptyPage}
-        >
-          {!isErrorRoomNotAvailable && (
-            <Section.SectionHeader>
-              {isFrame ? (
-                showTitle && <SectionHeaderContent />
-              ) : (
-                <SectionHeaderContent />
-              )}
-            </Section.SectionHeader>
-          )}
-
-          {!isLoadedEmptyPage && !isErrorRoomNotAvailable && (
-            <Section.SectionFilter>
-              {isFrame ? (
-                showFilter && <SectionFilterContent />
-              ) : (
-                <SectionFilterContent />
-              )}
-            </Section.SectionFilter>
-          )}
-
-          <Section.SectionBody>
-            <Consumer>
-              {(context) => (
-                <>
-                  <SectionBodyContent sectionWidth={context.sectionWidth} />
-                </>
-              )}
-            </Consumer>
-          </Section.SectionBody>
-
-          <Section.InfoPanelHeader>
-            <InfoPanelHeaderContent />
-          </Section.InfoPanelHeader>
-
-          <Section.InfoPanelBody>
-            <InfoPanelBodyContent />
-          </Section.InfoPanelBody>
-
-          {withPaging && (
-            <Section.SectionPaging>
-              <SectionPagingContent tReady={tReady} />
-            </Section.SectionPaging>
-          )}
-        </Section>
-      </>
-    );
+  if (window.parent && !frameConfig) {
+    frameCallCommand("setConfig");
   }
-}
+
+  return (
+    <>
+      <MediaViewer />
+      <DragTooltip />
+      <SelectionArea />
+
+      <Section
+        withPaging={withPaging}
+        dragging={dragging}
+        withBodyScroll
+        withBodyAutoFocus={!isMobile}
+        uploadFiles
+        onDrop={isRecycleBinFolder || isPrivacyFolder ? null : onDrop}
+        showPrimaryProgressBar={primaryProgressDataVisible}
+        primaryProgressBarValue={primaryProgressDataPercent}
+        primaryProgressBarIcon={primaryProgressDataIcon}
+        showPrimaryButtonAlert={primaryProgressDataAlert}
+        showSecondaryProgressBar={secondaryProgressDataStoreVisible}
+        secondaryProgressBarValue={secondaryProgressDataStorePercent}
+        secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
+        showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
+        clearUploadedFilesHistory={clearUploadedFilesHistory}
+        viewAs={viewAs}
+        hideAside={
+          primaryProgressDataVisible || secondaryProgressDataStoreVisible //TODO: use hideArticle action
+        }
+        isLoaded={!firstLoad}
+        isHeaderVisible={isHeaderVisible}
+        onOpenUploadPanel={showUploadPanel}
+        firstLoad={firstLoad}
+        isEmptyPage={isEmptyPage}
+      >
+        {!isErrorRoomNotAvailable && (
+          <Section.SectionHeader>
+            {isFrame ? (
+              showTitle && <SectionHeaderContent />
+            ) : (
+              <SectionHeaderContent />
+            )}
+          </Section.SectionHeader>
+        )}
+
+        {!isLoadedEmptyPage && !isErrorRoomNotAvailable && (
+          <Section.SectionFilter>
+            {isFrame ? (
+              showFilter && <SectionFilterContent />
+            ) : (
+              <SectionFilterContent />
+            )}
+          </Section.SectionFilter>
+        )}
+
+        <Section.SectionBody>
+          <Consumer>
+            {(context) => (
+              <>
+                <SectionBodyContent sectionWidth={context.sectionWidth} />
+              </>
+            )}
+          </Consumer>
+        </Section.SectionBody>
+
+        <Section.InfoPanelHeader>
+          <InfoPanelHeaderContent />
+        </Section.InfoPanelHeader>
+
+        <Section.InfoPanelBody>
+          <InfoPanelBodyContent />
+        </Section.InfoPanelBody>
+
+        {withPaging && (
+          <Section.SectionPaging>
+            <SectionPagingContent tReady={tReady} />
+          </Section.SectionPaging>
+        )}
+      </Section>
+    </>
+  );
+};
 
 const Home = withTranslation("Files")(PureHome);
 
