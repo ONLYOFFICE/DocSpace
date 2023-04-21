@@ -101,6 +101,22 @@ const ClientRoutes = [
         ),
       },
       {
+        path: "rooms/shared/:room",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "rooms/shared/:room/filter",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "rooms/archived",
         element: (
           <PrivateRoute>
@@ -110,6 +126,22 @@ const ClientRoutes = [
       },
       {
         path: "rooms/archived/filter",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "rooms/archived/:room",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "rooms/archived/:room/filter",
         element: (
           <PrivateRoute>
             <Home />
