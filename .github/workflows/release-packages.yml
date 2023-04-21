@@ -4,7 +4,6 @@ on:
   push:
 
 env:
-  VERSION: $(echo "$(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )" )
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
@@ -25,11 +24,15 @@ jobs:
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          # echo "VERSION=$(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )" >> $GITHUB_ENV
+          echo "VERSION=$(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
         run: |
+          echo ${{ steps.get_vars.outputs.VERSION }}
+          echo ${{ steps.get_vars.outputs.PRODUCT }}
+          echo ${{ steps.get_vars.outputs.BRANCH_NAME }}
+          
           sudo apt install -y dh-make nginx mysql-server rename curl
           curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
           echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
@@ -46,11 +49,13 @@ jobs:
         shell: bash
         run: |
           
+          V=${{ steps.get_vars.outputs.VERSION }}
+          echo $V
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           cd build/install/deb/ 
           rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/$V.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
 
