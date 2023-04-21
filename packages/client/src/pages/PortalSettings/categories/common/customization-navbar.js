@@ -4,7 +4,6 @@ import styled from "styled-components";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 import Link from "@docspace/components/link";
-import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 
@@ -95,10 +94,9 @@ const CustomizationNavbar = ({
             className="inherit-title-link header"
             onClick={onClickLink}
             truncate={true}
-            href={combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/customization/general/language-and-time-zone"
-            )}
+            href={
+              "portal-settings/customization/general/language-and-time-zone"
+            }
           >
             {t("StudioTimeLanguageSettings")}
           </Link>
@@ -125,10 +123,9 @@ const CustomizationNavbar = ({
             truncate={true}
             className="inherit-title-link header"
             onClick={onClickLink}
-            href={combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
+            href={
               "/portal-settings/customization/general/welcome-page-settings"
-            )}
+            }
           >
             {t("CustomTitlesWelcome")}
           </Link>
@@ -146,10 +143,7 @@ const CustomizationNavbar = ({
               truncate={true}
               className="inherit-title-link header"
               onClick={onClickLink}
-              href={combineUrl(
-                window.DocSpaceConfig?.proxy?.url,
-                "/portal-settings/customization/general/dns-settings"
-              )}
+              href={"/portal-settings/customization/general/dns-settings"}
             >
               {t("DNSSettings")}
             </Link>
@@ -185,10 +179,7 @@ const CustomizationNavbar = ({
             truncate={true}
             className="inherit-title-link header"
             onClick={onClickLink}
-            href={combineUrl(
-              window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/customization/general/portal-renaming"
-            )}
+            href={"/portal-settings/customization/general/portal-renaming"}
           >
             {t("PortalRenaming")}
           </Link>

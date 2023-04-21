@@ -2,8 +2,8 @@ import styled, { css } from "styled-components";
 import StyledInfoPanelToggleWrapper from "../../StyledInfoPanelToggleWrapper";
 import Base from "@docspace/components/themes/base";
 
-const getDefaultStyles = ({ $currentColorScheme }) =>
-  $currentColorScheme &&
+const getDefaultStyles = ({ $currentColorScheme, isInfoPanelVisible }) =>
+  $currentColorScheme && isInfoPanelVisible &&
   css`
     .info-panel-toggle-bg {
       path {

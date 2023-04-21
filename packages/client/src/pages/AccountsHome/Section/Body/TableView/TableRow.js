@@ -76,6 +76,15 @@ const StyledPeopleRow = styled(TableRow)`
     margin-left: -8px;
   }
 
+  .type-combobox {
+    visibility: ${(props) => (props.hideColumns ? "hidden" : "visible")};
+    opacity: ${(props) => (props.hideColumns ? 0 : 1)};
+
+    & > div {
+      max-width: fit-content;
+    }
+  }
+
   .type-combobox,
   .room-combobox {
     padding-left: 8px;
@@ -129,6 +138,7 @@ const PeopleTableRow = (props) => {
     isActive,
     isSeveralSelection,
     canChangeUserType,
+    hideColumns,
   } = props;
 
   const {
@@ -257,7 +267,7 @@ const PeopleTableRow = (props) => {
         }
         options={typesOptions}
         onSelect={onTypeChange}
-        scaled={false}
+        scaled
         size="content"
         displaySelectedOption
         modernView
@@ -330,6 +340,7 @@ const PeopleTableRow = (props) => {
         isActive={isActive}
         onClick={onRowClick}
         fileContextClick={onRowContextClick}
+        hideColumns={hideColumns}
         {...contextOptionsProps}
       >
         <TableCell className={"table-container_user-name-cell"}>
