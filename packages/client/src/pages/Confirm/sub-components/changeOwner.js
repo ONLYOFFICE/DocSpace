@@ -20,6 +20,7 @@ import { getUserFromConfirm } from "@docspace/common/api/people";
 const ChangeOwnerForm = (props) => {
   const { t, greetingTitle, linkData, history } = props;
   const [newOwner, setNewOwner] = useState("");
+  const [isOwnerChanged, setIsOwnerChanged] = useState(false);
 
   const ownerId = linkData.uid;
 
@@ -36,7 +37,8 @@ const ChangeOwnerForm = (props) => {
   const onChangeOwnerClick = async () => {
     try {
       await ownerChange(ownerId, linkData.confirmHeader);
-      history.push("/");
+      setIsOwnerChanged(true);
+      setTimeout(() => (location.href = "/"), 10000);
     } catch (error) {
       toastr.error(e);
       console.error(error);
@@ -57,28 +59,34 @@ const ChangeOwnerForm = (props) => {
           </Text>
 
           <FormWrapper>
-            <Text className="subtitle">
-              {t("ConfirmOwnerPortalTitle", { newOwner: newOwner })}
-            </Text>
-            <ButtonsWrapper>
-              <Button
-                primary
-                scale
-                size="medium"
-                label={t("Common:SaveButton")}
-                tabIndex={2}
-                isDisabled={false}
-                onClick={onChangeOwnerClick}
-              />
-              <Button
-                scale
-                size="medium"
-                label={t("Common:CancelButton")}
-                tabIndex={2}
-                isDisabled={false}
-                onClick={onCancelClick}
-              />
-            </ButtonsWrapper>
+            {isOwnerChanged ? (
+              <Text>{t("ConfirmOwnerPortalSuccessMessage")}</Text>
+            ) : (
+              <>
+                <Text className="subtitle">
+                  {t("ConfirmOwnerPortalTitle", { newOwner: newOwner })}
+                </Text>
+                <ButtonsWrapper>
+                  <Button
+                    primary
+                    scale
+                    size="medium"
+                    label={t("Common:SaveButton")}
+                    tabIndex={2}
+                    isDisabled={false}
+                    onClick={onChangeOwnerClick}
+                  />
+                  <Button
+                    scale
+                    size="medium"
+                    label={t("Common:CancelButton")}
+                    tabIndex={2}
+                    isDisabled={false}
+                    onClick={onCancelClick}
+                  />
+                </ButtonsWrapper>
+              </>
+            )}
           </FormWrapper>
         </StyledBody>
       </StyledContent>
