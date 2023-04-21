@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 import CrossIconReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import TagIconReactSvgUrl from "PUBLIC_DIR/images/tag.react.svg?url";
@@ -174,6 +175,31 @@ const Tag = ({
       )}
     </>
   );
+};
+
+Tag.propTypes = {
+  /** Accepts the tag id */
+  tag: PropTypes.string,
+  /** Accepts the tag label */
+  label: PropTypes.string,
+  /** Accepts class */
+  className: PropTypes.string,
+  /** Accepts id */
+  id: PropTypes.string,
+  /** Accepts css style */
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Accepts the tag styles as new and adds the delete button */
+  isNewTag: PropTypes.bool,
+  /** Accepts the tag styles as disabled and disables clicking */
+  isDisabled: PropTypes.bool,
+  /** Accepts the function that is called when the tag is clicked */
+  onClick: PropTypes.func,
+  /** Accepts the function that ist called when the tag delete button is clicked */
+  onDelete: PropTypes.func,
+  /** Accepts the max width of the tag */
+  tagMaxWidth: PropTypes.string,
+  /** Accepts the dropdown options */
+  advancedOptions: PropTypes.object,
 };
 
 export default React.memo(Tag);
