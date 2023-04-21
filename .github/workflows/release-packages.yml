@@ -4,6 +4,7 @@ on:
   push:
 
 env:
+  VERSION: $(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
@@ -24,7 +25,7 @@ jobs:
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )" >> $GITHUB_ENV
+          # echo "VERSION=$(echo ${ GITHUB_REF } | grep  -oP '\d+\.\d+\.\d+' )" >> $GITHUB_ENV
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
