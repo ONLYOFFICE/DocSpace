@@ -92,15 +92,6 @@ jobs:
       - name: Get files from repository.
         uses: actions/checkout@v2
 
-      - name: Get variables
-        id: get_vars
-        run: |
-          echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${GITHUB_REF##*/}" )" >> $GITHUB_OUTPUT
-          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-          
-
-
       - name: INSTALL tools & Prepare build
         run: |
           sudo apt install -y rpm nginx mysql-server rename curl
@@ -118,12 +109,20 @@ jobs:
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs
           sudo npm install -g json
           
-        
+      - name: Get variables
+        id: get_vars
+        run: |
+          echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${GITHUB_REF##*/}" )" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
     
       - name: BUILD package RPM
         run: |
 
           cd build/install/rpm/SPECS
+          
+          ls -la 
+          ls -la ./SOURCES
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ steps.get_vars.outputs.PRODUCT }}.rpmlintrc
