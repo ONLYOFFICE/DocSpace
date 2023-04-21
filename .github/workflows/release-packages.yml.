@@ -108,7 +108,7 @@ jobs:
 
           cd build/install/rpm/SPECS
           
-          ls -la 
+          # ls -la 
           ls -la ./SOURCES
           echo ${{ steps.get_vars.outputs.PRODUCT }}
           echo ${{ steps.get_vars.outputs.VERSION }}
