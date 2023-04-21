@@ -46,7 +46,7 @@ jobs:
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo {GITHUB_REF##*/} | tr -d '[:alpha:]' )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
@@ -95,7 +95,7 @@ jobs:
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" )" >> $GITHUB_OUTPUT
-          echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           
 
@@ -126,7 +126,7 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/"${{ steps.get_vars.outputs.PRODUCT }}".rpmlintrc
-          wget https://github.com/elshirak/"${{ steps.get_vars.outputs.PRODUCT }}"/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O "${{ steps.get_vars.outputs.PRODUCT }}"-"${{ steps.get_vars.outputs.BRANCH_NAME }}".tar.gz 
+          wget https://github.com/elshirak/"${{ steps.get_vars.outputs.PRODUCT }}"/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O ${{ steps.get_vars.outputs.PRODUCT }}-"${{ steps.get_vars.outputs.BRANCH_NAME }}".tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
@@ -134,8 +134,8 @@ jobs:
           echo "${{ steps.get_vars.outputs.BRANCH_NAME }}"
           
           sed -i -e '/BuildRequires/d' product.spec
-          rename 's/product/"${{ steps.get_vars.outputs.PRODUCT }}"/g' ../../common/*.sh
-          rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.BRANCH_NAME }}" -D "_topdir $(pwd)" -D "version "${{ steps.get_vars.outputs.VERSION }}"" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rename "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" ../../common/*.sh
+          rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.BRANCH_NAME }}" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
       - name: Upload assets RPM 
