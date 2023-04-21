@@ -4,8 +4,6 @@ on:
   push:
 
 env:
-  # product: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]')
-  # version: $(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' ) 
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
@@ -71,7 +69,7 @@ jobs:
           cd build/install/deb/ 
           rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/${ steps.get_vars.outputs.VERSION }.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
 
@@ -153,7 +151,13 @@ jobs:
           rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.SOURCE_NAME }}" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
-      - name: Upload assets RPM 
-        uses: softprops/action-gh-release@v1
+      - uses: ncipollo/release-action@v1
         with:
-          files: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          allowUpdates: true
+          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
+          tag: "${{ steps.get_vars.outputs.VERSION }}-$BUILD_NUMBER"
+          name: DocSpace packeges release "$BUILD_NUMBER"
+          body: Here you may find packages for DocSpace
+            - .RPM
+            - .DEB
+          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
