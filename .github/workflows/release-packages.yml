@@ -4,8 +4,8 @@ on:
   push:
 
 env:
-  product: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]')
-  version: $(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' ) 
+  # product: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]')
+  # version: $(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' ) 
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
@@ -42,6 +42,13 @@ jobs:
       - name: Get files from repository
         uses: actions/checkout@v2
               
+      - name: Get variables
+        id: get_vars
+        run: |
+          echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
+          echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+              
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
         run: |
           sudo apt install -y dh-make nginx mysql-server rename curl
@@ -59,16 +66,12 @@ jobs:
       - name: BUILD package DEB
         shell: bash
         run: |
-          echo ${{ env.product }}
-          echo ${{ env.version }}
-          echo "${{ env.TAG }}"
-          echo "${{ env.BUILD_NUMBER }}"
           
           sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           cd build/install/deb/ 
-          rename -f -v "s/product/${{ env.product }}/" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/${{ env.product }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/${{ env.version }}.$BUILD_NUMBER/g" debian/changelog debian/control
+          rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/" debian/* ../common/* ../common/logrotate/*
+          find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
+          sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
 
@@ -91,9 +94,9 @@ jobs:
       - name: Get variables
         id: get_vars
         run: |
-          # echo "product=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_ENV
-          # echo "version=${GITHUB_REF##*/}" >> $GITHUB_ENV
-          echo "branch_name=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "PRODUCT=$(echo "${{ github.event.repository.name }}" )" >> $GITHUB_OUTPUT
+          echo "VERSION=${GITHUB_REF##*/}" >> $GITHUB_OUTPUT
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           
 
 
@@ -122,17 +125,17 @@ jobs:
           cd build/install/rpm/SPECS
           
               ### Preparing source directory ###
-          mv ./SOURCES/product.rpmlintrc ./SOURCES/"${{ env.product }}".rpmlintrc
-          wget https://github.com/elshirak/"${{ env.product }}"/archive/${{ steps.get_vars.outputs.branch_name }}.tar.gz -O "${{ env.product }}"-"${{ steps.get_vars.outputs.branch_name }}".tar.gz 
+          mv ./SOURCES/product.rpmlintrc ./SOURCES/"${{ steps.get_vars.outputs.PRODUCT }}".rpmlintrc
+          wget https://github.com/elshirak/"${{ steps.get_vars.outputs.PRODUCT }}"/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O "${{ steps.get_vars.outputs.PRODUCT }}"-"${{ steps.get_vars.outputs.BRANCH_NAME }}".tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
           
-          echo "${{ steps.get_vars.outputs.branch_name }}"
+          echo "${{ steps.get_vars.outputs.BRANCH_NAME }}"
           
           sed -i -e '/BuildRequires/d' product.spec
-          rename 's/product/"${{ env.product }}"/g' ../../common/*.sh
-          rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.branch_name }}" -D "_topdir $(pwd)" -D "version $version" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rename 's/product/"${{ steps.get_vars.outputs.PRODUCT }}"/g' ../../common/*.sh
+          rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.BRANCH_NAME }}" -D "_topdir $(pwd)" -D "version "${{ steps.get_vars.outputs.VERSION }}"" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
       - name: Upload assets RPM 
