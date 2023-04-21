@@ -898,4 +898,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Новенькое</value>
   </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Брендинг и кастомизация</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Отслеживание входов в систему и действий пользователей</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Максимальный размер файла</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Размер файла не должен превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Количество администраторов не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Количество администраторов</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Автоматическое резервное копирование и восстановление данных</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Неограниченное количество активных комнат</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Количество комнат не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} дискового пространства</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Используемое дисковое пространство не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Дисковое пространство</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Добавлено администраторов:</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Комнат:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Используемое дисковое пространство:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Пользователей в комнате:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Неограниченное количество пользователей</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Количество пользователей не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Пользователей в комнате</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Количество пользователей в комнате не должно превышать {0}</value>
+  </data>
 </root>

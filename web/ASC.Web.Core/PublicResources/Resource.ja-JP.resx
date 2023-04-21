@@ -278,4 +278,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>新着情報</value>
   </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>ブランディング＆カスタマイズ</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>ユーザーのログイン＆アクションの追跡</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>最大ファイルサイズ</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>ファイルサイズは {0} を超えないこと</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>管理者の数は {0} を超えないこと</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>管理者数</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>自動バックアップ＆回復</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>アクティブルームの数は無制限</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>ルーム数は{0}を超えないこと</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} ストレージスペース</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>使用するストレージのサイズは {0} を超えないこと</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>ストレージスペース</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>追加された管理者：</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>ルーム：</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>使用されたストレージスペース：</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>ルーム内のユーザー数：</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>ユーザー数は無制限</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>ユーザー数は {0} を超えないこと</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>ルーム内のユーザー数</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>ルーム内のユーザー数は {0} を超えないこと</value>
+  </data>
 </root>

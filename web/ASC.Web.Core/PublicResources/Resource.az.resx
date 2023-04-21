@@ -307,4 +307,10 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Yeniliklər</value>
   </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Brendləşdirmə və fərdiləşdirmə</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>İstifadəçilərin giriş və hərəkətlərini izləmək</value>
+  </data>
 </root>

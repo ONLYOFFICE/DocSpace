@@ -448,4 +448,10 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>O que há de novo</value>
   </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Marca e personalização</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Rastreamento de logins e ações dos usuários</value>
+  </data>
 </root>
