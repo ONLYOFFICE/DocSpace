@@ -134,8 +134,6 @@ const SectionHeaderContent = (props) => {
     isHeaderIndeterminate,
     showText,
 
-    isEmptyPage,
-
     isEmptyArchive,
 
     isRoom,
@@ -196,7 +194,6 @@ const SectionHeaderContent = (props) => {
     isAdmin,
     setInvitePanelOptions,
   } = props;
-  const [navigationItems, setNavigationItems] = React.useState([]);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -856,7 +853,7 @@ const SectionHeaderContent = (props) => {
                   }}
                   withMenu={!isRoomsFolder}
                   onPlusClick={onCreateRoom}
-                  isEmptyPage={isEmptyPage}
+                  isEmptyPage={isEmptyFilesList}
                   isRoom={isRoom}
                 />
               )}
@@ -865,7 +862,7 @@ const SectionHeaderContent = (props) => {
         </StyledContainer>
       )}
     </Consumer>,
-    isRecycleBinFolder && !isEmptyPage && !isAccountsPage && (
+    isRecycleBinFolder && !isEmptyFilesList && !isAccountsPage && (
       <TrashWarning
         key="trash-warning"
         title={t("Files:TrashErasureWarning")}
@@ -913,8 +910,6 @@ export default inject(
 
       roomsForRestore,
       roomsForDelete,
-
-      isEmptyPage,
     } = filesStore;
 
     const {
@@ -1064,7 +1059,7 @@ export default inject(
       enablePlugins,
 
       setRestoreAllPanelVisible,
-      isEmptyPage,
+
       setArchiveDialogVisible,
       setRestoreAllArchive,
       setArchiveAction,
