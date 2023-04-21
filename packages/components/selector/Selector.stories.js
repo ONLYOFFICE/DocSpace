@@ -28,6 +28,9 @@ export default {
       },
     },
   },
+  argTypes: {
+    height: { description: "Property for story" },
+  },
 };
 
 function makeName() {
