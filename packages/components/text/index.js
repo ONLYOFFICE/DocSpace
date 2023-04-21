@@ -28,6 +28,7 @@ const Text = ({
 Text.propTypes = {
   /** Sets the tag through which the component is rendered */
   as: PropTypes.string,
+  /** Accepts the tag id */
   tag: PropTypes.string,
   /** Sets background color */
   backgroundColor: PropTypes.string,
