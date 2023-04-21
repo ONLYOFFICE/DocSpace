@@ -49,7 +49,7 @@ jobs:
           cd build/install/deb/ 
           rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/${ env.VERSION }.$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/${{ env.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
 
