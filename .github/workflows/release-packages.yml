@@ -71,8 +71,7 @@ jobs:
           cd build/install/deb/ 
           rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
-          # sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
-          sed -i "s/{{package_header_tag_version}}/1.0.0.$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
 
@@ -80,9 +79,11 @@ jobs:
         with:
           allowUpdates: true
           commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
-          tag: "${{ github.ref_name }}"
-          name: DocSpace packeges release ${BUILD_NUMBER}
-          body: Here you may find .rpm .deb packages for DocSpace 
+          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ BUILD_NUMBER }}"
+          name: DocSpace packeges release "${{ BUILD_NUMBER }}"
+          body: Here you may find packages for DocSpace
+            - .RPM
+            - .DEB
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           
 
@@ -117,7 +118,7 @@ jobs:
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${GITHUB_REF##*/}" )" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           echo "SOURCE_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-' )" >> $GITHUB_OUTPUT
     
@@ -146,6 +147,9 @@ jobs:
           
           sed -i -e '/BuildRequires/d' product.spec
           rename "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" ../../common/*.sh
+          
+          pwd && ls -la ./SOURCES
+          
           rpmbuild -D "GIT_BRANCH ${{ steps.get_vars.outputs.BRANCH_NAME }}" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
