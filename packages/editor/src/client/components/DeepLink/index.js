@@ -19,7 +19,7 @@ const DL_ANDROID = "com.onlyoffice.documents";
 const DL_IOS = "944896972";
 const DL_URL = "oodocuments://openfile";
 
-const DeepLink = ({ fileInfo, logoUrls, userEmail }) => {
+const DeepLink = ({ fileInfo, logoUrls, userEmail, setIsShowDeepLink }) => {
   const [isRemember, setIsRemember] = useState(false);
 
   const onChangeCheckbox = () => {
@@ -38,7 +38,7 @@ const DeepLink = ({ fileInfo, logoUrls, userEmail }) => {
 
   const onStayBrowserClick = () => {
     if (isRemember) localStorage.setItem("defaultOpenDocument", "web");
-    console.log("onStayBrowserClick");
+    setIsShowDeepLink(false);
   };
 
   const getFileIcon = () => {

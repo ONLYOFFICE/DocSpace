@@ -741,6 +741,7 @@ function Editor({
         fileInfo={fileInfo}
         logoUrls={logoUrls}
         userEmail={user.email}
+        setIsShowDeepLink={setIsShowDeepLink}
       />
     );
 
