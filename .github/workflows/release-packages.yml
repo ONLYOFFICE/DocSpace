@@ -95,8 +95,8 @@ jobs:
       - name: Get variables
         id: get_vars
         run: |
-          echo "PRODUCT=$(echo "${{ github.event.repository.name }}" )" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' )" >> $GITHUB_OUTPUT
+          echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${GITHUB_REF##*/}" )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           
 
@@ -127,12 +127,13 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ steps.get_vars.outputs.PRODUCT }}.rpmlintrc
-          wget https://github.com/elshirak/${{ steps.get_vars.outputs.PRODUCT }}/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O ${{ steps.get_vars.outputs.PRODUCT }}-${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz 
+          wget https://github.com/elshirak/${{ steps.get_vars.outputs.PRODUCT }}/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O DocSpace-${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O dictionaries-master.tar.gz
           cp *.tar.gz ./SOURCES
           
-          echo "${{ steps.get_vars.outputs.BRANCH_NAME }}"
+          ls -la 
+          ls -la ./SOURCES
           
           sed -i -e '/BuildRequires/d' product.spec
           rename "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" ../../common/*.sh
