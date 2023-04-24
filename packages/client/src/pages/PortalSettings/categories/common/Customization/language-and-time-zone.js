@@ -52,13 +52,11 @@ class LanguageAndTimeZone extends React.Component {
     const { t } = props;
 
     languageFromSessionStorage = getFromSessionStorage("language");
-    languageDefaultFromSessionStorage = getFromSessionStorage(
-      "languageDefault"
-    );
+    languageDefaultFromSessionStorage =
+      getFromSessionStorage("languageDefault");
     timezoneFromSessionStorage = getFromSessionStorage("timezone");
-    timezoneDefaultFromSessionStorage = getFromSessionStorage(
-      "timezoneDefault"
-    );
+    timezoneDefaultFromSessionStorage =
+      getFromSessionStorage("timezoneDefault");
 
     setDocumentTitle(t("StudioTimeLanguageSettings"));
 
@@ -92,6 +90,8 @@ class LanguageAndTimeZone extends React.Component {
       initSettings,
       setIsLoaded,
     } = this.props;
+
+    const cultureNames = mapCulturesToArray(cultures, i18n);
 
     if (!isLoaded) initSettings().then(() => setIsLoaded(true));
 
@@ -132,8 +132,6 @@ class LanguageAndTimeZone extends React.Component {
       tReady === true &&
       this.state.language === ""
     ) {
-      const cultureNames = mapCulturesToArray(cultures, i18n);
-
       const language =
         languageFromSessionStorage ||
         findSelectedItemByKey(cultureNames, portalLanguage) ||
@@ -150,7 +148,9 @@ class LanguageAndTimeZone extends React.Component {
 
     if (!languageDefault) {
       this.setState({
-        languageDefault: language,
+        languageDefault:
+          findSelectedItemByKey(cultureNames, portalLanguage) ||
+          cultureNames[0],
       });
     }
 
@@ -248,9 +248,8 @@ class LanguageAndTimeZone extends React.Component {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -549,12 +548,8 @@ export default inject(({ auth, setup, common }) => {
   const { user } = auth.userStore;
 
   const { setLanguageAndTime } = setup;
-  const {
-    isLoaded,
-    setIsLoadedLngTZSettings,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedLngTZSettings, initSettings, setIsLoaded } =
+    common;
   return {
     theme: auth.settingsStore.theme,
     user,

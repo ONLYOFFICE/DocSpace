@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "Yaddaş və administratorlar/ekspert istifadəçilər limitləri aşmaq üzrədir.",
   "StorageQuotaDescription": "Siz lazımsız faylları silə və ya DocSpace üçün daha uyğun qiymət planı tapmaq üçün <1>{{clickHere}}</1> edə bilərsiniz.",
   "StorageQuotaHeader": "Yaddaş sahəsinin həcmi keçmək üzrədir : {{currentValue}} / {{maxValue}}",
-  "UserQuotaDescription": "Portalınız üçün daha yaxşı qiymət planı tapmaq üçün <1>{{clickHere}}</1>.",
+  "UserQuotaDescription": "Sahəniz üçün daha yaxşı qiymət planı tapmaq üçün <1>{{clickHere}}</1>.",
   "UserQuotaHeader": "Admin/ekspert istifadəçilərin sayı keçmək üzrədir: {{currentValue}} / {{maxValue}}."
 }

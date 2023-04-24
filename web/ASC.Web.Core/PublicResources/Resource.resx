@@ -986,7 +986,7 @@
     <value>Storage space</value>
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Admins added:</value>
+    <value>Number of admins/power users:</value>
   </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Rooms:</value>
