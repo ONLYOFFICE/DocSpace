@@ -119,15 +119,20 @@ DropDownItem.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Accepts css text-overflow */
-  customHeight: PropTypes.number,
-  customHeightTablet: PropTypes.number,
   textOverflow: PropTypes.bool,
+  /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
+  /** Enables the submenu */
   isSubMenu: PropTypes.bool,
+  /**  Sets drop down item active  */
   isActive: PropTypes.bool,
+  /** Disables the element icon */
   withoutIcon: PropTypes.bool,
+  /** Sets the padding to the minimum value */
   isModern: PropTypes.bool,
+  /** Facilitates highlighting a selected element with the keyboard */
   isActiveDescendant: PropTypes.bool,
+  /** Facilitates selecting an element from the context menu */
   isSelected: PropTypes.bool,
 };
 
