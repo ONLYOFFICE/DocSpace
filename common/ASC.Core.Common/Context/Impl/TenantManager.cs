@@ -193,7 +193,7 @@ public class TenantManager
             tenant = context.Items[CurrentTenant] as Tenant;
             if (tenant == null && context.Request != null)
             {
-                tenant = GetTenant(context.Request.GetUrlRewriter().Host);
+                tenant = GetTenant(context.Request.Url().Host);
                 context.Items[CurrentTenant] = tenant;
             }
 
