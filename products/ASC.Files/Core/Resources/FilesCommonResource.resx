@@ -458,7 +458,7 @@ Highest compatibility with docx, xlsx, pptx. </value>
     <value>Viewer</value>
   </data>
   <data name="RoleEnum_Comment" xml:space="preserve">
-    <value>Сommentator</value>
+    <value>Сommenter</value>
   </data>
   <data name="RoleEnum_FillForms" xml:space="preserve">
     <value>Form filler</value>

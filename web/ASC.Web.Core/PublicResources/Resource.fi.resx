@@ -286,4 +286,64 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Uutta</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Käyttäjien kirjautumisten &amp; toiminnan seuranta</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimi tiedostokoko</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Tiedoston koko ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Ylläpitäjien määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Ylläpitäjien määrä</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automaattinen varmuuskopiointi &amp; palautus</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Rajoittamaton aktiivisten huoneiden määrä</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Huoneiden määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} muistin tila</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Käytetyn muistin koko ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Muistin tila</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Huoneet:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Käytetty muistin tila:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Käyttäjiä huoneessa:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Rajattu käyttäjien määrä</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Käyttäjien määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Käyttäjiä huoneessa</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Huoneessa olevien käyttäjien määrä ei saisi ylittää {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Brändäys &amp; räätälöinti</value>
+  </data>
 </root>

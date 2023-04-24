@@ -46,7 +46,7 @@
   "RoleDocSpaceAdminDescription": "协作空间管理员可访问协作空间设置、管理/归档房间、邀请新用户并指派低于其级别的角色。所有管理员都有访问“个人”分区的权限。",
   "RoleEditor": "编辑者",
   "RoleEditorDescription": "现有文件操作：查看、编辑、表单填写、审阅、评论。",
-  "RoleFormFiller": "编辑者",
+  "RoleFormFiller": "表单填写者",
   "RoleFormFillerDescription": "现有文件操作：查看、表单填写、审阅、评论。",
   "RolePowerUserDescription": "高级用户可以在房间里创建和编辑文件，但不能创建房间，管理用户，或访问设置。",
   "RoleReviewer": "审阅者",
