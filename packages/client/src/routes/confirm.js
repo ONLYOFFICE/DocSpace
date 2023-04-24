@@ -4,7 +4,7 @@ import loadable from "@loadable/component";
 import ConfirmRoute from "../helpers/confirmRoute";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 
-import { NotFoundError } from "./utils";
+import Error404 from "SRC_DIR/pages/Errors/404";
 
 const Confirm = loadable(() => import("../pages/Confirm"));
 
@@ -172,7 +172,7 @@ const ConfirmParentRoutes = [
         <Confirm />
       </ErrorBoundary>
     ),
-    errorElement: <NotFoundError />,
+    errorElement: <Error404 />,
     children: [...confirmRoutes],
   },
   {
@@ -182,7 +182,7 @@ const ConfirmParentRoutes = [
         <Confirm />
       </ErrorBoundary>
     ),
-    errorElement: <NotFoundError />,
+    errorElement: <Error404 />,
     children: [...confirmRoutes],
   },
 ];

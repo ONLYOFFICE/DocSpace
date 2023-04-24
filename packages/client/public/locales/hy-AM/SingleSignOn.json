@@ -17,6 +17,7 @@
   "HideAuthPage": "Թաքցնել իսկորոշման էջը",
   "LogoutEndpointUrl": "IdP Ելքի Միակ Վերջնակետ URL",
   "LogoutEndpointUrlTooltip": "URL-ն, որն օգտագործվում է Ծառայությունների մատակարարի կողմից առանձին դուրս գալու համար",
+  "MetadataLoadError": "Մետատվյալների ֆայլը չի   փոխանցվել:",
   "NameIDFormat": "NameId ձևաչափ",
   "NewCertificate": "Նոր վկայական",
   "OpenCertificate": "Հանրային վկայական",

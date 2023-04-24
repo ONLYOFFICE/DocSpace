@@ -169,7 +169,7 @@ public class ProductEntryPoint : Product
         var userRoomsWithRole = await GetUserRoomsWithRole(userId);
 
         var userRoomsWithRoleForSend = userRoomsWithRole.Where(r => !disabledRooms.Contains(r.Key));
-        var userRoomsForSend = userRoomsWithRole.Keys;
+        var userRoomsForSend = userRoomsWithRoleForSend.Select(r=> r.Key);
 
         var docSpaceAdmin = _userManager.IsDocSpaceAdmin(userId);
 

@@ -31,7 +31,16 @@ public class BaseEventTypeIpResolver : IValueResolver<LoginEvent, BaseEvent, str
 {
     public string Resolve(LoginEvent source, BaseEvent destination, string destMember, ResolutionContext context)
     {
-        return source.Ip.Split(':').Length > 1 ? source.Ip.Split(':')[0] : source.Ip;
+        if (!string.IsNullOrEmpty(source.Ip))
+        {
+            var ipSplited = source.Ip.Split(':');
+            if (ipSplited.Length > 1)
+            {
+                return ipSplited[0];
+            }
+        }
+
+        return source.Ip;
     }
 }
 

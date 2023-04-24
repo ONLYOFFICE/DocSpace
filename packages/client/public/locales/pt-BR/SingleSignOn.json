@@ -17,6 +17,7 @@
   "HideAuthPage": "Ocultar página de autenticação",
   "LogoutEndpointUrl": "URL do terminal de logout único IdP",
   "LogoutEndpointUrlTooltip": "A URL usada para o logout único no lado do provedor de serviços",
+  "MetadataLoadError": "Arquivo de metadados não transferido",
   "NameIDFormat": "Formato do ID do nome",
   "NewCertificate": "Novo certificado",
   "OpenCertificate": "Certificado público",
