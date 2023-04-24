@@ -5,7 +5,7 @@ import loadable from "@loadable/component";
 import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 
-import { NotFoundError } from "./utils";
+import Error404 from "SRC_DIR/pages/Errors/404";
 
 const PortalSettings = loadable(() => import("../pages/PortalSettings"));
 
@@ -100,7 +100,7 @@ const PortalSettingsRoutes = {
       </ErrorBoundary>
     </PrivateRoute>
   ),
-  errorElement: <NotFoundError />,
+  errorElement: <Error404 />,
   children: [
     {
       index: true,
