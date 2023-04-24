@@ -108,10 +108,9 @@ public static class BackupScheduleExtension
                 .UseCollation("utf8_general_ci")
                 .HasDefaultValueSql("NULL");
 
-            entity.HasOne(d => d.Tenant)
-                   .WithMany()
-                   .HasPrincipalKey(p => p.Id)
-                   .HasForeignKey(d => d.TenantId)
+            entity.HasOne(e => e.Tenant)
+                   .WithOne()
+                   .HasForeignKey<BackupSchedule>(b => b.TenantId)
                    .OnDelete(DeleteBehavior.Cascade);
         });
     }
@@ -165,10 +164,9 @@ public static class BackupScheduleExtension
                 .UseCollation("utf8_general_ci")
                 .HasDefaultValueSql("NULL");
 
-            entity.HasOne(d => d.Tenant)
-                   .WithMany()
-                   .HasPrincipalKey(p => p.Id)
-                   .HasForeignKey(d => d.TenantId)
+            entity.HasOne(e => e.Tenant)
+                   .WithOne()
+                   .HasForeignKey<BackupSchedule>(b => b.TenantId)
                    .OnDelete(DeleteBehavior.Cascade);
         });
     }
