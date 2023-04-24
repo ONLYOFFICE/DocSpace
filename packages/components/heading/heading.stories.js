@@ -20,7 +20,7 @@ export default {
 const Template = ({ headerText, ...args }) => {
   return (
     <div style={{ margin: "7px" }}>
-      <Heading {...args}>{headerText}</Heading>;
+      <Heading {...args}>{headerText}</Heading>
     </div>
   );
 };
