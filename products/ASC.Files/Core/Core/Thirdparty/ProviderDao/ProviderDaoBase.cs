@@ -28,21 +28,6 @@ namespace ASC.Files.Thirdparty.ProviderDao;
 
 internal class ProviderDaoBase : ThirdPartyProviderDao
 {
-    private List<IDaoSelector> _selectors;
-    private List<IDaoSelector> Selectors
-    {
-        get => _selectors ??= new List<IDaoSelector>
-        {
-            //Fill in selectors  
-            _serviceProvider.GetService<SharpBoxDaoSelector>(),
-            _serviceProvider.GetService<SharePointDaoSelector>(),
-            _serviceProvider.GetService<GoogleDriveDaoSelector>(),
-            _serviceProvider.GetService<BoxDaoSelector>(),
-            _serviceProvider.GetService<DropboxDaoSelector>(),
-            _serviceProvider.GetService<OneDriveDaoSelector>()
-        };
-    }
-
     private int TenantID
     {
         get
