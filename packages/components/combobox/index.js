@@ -326,7 +326,8 @@ ComboBox.propTypes = {
   fillIcon: PropTypes.bool,
   /** Used for proper positioning of the dropdown in case it is an external link */
   isExternalLink: PropTypes.bool,
-  isPersonal: PropTypes.bool,
+  // TODO: delete or rename prop
+  // isPersonal: PropTypes.bool,
   /** Sets the left offset for the dropdown */
   offsetLeft: PropTypes.number,
   /** Sets the combo-box to be displayed in modern view */

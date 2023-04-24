@@ -330,8 +330,10 @@ ContextMenuButton.propTypes = {
   columnCount: PropTypes.number,
   /** Sets the display type */
   displayType: PropTypes.string,
+
+  // TODO: rename prop
   /** Switches to the new view mode */
-  isNew: PropTypes.bool,
+  // isNew: PropTypes.bool,
   /** Closing event */
   onClose: PropTypes.func,
   /** Sets the drop down open with the portal */

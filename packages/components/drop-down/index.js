@@ -370,7 +370,8 @@ DropDown.propTypes = {
   disableOnClickOutside: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
   isExternalLink: PropTypes.bool,
-  isPersonal: PropTypes.bool,
+  // TODO: delete or rename prop
+  // isPersonal: PropTypes.bool,
 };
 
 DropDownContainer.propTypes = {
