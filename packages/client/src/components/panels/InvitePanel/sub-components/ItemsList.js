@@ -8,6 +8,7 @@ import Item from "./Item";
 import { StyledRow, ScrollList } from "../StyledInvitePanel";
 
 const FOOTER_HEIGHT = 70;
+const USER_ITEM_HEIGHT = 48;
 
 const Row = memo(({ data, index, style }) => {
   const {
@@ -49,6 +50,7 @@ const ItemsList = ({
   roomType,
   isOwner,
   externalLinksVisible,
+  scrollAllPanelContent,
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
@@ -57,29 +59,51 @@ const ItemsList = ({
 
   const onBodyResize = useCallback(() => {
     const heightList = height ? height : bodyRef.current.offsetHeight;
-    setBodyHeight(heightList - FOOTER_HEIGHT);
 
+    const calculatedHeight = scrollAllPanelContent
+      ? inviteItems.length * USER_ITEM_HEIGHT
+      : heightList - FOOTER_HEIGHT;
+
+    setBodyHeight(calculatedHeight);
     setOffsetTop(bodyRef.current.offsetTop);
-  }, [height, bodyRef?.current?.offsetHeight]);
+  }, [
+    height,
+    bodyRef?.current?.offsetHeight,
+    inviteItems.length,
+    scrollAllPanelContent,
+  ]);
 
   useEffect(() => {
     onBodyResize();
-  }, [bodyRef.current, externalLinksVisible, height]);
+  }, [
+    bodyRef.current,
+    externalLinksVisible,
+    height,
+    inviteItems.length,
+    scrollAllPanelContent,
+  ]);
 
-  useEffect(() => {
-    window.addEventListener("resize", onBodyResize);
-    return () => {
-      window.removeEventListener("resize", onBodyResize);
-    };
-  }, []);
+  let itemCount = inviteItems.length;
+
+  //Scroll blinking fix
+  if (scrollAllPanelContent) {
+    itemCount =
+      bodyHeight / inviteItems.length != USER_ITEM_HEIGHT
+        ? inviteItems.length - 1
+        : inviteItems.length;
+  }
 
   return (
-    <ScrollList offsetTop={offsetTop} ref={bodyRef}>
+    <ScrollList
+      offsetTop={offsetTop}
+      ref={bodyRef}
+      scrollAllPanelContent={scrollAllPanelContent}
+    >
       <List
         height={bodyHeight}
         width="auto"
-        itemCount={inviteItems.length}
-        itemSize={48}
+        itemCount={itemCount}
+        itemSize={USER_ITEM_HEIGHT}
         itemData={{
           inviteItems,
           setInviteItems,
