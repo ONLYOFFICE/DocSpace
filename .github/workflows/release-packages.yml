@@ -86,7 +86,7 @@ jobs:
           wget https://packages.microsoft.com/config/$(lsb_release -is | tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename
           sudo npm install -g json
           
           
