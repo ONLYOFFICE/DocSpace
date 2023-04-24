@@ -790,14 +790,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_activation_v1 {
             get {
@@ -937,14 +935,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_admin_activation_v1 {
             get {
@@ -1243,14 +1239,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_admin_activation_v1 {
             get {
@@ -1866,14 +1860,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_activation_v1 {
             get {

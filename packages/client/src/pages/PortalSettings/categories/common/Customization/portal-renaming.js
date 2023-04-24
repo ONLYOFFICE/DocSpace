@@ -7,8 +7,6 @@ import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
 import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
@@ -252,12 +250,7 @@ const PortalRenaming = (props) => {
         ""
       );
 
-      const newUrl = combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/portal-settings/customization/general"
-      );
-
+      const newUrl = "/portal-settings/customization/general";
       if (newUrl === currentUrl) return;
 
       navigate(newUrl);

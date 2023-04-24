@@ -331,4 +331,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Dosyanın kilidi kaldırıldı</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace Yöneticisi</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editör</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Oda Yöneticisi</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Kullanıcı</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Görüntüleyici</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Yorumcu</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Form doldurucu</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>İnceleyen</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Ortak çalışan</value>
+  </data>
 </root>

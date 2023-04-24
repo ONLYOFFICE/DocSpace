@@ -21,7 +21,6 @@ import { Trans } from "react-i18next";
 
 import toastr from "@docspace/components/toast/toastr";
 
-import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { EmployeeStatus, FilterSubject } from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
@@ -306,7 +305,7 @@ class AccountsContextOptionsStore {
   };
 
   onProfileClick = () => {
-    history.navigate(PROFILE_SELF_URL);
+    window.DocSpace.navigate(PROFILE_SELF_URL);
   };
 
   toggleChangeNameDialog = () => {

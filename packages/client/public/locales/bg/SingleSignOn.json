@@ -17,6 +17,7 @@
   "HideAuthPage": "Скриване на страницата за удостоверяване",
   "LogoutEndpointUrl": "URL адрес на крайна точка за единичен изход на доставчика на самоличност",
   "LogoutEndpointUrlTooltip": "URL адресът, използван за единично отписване от страна на доставчика на услуги",
+  "MetadataLoadError": "Файлът с метаданните не e прехвърлен",
   "NameIDFormat": "NameId формат",
   "NewCertificate": "Нов сертификат",
   "OpenCertificate": "Публичен сертификат",

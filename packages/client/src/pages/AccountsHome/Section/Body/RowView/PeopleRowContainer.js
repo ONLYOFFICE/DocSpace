@@ -103,11 +103,14 @@ const PeopleRowContainer = ({
   isLoading,
 }) => {
   useEffect(() => {
+
+    const width = window.innerWidth;
+
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
     // 400 - it is desktop info panel width
     if (
-      (sectionWidth < 1025 && !infoPanelVisible) ||
-      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+      (width < 1025 && !infoPanelVisible) ||
+      ((width < 625 || (viewAs === "row" && width < 1025)) &&
         infoPanelVisible) ||
       isMobile
     ) {

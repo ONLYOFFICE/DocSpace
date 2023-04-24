@@ -44,32 +44,15 @@ public static class TagValues
         return new TagValue("PersonalHeaderEnd", "</td></tr></tbody></table>");
     }
 
-    public static ITagValue BlueButton(Func<string> btnTextFunc, string btnUrl)
+    public static ITagValue GreenButton(string btnTextFunc, string btnUrl)
     {
-        string action()
-        {
-            var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
-            const string td = "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>";
-            const string color = "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;";
+        var btnText = btnTextFunc ?? string.Empty;
+        const string td = "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>";
+        const string color = "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;";
 
-            return $@"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{td}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{color}"" target=""_blank"" href=""{btnUrl}"">{btnText}</a></td>{td}</tr></tbody></table>";
-        }
+        var action = $@"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{td}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{color}"" target=""_blank"" href=""{btnUrl}"">{btnText}</a></td>{td}</tr></tbody></table>";
 
-        return new TagActionValue("BlueButton", action);
-    }
-
-    public static ITagValue GreenButton(Func<string> btnTextFunc, string btnUrl)
-    {
-        string action()
-        {
-            var btnText = btnTextFunc != null ? btnTextFunc() ?? string.Empty : string.Empty;
-            const string td = "<td style=\"height: 48px; width: 80px; margin:0; padding:0;\">&nbsp;</td>";
-            const string color = "color: #fff; font-family: Helvetica, Arial, Tahoma; font-size: 18px; font-weight: 600; vertical-align: middle; display: block; padding: 12px 0; text-align: center; text-decoration: none; background-color: #66b76d;";
-
-            return $@"<table style=""height: 48px; width: 540px; border-collapse: collapse; empty-cells: show; vertical-align: middle; text-align: center; margin: 30px auto; padding: 0;""><tbody><tr cellpadding=""0"" cellspacing=""0"" border=""0"">{td}<td style=""height: 48px; width: 380px; margin:0; padding:0; background-color: #66b76d; -moz-border-radius: 2px; -webkit-border-radius: 2px; border-radius: 2px;""><a style=""{color}"" target=""_blank"" href=""{btnUrl}"">{btnText}</a></td>{td}</tr></tbody></table>";
-        }
-
-        return new TagActionValue("GreenButton", action);
+        return new TagValue("GreenButton", action);
     }
 
     public static ITagValue TableTop()
@@ -81,55 +64,6 @@ public static class TagValues
     public static ITagValue TableBottom()
     {
         return new TagValue("TableItemsBtm", "</table>");
-    }
-
-    public static ITagValue TableItem(
-        int number,
-        Func<string> linkTextFunc,
-        string linkUrl,
-        string imgSrc,
-        Func<string> commentFunc,
-        Func<string> bottomlinkTextFunc,
-        string bottomlinkUrl)
-    {
-        string action()
-        {
-            var linkText = linkTextFunc != null ? linkTextFunc() ?? string.Empty : string.Empty;
-            var comment = commentFunc != null ? commentFunc() ?? string.Empty : string.Empty;
-            var bottomlinkText = bottomlinkTextFunc != null
-                                     ? bottomlinkTextFunc() ?? string.Empty
-                                     : string.Empty;
-
-            var imgHtml = $"<img style=\"border: 0; padding: 0 15px 0 5px; width: auto; height: auto;\" alt=\"{linkText}\" src=\"{imgSrc ?? string.Empty}\"/>";
-
-            var linkHtml = string.Empty;
-
-            if (!string.IsNullOrEmpty(linkText))
-            {
-                linkHtml =
-                    !string.IsNullOrEmpty(linkUrl)
-                        ? $"<a target=\"_blank\" style=\"color:#0078bd; font-family: Arial; font-size: 14px; font-weight: bold;\" href=\"{linkUrl}\">{linkText}</a><br/>"
-                        : $"<div style=\"display:block; color:#333333; font-family: Arial; font-size: 14px; font-weight: bold;margin-bottom: 10px;\">{linkText}</div>";
-            }
-
-            var underCommentLinkHtml =
-                string.IsNullOrEmpty(bottomlinkUrl)
-                    ? string.Empty
-                    : $"<br/><a target=\"_blank\" style=\"color: #0078bd; font-family: Arial; font-size: 14px;\" href=\"{bottomlinkUrl}\">{bottomlinkText}</a>";
-
-            var html =
-                "<tr><td style=\"vertical-align: top; padding: 5px 10px; width: 70px;\">" +
-                imgHtml +
-                "</td><td style=\" vertical-align: middle; padding: 5px 10px; font-size: 14px; width: 470px; color: #333333;\">" +
-                linkHtml +
-                comment +
-                underCommentLinkHtml +
-                "</td></tr>";
-
-            return html;
-        }
-
-        return new TagActionValue("TableItem" + number, action);
     }
 
     public static ITagValue Image(StudioNotifyHelper studioNotifyHelper, int id, string imageFileName)

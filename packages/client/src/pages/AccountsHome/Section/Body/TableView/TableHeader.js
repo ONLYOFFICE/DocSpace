@@ -140,6 +140,7 @@ class PeopleTableHeader extends React.Component {
       columnStorageName,
       columnInfoPanelStorageName,
       withPaging,
+      setHideColumns
     } = this.props;
     const { sortOrder } = filter;
 
@@ -161,6 +162,7 @@ class PeopleTableHeader extends React.Component {
         checkboxMargin="12px"
         infoPanelVisible={infoPanelVisible}
         useReactWindow={!withPaging}
+        setHideColumns={setHideColumns}
       />
     );
   }
