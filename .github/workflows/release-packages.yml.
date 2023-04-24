@@ -2,6 +2,7 @@ name: Release RPM DEB
 on:
   workflow_dispatch:
   push:
+    branches: '**'
 
 env:
   TAG: "${{ github.ref_name }}"
