@@ -18,16 +18,19 @@ jobs:
     permissions:
       contents: write
       
+      
     steps:
       - name: Get files from repository
         uses: actions/checkout@v2
+              
               
       - name: Get variables
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' )" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+              
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
         run: |
@@ -42,16 +45,16 @@ jobs:
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs
           sudo npm install -g json
+          
+          
       - name: BUILD package DEB
         shell: bash
         run: |
-          # V="${{ steps.get_vars.outputs.VERSION }}"
-          # sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
           cd build/install/deb/ 
-          # rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
           find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
+        
         
       - uses: ncipollo/release-action@v1
         with:
@@ -69,9 +72,11 @@ jobs:
     permissions:
       contents: write
  
+ 
     steps:
       - name: Get files from repository.
         uses: actions/checkout@v2
+
 
       - name: INSTALL tools & Prepare build
         run: |
@@ -88,13 +93,14 @@ jobs:
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs
           sudo npm install -g json
           
+          
       - name: Get variables
         id: get_vars
         run: |
           echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' )" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' || echo "1.0.0" )" >> $GITHUB_OUTPUT
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-          echo "SOURCE_NAME=$(echo ${GITHUB_REF#refs/heads/} | tr '/' '-' )" >> $GITHUB_OUTPUT
+    
     
       - name: BUILD package RPM
         run: |
@@ -102,16 +108,11 @@ jobs:
           
               ### Preparing source directory ###
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ steps.get_vars.outputs.PRODUCT }}.rpmlintrc
-          ls -la ./SOURCES
           wget https://github.com/elshirak/${{ steps.get_vars.outputs.PRODUCT }}/archive/${{ steps.get_vars.outputs.BRANCH_NAME }}.tar.gz -O ./SOURCES/DocSpace-$(echo ${{ steps.get_vars.outputs.BRANCH_NAME }} | tr '/' '-').tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O ./SOURCES/document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
-          # cp *.tar.gz ./SOURCES
-          ls -la ./SOURCES
          
           sed -i -e '/BuildRequires/d' product.spec
-          # rename "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" ../../common/*.sh
-          
           rpmbuild -D "GIT_BRANCH $(echo ${{ steps.get_vars.outputs.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
