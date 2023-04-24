@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Linq;
+
+using Microsoft.AspNetCore.Builder;
+
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
@@ -64,10 +68,41 @@ public abstract class BaseStartup
 
     public virtual void ConfigureServices(IServiceCollection services)
     {
-        services.AddCustomHealthCheck(_configuration);        
+        services.AddCustomHealthCheck(_configuration);
         services.AddHttpContextAccessor();
         services.AddMemoryCache();
         services.AddHttpClient();
+
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            options.ForwardLimit = null;
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+
+            var knownProxies = _configuration.GetSection("core:hosting:forwardedHeadersOptions:knownProxies").Get<List<String>>();
+            var knownNetworks = _configuration.GetSection("core:hosting:forwardedHeadersOptions:knownNetworks").Get<List<String>>();
+
+            if (knownProxies != null && knownProxies.Count > 0)
+            {
+                foreach (var knownProxy in knownProxies)
+                {
+                    options.KnownProxies.Add(IPAddress.Parse(knownProxy));
+                }
+            }
+
+
+            if (knownNetworks != null && knownNetworks.Count > 0)
+            {
+                foreach (var knownNetwork in knownNetworks)
+                {
+                    var prefix = IPAddress.Parse(knownNetwork.Split("/")[0]);
+                    var prefixLength = Convert.ToInt32(knownNetwork.Split("/")[1]);
+
+                    options.KnownNetworks.Add(new IPNetwork(prefix, prefixLength));
+                }
+            }
+        });
 
         services.AddScoped<EFLoggerFactory>();
 
@@ -270,10 +305,7 @@ public abstract class BaseStartup
 
     public virtual void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        });
+        app.UseForwardedHeaders();
 
         app.UseRouting();
 
