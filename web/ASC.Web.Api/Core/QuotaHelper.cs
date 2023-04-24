@@ -87,9 +87,9 @@ public class QuotaHelper
 
     private decimal GetPrice(TenantQuota quota, IDictionary<string, Dictionary<string, decimal>> priceInfo, RegionInfo currentRegion)
     {
-        if (!string.IsNullOrEmpty(quota.ProductId) && priceInfo.ContainsKey(quota.ProductId))
+        if (!string.IsNullOrEmpty(quota.Name) && priceInfo.ContainsKey(quota.Name))
         {
-            var prices = priceInfo[quota.ProductId];
+            var prices = priceInfo[quota.Name];
             if (prices.ContainsKey(currentRegion.ISOCurrencySymbol))
             {
                 return prices[currentRegion.ISOCurrencySymbol];
