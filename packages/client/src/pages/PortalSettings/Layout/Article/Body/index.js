@@ -205,7 +205,7 @@ const ArticleBodyContent = (props) => {
 
     if (settingsPath === location.pathname) return;
 
-    navigate(`${settingsPath}`, { relative: false });
+    navigate(`${settingsPath}`);
   };
 
   const mapKeys = (tKey) => {
