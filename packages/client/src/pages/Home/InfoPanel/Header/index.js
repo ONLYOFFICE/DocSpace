@@ -1,4 +1,4 @@
-﻿import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
+﻿import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import React, { useState, useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
@@ -106,25 +106,18 @@ const InfoPanelHeaderContent = (props) => {
           {t("Common:Info")}
         </Text>
 
-        <ColorTheme
-          {...props}
-          themeId={ThemeType.InfoPanelToggle}
-          isRootFolder={true}
-          isInfoPanelVisible={true}
-        >
-          {!isTablet && (
-            <div className="info-panel-toggle-bg">
-              <IconButton
-                id="info-panel-toggle--close"
-                className="info-panel-toggle"
-                iconName={PanelReactSvgUrl}
-                size="16"
-                isFill={true}
-                onClick={closeInfoPanel}
-              />
-            </div>
-          )}
-        </ColorTheme>
+        {!isTablet && (
+          <div className="info-panel-toggle-bg">
+            <IconButton
+              id="info-panel-toggle--close"
+              className="info-panel-toggle"
+              iconName={CrossReactSvgUrl}
+              size="16"
+              isFill={true}
+              onClick={closeInfoPanel}
+            />
+          </div>
+        )}
       </div>
 
       {withSubmenu && (

@@ -430,4 +430,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Какво ново</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Следене на вписванията и действията на потребителите</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Макс размер на файловете</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Размерът на файловете не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Броят администратори не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Брой администратори</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Автоматичен бекъп и възстановяване</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Неограничен брой активни стаи</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Броят стаи не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>Единично вписване</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} пространство в хранилището</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Използваното пространство в хранилището не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Място за съхранение</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Стаи:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Използвано пространство:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Потребители в стаята:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Неограничен брой потребители</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Броят потребители не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Потребители в стаята</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Броят потребители не трябва да надвишава {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Брандинг и персонализиране</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Брой администратори/опитни потребители:</value>
+  </data>
 </root>

@@ -17,6 +17,7 @@
   "HideAuthPage": "Скрыть страницу аутентификации",
   "LogoutEndpointUrl": "URL-адрес конечной точки единого выхода IdP:",
   "LogoutEndpointUrlTooltip": "URL-адрес, используемый для единого выхода на стороне поставщика сервиса",
+  "MetadataLoadError": "Файл метаданных не передан",
   "NameIDFormat": "Формат NameID:",
   "NewCertificate": "Новый сертификат",
   "OpenCertificate": "Открытый сертификат:",

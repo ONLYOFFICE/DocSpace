@@ -371,4 +371,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Tin tức mới</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Theo dõi thông tin đăng nhập và hành động của người dùng</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Kích thước tập tin tối đa</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Kích thước tập tin không được vượt quá {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Số lượng quản trị viên không được vượt quá {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Số lượng quản trị viên</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Tự động sao lưu &amp; khôi phục</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Không giới hạn số lượng phòng hoạt động</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Số lượng phòng không được vượt quá {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>không gian lưu trữ {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Kích thước lưu trữ đã sử dụng không được vượt quá {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Không gian lưu trữ</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Số phòng:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Không gian lưu trữ đã dùng:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Người dùng trong phòng:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Số lượng người dùng không giới hạn</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Số lượng người dùng không được vượt quá {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Người dùng trong phòng</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Số lượng người dùng trong phòng không được vượt quá {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Xây dựng thương hiệu &amp; tùy chỉnh</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Số lượng quản trị viên/người dùng cấp cao:</value>
+  </data>
 </root>

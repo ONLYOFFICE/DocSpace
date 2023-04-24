@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
 import React from "react";
 import { Navigate, Route, useLocation } from "react-router-dom";
-import AppLoader from "../AppLoader";
+//import AppLoader from "../AppLoader";
+import { combineUrl } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import { TenantStatus } from "../../constants";
 
@@ -55,8 +56,13 @@ export const PublicRoute = ({ children, ...rest }) => {
       );
     }
 
-    if (wizardCompleted && !isAuthenticated && !isPortalRestoring)
-      return <Navigate replace to={"/login"} />;
+    if (wizardCompleted && !isAuthenticated && !isPortalRestoring) {
+      window.location.replace(
+        combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+      );
+
+      return null;
+    }
 
     return children;
   };

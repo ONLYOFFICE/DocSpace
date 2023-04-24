@@ -1,5 +1,5 @@
 {
-  "Desc": "Stel de registratiegegevens van het portaal in.",
+  "Desc": "Stel de registratiegegevens van de ruimte in.",
   "Domain": "Domein:",
   "ErrorEmail": "Ongeldig e-mailadres",
   "ErrorInitWizard": "De dienst is momenteel niet beschikbaar, probeer het later nog eens.",
@@ -12,5 +12,5 @@
   "LicenseLink": "licentieovereenkomsten",
   "PlaceholderLicense": "Uw licentiebestand",
   "Timezone": "Tijdzone:",
-  "WelcomeTitle": "Welkom bij uw portaal!"
+  "WelcomeTitle": "Welkom bij uw ruimte!"
 }

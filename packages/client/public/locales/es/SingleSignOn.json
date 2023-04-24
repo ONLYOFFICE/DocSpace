@@ -17,6 +17,7 @@
   "HideAuthPage": "Ocultar la página de autenticación",
   "LogoutEndpointUrl": "URL del punto de conexión de cierre de sesión único IdP",
   "LogoutEndpointUrlTooltip": "La URL utilizada para el cierre de sesión único en el lado del proveedor de servicios.",
+  "MetadataLoadError": "No se ha transferido el archivo de metadatos",
   "NameIDFormat": "Formato NameId",
   "NewCertificate": "Nuevo certificado",
   "OpenCertificate": "Certificado público",
