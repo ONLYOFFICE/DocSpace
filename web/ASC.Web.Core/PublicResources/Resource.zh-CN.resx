@@ -409,4 +409,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>新鲜事</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>追踪用户登录和行动</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>文件最大大小</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>文件大小不应超过 {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>管理员的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>管理员的数量</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>自动备份与恢复</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>激活房间的数量无限</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>房间的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} 存储空间</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>使用的存储空间大小不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>储存空间</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>房间数量：</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>已用的存储空间：</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>房间总用户数量：</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>用户数量无限</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>用户的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>房间总用户数量</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>房间里的用户数量不应超过 {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>白标与自定义</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>管理员/高级用户的数:</value>
+  </data>
 </root>

@@ -17,6 +17,7 @@
   "HideAuthPage": "Piilota todennussivu",
   "LogoutEndpointUrl": "IdP Yksittäisen uloskirjautumisen päätepiste URL",
   "LogoutEndpointUrlTooltip": "Kertakirjautumisessa käytetty URL palveluntarjoajan puolella",
+  "MetadataLoadError": "Metatietoja ei siirretty",
   "NameIDFormat": "NimiID-muoto",
   "NewCertificate": "Uusi sertifikaatti",
   "OpenCertificate": "Julkinen Sertifikaatti",
