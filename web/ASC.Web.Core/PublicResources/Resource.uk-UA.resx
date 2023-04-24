@@ -263,4 +263,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Новеньке</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Відстеження входів та дій користувача</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Максимальний розмір файлу</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Розмір файлу не повинен перевищувати {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Кількість адміністраторів не повинна перевищувати {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Кількість адміністраторів</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Автоматичне резервне копіювання та відновлення</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Необмежена кількість активних кімнат</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Кількість кімнат не повинна перевищувати {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>Єдиний вхід</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>Обсяг сховища: {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Використаний обсяг сховища не повинен перевищувати {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Обсяг сховища</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Кімнати:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Використаний обсяг сховища:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Користувачі в кімнаті:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Необмежена кількість користувачів</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Кількість користувачів не повинна перевищувати {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Користувачі в кімнаті</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Кількість користувачів у кімнаті не повинна перевищувати {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Брендинг та налаштування</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Кількість адміністраторів / досвідчених користувачів:</value>
+  </data>
 </root>

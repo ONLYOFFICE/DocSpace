@@ -1,5 +1,5 @@
 {
-  "Desc": "请设置门户注册数据。",
+  "Desc": "请设置协作空间的注册数据。",
   "Domain": "域：",
   "ErrorEmail": "无效邮件地址",
   "ErrorInitWizard": "该服务目前不可用，请稍后重试。",
@@ -12,5 +12,5 @@
   "LicenseLink": "许可协议",
   "PlaceholderLicense": "您的许可文件",
   "Timezone": "时区：",
-  "WelcomeTitle": "欢迎来到门户！"
+  "WelcomeTitle": "欢迎来到协作空间！"
 }

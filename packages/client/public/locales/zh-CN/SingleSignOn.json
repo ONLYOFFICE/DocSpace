@@ -17,6 +17,7 @@
   "HideAuthPage": "隐藏认证页面",
   "LogoutEndpointUrl": "IdP 单点登出端点 URL",
   "LogoutEndpointUrlTooltip": "用于服务供应商端单点登出的 URL",
+  "MetadataLoadError": "元数据文件未转移",
   "NameIDFormat": "NameId 格式",
   "NewCertificate": "新证书",
   "OpenCertificate": "公共证书",
