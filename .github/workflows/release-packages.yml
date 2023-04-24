@@ -41,31 +41,7 @@ jobs:
           sudo dpkg -i packages-microsoft-prod.deb
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs
-          sudo npm install -g json
-
-
-      - name: BUILD package DEB
-        shell: bash
-        run: |
-          V="${{ steps.get_vars.outputs.VERSION }}"
-          sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
-          cd build/install/deb/ 
-          rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
-          find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/$V.$BUILD_NUMBER/g" debian/changelog debian/control
-          dpkg-buildpackage -us -uc -nc
-        
-
-      - name: Release DEB packages
-        uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
-          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
-          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
-          body: Here you may find packages for DocSpace
-          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
-    
+          sudo npm install -g json    
     
       - name: BUILD package RPM
         run: |
@@ -93,3 +69,26 @@ jobs:
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          
+          
+      - name: BUILD package DEB
+        shell: bash
+        run: |
+          V="${{ steps.get_vars.outputs.VERSION }}"
+          sudo sed -i "s_Duplicates)' == 'false'_Duplicates)' == 'true'_" /usr/share/dotnet/sdk/$(dotnet --version)/Sdks/Microsoft.NET.Sdk/targets/Microsoft.NET.ConflictResolution.targets 
+          cd build/install/deb/ 
+          rename -f -v "s/product/${{ steps.get_vars.outputs.PRODUCT }}/g" debian/* ../common/* ../common/logrotate/*
+          find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
+          sed -i "s/{{package_header_tag_version}}/$V.$BUILD_NUMBER/g" debian/changelog debian/control
+          dpkg-buildpackage -us -uc -nc
+        
+
+      - name: Release DEB packages
+        uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
+          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
+          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
+          body: Here you may find packages for DocSpace
+          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
