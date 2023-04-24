@@ -35,7 +35,7 @@ jobs:
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
         run: |
           wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
-          chmod 644 /usr/share/keyrings/yarnkey.gpg
+          sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
           echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
           
           wget https://packages.microsoft.com/config/$(lsb_release -is | tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
