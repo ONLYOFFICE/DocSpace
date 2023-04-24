@@ -6,6 +6,9 @@ on:
   push:
 
 env:
+  BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
+  VERSION: $(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")
+  PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
@@ -48,8 +51,8 @@ jobs:
         shell: bash
         run: |
           cd build/install/deb/ 
-          find ../ -type f -exec sed -i "s/{{product}}/${{ steps.get_vars.outputs.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
+          find ../ -type f -exec sed -i "s/{{product}}/$PRODUCT/g" {} ';'
+          sed -i "s/{{package_header_tag_version}}/$VERSION.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
         
