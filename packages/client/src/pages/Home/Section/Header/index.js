@@ -193,6 +193,7 @@ const SectionHeaderContent = (props) => {
     isOwner,
     isAdmin,
     setInvitePanelOptions,
+    isEmptyPage,
   } = props;
 
   const navigate = useNavigate();
@@ -200,7 +201,7 @@ const SectionHeaderContent = (props) => {
 
   const isAccountsPage = location.pathname.includes("accounts");
 
-  console.log("is accounts page: ", isAccountsPage);
+  console.log("is accounts header page: ", isAccountsPage);
 
   const onCreate = (format) => {
     const event = new Event(Events.CREATE);
@@ -853,7 +854,7 @@ const SectionHeaderContent = (props) => {
                   }}
                   withMenu={!isRoomsFolder}
                   onPlusClick={onCreateRoom}
-                  isEmptyPage={isEmptyFilesList}
+                  isEmptyPage={isEmptyPage}
                   isRoom={isRoom}
                 />
               )}
@@ -910,6 +911,8 @@ export default inject(
 
       roomsForRestore,
       roomsForDelete,
+
+      isEmptyPage,
     } = filesStore;
 
     const {
@@ -1091,6 +1094,7 @@ export default inject(
       isOwner,
       isAdmin,
       setInvitePanelOptions,
+      isEmptyPage,
     };
   }
 )(

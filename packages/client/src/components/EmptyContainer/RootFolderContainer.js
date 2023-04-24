@@ -65,7 +65,7 @@ const RootFolderContainer = (props) => {
     setAlreadyFetchingRooms,
     categoryType,
     isEmptyPage,
-    setIsEmptyPage,
+
     isVisitor,
     isCollaborator,
     sectionWidth,
@@ -104,14 +104,7 @@ const RootFolderContainer = (props) => {
   const roomHeader = "Welcome to DocSpace";
 
   useEffect(() => {
-    if (rootFolderType !== FolderType.COMMON) {
-      setIsEmptyPage(true);
-    } else {
-      setIsEmptyPage(false);
-    }
-
     return () => {
-      setIsEmptyPage(false);
       setIsLoadedEmptyPage(false);
     };
   }, []);
@@ -388,7 +381,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
@@ -415,7 +408,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
       security,
     };
