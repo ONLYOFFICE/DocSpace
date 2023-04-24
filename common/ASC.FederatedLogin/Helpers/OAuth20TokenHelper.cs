@@ -73,7 +73,7 @@ public class OAuth20TokenHelper
             query += $"&scope={HttpUtility.UrlEncode(scope)}";
         }
 
-        var u = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+        var u = _httpContextAccessor.HttpContext.Request.Url();
 
         var stateUriBuilder = new UriBuilder(u.Scheme, u.Host, u.Port, $"thirdparty/{loginProvider.Name.ToLower()}/code");
 
