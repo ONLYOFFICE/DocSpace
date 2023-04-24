@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import Button from "@docspace/components/button";
@@ -22,8 +23,9 @@ const DeepLink = ({
   setIsShowDeepLink,
   userTheme,
 }) => {
+  const { t } = useTranslation(["DeepLink", "Common"]);
+
   const [isRemember, setIsRemember] = useState(false);
-  console.log("theme", userTheme);
   const onChangeCheckbox = () => {
     setIsRemember(!isRemember);
   };
@@ -67,7 +69,7 @@ const DeepLink = ({
       <StyledDeepLink>
         <StyledBodyWrapper>
           <Text fontSize="23px" fontWeight="700">
-            Opening a document
+            {t("OpeningDocument")}
           </Text>
           <StyledFileTile>
             <img src={getFileIcon()} />
@@ -75,9 +77,7 @@ const DeepLink = ({
               {getFileTitle()}
             </Text>
           </StyledFileTile>
-          <Text>
-            You can open the document on the portal or in the mobile application
-          </Text>
+          <Text>{t("DeepLinkText")}</Text>
         </StyledBodyWrapper>
         <StyledActionsWrapper>
           <Checkbox
@@ -88,7 +88,7 @@ const DeepLink = ({
           <Button
             size="medium"
             primary
-            label="Open in the app"
+            label={t("OpenInApp")}
             onClick={onOpenAppClick}
           />
           <Link
@@ -100,7 +100,7 @@ const DeepLink = ({
             color="#316DAA"
             onClick={onStayBrowserClick}
           >
-            Stay in the browser
+            {t("StayInBrowser")}
           </Link>
         </StyledActionsWrapper>
       </StyledDeepLink>
