@@ -35,8 +35,8 @@ const TrustedMail = (props) => {
     trustedDomainsType,
     trustedDomains,
     setMailDomainSettings,
-    helpLink,
     currentColorScheme,
+    trustedMailDomainSettingsUrl,
   } = props;
 
   const navigate = useNavigate();
@@ -168,7 +168,7 @@ const TrustedMail = (props) => {
           color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+          href={trustedMailDomainSettingsUrl}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -233,6 +233,7 @@ export default inject(({ auth }) => {
     setMailDomainSettings,
     helpLink,
     currentColorScheme,
+    trustedMailDomainSettingsUrl,
   } = auth.settingsStore;
 
   return {
@@ -241,5 +242,6 @@ export default inject(({ auth }) => {
     setMailDomainSettings,
     helpLink,
     currentColorScheme,
+    trustedMailDomainSettingsUrl,
   };
 })(withTranslation(["Settings", "Common"])(observer(TrustedMail)));

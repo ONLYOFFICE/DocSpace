@@ -393,11 +393,7 @@ const LanguageAndTimeZone = (props) => {
         ""
       );
 
-      const newUrl = combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/portal-settings/customization/general"
-      );
+      const newUrl = "/portal-settings/customization/general";
 
       if (newUrl === currentUrl) return;
 
@@ -409,6 +405,7 @@ const LanguageAndTimeZone = (props) => {
 
   const onClickLink = (e) => {
     e.preventDefault();
+
     navigate(e.target.pathname);
   };
 

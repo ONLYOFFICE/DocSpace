@@ -114,5 +114,6 @@
   "ViewList": "Список",
   "ViewOnlyRooms": "Просмотр",
   "ViewTiles": "Плитки",
-  "WithSubfolders": "С подпапками"
+  "WithSubfolders": "С подпапками",
+  "DocumentEdited": "Невозможно выполнить действие, так как документ редактируется."
 }
