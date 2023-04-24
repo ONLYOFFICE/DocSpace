@@ -858,4 +858,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Cosa c'è di nuovo</value>
   </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding e personalizzazione</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Monitoraggio degli accessi e delle azioni degli utenti</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Dimensione massima del file</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>La dimensione del file non deve superare {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Il numero di amministratori non deve superare {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Numero di amministratori</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Backup e ripristino automatici</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Backup e ripristino automatici</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Il numero di stanze non deve superare {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} spazio di archiviazione</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>La dimensione dello spazio di archiviazione utilizzato non deve superare {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Spazio di archiviazione</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Stanze:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Spazio di archiviazione utilizzato:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Utenti presenti nella stanza:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Numero illimitato di utenti</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Il numero di utenti non deve superare {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Utenti presenti nella stanza</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Il numero di utenti in stanza non deve superare {0}</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Il numero di amministratori/utenti esperti:</value>
+  </data>
 </root>

@@ -41,7 +41,7 @@ RUN echo ${GIT_BRANCH}  && \
 RUN cd ${SRC_PATH} && \
     # mkdir -p /app/onlyoffice/config/ && cp -rf config/* /app/onlyoffice/config/ && \
     mkdir -p /app/onlyoffice/ && \
-    find config/ -maxdepth 1 -name "*.json" | grep -v test | xargs tar -cvf config.tar && \
+    find config/ -maxdepth 1 -name "*.json" | grep -v test | grep -v dev | xargs tar -cvf config.tar && \
     tar -C "/app/onlyoffice/" -xvf config.tar && \
     cp config/*.config /app/onlyoffice/config/ && \
     mkdir -p /etc/nginx/conf.d && cp -f config/nginx/onlyoffice*.conf /etc/nginx/conf.d/ && \

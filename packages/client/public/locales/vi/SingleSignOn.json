@@ -17,6 +17,7 @@
   "HideAuthPage": "Ẩn trang xác thực",
   "LogoutEndpointUrl": "URL điểm cuối đăng xuất một lần IdP",
   "LogoutEndpointUrlTooltip": "URL được sử dụng cho đăng xuất một lần ở phía Nhà cung cấp dịch vụ",
+  "MetadataLoadError": "Tập tin metadata chưa được chuyển",
   "NameIDFormat": "Định dạng NameId",
   "NewCertificate": "Chứng chỉ mới",
   "OpenCertificate": "Giấy chứng nhận công cộng",

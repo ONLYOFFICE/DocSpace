@@ -17,6 +17,7 @@
   "HideAuthPage": "Authentifizierungsseite ausblenden",
   "LogoutEndpointUrl": "URL des Single-Logout-Endpunkts vom IdP",
   "LogoutEndpointUrlTooltip": "Die URL, die für die einmalige Abmeldung auf Seiten des Dienstanbieters verwendet wird",
+  "MetadataLoadError": "Datei mit Metadaten nicht überwiesen",
   "NameIDFormat": "NameId-Format",
   "NewCertificate": "Neues Zertifikat",
   "OpenCertificate": "Öffentliches Zertifikat",

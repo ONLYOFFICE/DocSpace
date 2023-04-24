@@ -17,6 +17,7 @@
   "HideAuthPage": "Kimlik doğrulama sayfasını gizle",
   "LogoutEndpointUrl": "IdP Tek Oturum Kapatma Uç Noktası URL'si",
   "LogoutEndpointUrlTooltip": "Hizmet sağlayıcı tarafında tek oturum kapatma için kullanılan URL",
+  "MetadataLoadError": "Metadata dosyası transfer edilmedi",
   "NameIDFormat": "NameId Biçimi",
   "NewCertificate": "Yeni Sertifika",
   "OpenCertificate": "Kamu Sertifikası",

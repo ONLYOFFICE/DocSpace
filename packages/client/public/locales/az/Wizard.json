@@ -1,5 +1,5 @@
 {
-  "Desc": "Lütfən, portalda qeydiyyat məlumatlarını qeyd edin.",
+  "Desc": "Lütfən, DocSpace qeydiyyat məlumatlarını qeyd edin.",
   "Domain": "Domen:",
   "ErrorEmail": "Etibarsız e-poçt ünvanı",
   "ErrorInitWizard": "Xidmət hal-hazırda əlçatan deyil, lütfən bir qədər sonra yenidən cəhd edin.",
@@ -12,5 +12,5 @@
   "LicenseLink": "Lisenziya razılaşmalarınız",
   "PlaceholderLicense": "Lisenziya faylınız",
   "Timezone": "Saat qurşağı:",
-  "WelcomeTitle": "Portalınıza xoş gəlmisiniz!"
+  "WelcomeTitle": "DocSpace-ə xoş gəlmisiniz!"
 }
