@@ -156,7 +156,6 @@ public class FeedAggregateDataProvider
             using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
             await feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).ExecuteDeleteAsync();
-            await feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)).ExecuteDeleteAsync();
 
             await tx.CommitAsync();
         }).GetAwaiter()
@@ -343,7 +342,6 @@ public class FeedAggregateDataProvider
             using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
             await feedDbContext.FeedAggregates.Where(r => r.Id == id).ExecuteDeleteAsync();
-            await feedDbContext.FeedUsers.Where(r => r.FeedId == id).ExecuteDeleteAsync();
 
             await tx.CommitAsync();
         }).GetAwaiter()

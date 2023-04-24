@@ -40,6 +40,7 @@ public class WebhooksDbContext : DbContext
         .From(modelBuilder, Database)
         .AddDbWebhooks()
         .AddWebhooksConfig()
-        .AddWebhooksLog();
+        .AddWebhooksLog()
+        .AddDbTenant();
     }
 }
