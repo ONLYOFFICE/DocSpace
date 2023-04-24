@@ -24,19 +24,23 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Text.Json.Serialization;
+using ProtoBuf;
 
-global using ASC.Common;
-global using ASC.Common.Mapping;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.EventBus.Abstractions;
-global using ASC.EventBus.Events;
-global using ASC.Webhooks.Core.EF.Context;
-global using ASC.Webhooks.Core.EF.Model;
-global using ASC.Webhooks.Core.IntegrationEvents.Events;
-global using ASC.Webhooks.Core.Resources;
+namespace ASC.Webhooks.Core.IntegrationEvents.Events;
+[ProtoContract]
+public record WebhookRequestIntegrationEvent : IntegrationEvent
+{
+    public WebhookRequestIntegrationEvent() : base()
+    {
 
-global using Microsoft.EntityFrameworkCore;
+    }
+
+    public WebhookRequestIntegrationEvent(Guid createBy, int tenantId) :
+        base(createBy, tenantId)
+    {
+
+    }
+
+    [ProtoMember(1)]
+    public int WebhookId { get; set; }
+}

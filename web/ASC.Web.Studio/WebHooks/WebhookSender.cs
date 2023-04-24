@@ -50,12 +50,12 @@ public class WebhookSender
         };
     }
 
-    public async Task Send(WebhookRequest webhookRequest, CancellationToken cancellationToken)
+    public async Task Send(WebhookRequestIntegrationEvent webhookRequest, CancellationToken cancellationToken)
     {
         using var scope = _scopeFactory.CreateScope();
         var dbWorker = scope.ServiceProvider.GetRequiredService<DbWorker>();
 
-        var entry = await dbWorker.ReadJournal(webhookRequest.Id);
+        var entry = await dbWorker.ReadJournal(webhookRequest.WebhookId);
 
         var ssl = entry.Config.SSL;
 
