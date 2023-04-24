@@ -1250,7 +1250,7 @@ public class UserController : PeopleControllerBase
             if (!SetupInfo.IsSecretEmail(inDto.Email)
                 && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
             {
-                var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
+                var ip = _httpContextAccessor.HttpContext?.Connection.RemoteIpAddress.ToString();
 
                 if (string.IsNullOrEmpty(inDto.RecaptchaResponse)
                     || !await _recaptcha.ValidateRecaptchaAsync(inDto.RecaptchaResponse, ip))

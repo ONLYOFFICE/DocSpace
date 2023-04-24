@@ -111,7 +111,7 @@ public class SecurityContext
 
                     ArgumentNullException.ThrowIfNull(request);
 
-                    ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
+                    ipFrom = "from " + _httpContextAccessor?.HttpContext.Connection.RemoteIpAddress;
                     address = "for " + request.GetUrlRewriter();
                 }
                 _logger.InformationEmptyBearer(ipFrom, address);
@@ -127,7 +127,7 @@ public class SecurityContext
                     ArgumentNullException.ThrowIfNull(request);
 
                     address = "for " + request.GetUrlRewriter();
-                    ipFrom = "from " + (request.Headers["X-Forwarded-For"].ToString() ?? request.GetUserHostAddress());
+                    ipFrom = "from " + _httpContextAccessor?.HttpContext.Connection.RemoteIpAddress;
                 }
 
                 _logger.WarningCanNotDecrypt(cookie, ipFrom, address);

@@ -78,10 +78,13 @@ public class GeolocationHelper
     {
         if (_httpContextAccessor.HttpContext?.Request != null)
         {
-            var ip = (string)(_httpContextAccessor.HttpContext.Items["X-Forwarded-For"] ?? _httpContextAccessor.HttpContext.Items["REMOTE_ADDR"]);
-            if (!string.IsNullOrWhiteSpace(ip))
+            var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
+
+            if (ip != IPAddress.Loopback)
             {
-                return GetIPGeolocation(ip);
+                _logger.DebugRemoteIpAddress(ip.ToString());
+
+                return GetIPGeolocation(ip.ToString());
             }
         }
 
