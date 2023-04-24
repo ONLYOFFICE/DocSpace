@@ -6,7 +6,7 @@ import Avatar from "@docspace/components/avatar";
 import TextInput from "@docspace/components/text-input";
 import DropDownItem from "@docspace/components/drop-down-item";
 import toastr from "@docspace/components/toast/toastr";
-
+import { ShareAccessRights } from "@docspace/common/constants";
 import { parseAddresses } from "@docspace/components/utils/email";
 
 import { AddUsersPanel } from "../../index";
@@ -21,6 +21,7 @@ import {
   StyledInviteInputContainer,
   StyledDropDown,
   SearchItemText,
+  StyledDescription,
 } from "../StyledInvitePanel";
 
 const InviteInput = ({
@@ -128,7 +129,11 @@ const InviteInput = ({
     item.access = selectedAccess;
 
     const addUser = () => {
+      if (item.isOwner || item.isAdmin)
+        item.access = ShareAccessRights.RoomManager;
+
       const items = removeExist([item, ...inviteItems]);
+
       setInviteItems(items);
       closeInviteInputPanel();
       setInputValue("");
@@ -215,6 +220,17 @@ const InviteInput = ({
     }
   };
 
+  const onKeyDown = (event) => {
+    const keyCode = event.code;
+
+    const isAcceptableEvents =
+      keyCode === "ArrowUp" || keyCode === "ArrowDown" || keyCode === "Enter";
+
+    if (isAcceptableEvents && inputValue.length > 2) return;
+
+    event.stopPropagation();
+  };
+
   useEffect(() => {
     document.addEventListener("keyup", onKeyPress);
     return () => document.removeEventListener("keyup", onKeyPress);
@@ -223,7 +239,7 @@ const InviteInput = ({
   return (
     <>
       <StyledSubHeader>
-        {t("IndividualInvitation")}
+        {t("AddManually")}
         {!hideSelector && (
           <StyledLink
             fontWeight="600"
@@ -235,6 +251,11 @@ const InviteInput = ({
           </StyledLink>
         )}
       </StyledSubHeader>
+      <StyledDescription>
+        {roomId === -1
+          ? t("AddManuallyDescriptionAccounts")
+          : t("AddManuallyDescriptionRoom")}
+      </StyledDescription>
 
       <StyledInviteInputContainer ref={inputsRef}>
         <StyledInviteInput ref={searchRef}>
@@ -248,6 +269,8 @@ const InviteInput = ({
             }
             value={inputValue}
             onFocus={openInviteInputPanel}
+            isAutoFocussed={true}
+            onKeyDown={onKeyDown}
           />
         </StyledInviteInput>
         {inputValue.length > 2 && (
@@ -258,6 +281,7 @@ const InviteInput = ({
             manualX="16px"
             showDisabledItems
             clickOutsideAction={closeInviteInputPanel}
+            eventTypes="click"
             {...dropDownMaxHeight}
           >
             {!!usersList.length ? (

@@ -296,20 +296,6 @@ Este enlace es válido solo durante 7 días.
 
 Usted obtendrá más consejos útiles sobre cómo usar su oficina web. Usted puede cancelar las suscripciones así como re-activarlas en la página de su Perfil en cualquier momento.</value>
   </data>
-  <data name="pattern_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Su perfil de invitado ha sido agregado con éxito al "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora usted puede:
-
-1. Editar su perfil.
-2. Visualizar y comentar el contenido disponible en los módulos Comunidad y Proyectos.
-3. Añadir y descargar archivos disponibles para usted en el módulo Documentos.
-4. Organizar su horario con el Calendario incorporado.
-5. Usar el Chat para intercambiar mensajes instantáneos.
-
-Para acceder a su oficina web, siga el enlace
-$GreenButton</value>
-  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>¡Buen día, $UserName!
 
@@ -320,19 +306,6 @@ $GreenButton
 Este enlace es válido solo durante 7 días.
 
 Usted obtendrá más consejos útiles sobre cómo usar su oficina web. Usted puede cancelar las suscripciones así como re-activarlas en la página de su Perfil en cualquier momento.</value>
-  </data>
-  <data name="pattern_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Su perfil de invitado ha sido agregado con éxito al "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora usted puede:
-
-# Editar su "perfil":"$MyStaffLink".
-# Visualizar y comentar el contenido disponible en el módulo "Comunidad":"${__VirtualRootPath}/Products/Community/" y "Proyectos":"${__VirtualRootPath}/Products/Projects/".
-# Añadir y descargar archivos disponibles para usted en el módulo "Documentos":"${__VirtualRootPath}/Products/Files/".
-# Organizar su horario con el "Calendario" incorporado:"${__VirtualRootPath}/addons/calendar/".
-# Usar "Chat":"${__VirtualRootPath}/addons/talk/" para intercambiar mensajes instantáneos.
-
-$GreenButton</value>
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Mensaje de Portal "${__VirtualRootPath}":"${__VirtualRootPath}" 
@@ -461,25 +434,6 @@ Está invitado a unirse a "${__VirtualRootPath}":"${__VirtualRootPath}" como usu
 El enlace sólo es válido durante 7 días.
 
 Recibirá más consejos sobre cómo usar su oficina web. Puede cancelar las suscripciones en su página de perfil en cualquier momento, así como volver a activarlas.</value>
-  </data>
-  <data name="pattern_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Ahora usted es un usuario invitado en "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
-
-*Presentarse* al equipo editando su perfil.
-
-*Ver documentos compartidos* así como descargarlos y subir nuevos archivos a las carpetas compartidas.
-
-*Ver y comentar los proyectos* a los que ha sido invitado así como las entradas del blog y del foro.
-
-*Intercambiar mensajes instantáneos* y compartir rápidamente archivos usando Talk.
-
-*Utilizar calendarios personales y compartidos* para organizar reuniones, establecer recordatorios y crear listas de tareas.
-
-Para acceder a su oficina web, siga "el enlace":"${__VirtualRootPath}".
-
-Si desea crear su propia oficina web, visite "el sitio web oficial de ONLYOFFICE":"https://www.onlyoffice.com/".  </value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Hola, $Usuario
@@ -822,24 +776,47 @@ Cordialmente,
 Equipo de ONLYOFFICE
 "www.onlyoffice.com":"https://www.onlyoffice.com/es/"</value>
   </data>
-  <data name="pattern_saas_guest_welcome_v115" xml:space="preserve">
-    <value>¡Hola, $UserName!
-
-Su perfil de invitado ha sido añadido con éxito al "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora usted puede:
-
-1. Editar su "perfil:"$MyStaffLink".
-2. Ver y comentar el contenido disponible en los módulos "Comunidad":"${__VirtualRootPath}/Products/Community/" y "Proyectos":"${__VirtualRootPath}/Products/Projects/".
-3. Añadir y descargar archivos disponibles para usted en el módulo "Documentos":"${__VirtualRootPath}/Products/Files/".
-4. Organizar su agenda con el "Calendario" incorporado:"${__VirtualRootPath}/addons/calendar/".
-5. Usar "Chat":"${__VirtualRootPath}/addons/talk/" para intercambiar mensajes instantáneos.
-
-$GreenButton
-
-Si usted necesita ayuda, navegue por nuestro "Centro de Ayuda":"${__HelpLink}".
-
-Cordialmente,
-Equipo de ONLYOFFICE
-www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha creado un nuevo documento: &lt;a href={1}&gt;{2}&lt;/a&gt; en la sala: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha añadido un nuevo comentario a la versión del documento: &lt;a href={1}&gt;{2}&lt;/a&gt; en la sala: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha cargado un nuevo documento: &lt;a href={1}&gt;{2}&lt;/a&gt; en la sala: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha cambiado el nombre de la sala: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha creado una nueva sala: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; se ha eliminado de la sala: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha editado el documento: &lt;a href={1}&gt;{2}&lt;/a&gt; en la sala: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha eliminado la sala: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; se ha añadido a la sala: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha movido la sala: &lt;a href={1}&gt;{2}&lt;/a&gt; a archivo - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; se le ha asignado el rol de &lt;b&gt;{1}&lt;/b&gt; en la sala: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Se ha añadido un nuevo usuario de DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; ha cambiado el nivel de acceso de los usuarios &lt;b&gt;{1}&lt;/b&gt; a &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Se ha actualizado el usuario de DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.Notificación de cambio de perfil en el portal "${__VirtualRootPath}":"${__VirtualRootPath}" 
@@ -855,24 +832,12 @@ www.onlyoffice.com":"http://onlyoffice.com/"</value>
 [$__AuthorName]($__AuthorUrl) ha cambiado los detalles de su perfil en el portal [${__VirtualRootPath}](${__VirtualRootPath}).</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Qué hay nuevo en el Portal "${__VirtualRootPath}":"${__VirtualRootPath}" para $Date
+    <value>h1.Estas son las novedades de su DocSpace el $Date
 
 #foreach($activity in $Activities)
+$activity
 
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Author*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^Si no desea recibir las notificaciones sobre los nuevos eventos en el "${__VirtualRootPath}":"${__VirtualRootPath}" portal, por favor administre su "configuración de la suscripción":"$RecipientSubscriptionConfigURL".^</value>
+#end</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP Mensaje de Prueba 
@@ -946,6 +911,90 @@ $GreenButton
 
 El enlace es válido solo durante 7 días.</value>
   </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
+
+*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+
+*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+
+*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+
+*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+
+$GreenButton
+
+Si necesita ayuda, consulte nuestro "Centro de Ayuda":"https://helpcenter.onlyoffice.com/es" o pregunte a nuestro "equipo de soporte":"https://www.onlyoffice.com/es/support-contact-form.aspx".
+
+Cordialmente, 
+Equipo de ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
+
+*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+
+*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+
+*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+
+*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+
+$GreenButton
+
+Si necesita ayuda, consulte nuestro "Centro de Ayuda":"https://helpcenter.onlyoffice.com/es" o pregunte a nuestro "equipo de soporte":"https://www.onlyoffice.com/es/support-contact-form.aspx".
+
+Cordialmente, 
+Equipo de ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
+
+*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+
+*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+
+*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+
+*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+
+$GreenButton
+
+Si necesita ayuda, consulte nuestro "Centro de Ayuda":"https://helpcenter.onlyoffice.com/es" o pregunte a nuestro "equipo de soporte":"https://www.onlyoffice.com/es/support-contact-form.aspx".
+
+Cordialmente, 
+Equipo de ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>¡Hola, $UserName!
+
+¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
+
+*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+
+*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+
+*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+
+*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+
+$GreenButton
+
+Si necesita ayuda, consulte nuestro "Centro de Ayuda":"https://helpcenter.onlyoffice.com/es" o pregunte a nuestro "equipo de soporte":"https://www.onlyoffice.com/es/support-contact-form.aspx".
+
+Cordialmente, 
+Equipo de ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
   <data name="subject_activate_email" xml:space="preserve">
     <value>${LetterLogoText}. Por favor active su dirección de correo electrónico</value>
   </data>
@@ -970,14 +1019,8 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_enterprise_guest_welcome_v10" xml:space="preserve">
-    <value>Bienvenido a su oficina web</value>
-  </data>
   <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_enterprise_whitelabel_guest_welcome_v10" xml:space="preserve">
-    <value>Bienvenido a su oficina web</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Mensaje de usuario para los administradores</value>
@@ -1002,9 +1045,6 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_opensource_guest_activation_v11" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_opensource_guest_welcome_v11" xml:space="preserve">
-    <value>Bienvenido a su oficina web</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>¡Bienvenido a ONLYOFFICE para uso personal!</value>
@@ -1063,14 +1103,8 @@ El enlace es válido solo durante 7 días.</value>
   <data name="subject_saas_guest_activation_v115" xml:space="preserve">
     <value>Únase a ${__VirtualRootPath}</value>
   </data>
-  <data name="subject_saas_guest_welcome_v115" xml:space="preserve">
-    <value>Bienvenido/a a su ONLYOFFICE</value>
-  </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>Notificación de cambio de perfil en el portal ${__VirtualRootPath}</value>
-  </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Noticias de su portal para $Date</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Mensaje de prueba SMTP </value>
@@ -1098,5 +1132,17 @@ El enlace es válido solo durante 7 días.</value>
   </data>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>Usted está invitado/a a unirse a ${__VirtualRootPath}</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
   </data>
 </root>

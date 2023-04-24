@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
+import { inject, observer } from "mobx-react";
 import {
   StyledCircle,
-  StyledCircleWrap,
   StyledLoadingButton,
 } from "@docspace/common/components/StyledLoadingButton";
 
@@ -16,7 +16,6 @@ const LoadingButton = (props) => {
     onClick,
     isConversion,
     inConversion,
-    ...rest
   } = props;
   const [isAnimation, setIsAnimation] = useState(true);
 
@@ -61,4 +60,22 @@ const LoadingButton = (props) => {
   );
 };
 
-export default LoadingButton;
+export default inject(({ uploadDataStore }, { item }) => {
+  const { primaryProgressDataStore, isParallel } = uploadDataStore;
+  const { loadingFile: file } = primaryProgressDataStore;
+
+  const loadingFile = !file || !file.uniqueId ? null : file;
+
+  const currentFileUploadProgress =
+    file && loadingFile?.uniqueId === item?.uniqueId
+      ? loadingFile.percent
+      : null;
+
+  return {
+    percent: isParallel
+      ? item?.percent
+        ? item.percent
+        : null
+      : currentFileUploadProgress,
+  };
+})(observer(LoadingButton));

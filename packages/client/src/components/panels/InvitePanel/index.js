@@ -35,18 +35,26 @@ const InvitePanel = ({
   userLink,
   guestLink,
   adminLink,
+  collaboratorLink,
   defaultAccess,
   inviteUsers,
   setInfoPanelIsMobileHidden,
   reloadSelectionParentRoom,
   setUpdateRoomMembers,
   roomsView,
+  getUsersList,
+  filter,
 }) => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [hasErrors, setHasErrors] = useState(false);
   const [shareLinks, setShareLinks] = useState([]);
   const [roomUsers, setRoomUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [externalLinksVisible, setExternalLinksVisible] = useState(false);
+
+  const onChangeExternalLinksVisible = (visible) => {
+    setExternalLinksVisible(visible);
+  };
 
   const selectRoom = () => {
     const room = folders.find((folder) => folder.id === roomId);
@@ -85,7 +93,8 @@ const InvitePanel = ({
 
   useEffect(() => {
     if (roomId === -1) {
-      if (!userLink || !guestLink || !adminLink) getPortalInviteLinks();
+      if (!userLink || !guestLink || !adminLink || !collaboratorLink)
+        getPortalInviteLinks();
 
       setShareLinks([
         {
@@ -106,6 +115,12 @@ const InvitePanel = ({
           shareLink: adminLink,
           access: 3,
         },
+        {
+          id: "collaborator",
+          title: "Collaborator",
+          shareLink: collaboratorLink,
+          access: 4,
+        },
       ]);
 
       return;
@@ -113,7 +128,7 @@ const InvitePanel = ({
 
     selectRoom();
     getInfo();
-  }, [roomId, userLink, guestLink, adminLink]);
+  }, [roomId, userLink, guestLink, adminLink, collaboratorLink]);
 
   useEffect(() => {
     const hasErrors = inviteItems.some((item) => !!item.errors?.length);
@@ -172,12 +187,17 @@ const InvitePanel = ({
       if (roomsView === "info_members") {
         setUpdateRoomMembers(true);
       }
+
       onClose();
       toastr.success(t("Common:UsersInvited"));
       reloadSelectionParentRoom();
     } catch (err) {
       toastr.error(err);
       setIsLoading(false);
+    } finally {
+      if (roomId === -1) {
+        await getUsersList(filter, false);
+      }
     }
   };
 
@@ -199,9 +219,7 @@ const InvitePanel = ({
         zIndex={310}
       >
         <StyledBlock>
-          <StyledHeading>
-            {roomId === -1 ? t("Common:InviteUsers") : t("InviteUsersToRoom")}
-          </StyledHeading>
+          <StyledHeading>{t("Common:InviteUsers")}</StyledHeading>
         </StyledBlock>
 
         <ExternalLinks
@@ -209,6 +227,8 @@ const InvitePanel = ({
           shareLinks={shareLinks}
           getInfo={getInfo}
           roomType={roomType}
+          onChangeExternalLinksVisible={onChangeExternalLinksVisible}
+          externalLinksVisible={externalLinksVisible}
         />
 
         <InviteInput
@@ -220,7 +240,13 @@ const InvitePanel = ({
 
         {!!inviteItems.length && (
           <>
-            <ItemsList t={t} setHasErrors={setHasErrors} roomType={roomType} />
+            <ItemsList
+              t={t}
+              setHasErrors={setHasErrors}
+              roomType={roomType}
+              externalLinksVisible={externalLinksVisible}
+            />
+
             <StyledButtons>
               <Button
                 scale={true}
@@ -263,7 +289,8 @@ const InvitePanel = ({
 export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
   const { theme } = auth.settingsStore;
 
-  const { getUsersByQuery, inviteUsers } = peopleStore.usersStore;
+  const { getUsersByQuery, inviteUsers, getUsersList } = peopleStore.usersStore;
+  const { filter } = peopleStore.filterStore;
   const {
     setIsMobileHidden: setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
@@ -277,6 +304,7 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     userLink,
     guestLink,
     adminLink,
+    collaboratorLink,
   } = peopleStore.inviteLinksStore;
 
   const {
@@ -310,11 +338,14 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     userLink,
     guestLink,
     adminLink,
+    collaboratorLink,
     inviteUsers,
     setInfoPanelIsMobileHidden,
     reloadSelectionParentRoom,
     setUpdateRoomMembers,
     roomsView,
+    getUsersList,
+    filter,
   };
 })(
   withTranslation([

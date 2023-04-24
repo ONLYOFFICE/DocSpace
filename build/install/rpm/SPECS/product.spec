@@ -28,6 +28,7 @@ BuildRequires:  dotnet-sdk-7.0
 BuildRoot:      %_tmppath/%name-%version-%release.%arch
 
 Requires:       %name-api = %version-%release
+Requires:       %name-api-system = %version-%release
 Requires:       %name-backup = %version-%release
 Requires:       %name-backup-background = %version-%release
 Requires:       %name-clear-events = %version-%release

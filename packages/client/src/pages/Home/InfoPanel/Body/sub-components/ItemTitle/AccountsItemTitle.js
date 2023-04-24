@@ -13,17 +13,9 @@ const AccountsItemTitle = ({
   isSeveralItems,
   selection,
   getUserContextOptions,
-  selectionLength,
 }) => {
   if (isSeveralItems) {
-    return (
-      <StyledTitle>
-        <Avatar size={"min"} role={"user"} />
-        <Text className="text" fontWeight={600} fontSize="16px">
-          {`${t("InfoPanel:SelectedUsers")}: ${selectionLength}`}
-        </Text>
-      </StyledTitle>
-    );
+    return <></>;
   }
 
   const itemTitleRef = useRef();

@@ -3,5 +3,6 @@
   "ConnectFolderTitle": "Názov priečinka",
   "ConnectionUrl": "URL adresa pripojenia",
   "Login": "Prihlásiť sa",
-  "Reconnect": "Pripojiť znova"
+  "Reconnect": "Pripojiť znova",
+  "SuccessfulConnectionOfAThirdParty": "Služba od tretej strany bola úspešne pripojená."
 }

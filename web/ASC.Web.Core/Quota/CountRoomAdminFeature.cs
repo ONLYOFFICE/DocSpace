@@ -28,28 +28,31 @@
 
 namespace ASC.Web.Core.Quota;
 
-public class CountRoomAdminChecker : TenantQuotaFeatureCheckerCount<CountRoomAdminFeature>
+public class CountPaidUserChecker : TenantQuotaFeatureCheckerCount<CountPaidUserFeature>
 {
     public override string Exception => Resource.TariffsFeature_manager_exception;
 
-    public CountRoomAdminChecker(ITenantQuotaFeatureStat<CountRoomAdminFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
+    public CountPaidUserChecker(ITenantQuotaFeatureStat<CountPaidUserFeature, int> tenantQuotaFeatureStatistic, TenantManager tenantManager) : base(tenantQuotaFeatureStatistic, tenantManager)
     {
     }
 
 }
 
-public class CountRoomAdminStatistic : ITenantQuotaFeatureStat<CountRoomAdminFeature, int>
+public class CountPaidUserStatistic : ITenantQuotaFeatureStat<CountPaidUserFeature, int>
 {
     private readonly IServiceProvider _serviceProvider;
 
-    public CountRoomAdminStatistic(IServiceProvider serviceProvider)
+    public CountPaidUserStatistic(IServiceProvider serviceProvider)
     {
         _serviceProvider = serviceProvider;
     }
 
     public Task<int> GetValue()
     {
-        var _userManager = _serviceProvider.GetService<UserManager>();
-        return Task.FromResult(_userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupManager.ID).Length);
+        var userManager = _serviceProvider.GetService<UserManager>();
+        var adminsCount = userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupManager.ID).Length;
+        var collaboratorsCount = userManager.GetUsersByGroup(ASC.Core.Users.Constants.GroupCollaborator.ID).Length;
+        
+        return Task.FromResult(adminsCount + collaboratorsCount);
     }
 }

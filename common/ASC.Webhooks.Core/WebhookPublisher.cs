@@ -40,7 +40,7 @@ public class WebhookPublisher : IWebhookPublisher
         _webhookNotify = webhookNotify;
     }
 
-    public async Task PublishAsync(string method, string route, string requestPayload)
+    public async Task PublishAsync(int webhookId, string requestPayload)
     {
         if (string.IsNullOrEmpty(requestPayload))
         {
@@ -51,11 +51,11 @@ public class WebhookPublisher : IWebhookPublisher
 
         await foreach (var config in webhookConfigs.Where(r => r.Enabled))
         {
-            _ = await PublishAsync(method, route, requestPayload, config.Id);
+            _ = await PublishAsync(webhookId, requestPayload, config.Id);
         }
     }
 
-    public async Task<WebhooksLog> PublishAsync(string method, string route, string requestPayload, int configId)
+    public async Task<WebhooksLog> PublishAsync(int webhookId, string requestPayload, int configId)
     {
         if (string.IsNullOrEmpty(requestPayload))
         {
@@ -64,8 +64,7 @@ public class WebhookPublisher : IWebhookPublisher
 
         var webhooksLog = new WebhooksLog
         {
-            Method = method,
-            Route = route,
+            WebhookId = webhookId,
             CreationTime = DateTime.UtcNow,
             RequestPayload = requestPayload,
             ConfigId = configId

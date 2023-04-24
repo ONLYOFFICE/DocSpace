@@ -1,16 +1,19 @@
 {
-  "AddMembers": "Dodaj člane",
   "DeleteSelfProfile": "Izbriši profil",
   "DisableUserButton": "Onemogoči",
   "DisabledEmployeeStatus": "Onemogočeno",
   "EmailChangeButton": "Spremeni email",
   "EnableUserButton": "Omogoči",
+  "InviteLinkTitle": "Povezava do povabila",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Zamenjaj ime",
   "PasswordChangeButton": "Spremeni geslo",
   "PendingTitle": "V teku",
   "RemoveData": "Izbriši osebne podatke",
+  "ResetAuth": "Ponastavi avtentikacijo",
   "SendInviteAgain": "Ponovno pošlji vabilo",
   "SuccessChangeUserStatus": "Status uporabnika je bil uspešno spremenjen",
   "SuccessDeletePersonalData": "Osebni podatki so bili uspešno izbrisani",
-  "SuccessSentInvitation": "Vabilo je bilo uspešno poslano"
+  "SuccessSentInvitation": "Vabilo je bilo uspešno poslano",
+  "SuccessSentMultipleInvitatios": "Vabila so bila uspešno poslana"
 }

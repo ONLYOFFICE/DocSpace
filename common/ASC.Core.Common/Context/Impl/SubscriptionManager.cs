@@ -39,7 +39,8 @@ public class SubscriptionManager
     {
         Constants.DocSpaceAdmin.ID,
         Constants.Everyone.ID,
-        Constants.RoomAdmin.ID
+        Constants.RoomAdmin.ID,
+        Constants.Collaborator.ID,
     };
 
     public SubscriptionManager(CachedSubscriptionService service, TenantManager tenantManager, ICache cache)

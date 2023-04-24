@@ -639,8 +639,6 @@ class TableHeader extends React.Component {
       }
     }
 
-    console.log("str", str);
-
     str += `${settingsSize}px`;
 
     container.style.gridTemplateColumns = str;

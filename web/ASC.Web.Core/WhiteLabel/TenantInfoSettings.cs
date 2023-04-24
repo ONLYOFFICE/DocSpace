@@ -119,7 +119,8 @@ public class TenantInfoSettingsHelper
         using (var memory = new MemoryStream(data))
         using (var image = Image.Load(memory))
         {
-            tenantInfoSettings.CompanyLogoSize = image.Size();
+            tenantInfoSettings.CompanyLogoSize = image.Size;
+
             memory.Seek(0, SeekOrigin.Begin);
             await store.SaveAsync(companyLogoFileName, memory);
             tenantInfoSettings.CompanyLogoFileName = companyLogoFileName;
@@ -133,7 +134,7 @@ public class TenantInfoSettingsHelper
     {
         if (tenantInfoSettings.IsDefault)
         {
-            return _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
+            return _webImageSupplier.GetAbsoluteWebPath("notifications/logo.png");
         }
 
         var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");

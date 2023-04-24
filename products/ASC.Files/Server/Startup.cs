@@ -33,7 +33,7 @@ public class Startup : BaseStartup
     public Startup(IConfiguration configuration, IHostEnvironment hostEnvironment)
         : base(configuration, hostEnvironment)
     {
-
+        WebhooksEnabled = true;
     }
 
     public override void ConfigureServices(IServiceCollection services)

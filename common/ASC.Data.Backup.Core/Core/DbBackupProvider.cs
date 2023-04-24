@@ -45,7 +45,7 @@ public class DbBackupProvider : IBackupProvider
 
     public event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
-    public Task<IEnumerable<XElement>> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
+    public async Task<IEnumerable<XElement>> GetElements(int tenant, string[] configs, IDataWriteOperator writer)
     {
         _processedTables.Clear();
         var xml = new List<XElement>();
@@ -66,11 +66,11 @@ public class DbBackupProvider : IBackupProvider
             else
             {
                 connectionKeys.Add(connectionKey, connectionString.Name);
-                node.Add(BackupDatabase(tenant, connectionString, writer));
+                node.Add(await BackupDatabase(tenant, connectionString, writer));
             }
         }
        
-        return Task.FromResult(xml.AsEnumerable());
+        return xml.AsEnumerable();
     }
 
     public Task LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader)
@@ -137,7 +137,7 @@ public class DbBackupProvider : IBackupProvider
         return ConfigurationManager.OpenExeConfiguration(config);
     }
 
-    private List<XElement> BackupDatabase(int tenant, ConnectionStringSettings connectionString, IDataWriteOperator writer)
+    private async Task<List<XElement>> BackupDatabase(int tenant, ConnectionStringSettings connectionString, IDataWriteOperator writer)
     {
         var xml = new List<XElement>();
         var errors = 0;
@@ -187,7 +187,7 @@ public class DbBackupProvider : IBackupProvider
             using (var file = _tempStream.Create())
             {
                 dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
-                writer.WriteEntry($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
+                await writer.WriteEntryAsync($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
             }
 
             _processedTables.Add(table);

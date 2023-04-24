@@ -6,6 +6,7 @@ import ShareLinkedinReactSvgUrl from "PUBLIC_DIR/images/share.linkedin.react.svg
 export const LANGUAGE = "asc_language";
 export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
+export const LIVE_CHAT_LOCAL_STORAGE_KEY = "live_chat_state";
 
 /**
  * Enum for employee activation status.
@@ -33,10 +34,12 @@ export const EmployeeType = Object.freeze({
   User: 1,
   Guest: 2,
   Admin: 3,
+  Collaborator: 4,
   UserString: "user",
   RoomAdmin: "manager",
   DocSpaceAdmin: "admin",
   Owner: "Owner",
+  CollaboratorString: "collaborator",
 });
 /**
  * Enum for user payments type.
@@ -96,12 +99,18 @@ export const FileType = Object.freeze({
  * @readonly
  */
 export const RoomsType = Object.freeze({
-  FillingFormsRoom: 1,
+  //FillingFormsRoom: 1, //TODO: Restore when certs will be done
   EditingRoom: 2,
-  ReviewRoom: 3,
-  ReadOnlyRoom: 4,
+  //ReviewRoom: 3, //TODO: Restore when certs will be done
+  //ReadOnlyRoom: 4, //TODO: Restore when certs will be done
   CustomRoom: 5,
 });
+
+export const RoomsTypeValues = Object.freeze(
+  Object.values(RoomsType).reduce((acc, current) => {
+    return { ...acc, [current]: current };
+  }, {})
+);
 
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",
@@ -202,6 +211,7 @@ export const ShareAccessRights = Object.freeze({
   CustomFilter: 8,
   RoomManager: 9,
   Editing: 10,
+  Collaborator: 11,
 });
 export const ConflictResolveType = Object.freeze({
   Skip: 0,
@@ -301,6 +311,7 @@ export const FileStatus = Object.freeze({
  * @readonly
  */
 export const TenantStatus = Object.freeze({
+  PortalDeactivate: 1,
   PortalRestore: 4,
 });
 
@@ -375,3 +386,42 @@ export const PortalFeaturesLimitations = Object.freeze({
 });
 
 export const EDITOR_ID = "docspace_editor";
+
+export const wrongPortalNameUrl =
+  (typeof window !== "undefined" &&
+    window.DocSpaceConfig?.wrongPortalNameUrl) ||
+  `https://www.onlyoffice.com/wrongportalname.aspx`;
+
+/**
+ * Enum for notifications.
+ * @readonly
+ */
+export const NotificationsType = Object.freeze({
+  Badges: 0,
+  RoomsActivity: 1,
+  DailyFeed: 2,
+  UsefulTips: 3,
+});
+
+export const FilterGroups = Object.freeze({
+  filterType: "filter-filterType",
+  filterAuthor: "filter-author",
+  filterFolders: "filter-folders",
+  filterContent: "filter-withContent",
+  roomFilterProviderType: "filter-provider-type",
+  roomFilterType: "filter-type",
+  roomFilterSubject: "filter-subject",
+  roomFilterOwner: "filter-owner",
+  roomFilterTags: "filter-tags",
+  roomFilterFolders: "filter-withSubfolders",
+  roomFilterContent: "filter-content",
+});
+
+export const FilterKeys = Object.freeze({
+  withSubfolders: "withSubfolders",
+  excludeSubfolders: "excludeSubfolders",
+  withContent: "withContent",
+  me: "me",
+  other: "other",
+  user: "user",
+});

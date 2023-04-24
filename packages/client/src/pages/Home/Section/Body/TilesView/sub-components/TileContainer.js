@@ -48,6 +48,7 @@ const StyledGridWrapper = styled.div`
 const StyledTileContainer = styled.div`
   position: relative;
   height: 100%;
+  user-select: none;
 
   .tile-item-wrapper {
     position: relative;
@@ -68,6 +69,7 @@ const StyledTileContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
+    width: fit-content;
 
     div {
       cursor: pointer !important;
@@ -161,13 +163,6 @@ StyledTileContainer.defaultProps = { theme: Base };
 class TileContainer extends React.PureComponent {
   constructor(props) {
     super(props);
-
-    this.state = {
-      selectedFilterData: {
-        sortId: props.filter.sortBy,
-        sortDirection: props.filter.sortOrder,
-      },
-    };
   }
 
   render() {
@@ -179,9 +174,8 @@ class TileContainer extends React.PureComponent {
       style,
       headingFolders,
       headingFiles,
+      isDesc,
     } = this.props;
-
-    const { selectedFilterData } = this.state;
 
     const Rooms = [];
     const Folders = [];
@@ -258,7 +252,7 @@ class TileContainer extends React.PureComponent {
         className={`${className} files-tile-container`}
         style={style}
         useReactWindow={useReactWindow}
-        isDesc={selectedFilterData.sortDirection === "desc"}
+        isDesc={isDesc}
       >
         {useReactWindow ? (
           <InfiniteGrid>{renderTile}</InfiniteGrid>
@@ -282,20 +276,19 @@ TileContainer.defaultProps = {
   id: "tileContainer",
 };
 
-export default inject(
-  ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { personal } = auth.settingsStore;
-    const { fetchFiles, filter, setIsLoading } = filesStore;
-    const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
+export default inject(({ auth, filesStore, treeFoldersStore }) => {
+  const { personal } = auth.settingsStore;
+  const { fetchFiles, filter, setIsLoading } = filesStore;
+  const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
-    return {
-      personal,
-      fetchFiles,
-      filter,
-      setIsLoading,
-      isFavoritesFolder,
-      isRecentFolder,
-      selectedFolderId: selectedFolderStore.id,
-    };
-  }
-)(observer(withTranslation(["Files", "Common"])(TileContainer)));
+  const isDesc = filter?.sortOrder === "desc";
+
+  return {
+    personal,
+    fetchFiles,
+    setIsLoading,
+    isFavoritesFolder,
+    isRecentFolder,
+    isDesc,
+  };
+})(observer(withTranslation(["Files", "Common"])(TileContainer)));

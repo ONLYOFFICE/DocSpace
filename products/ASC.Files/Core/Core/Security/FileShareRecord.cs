@@ -37,7 +37,7 @@ public class FileShareRecord : IMapFrom<DbFilesSecurity>
     public FileShare Share { get; set; }
     public FileShareOptions FileShareOptions { get; set; }
     public int Level { get; set; }
-    public bool IsLink => SubjectType == SubjectType.InvintationLink || SubjectType == SubjectType.ExternalLink;
+    public bool IsLink => SubjectType == SubjectType.InvitationLink || SubjectType == SubjectType.ExternalLink;
 
     public void Mapping(AutoMapper.Profile profile)
     {

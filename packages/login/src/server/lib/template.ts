@@ -35,7 +35,9 @@ const template: Template = (
     ? `${t("Authorization")} – ${organizationName}`
     : title;
 
-  const favicon = getLogoFromPath(initLoginState.logoUrls[2]?.path?.light);
+  const favicon = getLogoFromPath(
+    initLoginState?.logoUrls && initLoginState?.logoUrls[2]?.path?.light
+  );
 
   let clientScripts =
     assets && assets.hasOwnProperty("client.js")
@@ -230,6 +232,7 @@ const template: Template = (
       <body>
         <noscript> You need to enable JavaScript to run this app. </noscript>
         <div id="root">${appComponent}</div>
+        <script src="/static/scripts/browserDetector.js"></script>
         ${scripts}
       </body>
     </html>

@@ -1,14 +1,21 @@
-﻿import InfoPanelRoomEmptyScreenSvgUrl from "PUBLIC_DIR/images/info-panel-room-empty-screen.svg?url";
+﻿import InfoPanelRoomEmptyScreenSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
+import InfoPanelRoomEmptyScreenDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate_dark.svg?url";
+
 import React from "react";
+import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 
 import { StyledNoItemContainer } from "../../styles/noItem";
 
-const NoRoomItem = ({ t }) => {
+const NoRoomItem = ({ t, theme }) => {
+  const imageSrc = theme.isBase
+    ? InfoPanelRoomEmptyScreenSvgUrl
+    : InfoPanelRoomEmptyScreenDarkSvgUrl;
+
   return (
     <StyledNoItemContainer className="info-panel_gallery-empty-screen">
       <div className="no-thumbnail-img-wrapper">
-        <img src={InfoPanelRoomEmptyScreenSvgUrl} alt="No Room Image" />
+        <img src={imageSrc} alt="No Room Image" />
       </div>
       <Text className="no-item-text" textAlign="center">
         {t("RoomsEmptyScreenTent")}
@@ -16,4 +23,9 @@ const NoRoomItem = ({ t }) => {
     </StyledNoItemContainer>
   );
 };
-export default NoRoomItem;
+
+export default inject(({ auth }) => {
+  return {
+    theme: auth.settingsStore.theme,
+  };
+})(observer(NoRoomItem));

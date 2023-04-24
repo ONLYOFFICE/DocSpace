@@ -45,19 +45,13 @@ class PeopleStore {
   inviteLinksStore = null;
   dialogStore = null;
   loadingStore = null;
-  infoPanelStore = null;
   setupStore = null;
   accessRightsStore = null;
   isInit = false;
   viewAs = isMobileRDD ? "row" : "table";
+  isLoadedProfileSectionBody = false;
 
-  constructor(
-    authStore,
-    infoPanelStore,
-    setupStore,
-    accessRightsStore,
-    dialogsStore
-  ) {
+  constructor(authStore, setupStore, accessRightsStore, dialogsStore) {
     this.authStore = authStore;
     this.groupsStore = new GroupsStore(this);
     this.usersStore = new UsersStore(this, authStore);
@@ -71,7 +65,6 @@ class PeopleStore {
     this.inviteLinksStore = new InviteLinksStore(this);
     this.dialogStore = new DialogStore();
     this.loadingStore = new LoadingStore();
-    this.infoPanelStore = infoPanelStore;
     this.setupStore = setupStore;
     this.accessRightsStore = accessRightsStore;
     this.dialogsStore = dialogsStore;
@@ -92,6 +85,7 @@ class PeopleStore {
     //this.authStore.settingsStore.setModuleInfo(config.homepage, config.id);
 
     await this.authStore.settingsStore.getPortalPasswordSettings();
+    await this.authStore.tfaStore.getTfaType();
 
     this.loadingStore.setIsLoaded(true);
   };
@@ -188,7 +182,7 @@ class PeopleStore {
   };
 
   onOpenInfoPanel = () => {
-    const { setIsVisible } = this.infoPanelStore;
+    const { setIsVisible } = this.authStore.infoPanelStore;
     setIsVisible(true);
   };
 
@@ -208,7 +202,7 @@ class PeopleStore {
 
     const { isOwner } = this.authStore.userStore.user;
 
-    const { isVisible } = this.infoPanelStore;
+    const { isVisible } = this.authStore.infoPanelStore;
 
     const options = [];
 
@@ -305,6 +299,10 @@ class PeopleStore {
 
   setViewAs = (viewAs) => {
     this.viewAs = viewAs;
+  };
+
+  setIsLoadedProfileSectionBody = (isLoadedProfileSectionBody) => {
+    this.isLoadedProfileSectionBody = isLoadedProfileSectionBody;
   };
 }
 

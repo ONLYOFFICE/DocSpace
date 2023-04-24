@@ -56,6 +56,8 @@ declare global {
     utcHoursOffset: number;
     utcOffset: string;
     version: string;
+    standalone: boolean;
+    trustedDomains: string[];
   }
 
   interface IBuildInfo {
@@ -69,7 +71,7 @@ declare global {
     provider: string;
     url: string;
   }
-  type ProvidersType = IProvider[];
+  type ProvidersType = IProvider[] | undefined;
 
   interface ICapabilities {
     ldapEnabled: boolean;
@@ -78,26 +80,39 @@ declare global {
     ssoUrl: string;
   }
 
+  type TThemeObj = {
+    accent: string;
+    buttons: string;
+  }
+
   interface ITheme {
     id: number;
-    accentColor: string;
-    buttonsMain: string;
-    textColor: string;
+    main: TThemeObj;
+    text: TThemeObj;
+    name: string;
   }
   interface IThemes {
     limit: number;
     selected: number;
     themes: ITheme[];
   }
+
+  interface IError {
+    status: number;
+    standalone: boolean;
+    message: string | undefined;
+  }
+
   interface IInitialState {
-    portalSettings: IPortalSettings;
-    buildInfo: IBuildInfo;
-    providers: ProvidersType;
-    capabilities: ICapabilities;
-    match: MatchType;
-    currentColorScheme: ITheme;
-    isAuth: boolean;
-    logoUrls: any;
+    portalSettings?: IPortalSettings;
+    buildInfo?: IBuildInfo;
+    providers?: ProvidersType;
+    capabilities?: ICapabilities;
+    match?: MatchType;
+    currentColorScheme?: ITheme;
+    isAuth?: boolean;
+    logoUrls: ILogoUrl[];
+    error?: IError;
   }
 
   interface DevRequest {
@@ -138,5 +153,27 @@ declare global {
   interface IAcceptLanguage {
     code?: string;
     quality?: number;
+  }
+
+  interface IUserTheme {
+    [key: string]: string;
+    isBase: boolean;
+  }
+
+  type TLogoPath = {
+    light: string;
+    dark?: string;
+  }
+
+  type TLogoSize = {
+    width: number;
+    height: number;
+    isEmpty: boolean;
+  }
+
+  interface ILogoUrl {
+    name: string;
+    path: TLogoPath;
+    size: TLogoSize;
   }
 }

@@ -11,7 +11,7 @@
   "InternalLink": "Interna povezava",
   "Notify users": "Obvesti uporabnike",
   "ReadOnly": "Samo za branje",
-  "ShareEmailBody": "Omogočen vam je dostop do {{itemName}} dokumenta. Če želite dokument odpreti, kliknite spodnjo povezavo: {{shareLink}}",
+  "ShareEmailBody": "Omogočen vam je dostop do {{itemName}} dokumenta. Če želite dokument odpreti, kliknite spodnjo povezavo: {{shareLink}}.",
   "ShareEmailSubject": "Omogočen vam je dostop do {{itemName}} dokumenta",
   "ShareVia": "Deli preko",
   "SharingSettingsTitle": "Nastavitve deljenja"

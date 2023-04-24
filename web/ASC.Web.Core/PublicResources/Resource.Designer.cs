@@ -151,6 +151,69 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apple ID.
+        /// </summary>
+        public static string ConsumersAppleId {
+            get {
+                return ResourceManager.GetString("ConsumersAppleId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application Client ID.
+        /// </summary>
+        public static string ConsumersappleIdClientId {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using an Apple ID account..
+        /// </summary>
+        public static string ConsumersAppleIdDescription {
+            get {
+                return ResourceManager.GetString("ConsumersAppleIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Apple ID. {0}Go to Apple Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersAppleIdInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersAppleIdInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A 10-character key identifier generated for the Sign in with Apple private key.
+        /// </summary>
+        public static string ConsumersappleIdKeyId {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdKeyId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Private key downloaded from Apple Developer.
+        /// </summary>
+        public static string ConsumersappleIdPrivateKey {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdPrivateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 10-character developer account Team ID.
+        /// </summary>
+        public static string ConsumersappleIdTeamId {
+            get {
+                return ResourceManager.GetString("ConsumersappleIdTeamId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Selectel authPwd.
         /// </summary>
         public static string ConsumersauthPwd {
@@ -808,6 +871,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Microsoft.
+        /// </summary>
+        public static string ConsumersMicrosoft {
+            get {
+                return ResourceManager.GetString("ConsumersMicrosoft", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Application Client ID.
+        /// </summary>
+        public static string ConsumersmicrosoftClientId {
+            get {
+                return ResourceManager.GetString("ConsumersmicrosoftClientId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Client Secret.
+        /// </summary>
+        public static string ConsumersmicrosoftClientSecret {
+            get {
+                return ResourceManager.GetString("ConsumersmicrosoftClientSecret", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the application to sign in to the portal using a Microsoft account..
+        /// </summary>
+        public static string ConsumersMicrosoftDescription {
+            get {
+                return ResourceManager.GetString("ConsumersMicrosoftDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Microsoft. {0}Go to Microsoft Azure and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        /// </summary>
+        public static string ConsumersMicrosoftInstruction {
+            get {
+                return ResourceManager.GetString("ConsumersMicrosoftInstruction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Rackspace Cloud Storage.
         /// </summary>
         public static string ConsumersRackspace {
@@ -1267,7 +1375,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access Token.
+        ///   Looks up a localized string similar to Client ID.
         /// </summary>
         public static string ConsumerstwitterAccessToken_Default {
             get {
@@ -1276,7 +1384,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Access Token Secret.
+        ///   Looks up a localized string similar to Client Secret.
         /// </summary>
         public static string ConsumerstwitterAccessTokenSecret_Default {
             get {
@@ -1312,7 +1420,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Twitter ID.
+        ///   Looks up a localized string similar to API Key.
         /// </summary>
         public static string ConsumersTwitterKey {
             get {
@@ -1321,7 +1429,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Twitter Key.
+        ///   Looks up a localized string similar to API Key Secret.
         /// </summary>
         public static string ConsumersTwitterSecret {
             get {
@@ -1915,6 +2023,51 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to First Name.
+        /// </summary>
+        public static string FirstName {
+            get {
+                return ResourceManager.GetString("FirstName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Name.
+        /// </summary>
+        public static string LastName {
+            get {
+                return ResourceManager.GetString("LastName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connection error.
+        /// </summary>
+        public static string LdapSettingsConnectError {
+            get {
+                return ResourceManager.GetString("LdapSettingsConnectError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users could not be created, the received data are incorrect..
+        /// </summary>
+        public static string LdapSettingsErrorCantCreateUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorCantCreateUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The server could not get settings..
+        /// </summary>
+        public static string LdapSettingsErrorCantGetLdapSettings {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorCantGetLdapSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The server could not save settings..
         /// </summary>
         public static string LdapSettingsErrorCantSaveLdapSettings {
@@ -1924,11 +2077,362 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incorrect login or password..
+        /// </summary>
+        public static string LdapSettingsErrorCredentialsNotValid {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorCredentialsNotValid", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LDAP domain not found..
+        /// </summary>
+        public static string LdapSettingsErrorDomainNotFound {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorDomainNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No groups could be found..
+        /// </summary>
+        public static string LdapSettingsErrorGroupsNotFound {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorGroupsNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid User Filter value..
+        /// </summary>
+        public static string LdapSettingsErrorIncorrectLdapFilter {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorIncorrectLdapFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You attempted to take away admin rights from yourself. Your admin rights was unaffected..
+        /// </summary>
+        public static string LdapSettingsErrorLostRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorLostRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your account is not linked to the LDAP directory and your LDAP password is no longer active. Please change or set the password to your account at the profile settings page..
+        /// </summary>
+        public static string LdapSettingsErrorRemovedYourself {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorRemovedYourself", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unknown error..
+        /// </summary>
+        public static string LdapSettingsErrorUnknownError {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorUnknownError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No users could be found..
+        /// </summary>
+        public static string LdapSettingsErrorUsersNotFound {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorUsersNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get Group Attribute for one or several groups..
+        /// </summary>
+        public static string LdapSettingsErrorWrongGroupAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongGroupAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrect Group Filter..
+        /// </summary>
+        public static string LdapSettingsErrorWrongGroupFilter {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongGroupFilter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not obtain Group Name Attribute for one or several groups..
+        /// </summary>
+        public static string LdapSettingsErrorWrongGroupNameAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongGroupNameAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get Login Attribute for one or several users..
+        /// </summary>
+        public static string LdapSettingsErrorWrongLoginAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongLoginAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to connect to LDAP server. Please check if the server address and port number are correct..
+        /// </summary>
+        public static string LdapSettingsErrorWrongServerOrPort {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongServerOrPort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Could not get User Attribute for one or several users..
+        /// </summary>
+        public static string LdapSettingsErrorWrongUserAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsErrorWrongUserAttribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Server internal error..
+        /// </summary>
+        public static string LdapSettingsInternalServerError {
+            get {
+                return ResourceManager.GetString("LdapSettingsInternalServerError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Modifying LDAP users on ordinary portal users.
+        /// </summary>
+        public static string LdapSettingsModifyLdapUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsModifyLdapUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to adding user.
+        /// </summary>
+        public static string LdapSettingsStatusAddingGroupUser {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusAddingGroupUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Certificate verification.
+        /// </summary>
+        public static string LdapSettingsStatusCertificateVerification {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusCertificateVerification", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking LDAP support settings.
+        /// </summary>
+        public static string LdapSettingsStatusCheckingLdapSettings {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusCheckingLdapSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to LDAP disconnecting.
+        /// </summary>
+        public static string LdapSettingsStatusDisconnecting {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusDisconnecting", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving the group list from the LDAP server.
+        /// </summary>
+        public static string LdapSettingsStatusGettingGroupsFromLdap {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusGettingGroupsFromLdap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Retrieving the user list from the LDAP server.
+        /// </summary>
+        public static string LdapSettingsStatusGettingUsersFromLdap {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusGettingUsersFromLdap", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting user {0} as {1} admin.
+        /// </summary>
+        public static string LdapSettingsStatusGivingRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusGivingRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading LDAP base info.
+        /// </summary>
+        public static string LdapSettingsStatusLoadingBaseInfo {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusLoadingBaseInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to removing user.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingGroupUser {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingGroupUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing outdated groups that have been loaded via LDAP earlier.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingOldGroups {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingOldGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Removing outdated access rights that have been loaded via LDAP earlier.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingOldRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingOldRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disabling outdated user profiles that have been loaded via LDAP earlier.
+        /// </summary>
+        public static string LdapSettingsStatusRemovingOldUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusRemovingOldUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving groups.
+        /// </summary>
+        public static string LdapSettingsStatusSavingGroups {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingGroups", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving settings.
+        /// </summary>
+        public static string LdapSettingsStatusSavingSettings {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingSettings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving photo.
+        /// </summary>
+        public static string LdapSettingsStatusSavingUserPhoto {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingUserPhoto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Saving users.
+        /// </summary>
+        public static string LdapSettingsStatusSavingUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSavingUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Syncing users.
+        /// </summary>
+        public static string LdapSettingsStatusSyncingUsers {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusSyncingUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating users access rights.
+        /// </summary>
+        public static string LdapSettingsStatusUpdatingAccessRights {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusUpdatingAccessRights", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating user photos.
+        /// </summary>
+        public static string LdapSettingsStatusUpdatingUserPhotos {
+            get {
+                return ResourceManager.GetString("LdapSettingsStatusUpdatingUserPhotos", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server..
+        /// </summary>
+        public static string LdapSettingsStrongAuthRequired {
+            get {
+                return ResourceManager.GetString("LdapSettingsStrongAuthRequired", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The current pricing plan user limit has been reached.
+        /// </summary>
+        public static string LdapSettingsTenantQuotaSettled {
+            get {
+                return ResourceManager.GetString("LdapSettingsTenantQuotaSettled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to StartTLS not supported for current LDAP server..
+        /// </summary>
+        public static string LdapSettingsTlsNotSupported {
+            get {
+                return ResourceManager.GetString("LdapSettingsTlsNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Too many LDAP operations..
         /// </summary>
         public static string LdapSettingsTooManyOperations {
             get {
                 return ResourceManager.GetString("LdapSettingsTooManyOperations", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unique ID for user/group objects could not be obtained. By default the system will try to match one of the following identifiers: entryUUID, nsuniqueid, GUID, objectSid. If none of the attributes corresponds to your LDAP server, please specify the necessary attribute in the ldap.unique.id setting of the web.appsettings.config file..
+        /// </summary>
+        public static string LdapSettingsWrongSidAttribute {
+            get {
+                return ResourceManager.GetString("LdapSettingsWrongSidAttribute", resourceCulture);
             }
         }
         
@@ -2005,15 +2509,6 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virtual room {0} invitations sent successfully..
-        /// </summary>
-        public static string MessageRoomInvitationsSentOnEmail {
-            get {
-                return ResourceManager.GetString("MessageRoomInvitationsSentOnEmail", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to If a user with the {0} email exists, the password change instruction has been sent to this email address..
         /// </summary>
         public static string MessageYourPasswordSendedToEmail {
@@ -2073,33 +2568,6 @@ namespace ASC.Web.Core.PublicResources {
         public static string PortalSecurity {
             get {
                 return ResourceManager.GetString("PortalSecurity", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is greater than portals quota..
-        /// </summary>
-        public static string QuotaGreaterPortalError {
-            get {
-                return ResourceManager.GetString("QuotaGreaterPortalError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to set the memory quota - some users cannot use this quota..
-        /// </summary>
-        public static string QuotaGroupError {
-            get {
-                return ResourceManager.GetString("QuotaGroupError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to set the memory quota - the memory quota you set is less than used memory..
-        /// </summary>
-        public static string QuotaLessUsedMemoryError {
-            get {
-                return ResourceManager.GetString("QuotaLessUsedMemoryError", resourceCulture);
             }
         }
         
@@ -2374,7 +2842,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admins added:.
+        ///   Looks up a localized string similar to Number of admins/power users:.
         /// </summary>
         public static string TariffsFeature_used_manager {
             get {

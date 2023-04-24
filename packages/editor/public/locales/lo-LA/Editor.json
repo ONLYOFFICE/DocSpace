@@ -5,5 +5,6 @@
   "ImageFileType": "ຮູບພາບ",
   "MailMergeFileType": "ກະລຸນາເລືືອກໄຟລ໌ເປັນ .XLSX",
   "OpenSavedDocument": "ເປີດເອກະສານທີ່ບັນທືກໄວ້ໃນແຖບໃໝ່",
-  "SelectFilesType": "ກະລຸນາເລືອກປະເພດໄຟລ໌ {{fileType}}"
+  "SelectFilesType": "ກະລຸນາເລືອກປະເພດໄຟລ໌ {{fileType}}",
+  "UsersWithoutAccess": "ຜູ້​ໃຊ້​ບາງ​ຄົນ​ທີ່​ທ່ານ​ຕ້ອງ​ການ​ກ່າວ​ເຖິງ​ບໍ່​ມີ​ການ​ເຂົ້າ​ເຖິງ​ຫ້ອງ: {{users}}"
 }

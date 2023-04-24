@@ -76,5 +76,37 @@ public class Startup : BaseStartup
         DIHelper.TryAdd<FacebookLoginProvider>();
         DIHelper.TryAdd<LinkedInLoginProvider>();
         DIHelper.TryAdd<SsoHandlerService>();
+
+
+        services.AddHttpClient();
+
+        DIHelper.TryAdd<DbWorker>();
+
+        services.AddHostedService<WorkerService>();
+        DIHelper.TryAdd<WorkerService>();
+
+        services.AddHttpClient("webhook")
+        .SetHandlerLifetime(TimeSpan.FromMinutes(5))
+        .AddPolicyHandler((s, request) =>
+        {
+            var settings = s.GetRequiredService<Settings>();
+
+            return HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .Or<SslException>()
+                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .WaitAndRetryAsync(settings.RepeatCount.HasValue ? settings.RepeatCount.Value : 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
+        })
+        .ConfigurePrimaryHttpMessageHandler((s) =>
+        {
+            return new HttpClientHandler()
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, sslPolicyErrors) =>
+                {
+                    var helper = s.GetRequiredService<SslHelper>();
+                    return helper.ValidateCertificate(sslPolicyErrors);
+                }
+            };
+        });
     }
 }

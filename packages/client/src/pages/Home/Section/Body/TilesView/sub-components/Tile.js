@@ -244,6 +244,12 @@ const StyledTile = styled.div`
   .new-items {
     min-width: 16px;
   }
+
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      ${animationStyles}
+    `}
 `;
 
 const StyledFileTileTop = styled.div`
@@ -261,8 +267,8 @@ const StyledFileTileTop = styled.div`
     position: absolute;
     height: 100%;
     width: 100%;
-    object-fit: ${(props) => (props.isMedia ? "cover" : "none")};
-    object-position: top;
+    object-fit: ${(props) => (props.thumbnails1280x720 ? "cover" : "none")};
+    object-position: ${(props) => (props.isImageOrMedia ? "center" : "top")};
     z-index: 0;
     border-radius: 6px 6px 0 0;
   }
@@ -422,6 +428,7 @@ class Tile extends React.PureComponent {
 
     this.cm = React.createRef();
     this.tile = React.createRef();
+    this.checkboxContainerRef = React.createRef();
   }
 
   onError = () => {
@@ -497,7 +504,8 @@ class Tile extends React.PureComponent {
         e.target.nodeName !== "INPUT" &&
         e.target.nodeName !== "rect" &&
         e.target.nodeName !== "path" &&
-        e.target.nodeName !== "svg"
+        e.target.nodeName !== "svg" &&
+        !this.checkboxContainerRef.current?.contains(e.target)
       ) {
         setSelection && setSelection([]);
       }
@@ -532,6 +540,7 @@ class Tile extends React.PureComponent {
       selectTag,
       selectOption,
       isHighlight,
+      thumbnails1280x720,
     } = this.props;
     const { isFolder, isRoom, id, fileExst } = item;
 
@@ -630,7 +639,10 @@ class Tile extends React.PureComponent {
                 {renderElement && !(!fileExst && id === -1) && !isEdit && (
                   <>
                     {!inProgress ? (
-                      <div className="file-icon_container">
+                      <div
+                        className="file-icon_container"
+                        ref={this.checkboxContainerRef}
+                      >
                         <StyledElement
                           className="file-icon"
                           isRoom={isRoom}
@@ -784,6 +796,11 @@ class Tile extends React.PureComponent {
               isActive={isActive}
               isMedia={item.canOpenPlayer}
               isHighlight={isHighlight}
+              thumbnails1280x720={thumbnails1280x720}
+              isImageOrMedia={
+                item?.viewAccessability?.ImageView ||
+                item?.viewAccessability?.MediaView
+              }
             >
               {icon}
             </StyledFileTileTop>

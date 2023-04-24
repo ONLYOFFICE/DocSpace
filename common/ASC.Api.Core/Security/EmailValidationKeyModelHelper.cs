@@ -38,7 +38,7 @@ public class EmailValidationKeyModelHelper
     private readonly AuthContext _authContext;
     private readonly UserManager _userManager;
     private readonly AuthManager _authentication;
-    private readonly DocSpaceLinkHelper _docSpaceLinkHelper;
+    private readonly InvitationLinkHelper _invitationLinkHelper;
     private readonly AuditEventsRepository _auditEventsRepository;
     private readonly TenantUtil _tenantUtil;
     private readonly MessageTarget _messageTarget;
@@ -49,7 +49,7 @@ public class EmailValidationKeyModelHelper
         AuthContext authContext,
         UserManager userManager,
         AuthManager authentication,
-        DocSpaceLinkHelper docSpaceLinkHelper,
+        InvitationLinkHelper invitationLinkHelper,
         AuditEventsRepository auditEventsRepository,
         TenantUtil tenantUtil,
         MessageTarget messageTarget)
@@ -59,7 +59,7 @@ public class EmailValidationKeyModelHelper
         _authContext = authContext;
         _userManager = userManager;
         _authentication = authentication;
-        _docSpaceLinkHelper = docSpaceLinkHelper;
+        _invitationLinkHelper = invitationLinkHelper;
         _auditEventsRepository = auditEventsRepository;
         _tenantUtil = tenantUtil;
         _messageTarget = messageTarget;
@@ -110,13 +110,7 @@ public class EmailValidationKeyModelHelper
                 break;
 
             case ConfirmType.LinkInvite:
-                checkKeyResult = string.IsNullOrEmpty(email) ? _docSpaceLinkHelper.ValidateRoomExternalLink(key)
-                        : _docSpaceLinkHelper.ValidateEmailLink(email, key, emplType ?? default);
-
-                if (checkKeyResult == ValidationResult.Invalid)
-                {
-                    checkKeyResult = _provider.ValidateEmailKey(type.ToString() + (int)(emplType ?? default), key, _provider.ValidEmailKeyInterval);
-                }
+                checkKeyResult = _invitationLinkHelper.Validate(key, email, emplType ?? default).Result;
                 break;
 
             case ConfirmType.PortalOwnerChange:

@@ -145,18 +145,9 @@ public class TariffService : ITariffService
         _cache = _tariffServiceStorage.Cache;
         _notify = _tariffServiceStorage.Notify;
         _dbContextFactory = coreDbContextManager;
-        //var range = (_configuration["core.payment-user-range"] ?? "").Split('-');
-        //if (!int.TryParse(range[0], out _activeUsersMin))
-        //{
-        //    _activeUsersMin = 0;
-        //}
-        //if (range.Length < 2 || !int.TryParse(range[1], out _activeUsersMax))
-        //{
-        //    _activeUsersMax = constants.MaxEveryoneCount;
-        //}
     }
 
-    public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true)
+    public Tariff GetTariff(int tenantId, bool withRequestToPaymentSystem = true, bool refresh = false)
     {
         //single tariff for all portals
         if (_coreBaseSettings.Standalone)
@@ -164,8 +155,7 @@ public class TariffService : ITariffService
             tenantId = -1;
         }
 
-        var tariff = GetTariffFromCache(tenantId);
-        int? tariffId = null;
+        var tariff = refresh ? null : GetTariffFromCache(tenantId);
 
         if (tariff == null)
         {
@@ -174,11 +164,12 @@ public class TariffService : ITariffService
 
             if (string.IsNullOrEmpty(_cache.Get<string>(GetTariffNeedToUpdateCacheKey(tenantId))))
             {
-                tariffId = tariff.Id;
+                UpdateCache(tariff.Id);
             }
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
+                var paymentFound = false;
 
                 try
                 {
@@ -190,10 +181,11 @@ public class TariffService : ITariffService
 
                     var asynctariff = CreateDefault(true);
                     string email = null;
+                    var tenantQuotas = _quotaService.GetTenantQuotas();
 
-                    foreach (var currentPayment in currentPayments)
+                    foreach (var currentPayment in currentPayments.OrderBy(r => r.EndDate))
                     {
-                        var quota = _quotaService.GetTenantQuotas().SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
+                        var quota = tenantQuotas.SingleOrDefault(q => q.ProductId == currentPayment.ProductId.ToString());
                         if (quota == null)
                         {
                             throw new InvalidOperationException($"Quota with id {currentPayment.ProductId} not found for portal {GetPortalId(tenantId)}.");
@@ -204,9 +196,22 @@ public class TariffService : ITariffService
                         var paymentEndDate = 9999 <= currentPayment.EndDate.Year ? DateTime.MaxValue : currentPayment.EndDate;
                         asynctariff.DueDate = DateTime.Compare(asynctariff.DueDate, paymentEndDate) < 0 ? asynctariff.DueDate : paymentEndDate;
 
+                        asynctariff.Quotas = asynctariff.Quotas.Where(r => r.Id != quota.Tenant).ToList();
                         asynctariff.Quotas.Add(new Quota(quota.Tenant, currentPayment.Quantity));
                         email = currentPayment.PaymentEmail;
                     }
+
+                    TenantQuota updatedQuota = null;
+
+                    foreach (var quota in asynctariff.Quotas)
+                    {
+                        var tenantQuota = tenantQuotas.SingleOrDefault(q => q.Tenant == quota.Id);
+
+                        tenantQuota *= quota.Quantity;
+                        updatedQuota += tenantQuota;
+                    }
+
+                    updatedQuota.Check(_serviceProvider).Wait();
 
                     if (!string.IsNullOrEmpty(email))
                     {
@@ -217,10 +222,21 @@ public class TariffService : ITariffService
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
-                        tariffId = asynctariff.Id;
+                    }
+
+                    UpdateCache(tariff.Id);
+
+                    paymentFound = true;
+                }
+                catch (Exception error)
+                {
+                    if (error is not BillingNotFoundException)
+                    {
+                        LogError(error, tenantId.ToString());
                     }
                 }
-                catch (BillingNotFoundException)
+
+                if (!paymentFound)
                 {
                     var freeTariff = tariff.Quotas.FirstOrDefault(tariffRow =>
                     {
@@ -244,22 +260,23 @@ public class TariffService : ITariffService
                     {
                         asynctariff = CalculateTariff(tenantId, asynctariff);
                         tariff = asynctariff;
-                        tariffId = asynctariff.Id;
                     }
-                }
-                catch (Exception error)
-                {
-                    LogError(error, tenantId.ToString());
+
+                    UpdateCache(tariff.Id);
                 }
             }
         }
-
-        if (tariffId.HasValue && tariffId.Value != 0)
+        else
         {
-            _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId.Value }, CacheNotifyAction.Insert);
+            tariff = CalculateTariff(tenantId, tariff);
         }
 
         return tariff;
+
+        void UpdateCache(int tariffId)
+        {
+            _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId }, CacheNotifyAction.Insert);
+        }
     }
 
     public async Task<bool> PaymentChange(int tenantId, Dictionary<string, int> quantity)
@@ -430,6 +447,27 @@ public class TariffService : ITariffService
 
     public async Task<Uri> GetShoppingUri(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null)
     {
+        List<TenantQuota> newQuotas = new();
+
+        if (_billingClient.Configured)
+        {
+            var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible).ToList();
+            newQuotas = quantity.Select(item => allQuotas.FirstOrDefault(q => q.Name == item.Key)).ToList();
+
+            TenantQuota updatedQuota = null;
+            foreach (var addedQuota in newQuotas)
+            {
+                var qty = quantity[addedQuota.Name];
+
+                var quota = addedQuota;
+
+                quota *= qty;
+                updatedQuota += quota;
+            }
+
+            await updatedQuota.Check(_serviceProvider);
+        }
+
         var hasQuantity = quantity != null && quantity.Any();
         var key = "shopingurl_" + (hasQuantity ? string.Join('_', quantity.Keys.ToArray()) : "all");
         var url = _cache.Get<string>(key);
@@ -438,22 +476,6 @@ public class TariffService : ITariffService
             url = string.Empty;
             if (_billingClient.Configured)
             {
-                var allQuotas = _quotaService.GetTenantQuotas().Where(q => !string.IsNullOrEmpty(q.ProductId) && q.Visible);
-                var newQuotas = quantity.Select(item => allQuotas.FirstOrDefault(q => q.Name == item.Key));
-
-                TenantQuota updatedQuota = null;
-                foreach (var addedQuota in newQuotas)
-                {
-                    var qty = quantity[addedQuota.Name];
-
-                    var quota = addedQuota;
-
-                    quota *= qty;
-                    updatedQuota += quota;
-                }
-
-                await updatedQuota.Check(_serviceProvider);
-
                 var productIds = newQuotas.Select(q => q.ProductId);
 
                 try
@@ -682,6 +704,7 @@ public class TariffService : ITariffService
         }
 
         var tariff = CreateDefault(true);
+        tariff.Id = r.Id;
         tariff.DueDate = r.Stamp.Year < 9999 ? r.Stamp : DateTime.MaxValue;
         tariff.CustomerId = r.CustomerId;
 
@@ -727,6 +750,7 @@ public class TariffService : ITariffService
                     if (efTariff.Id == default)
                     {
                         efTariff.Id = (-tenant);
+                        tariffInfo.Id = efTariff.Id;
                     }
 
                     if (efTariff.CustomerId == default)
@@ -769,8 +793,9 @@ public class TariffService : ITariffService
                 // update tenant.LastModified to flush cache in documents
                 _tenantService.SaveTenant(_coreSettings, t);
             }
-
             ClearCache(tenant);
+
+            NotifyWebSocket(currentTariff, tariffInfo);
         }
 
         return inserted;
@@ -939,5 +964,61 @@ public class TariffService : ITariffService
                 _logger.ErrorBilling(tenantId, error.Message);
             }
         }
+    }
+
+    private void NotifyWebSocket(Tariff currenTariff, Tariff newTariff)
+    {
+        var quotaSocketManager = _serviceProvider.GetRequiredService<QuotaSocketManager>();
+
+        var updatedQuota = GetTenantQuotaFromTariff(newTariff);
+
+        var maxTotalSize = updatedQuota.MaxTotalSize;
+        var maxTotalSizeFeatureName = updatedQuota.GetFeature<MaxTotalSizeFeature>().Name;
+
+        _ = quotaSocketManager.ChangeQuotaFeatureValue(maxTotalSizeFeatureName, maxTotalSize);
+
+        var maxPaidUsers = updatedQuota.CountRoomAdmin;
+        var maxPaidUsersFeatureName = updatedQuota.GetFeature<CountPaidUserFeature>().Name;
+
+        _ = quotaSocketManager.ChangeQuotaFeatureValue(maxPaidUsersFeatureName, maxPaidUsers);
+
+        var maxRoomCount = updatedQuota.CountRoom == int.MaxValue ? -1 : updatedQuota.CountRoom;
+        var maxRoomCountFeatureName = updatedQuota.GetFeature<CountRoomFeature>().Name;
+
+        _ = quotaSocketManager.ChangeQuotaFeatureValue(maxRoomCountFeatureName, maxRoomCount);
+
+        if (currenTariff != null)
+        {
+            var currentQuota = GetTenantQuotaFromTariff(currenTariff);
+
+            var free = updatedQuota.Free;
+            if (currentQuota.Free != free)
+            {
+                var freeFeatureName = updatedQuota.GetFeature<FreeFeature>().Name;
+
+                _ = quotaSocketManager.ChangeQuotaFeatureValue(freeFeatureName, free);
+            }
+        }
+    }
+
+    private TenantQuota GetTenantQuotaFromTariff(Tariff tariff)
+    {
+        TenantQuota result = null;
+        foreach (var tariffRow in tariff.Quotas)
+        {
+            var qty = tariffRow.Quantity;
+
+            var quota = _quotaService.GetTenantQuota(tariffRow.Id);
+
+            quota *= qty;
+            result += quota;
+        }
+
+        return result;
+    }
+
+    public int GetPaymentDelay()
+    {
+        return _paymentDelay;
     }
 }

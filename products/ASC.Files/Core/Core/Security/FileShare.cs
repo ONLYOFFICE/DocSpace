@@ -39,7 +39,8 @@ public enum FileShare
     FillForms,
     CustomFilter,
     RoomAdmin,
-    Editing
+    Editing,
+    Collaborator
 }
 
 public class FileShareConverter : System.Text.Json.Serialization.JsonConverter<FileShare>

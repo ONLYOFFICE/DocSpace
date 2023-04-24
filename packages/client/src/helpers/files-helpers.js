@@ -40,8 +40,9 @@ export const getAccessIcon = (access) => {
 };
 
 export const getTitleWithoutExst = (item, fromTemplate) => {
-  return item.fileExst && !fromTemplate
-    ? item.title.split(".").slice(0, -1).join(".")
+  const titleWithoutExst = item.title.split(".").slice(0, -1).join(".");
+  return titleWithoutExst && item.fileExst && !fromTemplate
+    ? titleWithoutExst
     : item.title;
 };
 

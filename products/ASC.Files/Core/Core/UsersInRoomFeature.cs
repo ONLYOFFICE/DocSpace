@@ -65,6 +65,6 @@ public class UsersInRoomStatistic : ITenantQuotaFeatureStat<UsersInRoomFeature, 
             return 0;
         }
 
-        return await securityDao.GetPureShareRecordsAsync(folder).CountAsync();
+        return await securityDao.GetPureShareRecordsAsync(folder).Where(r => !r.IsLink).CountAsync();
     }
 }

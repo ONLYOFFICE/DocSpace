@@ -12,4 +12,4 @@ Write-Host "Run Document server" -ForegroundColor Green
 $DOCUMENT_SERVER_IMAGE_NAME = "onlyoffice/documentserver-de:latest"
 
 
-docker run -i -t -d -p 8085:80 -e JWT_ENABLED=false -e JWT_IN_BODY=false --restart=always -v $RootDir/Data:/var/www/onlyoffice/Data $DOCUMENT_SERVER_IMAGE_NAME
+docker run -i -t -d -p 8085:80 -e JWT_ENABLED=true -e JWT_SECRET=secret -e JWT_HEADER=AuthorizationJwt --restart=always -v $RootDir/Data:/var/www/onlyoffice/Data $DOCUMENT_SERVER_IMAGE_NAME

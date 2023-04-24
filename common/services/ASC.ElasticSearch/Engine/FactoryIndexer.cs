@@ -618,14 +618,9 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
             {
                 await actionData();
             }
-            catch (AggregateException agg)
+            catch (Exception e)
             {
-                foreach (var e in agg.InnerExceptions)
-                {
-                    Logger.ErrorQueue(e);
-                }
-
-                throw;
+                Logger.ErrorQueue(e);
             }
         }, TaskCreationOptions.LongRunning);
 

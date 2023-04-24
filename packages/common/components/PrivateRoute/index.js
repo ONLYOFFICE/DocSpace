@@ -29,6 +29,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     tenantStatus,
     isNotPaidPeriod,
     withManager,
+    withCollaborator,
     isLogout,
   } = rest;
 
@@ -136,13 +137,12 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       );
     }
 
- 
     if (
       isNotPaidPeriod &&
       isLoaded &&
       !user.isOwner &&
       !user.isAdmin &&
-      isPortalUnavailableUrl
+      !isPortalUnavailableUrl
     ) {
       return (
         <Redirect
@@ -150,6 +150,20 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
             pathname: combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               "/portal-unavailable"
+            ),
+            state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (tenantStatus === TenantStatus.PortalDeactivate) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              "/unavailable"
             ),
             state: { from: props.location },
           }}
@@ -180,7 +194,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (
       !restricted ||
       isAdmin ||
-      (withManager && !user.isVisitor) ||
+      (withManager && !user.isVisitor && !user.isCollaborator) ||
+      (withCollaborator && !user.isVisitor) ||
       (allowForMe && userId && isMe(user, userId))
     ) {
       // console.log(

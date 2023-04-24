@@ -40,7 +40,7 @@ public class Helpers
             ConfigurationConstants.CoreSystem.ID,
             ConfigurationConstants.Guest.ID,
             UserConstants.LostUser.Id
-        };
+    };
 
     private readonly Guid[] _systemGroups = new[]
     {
@@ -50,6 +50,7 @@ public class Helpers
             UserConstants.GroupEveryone.ID,
             UserConstants.GroupUser.ID,
             UserConstants.GroupManager.ID,
+            UserConstants.GroupCollaborator.ID,
             new Guid("{EA942538-E68E-4907-9394-035336EE0BA8}"), //community product
             new Guid("{1e044602-43b5-4d79-82f3-fd6208a11960}"), //projects product
             new Guid("{6743007C-6F95-4d20-8C88-A8601CE5E76D}"), //crm product
@@ -59,7 +60,7 @@ public class Helpers
             new Guid("{32D24CB5-7ECE-4606-9C94-19216BA42086}"), //calendar product
             new Guid("{37620AE5-C40B-45ce-855A-39DD7D76A1FA}"), //birthdays product
             new Guid("{BF88953E-3C43-4850-A3FB-B1E43AD53A3E}")  //talk product
-        };
+    };
 
     public Helpers(InstanceCrypto instanceCrypto)
     {

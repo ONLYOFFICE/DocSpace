@@ -1,69 +1,96 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
-import Section from "@docspace/common/components/Section";
 import { inject, observer } from "mobx-react";
 import {
   StyledPage,
   StyledBody,
-  StyledHeader,
   ButtonsWrapper,
+  StyledContent,
 } from "./StyledConfirm";
 import withLoader from "../withLoader";
 import FormWrapper from "@docspace/components/form-wrapper";
+import toastr from "@docspace/components/toast/toastr";
 import DocspaceLogo from "../../../DocspaceLogo";
+import { ownerChange } from "@docspace/common/api/settings";
+import { getUserFromConfirm } from "@docspace/common/api/people";
 
 const ChangeOwnerForm = (props) => {
-  const { t, greetingTitle } = props;
-  console.log(props.linkData);
+  const { t, greetingTitle, linkData, history } = props;
+  const [newOwner, setNewOwner] = useState("");
+  const [isOwnerChanged, setIsOwnerChanged] = useState(false);
+
+  const ownerId = linkData.uid;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const confirmKey = linkData.confirmHeader;
+      const user = await getUserFromConfirm(ownerId, confirmKey);
+      setNewOwner(user?.displayName);
+    };
+
+    fetchData();
+  }, []);
+
+  const onChangeOwnerClick = async () => {
+    try {
+      await ownerChange(ownerId, linkData.confirmHeader);
+      setIsOwnerChanged(true);
+      setTimeout(() => (location.href = "/"), 10000);
+    } catch (error) {
+      toastr.error(e);
+      console.error(error);
+    }
+  };
+
+  const onCancelClick = () => {
+    history.push("/");
+  };
+
   return (
     <StyledPage>
-      <StyledBody>
-        <StyledHeader>
+      <StyledContent>
+        <StyledBody>
           <DocspaceLogo className="docspace-logo" />
           <Text fontSize="23px" fontWeight="700" className="title">
             {greetingTitle}
           </Text>
-        </StyledHeader>
 
-        <FormWrapper>
-          <Text className="subtitle">
-            {t("ConfirmOwnerPortalTitle", { newOwner: "NEW OWNER" })}
-          </Text>
-          <ButtonsWrapper>
-            <Button
-              primary
-              scale
-              size="medium"
-              label={t("Common:SaveButton")}
-              tabIndex={2}
-              isDisabled={false}
-              //onClick={this.onAcceptClick} // call toast with t("ConfirmOwnerPortalSuccessMessage")
-            />
-            <Button
-              scale
-              size="medium"
-              label={t("Common:CancelButton")}
-              tabIndex={2}
-              isDisabled={false}
-              //onClick={this.onCancelClick}
-            />
-          </ButtonsWrapper>
-        </FormWrapper>
-      </StyledBody>
+          <FormWrapper>
+            {isOwnerChanged ? (
+              <Text>{t("ConfirmOwnerPortalSuccessMessage")}</Text>
+            ) : (
+              <>
+                <Text className="subtitle">
+                  {t("ConfirmOwnerPortalTitle", { newOwner: newOwner })}
+                </Text>
+                <ButtonsWrapper>
+                  <Button
+                    primary
+                    scale
+                    size="medium"
+                    label={t("Common:SaveButton")}
+                    tabIndex={2}
+                    isDisabled={false}
+                    onClick={onChangeOwnerClick}
+                  />
+                  <Button
+                    scale
+                    size="medium"
+                    label={t("Common:CancelButton")}
+                    tabIndex={2}
+                    isDisabled={false}
+                    onClick={onCancelClick}
+                  />
+                </ButtonsWrapper>
+              </>
+            )}
+          </FormWrapper>
+        </StyledBody>
+      </StyledContent>
     </StyledPage>
-  );
-};
-
-const ChangeOwnerFormWrapper = (props) => {
-  return (
-    <Section>
-      <Section.SectionBody>
-        <ChangeOwnerForm {...props} />
-      </Section.SectionBody>
-    </Section>
   );
 };
 
@@ -73,7 +100,7 @@ export default inject(({ auth }) => ({
 }))(
   withRouter(
     withTranslation(["Confirm", "Common"])(
-      withLoader(observer(ChangeOwnerFormWrapper))
+      withLoader(observer(ChangeOwnerForm))
     )
   )
 );

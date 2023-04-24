@@ -204,7 +204,6 @@ const StyledCatalogItemText = styled(Text)`
 
   z-index: 1;
 
-  display: flex;
   align-items: center;
 
   pointer-events: none;

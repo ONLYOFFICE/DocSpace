@@ -31,23 +31,30 @@ namespace ASC.Core.Common.Security;
 
 public static class Security
 {
-    public static readonly Dictionary<Guid, Dictionary<Guid, HashSet<Rule>>> Rules = new Dictionary<Guid, Dictionary<Guid, HashSet<Rule>>>
+    public static readonly Dictionary<Guid, Dictionary<Guid, HashSet<Rule>>> Rules = new()
     {
         {
-            Constants.RoomAdmin.ID, new Dictionary<Guid, HashSet<Rule>>()
+            Constants.RoomAdmin.ID, new Dictionary<Guid, HashSet<Rule>>
             {
                 {
-                    Constants.User.ID, new HashSet<Rule>()
+                    Constants.User.ID, new HashSet<Rule>
                     {
-                        new Rule(UserConstants.Action_EditGroups.ID, Constants.User),
-                        new Rule(UserConstants.Action_AddRemoveUser.ID),
+                        new(UserConstants.Action_EditGroups.ID, Constants.User),
+                        new(UserConstants.Action_AddRemoveUser.ID),
                     }
                 },
                 {
-                    Constants.RoomAdmin.ID, new HashSet<Rule>()
+                    Constants.RoomAdmin.ID, new HashSet<Rule>
                     {
-                        new Rule(UserConstants.Action_EditGroups.ID, Constants.User),
-                        new Rule(UserConstants.Action_AddRemoveUser.ID),
+                        new(UserConstants.Action_EditGroups.ID, Constants.User),
+                        new(UserConstants.Action_AddRemoveUser.ID),
+                    }
+                },
+                {
+                    Constants.Collaborator.ID, new HashSet<Rule>
+                    {
+                        new(UserConstants.Action_EditGroups.ID, Constants.Collaborator),
+                        new(UserConstants.Action_AddRemoveUser.ID),
                     }
                 }
             }

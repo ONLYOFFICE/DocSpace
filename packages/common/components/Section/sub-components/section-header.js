@@ -41,6 +41,16 @@ const StyledSectionHeader = styled.div`
     min-height: 53px;
   `}
 
+  ${({ isTrashFolder, isEmptyPage }) =>
+    isTrashFolder &&
+    !isEmptyPage &&
+    css`
+      @media ${tablet} {
+        height: 109px;
+        min-height: 109px;
+      }
+    `}
+
   padding-right: 20px;
 
   box-sizing: border-box;
@@ -87,13 +97,24 @@ const StyledSectionHeader = styled.div`
 StyledSectionHeader.defaultProps = { theme: Base };
 
 const SectionHeader = (props) => {
-  const { viewAs, settingsStudio = false, className, ...rest } = props;
+  const {
+    viewAs,
+    settingsStudio = false,
+    className,
+    isEmptyPage,
+    ...rest
+  } = props;
+
+  const pathname = window.location.pathname.toLowerCase();
+  const isTrashFolder = pathname.indexOf("trash") !== -1;
 
   return (
     <StyledSectionHeader
       className={`section-header ${className}`}
+      isEmptyPage={isEmptyPage}
       viewAs={viewAs}
       settingsStudio={settingsStudio}
+      isTrashFolder={isTrashFolder}
       {...rest}
     />
   );

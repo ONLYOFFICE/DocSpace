@@ -1,4 +1,5 @@
 {
+  "CancelUpload": "The upload has been interrupted. Some files have not been uploaded.",
   "EnterPassword": "Enter password",
   "HideInput": "Hide",
   "Ready": "Done",

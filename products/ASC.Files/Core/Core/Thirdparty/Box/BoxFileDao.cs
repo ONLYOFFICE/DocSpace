@@ -599,7 +599,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
     public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
-        if (_setupInfo.ChunkUploadSize > contentLength)
+        if (_setupInfo.ChunkUploadSize > contentLength && contentLength != -1)
         {
             return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
         }
@@ -636,7 +636,7 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
 
         uploadSession.BytesUploaded += chunkLength;
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
             using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
                                            FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
@@ -648,6 +648,11 @@ internal class BoxFileDao : BoxDaoBase, IFileDao<string>
         }
 
         return uploadSession.File;
+    }
+
+    public Task<File<string>> FinalizeUploadSessionAsync(ChunkedUploadSession<string> uploadSession)
+    {
+        throw new NotImplementedException();
     }
 
     public Task AbortUploadSessionAsync(ChunkedUploadSession<string> uploadSession)

@@ -1,3 +1,14 @@
 {
-  "LinkCopySuccess": "Посилання скопійовано"
+  "AddManually": "Додати вручну",
+  "AddManuallyDescriptionAccounts": "Запрошуйте нових користувачів до DocSpace особисто за допомогою електронної пошти",
+  "AddManuallyDescriptionRoom": "Додайте наявних користувачів DocSpace до кімнати, використовуючи імена, або запросіть нових користувачів особисто електронною поштою",
+  "EmailErrorMessage": "Адреса електронної пошти недійсна. Щоб редагувати адресу електронної пошти, натисніть на неї.",
+  "InviteAccountSearchPlaceholder": "Запрошуйте людей за адресою електронної пошти",
+  "InviteRoomSearchPlaceholder": "Запрошуйте людей за іменем або адресою електронної пошти",
+  "InviteViaLink": "Запросити за допомогою посилання",
+  "InviteViaLinkDescriptionAccounts": "Створити універсальне посилання для самоавторизації в DocSpace",
+  "InviteViaLinkDescriptionRoom": "Створити універсальне посилання для самоавторизації в кімнаті",
+  "Invited": "Запрошено",
+  "LinkCopySuccess": "Посилання скопійовано",
+  "SendInvitation": "Надіслати запрошення"
 }

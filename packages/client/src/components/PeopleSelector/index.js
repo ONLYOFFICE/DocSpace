@@ -1,5 +1,6 @@
 import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
 import EmptyScreenPersonsSvgUrl from "PUBLIC_DIR/images/empty_screen_persons.svg?url";
+import EmptyScreenPersonsSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_persons_dark.svg?url";
 import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 
 import React, { useState, useEffect, useRef } from "react";
@@ -24,7 +25,6 @@ const PeopleSelector = ({
   className,
   emptyScreenDescription,
   emptyScreenHeader,
-  emptyScreenImage,
   headerLabel,
   id,
   isMultiSelect,
@@ -37,7 +37,6 @@ const PeopleSelector = ({
   onSelectAll,
   searchEmptyScreenDescription,
   searchEmptyScreenHeader,
-  searchEmptyScreenImage,
   searchPlaceholder,
   selectAllIcon,
   selectAllLabel,
@@ -51,6 +50,8 @@ const PeopleSelector = ({
   filter,
   excludeItems,
   currentUserId,
+  theme,
+  withOutCurrentAuthorizedUser,
 }) => {
   const [itemsList, setItemsList] = useState(items);
   const [searchValue, setSearchValue] = useState("");
@@ -85,7 +86,18 @@ const PeopleSelector = ({
   }, [isLoading]);
 
   const toListItem = (item) => {
-    const { id, email, avatar, icon, displayName, hasAvatar } = item;
+    const {
+      id,
+      email,
+      avatar,
+      icon,
+      displayName,
+      hasAvatar,
+      isOwner,
+      isAdmin,
+      isVisitor,
+      isCollaborator,
+    } = item;
 
     const role = getUserRole(item);
 
@@ -98,6 +110,10 @@ const PeopleSelector = ({
       icon,
       label: displayName || email,
       role,
+      isOwner,
+      isAdmin,
+      isVisitor,
+      isCollaborator,
     };
   };
 
@@ -114,6 +130,10 @@ const PeopleSelector = ({
     listUser.splice(0, 0, currentUser);
 
     return listUser;
+  };
+
+  const removeCurrentUserFromList = (listUser) => {
+    return listUser.filter((user) => user.id !== currentUserId);
   };
 
   const loadNextPage = (startIndex, search = searchValue) => {
@@ -148,9 +168,15 @@ const PeopleSelector = ({
           })
           .map((item) => toListItem(item));
 
-        newItems = moveCurrentUserToTopOfList([...newItems, ...items]);
+        const tempItems = [...newItems, ...items];
 
-        const newTotal = response.total - totalDifferent;
+        newItems = withOutCurrentAuthorizedUser
+          ? removeCurrentUserFromList(tempItems)
+          : moveCurrentUserToTopOfList(tempItems);
+
+        const newTotal = withOutCurrentAuthorizedUser
+          ? response.total - totalDifferent - 1
+          : response.total - totalDifferent;
 
         setHasNextPage(newItems.length < newTotal);
         setItemsList(newItems);
@@ -171,6 +197,10 @@ const PeopleSelector = ({
     setSearchValue("");
     loadNextPage(0, "");
   };
+
+  const emptyScreenImage = theme.isBase
+    ? EmptyScreenPersonsSvgUrl
+    : EmptyScreenPersonsSvgDarkUrl;
 
   return (
     <Selector
@@ -200,8 +230,10 @@ const PeopleSelector = ({
       emptyScreenImage={emptyScreenImage}
       emptyScreenHeader={emptyScreenHeader || t("EmptyHeader")}
       emptyScreenDescription={emptyScreenDescription || t("EmptyDescription")}
-      searchEmptyScreenImage={searchEmptyScreenImage}
-      searchEmptyScreenHeader={searchEmptyScreenHeader || t("NotFoundUsers")}
+      searchEmptyScreenImage={emptyScreenImage}
+      searchEmptyScreenHeader={
+        searchEmptyScreenHeader || t("People:NotFoundUsers")
+      }
       searchEmptyScreenDescription={
         searchEmptyScreenDescription || t("SearchEmptyDescription")
       }
@@ -227,8 +259,6 @@ PeopleSelector.propTypes = { excludeItems: PropTypes.array };
 PeopleSelector.defaultProps = {
   excludeItems: [],
   selectAllIcon: CatalogAccountsReactSvgUrl,
-  emptyScreenImage: EmptyScreenPersonsSvgUrl,
-  searchEmptyScreenImage: EmptyScreenPersonsSvgUrl,
 };
 
 const ExtendedPeopleSelector = inject(({ auth }) => {
@@ -238,9 +268,12 @@ const ExtendedPeopleSelector = inject(({ auth }) => {
   };
 })(
   observer(
-    withTranslation(["PeopleSelector", "PeopleTranslations", "Common"])(
-      PeopleSelector
-    )
+    withTranslation([
+      "PeopleSelector",
+      "PeopleTranslations",
+      "People",
+      "Common",
+    ])(PeopleSelector)
   )
 );
 

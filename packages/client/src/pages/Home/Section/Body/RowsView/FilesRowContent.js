@@ -2,8 +2,9 @@ import React, { useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
+import moment from "moment";
 
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
@@ -49,36 +50,41 @@ const SimpleFilesRowContent = styled(RowContent)`
 
   ${(props) =>
     ((props.sectionWidth <= 1024 && props.sectionWidth > 500) || isTablet) &&
-    `
-    .row-main-container-wrapper {
-      display: flex;
-      justify-content: space-between;
-      max-width: inherit;
-    }
+    css`
+      .row-main-container-wrapper {
+        display: flex;
+        justify-content: space-between;
+        max-width: inherit;
+      }
 
-    .badges {
-      flex-direction: row-reverse;
-    }
+      .badges {
+        flex-direction: row-reverse;
+      }
 
-    .tablet-badge {
-      margin-top: 5px;
-    }
+      .tablet-badge {
+        margin-top: 5px;
+      }
 
-    .tablet-edit,
-    .can-convert {
-     margin-top: 6px;
-     margin-right: 24px !important;
-    }
+      .tablet-edit,
+      .can-convert {
+        margin-top: 6px;
+        margin-right: 24px !important;
+      }
 
-    .badge-version {
-      margin-right: 22px;
-    }
+      .badge-version {
+        margin-right: 22px;
+      }
 
-    .new-items {
-      min-width: 16px;
-      margin: 5px 24px 0 0;
-    }
-  `}
+      .new-items {
+        min-width: 16px;
+        margin: 5px 24px 0 0;
+      }
+    `}
+
+  .row-content-link {
+    padding: 12px 12px 0px 0px;
+    margin-top: -12px;
+  }
 `;
 
 SimpleFilesRowContent.defaultProps = { theme: Base };
@@ -94,16 +100,22 @@ const FilesRowContent = ({
   quickButtons,
   theme,
   isRooms,
+  isTrashFolder,
 }) => {
   const {
     contentLength,
     fileExst,
     filesCount,
     foldersCount,
+    autoDelete,
     providerKey,
     title,
     isRoom,
+    daysRemaining,
+    viewAccessability,
   } = item;
+
+  const isMedia = viewAccessability?.ImageView || viewAccessability?.MediaView;
 
   return (
     <>
@@ -138,7 +150,11 @@ const FilesRowContent = ({
           // color={sideColor}
           className="row_update-text"
         >
-          {updatedDate && updatedDate}
+          {isTrashFolder
+            ? t("Files:DaysRemaining", {
+                daysRemaining,
+              })
+            : updatedDate && updatedDate}
         </Text>
 
         <Text
@@ -148,7 +164,6 @@ const FilesRowContent = ({
           className="row-content-text"
           fontSize="12px"
           fontWeight={400}
-          title=""
           truncate={true}
         >
           {isRooms
@@ -166,8 +181,9 @@ const FilesRowContent = ({
   );
 };
 
-export default inject(({ auth }) => {
-  return { theme: auth.settingsStore.theme };
+export default inject(({ auth, treeFoldersStore }) => {
+  const { isRecycleBinFolder } = treeFoldersStore;
+  return { theme: auth.settingsStore.theme, isTrashFolder: isRecycleBinFolder };
 })(
   observer(
     withRouter(

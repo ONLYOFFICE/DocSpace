@@ -5,6 +5,7 @@ import styled from "styled-components";
 import Box from "@docspace/components/box";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
+import Badge from "@docspace/components/badge";
 import toastr from "@docspace/components/toast/toastr";
 import { showLoader, hideLoader } from "@docspace/common/utils";
 import ConsumerItem from "./sub-components/consumerItem";
@@ -15,6 +16,14 @@ import { mobile } from "@docspace/components/utils/device";
 const RootContainer = styled(Box)`
   max-width: 700px;
   width: 100%;
+
+  .third-party-description {
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
+  }
+
+  .paid-badge {
+    cursor: auto;
+  }
 
   @media ${mobile} {
     width: calc(100% - 8px);
@@ -33,6 +42,10 @@ const RootContainer = styled(Box)`
     border-radius: 6px;
     min-height: 116px;
     padding: 12px 12px 8px 20px;
+  }
+
+  .paid-badge {
+    margin-bottom: 8px;
   }
 `;
 
@@ -119,30 +132,48 @@ class ThirdPartyServices extends React.Component {
       i18n,
       consumers,
       updateConsumerProps,
-      urlAuthKeys,
+      integrationSettingsUrl,
       theme,
       currentColorScheme,
+      isThirdPartyAvailable,
     } = this.props;
     const { dialogVisible, isLoading } = this.state;
     const { onModalClose, onModalOpen, setConsumer, onChangeLoading } = this;
 
+    const filteredConsumers = consumers.filter(
+      (consumer) =>
+        consumer.title !== "Bitly" &&
+        consumer.title !== "WordPress" &&
+        consumer.title !== "DocuSign"
+    );
+
     return (
       <>
         <RootContainer className="RootContainer">
-          <Text>{t("ThirdPartyTitleDescription")}</Text>
+          {!isThirdPartyAvailable && (
+            <Badge
+              backgroundColor="#EDC409"
+              label={t("Common:Paid")}
+              className="paid-badge"
+              isPaidBadge={true}
+            />
+          )}
+          <Text className="third-party-description">
+            {t("ThirdPartyTitleDescription")}
+          </Text>
           <Box marginProp="8px 0 24px 0">
             <Link
               color={currentColorScheme.main.accent}
               isHovered
               target="_blank"
-              href={urlAuthKeys}
+              href={integrationSettingsUrl}
             >
               {t("Common:LearnMore")}
             </Link>
           </Box>
 
           <div className="consumers-list-container">
-            {consumers.map((consumer) => (
+            {filteredConsumers.map((consumer) => (
               <Box className="consumer-item-wrapper" key={consumer.name}>
                 <ConsumerItem
                   consumer={consumer}
@@ -154,6 +185,7 @@ class ThirdPartyServices extends React.Component {
                   setConsumer={setConsumer}
                   updateConsumerProps={updateConsumerProps}
                   t={t}
+                  isThirdPartyAvailable={isThirdPartyAvailable}
                 />
               </Box>
             ))}
@@ -179,15 +211,15 @@ ThirdPartyServices.propTypes = {
   t: PropTypes.func.isRequired,
   i18n: PropTypes.object.isRequired,
   consumers: PropTypes.arrayOf(PropTypes.object).isRequired,
-  urlAuthKeys: PropTypes.string,
+  integrationSettingsUrl: PropTypes.string,
   getConsumers: PropTypes.func.isRequired,
   updateConsumerProps: PropTypes.func.isRequired,
   setSelectedConsumer: PropTypes.func.isRequired,
 };
 
 export default inject(({ setup, auth }) => {
-  const { settingsStore, setDocumentTitle } = auth;
-  const { urlAuthKeys, theme, currentColorScheme } = settingsStore;
+  const { settingsStore, setDocumentTitle, currentQuotaStore } = auth;
+  const { integrationSettingsUrl, theme, currentColorScheme } = settingsStore;
   const {
     getConsumers,
     integration,
@@ -195,15 +227,17 @@ export default inject(({ setup, auth }) => {
     setSelectedConsumer,
   } = setup;
   const { consumers } = integration;
+  const { isThirdPartyAvailable } = currentQuotaStore;
 
   return {
     theme,
     consumers,
-    urlAuthKeys,
+    integrationSettingsUrl,
     getConsumers,
     updateConsumerProps,
     setSelectedConsumer,
     setDocumentTitle,
     currentColorScheme,
+    isThirdPartyAvailable,
   };
 })(withTranslation(["Settings", "Common"])(observer(ThirdPartyServices)));

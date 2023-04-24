@@ -38,10 +38,6 @@ const StyledTableRow = styled(TableRow)`
         height: 48px;
         max-height: 48px;
       }
-
-      .table-container_row-checkbox {
-        padding-left: 20px !important;
-      }
     `}
   ${(props) =>
     !props.isDragging &&
@@ -53,6 +49,7 @@ const StyledTableRow = styled(TableRow)`
             `${props.theme.filesSection.tableView.row.backgroundActive} !important`};
 
           margin-top: ${(props) => (props.showHotkeyBorder ? "-2px" : "-1px")};
+
           ${(props) =>
             !props.showHotkeyBorder &&
             css`
@@ -97,6 +94,9 @@ const StyledTableRow = styled(TableRow)`
   .table-container_element-wrapper,
   .table-container_row-loader {
     min-width: ${(props) => (props.isRoom ? "40px" : "36px")};
+
+    margin-left: -20px;
+    padding-left: 20px;
   }
 
   .table-container_element-container {
@@ -115,7 +115,6 @@ const StyledTableRow = styled(TableRow)`
   }
 
   .table-container_row-checkbox {
-    padding-left: 20px;
     width: 16px;
   }
 
@@ -148,6 +147,10 @@ const StyledTableRow = styled(TableRow)`
       width: 12px;
       height: 12px;
     }
+  }
+
+  .item-file-name {
+    padding: 12px 12px 12px 0px;
   }
 
   ${(props) =>
@@ -191,6 +194,10 @@ const StyledTableRow = styled(TableRow)`
             background: none;
           }
         }
+      }
+
+      .table-container_cell:not(.table-container_element-wrapper, .table-container_file-name-cell) {
+        padding-right: ${(props) => props.hideColumns && `0px`};
       }
 
       .table-container_file-name-cell {

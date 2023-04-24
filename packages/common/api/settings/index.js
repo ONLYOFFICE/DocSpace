@@ -1,17 +1,17 @@
 import { request } from "../client";
 import axios from "axios";
 
-export function getSettings() {
+export function getSettings(withPassword = false) {
   return request({
     method: "get",
-    url: "/settings.json",
+    url: `/settings?withPassword=${withPassword}`,
   });
 }
 
 export function getPortalCultures() {
   return request({
     method: "get",
-    url: "/settings/cultures.json",
+    url: "/settings/cultures",
   });
 }
 
@@ -34,7 +34,7 @@ export function setPortalPasswordSettings(
 ) {
   return request({
     method: "put",
-    url: "/settings/security/password.json",
+    url: "/settings/security/password",
     data: { minLength, upperCase, digits, specSymbols },
   });
 }
@@ -42,7 +42,7 @@ export function setPortalPasswordSettings(
 export function setMailDomainSettings(data) {
   return request({
     method: "post",
-    url: "/settings/maildomainsettings.json",
+    url: "/settings/maildomainsettings",
     data,
   });
 }
@@ -50,7 +50,7 @@ export function setMailDomainSettings(data) {
 export function setDNSSettings(dnsName, enable) {
   return request({
     method: "post",
-    url: "/settings/maildomainsettings.json",
+    url: "/settings/maildomainsettings",
     data: { dnsName, enable },
   });
 }
@@ -88,7 +88,7 @@ export function setIpRestrictionsEnable(data) {
 export function setMessageSettings(turnOn) {
   return request({
     method: "post",
-    url: "/settings/messagesettings.json",
+    url: "/settings/messagesettings",
     data: { turnOn },
   });
 }
@@ -96,7 +96,7 @@ export function setMessageSettings(turnOn) {
 export function setCookieSettings(lifeTime) {
   return request({
     method: "put",
-    url: "/settings/cookiesettings.json",
+    url: "/settings/cookiesettings",
     data: { lifeTime },
   });
 }
@@ -104,14 +104,14 @@ export function setCookieSettings(lifeTime) {
 export function getCookieSettings() {
   return request({
     method: "get",
-    url: "/settings/cookiesettings.json",
+    url: "/settings/cookiesettings",
   });
 }
 
 export function setLifetimeAuditSettings(data) {
   return request({
     method: "post",
-    url: "/security/audit/settings/lifetime.json",
+    url: "/security/audit/settings/lifetime",
     data,
   });
 }
@@ -119,21 +119,21 @@ export function setLifetimeAuditSettings(data) {
 export function getLoginHistoryReport() {
   return request({
     method: "post",
-    url: "/security/audit/login/report.json",
+    url: "/security/audit/login/report",
   });
 }
 
 export function getAuditTrailReport() {
   return request({
     method: "post",
-    url: "/security/audit/events/report.json",
+    url: "/security/audit/events/report",
   });
 }
 
 export function getPortalTimezones(confirmKey = null) {
   const options = {
     method: "get",
-    url: "/settings/timezones.json",
+    url: "/settings/timezones",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -144,7 +144,7 @@ export function getPortalTimezones(confirmKey = null) {
 export function setLanguageAndTime(lng, timeZoneID) {
   return request({
     method: "put",
-    url: "/settings/timeandlanguage.json",
+    url: "/settings/timeandlanguage",
     data: { lng, timeZoneID },
   });
 }
@@ -152,7 +152,7 @@ export function setLanguageAndTime(lng, timeZoneID) {
 export function setGreetingSettings(title) {
   return request({
     method: "post",
-    url: `/settings/greetingsettings.json`,
+    url: `/settings/greetingsettings`,
     data: { title },
   });
 }
@@ -160,28 +160,28 @@ export function setGreetingSettings(title) {
 export function getGreetingSettingsIsDefault() {
   return request({
     method: "get",
-    url: `/settings/greetingsettings/isDefault.json`,
+    url: `/settings/greetingsettings/isDefault`,
   });
 }
 
 export function restoreGreetingSettings() {
   return request({
     method: "post",
-    url: `/settings/greetingsettings/restore.json`,
+    url: `/settings/greetingsettings/restore`,
   });
 }
 
 export function getAppearanceTheme() {
   return request({
     method: "get",
-    url: "/settings/colortheme.json",
+    url: "/settings/colortheme",
   });
 }
 
 export function sendAppearanceTheme(data) {
   return request({
     method: "put",
-    url: "/settings/colortheme.json",
+    url: "/settings/colortheme",
     data,
   });
 }
@@ -196,21 +196,21 @@ export function deleteAppearanceTheme(id) {
 export function getLogoText() {
   return request({
     method: "get",
-    url: `/settings/whitelabel/logotext.json`,
+    url: `/settings/whitelabel/logotext`,
   });
 }
 
 export function getLogoUrls() {
   return request({
     method: "get",
-    url: `/settings/whitelabel/logos.json`,
+    url: `/settings/whitelabel/logos`,
   });
 }
 
 export function setWhiteLabelSettings(data) {
   const options = {
     method: "post",
-    url: "/settings/whitelabel/save.json",
+    url: "/settings/whitelabel/save",
     data,
   };
 
@@ -220,7 +220,7 @@ export function setWhiteLabelSettings(data) {
 export function restoreWhiteLabelSettings(isDefault) {
   return request({
     method: "put",
-    url: "/settings/whitelabel/restore.json",
+    url: "/settings/whitelabel/restore",
     data: { isDefault },
   });
 }
@@ -238,7 +238,7 @@ export function setCompanyInfoSettings(
 
   return request({
     method: "post",
-    url: `/settings/rebranding/company.json`,
+    url: `/settings/rebranding/company`,
     data,
   });
 }
@@ -246,14 +246,14 @@ export function setCompanyInfoSettings(
 export function getCompanyInfoSettings() {
   return request({
     method: "get",
-    url: `/settings/rebranding/company.json`,
+    url: `/settings/rebranding/company`,
   });
 }
 
 export function restoreCompanyInfoSettings() {
   return request({
     method: "delete",
-    url: `/settings/rebranding/company.json`,
+    url: `/settings/rebranding/company`,
   });
 }
 
@@ -279,7 +279,7 @@ export function setAdditionalResources(
 
   return request({
     method: "post",
-    url: `/settings/rebranding/additional.json`,
+    url: `/settings/rebranding/additional`,
     data,
   });
 }
@@ -287,14 +287,14 @@ export function setAdditionalResources(
 export function getAdditionalResources() {
   return request({
     method: "get",
-    url: `/settings/rebranding/additional.json`,
+    url: `/settings/rebranding/additional`,
   });
 }
 
 export function restoreAdditionalResources() {
   return request({
     method: "delete",
-    url: `/settings/rebranding/additional.json`,
+    url: `/settings/rebranding/additional`,
   });
 }
 
@@ -337,7 +337,7 @@ export function setCustomSchema(
 export function getCurrentCustomSchema(id) {
   return request({
     method: "get",
-    url: `settings/customschemas/${id}.json`,
+    url: `settings/customschemas/${id}`,
   });
 }
 
@@ -363,15 +363,29 @@ export function sendOwnerChange(ownerId) {
   const data = { ownerId };
   return request({
     method: "post",
-    url: `/settings/owner.json`,
+    url: `/settings/owner`,
     data,
   });
+}
+
+export function ownerChange(ownerId, confirmKey = null) {
+  const data = { ownerId };
+
+  const options = {
+    method: "put",
+    url: `/settings/owner`,
+    data,
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
 }
 
 export function getMachineName(confirmKey = null) {
   const options = {
     method: "get",
-    url: "/settings/machine.json",
+    url: "/settings/machine",
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -389,7 +403,7 @@ export function setPortalOwner(
 ) {
   const options = {
     method: "put",
-    url: "/settings/wizard/complete.json",
+    url: "/settings/wizard/complete",
     data: {
       email: email,
       PasswordHash: hash,
@@ -408,7 +422,7 @@ export function setPortalOwner(
 export function getIsLicenseRequired() {
   return request({
     method: "get",
-    url: "/settings/license/required.json",
+    url: "/settings/license/required",
   });
 }
 
@@ -429,13 +443,13 @@ export function setLicense(confirmKey = null, data) {
 export function getPaymentSettings() {
   return request({
     method: "get",
-    url: `/settings/payment.json`,
+    url: `/settings/payment`,
   });
 }
 export function acceptLicense() {
   return request({
     method: "post",
-    url: `/settings/license/accept.json`,
+    url: `/settings/license/accept`,
   });
 }
 export function getConsumersList() {
@@ -548,7 +562,7 @@ export function getBackupStorage() {
 export function getBuildVersion() {
   const options = {
     method: "get",
-    url: "/settings/version/build.json",
+    url: "/settings/version/build",
   };
   return request(options);
 }
@@ -564,8 +578,30 @@ export function getCapabilities() {
 export function getTipsSubscription() {
   const options = {
     method: "get",
-    url: "/settings/tips/subscription.json",
+    url: "/settings/tips/subscription",
   };
+  return request(options);
+}
+
+export function getNotificationSubscription(notificationType) {
+  const options = {
+    method: "get",
+    url: `/settings/notification/${notificationType}`,
+  };
+  return request(options);
+}
+
+export function changeNotificationSubscription(notificationType, isEnabled) {
+  const data = {
+    Type: notificationType,
+    isEnabled,
+  };
+  const options = {
+    method: "post",
+    url: "/settings/notification",
+    data,
+  };
+
   return request(options);
 }
 
@@ -608,7 +644,7 @@ export function resetSsoForm() {
 export function getLifetimeAuditSettings(data) {
   return request({
     method: "get",
-    url: "/security/audit/settings/lifetime.json",
+    url: "/security/audit/settings/lifetime",
     data,
   });
 }
@@ -616,14 +652,14 @@ export function getLifetimeAuditSettings(data) {
 export function getLoginHistory() {
   return request({
     method: "get",
-    url: "/security/audit/login/last.json",
+    url: "/security/audit/login/last",
   });
 }
 
 export function getAuditTrail() {
   return request({
     method: "get",
-    url: "/security/audit/events/last.json",
+    url: "/security/audit/events/last",
   });
 }
 
@@ -693,4 +729,14 @@ export function removeActiveSession(eventId) {
     url: `/security/activeconnections/logout/${eventId}`,
     data: { eventId },
   });
+}
+
+export function muteRoomNotification(id, isMute) {
+  const options = {
+    method: "post",
+    url: `/settings/notification/rooms`,
+    data: { RoomsId: id, Mute: isMute },
+  };
+
+  return request(options);
 }

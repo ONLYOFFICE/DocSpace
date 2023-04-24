@@ -7,7 +7,6 @@ import toastr from "@docspace/components/toast/toastr";
 import SelectFolderDialog from "../SelectFolderDialog";
 import SimpleFileInput from "../../SimpleFileInput";
 import { withTranslation } from "react-i18next";
-import SelectionPanel from "../SelectionPanel/SelectionPanelBody";
 import { FolderType } from "@docspace/common/constants";
 class SelectFolderInput extends React.PureComponent {
   constructor(props) {
@@ -113,7 +112,7 @@ class SelectFolderInput extends React.PureComponent {
     onSelect && onSelect(folderId);
   };
   onSetFolderInfo = (folderId) => {
-    const { setExpandedPanelKeys, setParentId } = this.props;
+    const { setExpandedPanelKeys, setParentId, clearLocalStorage } = this.props;
 
     getFolder(folderId)
       .then((data) => {
@@ -123,7 +122,10 @@ class SelectFolderInput extends React.PureComponent {
         setExpandedPanelKeys(pathParts);
         setParentId(data.current.parentId);
       })
-      .catch((e) => toastr.error(e));
+      .catch((e) => {
+        toastr.error(e);
+        clearLocalStorage();
+      });
   };
 
   render() {
@@ -201,7 +203,9 @@ export default inject(
     treeFoldersStore,
     selectFolderDialogStore,
     selectedFolderStore,
+    backup,
   }) => {
+    const { clearLocalStorage } = backup;
     const { setFirstLoad } = filesStore;
     const { setExpandedPanelKeys } = treeFoldersStore;
     const {
@@ -220,6 +224,7 @@ export default inject(
     const { setParentId } = selectedFolderStore;
 
     return {
+      clearLocalStorage,
       setFirstLoad,
       setExpandedPanelKeys,
       setParentId,

@@ -1,7 +1,8 @@
 {
   "ConversionMessage": "Tous les documents transférés seront convertis au format Office Open XML (docx, xlsx or pptx) pour garantir une édition rapide.",
-  "ConvertedFileDestination": "La copie du fichier sera créée dans le dossier <strong>{{folderTitle}}</strong>",
+  "ConvertedFileDestination": "La copie du fichier sera créée dans le dossier <strong>{{folderTitle}}</strong>.",
   "DocumentConversionTitle": "Conversion du document",
+  "FailedToConvert": "Échec de la conversion",
   "FileUploadTitle": "Chargement du fichier",
   "HideMessage": "Ne plus afficher ce message",
   "InfoCreateFileIn": "Le nouveau fichier '{{fileTitle}}' est créé dans '{{folderTitle}}'",

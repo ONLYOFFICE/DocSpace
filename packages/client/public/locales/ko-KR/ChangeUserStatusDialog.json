@@ -1,8 +1,7 @@
 {
   "ChangeUserStatusDialog": "'{{ userStatus }}' 상태 사용자는 {{ status }}.",
   "ChangeUserStatusDialogHeader": "사용자 상태 변경",
-  "ChangeUserStatusDialogMessage": "포털 소유자와 자기 자신의 상태는 변경할 수 없습니다",
-  "ChangeUsersActiveStatus": "비활성화",
-  "ChangeUsersDisableStatus": "활성화",
-  "ChangeUsersStatusButton": "사용자 상태 변경"
+  "ChangeUserStatusDialogMessage": "DocSpace 소유자 및 자신의 상태를 변경할 수 없습니다.",
+  "ChangeUsersActiveStatus": "활성화되었습니다",
+  "ChangeUsersDisableStatus": "비활성화되었습니다"
 }

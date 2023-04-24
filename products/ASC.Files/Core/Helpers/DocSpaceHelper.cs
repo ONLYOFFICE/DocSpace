@@ -28,22 +28,14 @@ namespace ASC.Files.Core.Helpers;
 
 public static class DocSpaceHelper
 {
-    public static HashSet<FileShare> PaidRights { get; } = new HashSet<FileShare> { FileShare.RoomAdmin };
-
-    private static readonly List<FileShare> _fillingFormRoomRoles
-        = new List<FileShare> { FileShare.RoomAdmin, FileShare.FillForms, FileShare.Read, FileShare.None };
-    private static readonly List<FileShare> _collaborationRoomRoles
-        = new List<FileShare> { FileShare.RoomAdmin, FileShare.Editing, FileShare.Read, FileShare.None };
-    private static readonly List<FileShare> _reviewRoomRoles
-        = new List<FileShare> { FileShare.RoomAdmin, FileShare.Review, FileShare.Comment, FileShare.Read, FileShare.None };
-    private static readonly List<FileShare> _viewOnlyRoomRoles
-        = new List<FileShare> { FileShare.RoomAdmin, FileShare.Read, FileShare.None };
-
     public static bool IsRoom(FolderType folderType)
     {
-        return folderType == FolderType.CustomRoom || folderType == FolderType.EditingRoom 
-            || folderType == FolderType.ReviewRoom || folderType == FolderType.ReadOnlyRoom 
-            || folderType == FolderType.FillingFormsRoom;
+        return folderType is 
+            FolderType.CustomRoom or 
+            FolderType.EditingRoom or 
+            FolderType.ReviewRoom or 
+            FolderType.ReadOnlyRoom or 
+            FolderType.FillingFormsRoom;
     }
 
     public static async Task<bool> LocatedInPrivateRoomAsync<T>(File<T> file, IFolderDao<T> folderDao)
@@ -51,32 +43,6 @@ public static class DocSpaceHelper
         var parents = await folderDao.GetParentFoldersAsync(file.ParentId).ToListAsync();
         var room = parents.FirstOrDefault(f => IsRoom(f.FolderType));
 
-        return room != null && room.Private;
-    }
-
-    public static bool ValidateShare(FolderType folderType, FileShare fileShare)
-    {
-        return folderType switch
-        {
-            FolderType.CustomRoom => true,
-            FolderType.FillingFormsRoom => _fillingFormRoomRoles.Contains(fileShare),
-            FolderType.EditingRoom => _collaborationRoomRoles.Contains(fileShare),
-            FolderType.ReviewRoom => _reviewRoomRoles.Contains(fileShare),
-            FolderType.ReadOnlyRoom => _viewOnlyRoomRoles.Contains(fileShare),
-            _ => false
-        };
-    }
-
-    public static FileShare GetHighFreeRole(FolderType folderType)
-    {
-        return folderType switch
-        {
-            FolderType.CustomRoom => FileShare.Editing,
-            FolderType.FillingFormsRoom => _fillingFormRoomRoles[1],
-            FolderType.EditingRoom => _collaborationRoomRoles[1],
-            FolderType.ReviewRoom => _reviewRoomRoles[1],
-            FolderType.ReadOnlyRoom => _viewOnlyRoomRoles[1],
-            _ => FileShare.None
-        };
+        return room is { Private: true };
     }
 }

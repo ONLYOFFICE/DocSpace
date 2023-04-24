@@ -87,7 +87,7 @@ class RoomsModule extends React.Component {
         </div>
         <div className="manual-backup_buttons">
           <Button
-            label={t("Common:Duplicate")}
+            label={t("Common:CreateCopy")}
             onClick={this.onMakeCopy}
             primary
             isDisabled={isModuleDisabled || !selectedFolder}

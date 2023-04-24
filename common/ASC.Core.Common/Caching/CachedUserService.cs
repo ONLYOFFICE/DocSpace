@@ -271,6 +271,7 @@ public class CachedUserService : IUserService, ICachedService
     {
         Service.SetUserPhoto(tenant, id, photo);
         CacheUserPhotoItem.Publish(new UserPhotoCacheItem { Key = UserServiceCache.GetUserPhotoCacheKey(tenant, id) }, CacheNotifyAction.Remove);
+        CacheUserInfoItem.Publish(new UserInfoCacheItem { Id = id.ToString(), Tenant = tenant }, CacheNotifyAction.Any);
     }
 
     public DateTime GetUserPasswordStamp(int tenant, Guid id)

@@ -29,17 +29,11 @@ namespace ASC.Files.Core.Data;
 public class AbstractDao
 {
 
-    private int _tenantID;
     protected internal int TenantID
     {
         get
         {
-            if (_tenantID == 0)
-            {
-                _tenantID = _tenantManager.GetCurrentTenant().Id;
-            }
-
-            return _tenantID;
+            return _tenantManager.GetCurrentTenant().Id;
         }
     }
 
@@ -196,7 +190,7 @@ public class AbstractDao
         };
     }
 
-    internal static string GetSearchText(string text) => (text ?? "").ToLower().Trim().Replace("%", "\\%").Replace("_", "\\_");
+    internal static string GetSearchText(string text) => (text ?? "").ToLower().Trim();
 
     internal enum SearhTypeEnum
     {

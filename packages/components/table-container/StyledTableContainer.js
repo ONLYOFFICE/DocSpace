@@ -16,7 +16,7 @@ const reactWindowBodyStyles = css`
 `;
 
 const StyledTableContainer = styled.div`
-  -moz-user-select: none;
+  user-select: none;
 
   width: 100%;
   max-width: 100%;
@@ -361,8 +361,8 @@ const StyledTableCell = styled.div`
   }
   .table-container_row-checkbox {
     display: ${(props) => (props.checked ? "flex" : "none")};
-    padding: 12px;
-    margin-left: -12px;
+    padding: 16px;
+    margin-left: -4px;
   }
 
   ${(props) =>

@@ -95,6 +95,7 @@ public class StudioNotifyServiceSender
         if (!_coreBaseSettings.Personal)
         {
             _workContext.RegisterSendMethod(SendMsgWhatsNew, "0 0 * ? * *"); // every hour
+            _workContext.RegisterSendMethod(SendRoomsActivity, "0 0 * ? * *"); //every hour
         }
     }
 
@@ -122,30 +123,36 @@ public class StudioNotifyServiceSender
         scope.ServiceProvider.GetService<StudioPeriodicNotify>().SendPersonalLetters(EMailSenderName, scheduleDate);
     }
 
-    public void SendMsgWhatsNew(DateTime scheduleDate)
+    public async Task SendMsgWhatsNew(DateTime scheduleDate)
     {
         using var scope = _serviceProvider.CreateScope();
-        scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate);
+        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.DailyFeed);
+    }
+
+    public async Task SendRoomsActivity(DateTime scheduleDate)
+    {
+        using var scope = _serviceProvider.CreateScope();
+        await scope.ServiceProvider.GetRequiredService<StudioWhatsNewNotify>().SendMsgWhatsNew(scheduleDate, WhatsNewType.RoomsActivity);
     }
 }
 
 [Scope]
 public class StudioNotifyWorker
 {
-    private readonly CommonLinkUtilitySettings _commonLinkUtilitySettings;
     private readonly NotifyEngineQueue _notifyEngineQueue;
     private readonly WorkContext _workContext;
     private readonly TenantManager _tenantManager;
     private readonly UserManager _userManager;
     private readonly SecurityContext _securityContext;
     private readonly StudioNotifyHelper _studioNotifyHelper;
+    private readonly CommonLinkUtility _commonLinkUtility;
 
     public StudioNotifyWorker(
         TenantManager tenantManager,
-    UserManager userManager,
-    SecurityContext securityContext,
-    StudioNotifyHelper studioNotifyHelper,
-        CommonLinkUtilitySettings commonLinkUtilitySettings,
+        UserManager userManager,
+        SecurityContext securityContext,
+        StudioNotifyHelper studioNotifyHelper,
+        CommonLinkUtility baseCommonLinkUtility,
         NotifyEngineQueue notifyEngineQueue,
         WorkContext workContext)
     {
@@ -153,14 +160,14 @@ public class StudioNotifyWorker
         _userManager = userManager;
         _securityContext = securityContext;
         _studioNotifyHelper = studioNotifyHelper;
-        _commonLinkUtilitySettings = commonLinkUtilitySettings;
+        _commonLinkUtility = baseCommonLinkUtility;
         _notifyEngineQueue = notifyEngineQueue;
         _workContext = workContext;
     }
 
     public void OnMessage(NotifyItem item)
     {
-        _commonLinkUtilitySettings.ServerUri = item.BaseUrl;
+        _commonLinkUtility.ServerUri = item.BaseUrl;
         _tenantManager.SetCurrentTenant(item.TenantId);
 
         CultureInfo culture = null;

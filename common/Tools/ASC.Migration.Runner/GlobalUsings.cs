@@ -26,10 +26,11 @@
 
 global using System.Reflection;
 
-global using ASC.ActiveDirectory.Base;
 global using ASC.Common.Logging;
 global using ASC.Core.Common.EF;
 global using ASC.Core.Common.EF.Context;
+global using ASC.Core.Common.EF.Teamlabsite;
+global using ASC.Core.Common.EF.Teamlabsite.Context;
 global using ASC.Core.Common.Hosting;
 global using ASC.Data.Backup.EF.Context;
 global using ASC.EventBus.Extensions.Logger;

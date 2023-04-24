@@ -28,6 +28,8 @@ const Members = ({
 
   selectionParentRoom,
   setSelectionParentRoom,
+  isScrollLocked,
+  setIsScrollLocked,
 
   getRoomMembers,
   updateRoomMemberRole,
@@ -35,7 +37,9 @@ const Members = ({
   roomsView,
   resendEmailInvitations,
   setInvitePanelOptions,
+  setInviteUsersWarningDialogVisible,
   changeUserType,
+  isGracePeriod,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -117,6 +121,11 @@ const Members = ({
     setIsMobileHidden(true);
     const parentRoomId = selectionParentRoom.id;
 
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
+
     setInvitePanelOptions({
       visible: true,
       roomId: parentRoomId,
@@ -175,13 +184,15 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
+            isScrollLocked={isScrollLocked}
+            setIsScrollLocked={setIsScrollLocked}
           />
         ))}
       </StyledUserList>
 
       {!!members.expected.length && (
         <StyledUserTypeHeader isExpect>
-          <Text className="title">{t("ExpectPeople")}</Text>
+          <Text className="title">{t("PendingInvitations")}</Text>
           {canInviteUserInRoomAbility && (
             <IconButton
               className={"icon"}
@@ -196,11 +207,11 @@ const Members = ({
       )}
 
       <StyledUserList>
-        {Object.values(members.expected).map((user) => (
+        {Object.values(members.expected).map((user, i) => (
           <User
             security={security}
             isExpect
-            key={user.id}
+            key={i}
             t={t}
             user={user}
             membersHelper={membersHelper}
@@ -211,6 +222,8 @@ const Members = ({
             selectionParentRoom={selectionParentRoom}
             setSelectionParentRoom={setSelectionParentRoom}
             changeUserType={changeUserType}
+            isScrollLocked={isScrollLocked}
+            setIsScrollLocked={setIsScrollLocked}
           />
         ))}
       </StyledUserList>
@@ -237,6 +250,8 @@ export default inject(
 
       updateRoomMembers,
       setUpdateRoomMembers,
+      isScrollLocked,
+      setIsScrollLocked,
     } = auth.infoPanelStore;
     const {
       getRoomMembers,
@@ -244,7 +259,11 @@ export default inject(
       resendEmailInvitations,
     } = filesStore;
     const { id: selfId } = auth.userStore.user;
-    const { setInvitePanelOptions } = dialogsStore;
+    const { isGracePeriod } = auth.currentTariffStatusStore;
+    const {
+      setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
+    } = dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
 
@@ -254,6 +273,8 @@ export default inject(
       setIsMobileHidden,
       selectionParentRoom,
       setSelectionParentRoom,
+      isScrollLocked,
+      setIsScrollLocked,
 
       getRoomMembers,
       updateRoomMemberRole,
@@ -264,8 +285,10 @@ export default inject(
       selfId,
 
       setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
       resendEmailInvitations,
       changeUserType,
+      isGracePeriod,
     };
   }
 )(

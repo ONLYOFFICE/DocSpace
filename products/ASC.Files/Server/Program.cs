@@ -66,16 +66,14 @@ try
 
     startup.ConfigureServices(builder.Services);
 
-    builder.Host.ConfigureContainer<ContainerBuilder>(containerBuilder =>
-    {
-        startup.ConfigureContainer(containerBuilder);
-    });
+    builder.Host.ConfigureContainer<ContainerBuilder>(startup.ConfigureContainer);
 
     var app = builder.Build();
 
     startup.Configure(app, app.Environment);
 
     logger.Info("Starting web host ({applicationContext})...", AppName);
+
     await app.RunWithTasksAsync();
 }
 catch (Exception ex)

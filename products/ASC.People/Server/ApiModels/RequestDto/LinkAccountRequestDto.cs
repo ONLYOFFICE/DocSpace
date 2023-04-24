@@ -33,7 +33,7 @@ public class LinkAccountRequestDto
 
 public class SignupAccountRequestDto : LinkAccountRequestDto
 {
-    public EmployeeType? EmplType { get; set; }
+    public EmployeeType? EmployeeType { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }

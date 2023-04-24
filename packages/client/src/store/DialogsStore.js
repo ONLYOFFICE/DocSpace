@@ -26,6 +26,7 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   inviteUsersWarningDialogVisible = false;
+
   isFolderActions = false;
   roomCreation = false;
   invitePanelOptions = {

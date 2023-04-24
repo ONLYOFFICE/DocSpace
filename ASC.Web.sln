@@ -71,8 +71,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Backup", "common\s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks.Core", "common\ASC.Webhooks.Core\ASC.Webhooks.Core.csproj", "{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Webhooks.Service", "common\services\ASC.Webhooks.Service\ASC.Webhooks.Service.csproj", "{DAE2912D-1465-4D60-B1D7-90EE835003E4}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Backup.BackgroundTasks", "common\services\ASC.Data.Backup.BackgroundTasks\ASC.Data.Backup.BackgroundTasks.csproj", "{C0C28A02-943C-4A38-B474-A2B49C6201ED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.EventBus", "common\ASC.EventBus\ASC.EventBus.csproj", "{26540DA7-604B-474B-97BA-9CDC85A84B6D}"
@@ -90,6 +88,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.Data.Storage.Encryption", "common\services\ASC.Data.Storage.Encryption\ASC.Data.Storage.Encryption.csproj", "{76BFD0A6-3F28-4BCE-983B-9FE3FBDD966D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ApiSystem", "common\services\ASC.ApiSystem\ASC.ApiSystem.csproj", "{EB0FC2DF-D8AC-460B-8FBE-307A7B163C6C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASC.ApiCache", "common\services\ASC.ApiCache\ASC.ApiCache.csproj", "{AD4F5F31-625C-472D-BE2C-AD1FB693E065}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -217,10 +217,6 @@ Global
 		{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{760BFF3A-1A67-43A1-A94C-78D11A4BB1E6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DAE2912D-1465-4D60-B1D7-90EE835003E4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C0C28A02-943C-4A38-B474-A2B49C6201ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C0C28A02-943C-4A38-B474-A2B49C6201ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0C28A02-943C-4A38-B474-A2B49C6201ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -257,6 +253,10 @@ Global
 		{EB0FC2DF-D8AC-460B-8FBE-307A7B163C6C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EB0FC2DF-D8AC-460B-8FBE-307A7B163C6C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EB0FC2DF-D8AC-460B-8FBE-307A7B163C6C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD4F5F31-625C-472D-BE2C-AD1FB693E065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD4F5F31-625C-472D-BE2C-AD1FB693E065}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD4F5F31-625C-472D-BE2C-AD1FB693E065}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD4F5F31-625C-472D-BE2C-AD1FB693E065}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

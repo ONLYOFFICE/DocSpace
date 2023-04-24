@@ -19,6 +19,7 @@ const Details = ({
   getInfoPanelItemIcon,
   openUser,
   isVisitor,
+  isCollaborator,
 }) => {
   const [itemProperties, setItemProperties] = useState([]);
 
@@ -28,6 +29,7 @@ const Details = ({
   const history = useHistory();
 
   const detailsHelper = new DetailsHelper({
+    isCollaborator,
     isVisitor,
     t,
     item: selection,
@@ -57,15 +59,22 @@ const Details = ({
       ? selection?.logo?.large
       : getInfoPanelItemIcon(selection, 96);
 
+  //console.log("InfoPanel->Details render", { selection });
+
   return (
     <>
       {selection.thumbnailUrl && !isThumbnailError ? (
-        <StyledThumbnail>
+        <StyledThumbnail
+          isImageOrMedia={
+            selection?.viewAccessability?.ImageView ||
+            selection?.viewAccessability?.MediaView
+          }
+        >
           <img
-            src={selection.thumbnailUrl}
+            src={`${selection.thumbnailUrl}&size=1280x720`}
             alt="thumbnail-image"
-            height={260}
-            width={360}
+            //height={260}
+            //width={360}
             onError={onThumbnailError}
           />
         </StyledThumbnail>
@@ -116,6 +125,7 @@ export default inject(({ auth, filesStore }) => {
   const { user } = userStore;
 
   const isVisitor = user.isVisitor;
+  const isCollaborator = user.isCollaborator;
 
   return {
     personal,
@@ -125,5 +135,6 @@ export default inject(({ auth, filesStore }) => {
     getInfoPanelItemIcon,
     openUser,
     isVisitor,
+    isCollaborator,
   };
 })(withTranslation(["InfoPanel", "Common", "Translations", "Files"])(Details));

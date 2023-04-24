@@ -18,7 +18,7 @@ class ConfirmRoute extends React.Component {
   }
 
   componentDidMount() {
-    const { forUnauthorized, history, isAuthenticated } = this.props;
+    const { forUnauthorized, isAuthenticated } = this.props;
 
     if (forUnauthorized && isAuthenticated) {
       this.props.logout();
@@ -42,18 +42,25 @@ class ConfirmRoute extends React.Component {
       .then((validationResult) => {
         switch (validationResult) {
           case ValidationResult.Ok:
-            const confirmHeader = `${confirmLinkData}&${search.slice(1)}`;
+            const confirmHeader = search.slice(1);
             const linkData = {
               ...confirmLinkData,
               confirmHeader,
             };
+
+            console.log("checkConfirmLink", {
+              confirmLinkData,
+              validationResult,
+              linkData,
+            });
+
             this.setState({
               isLoaded: true,
               linkData,
             });
             break;
           case ValidationResult.Invalid:
-            console.error("invlid link");
+            console.error("invlid link", { confirmLinkData, validationResult });
             window.location.href = combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               path,
@@ -61,7 +68,10 @@ class ConfirmRoute extends React.Component {
             );
             break;
           case ValidationResult.Expired:
-            console.error("expired link");
+            console.error("expired link", {
+              confirmLinkData,
+              validationResult,
+            });
             window.location.href = combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               path,
@@ -69,7 +79,10 @@ class ConfirmRoute extends React.Component {
             );
             break;
           default:
-            console.error("unknown link");
+            console.error("unknown link", {
+              confirmLinkData,
+              validationResult,
+            });
             window.location.href = combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               path,
@@ -79,7 +92,7 @@ class ConfirmRoute extends React.Component {
         }
       })
       .catch((error) => {
-        console.error(error);
+        console.error("FAILED checkConfirmLink", { error, confirmLinkData });
         window.location.href = combineUrl(
           window.DocSpaceConfig?.proxy?.url,
           path,

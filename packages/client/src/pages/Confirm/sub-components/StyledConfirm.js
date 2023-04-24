@@ -1,19 +1,25 @@
 import styled from "styled-components";
-import { mobile, tablet } from "@docspace/components/utils/device";
+import { hugeMobile, mobile, tablet } from "@docspace/components/utils/device";
 
 export const StyledPage = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 56px auto 0 auto;
+  margin: 0 auto;
   max-width: 960px;
+  box-sizing: border-box;
 
   @media ${tablet} {
     padding: 0 16px;
   }
 
+  @media ${hugeMobile} {
+    margin: 32px 0;
+    padding: 0 8px 0 20px;
+  }
+
   @media ${mobile} {
-    margin-top: 32px;
+    padding: 0 8px 0 16px;
   }
 
   .subtitle {
@@ -27,6 +33,23 @@ export const StyledPage = styled.div`
 
   .subtitle {
     margin-bottom: 32px;
+  }
+`;
+
+export const StyledContent = styled.div`
+  min-height: 100vh;
+  flex: 1 0 auto;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+
+  @media ${hugeMobile} {
+    justify-content: start;
+    min-height: 100%;
   }
 `;
 
@@ -44,7 +67,11 @@ export const StyledHeader = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding-bottom: 64px;
+    padding-bottom: 40px;
+  }
+
+  @media ${hugeMobile} {
+    margin-top: 0;
   }
 `;
 
@@ -52,9 +79,27 @@ export const StyledBody = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 56px auto;
 
-  @media ${mobile} {
+  @media ${hugeMobile} {
     width: 100%;
+    margin: 0 auto;
+  }
+
+  .title {
+    margin-bottom: 32px;
+    text-align: center;
+  }
+
+  .subtitle {
+    margin-bottom: 32px;
+  }
+
+  .docspace-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-bottom: 40px;
   }
 
   .password-field-wrapper {

@@ -27,29 +27,31 @@
 namespace ASC.Core.Common;
 
 [Scope]
-public class CommonLinkUtilitySettings
-{
-    public string ServerUri { get; set; }
-}
-
-
-[Scope]
 public class BaseCommonLinkUtility
 {
     private const string LocalHost = "localhost";
+    private const int LocalPort = 8092;
 
     private UriBuilder _serverRoot;
     private string _vpath;
 
     protected IHttpContextAccessor _httpContextAccessor;
+    public string ServerUri
+    {
+        set
+        {
+            var uri = new Uri(value.Replace('*', 'x').Replace('+', 'x'));
+            _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LocalHost, uri.Port);
+            _vpath = "/" + uri.AbsolutePath.Trim('/');
+        }
+    }
 
     public BaseCommonLinkUtility(
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
         TenantManager tenantManager,
-        ILoggerProvider options,
-        CommonLinkUtilitySettings settings)
-        : this(null, coreBaseSettings, coreSettings, tenantManager, options, settings)
+        ILoggerProvider options)
+        : this(null, coreBaseSettings, coreSettings, tenantManager, options)
     {
     }
 
@@ -58,37 +60,29 @@ public class BaseCommonLinkUtility
         CoreBaseSettings coreBaseSettings,
         CoreSettings coreSettings,
         TenantManager tenantManager,
-        ILoggerProvider options,
-        CommonLinkUtilitySettings settings)
+        ILoggerProvider options)
     {
-        var serverUri = settings.ServerUri;
 
-        if (!string.IsNullOrEmpty(serverUri))
+        try
         {
-            var uri = new Uri(serverUri.Replace('*', 'x').Replace('+', 'x'));
-            _serverRoot = new UriBuilder(uri.Scheme, uri.Host != "x" ? uri.Host : LocalHost, uri.Port);
-            _vpath = "/" + uri.AbsolutePath.Trim('/');
+            _httpContextAccessor = httpContextAccessor;
+
+            if (_httpContextAccessor?.HttpContext?.Request != null)
+            {
+                var u = _httpContextAccessor?.HttpContext.Request.GetUrlRewriter();
+
+                ArgumentNullException.ThrowIfNull(u);
+
+                _serverRoot = new UriBuilder(u.Scheme, LocalHost, u.Port);
+            }
+            else if (_serverRoot == null)
+            {
+                _serverRoot = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+            }
         }
-        else
+        catch (Exception error)
         {
-            try
-            {
-                _httpContextAccessor = httpContextAccessor;
-                var uriBuilder = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
-                if (_httpContextAccessor?.HttpContext?.Request != null)
-                {
-                    var u = _httpContextAccessor?.HttpContext.Request.GetUrlRewriter();
-
-                    ArgumentNullException.ThrowIfNull(u);
-
-                    uriBuilder = new UriBuilder(u.Scheme, LocalHost, u.Port);
-                }
-                _serverRoot = uriBuilder;
-            }
-            catch (Exception error)
-            {
-                options.CreateLogger("ASC.Web").ErrorWithException(error);
-            }
+            options.CreateLogger("ASC.Web").ErrorWithException(error);
         }
 
         _coreBaseSettings = coreBaseSettings;
@@ -102,16 +96,10 @@ public class BaseCommonLinkUtility
     private readonly CoreSettings _coreSettings;
     protected TenantManager _tenantManager;
 
-    private string _serverRootPath;
     public string ServerRootPath
     {
         get
         {
-            if (!string.IsNullOrEmpty(_serverRootPath))
-            {
-                return _serverRootPath;
-            }
-
             UriBuilder result;
             // first, take from current request
             if (_httpContextAccessor?.HttpContext?.Request != null)
@@ -144,6 +132,7 @@ public class BaseCommonLinkUtility
                 if (tenant.Alias == LocalHost)
                 {
                     result.Host = LocalHost;
+                    result.Port = LocalPort;
                 }
 #endif
 
@@ -158,14 +147,7 @@ public class BaseCommonLinkUtility
                 }
             }
 
-            return _serverRootPath = result.Uri.ToString().TrimEnd('/');
-        }
-        set
-        {
-            if (value == null)
-            {
-                _serverRootPath = null;
-            }
+            return result.Uri.ToString().TrimEnd('/');
         }
     }
 

@@ -59,7 +59,7 @@ public class SsoHandlerService
     private readonly DisplayUserSettingsHelper _displayUserSettingsHelper;
     private readonly TenantUtil _tenantUtil;
     private readonly Action<string> _signatureResolver;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
     private const string MOB_PHONE = "mobphone";
     private const string EXT_MOB_PHONE = "extmobphone";
 
@@ -81,7 +81,7 @@ public class SsoHandlerService
         MessageService messageService,
         DisplayUserSettingsHelper displayUserSettingsHelper,
         TenantUtil tenantUtil,
-        CountRoomAdminChecker countRoomAdminChecker)
+        CountPaidUserChecker countPaidUserChecker)
     {
         _log = log;
         _coreBaseSettings = coreBaseSettings;
@@ -97,7 +97,7 @@ public class SsoHandlerService
         _messageService = messageService;
         _displayUserSettingsHelper = displayUserSettingsHelper;
         _tenantUtil = tenantUtil;
-        _countRoomAdminChecker = countRoomAdminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
         _signatureResolver = signature =>
         {
             int.TryParse(signature.Substring(signature.Length - 1), out var lastSignChar);
@@ -186,8 +186,14 @@ public class SsoHandlerService
                         _log.DebugUserAlreadyAuthenticated(context.User.Identity);
                     }
                 }
-
-                userInfo = await AddUser(userInfo);
+                try
+                {
+                    userInfo = await AddUser(userInfo);
+                }
+                catch(Exception ex)
+                {
+                    _log.WarningWithException("Failed to save user", ex);
+                }
 
                 var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
 
@@ -228,12 +234,12 @@ public class SsoHandlerService
         catch (SSOException e)
         {
             _log.ErrorWithException(e);
-            await WriteErrorToResponse(context, e.MessageKey);
+            RedirectToLogin(context, e.MessageKey);
         }
         catch (Exception e)
         {
             _log.ErrorWithException(e);
-            await WriteErrorToResponse(context, MessageKey.Error);
+            RedirectToLogin(context, MessageKey.Error);
         }
         finally
         {
@@ -241,12 +247,17 @@ public class SsoHandlerService
             //context.ApplicationInstance.CompleteRequest();
         }
     }
+    private void RedirectToLogin(HttpContext context, MessageKey messageKey)
+    {
+        context.Response.Redirect(_commonLinkUtility.GetDefault() + "/login/error?messageKey=" + messageKey, false);
+    }
 
+    //TODO
     private async Task WriteErrorToResponse(HttpContext context, MessageKey messageKey)
     {
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "text/plain";
-        await context.Response.WriteAsync(((int)messageKey).ToString());
+         context.Response.StatusCode = 500;
+         context.Response.ContentType = "text/plain";
+         await context.Response.WriteAsync(((int)messageKey).ToString());
     }
 
     private async Task<UserInfo> AddUser(UserInfo userInfo)
@@ -268,19 +279,19 @@ public class SsoHandlerService
 
             if (string.IsNullOrEmpty(newUserInfo.UserName))
             {
-                var limitExceeded = false;
+                var type = EmployeeType.RoomAdmin;
 
                 try
                 {
-                    await _countRoomAdminChecker.CheckAppend();
+                    await _countPaidUserChecker.CheckAppend();
                 }
                 catch (Exception)
                 {
-                    limitExceeded = true;
+                    type = EmployeeType.User;
                 }
 
                 newUserInfo = await _userManagerWrapper.AddUser(newUserInfo, UserManagerWrapper.GeneratePassword(), true,
-                  false, isUser: limitExceeded);
+                  false, type);
             }
             else
             {
@@ -289,7 +300,7 @@ public class SsoHandlerService
                     throw new Exception(Resource.ErrorIncorrectUserName);
                 }
 
-                await _userManager.SaveUserInfo(newUserInfo);
+                await _userManager.UpdateUserInfo(newUserInfo);
             }
 
             /*var photoUrl = samlResponse.GetRemotePhotoUrl();

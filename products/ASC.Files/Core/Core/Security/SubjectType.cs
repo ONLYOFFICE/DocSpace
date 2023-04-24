@@ -31,5 +31,5 @@ public enum SubjectType
     UserOrGroup = 0,
     ExternalLink = 1,
     Restriction = 2,
-    InvintationLink = 3,
+    InvitationLink = 3,
 }

@@ -84,7 +84,9 @@ const Caret = styled.div`
   `}
 `;
 
-const Separator = styled.div`
+const Separator = styled.div.attrs(() => ({
+  title: "",
+}))`
   vertical-align: middle;
   border: ${(props) => props.theme.groupButton.separator.border};
   width: ${(props) => props.theme.groupButton.separator.width};

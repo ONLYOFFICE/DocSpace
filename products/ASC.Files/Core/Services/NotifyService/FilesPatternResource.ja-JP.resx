@@ -72,15 +72,6 @@
 
 ^"${__VirtualRootPath}":"${__VirtualRootPath}" ポータルの登録ユーザーであるのためにそのメールを送信されました。^</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. ユーザーは"$__AuthorName":"$__AuthorUrl" に文書のコメントで言及されています。
-
-こちらはユーザーが"$__AuthorName":"$__AuthorUrl"に　"$DocumentTitle":"$DocumentURL"文書のコメントで言及されたという通知メールです。
-
-$Message
-
-^"${__VirtualRootPath}":"${__VirtualRootPath}" ポータルの登録ユーザーであるのためにそのメールを送信されました。</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1.メーリングは完了です。
 
@@ -112,9 +103,6 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>文書。署名ステータスが変更されました。</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>文書。文書に記載されました</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>文書。メーリングは完了です。</value>

@@ -1,4 +1,5 @@
 ﻿import EmptyScreenFilterAltSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt.svg?url";
+import EmptyScreenFilterAltDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_filter_alt_dark.svg?url";
 import ClearEmptyFilterSvgUrl from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import React from "react";
 import { withTranslation } from "react-i18next";
@@ -21,10 +22,11 @@ const EmptyFilterContainer = ({
   isArchiveFolder,
   isRoomsFolder,
   setClearSearch,
+  theme,
 }) => {
   const subheadingText = t("EmptyFilterSubheadingText");
   const descriptionText = isRooms
-    ? t("EmptyFilterDescriptionTextRooms")
+    ? t("Common:SearchEmptyRoomsDescription")
     : t("EmptyFilterDescriptionText");
 
   const onResetFilter = () => {
@@ -63,18 +65,22 @@ const EmptyFilterContainer = ({
     </div>
   );
 
+  const imageSrc = theme.isBase
+    ? EmptyScreenFilterAltSvgUrl
+    : EmptyScreenFilterAltDarkSvgUrl;
+
   return (
     <EmptyContainer
       headerText={t("Common:NotFoundTitle")}
       descriptionText={descriptionText}
-      imageSrc={EmptyScreenFilterAltSvgUrl}
+      imageSrc={imageSrc}
       buttons={buttons}
     />
   );
 };
 
 export default inject(
-  ({ filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({ auth, filesStore, selectedFolderStore, treeFoldersStore }) => {
     const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
     const isRooms = isRoomsFolder || isArchiveFolder;
@@ -88,6 +94,7 @@ export default inject(
       isArchiveFolder,
       isRoomsFolder,
       setClearSearch: filesStore.setClearSearch,
+      theme: auth.settingsStore.theme,
     };
   }
 )(withTranslation(["Files", "Common"])(observer(EmptyFilterContainer)));

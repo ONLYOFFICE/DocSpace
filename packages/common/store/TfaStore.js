@@ -35,6 +35,7 @@ class TfaStore {
   };
 
   setTfaSettings = async (type) => {
+    this.tfaSettings = type;
     return await api.settings.setTfaSettings(type);
   };
 

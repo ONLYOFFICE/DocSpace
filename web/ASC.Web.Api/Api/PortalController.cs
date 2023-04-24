@@ -63,6 +63,7 @@ public class PortalController : ControllerBase
     private readonly StudioSmsNotificationSettingsHelper _studioSmsNotificationSettingsHelper;
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly IMapper _mapper;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -94,7 +95,8 @@ public class PortalController : ControllerBase
         EmailValidationKeyProvider emailValidationKeyProvider,
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
-        IMapper mapper)
+        IMapper mapper,
+        IHttpContextAccessor httpContextAccessor)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -126,6 +128,7 @@ public class PortalController : ControllerBase
         _studioSmsNotificationSettingsHelper = studioSmsNotificationSettingsHelper;
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _mapper = mapper;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     [HttpGet("")]
@@ -357,7 +360,6 @@ public class PortalController : ControllerBase
             tenant.Alias = alias;
             tenant = _tenantManager.SaveTenant(tenant);
             _tenantManager.SetCurrentTenant(tenant);
-            _commonLinkUtility.ServerRootPath = null;
 
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))
             {
@@ -374,7 +376,14 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.Auth);
+        var rewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+        return string.Format("{0}{1}{2}{3}/{4}",
+                                rewriter?.Scheme ?? Uri.UriSchemeHttp,
+                                Uri.SchemeDelimiter,
+                                tenant.GetTenantDomain(_coreSettings),
+                                rewriter != null && !rewriter.IsDefaultPort ? $":{rewriter.Port}" : "",
+                                _commonLinkUtility.GetConfirmationUrlRelative(tenant.Id, user.Email, ConfirmType.Auth)
+               );
     }
 
     [HttpDelete("deleteportalimmediately")]

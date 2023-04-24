@@ -39,7 +39,7 @@ public class HostedSolution
     internal UserFormatter UserFormatter { get; set; }
     internal TenantManager ClientTenantManager { get; set; }
     internal TenantUtil TenantUtil { get; set; }
-    internal DbSettingsManager SettingsManager { get; set; }
+    internal SettingsManager SettingsManager { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
     public string Region { get; private set; }
@@ -51,7 +51,7 @@ public class HostedSolution
         UserFormatter userFormatter,
         TenantManager clientTenantManager,
         TenantUtil tenantUtil,
-        DbSettingsManager settingsManager,
+        SettingsManager settingsManager,
         CoreSettings coreSettings)
     {
         TenantService = tenantService;
@@ -196,9 +196,9 @@ public class HostedSolution
             return null;
         }
 
-        var tenantSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, Guid.Empty);
+        var tenantSettings = SettingsManager.Load<TenantCookieSettings>(tenantId, Guid.Empty);
         var expires = tenantSettings.IsDefault() ? DateTime.UtcNow.AddYears(1) : DateTime.UtcNow.AddMinutes(tenantSettings.LifeTime);
-        var userSettings = SettingsManager.LoadSettingsFor<TenantCookieSettings>(tenantId, user.Id);
+        var userSettings = SettingsManager.Load<TenantCookieSettings>(tenantId, user.Id);
 
         return cookieStorage.EncryptCookie(tenantId, user.Id, tenantSettings.Index, expires, userSettings.Index, 0);
     }

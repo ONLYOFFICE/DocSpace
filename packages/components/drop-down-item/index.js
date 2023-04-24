@@ -4,8 +4,12 @@ import { ReactSVG } from "react-svg";
 
 import RightArrowReactSvgUrl from "PUBLIC_DIR/images/right.arrow.react.svg?url";
 
-import { StyledDropdownItem, IconWrapper } from "./styled-drop-down-item";
-import { isNull } from "lodash";
+import {
+  StyledDropdownItem,
+  IconWrapper,
+  WrapperToggle,
+} from "./styled-drop-down-item";
+import ToggleButton from "../toggle-button";
 
 const DropDownItem = (props) => {
   //console.log("DropDownItem render");
@@ -15,7 +19,6 @@ const DropDownItem = (props) => {
     icon,
     children,
     disabled,
-    onClick,
     className,
     theme,
     fillIcon,
@@ -24,20 +27,36 @@ const DropDownItem = (props) => {
     withoutIcon,
     noHover,
     height,
+    isSelected,
+    isActiveDescendant,
   } = props;
+
+  const { withToggle, checked, onClick, ...rest } = props;
 
   const onClickAction = (e) => {
     onClick && !disabled && onClick(e);
   };
 
+  const stopPropagation = (event) => {
+    event.stopPropagation();
+  };
+
+  const onChange = (event) => {
+    stopPropagation(event);
+    onClickAction(event);
+  };
+
   return (
     <StyledDropdownItem
-      {...props}
+      {...rest}
       noHover={noHover}
       className={className}
       onClick={onClickAction}
       disabled={disabled}
       isActive={isActive}
+      isSelected={isSelected}
+      withToggle={withToggle}
+      isActiveDescendant={isActiveDescendant}
     >
       {icon && (
         <IconWrapper className="drop-down-icon">
@@ -63,6 +82,12 @@ const DropDownItem = (props) => {
             className="drop-down-item_icon"
           />
         </IconWrapper>
+      )}
+
+      {withToggle && (
+        <WrapperToggle onClick={stopPropagation}>
+          <ToggleButton isChecked={checked} onChange={onChange} noAnimation />
+        </WrapperToggle>
       )}
     </StyledDropdownItem>
   );
@@ -102,6 +127,8 @@ DropDownItem.propTypes = {
   isActive: PropTypes.bool,
   withoutIcon: PropTypes.bool,
   isModern: PropTypes.bool,
+  isActiveDescendant: PropTypes.bool,
+  isSelected: PropTypes.bool,
 };
 
 DropDownItem.defaultProps = {

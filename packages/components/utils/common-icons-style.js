@@ -1,6 +1,7 @@
 import { css } from "styled-components";
 
 const iconSizes = {
+  extraSmall: 8,
   small: 12,
   medium: 16,
   big: 24,
@@ -14,6 +15,7 @@ const getSizeStyle = (size) => {
             height: 100%;
           }
         `;
+    case "extraSmall":
     case "small":
     case "medium":
     case "big":

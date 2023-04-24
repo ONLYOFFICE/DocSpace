@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using SixLabors.ImageSharp.Processing;
+
 namespace ASC.Files.ThumbnailBuilder;
 
 [Singletone]
@@ -113,12 +115,20 @@ public class ThumbnailSettings
         set => _maxDegreeOfParallelism = value;
     }
 
-    private long? _availableFileSize;
-    public long? AvailableFileSize
+    private long? _maxImageFileSize;
+    public long? MaxImageFileSize
     {
-        get => _availableFileSize ?? 100L * 1024L * 1024L;
-        set => _availableFileSize = value;
+        get => _maxImageFileSize ?? 30L * 1024L * 1024L;
+        set => _maxImageFileSize = value;
     }
+
+    private long? _maxVideoFileSize;
+    public long? MaxVideoFileSize
+    {
+        get => _maxVideoFileSize ?? 1000L * 1024L * 1024L;
+        set => _maxVideoFileSize = value;
+    }
+
 
     private int? _attemptsLimit;
     public int? AttemptsLimit
@@ -143,4 +153,5 @@ public class ThumbnailSize
 {
     public int Height { get; set; }
     public int Width { get; set; }
+    public ResizeMode ResizeMode { get; set; } = ResizeMode.Crop;
 }

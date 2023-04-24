@@ -30,6 +30,9 @@ const StyledComponent = styled.div`
         padding-bottom: 5px;
       }
       .category-item_paid {
+        .paid-badge {
+          height: 16px;
+        }
         display: flex;
         svg {
           margin-top: auto;
@@ -38,7 +41,7 @@ const StyledComponent = styled.div`
     }
 
     .category-item-description {
-      color: #657077;
+      color: ${(props) => props.theme.client.settings.common.descriptionColor};
       font-size: 13px;
       max-width: 1024px;
       line-height: 20px;
@@ -61,13 +64,14 @@ StyledComponent.defaultProps = { theme: Base };
 const CustomizationNavbar = ({
   t,
   theme,
-  helpUrlCommonSettings,
   isLoaded,
   tReady,
   setIsLoadedCustomizationNavbar,
   isLoadedPage,
   isSettingPaid,
   currentColorScheme,
+  languageAndTimeZoneSettingsUrl,
+  dnsSettingsUrl,
 }) => {
   const isLoadedSetting = isLoaded && tReady;
   useEffect(() => {
@@ -91,7 +95,7 @@ const CustomizationNavbar = ({
             truncate={true}
             href={combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/common/customization/language-and-time-zone"
+              "/portal-settings/customization/general/language-and-time-zone"
             )}
           >
             {t("StudioTimeLanguageSettings")}
@@ -107,7 +111,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={helpUrlCommonSettings}
+            href={languageAndTimeZoneSettingsUrl}
           >
             {t("Common:LearnMore")}
           </Link>
@@ -121,7 +125,7 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             href={combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/common/customization/welcome-page-settings"
+              "/portal-settings/customization/general/welcome-page-settings"
             )}
           >
             {t("CustomTitlesWelcome")}
@@ -142,7 +146,7 @@ const CustomizationNavbar = ({
               onClick={onClickLink}
               href={combineUrl(
                 window.DocSpaceConfig?.proxy?.url,
-                "/portal-settings/common/customization/dns-settings"
+                "/portal-settings/customization/general/dns-settings"
               )}
             >
               {t("DNSSettings")}
@@ -152,6 +156,7 @@ const CustomizationNavbar = ({
                 backgroundColor="#EDC409"
                 label={t("Common:Paid")}
                 isPaidBadge={true}
+                className="paid-badge"
               />
             )}
             <StyledArrowRightIcon size="small" color="#333333" />
@@ -165,7 +170,7 @@ const CustomizationNavbar = ({
             color={currentColorScheme.main.accent}
             target="_blank"
             isHovered={true}
-            href={helpUrlCommonSettings}
+            href={dnsSettingsUrl}
           >
             {t("Common:LearnMore")}
           </Link>
@@ -180,7 +185,7 @@ const CustomizationNavbar = ({
             onClick={onClickLink}
             href={combineUrl(
               window.DocSpaceConfig?.proxy?.url,
-              "/portal-settings/common/customization/portal-renaming"
+              "/portal-settings/customization/general/portal-renaming"
             )}
           >
             {t("PortalRenaming")}
@@ -197,17 +202,19 @@ const CustomizationNavbar = ({
 
 export default inject(({ auth, common }) => {
   const {
-    helpUrlCommonSettings,
     theme,
     currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
+    dnsSettingsUrl,
   } = auth.settingsStore;
   const { isLoaded, setIsLoadedCustomizationNavbar } = common;
   return {
     theme,
-    helpUrlCommonSettings,
     isLoaded,
     setIsLoadedCustomizationNavbar,
     currentColorScheme,
+    languageAndTimeZoneSettingsUrl,
+    dnsSettingsUrl,
   };
 })(
   withRouter(

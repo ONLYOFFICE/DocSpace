@@ -93,7 +93,7 @@ public class WebItemSecurity
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly WebItemSecurityCache _webItemSecurityCache;
     private readonly SettingsManager _settingsManager;
-    private readonly CountRoomAdminChecker _countRoomAdminChecker;
+    private readonly CountPaidUserChecker _countPaidUserChecker;
 
     public WebItemSecurity(
         UserManager userManager,
@@ -106,7 +106,7 @@ public class WebItemSecurity
         CoreBaseSettings coreBaseSettings,
         WebItemSecurityCache webItemSecurityCache,
         SettingsManager settingsManager,
-        CountRoomAdminChecker countRoomAdminChecker)
+        CountPaidUserChecker countPaidUserChecker)
     {
         _userManager = userManager;
         _authContext = authContext;
@@ -118,7 +118,7 @@ public class WebItemSecurity
         _coreBaseSettings = coreBaseSettings;
         _webItemSecurityCache = webItemSecurityCache;
         _settingsManager = settingsManager;
-        _countRoomAdminChecker = countRoomAdminChecker;
+        _countPaidUserChecker = countPaidUserChecker;
     }
 
     //
@@ -283,8 +283,8 @@ public class WebItemSecurity
         {
             if (_userManager.IsUserInGroup(userid, ASC.Core.Users.Constants.GroupUser.ID))
             {
-                await _countRoomAdminChecker.CheckAppend();
-                _userManager.RemoveUserFromGroup(userid, ASC.Core.Users.Constants.GroupUser.ID);
+                await _countPaidUserChecker.CheckAppend();
+                await _userManager.RemoveUserFromGroup(userid, ASC.Core.Users.Constants.GroupUser.ID);
             }
 
             if (productid == WebItemManager.PeopleProductID)
@@ -306,7 +306,7 @@ public class WebItemSecurity
 
                 foreach (var id in groups)
                 {
-                    _userManager.RemoveUserFromGroup(userid, id);
+                    await _userManager.RemoveUserFromGroup(userid, id);
                 }
             }
 
@@ -318,7 +318,7 @@ public class WebItemSecurity
                 }
             }
 
-            _userManager.RemoveUserFromGroup(userid, productid);
+            await _userManager.RemoveUserFromGroup(userid, productid);
         }
 
         _webItemSecurityCache.Publish(_tenantManager.GetCurrentTenant().Id);

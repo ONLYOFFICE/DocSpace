@@ -53,7 +53,7 @@ public class ApiSystemHelper
         using var hasher = new HMACSHA1(_skey);
         var now = DateTime.UtcNow.ToString("yyyyMMddHHmmss");
         var hash = WebEncoders.Base64UrlEncode(hasher.ComputeHash(Encoding.UTF8.GetBytes(string.Join("\n", now, pkey))));
-        return $"ASC {pkey}:{now}:{hash}";
+        return $"ASC {pkey}:{now}:{hash}1"; //hack for .net
     }
 
     #region system
@@ -62,7 +62,7 @@ public class ApiSystemHelper
     {
         try
         {
-            var data = $"portalName={HttpUtility.UrlEncode(domain)}";
+            var data = "{\"portalName\":\"" + HttpUtility.UrlEncode(domain) + "\"}";
             await SendToApiAsync(ApiSystemUrl, "portal/validateportalname", WebRequestMethods.Http.Post, userId, data);
         }
         catch (WebException exception)
@@ -107,7 +107,7 @@ public class ApiSystemHelper
 
     public async Task AddTenantToCacheAsync(string domain, Guid userId)
     {
-        var data = $"portalName={HttpUtility.UrlEncode(domain)}";
+        var data = "{\"portalName\":\"" + HttpUtility.UrlEncode(domain) + "\"}";
         await SendToApiAsync(ApiCacheUrl, "portal/add", WebRequestMethods.Http.Post, userId, data);
     }
 
@@ -147,7 +147,7 @@ public class ApiSystemHelper
 
         if (data != null)
         {
-            request.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
+            request.Content = new StringContent(data, Encoding.UTF8, "application/json");
         }
 
         var httpClient = _clientFactory.CreateClient();

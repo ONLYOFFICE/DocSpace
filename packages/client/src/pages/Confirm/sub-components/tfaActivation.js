@@ -6,7 +6,6 @@ import Button from "@docspace/components/button";
 import TextInput from "@docspace/components/text-input";
 import FieldContainer from "@docspace/components/field-container";
 import Text from "@docspace/components/text";
-import Section from "@docspace/common/components/Section";
 import { inject, observer } from "mobx-react";
 import Box from "@docspace/components/box";
 import withLoader from "../withLoader";
@@ -16,9 +15,10 @@ import { hugeMobile, tablet } from "@docspace/components/utils/device";
 import Link from "@docspace/components/link";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
+import { StyledPage, StyledContent } from "./StyledConfirm";
 
 const StyledForm = styled(Box)`
-  margin-top: 63px;
+  margin: 56px auto;
   display: flex;
   flex: 1fr 1fr;
   gap: 80px;
@@ -26,18 +26,14 @@ const StyledForm = styled(Box)`
   justify-content: center;
 
   @media ${tablet} {
-    margin: 100px auto 0 auto;
     display: flex;
-    flex: 1fr;
     flex-direction: column;
     align-items: center;
     gap: 32px;
   }
 
   @media ${hugeMobile} {
-    margin-top: 32px;
-    width: 100%;
-    flex: 1fr;
+    margin: 0 auto;
     flex-direction: column;
     gap: 0px;
     padding-right: 8px;
@@ -52,7 +48,7 @@ const StyledForm = styled(Box)`
   }
 
   .docspace-logo {
-    padding-bottom: 64px;
+    padding-bottom: 40px;
 
     @media ${tablet} {
       display: flex;
@@ -100,6 +96,7 @@ const TfaActivationForm = withLoader((props) => {
     loginWithCodeAndCookie,
     history,
     location,
+    currentColorScheme,
   } = props;
 
   const [code, setCode] = useState("");
@@ -132,9 +129,10 @@ const TfaActivationForm = withLoader((props) => {
         errorMessage = err;
       }
       setError(errorMessage);
-      toastr.error(e);
+      toastr.error(errorMessage);
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const onKeyPress = (target) => {
@@ -142,97 +140,121 @@ const TfaActivationForm = withLoader((props) => {
   };
 
   return (
-    <StyledForm className="set-app-container">
-      <Box className="set-app-description" marginProp="0 0 32px 0">
-        <DocspaceLogo className="docspace-logo" />
-        <Text isBold fontSize="14px" className="set-app-title">
-          {t("SetAppTitle")}
-        </Text>
+    <StyledPage>
+      <StyledContent>
+        <StyledForm className="set-app-container">
+          <Box className="set-app-description" marginProp="0 0 32px 0">
+            <DocspaceLogo className="docspace-logo" />
+            <Text isBold fontSize="14px" className="set-app-title">
+              {t("SetAppTitle")}
+            </Text>
 
-        <Trans t={t} i18nKey="SetAppDescription" ns="Confirm">
-          The two-factor authentication is enabled to provide additional portal
-          security. Configure your authenticator application to continue work on
-          the portal. For example you could use Google Authenticator for
-          <Link isHovered href={props.tfaAndroidAppUrl} target="_blank">
-            Android
-          </Link>
-          and{" "}
-          <Link isHovered href={props.tfaIosAppUrl} target="_blank">
-            iOS
-          </Link>{" "}
-          or Authenticator for{" "}
-          <Link isHovered href={props.tfaWinAppUrl} target="_blank">
-            Windows Phone
-          </Link>{" "}
-          .
-        </Trans>
+            <Trans t={t} i18nKey="SetAppDescription" ns="Confirm">
+              The two-factor authentication is enabled to provide additional
+              portal security. Configure your authenticator application to
+              continue work on the portal. For example you could use Google
+              Authenticator for
+              <Link
+                color={currentColorScheme?.main?.accent}
+                href={props.tfaAndroidAppUrl}
+                target="_blank"
+              >
+                Android
+              </Link>
+              and{" "}
+              <Link
+                color={currentColorScheme?.main?.accent}
+                href={props.tfaIosAppUrl}
+                target="_blank"
+              >
+                iOS
+              </Link>{" "}
+              or Authenticator for{" "}
+              <Link
+                color={currentColorScheme?.main?.accent}
+                href={props.tfaWinAppUrl}
+                target="_blank"
+              >
+                Windows Phone
+              </Link>{" "}
+              .
+            </Trans>
 
-        <Text className="set-app-text">
-          <Trans
-            t={t}
-            i18nKey="SetAppInstallDescription"
-            ns="Confirm"
-            key={secretKey}
-          >
-            To connect your apllication scan the QR code or manually enter your
-            secret key <strong>{{ secretKey }}</strong> then enter 6-digit code
-            from your application in the field below.
-          </Trans>
-        </Text>
-      </Box>
-      <FormWrapper>
-        <Box
-          displayProp="flex"
-          flexDirection="column"
-          className="app-code-wrapper"
-        >
-          <div className="qrcode-wrapper">
-            <img src={qrCode} height="180px" width="180px" alt="QR-code"></img>
-          </div>
-          <Box className="app-code-input">
-            <FieldContainer
-              labelVisible={false}
-              hasError={error ? true : false}
-              errorMessage={error}
+            <Text className="set-app-text">
+              <Trans
+                t={t}
+                i18nKey="SetAppInstallDescription"
+                ns="Confirm"
+                key={secretKey}
+              >
+                To connect your apllication scan the QR code or manually enter
+                your secret key <strong>{{ secretKey }}</strong> then enter
+                6-digit code from your application in the field below.
+              </Trans>
+            </Text>
+          </Box>
+          <FormWrapper>
+            <Box
+              displayProp="flex"
+              flexDirection="column"
+              className="app-code-wrapper"
             >
-              <TextInput
-                id="code"
-                name="code"
-                type="text"
-                size="large"
-                scale
-                isAutoFocussed
-                tabIndex={1}
-                placeholder={t("EnterCodePlaceholder")}
-                isDisabled={isLoading}
-                maxLength={6}
-                onChange={(e) => {
-                  setCode(e.target.value);
-                  setError("");
-                }}
-                value={code}
-                hasError={error ? true : false}
-                onKeyDown={onKeyPress}
-              />
-            </FieldContainer>
-          </Box>
-          <Box className="app-code-continue-btn">
-            <Button
-              scale
-              primary
-              size="medium"
-              tabIndex={3}
-              label={
-                isLoading ? t("Common:LoadingProcessing") : t("SetAppButton")
-              }
-              isDisabled={!code.length || isLoading}
-              isLoading={isLoading}
-              onClick={onSubmit}
-            />
-          </Box>
-        </Box>
-      </FormWrapper>
-    </StyledForm>
+              <div className="qrcode-wrapper">
+                <img
+                  src={qrCode}
+                  height="180px"
+                  width="180px"
+                  alt="QR-code"
+                ></img>
+              </div>
+              <Box className="app-code-input">
+                <FieldContainer
+                  labelVisible={false}
+                  hasError={error ? true : false}
+                  errorMessage={error}
+                >
+                  <TextInput
+                    id="code"
+                    name="code"
+                    type="text"
+                    size="large"
+                    scale
+                    isAutoFocussed
+                    tabIndex={1}
+                    placeholder={t("EnterCodePlaceholder")}
+                    isDisabled={isLoading}
+                    maxLength={6}
+                    onChange={(e) => {
+                      setCode(e.target.value);
+                      setError("");
+                    }}
+                    value={code}
+                    hasError={error ? true : false}
+                    onKeyDown={onKeyPress}
+                  />
+                </FieldContainer>
+              </Box>
+              <Box className="app-code-continue-btn">
+                <Button
+                  scale
+                  primary
+                  size="medium"
+                  tabIndex={3}
+                  label={
+                    isLoading
+                      ? t("Common:LoadingProcessing")
+                      : t("SetAppButton")
+                  }
+                  isDisabled={!code.length || isLoading}
+                  isLoading={isLoading}
+                  onClick={onSubmit}
+                />
+              </Box>
+            </Box>
+          </FormWrapper>
+        </StyledForm>
+      </StyledContent>
+    </StyledPage>
   );
 });
 
@@ -243,7 +265,7 @@ const TfaActivationWrapper = (props) => {
   const [qrCode, setQrCode] = useState("");
   const [error, setError] = useState(null);
 
-  useEffect(async () => {
+  const fetchData = async () => {
     try {
       setIsLoading(true);
       const confirmKey = linkData.confirmHeader;
@@ -256,19 +278,18 @@ const TfaActivationWrapper = (props) => {
       setError(e.error);
       toastr.error(e);
     }
-
     setIsLoaded(true);
     setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
 
   return error ? (
     <ErrorContainer bodyText={error} />
   ) : (
-    <Section>
-      <Section.SectionBody>
-        <TfaActivationForm secretKey={secretKey} qrCode={qrCode} {...props} />
-      </Section.SectionBody>
-    </Section>
+    <TfaActivationForm secretKey={secretKey} qrCode={qrCode} {...props} />
   );
 };
 
@@ -281,6 +302,7 @@ export default inject(({ auth, confirm }) => ({
   tfaAndroidAppUrl: auth.tfaStore.tfaAndroidAppUrl,
   tfaIosAppUrl: auth.tfaStore.tfaIosAppUrl,
   tfaWinAppUrl: auth.tfaStore.tfaWinAppUrl,
+  currentColorScheme: auth.settingsStore.currentColorScheme,
 }))(
   withRouter(
     withTranslation(["Confirm", "Common"])(observer(TfaActivationWrapper))

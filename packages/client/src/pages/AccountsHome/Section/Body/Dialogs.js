@@ -12,6 +12,7 @@ import {
   SendInviteDialog,
   DeleteUsersDialog,
   ChangeNameDialog,
+  ResetApplicationDialog,
 } from "SRC_DIR/components/dialogs";
 
 const Dialogs = ({
@@ -28,10 +29,12 @@ const Dialogs = ({
   disableDialogVisible,
   sendInviteDialogVisible,
   deleteDialogVisible,
+  resetAuthDialogVisible,
 
   changeNameVisible,
   setChangeNameVisible,
   profile,
+  resetTfaApp,
 }) => {
   return (
     <>
@@ -101,6 +104,15 @@ const Dialogs = ({
           fromList
         />
       )}
+
+      {resetAuthDialogVisible && (
+        <ResetApplicationDialog
+          visible={resetAuthDialogVisible}
+          onClose={closeDialogs}
+          resetTfaApp={resetTfaApp}
+          id={data}
+        />
+      )}
     </>
   );
 };
@@ -121,6 +133,7 @@ export default inject(({ auth, peopleStore }) => {
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,
+    resetAuthDialogVisible,
   } = peopleStore.dialogStore;
 
   const { user: profile } = auth.userStore;
@@ -129,6 +142,10 @@ export default inject(({ auth, peopleStore }) => {
     changeNameVisible,
     setChangeNameVisible,
   } = peopleStore.targetUserStore;
+
+  const { tfaStore } = auth;
+
+  const { unlinkApp: resetTfaApp } = tfaStore;
 
   return {
     changeEmail,
@@ -145,9 +162,12 @@ export default inject(({ auth, peopleStore }) => {
     disableDialogVisible,
     sendInviteDialogVisible,
     deleteDialogVisible,
+    resetAuthDialogVisible,
 
     changeNameVisible,
     setChangeNameVisible,
     profile,
+
+    resetTfaApp,
   };
 })(observer(Dialogs));

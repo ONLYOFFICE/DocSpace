@@ -46,6 +46,7 @@
     <ProjectReference Include="..\..\common\ASC.Data.Backup.Core\ASC.Data.Backup.Core.csproj" />
     <ProjectReference Include="..\..\common\ASC.Feed\ASC.Feed.csproj" />
     <ProjectReference Include="..\..\common\services\ASC.AuditTrail\ASC.AuditTrail.csproj" />
+    <ProjectReference Include="..\ASC.Web.Core\ASC.Web.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Core\AuditResource.Designer.cs">

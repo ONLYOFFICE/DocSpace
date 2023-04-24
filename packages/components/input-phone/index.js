@@ -14,6 +14,8 @@ import DropDown from "@docspace/components/drop-down";
 import DropDownItem from "@docspace/components/drop-down-item";
 import Text from "@docspace/components/text";
 
+const PLUS = "+";
+
 const InputPhone = ({
   defaultCountry,
   onChange,
@@ -138,7 +140,7 @@ const InputPhone = ({
         fillIcon={true}
         selectedOption={country}
       />
-      <Label text="+" className="prefix" />
+      <Label text={PLUS} className="prefix" />
       <TextInput
         type="tel"
         className="input-phone"

@@ -82,6 +82,7 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
                 .ToListAsync();
 
                 filesDbContext.RemoveRange(query);
+                await filesDbContext.SaveChangesAsync();
             }
 
             await tx.CommitAsync();
@@ -133,33 +134,26 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
                          folders.Add(entryId);
                      }
 
-                     var toDelete = await filesDbContext.Security
+                     await filesDbContext.Security
                          .Where(a => a.TenantId == r.TenantId &&
                                      folders.Contains(a.EntryId) &&
                                      a.EntryType == FileEntryType.Folder &&
                                      a.Subject == r.Subject)
-                         .ToListAsync();
-
-                     filesDbContext.Security.RemoveRange(toDelete);
-                     await filesDbContext.SaveChangesAsync();
-
+                         .ExecuteDeleteAsync();
                  }
                  else
                  {
                      files.Add(entryId);
                  }
 
-                 if (0 < files.Count)
+                 if (files.Count > 0)
                  {
-                     var toDelete = await filesDbContext.Security
+                     await filesDbContext.Security
                          .Where(a => a.TenantId == r.TenantId &&
                                      files.Contains(a.EntryId) &&
                                      a.EntryType == FileEntryType.File &&
                                      a.Subject == r.Subject)
-                         .ToListAsync();
-
-                     filesDbContext.Security.RemoveRange(toDelete);
-                     await filesDbContext.SaveChangesAsync();
+                         .ExecuteDeleteAsync();
                  }
 
                  await tx.CommitAsync();
@@ -174,6 +168,19 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             await filesDbContext.AddOrUpdateAsync(r => r.Security, toInsert);
             await filesDbContext.SaveChangesAsync();
+        }
+    }
+
+    public async IAsyncEnumerable<FileShareRecord> GetShareForEntryIdsAsync(Guid subject, IEnumerable<string> roomIds)
+    {
+        var filesDbContext = _dbContextFactory.CreateDbContext();
+        var q = GetQuery(filesDbContext,
+            r => (r.Subject == subject || r.Owner == subject)
+            && roomIds.Contains(r.EntryId));
+
+        await foreach (var e in q.AsAsyncEnumerable())
+        {
+            yield return await ToFileShareRecordAsync(e);
         }
     }
 
@@ -343,14 +350,8 @@ internal class SecurityDao<T> : AbstractDao, ISecurityDao<T>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await filesDbContext.Database.BeginTransactionAsync();
 
-            var toDelete1 = await filesDbContext.Security.Where(r => r.Subject == subject).ToListAsync();
-            var toDelete2 = await filesDbContext.Security.Where(r => r.Owner == subject).ToListAsync();
-
-            filesDbContext.RemoveRange(toDelete1);
-            await filesDbContext.SaveChangesAsync();
-
-            filesDbContext.RemoveRange(toDelete2);
-            await filesDbContext.SaveChangesAsync();
+            await filesDbContext.Security.Where(r => r.Subject == subject).ExecuteDeleteAsync();
+            await filesDbContext.Security.Where(r => r.Owner == subject).ExecuteDeleteAsync();
 
             await tr.CommitAsync();
         });

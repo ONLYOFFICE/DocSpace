@@ -33,31 +33,33 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
     private Stream _bodyStream;
     private readonly IWebhookPublisher _webhookPublisher;
     private readonly ILogger<WebhooksGlobalFilterAttribute> _logger;
-    private static readonly List<string> _methodList = new List<string> { "POST", "UPDATE", "DELETE" };
+    private readonly SettingsManager _settingsManager;
+    private readonly DbWorker _dbWorker;
 
-    public WebhooksGlobalFilterAttribute(IWebhookPublisher webhookPublisher, ILogger<WebhooksGlobalFilterAttribute> logger)
+    public WebhooksGlobalFilterAttribute(
+        IWebhookPublisher webhookPublisher,
+        ILogger<WebhooksGlobalFilterAttribute> logger,
+        SettingsManager settingsManager,
+        DbWorker dbWorker)
     {
         _stream = new MemoryStream();
         _webhookPublisher = webhookPublisher;
         _logger = logger;
+        _settingsManager = settingsManager;
+        _dbWorker = dbWorker;
     }
 
-    public override void OnResultExecuting(ResultExecutingContext context)
+    public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (!Skip(context.HttpContext))
+        if (!await Skip(context.HttpContext))
         {
             _bodyStream = context.HttpContext.Response.Body;
             context.HttpContext.Response.Body = _stream;
         }
 
-        base.OnResultExecuting(context);
-    }
-
-    public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
-    {
         await base.OnResultExecutionAsync(context, next);
 
-        if (context.Cancel || Skip(context.HttpContext))
+        if (context.Cancel || await Skip(context.HttpContext))
         {
             return;
         }
@@ -74,7 +76,9 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 
                 var resultContent = Encoding.UTF8.GetString(_stream.ToArray());
 
-                await _webhookPublisher.PublishAsync(method, routePattern, resultContent);
+                var webhook = await _dbWorker.GetWebhookAsync(method, routePattern);
+
+                await _webhookPublisher.PublishAsync(webhook.Id, resultContent);
             }
             catch (Exception e)
             {
@@ -100,16 +104,17 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
         return (method, routePattern);
     }
 
-    private bool Skip(HttpContext context)
+    private async Task<bool> Skip(HttpContext context)
     {
         var (method, routePattern) = GetData(context);
 
-        if (!_methodList.Contains(method))
+        if (routePattern == null)
         {
             return true;
         }
 
-        if (routePattern == null)
+        var webhook = await _dbWorker.GetWebhookAsync(method, routePattern);
+        if (webhook == null || _settingsManager.Load<WebHooksSettings>().Ids.Contains(webhook.Id))
         {
             return true;
         }

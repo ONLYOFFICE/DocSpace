@@ -1,5 +1,5 @@
 ﻿import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
-import React from "react";
+import React, { useEffect } from "react";
 import { withTranslation, Trans } from "react-i18next";
 import Submenu from "@docspace/components/submenu";
 import Link from "@docspace/components/link";
@@ -9,9 +9,10 @@ import { inject, observer } from "mobx-react";
 import AutoBackup from "./auto-backup";
 import ManualBackup from "./manual-backup";
 import config from "PACKAGE_FILE";
+import { removeLocalStorage } from "../../../utils";
 
 const Backup = ({
-  helpUrlCreatingBackup,
+  automaticBackupUrl,
   buttonSize,
   t,
   history,
@@ -32,7 +33,7 @@ const Backup = ({
               <div>
                 <Link
                   as="a"
-                  href={helpUrlCreatingBackup}
+                  href={automaticBackupUrl}
                   target="_blank"
                   color={currentColorScheme.main.accent}
                   isBold
@@ -87,7 +88,7 @@ export default inject(({ auth }) => {
   const { isNotPaidPeriod } = currentTariffStatusStore;
 
   const {
-    helpUrlCreatingBackup,
+    automaticBackupUrl,
     isTabletView,
     currentColorScheme,
   } = settingsStore;
@@ -95,9 +96,10 @@ export default inject(({ auth }) => {
   const buttonSize = isTabletView ? "normal" : "small";
 
   return {
-    helpUrlCreatingBackup,
+    automaticBackupUrl,
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,
+    toDefault,
   };
 })(observer(withTranslation(["Settings", "Common"])(Backup)));

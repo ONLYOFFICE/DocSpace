@@ -5,7 +5,7 @@ import SettingsSetupStore from "./SettingsSetupStore";
 import ConfirmStore from "./ConfirmStore";
 import BackupStore from "./BackupStore";
 import CommonStore from "./CommonStore";
-import BannerStore from "./BannerStore";
+
 import ProfileActionsStore from "./ProfileActionsStore";
 import SsoFormStore from "./SsoFormStore";
 
@@ -30,6 +30,7 @@ import selectFileDialogStore from "./SelectFileDialogStore";
 import TagsStore from "./TagsStore";
 import PeopleStore from "./PeopleStore";
 import OformsStore from "./OformsStore";
+
 import AccessRightsStore from "./AccessRightsStore";
 import TableStore from "./TableStore";
 import CreateEditRoomStore from "./CreateEditRoomStore";
@@ -44,7 +45,6 @@ const setupStore = new SettingsSetupStore();
 const confirmStore = new ConfirmStore();
 const backupStore = new BackupStore();
 const commonStore = new CommonStore();
-const bannerStore = new BannerStore();
 
 const ssoStore = new SsoFormStore();
 
@@ -82,7 +82,6 @@ const dialogsStore = new DialogsStore(
 
 const peopleStore = new PeopleStore(
   authStore,
-  authStore.infoPanelStore,
   setupStore,
   accessRightsStore,
   dialogsStore
@@ -157,7 +156,8 @@ const createEditRoomStore = new CreateEditRoomStore(
   tagsStore,
   thirdPartyStore,
   authStore.settingsStore,
-  authStore.infoPanelStore
+  authStore.infoPanelStore,
+  authStore.currentQuotaStore
 );
 
 const store = {
@@ -168,7 +168,7 @@ const store = {
   confirm: confirmStore,
   backup: backupStore,
   common: commonStore,
-  bannerStore,
+
   ssoStore,
   profileActionsStore,
 

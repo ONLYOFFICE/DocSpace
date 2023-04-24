@@ -11,7 +11,11 @@ import Loaders from "@docspace/common/components/Loaders";
 import { withLayoutSize } from "@docspace/common/utils";
 
 import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
-import { EmployeeType, PaymentsType } from "@docspace/common/constants";
+import {
+  EmployeeType,
+  EmployeeStatus,
+  PaymentsType,
+} from "@docspace/common/constants";
 
 const getStatus = (filterValues) => {
   const employeeStatus = result(
@@ -69,7 +73,6 @@ const SectionFilterContent = ({
 }) => {
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
 
-  //TODO: add new options from filter after update backend and fix manager from role
   const onFilter = (data) => {
     const status = getStatus(data);
 
@@ -80,8 +83,12 @@ const SectionFilterContent = ({
     const newFilter = filter.clone();
 
     if (status === 3) {
-      newFilter.employeeStatus = 2;
+      newFilter.employeeStatus = EmployeeStatus.Disabled;
       newFilter.activationStatus = null;
+    } else if (status === 2) {
+      console.log(status);
+      newFilter.employeeStatus = EmployeeStatus.Active;
+      newFilter.activationStatus = status;
     } else {
       newFilter.employeeStatus = null;
       newFilter.activationStatus = status;
@@ -94,6 +101,7 @@ const SectionFilterContent = ({
     newFilter.group = group;
 
     newFilter.payments = payments;
+    //console.log(newFilter);
 
     setIsLoading(true);
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
@@ -123,7 +131,6 @@ const SectionFilterContent = ({
     fetchPeople(newFilter, true).finally(() => setIsLoading(false));
   };
 
-  // TODO: change translation keys
   const getData = async () => {
     const statusItems = [
       {
@@ -173,6 +180,12 @@ const SectionFilterContent = ({
         label: t("Common:RoomAdmin"),
       },
       {
+        id: "filter_type-room-admin",
+        key: EmployeeType.Collaborator,
+        group: "filter-type",
+        label: t("Common:PowerUser"),
+      },
+      {
         id: "filter_type-user",
         key: EmployeeType.Guest,
         group: "filter-type",
@@ -200,12 +213,20 @@ const SectionFilterContent = ({
       {
         key: "filter-account",
         group: "filter-account",
-        label: "Account",
+        label: t("ConnectDialog:Account"),
         isHeader: true,
         isLast: true,
       },
-      { key: PaymentsType.Paid, group: "filter-account", label: "Paid" },
-      { key: PaymentsType.Free, group: "filter-account", label: "Free" },
+      {
+        key: PaymentsType.Paid,
+        group: "filter-account",
+        label: t("Common:Paid"),
+      },
+      {
+        key: PaymentsType.Free,
+        group: "filter-account",
+        label: t("SmartBanner:Price"),
+      },
     ];
 
     // const roomItems = [
@@ -312,6 +333,9 @@ const SectionFilterContent = ({
         case EmployeeType.User:
           label = t("Common:RoomAdmin");
           break;
+        case EmployeeType.Collaborator:
+          label = t("Common:PowerUser");
+          break;
         case EmployeeType.Guest:
           label = t("Common:User");
           break;
@@ -330,7 +354,9 @@ const SectionFilterContent = ({
       filterValues.push({
         key: filter.payments.toString(),
         label:
-          PaymentsType.Paid === filter.payments.toString() ? "Paid" : "Free",
+          PaymentsType.Paid === filter.payments.toString()
+            ? t("Common:Paid")
+            : t("SmartBanner:Price"),
         group: "filter-account",
       });
     }
@@ -487,9 +513,13 @@ export default withRouter(
   })(
     observer(
       withLayoutSize(
-        withTranslation(["People", "Common", "PeopleTranslations"])(
-          withPeopleLoader(SectionFilterContent)(<Loaders.Filter />)
-        )
+        withTranslation([
+          "People",
+          "Common",
+          "PeopleTranslations",
+          "ConnectDialog",
+          "SmartBanner",
+        ])(withPeopleLoader(SectionFilterContent)(<Loaders.Filter />))
       )
     )
   )

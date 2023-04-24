@@ -54,24 +54,9 @@ const FileTile = (props) => {
     isRooms,
     withCtrlSelect,
     withShiftSelect,
-    setUploadedFileIdWithVersion,
+    isHighlight,
+    thumbnails1280x720,
   } = props;
-
-  const [isHighlight, setIsHighlight] = React.useState(false);
-
-  useEffect(() => {
-    setIsHighlight(false);
-  }, []);
-
-  useEffect(() => {
-    if (!item.upgradeVersion) return;
-
-    setIsHighlight(true);
-
-    return () => {
-      if (isHighlight) setUploadedFileIdWithVersion(null);
-    };
-  }, [item, isHighlight]);
 
   const temporaryExtension =
     item.id === -1 ? `.${item.fileExst}` : item.fileExst;
@@ -95,12 +80,14 @@ const FileTile = (props) => {
     />
   );
 
+  const activeClass = checkedProps || isActive ? "tile-selected" : "";
+
   return (
     <div ref={props.selectableRef} id={id}>
       <StyledDragAndDrop
         data-title={item.title}
         value={value}
-        className={`files-item ${className} ${item.id}_${item.fileExst}`}
+        className={`files-item ${className} ${activeClass} ${item.id}_${item.fileExst}`}
         onDrop={onDrop}
         onMouseDown={onMouseDown}
         dragging={dragging && isDragging}
@@ -144,6 +131,7 @@ const FileTile = (props) => {
           withCtrlSelect={withCtrlSelect}
           withShiftSelect={withShiftSelect}
           isHighlight={isHighlight}
+          thumbnails1280x720={thumbnails1280x720}
         >
           <FilesTileContent
             item={item}
@@ -157,28 +145,34 @@ const FileTile = (props) => {
   );
 };
 
-export default inject(({ settingsStore, filesStore, treeFoldersStore }) => {
-  const { getIcon } = settingsStore;
-  const {
-    setSelection,
-    withCtrlSelect,
-    withShiftSelect,
-    setUploadedFileIdWithVersion,
-  } = filesStore;
+export default inject(
+  ({ settingsStore, filesStore, treeFoldersStore }, { item }) => {
+    const { getIcon, thumbnails1280x720 } = settingsStore;
+    const {
+      setSelection,
+      withCtrlSelect,
+      withShiftSelect,
+      highlightFile,
+    } = filesStore;
 
-  const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
+    const isHighlight =
+      highlightFile.id == item?.id && highlightFile.isExst === !item?.fileExst;
 
-  const isRooms = isRoomsFolder || isArchiveFolder;
+    const { isRoomsFolder, isArchiveFolder } = treeFoldersStore;
 
-  return {
-    getIcon,
-    setSelection,
-    isRooms,
-    withCtrlSelect,
-    withShiftSelect,
-    setUploadedFileIdWithVersion,
-  };
-})(
+    const isRooms = isRoomsFolder || isArchiveFolder;
+
+    return {
+      getIcon,
+      setSelection,
+      isRooms,
+      withCtrlSelect,
+      withShiftSelect,
+      isHighlight,
+      thumbnails1280x720,
+    };
+  }
+)(
   withTranslation(["Files", "InfoPanel"])(
     withRouter(
       withFileActions(withBadges(withQuickButtons(observer(FileTile))))

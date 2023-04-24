@@ -1,64 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
-    Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
-    associated with the data types.
-    
-    Example:
-    
-    ... ado.net/XML headers & schema ...
-    <resheader name="resmimetype">text/microsoft-resx</resheader>
-    <resheader name="version">2.0</resheader>
-    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
-    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
-    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
-    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
-    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
-        <value>[base64 mime encoded serialized .NET Framework object]</value>
-    </data>
-    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
-        <comment>This is a comment</comment>
-    </data>
-                
-    There are any number of "resheader" rows that contain simple 
-    name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
-    mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
-    extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
-    read any of the formats listed below.
-    
-    mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
-            : and then encoded with base64 encoding.
-    
-    mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
-            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
-            : and then encoded with base64 encoding.
-
-    mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
-            : using a System.ComponentModel.TypeConverter
-            : and then encoded with base64 encoding.
-    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -112,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Validation code field cannot be empty</value>
@@ -146,6 +87,27 @@
   </data>
   <data name="ConsumersapiKey" xml:space="preserve">
     <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Application Client ID</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Enable the application to sign in to the portal using an Apple ID account.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Enable this app to allow your users to sign in to ONLYOFFICE using Apple ID. {0}Go to Apple Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>A 10-character key identifier generated for the Sign in with Apple private key</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Private key downloaded from Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10-character developer account Team ID</value>
   </data>
   <data name="ConsumersauthPwd" xml:space="preserve">
     <value>Selectel authPwd</value>
@@ -366,6 +328,21 @@
   <data name="ConsumersMailruInstruction" xml:space="preserve">
     <value>When you add the Mail.ru application you can enable signing in to the portal using the Mail.ru account on your profile page.</value>
   </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>Application Client ID</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Client Secret</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Enable the application to sign in to the portal using a Microsoft account.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Enable this app to allow your users to sign in to ONLYOFFICE using Microsoft. {0}Go to Microsoft Azure and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
+  </data>
   <data name="ConsumersRackspace" xml:space="preserve">
     <value>Rackspace Cloud Storage</value>
   </data>
@@ -480,6 +457,21 @@
   <data name="Consumerssmscpsw" xml:space="preserve">
     <value>Password or password MD5 hash in lowercase</value>
   </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Bot username</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Bot token</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Connect Telegram account to receive portal notifications via Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+    <value>To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below.</value>
+  </data>
   <data name="ConsumersTwilio" xml:space="preserve">
     <value>Twilio</value>
   </data>
@@ -505,10 +497,10 @@
     <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
-    <value>Access Token</value>
+    <value>Client ID</value>
   </data>
   <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
-    <value>Access Token Secret</value>
+    <value>Client Secret</value>
   </data>
   <data name="ConsumersTwitterDescription" xml:space="preserve">
     <value>Enable the application to sign in to the portal using a Twitter account and search for contacts.</value>
@@ -520,10 +512,10 @@
     <value>Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
-    <value>Twitter ID</value>
+    <value>API Key</value>
   </data>
   <data name="ConsumersTwitterSecret" xml:space="preserve">
-    <value>Twitter Key</value>
+    <value>API Key Secret</value>
   </data>
   <data name="Consumersusername" xml:space="preserve">
     <value>Rackspace username</value>
@@ -642,11 +634,20 @@
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
     <value>The uploaded file could not be found</value>
   </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Unknown image file type</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Image size exceed the allowed parameters</value>
+  </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Image file size is too large</value>
   </data>
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Incorrect firstname or lastname</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>The access to the portal is restricted</value>
   </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Your pricing plan does not support this option</value>
@@ -711,11 +712,143 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>The link to confirm your account has been sent to the specified email</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>First Name</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Last Name</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Connection error</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Users could not be created, the received data are incorrect.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>The server could not get settings.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>The server could not save settings.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Incorrect login or password.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAP domain not found.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>No groups could be found.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Invalid User Filter value.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>You attempted to take away admin rights from yourself. Your admin rights was unaffected.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Your account is not linked to the LDAP directory and your LDAP password is no longer active. Please change or set the password to your account at the profile settings page.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Unknown error.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>No users could be found.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Could not get Group Attribute for one or several groups.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Incorrect Group Filter.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Could not obtain Group Name Attribute for one or several groups.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Could not get Login Attribute for one or several users.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Unable to connect to LDAP server. Please check if the server address and port number are correct.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Could not get User Attribute for one or several users.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Server internal error.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Modifying LDAP users on ordinary portal users</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>adding user</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Certificate verification</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Checking LDAP support settings</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP disconnecting</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Retrieving the group list from the LDAP server</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Retrieving the user list from the LDAP server</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Setting user {0} as {1} admin</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Loading LDAP base info</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>removing user</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Removing outdated groups that have been loaded via LDAP earlier</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Removing outdated access rights that have been loaded via LDAP earlier</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Disabling outdated user profiles that have been loaded via LDAP earlier</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Saving groups</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Saving settings</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Saving photo</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Saving users</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Syncing users</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Updating users access rights</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Updating user photos</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>A more secure authentication type is required. Please use encripted connection or enable plain authentication on the server.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>The current pricing plan user limit has been reached</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS not supported for current LDAP server.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Too many LDAP operations.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Unique ID for user/group objects could not be obtained. By default the system will try to match one of the following identifiers: entryUUID, nsuniqueid, GUID, objectSid. If none of the attributes corresponds to your LDAP server, please specify the necessary attribute in the ldap.unique.id setting of the web.appsettings.config file.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>License is not correct</value>
@@ -755,6 +888,9 @@
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
     <value>Disk space quota exceeded</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Cloud space for your office docs</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Access</value>
@@ -807,6 +943,75 @@
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
     <value>Instructions to delete your profile has been sent to {0} email address</value>
   </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Tracking user logins &amp; action</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Max file size</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>The file size should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>The number of admins should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Number of admins</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatic backup &amp; recovery</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Unlimited number of active rooms</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>The number of rooms should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} storage space</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>The used storage size should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Storage space</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Number of admins/power users:</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Rooms:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Storage space used:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Users in room:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Unlimited number of users</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>The number of users should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Users in room</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>The number of users in room should not exceed {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding &amp; customization</value>
+  </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>Incorrect code</value>
   </data>
@@ -821,113 +1026,5 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>What's New</value>
-  </data>
-  <data name="MessageRoomInvitationsSentOnEmail" xml:space="preserve">
-    <value>Virtual room {0} invitations sent successfully.</value>
-  </data>
-  <data name="QuotaGreaterPortalError" xml:space="preserve">
-    <value>Failed to set the memory quota - the memory quota you set is greater than portals quota.</value>
-  </data>
-  <data name="QuotaGroupError" xml:space="preserve">
-    <value>Failed to set the memory quota - some users cannot use this quota.</value>
-  </data>
-  <data name="QuotaLessUsedMemoryError" xml:space="preserve">
-    <value>Failed to set the memory quota - the memory quota you set is less than used memory.</value>
-  </data>
-  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
-    <value>Number of admins</value>
-  </data>
-  <data name="TariffsFeature_audit" xml:space="preserve">
-    <value>Tracking user logins &amp; action</value>
-  </data>
-  <data name="TariffsFeature_restore" xml:space="preserve">
-    <value>Automatic backup &amp; recovery</value>
-  </data>
-  <data name="TariffsFeature_room" xml:space="preserve">
-    <value>Unlimited number of active rooms</value>
-  </data>
-  <data name="TariffsFeature_sso" xml:space="preserve">
-    <value>SSO</value>
-  </data>
-  <data name="TariffsFeature_total_size" xml:space="preserve">
-    <value>{0} storage space</value>
-  </data>
-  <data name="TariffsFeature_users" xml:space="preserve">
-    <value>Unlimited number of users</value>
-  </data>
-  <data name="TariffsFeature_whitelabel" xml:space="preserve">
-    <value>Branding &amp; customization</value>
-  </data>
-  <data name="Tariffs_admin" xml:space="preserve">
-    <value>Business</value>
-  </data>
-  <data name="TariffsFeature_used_total_size" xml:space="preserve">
-    <value>Storage space used:</value>
-  </data>
-  <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Admins added:</value>
-  </data>
-  <data name="Tariffs_startup" xml:space="preserve">
-    <value>Startup</value>
-  </data>
-  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
-    <value>Storage space</value>
-  </data>
-  <data name="TariffsFeature_file_size" xml:space="preserve">
-    <value>Max file size</value>
-  </data>
-  <data name="TariffsFeature_used_room" xml:space="preserve">
-    <value>Rooms:</value>
-  </data>
-  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
-    <value>Users in room:</value>
-  </data>
-  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
-    <value>Users in room</value>
-  </data>
-  <data name="TariffsFeature_room_exception" xml:space="preserve">
-    <value>The number of rooms should not exceed {0}</value>
-  </data>
-  <data name="TariffsFeature_manager_exception" xml:space="preserve">
-    <value>The number of admins should not exceed {0}</value>
-  </data>
-  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
-    <value>The used storage size should not exceed {0}</value>
-  </data>
-  <data name="TariffsFeature_users_exception" xml:space="preserve">
-    <value>The number of users should not exceed {0}</value>
-  </data>
-  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
-    <value>The file size should not exceed {0}</value>
-  </data>
-  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
-    <value>The number of users in room should not exceed {0}</value>
-  </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Cloud space for your office docs</value>
-  </data>
-  <data name="ErrorIpSecurity" xml:space="preserve">
-    <value>The access to the portal is restricted</value>
-  </data>
-  <data name="ErrorFileNotImage" xml:space="preserve">
-    <value>Unknown image file type</value>
-  </data>
-  <data name="ErrorImageSize" xml:space="preserve">
-    <value>Image size exceed the allowed parameters</value>
-  </data>
-  <data name="ConsumersTelegram" xml:space="preserve">
-    <value>Telegram</value>
-  </data>
-  <data name="ConsumersTelegramBotName" xml:space="preserve">
-    <value>Bot username</value>
-  </data>
-  <data name="ConsumersTelegramBotToken" xml:space="preserve">
-    <value>Bot token</value>
-  </data>
-  <data name="ConsumersTelegramDescription" xml:space="preserve">
-    <value>Connect Telegram account to receive portal notifications via Telegram.</value>
-  </data>
-  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
-    <value>To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below.</value>
   </data>
 </root>

@@ -113,7 +113,7 @@ public class RoomLogoManager
 
         if (EnableAudit)
         {
-            _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated, room.Title);
+            _ = _filesMessageService.Send(room, Headers, MessageAction.RoomLogoCreated, room.Title);
         }
 
         return room;
@@ -147,7 +147,7 @@ public class RoomLogoManager
 
             if (EnableAudit)
             {
-                _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
+                _ = _filesMessageService.Send(room, Headers, MessageAction.RoomLogoDeleted, room.Title);
             }
         }
         catch (Exception e)
@@ -177,10 +177,10 @@ public class RoomLogoManager
 
         return new Logo
         {
-            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?_={cacheKey}",
-            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?_={cacheKey}",
-            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?_={cacheKey}",
-            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?_={cacheKey}"
+            Original = await GetLogoPathAsync(id, SizeName.Original) + $"?hash={cacheKey}",
+            Large = await GetLogoPathAsync(id, SizeName.Large) + $"?hash={cacheKey}",
+            Medium = await GetLogoPathAsync(id, SizeName.Medium) + $"?hash={cacheKey}",
+            Small = await GetLogoPathAsync(id, SizeName.Small) + $"?hash={cacheKey}"
         };
     }
 
@@ -253,9 +253,9 @@ public class RoomLogoManager
         try
         {
             using var stream = new MemoryStream(data);
-            using var img = Image.Load(stream, out _);
+            using var img = Image.Load(stream);
 
-            if (size.Item2 != img.Size())
+            if (size.Item2 != img.Size)
             {
                 using var img2 = UserPhotoThumbnailManager.GetImage(img, size.Item2, new UserPhotoThumbnailSettings(position, cropSize));
                 data = CommonPhotoManager.SaveToBytes(img2);

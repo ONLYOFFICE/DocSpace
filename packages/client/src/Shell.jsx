@@ -24,11 +24,12 @@ import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
 import { useThemeDetector } from "@docspace/common/utils/useThemeDetector";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isMobile, isIOS, isFirefox } from "react-device-detect";
 import IndicatorLoader from "./components/IndicatorLoader";
 import DialogsWrapper from "./components/dialogs/DialogsWrapper";
 import MainBar from "./components/MainBar";
 import { Portal } from "@docspace/components";
+import queryString from "query-string";
 
 const Error404 = React.lazy(() => import("client/Error404"));
 const Error401 = React.lazy(() => import("client/Error401"));
@@ -69,6 +70,15 @@ const Error401Route = (props) => (
     </ErrorBoundary>
   </React.Suspense>
 );
+
+const ErrorUnavailableRoute = (props) => (
+  <React.Suspense fallback={<AppLoader />}>
+    <ErrorBoundary>
+      <ErrorUnavailable {...props} />
+    </ErrorBoundary>
+  </React.Suspense>
+);
+
 const FilesRoute = (props) => (
   <React.Suspense fallback={<AppLoader />}>
     <ErrorBoundary>
@@ -195,6 +205,10 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     socketHelper.emit({
       command: "subscribe",
       data: { roomParts: "backup-restore" },
+    });
+    socketHelper.emit({
+      command: "subscribe",
+      data: { roomParts: "quota" },
     });
     socketHelper.on("restore-backup", () => {
       setPreparationPortalDialogVisible(true);
@@ -384,6 +398,21 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     };
   }, [isLoaded]);
 
+  // fix night mode for IOS firefox
+  useEffect(() => {
+    if (isIOS && isMobile && isFirefox) {
+      Array.from(document.querySelectorAll("style")).forEach((sheet) => {
+        if (
+          sheet?.textContent?.includes(
+            "-webkit-filter: hue-rotate(180deg) invert(100%) !important;"
+          )
+        ) {
+          sheet.parentNode?.removeChild(sheet);
+        }
+      });
+    }
+  }, []);
+
   useEffect(() => {
     console.log("Current page ", page);
   }, [page]);
@@ -464,6 +493,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                   "/accounts/edit/:userId",
                   "/accounts/view/:userId",
                   "/accounts/view/@self",
+                  "/accounts/view/@self/notification",
 
                   "/settings",
                   "/settings/common",
@@ -479,7 +509,23 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
               />
               <PublicRoute exact path={"/wizard"} component={WizardRoute} />
               <PrivateRoute path={"/about"} component={AboutRoute} />
-              <Route path={"/confirm"} component={ConfirmRoute} />
+              <Route path={"/confirm/:type"} component={ConfirmRoute} />
+              <Route
+                path={["/confirm", "/confirm.aspx"]}
+                component={({ location }) => {
+                  const type = queryString.parse(location.search).type;
+
+                  return (
+                    <Redirect
+                      to={{
+                        pathname: `/confirm/${type}`,
+                        search: location.search,
+                        state: { from: location },
+                      }}
+                    />
+                  );
+                }}
+              />
               <PrivateRoute
                 restricted
                 path={"/portal-settings"}
@@ -493,6 +539,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
                 path={"/portal-unavailable"}
                 component={PortalUnavailableRoute}
               />
+              <Route path={"/unavailable"} component={ErrorUnavailableRoute} />
               <PrivateRoute path={"/error401"} component={Error401Route} />
               <PrivateRoute component={Error404Route} />
             </Switch>
@@ -517,7 +564,6 @@ const ShellWrapper = inject(({ auth, backup }) => {
     setSnackbarExist,
     socketHelper,
     setTheme,
-    getWhiteLabelLogoUrls,
     whiteLabelLogoUrls,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;

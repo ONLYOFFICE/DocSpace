@@ -80,7 +80,7 @@ public class BaseWorkerStartup
         DIHelper.Configure(services);
     }
 
-    private IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
+    protected IEnumerable<Assembly> GetAutoMapperProfileAssemblies()
     {
         return AppDomain.CurrentDomain.GetAssemblies().Where(x => x.GetName().Name.StartsWith("ASC."));
     }

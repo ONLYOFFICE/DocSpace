@@ -24,7 +24,7 @@ const StyledFloatingButtonWrapper = styled.div`
     right: 77px;
     bottom: 33px;
   }
-  :hover {
+  &:hover {
     .layout-progress-bar_close-icon {
       display: block;
     }

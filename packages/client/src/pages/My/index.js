@@ -58,42 +58,6 @@ class My extends React.Component {
     this.props.resetProfile();
   }
 
-  componentDidUpdate() {
-    const { tipsSubscription, t, changeEmailSubscription } = this.props;
-    if (location?.search !== "?unsubscribe=tips" || tipsSubscription === null)
-      return;
-
-    if (!tipsSubscription) {
-      window.history.replaceState("", "", window.location.pathname);
-      return;
-    }
-
-    changeEmailSubscription(false)
-      .then(() => {
-        window.history.replaceState("", "", window.location.pathname);
-        toastr.success(
-          <Trans t={t} i18nKey="SubscriptionTurnOffToast" ns="Profile">
-            You have been successfully unsubscribed from the the mailing list.
-            <Link
-              color="#5387AD"
-              isHovered={true}
-              onClick={() => {
-                changeEmailSubscription(true);
-                toastr.clear();
-              }}
-            >
-              Subscribe again
-            </Link>
-          </Trans>,
-          null,
-          0,
-          true,
-          true
-        );
-      })
-      .catch((e) => console.error(e));
-  }
-
   render() {
     const { tReady, location } = this.props;
 
@@ -141,9 +105,6 @@ const MyProfile = withRouter(
     setLoadedProfile: peopleStore.loadingStore.setLoadedProfile,
     setIsLoading: peopleStore.loadingStore.setIsLoading,
     setFirstLoad: peopleStore.loadingStore.setFirstLoad,
-    tipsSubscription: peopleStore.targetUserStore.tipsSubscription,
-    changeEmailSubscription:
-      peopleStore.targetUserStore.changeEmailSubscription,
   }))(withTranslation(["Profile", "ProfileAction"])(observer(My)))
 );
 

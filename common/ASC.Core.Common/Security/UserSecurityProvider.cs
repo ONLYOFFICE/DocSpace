@@ -67,6 +67,7 @@ public class UserSecurityProvider : SecurityObject
         {
             EmployeeType.DocSpaceAdmin => new[] { AuthConstants.DocSpaceAdmin },
             EmployeeType.RoomAdmin => new[] { AuthConstants.RoomAdmin },
+            EmployeeType.Collaborator => new[] { AuthConstants.Collaborator },
             EmployeeType.User => new[] { AuthConstants.User },
             _ => Array.Empty<IRole>(),
         };

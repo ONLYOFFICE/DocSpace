@@ -16,7 +16,8 @@ const StyledBody = styled.div`
 const MANAGER = "manager";
 let timerId = null,
   intervalId = null,
-  isWaitRequest = false;
+  isWaitRequest = false,
+  previousManagersCount = null;
 const UpdatePlanButtonContainer = ({
   setIsLoading,
   paymentLink,
@@ -29,8 +30,9 @@ const UpdatePlanButtonContainer = ({
   isLessCountThanAcceptable,
   currentTariffPlanTitle,
   t,
+  canPayTariff,
 }) => {
-  const updateMethod = async () => {
+  const onUpdateTariff = async () => {
     try {
       timerId = setTimeout(() => {
         setIsLoading(true);
@@ -48,6 +50,7 @@ const UpdatePlanButtonContainer = ({
         return;
       }
 
+      previousManagersCount = maxCountManagersByQuota;
       waitingForQuota();
     } catch (e) {
       toastr.error(t("ErrorNotification"));
@@ -57,11 +60,38 @@ const UpdatePlanButtonContainer = ({
     }
   };
 
+  const resetIntervalSuccess = () => {
+    intervalId &&
+      toastr.success(
+        t("BusinessUpdated", { planName: currentTariffPlanTitle })
+      );
+    clearInterval(intervalId);
+    intervalId = null;
+    setIsLoading(false);
+  };
+  useEffect(() => {
+    if (intervalId && maxCountManagersByQuota !== previousManagersCount) {
+      resetIntervalSuccess();
+      return;
+    }
+  }, [maxCountManagersByQuota, intervalId, previousManagersCount]);
   const waitingForQuota = () => {
     isWaitRequest = false;
-
+    let requestsCount = 0;
     intervalId = setInterval(async () => {
       try {
+        if (requestsCount === 30) {
+          setIsLoading(false);
+
+          intervalId && toastr.error(t("ErrorNotification"));
+          clearInterval(intervalId);
+          intervalId = null;
+
+          return;
+        }
+
+        requestsCount++;
+
         if (isWaitRequest) {
           return;
         }
@@ -71,18 +101,10 @@ const UpdatePlanButtonContainer = ({
 
         const managersObject = res.features.find((obj) => obj.id === MANAGER);
 
-        if (managersObject && managersObject.value === managersCount) {
+        if (managersObject?.value !== previousManagersCount) {
           setPortalQuotaValue(res);
-          intervalId &&
-            toastr.success(
-              <Trans t={t} i18nKey="BusinessUpdated" ns="Payments">
-                {{ planName: currentTariffPlanTitle }}
-              </Trans>
-            );
 
-          setIsLoading(false);
-          clearInterval(intervalId);
-          intervalId = null;
+          resetIntervalSuccess();
         }
       } catch (e) {
         setIsLoading(false);
@@ -96,12 +118,7 @@ const UpdatePlanButtonContainer = ({
     }, 2000);
   };
 
-  const onUpdateTariff = () => {
-    if (isAlreadyPaid) {
-      updateMethod();
-      return;
-    }
-
+  const goToStripePortal = () => {
     paymentLink
       ? window.open(paymentLink, "_blank")
       : toastr.error(t("ErrorNotification"));
@@ -111,29 +128,40 @@ const UpdatePlanButtonContainer = ({
     return () => {
       timerId && clearTimeout(timerId);
       timerId = null;
+
+      intervalId && clearInterval(intervalId);
+      intervalId = null;
     };
   }, []);
 
-  const switchPlanButton = (
-    <Button
-      label={t("UpgradeNow")}
-      size={"medium"}
-      primary
-      isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
-      onClick={onUpdateTariff}
-      isLoading={isLoading}
-    />
-  );
+  const payTariffButton = () => {
+    return canPayTariff ? (
+      <Button
+        label={t("UpgradeNow")}
+        size={"medium"}
+        primary
+        isDisabled={isLessCountThanAcceptable || isLoading || isDisabled}
+        onClick={goToStripePortal}
+        isLoading={isLoading}
+      />
+    ) : (
+      <DowngradePlanButtonContainer
+        buttonLabel={t("UpgradeNow")}
+        onUpdateTariff={goToStripePortal}
+        isDisabled={isDisabled}
+      />
+    );
+  };
 
-  const updatingPlanButton = () => {
+  const updatingCurrentTariffButton = () => {
     const isDowngradePlan = managersCount < maxCountManagersByQuota;
     const isTheSameCount = managersCount === maxCountManagersByQuota;
 
     return isDowngradePlan ? (
       <DowngradePlanButtonContainer
         onUpdateTariff={onUpdateTariff}
-        t={t}
         isDisabled={isDisabled}
+        buttonLabel={t("DowngradeNow")}
       />
     ) : (
       <Button
@@ -151,7 +179,7 @@ const UpdatePlanButtonContainer = ({
 
   return (
     <StyledBody>
-      {isAlreadyPaid ? updatingPlanButton() : switchPlanButton}
+      {isAlreadyPaid ? updatingCurrentTariffButton() : payTariffButton()}
     </StyledBody>
   );
 };
@@ -174,9 +202,13 @@ export default inject(({ auth, payments }) => {
     managersCount,
     isLessCountThanAcceptable,
     accountLink,
+    isAlreadyPaid,
+    canPayTariff,
   } = payments;
 
   return {
+    canPayTariff,
+    isAlreadyPaid,
     setIsLoading,
     paymentLink,
     isNeedRequest,

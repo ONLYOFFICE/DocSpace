@@ -316,4 +316,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Het bestand is ontgrendeld</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>DocSpace Beheerder</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Kamerbeheerder</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Gebruiker</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Kijker</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Opmerkingen gever</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Formuliervuller</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Beoordelaar</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Collega</value>
+  </data>
 </root>

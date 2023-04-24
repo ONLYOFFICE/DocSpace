@@ -24,9 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
-using StackExchange.Redis.Extensions.Core.Configuration;
-
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -47,16 +44,6 @@ var logger = LogManager.Setup()
                             })
                             .LoadConfiguration(builder.Configuration, builder.Environment)
                             .GetLogger(typeof(Startup).Namespace);
-var path = builder.Configuration["pathToConf"];
-logger.Debug("path: " + path);
-logger.Debug("EnvironmentName: " + builder.Environment.EnvironmentName);
-
-var redisConfiguration = builder.Configuration.GetSection("Redis").Get<RedisConfiguration>();
-logger.Error($"redisConfiguration is null: {redisConfiguration == null}");
-var kafkaConfiguration = builder.Configuration.GetSection("kafka").Get<KafkaSettings>();
-logger.Debug($"kafkaConfiguration is null: {kafkaConfiguration == null}");
-var rabbitMQConfiguration = builder.Configuration.GetSection("RabbitMQ").Get<RabbitMQSettings>();
-logger.Debug($"rabbitMQConfiguration is null: {rabbitMQConfiguration == null}");
 
 try
 {

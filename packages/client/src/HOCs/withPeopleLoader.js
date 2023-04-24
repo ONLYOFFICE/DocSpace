@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
 
 let loadTimeout = null;
+const delayLoader = 300
+
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
     const {
@@ -11,8 +13,12 @@ const withLoader = (WrappedComponent) => (Loader) => {
       firstLoad,
       profileLoaded,
       setIsBurgerLoading,
+      isLoadedProfileSectionBody,
+      setIsLoadedProfileSectionBody,
     } = props;
     const [inLoad, setInLoad] = useState(true);
+    const isProfileViewLoader = Loader.props.isProfileView;
+    const isProfileFooterLoader = Loader.props.isProfileFooter;
 
     const cleanTimer = () => {
       loadTimeout && clearTimeout(loadTimeout);
@@ -25,7 +31,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
         loadTimeout = setTimeout(() => {
           //console.log("inLoad", true);
           setInLoad(true);
-        }, 500);
+        }, delayLoader);
       } else {
         cleanTimer();
         //console.log("inLoad", false);
@@ -45,7 +51,30 @@ const withLoader = (WrappedComponent) => (Loader) => {
       }
     }, [isLoaded]);
 
-    return firstLoad || !isLoaded || inLoad || !tReady || !profileLoaded ? (
+    useEffect(() => {
+      if (!isProfileViewLoader) return;
+
+      if (!(firstLoad || !isLoaded || inLoad || !tReady || !profileLoaded)) {
+        setIsLoadedProfileSectionBody(true);
+      } else {
+        setIsLoadedProfileSectionBody(false);
+      }
+    }, [
+      firstLoad,
+      isLoaded,
+      inLoad,
+      tReady,
+      profileLoaded,
+      setIsLoadedProfileSectionBody,
+      isProfileViewLoader,
+    ]);
+
+    return firstLoad ||
+      !isLoaded ||
+      inLoad ||
+      !tReady ||
+      !profileLoaded ||
+      (isProfileFooterLoader && !isLoadedProfileSectionBody) ? (
       Loader
     ) : (
       <WrappedComponent {...props} />
@@ -54,7 +83,11 @@ const withLoader = (WrappedComponent) => (Loader) => {
 
   return inject(({ auth, peopleStore }) => {
     const { isLoaded, settingsStore } = auth;
-    const { loadingStore } = peopleStore;
+    const {
+      loadingStore,
+      isLoadedProfileSectionBody,
+      setIsLoadedProfileSectionBody,
+    } = peopleStore;
     const { isLoading, firstLoad, profileLoaded } = loadingStore;
     const { setIsBurgerLoading } = settingsStore;
     return {
@@ -63,6 +96,8 @@ const withLoader = (WrappedComponent) => (Loader) => {
       firstLoad,
       profileLoaded,
       setIsBurgerLoading,
+      isLoadedProfileSectionBody,
+      setIsLoadedProfileSectionBody,
     };
   })(observer(withLoader));
 };

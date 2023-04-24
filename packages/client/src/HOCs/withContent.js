@@ -49,20 +49,17 @@ export default function withContent(WrappedContent) {
 
     render() {
       const {
-        element,
         isDesktop,
         isTrashFolder,
         isArchiveFolder,
         item,
         onFilesClick,
         t,
-
         viewer,
-
         titleWithoutExt,
       } = this.props;
 
-      const { access, createdBy, fileExst, fileStatus, href, icon, id } = item;
+      const { access, createdBy, fileStatus, href } = item;
 
       const updatedDate = this.getStatusByDate(false);
       const createdDate = this.getStatusByDate(true);

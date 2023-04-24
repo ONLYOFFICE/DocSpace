@@ -31,6 +31,10 @@ namespace ASC.Data.Storage;
 ///</summary>
 public interface IDataStore
 {
+    IDataWriteOperator CreateDataWriteOperator(
+            CommonChunkedUploadSession chunkedUploadSession,
+            CommonChunkedUploadSessionHolder sessionHolder);
+
     IQuotaController QuotaController { get; set; }
 
     TimeSpan GetExpire(string domain);

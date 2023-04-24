@@ -602,7 +602,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
     public Task<ChunkedUploadSession<string>> CreateUploadSessionAsync(File<string> file, long contentLength)
     {
-        if (_setupInfo.ChunkUploadSize > contentLength)
+        if (_setupInfo.ChunkUploadSize > contentLength && contentLength != -1)
         {
             return Task.FromResult(new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false });
         }
@@ -666,7 +666,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
             var googleDriveSession = uploadSession.GetItemOrDefault<ResumableUploadSession>("GoogleDriveSession");
             var storage = await ProviderInfo.StorageAsync;
             storage = await ProviderInfo.StorageAsync;
-            await storage.TransferAsync(googleDriveSession, stream, chunkLength);
+            await storage.TransferAsync(googleDriveSession, stream, chunkLength, uploadSession.LastChunk);
         }
         else
         {
@@ -677,7 +677,7 @@ internal class GoogleDriveFileDao : GoogleDriveDaoBase, IFileDao<string>
 
         uploadSession.BytesUploaded += chunkLength;
 
-        if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
+        if (uploadSession.BytesUploaded == uploadSession.BytesTotal || uploadSession.LastChunk)
         {
             uploadSession.File = await FinalizeUploadSessionAsync(uploadSession);
         }

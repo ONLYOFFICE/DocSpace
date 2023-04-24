@@ -12,6 +12,8 @@ import { AutoBackupPeriod } from "@docspace/common/constants";
 const { EveryDayType, EveryWeekType } = AutoBackupPeriod;
 
 class BackupStore {
+  restoreResource = null;
+
   backupSchedule = {};
   backupStorage = {};
 
@@ -343,7 +345,8 @@ class BackupStore {
   };
 
   clearLocalStorage = () => {
-    removeLocalStorage("LocalCopyStorageType");
+    getFromLocalStorage("LocalCopyStorageType") &&
+      removeLocalStorage("LocalCopyStorageType");
 
     getFromLocalStorage("LocalCopyFolder") &&
       removeLocalStorage("LocalCopyFolder");
@@ -609,6 +612,10 @@ class BackupStore {
       default:
         return "";
     }
+  };
+
+  setRestoreResource = (value) => {
+    this.restoreResource = value;
   };
 }
 

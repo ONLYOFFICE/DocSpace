@@ -60,39 +60,7 @@
 			"bitlyToken": ""
 		  }
 	  }
-    },    
-    {
-      "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "telegram",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "telegram",
-		  "type": "ASC.FederatedLogin.LoginProviders.TelegramLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "telegram",
-		  "order": "13",
-		  "props": {
-			"telegramBotToken": "",
-			"telegramBotName": ""
-		  },
-		  "additional": {
-			"telegramAuthTokenLifespan" : 20,
-			"telegramProxy": ""
-		  }
-	  }
-    },    
+    },
 	{
       "type": "ASC.FederatedLogin.LoginProviders.BoxLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -148,38 +116,6 @@
 		  "order": "10",
 		  "props": {
 			"clickatellapiKey": ""
-		  }
-	  }
-    },
-	{
-      "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "docuSign",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "docuSign",
-		  "type": "ASC.FederatedLogin.LoginProviders.DocuSignLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "docuSign",
-		  "order": "1",
-		  "props": {
-			"docuSignClientId": "",
-			"docuSignClientSecret": "",
-			"docuSignHost": ""
-		  },
-		  "additional": {
-			"docuSignRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },
@@ -339,37 +275,6 @@
 		  }
 	  }
     },
-		{
-      "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "mailru",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "mailru",
-		  "type": "ASC.FederatedLogin.LoginProviders.MailRuLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "mailru",
-		  "order": "4",
-		  "props": {
-			"mailRuClientId": "",
-			"mailRuClientSecret": ""
-		  },
-		  "additional": {
-			"mailRuRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
 	{
       "type": "ASC.FederatedLogin.LoginProviders.OneDriveLoginProvider, ASC.FederatedLogin",
       "services": [
@@ -491,37 +396,6 @@
 	  }
     },
 	{
-      "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "vk",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "vk",
-		  "type": "ASC.FederatedLogin.LoginProviders.VKLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "vk",
-		  "order": "14",
-		  "props": {
-			"vkClientId": "",
-			"vkClientSecret": ""
-		  },
-		  "additional": {
-			"vkRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
-	{
       "type": "ASC.FederatedLogin.LoginProviders.WordpressLoginProvider, ASC.FederatedLogin",
       "services": [
         {
@@ -549,37 +423,6 @@
 		  },
 		  "additional": {
 			"wpRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
-		  }
-	  }
-    },
-	{
-      "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
-		}, 
-		{
-		  "key": "yandex",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "yandex",
-		  "type": "ASC.FederatedLogin.LoginProviders.YandexLoginProvider, ASC.FederatedLogin"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "yandex",
-		  "order": "15",
-		  "props": {
-			"yandexClientId": "",
-			"yandexClientSecret": ""
-		  },
-		  "additional": {
-			"yandexRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
 		  }
 	  }
     },

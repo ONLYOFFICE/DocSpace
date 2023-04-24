@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Polje potrditvene kode ne more biti prazno</value>
@@ -109,6 +109,9 @@
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Velikost datoteke slike je prevelika</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Dostop do portala je omejen</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Vaš cenovni načrt ne podpira te možnosti</value>
   </data>
@@ -154,8 +157,71 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Povezava za potrditev vašega računa je bila uspešno poslana na določen e-naslov</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Ime</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Priimek</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Ne morem ustvariti uporabnikov, prejeti podatki so morda nepravilni</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Strežnik je neuspešno obnovil nastavitve</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Strežnik je neuspešno shranil nastavitve</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Nepravilen vpis ali informacija gesla.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Ni mogoče najti skupin.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Nepravilna vrednost filtra uporabnika</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Neznana napaka.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Ni mogoče najti nobenega uporabnika</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Nepravilna vrednost atributa skupine.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Neveljavna lstnostna vrednost prijave.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Ne morem se povezati s strežnikom LDAP. Prosim preverite, če sta naslov strežnika in številka porta enaka.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Nepravilna vrednost uporabnikovega atributa</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Notranja napaka strežnika.</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Preverjanje LDAP nastavitev za pomoč</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Pridobivanje seznama skupin iz LDAP strežnika</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Pridobivanje uporabniškega seznama z LDAP strežnika</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Shranjevanje skupin</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Shranjevanje nastavitev</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Shranjevanje uporabnikov</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Dosežena je bila trenutna cenovna meja uporabniškega načrta</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Navodila za spremembo e-naslova so bila uspešno poslana</value>
@@ -204,5 +270,68 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Kaj je novega</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Spremljanje uporabnikovih prijav &amp; akcij</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimalna velikost datotek</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Velikost datoteke ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Število skrbnikov ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Število skrbnikov</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Samodejno varnostno kopiranje &amp; obnovitev</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Neomejeno število aktivnih sob</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Število sob ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} prostora za shranjevanje</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Prostor za shranjevanje ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Prostor za shranjevanje</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Sob:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Uporabljen prostor za shranjevanje:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Uporabnikov v sobi:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Neomejeno število uporabnikov</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Število uporabnikov ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Uporabnikov v sobi</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Število uporabnikov v sobi ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Blagovna znamka &amp; prilagoditve</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Število skrbnikov/naprednih uporabnikov:</value>
   </data>
 </root>

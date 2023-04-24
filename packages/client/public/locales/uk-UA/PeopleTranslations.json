@@ -1,16 +1,19 @@
 {
-  "AddMembers": "Додати учасників",
   "DeleteSelfProfile": "Видалити профіль",
   "DisableUserButton": "Відключити",
   "DisabledEmployeeStatus": "Відключено",
   "EmailChangeButton": "Змінити електронну пошту",
   "EnableUserButton": "Включити",
+  "InviteLinkTitle": "Посилання-запрошення",
   "LDAPLbl": "LDAP",
+  "NameChangeButton": "Змінити ім’я",
   "PasswordChangeButton": "Змінити пароль",
   "PendingTitle": "Очікування",
   "RemoveData": "Видалити персональні дані",
+  "ResetAuth": "Скинути автентифікацію",
   "SendInviteAgain": "Відправити запрошення знову",
   "SuccessChangeUserStatus": "Статус користувача успішно змінено",
   "SuccessDeletePersonalData": "Персональні дані успішно видалено",
-  "SuccessSentInvitation": "Запрошення успішно відправлено"
+  "SuccessSentInvitation": "Запрошення успішно відправлено",
+  "SuccessSentMultipleInvitatios": "Запрошення успішно надіслані"
 }

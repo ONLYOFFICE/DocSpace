@@ -1,9 +1,11 @@
-﻿import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import UpSvgUrl from "PUBLIC_DIR/images/up.svg?url";
 import EmptyScreenAltSvgUrl from "PUBLIC_DIR/images/empty_screen_alt.svg?url";
+import EmptyScreenAltSvgDarkUrl from "PUBLIC_DIR/images/empty_screen_alt_dark.svg?url";
 import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate.svg?url";
+import EmptyScreenCorporateDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate_dark.svg?url";
 import { inject, observer } from "mobx-react";
-import React from "react";
+import React, { useEffect } from "react";
 import { withTranslation } from "react-i18next";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
@@ -11,6 +13,7 @@ import Box from "@docspace/components/box";
 import { Text } from "@docspace/components";
 import { ReactSVG } from "react-svg";
 import Loaders from "@docspace/common/components/Loaders";
+import { showLoader, hideLoader } from "./EmptyFolderContainerUtils";
 
 const EmptyFolderContainer = ({
   t,
@@ -31,6 +34,7 @@ const EmptyFolderContainer = ({
   isLoadedFetchFiles,
   viewAs,
   setIsLoadedEmptyPage,
+  theme,
 }) => {
   const onBackToParentFolder = () => {
     setIsLoading(true);
@@ -40,7 +44,7 @@ const EmptyFolderContainer = ({
       : fetchFiles(parentId).finally(() => setIsLoading(false));
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (isLoadedFetchFiles && tReady) {
       setIsLoadedEmptyPage(true);
     } else {
@@ -48,7 +52,7 @@ const EmptyFolderContainer = ({
     }
   }, [isLoadedFetchFiles, tReady]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsEmptyPage(true);
 
     return () => {
@@ -139,20 +143,38 @@ const EmptyFolderContainer = ({
     <></>
   );
 
+  const emptyScreenCorporateSvg = theme.isBase
+    ? EmptyScreenCorporateSvgUrl
+    : EmptyScreenCorporateDarkSvgUrl;
+  const emptyScreenAltSvg = theme.isBase
+    ? EmptyScreenAltSvgUrl
+    : EmptyScreenAltSvgDarkUrl;
+
+  useEffect(
+    () => (!isLoadedFetchFiles || !tReady ? showLoader() : hideLoader()),
+    [isLoadedFetchFiles, tReady]
+  );
+
   if (!isLoadedFetchFiles || !tReady) {
-    return <Loaders.EmptyContainerLoader viewAs={viewAs} />;
+    return (
+      <Loaders.EmptyContainerLoader
+        style={{ display: "none", marginTop: 32 }}
+        id="empty-container-loader"
+        viewAs={viewAs}
+      />
+    );
   }
 
   return (
     <EmptyContainer
       headerText={isRooms ? t("RoomCreated") : t("EmptyScreenFolder")}
-      style={{ gridColumnGap: "39px" }}
+      style={{ gridColumnGap: "39px", marginTop: 32 }}
       descriptionText={
         canCreateFiles
           ? t("EmptyFolderDecription")
           : t("EmptyFolderDescriptionUser")
       }
-      imageSrc={isRooms ? EmptyScreenCorporateSvgUrl : EmptyScreenAltSvgUrl}
+      imageSrc={isRooms ? emptyScreenCorporateSvg : emptyScreenAltSvg}
       buttons={buttons}
       sectionWidth={sectionWidth}
       isEmptyFolderContainer={true}
@@ -162,6 +184,7 @@ const EmptyFolderContainer = ({
 
 export default inject(
   ({
+    auth,
     accessRightsStore,
     filesStore,
     selectedFolderStore,
@@ -212,6 +235,7 @@ export default inject(
       isLoadedFetchFiles,
       viewAs,
       setIsLoadedEmptyPage,
+      theme: auth.settingsStore.theme,
     };
   }
 )(withTranslation(["Files", "Translations"])(observer(EmptyFolderContainer)));

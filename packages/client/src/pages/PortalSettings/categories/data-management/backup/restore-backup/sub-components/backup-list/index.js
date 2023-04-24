@@ -302,14 +302,17 @@ BackupListModalDialog.propTypes = {
   isVisibleDialog: PropTypes.bool.isRequired,
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, backup }) => {
   const { settingsStore } = auth;
+  const { downloadingProgress } = backup;
   const { socketHelper, theme, setTenantStatus } = settingsStore;
+  const isCopyingToLocal = downloadingProgress !== 100;
 
   return {
     setTenantStatus,
     theme,
     socketHelper,
+    isCopyingToLocal,
   };
 })(
   withTranslation(["Settings", "Common", "Translations"])(

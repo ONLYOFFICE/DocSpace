@@ -3,10 +3,11 @@
   "CodeSubtitle": "{{email}} ünvanına 6 rəqəmli kod göndərdik. Kodun etibarlılıq müddəti limitlidir, ona görə onu mümkün olduğu qədər tez daxil edin.",
   "CodeTitle": "Kod e-poçt vasitəsilə göndərilmişdir",
   "CookieSettingsTitle": "Sessiya müddəti",
+  "ErrorInvalidHeader": "İstifadə müddəti bitmiş keçid",
   "ErrorInvalidText": "10 saniyədə <1>DocSpace</1> yönləndiriləcəksiniz",
-  "ExpiredCode": "Bu kod artıq etibarlı deyil. Yeni kod sorğusu göndərin və yenidən cəhd edin",
+  "ExpiredCode": "Bu kod artıq etibarlı deyil. Yeni kod sorğusu göndərin və yenidən cəhd edin.",
   "ForgotPassword": "Parolunuzu unutmusunuz mu?",
-  "InvalidCode": "Kod etibarsızdır. Yenidən cəhd edin",
+  "InvalidCode": "Kod etibarsızdır. Yenidən cəhd edin.",
   "MessageAuthorize": "Davam etmək üçün daxil olun",
   "MessageEmailConfirmed": "Sizin elektron poçt uğurla aktivləşdirilmişdi.",
   "MessageSendPasswordRecoveryInstructionsOnEmail": "Xahiş edirik qeydiyyat zamanı istifadə etdiyiniz elektron poçtu qeyd edin. Şifrəni sıfırlamaq üçün təlimat həmin elektron poçta göndəriləcəkdir.",
@@ -23,5 +24,7 @@
   "RegistrationEmailWatermark": "Elektron poçt",
   "Remember": "Yadda saxla",
   "RememberHelper": "Susmaya görə sessiya müddəti 20 dəqiqədir. Müddəti 1 ilə uzatmaq üçün qutunu klikləyin. Digər müddəti təyin etmək üçün, Ayarlar bölməsinə keçin.",
-  "ResendCode": "Kodu yenidən göndərin"
+  "ResendCode": "Kodu yenidən göndərin",
+  "SignInWithCode": "Gizli kodla daxil olun",
+  "SignInWithPassword": "Şifrə ilə daxil olun"
 }

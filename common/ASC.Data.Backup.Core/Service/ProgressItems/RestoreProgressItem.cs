@@ -97,6 +97,7 @@ public class RestoreProgressItem : BaseBackupProgressItem
         Notify = request.NotifyAfterCompletion;
         StoragePath = request.FilePathOrId;
         StorageType = request.StorageType;
+        StorageParams = request.StorageParams;
         TempFolder = tempFolder;
         _upgradesPath = upgradesPath;
         _region = region;
@@ -110,7 +111,6 @@ public class RestoreProgressItem : BaseBackupProgressItem
 
         try
         {
-
             await using var scope = _serviceScopeProvider.CreateAsyncScope();
 
             _tenantManager = scope.ServiceProvider.GetService<TenantManager>();

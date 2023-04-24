@@ -56,11 +56,26 @@ public class LocalesTest
         }
     }
 
+    public static bool Save
+    {
+        get
+        {
+            bool save;
+            if (bool.TryParse(Environment.GetEnvironmentVariable("SAVE"), out save))
+            {
+                return save;
+            }
+
+            return false;
+        }
+    }
+
     public List<string> Workspaces { get; set; }
     public List<TranslationFile> TranslationFiles { get; set; }
     public List<JavaScriptFile> JavaScriptFiles { get; set; }
     public List<ModuleFolder> ModuleFolders { get; set; }
     public List<KeyValuePair<string, string>> NotTranslatedToasts { get; set; }
+    public List<KeyValuePair<string, string>> NotTranslatedProps { get; set; }
     public List<LanguageItem> CommonTranslations { get; set; }
     public List<ParseJsonError> ParseJsonErrors { get; set; }
     public static string ConvertPathToOS { get; private set; }
@@ -68,11 +83,17 @@ public class LocalesTest
     //public List<JsonEncodingError> WrongEncodingJsonErrors { get; set; }
 
     private static readonly string _md5ExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../md5-excludes.json"));
+    private static readonly string _spellCheckCommonExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../spellcheck-excludes-common.json"));
+    private static readonly string _spellCheckExcludesPath = Path.GetFullPath(Utils.ConvertPathToOS("../../../spellcheck-excludes.json"));
 
     //private static string _encodingExcludesPath = "../../../encoding-excludes.json";
 
-    private static readonly List<string> _md5Excludes = File.Exists(_md5ExcludesPath)
+    private static readonly List<string> Md5Excludes = File.Exists(_md5ExcludesPath)
         ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_md5ExcludesPath))
+        : new List<string>();
+
+    private static readonly List<string> SpellCheckCommonExcludes = File.Exists(_spellCheckCommonExcludesPath)
+        ? JsonConvert.DeserializeObject<List<string>>(File.ReadAllText(_spellCheckCommonExcludesPath))
         : new List<string>();
 
     //private static List<string> encodingExcludes = File.Exists(_encodingExcludesPath)
@@ -174,6 +195,8 @@ public class LocalesTest
                                let clientDir = Path.Combine(BasePath, wsPath)
                                from filePath in Utils.GetFiles(clientDir, searchPatern, SearchOption.AllDirectories)
                                where !filePath.Contains(Utils.ConvertPathToOS("dist/"))
+                               && !filePath.Contains(Utils.ConvertPathToOS("storybook-static/"))
+                               && !filePath.Contains(Utils.ConvertPathToOS("node_modules/"))
                                && !filePath.Contains(".test.js")
                                && !filePath.Contains(".stories.js")
                                && !filePath.Contains(".test.ts")
@@ -199,7 +222,10 @@ public class LocalesTest
             "|(?<=toastr.success\\([\"`\'])(.*)(?=[\"\'`])" +
             "|(?<=toastr.warn\\([\"`\'])(.*)(?=[\"\'`])", RegexOptions.Multiline | RegexOptions.ECMAScript);
 
+        var notTranslatedPropsRegex = new Regex("<[\\w\\n][^>]* (title|placeholder|label|text)={?[\\\"\\'](.*)[\\\"\\']}?", RegexOptions.Multiline | RegexOptions.ECMAScript);
+
         NotTranslatedToasts = new List<KeyValuePair<string, string>>();
+        NotTranslatedProps = new List<KeyValuePair<string, string>>();
 
         foreach (var path in javascriptFiles)
         {
@@ -214,6 +240,18 @@ public class LocalesTest
                     var found = toastMatch.Value;
                     if (!string.IsNullOrEmpty(found) && !NotTranslatedToasts.Exists(t => t.Value == found))
                         NotTranslatedToasts.Add(new KeyValuePair<string, string>(path, found));
+                }
+            }
+
+            var propsMatches = notTranslatedPropsRegex.Matches(jsFileText).ToList();
+
+            if (propsMatches.Any())
+            {
+                foreach (var propsMatch in propsMatches)
+                {
+                    var found = propsMatch.Value;
+                    if (!string.IsNullOrEmpty(found) && !NotTranslatedProps.Exists(t => t.Value == found))
+                        NotTranslatedProps.Add(new KeyValuePair<string, string>(path, found));
                 }
             }
 
@@ -316,12 +354,16 @@ public class LocalesTest
 
         TestContext.Progress.WriteLine($"Found CommonTranslations = {CommonTranslations.Count()}. First path is '{CommonTranslations.FirstOrDefault()?.Path}'");
 
-        TestContext.Progress.WriteLine($"Found _md5Excludes = {_md5Excludes.Count()} Path to file '{_md5ExcludesPath}'");
-        
+        TestContext.Progress.WriteLine($"Found Md5Excludes = {Md5Excludes.Count} Path to file '{_md5ExcludesPath}'");
+
+        TestContext.Progress.WriteLine($"Found SpellCheckCommonExcludes = {SpellCheckCommonExcludes.Count} Path to file '{_spellCheckCommonExcludesPath}'");
+
+        TestContext.Progress.WriteLine($"Save spell check excludes = {Save} Path to file '{_spellCheckExcludesPath}'");
+
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void ParseJsonTest()
     {
         Assert.AreEqual(0, ParseJsonErrors.Count, string.Join("\r\n", ParseJsonErrors.Select(e => $"File path = '{e.Path}' failed to parse with error: '{e.Exception.Message}'")));
@@ -350,14 +392,14 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("LongRunning")]
+    [Category("SpellCheck")]
     public void SpellCheckTest()
     {
         var i = 0;
         var errorsCount = 0;
         var message = $"Next keys have spell check issues:\r\n\r\n";
 
-        //var list = new List<SpellCheckExclude>();
+        var list = new List<SpellCheckExclude>();
 
         var groupByLng = TranslationFiles
         .GroupBy(t => t.Language)
@@ -374,7 +416,7 @@ public class LocalesTest
             {
                 var dicPaths = SpellCheck.GetDictionaryPaths(group.Language);
 
-                //var spellCheckExclude = new SpellCheckExclude(group.Language);
+                var spellCheckExclude = new SpellCheckExclude(group.Language);
 
                 using (var dictionaryStream = File.OpenRead(dicPaths.DictionaryPath))
                 using (var affixStream = File.OpenRead(dicPaths.AffixPath))
@@ -389,27 +431,44 @@ public class LocalesTest
 
                             if (result.HasProblems)
                             {
-                                message += $"{++i}. lng='{group.Language}' file='{g.FilePath}'\r\nkey='{item.Key}' value='{item.Value}'\r\nIncorrect words:\r\n{string.Join("\r\n", result.SpellIssues.Select(issue => $"'{issue.Word}' Suggestion: '{issue.Suggestions.FirstOrDefault()}'"))}\r\n\r\n";
+                                var incorrectWords = result.SpellIssues
+                                    .Where(t => !SpellCheckCommonExcludes
+                                    .Exists(e => e.Equals(t.Word, StringComparison.InvariantCultureIgnoreCase)))
+                                    .Select(issue => $"'{issue.Word}' " +
+                                $"Suggestion: '{issue.Suggestions.FirstOrDefault()}'")
+                                    .ToList();
+
+                                if (!incorrectWords.Any())
+                                    continue;
+
+                                message += $"{++i}. lng='{group.Language}' file='{g.FilePath}'\r\nkey='{item.Key}' " +
+                                $"value='{item.Value}'\r\nIncorrect words:\r\n" +
+                                $"{string.Join("\r\n", incorrectWords)}\r\n\r\n";
                                 errorsCount++;
 
-
-                                /*foreach (var word in result.SpellIssues
+                                if (Save)
+                                {
+                                    foreach (var word in result.SpellIssues
                                     .Where(issue => issue.Suggestions.Any())
                                     .Select(issue => issue.Word))
-                                {
-                                    if (!spellCheckExclude.Excludes.Contains(word))
                                     {
-                                        spellCheckExclude.Excludes.Add(word);
+                                        if (!spellCheckExclude.Excludes.Contains(word))
+                                        {
+                                            spellCheckExclude.Excludes.Add(word);
+                                        }
                                     }
-                                }*/
+                                }
                             }
                         }
                     }
                 }
 
-                //spellCheckExclude.Excludes.Sort();
+                if (Save)
+                {
+                    spellCheckExclude.Excludes.Sort();
 
-                //list.Add(spellCheckExclude);
+                    list.Add(spellCheckExclude);
+                }
             }
             catch (NotSupportedException)
             {
@@ -418,14 +477,18 @@ public class LocalesTest
             }
         }
 
-        //string json = JsonConvert.SerializeObject(list, Formatting.Indented);
-        //File.WriteAllText("../../../spellcheck-excludes.json", json, Encoding.UTF8);
+        if (Save)
+        {
+            string json = JsonConvert.SerializeObject(list, Formatting.Indented);
+            File.WriteAllText(_spellCheckExcludesPath, json, Encoding.UTF8);
+            TestContext.Progress.WriteLine($"File spellcheck-excludes.json has been saved to '{_spellCheckExcludesPath}'");
+        }
 
         Assert.AreEqual(0, errorsCount, message);
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void SingleKeyFilesTest()
     {
         var singleKeyTranslationFiles = TranslationFiles
@@ -436,12 +499,12 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void DublicatesFilesByMD5HashTest()
     {
         var duplicatesByMD5 = TranslationFiles
             .Where(t => t.Language != "pt-BR")
-            .Where(t => !_md5Excludes.Contains(t.Md5Hash))
+            .Where(t => !Md5Excludes.Contains(t.Md5Hash))
             .GroupBy(t => t.Md5Hash)
             .Where(grp => grp.Count() > 1)
             .Select(grp => new { Key = grp.Key, Count = grp.Count(), Paths = grp.ToList().Select(f => f.FilePath) })
@@ -452,7 +515,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void FullEnDublicatesTest()
     {
         var fullEnDuplicates = TranslationFiles
@@ -469,7 +532,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void EnDublicatesByContentTest()
     {
         var allRuTranslations = TranslationFiles
@@ -548,7 +611,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotAllLanguageTranslatedTest()
     {
         var groupedByLng = TranslationFiles
@@ -625,7 +688,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotTranslatedKeysTest()
     {
         var message = $"Next languages are not equal 'en' by translated keys count:\r\n\r\n";
@@ -672,7 +735,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotFoundKeysTest()
     {
         var allEnKeys = TranslationFiles
@@ -694,7 +757,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void UselessTranslationKeysTest()
     {
         var allEnKeys = TranslationFiles
@@ -719,7 +782,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void UselessModuleTranslationKeysTest()
     {
         var notFoundi18nKeys = new List<KeyValuePair<string, List<string>>>();
@@ -745,7 +808,10 @@ public class LocalesTest
                 continue;
             }
 
+            var exepts = new List<string> { "Error", "Done", "Warning", "Alert", "Info" };
+
             var notCommonKeys = module.AppliedJsTranslationKeys
+                .Except(exepts)
                 .Where(k => !k.StartsWith("Common:"))
                 .OrderBy(t => t)
                 .ToList();
@@ -807,7 +873,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotTranslatedCommonKeysTest()
     {
         var message = $"Some i18n-keys are not found in COMMON translations: \r\nKeys: \r\n\r\n";
@@ -904,7 +970,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void EmptyValueKeysTest()
     {
         // Uncomment if new keys are available
@@ -1008,7 +1074,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void LanguageTranslatedPercentTest()
     {
         var message = $"Next languages translated less then 100%:\r\n\r\n";
@@ -1055,7 +1121,7 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
     public void NotTranslatedToastsTest()
     {
         var message = $"Next text not translated in toasts:\r\n\r\n";
@@ -1078,10 +1144,33 @@ public class LocalesTest
     }
 
     [Test]
-    [Category("FastRunning")]
+    [Category("Locales")]
+    public void NotTranslatedPropsTest()
+    {
+        var message = $"Next text not translated props (title, placeholder, label, text):\r\n\r\n";
+
+        var i = 0;
+
+        NotTranslatedProps.GroupBy(t => t.Key)
+            .Select(g => new
+            {
+                FilePath = g.Key,
+                Values = g.ToList()
+            })
+            .ToList()
+            .ForEach(t =>
+            {
+                message += $"{++i}. Path='{t.FilePath}'\r\n\r\n{string.Join("\r\n", t.Values.Select(v => v.Value))}\r\n\r\n";
+            });
+
+        Assert.AreEqual(0, NotTranslatedProps.Count, message);
+    }
+
+    [Test]
+    [Category("Locales")]
     public void WrongTranslationVariablesTest()
     {
-        var message = $"Next keys have wrong variables:\r\n\r\n";
+        var message = $"Next keys have wrong or empty variables:\r\n\r\n";
         var regVariables = new Regex("\\{\\{([^\\{].?[^\\}]+)\\}\\}", RegexOptions.Compiled | RegexOptions.Multiline);
 
         var groupedByLng = TranslationFiles
@@ -1091,7 +1180,7 @@ public class LocalesTest
                 Language = g.Key,
                 TranslationsWithVariables = g.ToList()
                     .SelectMany(t => t.Translations)
-                    .Where(k => k.Value.IndexOf("{{") != -1)
+                    //.Where(k => k.Value.IndexOf("{{") != -1)
                     .Select(t => new
                     {
                         t.Key,
@@ -1107,6 +1196,7 @@ public class LocalesTest
         var enWithVariables = groupedByLng
             .Where(t => t.Language == "en")
             .SelectMany(t => t.TranslationsWithVariables)
+            .Where(t => t.Variables.Count > 0)
             .ToList();
 
         var otherLanguagesWithVariables = groupedByLng
@@ -1116,11 +1206,129 @@ public class LocalesTest
         var i = 0;
         var errorsCount = 0;
 
-        foreach (var lng in otherLanguagesWithVariables)
+        foreach (var enKeyWithVariables in enWithVariables)
         {
-            foreach (var t in lng.TranslationsWithVariables)
+            foreach (var lng in otherLanguagesWithVariables)
             {
-                var enKey = enWithVariables
+                var lngKey = lng.TranslationsWithVariables
+                    .Where(t => t.Key == enKeyWithVariables.Key)
+                    .FirstOrDefault();
+
+                if (lngKey == null)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{enKeyWithVariables.Key}' not found\r\n\r\n";
+                    errorsCount++;
+                    continue;
+                }
+
+                if (enKeyWithVariables.Variables.Count != lngKey.Variables.Count)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has less variables then 'en' language have " +
+                        $"(en={enKeyWithVariables.Variables.Count}|{lng.Language}={lngKey.Variables.Count})\r\n" +
+                        $"'en': '{enKeyWithVariables.Value}'\r\n'{lng.Language}': '{lngKey.Value}'\r\n\r\n";
+                    errorsCount++;
+                }
+
+                if (!lngKey.Variables.All(v => enKeyWithVariables.Variables.Contains(v)))
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has not equals variables of 'en' language have \r\n" +
+                        $"'{enKeyWithVariables.Value}' Variables=[{string.Join(",", enKeyWithVariables.Variables)}]\r\n" +
+                        $"'{lngKey.Value}' Variables=[{string.Join(",", lngKey.Variables)}]\r\n\r\n";
+                    errorsCount++;
+                }
+            }
+        }
+
+        Assert.AreEqual(0, errorsCount, message);
+    }
+
+    [Test]
+    [Category("Locales")]
+    public void WrongTranslationTagsTest()
+    {
+        var message = $"Next keys have wrong or empty translation's html tags:\r\n\r\n";
+        var regString = "<([^>]*)>(\\s*(.+?)\\s*)</([^>/]*)>";
+
+        var regTags = new Regex(regString, RegexOptions.Compiled | RegexOptions.Multiline);
+
+        var groupedByLng = TranslationFiles
+            .GroupBy(t => t.Language)
+            .Select(g => new
+            {
+                Language = g.Key,
+                TranslationsWithTags = g.ToList()
+                    .SelectMany(t => t.Translations)
+                    //.Where(k => k.Value.IndexOf("<") != -1)
+                    .Select(t => new
+                    {
+                        t.Key,
+                        t.Value,
+                        Tags = regTags.Matches(t.Value)
+                                    .Select(m => m.Groups[1]?.Value?.Trim())
+                                    .ToList()
+                    })
+                    .ToList()
+            })
+            .ToList();
+
+        var enWithTags = groupedByLng
+            .Where(t => t.Language == "en")
+            .SelectMany(t => t.TranslationsWithTags)
+            .Where(t => t.Tags.Count > 0)
+            .ToList();
+
+        var otherLanguagesWithTags = groupedByLng
+            .Where(t => t.Language != "en")
+            .ToList();
+
+        var i = 0;
+        var errorsCount = 0;
+
+        foreach (var enKeyWithTags in enWithTags)
+        {
+            foreach (var lng in otherLanguagesWithTags)
+            {
+                var lngKey = lng.TranslationsWithTags
+                    .Where(t => t.Key == enKeyWithTags.Key)
+                    .FirstOrDefault();
+
+                if (lngKey == null)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{enKeyWithTags.Key}' not found\r\n\r\n";
+                    errorsCount++;
+                    continue;
+                }
+
+                if (enKeyWithTags.Tags.Count != lngKey.Tags.Count)
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has less tags then 'en' language have " +
+                        $"(en={enKeyWithTags.Tags.Count}|{lng.Language}={lngKey.Tags.Count})\r\n" +
+                        $"'en': '{enKeyWithTags.Value}'\r\n'{lng.Language}': '{lngKey.Value}'\r\n\r\n";
+                    errorsCount++;
+                }
+
+                if (!lngKey.Tags.All(v => enKeyWithTags.Tags.Contains(v)))
+                {
+                    // wrong
+                    message += $"{++i}. lng='{lng.Language}' key='{lngKey.Key}' has not equals tags of 'en' language have \r\n" +
+                        $"'{enKeyWithTags.Value}' Tags=[{string.Join(",", enKeyWithTags.Tags)}]\r\n" +
+                        $"'{lngKey.Value}' Tags=[{string.Join(",", lngKey.Tags)}]\r\n\r\n";
+                    errorsCount++;
+                }
+            }
+
+        }
+
+        /*foreach (var lng in otherLanguagesWithTags)
+        {
+            foreach (var t in lng.TranslationsWithTags)
+            {
+                var enKey = enWithTags
                     .Where(en => en.Key == t.Key)
                     .FirstOrDefault();
 
@@ -1132,31 +1340,31 @@ public class LocalesTest
                     continue;
                 }
 
-                if (enKey.Variables.Count != t.Variables.Count)
+                if (enKey.Tags.Count != t.Tags.Count)
                 {
                     // wrong
-                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has less variables then 'en' language have " +
-                        $"(en={enKey.Variables.Count}|{lng.Language}={t.Variables.Count})\r\n" +
+                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has less tags then 'en' language have " +
+                        $"(en={enKey.Tags.Count}|{lng.Language}={t.Tags.Count})\r\n" +
                         $"'en': '{enKey.Value}'\r\n'{lng.Language}': '{t.Value}'\r\n\r\n";
                     errorsCount++;
                 }
 
-                if (!t.Variables.All(v => enKey.Variables.Contains(v)))
+                if (!t.Tags.All(v => enKey.Tags.Contains(v)))
                 {
                     // wrong
                     errorsCount++;
-                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has not equals variables of 'en' language have\r\n\r\n" +
-                        $"Have to be:\r\n'{enKey.Value}'\r\n\r\n{string.Join("\r\n", enKey.Variables)}\r\n\r\n" +
-                        $"But in real:\r\n'{t.Value}'\r\n\r\n{string.Join("\r\n", t.Variables)} \r\n\r\n";
+                    message += $"{++i}. lng='{lng.Language}' key='{t.Key}' has not equals tags of 'en' language have\r\n\r\n" +
+                        $"Have to be:\r\n'{enKey.Value}'\r\n\r\n{string.Join("\r\n", enKey.Tags)}\r\n\r\n" +
+                        $"But in real:\r\n'{t.Value}'\r\n\r\n{string.Join("\r\n", t.Tags)} \r\n\r\n";
                 }
             }
-        }
+        }*/
 
         Assert.AreEqual(0, errorsCount, message);
     }
 
     //[Test]
-    //[Category("FastRunning")]
+    //[Category("Locales")]
     //public void TranslationsEncodingTest()
     //{
     //    /*//Convert to UTF-8

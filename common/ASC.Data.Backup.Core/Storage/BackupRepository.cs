@@ -30,12 +30,12 @@ namespace ASC.Data.Backup.Storage;
 public class BackupRepository : IBackupRepository
 {
     private readonly IDbContextFactory<BackupsContext> _dbContextFactory;
-    private readonly DbFactory _dbFactory;
+    private readonly CreatorDbContext _creatorDbContext;
 
-    public BackupRepository(IDbContextFactory<BackupsContext> dbContextFactory, DbFactory dbFactory)
+    public BackupRepository(IDbContextFactory<BackupsContext> dbContextFactory, CreatorDbContext creatorDbContext)
     {
         _dbContextFactory = dbContextFactory;
-        _dbFactory = dbFactory;
+        _creatorDbContext = creatorDbContext;
     }
 
     public void SaveBackupRecord(BackupRecord backup)
@@ -60,7 +60,7 @@ public class BackupRepository : IBackupRepository
     public List<BackupRecord> GetExpiredBackupRecords()
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return backupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow).ToList();
+        return backupContext.Backups.AsNoTracking().Where(b => b.ExpiresOn != DateTime.MinValue && b.ExpiresOn <= DateTime.UtcNow && b.Removed == false).ToList();
     }
 
     public List<BackupRecord> GetScheduledBackupRecords()
@@ -87,7 +87,7 @@ public class BackupRepository : IBackupRepository
             backup.Id = Guid.NewGuid();
         });
 
-        var backupContextByNewTenant = _dbFactory.CreateDbContext<BackupsContext>(region);
+        var backupContextByNewTenant = _creatorDbContext.CreateDbContext<BackupsContext>(region);
         backupContextByNewTenant.Backups.AddRange(backups);
         backupContextByNewTenant.SaveChanges();
     }
@@ -115,10 +115,7 @@ public class BackupRepository : IBackupRepository
     public void DeleteBackupSchedule(int tenantId)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        var shedule = backupContext.Schedules.AsQueryable().Where(s => s.TenantId == tenantId).ToList();
-
-        backupContext.Schedules.RemoveRange(shedule);
-        backupContext.SaveChanges();
+        backupContext.Schedules.Where(s => s.TenantId == tenantId).ExecuteDelete();
     }
 
     public List<BackupSchedule> GetBackupSchedules()

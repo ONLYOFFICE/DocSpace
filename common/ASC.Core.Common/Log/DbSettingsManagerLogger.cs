@@ -28,8 +28,8 @@ namespace ASC.Core.Common.Log;
 internal static partial class DbSettingsManagerLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "SaveSettingsFor")]
-    public static partial void ErrorSaveSettingsFor(this ILogger<DbSettingsManager> logger, Exception exception);
+    public static partial void ErrorSaveSettingsFor(this ILogger<SettingsManager> logger, Exception exception);
 
     [LoggerMessage(Level = LogLevel.Error, Message = "LoadSettingsFor")]
-    public static partial void ErrorLoadSettingsFor(this ILogger<DbSettingsManager> logger, Exception exception);
+    public static partial void ErrorLoadSettingsFor(this ILogger<SettingsManager> logger, Exception exception);
 }

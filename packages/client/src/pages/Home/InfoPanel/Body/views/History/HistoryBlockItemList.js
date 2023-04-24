@@ -21,29 +21,59 @@ export const HistoryBlockItemList = ({
   const onShowMore = () => setIsShowMore(true);
 
   const parsedItems = items.map((item) => {
+    const indexPoint = item.Title.lastIndexOf(".");
     const splitTitle = item.Title.split(".");
+    const splitTitleLength = splitTitle.length;
+
+    const fileExst =
+      splitTitleLength != 1 ? `.${splitTitle[splitTitleLength - 1]}` : null;
+
+    const title =
+      splitTitleLength <= 2 ? splitTitle[0] : item.Title.slice(0, indexPoint);
+
     return {
       ...item,
       isRoom: item.Item === "room",
       isFolder: item.Item === "folder",
       roomType: RoomsType[item.AdditionalInfo],
-      title: splitTitle[0],
-      fileExst: splitTitle[1] ? `.${splitTitle[1]}` : null,
+      title,
+      fileExst,
       id: item.ItemId.split("_")[0],
       viewUrl: item.itemId,
     };
   });
 
+  // If server returns two instances of the same item by mistake filters it out
+  const includedIds = [];
+  const filteredParsedItems = parsedItems.filter((item) => {
+    if (includedIds.indexOf(item.id) > -1) return false;
+    includedIds.push(item.id);
+    return true;
+  });
+
   return (
     <StyledHistoryBlockFilesList>
-      {parsedItems.map((item, i) => {
+      {filteredParsedItems.map((item, i) => {
+        includedIds.push(item);
         if (!isShowMore && i > 2) return null;
         return (
-          <StyledHistoryBlockFile isRoom={item.isRoom} key={i}>
+          <StyledHistoryBlockFile isRoom={item.isRoom} key={item.id + "__" + i}>
             <ReactSVG className="icon" src={getInfoPanelItemIcon(item, 24)} />
             <div className="item-title">
-              <span className="name">{item.title}</span>
-              {item.fileExst && <span className="exst">{item.fileExst}</span>}
+              {item.title ? (
+                [
+                  <span className="name" key="hbil-item-name">
+                    {item.title}
+                  </span>,
+                  item.fileExst && (
+                    <span className="exst" key="hbil-item-exst">
+                      {item.fileExst}
+                    </span>
+                  ),
+                ]
+              ) : (
+                <span className="name">{item.fileExst}</span>
+              )}
             </div>
             <IconButton
               className="location-btn"

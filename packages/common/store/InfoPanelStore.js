@@ -27,6 +27,7 @@ class InfoPanelStore {
   fileView = "info_history";
 
   updateRoomMembers = null;
+  isScrollLocked = false;
 
   authStore = null;
   settingsStore = null;
@@ -44,6 +45,7 @@ class InfoPanelStore {
   setIsVisible = (bool) => {
     this.setView("info_details");
     this.isVisible = bool;
+    this.isScrollLocked = false;
   };
   setIsMobileHidden = (bool) => (this.isMobileHidden = bool);
 
@@ -55,16 +57,22 @@ class InfoPanelStore {
       return;
     }
     this.selection = selection;
+    this.isScrollLocked = false;
   };
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
 
   setView = (view) => {
     this.roomsView = view;
     this.fileView = view === "info_members" ? "info_history" : view;
+    this.isScrollLocked = false;
   };
 
   setUpdateRoomMembers = (updateRoomMembers) => {
     this.updateRoomMembers = updateRoomMembers;
+  };
+
+  setIsScrollLocked = (isScrollLocked) => {
+    this.isScrollLocked = isScrollLocked;
   };
 
   // Selection helpers //
@@ -306,6 +314,11 @@ class InfoPanelStore {
   getIsGallery = (givenPathName) => {
     const pathname = givenPathName || window.location.pathname.toLowerCase();
     return pathname.indexOf("form-gallery") !== -1;
+  };
+
+  getIsTrash = (givenPathName) => {
+    const pathname = givenPathName || window.location.pathname.toLowerCase();
+    return pathname.indexOf("files/trash") !== -1;
   };
 }
 

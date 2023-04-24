@@ -291,17 +291,19 @@ const Dark = {
 
     background: black,
     disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
-    connectBackground: "#3B72A7",
+    connectBackground:
+      "linear-gradient(0deg, rgba(255, 255, 255, 0.88), rgba(255, 255, 255, 0.88)), #333333",
     hoverBackground: "#292929",
-    hoverConnectBackground: "#265A8F",
+    hoverConnectBackground: "#FFFFFF",
     activeBackground: "#292929",
-    hoverBorder: "#292929",
+    hoverBorder: "#858585",
 
     boxShadow: "none",
     hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
+    disabledSvgColor: "#474747",
 
     border: "1px solid #474747",
     text: {
@@ -317,7 +319,7 @@ const Dark = {
       whiteSpace: "nowrap",
       color: grayMaxLight,
       hoverColor: grayMaxLight,
-      connectColor: white,
+      connectColor: darkBlack,
     },
 
     svg: {
@@ -326,7 +328,7 @@ const Dark = {
       height: "18px",
       minWidth: "18px",
       minHeight: "18px",
-      fill: white,
+      fill: darkBlack,
     },
   },
 
@@ -569,6 +571,7 @@ const Dark = {
     overflow: "hidden",
     color: black,
     backgroundColor: "#F59931",
+    disableBackgroundColor: "#858585",
   },
 
   scrollbar: {
@@ -705,7 +708,7 @@ const Dark = {
         middle: "36px",
         big: "36px",
         huge: "37px",
-        large: "43px",
+        large: "42px",
       },
     },
     iconButton: {
@@ -1374,6 +1377,7 @@ const Dark = {
     borderRadius: "6px",
     boxShadow:
       "0px 16px 16px rgba(0, 0, 0, 0.16), 0px 8.1px 6.975px rgba(0, 0, 0, 0.108), 0px 3.2px 2.6px rgba(0, 0, 0, 0.08), 0px 0.7px 0.925px rgba(0, 0, 0, 0.052)",
+    boxShadowMobile: "0px -4px 60px rgba(0, 0, 0, 0.25)",
     border: "1px solid #474747",
   },
 
@@ -1383,6 +1387,7 @@ const Dark = {
     backgroundColor: black,
     hoverBackgroundColor: "#3D3D3D",
     hoverDisabledBackgroundColor: black,
+    selectedBackgroundColor: "#282828",
     fontWeight: "600",
     fontSize: "13px",
     width: "100%",
@@ -1608,6 +1613,7 @@ const Dark = {
     button: {
       height: "18px",
       heightWithBorder: "30px",
+      heightModernView: "28px",
 
       paddingLeft: "16px",
       paddingRightNoArrow: "16px",
@@ -1684,6 +1690,7 @@ const Dark = {
   },
 
   toggleButton: {
+    fillColorDefault: "#4781D1",
     fillColorOff: "#292929",
     hoverFillColorOff: "#3D3D3D",
 
@@ -1900,9 +1907,18 @@ const Dark = {
     paymentAlert: {
       color: "#ed7309",
       warningColor: "#E06451",
-      border: "1px solid #ed7309",
-      warningBorder: "1px solid #E06451",
     },
+
+    teamTrainingAlert: {
+      titleColor: "#FFFFFF",
+      borderColor: "#388BDE",
+      linkColor: "#5299E0",
+    },
+  },
+
+  alertComponent: {
+    descriptionColor: "#ADADAD",
+    iconColor: "#ADADAD",
   },
 
   catalogItem: {
@@ -2039,6 +2055,8 @@ const Dark = {
     header: {
       backgroundColor: black,
       background: `linear-gradient(180deg, #333333 2.81%, rgba(51, 51, 51, 0.9) 63.03%, rgba(51, 51, 51, 0) 100%);`,
+      trashErasureLabelBackground: "#292929",
+      trashErasureLabelText: "#ADADAD",
     },
   },
 
@@ -2327,7 +2345,7 @@ const Dark = {
     },
 
     emptyScreen: {
-      descriptionColor: cyanBlueDarkShade,
+      descriptionColor: "#ADADAD",
     },
   },
 
@@ -2639,6 +2657,8 @@ const Dark = {
       itemBorder: "1px dashed #333333",
 
       itemOwnerColor: "#858585",
+
+      backgroundButtons: "#333333",
 
       dropdownColor: grayMaxLight,
 
@@ -2986,7 +3006,7 @@ const Dark = {
       },
 
       backup: {
-        rectangleBackgroundColor: "#292929",
+        rectangleBackgroundColor: "#3D3D3D",
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
@@ -3077,10 +3097,18 @@ const Dark = {
     main: {
       background: "#1f1f1f",
       textColor: white,
+
+      descriptionTextColor: "#858585",
+      pendingEmailTextColor: "#858585",
+
+      mobileRowBackground: "#3D3D3D",
     },
     themePreview: {
       descriptionColor: "#ADADAD",
       border: "1px solid #474747",
+    },
+    notifications: {
+      textDescriptionColor: "#858585",
     },
   },
 
@@ -3121,6 +3149,14 @@ const Dark = {
 
   itemIcon: {
     borderColor: "#474747",
+  },
+
+  invitePage: {
+    borderColor: "#474747",
+  },
+
+  portalUnavailable: {
+    textDescriptionColor: "#858585",
   },
 };
 

@@ -1,4 +1,10 @@
-import React, { useEffect, useRef, useCallback, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useState,
+  useMemo,
+} from "react";
 import { inject, observer } from "mobx-react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TileContainer from "./sub-components/TileContainer";
@@ -25,7 +31,7 @@ const getThumbSize = (width) => {
     imgWidth = 440;
   }
 
-  return `${imgWidth}x300`;
+  return `${imgWidth}x156`;
 };
 
 const elementResizeDetector = elementResizeDetectorMaker({
@@ -33,14 +39,22 @@ const elementResizeDetector = elementResizeDetectorMaker({
   callOnAdd: false,
 });
 
-const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
+const FilesTileContainer = ({
+  filesList,
+  t,
+  sectionWidth,
+  withPaging,
+  thumbnails1280x720,
+}) => {
   const tileRef = useRef(null);
   const timerRef = useRef(null);
+  const isMountedRef = useRef(true);
   const [thumbSize, setThumbSize] = useState("");
   const [columnCount, setColumnCount] = useState(null);
 
   useEffect(() => {
     return () => {
+      isMountedRef.current = false;
       if (!tileRef?.current) return;
       clearTimeout(timerRef.current);
       elementResizeDetector.uninstall(tileRef.current);
@@ -49,11 +63,13 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
   const onResize = useCallback(
     (node) => {
-      if (!node) return;
+      if (!node || !isMountedRef.current) return;
 
       const { width } = node.getBoundingClientRect();
 
-      const size = getThumbSize(width);
+      if (width === 0) return;
+
+      const size = thumbnails1280x720 ? "1280x720" : getThumbSize(width);
 
       const widthWithoutPadding = width - 32;
 
@@ -69,7 +85,7 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
 
       setThumbSize(size);
     },
-    [columnCount, thumbSize]
+    [columnCount, thumbSize, thumbnails1280x720]
   );
 
   const onSetTileRef = React.useCallback((node) => {
@@ -87,6 +103,38 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
     }
   }, []);
 
+  const filesListNode = useMemo(() => {
+    return filesList.map((item, index) => {
+      return index % 11 == 0 ? (
+        <FileTile
+          id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+          key={
+            item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+          }
+          item={item}
+          itemIndex={index}
+          sectionWidth={sectionWidth}
+          selectableRef={onSetTileRef}
+          thumbSize={thumbSize}
+          columnCount={columnCount}
+          withRef={true}
+        />
+      ) : (
+        <FileTile
+          id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
+          key={
+            item?.version ? `${item.id}_${item.version}` : `${item.id}_${index}`
+          }
+          item={item}
+          itemIndex={index}
+          sectionWidth={sectionWidth}
+          thumbSize={thumbSize}
+          columnCount={columnCount}
+        />
+      );
+    });
+  }, [filesList, sectionWidth, onSetTileRef, thumbSize, columnCount]);
+
   return (
     <TileContainer
       className="tile-container"
@@ -95,39 +143,19 @@ const FilesTileContainer = ({ filesList, t, sectionWidth, withPaging }) => {
       headingFolders={t("Translations:Folders")}
       headingFiles={t("Translations:Files")}
     >
-      {filesList.map((item, index) => {
-        return index % 11 == 0 ? (
-          <FileTile
-            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
-            item={item}
-            sectionWidth={sectionWidth}
-            selectableRef={onSetTileRef}
-            thumbSize={thumbSize}
-            columnCount={columnCount}
-            withRef={true}
-          />
-        ) : (
-          <FileTile
-            id={`${item?.isFolder ? "folder" : "file"}_${item.id}`}
-            key={`${item.id}_${index}`}
-            item={item}
-            sectionWidth={sectionWidth}
-            thumbSize={thumbSize}
-            columnCount={columnCount}
-          />
-        );
-      })}
+      {filesListNode}
     </TileContainer>
   );
 };
 
-export default inject(({ auth, filesStore }) => {
+export default inject(({ auth, filesStore, settingsStore }) => {
   const { filesList } = filesStore;
   const { withPaging } = auth.settingsStore;
+  const { thumbnails1280x720 } = settingsStore;
 
   return {
     filesList,
     withPaging,
+    thumbnails1280x720,
   };
 })(observer(FilesTileContainer));

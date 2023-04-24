@@ -1,1 +1,5 @@
-{}
+{
+  "EmptyRoomsDescription": "Lütfen Odalarım'daki ilk odayı oluşturun.",
+  "EmptyRoomsHeader": "Burada henüz oda yok",
+  "RoomList": "Oda listesi"
+}

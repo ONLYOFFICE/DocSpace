@@ -49,7 +49,7 @@ const StyledSubHeader = styled(Heading)`
   font-size: 16px;
   padding-left: 16px;
   padding-right: 16px;
-  margin: 16px 0;
+  margin: 16px 0 8px 0;
 
   ${(props) =>
     props.inline &&
@@ -59,6 +59,20 @@ const StyledSubHeader = styled(Heading)`
       gap: 16px;
     `};
 `;
+
+const StyledDescription = styled(Text)`
+  padding-left: 16px;
+  padding-right: 16px;
+  color: ${(props) =>
+    props.theme.createEditRoomDialog.commonParam.descriptionColor};
+  margin-bottom: 16px;
+
+  font-weight: 400;
+  font-size: 12px;
+  line-height: 16px;
+`;
+
+StyledDescription.defaultProps = { theme: Base };
 
 const StyledRow = styled.div`
   width: calc(100% - 32px) !important;
@@ -128,7 +142,7 @@ const StyledInviteInputContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  ${fillAvailableWidth}
+  width: 100%;
   margin-bottom: 20px;
 
   .header_aside-panel {
@@ -199,7 +213,9 @@ const StyledDeleteIcon = styled(DeleteIcon)`
 
 StyledDeleteIcon.defaultProps = { theme: Base };
 
-const StyledHelpButton = styled(HelpButton)``;
+const StyledHelpButton = styled(HelpButton)`
+  margin-right: 8px;
+`;
 
 const StyledButtons = styled(Box)`
   padding: 16px 16px 16px 16px;
@@ -210,7 +226,7 @@ const StyledButtons = styled(Box)`
   position: absolute;
   bottom: 0px;
   width: 100%;
-
+  background: ${(props) => props.theme.filesPanels.sharing.backgroundButtons};
   border-top: ${(props) => props.theme.filesPanels.sharing.borderTop};
 `;
 
@@ -247,4 +263,5 @@ export {
   ScrollList,
   StyledAccessSelector,
   StyledToggleButton,
+  StyledDescription,
 };

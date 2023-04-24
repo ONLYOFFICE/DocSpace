@@ -214,6 +214,90 @@ $GreenButton
 
 *Lưu ý*: liên kết này chỉ có hiệu lực trong 7 ngày. Vui lòng hoàn tất quá trình thay đổi địa chỉ cổng thông tin trong khoảng thời gian đó.</value>
   </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Xin chào, $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+
+*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần trợ giúp, hãy xem qua "Trung tâm trợ giúp":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Xin chào, $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+
+*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần trợ giúp, hãy xem qua "Trung tâm trợ giúp":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Xin chào, $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+
+*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần trợ giúp, hãy xem qua "Trung tâm trợ giúp":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Xin chào, $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+
+*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần trợ giúp, hãy xem qua "Trung tâm trợ giúp":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Tin nhắn từ cổng "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -403,24 +487,12 @@ ONLYOFFICE™ Support Team
 ^Nếu bạn không muốn nhận thông báo về cập nhật hồ sơ, vui lòng điều chỉnh "thiết lập đăng ký":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
-    <value>h1.Có gì mới trên cổng "${__VirtualRootPath}":"${__VirtualRootPath}" vào ngày $Date
+    <value>h1.Đây là những điều mới trong DocSpace của bạn vào $Date
 
 #foreach($activity in $Activities)
+$activity
 
-h2.$activity.Key
-
-#foreach($whatsNewActivity in $activity.Value)
-#foreach($b in $whatsNewActivity.BreadCrumbs) h3.$b
-#end "$whatsNewActivity.Title":"$whatsNewActivity.URL"
-*Tác giả*: "$whatsNewActivity.UserName":"$whatsNewActivity.UserAbsoluteURL", $whatsNewActivity.Action: $whatsNewActivity.Date.ToShortTimeString()
-
-
-#end
-
-#end
-
-
-^Nếu bạn không muốn nhận thông báo về các sự kiện mới trên cổng "${__VirtualRootPath}":"${__VirtualRootPath}", vui lòng điều chỉnh trong "thiết lập đăng ký":"$RecipientSubscriptionConfigURL".^</value>
+#end</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>Tin nhắn SMTP thử nghiệm
@@ -456,6 +528,18 @@ Trân trọng,
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Thay đổi địa chỉ cổng</value>
+  </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Chào mừng bạn đến với ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Chào mừng bạn đến với ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Chào mừng bạn đến với ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Chào mừng bạn đến với ONLYOFFICE DocSpace!</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
     <value>Thông báo của người dùng đến các quản trị viên</value>
@@ -505,13 +589,52 @@ Trân trọng,
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__ VirtualRootPath} thông báo thay đổi hồ sơ cổng thông tin</value>
   </data>
-  <data name="subject_send_whats_new" xml:space="preserve">
-    <value>Có gì mới trên cổng thông tin của bạn vào ngày $Date</value>
-  </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Tin nhắn SMTP thử nghiệm</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Đã thêm người dùng mới vào cổng ${LetterLogoText}</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã tạo một tài liệu mới: &lt;a href={1}&gt;{2}&lt;/a&gt; trong phòng: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã thêm nhận xét mới vào phiên bản tài liệu: &lt;a href={1}&gt;{2}&lt;/a&gt; trong phòng: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã tải lên một tài liệu mới: &lt;a href={1}&gt;{2}&lt;/a&gt; trong phòng: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã đổi tên phòng: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã tạo một phòng mới: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã bị xóa khỏi phòng: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã chỉnh sửa tài liệu: &lt;a href={1}&gt;{2}&lt;/a&gt; trong phòng: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã xóa phòng: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã được thêm vào phòng: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã chuyển phòng: &lt;a href={1}&gt;{2}&lt;/a&gt; đến sao lưu - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã được chỉ định vai trò của &lt;b&gt;{1}&lt;/b&gt; trong phòng: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Đã thêm người dùng DocSpace mới: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; đã thay đổi mức truy cập của người dùng &lt;b&gt;{1}&lt;/b&gt; thành &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>Người dùng DocSpace đã được cập nhật: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
 </root>

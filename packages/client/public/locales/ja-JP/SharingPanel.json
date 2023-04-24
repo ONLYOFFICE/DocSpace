@@ -14,5 +14,5 @@
   "ShareEmailBody": "あなたは{{itemName}}ドキュメントへのアクセスを許可されています。以下のリンクをクリックして、今すぐドキュメントを開いてください。{{shareLink}}をクリックしてください。",
   "ShareEmailSubject": "あなたは{{itemName}}ドキュメントへのアクセスを許可されています。",
   "ShareVia": "でシェアする",
-  "SharingSettingsTitle": "設定の共有"
+  "SharingSettingsTitle": "共有の設定"
 }

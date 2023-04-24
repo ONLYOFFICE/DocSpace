@@ -24,11 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Notify.Extension;
-using ASC.Studio.Notify;
-
-using NLog;
-
 var options = new WebApplicationOptions
 {
     Args = args,
@@ -42,13 +37,14 @@ builder.Configuration.AddDefaultConfiguration(builder.Environment)
                      .AddEnvironmentVariables()
                      .AddCommandLine(args);
 
-var logger = LogManager.Setup()
-                            .SetupExtensions(s =>
-                            {
-                                s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
-                            })
-                            .LoadConfiguration(builder.Configuration, builder.Environment)
-                            .GetLogger(typeof(Startup).Namespace);
+var logger = LogManager
+    .Setup()
+    .SetupExtensions(s =>
+    {
+        s.RegisterLayoutRenderer("application-context", (logevent) => AppName);
+    })
+    .LoadConfiguration(builder.Configuration, builder.Environment)
+    .GetLogger(typeof(Startup).Namespace);
 
 try
 {

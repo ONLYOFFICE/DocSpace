@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>请输入验证码</value>
@@ -69,6 +69,12 @@
   </data>
   <data name="AdminMessageSent" xml:space="preserve">
     <value>您的信息已成功发送。稍后工作站管理员会与您联系。</value>
+  </data>
+  <data name="ButtonSmsEnable" xml:space="preserve">
+    <value>通过短信</value>
+  </data>
+  <data name="ButtonTfaAppEnable" xml:space="preserve">
+    <value>使用授权应用</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
     <value>系统已发送通知到：email（本工作站主要负责人的Email），等待其确认此操作。</value>
@@ -130,6 +136,9 @@
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>名字或姓氏不正确</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>对门户的访问受到限制</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>您的定价方案不支持该选项</value>
   </data>
@@ -151,11 +160,17 @@
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>数字</value>
   </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>没有空格</value>
+  </data>
   <data name="ErrorPasswordNoSpecialSymbols" xml:space="preserve">
     <value>特殊字符</value>
   </data>
   <data name="ErrorPasswordNoUpperCase" xml:space="preserve">
     <value>大写字母</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>只有拉丁字母</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
     <value>超过请求限制</value>
@@ -181,11 +196,128 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>通知邮件已发送。请查收并按邮件中的提示完成账户激活操作</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>名字</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>姓氏</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>连接错误</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>无法创建用户，收到的数据有误。</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>服务器无法获取设置。</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>服务器无法保存设置。</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>用户名或密码有误</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>找不到LDAP域名。</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>找不到小组。</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>用户筛选值无效。</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>未知错误。</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>未找到用户。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>无法获取一个或多个小组的小组属性。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>错误的小组筛选条件。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>无法获取一个或多个小组的小组名称属性。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>无法获取一个或多个用户的登录属性。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>无法连接到LDAP服务器。请检查服务器的地址和端口号是否正确。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>无法获取一个或多个用户的用户属性。</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>服务器内部错误。</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>修改普通门户用户上的LDAP用户</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>正在添加用户</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>证书验证</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>检查LDAP支持设置</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>从LDAP服务器检索小组列表</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>从LDAP服务器检索用户列表</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>加载LDAP基本信息</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>正在删除用户</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>删除之前经通过LDAP加载的过期小组</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>删除先前通过LDAP加载的过期访问权限</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>删除之前通过LDAP加载的过期用户</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>保存小组</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>保存设置</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>保存照片</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>保存用户</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>同步用户</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>更新用户照片</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>需更安全的身份验证类型。请使用加密连接或在服务器上启用纯认证。</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>已达到目前的定价计划用户限制</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>当前LDAP服务器不支持StartTLS。</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>LDAP操作太多</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>无法获取用户/组对象的唯一ID。默认情况下，系统将尝试匹配以下标识符之一：entryUUID，nsuniqueid，GUID，objectSid。若没有属性对应于您的LDAP服务器，请在web.appsettings.config文件的ldap.unique.id设置中指定必要的属性。</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>许可证有误</value>
@@ -276,5 +408,68 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>新鲜事</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>追踪用户登录和行动</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>文件最大大小</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>文件大小不应超过 {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>管理员的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>管理员的数量</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>自动备份与恢复</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>激活房间的数量无限</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>房间的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} 存储空间</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>使用的存储空间大小不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>储存空间</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>房间数量：</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>已用的存储空间：</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>房间总用户数量：</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>用户数量无限</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>用户的数量不应超过{0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>房间总用户数量</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>房间里的用户数量不应超过 {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>白标与自定义</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>管理员/高级用户的数:</value>
   </data>
 </root>

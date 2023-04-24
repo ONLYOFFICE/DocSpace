@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text.RegularExpressions;
+
 namespace ASC.Web.Files.HttpHandlers;
 
 public class ChunkedUploaderHandler
@@ -83,11 +85,7 @@ public class ChunkedUploaderHandlerService
     {
         try
         {
-            var uploadSession = await _chunkedUploadSessionHolder.GetSessionAsync<int>(context.Request.Query["uid"]);
-            if (uploadSession != null)
-            {
-                await Invoke<int>(context);
-            }
+            await Invoke<int>(context);
         }
         catch (Exception)
         {
@@ -142,7 +140,7 @@ public class ChunkedUploaderHandlerService
                     if (resumedSession.BytesUploaded == resumedSession.BytesTotal)
                     {
                         await WriteSuccess(context, ToResponseObject(resumedSession.File), (int)HttpStatusCode.Created);
-                        _filesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
+                        _ = _filesMessageService.Send(resumedSession.File, MessageAction.FileUploaded, resumedSession.File.Title);
 
                         await _socketManager.CreateFileAsync(resumedSession.File);
                     }
@@ -306,9 +304,35 @@ public class ChunkedRequestHelper<T>
         return _authKey.Value;
     }
 
-    public T FolderId => (T)Convert.ChangeType(_request.Query[FilesLinkUtility.FolderId], typeof(T));
+    public T FolderId
+    {
+        get
+        {
+            var queryValue = _request.Query[FilesLinkUtility.FolderId];
 
-    public T FileId => (T)Convert.ChangeType(_request.Query[FilesLinkUtility.FileId], typeof(T));
+            if (queryValue.Count == 0)
+            {
+                return default(T);
+            }
+
+            return (T)Convert.ChangeType(queryValue[0], typeof(T));
+        }
+    }
+
+    public T FileId
+    {
+        get
+        {
+            var queryValue = _request.Query[FilesLinkUtility.FileId];
+
+            if (queryValue.Count == 0)
+            {
+                return default(T);
+            }
+
+            return (T)Convert.ChangeType(queryValue[0], typeof(T));
+        }
+    }
 
     public string FileName => _request.Query[FilesLinkUtility.FileTitle];
 
@@ -337,10 +361,17 @@ public class ChunkedRequestHelper<T>
             return _cultureInfo;
         }
 
-        var culture = _request.Query["culture"];
-        if (string.IsNullOrEmpty(culture))
+        var queryValue = _request.Query["culture"];
+
+        string culture;
+
+        if (queryValue.Count == 0)
         {
             culture = "en-US";
+        }
+        else
+        {
+            culture = queryValue[0];
         }
 
         return _cultureInfo = setupInfo.GetPersonalCulture(culture).Value;

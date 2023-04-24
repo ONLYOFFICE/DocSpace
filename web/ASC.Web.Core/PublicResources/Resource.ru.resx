@@ -53,10 +53,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActivateMobilePhoneEmptyCode" xml:space="preserve">
     <value>Поле кода подтверждения не может быть пустым</value>
@@ -446,10 +446,10 @@
     <value>Twitter</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
-    <value>Токен доступа</value>
+    <value>Client ID</value>
   </data>
   <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
-    <value>Секретный токен доступа</value>
+    <value>Client Secret</value>
   </data>
   <data name="ConsumersTwitterDescription" xml:space="preserve">
     <value>Подключите приложение для входа на портал по учетной записи Twitter и поиска контактов.</value>
@@ -461,10 +461,10 @@
     <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Twitter, и привязывать Twitter-аккаунты клиентов в модуле CRM. {0}Перейдите на портал для разработчиков Twitter и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
-    <value>Twitter ID</value>
+    <value>API Key</value>
   </data>
   <data name="ConsumersTwitterSecret" xml:space="preserve">
-    <value>Ключ Twitter</value>
+    <value>API Key Secret</value>
   </data>
   <data name="Consumersusername" xml:space="preserve">
     <value>Имя пользователя Rackspace</value>
@@ -589,6 +589,9 @@
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Некорректное имя или фамилия</value>
   </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>Доступ к порталу ограничен</value>
+  </data>
   <data name="ErrorNotAllowedOption" xml:space="preserve">
     <value>Ваш тарифный план не поддерживает эту возможность</value>
   </data>
@@ -652,11 +655,143 @@
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>На указанный email была выслана ссылка для подтверждения новой учетной записи</value>
   </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Фамилия</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Ошибка подключения</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Не удалось создать пользователей, полученные данные неверны.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Серверу не удалось получить настройки.</value>
+  </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Серверу не удалось сохранить настройки.</value>
   </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Неверный логин или пароль.</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>Домен LDAP не найден.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Не удалось найти группы.</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>Недопустимое значение Фильтра пользователей.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Вы пытались снять с себя права администратора. Ваши права администратора остались без изменений.</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>Ваш аккаунт не связан с каталогом LDAP, и ваш пароль LDAP неактивен. Измените или задайте пароль к аккаунту на странице настроек профиля.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Неизвестная ошибка.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Не удалось найти пользователей.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>Не удалось получить Атрибут группы для одной или нескольких групп.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>Неправильный фильтр групп.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>Не удалось получить атрибут названия группы для одной или нескольких групп.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>Не удалось получить Атрибут логина для одного или нескольких пользователей.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>Не удается установить соединение с сервером LDAP. Пожалуйста, проверьте правильность указанного адреса сервера и номера порта.</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>Не удалось получить Атрибут пользователя для одного или нескольких пользователей.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Внутренняя ошибка сервера.</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>Изменение LDAP-пользователей на обычных пользователей портала</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>добавление пользователя</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Проверка сертификата</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Проверка настроек поддержки LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>Отключение LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>Получение списка групп с сервера LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>Получение списка пользователей с сервера LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Предоставление пользователю {0} прав администратора: {1}</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>Загрузка информации из базы LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>удаление пользователя</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>Удаление устаревших групп, загруженных по LDAP ранее</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>Удаление устаревших прав доступа, загруженных по LDAP ранее</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>Отключение устаревших профилей пользователей, загруженных по LDAP ранее</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Сохранение групп</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Сохранение настроек</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Сохранение фотографии</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Сохранение пользователей</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Синхронизация пользователей</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Обновление прав доступа пользователей</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Обновление фотографий пользователей</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>Требуется более безопасный тип аутентификации. Используйте SSL или разрешите plain-аутентификацию на сервере.</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>Достигнуто предельное количество пользователей для текущего тарифного плана</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>StartTLS не поддерживается для текущего сервера LDAP.</value>
+  </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
     <value>Слишком много операций LDAP.</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>Не удается получить уникальный идентификатор объектов пользователей/групп. По умолчанию система пытается подобрать один из следующих идентификаторов: entryUUID, nsuniqueid, GUID, objectSid. Если ни один из данных атрибутов не соответствует вашему LDAP-серверу, пожалуйста, укажите необходимый атрибут в настройке ldap.unique.id в файле web.appsettings.config.</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>Некорректная лицензия</value>
@@ -762,5 +897,68 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Новенькое</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Брендинг и кастомизация</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Отслеживание входов в систему и действий пользователей</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Максимальный размер файла</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Размер файла не должен превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Количество администраторов не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Количество администраторов</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Автоматическое резервное копирование и восстановление данных</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Неограниченное количество активных комнат</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Количество комнат не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} дискового пространства</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Используемое дисковое пространство не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Дисковое пространство</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Комнат:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Используемое дисковое пространство:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Пользователей в комнате:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Неограниченное количество пользователей</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Количество пользователей не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Пользователей в комнате</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Количество пользователей в комнате не должно превышать {0}</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Количество администраторов/опытных пользователей:</value>
   </data>
 </root>

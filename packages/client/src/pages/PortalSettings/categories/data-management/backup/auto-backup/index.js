@@ -449,7 +449,7 @@ class AutomaticBackup extends React.PureComponent {
           {!isEnableAuto && (
             <Badge
               backgroundColor="#EDC409"
-              label="Paid"
+              label={t("Common:Paid")}
               className="auto-backup_badge"
               isPaidBadge={true}
             />
@@ -518,7 +518,7 @@ class AutomaticBackup extends React.PureComponent {
             <StyledModules>
               <RadioButton
                 {...commonRadioButtonProps}
-                label={t("ThirdPartyStorage")}
+                label={t("Common:ThirdPartyStorage")}
                 name={`${StorageModuleType}`}
                 isChecked={isCheckedThirdPartyStorage}
                 isDisabled={isLoadingData}

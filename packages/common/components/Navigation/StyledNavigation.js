@@ -9,7 +9,7 @@ import {
 
 const StyledContainer = styled.div`
   ${(props) =>
-    !props.isDropBox &&
+    !props.isDropBoxComponent &&
     props.isDesktop &&
     css`
       width: fit-content;
@@ -26,6 +26,7 @@ const StyledContainer = styled.div`
   height: 100%;
   ${(props) =>
     props.isDesktopClient &&
+    props.isDropBoxComponent &&
     css`
       max-height: 32px;
     `}
@@ -66,13 +67,6 @@ const StyledContainer = styled.div`
     grid-template-columns: ${(props) =>
       props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
   }
-
-  ${isMobile &&
-  css`
-    width: 100%;
-    grid-template-columns: ${(props) =>
-      props.isRootFolder ? "1fr auto" : "49px 1fr auto"};
-  `}
 `;
 
 export default StyledContainer;

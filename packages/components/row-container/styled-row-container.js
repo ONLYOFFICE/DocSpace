@@ -1,6 +1,7 @@
 import styled from "styled-components";
 
 const StyledRowContainer = styled.div`
+  user-select: none;
   height: ${(props) =>
     props.useReactWindow
       ? props.manualHeight

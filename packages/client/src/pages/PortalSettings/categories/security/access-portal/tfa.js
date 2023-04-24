@@ -23,7 +23,15 @@ const MainContainer = styled.div`
 `;
 
 const TwoFactorAuth = (props) => {
-  const { t, history, initSettings, isInit, setIsInit, helpLink } = props;
+  const {
+    t,
+    history,
+    initSettings,
+    isInit,
+    setIsInit,
+    currentColorScheme,
+    tfaSettingsUrl,
+  } = props;
   const [type, setType] = useState("none");
 
   const [smsDisabled, setSmsDisabled] = useState(false);
@@ -125,10 +133,10 @@ const TwoFactorAuth = (props) => {
       <LearnMoreWrapper>
         <Text className="learn-subtitle">{t("TwoFactorAuthHelper")}</Text>
         <Link
-          color="#316DAA"
+          color={currentColorScheme.main.accent}
           target="_blank"
           isHovered
-          href={`${helpLink}/administration/two-factor-authentication.aspx`}
+          href={tfaSettingsUrl}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -187,7 +195,7 @@ export default inject(({ auth, setup }) => {
   } = auth.tfaStore;
 
   const { isInit, initSettings, setIsInit } = setup;
-  const { helpLink } = auth.settingsStore;
+  const { currentColorScheme, tfaSettingsUrl } = auth.settingsStore;
 
   return {
     setTfaSettings,
@@ -198,7 +206,8 @@ export default inject(({ auth, setup }) => {
     isInit,
     initSettings,
     setIsInit,
-    helpLink,
+    currentColorScheme,
+    tfaSettingsUrl,
   };
 })(
   withTranslation(["Settings", "Common"])(withRouter(observer(TwoFactorAuth)))

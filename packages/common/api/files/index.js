@@ -32,6 +32,17 @@ export function openEdit(fileId, version, doc, view) {
   return request(options);
 }
 
+export function getReferenceData(object) {
+  const data = object;
+  const options = {
+    method: "post",
+    url: `/files/file/referencedata`,
+    data,
+  };
+
+  return request(options);
+}
+
 export function getFolderInfo(folderId) {
   const options = {
     method: "get",
@@ -538,7 +549,7 @@ export function startUploadSession(
   const data = { fileName, fileSize, relativePath, encrypted, createOn };
   return request({
     method: "post",
-    url: `/files/${folderId}/upload/create_session.json`,
+    url: `/files/${folderId}/upload/create_session`,
     data,
   });
 }
@@ -564,7 +575,7 @@ export function checkFileConflicts(destFolderId, folderIds, fileIds) {
 
   return request({
     method: "get",
-    url: `/files/fileops/move.json?destFolderId=${destFolderId}${paramsString}`,
+    url: `/files/fileops/move?destFolderId=${destFolderId}${paramsString}`,
   });
 }
 
@@ -690,6 +701,11 @@ export function storeForceSave(val) {
 export function forceSave(val) {
   const data = { set: val };
   return request({ method: "put", url: "files/forcesave", data });
+}
+
+export function changeKeepNewFileName(val) {
+  const data = { set: val };
+  return request({ method: "put", url: "files/keepnewfilename", data });
 }
 
 export function thirdParty(val) {
@@ -863,7 +879,7 @@ export function setRecentSetting(set) {
 export function hideConfirmConvert(save) {
   return request({
     method: "put",
-    url: "/files/hideconfirmconvert.json",
+    url: "/files/hideconfirmconvert",
     data: { save },
   });
 }
@@ -940,4 +956,24 @@ export function restoreDocumentsVersion(fileId, version, doc) {
   };
 
   return request(options);
+}
+
+export function getSharedUsers(fileId) {
+  const options = {
+    method: "get",
+    url: `/files/file/${fileId}/sharedusers`,
+  };
+
+  return request(options);
+}
+export function sendEditorNotify(fileId, actionLink, emails, message) {
+  return request({
+    method: "post",
+    url: `files/file/${fileId}/sendeditornotify`,
+    data: {
+      actionLink,
+      emails,
+      message,
+    },
+  });
 }

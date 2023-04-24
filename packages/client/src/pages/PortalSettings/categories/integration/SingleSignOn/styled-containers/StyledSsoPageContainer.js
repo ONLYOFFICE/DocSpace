@@ -10,6 +10,7 @@ const StyledSsoPage = styled.div`
   .intro-text {
     margin-bottom: 18px;
     max-width: 700px;
+    color: ${(props) => props.theme.client.settings.common.descriptionColor};
   }
 
   .toggle {
@@ -25,6 +26,7 @@ const StyledSsoPage = styled.div`
       display: flex;
       .toggle-caption_title_badge {
         margin-left: 4px;
+        cursor: auto;
       }
     }
   }
@@ -141,7 +143,7 @@ const StyledSsoPage = styled.div`
       width: 350px;
     }
 
-    p > div {
+    .label > div {
       display: inline-flex;
       margin-left: 4px;
     }

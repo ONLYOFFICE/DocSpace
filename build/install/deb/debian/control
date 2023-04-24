@@ -12,6 +12,7 @@ Architecture: any
 Depends: debconf,
          ${misc:Depends}, ${shlibs:Depends},
          {{product}}-api (= {{package_header_tag_version}}),
+         {{product}}-api-system (= {{package_header_tag_version}}),
          {{product}}-backup (= {{package_header_tag_version}}),
          {{product}}-backup-background (= {{package_header_tag_version}}),
          {{product}}-clear-events (= {{package_header_tag_version}}),
@@ -62,6 +63,7 @@ Package: {{product}}-files-services
 Architecture: any
 Depends: {{product}}-common (= {{package_header_tag_version}}),
  dotnet-sdk-7.0,
+ ffmpeg,
  ${misc:Depends},
  ${shlibs:Depends}
 Description: {{product}}-files-services

@@ -22,12 +22,18 @@ const PureText = ({ type, color, ...props }) => <Text {...props} />;
 const StyledText = styled(PureText)`
   text-decoration: ${(props) => props.theme.link.textDecoration};
 
-  ${(props) => !props.enableUserSelect && NoUserSelect}
+  ${(props) =>
+    props.enableUserSelect
+      ? css`
+          user-select: text;
+        `
+      : NoUserSelect}
 
   cursor: ${(props) => props.theme.link.cursor};
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   opacity: ${(props) => props.isSemitransparent && props.theme.link.opacity};
-  line-height: ${(props) => props.theme.link.lineHeight};
+  line-height: ${(props) =>
+    props.lineHeight ? props.lineHeight : props.theme.link.lineHeight};
 
   ${colorCss};
 

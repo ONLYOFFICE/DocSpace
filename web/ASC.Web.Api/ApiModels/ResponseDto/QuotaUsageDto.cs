@@ -35,7 +35,7 @@ public class QuotaUsageManager
     private readonly AuthContext _authContext;
     private readonly SettingsManager _settingsManager;
     private readonly WebItemManager _webItemManager;
-    private readonly CountRoomAdminStatistic _countRoomAdminStatistic;
+    private readonly CountPaidUserStatistic _countPaidUserStatistic;
     private readonly CountUserStatistic _activeUsersStatistic;
 
     public QuotaUsageManager(
@@ -45,7 +45,7 @@ public class QuotaUsageManager
         AuthContext authContext,
         SettingsManager settingsManager,
         WebItemManager webItemManager,
-        CountRoomAdminStatistic countManagerStatistic,
+        CountPaidUserStatistic countPaidUserStatistic,
         CountUserStatistic activeUsersStatistic)
     {
         _tenantManager = tenantManager;
@@ -54,7 +54,7 @@ public class QuotaUsageManager
         _authContext = authContext;
         _settingsManager = settingsManager;
         _webItemManager = webItemManager;
-        _countRoomAdminStatistic = countManagerStatistic;
+        _countPaidUserStatistic = countPaidUserStatistic;
         _activeUsersStatistic = activeUsersStatistic;
     }
 
@@ -71,7 +71,7 @@ public class QuotaUsageManager
             StorageSize = (ulong)Math.Max(0, quota.MaxTotalSize),
             UsedSize = (ulong)Math.Max(0, quotaRows.Sum(r => r.Counter)),
             MaxRoomAdminsCount = quota.CountRoomAdmin,
-            RoomAdminCount = _coreBaseSettings.Personal ? 1 : await _countRoomAdminStatistic.GetValue(),
+            RoomAdminCount = _coreBaseSettings.Personal ? 1 : await _countPaidUserStatistic.GetValue(),
             MaxUsers = _coreBaseSettings.Standalone ? -1 : quota.CountUser,
             UsersCount = _coreBaseSettings.Personal ? 0 : await _activeUsersStatistic.GetValue(),
 

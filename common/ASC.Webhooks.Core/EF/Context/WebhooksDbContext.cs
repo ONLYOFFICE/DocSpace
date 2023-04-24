@@ -30,6 +30,7 @@ public class WebhooksDbContext : DbContext
 {
     public DbSet<WebhooksConfig> WebhooksConfigs { get; set; }
     public DbSet<WebhooksLog> WebhooksLogs { get; set; }
+    public DbSet<DbWebhook> Webhooks { get; set; }
 
     public WebhooksDbContext(DbContextOptions<WebhooksDbContext> options) : base(options) { }
 
@@ -37,6 +38,7 @@ public class WebhooksDbContext : DbContext
     {
         ModelBuilderWrapper
         .From(modelBuilder, Database)
+        .AddDbWebhooks()
         .AddWebhooksConfig()
         .AddWebhooksLog();
     }

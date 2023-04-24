@@ -1,5 +1,6 @@
 ﻿import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
 import ManageAccessRightsReactSvgUrl from "PUBLIC_DIR/images/manage.access.rights.react.svg?url";
+import ManageAccessRightsReactSvgDarkUrl from "PUBLIC_DIR/images/manage.access.rights.dark.react.svg?url";
 import React from "react";
 
 import { inject, observer } from "mobx-react";
@@ -23,6 +24,7 @@ const RoomNoAccessContainer = (props) => {
     categoryType,
     isEmptyPage,
     sectionWidth,
+    theme,
   } = props;
 
   const descriptionRoomNoAccess = t("NoAccessRoomDescription");
@@ -77,7 +79,9 @@ const RoomNoAccessContainer = (props) => {
   const propsRoomNotFoundOrMoved = {
     headerText: titleRoomNoAccess,
     descriptionText: descriptionRoomNoAccess,
-    imageSrc: ManageAccessRightsReactSvgUrl,
+    imageSrc: theme.isBase
+      ? ManageAccessRightsReactSvgUrl
+      : ManageAccessRightsReactSvgDarkUrl,
     buttons: goToButtons,
   };
 
@@ -92,7 +96,7 @@ const RoomNoAccessContainer = (props) => {
   );
 };
 
-export default inject(({ filesStore }) => {
+export default inject(({ auth, filesStore }) => {
   const {
     setIsLoading,
     fetchRooms,
@@ -106,5 +110,6 @@ export default inject(({ filesStore }) => {
     categoryType,
     setAlreadyFetchingRooms,
     isEmptyPage,
+    theme: auth.settingsStore.theme,
   };
 })(withTranslation(["Files"])(observer(RoomNoAccessContainer)));

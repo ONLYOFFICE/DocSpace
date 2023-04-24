@@ -52,13 +52,11 @@ class LanguageAndTimeZone extends React.Component {
     const { t } = props;
 
     languageFromSessionStorage = getFromSessionStorage("language");
-    languageDefaultFromSessionStorage = getFromSessionStorage(
-      "languageDefault"
-    );
+    languageDefaultFromSessionStorage =
+      getFromSessionStorage("languageDefault");
     timezoneFromSessionStorage = getFromSessionStorage("timezone");
-    timezoneDefaultFromSessionStorage = getFromSessionStorage(
-      "timezoneDefault"
-    );
+    timezoneDefaultFromSessionStorage =
+      getFromSessionStorage("timezoneDefault");
 
     setDocumentTitle(t("StudioTimeLanguageSettings"));
 
@@ -81,6 +79,7 @@ class LanguageAndTimeZone extends React.Component {
     const {
       i18n,
       language,
+      timezone,
       rawTimezones,
       portalTimeZoneId,
       isLoaded,
@@ -91,6 +90,8 @@ class LanguageAndTimeZone extends React.Component {
       initSettings,
       setIsLoaded,
     } = this.props;
+
+    const cultureNames = mapCulturesToArray(cultures, i18n);
 
     if (!isLoaded) initSettings().then(() => setIsLoaded(true));
 
@@ -131,8 +132,6 @@ class LanguageAndTimeZone extends React.Component {
       tReady === true &&
       this.state.language === ""
     ) {
-      const cultureNames = mapCulturesToArray(cultures, i18n);
-
       const language =
         languageFromSessionStorage ||
         findSelectedItemByKey(cultureNames, portalLanguage) ||
@@ -149,11 +148,17 @@ class LanguageAndTimeZone extends React.Component {
 
     if (!languageDefault) {
       this.setState({
-        languageDefault: language,
+        languageDefault:
+          findSelectedItemByKey(cultureNames, portalLanguage) ||
+          cultureNames[0],
       });
     }
 
-    if (timezoneDefault && languageDefault) {
+    if (timezoneDefault || timezone) {
+      this.checkChanges();
+    }
+
+    if (languageDefault || language) {
       this.checkChanges();
     }
   }
@@ -243,9 +248,8 @@ class LanguageAndTimeZone extends React.Component {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -327,14 +331,14 @@ class LanguageAndTimeZone extends React.Component {
   onCancelClick = () => {
     settingNames.forEach((settingName) => {
       const valueFromSessionStorage = getFromSessionStorage(settingName);
-
       if (
-        valueFromSessionStorage &&
+        valueFromSessionStorage !== "none" &&
+        valueFromSessionStorage !== null &&
         !this.settingIsEqualInitialValue(settingName, valueFromSessionStorage)
       ) {
         const defaultValue = this.state[settingName + "Default"];
 
-        this.setState({ [settingName]: defaultValue });
+        this.setState({ [settingName]: defaultValue || null });
         saveToSessionStorage(settingName, "");
       }
     });
@@ -378,13 +382,20 @@ class LanguageAndTimeZone extends React.Component {
         isCustomizationView: true,
       });
 
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/portal-settings/common/customization"
-        )
+      const currentUrl = window.location.href.replace(
+        window.location.origin,
+        ""
       );
+
+      const newUrl = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/portal-settings/customization/general"
+      );
+
+      if (newUrl === currentUrl) return;
+
+      history.push(newUrl);
     } else {
       this.setState({
         isCustomizationView: false,
@@ -452,6 +463,7 @@ class LanguageAndTimeZone extends React.Component {
             scaledOptions={true}
             dropDownMaxHeight={300}
             className="dropdown-item-width combo-box-settings"
+            showDisabledItems={true}
           />
         </FieldContainer>
         <FieldContainer
@@ -471,6 +483,7 @@ class LanguageAndTimeZone extends React.Component {
             scaledOptions={true}
             dropDownMaxHeight={300}
             className="dropdown-item-width combo-box-settings"
+            showDisabledItems={true}
           />
         </FieldContainer>
       </div>
@@ -535,12 +548,8 @@ export default inject(({ auth, setup, common }) => {
   const { user } = auth.userStore;
 
   const { setLanguageAndTime } = setup;
-  const {
-    isLoaded,
-    setIsLoadedLngTZSettings,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedLngTZSettings, initSettings, setIsLoaded } =
+    common;
   return {
     theme: auth.settingsStore.theme,
     user,

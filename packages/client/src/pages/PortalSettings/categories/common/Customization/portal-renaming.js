@@ -19,6 +19,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+
 const PortalRenaming = (props) => {
   const {
     t,
@@ -32,6 +33,7 @@ const PortalRenaming = (props) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
+    domain,
   } = props;
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
@@ -121,7 +123,14 @@ const PortalRenaming = (props) => {
     setIsLoadingPortalNameSave(true);
 
     setPortalRename(portalName)
-      .then(() => toastr.success(t("SuccessfullySavePortalNameMessage")))
+      .then((res) => {
+        toastr.success(t("SuccessfullySavePortalNameMessage"));
+
+        setPortalName(portalName);
+        setPortalNameDefault(portalName);
+
+        window.location.href = res;
+      })
       .catch((error) => {
         let errorMessage = "";
         if (typeof error === "object") {
@@ -136,12 +145,7 @@ const PortalRenaming = (props) => {
 
         setErrorValue(errorMessage);
         saveToSessionStorage("errorValue", errorMessage);
-      })
-      .finally(() => setIsLoadingPortalNameSave(false));
-
-    setShowReminder(false);
-    setPortalName(portalName);
-    setPortalNameDefault(portalName);
+      });
 
     saveToSessionStorage("portalName", portalName);
     saveToSessionStorage("portalNameDefault", portalName);
@@ -243,25 +247,34 @@ const PortalRenaming = (props) => {
     if (!isSmallTablet()) {
       setIsCustomizationView(true);
 
-      history.push(
-        combineUrl(
-          window.DocSpaceConfig?.proxy?.url,
-          config.homepage,
-          "/portal-settings/common/customization"
-        )
+      const currentUrl = window.location.href.replace(
+        window.location.origin,
+        ""
       );
+
+      const newUrl = combineUrl(
+        window.DocSpaceConfig?.proxy?.url,
+        config.homepage,
+        "/portal-settings/customization/general"
+      );
+
+      if (newUrl === currentUrl) return;
+
+      history.push(newUrl);
     } else {
       setIsCustomizationView(false);
     }
   }, [isSmallTablet, setIsCustomizationView]);
 
-  const tooltipPortalRenamingTooltip = <PortalRenamingTooltip t={t} />;
+  const tooltipPortalRenamingTooltip = (
+    <PortalRenamingTooltip t={t} domain={domain} />
+  );
   const hasError = errorValue === null ? false : true;
 
   const settingsBlock = (
     <div className="settings-block">
       <div className="settings-block-description">
-        {t("PortalRenamingMobile")}
+        {t("PortalRenamingMobile", { domain })}
       </div>
       <FieldContainer
         id="fieldContainerPortalRenaming"
@@ -325,7 +338,7 @@ const PortalRenaming = (props) => {
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { theme, tenantAlias } = auth.settingsStore;
+  const { theme, tenantAlias, baseDomain } = auth.settingsStore;
   const { setPortalRename, getAllSettings } = setup;
   const {
     isLoaded,
@@ -342,6 +355,7 @@ export default inject(({ auth, setup, common }) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
+    domain: baseDomain,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

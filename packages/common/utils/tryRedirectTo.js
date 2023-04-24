@@ -1,4 +1,3 @@
-import history from "../history";
 export default function (page) {
   if (
     window.location.pathname === page ||
@@ -6,9 +5,8 @@ export default function (page) {
   ) {
     return false;
   }
-  //TODO: check if we already on default page
+
   window.location.replace(page);
-  history.push(page); // SSR crash
 
   return true;
 }

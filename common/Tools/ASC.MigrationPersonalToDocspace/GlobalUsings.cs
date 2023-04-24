@@ -47,6 +47,7 @@ global using ASC.Data.Backup.Tasks;
 global using ASC.Data.Backup.Tasks.Data;
 global using ASC.Data.Backup.Tasks.Modules;
 global using ASC.Data.Storage;
+global using ASC.Data.Storage.ZipOperators;
 global using ASC.EventBus.Abstractions;
 global using ASC.EventBus.Events;
 global using ASC.EventBus.Extensions.Logger;

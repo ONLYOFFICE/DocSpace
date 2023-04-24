@@ -1,3 +1,14 @@
 {
-  "LinkCopySuccess": "Връзката беше копирана"
+  "AddManually": "Добавете ръчно",
+  "AddManuallyDescriptionAccounts": "Поканете нови потребители в DocSpace лично чрез имейл",
+  "AddManuallyDescriptionRoom": "Добавете съществуващи DocSpace потребители към стаята, като използвате имената или поканете нови потребители лично чрез имейл",
+  "EmailErrorMessage": "Невалиден имейл адрес. Можете да редактирате имейла, като щракнете върху него.",
+  "InviteAccountSearchPlaceholder": "Поканете хора по имейл",
+  "InviteRoomSearchPlaceholder": "Поканете хора по име или имейл",
+  "InviteViaLink": "Поканете чрез линк",
+  "InviteViaLinkDescriptionAccounts": "Създайте универсален линк за самоупълномощаване в DocSpace",
+  "InviteViaLinkDescriptionRoom": "Създайте универсален линк за самоупълномощаване в стаята",
+  "Invited": "Поканени",
+  "LinkCopySuccess": "Връзката беше копирана",
+  "SendInvitation": "Изпращане на покана"
 }

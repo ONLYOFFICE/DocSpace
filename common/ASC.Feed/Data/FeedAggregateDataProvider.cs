@@ -100,10 +100,10 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
             using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction();
+            using var tx = await feedDbContext.Database.BeginTransactionAsync();
 
             foreach (var f in feeds)
             {
@@ -117,14 +117,14 @@ public class FeedAggregateDataProvider
 
                 if (f.ClearRightsBeforeInsert)
                 {
-                    var fu = feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefault();
+                    var fu = await feedDbContext.FeedUsers.Where(r => r.FeedId == f.Id).FirstOrDefaultAsync();
                     if (fu != null)
                     {
                         feedDbContext.FeedUsers.Remove(fu);
                     }
                 }
 
-                feedDbContext.AddOrUpdate(feedDbContext.FeedAggregates, feedAggregate);
+               await feedDbContext.AddOrUpdateAsync(r => feedDbContext.FeedAggregates, feedAggregate);
 
                 foreach (var u in f.Users)
                 {
@@ -134,14 +134,15 @@ public class FeedAggregateDataProvider
                         UserId = u
                     };
 
-                    feedDbContext.AddOrUpdate(feedDbContext.FeedUsers, feedUser);
+                    await feedDbContext.AddOrUpdateAsync(r => feedDbContext.FeedUsers, feedUser);
                 }
             }
 
-            feedDbContext.SaveChanges();
+            await feedDbContext.SaveChangesAsync();
 
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public void RemoveFeedAggregate(DateTime fromTime)
@@ -149,19 +150,17 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
             using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
-            var aggregates = feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime);
-            feedDbContext.FeedAggregates.RemoveRange(aggregates);
+            await feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).ExecuteDeleteAsync();
+            await feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)).ExecuteDeleteAsync();
 
-            var users = feedDbContext.FeedUsers.Where(r => feedDbContext.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId));
-            feedDbContext.FeedUsers.RemoveRange(users);
-
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult();
     }
 
     public List<FeedResultItem> GetFeeds(FeedApiFilter filter)
@@ -203,23 +202,58 @@ public class FeedAggregateDataProvider
         var q = feedDbContext.FeedAggregates.AsNoTracking()
             .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id);
 
-        var exp = GetIdSearchExpression(filter.Id, filter.Module, filter.WithRelated);
+        var feeds = filter.History ? GetFeedsAsHistoryQuery(q, filter) : GetFeedsDefaultQuery(feedDbContext, q, filter);
 
-        if (exp != null)
+        return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(feeds);
+    }
+
+    private static IQueryable<FeedAggregate> GetFeedsAsHistoryQuery(IQueryable<FeedAggregate> query, FeedApiFilter filter)
+    {
+        Expression<Func<FeedAggregate, bool>> exp = null;
+
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filter.Id);
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filter.Module);
+
+        switch (filter.Module)
         {
-            q = q.Where(exp);
+            case Constants.RoomsModule:
+                {
+                    var roomId = $"{Constants.RoomItem}_{filter.Id}";
+
+                    exp = f => f.Id == roomId || (f.Id.StartsWith(Constants.SharedRoomItem) && f.ContextId == roomId);
+
+                    if (filter.History)
+                    {
+                        exp = f => f.Id == roomId || f.ContextId == roomId;
+                    }
+
+                    break;
+                }
+            case Constants.FilesModule:
+                exp = f => f.Id.StartsWith($"{Constants.FileItem}_{filter.Id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{filter.Id}");
+                break;
+            case Constants.FoldersModule:
+                exp = f => f.Id == $"{Constants.FolderItem}_{filter.Id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{filter.Id}");
+                break;
         }
 
-        var q1 = q.Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
+        if (exp == null)
+        {
+            throw new InvalidOperationException();
+        }
+
+        return query.Where(exp);
+    }
+
+    private IQueryable<FeedAggregate> GetFeedsDefaultQuery(FeedDbContext feedDbContext, IQueryable<FeedAggregate> query, FeedApiFilter filter)
+    {
+        var q1 = query.Join(feedDbContext.FeedUsers, a => a.Id, b => b.FeedId, (aggregates, users) => new { aggregates, users })
             .OrderByDescending(r => r.aggregates.ModifiedDate)
             .Skip(filter.Offset)
             .Take(filter.Max);
 
-        if (exp == null)
-        {
-            q1 = q1.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID).
-                Where(r => r.users.UserId == _authContext.CurrentAccount.ID);
-        }
+        q1 = q1.Where(r => r.aggregates.ModifiedBy != _authContext.CurrentAccount.ID).
+            Where(r => r.users.UserId == _authContext.CurrentAccount.ID);
 
         if (filter.OnlyNew)
         {
@@ -250,16 +284,14 @@ public class FeedAggregateDataProvider
         if (filter.SearchKeys != null && filter.SearchKeys.Length > 0)
         {
             var keys = filter.SearchKeys
-                            .Where(s => !string.IsNullOrEmpty(s))
-                            .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
-                            .ToList();
+                .Where(s => !string.IsNullOrEmpty(s))
+                .Select(s => s.Replace("\\", "\\\\").Replace("%", "\\%").Replace("_", "\\_"))
+                .ToList();
 
             q1 = q1.Where(r => keys.Any(k => r.aggregates.Keywords.StartsWith(k)));
         }
 
-        var news = q1.Select(r => r.aggregates).Distinct().AsEnumerable();
-
-        return _mapper.Map<IEnumerable<FeedAggregate>, List<FeedResultItem>>(news);
+        return q1.Select(r => r.aggregates).Distinct();
     }
 
     public int GetNewFeedsCount(DateTime lastReadedTime)
@@ -305,21 +337,17 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var strategy = feedDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(() =>
+        strategy.Execute(async () =>
         {
             using var feedDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = feedDbContext.Database.BeginTransaction(IsolationLevel.ReadUncommitted);
+            using var tx = await feedDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
 
-            var aggregates = feedDbContext.FeedAggregates.Where(r => r.Id == id);
-            feedDbContext.FeedAggregates.RemoveRange(aggregates);
+            await feedDbContext.FeedAggregates.Where(r => r.Id == id).ExecuteDeleteAsync();
+            await feedDbContext.FeedUsers.Where(r => r.FeedId == id).ExecuteDeleteAsync();
 
-            var users = feedDbContext.FeedUsers.Where(r => r.FeedId == id);
-            feedDbContext.FeedUsers.RemoveRange(users);
-
-            feedDbContext.SaveChanges();
-
-            tx.Commit();
-        });
+            await tx.CommitAsync();
+        }).GetAwaiter()
+          .GetResult();
     }
 
     private Expression<Func<FeedAggregate, bool>> GetIdSearchExpression(string id, string module, bool withRelated)
@@ -328,30 +356,30 @@ public class FeedAggregateDataProvider
 
         if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(module))
         {
-            return exp;
+            return null;
         }
 
-        if (module == Constants.RoomsModule)
+        switch (module)
         {
-            var roomId = $"{Constants.RoomItem}_{id}";
-            var sharedRoomId = $"{Constants.SharedRoomItem}_{id}";
+            case Constants.RoomsModule:
+                {
+                    var roomId = $"{Constants.RoomItem}_{id}";
 
-            exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId);
+                    exp = f => f.Id == roomId || (f.Id.StartsWith(Constants.SharedRoomItem) && f.ContextId == roomId);
 
-            if (withRelated)
-            {
-                exp = f => f.Id == roomId || f.Id.StartsWith(sharedRoomId) || f.ContextId == roomId;
-            }
-        }
+                    if (withRelated)
+                    {
+                        exp = f => f.Id == roomId || f.ContextId == roomId;
+                    }
 
-        if (module == Constants.FilesModule)
-        {
-            exp = f => f.Id.StartsWith($"{Constants.FileItem}_{id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{id}");
-        }
-
-        if (module == Constants.FoldersModule)
-        {
-            exp = f => f.Id == $"{Constants.FolderItem}_{id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{id}");
+                    break;
+                }
+            case Constants.FilesModule:
+                exp = f => f.Id.StartsWith($"{Constants.FileItem}_{id}") || f.Id.StartsWith($"{Constants.SharedFileItem}_{id}");
+                break;
+            case Constants.FoldersModule:
+                exp = f => f.Id == $"{Constants.FolderItem}_{id}" || f.Id.StartsWith($"{Constants.SharedFolderItem}_{id}");
+                break;
         }
 
         return exp;

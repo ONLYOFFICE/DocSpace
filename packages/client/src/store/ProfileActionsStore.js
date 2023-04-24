@@ -3,8 +3,10 @@ import HotkeysReactSvgUrl from "PUBLIC_DIR/images/hotkeys.react.svg?url";
 import ProfileReactSvgUrl from "PUBLIC_DIR/images/profile.react.svg?url";
 import PaymentsReactSvgUrl from "PUBLIC_DIR/images/payments.react.svg?url";
 import HelpCenterReactSvgUrl from "PUBLIC_DIR/images/help.center.react.svg?url";
-import SupportReactSvgUrl from "PUBLIC_DIR/images/support.react.svg?url";
-import VideoGuidesReactSvgUrl from "PUBLIC_DIR/images/video.guides.react.svg?url";
+import EmailReactSvgUrl from "PUBLIC_DIR/images/email.react.svg?url";
+import LiveChatReactSvgUrl from "PUBLIC_DIR/images/support.react.svg?url";
+import BookTrainingReactSvgUrl from "PUBLIC_DIR/images/book.training.react.svg?url";
+//import VideoGuidesReactSvgUrl from "PUBLIC_DIR/images/video.guides.react.svg?url";
 import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import LogoutReactSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
 import { makeAutoObservable } from "mobx";
@@ -12,6 +14,9 @@ import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
+import { ZendeskAPI } from "@docspace/common/components/Zendesk";
+import { LIVE_CHAT_LOCAL_STORAGE_KEY } from "@docspace/common/constants";
+import toastr from "@docspace/components/toast/toastr";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 const PROFILE_SELF_URL = combineUrl(PROXY_HOMEPAGE_URL, "/accounts/view/@self");
@@ -21,9 +26,8 @@ const PAYMENTS_URL = combineUrl(
   PROXY_HOMEPAGE_URL,
   "/portal-settings/payments/portal-payments"
 );
-const HELP_URL = "https://onlyoffice.com/";
-const SUPPORT_URL = "https://onlyoffice.com/";
-const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
+
+//const VIDEO_GUIDES_URL = "https://onlyoffice.com/";
 
 class ProfileActionsStore {
   authStore = null;
@@ -33,6 +37,7 @@ class ProfileActionsStore {
   selectedFolderStore = null;
   isAboutDialogVisible = false;
   isDebugDialogVisible = false;
+  isShowLiveChat = false;
 
   constructor(
     authStore,
@@ -47,8 +52,26 @@ class ProfileActionsStore {
     this.treeFoldersStore = treeFoldersStore;
     this.selectedFolderStore = selectedFolderStore;
 
+    this.isShowLiveChat = this.getStateLiveChat();
+
     makeAutoObservable(this);
   }
+
+  getStateLiveChat = () => {
+    const state = localStorage.getItem(LIVE_CHAT_LOCAL_STORAGE_KEY) === "true";
+
+    if (!state) return false;
+
+    return state;
+  };
+
+  setStateLiveChat = (state) => {
+    if (typeof state !== "boolean") return;
+
+    localStorage.setItem(LIVE_CHAT_LOCAL_STORAGE_KEY, state.toString());
+
+    this.isShowLiveChat = state;
+  };
 
   setIsAboutDialogVisible = (visible) => {
     this.isAboutDialogVisible = visible;
@@ -71,8 +94,9 @@ class ProfileActionsStore {
   onProfileClick = () => {
     //TODO: add check manager
     const { isAdmin, isOwner } = this.authStore.userStore.user;
+    const { isRoomAdmin } = this.authStore;
 
-    if (isAdmin || isOwner) {
+    if (isAdmin || isOwner || isRoomAdmin) {
       this.selectedFolderStore.setSelectedFolder(null);
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
@@ -89,16 +113,37 @@ class ProfileActionsStore {
   };
 
   onHelpCenterClick = () => {
-    window.open(HELP_URL, "_blank");
+    const helpUrl = this.authStore.settingsStore.helpLink;
+
+    window.open(helpUrl, "_blank");
+  };
+
+  onLiveChatClick = (t) => {
+    const isShow = !this.isShowLiveChat;
+
+    this.setStateLiveChat(isShow);
+
+    ZendeskAPI("webWidget", isShow ? "show" : "hide");
+
+    toastr.success(isShow ? t("LiveChatOn") : t("LiveChatOff"));
   };
 
   onSupportClick = () => {
-    window.open(SUPPORT_URL, "_blank");
+    const supportUrl = this.authStore.settingsStore.additionalResourcesData
+      ?.feedbackAndSupportUrl;
+
+    window.open(supportUrl, "_blank");
   };
 
-  onVideoGuidesClick = () => {
-    window.open(VIDEO_GUIDES_URL, "_blank");
+  onBookTraining = () => {
+    const trainingEmail = this.authStore.settingsStore?.bookTrainingEmail;
+
+    trainingEmail && window.open(`mailto:${trainingEmail}`, "_blank");
   };
+
+  // onVideoGuidesClick = () => {
+  //   window.open(VIDEO_GUIDES_URL, "_blank");
+  // };
 
   onHotkeysClick = () => {
     this.authStore.settingsStore.setHotkeyPanelVisible(true);
@@ -116,9 +161,11 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      window.location.replace(
-        combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
-      );
+      setTimeout(() => {
+        window.location.replace(
+          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
+        );
+      }, 300);
     });
   };
 
@@ -167,6 +214,31 @@ class ProfileActionsStore {
       };
     }
     // }
+
+    let liveChat = null;
+
+    if (!isMobile && this.authStore.isLiveChatAvailable) {
+      liveChat = {
+        key: "user-menu-live-chat",
+        icon: LiveChatReactSvgUrl,
+        label: t("Common:LiveChat"),
+        onClick: () => this.onLiveChatClick(t),
+        checked: this.isShowLiveChat,
+        withToggle: true,
+      };
+    }
+
+    let bookTraining = null;
+
+    if (!isMobile && this.authStore.isTeamTrainingAlertAvailable) {
+      bookTraining = {
+        key: "user-menu-book-training",
+        icon: BookTrainingReactSvgUrl,
+        label: t("Common:BookTraining"),
+        onClick: this.onBookTraining,
+      };
+    }
+
     const actions = [
       {
         key: "user-menu-profile",
@@ -182,24 +254,34 @@ class ProfileActionsStore {
         onClick: this.onPaymentsClick,
       },
       {
+        isSeparator: true,
+        key: "separator1",
+      },
+      {
         key: "user-menu-help-center",
         icon: HelpCenterReactSvgUrl,
         label: t("Common:HelpCenter"),
         onClick: this.onHelpCenterClick,
       },
+      // {
+      //   key: "user-menu-video",
+      //   icon: VideoGuidesReactSvgUrl,
+      //   label: "VideoGuides",
+      //   onClick: this.onVideoGuidesClick,
+      // },
+      hotkeys,
+      {
+        isSeparator: true,
+        key: "separator2",
+      },
+      liveChat,
       {
         key: "user-menu-support",
-        icon: SupportReactSvgUrl,
+        icon: EmailReactSvgUrl,
         label: t("Common:FeedbackAndSupport"),
         onClick: this.onSupportClick,
       },
-      {
-        key: "user-menu-video",
-        icon: VideoGuidesReactSvgUrl,
-        label: t("Common:VideoGuides"),
-        onClick: this.onVideoGuidesClick,
-      },
-      hotkeys,
+      bookTraining,
       {
         key: "user-menu-about",
         icon: InfoOutlineReactSvgUrl,
@@ -208,7 +290,7 @@ class ProfileActionsStore {
       },
       {
         isSeparator: true,
-        key: "separator",
+        key: "separator3",
       },
       {
         key: "user-menu-logout",
@@ -220,7 +302,7 @@ class ProfileActionsStore {
     ];
 
     if (debugInfo) {
-      actions.splice(3, 0, {
+      actions.splice(4, 0, {
         key: "user-menu-debug",
         icon: InfoOutlineReactSvgUrl,
         label: "Debug Info",

@@ -132,7 +132,6 @@ const StyledBody = styled.div`
 
 const SelectUsersCountContainer = ({
   managersCount,
-  setShoppingLink,
   theme,
   isDisabled,
   isLoading,
@@ -146,16 +145,12 @@ const SelectUsersCountContainer = ({
   addedManagersCountTitle,
   isNeedPlusSign,
 }) => {
-  const { t } = useTranslation("Payments");
-
   const onSliderChange = (e) => {
     const count = parseFloat(e.target.value);
     if (count > minAvailableManagersValue) {
-      setShoppingLink(count);
       setManagersCount(count);
       setTotalPrice(count);
     } else {
-      setShoppingLink(minAvailableManagersValue);
       setManagersCount(minAvailableManagersValue);
       setTotalPrice(minAvailableManagersValue);
     }
@@ -182,7 +177,6 @@ const SelectUsersCountContainer = ({
     }
 
     if (value !== +managersCount) {
-      setShoppingLink(value);
       setManagersCount(value);
       setTotalPrice(value);
     }
@@ -201,10 +195,10 @@ const SelectUsersCountContainer = ({
 
     if (numberValue === 0) {
       setManagersCount(minAvailableManagersValue);
+      setTotalPrice(minAvailableManagersValue);
       return;
     }
 
-    setShoppingLink(numberValue);
     setManagersCount(numberValue);
     setTotalPrice(numberValue);
   };
@@ -299,12 +293,14 @@ export default inject(({ auth, payments }) => {
     setTotalPrice,
     isLessCountThanAcceptable,
     stepByQuotaForManager,
+    isAlreadyPaid,
   } = payments;
   const { addedManagersCountTitle } = paymentQuotasStore;
 
   const step = stepByQuotaForManager;
 
   return {
+    isAlreadyPaid,
     theme,
     isLoading,
     minAvailableManagersValue,

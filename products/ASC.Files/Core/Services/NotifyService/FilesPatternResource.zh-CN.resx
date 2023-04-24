@@ -68,11 +68,6 @@
 
 登录您的DocuSign账户，获取更多信息。</value>
   </data>
-  <data name="pattern_EditorMentions" xml:space="preserve">
-    <value>h1. "$__作者名字":"$__作者Url地址" 在文档注释中提到您
-这是一封邮件，用于通知“$文档标题”：“$文档URL地址”文档的注释中“$__作者名字”：“$__作者Url名字”提到了您：
-$信息</value>
-  </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. 邮件发送已完成
 
@@ -106,9 +101,6 @@ $Message</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>文档。 签名状态已更改</value>
-  </data>
-  <data name="subject_EditorMentions" xml:space="preserve">
-    <value>文档。文档中提及</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>文档。 邮件发送已完成。</value>

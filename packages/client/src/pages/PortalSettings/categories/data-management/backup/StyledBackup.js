@@ -5,7 +5,12 @@ import {
 } from "../../../utils/commonSettingsStyles";
 import globalColors from "@docspace/components/utils/globalColors";
 import { isMobileOnly } from "react-device-detect";
-import { mobile } from "@docspace/components/utils/device";
+import {
+  hugeMobile,
+  tablet,
+  mobile,
+  smallTablet,
+} from "@docspace/components/utils/device";
 
 const linkColor = globalColors.black;
 
@@ -72,14 +77,34 @@ const StyledManualBackup = styled.div`
   .manual-backup_buttons {
     margin-top: 16px;
     margin-left: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
     button:first-child {
-      width: 50%;
-      max-width: 164px;
+      max-width: 124px;
       margin-right: 8px;
     }
     button:last-child {
-      max-width: 164px;
-      width: calc(50% - 8px);
+      max-width: 153px;
+    }
+
+    @media ${tablet} {
+      button:first-child {
+        max-width: 129px;
+      }
+      button:last-child {
+        max-width: 160px;
+      }
+    }
+
+    @media ${hugeMobile} {
+      button:first-child {
+        max-width: 155px;
+      }
+      button:last-child {
+        max-width: 155px;
+      }
     }
   }
   .manual-backup_storages-module {
@@ -163,6 +188,7 @@ const StyledAutoBackup = styled.div`
   .auto-backup_badge {
     height: 16px;
     margin-left: 8px;
+    cursor: auto;
   }
   ${(props) => !props.isEnableAuto && UnavailableStyles}
 `;
@@ -219,6 +245,10 @@ const StyledRestoreBackup = styled.div`
   .restore-backup_input {
     margin: 16px 0;
     max-width: ${INPUT_LENGTH};
+
+    @media ${smallTablet} {
+      max-width: none;
+    }
   }
   .restore-description {
     margin-bottom: 24px;
@@ -230,7 +260,9 @@ const StyledRestoreBackup = styled.div`
     margin-bottom: 16px;
   }
   .restore-backup_button {
-    ${isMobileOnly && "width:100%"}
+    @media ${smallTablet} {
+      width: 100%;
+    }
   }
   ${(props) => !props.isEnableRestore && UnavailableStyles}
 `;

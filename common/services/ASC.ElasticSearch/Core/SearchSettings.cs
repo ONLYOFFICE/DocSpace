@@ -158,7 +158,7 @@ public class SearchSettingsHelper
             return true;
         }
 
-        var settings = _settingsManager.LoadForTenant<SearchSettings>(tenantId);
+        var settings = _settingsManager.Load<SearchSettings>(tenantId);
 
         return settings.IsEnabled(((ISearchItemDocument)_serviceProvider.GetService(t)).IndexName);
     }

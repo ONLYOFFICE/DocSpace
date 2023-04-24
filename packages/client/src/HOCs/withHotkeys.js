@@ -56,6 +56,8 @@ const withHotkeys = (Component) => {
       isVisitor,
       deleteRooms,
       archiveRooms,
+      isGracePeriod,
+      setInviteUsersWarningDialogVisible,
     } = props;
 
     const hotkeysFilter = {
@@ -98,6 +100,11 @@ const withHotkeys = (Component) => {
 
     const onCreateRoom = () => {
       if (!isVisitor && isRoomsFolder) {
+        if (isGracePeriod) {
+          setInviteUsersWarningDialogVisible(true);
+          return;
+        }
+
         const event = new Event(Events.ROOM_CREATE);
         window.dispatchEvent(event);
       }
@@ -387,6 +394,7 @@ const withHotkeys = (Component) => {
         setDeleteDialogVisible,
         setSelectFileDialogVisible,
         someDialogIsOpen,
+        setInviteUsersWarningDialogVisible,
       } = dialogsStore;
       const {
         isAvailableOption,
@@ -400,6 +408,7 @@ const withHotkeys = (Component) => {
       const { visible: mediaViewerIsVisible } = mediaViewerDataStore;
       const { setHotkeyPanelVisible } = auth.settingsStore;
       const { isVisitor } = auth.userStore.user;
+      const { isGracePeriod } = auth.currentTariffStatusStore;
 
       const {
         isFavoritesFolder,
@@ -457,6 +466,9 @@ const withHotkeys = (Component) => {
         isVisitor,
         deleteRooms,
         archiveRooms,
+
+        isGracePeriod,
+        setInviteUsersWarningDialogVisible,
       };
     }
   )(observer(WithHotkeys));

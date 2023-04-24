@@ -24,6 +24,8 @@ class UserStore {
     else user = await api.people.getUser();
 
     this.setUser(user);
+
+    return user;
   };
 
   init = async () => {
@@ -62,6 +64,19 @@ class UserStore {
     this.setIsLoading(false);
   };
 
+  updateEmailActivationStatus = async (activationStatus, userId, key) => {
+    this.setIsLoading(true);
+
+    const user = await api.people.updateActivationStatus(
+      activationStatus,
+      userId,
+      key
+    );
+
+    this.setUser(user);
+    this.setIsLoading(false);
+  };
+
   changeTheme = async (key) => {
     this.setIsLoading(true);
 
@@ -86,29 +101,32 @@ class UserStore {
   sendActivationLink = (t) => {
     const { email, id } = this.user;
 
-    return api.people
-      .resendUserInvites([id])
-      .then(() => {
-        toastr.success(
-          <Trans
-            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            ns="People"
-            t={t}
-          >
-            The email activation instructions have been sent to the
-            <strong>{{ email: email }}</strong> email address
-          </Trans>
-        );
-      })
-      .finally(() => {
-        this.setWithSendAgain(false);
-      });
+    return api.people.resendUserInvites([id]).then(() => {
+      toastr.success(
+        <Trans
+          i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
+          ns="People"
+          t={t}
+        >
+          The email activation instructions have been sent to the
+          <strong>{{ email: email }}</strong> email address
+        </Trans>
+      );
+    });
+  };
+
+  updateAvatarInfo = (avatar, avatarSmall, avatarMedium, avatarMax) => {
+    this.user.avatar = avatar;
+    this.user.avatarSmall = avatarSmall;
+    this.user.avatarMedium = avatarMedium;
+    this.user.avatarMax = avatarMax;
   };
 
   get withActivationBar() {
     return (
       this.user &&
-      this.user.activationStatus === EmployeeActivationStatus.Pending &&
+      (this.user.activationStatus === EmployeeActivationStatus.Pending ||
+        this.user.activationStatus === EmployeeActivationStatus.NotActivated) &&
       this.withSendAgain
     );
   }

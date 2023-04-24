@@ -34,9 +34,9 @@ const ToggleButtonContainer = styled.label`
       props.isChecked
         ? css`
             rect {
-              fill: ${props.isDisabled &&
-              props.theme.isBase &&
-              props.theme.toggleButton.fillColorOff} !important;
+              fill: ${props.isDisabled && props.theme.isBase
+                ? props.theme.toggleButton.fillColorOff
+                : props.theme.toggleButton.fillColorDefault} !important;
 
               &:hover {
                 opacity: ${!props.isDisabled && "0.85"};
