@@ -17,6 +17,7 @@
   "HideAuthPage": "인증 페이지 숨기기",
   "LogoutEndpointUrl": "IdP 싱글 로그아웃 엔드포인트 URL",
   "LogoutEndpointUrlTooltip": "서비스 공급자 측의 싱글 로그아웃에 사용되는 URL",
+  "MetadataLoadError": "메타데이터 파일이 전송되지 않았습니다",
   "NameIDFormat": "이름 ID 형식",
   "NewCertificate": "새 인증서",
   "OpenCertificate": "공인 인증서",
