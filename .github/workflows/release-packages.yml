@@ -37,11 +37,10 @@ jobs:
           wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
           sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
           echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          
           wget https://packages.microsoft.com/config/$(lsb_release -is | tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make # rename curl nginx mysql-server
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make
           sudo npm install -g json
           
           
@@ -78,13 +77,13 @@ jobs:
 
       - name: INSTALL tools & Prepare build
         run: |
-          sudo apt install -y rpm rename curl # nginx mysql-server 
-          curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
-          echo "deb https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+          wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
+          sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
+          echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
           wget https://packages.microsoft.com/config/$(lsb_release -is | tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
-          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt install -y dotnet-sdk-7.0 yarn nodejs
+          wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make
           sudo npm install -g json
           
           
