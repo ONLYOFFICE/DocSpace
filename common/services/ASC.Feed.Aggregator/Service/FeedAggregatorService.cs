@@ -150,7 +150,7 @@ public class FeedAggregatorService : FeedBaseService
                         var feedsRow = feeds
                             .Select(tuple => new Tuple<FeedRow, object>(new FeedRow(tuple.Item1)
                             {
-                                Tenant = tenant1,
+                                TenantId = tenant1,
                                 Product = module1.Product
                             }, tuple.Item2))
                             .ToList();
@@ -179,7 +179,7 @@ public class FeedAggregatorService : FeedBaseService
                 {
                     foreach (var userGuid in res.Users.Where(userGuid => !userGuid.Equals(res.ModifiedBy)))
                     {
-                        if (!unreadUsers.TryGetValue(res.Tenant, out var dictionary))
+                        if (!unreadUsers.TryGetValue(res.TenantId, out var dictionary))
                         {
                             dictionary = new Dictionary<Guid, int>();
                         }
@@ -192,7 +192,7 @@ public class FeedAggregatorService : FeedBaseService
                             dictionary.Add(userGuid, 1);
                         }
 
-                        unreadUsers[res.Tenant] = dictionary;
+                        unreadUsers[res.TenantId] = dictionary;
                     }
                 }
             }

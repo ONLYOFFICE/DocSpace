@@ -136,7 +136,7 @@ public class LicenseController : BaseSettingsController
         }
 
         var curQuota = _tenantManager.GetCurrentTenantQuota();
-        if (curQuota.Tenant != Tenant.DefaultTenant)
+        if (curQuota.TenantId != Tenant.DefaultTenant)
         {
             return false;
         }
@@ -168,7 +168,7 @@ public class LicenseController : BaseSettingsController
 
         var tariff = new Tariff
         {
-            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+            Quotas = new List<Quota> { new Quota(quota.TenantId, 1) },
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 

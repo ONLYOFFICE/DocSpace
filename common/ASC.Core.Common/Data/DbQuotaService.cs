@@ -51,7 +51,7 @@ class DbQuotaService : IQuotaService
         using var coreDbContext = _dbContextFactory.CreateDbContext();
 
         return coreDbContext.Quotas
-            .Where(r => r.Tenant == id)
+            .Where(r => r.TenantId == id)
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
             .SingleOrDefault();
     }
@@ -78,7 +78,7 @@ class DbQuotaService : IQuotaService
             using var tr = await coreDbContext.Database.BeginTransactionAsync();
 
             await coreDbContext.Quotas
-                               .Where(r => r.Tenant == id)
+                               .Where(r => r.TenantId == id)
                                .ExecuteDeleteAsync();
 
             await tr.CommitAsync();
@@ -95,7 +95,7 @@ class DbQuotaService : IQuotaService
         var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
         dbTenantQuotaRow.UserId = row.UserId;
 
-        var exist = coreDbContext.QuotaRows.Find(new object[] { dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
+        var exist = coreDbContext.QuotaRows.Find(new object[] { dbTenantQuotaRow.TenantId, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
 
         if (exist == null)
         {
@@ -107,7 +107,7 @@ class DbQuotaService : IQuotaService
             if (exchange)
             {
                 coreDbContext.QuotaRows
-                    .Where(r => r.Path == row.Path && r.Tenant == row.Tenant && r.UserId == row.UserId)
+                    .Where(r => r.Path == row.Path && r.TenantId == row.TenantId && r.UserId == row.UserId)
                     .ExecuteUpdate(x => x.SetProperty(p => p.Counter, p => (p.Counter + row.Counter)));
             }
             else
@@ -130,7 +130,7 @@ class DbQuotaService : IQuotaService
 
         if (tenantId != Tenant.DefaultTenant)
         {
-            q = q.Where(r => r.Tenant == tenantId);
+            q = q.Where(r => r.TenantId == tenantId);
         }
 
         return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();

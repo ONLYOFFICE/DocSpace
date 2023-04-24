@@ -28,7 +28,7 @@ namespace ASC.Core.Common.EF;
 
 public class User : BaseEntity, IMapFrom<UserInfo>
 {
-    public int Tenant { get; set; }
+    public int TenantId { get; set; }
     public string UserName { get; set; }
     public string FirstName { get; set; }
     public string LastName { get; set; }
@@ -54,6 +54,8 @@ public class User : BaseEntity, IMapFrom<UserInfo>
     public DateTime CreateDate { get; set; }
     public DateTime LastModified { get; set; }
 
+    public DbTenant Tenant { get; set; }
+
     public override object[] GetKeys()
     {
         return new object[] { Id };
@@ -64,6 +66,8 @@ public static class DbUserExtension
 {
     public static ModelBuilderWrapper AddUser(this ModelBuilderWrapper modelBuilder)
     {
+        modelBuilder.Entity<User>().Navigation(e => e.Tenant).AutoInclude(false);
+
         modelBuilder
             .Add(MySqlAddUser, Provider.MySql)
             .Add(PgSqlAddUser, Provider.PostgreSql)
@@ -74,7 +78,7 @@ public static class DbUserExtension
                 FirstName = "Administrator",
                 LastName = "",
                 UserName = "administrator",
-                Tenant = 1,
+                TenantId = 1,
                 Email = "",
                 Status = (EmployeeStatus)1,
                 ActivationStatus = 0,
@@ -102,7 +106,7 @@ public static class DbUserExtension
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified");
 
-            entity.HasIndex(e => new { e.Tenant, e.UserName })
+            entity.HasIndex(e => new { e.TenantId, e.UserName })
                 .HasDatabaseName("username");
 
             entity.Property(e => e.Id)
@@ -213,7 +217,7 @@ public static class DbUserExtension
                 .HasColumnName("status")
                 .HasDefaultValueSql("'1'");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
 
             entity.Property(e => e.TerminatedDate)
                 .HasColumnName("terminateddate")
@@ -251,7 +255,7 @@ public static class DbUserExtension
             entity.HasIndex(e => e.LastModified)
                 .HasDatabaseName("last_modified_core_user");
 
-            entity.HasIndex(e => new { e.UserName, e.Tenant })
+            entity.HasIndex(e => new { e.UserName, e.TenantId })
                 .HasDatabaseName("username");
 
             entity.Property(e => e.Id)
@@ -333,7 +337,7 @@ public static class DbUserExtension
                 .HasColumnName("status")
                 .HasDefaultValueSql("1");
 
-            entity.Property(e => e.Tenant).HasColumnName("tenant");
+            entity.Property(e => e.TenantId).HasColumnName("tenant");
 
             entity.Property(e => e.TerminatedDate).HasColumnName("terminateddate");
 

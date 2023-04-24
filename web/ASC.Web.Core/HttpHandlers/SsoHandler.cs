@@ -195,7 +195,7 @@ public class SsoHandlerService
                     _log.WarningWithException("Failed to save user", ex);
                 }
 
-                var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
+                var authKey = _cookiesManager.AuthenticateMeAndSetCookies(userInfo.TenantId, userInfo.Id, MessageAction.LoginSuccessViaSSO);
 
                 context.Response.Redirect(_commonLinkUtility.GetDefault() + "?token=" + HttpUtility.UrlEncode(authKey), false);
 

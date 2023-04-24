@@ -117,7 +117,7 @@ public class PeopleController : ControllerBase
 
     private string GetUserProfileLink(UserInfo user)
     {
-        var tenantDomain = GetTenantDomain(user.Tenant);
+        var tenantDomain = GetTenantDomain(user.TenantId);
         return string.Format("{0}{1}{2}/{3}",
                              _httpContextAccessor.HttpContext.Request.Scheme,
                              Uri.SchemeDelimiter,

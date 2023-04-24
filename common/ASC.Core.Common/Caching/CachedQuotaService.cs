@@ -104,7 +104,7 @@ class CachedQuotaService : IQuotaService
 
     public TenantQuota GetTenantQuota(int tenant)
     {
-        return GetTenantQuotas().SingleOrDefault(q => q.Tenant == tenant);
+        return GetTenantQuotas().SingleOrDefault(q => q.TenantId == tenant);
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)
@@ -123,11 +123,11 @@ class CachedQuotaService : IQuotaService
     public void SetTenantQuotaRow(TenantQuotaRow row, bool exchange)
     {
         Service.SetTenantQuotaRow(row, exchange);
-        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant) }, CacheNotifyAction.Any);
+        CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.TenantId) }, CacheNotifyAction.Any);
 
         if (row.UserId != Guid.Empty)
         {
-            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.Tenant, row.UserId) }, CacheNotifyAction.Any);
+            CacheNotify.Publish(new QuotaCacheItem { Key = GetKey(row.TenantId, row.UserId) }, CacheNotifyAction.Any);
         }
     }
 

@@ -54,7 +54,7 @@ public class FeedReadedDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         return feedDbContext.FeedReaded
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .Where(r => r.UserId == user)
             .Where(r => r.Module == module)
             .Max(r => r.TimeStamp);
@@ -87,7 +87,7 @@ public class FeedReadedDataProvider
             UserId = user,
             TimeStamp = time,
             Module = module,
-            Tenant = tenant
+            TenantId = tenant
         };
 
         using var feedDbContext = _dbContextFactory.CreateDbContext();
@@ -104,7 +104,7 @@ public class FeedReadedDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         return feedDbContext.FeedReaded
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .Where(r => r.UserId == user)
             .Where(r => r.TimeStamp >= fromTime)
             .Select(r => r.Module)

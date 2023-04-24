@@ -93,7 +93,7 @@ public class DbTenantService : ITenantService
         using var userDbContext = _userDbContextFactory.CreateDbContext();//TODO: remove
         IQueryable<TenantUserSecurity> query() => tenantDbContext.Tenants
                 .Where(r => r.Status == TenantStatus.Active)
-                .Join(userDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
+                .Join(userDbContext.Users, r => r.Id, r => r.TenantId, (tenant, user) => new
                 {
                     tenant,
                     user
@@ -316,7 +316,7 @@ public class DbTenantService : ITenantService
     {
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return tenantDbContext.CoreSettings
-            .Where(r => r.Tenant == tenant)
+            .Where(r => r.TenantId == tenant)
             .Where(r => r.Id == key)
             .Select(r => r.Value)
             .FirstOrDefault();
@@ -335,7 +335,7 @@ public class DbTenantService : ITenantService
             if (data == null || data.Length == 0)
             {
                 var settings = await tenantDbContext.CoreSettings
-                    .Where(r => r.Tenant == tenant)
+                    .Where(r => r.TenantId == tenant)
                     .Where(r => r.Id == key)
                     .FirstOrDefaultAsync();
 
@@ -349,7 +349,7 @@ public class DbTenantService : ITenantService
                 var settings = new DbCoreSettings
                 {
                     Id = key,
-                    Tenant = tenant,
+                    TenantId = tenant,
                     Value = data,
                     LastModified = DateTime.UtcNow
                 };

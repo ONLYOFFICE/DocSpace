@@ -200,7 +200,7 @@ public class FeedAggregateDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var q = feedDbContext.FeedAggregates.AsNoTracking()
-            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id);
+            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id);
 
         var feeds = filter.History ? GetFeedsAsHistoryQuery(q, filter) : GetFeedsDefaultQuery(feedDbContext, q, filter);
 
@@ -298,7 +298,7 @@ public class FeedAggregateDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         var count = feedDbContext.FeedAggregates
-            .Where(r => r.Tenant == _tenantManager.GetCurrentTenant().Id)
+            .Where(r => r.TenantId == _tenantManager.GetCurrentTenant().Id)
             .Where(r => r.ModifiedBy != _authContext.CurrentAccount.ID)
             .Join(feedDbContext.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
             .Where(r => r.user.UserId == _authContext.CurrentAccount.ID);
@@ -316,7 +316,7 @@ public class FeedAggregateDataProvider
         using var feedDbContext = _dbContextFactory.CreateDbContext();
         return feedDbContext.FeedAggregates
             .Where(r => r.AggregateDate >= interval.From && r.AggregateDate <= interval.To)
-            .GroupBy(r => r.Tenant)
+            .GroupBy(r => r.TenantId)
             .Select(r => r.Key)
             .ToList();
     }

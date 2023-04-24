@@ -42,6 +42,7 @@ public class WebhooksLog
     public DateTime? Delivery { get; set; }
 
     public WebhooksConfig Config { get; set; }
+    public DbTenant Tenant { get; set; }
 }
 
 public static class WebhooksPayloadExtension
@@ -49,6 +50,7 @@ public static class WebhooksPayloadExtension
     public static ModelBuilderWrapper AddWebhooksLog(this ModelBuilderWrapper modelBuilder)
     {
         modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Config).AutoInclude();
+        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Tenant).AutoInclude(false);
 
         modelBuilder
             .Add(MySqlAddWebhooksLog, Provider.MySql)

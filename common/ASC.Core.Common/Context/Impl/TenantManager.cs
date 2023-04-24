@@ -280,7 +280,7 @@ public class TenantManager
 
     public IEnumerable<TenantQuota> GetTenantQuotas(bool all)
     {
-        return QuotaService.GetTenantQuotas().Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
+        return QuotaService.GetTenantQuotas().Where(q => q.TenantId < 0 && (all || q.Visible)).OrderByDescending(q => q.TenantId).ToList();
     }
 
     public TenantQuota GetCurrentTenantQuota(bool refresh = false)
@@ -291,7 +291,7 @@ public class TenantManager
     public TenantQuota GetTenantQuota(int tenant, bool refresh = false)
     {
         var defaultQuota = QuotaService.GetTenantQuota(tenant) ?? QuotaService.GetTenantQuota(Tenant.DefaultTenant) ?? TenantQuota.Default;
-        if (defaultQuota.Tenant != tenant && TariffService != null)
+        if (defaultQuota.TenantId != tenant && TariffService != null)
         {
             var tariff = TariffService.GetTariff(tenant, refresh: refresh);
 

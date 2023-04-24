@@ -372,7 +372,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 throw new Exception("Profile is null");
             }
 
-            _cookiesManager.AuthenticateMeAndSetCookies(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
+            _cookiesManager.AuthenticateMeAndSetCookies(userInfo.TenantId, userInfo.Id, MessageAction.LoginSuccessViaSocialApp);
 
             if (isNew)
             {

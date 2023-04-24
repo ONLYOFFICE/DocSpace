@@ -27,7 +27,6 @@
 namespace ASC.Core.Common.EF.Context;
 public class FirebaseDbContext : DbContext
 {
-
     public DbSet<FireBaseUser> Users { get; set; }
 
     public FirebaseDbContext(DbContextOptions<FirebaseDbContext> options) : base(options)

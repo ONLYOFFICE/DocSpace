@@ -212,7 +212,7 @@ public class LicenseReader
 
         var tariff = new Tariff
         {
-            Quotas = new List<Quota> { new Quota(quota.Tenant, 1) },
+            Quotas = new List<Quota> { new Quota(quota.TenantId, 1) },
             DueDate = license.DueDate,
         };
 

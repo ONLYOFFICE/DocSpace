@@ -106,7 +106,7 @@ public class DbSubscriptionService : ISubscriptionService
         var q = userDbContext.Subscriptions
             .Where(r => r.Source == sourceId &&
                         r.Action == actionId &&
-                        r.Tenant == tenant &&
+                        r.TenantId == tenant &&
                         r.Recipient == recipientId &&
                         r.Unsubscribed);
 
@@ -154,7 +154,7 @@ public class DbSubscriptionService : ISubscriptionService
             Recipient = s.RecipientId,
             Source = s.SourceId,
             Unsubscribed = !s.Subscribed,
-            Tenant = s.Tenant
+            TenantId = s.Tenant
         };
 
         using var userDbContext = _dbContextFactory.CreateDbContext();
@@ -180,7 +180,7 @@ public class DbSubscriptionService : ISubscriptionService
             using var userDbContext = _dbContextFactory.CreateDbContext();
             using var tr = await userDbContext.Database.BeginTransactionAsync();
             var q = userDbContext.Subscriptions
-                .Where(r => r.Tenant == tenant)
+                .Where(r => r.TenantId == tenant)
                 .Where(r => r.Source == sourceId)
                 .Where(r => r.Action == actionId);
 
@@ -209,7 +209,7 @@ public class DbSubscriptionService : ISubscriptionService
 
         using var userDbContext = _dbContextFactory.CreateDbContext();
         var q = userDbContext.SubscriptionMethods
-            .Where(r => r.Tenant == -1 || r.Tenant == tenant)
+            .Where(r => r.TenantId == -1 || r.TenantId == tenant)
             .Where(r => r.Source == sourceId);
 
         if (recipientId != null)
@@ -218,7 +218,7 @@ public class DbSubscriptionService : ISubscriptionService
         }
 
         var a = q
-            .OrderBy(r => r.Tenant)
+            .OrderBy(r => r.TenantId)
             .Distinct();
 
 
@@ -262,7 +262,7 @@ public class DbSubscriptionService : ISubscriptionService
             if (m.Methods == null || m.Methods.Length == 0)
             {
                 var q = userDbContext.SubscriptionMethods
-                    .Where(r => r.Tenant == m.Tenant)
+                    .Where(r => r.TenantId == m.Tenant)
                     .Where(r => r.Source == m.Source)
                     .Where(r => r.Recipient == m.Recipient)
                     .Where(r => r.Action == m.Action);
@@ -281,7 +281,7 @@ public class DbSubscriptionService : ISubscriptionService
                     Action = m.Action,
                     Recipient = m.Recipient,
                     Source = m.Source,
-                    Tenant = m.Tenant,
+                    TenantId = m.Tenant,
                     Sender = string.Join("|", m.Methods)
                 };
                 await userDbContext.AddOrUpdateAsync(r => userDbContext.SubscriptionMethods, sm);
@@ -304,8 +304,8 @@ public class DbSubscriptionService : ISubscriptionService
             userDbContext.Subscriptions
             .Where(r => r.Source == sourceId)
             .Where(r => r.Action == actionId)
-            .Where(r => r.Tenant == -1 || r.Tenant == tenant)
-            .OrderBy(r => r.Tenant);
+            .Where(r => r.TenantId == -1 || r.TenantId == tenant)
+            .OrderBy(r => r.TenantId);
     }
 
     private IEnumerable<SubscriptionRecord> GetSubscriptions(IQueryable<Subscription> q, int tenant)

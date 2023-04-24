@@ -129,7 +129,7 @@ public class TenantQuotaController : IQuotaController
     private void SetTenantQuotaRow(string module, string domain, long size, string dataTag, bool exchange, Guid userId)
     {
         _tenantManager.SetTenantQuotaRow(
-            new TenantQuotaRow { Tenant = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag, UserId = userId, LastModified = DateTime.UtcNow },
+            new TenantQuotaRow { TenantId = _tenant, Path = $"/{module}/{domain}", Counter = size, Tag = dataTag, UserId = userId, LastModified = DateTime.UtcNow },
             exchange);
 
     }
