@@ -22,7 +22,6 @@
   "RegisterTextBodyBeforeDomainsList": "Rejestracja jest dostępna dla użytkowników posiadających adres e-mail na następujących domenach:",
   "RegisterTitle": "Wniosek o rejestrację",
   "RegistrationEmailWatermark": "E-mail",
-  "Remember": "Pamiętaj mnie",
   "RememberHelper": "Domyślny czas trwania sesji to 20 min. Zaznacz tę opcję, aby ustawić go na 1 rok. Aby ustawić wartość niestandardową, przejdź do Ustawień.",
   "ResendCode": "Wyślij kod jeszcze raz",
   "SignInWithCode": "Zaloguj się za pomocą tajnego kodu",

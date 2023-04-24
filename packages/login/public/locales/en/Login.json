@@ -22,7 +22,6 @@
   "RegisterTextBodyBeforeDomainsList": "Registration is available to users with an email account at",
   "RegisterTitle": "Registration request",
   "RegistrationEmailWatermark": "Email",
-  "Remember": "Remember me",
   "RememberHelper": "The default session lifetime is 20 minutes. Check this option to set it to 1 year. To set your own value, go to Settings.",
   "ResendCode": "Resend code",
   "SignInWithCode": "Sign in with secret code",

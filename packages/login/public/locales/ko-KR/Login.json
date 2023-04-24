@@ -22,7 +22,6 @@
   "RegisterTextBodyBeforeDomainsList": "이메일 계정을 가진 사용자만 가입할 수 있습니다 -",
   "RegisterTitle": "가입 요청",
   "RegistrationEmailWatermark": "이메일",
-  "Remember": "저장하기",
   "RememberHelper": "기본 세션 기간은 20분입니다. 1년으로 설정하려면 이 옵션을 확인하세요. 원하시는 값으로 설정하려면 설정으로 이동하세요.",
   "ResendCode": "코드 재전송",
   "SignInWithCode": "비밀 코드로 로그인",

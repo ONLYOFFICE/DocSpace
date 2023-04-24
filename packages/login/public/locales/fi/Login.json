@@ -22,7 +22,6 @@
   "RegisterTextBodyBeforeDomainsList": "Rekisteröityminen on saatavilla käyttäjille, joilla on sähköpostitili osoitteessa",
   "RegisterTitle": "Rekisteröintipyyntö",
   "RegistrationEmailWatermark": "sähköposti",
-  "Remember": "Muista minut",
   "RememberHelper": "Istunnon oletuskesto on 20 minuuttia. Valitse tämä vaihtoehto, jos haluat asettaa sen 1 vuodeksi. Voit asettaa oman arvon Asetuksissa.",
   "ResendCode": "Lähetä koodi uudelleen",
   "SignInWithCode": "Kirjaudu sisään salaisella koodilla",
