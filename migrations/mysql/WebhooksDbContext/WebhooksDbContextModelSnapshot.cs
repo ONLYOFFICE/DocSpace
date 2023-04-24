@@ -31,16 +31,14 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)")
                         .HasColumnName("method")
-                        .HasDefaultValueSql("''")
-                        .IsRequired();
+                        .HasDefaultValueSql("''");
 
                     b.Property<string>("Route")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasMaxLength(200)
+                        .HasColumnType("varchar(200)")
                         .HasColumnName("route")
-                        .HasDefaultValueSql("''")
-                        .IsRequired();
+                        .HasDefaultValueSql("''");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
@@ -111,11 +109,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("delivery");
 
-                    b.Property<string>("Method")
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar")
-                        .HasColumnName("method");
-
                     b.Property<string>("RequestHeaders")
                         .HasColumnType("json")
                         .HasColumnName("request_headers");
@@ -137,10 +130,6 @@ namespace ASC.Migrations.MySql.Migrations
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
-                    b.Property<int>("ConfigId")
-                        .HasColumnType("int")
-                        .HasColumnName("config_id");
-
                     b.Property<int>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
@@ -155,6 +144,10 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("uid")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
+
+                    b.Property<int>("WebhookId")
+                        .HasColumnType("int")
+                        .HasColumnName("webhook_id");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
