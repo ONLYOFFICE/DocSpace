@@ -56,7 +56,7 @@ const Badge = (props) => {
 };
 
 Badge.propTypes = {
-  /** Value */
+  /** Label */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   /** CSS background-color */
   backgroundColor: PropTypes.string,
