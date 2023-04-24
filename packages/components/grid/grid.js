@@ -8,6 +8,7 @@ const Grid = forwardRef(({ tag, as, ...rest }, ref) => {
 });
 
 Grid.propTypes = {
+  /** Sets the tag through which to render the component */
   as: PropTypes.string,
   /** Sets the distribution of space between and around content items along a flexbox's cross-axis or a grid's block axis */
   alignContent: PropTypes.string,
@@ -54,6 +55,7 @@ Grid.propTypes = {
   /** Defines the sizing of the grid rows. Specifying a single string will repeat several rows of this size. Or you can specify an array with rows sizes.
    * The row size can be specified as an array of minimum and maximum heights. */
   rowsProp: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
+  /** Sets the tag through which to render the component */
   tag: PropTypes.string,
   /** Defines the width of the border of the element area. */
   widthProp: PropTypes.string,
