@@ -53,6 +53,14 @@ const ClientRoutes = [
         ),
       },
       {
+        path: "archived",
+        element: (
+          <PrivateRoute>
+            <Navigate to="/rooms/archived" replace />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "rooms/personal",
         element: (
           <PrivateRoute restricted withManager withCollaborator>

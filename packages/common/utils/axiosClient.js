@@ -1,7 +1,6 @@
 import axios from "axios";
 import combineUrl from "./combineUrl";
 import defaultConfig from "PUBLIC_DIR/scripts/config.json";
-import history from "@docspace/common/history";
 
 let { api: apiConf, proxy: proxyConf } = defaultConfig;
 let { orign: apiOrigin, prefix: apiPrefix, timeout: apiTimeout } = apiConf;
@@ -161,7 +160,7 @@ class AxiosClient {
             if (!isRooms) return;
 
             setTimeout(() => {
-              history.navigate(isArchived ? "/archived" : "/");
+              window.DocSpace.navigate(isArchived ? "/archived" : "/");
             }, 1000);
 
             break;
