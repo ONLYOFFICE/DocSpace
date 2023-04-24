@@ -14,11 +14,11 @@ import { showLoader, hideLoader } from "@docspace/common/utils";
 import {
   // SectionHeaderContent,
   SectionBodyContent,
-  SectionFilterContent,
+  // SectionFilterContent,
   SectionPagingContent,
 } from "./Section";
 
-import { SectionHeaderContent } from "../Home/Section";
+import { SectionHeaderContent, SectionFilterContent } from "../Home/Section";
 
 import Dialogs from "./Section/Body/Dialogs"; //TODO: Move dialogs to another folder
 import {
