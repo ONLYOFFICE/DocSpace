@@ -14,7 +14,7 @@
   "EnterCodePlaceholder": "Kodu girin",
   "EnterPhone": "Cep telefonu numarası giriniz",
   "GetCode": "Kod al",
-  "InviteTitle": "Bu portala katılmaya davet edildiniz!",
+  "InviteTitle": "Bu alana katılmaya davet edildiniz!",
   "LoginRegistryButton": "Katıl",
   "PassworResetTitle": "Şimdi yeni şifre oluşturabilirsiniz.",
   "PhoneSubtitle": "İki aşamalı doğrulama ekstra güvenliği sağlamak için etkinleştirilmiştir. DocSpace'te çalışmaya devam etmek için mobil telefon numaranızı giriniz. Mobil telefon numarası ülke koduyla girilmelidir.",
@@ -29,5 +29,5 @@
   "SuccessDeactivate": "Hesabınız başarıyla devre dışı bırakıldı. 10 saniye içinde <1>siteye</1> yönlendirileceksiniz",
   "SuccessReactivate": "Hesabınız başarıyla yeniden etkinleştirildi. 10 saniye içinde <1>portal</1>'a yönlendirileceksiniz.",
   "SuccessRemoved": "Hesabınız başarıyla kaldırıldı. 10 saniye içinde <1>siteye</1> yönlendirileceksiniz.",
-  "WelcomeUser": "Portalımıza hoş geldiniz!\nBaşlamak için kaydolun veya sosyal ağ üzerinden giriş yapın."
+  "WelcomeUser": "DocSpace’imize hoş geldiniz!\nBaşlamak için kaydolun veya sosyal ağ üzerinden giriş yapın."
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
@@ -19,7 +19,7 @@ import {
 import ItemsList from "./sub-components/ItemsList";
 import InviteInput from "./sub-components/InviteInput";
 import ExternalLinks from "./sub-components/ExternalLinks";
-
+import Scrollbar from "@docspace/components/scrollbar";
 const InvitePanel = ({
   folders,
   getFolderInfo,
@@ -51,11 +51,17 @@ const InvitePanel = ({
   const [roomUsers, setRoomUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [externalLinksVisible, setExternalLinksVisible] = useState(false);
+  const [scrollAllPanelContent, setScrollAllPanelContent] = useState(false);
+  const [activeLink, setActiveLink] = useState({});
 
   const inputsRef = useRef();
 
   const onChangeExternalLinksVisible = (visible) => {
     setExternalLinksVisible(visible);
+  };
+
+  const onChangeActiveLink = (activeLink) => {
+    setActiveLink(activeLink);
   };
 
   const selectRoom = () => {
@@ -138,6 +144,18 @@ const InvitePanel = ({
     setHasErrors(hasErrors);
   }, [inviteItems]);
 
+  useEffect(() => {
+    onCheckHeight();
+    window.addEventListener("resize", onCheckHeight);
+    return () => {
+      window.removeEventListener("resize", onCheckHeight);
+    };
+  }, []);
+
+  const onCheckHeight = () => {
+    setScrollAllPanelContent(window.innerHeight < 1024);
+  };
+
   const onClose = () => {
     setInfoPanelIsMobileHidden(false);
     setInvitePanelOptions({
@@ -204,9 +222,57 @@ const InvitePanel = ({
   };
 
   const roomType = selectedRoom ? selectedRoom.roomType : -1;
+  const hasInvitedUsers = !!inviteItems.length;
+
+  const bodyInvitePanel = useMemo(() => {
+    return (
+      <>
+        <ExternalLinks
+          t={t}
+          shareLinks={shareLinks}
+          getInfo={getInfo}
+          roomType={roomType}
+          onChangeExternalLinksVisible={onChangeExternalLinksVisible}
+          externalLinksVisible={externalLinksVisible}
+          onChangeActiveLink={onChangeActiveLink}
+          activeLink={activeLink}
+        />
+
+        <InviteInput
+          t={t}
+          onClose={onClose}
+          roomUsers={roomUsers}
+          roomType={roomType}
+          inputsRef={inputsRef}
+        />
+        {hasInvitedUsers && (
+          <ItemsList
+            t={t}
+            setHasErrors={setHasErrors}
+            roomType={roomType}
+            externalLinksVisible={externalLinksVisible}
+            scrollAllPanelContent={scrollAllPanelContent}
+            inputsRef={inputsRef}
+          />
+        )}
+      </>
+    );
+  }, [
+    t,
+    shareLinks,
+    getInfo,
+    roomType,
+    onChangeExternalLinksVisible,
+    externalLinksVisible,
+    onClose,
+    roomUsers,
+    setHasErrors,
+    scrollAllPanelContent,
+    hasInvitedUsers,
+  ]);
 
   const invitePanelComponent = (
-    <StyledInvitePanel>
+    <StyledInvitePanel hasInvitedUsers={hasInvitedUsers}>
       <Backdrop
         onClick={onClose}
         visible={visible}
@@ -224,52 +290,33 @@ const InvitePanel = ({
           <StyledHeading>{t("Common:InviteUsers")}</StyledHeading>
         </StyledBlock>
 
-        <ExternalLinks
-          t={t}
-          shareLinks={shareLinks}
-          getInfo={getInfo}
-          roomType={roomType}
-          onChangeExternalLinksVisible={onChangeExternalLinksVisible}
-          externalLinksVisible={externalLinksVisible}
-        />
+        {scrollAllPanelContent ? (
+          <div className="invite-panel-body">
+            <Scrollbar stype="mediumBlack">{bodyInvitePanel}</Scrollbar>
+          </div>
+        ) : (
+          bodyInvitePanel
+        )}
 
-        <InviteInput
-          t={t}
-          onClose={onClose}
-          roomUsers={roomUsers}
-          roomType={roomType}
-          inputsRef={inputsRef}
-        />
-
-        {!!inviteItems.length && (
-          <>
-            <ItemsList
-              t={t}
-              setHasErrors={setHasErrors}
-              roomType={roomType}
-              externalLinksVisible={externalLinksVisible}
-              inputsRef={inputsRef}
+        {hasInvitedUsers && (
+          <StyledButtons>
+            <Button
+              scale={true}
+              size={"normal"}
+              isDisabled={hasErrors}
+              primary
+              onClick={onClickSend}
+              label={t("SendInvitation")}
+              isLoading={isLoading}
             />
-
-            <StyledButtons>
-              <Button
-                scale={true}
-                size={"normal"}
-                isDisabled={hasErrors}
-                primary
-                onClick={onClickSend}
-                label={t("SendInvitation")}
-                isLoading={isLoading}
-              />
-              <Button
-                scale={true}
-                size={"normal"}
-                onClick={onClose}
-                label={t("Common:CancelButton")}
-                isDisabled={isLoading}
-              />
-            </StyledButtons>
-          </>
+            <Button
+              scale={true}
+              size={"normal"}
+              onClick={onClose}
+              label={t("Common:CancelButton")}
+              isDisabled={isLoading}
+            />
+          </StyledButtons>
         )}
       </Aside>
     </StyledInvitePanel>

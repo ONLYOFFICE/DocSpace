@@ -75,28 +75,19 @@ public class SettingsManager
         _logger = logger;
     }
 
-    private int _tenantID;
     private int TenantID
     {
         get
         {
-            if (_tenantID == 0)
-            {
-                _tenantID = _tenantManager.GetCurrentTenant().Id;
-            }
-
-            return _tenantID;
+            return _tenantManager.GetCurrentTenant().Id;
         }
     }
-    //
-    private Guid? _currentUserID;
+
     private Guid CurrentUserID
     {
         get
         {
-            _currentUserID ??= _authContext.CurrentAccount.ID;
-
-            return _currentUserID.Value;
+            return _authContext.CurrentAccount.ID;
         }
     }
 

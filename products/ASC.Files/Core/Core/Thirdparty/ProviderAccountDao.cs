@@ -46,17 +46,11 @@ public enum ProviderTypes
 [Scope]
 internal class ProviderAccountDao : IProviderDao
 {
-    private int _tenantID;
     protected int TenantID
     {
         get
         {
-            if (_tenantID == 0)
-            {
-                _tenantID = _tenantManager.GetCurrentTenant().Id;
-            }
-
-            return _tenantID;
+            return _tenantManager.GetCurrentTenant().Id;
         }
     }
 

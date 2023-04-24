@@ -2,7 +2,7 @@ import React from "react";
 import { createBrowserRouter } from "react-router-dom";
 
 import routes from "./routes";
-import { NotFoundError } from "./routes/utils";
+import Error404 from "SRC_DIR/pages/Errors/404";
 
 import Root from "./Shell";
 
@@ -10,7 +10,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    errorElement: <NotFoundError />,
+    errorElement: <Error404 />,
     children: [...routes],
   },
 ]);
