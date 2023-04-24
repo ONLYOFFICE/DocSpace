@@ -6,7 +6,7 @@ on:
   push:
 
 env:
-  BRANCH_NAME: "${{ GITHUB_REF#refs/heads/ }}"
+  BRANCH_NAME: "${{ github.ref#refs/heads/ }}"
   VERSION: $(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")
   PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
   TAG: "${{ github.ref_name }}"
