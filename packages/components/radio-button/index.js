@@ -94,6 +94,7 @@ RadioButton.propTypes = {
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   /** Used as HTML `name` property for `<input>` tag. */
   name: PropTypes.string.isRequired,
+  /** Allows handling the changing events of the component  */
   onChange: PropTypes.func,
   /** Allows handling component clicking events */
   onClick: PropTypes.func,
