@@ -9,7 +9,7 @@ env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
   PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
   BUILD_NUMBER: "${{ github.run_number }}"
-  VERSION: $(echo ${{ env.BRANCH_NAME }} | tr '/' '-') # test
+  # VERSION: $(echo ${{ env.BRANCH_NAME }} | tr '/' '-') # test
 
 
 jobs:
@@ -87,8 +87,8 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          commit: "${{ github.ref }}-${{ env.BUILD_NUMBER }}"
-          tag: "${{ env.VERSION }}-${{ env.BUILD_NUMBER }}"
+          commit: feature/DocSpace-packages-release/v1.0.0
+          tag: "$VERSION-${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
