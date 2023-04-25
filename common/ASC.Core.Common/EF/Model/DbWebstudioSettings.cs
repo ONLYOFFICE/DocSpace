@@ -43,13 +43,8 @@ public class DbWebstudioSettings : BaseEntity
 
 public static class WebstudioSettingsExtension
 {
-    public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder, bool ignoreWhenMigration = false)
+    public static ModelBuilderWrapper AddWebstudioSettings(this ModelBuilderWrapper modelBuilder)
     {
-        if (Context.SettingsContext.IsMigration && ignoreWhenMigration)
-        {
-            modelBuilder.Entity<User>().ToTable(t => t.ExcludeFromMigrations());
-        }
-
         modelBuilder.Entity<DbWebstudioSettings>().Navigation(e => e.Tenant).AutoInclude(false);
 
         modelBuilder

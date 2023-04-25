@@ -29,7 +29,7 @@ namespace Migration.Creator;
 public class MigrationCreator
 {
     private readonly IServiceProvider _serviceProvider;
-    private int _counter = 0;
+    private int _counter;
 
     public MigrationCreator(IServiceProvider serviceProvider)
     {

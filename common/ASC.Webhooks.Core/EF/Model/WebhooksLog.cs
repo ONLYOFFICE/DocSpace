@@ -50,7 +50,7 @@ public static class WebhooksPayloadExtension
     public static ModelBuilderWrapper AddWebhooksLog(this ModelBuilderWrapper modelBuilder)
     {
         modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Config).AutoInclude();
-        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Tenant).AutoInclude(false);
+        modelBuilder.Entity<WebhooksLog>().Navigation(e => e.Tenant).AutoInclude();
 
         modelBuilder
             .Add(MySqlAddWebhooksLog, Provider.MySql)
@@ -88,8 +88,7 @@ public static class WebhooksPayloadExtension
                 .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()
@@ -158,8 +157,7 @@ public static class WebhooksPayloadExtension
                 .HasMaxLength(50);
 
             entity.Property(e => e.TenantId)
-                .HasColumnName("tenant_id")
-                .HasColumnType("int unsigned");
+                .HasColumnName("tenant_id");
 
             entity.Property(e => e.RequestPayload)
                 .IsRequired()

@@ -41,12 +41,18 @@ public class MessagesContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        if (ASC.Core.Common.EF.Context.SettingsContext.IsMigration)
+        {
+            modelBuilder.Entity<User>().ToTable(nameof(Users), t => t.ExcludeFromMigrations());
+            modelBuilder.Entity<DbWebstudioSettings>().ToTable(nameof(WebstudioSettings), t => t.ExcludeFromMigrations());
+        }
+
         ModelBuilderWrapper
             .From(modelBuilder, Database)
             .AddAuditEvent()
             .AddLoginEvents()
-            .AddUser(true)
-            .AddWebstudioSettings(true)
+            .AddUser()
+            .AddWebstudioSettings()
             .AddDbTenant()
             .AddDbFunction();
     }
