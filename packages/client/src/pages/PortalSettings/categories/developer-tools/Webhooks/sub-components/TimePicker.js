@@ -31,7 +31,7 @@ const TimeInput = styled.div`
   }
 `;
 
-export const TimePicker = ({ date, setDate, onChange }) => {
+export const TimePicker = ({ date, setDate, onChange, className }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
   const timeInputRef = useRef(null);
@@ -117,7 +117,7 @@ export const TimePicker = ({ date, setDate, onChange }) => {
   };
 
   return (
-    <TimeInput ref={timeInputRef} onClick={focusHoursInput}>
+    <TimeInput ref={timeInputRef} onClick={focusHoursInput} className={className}>
       <TextInput
         withBorder={false}
         forwardedRef={hoursInputRef}
@@ -141,6 +141,7 @@ export const TimePicker = ({ date, setDate, onChange }) => {
 TimePicker.propTypes = {
   date: PropTypes.object,
   setDate: PropTypes.func,
+  className: PropTypes.string,
 
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func,
@@ -150,4 +151,5 @@ TimePicker.defaultProps = {
   date: moment(),
   setDate: () => {},
   onChange: () => {},
+  className: "",
 };
