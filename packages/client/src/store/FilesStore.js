@@ -1217,6 +1217,7 @@ class FilesStore {
 
         runInAction(() => {
           const isEmptyList = [...data.folders, ...data.files].length === 0;
+
           if (filter && isEmptyList) {
             const {
               authorType,
@@ -1228,7 +1229,7 @@ class FilesStore {
             const isFiltered =
               authorType ||
               search ||
-              withSubfolders ||
+              !withSubfolders ||
               filterType ||
               searchInContent;
 
