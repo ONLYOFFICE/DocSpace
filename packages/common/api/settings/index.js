@@ -743,13 +743,18 @@ export function removeWebhook(id) {
   });
 }
 
-export function getWebhooksJournal({configId, eventId, logCount, startIndex}) {
+export function getWebhooksJournal(props) {
+  const { configId, eventId, logCount, startIndex, deliveryFrom, deliveryTo, groupStatus } = props;
+
   const params = {};
 
   configId && (params.configId = configId);
   eventId && (params.eventId = eventId);
   logCount && (params.logCount = logCount);
   startIndex && (params.startIndex = startIndex);
+  deliveryFrom && (params.deliveryFrom = deliveryFrom);
+  deliveryTo && (params.deliveryTo = deliveryTo);
+  groupStatus && (params.groupStatus = groupStatus);
 
   return request({
     method: "get",
