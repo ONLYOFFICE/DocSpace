@@ -18,7 +18,11 @@ export default {
 };
 
 const Template = ({ headerText, ...args }) => {
-  return <Heading {...args}>{headerText}</Heading>;
+  return (
+    <div style={{ margin: "7px" }}>
+      <Heading {...args}>{headerText}</Heading>
+    </div>
+  );
 };
 
 export const Default = Template.bind({});

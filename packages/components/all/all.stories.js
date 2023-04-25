@@ -165,7 +165,7 @@ while (rowCount != 0) {
 }
 
 export default {
-  title: "Components/All",
+  title: "All",
   parameters: {
     docs: { description: { component: "All components" } },
   },
@@ -457,9 +457,7 @@ const Template = (args) => (
             minDate={new Date("1970/01/01")}
             maxDate={new Date("3000/01/01")}
             locale="ru"
-            setSelectedDate={(date) => {
-              console.log(date);
-            }}
+            setSelectedDate={(date) => {}}
           />
         </div>
       </div>
