@@ -1907,7 +1907,7 @@ const SectionFilterContent = ({
     [isLoadedFilter]
   );
 
-  if (!isLoadedFilter) {
+  if (!isLoadedFilter && !isAccountsPage) {
     return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
   }
 
