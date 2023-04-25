@@ -289,8 +289,6 @@ class DropDown extends React.PureComponent {
         directionX={directionX}
         directionY={directionY}
         manualY={manualY}
-        isExternalLink={this.props.isExternalLink}
-        isPersonal={this.props.isPersonal}
         isMobileView={isMobileView}
         itemCount={itemCount}
         {...dropDownMaxHeightProp}
@@ -369,9 +367,6 @@ class DropDownContainer extends React.Component {
 DropDown.propTypes = {
   disableOnClickOutside: PropTypes.func,
   enableOnClickOutside: PropTypes.func,
-  isExternalLink: PropTypes.bool,
-  // TODO: delete or rename prop
-  // isPersonal: PropTypes.bool,
 };
 
 DropDownContainer.propTypes = {

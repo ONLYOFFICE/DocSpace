@@ -107,8 +107,6 @@ class ComboBox extends React.Component {
       fixedDirection,
       withBlur,
       fillIcon,
-      isExternalLink,
-      isPersonal,
       offsetLeft,
       modernView,
       withBackdrop,
@@ -212,8 +210,6 @@ class ComboBox extends React.Component {
             isDefaultMode={isDefaultMode}
             fixedDirection={fixedDirection}
             withBlur={withBlur}
-            isExternalLink={isExternalLink}
-            isPersonal={isPersonal}
             offsetLeft={offsetLeft}
             withBackdrop={withBackdrop}
             isAside={isAside}
@@ -324,10 +320,6 @@ ComboBox.propTypes = {
   disableItemClick: PropTypes.bool,
   /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
-  /** Used for proper positioning of the dropdown in case it is an external link */
-  isExternalLink: PropTypes.bool,
-  // TODO: delete or rename prop
-  // isPersonal: PropTypes.bool,
   /** Sets the left offset for the dropdown */
   offsetLeft: PropTypes.number,
   /** Sets the combo-box to be displayed in modern view */
@@ -357,7 +349,6 @@ ComboBox.defaultProps = {
   displaySelectedOption: false,
   fixedDirection: false,
   disableItemClick: false,
-  isExternalLink: false,
   modernView: false,
   tabIndex: -1,
   withoutPadding: false,
