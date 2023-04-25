@@ -9,8 +9,6 @@ env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
   PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
   BUILD_NUMBER: "${{ github.run_number }}"
-  
-  VERSION: $(echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ) 
 
 
 jobs:
@@ -78,7 +76,7 @@ jobs:
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename
           sudo npm install -g json
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
-          echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${ GITHUB_REF##*/ }" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
           
       - name: BUILD package RPM
         run: |
