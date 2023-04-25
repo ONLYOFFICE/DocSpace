@@ -13,10 +13,6 @@ export default {
     },
   },
   argTypes: {
-    onAction: {
-      action: "onAction",
-      description: "Property for story",
-    },
     textColor: { control: "color" },
     backgroundColor: { control: "color" },
     showIcon: { control: "boolean" },

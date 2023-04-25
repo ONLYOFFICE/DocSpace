@@ -79,7 +79,6 @@ const Template = ({
         clickAction={clickMainButtonHandler}
         clickActionSecondary={clickSecondaryButtonHandler}
         model={itemsModel}
-        iconName
       ></MainButton>
     </div>
   );
