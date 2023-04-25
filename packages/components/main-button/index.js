@@ -92,8 +92,6 @@ MainButton.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Data model menu */
   model: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Image source   */
-  iconName: PropTypes.string,
 };
 
 MainButton.defaultProps = {

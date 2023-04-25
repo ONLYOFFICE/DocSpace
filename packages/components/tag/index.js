@@ -199,7 +199,7 @@ Tag.propTypes = {
   /** Accepts the max width of the tag */
   tagMaxWidth: PropTypes.string,
   /** Accepts the dropdown options */
-  advancedOptions: PropTypes.object,
+  advancedOptions: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
 export default React.memo(Tag);
