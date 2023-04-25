@@ -17,13 +17,14 @@ const StyledModal = styled(ModalDialogContainer)`
   }
 `;
 
-const ArchiveDialogComponent = (props) => {
+const RestoreRoomDialogComponent = (props) => {
   const {
     t,
     tReady,
     visible,
     restoreAll,
-    setArchiveDialogVisible,
+    setRestoreRoomDialogVisible,
+    setRestoreAllArchive,
     setArchiveAction,
     items,
   } = props;
@@ -35,12 +36,15 @@ const ArchiveDialogComponent = (props) => {
   }, []);
 
   const onClose = () => {
-    setArchiveDialogVisible(false);
+    setRestoreAllArchive(false);
+    setRestoreRoomDialogVisible(false);
   };
 
   const onAction = () => {
-    setArchiveDialogVisible(false);
-    setArchiveAction("archive", items, t);
+    setRestoreRoomDialogVisible(false);
+    setArchiveAction("unarchive", items, t).then(() => {
+      setRestoreAllArchive(false);
+    });
   };
 
   const onKeyPress = (e) => {
@@ -53,8 +57,8 @@ const ArchiveDialogComponent = (props) => {
     if (restoreAll) return t("ArchiveDialog:RestoreAllRooms");
 
     return items.length > 1
-      ? `${t("ArchiveDialog:ArchiveRooms")} ${t("Common:WantToContinue")}`
-      : `${t("ArchiveDialog:ArchiveRoom")} ${t("Common:WantToContinue")}`;
+      ? t("ArchiveDialog:RestoreRooms")
+      : t("ArchiveDialog:RestoreRoom");
   };
 
   const description = getDescription();
@@ -66,24 +70,22 @@ const ArchiveDialogComponent = (props) => {
       onClose={onClose}
       displayType="modal"
     >
-      <ModalDialog.Header>
-        {t("ArchiveDialog:ArchiveHeader")}
-      </ModalDialog.Header>
+      <ModalDialog.Header>{t("Common:Restore")}</ModalDialog.Header>
       <ModalDialog.Body>
         <Text noSelect={true}>{description}</Text>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
-          id="shared_move-to-archived-modal_submit"
+          id="restore-all_submit"
           key="OkButton"
-          label={t("Common:OKButton")}
+          label={t("Common:Restore")}
           size="normal"
           primary
           onClick={onAction}
           scale
         />
         <Button
-          id="shared_move-to-archived-modal_cancel"
+          id="restore-all_cancel"
           key="CancelButton"
           label={t("Common:CancelButton")}
           size="normal"
@@ -95,8 +97,8 @@ const ArchiveDialogComponent = (props) => {
   );
 };
 
-const ArchiveDialog = withTranslation(["Files", "ArchiveDialog", "Common"])(
-  ArchiveDialogComponent
+const RestoreRoomDialog = withTranslation(["Files", "ArchiveDialog", "Common"])(
+  RestoreRoomDialogComponent
 );
 
 export default inject(
@@ -105,9 +107,10 @@ export default inject(
     const { setArchiveAction } = filesActionsStore;
 
     const {
-      archiveDialogVisible: visible,
+      restoreRoomDialogVisible: visible,
       restoreAllArchive: restoreAll,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
+      setRestoreAllArchive,
     } = dialogsStore;
 
     const items = restoreAll
@@ -121,9 +124,10 @@ export default inject(
     return {
       visible,
       restoreAll,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
+      setRestoreAllArchive,
       setArchiveAction,
       items,
     };
   }
-)(withRouter(observer(ArchiveDialog)));
+)(withRouter(observer(RestoreRoomDialog)));
