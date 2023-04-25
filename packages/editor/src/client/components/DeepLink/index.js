@@ -22,6 +22,7 @@ const DeepLink = ({
   userEmail,
   setIsShowDeepLink,
   userTheme,
+  currentColorScheme,
 }) => {
   const { t } = useTranslation(["DeepLink", "Common"]);
 
@@ -97,7 +98,7 @@ const DeepLink = ({
             fontSize="13px"
             fontWeight="600"
             isHovered
-            color="#316DAA"
+            color={currentColorScheme?.main?.accent}
             onClick={onStayBrowserClick}
           >
             {t("StayInBrowser")}

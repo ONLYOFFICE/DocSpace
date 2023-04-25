@@ -99,6 +99,7 @@ function Editor({
   url,
   filesSettings,
   logoUrls,
+  currentColorScheme,
 }) {
   const [isShowDeepLink, setIsShowDeepLink] = useState(false);
 
@@ -773,6 +774,7 @@ function Editor({
         userEmail={user.email}
         setIsShowDeepLink={setIsShowDeepLink}
         userTheme={user.theme}
+        currentColorScheme={currentColorScheme}
       />
     );
 
