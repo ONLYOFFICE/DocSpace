@@ -15,7 +15,7 @@ export default {
     onBlur: { action: "onBlur" },
     onFocus: { action: "onFocus" },
     onChange: { action: "onChange" },
-    scaled: { description: "Indicates that the input field has scaled" },
+    scale: { description: "Indicates that the input field has scaled" },
   },
 };
 
@@ -46,7 +46,7 @@ Default.args = {
   isReadOnly: false,
   hasError: false,
   hasWarning: false,
-  scaled: false,
+  scale: false,
   autoComplete: "off",
   tabIndex: 1,
   withBorder: true,
