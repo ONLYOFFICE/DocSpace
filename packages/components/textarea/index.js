@@ -85,6 +85,10 @@ const Textarea = ({
     }
   }, [areaSelect]);
 
+  const WrappedStyledCopyIcon = ({ heightScale, isJSONField, ...props }) => (
+    <StyledCopyIcon {...props} />
+  );
+
   return (
     <Wrapper
       className="textarea-wrapper"
@@ -92,7 +96,7 @@ const Textarea = ({
       onFocus={isJSONField ? onTextareaClick : undefined}
     >
       {isJSONField && (
-        <StyledCopyIcon
+        <WrappedStyledCopyIcon
           onClick={() => {
             copy(modifiedValue);
             toastr.success(copyInfoText);
