@@ -29,6 +29,7 @@ namespace Migration.Creator;
 public class MigrationCreator
 {
     private readonly IServiceProvider _serviceProvider;
+    private int _counter = 0;
 
     public MigrationCreator(IServiceProvider serviceProvider)
     {
@@ -37,7 +38,6 @@ public class MigrationCreator
 
     public void RunCreateMigrations(Options options)
     {
-        var counter = 0;
 
         foreach (var projectInfo in Solution.GetProjects(options.Path))
         {
@@ -50,7 +50,6 @@ public class MigrationCreator
                     foreach (var providerInfo in options.TeamlabsiteProviders)
                     {
                         CreateMigration(options, contextType, providerInfo);
-                        counter++;
                     }
                 }
                 else
@@ -58,13 +57,12 @@ public class MigrationCreator
                     foreach (var providerInfo in options.Providers)
                     {
                         CreateMigration(options, contextType, providerInfo);
-                        counter++;
                     }
                 }
             }
         }
 
-        Console.WriteLine($"Created {counter} migrations");
+        Console.WriteLine($"Created {_counter} migrations");
     }
 
     private void CreateMigration(Options options, Type contextType, ProviderInfo providerInfo)
@@ -84,5 +82,6 @@ public class MigrationCreator
         var providerInfoProjectPath = Solution.GetProviderProjectPath(options.Path, providerInfo);
         var migrationGenerator = new MigrationGenerator(context, providerInfo.Provider, providerInfoProjectPath);
         migrationGenerator.Generate();
+        _counter++;
     }
 }
