@@ -1105,7 +1105,7 @@ public class FileSecurity : IFileSecurity
             Owner = _authContext.CurrentAccount.ID,
             Share = share,
             SubjectType = subjectType,
-            FileShareOptions = fileShareOptions,
+            Options = fileShareOptions,
         };
 
         return securityDao.SetShareAsync(r);
