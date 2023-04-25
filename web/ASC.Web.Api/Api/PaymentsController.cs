@@ -186,7 +186,7 @@ public class PaymentController : ControllerBase
     /// Get currencies
     /// </short>
     /// <category>Payment</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModels.ResponseDto.CurrenciesDto}, System.Collections.Generic">List of available portal currencies</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CurrenciesDto, ASC.Web.Api">List of available portal currencies</returns>
     /// <path>api/2.0/portal/payment/currencies</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -211,7 +211,7 @@ public class PaymentController : ControllerBase
     /// Get quotas
     /// </short>
     /// <category>Quota</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.QuotaDto}, System.Collections.Generic">List of available portal quotas</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api">List of available portal quotas</returns>
     /// <path>api/2.0/portal/payment/quotas</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -228,7 +228,7 @@ public class PaymentController : ControllerBase
     /// Get quota payment information
     /// </short>
     /// <category>Payment</category>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api">Payment information about the current portal quota: ID, title, price, nonprofit or not, free or not, trial or not, tenant quota features</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.QuotaDto, ASC.Web.Api">Payment information about the current portal quota</returns>
     /// <path>api/2.0/portal/payment/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("payment/quota")]

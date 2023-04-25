@@ -184,7 +184,7 @@ public class WhitelabelController : BaseSettingsController
     /// </short>
     /// <category>Rebranding</category>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WhiteLabelQueryRequestsDto, ASC.Web.Api" name="inDto">White label request parameters</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModels.ResponseDto.WhiteLabelItemDto}, System.Collections.Generic">White label logos: file name, size, path</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.WhiteLabelItemDto, ASC.Web.Api">White label logos</returns>
     /// <path>api/2.0/settings/whitelabel/logos</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -300,7 +300,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <short>Get the licensor data</short>
     /// <category>Rebranding</category>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings}, System.Collections.Generic">List of company white label settings: company name, site, email, address, phone, licensor or not</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core">List of company white label settings</returns>
     /// <path>api/2.0/settings/companywhitelabel</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -355,7 +355,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Get the company white label settings</short>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CompanyWhiteLabelSettingsDtov, ASC.Web.Api">Company white label settings: company name, site, email, address, phone, licensor or not, default setings or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CompanyWhiteLabelSettingsDtov, ASC.Web.Api">Company white label settings</returns>
     /// <path>api/2.0/settings/rebranding/company</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -371,7 +371,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Delete the company white label settings</short>
-    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core">Default company white label settings: company name, site, email, address, phone, licensor or not</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core">Default company white label settings</returns>
     /// <path>api/2.0/settings/rebranding/company</path>
     /// <httpMethod>DELETE</httpMethod>
     /// <visible>false</visible>
@@ -419,7 +419,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Get the additional white label settings</short>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.AdditionalWhiteLabelSettingsDto, ASC.Web.Api">Additional white label settings: start document is enabled or not, the help center is enabled or not, feedback and support are available or not, feedback and support URL, the user forum is enabled or not, user forum URL, the video guides are enabled or not, video guides URL, sales email, URL to pay for the portal, the license agreements are enabled or not, license agreements URL, default settings or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.AdditionalWhiteLabelSettingsDto, ASC.Web.Api">Additional white label settings</returns>
     /// <path>api/2.0/settings/rebranding/additional</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -435,7 +435,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Delete the additional white label settings</short>
-    /// <returns type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettings, ASC.Web.Core">Default additional white label settings: start document is enabled or not, the help center is enabled or not, feedback and support are available or not, feedback and support URL, the user forum is enabled or not, user forum URL, the video guides are enabled or not, video guides URL, sales email, URL to pay for the portal, the license agreements are enabled or not, license agreements URL</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.AdditionalWhiteLabelSettings, ASC.Web.Core">Default additional white label settings</returns>
     /// <path>api/2.0/settings/rebranding/additional</path>
     /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>
@@ -503,7 +503,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Get the mail white label settings</short>
-    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Mail white label settings: the mail footer is enabled or not, the footer with social media contacts is enabled or not, support URL, support email, sales email, demo URL, site URL</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Mail white label settings</returns>
     /// <path>api/2.0/settings/rebranding/mail</path>
     /// <httpMethod>GET</httpMethod>
     ///<visible>false</visible>
@@ -518,7 +518,7 @@ public class WhitelabelController : BaseSettingsController
     /// </summary>
     /// <category>Rebranding</category>
     /// <short>Delete the mail white label settings</short>
-    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Default mail white label settings: the mail footer is enabled or not, the footer with social media contacts is enabled or not, support URL, support email, sales email, demo URL, site URL</returns>
+    /// <returns type="ASC.Web.Core.WhiteLabel.MailWhiteLabelSettings, ASC.Web.Core">Default mail white label settings</returns>
     /// <path>api/2.0/settings/rebranding/mail</path>
     /// <httpMethod>DELETE</httpMethod>
     ///<visible>false</visible>

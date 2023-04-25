@@ -31,5 +31,6 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class DeleteRoomRequestDto
 {
     /// <summary>Specifies whether to delete a room after the editing session is finished or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DeleteAfter { get; set; }
 }

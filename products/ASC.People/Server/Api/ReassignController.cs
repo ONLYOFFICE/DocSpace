@@ -59,7 +59,7 @@ public class ReassignController : ApiControllerBase
     /// <short>Get the reassignment progress</short>
     /// <param type="System.Guid, System" name="userId">User ID whose data is reassigned</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress: reassignment item progress ID, status, exception, percentage, completed or not, the user whose data is reassigned, the user to whom this data is reassigned</returns>
+    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
     /// <path>api/2.0/people/reassign/progress</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("reassign/progress")]
@@ -76,7 +76,7 @@ public class ReassignController : ApiControllerBase
     /// <short>Start the data reassignment</short>
     /// <param type="ASC.People.ApiModels.RequestDto.StartReassignRequestDto, ASC.People" name="inDto">Request parameters for starting the reassignment process</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress: reassignment item progress ID, status, exception, percentage, completed or not, the user whose data is reassigned, the user to whom this data is reassigned</returns>
+    /// <returns type="ASC.Data.Reassigns.ReassignProgressItem, ASC.Data.Reassigns">Reassignment progress</returns>
     /// <path>api/2.0/people/reassign/start</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("reassign/start")]

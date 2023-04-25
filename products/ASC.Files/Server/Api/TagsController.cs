@@ -73,7 +73,7 @@ public abstract class TagsController<T> : ApiControllerBase
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <short>Add a file to the "Recent" section</short>
     /// <category>Files</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information</returns>
     /// <path>api/2.0/files/file/{fileId}/recent</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("file/{fileId}/recent")]

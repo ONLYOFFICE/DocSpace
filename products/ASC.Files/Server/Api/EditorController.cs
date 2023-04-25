@@ -76,7 +76,7 @@ public class EditorControllerThirdparty : EditorController<string>
     /// </short>
     /// <category>Third-party integration</category>
     /// <param type="System.String, System" method="url" name="fileId">File ID</param>
-    /// <returns type="ASC.Web.Files.Services.DocumentService.Configuration, ASC.Files.Core">Configuration parameters: document config, document type, editor config, editor type, editor URL, token, platform type</returns>
+    /// <returns type="ASC.Web.Files.Services.DocumentService.Configuration, ASC.Files.Core">Configuration parameters</returns>
     /// <path>api/2.0/files/file/app-{fileId}/openedit</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -163,7 +163,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.SaveEditingRequestDto, ASC.Files.Core" name="inDto">Request parameters for saving file edits</param>
     /// <category>Files</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Saved file parameters: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Saved file parameters</returns>
     /// <path>api/2.0/files/file/{fileId}/saveediting</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("file/{fileId}/saveediting")]
@@ -218,7 +218,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <param type="System.String, System" name="doc">Shared token</param>
     /// <param type="System.Boolean, System" name="view">Specifies if a document will be opened for viewing only or not</param>
     /// <category>Files</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.ConfigurationDto, ASC.Files.Core">Configuration parameters: document config, document type, editor config, editor type, editor URL, token, platform type, file parameters</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.ConfigurationDto, ASC.Files.Core">Configuration parameters</returns>
     /// <path>api/2.0/files/file/{fileId}/openedit</path>
     /// <requiresAuthorization>false</requiresAuthorization>
     /// <httpMethod>GET</httpMethod>
@@ -279,7 +279,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <short>Get shared users</short>
     /// <category>Sharing</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Files.Services.WCFService.MentionWrapper}, System.Collections.Generic">List of users with their access rights to the file: user information, user email, user ID, has access to the file or not, user display name</returns>
+    /// <returns type="ASC.Web.Files.Services.WCFService.MentionWrapper, ASC.Files.Core">List of users with their access rights to the file</returns>
     /// <path>api/2.0/files/file/{fileId}/sharedusers</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -295,7 +295,7 @@ public abstract class EditorController<T> : ApiControllerBase
     /// <short>Get reference data</short>
     /// <category>Files</category>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.GetReferenceDataDto, ASC.Files.Core" name="inDto">Request parameters for getting reference data</param>
-    /// <returns type="ASC.Web.Files.Services.DocumentService.FileReference, ASC.Files.Core">File reference data: error, path, URL, file type, token</returns>
+    /// <returns type="ASC.Web.Files.Services.DocumentService.FileReference, ASC.Files.Core">File reference data</returns>
     /// <path>api/2.0/files/file/referencedata</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("file/referencedata")]
@@ -334,7 +334,7 @@ public class EditorController : ApiControllerBase
     /// <short>Check the document service URL</short>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.CheckDocServiceUrlRequestDto, ASC.Files.Core" name="inDto">Request parameters for checking the document service location</param>
     /// <category>Settings</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic">Document service information: the Document Server address, the Document Server address in the local private network, the Community Server address</returns>
+    /// <returns type="System.String, System">Document service information: the Document Server address, the Document Server address in the local private network, the Community Server address</returns>
     /// <path>api/2.0/files/docservice</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>

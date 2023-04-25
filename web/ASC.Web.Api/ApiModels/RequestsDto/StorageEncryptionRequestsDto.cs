@@ -31,5 +31,6 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 public class StorageEncryptionRequestsDto
 {
     /// <summary>Specifies if the users will be notified about the encryption process or note</summary>
+    /// <type>System.Boolean, System</type>
     public bool NotifyUsers { get; set; }
 }

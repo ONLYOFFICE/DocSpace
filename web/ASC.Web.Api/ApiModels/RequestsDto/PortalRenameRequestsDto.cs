@@ -31,5 +31,6 @@ namespace ASC.Web.Api.ApiModels.RequestsDto;
 public class PortalRenameRequestsDto
 {
     /// <summary>Portal name</summary>
+    /// <type>System.String, System</type>
     public string Alias { get; set; }
 }

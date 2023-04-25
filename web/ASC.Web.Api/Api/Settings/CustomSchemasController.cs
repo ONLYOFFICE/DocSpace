@@ -54,7 +54,7 @@ public class CustomSchemasController : BaseSettingsController
     /// </summary>
     /// <short>Get team templates</short>
     /// <category>Team templates</category>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto}, System.Collections.Generic">List of team templates with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">List of team templates with the following parameters</returns>
     /// <path>api/2.0/settings/customschemas</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -91,7 +91,7 @@ public class CustomSchemasController : BaseSettingsController
     /// <short>Save the naming settings</short>
     /// <category>Team templates</category>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api" name="inDto">Team template parameters</param>
-    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Team template with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Team template with the following parameters</returns>
     /// <path>api/2.0/settings/customschemas</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("customschemas")]
@@ -114,7 +114,7 @@ public class CustomSchemasController : BaseSettingsController
     /// <short>Create a custom team template</short>
     /// <category>Team templates</category>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api" name="inDto">Team template parameters</param>
-    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Custom team template with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Custom team template with the following parameters</returns>
     /// <path>api/2.0/settings/customschemas</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("customschemas")]
@@ -174,7 +174,7 @@ public class CustomSchemasController : BaseSettingsController
     /// <short>Get a team template by ID</short>
     /// <category>Team templates</category>
     /// <param type="System.String, System" method="url" name="id">Team template ID</param>
-    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Team template with the following parameters: ID, name, user caption, users caption, group caption, groups caption, user status caption, registration date caption, group lead caption, guest caption, guests caption</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.SchemaRequestsDto, ASC.Web.Api">Team template with the following parameters</returns>
     /// <path>api/2.0/settings/customschemas/{id}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("customschemas/{id}")]

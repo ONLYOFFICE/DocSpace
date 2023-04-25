@@ -30,8 +30,10 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class DeleteFolderDto
 {
     /// <summary>Specifies whether to delete a folder after the editing session is finished or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DeleteAfter { get; set; }
 
     /// <summary>Specifies whether to move a folder to the "Trash" folder or delete it immediately</summary>
+    /// <type>System.Boolean, System</type>
     public bool Immediately { get; set; }
 }

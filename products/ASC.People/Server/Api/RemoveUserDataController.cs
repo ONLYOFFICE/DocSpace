@@ -65,7 +65,7 @@ public class RemoveUserDataController : ApiControllerBase
     /// <short>Get the deletion progress</short>
     /// <param type="System.Guid, System" name="userId">User ID</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress: deletion item progress ID, status, exception, percentage, completed or not, the user whose data is deleted</returns>
+    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
     /// <path>api/2.0/people/remove/progress</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("remove/progress")]
@@ -108,7 +108,7 @@ public class RemoveUserDataController : ApiControllerBase
     /// <short>Start the data deletion</short>
     /// <param type="ASC.People.ApiModels.RequestDto.TerminateRequestDto, ASC.People" name="inDto">Request parameters for starting the deletion process</param>
     /// <category>User data</category>
-    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress: deletion item progress ID, status, exception, percentage, completed or not, the user whose data is deleted</returns>
+    /// <returns type="ASC.Data.Reassigns.RemoveProgressItem, ASC.Data.Reassigns">Deletion progress</returns>
     /// <path>api/2.0/people/remove/start</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("remove/start")]

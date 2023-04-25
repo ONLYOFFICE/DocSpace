@@ -31,21 +31,27 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 public class AuthServiceRequestsDto
 {
     /// <summary>Name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
 
     /// <summary>Title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 
     /// <summary>Description</summary>
+    /// <type>System.String, System</type>
     public string Description { get; set; }
 
     /// <summary>Instruction</summary>
+    /// <type>System.String, System</type>
     public string Instruction { get; set; }
 
-    /// <summary>Can be set or not</summary>
+    /// <summary>Specifies if the authentication service can be set or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool CanSet { get; set; }
 
-    /// <summary>List of authorization keys.</summary>
+    /// <summary>List of authorization keys</summary>
+    /// <type>System.Collections.Generic.List{ASC.Web.Core.CookiesType.AuthKey}, System.Collections.Generic</type>
     public List<AuthKey> Props { get; set; }
 
     public AuthServiceRequestsDto()

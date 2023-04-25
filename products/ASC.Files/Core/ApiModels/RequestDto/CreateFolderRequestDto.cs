@@ -31,5 +31,6 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class CreateFolderRequestDto
 {
     /// <summary>Folder title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 }

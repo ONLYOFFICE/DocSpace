@@ -357,7 +357,7 @@ public class SettingsController : ApiControllerBase
     /// <short>Change the default access rights</short>
     /// <param type="System.Collections.Generic.List{ASC.Files.Core.Security.FileShare}, System.Collections.Generic" name="value">Sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing, Collaborator)</param>
     /// <category>Settings</category>
-    /// <returns type="System.Collections.Generic.List{SC.Files.Core.Security.FileShare}, System.Collections.Generic">Updated sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing, Collaborator)</returns>
+    /// <returns type="ASC.Files.Core.Security.FileShare, ASC.Files.Core">Updated sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing, Collaborator)</returns>
     /// <path>api/2.0/files/settings/dafaultaccessrights</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>

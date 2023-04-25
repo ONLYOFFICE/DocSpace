@@ -31,5 +31,6 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class BatchTagsRequestDto
 {
     /// <summary>Tag names</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic</type>
     public IEnumerable<string> Names { get; set; }
 }

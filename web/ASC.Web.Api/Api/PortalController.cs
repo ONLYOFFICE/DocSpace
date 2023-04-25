@@ -306,7 +306,7 @@ public class PortalController : ControllerBase
     /// Get a portal quota
     /// </short>
     /// <category>Quota</category>
-    /// <returns type="ASC.Core.Tenants.TenantQuota, ASC.Core.Common">Current portal quota: tenant, name, price, product ID, visible or not, tenant quota features</returns>
+    /// <returns type="ASC.Core.Tenants.TenantQuota, ASC.Core.Common">Current portal quota</returns>
     /// <path>api/2.0/portal/quota</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]

@@ -139,7 +139,7 @@ public class SettingsController : BaseSettingsController
     /// </short>
     /// <category>Common settings</category>
     /// <param type="System.Boolean, System" name="withpassword">Specifies if the password hasher settings will be returned or not</param>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SettingsDto, ASC.Web.Api">Settings: time zone, trusted domains, trusted domains type, language, UTC offset, greeting settings, owner ID, team template ID, enabled to join or not, enabled to send a message to the administrator or not, enabled to connect third-party providers r not, Personal or DocSpace portal, standalone or not, Wizard token, password hash, Firebase parameters, version, ReCAPTCHA public key, send debug information or not, socket URL, tenant status, tenant alias, link to the help, domain validator, plugins</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SettingsDto, ASC.Web.Api">Settings</returns>
     /// <path>api/2.0/settings</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -294,7 +294,7 @@ public class SettingsController : BaseSettingsController
     /// Get the space usage
     /// </short>
     /// <category>Quota</category>
-    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.QuotaUsageDto, ASC.Web.Api">Space usage and limits for upload: storage size, maximum file size, used size, maximum number of room admins, number of room admins, available size, available number of users, storage usage, user storage size, user used size, user available size, maximum number of users, number of users</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.QuotaUsageDto, ASC.Web.Api">Space usage and limits for upload</returns>
     /// <path>api/2.0/settings/quota</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("quota")]
@@ -329,7 +329,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Get supporrted languages</short>
     /// <category>Common settings</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{System.Object}, System.Collections.Generic">List of all the available portal languages</returns>
+    /// <returns type="System.Object, System">List of all the available portal languages</returns>
     /// <path>api/2.0/settings/cultures</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
@@ -347,7 +347,7 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Get time zones</short>
     /// <category>Common settings</category>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.ApiModel.RequestsDto.TimezonesRequestsDto}, System.Collections.Generic">List of all the available time zones with their IDs and display names</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.TimezonesRequestsDto, ASC.Web.Api">List of all the available time zones with their IDs and display names</returns>
     /// <path>api/2.0/settings/timezones</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -465,7 +465,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Complete the Wizard settings</short>
     /// <category>Common settings</category>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WizardRequestsDto, ASC.Web.Api" name="inDto">Wizard settings request parameters</param>
-    /// <returns type="ASC.Web.Core.Utility.Settings.WizardSettings, ASC.Web.Core">Wizard settings: completed or not</returns>
+    /// <returns type="ASC.Web.Core.Utility.Settings.WizardSettings, ASC.Web.Core">Wizard settings</returns>
     /// <path>api/2.0/settings/wizard/complete</path>
     /// <httpMethod>PUT</httpMethod>
     [AllowNotPayment]
@@ -527,7 +527,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Save a color theme</short>
     /// <category>Common settings</category>
     /// <param type="ASC.Web.Api.ApiModels.RequestsDto.CustomColorThemesSettingsRequestsDto, ASC.Web.Api" name="inDto">Portal theme settings</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Portal theme settings: custom color theme settings, selected or not, limit</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.CustomColorThemesSettingsDto, ASC.Web.Api">Portal theme settings</returns>
     /// <path>api/2.0/settings/colortheme</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("colortheme")]
@@ -731,7 +731,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Update the email activation settings</short>
     /// <category>Common settings</category>
     /// <param type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core" name="settings">Email activation settings</param>
-    /// <returns type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core">Updated email activation settings: shown or hidden</returns>
+    /// <returns type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core">Updated email activation settings</returns>
     /// <path>api/2.0/settings/emailactivation</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("emailactivation")]
@@ -747,7 +747,7 @@ public class SettingsController : BaseSettingsController
     /// <category>Statistics</category>
     /// <short>Get the space usage statistics</short>
     /// <param ype="System.Guid, System" method="url" name="id">Module ID</param>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.ApiModel.ResponseDto.UsageSpaceStatItemDto}, System.Collections.Generic">Module space usage statistics: name, icon, disabled or not, size, URL</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.UsageSpaceStatItemDto, ASC.Web.Api">Module space usage statistics</returns>
     /// <path>api/2.0/settings/statistics/spaceusage/{id}</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -792,7 +792,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Get the visit statistics</short>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="fromDate">Start period date</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="toDate">End period date</param>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.ApiModel.ResponseDto.ChartPointDto}, System.Collections.Generic">List of point charts: display data, date, hosts, hits</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.ChartPointDto, ASC.Web.Api">List of point charts</returns>
     /// <path>api/2.0/settings/statistics/visit</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -895,7 +895,7 @@ public class SettingsController : BaseSettingsController
     /// <short>Get the authorization services</short>
     /// <path>api/2.0/settings/authservice</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.RequestsDto.AuthServiceRequestsDto}, System.Collections.Generic">Authorization services: name, title, description, instruction, service can be set or not, list of authorization keys</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.AuthServiceRequestsDto, ASC.Web.Api">Authorization services</returns>
     /// <collection>list</collection>
     [HttpGet("authservice")]
     public IEnumerable<AuthServiceRequestsDto> GetAuthServices()

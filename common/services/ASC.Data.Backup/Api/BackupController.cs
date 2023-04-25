@@ -55,7 +55,7 @@ public class BackupController : ControllerBase
     /// Returns the backup schedule of the current portal.
     /// </summary>
     /// <short>Get the backup schedule</short>
-    /// <returns type="ASC.Data.Backup.BackupAjaxHandler.Schedule, ASC.Data.Backup">Backup schedule: storage type, storage parameters, cron parameters, maximum number of the stored backup copies, last backup creation time</returns>
+    /// <returns type="ASC.Data.Backup.BackupAjaxHandler.Schedule, ASC.Data.Backup">Backup schedule</returns>
     /// <httpMethod>GET</httpMethod>
     /// <path>api/2.0/backup/getbackupschedule</path>
     [HttpGet("getbackupschedule")]
@@ -146,7 +146,7 @@ public class BackupController : ControllerBase
     /// Returns the history of the started backup.
     /// </summary>
     /// <short>Get the backup history</short>
-    /// <returns type="System.Collections.Generic.List{ASC.Data.Backup.Contracts.BackupHistoryRecord}, System.Collections.Generic">List of backup history records: backup ID, file name, storage type, creation date, expiration date</returns>
+    /// <returns type="ASC.Data.Backup.Contracts.BackupHistoryRecord, ASC.Data.Backup.Core">List of backup history records</returns>
     /// <httpMethod>GET</httpMethod>
     /// <path>api/2.0/backup/getbackuphistory</path>
     /// <collection>list</collection>

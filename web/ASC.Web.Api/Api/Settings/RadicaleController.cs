@@ -74,7 +74,7 @@ public class RadicaleController : BaseSettingsController
     /// Get a link to the CardDav address book
     /// </short>
     /// <category>CardDav address book</category>
-    /// <returns type="ASC.Common.Radicale.DavResponse, ASC.Common.Radicale">CardDav response: completed or not, link to the CardDav address book</returns>
+    /// <returns type="ASC.Common.Radicale.DavResponse, ASC.Common.Radicale">CardDav response</returns>
     /// <path>api/2.0/settings/carddavurl</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("carddavurl")]
@@ -146,7 +146,7 @@ public class RadicaleController : BaseSettingsController
     /// Delete a CardDav address book
     /// </short>
     /// <category>CardDav address book</category>
-    /// <returns type="ASC.Common.Radicale.DavResponse, ASC.Common.Radicale">CardDav response: completed or not, error</returns>
+    /// <returns type="ASC.Common.Radicale.DavResponse, ASC.Common.Radicale">CardDav response</returns>
     /// <path>api/2.0/settings/deletebook</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("deletebook")]

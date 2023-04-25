@@ -31,16 +31,20 @@ namespace ASC.Data.Backup.ApiModels;
 public class BackupRestoreDto
 {
     /// <summary>Backup ID</summary>
+    /// <type>System.String, System</type>
     public string BackupId { get; set; }
 
     /// <summary>Storage type</summary>
+    /// <type>System.Object, System</type>
     /// <example>"Documents"</example>
     public object StorageType { get; set; }
 
     /// <summary>Storage parameters</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Api.Collections.ItemKeyValuePair{System.Object, System.Object}}, System.Collections.Generic</type>
     /// <example>[{"Key": "some text", "Value": "some text"}]</example>
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
 
     /// <summary>Notifies users about portal restoring process or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Notify { get; set; }
 }

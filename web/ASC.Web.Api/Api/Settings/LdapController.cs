@@ -70,7 +70,7 @@ public class LdapController : BaseSettingsController
     /// Get the LDAP settings
     /// </short>
     /// <category>LDAP</category>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapSettingsDto, ASC.Web.Api">LDAP settings: enable LDAP authentication or not, start TLS or not, enable SSL or not, send welcome email or not, server name, user name, port number, user filter, login attribute, LDAP settings mapping, access rights, user is a group member or not, group name, user attribute, group filter, group attribute, group name attribute, authentication is enabled or not, login, password, accept certificate or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapSettingsDto, ASC.Web.Api">LDAP settings</returns>
     /// <path>api/2.0/settings/ldap</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ldap")]
@@ -109,7 +109,7 @@ public class LdapController : BaseSettingsController
     /// Get the LDAP cron expression
     /// </short>
     /// <category>LDAP</category>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapCronSettingsDto, ASC.Web.Api">LDAP cron settings: cron expression</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapCronSettingsDto, ASC.Web.Api">LDAP cron settings</returns>
     /// <path>api/2.0/settings/ldap/cron</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ldap/cron")]
@@ -190,7 +190,7 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <path>api/2.0/settings/ldap/sync</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status: completed or not, ID, status, error, warning, percentage of completion, certificate confirmation request, source, operation type</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status</returns>
     [HttpGet("ldap/sync")]
     public LdapStatusDto SyncLdap()
     {
@@ -214,7 +214,7 @@ public class LdapController : BaseSettingsController
     /// <category>LDAP</category>
     /// <path>api/2.0/settings/ldap/sync/test</path>
     /// <httpMethod>GET</httpMethod>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status: completed or not, ID, status, error, warning, percentage of completion, certificate confirmation request, source, operation type</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status</returns>
     [HttpGet("ldap/sync/test")]
     public LdapStatusDto TestLdapSync()
     {
@@ -235,7 +235,7 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LdapRequestsDto, ASC.Web.Api" name="ldapRequestsDto">LDAP settings</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status: completed or not, ID, status, error, warning, percentage of completion, certificate confirmation request, source, operation type</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status</returns>
     /// <path>api/2.0/settings/ldap</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("ldap")]
@@ -267,7 +267,7 @@ public class LdapController : BaseSettingsController
     /// <param type="ASC.ActiveDirectory.Base.Settings.LdapSettings, ASC.ActiveDirectory.Base.Settings" name="ldapSettings">LDAP settings</param>
     /// <path>api/2.0/settings/ldap/save/test</path>
     /// <httpMethod>POST</httpMethod>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status: completed or not, ID, status, error, warning, percentage of completion, certificate confirmation request, source, operation type</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status</returns>
     [HttpPost("ldap/save/test")]
     public LdapStatusDto TestLdapSave(LdapSettings ldapSettings)
     {
@@ -287,7 +287,7 @@ public class LdapController : BaseSettingsController
     /// Get the LDAP synchronization process status
     /// </short>
     /// <category>LDAP</category>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status: completed or not, ID, status, error, warning, percentage of completion, certificate confirmation request, source, operation type</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status</returns>
     /// <path>api/2.0/settings/ldap/status</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ldap/status")]

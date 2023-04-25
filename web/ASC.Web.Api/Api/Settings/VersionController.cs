@@ -56,7 +56,7 @@ public class VersionController : BaseSettingsController
     /// <path>api/2.0/settings/version/build</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>
-    /// <returns type="ASC.Api.Settings.BuildVersion, ASC.Api.Settings">Current DocSpace, Community Server, Document Server, Mail Server, XMPP server versions</returns>
+    /// <returns type="ASC.Api.Settings.BuildVersion, ASC.Web.Api">Current product versions</returns>
     [AllowAnonymous]
     [AllowNotPayment]
     [HttpGet("version/build")]

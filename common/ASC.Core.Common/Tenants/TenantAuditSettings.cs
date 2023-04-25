@@ -34,9 +34,11 @@ public class TenantAuditSettings : ISettings<TenantAuditSettings>
     public const int MaxLifeTime = 180;
 
     /// <summary>Login history lifetime</summary>
+    /// <type>System.Int32, System</type>
     public int LoginHistoryLifeTime { get; set; }
 
     /// <summary>Audit trail lifetime</summary>
+    /// <type>System.Int32, System</type>
     public int AuditTrailLifeTime { get; set; }
 
     public static readonly Guid Guid = new Guid("{8337D0FB-AD67-4552-8297-802312E7F503}");
@@ -59,5 +61,6 @@ public class TenantAuditSettings : ISettings<TenantAuditSettings>
 public class TenantAuditSettingsWrapper
 {
     /// <summary>Audit trail settingse</summary>
+    /// <type>ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Common</type>
     public TenantAuditSettings Settings { get; set; }
 }

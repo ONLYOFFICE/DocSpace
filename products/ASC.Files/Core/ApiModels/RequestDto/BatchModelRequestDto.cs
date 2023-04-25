@@ -31,9 +31,11 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class BaseBatchRequestDto
 {
     /// <summary>List of folder IDs</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.Text.Json.JsonElement}, System.Collections.Generic</type>
     public IEnumerable<JsonElement> FolderIds { get; set; }
 
     /// <summary>List of file IDs</summary>
+    /// <type>System.Collections.Generic.IEnumerable{System.Text.Json.JsonElement}, System.Collections.Generic</type>
     public IEnumerable<JsonElement> FileIds { get; set; }
 
     public BaseBatchRequestDto()
@@ -48,6 +50,7 @@ public class BaseBatchRequestDto
 public class DownloadRequestDto : BaseBatchRequestDto
 {
     /// <summary>List of file IDs which will be converted</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Api.Collections.ItemKeyValuePair{System.Text.Json.JsonElement, System.String}}, System.Collections.Generic</type>
     public IEnumerable<ItemKeyValuePair<JsonElement, string>> FileConvertIds { get; set; }
 
     public DownloadRequestDto() : base()
@@ -61,9 +64,11 @@ public class DownloadRequestDto : BaseBatchRequestDto
 public class DeleteBatchRequestDto : BaseBatchRequestDto
 {
     /// <summary>Specifies whether to delete a file after the editing session is finished or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DeleteAfter { get; set; }
 
     /// <summary>Specifies whether to move a file to the "Trash" folder or delete it immediately</summary>
+    /// <type>System.Boolean, System</type>
     public bool Immediately { get; set; }
 }
 
@@ -72,9 +77,11 @@ public class DeleteBatchRequestDto : BaseBatchRequestDto
 public class DeleteRequestDto
 {
     /// <summary>Specifies whether to delete a file after the editing session is finished or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DeleteAfter { get; set; }
 
     /// <summary>Specifies whether to move a file to the "Trash" folder or delete it immediately</summary>
+    /// <type>System.Boolean, System</type>
     public bool Immediately { get; set; }
 }
 
@@ -83,11 +90,14 @@ public class DeleteRequestDto
 public class BatchRequestDto : BaseBatchRequestDto
 {
     /// <summary>Destination folder ID</summary>
+    /// <type>System.Text.Json.JsonElement, System.Text.Json</type>
     public JsonElement DestFolderId { get; set; }
 
     /// <summary>Overwriting behavior</summary>
+    /// <type>ASC.Web.Files.Services.WCFService.FileOperations.FileConflictResolveType, ASC.Files.Core</type>
     public FileConflictResolveType ConflictResolveType { get; set; }
 
     /// <summary>Specifies whether to delete a folder after the editing session is finished or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool DeleteAfter { get; set; }
 }

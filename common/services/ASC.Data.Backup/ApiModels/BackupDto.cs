@@ -31,10 +31,12 @@ namespace ASC.Data.Backup.ApiModels;
 public class BackupDto
 {
     /// <summary>Storage type</summary>
+    /// <type>System.String, System</type>
     /// <example>"Documents"</example>
     public string StorageType { get; set; }
 
     /// <summary>Storage parameters</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Api.Collections.ItemKeyValuePair{System.Object, System.Object}}, System.Collections.Generic</type>
     /// <example>[{"Key": "some text", "Value": "some text"}]</example>
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
 }

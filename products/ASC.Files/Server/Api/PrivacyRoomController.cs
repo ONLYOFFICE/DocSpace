@@ -70,7 +70,7 @@ public abstract class PrivacyRoomController<T> : ControllerBase
     /// </summary>
     /// <short>Get file key pairs</short>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Files.Core.Entries.EncryptionKeyPairDto}, System.Collections.Generic">List of encryption key pairs: private key, public key, user ID</returns>
+    /// <returns type="ASC.Web.Files.Core.Entries.EncryptionKeyPairDto, ASC.Files.Core">List of encryption key pairs</returns>
     /// <path>api/2.0/privacyroom/access/{fileId}</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>

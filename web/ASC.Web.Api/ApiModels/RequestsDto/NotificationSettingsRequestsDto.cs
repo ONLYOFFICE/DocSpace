@@ -33,10 +33,12 @@ namespace ASC.Web.Api.ApiModels.RequestsDto;
 public class NotificationSettingsRequestsDto
 {
     /// <summary>Notification type (Badges, RoomsActivity, DailyFeed, UsefullTips)</summary>
+    /// <type>ASC.Web.Core.Notify.NotificationType, ASC.Web.Core</type>
     public NotificationType Type { get; set; }
 
 
     /// <summary>Specifies if the notification type is enabled or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool IsEnabled { get; set; }
 }
 

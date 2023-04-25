@@ -66,15 +66,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// <short>Chunked upload</short>
     /// <category>Operations</category>
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SessionRequestDto, ASC.Files.Core" name="inDto">Session request parameters: <![CDATA[
-    /// <ul>
-    ///     <li><b>FileName</b> (string) - file name,</li>
-    ///     <li><b>FileSize</b> (long) - file length in bytes,</li>
-    ///     <li><b>RelativePath</b> (string) - relative path to the folder,</li>
-    ///     <li><b>CreateOn</b> (ApiDateTime) - creation time,</li>
-    ///     <li><b>Encrypted</b> (bool) - specifies whether to encrypt a file or not.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.SessionRequestDto, ASC.Files.Core" name="inDto">Session request parameters</param>
     /// <remarks>
     /// <![CDATA[
     /// Each chunk can have different length but the length should be multiple of <b>512</b> and greater or equal to <b>10 mb</b>. Last chunk can have any size.
@@ -84,7 +76,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// When the number of bytes uploaded is equal to the number of bytes you sent in the initial request, the server responds with the <b>201 Created</b> status and sends you information about the uploaded file.
     /// ]]>
     /// </remarks>
-    /// <returns>
+    /// <returns type="System.Object, System">
     /// <![CDATA[
     /// Information about created session which includes:
     /// <ul>
@@ -112,7 +104,7 @@ public abstract class UploadController<T> : ApiControllerBase
     /// <category>Files</category>
     /// <param type="System.Int32, System" name="fileId">File ID</param>
     /// <param type="System.Int64, System" name="fileSize">File size in bytes</param>
-    /// <returns>
+    /// <returns type="System.Object, System">
     /// <![CDATA[
     /// Information about created session which includes:
     /// <ul>
@@ -138,16 +130,9 @@ public abstract class UploadController<T> : ApiControllerBase
     /// </summary>
     /// <short>Insert a file</short>
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Stream</b> (Stream) - request input stream,</li>
-    ///     <li><b>Title</b> (string) - file name,</li>
-    ///     <li><b>CreateNewIfExist</b> (bool?) - specifies whether to create a new file if it already exists or not,</li>
-    ///     <li><b>KeepConvertStatus</b> (bool) - specifies whether to keep the file converting status or not.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file</param>
     /// <category>Folders</category>
-    /// <returns>Inserted file information: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Inserted file informationy</returns>
     /// <path>api/2.0/files/{folderId}/insert</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/insert", Order = 1)]
@@ -171,18 +156,8 @@ public abstract class UploadController<T> : ApiControllerBase
     /// </ol>]]>
     /// </remarks>
     /// <param type="System.Int32, System" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>File</b> (IFormFile) - request input stream,</li>
-    ///     <li><b>ContentType</b> (ContentType) - Content-Type header,</li>
-    ///     <li><b>ContentDisposition</b> (ContentDisposition) - Content-Disposition header,</li>
-    ///     <li><b>Files</b> (IEnumerable&lt;IFormFile&gt;) - list of files when specified as multipart/form-data,</li>
-    ///     <li><b>CreateNewIfExist</b> (bool?) - specifies whether to create a new file if it already exists or not,</li>
-    ///     <li><b>StoreOriginalFileFlag</b> (bool?) - specifies whether to upload documents in the original formats as well or not,</li>
-    ///     <li><b>KeepConvertStatus</b> (bool) - specifies whether to keep the file converting status or not.</li>
-    /// </ul>
-    /// ]]></param>
-    /// <returns>Uploaded file(s): folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file</param>
+    /// <returns type="System.Object, System">Uploaded file(s)</returns>
     /// <path>api/2.0/files/{folderId}/upload</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("{folderId}/upload", Order = 1)]
@@ -212,16 +187,9 @@ public class UploadControllerCommon : ApiControllerBase
     /// Inserts a file specified in the request to the "Common" section by single file uploading.
     /// </summary>
     /// <short>Insert a file to the "Common" section</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Stream</b> (Stream) - request input stream,</li>
-    ///     <li><b>Title</b> (string) - file name,</li>
-    ///     <li><b>CreateNewIfExist</b> (bool?) - specifies whether to create a new file if it already exists or not,</li>
-    ///     <li><b>KeepConvertStatus</b> (bool) - specifies whether to keep the file converting status or not.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file</param>
     /// <category>Folders</category>
-    /// <returns>Inserted file: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Inserted file</returns>
     /// <path>api/2.0/files/@common/insert</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@common/insert")]
@@ -234,16 +202,9 @@ public class UploadControllerCommon : ApiControllerBase
     /// Inserts a file specified in the request to the "My documents" section by single file uploading.
     /// </summary>
     /// <short>Insert a file to the "My documents" section</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>Stream</b> (Stream) - request input stream,</li>
-    ///     <li><b>Title</b> (string) - file name,</li>
-    ///     <li><b>CreateNewIfExist</b> (bool?) - specifies whether to create a new file if it already exists or not,</li>
-    ///     <li><b>KeepConvertStatus</b> (bool) - specifies whether to keep the file converting status or not.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.InsertFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for inserting a file</param>
     /// <category>Folders</category>
-    /// <returns>Inserted file: folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">Inserted file</returns>
     /// <path>api/2.0/files/@my/insert</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/insert")]
@@ -257,17 +218,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Upload a file to the "Common" section</short>
     /// <category>Folders</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>File</b> (IFormFile) - request input stream,</li>
-    ///     <li><b>ContentType</b> (ContentType) - Content-Type header,</li>
-    ///     <li><b>ContentDisposition</b> (ContentDisposition) - Content-Disposition header,</li>
-    ///     <li><b>Files</b> (IEnumerable&lt;IFormFile&gt;) - list of files when specified as multipart/form-data,</li>
-    ///     <li><b>CreateNewIfExist</b> (bool?) - specifies whether to create a new file if it already exists or not,</li>
-    ///     <li><b>StoreOriginalFileFlag</b> (bool?) - specifies whether to upload documents in the original formats as well or not,</li>
-    ///     <li><b>KeepConvertStatus</b> (bool) - specifies whether to keep the file converting status or not.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file</param>
     /// <remarks>
     /// <![CDATA[
     ///  You can upload files in two different ways:
@@ -276,7 +227,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// <li>Using standart multipart/form-data method.</li>
     /// </ol>]]>
     /// </remarks>
-    /// <returns>Uploaded file(s): folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="System.Object, System">Uploaded file(s)</returns>
     /// <path>api/2.0/files/@common/upload</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@common/upload")]
@@ -292,17 +243,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Upload a file to the "My documents" section</short>
     /// <category>Folders</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file: <![CDATA[
-    /// <ul>
-    ///     <li><b>File</b> (IFormFile) - request input stream,</li>
-    ///     <li><b>ContentType</b> (ContentType) - Content-Type header,</li>
-    ///     <li><b>ContentDisposition</b> (ContentDisposition) - Content-Disposition header,</li>
-    ///     <li><b>Files</b> (IEnumerable&lt;IFormFile&gt;) - list of files when specified as multipart/form-data,</li>
-    ///     <li><b>CreateNewIfExist</b> (bool?) - specifies whether to create a new file if it already exists or not,</li>
-    ///     <li><b>StoreOriginalFileFlag</b> (bool?) - specifies whether to upload documents in the original formats as well or not,</li>
-    ///     <li><b>KeepConvertStatus</b> (bool) - specifies whether to keep the file converting status or not.</li>
-    /// </ul>
-    /// ]]></param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.UploadRequestDto, ASC.Files.Core" name="inDto">Request parameters for uploading a file</param>
     /// <remarks>
     /// <![CDATA[
     ///  You can upload files in two different ways:
@@ -311,7 +252,7 @@ public class UploadControllerCommon : ApiControllerBase
     /// <li>Using standart multipart/form-data method.</li>
     /// </ol>]]>
     /// </remarks>
-    /// <returns>Uploaded file(s): folder ID, version, version group, content length, pure content length, file status, URL to view a file, web URL, file type, file extension, comment, encrypted or not, thumbnail URL, thumbnail status, locked or not, user ID who locked a file, denies file downloading or not, denies file sharing or not, file accessibility</returns>
+    /// <returns type="System.Object, System">Uploaded file(s)</returns>
     /// <path>api/2.0/files/@my/upload</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("@my/upload")]

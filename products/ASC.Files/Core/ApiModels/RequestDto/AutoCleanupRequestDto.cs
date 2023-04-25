@@ -30,8 +30,10 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class AutoCleanupRequestDto
 {
     /// <summary>Enables the auto-clearing or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Set { get; set; }
 
     /// <summary>A time interval when the auto-clearing will be performed</summary>
+    /// <type>ASC.Files.Core.DateToAutoCleanUp, ASC.Files.Core</type>
     public DateToAutoCleanUp Gap { get; set; }
 }

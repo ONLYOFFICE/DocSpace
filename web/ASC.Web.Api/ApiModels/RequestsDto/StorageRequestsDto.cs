@@ -31,8 +31,10 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 public class StorageRequestsDto
 {
     /// <summary>Storage name</summary>
+    /// <type>System.String, System</type>
     public string Module { get; set; }
 
     /// <summary>Storage properties</summary>
+    /// <type>System.Collections.Generic.IEnumerable{ASC.Api.Collections.ItemKeyValuePair{System.String, System.String}}, System.Collections.Generic</type>
     public IEnumerable<ItemKeyValuePair<string, string>> Props { get; set; }
 }

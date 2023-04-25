@@ -152,7 +152,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="ASC.People.ApiModels.RequestDto.MemberRequestDto, ASC.People" name="inDto">Member request parameters</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Newly added user with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Newly added user with the detailed information</returns>
     /// <path>api/2.0/people/active</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("active")]
@@ -221,7 +221,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="ASC.People.ApiModels.RequestDto.MemberRequestDto, ASC.People" name="inDto">Member request parameters</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Newly added user with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Newly added user with the detailed information</returns>
     /// <path>api/2.0/people</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost]
@@ -344,7 +344,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="ASC.People.ApiModels.RequestDto.InviteUsersRequestDto, ASC.People" name="inDto">Request parameters for inviting users</param>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Api.Models.EmployeeDto}, System.Collections.Generic">List of users</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
     /// <path>api/2.0/people/invite</path>
     /// <httpMethod>POST</httpMethod>
     /// <collection>list</collection>
@@ -384,7 +384,7 @@ public class UserController : PeopleControllerBase
     /// <category>Password</category>
     /// <param type="System.Guid, System" method="url" name="userid">User ID</param>
     /// <param type="ASC.People.ApiModels.RequestDto.MemberRequestDto, ASC.People" name="inDto">Request parameters for setting new password</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Detailed user information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed user information</returns>
     /// <path>api/2.0/people/{userid}/password</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/password")]
@@ -449,7 +449,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="System.String, System" method="url" name="userid">User ID</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Deleted user detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Deleted user detailed information</returns>
     /// <path>api/2.0/people/{userid}</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("{userid}")]
@@ -488,7 +488,7 @@ public class UserController : PeopleControllerBase
     /// Delete my profile
     /// </short>
     /// <category>Profiles</category>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Detailed information about my profile</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed information about my profile</returns>
     /// <path>api/2.0/people/@self</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("@self")]
@@ -548,7 +548,7 @@ public class UserController : PeopleControllerBase
     /// <category>Search</category>
     /// <param type="ASC.Core.Users.EmployeeStatus, ASC.Core.Common" method="url" name="status">User status</param>
     /// <param type="System.String, System" name="query">Search query</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/status/{status}/search</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -586,7 +586,7 @@ public class UserController : PeopleControllerBase
     /// Get profiles
     /// </short>
     /// <category>Profiles</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -604,7 +604,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="System.String, System" method="url" name="email">User email address</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Detailed profile information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed profile information</returns>
     /// <path>api/2.0/people/email</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
@@ -633,7 +633,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="System.String, System" method="url" name="username">User name</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Detailed profile information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed profile information</returns>
     /// <path>api/2.0/people/{username}</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
@@ -684,7 +684,7 @@ public class UserController : PeopleControllerBase
     /// Get profiles by status
     /// </short>
     /// <param type="ASC.Core.Users.EmployeeStatus, ASC.Core.Common" method="url" name="status">User status</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <category>User status</category>
     /// <path>api/2.0/people/status/{status}</path>
     /// <httpMethod>GET</httpMethod>
@@ -720,7 +720,7 @@ public class UserController : PeopleControllerBase
     /// <param type="System.Nullable{ASC.Core.Users.EmployeeType}, System" name="employeeType">User type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
     /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/filter</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -740,7 +740,7 @@ public class UserController : PeopleControllerBase
     /// </summary>
     /// <short>Get the People information</short>
     /// <category>Module</category>
-    /// <returns type="ASC.Api.Core.Module, ASC.Api.Core">Module information: ID, product class name, title, description, icon URL, large icon URL, start URL, primary or nor, help URL</returns>
+    /// <returns type="ASC.Api.Core.Module, ASC.Api.Core">Module information</returns>
     /// <path>api/2.0/people/info</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("info")]
@@ -758,7 +758,7 @@ public class UserController : PeopleControllerBase
     /// <short>Search users (using query parameters)</short>
     /// <category>Search</category>
     /// <param type="System.String, System" name="query">Search query</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeDto}, System.Collections.Generic">List of users</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
     /// <path>api/2.0/people/search</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -774,7 +774,7 @@ public class UserController : PeopleControllerBase
     /// <short>Search users</short>
     /// <category>Search</category>
     /// <param type="System.String, System" method="url" name="query">Search query</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/@search/{query}</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -813,7 +813,7 @@ public class UserController : PeopleControllerBase
     /// <param type="System.Nullable{ASC.Core.Users.EmployeeType}, System" name="employeeType">User type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="isAdministrator">Specifies if the user is an administrator or not</param>
     /// <param type="System.Nullable{ASC.Core.Payments}, System" name="payments">User payment status</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeDto}, System.Collections.Generic">List of users</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of users</returns>
     /// <path>api/2.0/people/simple/filter</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -860,7 +860,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating portal users</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/delete</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
@@ -905,7 +905,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Profiles</category>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating portal users</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/invite</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
@@ -1029,7 +1029,7 @@ public class UserController : PeopleControllerBase
     /// Get my profile
     /// </short>
     /// <category>Profiles</category>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Detailed information about my profile</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed information about my profile</returns>
     /// <path>api/2.0/people/@self</path>
     /// <httpMethod>GET</httpMethod>
     [AllowNotPayment]
@@ -1156,7 +1156,7 @@ public class UserController : PeopleControllerBase
     /// <category>User status</category>
     /// <param type="ASC.Core.Users.EmployeeActivationStatus, ASC.Core.Common" method="url" name="activationstatus">Activation status</param>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/activationstatus/{activationstatus}</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
@@ -1191,7 +1191,7 @@ public class UserController : PeopleControllerBase
     /// <category>Profiles</category>
     /// <param type="System.String, System" method="url" name="userid">User ID</param>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Detailed user information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Detailed user information</returns>
     /// <path>api/2.0/people/{userid}/culture</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}/culture")]
@@ -1241,7 +1241,7 @@ public class UserController : PeopleControllerBase
     /// <category>Profiles</category>
     /// <param type="System.String, System" method="url" name="userid">User ID</param>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMemberRequestDto, ASC.People" name="inDto">Member request parameters</param>
-    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Web.Api">Updated user with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">Updated user with the detailed information</returns>
     /// <path>api/2.0/people/{userid}</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{userid}", Order = 1)]
@@ -1359,7 +1359,7 @@ public class UserController : PeopleControllerBase
     /// <category>User status</category>
     /// <param type="ASC.Core.Users.EmployeeStatus, ASC.Core.Common" method="url" name="status">New user status</param>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/status/{status}</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
@@ -1426,7 +1426,7 @@ public class UserController : PeopleControllerBase
     /// <category>User type</category>
     /// <param type="ASC.Core.Users.EmployeeType, ASC.Core.Common" method="url" name="type">New user type</param>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/type/{type}</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
@@ -1501,7 +1501,7 @@ public class UserController : PeopleControllerBase
     /// </short>
     /// <category>Quota</category>
     /// <param type="ASC.People.ApiModels.RequestDto.UpdateMembersRequestDto, ASC.People" name="inDto">Request parameters for updating user information</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeFullDto}, System.Collections.Generic">List of users with the detailed information</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeFullDto, ASC.Api.Core">List of users with the detailed information</returns>
     /// <path>api/2.0/people/quota</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>

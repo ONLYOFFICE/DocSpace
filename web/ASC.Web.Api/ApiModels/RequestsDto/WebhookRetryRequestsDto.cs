@@ -31,5 +31,6 @@ namespace ASC.Web.Api.ApiModels.RequestsDto;
 public class WebhookRetryRequestsDto
 {
     /// <summary>List of webhook IDs</summary>
+    /// <type>System.Collections.Generic.List{System.Int32}, System.Collections.Generic</type>
     public List<int> Ids { get; set; }
 }

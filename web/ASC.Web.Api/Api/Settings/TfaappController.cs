@@ -95,7 +95,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Get the TFA settings</short>
     /// <category>TFA settings</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.RequestsDto.TfaSettingsDto}, System.Collections.Generic">TFA settings: ID, title, enabled or not, available or not, list of trusted IP addresses, list of users who must use the TFA verification, list of groups who must use the TFA verification</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.RequestsDto.TfaSettingsDto, ASC.Web.Api">TFA settings</returns>
     ///<path>api/2.0/settings/tfaapp</path>
     ///<httpMethod>GET</httpMethod>
     ///<collection>list</collection>
@@ -352,7 +352,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Get the TFA codes</short>
     /// <category>TFA settings</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{System.Object}, System.Collections.Generic">List of TFA application codes</returns>
+    /// <returns type="System.Object, System">List of TFA application codes</returns>
     /// <path>api/2.0/settings/tfaappcodes</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -379,7 +379,7 @@ public class TfaappController : BaseSettingsController
     /// </summary>
     /// <short>Update the TFA codes</short>
     /// <category>TFA settings</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{System.Object}, System.Collections.Generic">New backup codes</returns>
+    /// <returns type="System.Object, System">New backup codes</returns>
     /// <path>api/2.0/settings/tfaappnewcodes</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>

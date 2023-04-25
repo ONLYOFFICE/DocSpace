@@ -83,7 +83,7 @@ public class SecurityController : ControllerBase
     /// Get login history
     /// </short>
     /// <category>Login history</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto}, System.Collections.Generic">List of login events</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto, ASC.Web.Api">List of login events</returns>
     /// <path>api/2.0/security/audit/login/last</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -104,7 +104,7 @@ public class SecurityController : ControllerBase
     /// Get audit trail data
     /// </short>
     /// <category>Audit trail data</category>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.AuditEventDto}, System.Collections.Generic">List of audit trail data</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuditEventDto, ASC.Web.Api">List of audit trail data</returns>
     /// <path>api/2.0/security/audit/events/last</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -129,7 +129,7 @@ public class SecurityController : ControllerBase
     /// <param type="ASC.MessagingSystem.Core.MessageAction, ASC.MessagingSystem.Core" name="action">Action</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Start date</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">End date</param>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto}, System.Collections.Generic">List of filtered login events</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.LoginEventDto, ASC.Web.Api">List of filtered login events</returns>
     /// <path>api/2.0/security/audit/login/filter</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -175,7 +175,7 @@ public class SecurityController : ControllerBase
     /// <param type="System.String, System" name="target">Target</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="from">Start date</param>
     /// <param type="ASC.Api.Core.ApiDateTime, ASC.Api.Core" name="to">End date</param>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.AuditEventDto}, System.Collections.Generic">List of filtered audit trail data</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.AuditEventDto, ASC.Web.Api">List of filtered audit trail data</returns>
     /// <path>api/2.0/security/audit/events/filter</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>

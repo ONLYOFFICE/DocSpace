@@ -62,7 +62,7 @@ public class SsoController : BaseSettingsController
     /// Get the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Studio.UserControls.Management.SingleSignOnSettings">SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">SSO settings</returns>
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2")]
@@ -87,7 +87,7 @@ public class SsoController : BaseSettingsController
     /// Get the default SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Studio.UserControls.Management.SingleSignOnSettings">Default SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">Default SSO settings</returns>
     /// <path>api/2.0/settings/ssov2/default</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("ssov2/default")]
@@ -129,7 +129,7 @@ public class SsoController : BaseSettingsController
     /// </short>
     /// <category>SSO</category>
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.SsoSettingsRequestsDto, ASC.Web.Api" name="inDto">SSO settings request parameters</param>
-    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Studio.UserControls.Management.SingleSignOnSettings">SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">SSO settings</returns>
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("ssov2")]
@@ -212,7 +212,7 @@ public class SsoController : BaseSettingsController
     /// Reset the SSO settings
     /// </short>
     /// <category>SSO</category>
-    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Studio.UserControls.Management.SingleSignOnSettings">Default SSO settings: SSO is enabled or not, IDP settings, IDP certificates, IDP advanced certificate, SP certificates, SP advanced certificate, field mapping, SP login label, hide authentication page or not</returns>
+    /// <returns type="ASC.Web.Studio.UserControls.Management.SingleSignOnSettings.SsoSettingsV2, ASC.Web.Core">Default SSO settings</returns>
     /// <path>api/2.0/settings/ssov2</path>
     /// <httpMethod>DELETE</httpMethod>
     [HttpDelete("ssov2")]

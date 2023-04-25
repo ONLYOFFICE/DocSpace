@@ -31,11 +31,14 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class CreateWordpressPostRequestDto
 {
     /// <summary>Post title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 
     /// <summary>Post contents</summary>
+    /// <type>System.String, System</type>
     public string Content { get; set; }
 
     /// <summary>Operation status</summary>
+    /// <type>System.Int32, System</type>
     public int Status { get; set; }
 }

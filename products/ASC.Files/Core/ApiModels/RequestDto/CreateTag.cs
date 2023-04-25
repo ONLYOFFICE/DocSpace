@@ -31,5 +31,6 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class CreateTagRequestDto
 {
     /// <summary>Tag name</summary>
+    /// <type>System.String, System</type>
     public string Name { get; set; }
 }

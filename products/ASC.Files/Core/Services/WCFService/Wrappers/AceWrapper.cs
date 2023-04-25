@@ -63,10 +63,20 @@ public class AceWrapper : IMapFrom<RoomInvitation>
     public bool DisableRemove { get; set; }
 }
 
+/// <summary>
+/// </summary>
 public class AceShortWrapper
 {
+    /// <summary>User</summary>
+    /// <type>System.String</type>
     public string User { get; set; }
+
+    /// <summary>User access rights to the file</summary>
+    /// <type>System.String</type>
     public string Permissions { get; set; }
+
+    /// <summary>Specifies if the external link is available or not</summary>
+    /// <type>System.Nullable{System.Boolean}, System</type>
     public bool? IsLink { get; set; }
 
     public AceShortWrapper(AceWrapper aceWrapper)

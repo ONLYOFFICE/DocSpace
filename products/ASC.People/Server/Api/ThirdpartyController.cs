@@ -102,7 +102,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <param type="System.Boolean, System" name="settingsView">Specifies whether to return URLs in the format that is used on the Settings page</param>
     /// <param type="System.String, System" name="clientCallback">Method that is called after authorization</param>
     /// <param type="System.String, System" name="fromOnly">Provider name if the response only from this provider is needed</param>
-    /// <returns type="System.Collections.Generic.ICollection{ASC.People.ApiModels.ResponseDto.AccountInfoDto}, System.Collections.Generic">List of third-party accounts: provider, URL, linked or not</returns>
+    /// <returns type="ASC.People.ApiModels.ResponseDto.AccountInfoDto, ASC.People">List of third-party accounts</returns>
     /// <path>api/2.0/people/thirdparty/providers</path>
     /// <httpMethod>GET</httpMethod>
     /// <requiresAuthorization>false</requiresAuthorization>

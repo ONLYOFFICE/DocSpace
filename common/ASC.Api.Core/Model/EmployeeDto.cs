@@ -28,13 +28,32 @@ using System;
 
 namespace ASC.Web.Api.Models;
 
+/// <summary>
+/// </summary>
 public class EmployeeDto
 {
+    /// <summary>ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid Id { get; set; }
+
+    /// <summary>Display name</summary>
+    /// <type>System.String, System</type>
     public string DisplayName { get; set; }
+
+    /// <summary>Title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
+
+    /// <summary>Small avatar</summary>
+    /// <type>System.String, System</type>
     public string AvatarSmall { get; set; }
+
+    /// <summary>Profile URL</summary>
+    /// <type>System.String, System</type>
     public string ProfileUrl { get; set; }
+
+    /// <summary>Specifies if the user has an avatar or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool HasAvatar { get; set; }
 
     public static EmployeeDto GetSample()

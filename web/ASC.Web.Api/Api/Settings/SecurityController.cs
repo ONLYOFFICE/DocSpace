@@ -87,7 +87,7 @@ public class SecurityController : BaseSettingsController
     /// </short>
     /// <category>Security</category>
     /// <param type="System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic" name="ids">List of module IDs</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.ApiModel.ResponseDto.SecurityDto}, System.Collections.Generic">Security settings: module ID, list of users with the access to the module, list of groups with the access to the module, security settings are enabled or not, subitem or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SecurityDto, ASC.Web.Api">Security settings</returns>
     /// <path>api/2.0/settings/security</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -175,7 +175,7 @@ public class SecurityController : BaseSettingsController
     /// Get the password settings
     /// </short>
     /// <category>Security</category>
-    /// <returns type="ASC.Web.Core.Utility.PasswordSettings, ASC.Web.Core">Password settings: minimum length, includes uppercase letters, digits and special symbols or not</returns>
+    /// <returns type="ASC.Web.Core.Utility.PasswordSettings, ASC.Web.Core">Password settings</returns>
     /// <path>api/2.0/settings/security/password</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("security/password")]
@@ -194,7 +194,7 @@ public class SecurityController : BaseSettingsController
     /// </short>
     /// <category>Security</category>
     /// <param type="ASC.Web.Api.Models.PasswordSettingsRequestsDto, ASC.Web.Api" name="inDto">Password settings</param>
-    /// <returns type="ASC.Web.Core.Utility.PasswordSettings, ASC.Web.Core">Password settings: minimum length, includes uppercase letters, digits and special symbols or not</returns>
+    /// <returns type="ASC.Web.Core.Utility.PasswordSettings, ASC.Web.Core">Password settings</returns>
     /// <path>api/2.0/settings/security/password</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("security/password")]
@@ -227,7 +227,7 @@ public class SecurityController : BaseSettingsController
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WebItemSecurityRequestsDto, ASC.Web.Api" name="inDto">Module request parameters</param>
     /// <path>api/2.0/settings/security</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.SecurityDto}, System.Collections.Generic">Security settings: module ID, list of users with the access to the module, list of groups with the access to the module, security settings are enabled or not, subitem or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SecurityDto, ASC.Web.Api">Security settings</returns>
     /// <collection>list</collection>
     [HttpPut("security")]
     public async Task<IEnumerable<SecurityDto>> SetWebItemSecurity(WebItemSecurityRequestsDto inDto)
@@ -276,7 +276,7 @@ public class SecurityController : BaseSettingsController
     /// <param type="ASC.Web.Api.ApiModel.RequestsDto.WebItemSecurityRequestsDto, ASC.Web.Api" name="inDto">Module request parameters</param>
     /// <path>api/2.0/settings/security/access</path>
     /// <httpMethod>PUT</httpMethod>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Web.Api.ApiModel.ResponseDto.SecurityDto}, System.Collections.Generic">Security settings: module ID, list of users with the access to the module, list of groups with the access to the module, security settings are enabled or not, subitem or not</returns>
+    /// <returns type="ASC.Web.Api.ApiModel.ResponseDto.SecurityDto, ASC.Web.Api">Security settings</returns>
     /// <collection>list</collection>
     [HttpPut("security/access")]
     public async Task<IEnumerable<SecurityDto>> SetAccessToWebItems(WebItemSecurityRequestsDto inDto)
@@ -335,7 +335,7 @@ public class SecurityController : BaseSettingsController
     /// </short>
     /// <category>Security</category>
     /// <param type="System.Guid, System" method="url" name="productid">Product ID</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Api.Models.EmployeeDto}, System.Collections.Generic">List of product administrators with the followinf parameters: ID, display name, title, small avatar, profile URL, has an avatar or not</returns>
+    /// <returns type="ASC.Web.Api.Models.EmployeeDto, ASC.Api.Core">List of product administrators with the following parameters</returns>
     /// <path>api/2.0/settings/security/administrator/{productid}</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -417,7 +417,7 @@ public class SecurityController : BaseSettingsController
     /// </short>
     /// <category>Login settings</category>
     /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LoginSettingsRequestDto, ASC.Web.Api" name="loginSettingsRequestDto">Login settings request parameters</param>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LoginSettingsDto, ASC.Web.Api">Updated login settings: maximum number of the user attempts to log in, the time for which the user will be blocked after unsuccessful login attempts, the time to wait for a response from the server</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LoginSettingsDto, ASC.Web.Api">Updated login settings</returns>
     /// <path>api/2.0/settings/security/loginsettings</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("security/loginSettings")]
@@ -461,7 +461,7 @@ public class SecurityController : BaseSettingsController
     /// Get login settings
     /// </short>
     /// <category>Login settings</category>
-    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LoginSettingsDto, ASC.Web.Api">Login settings: maximum number of the user attempts to log in, the time for which the user will be blocked after unsuccessful login attempts, the time to wait for a response from the server</returns>
+    /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LoginSettingsDto, ASC.Web.Api">Login settings</returns>
     /// <path>api/2.0/settings/security/loginsettings</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("security/loginSettings")]

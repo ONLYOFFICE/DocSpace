@@ -31,11 +31,14 @@ namespace ASC.Web.Api.ApiModels.RequestsDto;
 public class WebhooksLogRequest
 {
     /// <summary>Time when a webhook was delivered</summary>
+    /// <type>System.Nullable{System.DateTime}, System</type>
     public DateTime? Delivery { get; set; }
 
     /// <summary>Hook URI</summary>
+    /// <type>System.String, System</type>
     public string HookUri { get; set; }
 
     /// <summary>Webhook ID</summary>
+    /// <type>System.Int32, System</type>
     public int WebhookId { get; set; }
 }

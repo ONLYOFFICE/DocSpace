@@ -85,7 +85,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <category>Folders</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Parent folder ID</param>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFolderRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a folder</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">New folder parameters: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">New folder parameters</returns>
     /// <path>api/2.0/files/folder/{folderId}</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("folder/{folderId}")]
@@ -101,7 +101,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <category>Folders</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.DeleteFolderDto, ASC.Files.Core" name="inDto">Request parameters for deleting a folder</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto}, System.Collections.Generic">List of file operations: operation ID, operation type, operation progress, error, processing status, finished or not, URL, list of files, list of folders</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileOperationDto, ASC.Files.Core">List of file operations</returns>
     /// <path>api/2.0/files/folder/{folderId}</path>
     /// <httpMethod>DELETE</httpMethod>
     /// <collection>list</collection>
@@ -128,7 +128,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="excludeSubject">Specifies whether to exclude a subject or not</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">Folder contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">Folder contents</returns>
     /// <path>api/2.0/files/{folderId}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("{folderId}", Order = 1)]
@@ -145,7 +145,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <short>Get folder information</short>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
     /// <category>Folders</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder parameters: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder parameters</returns>
     /// <path>api/2.0/files/folder/{folderId}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("folder/{folderId}")]
@@ -160,7 +160,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <short>Get the folder path</short>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
     /// <category>Folders</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic">List of file entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core">List of file entry information</returns>
     /// <path>api/2.0/files/folder/{folderId}/path</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -181,7 +181,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <short>Get subfolders</short>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
     /// <category>Folders</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic">List of file entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core">List of file entry information</returns>
     /// <path>api/2.0/files/{folderId}/subfolders</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -201,7 +201,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <short>Get new folder items</short>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
     /// <category>Folders</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic">List of file entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core">List of file entry information</returns>
     /// <path>api/2.0/files/{folderId}/news</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -225,7 +225,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <category>Folders</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFolderRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a folder: Title (string) - new folder title</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder parameters: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder parameters</returns>
     /// <path>api/2.0/files/folder/{folderId}</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("folder/{folderId}")]
@@ -262,7 +262,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Common" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Common" section contents</returns>
     /// <path>api/2.0/files/@common</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@common")]
@@ -280,7 +280,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Favorites" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Favorites" section contents</returns>
     /// <path>api/2.0/files/@favorites</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@favorites")]
@@ -298,7 +298,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "My documents" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "My documents" section contents</returns>
     /// <path>api/2.0/files/@my</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@my")]
@@ -316,7 +316,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Private Room" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Private Room" section contents</returns>
     /// <path>api/2.0/files/@privacy</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@privacy")]
@@ -339,7 +339,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "In projects" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "In projects" section contents</returns>
     /// <path>api/2.0/files/@projects</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@projects")]
@@ -357,7 +357,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Recent" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Recent" section contents</returns>
     /// <path>api/2.0/files/@recent</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@recent")]
@@ -377,7 +377,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withoutAdditionalFolder">Specifies whether to return sections with or without additional folders</param>
     /// <category>Folders</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto}, System.Collections.Generic">List of section contents with the following parameters: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">List of section contents with the following parameters</returns>
     /// <path>api/2.0/files/@root</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -401,7 +401,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Shared with me" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Shared with me" section contents</returns>
     /// <path>api/2.0/files/@share</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@share")]
@@ -419,7 +419,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Templates" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Templates" section contents</returns>
     /// <path>api/2.0/files/@templates</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@templates")]
@@ -437,7 +437,7 @@ public class FoldersControllerCommon : ApiControllerBase
     /// <param type="System.Nullable{ASC.Files.Core.FilterType}, System" name="filterType" optional="true" remark="Allowed values: None (0), FilesOnly (1), FoldersOnly (2), DocumentsOnly (3), PresentationsOnly (4), SpreadsheetsOnly (5), ImagesOnly (7), ByUser (8), ByDepartment (9), ArchiveOnly (10), ByExtension (11), MediaOnly (12), EditingRooms (14), CustomRooms (17), OFormTemplateOnly (18), OFormOnly (19)">Filter type</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="searchInContent">Specifies whether to search within the section contents or not</param>
     /// <param type="System.Nullable{System.Boolean}, System" name="withsubfolders">Specifies whether to return sections with or without subfolders</param>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Trash" section contents: list of files, list of folders, current folder information, folder path, folder start index, number of folder elements, total number of elements in the folder, new element index</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderContentDto, ASC.Files.Core">The "Trash" section contents</returns>
     /// <path>api/2.0/files/@trash</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("@trash")]

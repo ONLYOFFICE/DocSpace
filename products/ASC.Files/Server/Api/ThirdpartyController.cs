@@ -79,7 +79,7 @@ public class ThirdpartyController : ApiControllerBase
     /// </summary>
     /// <short>Get providers</short>
     /// <category>Third-party integration</category>
-    /// <returns type="System.Collections.Generic.List{System.Collections.Generic.List}, System.Collections.Generic">List of provider keys</returns>
+    /// <returns type="System.Collections.Generic.List{System.String}, System.Collections.Generic">List of provider keys</returns>
     /// <remarks>Available provider keys: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive.</remarks>
     /// <path>api/2.0/files/thirdparty/capabilities</path>
     /// <httpMethod>GET</httpMethod>
@@ -188,7 +188,7 @@ public class ThirdpartyController : ApiControllerBase
     /// </summary>
     /// <category>Third-party integration</category>
     /// <short>Get common third-party services</short>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FolderDto}, System.Collections.Generic">List of common third-party folders: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">List of common third-party folderst</returns>
     /// <path>api/2.0/files/thirdparty/common</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -209,7 +209,7 @@ public class ThirdpartyController : ApiControllerBase
     /// </summary>
     /// <category>Third-party integration</category>
     /// <short>Get third-party accounts</short>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Web.Files.Services.WCFService.ThirdPartyParams}, System.Collections.Generic">List of connected providers information: customer title, root folder type, provider ID, provider key</returns>
+    /// <returns type="ASC.Web.Files.Services.WCFService.ThirdPartyParams, ASC.Files.Core">List of connected providers information</returns>
     /// <path>api/2.0/files/thirdparty</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -224,7 +224,7 @@ public class ThirdpartyController : ApiControllerBase
     /// </summary>
     /// <category>Third-party integration</category>
     /// <short>Get a third-party account backup</short>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup</returns>
     /// <path>api/2.0/files/thirdparty/backup</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("thirdparty/backup")]
@@ -284,7 +284,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Save a third-party account</short>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyRequestDto, ASC.Files.Core" name="inDto">Third-party request parameters</param>
     /// <category>Third-party integration</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Connected provider folder: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Connected provider folder</returns>
     /// <remarks>List of provider keys: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive.</remarks>
     /// <path>api/2.0/files/thirdparty</path>
     /// <httpMethod>POST</httpMethod>
@@ -313,7 +313,7 @@ public class ThirdpartyController : ApiControllerBase
     /// <short>Save a third-party account backup</short>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.ThirdPartyBackupRequestDto, ASC.Files.Core" name="inDto">Third-party backup request parameters</param>
     /// <category>Third-party integration</category>
-    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup: parent folder ID, number of files, number of folders, shareable or not, favorite or not, number for a new folder, list of tags, logo, pinned or not, room type, private or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FolderDto, ASC.Files.Core">Folder for the third-party account backup</returns>
     /// <remarks>List of provider key: DropboxV2, Box, WebDav, Yandex, OneDrive, SharePoint, GoogleDrive, kDrive</remarks>
     /// <path>api/2.0/files/thirdparty/backup</path>
     /// <httpMethod>POST</httpMethod>

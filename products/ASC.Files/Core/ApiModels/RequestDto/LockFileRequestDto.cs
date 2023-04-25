@@ -31,5 +31,6 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class LockFileRequestDto
 {
     /// <summary>Specifies whether to lock a file or not</summary>
+    /// <type>System.Boolea, System</type>
     public bool LockFile { get; set; }
 }

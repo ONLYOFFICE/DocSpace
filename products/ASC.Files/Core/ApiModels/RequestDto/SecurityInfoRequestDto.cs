@@ -31,11 +31,14 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class SecurityInfoRequestDto : BaseBatchRequestDto
 {
     /// <summary>Collection of sharing parameters</summary>
+    /// <type>System.Collections.Generic.IAsyncEnumIEnumerableerable{ASC.Files.Core.ApiModels.FileShareParams}, System.Collections.Generic</type>
     public IEnumerable<FileShareParams> Share { get; set; }
 
     /// <summary>Notifies users about the shared file or not</summary>
+    /// <type>System.Boolean, System</type>
     public bool Notify { get; set; }
 
     /// <summary>Message to send when notifying about the shared file</summary>
+    /// <type>System.String, System</type>
     public string SharingMessage { get; set; }
 }

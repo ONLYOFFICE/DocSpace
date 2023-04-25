@@ -31,8 +31,10 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class CreateTextOrHtmlFileRequestDto
 {
     /// <summary>File title</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 
     /// <summary>File contents</summary>
+    /// <type>System.String, System</type>
     public string Content { get; set; }
 }

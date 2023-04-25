@@ -26,17 +26,51 @@
 
 namespace ASC.Web.Api.ApiModels.ResponseDto;
 
+/// <summary>
+/// </summary>
 public class WebhooksLogDto : IMapFrom<WebhooksLog>
 {
+    /// <summary>ID</summary>
+    /// <type>System.Int32, System</type>
     public int Id { get; set; }
+
+    /// <summary>Config name</summary>
+    /// <type>System.String, System</type>
     public string ConfigName { get; set; }
+
+    /// <summary>Creation time</summary>
+    /// <type>System.DateTime, System</type>
     public DateTime CreationTime { get; set; }
+
+    /// <summary>Method</summary>
+    /// <type>System.String, System</type>
     public string Method { get; set; }
+
+    /// <summary>Route</summary>
+    /// <type>System.String, System</type>
     public string Route { get; set; }
+
+    /// <summary>Request headers</summary>
+    /// <type>System.String, System</type>
     public string RequestHeaders { get; set; }
+
+    /// <summary>Request payload</summary>
+    /// <type>System.String, System</type>
     public string RequestPayload { get; set; }
+
+    /// <summary>Response headers</summary>
+    /// <type>System.String, System</type>
     public string ResponseHeaders { get; set; }
+
+    /// <summary>Response payload</summary>
+    /// <type>System.String, System</type>
     public string ResponsePayload { get; set; }
+
+    /// <summary>Status</summary>
+    /// <type>System.Int32, System</type>
     public int Status { get; set; }
+
+    /// <summary>Delivery time</summary>
+    /// <type>System.Nullable{System.DateTime}, System</type>
     public DateTime? Delivery { get; set; }
 }

@@ -31,11 +31,14 @@ namespace ASC.Files.Core.ApiModels.RequestDto;
 public class InvintationLinkRequestDto
 {
     /// <summary>Link ID</summary>
+    /// <type>System.Guid, System</type>
     public Guid LinkId { get; set; }
 
     /// <summary>External link name</summary>
+    /// <type>System.String, System</type>
     public string Title { get; set; }
 
-    /// <summary>Sharing rights (None, ReadWrite, Read, Restrict, Varies, Review, Comment, FillForms, CustomFilter, RoomAdmin, Editing, Collaborator)</summary>
+    /// <summary>Sharing rights</summary>
+    /// <type>ASC.Files.Core.Security.FileShare, ASC.Files.Core</type>
     public FileShare Access { get; set; }
 }

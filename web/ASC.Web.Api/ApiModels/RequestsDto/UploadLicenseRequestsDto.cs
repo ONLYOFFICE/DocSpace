@@ -31,5 +31,6 @@ namespace ASC.Web.Api.ApiModel.RequestsDto;
 public class UploadLicenseRequestsDto
 {
     /// <summary>License attachments</summary>
+    /// <type>System.Collections.Generic.IEnumerable{Microsoft.AspNetCore.Http.IFormFile}, System.Collections.Generic</type>
     public IEnumerable<IFormFile> Files { get; set; }
 }

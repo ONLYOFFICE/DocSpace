@@ -50,7 +50,7 @@ public class ModulesController : ControllerBase
     /// <short>
     /// Get modules
     /// </short>
-    /// <returns type="System.Collections.Generic.IEnumerable{System.String}, System.Collections.Generic">List of modules</returns>
+    /// <returns type="System.String, System">List of modules</returns>
     /// <path>api/2.0/modules</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -73,7 +73,7 @@ public class ModulesController : ControllerBase
     /// <short>
     /// Get modules information
     /// </short>
-    /// <returns type="System.Collections.Generic.IEnumerable{ASC.Api.Core.Module}, System.Collections.Generic">List of modules with their information: ID, product class name, title, description, icon URL, large icon URL, start URL, primary or nor, help URL</returns>
+    /// <returns type="ASC.Api.Core.Module, ASC.Api.Core">List of modules with their information</returns>
     /// <path>api/2.0/modules/info</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>

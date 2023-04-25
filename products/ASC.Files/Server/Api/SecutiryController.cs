@@ -86,7 +86,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <short>Get the shared file information</short>
     /// <category>Sharing</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, System.Collections.Generic">List of shared file information: sharing rights, a user who has the access to the specified file, the file is locked by this user or not, this user is an owner of the specified file or not, this user can edit the access to the specified file or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">List of shared file information</returns>
     /// <path>api/2.0/files/file/{fileId}/share</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -105,7 +105,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <short>Get the shared folder information</short>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
     /// <category>Sharing</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, System.Collections.Generic">List of shared folder information: sharing rights, a user who has the access to the specified folder, the folder is locked by this user or not, this user is an owner of the specified folder or not, this user can edit the access to the specified folder or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">List of shared folder information</returns>
     /// <path>api/2.0/files/folder/{folderId}/share</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -141,7 +141,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.SecurityInfoRequestDto, ASC.Files.Core" name="inDto">Security information request parameters</param>
     /// <short>Share a file</short>
     /// <category>Sharing</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, System.Collections.Generic">List of shared file information: sharing rights, a user who has the access to the specified file, the file is locked by this user or not, this user is an owner of the specified file or not, this user can edit the access to the specified file or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">List of shared file information: sharing rights, a user who has the access to the specified file, the file is locked by this user or not, this user is an owner of the specified file or not, this user can edit the access to the specified file or not</returns>
     /// <path>api/2.0/files/file/{fileId}/share</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
@@ -161,7 +161,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.SecurityInfoRequestDto, ASC.Files.Core" name="inDto">Security information request parameters</param>
     /// <short>Share a folder</short>
     /// <category>Sharing</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, System.Collections.Generic">List of shared folder information: sharing rights, a user who has the access to the specified folder, the folder is locked by this user or not, this user is an owner of the specified folder or not, this user can edit the access to the specified folder or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, ASC.Files.Core">List of shared folder information: sharing rights, a user who has the access to the specified folder, the folder is locked by this user or not, this user is an owner of the specified folder or not, this user can edit the access to the specified folder or not</returns>
     /// <path>api/2.0/files/folder/{folderId}/share</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
@@ -180,7 +180,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <short>Get file encryption keys</short>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
     /// <category>Sharing</category>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Files.Core.Entries.EncryptionKeyPairDto}, System.Collections.Generic">List of encryption key pairs: encrypted private key, public key, user ID</returns>
+    /// <returns type="ASC.Web.Files.Core.Entries.EncryptionKeyPairDto, ASC.Files.Core">List of encryption key pairs: encrypted private key, public key, user ID</returns>
     /// <path>api/2.0/files/file/{fileId}/publickeys</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -197,7 +197,7 @@ public abstract class SecutiryController<T> : ApiControllerBase
     /// <param type="ASC.Web.Files.Services.WCFService.MentionMessageWrapper, ASC.Files.Core" name="mentionMessage">Mention message request parameters</param>
     /// <short>Send the mention message</short>
     /// <category>Sharing</category>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Files.Services.WCFService.AceShortWrapper}, System.Collections.Generic">List of access rights information: user, their access rights to the file, the external link is available or not</returns>
+    /// <returns type="ASC.Web.Files.Services.WCFService.AceShortWrapper, ASC.Files.Core">List of access rights information</returns>
     /// <path>api/2.0/files/file/{fileId}/sendeditornotify</path>
     /// <httpMethod>POST</httpMethod>
     /// <collection>list</collection>
@@ -235,7 +235,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.ChangeOwnerRequestDto, ASC.Files.Core" name="inDto">Request parameters for changing the file owner</param>
     /// <short>Change the file owner</short>
     /// <category>Sharing</category>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto}, System.Collections.Generic">File entry information: title, access rights, shared or not, creation time, author, time of the last file update, root folder type, a user who updated a file, provider is specified or not, provider key, provider ID</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core">File entry information</returns>
     /// <path>api/2.0/files/owner</path>
     /// <httpMethod>POST</httpMethod>
     /// <collection>list</collection>
@@ -261,7 +261,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     /// <short>Get the sharing rights</short>
     /// <category>Sharing</category>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.BaseBatchRequestDto, ASC.Files.Core" name="inDto">Base batch request parameters</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, System.Collections.Generic">List of shared files and folders information: sharing rights, a user who has the access to the specified folder, the folder is locked by this user or not, this user is an owner of the specified folder or not, this user can edit the access to the specified folder or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">List of shared files and folders information</returns>
     /// <path>api/2.0/files/share</path>
     /// <httpMethod>POST</httpMethod>
     /// <collection>list</collection>
@@ -308,7 +308,7 @@ public class SecutiryControllerCommon : ApiControllerBase
     /// <short>Set the sharing rights</short>
     /// <category>Sharing</category>
     /// <param type="ASC.Files.Core.ApiModels.RequestDto.SecurityInfoRequestDto, ASC.Files.Core" name="inDto">Security information request parameters</param>
-    /// <returns type="System.Collections.Generic.IAsyncEnumerable{ASC.Files.Core.ApiModels.ResponseDto.FileShareDto}, System.Collections.Generic">List of shared files and folders information: sharing rights, a user who has the access to the specified folder, the folder is locked by this user or not, this user is an owner of the specified folder or not, this user can edit the access to the specified folder or not</returns>
+    /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileShareDto, ASC.Files.Core">List of shared files and folders information: sharing rights, a user who has the access to the specified folder, the folder is locked by this user or not, this user is an owner of the specified folder or not, this user can edit the access to the specified folder or not</returns>
     /// <path>api/2.0/files/share</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>

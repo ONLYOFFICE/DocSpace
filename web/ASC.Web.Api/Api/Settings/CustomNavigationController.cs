@@ -54,7 +54,7 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Get the custom navigation items</short>
     /// <category>Custom navigation</category>
-    /// <returns type="System.Collections.Generic.List{ASC.Web.Studio.Core.CustomNavigationItem}, System.Collections.Generic">List of the custom navigation items</returns>
+    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core">List of the custom navigation items</returns>
     /// <path>api/2.0/settings/customnavigation/getall</path>
     /// <httpMethod>GET</httpMethod>
     /// <collection>list</collection>
@@ -69,7 +69,7 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Get a custom navigation item sample</short>
     /// <category>Custom navigation</category>
-    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core">Custom navigation item</returns>
+    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core">Custom navigation item</returns>
     /// <path>api/2.0/settings/customnavigation/getsample</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("customnavigation/getsample")]
@@ -84,7 +84,7 @@ public class CustomNavigationController : BaseSettingsController
     /// <short>Get a custom navigation item by ID</short>
     /// <category>Custom navigation</category>
     /// <param type="System.Guid, System" method="url" name="id">Custom navigation item ID</param>
-    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core">Custom navigation item</returns>
+    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core">Custom navigation item</returns>
     /// <path>api/2.0/settings/customnavigation/get/{id}</path>
     /// <httpMethod>GET</httpMethod>
     [HttpGet("customnavigation/get/{id}")]
@@ -98,8 +98,8 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Add a custom navigation item</short>
     /// <category>Custom navigation</category>
-    /// <param type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core" name="item">Custom navigation parameters</param>
-    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Studio.Core">Custom navigation item</returns>
+    /// <param type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core" name="item">Custom navigation parameters</param>
+    /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core">Custom navigation item</returns>
     /// <path>api/2.0/settings/customnavigation/create</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("customnavigation/create")]

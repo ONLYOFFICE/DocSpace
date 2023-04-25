@@ -31,6 +31,7 @@ namespace ASC.Web.Core.WhiteLabel;
 public class CompanyWhiteLabelSettingsWrapper
 {
     /// <summary>Company white label settings</summary>
+    /// <type>ASC.Web.Core.WhiteLabel.CompanyWhiteLabelSettings, ASC.Web.Core</type>
     public CompanyWhiteLabelSettings Settings { get; set; }
 }
 
@@ -40,24 +41,31 @@ public class CompanyWhiteLabelSettingsWrapper
 public class CompanyWhiteLabelSettings : ISettings<CompanyWhiteLabelSettings>
 {
     /// <summary>Core settings</summary>
+    /// <type>ASC.Core.CoreSettings, ASC.Core.Common</type>
     public CoreSettings CoreSettings;
 
     /// <summary>Company name</summary>
+    /// <type>System.String, System</type>
     public string CompanyName { get; set; }
 
     /// <summary>Site</summary>
+    /// <type>System.String, System</type>
     public string Site { get; set; }
 
     /// <summary>Email address</summary>
+    /// <type>System.String, System</type>
     public string Email { get; set; }
 
     /// <summary>Address</summary>
+    /// <type>System.String, System</type>
     public string Address { get; set; }
 
     /// <summary>Phone</summary>
+    /// <type>System.String, System</type>
     public string Phone { get; set; }
 
-    /// <summary>Licensor or not</summary>
+    /// <summary>Specifies if a company is a licensor or not</summary>
+    /// <type>System.Boolean, System</type>
     [JsonPropertyName("IsLicensor")]
     public bool IsLicensor { get; set; }
 
