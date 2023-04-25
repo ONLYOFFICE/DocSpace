@@ -31,4 +31,12 @@ public class FileShareOptions
 {
     public string Title { get; set; }
     public DateTime ExpirationDate { get; set; }
+    public string Password { get; set; }
+    public bool DenyDownload { get; set; }
+    public bool Disabled { get; set; }
+
+    public bool IsExpired()
+    {
+        return ExpirationDate != DateTime.MinValue && ExpirationDate < DateTime.UtcNow;
+    }
 }
