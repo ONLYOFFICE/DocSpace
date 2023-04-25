@@ -38,8 +38,8 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          commit: "${{ GITHUB_REF#refs/heads/ }}"
-          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
+          commit: "${{ env.BUILD_NUMBER }}"
+          tag: "${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb  
