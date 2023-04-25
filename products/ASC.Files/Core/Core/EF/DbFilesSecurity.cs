@@ -51,7 +51,7 @@ public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
             .AfterMap((src, dest) =>
             {
                 dest.TimeStamp = DateTime.UtcNow;
-                dest.FileShareOptions = src.FileShareOptions != null ? JsonSerializer.Serialize(src.FileShareOptions) : null;
+                dest.FileShareOptions = src.Options != null ? JsonSerializer.Serialize(src.Options) : null;
             });
     }
 }
