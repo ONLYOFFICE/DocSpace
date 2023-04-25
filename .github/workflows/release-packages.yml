@@ -20,20 +20,12 @@ jobs:
     permissions:
       contents: write
       
-    steps:
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          commit: feature/DocSpace-packages-release/v1.0.0
-          tag: $((echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ))-"${{ env.BUILD_NUMBER }}"
-          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
-          body: Here you may find packages for DocSpace
-          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
-          
+    steps:          
       - name: Get files from repository
         uses: actions/checkout@v2
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
+        id: get_vars
         run: |
           wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
           sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
@@ -43,6 +35,8 @@ jobs:
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make
           sudo npm install -g json
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
           
       - name: BUILD package DEB
         shell: bash
@@ -55,13 +49,13 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          commit: ${GITHUB_REF#refs/heads/}
-          tag: ${{ env.VERSION }}-"${{ env.BUILD_NUMBER }}"
+          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
+          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           
-
+          
   build_rpm:
     name: Build .rpm package
     runs-on: ubuntu-latest
@@ -69,19 +63,11 @@ jobs:
       contents: write
  
     steps:
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          commit: feature/DocSpace-packages-release/v1.0.0
-          tag: "${{ env.VERSION }}-${{ env.BUILD_NUMBER }}"
-          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
-          body: Here you may find packages for DocSpace
-          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
-          
       - name: Get files from repository.
         uses: actions/checkout@v2
 
       - name: INSTALL tools & Prepare build
+        id: get_vars
         run: |
           wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
           sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
@@ -91,6 +77,8 @@ jobs:
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename
           sudo npm install -g json
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
           
       - name: BUILD package RPM
         run: |
@@ -99,15 +87,14 @@ jobs:
           wget https://github.com/elshirak/${{ env.PRODUCT }}/archive/${{ env.BRANCH_NAME }}.tar.gz -O ./SOURCES/DocSpace-$(echo ${{ env.BRANCH_NAME }} | tr '/' '-').tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O ./SOURCES/document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
-          VERSION=$(echo ${{ github.ref }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0") # test
           sed -i -e '/BuildRequires/d' product.spec
-          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version $VERSION" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          commit: "${{ env.BRANCH_NAME }}"
-          tag: "${{ env.VERSION }}-${{ env.BUILD_NUMBER }}"
+          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
+          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
