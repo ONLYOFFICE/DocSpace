@@ -6,7 +6,7 @@ import { ChangeUserTypeDialog } from "../dialogs";
 import toastr from "@docspace/components/toast/toastr";
 import Link from "@docspace/components/link";
 import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
+import { useNavigate } from "react-router-dom";
 
 const ChangeUserTypeEvent = ({
   setVisible,
@@ -17,13 +17,8 @@ const ChangeUserTypeEvent = ({
   getUsersList,
   onClose,
 }) => {
-  const {
-    toType,
-    fromType,
-    userIDs,
-    successCallback,
-    abortCallback,
-  } = peopleDialogData;
+  const { toType, fromType, userIDs, successCallback, abortCallback } =
+    peopleDialogData;
   const { t } = useTranslation(["ChangeUserTypeDialog", "Common", "Payments"]);
 
   const onKeyUpHandler = (e) => {
@@ -50,12 +45,12 @@ const ChangeUserTypeEvent = ({
 
   const onClickPayments = () => {
     const paymentPageUrl = combineUrl(
-      combineUrl(window.DocSpaceConfig?.proxy?.url, "/portal-settings"),
+      "/portal-settings",
       "/payments/portal-payments"
     );
 
     toastr.clear();
-    history.push(paymentPageUrl);
+    navigate(paymentPageUrl);
   };
 
   const onChangeUserType = () => {

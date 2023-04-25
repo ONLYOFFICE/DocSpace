@@ -283,4 +283,31 @@
   <data name="UnlockComment" xml:space="preserve">
     <value>Файл розблоковано</value>
   </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Адміністратор DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Редактор</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Адміністратор кімнати</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Користувач</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Глядач</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Коментатор</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Заповнювач форм</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Рецензент</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Співпрацівник</value>
+  </data>
 </root>

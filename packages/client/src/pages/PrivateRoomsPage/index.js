@@ -8,7 +8,7 @@ import Loader from "@docspace/components/loader";
 import Section from "@docspace/common/components/Section";
 import { smallTablet, tablet } from "@docspace/components/utils/device";
 import { I18nextProvider, Trans, withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useLocation } from "react-router-dom";
 import { isMobile } from "react-device-detect";
 //import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 import i18n from "./i18n";
@@ -98,16 +98,18 @@ const StyledPrivacyPage = styled.div`
 
 StyledPrivacyPage.defaultProps = { theme: Base };
 
-const PrivacyPageComponent = ({ t, history, tReady }) => {
+const PrivacyPageComponent = ({ t, tReady }) => {
   //   useEffect(() => {
   //     setDocumentTitle(t("Common:About"));
   //   }, [t]);
 
   const [isDisabled, setIsDisabled] = useState(false);
 
+  const location = useLocation();
+
   const onOpenEditorsPopup = async () => {
     setIsDisabled(true);
-    checkProtocol(history.location.search.split("=")[1])
+    checkProtocol(location.search.split("=")[1])
       .then(() => setIsDisabled(false))
       .catch(() => {
         setIsDisabled(false);
@@ -199,7 +201,7 @@ const PrivacyPageComponent = ({ t, history, tReady }) => {
 };
 
 const PrivacyPageWrapper = withTranslation(["PrivacyPage"])(
-  withRouter(PrivacyPageComponent)
+  PrivacyPageComponent
 );
 
 const PrivacyPage = (props) => {

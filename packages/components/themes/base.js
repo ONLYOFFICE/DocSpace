@@ -293,7 +293,7 @@ const Base = {
     width: "100%",
 
     background: white,
-    disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    disableBackgroundColor: "#F8F9F9",
     connectBackground: "#3B72A7",
     hoverBackground: white,
     hoverConnectBackground: "#265A8F",
@@ -305,7 +305,8 @@ const Base = {
     hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
-    disableColor: "rgba(0, 0, 0, 0.4)",
+    disableColor: "#333333",
+    disabledSvgColor: "none",
     border: "none",
     text: {
       width: "100%",

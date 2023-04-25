@@ -7,7 +7,6 @@ import Textarea from "@docspace/components/textarea";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
 import { StyledVersionRow } from "./StyledVersionHistory";
 import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg";
@@ -172,7 +171,7 @@ const VersionRow = (props) => {
             {showEditPanel && (
               <>
                 <Textarea
-                  className="version_edit-comment textarea-desktop"
+                  className="version_edit-comment"
                   onChange={onChange}
                   fontSize={12}
                   heightTextArea={54}
@@ -184,7 +183,9 @@ const VersionRow = (props) => {
               </>
             )}
 
-            <Text className="version_text">{info.comment}</Text>
+            <Text className="version_text" truncate={true}>
+              {info.comment}
+            </Text>
           </>
         </Box>
         {showEditPanel && (
@@ -249,9 +250,7 @@ export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
     canChangeVersionFileHistory,
   };
 })(
-  withRouter(
-    withTranslation(["VersionHistory", "Common", "Translations"])(
-      observer(VersionRow)
-    )
+  withTranslation(["VersionHistory", "Common", "Translations"])(
+    observer(VersionRow)
   )
 );

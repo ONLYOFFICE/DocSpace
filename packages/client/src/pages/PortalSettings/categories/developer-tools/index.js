@@ -29,7 +29,7 @@ const DeveloperToolsWrapper = (props) => {
       id: "webhooks",
       name: t("Webhooks"),
       content: <Webhooks />,
-    }
+    },
   ];
 
   const load = async () => {

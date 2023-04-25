@@ -1,7 +1,6 @@
 ﻿import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 import React from "react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
 import { desktop } from "@docspace/components/utils/device";

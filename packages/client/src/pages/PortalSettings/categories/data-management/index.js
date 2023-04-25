@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { withTranslation, Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -17,14 +17,17 @@ import AutoBackup from "./backup/auto-backup";
 
 const DataManagementWrapper = (props) => {
   const {
-    helpUrlCreatingBackup,
+    dataBackupUrl,
+    automaticBackupUrl,
     buttonSize,
     t,
-    history,
+
     isNotPaidPeriod,
     currentColorScheme,
     toDefault,
   } = props;
+
+  const navigate = useNavigate();
 
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -37,6 +40,9 @@ const DataManagementWrapper = (props) => {
   }, []);
 
   const renderTooltip = (helpInfo) => {
+    const isAutoBackupPage = window.location.pathname.includes(
+      "portal-settings/backup/auto-backup"
+    );
     return (
       <>
         <HelpButton
@@ -50,7 +56,7 @@ const DataManagementWrapper = (props) => {
               <div>
                 <Link
                   as="a"
-                  href={helpUrlCreatingBackup}
+                  href={isAutoBackupPage ? automaticBackupUrl : dataBackupUrl}
                   target="_blank"
                   color={currentColorScheme.main.accent}
                   isBold
@@ -93,7 +99,7 @@ const DataManagementWrapper = (props) => {
   }, []);
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -121,7 +127,8 @@ export default inject(({ auth, setup, backup }) => {
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { toDefault } = backup;
   const {
-    helpUrlCreatingBackup,
+    dataBackupUrl,
+    automaticBackupUrl,
     isTabletView,
     currentColorScheme,
   } = settingsStore;
@@ -131,14 +138,11 @@ export default inject(({ auth, setup, backup }) => {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    helpUrlCreatingBackup,
+    dataBackupUrl,
+    automaticBackupUrl,
     buttonSize,
     isNotPaidPeriod,
     currentColorScheme,
     toDefault,
   };
-})(
-  withTranslation(["Settings", "Common"])(
-    withRouter(observer(DataManagementWrapper))
-  )
-);
+})(withTranslation(["Settings", "Common"])(observer(DataManagementWrapper)));

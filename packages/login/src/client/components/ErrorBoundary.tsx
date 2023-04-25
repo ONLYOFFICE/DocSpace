@@ -1,6 +1,7 @@
 import React from "react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 import { Dark, Base } from "@docspace/components/themes";
 
 interface IError520Props {
@@ -22,7 +23,8 @@ interface IErrorBoundaryState {
 
 const Error520: React.FC<IError520Props> = ({ match }) => {
   const { t } = useTranslation(["Common"]);
-  const { error } = (match && match.params) || {};
+  const params = useParams();
+  const { error } = (params && params) || {};
 
   const theme =
     typeof window !== "undefined" &&
