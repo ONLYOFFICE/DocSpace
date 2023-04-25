@@ -43,6 +43,77 @@ public class BruteForceLoginManager
         _distributedCache = distributedCache;
     }
 
+    public bool Increment(string key, string requestIp, bool throwException, out bool showRecaptcha)
+    {
+        showRecaptcha = true;
+        
+        var blockCacheKey = GetBlockCacheKey(key, requestIp);
+        
+        if (GetFromCache<string>(blockCacheKey) != null)
+        {
+            if (throwException)
+            {
+                throw new BruteForceCredentialException();
+            }
+
+            return false;
+        }
+
+        lock (_lock)
+        {
+            if (GetFromCache<string>(blockCacheKey) != null)
+            {
+                throw new BruteForceCredentialException();
+            }
+            
+            var historyCacheKey = GetHistoryCacheKey(key, requestIp);
+            var settings = new LoginSettingsWrapper(_settingsManager.Load<LoginSettings>());
+            var history = (GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>());
+            
+            var now = DateTime.UtcNow;
+            var checkTime = now.Subtract(settings.CheckPeriod);
+
+            history = history.Where(item => item > checkTime).ToList();
+            history.Add(now);
+            
+            showRecaptcha = history.Count > settings.AttemptCount - 1;
+            
+            if (history.Count > settings.AttemptCount)
+            {
+                SetToCache(blockCacheKey, "block", now.Add(settings.BlockTime));
+                _distributedCache.Remove(historyCacheKey);
+
+                if (throwException)
+                {
+                    throw new BruteForceCredentialException();
+                }
+
+                return false;
+            }
+
+            SetToCache(historyCacheKey, history, now.Add(settings.CheckPeriod));
+            
+            return true;
+        }
+    }
+
+    public void Decrement(string key, string requestIp)
+    {
+        lock (_lock)
+        {
+            var settings = new LoginSettingsWrapper(_settingsManager.Load<LoginSettings>());
+            var historyCacheKey = GetHistoryCacheKey(key, requestIp);
+            var history = (GetFromCache<List<DateTime>>(historyCacheKey) ?? new List<DateTime>());
+
+            if (history.Count > 0)
+            {
+                history.RemoveAt(history.Count - 1);
+            }
+
+            SetToCache(historyCacheKey, history, DateTime.UtcNow.Add(settings.CheckPeriod));
+        }
+    }
+
     public UserInfo Attempt(string login, string passwordHash, string requestIp, out bool showRecaptcha)
     {
         UserInfo user = null;
