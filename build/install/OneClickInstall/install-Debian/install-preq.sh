@@ -118,14 +118,8 @@ apt-get install -o DPkg::options::="--force-confnew" -yq \
 				postgresql \
 				redis-server \
 				rabbitmq-server \
-				nginx-extras 
-		
-if [ -e /etc/redis/redis.conf ]; then
- sed -i "s/bind .*/bind 127.0.0.1/g" /etc/redis/redis.conf
- sed -r "/^save\s[0-9]+/d" -i /etc/redis/redis.conf
- 
- service redis-server restart
-fi
+				nginx-extras \
+				ffmpeg 
 
 if [ ! -e /usr/bin/json ]; then
 	npm i json -g >/dev/null 2>&1

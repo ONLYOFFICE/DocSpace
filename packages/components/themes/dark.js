@@ -303,6 +303,7 @@ const Dark = {
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
+    disabledSvgColor: "#474747",
 
     border: "1px solid #474747",
     text: {
