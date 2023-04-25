@@ -7,7 +7,7 @@ on:
 
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
-  VERSION: $(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")
+  VERSION: "${{ github.ref }}" # | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")
   PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
   TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
@@ -60,7 +60,7 @@ jobs:
         with:
           allowUpdates: true
           commit: "${{ env.BRANCH_NAME }}"
-          tag: "${{ env.VERSION }}-${{ env.BUILD_NUMBER }}"
+          tag: $(echo "${{ env.VERSION }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0") - ${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
@@ -100,6 +100,7 @@ jobs:
           echo "Product - ${{ env.PRODUCT }}"
           echo "Source name from branch - $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')"
           echo "version - ${{ env.VERSION }}"
+          echo "version - $(echo ${{ env.VERSION }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0"))
           echo "release - ${{ env.BUILD_NUMBER }}"
           echo $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')
     
@@ -114,7 +115,7 @@ jobs:
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
          
           sed -i -e '/BuildRequires/d' product.spec
-          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ env.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version $(echo ${{ env.VERSION }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
       - uses: ncipollo/release-action@v1
