@@ -24,19 +24,30 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-global using System.Text.Json.Serialization;
+namespace ASC.Web.Studio.IntegrationEvents.EventHandling;
+[Scope]
+public class WebhookRequestIntegrationEventHandler : IIntegrationEventHandler<WebhookRequestIntegrationEvent>
+{
+    private readonly ConcurrentQueue<WebhookRequestIntegrationEvent> _queue;
+    private readonly ILogger _logger;
 
-global using ASC.Common;
-global using ASC.Common.Mapping;
-global using ASC.Core;
-global using ASC.Core.Common.EF;
-global using ASC.Core.Common.EF.Model;
-global using ASC.Core.Common.Settings;
-global using ASC.EventBus.Abstractions;
-global using ASC.EventBus.Events;
-global using ASC.Webhooks.Core.EF.Context;
-global using ASC.Webhooks.Core.EF.Model;
-global using ASC.Webhooks.Core.IntegrationEvents.Events;
-global using ASC.Webhooks.Core.Resources;
+    public WebhookRequestIntegrationEventHandler(
+        ILogger<WebhookRequestIntegrationEventHandler> logger,
+        ConcurrentQueue<WebhookRequestIntegrationEvent> concurrentQueue)
+    {
+        _queue = concurrentQueue;
+        _logger = logger;
+    }
 
-global using Microsoft.EntityFrameworkCore;
+    public async Task Handle(WebhookRequestIntegrationEvent @event)
+    {
+        using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
+        {
+            _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
+
+            _queue.Enqueue(@event);
+
+            await Task.CompletedTask;
+        }
+    }
+}

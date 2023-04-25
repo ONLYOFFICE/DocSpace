@@ -84,6 +84,9 @@ public class Startup : BaseStartup
         services.AddHostedService<WorkerService>();
         DIHelper.TryAdd<WorkerService>();
 
+        services.TryAddSingleton(new ConcurrentQueue<WebhookRequestIntegrationEvent>());
+        DIHelper.TryAdd<WebhookRequestIntegrationEventHandler>();
+
         var lifeTime = TimeSpan.FromMinutes(5);
 
         Func<IServiceProvider, HttpRequestMessage, IAsyncPolicy<HttpResponseMessage>> policyHandler = (s, request) =>
@@ -92,7 +95,7 @@ public class Startup : BaseStartup
 
             return HttpPolicyExtensions
                 .HandleTransientHttpError()
-                .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+                .OrResult(msg => msg.StatusCode == HttpStatusCode.NotFound)
                 .WaitAndRetryAsync(settings.RepeatCount.HasValue ? settings.RepeatCount.Value : 5, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
         };
 
