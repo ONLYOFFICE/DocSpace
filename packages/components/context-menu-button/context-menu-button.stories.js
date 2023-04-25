@@ -62,6 +62,7 @@ const Template = (args) => {
 export const Default = Template.bind({});
 Default.args = {
   title: "Actions",
+  displayType: "dropdown",
   iconName: VerticalDotsReactSvgUrl,
   size: 16,
   directionX: "left",

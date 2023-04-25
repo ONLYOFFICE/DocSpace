@@ -166,7 +166,7 @@ class Row extends React.Component {
               className="expandButton"
               getData={getOptions}
               directionX="right"
-              isNew={true}
+              displayType="toggle"
               onClick={onContextMenu}
             />
           ) : (

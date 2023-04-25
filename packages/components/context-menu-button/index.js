@@ -86,7 +86,7 @@ class ContextMenuButton extends React.Component {
   }
 
   onIconButtonClick = (e) => {
-    if (this.props.isDisabled || this.props.isNew) {
+    if (this.props.isDisabled || this.state.displayType === "toggle") {
       this.stopAction;
       return;
     }
@@ -131,7 +131,7 @@ class ContextMenuButton extends React.Component {
   }
 
   callNewMenu = (e) => {
-    if (this.props.isDisabled || !this.props.isNew) {
+    if (this.props.isDisabled || this.state.displayType !== "toggle") {
       this.stopAction;
       return;
     }
@@ -168,7 +168,6 @@ class ContextMenuButton extends React.Component {
       style,
       isFill, // eslint-disable-line react/prop-types
       asideHeader, // eslint-disable-line react/prop-types
-      isNew,
       title,
       zIndex,
       usePortal,
@@ -329,11 +328,7 @@ ContextMenuButton.propTypes = {
   /** Sets the number of columns */
   columnCount: PropTypes.number,
   /** Sets the display type */
-  displayType: PropTypes.string,
-
-  // TODO: rename prop
-  /** Switches to the new view mode */
-  // isNew: PropTypes.bool,
+  displayType: PropTypes.oneOf(["dropdown", "toggle", "aside", "auto"]),
   /** Closing event */
   onClose: PropTypes.func,
   /** Sets the drop down open with the portal */
@@ -356,7 +351,6 @@ ContextMenuButton.defaultProps = {
   directionX: "left",
   isFill: false,
   displayType: "dropdown",
-  isNew: false,
   usePortal: true,
   displayIconBorder: false,
 };
