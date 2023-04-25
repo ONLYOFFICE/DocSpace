@@ -98,7 +98,7 @@ const StyledSortButton = styled.div`
         display: flex;
         align-items: center;
         justify-content: space-between;
-
+        gap: 12px;
         min-width: 200px;
 
         svg {
