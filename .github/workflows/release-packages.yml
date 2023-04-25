@@ -7,9 +7,9 @@ on:
 
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
-  VERSION: "${{ github.ref }}" # | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")
+  # VERSION: "${{ github.ref }}" # | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")
   PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
-  TAG: "${{ github.ref_name }}"
+  # TAG: "${{ github.ref_name }}"
   BUILD_NUMBER: "${{ github.run_number }}"
 
 
@@ -30,9 +30,9 @@ jobs:
       - name: Get variables
         id: get_vars
         run: |
-          echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
-          # echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
-          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
+          # echo "PRODUCT=$(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )" >> $GITHUB_OUTPUT
+          echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
+          # echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
               
               
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
@@ -52,7 +52,7 @@ jobs:
         run: |
           cd build/install/deb/ 
           find ../ -type f -exec sed -i "s/{{product}}/${{ env.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/$(echo ${{ env.VERSION }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ).$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/$(echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ).$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
         
@@ -60,7 +60,7 @@ jobs:
         with:
           allowUpdates: true
           commit: "${{ env.BRANCH_NAME }}"
-          tag: ${ echo "${{ env.VERSION }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0" } - ${{ env.BUILD_NUMBER }}
+          tag: "${{ steps.get_vars.outputs.VERSION }} - ${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
@@ -86,7 +86,7 @@ jobs:
           wget https://packages.microsoft.com/config/$(lsb_release -is | tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
-          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename nginx mysql-server
+          sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename
           sudo npm install -g json
           
           
@@ -97,12 +97,6 @@ jobs:
           # echo "VERSION=$(echo "${GITHUB_REF##*/}" | tr -d '[:alpha:]' || echo "1.0.0" )" >> $GITHUB_OUTPUT
           # echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           
-          echo "Product - ${{ env.PRODUCT }}"
-          echo "Source name from branch - $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')"
-          echo "version - ${{ env.VERSION }}"
-          echo "version - $(echo ${{ env.VERSION }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0") "
-          echo "release - ${{ env.BUILD_NUMBER }}"
-          echo $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')
     
       - name: BUILD package RPM
         run: |
@@ -113,9 +107,10 @@ jobs:
           wget https://github.com/elshirak/${{ env.PRODUCT }}/archive/${{ env.BRANCH_NAME }}.tar.gz -O ./SOURCES/DocSpace-$(echo ${{ env.BRANCH_NAME }} | tr '/' '-').tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O ./SOURCES/document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
-         
+          
+          VERSION=$(echo ${{ github.ref }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")
           sed -i -e '/BuildRequires/d' product.spec
-          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version $(echo ${{ env.VERSION }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version $VERSION" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
         
         
       - uses: ncipollo/release-action@v1
