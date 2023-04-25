@@ -87,6 +87,7 @@ const Textarea = ({
 
   return (
     <Wrapper
+      className="textarea-wrapper"
       isJSONField={isJSONField}
       onFocus={isJSONField ? onTextareaClick : undefined}
     >
