@@ -14,6 +14,7 @@ import { decode } from "he";
 const HistoryBlock = ({
   t,
   selection,
+  selectionIsFile,
   feed,
   selectedFolder,
   selectionParentRoom,
@@ -39,7 +40,7 @@ const HistoryBlock = ({
     ? initiator.avatarSmall
     : DefaultUserAvatarSmall;
 
-  const isSelectedFile = !selection.isFolder && !selection.isRoom;
+  const isSelectedFile = selectionIsFile;
 
   return (
     <StyledHistoryBlock

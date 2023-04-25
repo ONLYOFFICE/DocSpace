@@ -21,6 +21,7 @@ class InfoPanelStore {
   isMobileHidden = false;
 
   selection = null;
+  selectionHistory = null;
   selectionParentRoom = null;
 
   roomsView = "info_details";
@@ -60,6 +61,7 @@ class InfoPanelStore {
     this.isScrollLocked = false;
   };
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
+  setSelectionHistory = (obj) => (this.selectionHistory = obj);
 
   setView = (view) => {
     this.roomsView = view;

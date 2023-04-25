@@ -13,8 +13,9 @@ const History = ({
   t,
   selection,
   selectedFolder,
+  selectionHistory,
+  setSelectionHistory,
   selectionParentRoom,
-  setSelection,
   getInfoPanelItemIcon,
   getHistory,
   checkAndOpenLocationAction,
@@ -22,14 +23,10 @@ const History = ({
   isVisitor,
   isCollaborator,
 }) => {
-  const [history, setHistory] = useState(null);
+  let history = selectionHistory;
   const [showLoader, setShowLoader] = useState(false);
 
   const isMount = useRef(true);
-
-  useEffect(() => {
-    return () => (isMount.current = false);
-  }, []);
 
   const fetchHistory = async (itemId) => {
     let module = "files";
@@ -42,8 +39,13 @@ const History = ({
     clearTimeout(timerId);
 
     if (isMount.current) {
-      setHistory(fetchedHistory);
-      setSelection({ ...selection, history: fetchedHistory });
+      if (!selectionHistory || selectionHistory.itemId !== itemId) {
+        setSelectionHistory({
+          itemId,
+          isFile: !selection.isFolder && !selection.isRoom,
+          ...fetchedHistory,
+        });
+      }
       setShowLoader(false);
     }
   };
@@ -91,14 +93,12 @@ const History = ({
 
   useEffect(() => {
     if (!isMount.current) return;
-
-    if (selection.history) {
-      setHistory(selection.history);
-      return;
-    }
-
     fetchHistory(selection.id);
   }, [selection]);
+
+  useEffect(() => {
+    return () => (isMount.current = false);
+  }, []);
 
   if (showLoader) return <Loaders.InfoPanelViewLoader view="history" />;
   if (!history) return <></>;
@@ -111,8 +111,9 @@ const History = ({
           <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
           ...feeds.map((feed, i) => (
             <HistoryBlock
-              key={feed.json.Id}
               t={t}
+              key={feed.json.Id}
+              selectionIsFile={history?.isFile}
               feed={feed}
               selection={selection}
               selectedFolder={selectedFolder}
@@ -136,7 +137,8 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   const {
     selection,
     selectionParentRoom,
-    setSelection,
+    selectionHistory,
+    setSelectionHistory,
     getInfoPanelItemIcon,
     openUser,
   } = auth.infoPanelStore;
@@ -154,7 +156,8 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     culture,
     selection,
     selectionParentRoom,
-    setSelection,
+    selectionHistory,
+    setSelectionHistory,
     getInfoPanelItemIcon,
     getHistory,
     checkAndOpenLocationAction,
