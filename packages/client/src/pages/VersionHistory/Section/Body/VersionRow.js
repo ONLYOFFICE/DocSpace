@@ -171,7 +171,7 @@ const VersionRow = (props) => {
             {showEditPanel && (
               <>
                 <Textarea
-                  className="version_edit-comment textarea-desktop"
+                  className="version_edit-comment"
                   onChange={onChange}
                   fontSize={12}
                   heightTextArea={54}
