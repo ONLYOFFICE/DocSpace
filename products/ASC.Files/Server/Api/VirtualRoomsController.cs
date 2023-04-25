@@ -385,9 +385,15 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// </param>
     /// <returns>Room security info</returns>
     [HttpPut("rooms/{id}/links")]
-    public async IAsyncEnumerable<FileShareDto> SetInvintationLinkAsync(T id, InvintationLinkRequestDto inDto)
+    public async IAsyncEnumerable<FileShareDto> SetLinkAsync(T id, LinkRequestDto inDto)
     {
-        var fileShares = await _fileStorageService.SetInvitationLink(id, inDto.LinkId, inDto.Title, inDto.Access);
+        var fileShares = inDto.LinkType switch
+        {
+            LinkType.Invitation => await _fileStorageService.SetInvitationLinkAsync(id, inDto.LinkId, inDto.Title, inDto.Access),
+            LinkType.External => await _fileStorageService.SetExternalLinkAsync(id, FileEntryType.Folder, inDto.LinkId, inDto.Title, 
+                inDto.Access is not (FileShare.Read or FileShare.None) ? FileShare.Read : inDto.Access , inDto.ExpirationDate, inDto.Password, inDto.Disabled, inDto.DenyDownload),
+            _ => throw new InvalidOperationException()
+        };
 
         foreach (var fileShareDto in fileShares)
         {
