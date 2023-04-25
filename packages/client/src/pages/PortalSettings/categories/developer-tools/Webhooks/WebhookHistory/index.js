@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import moment from "moment";
 import styled from "styled-components";
 
 import HistoryHeader from "./sub-components/HistoryHeader";
@@ -28,6 +29,13 @@ const WebhookHistory = (props) => {
     })();
   }, []);
 
+  const applyFilters = async ({ deliveryFrom, deliveryTo, groupStatus }) => {
+    const params = { configId: id, deliveryFrom, deliveryTo, groupStatus };
+
+    const webhookHistoryData = await getWebhookHistory(params);
+    setHistoryWebhooks(webhookHistoryData);
+  };
+
   const [historyWebhooks, setHistoryWebhooks] = useState([]);
 
   return (
@@ -37,7 +45,7 @@ const WebhookHistory = (props) => {
         <WebhookHistoryLoader />
       ) : (
         <main>
-          <HistoryFilterHeader />
+          <HistoryFilterHeader applyFilters={applyFilters} />
           <WebhookHistoryTable historyWebhooks={historyWebhooks} />
         </main>
       )}
