@@ -9,7 +9,8 @@ env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
   PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
   BUILD_NUMBER: "${{ github.run_number }}"
-  # VERSION: $(echo ${{ env.BRANCH_NAME }} | tr '/' '-') # test
+  
+  VERSION: $(echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ) 
 
 
 jobs:
@@ -20,6 +21,15 @@ jobs:
       contents: write
       
     steps:
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          commit: ${GITHUB_REF#refs/heads/}
+          tag: ${{ env.VERSION }}-"${{ env.BUILD_NUMBER }}"
+          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
+          body: Here you may find packages for DocSpace
+          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+          
       - name: Get files from repository
         uses: actions/checkout@v2
               
@@ -45,8 +55,8 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          commit: feature/DocSpace-packages-release/v1.0.0
-          tag: "${{ env.BUILD_NUMBER }}"
+          commit: ${GITHUB_REF#refs/heads/}
+          tag: ${{ env.VERSION }}-"${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
@@ -59,6 +69,15 @@ jobs:
       contents: write
  
     steps:
+      - uses: ncipollo/release-action@v1
+        with:
+          allowUpdates: true
+          commit: ${{ env.BRANCH_NAME }}
+          tag: "${{ env.VERSION }}-${{ env.BUILD_NUMBER }}"
+          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
+          body: Here you may find packages for DocSpace
+          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          
       - name: Get files from repository.
         uses: actions/checkout@v2
 
@@ -87,8 +106,8 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          commit: feature/DocSpace-packages-release/v1.0.0
-          tag: "$VERSION-${{ env.BUILD_NUMBER }}"
+          commit: ${{ env.BRANCH_NAME }}
+          tag: "${{ env.VERSION }}-${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
           artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
