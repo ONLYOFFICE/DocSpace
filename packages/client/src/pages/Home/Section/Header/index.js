@@ -201,8 +201,6 @@ const SectionHeaderContent = (props) => {
 
   const isAccountsPage = location.pathname.includes("accounts");
 
-  console.log("is accounts header page: ", isAccountsPage);
-
   const onCreate = (format) => {
     const event = new Event(Events.CREATE);
 

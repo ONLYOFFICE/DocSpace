@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
 
 let loadTimeout = null;
-const delayLoader = 300
+const delayLoader = 300;
 
 const withLoader = (WrappedComponent) => (Loader) => {
   const withLoader = (props) => {
@@ -69,16 +69,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       isProfileViewLoader,
     ]);
 
-    return firstLoad ||
-      !isLoaded ||
-      inLoad ||
-      !tReady ||
-      !profileLoaded ||
-      (isProfileFooterLoader && !isLoadedProfileSectionBody) ? (
-      Loader
-    ) : (
-      <WrappedComponent {...props} />
-    );
+    return <WrappedComponent {...props} />;
   };
 
   return inject(({ auth, peopleStore }) => {
