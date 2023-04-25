@@ -124,18 +124,10 @@ const Template = (args) => {
               </Link>
               <>
                 {user.status === "pending" && (
-                  <SendClockReactSvg
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <SendClockReactSvg size="small" color="#3B72A7" />
                 )}
                 {user.status === "disabled" && (
-                  <CatalogSpamReactSvg
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <CatalogSpamReactSvg size="small" color="#3B72A7" />
                 )}
               </>
               {user.isHead ? (

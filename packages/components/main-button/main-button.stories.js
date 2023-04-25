@@ -89,5 +89,4 @@ Default.args = {
   isDisabled: false,
   isDropdown: true,
   text: "Actions",
-  iconName: CatalogFolderReactSvgUrl,
 };
