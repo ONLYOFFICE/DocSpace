@@ -3,7 +3,10 @@ name: Release RPM DEB
 on:
   workflow_dispatch:
   # workflow_call:
-  # push
+  push:
+    paths:
+    - build/install/deb*
+    - build/install/rpm*
   
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
