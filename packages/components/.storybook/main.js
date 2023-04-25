@@ -4,7 +4,7 @@ module.exports = {
   },
   stories: [
     "../all/all.stories.js", // default page
-    "../**/*.stories.@(js|mdx)",
+    "../**/*.stories.js", //"../**/*.stories.@(js|mdx)",
   ],
   staticDirs: ["../../../public"],
   addons: [
@@ -14,20 +14,20 @@ module.exports = {
     "@storybook/addon-controls",
     "@storybook/addon-viewport",
     "@storybook/addon-contexts/register",
-    {
-      name: "@storybook/addon-docs",
-      options: {
-        babelOptions: {
-          plugins: [
-            [
-              "@babel/plugin-proposal-private-property-in-object",
-              {
-                loose: true,
-              },
-            ],
-          ],
-        },
-      },
-    },
+    // {
+    //   name: "@storybook/addon-docs",
+    //   options: {
+    //     babelOptions: {
+    //       plugins: [
+    //         [
+    //           "@babel/plugin-proposal-private-property-in-object",
+    //           {
+    //             loose: true,
+    //           },
+    //         ],
+    //       ],
+    //     },
+    //   },
+    // },
   ],
 };
