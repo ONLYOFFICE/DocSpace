@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import moment from "moment";
 import styled from "styled-components";
 
 import { Base } from "@docspace/components/themes";
@@ -7,6 +8,8 @@ import IconButton from "@docspace/components/icon-button";
 
 import { useParams } from "react-router-dom";
 import { FilterDialog } from "./FilterDialog";
+
+import { SelectedItem } from "@docspace/components";
 
 const ListHeader = styled.header`
   display: flex;
@@ -50,10 +53,18 @@ const FilterButton = styled.div`
   }
 `;
 
-const HistoryFilterHeader = () => {
+const HistoryFilterHeader = ({ applyFilters }) => {
   const { id } = useParams();
 
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
+  const [isApplied, setIsApplied] = useState(false);
+
+  const [filterSettings, setFilterSettings] = useState({
+    deliveryDate: null,
+    deliveryFrom: moment().startOf("day"),
+    deliveryTo: moment().endOf("day"),
+    status: [],
+  });
 
   const openFiltersModal = () => {
     setIsFiltersVisible(true);
@@ -64,19 +75,25 @@ const HistoryFilterHeader = () => {
   };
 
   return (
-    <ListHeader>
-      <ListHeading>Webhook {id}</ListHeading>
+    <div>
+      <ListHeader>
+        <ListHeading>Webhook {id}</ListHeading>
 
-      <FilterButton onClick={openFiltersModal}>
-        <IconButton iconName={FilterReactSvrUrl} size={16} />
-      </FilterButton>
+        <FilterButton onClick={openFiltersModal}>
+          <IconButton iconName={FilterReactSvrUrl} size={16} />
+        </FilterButton>
+      </ListHeader>
 
       <FilterDialog
         visible={isFiltersVisible}
         closeModal={closeFiltersModal}
-        applyFilters={() => {}}
+        applyFilters={applyFilters}
+        filterSettings={filterSettings}
+        setFilterSettings={setFilterSettings}
+        isApplied={isApplied}
+        setIsApplied={setIsApplied}
       />
-    </ListHeader>
+    </div>
   );
 };
 
