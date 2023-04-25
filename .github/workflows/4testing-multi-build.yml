@@ -30,7 +30,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
       - name: Build 4testing
         run: |
           cd .${DOCKER_PATH}
@@ -44,5 +43,5 @@ jobs:
           DOCKER_TAG=${DOCKER_TAG}-$(date "+%Y%m%d%H") \    
           docker buildx bake -f build.yml \
           --set *.args.GIT_BRANCH=$GITHUB_REF_NAME \
-          --push    
+          --push
         shell: bash
