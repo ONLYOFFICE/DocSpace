@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import Row from "@docspace/components/row";
 import { HistoryRowContent } from "./HistoryRowContent";
@@ -9,10 +9,9 @@ import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 export const HistoryRow = ({ historyItem, sectionWidth }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  const redirectToDetails = () =>
-    history.push(window.location.pathname + `/event/${historyItem.id}`);
+  const redirectToDetails = () => navigate(window.location.pathname + `/${historyItem.id}`);
 
   const contextOptions = [
     {

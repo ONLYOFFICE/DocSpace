@@ -10,7 +10,7 @@ import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const WebhookRow = ({
   webhook,
@@ -19,7 +19,7 @@ export const WebhookRow = ({
   deleteWebhook,
   editWebhook,
 }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [isChecked, setIsChecked] = useState(webhook.enabled);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
@@ -29,8 +29,7 @@ export const WebhookRow = ({
   const openSettings = () => setIsSettingsOpened(true);
   const onDeleteOpen = () => setIsDeleteOpened(true);
   const onDeleteClose = () => setIsDeleteOpened(false);
-  const redirectToHistory = () =>
-    history.push(`/portal-settings/developer/tools/webhooks/history/${webhook.id}`);
+  const redirectToHistory = () => navigate(window.location.pathname + `/${webhook.id}`);
 
   const handleWebhookUpdate = (webhookInfo) => editWebhook(webhook, webhookInfo);
   const handleWebhookDelete = () => deleteWebhook(webhook);

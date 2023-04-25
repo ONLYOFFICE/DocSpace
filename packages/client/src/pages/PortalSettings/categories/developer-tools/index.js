@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Submenu from "@docspace/components/submenu";
-import { withRouter } from "react-router";
-import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
+
+import { useNavigate } from "react-router-dom";
 
 import JavascriptSDK from "./JavascriptSDK";
 import Webhooks from "./Webhooks";
@@ -13,40 +13,39 @@ import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 
 const DeveloperToolsWrapper = (props) => {
-  const { t, tReady, history, loadBaseInfo, setDocumentTitle } = props;
+  const { loadBaseInfo } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
-
-  setDocumentTitle("Developer Tools");
+  const navigate = useNavigate();
 
   const data = [
     {
       id: "javascript-sdk",
-      name: t("Javascript sdk"),
+      name: "Javascript sdk",
       content: <JavascriptSDK />,
     },
     {
       id: "webhooks",
-      name: t("Webhooks"),
+      name: "Webhooks",
       content: <Webhooks />,
     },
   ];
 
   const load = async () => {
-    const path = location.pathname;
-    const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) setCurrentTab(currentTab);
-
     await loadBaseInfo();
     setIsLoading(true);
   };
 
   useEffect(() => {
+    const path = location.pathname;
+    const currentTab = data.findIndex((item) => path.includes(item.id));
+    if (currentTab !== -1) setCurrentTab(currentTab);
+
     load();
   }, []);
 
   const onSelect = (e) => {
-    history.push(
+    navigate(
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
@@ -55,23 +54,17 @@ const DeveloperToolsWrapper = (props) => {
     );
   };
 
-  if (!isLoading && !tReady) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
+  if (!isLoading) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
 
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ setup, auth }) => {
+export default inject(({ setup }) => {
   const { initSettings } = setup;
-  const { setDocumentTitle } = auth;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
-    setDocumentTitle,
   };
-})(
-  withTranslation(["Settings", "SingleSignOn", "Translations"])(
-    withRouter(observer(DeveloperToolsWrapper)),
-  ),
-);
+})(observer(DeveloperToolsWrapper));

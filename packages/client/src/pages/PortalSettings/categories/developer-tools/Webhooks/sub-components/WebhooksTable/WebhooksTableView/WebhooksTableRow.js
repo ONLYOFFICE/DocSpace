@@ -11,10 +11,10 @@ import WebhookDialog from "../../WebhookDialog";
 import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
 import { StatusBadge } from "../../StatusBadge";
 
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [isChecked, setIsChecked] = useState(webhook.enabled);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
@@ -24,8 +24,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
   const openSettings = () => setIsSettingsOpened(true);
   const onDeleteOpen = () => setIsDeleteOpened(true);
   const onDeleteClose = () => setIsDeleteOpened(false);
-  const redirectToHistory = () =>
-    history.push(`/portal-settings/developer/tools/webhooks/history/${webhook.id}`);
+  const redirectToHistory = () => navigate(window.location.pathname + `/${webhook.id}`);
 
   const handleWebhookUpdate = (webhookInfo) => editWebhook(webhook, webhookInfo);
   const handleWebhookDelete = () => deleteWebhook(webhook);

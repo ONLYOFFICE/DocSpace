@@ -14,7 +14,7 @@ import { objectToGetParams, loadScript } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
-import { SortByFieldName } from "../../../../helpers/constants";
+import { SortByFieldName } from "../../../../../helpers/constants";
 
 const Controls = styled(Box)`
   width: 500px;
@@ -337,9 +337,7 @@ const PortalIntegration = (props) => {
             </ControlsGroup>
             <ControlsGroup>
               <Label className="label" text={t("SearchTerm")} />
-              <Box
-                style={{ flexDirection: "row", display: "flex", gap: "16px" }}
-              >
+              <Box style={{ flexDirection: "row", display: "flex", gap: "16px" }}>
                 <TextInput
                   scale={true}
                   onChange={onChangeSearch}
@@ -393,18 +391,8 @@ const PortalIntegration = (props) => {
             </Frame>
 
             <Buttons>
-              <Button
-                primary
-                size="normal"
-                label={t("Common:Preview")}
-                onClick={loadFrame}
-              />
-              <Button
-                primary
-                size="normal"
-                label={t("Destroy")}
-                onClick={destroyFrame}
-              />
+              <Button primary size="normal" label={t("Common:Preview")} onClick={loadFrame} />
+              <Button primary size="normal" label={t("Destroy")} onClick={destroyFrame} />
             </Buttons>
 
             <Heading level={1} size="xsmall">
@@ -429,6 +417,6 @@ export default inject(({ setup, auth }) => {
   };
 })(
   withTranslation(["JavascriptSdk", "Files", "EmbeddingPanel", "Common"])(
-    observer(PortalIntegration)
-  )
+    observer(PortalIntegration),
+  ),
 );

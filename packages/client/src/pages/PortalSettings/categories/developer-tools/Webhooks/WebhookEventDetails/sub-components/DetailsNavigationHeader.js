@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+
+import { useNavigate } from "react-router-dom";
 
 import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 
@@ -30,10 +31,10 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const DetailsNavigationHeader = (props) => {
-  const { history } = props;
+const DetailsNavigationHeader = () => {
+  const navigate = useNavigate();
   const onBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   return (
@@ -52,4 +53,4 @@ const DetailsNavigationHeader = (props) => {
   );
 };
 
-export default withRouter(DetailsNavigationHeader);
+export default DetailsNavigationHeader;

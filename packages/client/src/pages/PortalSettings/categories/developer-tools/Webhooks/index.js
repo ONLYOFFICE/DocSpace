@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import WebhookDialog from "./sub-components/WebhookDialog";
 import { WebhookInfo } from "./sub-components/WebhookInfo";
 import WebhooksTable from "./sub-components/WebhooksTable";
-import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
 import { inject, observer } from "mobx-react";
 
@@ -20,7 +19,10 @@ const MainWrapper = styled.div`
 `;
 
 const Webhooks = (props) => {
-  const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty } = props;
+  const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty, setDocumentTitle } =
+    props;
+
+  setDocumentTitle("Webhooks");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -35,7 +37,6 @@ const Webhooks = (props) => {
   const openModal = () => setIsModalOpen(true);
 
   useEffect(() => {
-    setDocumentTitle("Developer Tools");
     loadWebhooks();
   }, []);
 
@@ -60,8 +61,9 @@ const Webhooks = (props) => {
   );
 };
 
-export default inject(({ webhooksStore }) => {
+export default inject(({ webhooksStore, auth }) => {
   const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty } = webhooksStore;
+  const { setDocumentTitle } = auth;
 
   return {
     state,
@@ -69,5 +71,6 @@ export default inject(({ webhooksStore }) => {
     addWebhook,
     isWebhookExist,
     isWebhooksEmpty,
+    setDocumentTitle,
   };
 })(observer(Webhooks));

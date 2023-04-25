@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 
 import ArrowPathReactSvgUrl from "PUBLIC_DIR/images/arrow.path.react.svg?url";
 
@@ -32,10 +32,10 @@ const HeaderContainer = styled.div`
   }
 `;
 
-const HistoryHeader = (props) => {
-  const { history } = props;
+const HistoryHeader = () => {
+  const navigate = useNavigate();
   const onBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   return (
@@ -57,4 +57,4 @@ const HistoryHeader = (props) => {
   );
 };
 
-export default withRouter(HistoryHeader);
+export default HistoryHeader;

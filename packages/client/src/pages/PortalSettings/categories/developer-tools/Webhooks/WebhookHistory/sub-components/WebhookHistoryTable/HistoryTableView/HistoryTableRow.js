@@ -1,14 +1,12 @@
 import React, { useMemo } from "react";
 import moment from "moment";
-import { useHistory } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import { StatusBadge } from "../../../../sub-components/StatusBadge";
-
-import { withRouter } from "react-router";
 import withFileActions from "@docspace/client/src/HOCs/withFileActions";
 
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
@@ -16,9 +14,9 @@ import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 const HistoryTableRow = (props) => {
   const { item, checkedProps, onContentFileSelect } = props;
-  const history = useHistory();
+  const navigate = useNavigate();
 
-  const redirectToDetails = () => history.push(window.location.pathname + `/event/${item.id}`);
+  const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
 
   const contextOptions = [
     {
@@ -64,4 +62,4 @@ const HistoryTableRow = (props) => {
   );
 };
 
-export default withRouter(withFileActions(HistoryTableRow));
+export default withFileActions(HistoryTableRow);
