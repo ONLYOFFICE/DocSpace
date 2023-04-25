@@ -3,7 +3,6 @@ name: Release RPM DEB
 on:
   workflow_dispatch:
   workflow_call:
-  push:
 
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
