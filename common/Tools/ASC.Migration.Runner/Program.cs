@@ -32,6 +32,8 @@ var options = new WebApplicationOptions
 
 var builder = WebApplication.CreateBuilder(options);
 
+SettingsContext.IsMigration = true;
+
 builder.Configuration.AddJsonFile($"appsettings.runner.json", true)
                 .AddCommandLine(args);
 
