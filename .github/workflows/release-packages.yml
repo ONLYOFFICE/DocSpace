@@ -5,8 +5,8 @@ on:
   # workflow_call:
   push:
     paths:
-    - build/install/deb*
-    - build/install/rpm*
+    - build/install/deb**
+    - build/install/rpm**
   
 env:
   BRANCH_NAME: $(echo ${GITHUB_REF#refs/heads/})
