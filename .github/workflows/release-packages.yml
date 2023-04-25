@@ -52,7 +52,7 @@ jobs:
         run: |
           cd build/install/deb/ 
           find ../ -type f -exec sed -i "s/{{product}}/${{ env.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/${{ env.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/$(echo ${{ env.VERSION }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ).$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
         
         
@@ -100,7 +100,7 @@ jobs:
           echo "Product - ${{ env.PRODUCT }}"
           echo "Source name from branch - $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')"
           echo "version - ${{ env.VERSION }}"
-          echo "version - $(echo ${{ env.VERSION }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0"))
+          echo "version - $(echo ${{ env.VERSION }} | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0") "
           echo "release - ${{ env.BUILD_NUMBER }}"
           echo $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')
     
