@@ -95,7 +95,17 @@ const AccessRightSelect = ({
 };
 
 AccessRightSelect.propTypes = {
-  /** Will be triggered whenever an AccessRightSelect is selected option */
+  /** Indicates that component`s options are scaled by ComboButton */
+  scaledOptions: PropTypes.bool,
+  /** Combo box options */
+  options: PropTypes.array,
+  /** Sets the component's width from the default settings */
+  size: PropTypes.oneOf(["base", "middle", "big", "huge", "content"]),
+  /** Dropdown manual width */
+  manualWidth: PropTypes.string,
+  /** Indicates that component is scaled by parent */
+  scaled: PropTypes.bool,
+  /** Will be triggered when the AccessRightSelect is a selected option */
   onSelect: PropTypes.func,
   /** List of advanced options */
   advancedOptions: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),

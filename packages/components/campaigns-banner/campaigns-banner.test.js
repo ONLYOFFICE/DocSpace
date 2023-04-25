@@ -9,7 +9,7 @@ describe("<CampaignsBanner />", () => {
       <CampaignsBanner
         headerLabel="ONLYOFFICE for business"
         textLabel="Docs, projects, clients & emails"
-        btnLabel="START FREE TRIAL"
+        buttonLabel="START FREE TRIAL"
         img={CampaignsCloudPng}
         btnLink="https://onlyoffice.com"
       />

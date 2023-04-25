@@ -30,29 +30,29 @@ Link.propTypes = {
   children: PropTypes.any,
   /** Accepts class */
   className: PropTypes.string,
-  /** Color of link */
+  /** Link color */
   color: PropTypes.string,
-  /** Font size of link */
+  /** Link font size */
   fontSize: PropTypes.string,
-  /** Font weight of link */
+  /** Link font weight  */
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  /** Line height of link */
+  /** Line height of the link */
   lineHeight: PropTypes.string,
   /** Used as HTML `href` property */
   href: PropTypes.string,
   /** Accepts id */
   id: PropTypes.string,
-  /** Set font weight */
+  /** Sets font weight */
   isBold: PropTypes.bool,
-  /** Set hovered state and effects of link */
+  /** Sets hovered state and link effects */
   isHovered: PropTypes.bool,
-  /** Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status */
+  /** Sets the 'opacity' css-property to 0.5. Usually applied for the users with "pending" status */
   isSemitransparent: PropTypes.bool,
-  /** Activate or deactivate _text-overflow_ CSS property with ellipsis (' … ') value */
+  /** Activates or deactivates _text-overflow_ CSS property with ellipsis (' … ') value */
   isTextOverflow: PropTypes.bool,
-  /** Disabled hover styles */
+  /** Disables hover styles */
   noHover: PropTypes.bool,
-  /** What the link will trigger when clicked. Only for \'action\' type of link */
+  /** Sets a callback function that is triggered when the link is clicked. Only for \'action\' type of link */
   onClick: PropTypes.func,
   /** Used as HTML `rel` property */
   rel: PropTypes.string,
@@ -60,13 +60,15 @@ Link.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Used as HTML `tabindex` property */
   tabIndex: PropTypes.number,
-  /** The _target_ attribute specifies where the linked document will open when the link is clicked. */
+  /** Specifies where the linked document will open once the link is clicked. */
   target: PropTypes.oneOf(["_blank", "_self", "_parent", "_top"]),
   /** Used as HTML `title` property */
   title: PropTypes.string,
-  /** Type of link */
+  /** Link type */
   type: PropTypes.oneOf(["action", "page"]),
-
+  /** Label */
+  label: PropTypes.string,
+  /** Allows enabling UserSelect */
   enableUserSelect: PropTypes.bool,
 };
 

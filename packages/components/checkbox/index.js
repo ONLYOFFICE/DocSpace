@@ -150,13 +150,13 @@ Checkbox.propTypes = {
   value: PropTypes.string,
   /** Label of the input */
   label: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  /** The checked property sets the checked state of a checkbox */
+  /** Sets the checked state of the checkbox */
   isChecked: PropTypes.bool,
-  /** If true, this state is shown as a rectangle in the checkbox */
+  /** The state is displayed as a rectangle in the checkbox when set to true */
   isIndeterminate: PropTypes.bool,
   /** Disables the Checkbox input */
   isDisabled: PropTypes.bool,
-  /** Will be triggered whenever an CheckboxInput is clicked */
+  /** Is triggered whenever the CheckboxInput is clicked */
   onChange: PropTypes.func,
   /** Accepts class */
   className: PropTypes.string,
@@ -166,9 +166,11 @@ Checkbox.propTypes = {
   title: PropTypes.string,
   /** Disables word wrapping */
   truncate: PropTypes.bool,
-  /** Help button render */
+  /** Renders the help button */
   helpButton: PropTypes.any,
+  /** Checkbox tab index */
   tabIndex: PropTypes.number,
+  /** Notifies if the error occurs */
   hasError: PropTypes.bool,
 };
 

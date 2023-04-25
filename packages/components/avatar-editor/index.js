@@ -233,7 +233,7 @@ class AvatarEditor extends React.Component {
 }
 
 AvatarEditor.propTypes = {
-  /** Display avatar editor */
+  /** Displays avatar editor */
   visible: PropTypes.bool,
   /** Translation string for title */
   headerLabel: PropTypes.string,
@@ -245,7 +245,7 @@ AvatarEditor.propTypes = {
   saveButtonLabel: PropTypes.string,
   /** Translation string for cancel button */
   cancelButtonLabel: PropTypes.string,
-  /** Tells when the button should show loader icon */
+  /** Sets the button to show loader icon */
   saveButtonLoading: PropTypes.bool,
   /** Translation string for size warning */
   maxSizeFileError: PropTypes.string,
@@ -271,7 +271,7 @@ AvatarEditor.propTypes = {
   unknownTypeError: PropTypes.string,
   /** Translation string for warning */
   unknownError: PropTypes.string,
-  /** Display type */
+  /** Specifies the display type */
   displayType: PropTypes.oneOf(["auto", "modal", "aside"]),
   /** Accepts class" */
   className: PropTypes.string,
@@ -279,7 +279,7 @@ AvatarEditor.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Use for the view of the modal dialog or not */
+  /** Enables/disables modal dialog view */
   useModalDialog: PropTypes.bool,
   maxSizeLabel: PropTypes.string,
 };
