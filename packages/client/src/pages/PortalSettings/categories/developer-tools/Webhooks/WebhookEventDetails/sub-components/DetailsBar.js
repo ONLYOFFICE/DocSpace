@@ -53,10 +53,6 @@ export const DetailsBar = ({ webhookDetails }) => {
         <BarItemHeader>Status</BarItemHeader>
         <FlexWrapper>
           <StatusBadge status={webhookDetails.status} />
-          <Text isInline fontWeight={600}>
-            {" "}
-            Client Error - Not Found
-          </Text>
         </FlexWrapper>
       </BarItem>
       <BarItem>
