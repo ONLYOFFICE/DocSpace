@@ -8,13 +8,17 @@ import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import { StatusBadge } from "../../../../sub-components/StatusBadge";
 
+import { withRouter } from "react-router";
+import withFileActions from "@docspace/client/src/HOCs/withFileActions";
+
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
-export const HistoryTableRow = ({ eventData }) => {
+const HistoryTableRow = (props) => {
+  const { item, checkedProps, onContentFileSelect } = props;
   const history = useHistory();
 
-  const redirectToDetails = () => history.push(window.location.pathname + `/event/${eventData.id}`);
+  const redirectToDetails = () => history.push(window.location.pathname + `/event/${item.id}`);
 
   const contextOptions = [
     {
@@ -31,21 +35,25 @@ export const HistoryTableRow = ({ eventData }) => {
   ];
 
   const formattedDelivery = useMemo(
-    () => moment(eventData.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC",
-    [eventData],
+    () => moment(item.delivery).format("MMM D, YYYY, h:mm:ss A") + " UTC",
+    [item],
   );
 
+  const onChange = (e) => {
+    onContentFileSelect && onContentFileSelect(e.target.checked, item);
+  };
+
   return (
-    <TableRow contextOptions={contextOptions}>
+    <TableRow contextOptions={contextOptions} checked={checkedProps}>
       <TableCell>
-        <TableCell checked={false} className="noPadding">
-          <Checkbox onChange={() => {}} isChecked={false} title="TitleSelectFile" />
+        <TableCell checked={checkedProps} className="noPadding">
+          <Checkbox onChange={onChange} isChecked={checkedProps} title="TitleSelectFile" />
         </TableCell>
 
-        <Text fontWeight={600}>{eventData.id}</Text>
+        <Text fontWeight={600}>{item.id}</Text>
       </TableCell>
       <TableCell>
-        <StatusBadge status={eventData.status} />
+        <StatusBadge status={item.status} />
       </TableCell>
       <TableCell>
         <Text fontWeight={600} fontSize="11px">
@@ -55,3 +63,5 @@ export const HistoryTableRow = ({ eventData }) => {
     </TableRow>
   );
 };
+
+export default withRouter(withFileActions(HistoryTableRow));
