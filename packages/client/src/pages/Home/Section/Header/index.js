@@ -826,7 +826,9 @@ const SectionHeaderContent = (props) => {
                   showText={showText}
                   isRootFolder={isRootFolder || isAccountsPage}
                   canCreate={security?.Create || isAccountsPage}
-                  title={isAccountsPage ? t("Common:Accounts") : title}
+                  title={
+                    isAccountsPage || !title ? t("Common:Accounts") : title
+                  }
                   isDesktop={isDesktop}
                   isTabletView={isTabletView}
                   personal={personal}
