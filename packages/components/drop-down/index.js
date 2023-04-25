@@ -168,7 +168,7 @@ class DropDown extends React.PureComponent {
 
   checkPositionPortal = () => {
     const parent = this.props.forwardedRef;
-    if (!parent.current || this.props.fixedDirection) return;
+    if (!parent?.current || this.props.fixedDirection) return;
 
     const rects = parent.current.getBoundingClientRect();
 
