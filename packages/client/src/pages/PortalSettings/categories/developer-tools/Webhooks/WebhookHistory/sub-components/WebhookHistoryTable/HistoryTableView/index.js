@@ -7,7 +7,7 @@ import { isMobile } from "react-device-detect";
 import TableContainer from "@docspace/components/table-container/TableContainer";
 import TableBody from "@docspace/components/table-container/TableBody";
 import HistoryTableHeader from "./HistoryTableHeader";
-import { HistoryTableRow } from "./HistoryTableRow";
+import HistoryTableRow from "./HistoryTableRow";
 
 import { inject, observer } from "mobx-react";
 
@@ -20,7 +20,12 @@ const TableWrapper = styled(TableContainer)`
 `;
 
 const HistoryTableView = (props) => {
-  const { sectionWidth, historyWebhooks, viewAs, setViewAs } = props;
+  const {
+    sectionWidth,
+    historyWebhooks,
+    viewAs,
+    setViewAs,
+  } = props;
 
   const tableRef = useRef(null);
 
@@ -42,17 +47,24 @@ const HistoryTableView = (props) => {
       <HistoryTableHeader sectionWidth={sectionWidth} tableRef={tableRef} />
       <TableBody itemHeight={49}>
         {historyWebhooks.map((item) => (
-          <HistoryTableRow key={item.id} eventData={item} />
+          <HistoryTableRow key={item.id} item={{ ...item, title: item.id }} />
         ))}
       </TableBody>
     </TableWrapper>
   );
 };
 
-export default inject(({ setup }) => {
+export default inject(({ setup, filesStore }) => {
   const { viewAs, setViewAs } = setup;
+  const { filesList, setFirsElemChecked, setHeaderBorder, roomsFilterTotal, highlightFile } =
+    filesStore;
   return {
     viewAs,
     setViewAs,
+    filesList,
+    setFirsElemChecked,
+    setHeaderBorder,
+    roomsFilterTotal,
+    highlightFile,
   };
 })(observer(HistoryTableView));
