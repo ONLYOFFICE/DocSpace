@@ -38,7 +38,7 @@ jobs:
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
-          commit: "${GITHUB_REF#refs/heads/}"
+          commit: "${{ GITHUB_REF#refs/heads/ }}"
           tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
