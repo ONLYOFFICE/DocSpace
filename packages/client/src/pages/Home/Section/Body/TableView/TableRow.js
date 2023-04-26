@@ -24,6 +24,7 @@ const FilesTableRow = (props) => {
     isDragging,
     onDrop,
     onMouseDown,
+    onKeydownTab,
     isActive,
     onHideContextMenu,
     onFilesClick,
@@ -80,14 +81,6 @@ const FilesTableRow = (props) => {
   const onDragLeave = () => {
     setIsDragActive(false);
   };
-
-  React.useEffect(() => {
-    window.addEventListener("keydown", onKeydown);
-
-    return () => {
-      window.removeEventListener("keydown", onKeydown);
-    };
-  }, []);
 
   React.useEffect(() => {
     if (index === 0) {
@@ -155,6 +148,7 @@ const FilesTableRow = (props) => {
         isRoom={item.isRoom}
         isHighlight={isHighlight}
         hideColumns={hideColumns}
+        onKeyDown={onKeydownTab}
       >
         {isRooms ? (
           <RoomsRowDataComponent

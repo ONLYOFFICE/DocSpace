@@ -34,13 +34,8 @@ export default function withFileActions(WrappedFileItem) {
     };
 
     onDropZoneUpload = (files, uploadToFolder) => {
-      const {
-        t,
-        dragging,
-        setDragging,
-        startUpload,
-        uploadEmptyFolders,
-      } = this.props;
+      const { t, dragging, setDragging, startUpload, uploadEmptyFolders } =
+        this.props;
 
       dragging && setDragging(false);
 
@@ -165,6 +160,12 @@ export default function withFileActions(WrappedFileItem) {
       } else this.fileContextClick();
     };
 
+    onKeydownTab = (e) => {
+      if (e.code !== "Tab") return;
+      e.preventDefault();
+      e.stopPropagation();
+    };
+
     onDoubleClick = (e) => {
       if (e.ctrlKey || e.shiftKey) {
         return e;
@@ -266,6 +267,7 @@ export default function withFileActions(WrappedFileItem) {
           onFilesClick={this.onFilesClick}
           onDoubleClick={this.onDoubleClick}
           onMouseClick={this.onMouseClick}
+          onKeydownTab={this.onKeydownTab}
           onHideContextMenu={this.onHideContextMenu}
           onSelectTag={this.onSelectTag}
           onSelectOption={this.onSelectOption}

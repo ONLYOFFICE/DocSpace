@@ -233,6 +233,7 @@ const SimpleFilesRow = (props) => {
     fileContextClick,
     onDrop,
     onMouseDown,
+    onKeydownTab,
     className,
     isDragging,
     value,
@@ -271,14 +272,6 @@ const SimpleFilesRow = (props) => {
     />
   );
 
-  React.useEffect(() => {
-    window.addEventListener("keydown", onKeydown);
-
-    return () => {
-      window.removeEventListener("keydown", onKeydown);
-    };
-  }, []);
-
   const onDragOver = (dragOver) => {
     if (dragOver !== isDragOver) {
       setIsDragOver(dragOver);
@@ -303,11 +296,6 @@ const SimpleFilesRow = (props) => {
     ? `${item.id}_${item.fileExst}`
     : item.id ?? "";
 
-  const onKeydown = (e) => {
-    if (e.code !== "Tab") return;
-    e.preventDefault();
-  };
-
   return (
     <StyledWrapper
       id={id}
@@ -319,6 +307,7 @@ const SimpleFilesRow = (props) => {
           ? "row-selected"
           : ""
       }`}
+      onKeyDown={onKeydownTab}
     >
       <DragAndDrop
         data-title={item.title}
