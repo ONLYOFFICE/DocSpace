@@ -84,7 +84,7 @@ jobs:
           %_signature gpg
           %_gpg_path /home/runner/.gnupg
           %_gpg_name Elbakyan-Shirak
-          %_gpg /usr/bin/gpg
+          %__gpg /usr/bin/gpg
           EOF
           cat ~/.rpmmacros
           which gpg
