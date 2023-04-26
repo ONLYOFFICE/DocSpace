@@ -391,12 +391,13 @@ const PureHome = (props) => {
   };
 
   const prevProps = React.useRef({
-    isHeaderVisible: null,
-    isProgressFinished: null,
+    isHeaderVisible: isHeaderVisible,
+    isProgressFinished: isProgressFinished,
   });
 
   React.useEffect(() => {
     if (isAccountsPage) return;
+
     if (isHeaderVisible !== prevProps.current.isHeaderVisible) {
       setHeaderVisible(isHeaderVisible);
     }
