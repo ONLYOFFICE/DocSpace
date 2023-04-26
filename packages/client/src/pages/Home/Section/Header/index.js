@@ -194,6 +194,7 @@ const SectionHeaderContent = (props) => {
     isAdmin,
     setInvitePanelOptions,
     isEmptyPage,
+    pathParts,
   } = props;
 
   const navigate = useNavigate();
@@ -776,7 +777,6 @@ const SectionHeaderContent = (props) => {
       .catch((err) => toastr.error(err));
   }, [resendInvitesAgain]);
 
-  const isLoading = (!title && !isAccountsPage) || !tReady;
   const headerMenu = isAccountsPage
     ? getAccountsHeaderMenu(t)
     : getHeaderMenu(t);
@@ -807,7 +807,11 @@ const SectionHeaderContent = (props) => {
     tableGroupMenuProps.isBlocked = isGroupMenuBlocked;
   }
 
-  return [
+  const fromAccounts = location?.state?.fromAccounts;
+  const isRoot =
+    pathParts === null && fromAccounts ? true : isRootFolder || isAccountsPage;
+
+  return (
     <Consumer key="header">
       {(context) => (
         <StyledContainer
@@ -818,59 +822,46 @@ const SectionHeaderContent = (props) => {
             <TableGroupMenu {...tableGroupMenuProps} />
           ) : (
             <div className="header-container">
-              {isLoading ? (
-                <Loaders.SectionHeader />
-              ) : (
-                <Navigation
-                  sectionWidth={context.sectionWidth}
-                  showText={showText}
-                  isRootFolder={isRootFolder || isAccountsPage}
-                  canCreate={security?.Create || isAccountsPage}
-                  title={
-                    isAccountsPage || !title ? t("Common:Accounts") : title
-                  }
-                  isDesktop={isDesktop}
-                  isTabletView={isTabletView}
-                  personal={personal}
-                  tReady={tReady}
-                  menuItems={menuItems}
-                  navigationItems={navigationPath}
-                  getContextOptionsPlus={getContextOptionsPlus}
-                  getContextOptionsFolder={getContextOptionsFolder}
-                  onClose={onClose}
-                  onClickFolder={onClickFolder}
-                  isTrashFolder={isRecycleBinFolder}
-                  isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
-                  isEmptyFilesList={
-                    isArchiveFolder ? isEmptyArchive : isEmptyFilesList
-                  }
-                  clearTrash={onEmptyTrashAction}
-                  onBackToParentFolder={onClickBack}
-                  toggleInfoPanel={onToggleInfoPanel}
-                  isInfoPanelVisible={isInfoPanelVisible}
-                  titles={{
-                    trash: t("EmptyRecycleBin"),
-                    trashWarning: t("TrashErasureWarning"),
-                  }}
-                  withMenu={!isRoomsFolder}
-                  onPlusClick={onCreateRoom}
-                  isEmptyPage={isEmptyPage}
-                  isRoom={isRoom}
-                />
-              )}
+              <Navigation
+                sectionWidth={context.sectionWidth}
+                showText={showText}
+                isRootFolder={isRoot}
+                canCreate={security?.Create || isAccountsPage}
+                title={isAccountsPage || !title ? t("Common:Accounts") : title}
+                isDesktop={isDesktop}
+                isTabletView={isTabletView}
+                personal={personal}
+                tReady={tReady}
+                menuItems={menuItems}
+                navigationItems={navigationPath}
+                getContextOptionsPlus={getContextOptionsPlus}
+                getContextOptionsFolder={getContextOptionsFolder}
+                onClose={onClose}
+                onClickFolder={onClickFolder}
+                isTrashFolder={isRecycleBinFolder}
+                isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
+                isEmptyFilesList={
+                  isArchiveFolder ? isEmptyArchive : isEmptyFilesList
+                }
+                clearTrash={onEmptyTrashAction}
+                onBackToParentFolder={onClickBack}
+                toggleInfoPanel={onToggleInfoPanel}
+                isInfoPanelVisible={isInfoPanelVisible}
+                titles={{
+                  trash: t("EmptyRecycleBin"),
+                  trashWarning: t("TrashErasureWarning"),
+                }}
+                withMenu={!isRoomsFolder}
+                onPlusClick={onCreateRoom}
+                isEmptyPage={isEmptyPage}
+                isRoom={isRoom}
+              />
             </div>
           )}
         </StyledContainer>
       )}
-    </Consumer>,
-    isRecycleBinFolder && !isEmptyFilesList && !isAccountsPage && (
-      <TrashWarning
-        key="trash-warning"
-        title={t("Files:TrashErasureWarning")}
-        isTabletView
-      />
-    ),
-  ];
+    </Consumer>
+  );
 };
 
 export default inject(

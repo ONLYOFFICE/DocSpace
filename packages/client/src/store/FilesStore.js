@@ -1094,7 +1094,12 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    window.DocSpace.navigate(newUrl);
+    window.DocSpace.navigate(newUrl, {
+      state: {
+        fromAccounts:
+          window.DocSpace.location.pathname.includes("accounts/filter"),
+      },
+    });
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
