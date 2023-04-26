@@ -110,8 +110,8 @@ jobs:
 
       - name: Sign packages and check 
         run: |
-          rpm --define "_gpg_name Elbakyan Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/docspace-api-1.0.0-194.x86_64.rpm
-          rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/docspace-api-1.0.0-206.x86_64.rpm
+          rpm --define "_gpg_name Elbakyan Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/docspace-api-1.0.0-207.x86_64.rpm
+          rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/docspace-api-1.0.0-207.x86_64.rpm
           
       
       - uses: ncipollo/release-action@v1
