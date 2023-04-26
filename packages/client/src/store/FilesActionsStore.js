@@ -252,7 +252,11 @@ class FilesActionStore {
     withoutDialog = false
   ) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { addActiveItems, getIsEmptyTrash } = this.filesStore;
+    const {
+      addActiveItems,
+      getIsEmptyTrash,
+      bufferSelection,
+    } = this.filesStore;
     const {
       secondaryProgressDataStore,
       clearActiveOperations,
@@ -263,7 +267,11 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
     const { withPaging } = this.authStore.settingsStore;
 
-    const selection = newSelection ? newSelection : this.filesStore.selection;
+    const selection = newSelection
+      ? newSelection
+      : this.filesStore.selection.length
+      ? this.filesStore.selection
+      : [bufferSelection];
     const isThirdPartyFile = selection.some((f) => f.providerKey);
 
     const currentFolderId = this.selectedFolderStore.id;
