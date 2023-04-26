@@ -259,7 +259,7 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     private readonly TenantQuotaFeatureFlag _autoBackupRestoreFeature;
 
-    /// <summary>Specifies if the automatic Backup&Restore feature is available or not</summary>
+    /// <summary>Specifies if the automatic Backup&amp;Restore feature is available or not</summary>
     /// <type>System.Boolean, System</type>
     public bool AutoBackupRestore
     {
