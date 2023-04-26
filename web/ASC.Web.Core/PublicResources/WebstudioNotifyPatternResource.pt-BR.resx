@@ -1187,4 +1187,96 @@ O link só é válido por 7 dias.</value>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>Usuário do DocSpace atualizado: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+ 
+Você acabou de criar o ONLYOFFICE DocSpace, um hub de documentos onde você pode aumentar a colaboração com sua equipe, clientes, parceiros e muito mais. Seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirme seu e-mail (o link é válido por 7 dias):
+ 
+$GreenButton
+ 
+O seu tarifário atual é STARTUP. É totalmente gratuito e inclui:
+ 
+* 1 administrador, 2 usuários avançados
+* Até 12 salas
+* Número ilimitado de usuários em cada sala
+* 2GB de espaço em disco
+ 
+Desfrute de uma nova forma de colaboração de documentos!
+ 
+Atenciosamente,
+ 
+Equipe ONLYOFFICE 
+"www.onlyoffice.com/pt":http://onlyoffice.com/pt</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+ 
+Você acabou de criar o ONLYOFFICE DocSpace, um hub de documentos onde você pode aumentar a colaboração com sua equipe, clientes, parceiros e muito mais. Seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirme seu e-mail (o link é válido por 7 dias):
+ 
+$GreenButton
+ 
+O seu tarifário atual é STARTUP. É totalmente gratuito e inclui:
+ 
+* 1 administrador, 2 usuários avançados
+* Até 12 salas
+* Número ilimitado de usuários em cada sala
+* 2GB de espaço em disco
+ 
+Desfrute de uma nova forma de colaboração de documentos!
+ 
+Atenciosamente,
+ 
+Equipe ONLYOFFICE 
+"www.onlyoffice.com/pt":http://onlyoffice.com/pt</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+ 
+Você acabou de criar o ONLYOFFICE DocSpace, um hub de documentos onde você pode aumentar a colaboração com sua equipe, clientes, parceiros e muito mais. Seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirme seu e-mail (o link é válido por 7 dias):
+ 
+$GreenButton
+ 
+O seu tarifário atual é STARTUP. É totalmente gratuito e inclui:
+ 
+* 1 administrador, 2 usuários avançados
+* Até 12 salas
+* Número ilimitado de usuários em cada sala
+* 2GB de espaço em disco
+ 
+Desfrute de uma nova forma de colaboração de documentos!
+ 
+Atenciosamente,
+ 
+Equipe ONLYOFFICE 
+"www.onlyoffice.com/pt":http://onlyoffice.com/pt</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+ 
+Você acabou de criar o ONLYOFFICE DocSpace, um hub de documentos onde você pode aumentar a colaboração com sua equipe, clientes, parceiros e muito mais. Seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirme seu e-mail (o link é válido por 7 dias):
+ 
+$GreenButton
+ 
+O seu tarifário atual é STARTUP. É totalmente gratuito e inclui:
+ 
+* 1 administrador, 2 usuários avançados
+* Até 12 salas
+* Número ilimitado de usuários em cada sala
+* 2GB de espaço em disco
+ 
+Desfrute de uma nova forma de colaboração de documentos!
+ 
+Atenciosamente,
+ 
+Equipe ONLYOFFICE 
+"www.onlyoffice.com/pt":http://onlyoffice.com/pt</value>
+  </data>
 </root>

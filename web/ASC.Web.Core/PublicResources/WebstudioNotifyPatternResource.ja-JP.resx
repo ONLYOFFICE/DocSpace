@@ -200,4 +200,96 @@ $activity
 
 #end</value>
 </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>$UserName 様
+
+ONLYOFFICE DocSpaceをご利用いただきありがとうございます。
+
+社内チーム、顧客、パートナーなどとのコラボレーションを促進するドキュメントハブであるONLYOFFICE DocSpaceでお客様のアカウントを作成いたしました。アカウントのアドレス以下の通りです。"${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+メールのご確認をお願いします。リンクの有効期限は7日間です：
+ 
+$GreenButton
+ 
+現在のプランはSTARTUPです。このプランは完全無料で以下のものが含まれています：
+ 
+* 管理者1人、パワーユーザー2人
+* 最大12ルーム
+* 各ルームのユーザー数は無制限
+* ディスク領域 2 GB
+ 
+ドキュメントコラボレーションの新時代をどうぞお楽しみください！
+ 
+ONLYOFFICE Team
+"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>$UserName 様
+
+ONLYOFFICE DocSpaceをご利用いただきありがとうございます。
+
+社内チーム、顧客、パートナーなどとのコラボレーションを促進するドキュメントハブであるONLYOFFICE DocSpaceでお客様のアカウントを作成いたしました。アカウントのアドレス以下の通りです。"${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+メールのご確認をお願いします。リンクの有効期限は7日間です：
+ 
+$GreenButton
+ 
+現在のプランはSTARTUPです。このプランは完全無料で以下のものが含まれています：
+ 
+* 管理者1人、パワーユーザー2人
+* 最大12ルーム
+* 各ルームのユーザー数は無制限
+* ディスク領域 2 GB
+ 
+ドキュメントコラボレーションの新時代をどうぞお楽しみください！
+ 
+ONLYOFFICE Team
+"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>$UserName 様
+
+ONLYOFFICE DocSpaceをご利用いただきありがとうございます。
+
+社内チーム、顧客、パートナーなどとのコラボレーションを促進するドキュメントハブであるONLYOFFICE DocSpaceでお客様のアカウントを作成いたしました。アカウントのアドレス以下の通りです。"${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+メールのご確認をお願いします。リンクの有効期限は7日間です：
+ 
+$GreenButton
+ 
+現在のプランはSTARTUPです。このプランは完全無料で以下のものが含まれています：
+ 
+* 管理者1人、パワーユーザー2人
+* 最大12ルーム
+* 各ルームのユーザー数は無制限
+* ディスク領域 2 GB
+ 
+ドキュメントコラボレーションの新時代をどうぞお楽しみください！
+ 
+ONLYOFFICE Team
+"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>$UserName 様
+
+ONLYOFFICE DocSpaceをご利用いただきありがとうございます。
+
+社内チーム、顧客、パートナーなどとのコラボレーションを促進するドキュメントハブであるONLYOFFICE DocSpaceでお客様のアカウントを作成いたしました。アカウントのアドレス以下の通りです。"${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+メールのご確認をお願いします。リンクの有効期限は7日間です：
+ 
+$GreenButton
+ 
+現在のプランはSTARTUPです。このプランは完全無料で以下のものが含まれています：
+ 
+* 管理者1人、パワーユーザー2人
+* 最大12ルーム
+* 各ルームのユーザー数は無制限
+* ディスク領域 2 GB
+ 
+ドキュメントコラボレーションの新時代をどうぞお楽しみください！
+ 
+ONLYOFFICE Team
+"www.onlyoffice.com":http://onlyoffice.com/ja</value>
+  </data>
 </root>

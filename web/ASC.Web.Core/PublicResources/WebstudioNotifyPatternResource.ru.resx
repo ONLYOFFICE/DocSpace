@@ -296,7 +296,7 @@ $GreenButton
 
 Вы будете получать другие полезные советы по использованию виртуального офиса. Вы можете в любой момент отписаться от рассылок или заново подписаться на них на странице вашего профиля.</value>
   </data>
-<data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 
 Добро пожаловать в ONLYOFFICE DocSpace! Ваш пользовательский профиль успешно добавлен по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
@@ -316,7 +316,7 @@ $GreenButton
 С уважением, 
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
-  </data>  
+  </data>
   <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 
@@ -497,7 +497,7 @@ $GreenButton
 С уважением, 
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
- </data> 
+ </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Здравствуйте, $UserName
 Вы успешно зарегистрировались в ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
@@ -843,7 +843,7 @@ $GreenButton
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
- <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
     <value>Здравствуйте, $UserName!
 
 Добро пожаловать в ONLYOFFICE DocSpace! Ваш пользовательский профиль успешно добавлен по адресу "${__VirtualRootPath}":"${__VirtualRootPath}". Теперь вы можете:
@@ -863,7 +863,7 @@ $GreenButton
 С уважением, 
 Команда ONLYOFFICE
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
- </data> 
+ </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.Оповещение об изменении профиля на портале "${__VirtualRootPath}":"${__VirtualRootPath}"
 
@@ -1148,5 +1148,93 @@ $GreenButton
   </data>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>Вас приглашают стать участником ${__VirtualRootPath}</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+ 
+Вы создали ONLYOFFICE DocSpace, центр управления документами, где вы можете повысить эффективность совместной работы с командой, клиентами и партнерами. Его адрес: "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Пожалуйста, подтвердите ваш адрес электронной почты (Ссылка действительна в течение 7 дней):
+ 
+$GreenButton
+ 
+Ваш текущий тарифный план: STARTUP. Он абсолютно бесплатный и включает в себя:
+ 
+* 1 администратора, 2 опытных пользователей
+*До 12 комнат
+* Неограниченное количество пользователей в каждой комнате
+* 2 Гб дискового пространства
+ 
+Оцените новый способ совместной работы над документами!
+ 
+С уважением,
+команда ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+ 
+Вы создали ONLYOFFICE DocSpace, центр управления документами, где вы можете повысить эффективность совместной работы с командой, клиентами и партнерами. Его адрес: "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Пожалуйста, подтвердите ваш адрес электронной почты (Ссылка действительна в течение 7 дней):
+ 
+$GreenButton
+ 
+Ваш текущий тарифный план: STARTUP. Он абсолютно бесплатный и включает в себя:
+ 
+* 1 администратора, 2 опытных пользователей
+*До 12 комнат
+* Неограниченное количество пользователей в каждой комнате
+* 2 Гб дискового пространства
+ 
+Оцените новый способ совместной работы над документами!
+ 
+С уважением,
+команда ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+ 
+Вы создали ONLYOFFICE DocSpace, центр управления документами, где вы можете повысить эффективность совместной работы с командой, клиентами и партнерами. Его адрес: "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Пожалуйста, подтвердите ваш адрес электронной почты (Ссылка действительна в течение 7 дней):
+ 
+$GreenButton
+ 
+Ваш текущий тарифный план: STARTUP. Он абсолютно бесплатный и включает в себя:
+ 
+* 1 администратора, 2 опытных пользователей
+*До 12 комнат
+* Неограниченное количество пользователей в каждой комнате
+* 2 Гб дискового пространства
+ 
+Оцените новый способ совместной работы над документами!
+ 
+С уважением,
+команда ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Здравствуйте, $UserName!
+ 
+Вы создали ONLYOFFICE DocSpace, центр управления документами, где вы можете повысить эффективность совместной работы с командой, клиентами и партнерами. Его адрес: "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Пожалуйста, подтвердите ваш адрес электронной почты (Ссылка действительна в течение 7 дней):
+ 
+$GreenButton
+ 
+Ваш текущий тарифный план: STARTUP. Он абсолютно бесплатный и включает в себя:
+ 
+* 1 администратора, 2 опытных пользователей
+*До 12 комнат
+* Неограниченное количество пользователей в каждой комнате
+* 2 Гб дискового пространства
+ 
+Оцените новый способ совместной работы над документами!
+ 
+С уважением,
+команда ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/ru</value>
   </data>
 </root>
