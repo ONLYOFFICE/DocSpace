@@ -87,6 +87,8 @@ jobs:
           %_gpgbin /usr/bin/gpg
           EOF
           cat ~/.rpmmacros
+          which gpg
+          sudo which gpg
           
       - name: Get files from repository.
         uses: actions/checkout@v2
