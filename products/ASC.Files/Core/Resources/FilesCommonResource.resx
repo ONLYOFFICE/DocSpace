@@ -475,4 +475,7 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
     <value>You don't have enough permission to archive the room</value>
   </data>
+  <data name="ErrorMessage_MinLinksCount" xml:space="preserve">
+    <value>The number of links cannot be less than {0}</value>
+  </data>
 </root>
