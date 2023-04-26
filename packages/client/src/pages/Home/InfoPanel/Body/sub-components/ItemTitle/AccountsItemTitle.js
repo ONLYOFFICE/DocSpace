@@ -55,7 +55,7 @@ const AccountsItemTitle = ({
             : selection.email}
         </Text>
         {!isPending && (
-          <Text className={"info-text__email"} noSelect title={selection.email}>
+          <Text className={"info-text__email"} title={selection.email}>
             {selection.email}
           </Text>
         )}
