@@ -889,6 +889,21 @@ public class UserController : PeopleControllerBase
 
             u.ActivationStatus = activationstatus;
             await _userManager.UpdateUserInfo(u);
+
+            if (activationstatus == EmployeeActivationStatus.Activated
+                && u.IsOwner(_tenantManager.GetCurrentTenant()))
+            {
+                var settings = _settingsManager.Load<FisrtEmailConfirmSettings>();
+
+                if (settings.IsFirst)
+                {
+                    _studioNotifyService.SendAdminWelcome(u);
+
+                    settings.IsFirst = false;
+                    _settingsManager.Save(settings);
+                }
+            }
+
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }

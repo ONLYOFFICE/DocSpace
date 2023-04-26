@@ -790,7 +790,8 @@ public class StudioNotifyService
 
             var userId = u.Id;
             var confirmationUrl = _commonLinkUtility.GetConfirmationEmailUrl(u.Email, ConfirmType.EmailActivation, null, userId);
-            confirmationUrl += "&first=true";
+
+            _settingsManager.Save(new FisrtEmailConfirmSettings() { IsFirst = true});
 
             var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmEmail", GetCulture(u));
 
