@@ -556,6 +556,10 @@ class ContextOptionsStore {
     window.dispatchEvent(event);
   };
 
+  onClickCopyExternalLink = () => {
+    toastr.success("TODO: onClickCopyExternalLink");
+  };
+
   onClickInviteUsers = (e) => {
     const data = (e.currentTarget && e.currentTarget.dataset) || e;
 

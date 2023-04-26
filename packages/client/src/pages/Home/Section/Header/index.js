@@ -11,6 +11,7 @@ import ActionsUploadReactSvgUrl from "PUBLIC_DIR/images/actions.upload.react.svg
 import ClearTrashReactSvgUrl from "PUBLIC_DIR/images/clear.trash.react.svg?url";
 import ReconnectSvgUrl from "PUBLIC_DIR/images/reconnect.svg?url";
 import SettingsReactSvgUrl from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
+import CopyToReactSvgUrl from "PUBLIC_DIR/images/copyTo.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
@@ -36,7 +37,7 @@ import { inject, observer } from "mobx-react";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import Navigation from "@docspace/common/components/Navigation";
 import TrashWarning from "@docspace/common/components/Navigation/sub-components/trash-warning";
-import { Events } from "@docspace/common/constants";
+import { Events, RoomsType } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 import { combineUrl } from "@docspace/common/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
@@ -158,8 +159,13 @@ const SectionHeaderContent = (props) => {
   };
 
   const getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins, security } =
-      props;
+    const {
+      t,
+      isPrivacyFolder,
+      isRoomsFolder,
+      enablePlugins,
+      security,
+    } = props;
 
     const options = isRoomsFolder
       ? [
@@ -411,6 +417,7 @@ const SectionHeaderContent = (props) => {
       selectedFolder,
 
       onClickEditRoom,
+      onClickCopyExternalLink,
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
@@ -420,6 +427,7 @@ const SectionHeaderContent = (props) => {
       canDeleteAll,
 
       security,
+      isPublicRoom,
     } = props;
 
     const isDisabled = isRecycleBinFolder || isRoom;
@@ -467,7 +475,7 @@ const SectionHeaderContent = (props) => {
         key: "link-for-room-members",
         label: t("LinkForRoomMembers"),
         onClick: onCopyLinkAction,
-        disabled: isRecycleBinFolder || isPersonalRoom,
+        disabled: isRecycleBinFolder || isPersonalRoom || isPublicRoom,
         icon: InvitationLinkReactSvgUrl,
       },
       {
@@ -509,6 +517,14 @@ const SectionHeaderContent = (props) => {
         icon: SettingsReactSvgUrl,
         onClick: () => onClickEditRoom(selectedFolder),
         disabled: !isRoom || !security?.EditRoom,
+      },
+      {
+        id: "header_option_copy-external-link",
+        key: "copy-external-link",
+        label: t("SharingPanel:CopyExternalLink"),
+        icon: CopyToReactSvgUrl,
+        onClick: () => onClickCopyExternalLink(),
+        disabled: !isPublicRoom,
       },
       {
         id: "header_option_invite-users-to-room",
@@ -628,8 +644,12 @@ const SectionHeaderContent = (props) => {
   };
 
   const onClickFolder = (id, isRootRoom) => {
-    const { setSelectedNode, setIsLoading, fetchFiles, moveToRoomsPage } =
-      props;
+    const {
+      setSelectedNode,
+      setIsLoading,
+      fetchFiles,
+      moveToRoomsPage,
+    } = props;
 
     if (isRootRoom) {
       return moveToRoomsPage();
@@ -829,8 +849,14 @@ export default inject(
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
 
-    const { title, id, roomType, pathParts, navigationPath, security } =
-      selectedFolderStore;
+    const {
+      title,
+      id,
+      roomType,
+      pathParts,
+      navigationPath,
+      security,
+    } = selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
 
@@ -838,6 +864,7 @@ export default inject(
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
+    const isPublicRoom = roomType === RoomsType.PublicRoom;
 
     const {
       onClickEditRoom,
@@ -846,6 +873,7 @@ export default inject(
       onClickArchive,
       onClickReconnectStorage,
       onCopyLink,
+      onClickCopyExternalLink,
     } = contextOptionsStore;
 
     const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
@@ -931,6 +959,7 @@ export default inject(
       selectedFolder,
 
       onClickEditRoom,
+      onClickCopyExternalLink,
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
@@ -943,6 +972,7 @@ export default inject(
 
       moveToRoomsPage,
       onClickBack,
+      isPublicRoom,
     };
   }
 )(
