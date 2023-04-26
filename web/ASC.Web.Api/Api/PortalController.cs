@@ -64,6 +64,7 @@ public class PortalController : ControllerBase
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IEventBus _eventBus;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -96,7 +97,8 @@ public class PortalController : ControllerBase
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         IMapper mapper,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        IEventBus eventBus)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -129,6 +131,7 @@ public class PortalController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
+        _eventBus = eventBus;
     }
 
     [HttpGet("")]
@@ -409,7 +412,6 @@ public class PortalController : ControllerBase
             {
                 _securityContext.AuthenticateMeWithoutCookie(ASC.Core.Configuration.Constants.CoreSystem);
             }
-
             _messageService.Send(MessageAction.PortalDeleted);
         }
         finally
@@ -524,7 +526,10 @@ public class PortalController : ControllerBase
             }
         }
 
-        _studioNotifyService.SendMsgPortalDeletionSuccess(owner, redirectLink);
+        _eventBus.Publish(new RemovePortalIntegrationEvent(_securityContext.CurrentAccount.ID, Tenant.Id)
+        {
+            RedirectLink = redirectLink
+        });
 
         return redirectLink;
     }

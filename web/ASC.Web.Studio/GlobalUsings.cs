@@ -39,13 +39,17 @@ global using ASC.Common.Log;
 global using ASC.Common.Utils;
 global using ASC.Core.Common.Settings;
 global using ASC.Data.Storage;
+global using ASC.EventBus.Abstractions;
 global using ASC.FederatedLogin;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.Web.Core.HttpHandlers;
+global using ASC.Web.Core.RemovePortal;
 global using ASC.Web.Studio;
+global using ASC.Web.Studio.IntegrationEvents;
 global using ASC.Web.Webhooks;
 global using ASC.Webhooks;
 global using ASC.Webhooks.Core;
+global using ASC.Webhooks.Extension;
 global using ASC.Webhooks.Service.Log;
 global using ASC.Webhooks.Service.Services;
 

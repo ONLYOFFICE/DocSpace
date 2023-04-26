@@ -73,6 +73,7 @@ global using ASC.Core.Notify;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Storage;
+global using ASC.EventBus.Events;
 global using ASC.FederatedLogin.LoginProviders;
 global using ASC.FederatedLogin.Profile;
 global using ASC.IPSecurity;

@@ -266,6 +266,12 @@ class CachedTenantService : ITenantService
         _cacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.InsertOrUpdate);
     }
 
+    public async Task PermanentlyRemoveTenantAsync(int id)
+    {
+        await _service.PermanentlyRemoveTenantAsync(id);
+        _cacheNotifyItem.Publish(new TenantCacheItem() { TenantId = id }, CacheNotifyAction.Remove);
+    }
+
     public IEnumerable<TenantVersion> GetTenantVersions()
     {
         return _service.GetTenantVersions();

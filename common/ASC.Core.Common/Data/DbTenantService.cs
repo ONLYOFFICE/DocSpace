@@ -302,6 +302,14 @@ public class DbTenantService : ITenantService
           .GetResult(); 
     }
 
+    public async Task PermanentlyRemoveTenantAsync(int id)
+    {
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        var tenant = await tenantDbContext.Tenants.SingleOrDefaultAsync(r => r.Id == id);
+        tenantDbContext.Tenants.Remove(tenant);
+        await tenantDbContext.SaveChangesAsync();
+    }
+
     public IEnumerable<TenantVersion> GetTenantVersions()
     {
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
