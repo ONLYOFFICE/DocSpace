@@ -227,7 +227,7 @@ install_json() {
 }
 
 restart_services() {
-	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
+	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	echo -n "Updating database... "
