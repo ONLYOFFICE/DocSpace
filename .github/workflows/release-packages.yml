@@ -2,9 +2,9 @@ name: Release RPM DEB
 
 on:
   push:
-    paths:
-    - build/install/deb**
-    - build/install/rpm**
+    # paths:
+    # - build/install/deb**
+    # - build/install/rpm**
   workflow_dispatch:
   
 env:
@@ -63,6 +63,19 @@ jobs:
       contents: write
  
     steps:
+      - name: Generate GPG key
+        run: |
+          echo "%echo Generating a GPG key"
+          echo "Key-Type: RSA" > gen-key-instruction
+          echo "Key-Length: 4096" >> gen-key-instruction
+          echo "Name-Real: Your Name" >> gen-key-instruction
+          echo "Name-Email: your-email@example.com" >> gen-key-instruction
+          echo "Expire-Date: 0" >> gen-key-instruction
+          echo "Passphrase: 42*Hello_I-love-you!1337" >> gen-key-instruction
+          echo "%commit" >> gen-key-instruction
+          echo "%echo Done!" >> gen-key-instruction
+          gpg --batch --gen-key gen-key-instruction
+          
       - name: Get files from repository.
         uses: actions/checkout@v2
 
@@ -89,7 +102,21 @@ jobs:
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
-        
+
+      - name: Generate GPG key
+        run: |
+          echo "%echo Generating a GPG key"
+          echo "Key-Type: RSA" > gen-key-instruction
+          echo "Key-Length: 4096" >> gen-key-instruction
+          echo "Name-Real: Your Name" >> gen-key-instruction
+          echo "Name-Email: your-email@example.com" >> gen-key-instruction
+          echo "Expire-Date: 0" >> gen-key-instruction
+          echo "Passphrase: 42*Hello_I-love-you!1337" >> gen-key-instruction
+          echo "%commit" >> gen-key-instruction
+          echo "%echo Done!" >> gen-key-instruction
+          gpg --batch --gen-key gen-key-instruction
+          
+      
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
