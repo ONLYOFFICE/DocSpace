@@ -369,7 +369,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     }
 
     /// <summary>
-    /// Setting an external invite link
+    /// Setting an room link
     /// </summary>
     /// <param name="id">
     /// Room ID
@@ -378,10 +378,25 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// Link ID
     /// </param>
     /// <param name="title">
-    /// External link name
+    /// Link name
     /// </param>
-    /// /// <param name="access">
+    /// <param name="access">
     /// Access level
+    /// </param>
+    /// <param name="expirationDate">
+    /// Link expiration date
+    /// </param>
+    /// <param name="linkType">
+    /// Link type
+    /// </param>
+    /// <param name="password">
+    /// Link password
+    /// </param>
+    /// <param name="disabled">
+    /// Link status
+    /// </param>
+    /// <param name="denyDownload">
+    /// Download restriction
     /// </param>
     /// <returns>Room security info</returns>
     [HttpPut("rooms/{id}/links")]
@@ -394,6 +409,36 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
                 inDto.Access is not (FileShare.Read or FileShare.None) ? FileShare.Read : inDto.Access , inDto.ExpirationDate, inDto.Password, inDto.Disabled, inDto.DenyDownload),
             _ => throw new InvalidOperationException()
         };
+
+        foreach (var fileShareDto in fileShares)
+        {
+            yield return await _fileShareDtoHelper.Get(fileShareDto);
+        }
+    }
+
+    /// <summary>
+    /// Getting room links
+    /// </summary>
+    /// <param name="id">
+    /// Room ID
+    /// </param>
+    /// <param name="type">
+    /// Link type
+    /// </param>
+    /// <returns>Room security info</returns>
+    [HttpGet("rooms/{id}/links")]
+    public async IAsyncEnumerable<FileShareDto> GetLinksAsync(T id, LinkType? type)
+    {
+        var subjectTypes = type.HasValue
+            ? type.Value switch
+            {
+                LinkType.Invitation => new[] { SubjectType.InvitationLink },
+                LinkType.External => new[] { SubjectType.ExternalLink },
+                _ => new[] { SubjectType.InvitationLink, SubjectType.ExternalLink }
+            }
+            : new[] { SubjectType.InvitationLink, SubjectType.ExternalLink };
+
+        var fileShares = await _fileStorageService.GetSharedInfoAsync(Array.Empty<T>(), new[] { id }, subjectTypes, true);
 
         foreach (var fileShareDto in fileShares)
         {
