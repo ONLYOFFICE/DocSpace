@@ -75,7 +75,7 @@ jobs:
           echo "%commit" >> gen-key-instruction
           echo "%echo Done!" >> gen-key-instruction
           gpg --batch --gen-key gen-key-instruction
-          gpg --export >> public.key
+          gpg --export --armor --output public.key el.shirak@internet.com
           cat public.key
           rpm --import pub_key.gpg
           
