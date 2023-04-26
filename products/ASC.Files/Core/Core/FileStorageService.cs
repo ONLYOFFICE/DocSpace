@@ -88,6 +88,7 @@ public class FileStorageService //: IFileStorageService
     private readonly StudioNotifyService _studioNotifyService;
     private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
     private readonly QuotaSocketManager _quotaSocketManager;
+
     public FileStorageService(
         Global global,
         GlobalStore globalStore,
@@ -2597,58 +2598,31 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
-    public async Task<List<AceWrapper>> SetInvitationLink<T>(T roomId, Guid linkId, string title, FileShare share)
+    public async Task<List<AceWrapper>> SetInvitationLinkAsync<T>(T roomId, Guid linkId, string title, FileShare share)
     {
-        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
+        var expirationDate = DateTime.UtcNow.Add(_invitationLinkHelper.IndividualLinkExpirationInterval);
 
-        var folderDao = GetFolderDao<T>();
-        var room = (await folderDao.GetFolderAsync(roomId)).NotFoundIfNull();
-        var messageAction = MessageAction.RoomLinkCreated;
-
-        if (share == FileShare.None)
+        var messageActions = new Dictionary<EventType, MessageAction>
         {
-            messageAction = MessageAction.RoomLinkDeleted;
-        }
-        else
-        {
-            var linkExist = (await _fileSecurity.GetSharesAsync(room))
-                .Any(r => r.Subject == linkId && r.SubjectType == SubjectType.InvitationLink);
-
-            if (linkExist)
-            {
-                messageAction = MessageAction.RoomLinkUpdated;
-            }
-        }
-
-        var aces = new List<AceWrapper>
-        {
-            new()
-            {
-                Access = share,
-                Id = linkId,
-                SubjectType = SubjectType.InvitationLink,
-                FileShareOptions = new FileShareOptions
-                {
-                    Title = title,
-                    ExpirationDate = DateTime.UtcNow.Add(_invitationLinkHelper.IndividualLinkExpirationInterval)
-                }
-            }
+            { EventType.Create, MessageAction.RoomInvitationLinkCreated },
+            { EventType.Update, MessageAction.RoomInvitationLinkUpdated },
+            { EventType.Remove, MessageAction.RoomInvitationLinkDeleted },
         };
 
-        try
+        return await SetAceLinkAsync(roomId, FileEntryType.Folder, SubjectType.InvitationLink, linkId, title, share, messageActions, expirationDate);
+    }
+    
+    public async Task<List<AceWrapper>> SetExternalLinkAsync<T>(T entryId, FileEntryType entryType, Guid linkId, string title, FileShare share, DateTime expirationDate = default, 
+        string password = null, bool disabled = false, bool denyDownload = false)
+    {
+        var messageActions = new Dictionary<EventType, MessageAction>
         {
-            var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, room, false, null, null);
-            if (changed)
-            {
-                _ = _filesMessageService.Send(room, GetHttpHeaders(), messageAction, room.Title, GetAccessString(share));
-            }
-        }
-        catch (Exception e)
-        {
-            throw GenerateException(e);
-        }
-
-        return await GetSharedInfoAsync(Array.Empty<T>(), new[] { roomId });
+            { EventType.Create, MessageAction.ExternalLinkCreated },
+            { EventType.Update, MessageAction.ExternalLinkUpdated },
+            { EventType.Remove, MessageAction.ExternalLinkDeleted },
+        };
+        
+        return await SetAceLinkAsync(entryId, entryType, SubjectType.ExternalLink, linkId, title, share, messageActions, expirationDate, password, disabled, denyDownload, 1);
     }
 
     public async Task<bool> SetAceLinkAsync<T>(T fileId, FileShare share)
@@ -3359,6 +3333,83 @@ public class FileStorageService //: IFileStorageService
             default:
                 return string.Empty;
         }
+    }
+    
+    private async Task<List<AceWrapper>> SetAceLinkAsync<T>(T entryId, FileEntryType entryType, SubjectType subjectType, Guid linkId, string title, FileShare share, 
+        IDictionary<EventType, MessageAction> messageActions, DateTime expirationDate = default, string password = null, bool disabled = false, bool denyDownload = false, 
+        uint minLinksCount = 0)
+    {
+        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
+
+        FileEntry<T> entry = entryType == FileEntryType.File ? 
+            await GetFileDao<T>().GetFileAsync(entryId).NotFoundIfNull() : 
+            await GetFolderDao<T>().GetFolderAsync(entryId).NotFoundIfNull();
+
+        var action = EventType.Create;
+        
+        var links = (await _fileSecurity.GetSharesAsync(entry))
+            .Where(r => r.SubjectType == subjectType).ToList();
+        
+        if (share == FileShare.None)
+        {
+            if (minLinksCount > 0 && links.Count - 1 < minLinksCount)
+            {
+                throw new InvalidOperationException(string.Format(FilesCommonResource.ErrorMessage_MinLinksCount, minLinksCount));
+            }
+
+            action = EventType.Remove;
+        }
+        else if (links.Any(r => r.Subject == linkId))
+        {
+            action = EventType.Update;
+        }
+
+        var options = new FileShareOptions
+        {
+            Title = title, 
+            Password = password,
+            Disabled = disabled,
+            DenyDownload = denyDownload
+        };
+
+        if (expirationDate != DateTime.MinValue && expirationDate > DateTime.UtcNow)
+        {
+            options.ExpirationDate = expirationDate;
+        }
+
+        if (!string.IsNullOrEmpty(password))
+        {
+            options.Password = password;
+        }
+
+        var aces = new List<AceWrapper>
+        {
+            new()
+            {
+                Access = share, 
+                Id = linkId, 
+                SubjectType = subjectType, 
+                FileShareOptions = options
+            }
+        };
+
+        try
+        {
+            var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, entry, false, null, null);
+            
+            if (changed)
+            {
+                _ = _filesMessageService.Send(entry, GetHttpHeaders(), messageActions[action], entry.Title, GetAccessString(share));
+            }
+        }
+        catch (Exception e)
+        {
+            throw GenerateException(e);
+        }
+        
+        return entryType == FileEntryType.File ? 
+            await GetSharedInfoAsync(new[] { entryId }, Array.Empty<T>()) : 
+            await GetSharedInfoAsync(Array.Empty<T>(), new[] { entryId });
     }
 
     private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
