@@ -68,7 +68,7 @@ jobs:
           echo "echo Generating a GPG key"
           echo "Key-Type: RSA" > gen-key-instruction
           echo "Key-Length: 4096" >> gen-key-instruction
-          echo "Name-Real: Elbakyan Shirak" >> gen-key-instruction
+          echo "Name-Real: Elbakyan-Shirak" >> gen-key-instruction
           echo "Name-Email: el.shirak@internet.com" >> gen-key-instruction
           echo "Expire-Date: 0" >> gen-key-instruction
           echo "Passphrase: 42*Hello_I-love-you!1337" >> gen-key-instruction
@@ -83,7 +83,7 @@ jobs:
           cat << EOF >> ~/.rpmmacros
           %_signature gpg
           %_gpg_path /home/runner/.gnupg
-          %_gpg_name Elbakyan Shirak
+          %_gpg_name Elbakyan-Shirak
           %_gpgbin /usr/bin/gpg
           EOF
           cat ~/.rpmmacros
