@@ -86,6 +86,7 @@ export default function withBadges(WrappedComponent) {
         sectionWidth,
         viewAs,
         isMutedBadge,
+        isArchiveFolderRoot,
       } = this.props;
       const { fileStatus, access, mute } = item;
 
@@ -109,6 +110,7 @@ export default function withBadges(WrappedComponent) {
           sectionWidth={sectionWidth}
           isTrashFolder={isTrashFolder}
           isPrivacyFolder={isPrivacyFolder}
+          isArchiveFolderRoot={isArchiveFolderRoot}
           isDesktopClient={isDesktopClient}
           accessToEdit={accessToEdit}
           onShowVersionHistory={this.onShowVersionHistory}
@@ -139,7 +141,8 @@ export default function withBadges(WrappedComponent) {
       },
       { item }
     ) => {
-      const { isRecycleBinFolder, isPrivacyFolder } = treeFoldersStore;
+      const { isRecycleBinFolder, isPrivacyFolder, isArchiveFolderRoot } =
+        treeFoldersStore;
       const { markAsRead, setPinAction } = filesActionsStore;
       const { isTabletView, isDesktopClient, theme } = auth.settingsStore;
       const { setIsVerHistoryPanel, fetchFileVersions } = versionHistoryStore;
@@ -155,6 +158,7 @@ export default function withBadges(WrappedComponent) {
       const isMutedBadge = isRoom ? mute : isMuteCurrentRoomNotifications;
 
       return {
+        isArchiveFolderRoot,
         theme,
         isAdmin: auth.isAdmin,
 

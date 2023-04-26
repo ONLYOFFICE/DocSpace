@@ -1,5 +1,5 @@
 {
-  "Desc": "Määritä portaalin rekisteröintitiedot.",
+  "Desc": "Määritä DocSpacen rekisteröintitiedot.",
   "Domain": "Verkkotunnus:",
   "ErrorEmail": "Epäkelpo sähköpostiosoite",
   "ErrorInitWizard": "Palvelu ei ole tällä hetkellä käytettävissä, yritä myöhemmin uudelleen.",
@@ -12,5 +12,5 @@
   "LicenseLink": "Lisenssisopimukset",
   "PlaceholderLicense": "Lisenssitiedosto",
   "Timezone": "Aikavyöhyke:",
-  "WelcomeTitle": "Tervetuloa portaaliisi!"
+  "WelcomeTitle": "Tervetuloa DocSpaceen!"
 }

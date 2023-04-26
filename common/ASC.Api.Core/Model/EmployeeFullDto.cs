@@ -269,6 +269,8 @@ public class EmployeeFullDtoHelper : EmployeeDtoHelper
             result.Avatar = "data:image/png;base64," + Convert.ToBase64String(photoData);
         }
 
+        result.HasAvatar = await _userPhotoManager.UserHasAvatar(userInfo.Id);
+
         return result;
     }
 

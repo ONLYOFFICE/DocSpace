@@ -17,6 +17,7 @@
   "HideAuthPage": "Ascundere pagina de autentificare",
   "LogoutEndpointUrl": "URL punct final de deconectare unică al furnizorului de identitate (IdP)",
   "LogoutEndpointUrlTooltip": "Adresa URL utilizată pentru deconectarea unică pe partea de furnizor de serviciu",
+  "MetadataLoadError": "Fișierul de metadate nu a fost transferat",
   "NameIDFormat": "Format NameId",
   "NewCertificate": "Certificat nou",
   "OpenCertificate": "Certificat Public",

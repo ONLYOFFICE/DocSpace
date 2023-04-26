@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "Muisti ja ylläpitäjien/tehokäyttäjien määrän raja on ylittymässä.",
   "StorageQuotaDescription": "Voit poistaa tarpeettomat tiedostot tai <1>{{clickHere}}</1> löytääksesi sopivamman hintaohjelman DocSpacellesi.",
   "StorageQuotaHeader": "Tallennustilan määrä on ylittymässä: {{currentValue}} / {{maxValue}}",
-  "UserQuotaDescription": "<1>{{clickHere}}</1> löytääksesi portaalillesi sopivamman hinnoitteluohjelman.",
+  "UserQuotaDescription": "<1>{{clickHere}}</1> löytääksesi DocSpacellesi sopivamman hinnoitteluohjelman.",
   "UserQuotaHeader": "Ylläpitäjien/tehokäyttäjien määrän raja on ylittymässä: {{currentValue}} / {{maxValue}}"
 }

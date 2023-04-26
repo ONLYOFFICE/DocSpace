@@ -17,6 +17,7 @@
   "HideAuthPage": "Masquer la page d’authentification",
   "LogoutEndpointUrl": "URL du point final de déconnexion unique IdP",
   "LogoutEndpointUrlTooltip": "L’URL utilisée pour la déconnexion unique du côté du fournisseur de services",
+  "MetadataLoadError": "Le fichier de métadonnées n'a pas été transféré",
   "NameIDFormat": "Format NameID",
   "NewCertificate": "Nouveau certificat",
   "OpenCertificate": "Certificat public",
