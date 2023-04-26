@@ -167,21 +167,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.Backups
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
-                        },
-                        new
-                        {
-                            Id = -1,
-                            Alias = "settings",
-                            Calls = false,
-                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
-                            Industry = 0,
-                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Web Office",
-                            OwnerId = new Guid("00000000-0000-0000-0000-000000000000"),
-                            Spam = false,
-                            Status = 1,
-                            TrustedDomainsEnabled = 0,
-                            Version = 0
                         });
                 });
 
@@ -284,9 +269,11 @@ namespace ASC.Migrations.PostgreSql.Migrations.Backups
             modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupSchedule", b =>
                 {
                     b.Property<int>("TenantId")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(10)
                         .HasColumnType("integer")
-                        .HasColumnName("tenant_id");
+                        .HasColumnName("tenant_id")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
                     b.Property<int>("BackupsStored")
                         .HasMaxLength(10)
@@ -331,28 +318,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.Backups
                         .HasName("PRIMARY");
 
                     b.ToTable("backup_schedule", (string)null);
-                });
-
-            modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupRecord", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("ASC.Data.Backup.EF.Model.BackupSchedule", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithOne()
-                        .HasForeignKey("ASC.Data.Backup.EF.Model.BackupSchedule", "TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }

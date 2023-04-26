@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace ASC.Migrations.MySql.Migrations.WebhooksDb
+namespace ASC.Migrations.MySql.Migrations
 {
     [DbContext(typeof(WebhooksDbContext))]
     partial class WebhooksDbContextModelSnapshot : ModelSnapshot
@@ -18,170 +18,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.2")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
-
-                    b.Property<string>("Alias")
-                        .IsRequired()
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("alias")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<bool>("Calls")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("calls")
-                        .HasDefaultValueSql("'1'");
-
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime")
-                        .HasColumnName("creationdatetime");
-
-                    b.Property<int>("Industry")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("industry")
-                        .HasDefaultValueSql("'0'");
-
-                    b.Property<string>("Language")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("char(10)")
-                        .HasColumnName("language")
-                        .HasDefaultValueSql("'en-US'")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<DateTime>("LastModified")
-                        .HasColumnType("timestamp")
-                        .HasColumnName("last_modified");
-
-                    b.Property<string>("MappedDomain")
-                        .HasColumnType("varchar(100)")
-                        .HasColumnName("mappeddomain")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("OwnerId")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("owner_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<string>("PaymentId")
-                        .HasColumnType("varchar(38)")
-                        .HasColumnName("payment_id")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<bool>("Spam")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("tinyint(1)")
-                        .HasColumnName("spam")
-                        .HasDefaultValueSql("'1'");
-
-                    b.Property<int>("Status")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("status")
-                        .HasDefaultValueSql("'0'");
-
-                    b.Property<DateTime?>("StatusChanged")
-                        .HasColumnType("datetime")
-                        .HasColumnName("statuschanged");
-
-                    b.Property<string>("TimeZone")
-                        .HasColumnType("varchar(50)")
-                        .HasColumnName("timezone")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<int>("TrustedDomainsEnabled")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("trusteddomainsenabled")
-                        .HasDefaultValueSql("'1'");
-
-                    b.Property<string>("TrustedDomainsRaw")
-                        .HasColumnType("varchar(1024)")
-                        .HasColumnName("trusteddomains")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<int>("Version")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("version")
-                        .HasDefaultValueSql("'2'");
-
-                    b.Property<DateTime?>("Version_Changed")
-                        .HasColumnType("datetime")
-                        .HasColumnName("version_changed");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Alias")
-                        .IsUnique()
-                        .HasDatabaseName("alias");
-
-                    b.HasIndex("LastModified")
-                        .HasDatabaseName("last_modified");
-
-                    b.HasIndex("MappedDomain")
-                        .HasDatabaseName("mappeddomain");
-
-                    b.HasIndex("Version")
-                        .HasDatabaseName("version");
-
-                    b.ToTable("tenants_tenants", (string)null);
-
-                    b.HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Alias = "localhost",
-                            Calls = false,
-                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
-                            Industry = 0,
-                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Web Office",
-                            OwnerId = "66faa6e4-f133-11ea-b126-00ffeec8b4ef",
-                            Spam = false,
-                            Status = 0,
-                            TrustedDomainsEnabled = 0,
-                            Version = 0
-                        },
-                        new
-                        {
-                            Id = -1,
-                            Alias = "settings",
-                            Calls = false,
-                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
-                            Industry = 0,
-                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Web Office",
-                            OwnerId = "00000000-0000-0000-0000-000000000000",
-                            Spam = false,
-                            Status = 1,
-                            TrustedDomainsEnabled = 0,
-                            Version = 0
-                        });
-                });
 
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.DbWebhook", b =>
                 {
@@ -195,14 +31,16 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                         .HasMaxLength(10)
                         .HasColumnType("varchar(10)")
                         .HasColumnName("method")
-                        .HasDefaultValueSql("''");
+                        .HasDefaultValueSql("''")
+                        .IsRequired();
 
                     b.Property<string>("Route")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("route")
-                        .HasDefaultValueSql("''");
+                        .HasDefaultValueSql("''")
+                        .IsRequired();
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
@@ -232,8 +70,8 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                         .HasColumnName("secret_key")
                         .HasDefaultValueSql("''");
 
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int")
+                    b.Property<uint>("TenantId")
+                        .HasColumnType("int unsigned")
                         .HasColumnName("tenant_id");
 
                     b.Property<string>("Uri")
@@ -294,13 +132,21 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
 
+                    b.Property<int>("ConfigId")
+                        .HasColumnType("int")
+                        .HasColumnName("config_id");
+
                     b.Property<int>("Status")
                         .HasColumnType("int")
                         .HasColumnName("status");
 
-                    b.Property<int>("TenantId")
-                        .HasColumnType("int")
+                    b.Property<uint>("TenantId")
+                        .HasColumnType("int unsigned")
                         .HasColumnName("tenant_id");
+						
+					b.Property<int>("WebhookId")
+                        .HasColumnType("int")
+                        .HasColumnName("webhook_id");
 
                     b.Property<string>("Uid")
                         .IsRequired()
@@ -308,10 +154,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                         .HasColumnName("uid")
                         .UseCollation("utf8_general_ci")
                         .HasAnnotation("MySql:CharSet", "utf8");
-
-                    b.Property<int>("WebhookId")
-                        .HasColumnType("int")
-                        .HasColumnName("webhook_id");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
@@ -326,17 +168,6 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                     b.HasAnnotation("MySql:CharSet", "utf8");
                 });
 
-            modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksConfig", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
-                });
-
             modelBuilder.Entity("ASC.Webhooks.Core.EF.Model.WebhooksLog", b =>
                 {
                     b.HasOne("ASC.Webhooks.Core.EF.Model.WebhooksConfig", "Config")
@@ -345,15 +176,7 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Config");
-
-                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }

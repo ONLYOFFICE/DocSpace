@@ -16,7 +16,7 @@ namespace ASC.Migrations.MySql.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.2")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.DbTenant", b =>
@@ -165,21 +165,6 @@ namespace ASC.Migrations.MySql.Migrations
                             Status = 0,
                             TrustedDomainsEnabled = 0,
                             Version = 0
-                        },
-                        new
-                        {
-                            Id = -1,
-                            Alias = "settings",
-                            Calls = false,
-                            CreationDateTime = new DateTime(2021, 3, 9, 17, 46, 59, 97, DateTimeKind.Utc).AddTicks(4317),
-                            Industry = 0,
-                            LastModified = new DateTime(2022, 7, 8, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Name = "Web Office",
-                            OwnerId = "00000000-0000-0000-0000-000000000000",
-                            Spam = false,
-                            Status = 1,
-                            TrustedDomainsEnabled = 0,
-                            Version = 0
                         });
                 });
 
@@ -213,10 +198,7 @@ namespace ASC.Migrations.MySql.Migrations
                     b.HasIndex("Id")
                         .HasDatabaseName("ID");
 
-                    b.ToTable("webstudio_settings", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.ToTable("webstudio_settings", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
 
@@ -347,7 +329,7 @@ namespace ASC.Migrations.MySql.Migrations
                         .HasColumnName("status")
                         .HasDefaultValueSql("'1'");
 
-                    b.Property<int>("TenantId")
+                    b.Property<int>("Tenant")
                         .HasColumnType("int")
                         .HasColumnName("tenant");
 
@@ -381,13 +363,10 @@ namespace ASC.Migrations.MySql.Migrations
                     b.HasIndex("LastModified")
                         .HasDatabaseName("last_modified");
 
-                    b.HasIndex("TenantId", "UserName")
+                    b.HasIndex("Tenant", "UserName")
                         .HasDatabaseName("username");
 
-                    b.ToTable("core_user", null, t =>
-                        {
-                            t.ExcludeFromMigrations();
-                        });
+                    b.ToTable("core_user", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
 
@@ -404,7 +383,7 @@ namespace ASC.Migrations.MySql.Migrations
                             MobilePhoneActivation = 0,
                             Removed = false,
                             Status = 1,
-                            TenantId = 1,
+                            Tenant = 1,
                             UserName = "administrator",
                             WorkFromDate = new DateTime(2021, 3, 9, 9, 52, 55, 764, DateTimeKind.Utc).AddTicks(9157)
                         });
@@ -564,50 +543,6 @@ namespace ASC.Migrations.MySql.Migrations
                     b.ToTable("login_events", (string)null);
 
                     b.HasAnnotation("MySql:CharSet", "utf8");
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbWebstudioSettings", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("ASC.Core.Common.EF.User", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("ASC.MessagingSystem.EF.Model.AuditEvent", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
-                });
-
-            modelBuilder.Entity("ASC.MessagingSystem.EF.Model.LoginEvent", b =>
-                {
-                    b.HasOne("ASC.Core.Common.EF.Model.DbTenant", "Tenant")
-                        .WithMany()
-                        .HasForeignKey("TenantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Tenant");
                 });
 #pragma warning restore 612, 618
         }
