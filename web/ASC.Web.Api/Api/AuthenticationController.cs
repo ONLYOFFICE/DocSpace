@@ -363,7 +363,7 @@ public class AuthenticationController : ControllerBase
     /// <short>
     /// Open confirmation email URL
     /// </short>
-    /// <param type="ASC.Security.Cryptography.EmailValidationKeyModel, ASC.Security.Cryptography" name="inDto">Confirmation email parameters</param>
+    /// <param type="ASC.Security.Cryptography.EmailValidationKeyModel, ASC.Core.Common" name="inDto">Confirmation email parameters</param>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/authentication/confirm</path>
     /// <returns type="ASC.Security.Cryptography.EmailValidationKeyProvider.ValidationResult, ASC.Security.Cryptography">Validation result: Ok, Invalid, or Expired</returns>

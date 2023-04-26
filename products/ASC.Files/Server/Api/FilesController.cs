@@ -164,7 +164,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Copy a file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CopyAsRequestDto, ASC.Files.Core" name="inDto">Request parameters for copying a file</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CopyAsRequestDto{System.Text.Json.JsonElement}, ASC.Files.Core" name="inDto">Request parameters for copying a file</param>
     /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileEntryDto, ASC.Files.Core">Copied file entry information</returns>
     /// <path>api/2.0/files/file/{fileId}/copyas</path>
     /// <httpMethod>POST</httpMethod>
@@ -189,7 +189,7 @@ public abstract class FilesController<T> : ApiControllerBase
     /// <short>Create a file</short>
     /// <category>Files</category>
     /// <param type="System.Int32, System" method="url" name="folderId">Folder ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a file</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto{System.Text.Json.JsonElement}, ASC.Files.Core" name="inDto">Request parameters for creating a file</param>
     /// <remarks>If a file extension is different from DOCX/XLSX/PPTX and refers to one of the known text, spreadsheet, or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not specified or is unknown, the DOCX extension will be added to the file title.</remarks>
     /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information</returns>
     /// <path>api/2.0/files/{folderId}/file</path>
@@ -453,15 +453,15 @@ public abstract class FilesController<T> : ApiControllerBase
     /// </summary>
     /// <short>Save file properties to a file</short>
     /// <param type="System.Int32, System" method="url" name="fileId">File ID</param>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core" name="fileProperties">File properties request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.EntryPropertiesRequestDto, ASC.Files.Core" name="inDto">File properties request parameters</param>
     /// <category>Files</category>
     /// <returns type="ASC.Files.Core.EntryProperties, ASC.Files.Core">File properties</returns>
     /// <path>api/2.0/files/{fileId}/properties</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("{fileId}/properties")]
-    public Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto fileProperties)
+    public Task<EntryProperties> SetProperties(T fileId, EntryPropertiesRequestDto inDto)
     {
-        return _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(fileProperties));
+        return _fileStorageService.SetFileProperties(fileId, _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(inDto));
     }
 }
 
@@ -494,7 +494,7 @@ public class FilesControllerCommon : ApiControllerBase
     /// </summary>
     /// <short>Create a file in the "My documents" section</short>
     /// <category>Files</category>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto, ASC.Files.Core" name="inDto">Request parameters for creating a file</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.CreateFileRequestDto{System.Text.Json.JsonElement}, ASC.Files.Core" name="inDto">Request parameters for creating a file</param>
     /// <remarks>If a file extension is different from DOCX/XLSX/PPTX and refers to one of the known text, spreadsheet, or presentation formats, it will be changed to DOCX/XLSX/PPTX accordingly. If the file extension is not specified or is unknown, the DOCX extension will be added to the file title.</remarks>
     /// <returns type="ASC.Files.Core.ApiModels.ResponseDto.FileDto, ASC.Files.Core">New file information</returns>
     /// <path>api/2.0/files/@my/file</path>
@@ -586,18 +586,18 @@ public class FilesControllerCommon : ApiControllerBase
     /// Saves file properties to the specified files.
     /// </summary>
     /// <short>Save file properties to files</short>
-    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchEntryPropertiesRequestDto, ASC.Files.Core" name="batchEntryPropertiesRequestDto">Batch entry properties request parameters</param>
+    /// <param type="ASC.Files.Core.ApiModels.RequestDto.BatchEntryPropertiesRequestDto, ASC.Files.Core" name="inDto">Batch entry properties request parameters</param>
     /// <category>Files</category>
     /// <returns type="ASC.Files.Core.EntryProperties, ASC.Files.Core">List of file properties: collects the data from the filled forms or not, folder ID where a file will be saved, folder path where a file will be saved, new folder title, file name mask</returns>
     /// <path>api/2.0/files/batch/properties</path>
     /// <httpMethod>PUT</httpMethod>
     /// <collection>list</collection>
     [HttpPut("batch/properties")]
-    public async Task<List<EntryProperties>> SetProperties(BatchEntryPropertiesRequestDto batchEntryPropertiesRequestDto)
+    public async Task<List<EntryProperties>> SetProperties(BatchEntryPropertiesRequestDto inDto)
     {
         var result = new List<EntryProperties>();
 
-        foreach (var fileId in batchEntryPropertiesRequestDto.FilesId)
+        foreach (var fileId in inDto.FilesId)
         {
             if (fileId.ValueKind == JsonValueKind.String)
             {
@@ -615,8 +615,8 @@ public class FilesControllerCommon : ApiControllerBase
         {
             await using var scope = _serviceScopeFactory.CreateAsyncScope();
             var fileStorageService = scope.ServiceProvider.GetRequiredService<FileStorageService<T>>();
-            var props = _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(batchEntryPropertiesRequestDto.FileProperties);
-            if (batchEntryPropertiesRequestDto.CreateSubfolder)
+            var props = _mapper.Map<EntryPropertiesRequestDto, EntryProperties>(inDto.FileProperties);
+            if (inDto.CreateSubfolder)
             {
                 var file = await fileStorageService.GetFileAsync(fileId, -1).NotFoundIfNull("File not found");
                 props.FormFilling.CreateFolderTitle = Path.GetFileNameWithoutExtension(file.Title);

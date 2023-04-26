@@ -98,12 +98,12 @@ public class CustomNavigationController : BaseSettingsController
     /// </summary>
     /// <short>Add a custom navigation item</short>
     /// <category>Custom navigation</category>
-    /// <param type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core" name="item">Custom navigation parameters</param>
+    /// <param type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core" name="inDto">Custom navigation parameters</param>
     /// <returns type="ASC.Web.Studio.Core.CustomNavigationItem, ASC.Web.Core">Custom navigation item</returns>
     /// <path>api/2.0/settings/customnavigation/create</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("customnavigation/create")]
-    public async Task<CustomNavigationItem> CreateCustomNavigationItem(CustomNavigationItem item)
+    public async Task<CustomNavigationItem> CreateCustomNavigationItem(CustomNavigationItem inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
@@ -113,26 +113,26 @@ public class CustomNavigationController : BaseSettingsController
 
         foreach (var existItem in settings.Items)
         {
-            if (existItem.Id != item.Id)
+            if (existItem.Id != inDto.Id)
             {
                 continue;
             }
 
-            existItem.Label = item.Label;
-            existItem.Url = item.Url;
-            existItem.ShowInMenu = item.ShowInMenu;
-            existItem.ShowOnHomePage = item.ShowOnHomePage;
+            existItem.Label = inDto.Label;
+            existItem.Url = inDto.Url;
+            existItem.ShowInMenu = inDto.ShowInMenu;
+            existItem.ShowOnHomePage = inDto.ShowOnHomePage;
 
-            if (existItem.SmallImg != item.SmallImg)
+            if (existItem.SmallImg != inDto.SmallImg)
             {
                 await _storageHelper.DeleteLogo(existItem.SmallImg);
-                existItem.SmallImg = await _storageHelper.SaveTmpLogo(item.SmallImg);
+                existItem.SmallImg = await _storageHelper.SaveTmpLogo(inDto.SmallImg);
             }
 
-            if (existItem.BigImg != item.BigImg)
+            if (existItem.BigImg != inDto.BigImg)
             {
                 await _storageHelper.DeleteLogo(existItem.BigImg);
-                existItem.BigImg = await _storageHelper.SaveTmpLogo(item.BigImg);
+                existItem.BigImg = await _storageHelper.SaveTmpLogo(inDto.BigImg);
             }
 
             exist = true;
@@ -141,18 +141,18 @@ public class CustomNavigationController : BaseSettingsController
 
         if (!exist)
         {
-            item.Id = Guid.NewGuid();
-            item.SmallImg = await _storageHelper.SaveTmpLogo(item.SmallImg);
-            item.BigImg = await _storageHelper.SaveTmpLogo(item.BigImg);
+            inDto.Id = Guid.NewGuid();
+            inDto.SmallImg = await _storageHelper.SaveTmpLogo(inDto.SmallImg);
+            inDto.BigImg = await _storageHelper.SaveTmpLogo(inDto.BigImg);
 
-            settings.Items.Add(item);
+            settings.Items.Add(inDto);
         }
 
         _settingsManager.Save(settings);
 
         _messageService.Send(MessageAction.CustomNavigationSettingsUpdated);
 
-        return item;
+        return inDto;
     }
 
     /// <summary>
