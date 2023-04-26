@@ -118,7 +118,7 @@ jobs:
       - name: Sign packages and check 
         run: |
           export GPG_TTY=$(tty)
-          rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          sudo rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           
       
