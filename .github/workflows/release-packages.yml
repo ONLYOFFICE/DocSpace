@@ -80,7 +80,7 @@ jobs:
           cat public.key
           sudo rpm --import public.key
           gpg --list-keys
-          rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
+          # rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
           cat << EOF >> ~/.rpmmacros
           %_signature gpg /
           %_gpg_path /root/.gnupg /
