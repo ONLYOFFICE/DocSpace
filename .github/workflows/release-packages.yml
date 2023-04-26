@@ -65,6 +65,7 @@ jobs:
     steps:
       - name: Generate GPG key
         run: |
+          sudo apt-get install gpg-pubkey
           echo "echo Generating a GPG key"
           echo "Key-Type: RSA" > gen-key-instruction
           echo "Key-Length: 4096" >> gen-key-instruction
