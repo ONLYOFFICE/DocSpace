@@ -825,6 +825,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The number of links cannot be less than {0}.
+        /// </summary>
+        public static string ErrorMessage_MinLinksCount {
+            get {
+                return ResourceManager.GetString("ErrorMessage_MinLinksCount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to This provider is already connected to the room.
         /// </summary>
         public static string ErrorMessage_ProviderAlreadyConnect {
