@@ -32,7 +32,7 @@ public class SmtpSettingsDto : IMapFrom<SmtpSettings>
 {
     /// <summary>Host</summary>
     /// <type>System.String, System</type>
-    /// <example>"mail.example.com"</example>
+    /// <example>mail.example.com</example>
     public string Host { get; set; }
 
     /// <summary>Port</summary>
@@ -42,22 +42,22 @@ public class SmtpSettingsDto : IMapFrom<SmtpSettings>
 
     /// <summary>Sender address</summary>
     /// <type>System.String, System</type>
-    /// <example>"notify@example.com"</example>
+    /// <example>notify@example.com</example>
     public string SenderAddress { get; set; }
 
     /// <summary>Sender display name</summary>
     /// <type>System.String, System</type>
-    /// <example>"Postman"</example>
+    /// <example>Postman</example>
     public string SenderDisplayName { get; set; }
 
     /// <summary>Credentials username</summary>
     /// <type>System.String, System</type>
-    /// <example>"notify@example.com"</example>
+    /// <example>notify@example.com</example>
     public string CredentialsUserName { get; set; }
 
     /// <summary>Credentials user password</summary>
     /// <type>System.String, System</type>
-    /// <example>"{password}"</example>
+    /// <example>{password}</example>
     public string CredentialsUserPassword { get; set; }
 
     /// <summary>Enables SSL or not</summary>

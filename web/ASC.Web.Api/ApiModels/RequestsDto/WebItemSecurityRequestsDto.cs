@@ -40,11 +40,11 @@ public class WebItemSecurityRequestsDto
 
     /// <summary>List of user/group IDs with the access to the module</summary>
     /// <type>System.Collections.Generic.IEnumerable{System.Guid}, System.Collections.Generic</type>
-    /// <example>["9924256A-739C-462b-AF15-E652A3B1B6EB"]</example>
+    /// <example>9924256A-739C-462b-AF15-E652A3B1B6EB</example>
+	/// <collection>list</collection>
     public IEnumerable<Guid> Subjects { get; set; }
 
     /// <summary>Products with security information</summary>
     /// <type>System.Collections.Generic.IEnumerable{ASC.Api.Collections.ItemKeyValuePair{System.String, System.Boolean}}, System.Collections.Generic</type>
-    /// <example>[{"Key": "one", "Value": true}]</example>
     public IEnumerable<ItemKeyValuePair<string, bool>> Items { get; set; }
 }

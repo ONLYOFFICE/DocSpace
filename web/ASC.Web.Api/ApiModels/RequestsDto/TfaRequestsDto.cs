@@ -36,7 +36,7 @@ public class TfaRequestsDto
 
     /// <summary>User ID</summary>
     /// <type>System.Nullable{System.Guid}, System</type>
-    /// <example>"9924256A-739C-462b-AF15-E652A3B1B6EB"</example>
+    /// <example>9924256A-739C-462b-AF15-E652A3B1B6EB</example>
     public Guid? Id { get; set; }
 
     /// <summary>List of trusted IP addresses</summary>
@@ -45,12 +45,14 @@ public class TfaRequestsDto
 
     /// <summary>List of users who must use the TFA verification</summary>
     /// <type>System.Collections.Generic.List{System.Guid}, System.Collections.Generic</type>
-    /// <example>["9924256A-739C-462b-AF15-E652A3B1B6EB"]</example>
+    /// <example>9924256A-739C-462b-AF15-E652A3B1B6EB</example>
+	/// <collection>list</collection>
     public List<Guid> MandatoryUsers { get; set; }
 
     /// <summary>List of groups who must use the TFA verification</summary>
     /// <type>System.Collections.Generic.List{System.Guid}, System.Collections.Generic</type>
-    /// <example>["9924256A-739C-462b-AF15-E652A3B1B6EB"]</example>
+    /// <example>9924256A-739C-462b-AF15-E652A3B1B6EB</example>
+	/// <collection>list</collection>
     public List<Guid> MandatoryGroups { get; set; }
 }
 

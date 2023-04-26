@@ -32,12 +32,11 @@ public class BackupScheduleDto
 {
     /// <summary>Storage type</summary>
     /// <type>System.String, System</type>
-    /// <example>"Documents"</example>
+    /// <example>Documents</example>
     public string StorageType { get; set; }
 
     /// <summary>Storage parameters</summary>
     /// <type>System.Collections.Generic.IEnumerable{ASC.Api.Collections.ItemKeyValuePair{System.Object, System.Object}}, System.Collections.Generic</type>
-    /// <example>[{"Key": "some text", "Value": "some text"}]</example>
     public IEnumerable<ItemKeyValuePair<object, object>> StorageParams { get; set; }
 
     /// <summary>Maximum number of the stored backup copies</summary>
@@ -55,16 +54,16 @@ public class Cron
 {
     /// <summary>Period</summary>
     /// <type>System.String, System</type>
-    /// <example>"0"</example>
+    /// <example>0</example>
     public string Period { get; set; }
 
     /// <summary>Hour</summary>
     /// <type>System.String, System</type>
-    /// <example>"0"</example>
+    /// <example>0</example>
     public string Hour { get; set; }
 
     /// <summary>Day</summary>
     /// <type>System.String, System</type>
-    /// <example>"0"</example>
+    /// <example>0</example>
     public string Day { get; set; }
 }

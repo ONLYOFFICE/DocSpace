@@ -32,7 +32,8 @@ public class UpdateMembersRequestDto
 {
     /// <summary>List of user IDs</summary>
     /// <type>System.Collections.Generic.IEnumerable{System.Guid}, System.Collections.Generic</type>
-    /// <example>["9924256A-739C-462b-AF15-E652A3B1B6EB"]</example>
+    /// <example>9924256A-739C-462b-AF15-E652A3B1B6EB</example>
+	/// <collection>list</collection>
     public IEnumerable<Guid> UserIds { get; set; }
 
     /// <summary>Specifies whether to resend invitation letters to all the users or not</summary>
