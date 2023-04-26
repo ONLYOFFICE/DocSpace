@@ -589,7 +589,7 @@ class ContextOptionsStore {
     const { isGracePeriod } = this.authStore.currentTariffStatusStore;
     const {
       setArchiveDialogVisible,
-      setArchiveAction,
+      setRestoreRoomDialogVisible,
       setInviteUsersWarningDialogVisible,
     } = this.dialogsStore;
 
@@ -598,8 +598,11 @@ class ContextOptionsStore {
       return;
     }
 
-    setArchiveAction(action);
-    setArchiveDialogVisible(true);
+    if (action === "archive") {
+      setArchiveDialogVisible(true);
+    } else {
+      setRestoreRoomDialogVisible(true);
+    }
   };
 
   onSelect = (item) => {

@@ -1048,6 +1048,7 @@ class FilesActionStore {
       secondaryProgressDataStore,
       clearActiveOperations,
     } = this.uploadDataStore;
+
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -1125,7 +1126,12 @@ class FilesActionStore {
 
             toastr.success(successTranslation);
           })
-          .then(() => setSelected("close"))
+          .then(() => {
+            const clearBuffer =
+              !this.dialogsStore.archiveDialogVisible &&
+              !this.dialogsStore.restoreRoomDialogVisible;
+            setSelected("close", clearBuffer);
+          })
           .catch((err) => {
             clearActiveOperations(null, items);
             setSecondaryProgressBarData({
@@ -1535,12 +1541,19 @@ class FilesActionStore {
       setArchiveAction,
       setArchiveDialogVisible,
       setInviteUsersWarningDialogVisible,
+      setRestoreRoomDialogVisible,
     } = this.dialogsStore;
     const { isGracePeriod } = this.authStore.currentTariffStatusStore;
 
     if (action === "unarchive" && isGracePeriod) {
       setInviteUsersWarningDialogVisible(true);
       return;
+    }
+
+    if (action === "archive") {
+      setArchiveDialogVisible(true);
+    } else {
+      setRestoreRoomDialogVisible(true);
     }
 
     setArchiveAction(action);
