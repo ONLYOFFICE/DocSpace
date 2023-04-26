@@ -148,18 +148,25 @@ internal class EventTypeConverter : ITypeConverter<LoginEventQuery, LoginEventDt
         }
 
 
-        result.Date =  _tenantUtil.DateTimeFromUtc(result.Date);
-        result.IP = result.IP.Split(':').Length > 1 ? result.IP.Split(':')[0] : result.IP;
+        result.Date = _tenantUtil.DateTimeFromUtc(result.Date);
+        if (!string.IsNullOrEmpty(result.IP))
+        {
+            var ipSplited = result.IP.Split(':');
+            if (ipSplited.Length > 1)
+            {
+                result.IP = ipSplited[0];
+            }
+        }
 
         if (map?.ProductType == ProductType.Documents)
         {
             var rawNotificationInfo = result.Description?.LastOrDefault();
-            
+
             if (!string.IsNullOrEmpty(rawNotificationInfo) && rawNotificationInfo.StartsWith('{') && rawNotificationInfo.EndsWith('}'))
             {
                 var notificationInfo = System.Text.Json.JsonSerializer.Deserialize<AdditionalNotificationInfo>(rawNotificationInfo);
 
-                result.Context = result.Action == (int)MessageAction.RoomRenamed ? notificationInfo.RoomOldTitle : 
+                result.Context = result.Action == (int)MessageAction.RoomRenamed ? notificationInfo.RoomOldTitle :
                     !string.IsNullOrEmpty(notificationInfo.RoomTitle) ? notificationInfo.RoomTitle : notificationInfo.RootFolderTitle;
             }
         }
