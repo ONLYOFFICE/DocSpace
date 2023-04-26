@@ -366,31 +366,31 @@ public class SecurityController : ControllerBase
     /// Set the audit trail settings
     /// </short>
     /// <category>Audit trail data</category>
-    /// <param type="ASC.Core.Tenants.TenantAuditSettingsWrapper, ASC.Core.Common" name="wrapper">Audit trail settings</param>
+    /// <param type="ASC.Core.Tenants.TenantAuditSettingsWrapper, ASC.Core.Common" name="inDto">Audit trail settings</param>
     /// <returns type="ASC.Core.Tenants.TenantAuditSettings, ASC.Core.Common">Audit trail settings</returns>
     /// <path>api/2.0/security/audit/settings/lifetime</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("audit/settings/lifetime")]
-    public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
+    public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
         DemandAuditPermission();
 
-        if (wrapper.Settings.LoginHistoryLifeTime <= 0 || wrapper.Settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
+        if (inDto.Settings.LoginHistoryLifeTime <= 0 || inDto.Settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
         {
             throw new ArgumentException("LoginHistoryLifeTime");
         }
 
-        if (wrapper.Settings.AuditTrailLifeTime <= 0 || wrapper.Settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
+        if (inDto.Settings.AuditTrailLifeTime <= 0 || inDto.Settings.AuditTrailLifeTime > TenantAuditSettings.MaxLifeTime)
         {
             throw new ArgumentException("AuditTrailLifeTime");
         }
 
-        _settingsManager.Save(wrapper.Settings, _tenantManager.GetCurrentTenant().Id);
+        _settingsManager.Save(inDto.Settings, _tenantManager.GetCurrentTenant().Id);
         _messageService.Send(MessageAction.AuditSettingsUpdated);
 
-        return wrapper.Settings;
+        return inDto.Settings;
     }
 
     private void DemandAuditPermission()

@@ -68,21 +68,21 @@ public class BackupController : ControllerBase
     /// Creates the backup schedule of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Create the backup schedule</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup" name="backupSchedule">Backup schedule parameters</param>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupScheduleDto, ASC.Data.Backup" name="inDto">Backup schedule parameters</param>
     /// <returns type="System.Boolean, System">Boolean value: true if the operation is successful</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/createbackupschedule</path>
     [HttpPost("createbackupschedule")]
-    public bool CreateBackupSchedule(BackupScheduleDto backupSchedule)
+    public bool CreateBackupSchedule(BackupScheduleDto inDto)
     {
-        var storageType = backupSchedule.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backupSchedule.StorageType);
-        var storageParams = backupSchedule.StorageParams == null ? new Dictionary<string, string>() : backupSchedule.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
-        var backupStored = backupSchedule.BackupsStored == null ? 0 : Int32.Parse(backupSchedule.BackupsStored);
+        var storageType = inDto.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(inDto.StorageType);
+        var storageParams = inDto.StorageParams == null ? new Dictionary<string, string>() : inDto.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+        var backupStored = inDto.BackupsStored == null ? 0 : Int32.Parse(inDto.BackupsStored);
         var cron = new CronParams()
         {
-            Period = backupSchedule.CronParams.Period == null ? BackupPeriod.EveryDay : (BackupPeriod)Int32.Parse(backupSchedule.CronParams.Period),
-            Hour = backupSchedule.CronParams.Hour == null ? 0 : Int32.Parse(backupSchedule.CronParams.Hour),
-            Day = backupSchedule.CronParams.Day == null ? 0 : Int32.Parse(backupSchedule.CronParams.Day),
+            Period = inDto.CronParams.Period == null ? BackupPeriod.EveryDay : (BackupPeriod)Int32.Parse(inDto.CronParams.Period),
+            Hour = inDto.CronParams.Hour == null ? 0 : Int32.Parse(inDto.CronParams.Hour),
+            Day = inDto.CronParams.Day == null ? 0 : Int32.Parse(inDto.CronParams.Day),
         };
         _backupHandler.CreateSchedule(storageType, storageParams, backupStored, cron);
         return true;
@@ -107,16 +107,16 @@ public class BackupController : ControllerBase
     /// Starts the backup of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Start the backup</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup" name="backup">Backup parameters</param>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupDto, ASC.Data.Backup" name="inDto">Backup parameters</param>
     /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/startbackup</path>
     [AllowNotPayment]
     [HttpPost("startbackup")]
-    public BackupProgress StartBackup(BackupDto backup)
+    public BackupProgress StartBackup(BackupDto inDto)
     {
-        var storageType = backup.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(backup.StorageType);
-        var storageParams = backup.StorageParams == null ? new Dictionary<string, string>() : backup.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+        var storageType = inDto.StorageType == null ? BackupStorageType.Documents : (BackupStorageType)Int32.Parse(inDto.StorageType);
+        var storageParams = inDto.StorageParams == null ? new Dictionary<string, string>() : inDto.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
         _eventBus.Publish(new BackupRequestIntegrationEvent(
              tenantId: _tenantId,
@@ -189,22 +189,22 @@ public class BackupController : ControllerBase
     /// Starts the data restoring process of the current portal with the parameters specified in the request.
     /// </summary>
     /// <short>Start the restoring process</short>
-    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup" name="backupRestore">Restoring parameters</param>
+    /// <param type="ASC.Data.Backup.ApiModels.BackupRestoreDto, ASC.Data.Backup" name="inDto">Restoring parameters</param>
     /// <returns type="System.Object, System">Backup progress: completed or not, progress percentage, error, tenant ID, backup progress item (Backup, Restore, Transfer), link</returns>
     /// <httpMethod>POST</httpMethod>
     /// <path>api/2.0/backup/startrestore</path>
     [HttpPost("startrestore")]
-    public BackupProgress StartBackupRestore(BackupRestoreDto backupRestore)
+    public BackupProgress StartBackupRestore(BackupRestoreDto inDto)
     {
-        var storageParams = backupRestore.StorageParams == null ? new Dictionary<string, string>() : backupRestore.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
+        var storageParams = inDto.StorageParams == null ? new Dictionary<string, string>() : inDto.StorageParams.ToDictionary(r => r.Key.ToString(), r => r.Value.ToString());
 
         _eventBus.Publish(new BackupRestoreRequestIntegrationEvent(
                              tenantId: _tenantId,
                              createBy: _currentUserId,
                              storageParams: storageParams,
-                             storageType: (BackupStorageType)Int32.Parse(backupRestore.StorageType.ToString()),
-                             notify: backupRestore.Notify,
-                             backupId: backupRestore.BackupId
+                             storageType: (BackupStorageType)Int32.Parse(inDto.StorageType.ToString()),
+                             notify: inDto.Notify,
+                             backupId: inDto.BackupId
                         ));
 
 

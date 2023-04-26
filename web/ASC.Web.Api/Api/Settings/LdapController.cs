@@ -136,13 +136,13 @@ public class LdapController : BaseSettingsController
     /// </short>
     /// <category>LDAP</category>
     /// <path>api/2.0/settings/ldap/cron</path>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LdapCronRequestDto, ASC.Web.Api" name="ldapCronRequest">LDAP cron request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LdapCronRequestDto, ASC.Web.Api" name="inDto">LDAP cron request parameters</param>
     /// <httpMethod>POST</httpMethod>
     /// <returns></returns>
     [HttpPost("ldap/cron")]
-    public void SetLdapCronSettingsFromBody(LdapCronRequestDto ldapCronRequest)
+    public void SetLdapCronSettingsFromBody(LdapCronRequestDto inDto)
     {
-        SetLdapCronSettings(ldapCronRequest);
+        SetLdapCronSettings(inDto);
     }
 
     private void SetLdapCronSettings(LdapCronRequestDto ldapCronRequest)
@@ -234,14 +234,14 @@ public class LdapController : BaseSettingsController
     /// Save the LDAP settings
     /// </short>
     /// <category>LDAP</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LdapRequestsDto, ASC.Web.Api" name="ldapRequestsDto">LDAP settings</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LdapRequestsDto, ASC.Web.Api" name="inDto">LDAP settings</param>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status</returns>
     /// <path>api/2.0/settings/ldap</path>
     /// <httpMethod>POST</httpMethod>
     [HttpPost("ldap")]
-    public LdapStatusDto SaveLdapSettings(LdapRequestsDto ldapRequestsDto)
+    public LdapStatusDto SaveLdapSettings(LdapRequestsDto inDto)
     {
-        var ldapSettings = _mapper.Map<LdapRequestsDto, LdapSettings>(ldapRequestsDto);
+        var ldapSettings = _mapper.Map<LdapRequestsDto, LdapSettings>(inDto);
 
         CheckLdapPermissions();
 
@@ -264,18 +264,18 @@ public class LdapController : BaseSettingsController
     /// Test the LDAP saving process
     /// </short>
     /// <category>LDAP</category>
-    /// <param type="ASC.ActiveDirectory.Base.Settings.LdapSettings, ASC.ActiveDirectory.Base.Settings" name="ldapSettings">LDAP settings</param>
+    /// <param type="ASC.ActiveDirectory.Base.Settings.LdapSettings, ASC.ActiveDirectory.Base.Settings" name="inDto">LDAP settings</param>
     /// <path>api/2.0/settings/ldap/save/test</path>
     /// <httpMethod>POST</httpMethod>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LdapStatusDto, ASC.Web.Api">LDAP operation status</returns>
     [HttpPost("ldap/save/test")]
-    public LdapStatusDto TestLdapSave(LdapSettings ldapSettings)
+    public LdapStatusDto TestLdapSave(LdapSettings inDto)
     {
         CheckLdapPermissions();
 
         var userId = _authContext.CurrentAccount.ID.ToString();
 
-        var result = _ldapSaveSyncOperation.TestLdapSave(ldapSettings, Tenant, userId);
+        var result = _ldapSaveSyncOperation.TestLdapSave(inDto, Tenant, userId);
 
         return _mapper.Map<LdapOperationStatus, LdapStatusDto>(result);
     }

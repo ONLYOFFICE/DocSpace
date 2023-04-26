@@ -730,15 +730,15 @@ public class SettingsController : BaseSettingsController
     /// </summary>
     /// <short>Update the email activation settings</short>
     /// <category>Common settings</category>
-    /// <param type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core" name="settings">Email activation settings</param>
+    /// <param type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core" name="inDto">Email activation settings</param>
     /// <returns type="ASC.Web.Studio.Core.EmailActivationSettings, ASC.Web.Studio.Core">Updated email activation settings</returns>
     /// <path>api/2.0/settings/emailactivation</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("emailactivation")]
-    public EmailActivationSettings UpdateEmailActivationSettings(EmailActivationSettings settings)
+    public EmailActivationSettings UpdateEmailActivationSettings(EmailActivationSettings inDto)
     {
-        _settingsManager.SaveForCurrentUser(settings);
-        return settings;
+        _settingsManager.SaveForCurrentUser(inDto);
+        return inDto;
     }
 
     /// <summary>

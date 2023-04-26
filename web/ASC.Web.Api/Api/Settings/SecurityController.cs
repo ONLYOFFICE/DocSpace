@@ -416,18 +416,18 @@ public class SecurityController : BaseSettingsController
     /// Update login settings
     /// </short>
     /// <category>Login settings</category>
-    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LoginSettingsRequestDto, ASC.Web.Api" name="loginSettingsRequestDto">Login settings request parameters</param>
+    /// <param type="ASC.Web.Api.ApiModels.RequestsDto.LoginSettingsRequestDto, ASC.Web.Api" name="inDto">Login settings request parameters</param>
     /// <returns type="ASC.Web.Api.ApiModels.ResponseDto.LoginSettingsDto, ASC.Web.Api">Updated login settings</returns>
     /// <path>api/2.0/settings/security/loginsettings</path>
     /// <httpMethod>PUT</httpMethod>
     [HttpPut("security/loginSettings")]
-    public LoginSettingsDto UpdateLoginSettings(LoginSettingsRequestDto loginSettingsRequestDto)
+    public LoginSettingsDto UpdateLoginSettings(LoginSettingsRequestDto inDto)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var attemptsCount = loginSettingsRequestDto.AttemptCount;
-        var checkPeriod = loginSettingsRequestDto.CheckPeriod;
-        var blockTime = loginSettingsRequestDto.BlockTime;
+        var attemptsCount = inDto.AttemptCount;
+        var checkPeriod = inDto.CheckPeriod;
+        var blockTime = inDto.BlockTime;
 
         if (attemptsCount < 1)
         {
