@@ -77,9 +77,16 @@ jobs:
           gpg --batch --gen-key gen-key-instruction
           gpg --export --armor --output public.key el.shirak@internet.com
           cat public.key
-          rpm --import public.key
+          sudo rpm --import public.key
           gpg --list-keys
           rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
+          cat << EOF >> ~/.rpmmacros
+          %_signature gpg /
+          %_gpg_path /root/.gnupg /
+          %_gpg_name Elbakyan Shirak /
+          %_gpgbin /usr/bin/gpg /
+          EOF
+          cat ~/.rpmmacros
           
       - name: Get files from repository.
         uses: actions/checkout@v2
@@ -110,8 +117,8 @@ jobs:
 
       - name: Sign packages and check 
         run: |
-          rpm --define "_gpg_name Elbakyan Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/docspace-api-1.0.0-207.x86_64.rpm
-          rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/docspace-api-1.0.0-207.x86_64.rpm
+          rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           
       
       - uses: ncipollo/release-action@v1
