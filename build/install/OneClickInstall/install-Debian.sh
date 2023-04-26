@@ -21,6 +21,27 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+
+		-je | --jwtenabled )
+			if [ "$2" != "" ]; then
+				DS_JWT_ENABLED=$2
+				shift
+			fi
+		;;
+
+		-jh | --jwtheader )
+			if [ "$2" != "" ]; then
+				DS_JWT_HEADER=$2
+				shift
+			fi
+		;;
+
+		-js | --jwtsecret )
+			if [ "$2" != "" ]; then
+				DS_JWT_SECRET=$2
+				shift
+			fi
+		;;
 		
 		-gb | --gitbranch )
 			if [ "$2" != "" ]; then
@@ -47,9 +68,12 @@ while [ "$1" != "" ]; do
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
 			echo "    Parameters:"
-			echo "      -it, --installation_type          installation type (COMMUNITY|ENTERPRISE|DEVELOPER)"
 			echo "      -u, --update                      use to update existing components (true|false)"
-			echo "      -ls, --local_scripts			  use 'true' to run local scripts (true|false)"
+			echo "      -je, --jwtenabled                 specifies the enabling the JWT validation (true|false)"
+			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
+			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"
+			echo "      -ls, --local_scripts              use 'true' to run local scripts (true|false)"
+			echo "      -skiphc, --skiphardwarecheck      use to skip hardware check (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			exit 0

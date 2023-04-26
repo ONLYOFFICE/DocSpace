@@ -34,9 +34,9 @@
 PARAMETERS="";
 DOCKER="";
 LOCAL_SCRIPTS="false"
-HELP="false";
 product="docspace"
 GIT_BRANCH="develop"
+FILE_NAME="$(basename "$0")"
 
 while [ "$1" != "" ]; do
 	case $1 in
@@ -56,10 +56,23 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		"-?" | -h | --help )
-			HELP="true";
+		docker )
 			DOCKER="true";
-			PARAMETERS="$PARAMETERS -ht install-Docker.sh";
+			shift && continue
+		;;
+
+		package )
+			DOCKER="false";
+			shift && continue
+		;;
+
+		"-?" | -h | --help )
+			if [ -z "$DOCKER" ]; then
+				echo "Run 'bash $FILE_NAME docker' to install docker version of application or 'bash $FILE_NAME package' to install deb/rpm version."
+				echo "Run 'bash $FILE_NAME docker -h' or 'bash $FILE_NAME package -h' to get more details."
+				exit 0;
+			fi
+			PARAMETERS="$PARAMETERS -ht $FILE_NAME";
 		;;
 	esac
 	PARAMETERS="$PARAMETERS ${1}";
@@ -123,7 +136,7 @@ if ! command_exists curl ; then
 	install_curl;
 fi
 
-if [ "$HELP" == "false" ]; then
+if [ -z "$DOCKER" ]; then
 	read_installation_method;
 fi
 
