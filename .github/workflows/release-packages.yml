@@ -82,7 +82,7 @@ jobs:
           # rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
           cat << EOF >> ~/.rpmmacros
           %_signature gpg
-          %_gpg_path /root/.gnupg
+          %_gpg_path /home/runner/.gnupg
           %_gpg_name Elbakyan Shirak
           %_gpgbin /usr/bin/gpg
           EOF
