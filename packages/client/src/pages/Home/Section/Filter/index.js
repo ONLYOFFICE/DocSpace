@@ -226,17 +226,6 @@ const SectionFilterContent = ({
   const isAccountsPage = location.pathname.includes("accounts");
 
   const [selectedFilterValues, setSelectedFilterValues] = React.useState(null);
-  const [isLoadedFilter, setIsLoadedFilter] = React.useState(false);
-
-  useEffect(() => {
-    if (isEmptyPage) {
-      setIsLoadedFilter(isLoadedEmptyPage);
-    }
-
-    if (!isEmptyPage && !isLoadedEmptyPage) {
-      setIsLoadedFilter(true);
-    }
-  }, [isLoadedEmptyPage, isEmptyPage]);
 
   const onFilter = React.useCallback(
     (data) => {
@@ -1902,15 +1891,6 @@ const SectionFilterContent = ({
     }
   };
 
-  useEffect(
-    () => (!!isLoadedFilter ? showLoader() : hideLoader()),
-    [isLoadedFilter]
-  );
-
-  if (!isLoadedFilter && !isAccountsPage) {
-    return <Loaders.Filter style={{ display: "none" }} id="filter-loader" />;
-  }
-
   return (
     <FilterInput
       t={t}
@@ -2059,6 +2039,6 @@ export default inject(
       "PeopleTranslations",
       "ConnectDialog",
       "SmartBanner",
-    ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
+    ])(observer(SectionFilterContent))
   )
 );

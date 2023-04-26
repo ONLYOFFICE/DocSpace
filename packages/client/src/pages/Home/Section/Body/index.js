@@ -326,6 +326,6 @@ export default inject(
   }
 )(
   withTranslation(["Files", "Common", "Translations"])(
-    withLoader(withHotkeys(observer(SectionBodyContent)))()
+    withHotkeys(observer(SectionBodyContent))
   )
 );

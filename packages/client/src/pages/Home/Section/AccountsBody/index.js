@@ -69,8 +69,6 @@ export default inject(({ peopleStore }) => {
   return { viewAs, setSelection, setBufferSelection };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(
-    withPeopleLoader(observer(SectionBodyContent))(
-      <Loaders.Rows isRectangle={false} />
-    )
+    observer(SectionBodyContent)
   )
 );
