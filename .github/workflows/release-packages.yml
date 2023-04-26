@@ -89,6 +89,9 @@ jobs:
           cat ~/.rpmmacros
           which gpg
           sudo which gpg
+          cd ~
+          pwd 
+          ls -la 
           
       - name: Get files from repository.
         uses: actions/checkout@v2
