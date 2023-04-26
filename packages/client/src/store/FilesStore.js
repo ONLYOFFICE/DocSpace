@@ -2563,6 +2563,11 @@ class FilesStore {
     });
 
     const items = [...newFolders, ...this.files];
+
+    if (items.length > 0 && this.isEmptyPage) {
+      this.setIsEmptyPage(false);
+    }
+
     const newItem = items.map((item) => {
       const {
         access,
