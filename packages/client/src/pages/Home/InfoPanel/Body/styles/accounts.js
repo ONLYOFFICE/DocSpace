@@ -56,6 +56,7 @@ const StyledAccountsItemTitle = styled.div`
       font-size: 13px;
       line-height: 20px;
       color: ${(props) => props.theme.text.disableColor};
+      user-select: text;
     }
   }
 
