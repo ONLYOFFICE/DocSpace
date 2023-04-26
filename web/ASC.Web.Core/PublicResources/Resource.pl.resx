@@ -370,4 +370,64 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Co nowego?</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Śledzenie logowań i działań użytkowników</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksymalny rozmiar pliku</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Rozmiar pliku nie powinien być większy niż {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Liczba administratorów nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Liczba administratorów</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatyczne tworzenie kopii zapasowych i przywracanie</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Nieograniczona liczba aktywnych pokoi</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Liczba pokoi nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>Pamięć: {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Ilość zużytej pamięci nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Pamięć</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Pokoje:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Zużyta pamięć:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Liczba użytkowników w pokoju:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Nieograniczona liczba użytkowników</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Liczba użytkowników nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Użytkownicy w pokoju</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Liczba użytkowników w pokoju nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding i personalizacja</value>
+  </data>
 </root>

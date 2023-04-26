@@ -1,5 +1,5 @@
 {
-  "Desc": "Lūdzu, iestatiet portāla reģistrācijas datus.",
+  "Desc": "Lūdzu, iestatiet DocSpace reģistrācijas datus.",
   "Domain": "Domēns:",
   "ErrorEmail": "Nederīga e-pasta adrese",
   "ErrorInitWizard": "Pakalpojums pašlaik nav pieejams. Lūdzu, vēlāk mēģiniet vēlreiz.",
@@ -12,5 +12,5 @@
   "LicenseLink": "Licences līgumi",
   "PlaceholderLicense": "Jūsu licences fails",
   "Timezone": "Laika zona:",
-  "WelcomeTitle": "Laipni lūdzam jūsu portālā!"
+  "WelcomeTitle": "Laipni lūdzam jūsu DocSpace!"
 }

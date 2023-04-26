@@ -370,4 +370,64 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Kas Jauns</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Lietotāju pieteikšanās un darbību izsekošana</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimālais faila lielums</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Faila lielums nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Administratoru skaits nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Administratoru skaits</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automātiska dublēšana un atkopšana</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Neierobežots aktīvo telpu skaits</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Telpu skaits nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} krātuves vieta</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Izmantotās krātuves lielums nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Krātuves vieta</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Telpas:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Izmantotā krātuves vieta:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Lietotāji telpā:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Neierobežots lietotāju skaits</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Lietotāju skaits nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Lietotāji telpā</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Lietotāju skaits telpā nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Zīmolrade un pielāgošana</value>
+  </data>
 </root>
