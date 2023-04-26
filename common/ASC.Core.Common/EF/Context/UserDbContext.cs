@@ -56,6 +56,6 @@ public class UserDbContext : DbContext
         .AddUserGroup()
         .AddSubscription()
         .AddUserDav()
-        .AddDbTenant();
+        .AddDbTenant(true);
     }
 }

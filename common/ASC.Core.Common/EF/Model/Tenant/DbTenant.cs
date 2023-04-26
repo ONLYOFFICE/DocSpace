@@ -77,8 +77,12 @@ public class DbTenant : IMapFrom<Tenant>
 
 public static class DbTenantExtension
 {
-    public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder)
+    public static ModelBuilderWrapper AddDbTenant(this ModelBuilderWrapper modelBuilder, bool ignoreMigration = false)
     {
+        if (ignoreMigration)
+        {
+            modelBuilder.Entity<DbTenant>().ToTable(t => t.ExcludeFromMigrations());
+        }
         modelBuilder
             .Add(MySqlAddDbTenant, Provider.MySql)
             .Add(PgSqlAddDbTenant, Provider.PostgreSql)
