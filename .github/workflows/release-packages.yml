@@ -77,7 +77,7 @@ jobs:
           gpg --batch --gen-key gen-key-instruction
           gpg --export --armor --output public.key el.shirak@internet.com
           cat public.key
-          rpm --import pub_key.gpg
+          rpm --import public.key
           
       - name: Get files from repository.
         uses: actions/checkout@v2
