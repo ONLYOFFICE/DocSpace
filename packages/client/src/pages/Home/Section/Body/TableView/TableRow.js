@@ -101,11 +101,6 @@ const FilesTableRow = (props) => {
     ? `${item.id}_${item.fileExst}`
     : item.id ?? "";
 
-  const onKeydown = (e) => {
-    if (e.code !== "Tab") return;
-    e.preventDefault();
-  };
-
   return (
     <StyledDragAndDrop
       id={id}
