@@ -285,6 +285,20 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-jh | --jwtheader )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_HEADER=$2
+				shift
+			fi
+		;;
+
+		-js | --jwtsecret )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_SECRET=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -296,6 +310,8 @@ while [ "$1" != "" ]; do
 			echo "      -tag, --dockertag                 select the version to install $PRODUCT (latest|develop|version number)"
 			echo "      -idocs, --installdocumentserver   install or update document server (true|false)"
 			echo "      -di, --documentserverimage        document server image name"
+			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
+			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
 			echo "      -irb, --installrabbitmq           install or update rabbitmq (true|false)"	
 			echo "      -ird, --installredis              install or update redis (true|false)"
@@ -751,6 +767,30 @@ set_jwt_secret () {
 	fi
 }
 
+set_jwt_header () {
+	CURRENT_JWT_HEADER="";
+
+	if [[ -z ${JWT_HEADER} ]]; then
+		CURRENT_JWT_HEADER=$(get_container_env_parameter  "${PACKAGE_SYSNAME}-document-server" "JWT_HEADER");
+
+		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
+			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
+		fi
+	fi	
+	
+	if [[ -z ${JWT_HEADER} ]]; then
+		CURRENT_JWT_HEADER=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "DOCUMENT_SERVER_JWT_HEADER");
+
+		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
+			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
+		fi
+	fi
+
+	if [[ -z ${JWT_HEADER} ]]; then
+		DOCUMENT_SERVER_JWT_HEADER="AuthorizationJwt"
+	fi
+}
+
 set_core_machinekey () {
 	CURRENT_CORE_MACHINEKEY="";
 
@@ -984,6 +1024,7 @@ start_installation () {
 	download_files
 
 	set_jwt_secret
+	set_jwt_header
 
 	set_core_machinekey
 

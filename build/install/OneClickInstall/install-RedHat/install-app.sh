@@ -65,9 +65,9 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	DS_DB_USER=$DS_COMMON_NAME;
 	DS_DB_PWD=$DS_COMMON_NAME;
 	
-	declare -x JWT_ENABLED=true;
-	declare -x JWT_SECRET="$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)";
-	declare -x JWT_HEADER="AuthorizationJwt";
+	declare -x JWT_ENABLED=${JWT_ENABLED:-true};
+	declare -x JWT_SECRET=${JWT_SECRET:-$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)};
+	declare -x JWT_HEADER=${JWT_HEADER:-AuthorizationJwt};
 		
 	if ! su - postgres -s /bin/bash -c "psql -lqt" | cut -d \| -f 1 | grep -q ${DS_DB_NAME}; then
 		su - postgres -s /bin/bash -c "psql -c \"CREATE USER ${DS_DB_USER} WITH password '${DS_DB_PWD}';\""
