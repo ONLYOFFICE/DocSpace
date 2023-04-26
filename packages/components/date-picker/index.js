@@ -396,7 +396,7 @@ class DatePicker extends Component {
 }
 
 DatePicker.propTypes = {
-  /** Function called when the user select a day */
+  /** Function called when the user selects a day */
   onChange: PropTypes.func,
   /** Selected date value */
   selectedDate: PropTypes.instanceOf(Date),
@@ -410,9 +410,9 @@ DatePicker.propTypes = {
   locale: PropTypes.string,
   /** Disabled react-calendar */
   isDisabled: PropTypes.bool,
-  /** Set input type is read only */
+  /** Sets the input type to ReadOnly */
   isReadOnly: PropTypes.bool,
-  /** Set error date-input style */
+  /** Sets the error date-input style */
   hasError: PropTypes.bool,
   //hasWarning: PropTypes.bool,
   /** Opens calendar */

@@ -163,8 +163,9 @@ const StyledVersionRow = styled(Row)`
     display: block;
   }
 
-  .textarea-desktop {
+  .textarea-wrapper {
     margin: 9px 23px 1px -7px;
+    width: 100%;
   }
 
   .version_content-length {

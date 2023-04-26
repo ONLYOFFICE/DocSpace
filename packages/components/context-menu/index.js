@@ -399,27 +399,27 @@ ContextMenu.propTypes = {
   className: PropTypes.string,
   /** Attaches the menu to document instead of a particular item */
   global: PropTypes.bool,
-  /** Tell when context menu was render with backdrop */
+  /** Sets the context menu to be rendered with a backdrop */
   withBackdrop: PropTypes.bool,
-  /** Base zIndex value to use in layering */
+  /** Sets zIndex layering value automatically */
   autoZIndex: PropTypes.bool,
-  /** Whether to automatically manage layering */
+  /** Sets automatic layering management */
   baseZIndex: PropTypes.number,
-  /** DOM element instance where the menu should be mounted */
+  /** DOM element instance where the menu is mounted */
   appendTo: PropTypes.any,
-  /** Callback to invoke when a popup menu is shown */
+  /** Specifies a callback function that is invoked when a popup menu is shown */
   onShow: PropTypes.func,
-  /** Callback to invoke when a popup menu is hidden */
+  /** Specifies a callback function that is invoked when a popup menu is hidden */
   onHide: PropTypes.func,
-  /** If you want to display relative to another component */
+  /** Displays a reference to another component */
   containerRef: PropTypes.any,
-  /** Scale with by container component*/
+  /** Scales width by the container component */
   scaled: PropTypes.bool,
-  /** If you want to fill icons with default colors or not  */
+  /** Fills the icons with default colors */
   fillIcon: PropTypes.bool,
-
+  /** Function that returns an object containing the elements of the context menu */
   getContextModel: PropTypes.func,
-
+  /** Specifies the offset  */
   leftOffset: PropTypes.number,
 };
 

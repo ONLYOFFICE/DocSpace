@@ -25,7 +25,7 @@ export const useThemeDetector = () => {
     return () => {
       if (isDesktopClient) return;
 
-      mediaQuery.removeEventListener(systemThemeListener);
+      mediaQuery.removeEventListener("change", systemThemeListener);
     };
   }, []);
 

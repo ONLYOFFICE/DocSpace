@@ -249,8 +249,6 @@ const StyledContextMenu = styled.div`
     & svg {
       height: 16px;
       width: 16px;
-    }
-     {
       ${(props) =>
         props.fillIcon &&
         css`

@@ -198,41 +198,44 @@ class LinkWithDropdown extends React.Component {
 }
 
 LinkWithDropdown.propTypes = {
-  /** Color of link in all states - hover, active, visited */
+  /** Link color in all states - hover, active, visited */
   color: PropTypes.string,
   /** Array of objects, each can contain `<DropDownItem />` props */
   data: PropTypes.array,
-  /** Type of dropdown: alwaysDashed is always show dotted style and icon of arrow,
-   * appearDashedAfterHover is show dotted style and icon arrow only after hover */
+  /** Dropdown type 'alwaysDashed' always displays a dotted style and an arrow icon,
+   * appearDashedAfterHover displays a dotted style and icon arrow only  on hover */
   dropdownType: PropTypes.oneOf(["alwaysDashed", "appearDashedAfterHover"]),
+  /** Displays the expander */
   withExpander: PropTypes.bool,
-  /** Font size of link */
+  /** Link font size */
   fontSize: PropTypes.string,
-  /** Font weight of link */
+  /** Link font weight */
   fontWeight: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  /** Set font weight */
+  /** Sets font weight */
   isBold: PropTypes.bool,
-  /** Set css-property 'opacity' to 0.5. Usually apply for users with "pending" status */
+  /** Sets css-property 'opacity' to 0.5. Usually applied for the users with "pending" status */
   isSemitransparent: PropTypes.bool,
-  /** Activate or deactivate _text-overflow_ CSS property with ellipsis (' … ') value */
+  /** Activates or deactivates _text-overflow_ CSS property with ellipsis (' … ') value */
   isTextOverflow: PropTypes.bool,
-  /** Title of link */
+  /** Link title */
   title: PropTypes.string,
-  /** Set open prop */
+  /** Sets open prop */
   isOpen: PropTypes.bool,
   /** Children element */
   children: PropTypes.any,
   /** Accepts css class */
   className: PropTypes.string,
+  /** Sets the classNaame of the drop down */
   dropDownClassName: PropTypes.string,
   /** Accepts id */
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Set disabled view */
+  /** Sets disabled view */
   isDisabled: PropTypes.bool,
   /** Sets the opening direction relative to the parent */
   directionY: PropTypes.oneOf(["bottom", "top", "both"]),
+  /** Displays the scrollbar */
   hasScroll: PropTypes.bool,
 };
 

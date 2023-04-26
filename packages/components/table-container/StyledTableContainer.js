@@ -4,6 +4,7 @@ import { mobile, tablet, hugeMobile } from "../utils/device";
 import IconButton from "../icon-button";
 import Scrollbar from "../scrollbar";
 import { isMobile, isMobileOnly } from "react-device-detect";
+import { ColorTheme } from "@docspace/common/components/ColorTheme";
 
 const reactWindowContainerStyles = css`
   height: 100%;
@@ -50,7 +51,7 @@ const StyledTableContainer = styled.div`
     border-bottom: 1px solid;
     border-image-slice: 1;
     border-image-source: ${(props) =>
-      props.theme.tableContainer.header.borderImageSource};
+    props.theme.tableContainer.header.borderImageSource};
     border-top: 0;
     border-left: 0;
   }
@@ -58,12 +59,12 @@ const StyledTableContainer = styled.div`
   .lengthen-header {
     border-image-slice: 1;
     border-image-source: ${(props) =>
-      props.theme.tableContainer.header.lengthenBorderImageSource};
+    props.theme.tableContainer.header.lengthenBorderImageSource};
   }
 
   .hotkeys-lengthen-header {
     border-bottom: ${(props) =>
-      props.theme.tableContainer.header.hotkeyBorderBottom};
+    props.theme.tableContainer.header.hotkeyBorderBottom};
     border-image-source: none;
   }
 
@@ -121,14 +122,14 @@ const StyledTableGroupMenu = styled.div`
     }
 
     ${isMobile &&
-    css`
+  css`
       margin-left: 24px;
     `}
   }
 
   .table-container_group-menu-separator {
     border-right: ${(props) =>
-      props.theme.tableContainer.groupMenu.borderRight};
+    props.theme.tableContainer.groupMenu.borderRight};
     width: 1px;
     height: 21px;
     margin: 0 16px 0 20px;
@@ -138,7 +139,7 @@ const StyledTableGroupMenu = styled.div`
     }
 
     ${isMobile &&
-    css`
+  css`
       height: 36px;
     `}
 
@@ -147,7 +148,7 @@ const StyledTableGroupMenu = styled.div`
     }
 
     ${isMobileOnly &&
-    css`
+  css`
       height: 20px;
     `}
   }
@@ -172,8 +173,8 @@ const StyledTableGroupMenu = styled.div`
 
 StyledTableGroupMenu.defaultProps = { theme: Base };
 
-const StyledInfoPanelToggleWrapper = styled.div`
-  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
+  display: flex;
 
   align-items: center;
   align-self: center;
@@ -182,6 +183,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   height: 100%;
   width: auto;
   padding-left: 20px;
+  padding-right: 0;
 
   @media ${tablet} {
     display: none;
@@ -191,30 +193,10 @@ const StyledInfoPanelToggleWrapper = styled.div`
   margin-top: 1px;
 
   .info-panel-toggle-bg {
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    align-self: center;
-
-    justify-content: center;
-    border-radius: 50%;
-    background-color: ${(props) =>
-      props.isInfoPanelVisible
-        ? props.theme.infoPanel.sectionHeaderToggleBgActive
-        : props.theme.infoPanel.sectionHeaderToggleBg};
-
-    path {
-      fill: ${(props) =>
-        props.isInfoPanelVisible
-          ? props.theme.infoPanel.sectionHeaderToggleIconActive
-          : props.theme.infoPanel.sectionHeaderToggleIcon};
-    }
-
     margin-bottom: 1px;
   }
 `;
-StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
+StyledInfoPanelToggleColorThemeWrapper.defaultProps = { theme: Base };
 
 const StyledTableHeader = styled.div`
   position: fixed;
@@ -245,10 +227,10 @@ const StyledTableHeaderCell = styled.div`
     padding: 13px 0 0 4px;
 
     display: ${(props) =>
-      props.isActive && props.showIcon ? "block" : "none"};
+    props.isActive && props.showIcon ? "block" : "none"};
     ${(props) =>
-      props.sorted &&
-      css`
+    props.sorted &&
+    css`
         transform: scale(1, -1);
         padding: 14px 0 14px 4px;
       `}
@@ -258,16 +240,16 @@ const StyledTableHeaderCell = styled.div`
       height: 12px;
       path {
         fill: ${(props) =>
-          props.isActive
-            ? props.theme.tableContainer.header.activeIconColor
-            : props.theme.tableContainer.header.iconColor} !important;
+    props.isActive
+      ? props.theme.tableContainer.header.activeIconColor
+      : props.theme.tableContainer.header.iconColor} !important;
       }
     }
 
     &:hover {
       path {
         fill: ${(props) =>
-          props.theme.tableContainer.header.hoverIconColor} !important;
+    props.theme.tableContainer.header.hoverIconColor} !important;
       }
     }
   }
@@ -275,8 +257,8 @@ const StyledTableHeaderCell = styled.div`
   :hover {
     .header-container-text-icon {
       ${(props) =>
-        props.showIcon &&
-        css`
+    props.showIcon &&
+    css`
           display: block;
         `};
     }
@@ -300,13 +282,13 @@ const StyledTableHeaderCell = styled.div`
     display: flex;
     align-items: center;
     color: ${(props) =>
-      props.isActive
-        ? props.theme.tableContainer.header.activeTextColor
-        : props.theme.tableContainer.header.textColor};
+    props.isActive
+      ? props.theme.tableContainer.header.activeTextColor
+      : props.theme.tableContainer.header.textColor};
 
     &:hover {
       color: ${(props) =>
-        props.theme.tableContainer.header.hoverTextColor} !important;
+    props.theme.tableContainer.header.hoverTextColor} !important;
     }
   }
 `;
@@ -330,9 +312,9 @@ const StyledTableRow = styled.div`
 
   .droppable-hover {
     background: ${(props) =>
-      props.dragging
-        ? `${props.theme.dragAndDrop.acceptBackground} !important`
-        : "none"};
+    props.dragging
+      ? `${props.theme.dragAndDrop.acceptBackground} !important`
+      : "none"};
   }
 
   .table-container_row-loader {
@@ -420,7 +402,7 @@ const StyledSettingsIcon = styled(IconButton)`
       svg {
         path {
           fill: ${props.theme.tableContainer.header
-            .settingsIconDisableColor} !important;
+        .settingsIconDisableColor} !important;
         }
       }
     `}
@@ -437,7 +419,7 @@ export {
   StyledTableCell,
   StyledTableSettings,
   StyledTableGroupMenu,
-  StyledInfoPanelToggleWrapper,
+  StyledInfoPanelToggleColorThemeWrapper,
   StyledEmptyTableContainer,
   StyledScrollbar,
   StyledSettingsIcon,

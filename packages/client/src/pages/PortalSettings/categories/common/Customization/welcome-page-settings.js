@@ -10,7 +10,6 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { inject, observer } from "mobx-react";
 import { CustomTitlesTooltip } from "../sub-components/common-tooltips";
-import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
@@ -276,11 +275,7 @@ const WelcomePageSettings = (props) => {
         ""
       );
 
-      const newUrl = combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/portal-settings/customization/general"
-      );
+      const newUrl = "/portal-settings/customization/general";
 
       if (newUrl === currentUrl) return;
 

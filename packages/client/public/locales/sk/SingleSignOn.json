@@ -17,6 +17,7 @@
   "HideAuthPage": "Skryť autorizačnú stránku",
   "LogoutEndpointUrl": "URL koncového bodu s jedným odhlásením IdP",
   "LogoutEndpointUrlTooltip": "Adresa URL použitá na jednotné odhlásenie na strane poskytovateľa služby",
+  "MetadataLoadError": "Súbor s metaúdajmi nebol prenesený",
   "NameIDFormat": "Formát NameId",
   "NewCertificate": "Nový certifikát",
   "OpenCertificate": "Verejný certifikát",

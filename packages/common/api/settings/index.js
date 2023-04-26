@@ -368,6 +368,20 @@ export function sendOwnerChange(ownerId) {
   });
 }
 
+export function ownerChange(ownerId, confirmKey = null) {
+  const data = { ownerId };
+
+  const options = {
+    method: "put",
+    url: `/settings/owner`,
+    data,
+  };
+
+  if (confirmKey) options.headers = { confirm: confirmKey };
+
+  return request(options);
+}
+
 export function getMachineName(confirmKey = null) {
   const options = {
     method: "get",

@@ -41,9 +41,9 @@ SelectedItem.propTypes = {
   text: PropTypes.string,
   /** Sets the 'display: inline-block' property */
   isInline: PropTypes.bool,
-  /** What the selected item will trigger when clicked */
+  /** Sets a callback function that is triggered when the selected item is clicked */
   onClose: PropTypes.func.isRequired,
-  /** Tells when the button should present a disabled state */
+  /** Sets the button to present a disabled state */
   isDisabled: PropTypes.bool,
   /** Accepts class  */
   className: PropTypes.string,
