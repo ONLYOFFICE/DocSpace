@@ -81,10 +81,10 @@ jobs:
           gpg --list-keys
           # rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
           cat << EOF >> ~/.rpmmacros
-          %_signature gpg /
-          %_gpg_path /root/.gnupg /
-          %_gpg_name Elbakyan Shirak /
-          %_gpgbin /usr/bin/gpg /
+          %_signature gpg
+          %_gpg_path /root/.gnupg
+          %_gpg_name Elbakyan Shirak
+          %_gpgbin /usr/bin/gpg
           EOF
           cat ~/.rpmmacros
           
@@ -117,6 +117,7 @@ jobs:
 
       - name: Sign packages and check 
         run: |
+          export GPG_TTY=$(tty)
           rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           
