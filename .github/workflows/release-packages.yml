@@ -123,7 +123,7 @@ jobs:
       - name: Sign packages and check 
         run: |
           export GPG_TTY=$(tty)
-          sudo rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          rpm --define "_gpg_name Elbakyan-Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           
       
