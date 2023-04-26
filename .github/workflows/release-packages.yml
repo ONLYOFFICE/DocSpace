@@ -78,6 +78,7 @@ jobs:
           gpg --export --armor --output public.key el.shirak@internet.com
           cat public.key
           rpm --import public.key
+          rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
           
       - name: Get files from repository.
         uses: actions/checkout@v2
