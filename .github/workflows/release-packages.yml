@@ -123,6 +123,8 @@ jobs:
           cat ~/.rpmmacros
           sudo cp /home/runner/.rpmmacros ~
           which gpg
+          pwd 
+          ls -la
 
           
       - name: Get files from repository.
@@ -151,6 +153,15 @@ jobs:
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+
+      - name: Sign with marketplace 
+        uses: signalwire/sign-rpm-packages-action@v1.0.0
+        with:
+          gpg_file: /home/runner/public.key
+          gpg_name: Elbakyan-Shirak el.shirak@internet.com
+          target_path: /home/runner/work
+          target_folder: docspace
+          rpm_path: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
 
       - name: Sign packages and check 
         run: |
