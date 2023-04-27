@@ -7,8 +7,8 @@
     name: "frameDocSpace",
     type: "desktop", // TODO: ["desktop", "mobile"]
     frameId: "ds-frame",
-    mode: "manager", //TODO: ["manager", "editor", "viewer", "file selector", "folder selector", "user picker"]
-    fileId: null,
+    mode: "manager", //TODO: ["manager", "editor", "viewer","room selector", "file selector", "folder selector", "user picker"]
+    id: null,
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     showHeader: false,
     showTitle: true,
@@ -35,7 +35,7 @@
       "height",
       "name",
       "frameId",
-      "fileId",
+      "id",
       "type",
       "editorType",
       "mode",
@@ -43,6 +43,8 @@
     events: {
       onSelectCallback: null,
       onCloseCallback: null,
+      onAppReady: null,
+      onAppError: null,
     },
   };
 
@@ -95,24 +97,30 @@
       switch (config.mode) {
         case "manager": {
           if (config.filter) {
+            if (config.id) config.filter.folder = config.id;
             const filterString = new URLSearchParams(config.filter).toString();
-            path = `${config.rootPath}filter?${filterString}`;
+            path = `${config.rootPath}${
+              config.id ? config.id + "/" : ""
+            }filter?${filterString}`;
           }
           break;
         }
 
-        case "room selector": {
+        case "room selector":
+        case "file selector":
+        case "folder selector":
+        case "user picker": {
           path = `/selector`;
           break;
         }
 
         case "editor": {
-          path = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}`;
           break;
         }
 
         case "viewer": {
-          path = `/doceditor/?fileId=${config.fileId}&type=${config.editorType}&action=view`;
+          path = `/doceditor/?fileId=${config.id}&type=${config.editorType}&action=view`;
           break;
         }
 
@@ -234,6 +242,8 @@
         window.addEventListener("message", this.#onMessage, false);
         this.#isConnected = true;
       }
+
+      return this.#iframe;
     }
 
     destroyFrame() {
@@ -245,6 +255,8 @@
       if (this.#iframe) {
         window.removeEventListener("message", this.#onMessage, false);
         this.#isConnected = false;
+
+        delete window.DocSpace[this.config.frameId];
 
         this.#iframe.parentNode &&
           this.#iframe.parentNode.replaceChild(target, this.#iframe);
@@ -338,10 +350,11 @@
       return this.#getMethodPromise("createHash", { password, hashSettings });
     }
   }
+  window.DocSpace = window.DocSpace || [];
 
   const config = getConfigFromParams();
 
-  window.DocSpace = new DocSpace(config);
+  window.DocSpace[config.frameId] = new DocSpace(config);
 
-  window.DocSpace.initFrame();
+  window.DocSpace[config.frameId].initFrame();
 })();
