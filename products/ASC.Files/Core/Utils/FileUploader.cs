@@ -298,7 +298,7 @@ public class FileUploader
         uploadSession.TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
         uploadSession.UserId = _authContext.CurrentAccount.ID;
         uploadSession.FolderId = folderId;
-        uploadSession.CultureName = CustomSynchronizationContext.CurrentContext.CurrentUICulture.Name;
+        uploadSession.CultureName = CultureInfo.CurrentUICulture.Name;
         uploadSession.Encrypted = encrypted;
         uploadSession.KeepVersion = keepVersion;
 

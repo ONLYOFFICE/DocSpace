@@ -120,7 +120,7 @@ public class LdapOperationJob : DistributedTaskProgress
 
         OperationType = operationType;
 
-        _culture = CustomSynchronizationContext.CurrentContext.CurrentCulture.Name;
+        _culture = CultureInfo.CurrentCulture.Name;
 
         LDAPSettings = settings;
 
@@ -142,8 +142,8 @@ public class LdapOperationJob : DistributedTaskProgress
         {
             await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
 
-            CustomSynchronizationContext.CurrentContext.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
-            CustomSynchronizationContext.CurrentContext.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
 
             if (LDAPSettings == null)
             {

@@ -31,8 +31,6 @@ namespace ASC.Core;
 public class CustomSynchronizationContext
 {
     public IPrincipal CurrentPrincipal { get; set; }
-    public CultureInfo CurrentCulture { get; set; }
-    public CultureInfo CurrentUICulture { get; set; }
 
     private readonly static AsyncLocal<CustomSynchronizationContext> _context = new AsyncLocal<CustomSynchronizationContext>();
     public static CustomSynchronizationContext CurrentContext => _context.Value;
@@ -41,11 +39,7 @@ public class CustomSynchronizationContext
     {
         if (CurrentContext == null)
         {
-            var context = new CustomSynchronizationContext()
-            {
-                CurrentCulture = Thread.CurrentThread.CurrentCulture,
-                CurrentUICulture = Thread.CurrentThread.CurrentUICulture,
-            };
+            var context = new CustomSynchronizationContext();
             _context.Value = context;
         }
     }

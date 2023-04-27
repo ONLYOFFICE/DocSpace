@@ -1405,7 +1405,7 @@ public class EntryManager
             {
                 var storeTemplate = await _globalStore.GetStoreTemplateAsync();
 
-                var path = FileConstant.NewDocPath + CustomSynchronizationContext.CurrentContext.CurrentCulture + "/";
+                var path = FileConstant.NewDocPath + CultureInfo.CurrentCulture + "/";
                 if (!await storeTemplate.IsDirectoryAsync(path))
                 {
                     path = FileConstant.NewDocPath + "en-US/";

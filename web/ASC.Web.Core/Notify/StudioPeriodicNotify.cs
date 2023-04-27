@@ -324,8 +324,8 @@ public class StudioPeriodicNotify
                 await foreach (var u in asyncUsers.WhereAwait(async u => paymentMessage || await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                 {
                     var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
-                    CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
-                    CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
+                    CultureInfo.CurrentCulture = culture;
+                    CultureInfo.CurrentUICulture = culture;
                     var rquota = await _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
                     await client.SendNoticeToAsync(
@@ -439,8 +439,8 @@ public class StudioPeriodicNotify
                 await foreach (var u in users.ToAsyncEnumerable().WhereAwait(async u => paymentMessage || await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                 {
                     var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
-                    CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
-                    CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
+                    CultureInfo.CurrentCulture = culture;
+                    CultureInfo.CurrentUICulture = culture;
 
                     var rquota = await _tenantExtra.GetRightQuota() ?? TenantQuota.Default;
 
@@ -503,8 +503,8 @@ public class StudioPeriodicNotify
                     await foreach (var u in users.ToAsyncEnumerable().WhereAwait(async u => await _studioNotifyHelper.IsSubscribedToNotifyAsync(u, Actions.PeriodicNotify)))
                     {
                         var culture = string.IsNullOrEmpty(u.CultureName) ? tenant.GetCulture() : u.GetCulture();
-                        CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
-                        CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
+                        CultureInfo.CurrentCulture = culture;
+                        CultureInfo.CurrentUICulture = culture;
 
                         await client.SendNoticeToAsync(
                                 await _userManager.IsDocSpaceAdminAsync(u) ? Actions.OpensourceAdminDocsTipsV1 : Actions.OpensourceUserDocsTipsV1,
@@ -570,8 +570,8 @@ public class StudioPeriodicNotify
                         }
                     }
 
-                    CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
-                    CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
+                    CultureInfo.CurrentCulture = culture;
+                    CultureInfo.CurrentUICulture = culture;
 
                     var dayAfterRegister = (int)scheduleDate.Date.Subtract(user.CreateDate.Date).TotalDays;
 

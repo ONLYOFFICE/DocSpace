@@ -162,8 +162,8 @@ public class StudioWhatsNewNotify
 
                 var culture = string.IsNullOrEmpty(user.CultureName) ? tenant.GetCulture() : user.GetCulture();
 
-                CustomSynchronizationContext.CurrentContext.CurrentCulture = culture;
-                CustomSynchronizationContext.CurrentContext.CurrentUICulture = culture;
+                CultureInfo.CurrentCulture = culture;
+                CultureInfo.CurrentUICulture = culture;
 
                 var auditEvents = new List<ActivityInfo>();
 

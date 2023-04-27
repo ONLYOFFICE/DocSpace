@@ -47,7 +47,7 @@ public abstract class FileOperation : DistributedTaskProgress
     protected FileOperation(IServiceProvider serviceProvider)
     {
         _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal;
-        _culture = CustomSynchronizationContext.CurrentContext.CurrentCulture.Name;
+        _culture = CultureInfo.CurrentCulture.Name;
 
         this[Owner] = ((IAccount)(_principal ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal).Identity).ID.ToString();
         this[Src] = _props.ContainsValue(Src) ? this[Src] : "";
@@ -225,8 +225,8 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
             tenantManager.SetCurrentTenant(CurrentTenant);
 
             CustomSynchronizationContext.CurrentContext.CurrentPrincipal = _principal;
-            CustomSynchronizationContext.CurrentContext.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
-            CustomSynchronizationContext.CurrentContext.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
 
             FolderDao = daoFactory.GetFolderDao<TId>();
             FileDao = daoFactory.GetFileDao<TId>();
