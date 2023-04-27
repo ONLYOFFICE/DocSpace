@@ -88,6 +88,7 @@ public class FileStorageService //: IFileStorageService
     private readonly StudioNotifyService _studioNotifyService;
     private readonly TenantQuotaFeatureStatHelper _tenantQuotaFeatureStatHelper;
     private readonly QuotaSocketManager _quotaSocketManager;
+    private readonly ExternalShare _externalShare;
 
     public FileStorageService(
         Global global,
@@ -145,7 +146,8 @@ public class FileStorageService //: IFileStorageService
         InvitationLinkHelper invitationLinkHelper,
         StudioNotifyService studioNotifyService,
         TenantQuotaFeatureStatHelper tenantQuotaFeatureStatHelper,
-        QuotaSocketManager quotaSocketManager)
+        QuotaSocketManager quotaSocketManager,
+        ExternalShare externalShare)
     {
         _global = global;
         _globalStore = globalStore;
@@ -203,6 +205,7 @@ public class FileStorageService //: IFileStorageService
         _studioNotifyService = studioNotifyService;
         _tenantQuotaFeatureStatHelper = tenantQuotaFeatureStatHelper;
         _quotaSocketManager = quotaSocketManager;
+        _externalShare = externalShare;
     }
 
     public async Task<Folder<T>> GetFolderAsync<T>(T folderId)
@@ -1654,7 +1657,8 @@ public class FileStorageService //: IFileStorageService
             return GetTasksStatuses();
         }
 
-        return _fileOperationsManager.MarkAsRead(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersId, filesId, GetHttpHeaders());
+        return _fileOperationsManager.MarkAsRead(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersId, filesId, GetHttpHeaders(),
+            _externalShare.GetCurrentShareData());
     }
 
     public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAsync()
@@ -1976,15 +1980,11 @@ public class FileStorageService //: IFileStorageService
 
     public List<FileOperationResult> GetTasksStatuses()
     {
-        ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-
         return _fileOperationsManager.GetOperationResults(_authContext.CurrentAccount.ID);
     }
 
     public List<FileOperationResult> TerminateTasks()
     {
-        ErrorIf(!_authContext.IsAuthenticated, FilesCommonResource.ErrorMassage_SecurityException);
-
         return _fileOperationsManager.CancelOperations(_authContext.CurrentAccount.ID);
     }
 
@@ -1992,7 +1992,7 @@ public class FileStorageService //: IFileStorageService
     {
         ErrorIf(folders.Count == 0 && files.Count == 0, FilesCommonResource.ErrorMassage_BadRequest);
 
-        return _fileOperationsManager.Download(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders());
+        return _fileOperationsManager.Download(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, GetHttpHeaders(), _externalShare.GetCurrentShareData());
     }
 
     public async Task<(List<object>, List<object>)> MoveOrCopyFilesCheckAsync<T1>(List<JsonElement> filesId, List<JsonElement> foldersId, T1 destFolderId)
@@ -2097,7 +2097,8 @@ public class FileStorageService //: IFileStorageService
         List<FileOperationResult> result;
         if (foldersId.Count > 0 || filesId.Count > 0)
         {
-            result = _fileOperationsManager.MoveOrCopy(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, !deleteAfter, GetHttpHeaders());
+            result = _fileOperationsManager.MoveOrCopy(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersId, filesId, destFolderId, ic, resolve, 
+                !deleteAfter, GetHttpHeaders(), _externalShare.GetCurrentShareData());
         }
         else
         {
@@ -2109,21 +2110,25 @@ public class FileStorageService //: IFileStorageService
 
     public List<FileOperationResult> DeleteFile<T>(string action, T fileId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>(), new List<T>() { fileId }, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>(), new List<T>() { fileId }, ignoreException, 
+            !deleteAfter, immediately, GetHttpHeaders(), _externalShare.GetCurrentShareData());
     }
     public List<FileOperationResult> DeleteFolder<T>(string action, T folderId, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>() { folderId }, new List<T>(), ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), new List<T>() { folderId }, new List<T>(), ignoreException, 
+            !deleteAfter, immediately, GetHttpHeaders(), _externalShare.GetCurrentShareData());
     }
 
     public List<FileOperationResult> DeleteItems(string action, List<JsonElement> files, List<JsonElement> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, 
+            GetHttpHeaders(), _externalShare.GetCurrentShareData());
     }
 
     public List<FileOperationResult> DeleteItems<T>(string action, List<T> files, List<T> folders, bool ignoreException = false, bool deleteAfter = false, bool immediately = false)
     {
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, GetHttpHeaders());
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), folders, files, ignoreException, !deleteAfter, immediately, 
+            GetHttpHeaders(), _externalShare.GetCurrentShareData());
     }
 
     public async Task<List<FileOperationResult>> EmptyTrashAsync()
@@ -2134,7 +2139,8 @@ public class FileStorageService //: IFileStorageService
         var foldersIdTask = await folderDao.GetFoldersAsync(trashId).Select(f => f.Id).ToListAsync();
         var filesIdTask = await fileDao.GetFilesAsync(trashId).ToListAsync();
 
-        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, false, GetHttpHeaders(), true);
+        return _fileOperationsManager.Delete(_authContext.CurrentAccount.ID, _tenantManager.GetCurrentTenant(), foldersIdTask, filesIdTask, false, true, 
+            false, GetHttpHeaders(), _externalShare.GetCurrentShareData(), true);
     }
 
     public async IAsyncEnumerable<FileOperationResult> CheckConversionAsync<T>(List<CheckConversionRequestDto<T>> filesInfoJSON, bool sync = false)
@@ -3367,8 +3373,7 @@ public class FileStorageService //: IFileStorageService
 
         var options = new FileShareOptions
         {
-            Title = title, 
-            Password = password,
+            Title = title,
             Disabled = disabled,
             DenyDownload = denyDownload
         };
@@ -3380,7 +3385,7 @@ public class FileStorageService //: IFileStorageService
 
         if (!string.IsNullOrEmpty(password))
         {
-            options.Password = password;
+            options.Password = _externalShare.CreatePasswordKey(password);
         }
 
         var aces = new List<AceWrapper>
