@@ -1,0 +1,8 @@
+{
+  "ErrorUserNotFound": "O utilizadore não pôde ser encontrado",
+  "ErrorExpiredActivationLink": "Link expirou",
+  "ErrorInvalidActivationLink": "Link de ativação inválido",
+  "ErrorConfirmURLError": "E-mail inválido ou link expirado",
+  "LoginWithAccountNotFound": "Não é possível localizar a conta associada de terceiros",
+  "InvalidUsernameOrPassword": "Nome de utilizador ou senha inválidos."
+}
