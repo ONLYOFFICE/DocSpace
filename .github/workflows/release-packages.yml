@@ -58,6 +58,7 @@ jobs:
           sudo dpkg -i packages-microsoft-prod.deb
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make
+          sudo apt-get install dpkg-sig
           sudo npm install -g json
           echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
           echo "VERSION=$(echo "${{ github.ref }}" | grep  -oP '\d+\.\d+\.\d+' || echo "1.0.0")" >> $GITHUB_OUTPUT
@@ -72,8 +73,10 @@ jobs:
       
       - name: Sign packages and check 
         run: |
-          keyID=$(gpg --list-keys --keyid-format short | awk '/^pub/ {print $2}' | cut -d'/' -f2)
-          dpkg-sig -k $keyID --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+          keyID="$(gpg --list-keys --keyid-format short | awk '/^pub/ {print $2}' | cut -d'/' -f2)"
+          echo "keyID"
+          
+          dpkg-sig -k "$keyID" --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
 
         
       - uses: ncipollo/release-action@v1
@@ -112,7 +115,7 @@ jobs:
           # rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
           cat << EOF >> ~/.rpmmacros
           %_signature gpg
-          %_gpg_path /home/runner/.gnupg
+          %_gpg_path /root/.gnupg
           %_gpg_name Elbakyan-Shirak
           %__gpg /usr/bin/gpg
           EOF
