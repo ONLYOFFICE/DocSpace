@@ -169,6 +169,7 @@ public class FileSecurity : IFileSecurity
     private readonly FileUtility _fileUtility;
     private readonly StudioNotifyHelper _studioNotifyHelper;
     private readonly BadgesSettingsHelper _badgesSettingsHelper;
+    private readonly ExternalShare _externalShare;
 
     public FileSecurity(
         IDaoFactory daoFactory,
@@ -180,7 +181,8 @@ public class FileSecurity : IFileSecurity
         FileSecurityCommon fileSecurityCommon,
         FileUtility fileUtility,
         StudioNotifyHelper studioNotifyHelper,
-        BadgesSettingsHelper badgesSettingsHelper)
+        BadgesSettingsHelper badgesSettingsHelper, 
+        ExternalShare externalShare)
     {
         _daoFactory = daoFactory;
         _userManager = userManager;
@@ -192,6 +194,7 @@ public class FileSecurity : IFileSecurity
         _fileUtility = fileUtility;
         _studioNotifyHelper = studioNotifyHelper;
         _badgesSettingsHelper = badgesSettingsHelper;
+        _externalShare = externalShare;
     }
 
     public IAsyncEnumerable<Tuple<FileEntry<T>, bool>> CanReadAsync<T>(IAsyncEnumerable<FileEntry<T>> entries, Guid userId)
@@ -271,7 +274,7 @@ public class FileSecurity : IFileSecurity
 
     public async Task<bool> CanDownloadAsync<T>(FileEntry<T> entry, Guid userId)
     {
-        if (!await CanReadAsync(entry, userId))
+        if (!await CanAsync(entry, userId, FilesSecurityActions.Download))
         {
             return false;
         }
@@ -629,9 +632,9 @@ public class FileSecurity : IFileSecurity
 
     private async Task<bool> CanAsync<T>(FileEntry<T> entry, Guid userId, FilesSecurityActions action, IEnumerable<FileShareRecord> shares = null)
     {
-        if (entry.Security != null && entry.Security.ContainsKey(action))
+        if (entry.Security != null && entry.Security.TryGetValue(action, out var result))
         {
-            return entry.Security[action];
+            return result;
         }
 
         var user = _userManager.GetUsers(userId);
@@ -709,11 +712,11 @@ public class FileSecurity : IFileSecurity
 
     private async Task<bool> FilterEntry<T>(FileEntry<T> e, FilesSecurityActions action, Guid userId, IEnumerable<FileShareRecord> shares, bool isOutsider, bool isUser, bool isAuthenticated, bool isDocSpaceAdmin, bool isCollaborator)
     {
-        if (!isAuthenticated && userId != FileConstant.ShareLinkId)
+        if (!isAuthenticated && action is not (FilesSecurityActions.Read or FilesSecurityActions.Download))
         {
             return false;
         }
-
+        
         var file = e as File<T>;
         var folder = e as Folder<T>;
         var isRoom = folder != null && DocSpaceHelper.IsRoom(folder.FolderType);
@@ -912,6 +915,13 @@ public class FileSecurity : IFileSecurity
                         .FirstOrDefault();
         }
 
+        if (ace is { SubjectType: SubjectType.ExternalLink } && 
+            ace.Subject != userId && 
+            _externalShare.GetStatus(ace, null) != Status.Ok)
+        {
+            return false;
+        }
+
         var defaultShare = userId == FileConstant.ShareLinkId
                 ? FileShare.Restrict
                 : e.RootFolderType == FolderType.VirtualRooms
@@ -922,7 +932,7 @@ public class FileSecurity : IFileSecurity
                 ? DefaultPrivacyShare
                 : DefaultCommonShare;
 
-        e.Access = ace != null ? ace.Share : defaultShare;
+        e.Access = ace?.Share ?? defaultShare;
 
         e.Access = e.RootFolderType == FolderType.ThirdpartyBackup ? FileShare.Restrict : e.Access;
 
@@ -933,8 +943,7 @@ public class FileSecurity : IFileSecurity
             case FilesSecurityActions.Mute:
                 return e.Access != FileShare.Restrict;
             case FilesSecurityActions.Comment:
-                if (e.Access == FileShare.Comment ||
-                    e.Access == FileShare.Review ||
+                if (e.Access is FileShare.Comment or FileShare.Review ||
                     e.Access == FileShare.CustomFilter ||
                     e.Access == FileShare.ReadWrite ||
                     e.Access == FileShare.RoomAdmin ||
@@ -1070,6 +1079,12 @@ public class FileSecurity : IFileSecurity
                 if ((e.Access == FileShare.RoomAdmin || 
                      e.Access == FileShare.Collaborator && e.CreateBy == _authContext.CurrentAccount.ID) 
                     && !isRoom)
+                {
+                    return true;
+                }
+                break;
+            case FilesSecurityActions.Download:
+                if (e.Access != FileShare.Restrict && ace?.Options is not { DenyDownload: true })
                 {
                     return true;
                 }
@@ -1596,6 +1611,14 @@ public class FileSecurity : IFileSecurity
         // User, Departments, admin, everyone
 
         var result = new List<Guid> { userId };
+
+        var success = _externalShare.TryGetLinkId(out var linkId);
+
+        if (success)
+        {
+            result.Add(linkId);
+        }
+
         if (userId == FileConstant.ShareLinkId)
         {
             return result;
@@ -1724,5 +1747,6 @@ public class FileSecurity : IFileSecurity
         Mute,
         EditAccess,
         Duplicate,
+        Download,
     }
 }
