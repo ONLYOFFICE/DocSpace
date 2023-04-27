@@ -152,22 +152,31 @@ jobs:
 
       - name: Sign packages and check 
         run: |
+          cp /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm ~ 
+          ls -la ~
+          echo "//////////////////////////////////////"
+          
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
           pwd
-          sudo chmod 755 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
-          sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
-          sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          
+          sudo chmod -R 777 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
+          sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
+          sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
           echo "........................................"
+          
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
           echo "........................................"
+          
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS
           echo "........................................"
+          
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm
           echo "........................................"
+          
           export GPG_TTY=$(tty)
           # GPG_TTY=$TTY sudo rpm --addsign
-          cp /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm ~ 
+          
           rpm --define "_gpg_name Elbakyan-Shirak" --addsign ~/*.rpm
           rpm --checksig ~/*.rpm
           
