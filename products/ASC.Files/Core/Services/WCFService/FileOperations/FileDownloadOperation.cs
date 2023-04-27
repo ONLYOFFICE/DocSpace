@@ -31,8 +31,9 @@ internal class FileDownloadOperationData<T> : FileOperationData<T>
     public Dictionary<T, string> FilesDownload { get; }
     public IDictionary<string, StringValues> Headers { get; }
 
-    public FileDownloadOperationData(Dictionary<T, string> folders, Dictionary<T, string> files, Tenant tenant, IDictionary<string, StringValues> headers, bool holdResult = true)
-        : base(folders.Select(f => f.Key).ToList(), files.Select(f => f.Key).ToList(), tenant, holdResult)
+    public FileDownloadOperationData(Dictionary<T, string> folders, Dictionary<T, string> files, Tenant tenant, IDictionary<string, StringValues> headers, 
+        ExternalShareData externalShareData, bool holdResult = true)
+        : base(folders.Select(f => f.Key).ToList(), files.Select(f => f.Key).ToList(), tenant, externalShareData, holdResult)
     {
         FilesDownload = files;
         Headers = headers;
@@ -59,6 +60,7 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
         var tenantManager = scope.ServiceProvider.GetRequiredService<TenantManager>();
         var instanceCrypto = scope.ServiceProvider.GetRequiredService<InstanceCrypto>();
         var daoFactory = scope.ServiceProvider.GetRequiredService<IDaoFactory>();
+        var externalShare = scope.ServiceProvider.GetRequiredService<ExternalShare>();
         var scopeClass = scope.ServiceProvider.GetService<FileDownloadOperationScope>();
         var (globalStore, filesLinkUtility, _, _, _, log) = scopeClass;
         var stream = _tempStream.Create();
@@ -99,7 +101,24 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
             }
 
             var store = globalStore.GetStore();
-            var path = string.Format(@"{0}\{1}", ((IAccount)_principal.Identity).ID, fileName);
+            string path;
+            string sessionKey = null;
+
+            var isAuthenticated = _principal.Identity is IAccount;
+
+            if (isAuthenticated)
+            {
+                path = string.Format(@"{0}\{1}", ((IAccount)_principal.Identity).ID, fileName);
+            }
+            else if (externalShare.TryGetSessionId(out var id) && externalShare.TryGetLinkId(out var linkId))
+            {
+                path = string.Format(@"{0}\{1}\{2}", linkId, id, fileName);
+                sessionKey = externalShare.CreateDownloadSessionKey();
+            }
+            else
+            {
+                throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
+            }
 
             if (await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
             {
@@ -112,13 +131,17 @@ class FileDownloadOperation : ComposeFileOperation<FileDownloadOperationData<str
                 stream,
                 MimeMapping.GetMimeMapping(path),
                 "attachment; filename=\"" + Uri.EscapeDataString(fileName) + "\"");
-
+            
             this[Res] = $"{filesLinkUtility.FileHandlerPath}?{FilesLinkUtility.Action}=bulk&filename={Uri.EscapeDataString(instanceCrypto.Encrypt(fileName))}";
+
+            if (!isAuthenticated)
+            {
+                this[Res] += $"&session={HttpUtility.UrlEncode(sessionKey)}";
+            }
         }
 
         this[Finish] = true;
         PublishChanges();
-
     }
 
     public override void PublishChanges(DistributedTask task)
