@@ -2,11 +2,9 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
-import Loaders from "@docspace/common/components/Loaders";
-
 import { Consumer } from "@docspace/components/utils/context";
 
-import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
+import withLoader from "SRC_DIR/HOCs/withLoader";
 
 import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
@@ -69,6 +67,6 @@ export default inject(({ peopleStore }) => {
   return { viewAs, setSelection, setBufferSelection };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(
-    observer(SectionBodyContent)
+    withLoader(observer(SectionBodyContent))(<></>)
   )
 );

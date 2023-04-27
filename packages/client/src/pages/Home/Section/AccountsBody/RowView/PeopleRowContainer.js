@@ -42,7 +42,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected + .row-wrapper:not(.row-selected) {
     .user-row {
       border-top: ${(props) =>
-    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
       ${marginStyles}
@@ -52,7 +52,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-wrapper:not(.row-selected) + .row-selected {
     .user-row {
       border-top: ${(props) =>
-    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
       ${marginStyles}
@@ -68,7 +68,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected:last-child {
     .user-row {
       border-bottom: ${(props) =>
-    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       padding-bottom: 1px;
 
       ${marginStyles}
@@ -80,7 +80,7 @@ const StyledRowContainer = styled(RowContainer)`
   .row-selected:first-child {
     .user-row {
       border-top: ${(props) =>
-    `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
+        `1px ${props.theme.filesSection.tableView.row.borderColor} solid`};
       margin-top: -3px;
 
       ${marginStyles}
@@ -103,7 +103,6 @@ const PeopleRowContainer = ({
   isLoading,
 }) => {
   useEffect(() => {
-
     const width = window.innerWidth;
 
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -120,8 +119,7 @@ const PeopleRowContainer = ({
     }
   }, [sectionWidth]);
 
-
-  if (isLoading) return <></>
+  if (isLoading) return <></>;
 
   return peopleList.length > 0 ? (
     <StyledRowContainer
@@ -147,15 +145,15 @@ const PeopleRowContainer = ({
   );
 };
 
-export default inject(({ peopleStore, auth }) => {
-  const { usersStore, filterStore, viewAs, setViewAs, loadingStore } = peopleStore;
+export default inject(({ peopleStore, auth, filesStore }) => {
+  const { usersStore, filterStore, viewAs, setViewAs } = peopleStore;
   const { theme, withPaging } = auth.settingsStore;
   const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
   const { filterTotal } = filterStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
-  const { isLoading } = loadingStore
+  const { isLoading } = filesStore;
 
   return {
     peopleList,

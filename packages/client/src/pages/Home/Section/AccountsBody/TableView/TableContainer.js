@@ -83,7 +83,7 @@ const StyledTableContainer = styled(TableContainer)`
       .table-container_user-name-cell,
       .table-container_row-context-menu-wrapper {
         border-bottom: ${(props) =>
-    `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+          `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
   }
@@ -113,7 +113,6 @@ const Table = ({
   const ref = useRef(null);
   const [hideColumns, setHideColumns] = React.useState(false);
   useEffect(() => {
-
     const width = window.innerWidth;
 
     if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
@@ -133,7 +132,7 @@ const Table = ({
   const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
   const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
 
-  if (isLoading) return <></>
+  if (isLoading) return <></>;
 
   return peopleList.length > 0 ? (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
@@ -175,41 +174,37 @@ const Table = ({
   );
 };
 
-export default inject(({ peopleStore, auth, accessRightsStore }) => {
-  const {
-    usersStore,
-    filterStore,
-    viewAs,
-    setViewAs,
-    changeType,
-    loadingStore
-  } = peopleStore;
-  const { theme, withPaging } = auth.settingsStore;
-  const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
-  const { filterTotal } = filterStore;
+export default inject(
+  ({ peopleStore, auth, accessRightsStore, filesStore }) => {
+    const { usersStore, filterStore, viewAs, setViewAs, changeType } =
+      peopleStore;
+    const { theme, withPaging } = auth.settingsStore;
+    const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
+    const { filterTotal } = filterStore;
 
-  const { isVisible: infoPanelVisible } = auth.infoPanelStore;
-  const { isAdmin, isOwner, id: userId } = auth.userStore.user;
+    const { isVisible: infoPanelVisible } = auth.infoPanelStore;
+    const { isAdmin, isOwner, id: userId } = auth.userStore.user;
 
-  const { canChangeUserType } = accessRightsStore;
+    const { canChangeUserType } = accessRightsStore;
 
-  const { isLoading } = loadingStore
+    const { isLoading } = filesStore;
 
-  return {
-    peopleList,
-    viewAs,
-    setViewAs,
-    theme,
-    isAdmin,
-    isOwner,
-    changeType,
-    userId,
-    infoPanelVisible,
-    withPaging,
-    isLoading,
-    fetchMoreAccounts,
-    hasMoreAccounts,
-    filterTotal,
-    canChangeUserType,
-  };
-})(observer(Table));
+    return {
+      peopleList,
+      viewAs,
+      setViewAs,
+      theme,
+      isAdmin,
+      isOwner,
+      changeType,
+      userId,
+      infoPanelVisible,
+      withPaging,
+      isLoading,
+      fetchMoreAccounts,
+      hasMoreAccounts,
+      filterTotal,
+      canChangeUserType,
+    };
+  }
+)(observer(Table));
