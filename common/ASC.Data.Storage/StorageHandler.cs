@@ -56,10 +56,15 @@ public class StorageHandler
         var auth = context.Request.Query[Constants.QueryAuth].FirstOrDefault() ?? "";
         var storageExpire = storage.GetExpire(_domain);
 
-        if (_checkAuth && !securityContext.IsAuthenticated && String.IsNullOrEmpty(auth))
+        if (_checkAuth && !securityContext.IsAuthenticated)
         {
-            context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-            return Task.CompletedTask;
+            var secureKey = context.Request.Query[Constants.SecureKeyHeader].FirstOrDefault() ?? string.Empty;
+
+            if (!SecureHelper.CheckSecureKeyHeader(secureKey, path, emailValidationKeyProvider))
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return Task.CompletedTask;
+            }
         }
 
         if (storageExpire != TimeSpan.Zero && storageExpire != TimeSpan.MinValue && storageExpire != TimeSpan.MaxValue || !string.IsNullOrEmpty(auth))
