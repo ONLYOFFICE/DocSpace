@@ -37,7 +37,9 @@ jobs:
           echo "%echo Done!" >> gen-key-instruction
           gpg --batch --gen-key gen-key-instruction
           gpg --list-keys
-          gpg --import el.shirak@internet.com
+          ls -la ~/.gnupg/private-keys-v1.d/
+          ls -la ~/.gnupg
+          gpg --import ~/.gnupg/private-keys-v1.d/*.key
           
           
       - name: Get files from repository
