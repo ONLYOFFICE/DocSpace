@@ -117,7 +117,6 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {/* //TODO: Uncomment when third-party storages will be stable */}
       {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
