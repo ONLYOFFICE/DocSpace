@@ -319,55 +319,55 @@ Selector.propTypes = {
 
   /** Selector header text */
   headerLabel: PropTypes.string,
-  /** What the header arrow will trigger when clicked */
+  /** Sets a callback function that is triggered when the header arrow is clicked */
   onBackClick: PropTypes.func,
 
   /** Placeholder for search input */
   searchPlaceholder: PropTypes.string,
   /** Start value for search input */
   searchValue: PropTypes.string,
-  /** What the search input will trigger when user stopped typing */
+  /** Sets a callback function that is triggered when the user stops typing */
   onSearch: PropTypes.func,
-  /** What the clear icon of search input will trigger when clicked */
+  /** Sets a callback function that is triggered when the clear icon of the search input is clicked  */
   onClearSearch: PropTypes.func,
 
-  /** Displaying items */
+  /** Displays items */
   items: PropTypes.array,
-  /** What the item will trigger when clicked */
+  /** Sets a callback function that is triggered when the item is clicked */
   onSelect: PropTypes.func,
 
-  /** Allows you to select multiple objects */
+  /** Allows selecting multiple objects */
   isMultiSelect: PropTypes.bool,
-  /** Tells when the items should present a checked state */
+  /** Sets the items to present a checked state */
   selectedItems: PropTypes.array,
-  /** Accept button text */
+  /** Accepts button text */
   acceptButtonLabel: PropTypes.string,
-  /** What the accept button will trigger when clicked */
+  /** Sets a callback function that is triggered when the accept button is clicked */
   onAccept: PropTypes.func,
 
-  /** Add option for select all items */
+  /** Adds an option for selecting all items */
   withSelectAll: PropTypes.bool,
-  /** Text for select all component */
+  /** Text for selecting all components */
   selectAllLabel: PropTypes.string,
-  /** Icon for select all component */
+  /** Icon for selecting all components */
   selectAllIcon: PropTypes.string,
-  /** What the select all will trigger when clicked */
+  /** Sets a callback function that is triggered when SelectAll is clicked */
   onSelectAll: PropTypes.func,
 
-  /** Add combobox for displaying access rights at footer */
+  /** Adds combobox for displaying access rights at the footer */
   withAccessRights: PropTypes.bool,
   /** Access rights items */
   accessRights: PropTypes.array,
   /** Selected access rights items */
   selectedAccessRight: PropTypes.object,
-  /** What the access right will trigger when changed */
+  /** Sets a callback function that is triggered when the access rights are changed */
   onAccessRightsChange: PropTypes.func,
 
-  /** Add cancel button at footer */
+  /** Adds a cancel button at the footer */
   withCancelButton: PropTypes.bool,
-  /** Displaying text at cancel button */
+  /** Displays text in the cancel button */
   cancelButtonLabel: PropTypes.string,
-  /** What the cancel button will trigger when clicked */
+  /** Sets a callback function that is triggered when the cancel button is clicked */
   onCancel: PropTypes.func,
 
   /** Image for default empty screen */
@@ -384,16 +384,16 @@ Selector.propTypes = {
   /** Description for search empty screen */
   searchEmptyScreenDescription: PropTypes.string,
 
-  /** Count items for infinity scroll */
+  /** Counts items for infinity scroll */
   totalItems: PropTypes.number,
-  /** Has next page for infinity scroll */
+  /** Sets the next page for the infinity scroll */
   hasNextPage: PropTypes.bool,
-  /** Tells when next page already loading */
+  /** Notifies that the next page is loading */
   isNextPageLoading: PropTypes.bool,
-  /** Function for load next page */
+  /** Sets a callback function that is invoked to load the next page */
   loadNextPage: PropTypes.func,
 
-  /** Set loading state for select */
+  /** Sets loading state for select */
   isLoading: PropTypes.bool,
   /** Loader element for search block */
   searchLoader: PropTypes.node,

@@ -14,7 +14,7 @@ const Heading = ({ level, color, className, ...rest }) => {
 };
 
 Heading.propTypes = {
-  /** 	The heading level. It corresponds to the number after the 'H' for the DOM tag. Set the level for semantic accuracy and accessibility. */
+  /** 	The heading level. It corresponds to the number after the 'H' for the DOM tag. Sets the level for semantic accuracy and accessibility. */
   level: PropTypes.oneOf([1, 2, 3, 4, 5, 6]),
   /** Specifies the headline color */
   color: PropTypes.string,

@@ -159,7 +159,7 @@ const Tile = (props) => {
             className="expandButton"
             directionX="right"
             getData={getOptions}
-            isNew={true}
+            displayType="toggle"
             onClick={onContextMenu}
             title={title}
           />

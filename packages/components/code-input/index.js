@@ -95,11 +95,17 @@ const CodeInput = (props) => {
 };
 
 CodeInput.propTypes = {
+  /** Sets a callback function that is triggered when the enter is pressed */
   onSubmit: PropTypes.func.isRequired,
+  /** Sets a callback function that is triggered on the onChange event */
   handleChange: PropTypes.func,
+  /** Sets the code input to present a disabled state */
   isDisabled: PropTypes.bool,
+  /** Accepts class */
   className: PropTypes.string,
+  /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 
