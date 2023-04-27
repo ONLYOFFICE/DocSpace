@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { observer, inject } from "mobx-react";
+import { useNavigate } from "react-router-dom";
 import Loader from "@docspace/components/loader";
 import axios from "axios";
 import { combineUrl } from "@docspace/common/utils";
@@ -15,7 +16,7 @@ export default function withLoader(WrappedComponent) {
       passwordSettings,
       getSettings,
       getPortalPasswordSettings,
-      history,
+
       getAuthProviders,
       getCapabilities,
     } = props;
@@ -23,6 +24,8 @@ export default function withLoader(WrappedComponent) {
 
     const type = linkData ? linkData.type : null;
     const confirmHeader = linkData ? linkData.confirmHeader : null;
+
+    const navigate = useNavigate();
 
     useEffect(() => {
       if (
@@ -46,7 +49,7 @@ export default function withLoader(WrappedComponent) {
             }
 
             console.error(errorMessage);
-            history.push(
+            navigate(
               combineUrl(
                 window.DocSpaceConfig?.proxy?.url,
                 `/login/error?message=${errorMessage}`
@@ -70,7 +73,7 @@ export default function withLoader(WrappedComponent) {
             errorMessage = error;
           }
           console.error(errorMessage);
-          history.push(
+          navigate(
             combineUrl(
               window.DocSpaceConfig?.proxy?.url,
               `/login/error?message=${errorMessage}`
@@ -121,11 +124,8 @@ export default function withLoader(WrappedComponent) {
 
   return inject(({ auth, confirm }) => {
     const { isLoaded, isLoading } = confirm;
-    const {
-      passwordSettings,
-      getSettings,
-      getPortalPasswordSettings,
-    } = auth.settingsStore;
+    const { passwordSettings, getSettings, getPortalPasswordSettings } =
+      auth.settingsStore;
     const { getAuthProviders, getCapabilities } = auth;
 
     return {

@@ -1,13 +1,10 @@
-﻿import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
+﻿import CrossReactSvgUrl from "PUBLIC_DIR/images/cross.react.svg?url";
 import React, { useState, useEffect } from "react";
-import { inject, observer } from "mobx-react";
+import { inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { isMobile as isMobileRDD } from "react-device-detect";
 
 import IconButton from "@docspace/components/icon-button";
 import Text from "@docspace/components/text";
-import Loaders from "@docspace/common/components/Loaders";
-import withLoader from "@docspace/client/src/HOCs/withLoader";
 import Submenu from "@docspace/components/submenu";
 import {
   isDesktop as isDesktopUtils,
@@ -15,10 +12,8 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-
 import { StyledInfoPanelHeader } from "./styles/common";
-import { FolderType } from "@docspace/common/constants";
+import { RoomsType } from "@docspace/common/constants";
 
 const InfoPanelHeaderContent = (props) => {
   const {
@@ -33,8 +28,7 @@ const InfoPanelHeaderContent = (props) => {
     getIsAccounts,
     getIsTrash,
     isRootFolder,
-    // rootFolderType,
-    // selectionParentRoom,
+    isPublicRoom,
   } = props;
 
   const [isTablet, setIsTablet] = useState(false);
@@ -69,12 +63,10 @@ const InfoPanelHeaderContent = (props) => {
   const setHistory = () => setView("info_history");
   const setDetails = () => setView("info_details");
 
-  //const isArchiveRoot = rootFolderType === FolderType.Archive;
-
   const submenuData = [
     {
       id: "info_members",
-      name: t("Common:Members"),
+      name: isPublicRoom ? t("Common:LinksAndMembers") : t("Common:Members"),
       onClick: setMembers,
       content: null,
     },
@@ -91,9 +83,6 @@ const InfoPanelHeaderContent = (props) => {
       content: null,
     },
   ];
-  // const selectionRoomRights = selectionParentRoom
-  //   ? selectionParentRoom.security?.Read
-  //   : selection?.security?.Read;
 
   const roomsSubmenu = [...submenuData];
 
@@ -106,25 +95,18 @@ const InfoPanelHeaderContent = (props) => {
           {t("Common:Info")}
         </Text>
 
-        <ColorTheme
-          {...props}
-          themeId={ThemeType.InfoPanelToggle}
-          isRootFolder={true}
-          isInfoPanelVisible={true}
-        >
-          {!isTablet && (
-            <div className="info-panel-toggle-bg">
-              <IconButton
-                id="info-panel-toggle--close"
-                className="info-panel-toggle"
-                iconName={PanelReactSvgUrl}
-                size="16"
-                isFill={true}
-                onClick={closeInfoPanel}
-              />
-            </div>
-          )}
-        </ColorTheme>
+        {!isTablet && (
+          <div className="info-panel-toggle-bg">
+            <IconButton
+              id="info-panel-toggle--close"
+              className="info-panel-toggle"
+              iconName={CrossReactSvgUrl}
+              size="16"
+              isFill={true}
+              onClick={closeInfoPanel}
+            />
+          </div>
+        )}
       </div>
 
       {withSubmenu && (
@@ -160,12 +142,12 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsGallery,
     getIsAccounts,
     getIsTrash,
-    //selectionParentRoom,
   } = auth.infoPanelStore;
-  const {
-    isRootFolder,
-    // rootFolderType
-  } = selectedFolderStore;
+  const { isRootFolder, roomType } = selectedFolderStore;
+
+  const isPublicRoom =
+    selection?.roomType === RoomsType.PublicRoom ||
+    roomType === RoomsType.PublicRoom;
 
   return {
     selection,
@@ -178,17 +160,7 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsGallery,
     getIsAccounts,
     getIsTrash,
-
     isRootFolder,
-    //  rootFolderType,
-
-    //selectionParentRoom,
+    isPublicRoom,
   };
-})(
-  withTranslation(["Common", "InfoPanel"])(
-    InfoPanelHeaderContent
-    // withLoader(observer(InfoPanelHeaderContent))(
-    //   <Loaders.InfoPanelHeaderLoader />
-    // )
-  )
-);
+})(withTranslation(["Common", "InfoPanel"])(InfoPanelHeaderContent));

@@ -25,6 +25,7 @@ const _ = require("lodash");
 const fs = require("fs");
 const path = require("path");
 const minifyXML = require("minify-xml").minify;
+const logger = require("../log.js");
 
 saml.setSchemaValidator(validator);
 
@@ -33,7 +34,7 @@ const IdentityProvider = saml.IdentityProvider;
 
 const templDir = path.join(process.cwd(),"../../common/ASC.SsoAuth", "/app/templates/");
 
-module.exports = function (logger) {
+module.exports = function () {
   function removeCertHead(cert) {
     var newCert = cert;
     if (cert && cert[0] === "-") {
@@ -283,5 +284,3 @@ module.exports = function (logger) {
     },
   };
 };
-
-//module.exports = Converter(logger);

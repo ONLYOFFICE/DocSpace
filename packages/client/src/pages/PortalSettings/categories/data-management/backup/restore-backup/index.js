@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 import {
   getBackupStorage,
@@ -48,7 +47,6 @@ const RestoreBackup = (props) => {
     isEnableRestore,
     setRestoreResource,
     buttonSize,
-    history,
   } = props;
 
   const [radioButtonState, setRadioButtonState] = useState(LOCAL_FILE);
@@ -236,7 +234,6 @@ const RestoreBackup = (props) => {
           isVisibleDialog={isVisibleBackupListDialog}
           onModalClose={onModalClose}
           isNotify={checkboxState.notification}
-          history={history}
         />
       )}
       <Checkbox
@@ -265,7 +262,6 @@ const RestoreBackup = (props) => {
         radioButtonState={radioButtonState}
         isCheckedThirdPartyStorage={radioButtonState === STORAGE_SPACE}
         isCheckedLocalFile={radioButtonState === LOCAL_FILE}
-        history={history}
         t={t}
         buttonSize={buttonSize}
       />

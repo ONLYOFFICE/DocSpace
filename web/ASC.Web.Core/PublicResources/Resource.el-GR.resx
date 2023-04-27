@@ -208,4 +208,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Τι νέο υπάρχει</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Παρακολούθηση των συνδέσεων και των ενεργειών των χρηστών</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Μέγ. μέγεθος αρχείου</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Το μέγεθος του αρχείου πρέπει να είναι ίσο ή μικρότερο από {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Ο αριθμός των διαχειριστών πρέπει να είναι ίσος ή μικρότερος από {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Αριθμός των διαχειριστών</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Αυτόματη δημιουργία αντιγράφων ασφαλείας και ανάκτηση</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Απεριόριστος αριθμός ενεργών δωματίων</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Ο αριθμός των δωματίων πρέπει να είναι ίσος ή μικρότερος από {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>Χώρος αποθήκευσης {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Το μέγεθος του χρησιμοποιούμενου αποθηκευτικού χώρου πρέπει να είναι ίσο ή μικρότερο από {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Αποθηκευτικός χώρος</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Δωμάτια:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Αποθηκευτικός χώρος που χρησιμοποιήθηκε:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Χρήστες στο δωμάτιο:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Απεριόριστος αριθμός χρηστών</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Ο αριθμός των χρηστών πρέπει να είναι ίσος ή μικρότερος από {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Χρήστες στο δωμάτιο</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Ο αριθμός των χρηστών στο δωμάτιο πρέπει να είναι ίσος ή μικρότερος από {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Επωνυμία και προσαρμογή</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Ο αριθμός των διαχειριστών/χρηστών ισχύο:</value>
+  </data>
 </root>

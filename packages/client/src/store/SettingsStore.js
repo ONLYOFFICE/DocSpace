@@ -313,6 +313,9 @@ class SettingsStore {
         case RoomsType.ReviewRoom:
           path = "review.svg";
           break;
+        case RoomsType.PublicRoom:
+          path = "public.svg";
+          break;
       }
     }
 

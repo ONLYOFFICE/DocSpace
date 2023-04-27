@@ -99,12 +99,19 @@ export const FileType = Object.freeze({
  * @readonly
  */
 export const RoomsType = Object.freeze({
-  //FillingFormsRoom: 1, //TODO: Restore when certs will be done
+  // FillingFormsRoom: 1, //TODO: Restore when certs will be done
   EditingRoom: 2,
-  //ReviewRoom: 3, //TODO: Restore when certs will be done
-  //ReadOnlyRoom: 4, //TODO: Restore when certs will be done
+  // ReviewRoom: 3, //TODO: Restore when certs will be done
+  // ReadOnlyRoom: 4, //TODO: Restore when certs will be done
   CustomRoom: 5,
+  PublicRoom: 6, //TODO: see enum on backend
 });
+
+export const RoomsTypeValues = Object.freeze(
+  Object.values(RoomsType).reduce((acc, current) => {
+    return { ...acc, [current]: current };
+  }, {})
+);
 
 export const RoomsTypeTranslations = Object.freeze({
   1: "Files:FillingFormRooms",

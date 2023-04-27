@@ -14,6 +14,7 @@ import { objectToGetParams, loadScript } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
+import { SortByFieldName } from "../../../../helpers/constants";
 
 const Controls = styled(Box)`
   width: 500px;
@@ -81,12 +82,16 @@ const PortalIntegration = (props) => {
   const scriptUrl = `${window.location.origin}/static/scripts/api.js`;
 
   const dataSortBy = [
-    { key: "DateAndTime", label: t("Common:LastModifiedDate"), default: true },
-    { key: "AZ", label: t("Common:Title") },
-    { key: "Type", label: t("Common:Type") },
-    { key: "Size", label: t("Common:Size") },
-    { key: "DateAndTimeCreation", label: t("Files:ByCreation") },
-    { key: "Author", label: t("Files:ByAuthor") },
+    {
+      key: SortByFieldName.ModifiedDate,
+      label: t("Common:LastModifiedDate"),
+      default: true,
+    },
+    { key: SortByFieldName.Name, label: t("Common:Title") },
+    { key: SortByFieldName.Type, label: t("Common:Type") },
+    { key: SortByFieldName.Size, label: t("Common:Size") },
+    { key: SortByFieldName.CreationDate, label: t("Files:ByCreation") },
+    { key: SortByFieldName.Author, label: t("Files:ByAuthor") },
   ];
 
   const dataSortOrder = [

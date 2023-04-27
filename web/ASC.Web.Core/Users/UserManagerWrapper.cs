@@ -213,7 +213,7 @@ public sealed class UserManagerWrapper
                     _studioNotifyService.UserInfoAddedAfterInvite(newUserInfo);
                 }
 
-                if (fromInviteLink)
+                if (fromInviteLink && newUserInfo.ActivationStatus != EmployeeActivationStatus.Activated)
                 {
                     _studioNotifyService.SendEmailActivationInstructions(newUserInfo, newUserInfo.Email);
                 }
