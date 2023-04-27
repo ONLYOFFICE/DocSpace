@@ -30,7 +30,8 @@ class FileMarkAsReadOperationData<T> : FileOperationData<T>
 {
     public IDictionary<string, StringValues> Headers { get; }
 
-    public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, IDictionary<string, StringValues> headers, bool holdResult = true) : base(folders, files, tenant, holdResult)
+    public FileMarkAsReadOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, IDictionary<string, StringValues> headers, ExternalShareData externalShareData, 
+        bool holdResult = true) : base(folders, files, tenant, externalShareData, holdResult)
     {
         Headers = headers;
     }

@@ -35,9 +35,9 @@ internal class FileDeleteOperationData<T> : FileOperationData<T>
     public IDictionary<string, StringValues> Headers { get; }
     public bool IsEmptyTrash { get; }
 
-    public FileDeleteOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant,
-        bool holdResult = true, bool ignoreException = false, bool immediately = false, IDictionary<string, StringValues> headers = null, bool isEmptyTrash = false)
-        : base(folders, files, tenant, holdResult)
+    public FileDeleteOperationData(IEnumerable<T> folders, IEnumerable<T> files, Tenant tenant, ExternalShareData externalShareData, bool holdResult = true, 
+        bool ignoreException = false, bool immediately = false, IDictionary<string, StringValues> headers = null, bool isEmptyTrash = false)
+        : base(folders, files, tenant, externalShareData, holdResult)
     {
         IgnoreException = ignoreException;
         Immediately = immediately;
@@ -83,6 +83,10 @@ class FileDeleteOperation<T> : FileOperation<FileDeleteOperationData<T>, T>
         var filesMessageService = scope.ServiceProvider.GetService<FilesMessageService>();
         var tenantManager = scope.ServiceProvider.GetService<TenantManager>();
         tenantManager.SetCurrentTenant(CurrentTenant);
+        
+        var externalShare = scope.ServiceProvider.GetRequiredService<ExternalShare>();
+        externalShare.SetCurrentShareData(CurrentShareData);
+        
         _trashId = await folderDao.GetFolderIDTrashAsync(true);
 
         Folder<T> root = null;
