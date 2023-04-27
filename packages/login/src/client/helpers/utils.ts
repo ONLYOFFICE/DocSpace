@@ -121,6 +121,6 @@ export const getMessageKeyTranslate = (t, message) => {
     case "ErrorNotCorrectEmail":
       return t("Common:IncorrectEmail");
     default:
-      return t(`SSOErrors:${message}`)
+      return t(`Errors:${message}`)
   }
 }

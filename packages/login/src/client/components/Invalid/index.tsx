@@ -24,7 +24,7 @@ const InvalidError = ({ theme, setTheme, match }: InvalidErrorProps) => {
   const [hydrated, setHydrated] = React.useState(false);
 
   const [proxyHomepageUrl, setProxyHomepageUrl] = React.useState("");
-  const { t } = useTranslation(["Login", "SSOErrors", "Common"]);
+  const { t } = useTranslation(["Login", "Errors", "Common"]);
   const history = useHistory();
 
   useIsomorphicLayoutEffect(() => {
