@@ -20,7 +20,26 @@ jobs:
     permissions:
       contents: write
       
-    steps:          
+    steps:
+      - name: Generate GPG key
+        run: |
+          export DEBEMAIL=mymail@example.com
+          export DEBFULLNAME="Elbakyan Shirak"
+
+          echo "echo Generating a GPG key"
+          echo "Key-Type: RSA" > gen-key-instruction
+          echo "Key-Length: 4096" >> gen-key-instruction
+          echo "Name-Real: Elbakyan-Shirak" >> gen-key-instruction
+          echo "Name-Email: el.shirak@internet.com" >> gen-key-instruction
+          echo "Expire-Date: 0" >> gen-key-instruction
+          echo "Passphrase: 42*Hello_I-love-you!1337" >> gen-key-instruction
+          echo "%commit" >> gen-key-instruction
+          echo "%echo Done!" >> gen-key-instruction
+          gpg --batch --gen-key gen-key-instruction
+          gpg --list-keys
+          gpg --import el.shirak@internet.com
+          
+          
       - name: Get files from repository
         uses: actions/checkout@v2
               
@@ -45,6 +64,11 @@ jobs:
           find ../ -type f -exec sed -i "s/{{product}}/${{ env.PRODUCT }}/g" {} ';'
           sed -i "s/{{package_header_tag_version}}/$(echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ).$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
+      
+      - name: Sign packages and check 
+        run: |
+          dpkg-sig -k el.shirak@internet.com --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+
         
       - uses: ncipollo/release-action@v1
         with:
@@ -125,8 +149,8 @@ jobs:
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
           pwd
           sudo chmod 755 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
-          sudo chown -R $USER:$USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
-          sudo chgrp -R $USER:$USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
           echo "........................................"
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
@@ -137,6 +161,10 @@ jobs:
           echo "........................................"
           export GPG_TTY=$(tty)
           # GPG_TTY=$TTY sudo rpm --addsign
+          cp /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm ~ 
+          rpm --define "_gpg_name Elbakyan-Shirak" --addsign ~/*.rpm
+          rpm --checksig ~/*.rpm
+          
           rpm --define "_gpg_name Elbakyan-Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           
