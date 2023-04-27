@@ -1,0 +1,19 @@
+{
+  "ErrorUserNotFound": "İstifadəçi tapılmadı",
+  "ErrorExpiredActivationLink": "Keçidin vaxtı keçib",
+  "ErrorInvalidActivationLink": "Etibarsız aktivasiya keçidi",
+  "ErrorConfirmURLError": "Etibarsız elektron poçt və ya vaxtı keçmiş keçid",
+  "LoginWithBruteForce": "Avtorizasiya müvəqqəti olaraq bloklanıb.",
+  "RecaptchaInvalid": "Yanlış Recaptcha",
+  "LoginWithAccountNotFound": "Əlaqəli üçüncü partiya hesab tapılmır",
+  "InvalidUsernameOrPassword": "Etibarsız istifadəçi adı və ya parol",
+  "SsoSettingsDisabled": "Tək giriş deaktiv edilib",
+  "ErrorNotAllowedOption": "Sizin qiymət planınız bu imkanı dəstəkləmir",
+  "SsoSettingsEmptyToken": "İdentifikasiya nişanı tapılmadı",
+  "SsoSettingsNotValidToken": "Yanlış identifikasiya nişanı",
+  "SsoSettingsCantCreateUser": "Bu autentifikasiya nişanı ilə istifadəçi yaratmaq mümkün olmadı",
+  "SsoSettingsUserTerminated": "Bu istifadəçi deaktiv edilib",
+  "SsoError": "Daxili server xətası",
+  "SsoAuthFailed": "İdentifikasiya uğursuz oldu",
+  "SsoAttributesNotFound": "İdentifikasiya uğursuz oldu (təsdiq atributları tapılmadı)"
+}

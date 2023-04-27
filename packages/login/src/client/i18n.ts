@@ -33,7 +33,7 @@ newInstance
       crossDomain: false,
     },
 
-    ns: ["Login", "Common"],
+    ns: ["Login", "Errors", "Common"],
     defaultNS: "Login",
 
     react: {

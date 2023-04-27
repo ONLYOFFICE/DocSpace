@@ -36,7 +36,7 @@ const App: React.FC<ILoginProps> = (props) => {
       <SimpleNav {...props} />
       <Switch>
         <Route path="/login/error">
-          <InvalidRoute />
+          <InvalidRoute {...props} />
         </Route>
         <Route path="/login/code">
           <CodeLogin {...props} />

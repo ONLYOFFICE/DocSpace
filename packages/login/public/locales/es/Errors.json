@@ -1,0 +1,19 @@
+{
+  "ErrorUserNotFound": "Usuario no ha sido encontrado",
+  "ErrorExpiredActivationLink": "Enlace ha expirado",
+  "ErrorInvalidActivationLink": "Enlace de activación inválido",
+  "ErrorConfirmURLError": "E-mail inválido o enlace expirado",
+  "LoginWithBruteForce": "Autorización está temporalmente bloqueada.",
+  "RecaptchaInvalid": "Recaptcha inválido",
+  "LoginWithAccountNotFound": "No se puede encontrar la cuenta de los terceros asociada.Primeramente usted tiene que conectar su cuenta de red social en la página de edición del portal.",
+  "InvalidUsernameOrPassword": "Nombre de usuario o contraseña inválida",
+  "SsoSettingsDisabled": "Single sign-on está desactivado",
+  "ErrorNotAllowedOption": "Su plan de precios no admite esta opción",
+  "SsoSettingsEmptyToken": "No se puede encontrar token de autenticación",
+  "SsoSettingsNotValidToken": "Token de autenticación inválido",
+  "SsoSettingsCantCreateUser": "No se puede crear un usuario con este token de autenticación",
+  "SsoSettingsUserTerminated": "Este usuario está desactivado",
+  "SsoError": "Error interno de servidor",
+  "SsoAuthFailed": "Error de autenticación",
+  "SsoAttributesNotFound": "Error de autenticación (atributos de aserción no se han encontrado)"
+}
