@@ -28,17 +28,11 @@ namespace ASC.Files.Thirdparty.ProviderDao;
 
 internal class ProviderDaoBase : ThirdPartyProviderDao
 {
-    private int _tenantID;
     private int TenantID
     {
         get
         {
-            if (_tenantID == 0)
-            {
-                _tenantID = _tenantManager.GetCurrentTenant().Id;
-            }
-
-            return _tenantID;
+            return _tenantManager.GetCurrentTenant().Id;
         }
     }
 

@@ -94,21 +94,21 @@ const DropDownItem = (props) => {
 };
 
 DropDownItem.propTypes = {
-  /** Tells when the dropdown item should display like separator */
+  /** Sets the dropdown item to display as a separator */
   isSeparator: PropTypes.bool,
-  /** Tells when the dropdown item should display like header */
+  /** Sets the dropdown to display as a header */
   isHeader: PropTypes.bool,
   /** Accepts tab-index */
   tabIndex: PropTypes.number,
   /** Dropdown item text */
   label: PropTypes.string,
-  /** Tells when the dropdown item should display like disabled */
+  /** Sets the dropdown item to display as disabled */
   disabled: PropTypes.bool,
   /** Dropdown item icon */
   icon: PropTypes.string,
-  /** Disable default style hover effect */
+  /** Disables default style hover effect */
   noHover: PropTypes.bool,
-  /** What the dropdown item will trigger when clicked */
+  /** Sets an action that will be triggered when the dropdown item is clicked */
   onClick: PropTypes.func,
   /** Children elements */
   children: PropTypes.any,
@@ -119,15 +119,20 @@ DropDownItem.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Accepts css text-overflow */
-  customHeight: PropTypes.number,
-  customHeightTablet: PropTypes.number,
   textOverflow: PropTypes.bool,
+  /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
+  /** Enables the submenu */
   isSubMenu: PropTypes.bool,
+  /**  Sets drop down item active  */
   isActive: PropTypes.bool,
+  /** Disables the element icon */
   withoutIcon: PropTypes.bool,
+  /** Sets the padding to the minimum value */
   isModern: PropTypes.bool,
+  /** Facilitates highlighting a selected element with the keyboard */
   isActiveDescendant: PropTypes.bool,
+  /** Facilitates selecting an element from the context menu */
   isSelected: PropTypes.bool,
 };
 

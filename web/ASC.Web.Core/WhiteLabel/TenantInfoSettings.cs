@@ -134,7 +134,7 @@ public class TenantInfoSettingsHelper
     {
         if (tenantInfoSettings.IsDefault)
         {
-            return _webImageSupplier.GetAbsoluteWebPath("logo/dark_general.png");
+            return _webImageSupplier.GetAbsoluteWebPath("notifications/logo.png");
         }
 
         var store = _storageFactory.GetStorage(_tenantManager.GetCurrentTenant().Id, "logo");

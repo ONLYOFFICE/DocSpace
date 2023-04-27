@@ -45,7 +45,7 @@ const PrivateRoute = ({ children, ...rest }) => {
       location.pathname === "/portal-settings/delete-data/deactivation";
 
     if (isLoaded && !isAuthenticated) {
-      // console.log("PrivateRoute render Redirect to login", rest);
+      // console.log("PrivateRoute render Redirect to login", rest);x
       const redirectPath = wizardCompleted ? "/login" : "/wizard";
 
       if (location.pathname === redirectPath) return null;
@@ -56,7 +56,11 @@ const PrivateRoute = ({ children, ...rest }) => {
         sessionStorage.setItem("referenceUrl", window.location.href);
       }
 
-      return <Navigate replace to={redirectPath} />;
+      window.location.replace(
+        combineUrl(window.DocSpaceConfig?.proxy?.url, redirectPath)
+      );
+
+      return null;
     }
 
     if (

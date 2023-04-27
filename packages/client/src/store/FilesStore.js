@@ -10,7 +10,7 @@ import {
   RoomsTypeValues,
   RoomsProviderType,
 } from "@docspace/common/constants";
-import history from "@docspace/common/history";
+
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
 import { isMobile, isMobileOnly } from "react-device-detect";
@@ -1094,7 +1094,7 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    history.navigate(newUrl);
+    window.DocSpace.navigate(newUrl);
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {

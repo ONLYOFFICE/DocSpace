@@ -97,6 +97,7 @@ const Template = ({
       <Paging
         {...args}
         pageItems={displayItems ? pageItems : null}
+        style={{ justifyContent: "center", alignItems: "center" }}
         countItems={displayCount ? countItems : null}
         previousAction={() => {
           previousAction("Prev");

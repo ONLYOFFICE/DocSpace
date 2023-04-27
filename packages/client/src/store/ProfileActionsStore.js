@@ -11,7 +11,7 @@ import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url
 import LogoutReactSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
+
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 import { ZendeskAPI } from "@docspace/common/components/Zendesk";
@@ -101,15 +101,15 @@ class ProfileActionsStore {
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
 
-    history.navigate(PROFILE_SELF_URL);
+    window.DocSpace.navigate(PROFILE_SELF_URL);
   };
 
   onSettingsClick = (settingsUrl) => {
-    history.navigate(settingsUrl);
+    window.DocSpace.navigate(settingsUrl);
   };
 
   onPaymentsClick = () => {
-    history.navigate(PAYMENTS_URL);
+    window.DocSpace.navigate(PAYMENTS_URL);
   };
 
   onHelpCenterClick = () => {
@@ -129,9 +129,8 @@ class ProfileActionsStore {
   };
 
   onSupportClick = () => {
-    const supportUrl =
-      this.authStore.settingsStore.additionalResourcesData
-        ?.feedbackAndSupportUrl;
+    const supportUrl = this.authStore.settingsStore.additionalResourcesData
+      ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
   };
@@ -154,7 +153,7 @@ class ProfileActionsStore {
     if (isDesktop || isTablet) {
       this.setIsAboutDialogVisible(true);
     } else {
-      history.navigate(ABOUT_URL);
+      window.DocSpace.navigate(ABOUT_URL);
     }
   };
 
@@ -162,11 +161,6 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      setTimeout(() => {
-        window.location.replace(
-          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
-        );
-      }, 300);
     });
   };
 
@@ -334,13 +328,12 @@ class ProfileActionsStore {
       return actionsArray;
     }
 
-    const feedbackAndSupportEnabled =
-      this.authStore.settingsStore.additionalResourcesData
-        ?.feedbackAndSupportEnabled;
-    const videoGuidesEnabled =
-      this.authStore.settingsStore.additionalResourcesData?.videoGuidesEnabled;
-    const helpCenterEnabled =
-      this.authStore.settingsStore.additionalResourcesData?.helpCenterEnabled;
+    const feedbackAndSupportEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(

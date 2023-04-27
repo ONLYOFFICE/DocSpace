@@ -17,6 +17,7 @@
   "HideAuthPage": "Skrýt stránky pro ověření",
   "LogoutEndpointUrl": "Adresa URL koncového bodu jednotného odhlášení IdP",
   "LogoutEndpointUrlTooltip": "Adresa URL použitá pro jednorázové odhlášení na straně poskytovatele služeb",
+  "MetadataLoadError": "Soubor s metadaty nebyl převeden",
   "NameIDFormat": "Formát NameId",
   "NewCertificate": "Nový certifikát",
   "OpenCertificate": "Veřejný certifikát",

@@ -1,30 +1,22 @@
 import React, { useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-} from "react-router-dom";
-import { inject, observer } from "mobx-react";
+import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { inject, observer, Provider as MobxProvider } from "mobx-react";
 import NavMenu from "./components/NavMenu";
 import Main from "./components/Main";
-import PrivateRoute from "@docspace/common/components/PrivateRoute";
-import PublicRoute from "@docspace/common/components/PublicRoute";
-import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
+
 import Layout from "./components/Layout";
 import ScrollToTop from "./components/Layout/ScrollToTop";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
 import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
-import { Provider as MobxProvider } from "mobx-react";
+
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
 
 import config from "PACKAGE_FILE";
 import { I18nextProvider, useTranslation } from "react-i18next";
 import i18n from "./i18n";
-import AppLoader from "@docspace/common/components/AppLoader";
+
 import Snackbar from "@docspace/components/snackbar";
 import moment from "moment";
 import ReactSmartBanner from "./components/SmartBanner";
@@ -37,128 +29,6 @@ import { Portal } from "@docspace/components";
 import indexedDbHelper from "@docspace/common/utils/indexedDBHelper";
 import { IndexedDBStores } from "@docspace/common/constants";
 import queryString from "query-string";
-
-const Error404 = React.lazy(() => import("client/Error404"));
-const Error401 = React.lazy(() => import("client/Error401"));
-const Files = React.lazy(() => import("./pages/Files")); //import("./components/pages/Home"));
-
-const About = React.lazy(() => import("./pages/About"));
-const Wizard = React.lazy(() => import("./pages/Wizard"));
-const PortalSettings = React.lazy(() => import("./pages/PortalSettings"));
-
-const Confirm = !IS_PERSONAL && React.lazy(() => import("./pages/Confirm"));
-
-const PreparationPortal = React.lazy(() => import("./pages/PreparationPortal"));
-const PortalUnavailable = React.lazy(() => import("./pages/PortalUnavailable"));
-const FormGallery = React.lazy(() => import("./pages/FormGallery"));
-
-const ErrorUnavailable = React.lazy(() => import("./pages/Errors/Unavailable"));
-
-const PortalSettingsRoute = (props) => {
-  return (
-    <React.Suspense fallback={<AppLoader />}>
-      <ErrorBoundary>
-        <PortalSettings {...props} />
-      </ErrorBoundary>
-    </React.Suspense>
-  );
-};
-
-const Error404Route = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Error404 {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const Error401Route = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Error401 {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const ErrorUnavailableRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <ErrorUnavailable {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const FilesRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Files {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const ConfirmRoute =
-  !IS_PERSONAL &&
-  ((props) => (
-    <React.Suspense fallback={<AppLoader />}>
-      <ErrorBoundary>
-        <Confirm {...props} />
-      </ErrorBoundary>
-    </React.Suspense>
-  ));
-
-const PreparationPortalRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <PreparationPortal {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const PortalUnavailableRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <PortalUnavailable {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const AboutRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <About {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const WizardRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <Wizard {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const FormGalleryRoute = (props) => (
-  <React.Suspense fallback={<AppLoader />}>
-    <ErrorBoundary>
-      <FormGallery {...props} />
-    </ErrorBoundary>
-  </React.Suspense>
-);
-
-const ConfirmNavigate = () => {
-  const location = useLocation();
-
-  const type = queryString.parse(location.search).type;
-
-  return (
-    <Navigate
-      to={`/confirm/${type}`}
-      search={location.search}
-      state={{ from: location }}
-    />
-  );
-};
 
 const Shell = ({ items = [], page = "home", ...rest }) => {
   const {
@@ -467,120 +337,21 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   );
 
   return (
-    <Router>
-      <Layout>
-        {toast}
-        <ReactSmartBanner t={t} ready={ready} />
-        {isEditor || !isMobileOnly ? <></> : <NavMenu />}
-        {isMobileOnly && <MainBar />}
-        <IndicatorLoader />
-        <ScrollToTop />
-        <DialogsWrapper t={t} />
-        <Main isDesktop={isDesktop}>
-          {!isMobileOnly && <MainBar />}
-          <div className="main-container">
-            <Routes>
-              <Route
-                caseSensitive
-                path="/Products/Files/"
-                element={<Navigate to="/rooms/shared" replace />}
-              />
-
-              <Route
-                path="/*"
-                element={
-                  <PrivateRoute>
-                    <FilesRoute />
-                  </PrivateRoute>
-                }
-              />
-
-              <Route
-                path={"/form-gallery/:folderId"}
-                element={
-                  <PrivateRoute>
-                    <FormGalleryRoute />
-                  </PrivateRoute>
-                }
-              />
-
-              <Route
-                path={"/wizard"}
-                element={
-                  <PublicRoute>
-                    <WizardRoute />
-                  </PublicRoute>
-                }
-              />
-
-              <Route
-                path={"/about"}
-                element={
-                  <PrivateRoute>
-                    <AboutRoute />
-                  </PrivateRoute>
-                }
-              />
-
-              {/* <Route path={"/confirm/:type/*"} element={<ConfirmRoute />} /> */}
-              <Route path={"/confirm/*"} element={<ConfirmRoute />} />
-              <Route path={"/confirm.aspx/*"} element={<ConfirmRoute />} />
-
-              <Route
-                path={"/portal-settings/*"}
-                element={
-                  <PrivateRoute restricted>
-                    <PortalSettingsRoute />
-                  </PrivateRoute>
-                }
-              />
-
-              <Route
-                path={"/portal-unavailable"}
-                element={
-                  <PrivateRoute>
-                    <PortalUnavailableRoute />
-                  </PrivateRoute>
-                }
-              />
-              <Route
-                path={"/preparation-portal"}
-                element={
-                  <PublicRoute>
-                    <PreparationPortalRoute />
-                  </PublicRoute>
-                }
-              />
-              <Route
-                path={"/unavailable"}
-                element={
-                  <PrivateRoute>
-                    <ErrorUnavailableRoute />
-                  </PrivateRoute>
-                }
-              />
-
-              <Route
-                path={"/error401"}
-                element={
-                  <PrivateRoute>
-                    <Error401Route />
-                  </PrivateRoute>
-                }
-              />
-
-              <Route
-                element={
-                  <PrivateRoute>
-                    <Error404Route />
-                  </PrivateRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </Main>
-      </Layout>
-    </Router>
+    <Layout>
+      {toast}
+      <ReactSmartBanner t={t} ready={ready} />
+      {isEditor || !isMobileOnly ? <></> : <NavMenu />}
+      {isMobileOnly && <MainBar />}
+      <IndicatorLoader />
+      <ScrollToTop />
+      <DialogsWrapper t={t} />
+      <Main isDesktop={isDesktop}>
+        {!isMobileOnly && <MainBar />}
+        <div className="main-container">
+          <Outlet />
+        </div>
+      </Main>
+    </Layout>
   );
 };
 
