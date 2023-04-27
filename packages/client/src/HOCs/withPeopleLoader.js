@@ -69,7 +69,16 @@ const withLoader = (WrappedComponent) => (Loader) => {
       isProfileViewLoader,
     ]);
 
-    return <WrappedComponent {...props} />;
+    return firstLoad ||
+      !isLoaded ||
+      inLoad ||
+      !tReady ||
+      !profileLoaded ||
+      (isProfileFooterLoader && !isLoadedProfileSectionBody) ? (
+      Loader
+    ) : (
+      <WrappedComponent {...props} />
+    );
   };
 
   return inject(({ auth, peopleStore }) => {
