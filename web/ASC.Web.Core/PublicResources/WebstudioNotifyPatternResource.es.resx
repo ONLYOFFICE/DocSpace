@@ -436,9 +436,9 @@ El enlace sólo es válido durante 7 días.
 Recibirá más consejos sobre cómo usar su oficina web. Puede cancelar las suscripciones en su página de perfil en cualquier momento, así como volver a activarlas.</value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
-    <value>Hola, $Usuario
+    <value>Hola, $UserName
 Se ha registrado correctamente en ONLYOFFICE Personal 
-"${__ VirtualRootPath}":"${__ VirtualRootPath}".
+"${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Conecte su almacenamiento de nube favorito: Dropbox, Google Drive, OneDrive o Box para crear un único espacio de trabajo para sus documentos, accesible desde cualquier lugar.
 
@@ -1083,7 +1083,7 @@ Equipo de ONLYOFFICE
     <value>${LetterLogoText}. Fallo en reasignación de los datos de usuario</value>
   </data>
   <data name="subject_remove_user_data_completed" xml:space="preserve">
-    <value>${LetterLogoText}. Se ha completado la eliminación de los datos de usuario.</value>
+    <value>${LetterLogoText}. Se ha completado la eliminación de los datos de usuario</value>
   </data>
   <data name="subject_remove_user_data_failed" xml:space="preserve">
     <value>${LetterLogoText}. Fallo en eliminación de los datos de usuario</value>
@@ -1107,7 +1107,7 @@ Equipo de ONLYOFFICE
     <value>Notificación de cambio de perfil en el portal ${__VirtualRootPath}</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
-    <value>Mensaje de prueba SMTP </value>
+    <value>Mensaje de prueba SMTP</value>
   </data>
   <data name="subject_storage_decryption_error" xml:space="preserve">
     <value>${LetterLogoText}. El proceso de descifrado ha fracasado</value>

@@ -872,7 +872,7 @@
     <value>Uploaded successfully. {0}Support are not available for this license since {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>The email change instructions have been successfuly sent</value>
+    <value>The email change instructions have been successfully sent</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>If a user with the {0} email exists, the password change instruction has been sent to this email address.</value>

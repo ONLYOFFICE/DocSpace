@@ -1229,7 +1229,7 @@
     <value>Đã cập nhật Cài đặt Tên miền Mail được tin cậy</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
-    <value>Đã cập nhật Cài đặt Xác thực Hai yếu tố </value>
+    <value>Đã cập nhật Cài đặt Xác thực Hai yếu tố</value>
   </data>
   <data name="UnfollowActionType" xml:space="preserve">
     <value>Bỏ theo dõi</value>
@@ -1329,5 +1329,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Đã cập nhật Mẫu liên hệ Website</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Đã tạo phòng</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Phòng</value>
   </data>
 </root>

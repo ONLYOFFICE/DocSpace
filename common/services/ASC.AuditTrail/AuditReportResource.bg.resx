@@ -1369,4 +1369,10 @@
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Форма за контакт с уебсайта Обновен</value>
   </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Стаята е създадена</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Стаи</value>
+  </data>
 </root>

@@ -71,7 +71,7 @@
     <value>Fayllar {0} .tar.gz faylına {1} sıxılacaq</value>
   </data>
   <data name="FilesWillBeCompressedZip" xml:space="preserve">
-    <value> Fayllar  {0}.zip faylına{1} sıxılacaq</value>
+    <value>Fayllar  {0}.zip faylına{1} sıxılacaq</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
     <value>Sənədlərim</value>

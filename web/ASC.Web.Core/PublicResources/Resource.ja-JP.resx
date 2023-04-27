@@ -95,7 +95,7 @@
     <value>操作を確認するためのリンクが{0}（ポータル所有者の電子メールアドレス）に送信されました。</value>
   </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
-    <value>インスタンスIDが間違っているようです</value>
+    <value>インスタンスIDが間違っているようです。</value>
   </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>正しくないメールアドレス</value>
@@ -113,7 +113,7 @@
     <value>{!User} このメールアドレスは既に登録されていると</value>
   </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
-    <value>このドメインからのメールは登録できません。</value>
+    <value>このドメインからのメールは登録できません</value>
   </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>メールフィールドは空です</value>
@@ -164,7 +164,7 @@
     <value>大文字</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
-    <value>要求数が上限を超過しました。</value>
+    <value>要求数が上限を超過しました</value>
   </data>
   <data name="ErrorTenantTooShortFormat" xml:space="preserve">
     <value>ドメイン名の長さは{0}文字から{1}文字の間でなければなりません。</value>
@@ -182,8 +182,7 @@
     <value>最大ファイルサイズを超えています</value>
   </data>
   <data name="FileSizeNote" xml:space="preserve">
-    <value>注：ファイルサイズを超えることはできません{1}{0}{2}
-</value>
+    <value>注：ファイルサイズを超えることはできません{1}{0}{2}</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
     <value>bytes,KB,MB,GB</value>
@@ -192,7 +191,7 @@
     <value>アカウントを確認するためのリンクが指定された電子メールに送信されました</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>LDAP操作が多すぎています</value>
+    <value>LDAP操作が多すぎています。</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>ライセンスが間違っているようです</value>
@@ -207,10 +206,10 @@
     <value>{0}メールアドレスを持つユーザが存在する場合は、パスワード変更手順はこのメールアドレスに送信されます。</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
-    <value>電話番号を変更のために、現在電話番後を削除するのは必要です。</value>
+    <value>電話番号を変更のために、現在電話番後を削除するのは必要です</value>
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
-    <value>ORG地域 </value>
+    <value>ORG地域</value>
   </data>
   <data name="Owner" xml:space="preserve">
     <value>所有者</value>
@@ -243,7 +242,7 @@
     <value>SMS設定は利用できません</value>
   </data>
   <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
-    <value>設定は保存できませんでした。</value>
+    <value>設定は保存できませんでした</value>
   </data>
   <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
     <value>設定はnullにすることはできません</value>
@@ -270,7 +269,7 @@
     <value>不正なコード</value>
   </data>
   <data name="TfaAppNotAvailable" xml:space="preserve">
-    <value>二要素認証アプリ設定は無効です。</value>
+    <value>二要素認証アプリ設定は無効です</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>US西部地域（オレゴン）</value>

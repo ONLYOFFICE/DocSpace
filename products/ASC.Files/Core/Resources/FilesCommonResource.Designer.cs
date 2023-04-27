@@ -979,7 +979,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed. .
+        ///   Looks up a localized string similar to Create, edit, and share office documents. Collaborate on them in real-time. Highest compatibility with docx, xlsx, pptx guaranteed..
         /// </summary>
         public static string ProductDescription {
             get {
@@ -989,7 +989,7 @@ namespace ASC.Files.Core.Resources {
         
         /// <summary>
         ///   Looks up a localized string similar to Edit, share and collaborate on office documents in real-time. Create and manage common docs for the whole team to access. 
-        ///Highest compatibility with docx, xlsx, pptx. .
+        ///Highest compatibility with docx, xlsx, pptx..
         /// </summary>
         public static string ProductDescriptionEx {
             get {

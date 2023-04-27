@@ -101,7 +101,7 @@
     <value>Meilenstein wurde erstellt</value>
   </data>
   <data name="ActionCreateProject" xml:space="preserve">
-    <value>das Projekt wurde erstellt </value>
+    <value>das Projekt wurde erstellt</value>
   </data>
   <data name="ActionCreateTask" xml:space="preserve">
     <value>die Aufgabe wurde erstellt</value>
@@ -189,7 +189,7 @@
 
 Hallo!
 
-Sie sind eingeladen, sich bei ${LetterLogoText} anzumelden, müssen Sie Ihre E-Mail-Adresse aktivieren. Dies wird aus Sicherheitsgründen gemacht.
+Sie sind eingeladen, sich bei "${__VirtualRootPath}":"$InviteLink" anzumelden, müssen Sie Ihre E-Mail-Adresse aktivieren. Dies wird aus Sicherheitsgründen gemacht.
 
 $GreenButton
 
@@ -376,7 +376,7 @@ $GreenButton
 *Hinweis*: Dieser Link ist nur 48 Tage gültig. Bitte schließen Sie die Aktivierung Ihrer E-Mail-Adresse in dieser Zeitperiode ab.</value>
   </data>
   <data name="pattern_mailbox_created" xml:space="preserve">
-    <value> Sehr geehrte/er Frau/ Herr $UserName,
+    <value>Sehr geehrte/er Frau/ Herr $UserName,
 
       Der Administrator hat ein neues &lt;b&gt;$Address&lt;/ b&gt; Mailbox für Sie auf dem "${__VirtualRootPath}":"${__VirtualRootPath}" erstellt.
 
@@ -399,20 +399,18 @@ $GreenButton
      Wenn Sie diese E-Mail versehentlich erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.</value>
   </data>
   <data name="pattern_mailbox_password_changed" xml:space="preserve">
-    <value>      Sehr geehrte/er Frau/ Herr $UserName,
+    <value>Sehr geehrte/er Frau/ Herr $UserName,
 
       Das Passwort für die &lt;b&gt;$Address&lt;/b&gt; Mailbox wurde geändert.
 
-      Wenn Sie diese E-Mail versehentlich erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.
-    </value>
+      Wenn Sie diese E-Mail versehentlich erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.</value>
   </data>
   <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
     <value>Sehr geehrte/er Frau/ Herr $UserName,
 
      Der Administrator hat eine neue &lt;b&gt;$Address&lt;/ b&gt; Mailbox auf dem Portal "${__VirtualRootPath}":"${__VirtualRootPath}" erstellt.
 
-      Wenn Sie diese E-Mail aus Versehen erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.
-    </value>
+      Wenn Sie diese E-Mail aus Versehen erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.</value>
   </data>
   <data name="pattern_migration_error" xml:space="preserve">
     <value>h1.Andere Region Portal Migration Fehler
@@ -990,8 +988,7 @@ Dieser Link ist nur 7 Tage gültig.</value>
     <value>${__VirtualRootPath} beitreten</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
-    <value>Benutzermeldung an Administratoren
-</value>
+    <value>Benutzermeldung an Administratoren</value>
   </data>
   <data name="subject_join" xml:space="preserve">
     <value>Einladung zum Portal ${__VirtualRootPath}</value>
@@ -1015,7 +1012,7 @@ Dieser Link ist nur 7 Tage gültig.</value>
     <value>${__VirtualRootPath} beitreten</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
-    <value>Willkommen auf ONLYOFFICE für persönlichen Gebrauch</value>
+    <value>Willkommen auf ONLYOFFICE für persönlichen Gebrauch!</value>
   </data>
   <data name="subject_personal_after_registration1" xml:space="preserve">
     <value>Willkommen auf ONLYOFFICE Personal</value>

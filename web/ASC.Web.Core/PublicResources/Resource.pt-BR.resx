@@ -215,7 +215,7 @@
     <value>Erro de conexão</value>
   </data>
   <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
-    <value>Os usuários não puderam ser criados, os dados recebidos estão incorretos</value>
+    <value>Os usuários não puderam ser criados, os dados recebidos estão incorretos.</value>
   </data>
   <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
     <value>O servidor não obteve as configurações.</value>
@@ -347,7 +347,7 @@
     <value>Licença não está correta</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licença expirou</value>
+    <value>Licença expirou.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>O número de portais excede o que é permitido pela licença</value>
@@ -359,10 +359,10 @@
     <value>Carregado com sucesso</value>
   </data>
   <data name="LicenseUploadedOverdue" xml:space="preserve">
-    <value>Carregado com sucesso. {0}Suporte e atualizações não estão disponíveis para esta licença desde {2}.{1}.</value>
+    <value>Carregado com sucesso. {0}Suporte e atualizações não estão disponíveis para esta licença desde {2}.{1}</value>
   </data>
   <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
-    <value>Carregado com sucesso. {0}Não há suporte disponível para esta licença desde {2}.{1}.</value>
+    <value>Carregado com sucesso. {0}Não há suporte disponível para esta licença desde {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>As instruções de alteração de e-mail foram enviadas com sucesso</value>

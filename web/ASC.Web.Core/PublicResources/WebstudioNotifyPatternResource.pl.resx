@@ -524,7 +524,7 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
     <value>${LetterLogoText}. Żądanie zmiany numeru telefonu</value>
   </data>
   <data name="subject_confirm_owner_change" xml:space="preserve">
-    <value>$ {LetterLogoText}. Zmiana właściciela portalu</value>
+    <value>${LetterLogoText}. Zmiana właściciela portalu</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
     <value>${LetterLogoText}. Zmiana adresu portalu</value>
@@ -548,7 +548,7 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
     <value>Zaproszenie na portal ${__VirtualRootPath}</value>
   </data>
   <data name="subject_migration_error" xml:space="preserve">
-    <value>$ {LetterLogoText}. Inny błąd migracji portalu obszaru</value>
+    <value>${LetterLogoText}. Inny błąd migracji portalu obszaru</value>
   </data>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Rozpoczęła się inna migracja portalu regionu</value>
@@ -563,7 +563,7 @@ Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRo
     <value>Usuwanie portalu ${__VirtualRootPath}</value>
   </data>
   <data name="subject_portal_rename" xml:space="preserve">
-    <value>$ {LetterLogoText}. Zmiana adresu portalu</value>
+    <value>${LetterLogoText}. Zmiana adresu portalu</value>
   </data>
   <data name="subject_profile_delete" xml:space="preserve">
     <value>Usunięcie profilu na portalu ${__VirtualRootPath}</value>

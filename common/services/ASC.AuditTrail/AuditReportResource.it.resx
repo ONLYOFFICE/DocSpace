@@ -206,7 +206,7 @@
     <value>Aziende [{0}]. Etichetta creata: {1}</value>
   </data>
   <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Azienda creata per mezzo del modulo web: {0} </value>
+    <value>Azienda creata per mezzo del modulo web: {0}</value>
   </data>
   <data name="CompanyDeleted" xml:space="preserve">
     <value>Azienda eliminata: {0}</value>
@@ -230,7 +230,7 @@
     <value>Aziende [{0}]. Persona scollegata: {1}</value>
   </data>
   <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Aziende [{0}]. Progetto scollegato: {1} </value>
+    <value>Aziende [{0}]. Progetto scollegato: {1}</value>
   </data>
   <data name="CompanyUpdated" xml:space="preserve">
     <value>Azienda aggiornata: {0}</value>
@@ -437,7 +437,7 @@
     <value>Progetti [{0}]. Discussione eliminata: {1}</value>
   </data>
   <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Progetti [{0}]. Discussioni [{1}]. File scollegato: {2} </value>
+    <value>Progetti [{0}]. Discussioni [{1}]. File scollegato: {2}</value>
   </data>
   <data name="DiscussionsModule" xml:space="preserve">
     <value>Discussioni</value>
@@ -530,7 +530,7 @@
     <value>File rinominato: {0}</value>
   </data>
   <data name="FileRestoreVersion" xml:space="preserve">
-    <value>Files [{0}]. Revisione: {1}. Version Ripristinata.</value>
+    <value>Files [{0}]. Revisione: {1}. Version Ripristinata</value>
   </data>
   <data name="FilesDocumentSigned" xml:space="preserve">
     <value>Documento {1} firmato tramite {0}</value>
@@ -827,7 +827,7 @@
     <value>Opportunità esportate al file CSV: {0}</value>
   </data>
   <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Opportunità importate dal file CSV: {0}</value>
+    <value>Opportunità importate dal file CSV</value>
   </data>
   <data name="OpportunitiesModule" xml:space="preserve">
     <value>Opportunità</value>
@@ -902,7 +902,7 @@
     <value>Campo utente di opportunità eliminato: {0}</value>
   </data>
   <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Ordine campi utente di opportunità aggiornato: {0} </value>
+    <value>Ordine campi utente di opportunità aggiornato: {0}</value>
   </data>
   <data name="OpportunityUserFieldUpdated" xml:space="preserve">
     <value>Campo utente di opportunità aggiornato: {0}</value>
@@ -1019,7 +1019,7 @@
     <value>Piattaforma</value>
   </data>
   <data name="PortalAccessSettingsUpdated" xml:space="preserve">
-    <value>Impostazioni d'accesso portale aggiornati.</value>
+    <value>Impostazioni d'accesso portale aggiornati</value>
   </data>
   <data name="PortalDeactivated" xml:space="preserve">
     <value>Portale disattivato</value>
@@ -1076,7 +1076,7 @@
     <value>Progetto seguito: {0}</value>
   </data>
   <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Progetti [{0}]. Azienda collegata: {1} </value>
+    <value>Progetti [{0}]. Azienda collegata: {1}</value>
   </data>
   <data name="ProjectLinkedContacts" xml:space="preserve">
     <value>Progetti [{0}]. Contatti collegati: {1}</value>
@@ -1109,7 +1109,7 @@
     <value>Progetto non più seguito: {0}</value>
   </data>
   <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Progetti [{0}]. Azienda scollegata: {1} </value>
+    <value>Progetti [{0}]. Azienda scollegata: {1}</value>
   </data>
   <data name="ProjectUnlinkedPerson" xml:space="preserve">
     <value>Progetti [{0}]. Persona scollegata: {1}</value>
@@ -1199,7 +1199,7 @@
     <value>Progetti [{0}]. Attività [{1}]. Commento creato</value>
   </data>
   <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Progetti [{0}]. Attività [{1}]. Commento eliminato </value>
+    <value>Progetti [{0}]. Attività [{1}]. Commento eliminato</value>
   </data>
   <data name="TaskCommentUpdated" xml:space="preserve">
     <value>Progetti [{0}]. Attività [{1}]. Commento aggiornato</value>
@@ -1241,7 +1241,7 @@
     <value>Progetti [{0}]. Attività: [{1}]. Ora aggiornata: {2}</value>
   </data>
   <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Progetti [{0}]. Attività: [{1}]. Scollegata dalla milestone</value>
+    <value>Progetti [{0}]. Attività: [{1}]. Scollegata dalla milestone.</value>
   </data>
   <data name="TaskUpdated" xml:space="preserve">
     <value>Progetti [{0}]. Attività aggiornata: {1}</value>
@@ -1316,7 +1316,7 @@
     <value>Utente creato: {0}</value>
   </data>
   <data name="UserCreatedViaInvite" xml:space="preserve">
-    <value>Utente creato per mezzo dell'invito: {0} </value>
+    <value>Utente creato per mezzo dell'invito: {0}</value>
   </data>
   <data name="UserDataReassigns" xml:space="preserve">
     <value>Dati Riassegnati: da utente {0} a utente {1}</value>
@@ -1328,7 +1328,7 @@
     <value>Utente eliminato: {0}</value>
   </data>
   <data name="UserDeletedAvatar" xml:space="preserve">
-    <value>Utenti [{0}]. Avatar eliminato </value>
+    <value>Utenti [{0}]. Avatar eliminato</value>
   </data>
   <data name="UserFileUpdated" xml:space="preserve">
     <value>Utenti [{0}]. File aggiornato: {1}</value>
@@ -1379,10 +1379,7 @@
     <value>Utente aggiornato: {0}</value>
   </data>
   <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
-    <value>Utenti [{0}]. Miniature avatar aggiornate
-
-
-</value>
+    <value>Utenti [{0}]. Miniature avatar aggiornate</value>
   </data>
   <data name="UserUpdatedEmail" xml:space="preserve">
     <value>Email aggiornata</value>
@@ -1398,5 +1395,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Chiave del modulo Contatti dal sito aggiornata</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>La stanza è stata creata</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Stanze</value>
   </data>
 </root>

@@ -71,7 +71,7 @@
     <value>Mesajınız başarıyla gönderildi. Portal yöneticisi sizinle iletişime geçecek.</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
-    <value>İşlemi onaylamak için bir bağlantı :email adresine gönderildi. (portal sahibinin e-posta adresi)</value>
+    <value>İşlemi onaylamak için bir bağlantı :email adresine gönderildi. (portal sahibinin e-posta adresi).</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>Şifre kurtarma işlemi LDAP kullanıcıları için kullanılamaz</value>
@@ -83,7 +83,7 @@
     <value>Özel</value>
   </data>
   <data name="DnsChangeMsg" xml:space="preserve">
-    <value>İşlemi onaylamak için bir bağlantı {0} adresine gönderildi. (portal sahibinin e-posta adresi)</value>
+    <value>İşlemi onaylamak için bir bağlantı {0} adresine gönderildi. (portal sahibinin e-posta adresi).</value>
   </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Yanlış eposta adresi</value>
@@ -92,7 +92,7 @@
     <value>Bu eylemi gerçekleştirmek için izin yok</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>Portala erişim sınırlandı</value>
+    <value>Portala erişim sınırlandı.</value>
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>Hatalı anahtarlar</value>
@@ -197,7 +197,7 @@
     <value>LDAP alanı bulunamadı.</value>
   </data>
   <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
-    <value>Grup bulunamadı</value>
+    <value>Grup bulunamadı.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
     <value>Geçersiz Kullanıcı Filtre değeri.</value>
@@ -293,7 +293,7 @@
     <value>Lisans hatalı</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Lisans süresi dolmuş</value>
+    <value>Lisans süresi dolmuş.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Portal sayısı bu lisans için geçerli maksimum sayıyı aşmaktadır</value>

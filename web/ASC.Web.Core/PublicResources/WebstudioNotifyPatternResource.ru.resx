@@ -376,7 +376,7 @@ $GreenButton
 *Обратите внимание*: эта ссылка действительна только 48 часов. Пожалуйста, выполните данную операцию в течение этого времени.</value>
   </data>
   <data name="pattern_mailbox_created" xml:space="preserve">
-    <value>      Здравствуйте, $UserName,
+    <value>Здравствуйте, $UserName,
 
       Администратор создал для вас новый почтовый ящик &lt;b&gt;$Address&lt;/b&gt; на портале "${__VirtualRootPath}":"${__VirtualRootPath}".
 
@@ -399,7 +399,7 @@ $GreenButton
       Если вы получили это письмо по ошибке, проигнорируйте его или обратитесь к администратору вашего портала за разъяснениями.</value>
   </data>
   <data name="pattern_mailbox_password_changed" xml:space="preserve">
-    <value>      Здравствуйте, $UserName,
+    <value>Здравствуйте, $UserName,
 
       Пароль для почтового ящика &lt;b&gt;$Address&lt;/b&gt; был изменен.
 

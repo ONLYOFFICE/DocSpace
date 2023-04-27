@@ -629,7 +629,7 @@
     <value>Превышен лимит запросов</value>
   </data>
   <data name="ErrorTenantTooShort" xml:space="preserve">
-    <value>Домен клиента не может быть пустым</value>
+    <value>Домен клиента не может быть пустым.</value>
   </data>
   <data name="ErrorTenantTooShortFormat" xml:space="preserve">
     <value>Доменное имя должно содержать от {0} до {1} символов.</value>

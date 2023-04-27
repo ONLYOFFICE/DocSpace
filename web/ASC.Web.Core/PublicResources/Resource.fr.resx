@@ -86,10 +86,10 @@
     <value>S3 accesskey</value>
   </data>
   <data name="ConsumersapiKey" xml:space="preserve">
-    <value>Clé API Rackspace </value>
+    <value>Clé API Rackspace</value>
   </data>
   <data name="ConsumersauthPwd" xml:space="preserve">
-    <value>authPwd Selectel </value>
+    <value>authPwd Selectel</value>
   </data>
   <data name="ConsumersauthUser" xml:space="preserve">
     <value>authUser Selectel</value>
@@ -257,7 +257,7 @@
     <value>Saisissez le nom du conteneur Google Cloud bucket pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
-    <value>Connecter service Google Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail. </value>
+    <value>Connecter service Google Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
   </data>
   <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
     <value>Quand vous ajoutez le service  Google Cloud à votre portail, vous pourrez l'utiliser pour créer des copies de sauvegarde de votre portail en vous assurant qu'aucune donnée ne sera jamais perdue. Utilisez-le aussi pour stocker les données et le contenu statique de votre portail.</value>
@@ -302,7 +302,7 @@
     <value>Clé secrète</value>
   </data>
   <data name="ConsumersMailruDescription" xml:space="preserve">
-    <value>Activer l'application pour se connecter au portail via le compte Mail.ru</value>
+    <value>Activer l'application pour se connecter au portail via le compte Mail.ru.</value>
   </data>
   <data name="ConsumersMailruInstruction" xml:space="preserve">
     <value>Lorsque vous connectez l'application Mail.ru, vous pouvez activer la connexion au portail via votre compte Mail.ru sur la page de votre profil.</value>
@@ -311,7 +311,7 @@
     <value>Rackspace Cloud Storage</value>
   </data>
   <data name="ConsumersRackspaceDescription" xml:space="preserve">
-    <value>Connecter service Rackspace Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail. </value>
+    <value>Connecter service Rackspace Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
   </data>
   <data name="ConsumersRackspaceInstruction" xml:space="preserve">
     <value>Quand vous ajoutez le service  Rackspace  à votre portail, vous pourrez l'utiliser pour créer des copies de sauvegarde de votre portail en vous assurant qu'aucune donnée ne sera jamais perdue. Utilisez-le aussi pour stocker les données et le contenu statique de votre portail.</value>
@@ -413,7 +413,7 @@
     <value>En ajoutant l'application de service SMS Center, vous pourrez activer l'authentification à deux facteurs et recevoir un SMS avec un code permettant à l'utilisateur d'accéder au portail ONLYOFFICE. L'application SMS Center est utile en tant que fournisseur pour les pays de la CEI.</value>
   </data>
   <data name="ConsumersSmscInstructionV11" xml:space="preserve">
-    <value>Utilisez cette application pour activer l'authentification à deux facteurs via le service SMS Center. {0}Insérez l'identifiant de votre compte smsc et votre mot de passe (ou le mot de passe MD5 hash) en caractères minuscules : </value>
+    <value>Utilisez cete application pour activer l'authentification à deux facteurs via le service SMS Center. {0}Insérez l'identifiant de votre compte smsc et votre mot de passe (ou le mot de passe MD5 hash) en caractères minuscules :</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Login</value>
@@ -524,7 +524,7 @@
     <value>Identifiant</value>
   </data>
   <data name="ConsumersYandexClientSecret" xml:space="preserve">
-    <value> Mot de passe</value>
+    <value>Mot de passe</value>
   </data>
   <data name="ConsumersYandexDescription" xml:space="preserve">
     <value>Activer l'application pour vous connecter au portail via le compte Yandex.</value>
@@ -554,7 +554,7 @@
     <value>Pas d'autorisation pour effectuer cette action</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>L'accès au portail est limité</value>
+    <value>L'accès au portail est limité.</value>
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>Clés invalides</value>
@@ -629,7 +629,7 @@
     <value>Le délai de  requête est dépassé</value>
   </data>
   <data name="ErrorTenantTooShort" xml:space="preserve">
-    <value>L'hôte du domaine ne peut pas être vide</value>
+    <value>L'hôte du domaine ne peut pas être vide.</value>
   </data>
   <data name="ErrorTenantTooShortFormat" xml:space="preserve">
     <value>Le nom de domaine doit contenir de {0} à {1} caractères.</value>
@@ -650,9 +650,7 @@
     <value>Remarque: la taille du fichier ne doit pas dépasser {1}{0}{2}</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
-    <value>octets,ko,Mo,Go,To
-
-</value>
+    <value>octets,ko,Mo,Go,To</value>
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Le lien pour confirmer votre compte a été envoyé à l'adresse email indiquée</value>
@@ -682,7 +680,7 @@
     <value>Le domaine LDAP non trouvé.</value>
   </data>
   <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
-    <value>Pas de groupes trouvés</value>
+    <value>Pas de groupes trouvés.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
     <value>Filtre d'utilisateur non valide.</value>
@@ -697,7 +695,7 @@
     <value>Erreur inconnue.</value>
   </data>
   <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
-    <value>Pas d'utilisateurs trouvés</value>
+    <value>Pas d'utilisateurs trouvés.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
     <value>Impossible d'obtenir l'Attribut du groupe pour un ou plusieurs groupes.</value>
@@ -754,7 +752,7 @@
     <value>Suppression de groupes anciens chargés plus tôt via LDAP</value>
   </data>
   <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
-    <value>Retrait des droits d'accès dépassés qui étaient téléchargés avec LDAP </value>
+    <value>Retrait des droits d'accès dépassés qui étaient téléchargés avec LDAP</value>
   </data>
   <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
     <value>Désactivation des profils d'utilisateurs obsolètes chargés plus tôt via LDAP</value>
@@ -763,7 +761,7 @@
     <value>Enregistrement des groupes</value>
   </data>
   <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
-    <value>Paramètres d'eregistrement </value>
+    <value>Paramètres d'enregistrement</value>
   </data>
   <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
     <value>Sauvegarde de photo</value>
@@ -784,7 +782,7 @@
     <value>Un type d'authentification plus sécurisée est requise. Veuillez utiliser une connexion cryptée ou activer l'authentification simple sur le serveur.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
-    <value>La limite d'utilisateur du plan tarifaire courant a été atteinte.</value>
+    <value>La limite d'utilisateur du plan tarifaire courant a été atteinte</value>
   </data>
   <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
     <value>StartTLS n'est pas pris en charge sur la version actuelle du serveur LDAP.</value>
@@ -799,7 +797,7 @@
     <value>La licence n'est pas correcte</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>La licence  n'est pas valide pour cette version du portail</value>
+    <value>La licence  n'est pas valide pour cette version du portail.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Le nombre de portails a dépassé la limite autorisée par la licence</value>
@@ -814,7 +812,7 @@
     <value>Téléchargé avec succès. {0}Support et mises à jour ne sont plus disponibles pour cette licence depuis {2}.{1}</value>
   </data>
   <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
-    <value>Chargement réussi. {0}Le support n'est plus disponible pour cette licence à partir de {2}.{1} </value>
+    <value>Chargement réussi. {0}Le support n'est plus disponible pour cette licence à partir de {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Les instructions de changement d'émail ont été envoyées avec succès</value>
@@ -823,7 +821,7 @@
     <value>Si l'utilisateur avec le mail {0} existe, les consignes du changement de mot de passe ont été envoyées à votre adresse mail.</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
-    <value>Pour changer le numéro; vous avez besoin de supprimer le numéro de téléphone actuel.</value>
+    <value>Pour changer le numéro; vous avez besoin de supprimer le numéro de téléphone actuel</value>
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Région</value>

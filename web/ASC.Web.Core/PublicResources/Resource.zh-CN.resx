@@ -215,7 +215,7 @@
     <value>服务器无法保存设置。</value>
   </data>
   <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
-    <value>用户名或密码有误</value>
+    <value>用户名或密码有误。</value>
   </data>
   <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
     <value>找不到LDAP域名。</value>
@@ -314,7 +314,7 @@
     <value>当前LDAP服务器不支持StartTLS。</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>LDAP操作太多</value>
+    <value>LDAP操作太多。</value>
   </data>
   <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
     <value>无法获取用户/组对象的唯一ID。默认情况下，系统将尝试匹配以下标识符之一：entryUUID，nsuniqueid，GUID，objectSid。若没有属性对应于您的LDAP服务器，请在web.appsettings.config文件的ldap.unique.id设置中指定必要的属性。</value>
@@ -323,7 +323,7 @@
     <value>许可证有误</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>许可证已过期</value>
+    <value>许可证已过期。</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>门户数量超过许可证允许的数量</value>
@@ -335,7 +335,7 @@
     <value>上传成功</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>详细的email地址变更指引已发送到{0}的电子邮箱</value>
+    <value>详细的email地址变更指引已发送到的电子邮箱</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>若想更改号码，您需要删除当前的电话号码</value>

@@ -110,13 +110,13 @@
     <value>Pole e-mail jest puste</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
-    <value>Obecny e-mail jest zbieżny z nowym adresem e-mail.</value>
+    <value>Obecny e-mail jest zbieżny z nowym adresem e-mail</value>
   </data>
   <data name="ErrorEmptyFields" xml:space="preserve">
     <value>Proszę wypełnić wszystkie pola</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Przesłany plik nie został znaleziony.</value>
+    <value>Przesłany plik nie został znaleziony</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Rozmiar obrazka jest zbyt duży</value>
@@ -152,16 +152,16 @@
     <value>wielkie litery</value>
   </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
-    <value>Użytkownik nie został odnaleziony.</value>
+    <value>Użytkownik nie został odnaleziony</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
-    <value>Użytkownik z adresem e-mail "{0}" nie został odnaleziony.</value>
+    <value>Użytkownik z adresem e-mail "{0}" nie został odnaleziony</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
     <value>Region UE (Frankfurt)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
-    <value>Maksymalny rozmiar pliku został przekroczony.</value>
+    <value>Maksymalny rozmiar pliku został przekroczony</value>
   </data>
   <data name="FileSizeNote" xml:space="preserve">
     <value>Uwaga: rozmiar pliku nie może przekroczyć {1}{0}{2}</value>
@@ -170,7 +170,7 @@
     <value>bajty,kB,MB,GB</value>
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
-    <value>Link potwierdzający założenie konta został wysłany na podany e-mail.</value>
+    <value>Link potwierdzający założenie konta został wysłany na podany e-mail</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Imię</value>
@@ -293,7 +293,7 @@
     <value>Licencja nie jest poprawna</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licencja wygasła</value>
+    <value>Licencja wygasła.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Liczba portali przekracza dozwoloną liczbę licencji</value>
@@ -356,10 +356,10 @@
     <value>Nieprawidłowe mapowanie pól</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
-    <value>Ustawienie powitania pozostaje puste.</value>
+    <value>Ustawienie powitania pozostaje puste</value>
   </data>
   <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
-    <value>Ustawienia zostały zaktualizowane.</value>
+    <value>Ustawienia zostały zaktualizowane</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
     <value>Instrukcje dotyczące usunięcia profilu zostały wysłane na {0} twój adres e-mail</value>
@@ -368,7 +368,7 @@
     <value>Region Stanów Zjednoczonych (Oregon)</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
-    <value>Co nowego?</value>
+    <value>Co nowego</value>
   </data>
   <data name="TariffsFeature_audit" xml:space="preserve">
     <value>Śledzenie logowań i działań użytkowników</value>

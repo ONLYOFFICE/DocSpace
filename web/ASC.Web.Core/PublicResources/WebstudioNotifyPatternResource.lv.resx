@@ -314,13 +314,12 @@ $GreenButton
 *Piezīme*: šī saite ir derīga 48 stundas. Lūdzu, šajā laikā pabeidziet šo darbību.</value>
   </data>
   <data name="pattern_migration_error" xml:space="preserve">
-    <value>h1.Kļūda, pārnesot portālu uz citu apgabalu
+    <value>h1.Kļūda, pārnesot portālu uz citu apgabalu $RegionName
 
-Radās kļūda, pārnesot portālu uz apgabalu $RegionName. Lūdzu, mēģiniet vēlāk vēlreiz.
+Radās kļūda, pārnesot portālu uz apgabalu. Lūdzu, mēģiniet vēlāk vēlreiz.
 Jūsu portāls ir pieejams vecajā adresē "$PortalUrl":"$PortalUrl"
 
 Ja jums radušies kādi jautājumi vai ir nepieciešama palīdzība, sazinieties ar mums, rakstot uz "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Ar cieņu
 ONLYOFFICE™ atbalsta komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"
@@ -570,7 +569,7 @@ ONLYOFFICE komanda</value>
     <value>Uzaicinājums pievienoties portālam ${__VirtualRootPath}</value>
   </data>
   <data name="subject_migration_error" xml:space="preserve">
-    <value>${__VirtualRootPath}. Kļūda, pārnesot portālu uz citu apgabalu</value>
+    <value>${LetterLogoText}. Kļūda, pārnesot portālu uz citu apgabalu</value>
   </data>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Portāla pārnese uz citu apgabalu uzsākta</value>

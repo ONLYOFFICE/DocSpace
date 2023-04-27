@@ -134,7 +134,7 @@
     <value>Tên miền không hợp lệ</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
-    <value>Chưa có mật khẩu</value>
+    <value>Chưa có mật khẩu.</value>
   </data>
   <data name="ErrorPasswordLength" xml:space="preserve">
     <value>từ {0} đến {1} ký tự</value>
@@ -155,7 +155,7 @@
     <value>Không tìm thấy người dùng này</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
-    <value>Không tìm thấy người dùng với thư điện tử "{0}" </value>
+    <value>Không tìm thấy người dùng với thư điện tử "{0}"</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
     <value>Vùng châu Âu (Frankfurt)</value>
@@ -167,8 +167,7 @@
     <value>Lưu ý: kích thước file không được vượt quá {1}{0}{2}</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
-    <value>bytes,KB,MB,GB,TB
-</value>
+    <value>bytes,KB,MB,GB,TB</value>
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Liên kết để xác nhận tài khoản của bạn đã được gửi tới email chỉ định</value>
@@ -294,7 +293,7 @@
     <value>Giấy phép không đúng</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Giấy phép đã hết hạn</value>
+    <value>Giấy phép đã hết hạn.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Số cổng thông tin vượt quá số lượng quy định trong giấy phép</value>

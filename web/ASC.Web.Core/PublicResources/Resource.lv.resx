@@ -92,7 +92,7 @@
     <value>Nav atļaujas šajai darbībai</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>Piekļuve portālam ir ierobežota</value>
+    <value>Piekļuve portālam ir ierobežota.</value>
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>Nepareizas atslēgas</value>
@@ -185,7 +185,7 @@
     <value>Lietotājus neizdevās izveidot, saņemtie dati nav pareizi.</value>
   </data>
   <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
-    <value>Serverim neizdevās iegūt iestatījumus</value>
+    <value>Serverim neizdevās iegūt iestatījumus.</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Serverim neizdevās noglabāt iestatījumus.</value>
@@ -200,13 +200,13 @@
     <value>Nav atrastas grupas.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
-    <value>Nederīga lietotāja filtra vērtība</value>
+    <value>Nederīga lietotāja filtra vērtība.</value>
   </data>
   <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
-    <value>Nezināma kļūda</value>
+    <value>Nezināma kļūda.</value>
   </data>
   <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
-    <value>Neizdevās atrast lietotājus</value>
+    <value>Neizdevās atrast lietotājus.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
     <value>Neizdevās iegūt grupas atribūtu vienai vai vairākām grupām.</value>
@@ -278,13 +278,13 @@
     <value>Ir nepieciešams drošās autentifikācijas veids. Lūdzu, izmantojiet šifrēto savienojumu vai iespējojiet autentifikāciju serverī.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
-    <value>Ir sasniegts šībrīža cenu plāna lietotāju limits.</value>
+    <value>Ir sasniegts šībrīža cenu plāna lietotāju limits</value>
   </data>
   <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
-    <value>Šībrīža LDAP serveris neatbalsta StartTLS</value>
+    <value>Šībrīža LDAP serveris neatbalsta StartTLS.</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>Par daudz LDAP darbību</value>
+    <value>Par daudz LDAP darbību.</value>
   </data>
   <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
     <value>Neizdevās iegūt lietotāja/grupas objektu unikālo ID. Sistēma pēc noklusējuma mēģinās saskaņot vienu no šādiem identifikatoriem: entryUUID, nsuniqueid, GUID, objectSid. Ja neviens no atribūtiem neatbilst jūsu LDAP serverim, lūdzu, precizējiet nepieciešamo atribūtu ldap.unique.id iestatījumā web.appsettings.config failā.</value>
@@ -293,7 +293,7 @@
     <value>Licence nav pareiza</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licencei beidzies termiņš</value>
+    <value>Licencei beidzies termiņš.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Portālu skaits pārsniedz licencē atļauto</value>

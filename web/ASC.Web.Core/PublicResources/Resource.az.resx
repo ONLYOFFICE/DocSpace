@@ -77,10 +77,10 @@
     <value>SMS vasitəsi ilə</value>
   </data>
   <data name="ButtonTfaAppEnable" xml:space="preserve">
-    <value> Audentifikasiya tətbiqi ilə</value>
+    <value>Audentifikasiya tətbiqi ilə</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
-    <value>Əməliyyatı təsdiq etmək üçün keçid: e-poçt ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+    <value>Əməliyyatı təsdiq etmək üçün keçid: e-poçt ünvanına göndərildi. (portal sahibinin e-poçt ünvanı).</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>LDAP istifadəçisi üçün parol bərpa əməliyyatı qadağandır</value>
@@ -92,7 +92,7 @@
     <value>İstifadəçi seçimləri</value>
   </data>
   <data name="DnsChangeMsg" xml:space="preserve">
-    <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+    <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı).</value>
   </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Yanlış Nümunə id.</value>
@@ -224,7 +224,7 @@
     <value>Uğurla yükləndi. {0}Bu lisenziya üçün dəstək {2} tarixindən etibarən mövcud deyil.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>Elektron poçt dəyişdirilmə instruksiyaları {0} elektron poçt ünvanına göndərildi.</value>
+    <value>Elektron poçt dəyişdirilmə instruksiyaları elektron poçt ünvanına göndərildi</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>{0} e-poçtu olan istifadəçi varsa, parol dəyişdirmə təlimatı bu e-poçt ünvanına göndərilib.</value>

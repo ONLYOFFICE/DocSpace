@@ -89,7 +89,7 @@
     <value>Папка була створена в</value>
   </data>
   <data name="ActionCreateForum" xml:space="preserve">
-    <value>Форум був створений в </value>
+    <value>Форум був створений в</value>
   </data>
   <data name="ActionCreateForumPoll" xml:space="preserve">
     <value>Опитування було створено в</value>
@@ -392,7 +392,7 @@ $GreenButton
 
 Якщо у вас виникли питання або потрібна допомога, не соромтеся звертатися до нас за адресою "support@onlyoffice.com":"mailto: support@onlyoffice.com"
 
-З найкращими побажаннями,</value>
+З найкращими побажаннями</value>
   </data>
   <data name="pattern_portal_rename" xml:space="preserve">
     <value>h1.Зміна адреси порталу
@@ -542,7 +542,7 @@ $activity
     <value>Запрошення приєднатись до порталу ${__VirtualRootPath}</value>
   </data>
   <data name="subject_migration_error" xml:space="preserve">
-    <value>${LetterLogoText}.Інша помилка переміщення регіонального порталу </value>
+    <value>${LetterLogoText}.Інша помилка переміщення регіонального порталу</value>
   </data>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}.Розпочалася інша міграція порталу</value>
@@ -551,7 +551,7 @@ $activity
     <value>${LetterLogoText}. Інше переміщенні регіонального порталу успішно завершено</value>
   </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
-    <value>Деактивація  ${__ VirtualRootPath}порталу</value>
+    <value>Деактивація  ${__VirtualRootPath} порталу</value>
   </data>
   <data name="subject_portal_delete" xml:space="preserve">
     <value>Видалення порталу ${__VirtualRootPath}</value>
@@ -575,7 +575,7 @@ $activity
     <value>${LetterLogoText}. Відновлення завершено</value>
   </data>
   <data name="subject_restore_started" xml:space="preserve">
-    <value>${LetterLogoText}. Відновлення розпочалося </value>
+    <value>${LetterLogoText}. Відновлення розпочалося</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
     <value>${__VirtualRootPath} повідомлення про зміну профілю порталу</value>

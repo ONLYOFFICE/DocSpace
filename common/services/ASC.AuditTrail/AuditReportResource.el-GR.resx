@@ -134,7 +134,7 @@
     <value>Επαφές Που Εξήχθησαν Σε Αρχείο CSV: {0}</value>
   </data>
   <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Επαφής Που Εισήχθησαν Από Αρχείο CSV </value>
+    <value>Επαφής Που Εισήχθησαν Από Αρχείο CSV</value>
   </data>
   <data name="ContactsModule" xml:space="preserve">
     <value>Επαφές</value>
@@ -356,7 +356,7 @@
     <value>Αποτυχία Σύνδεσης. Πάρα πολλές προσπάθειες</value>
   </data>
   <data name="LoginFailDisabledProfile" xml:space="preserve">
-    <value>Αποτυχία Σύνδεσης. Το Προφίλ Απενεργοποιήθηκε.</value>
+    <value>Αποτυχία Σύνδεσης. Το Προφίλ Απενεργοποιήθηκε</value>
   </data>
   <data name="LoginFailInvalidCombination" xml:space="preserve">
     <value>Η Σύνδεση Απέτυχε. Μη έγκυρος συνδυασμός ονόματος χρήστη-συνθηματικού</value>
@@ -636,5 +636,11 @@
   </data>
   <data name="UserUpdatedPassword" xml:space="preserve">
     <value>Το Συνθηματικό Ενημερώθηκε</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Το δωμάτιο δημιουργήθηκε</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Δωμάτια</value>
   </data>
 </root>

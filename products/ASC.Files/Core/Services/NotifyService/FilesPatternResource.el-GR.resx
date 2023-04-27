@@ -96,7 +96,7 @@ $Message</value>
     <value>Έγγραφα. Η κατάσταση υπογραφής άλλαξε</value>
   </data>
   <data name="subject_EditorMentions" xml:space="preserve">
-    <value>Έγγραφα. Αναφέρεται σε έγγραφο.</value>
+    <value>Έγγραφα. Αναφέρεται σε έγγραφο</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
     <value>Έγγραφα. Πρόσβαση που παρέχεται στο $DocumentTitle</value>

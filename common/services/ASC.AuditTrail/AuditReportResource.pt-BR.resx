@@ -290,10 +290,10 @@
     <value>Configurações de etiqueta de contatos atualizadas</value>
   </data>
   <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Nível de temperatura do contato criado [{0}].</value>
+    <value>Nível de temperatura do contato criado [{0}]</value>
   </data>
   <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Nível de temperatura do contato excluído [{0}].</value>
+    <value>Nível de temperatura do contato excluído [{0}]</value>
   </data>
   <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
     <value>Configurações do nível de temperatura do contato atualizadas</value>
@@ -488,7 +488,7 @@
     <value>Arquivo convertido para formato interno: {0}</value>
   </data>
   <data name="FileCopied" xml:space="preserve">
-    <value>Arquivos. Copiados da pasta "{1}" para a pasta: "{2}"</value>
+    <value>Arquivos [{0}]. Copiados da pasta "{1}" para a pasta: "{2}"</value>
   </data>
   <data name="FileCopiedWithOverwriting" xml:space="preserve">
     <value>Arquivos[{0}]. Copiado com substituição da pasta "{1}" para a pasta: "{2}"</value>
@@ -497,7 +497,7 @@
     <value>Arquivo criado: {0}</value>
   </data>
   <data name="FileCreatedVersion" xml:space="preserve">
-    <value>Arquivos [{0}]. Revisão {1}. Versão criada </value>
+    <value>Arquivos [{0}]. Revisão {1}. Versão criada</value>
   </data>
   <data name="FileDeleted" xml:space="preserve">
     <value>Arquivo excluído: {0}</value>
@@ -950,7 +950,7 @@
     <value>Pessoa criada: {0}</value>
   </data>
   <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Pessoas [{0}]. Etiqueta da empresa criada: {0}</value>
+    <value>Pessoas [{0}]. Etiqueta da empresa criada: {1}</value>
   </data>
   <data name="PersonCreatedHistoryEvent" xml:space="preserve">
     <value>Pessoas [{0}]. Evento histórico criado: {1}</value>
@@ -1046,13 +1046,13 @@
     <value>Produtos [{0}]. Acesso restrito</value>
   </data>
   <data name="ProductAddedAdministrator" xml:space="preserve">
-    <value>Produtos [{0}]. Administrador adicionado: {0}</value>
+    <value>Produtos [{0}]. Administrador adicionado: {1}</value>
   </data>
   <data name="ProductCol" xml:space="preserve">
     <value>Produto</value>
   </data>
   <data name="ProductDeletedAdministrator" xml:space="preserve">
-    <value>Produtos [{0}]. Administrador excluído: {0}</value>
+    <value>Produtos [{0}]. Administrador excluído: {1}</value>
   </data>
   <data name="ProductsListUpdated" xml:space="preserve">
     <value>Lista de produtos atualizada</value>
@@ -1395,5 +1395,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Chave de formulário de contato do site atualizada</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Sala criada</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Salas</value>
   </data>
 </root>

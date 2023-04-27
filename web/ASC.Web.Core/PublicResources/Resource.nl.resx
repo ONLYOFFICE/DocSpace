@@ -152,7 +152,7 @@
     <value>hoofdletters</value>
   </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
-    <value>De gebruiker kon niet worden gevonden </value>
+    <value>De gebruiker kon niet worden gevonden</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
     <value>De gebruiker met "{0}" e-mail kon niet worden gevonden</value>
@@ -212,7 +212,7 @@
     <value>Kon Groepsattribuut niet ophalen voor een of meerdere groepen.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
-    <value>Onjuiste Groepsfilter</value>
+    <value>Onjuiste Groepsfilter.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
     <value>Kon Groepsnaamattribuut niet ophalen voor een of meerdere groepen.</value>
@@ -287,7 +287,7 @@
     <value>Licentie is niet correct</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licentie is verlopen</value>
+    <value>Licentie is verlopen.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Het aantal portalen overschrijdt het aantal toegestaan voor de licentie</value>
@@ -296,7 +296,7 @@
     <value>Het aantal gebruikers overschrijdt het aantal toegestaan voor de licentie</value>
   </data>
   <data name="LicenseUploaded" xml:space="preserve">
-    <value>Succesvol geüpload </value>
+    <value>Succesvol geüpload</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>De e-mailwijzigingsinstructies zijn succesvol verzonden</value>

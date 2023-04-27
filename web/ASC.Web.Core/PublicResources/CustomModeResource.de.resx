@@ -158,7 +158,7 @@ Beim Entfernen persönlicher Daten es wurde freigegeben:
     <value>Löschung des ONLYOFFICE Personal-Kontos</value>
   </data>
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
-    <value>${LetterLogoText}. Entfernen von Benutzerdaten ist abgeschlossen.</value>
+    <value>${LetterLogoText}. Entfernen von Benutzerdaten ist abgeschlossen</value>
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Neues Portal wurde registriert</value>

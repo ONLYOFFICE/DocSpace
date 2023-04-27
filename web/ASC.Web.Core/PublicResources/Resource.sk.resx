@@ -80,7 +80,7 @@
     <value>Obnova hesla pre používateľa LDAP je zakázaná</value>
   </data>
   <data name="CouldNotRecoverPasswordForSsoUser" xml:space="preserve">
-    <value>Obnova hesla je zakázaná pre SSO používateľa </value>
+    <value>Obnova hesla je zakázaná pre SSO používateľa</value>
   </data>
   <data name="CustomNamingPeopleSchema" xml:space="preserve">
     <value>Vlastný</value>
@@ -236,9 +236,7 @@
     <value>Upraviť používateľov LDAP na bežných používateľov portálu</value>
   </data>
   <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
-    <value>pridanie používateľa
-
-</value>
+    <value>pridanie používateľa</value>
   </data>
   <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
     <value>Overenie certifikátu</value>
@@ -259,9 +257,7 @@
     <value>Načítanie základných informácií LDAP</value>
   </data>
   <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
-    <value>odstránenie používateľa
-
-</value>
+    <value>odstránenie používateľa</value>
   </data>
   <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
     <value>Odstránenie zastaraných skupín, ktoré boli skôr nahraté pomocou LDAP</value>
@@ -300,7 +296,7 @@
     <value>Licencia nie je správna</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Platnosť licencie uplynula</value>
+    <value>Platnosť licencie uplynula.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Počet portálov presahuje počet, ktorý dovoľuje licencia</value>
@@ -351,7 +347,7 @@
     <value>Nastavenia sa nepodarilo uložiť</value>
   </data>
   <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
-    <value>Nastavenia nemôžu byť nulové.</value>
+    <value>Nastavenia nemôžu byť nulové</value>
   </data>
   <data name="SsoSettingsInvalidBinding" xml:space="preserve">
     <value>Neplatná väzba: {0}</value>
@@ -369,7 +365,7 @@
     <value>Nastavenia boli úspešne aktualizované</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Pokyny k zmazaniu Vášho profilu boli odoslané na e-mailovú adresu {0}.</value>
+    <value>Pokyny k zmazaniu Vášho profilu boli odoslané na e-mailovú adresu {0}</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>Región Západ USA (Oregon)</value>
