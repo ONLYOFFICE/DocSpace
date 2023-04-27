@@ -41,4 +41,31 @@ public static class SecureHelper
             return false;
         }
     }
+
+    public static string GenerateSecureKeyHeader(string path, EmailValidationKeyProvider keyProvider)
+    {
+        var ticks = DateTime.UtcNow.Ticks;
+        var data = path.Replace('/', Path.DirectorySeparatorChar).Replace('\\', Path.DirectorySeparatorChar) + '.' + ticks;
+        var key = keyProvider.GetEmailKey(data);
+
+        return Constants.SecureKeyHeader + ':' + ticks + '-' + key;
+    }
+
+    public static bool CheckSecureKeyHeader(string header, string path, EmailValidationKeyProvider keyProvider)
+    {
+        if (string.IsNullOrEmpty(header))
+        {
+            return false;
+        }
+
+        header = header.Replace(Constants.SecureKeyHeader + ':', string.Empty);
+
+        var separatorPosition = header.IndexOf('-');
+        var ticks = header[..separatorPosition];
+        var key = header[(separatorPosition + 1)..];
+
+        var result = keyProvider.ValidateEmailKey(path + '.' + ticks, key);
+
+        return result == EmailValidationKeyProvider.ValidationResult.Ok;
+    }
 }
