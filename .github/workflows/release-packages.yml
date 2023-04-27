@@ -121,6 +121,7 @@ jobs:
           %__gpg /usr/bin/gpg
           EOF
           cat ~/.rpmmacros
+          sudo cp /home/runner/.rpmmacros ~
           which gpg
 
           
