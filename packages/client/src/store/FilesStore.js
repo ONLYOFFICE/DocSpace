@@ -1805,6 +1805,8 @@ class FilesStore {
       const canViewRoomInfo = item.security?.Read;
       const canMuteRoom = item.security?.Mute;
 
+      const isPublicRoom = item.roomType === RoomsType.PublicRoom;
+
       let roomOptions = [
         "select",
         "open",
@@ -1813,6 +1815,7 @@ class FilesStore {
         "reconnect-storage",
         "edit-room",
         "invite-users-to-room",
+        "external-link",
         "room-info",
         "pin-room",
         "unpin-room",
@@ -1895,6 +1898,10 @@ class FilesStore {
           pluginRoomsKeys &&
             pluginRoomsKeys.forEach((key) => roomOptions.push(key));
         }
+      }
+
+      if (!isPublicRoom) {
+        roomOptions = this.removeOptions(roomOptions, ["external-link"]);
       }
 
       roomOptions = this.removeSeparator(roomOptions);
