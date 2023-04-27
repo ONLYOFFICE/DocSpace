@@ -33,12 +33,16 @@ const StyledAccountsItemTitle = styled.div`
   }
 
   .info-panel__info-text {
-    padding-top: 24px;
     display: flex;
-    flex-direction: ${(props) => (props.isPending ? "row" : "column")};
+    flex-direction: column;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+
+    .info-panel__info-wrapper {
+      display: flex;
+      flex-direction: row;
+    }
 
     .badges {
       height: 22px;
@@ -57,6 +61,10 @@ const StyledAccountsItemTitle = styled.div`
       line-height: 20px;
       color: ${(props) => props.theme.text.disableColor};
       user-select: text;
+    }
+
+    .sso-badge {
+      margin-top: 8px;
     }
   }
 
