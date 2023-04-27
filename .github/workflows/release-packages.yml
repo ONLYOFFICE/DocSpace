@@ -123,7 +123,20 @@ jobs:
       - name: Sign packages and check 
         run: |
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          pwd
+          sudo chmod 755 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
+          sudo chown -R $USER:$USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          sudo chgrp -R $USER:$USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          echo "........................................"
+          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
+          echo "........................................"
+          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS
+          echo "........................................"
+          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm
+          echo "........................................"
           export GPG_TTY=$(tty)
+          # GPG_TTY=$TTY sudo rpm --addsign
           rpm --define "_gpg_name Elbakyan-Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           
