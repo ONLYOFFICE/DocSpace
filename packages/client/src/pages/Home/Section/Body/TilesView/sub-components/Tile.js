@@ -679,7 +679,7 @@ class Tile extends React.PureComponent {
                       className="expandButton"
                       directionX="right"
                       getData={getOptions}
-                      isNew={true}
+                      displayType="toggle"
                       onClick={onContextMenu}
                       title={title}
                     />
@@ -772,7 +772,7 @@ class Tile extends React.PureComponent {
                     className="expandButton"
                     directionX="right"
                     getData={getOptions}
-                    isNew={true}
+                    displayType="toggle"
                     onClick={onContextMenu}
                     title={title}
                   />
@@ -851,7 +851,7 @@ class Tile extends React.PureComponent {
                     className="expandButton"
                     directionX="right"
                     getData={getOptions}
-                    isNew={true}
+                    displayType="toggle"
                     onClick={onContextMenu}
                     title={title}
                   />

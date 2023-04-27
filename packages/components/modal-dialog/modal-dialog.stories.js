@@ -13,12 +13,9 @@ export default {
       },
     },
   },
-  argTypes: {
-    onOk: { action: "onOk" },
-  },
 };
 
-const Template = ({ onOk, ...args }) => {
+const Template = ({ ...args }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const openModal = () => setIsVisible(true);
@@ -43,7 +40,6 @@ const Template = ({ onOk, ...args }) => {
             scale
             size="normal"
             onClick={() => {
-              onOk();
               closeModal();
             }}
           />
@@ -63,10 +59,6 @@ const Template = ({ onOk, ...args }) => {
       </ModalDialog>
     </>
   );
-};
-
-Template.propTypes = {
-  onOk: PropTypes.func,
 };
 
 export const Default = Template.bind({});

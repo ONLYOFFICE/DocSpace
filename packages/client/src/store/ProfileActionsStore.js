@@ -129,9 +129,8 @@ class ProfileActionsStore {
   };
 
   onSupportClick = () => {
-    const supportUrl =
-      this.authStore.settingsStore.additionalResourcesData
-        ?.feedbackAndSupportUrl;
+    const supportUrl = this.authStore.settingsStore.additionalResourcesData
+      ?.feedbackAndSupportUrl;
 
     window.open(supportUrl, "_blank");
   };
@@ -162,11 +161,6 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      setTimeout(() => {
-        window.location.replace(
-          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
-        );
-      }, 300);
     });
   };
 
@@ -334,13 +328,12 @@ class ProfileActionsStore {
       return actionsArray;
     }
 
-    const feedbackAndSupportEnabled =
-      this.authStore.settingsStore.additionalResourcesData
-        ?.feedbackAndSupportEnabled;
-    const videoGuidesEnabled =
-      this.authStore.settingsStore.additionalResourcesData?.videoGuidesEnabled;
-    const helpCenterEnabled =
-      this.authStore.settingsStore.additionalResourcesData?.helpCenterEnabled;
+    const feedbackAndSupportEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.feedbackAndSupportEnabled;
+    const videoGuidesEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.videoGuidesEnabled;
+    const helpCenterEnabled = this.authStore.settingsStore
+      .additionalResourcesData?.helpCenterEnabled;
 
     if (!feedbackAndSupportEnabled) {
       const index = actionsArray.findIndex(

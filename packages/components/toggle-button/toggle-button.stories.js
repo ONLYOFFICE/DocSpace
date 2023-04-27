@@ -32,4 +32,5 @@ Default.args = {
   className: "toggle className",
   isDisabled: false,
   label: "label text",
+  isChecked: false,
 };

@@ -117,16 +117,19 @@ RowContent.propTypes = {
   children: PropTypes.node.isRequired,
   /** Accepts class */
   className: PropTypes.string,
-  /** If you do not need SideElements */
+  /** Disables SideElements */
   disableSideInfo: PropTypes.bool,
   /** Accepts id */
   id: PropTypes.string,
+  /** Sets the action initiated upon clicking the button */
   onClick: PropTypes.func,
-  /** Need for change side information color */
+  /** Changes the side information color */
   sideColor: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Width section */
   sectionWidth: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+  /** Converts the SideInfo */
   convertSideInfo: PropTypes.bool,
 };
 

@@ -271,4 +271,67 @@
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Kaj je novega</value>
   </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Spremljanje uporabnikovih prijav &amp; akcij</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimalna velikost datotek</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Velikost datoteke ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Število skrbnikov ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Število skrbnikov</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Samodejno varnostno kopiranje &amp; obnovitev</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Neomejeno število aktivnih sob</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Število sob ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} prostora za shranjevanje</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Prostor za shranjevanje ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Prostor za shranjevanje</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Sob:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Uporabljen prostor za shranjevanje:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Uporabnikov v sobi:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Neomejeno število uporabnikov</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Število uporabnikov ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Uporabnikov v sobi</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Število uporabnikov v sobi ne sme presegati {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Blagovna znamka &amp; prilagoditve</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Število skrbnikov/naprednih uporabnikov:</value>
+  </data>
 </root>

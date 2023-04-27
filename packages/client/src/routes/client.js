@@ -6,7 +6,7 @@ import PrivateRoute from "@docspace/common/components/PrivateRoute";
 import PublicRoute from "@docspace/common/components/PublicRoute";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 
-import { NotFoundError } from "./utils";
+import Error404 from "SRC_DIR/pages/Errors/404";
 
 const Client = loadable(() => import("../Client"));
 
@@ -34,7 +34,7 @@ const ClientRoutes = [
         </ErrorBoundary>
       </PrivateRoute>
     ),
-    errorElement: <NotFoundError />,
+    errorElement: <Error404 />,
     children: [
       {
         index: true,
@@ -109,6 +109,22 @@ const ClientRoutes = [
         ),
       },
       {
+        path: "rooms/shared/:room",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "rooms/shared/:room/filter",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
         path: "rooms/archived",
         element: (
           <PrivateRoute>
@@ -118,6 +134,22 @@ const ClientRoutes = [
       },
       {
         path: "rooms/archived/filter",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "rooms/archived/:room",
+        element: (
+          <PrivateRoute>
+            <Home />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "rooms/archived/:room/filter",
         element: (
           <PrivateRoute>
             <Home />

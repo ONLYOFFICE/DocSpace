@@ -88,7 +88,7 @@ const AllTemplate = (args) => {
           Bob Johnston
         </Link>
       </div>
-      <Tooltip id="link" offsetRight={90} effect="solid">
+      <Tooltip id="link" offsetRight={0} effect="solid">
         <div>
           <Text isBold={true} fontSize="16px">
             Bob Johnston
@@ -125,7 +125,7 @@ const AllTemplate = (args) => {
 
       <Tooltip
         id="group"
-        offsetRight={90}
+        offsetRight={0}
         getContent={(dataTip) =>
           dataTip ? (
             <div>

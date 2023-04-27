@@ -17,6 +17,7 @@
   "HideAuthPage": "認証ページを非表示にする",
   "LogoutEndpointUrl": "IdPシングルログアウトエンドポイントのURL",
   "LogoutEndpointUrlTooltip": "サービス提供者側でシングルログアウトに使用するURL",
+  "MetadataLoadError": "メタデータファイルが転送されていません",
   "NameIDFormat": "NameId フォーマット",
   "NewCertificate": "新しい証明書",
   "OpenCertificate": "公開証明書",
