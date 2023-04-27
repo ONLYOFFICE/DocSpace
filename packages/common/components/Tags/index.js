@@ -14,11 +14,10 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
       if (!columnCount) return;
 
       const newTags = [];
-
       const containerWidth = tagsRef.current.offsetWidth;
 
       if (tags.length === 1) {
-        if (tags[0]?.isDefault || tags[0]?.isThirdParty) {
+        if (tags[0]?.isDefault) {
           const tag = { ...tags[0], maxWidth: `100%` };
           newTags.push(tag);
         } else if (tags[0].isThirdParty) {
@@ -54,7 +53,6 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
             newTags.push(tag);
           } else if (tags[i].isDefault) {
             const tag = { ...tags[i], maxWidth: `${maxWidthPercent}%` };
-
             newTags.push(tag);
           } else {
             const tag = { label: tags[i], maxWidth: `${maxWidthPercent}%` };
