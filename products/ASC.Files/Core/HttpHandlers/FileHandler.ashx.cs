@@ -34,6 +34,7 @@ using static Dropbox.Api.UsersCommon.AccountType;
 using Image = SixLabors.ImageSharp.Image;
 using JsonException = System.Text.Json.JsonException;
 using MimeMapping = ASC.Common.Web.MimeMapping;
+using Status = ASC.Files.Core.Security.Status;
 
 namespace ASC.Web.Files;
 
@@ -87,6 +88,7 @@ public class FileHandlerService
     private readonly SocketManager _socketManager;
     private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly ExternalShare _externalShare;
 
     public FileHandlerService(
         FilesLinkUtility filesLinkUtility,
@@ -117,7 +119,8 @@ public class FileHandlerService
         CompressToArchive compressToArchive,
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
-        ThumbnailSettings thumbnailSettings)
+        ThumbnailSettings thumbnailSettings,
+        ExternalShare externalShare)
     {
         _filesLinkUtility = filesLinkUtility;
         _tenantExtra = tenantExtra;
@@ -148,6 +151,7 @@ public class FileHandlerService
         _logger = logger;
         _clientFactory = clientFactory;
         _thumbnailSettings = thumbnailSettings;
+        _externalShare = externalShare;
     }
 
     public Task Invoke(HttpContext context)
@@ -217,13 +221,14 @@ public class FileHandlerService
 
     private async Task BulkDownloadFile(HttpContext context)
     {
-        if (!_securityContext.IsAuthenticated)
+        var filename = context.Request.Query["filename"].FirstOrDefault();
+        var sessionKey = context.Request.Query["session"].FirstOrDefault();
+
+        if (!_securityContext.IsAuthenticated && string.IsNullOrEmpty(sessionKey))
         {
             context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
             return;
         }
-
-        var filename = context.Request.Query["filename"].FirstOrDefault();
 
         if (String.IsNullOrEmpty(filename))
         {
@@ -235,7 +240,28 @@ public class FileHandlerService
             filename = _instanceCrypto.Decrypt(Uri.UnescapeDataString(filename));
         }
 
-        var path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
+        string path;
+
+        if (!string.IsNullOrEmpty(sessionKey))
+        {
+            var session = _externalShare.ParseDownloadSessionKey(sessionKey);
+
+            if (session != null && _externalShare.TryGetSessionId(out var sessionId) && session.Id == sessionId &&
+                (await _externalShare.GetStatusAsync(session.LinkId)) == Status.Ok)
+            {
+                path = string.Format(@"{0}\{1}\{2}", session.LinkId, session.Id, filename);
+            }
+            else
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                return;
+            }
+        }
+        else
+        {
+            path = string.Format(@"{0}\{1}", _securityContext.CurrentAccount.ID, filename);
+        }
+        
         var store = _globalStore.GetStore();
 
         if (!await store.IsFileAsync(FileConstant.StorageDomainTmp, path))
@@ -247,7 +273,9 @@ public class FileHandlerService
 
         if (store.IsSupportedPreSignedUri)
         {
-            var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), null);
+            var headers = _securityContext.IsAuthenticated ? null : new[] { SecureHelper.GenerateSecureKeyHeader(path, _emailValidationKeyProvider) };
+
+            var tmp = await store.GetPreSignedUriAsync(FileConstant.StorageDomainTmp, path, TimeSpan.FromHours(1), headers);
             var url = tmp.ToString();
             context.Response.Redirect(HttpUtility.UrlPathEncode(url));
             return;
@@ -634,10 +662,34 @@ public class FileHandlerService
                 version = 0;
             }
             var doc = context.Request.Query[FilesLinkUtility.DocShareKey];
+            var share = context.Request.Query[FilesLinkUtility.FolderShareKey];
 
             await fileDao.InvalidateCacheAsync(id);
 
-            var (linkRight, file) = await _fileShareLink.CheckAsync(doc, fileDao);
+            var linkRight = FileShare.Restrict;
+            File<T> file = null;
+
+            if (!string.IsNullOrEmpty(share))
+            {
+                var result = await _externalShare.ValidateAsync(share);
+
+                if (result.Access != FileShare.Restrict)
+                {
+                    file = version > 0
+                        ? await fileDao.GetFileAsync(id, version)
+                        : await fileDao.GetFileAsync(id);
+
+                    if (file != null && await _fileSecurity.CanDownloadAsync(file))
+                    {
+                        linkRight = result.Access;
+                    }
+                }
+            }
+            else if (!string.IsNullOrEmpty(doc))
+            {
+                (linkRight, file) = await _fileShareLink.CheckAsync(doc, fileDao);
+            }
+            
             if (linkRight == FileShare.Restrict && !_securityContext.IsAuthenticated)
             {
                 var auth = context.Request.Query[FilesLinkUtility.AuthKey];
