@@ -25,16 +25,16 @@ jobs:
         run: |
           export DEBEMAIL=mymail@example.com
           export DEBFULLNAME="Elbakyan Shirak"
-
-          echo "echo Generating a GPG key"
-          echo "Key-Type: RSA" > gen-key-instruction
-          echo "Key-Length: 4096" >> gen-key-instruction
-          echo "Name-Real: Elbakyan-Shirak" >> gen-key-instruction
-          echo "Name-Email: el.shirak@internet.com" >> gen-key-instruction
-          echo "Expire-Date: 0" >> gen-key-instruction
-          echo "Passphrase: 42*Hello_I-love-you!1337" >> gen-key-instruction
-          echo "%commit" >> gen-key-instruction
-          echo "%echo Done!" >> gen-key-instruction
+          cat << EOF >> gen-key-instruction
+          Key-Type: RSA
+          Key-Length: 4096
+          Name-Real: Elbakyan-Shirak
+          Name-Email: el.shirak@internet.com"
+          Expire-Date: 0
+          Passphrase: 42*Hello_I-love-you!1337
+          %commit
+          %echo Done
+          EOF
           gpg --batch --gen-key gen-key-instruction
           gpg --list-keys
           ls -la ~/.gnupg/private-keys-v1.d/
@@ -73,6 +73,7 @@ jobs:
       
       - name: Sign packages and check 
         run: |
+          export GPG_TTY=$(tty)
           keyID="$(gpg --list-keys --keyid-format short | awk '/^pub/ {print $2}' | cut -d'/' -f2)"
           echo "keyID"
           
@@ -121,10 +122,7 @@ jobs:
           EOF
           cat ~/.rpmmacros
           which gpg
-          sudo which gpg
-          cd ~
-          pwd 
-          ls -la 
+
           
       - name: Get files from repository.
         uses: actions/checkout@v2
@@ -165,6 +163,7 @@ jobs:
           sudo chmod -R 777 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
           sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
           sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
+          
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
           echo "........................................"
           
@@ -180,8 +179,8 @@ jobs:
           export GPG_TTY=$(tty)
           # GPG_TTY=$TTY sudo rpm --addsign
           
-          rpm --define "_gpg_name Elbakyan-Shirak" --addsign ~/*.rpm
-          rpm --checksig ~/*.rpm
+          sudo rpm --define "_gpg_name Elbakyan-Shirak" --addsign /home/runner/*.rpm
+          rpm --checksig /home/runner/*.rpm
           
           rpm --define "_gpg_name Elbakyan-Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
           rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
