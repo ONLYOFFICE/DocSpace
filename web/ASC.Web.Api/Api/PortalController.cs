@@ -376,7 +376,7 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        var rewriter = _httpContextAccessor.HttpContext.Request.Url();
+        var rewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
         return string.Format("{0}{1}{2}{3}/{4}",
                                 rewriter?.Scheme ?? Uri.UriSchemeHttp,
                                 Uri.SchemeDelimiter,
