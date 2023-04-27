@@ -68,11 +68,11 @@ public class AceWrapper : IMapFrom<RoomInvitation>
 public class AceShortWrapper
 {
     /// <summary>User</summary>
-    /// <type>System.String</type>
+    /// <type>System.String, System</type>
     public string User { get; set; }
 
     /// <summary>User access rights to the file</summary>
-    /// <type>System.String</type>
+    /// <type>System.String, System</type>
     public string Permissions { get; set; }
 
     /// <summary>Specifies if the external link is available or not</summary>
