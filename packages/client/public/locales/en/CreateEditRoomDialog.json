@@ -25,5 +25,6 @@
   "ViewOnlyRoomDescription": "Share any ready documents, reports, documentation, and other files for viewing.",
   "ViewOnlyRoomTitle": "View-only room",
   "PublicRoomTitle": "Public room",
-  "PublicRoomDescription": "Invite users via external links to view documents without registration. You can also embed this room into any web interface."
+  "PublicRoomDescription": "Invite users via external links to view documents without registration. You can also embed this room into any web interface.",
+  "PublicRoomBarDescription": "This room is available to anyone with the link. External users will have View Only permission for all the files."
 }
