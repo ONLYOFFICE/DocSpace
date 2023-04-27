@@ -24,7 +24,7 @@ import Section from "@docspace/common/components/Section";
 import toastr from "@docspace/components/toast/toastr";
 
 import DragTooltip from "SRC_DIR/components/DragTooltip";
-import { getCategoryType } from "SRC_DIR/helpers/utils";
+import { getCategoryType, setDocumentTitle } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 
 import {
@@ -124,9 +124,10 @@ const PureHome = (props) => {
   const location = useLocation();
 
   const isAccountsPage = location.pathname.includes("accounts");
+  const isSettingsPage = location.pathname.includes("settings");
 
   React.useEffect(() => {
-    if (isAccountsPage) return;
+    if (isAccountsPage || isSettingsPage) return;
 
     if (!window.location.href.includes("#preview")) {
       localStorage.removeItem("isFirstUrl");
@@ -396,16 +397,16 @@ const PureHome = (props) => {
   });
 
   React.useEffect(() => {
-    if (isAccountsPage) return;
-
     if (isHeaderVisible !== prevProps.current.isHeaderVisible) {
       setHeaderVisible(isHeaderVisible);
     }
 
     if (isProgressFinished !== prevProps.current.isProgressFinished) {
-      setTimeout(() => {
-        refreshFiles();
-      }, 100);
+      if (!isAccountsPage && !isSettingsPage) {
+        setTimeout(() => {
+          refreshFiles();
+        }, 100);
+      }
     }
 
     if (
@@ -526,7 +527,7 @@ const PureHome = (props) => {
     }
   };
 
-  if (window.parent && !frameConfig && !isAccountsPage) {
+  if (window.parent && !frameConfig && !isAccountsPage && !isSettingsPage) {
     frameCallCommand("setConfig");
   }
 
@@ -551,39 +552,55 @@ const PureHome = (props) => {
     }
   }, [isAccountsPage, location, setSelectedNode]);
 
-  const sectionProps = {
-    withPaging,
-    withBodyScroll: true,
-    withBodyAutoFocus: !isMobile,
-    firstLoad,
-    isLoaded: !firstLoad,
-    viewAs: accountsViewAs,
-  };
+  React.useEffect(() => {
+    if (!isSettingsPage) return;
+    setDocumentTitle(t("Common:Settings"));
+  }, [t, tReady, isSettingsPage]);
 
-  if (!isAccountsPage) {
-    sectionProps.dragging = dragging;
-    sectionProps.uploadFiles = true;
-    sectionProps.onDrop = isRecycleBinFolder || isPrivacyFolder ? null : onDrop;
-    sectionProps.showPrimaryProgressBar = primaryProgressDataVisible;
-    sectionProps.primaryProgressBarValue = primaryProgressDataPercent;
-    sectionProps.primaryProgressBarIcon = primaryProgressDataIcon;
-    sectionProps.showPrimaryButtonAlert = primaryProgressDataAlert;
-    sectionProps.showSecondaryProgressBar = secondaryProgressDataStoreVisible;
-    sectionProps.secondaryProgressBarValue = secondaryProgressDataStorePercent;
-    sectionProps.secondaryProgressBarIcon = secondaryProgressDataStoreIcon;
-    sectionProps.showSecondaryButtonAlert = secondaryProgressDataStoreAlert;
-    sectionProps.clearUploadedFilesHistory = clearUploadedFilesHistory;
-    sectionProps.viewAs = viewAs;
-    sectionProps.hideAside =
-      primaryProgressDataVisible || secondaryProgressDataStoreVisible;
-    sectionProps.isHeaderVisible = isHeaderVisible;
-    sectionProps.onOpenUploadPanel = showUploadPanel;
-    sectionProps.isEmptyPage = isEmptyPage;
+  let sectionProps = {};
+
+  if (isSettingsPage) {
+    sectionProps.isInfoPanelAvailable = false;
+    sectionProps.viewAs = "settings";
+  } else {
+    sectionProps = {
+      withPaging,
+      withBodyScroll: true,
+      withBodyAutoFocus: !isMobile,
+      firstLoad,
+      isLoaded: !firstLoad,
+      viewAs: accountsViewAs,
+    };
+
+    if (!isAccountsPage) {
+      sectionProps.dragging = dragging;
+      sectionProps.uploadFiles = true;
+      sectionProps.onDrop =
+        isRecycleBinFolder || isPrivacyFolder ? null : onDrop;
+      sectionProps.showPrimaryProgressBar = primaryProgressDataVisible;
+      sectionProps.primaryProgressBarValue = primaryProgressDataPercent;
+      sectionProps.primaryProgressBarIcon = primaryProgressDataIcon;
+      sectionProps.showPrimaryButtonAlert = primaryProgressDataAlert;
+      sectionProps.showSecondaryProgressBar = secondaryProgressDataStoreVisible;
+      sectionProps.secondaryProgressBarValue =
+        secondaryProgressDataStorePercent;
+      sectionProps.secondaryProgressBarIcon = secondaryProgressDataStoreIcon;
+      sectionProps.showSecondaryButtonAlert = secondaryProgressDataStoreAlert;
+      sectionProps.clearUploadedFilesHistory = clearUploadedFilesHistory;
+      sectionProps.viewAs = viewAs;
+      sectionProps.hideAside =
+        primaryProgressDataVisible || secondaryProgressDataStoreVisible;
+      sectionProps.isHeaderVisible = isHeaderVisible;
+      sectionProps.onOpenUploadPanel = showUploadPanel;
+      sectionProps.isEmptyPage = isEmptyPage;
+    }
   }
 
   return (
     <>
-      {isAccountsPage ? (
+      {isSettingsPage ? (
+        <></>
+      ) : isAccountsPage ? (
         <AccountsDialogs />
       ) : (
         <>
@@ -594,7 +611,7 @@ const PureHome = (props) => {
       )}
 
       <Section {...sectionProps}>
-        {(!isErrorRoomNotAvailable || isAccountsPage) && (
+        {(!isErrorRoomNotAvailable || isAccountsPage || isSettingsPage) && (
           <Section.SectionHeader>
             {isFrame ? (
               showTitle && <SectionHeaderContent />
@@ -604,30 +621,32 @@ const PureHome = (props) => {
           </Section.SectionHeader>
         )}
 
-        {((!isLoadedEmptyPage && !isErrorRoomNotAvailable) ||
-          isAccountsPage) && (
-          <Section.SectionFilter>
-            {isFrame ? (
-              showFilter && <SectionFilterContent />
-            ) : (
-              <SectionFilterContent />
-            )}
-          </Section.SectionFilter>
-        )}
+        {((!isLoadedEmptyPage && !isErrorRoomNotAvailable) || isAccountsPage) &&
+          !isSettingsPage && (
+            <Section.SectionFilter>
+              {isFrame ? (
+                showFilter && <SectionFilterContent />
+              ) : (
+                <SectionFilterContent />
+              )}
+            </Section.SectionFilter>
+          )}
 
         <Section.SectionBody>
           <Outlet />
         </Section.SectionBody>
+        {!isSettingsPage && (
+          <>
+            <Section.InfoPanelHeader>
+              <InfoPanelHeaderContent />
+            </Section.InfoPanelHeader>
+            <Section.InfoPanelBody>
+              <InfoPanelBodyContent />
+            </Section.InfoPanelBody>
+          </>
+        )}
 
-        <Section.InfoPanelHeader>
-          <InfoPanelHeaderContent />
-        </Section.InfoPanelHeader>
-
-        <Section.InfoPanelBody>
-          <InfoPanelBodyContent />
-        </Section.InfoPanelBody>
-
-        {withPaging && (
+        {withPaging && !isSettingsPage && (
           <Section.SectionPaging>
             <SectionPagingContent tReady={tReady} />
           </Section.SectionPaging>

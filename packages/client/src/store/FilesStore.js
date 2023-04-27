@@ -1098,6 +1098,7 @@ class FilesStore {
       state: {
         fromAccounts:
           window.DocSpace.location.pathname.includes("accounts/filter"),
+        fromSettings: window.DocSpace.location.pathname.includes("settings"),
       },
     });
   };

@@ -9,12 +9,12 @@ import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 import Error404 from "SRC_DIR/pages/Errors/404";
 import FilesView from "SRC_DIR/pages/Home/View/Files";
 import AccountsView from "SRC_DIR/pages/Home/View/Accounts";
+import SettingsView from "SRC_DIR/pages/Home/View/Settings";
 
 const Client = loadable(() => import("../Client"));
 
 const Home = loadable(() => import("../pages/Home"));
 
-const Settings = loadable(() => import("../pages/Settings"));
 const Profile = loadable(() => import("../pages/Profile"));
 const NotificationComponent = loadable(() => import("../pages/Notifications"));
 
@@ -178,6 +178,30 @@ const ClientRoutes = [
               </PrivateRoute>
             ),
           },
+          {
+            path: "settings",
+            element: (
+              <PrivateRoute withCollaborator restricted>
+                <Navigate to="/settings/common" replace />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "settings/common",
+            element: (
+              <PrivateRoute withCollaborator restricted>
+                <SettingsView />
+              </PrivateRoute>
+            ),
+          },
+          {
+            path: "settings/admin",
+            element: (
+              <PrivateRoute withCollaborator restricted>
+                <SettingsView />
+              </PrivateRoute>
+            ),
+          },
         ],
       },
 
@@ -194,30 +218,6 @@ const ClientRoutes = [
         element: (
           <PrivateRoute>
             <NotificationComponent />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "settings",
-        element: (
-          <PrivateRoute withCollaborator restricted>
-            <Navigate to="/settings/common" replace />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "settings/common",
-        element: (
-          <PrivateRoute withCollaborator restricted>
-            <Settings />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "settings/admin",
-        element: (
-          <PrivateRoute withCollaborator restricted>
-            <Settings />
           </PrivateRoute>
         ),
       },

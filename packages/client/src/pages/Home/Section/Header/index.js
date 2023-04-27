@@ -201,6 +201,7 @@ const SectionHeaderContent = (props) => {
   const location = useLocation();
 
   const isAccountsPage = location.pathname.includes("accounts");
+  const isSettingsPage = location.pathname.includes("settings");
 
   const onCreate = (format) => {
     const event = new Event(Events.CREATE);
@@ -808,8 +809,18 @@ const SectionHeaderContent = (props) => {
   }
 
   const fromAccounts = location?.state?.fromAccounts;
+  const fromSettings = location?.state?.fromSettings;
+
   const isRoot =
-    pathParts === null && fromAccounts ? true : isRootFolder || isAccountsPage;
+    pathParts === null && (fromAccounts || fromSettings)
+      ? true
+      : isRootFolder || isAccountsPage || isSettingsPage;
+  const currentTitle =
+    isSettingsPage || (!title && fromSettings)
+      ? t("Common:Settings")
+      : isAccountsPage || (!title && fromAccounts)
+      ? t("Common:Accounts")
+      : title;
 
   return (
     <Consumer key="header">
@@ -826,8 +837,10 @@ const SectionHeaderContent = (props) => {
                 sectionWidth={context.sectionWidth}
                 showText={showText}
                 isRootFolder={isRoot}
-                canCreate={security?.Create || isAccountsPage}
-                title={isAccountsPage || !title ? t("Common:Accounts") : title}
+                canCreate={
+                  security?.Create || isAccountsPage || !isSettingsPage
+                }
+                title={currentTitle}
                 isDesktop={isDesktop}
                 isTabletView={isTabletView}
                 personal={personal}
@@ -855,6 +868,7 @@ const SectionHeaderContent = (props) => {
                 onPlusClick={onCreateRoom}
                 isEmptyPage={isEmptyPage}
                 isRoom={isRoom}
+                hideInfoPanel={isSettingsPage}
               />
             </div>
           )}
