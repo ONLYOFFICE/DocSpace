@@ -28,8 +28,9 @@ using Status = ASC.Files.Core.Security.Status;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
 
-public class ExternalShareDataDto
+public class ExternalShareDto : IMapFrom<ValidationInfo>
 {
     public Status Status { get; set; }
     public string EntryId { get; set; }
+    public string Title { get; set; }
 }
