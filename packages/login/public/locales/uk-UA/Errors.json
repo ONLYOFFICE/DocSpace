@@ -1,0 +1,14 @@
+{
+  "ErrorUserNotFound": "Користувач не знайдений",
+  "ErrorExpiredActivationLink": "Термін дії посилання минув",
+  "ErrorInvalidActivationLink": "Недійсне посилання активації",
+  "ErrorConfirmURLError": "Неправильний email або закінчився термін дії ссилки",
+  "LoginWithAccountNotFound": "Пов'язаний аккаунт не знайдено",
+  "InvalidUsernameOrPassword": "Невірний логін або пароль.",
+  "SsoSettingsDisabled": "Єдиний вхід відключено",
+  "ErrorNotAllowedOption": "Ваш тарифний план не підтримує цей параметр",
+  "SsoSettingsEmptyToken": "Токен авторизації не знайдено",
+  "SsoSettingsNotValidToken": "Недійсний маркер аутентифікації",
+  "SsoSettingsCantCreateUser": "Не вдалося створити користувача з цим маркером автентифікації",
+  "SsoSettingsUserTerminated": "Користувач відключений"
+}

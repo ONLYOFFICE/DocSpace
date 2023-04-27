@@ -1,0 +1,19 @@
+{
+  "ErrorUserNotFound": "Пользователь не найден",
+  "ErrorExpiredActivationLink": "Время действия ссылки истекло",
+  "ErrorInvalidActivationLink": "Недействительная ссылка активации",
+  "ErrorConfirmURLError": "Неправильный email или истек срок действия ссылки",
+  "LoginWithBruteForce": "Авторизация временно заблокирована.",
+  "RecaptchaInvalid": "Неверный код Recaptcha",
+  "LoginWithAccountNotFound": "Связанных сторонних аккаунтов не найдено. Сначала необходимо подключить аккаунт социальной сети на странице редактирования профиля.",
+  "InvalidUsernameOrPassword": "Неверный логин или пароль.",
+  "SsoSettingsDisabled": "Функция Единого входа отключена",
+  "ErrorNotAllowedOption": "Ваш тарифный план не поддерживает эту возможность",
+  "SsoSettingsEmptyToken": "Не удалось найти токен аутентификации",
+  "SsoSettingsNotValidToken": "Недопустимый токен аутентификации",
+  "SsoSettingsCantCreateUser": "Не удалось создать пользователя с таким токеном аутентификации",
+  "SsoSettingsUserTerminated": "Этот пользователь заблокирован",
+  "SsoError": "Внутренняя ошибка сервера",
+  "SsoAuthFailed": "Аутентификация не пройдена",
+  "SsoAttributesNotFound": "Аутентификация не пройдена (атрибуты утверждений не найдены)"
+}

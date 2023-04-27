@@ -1,0 +1,14 @@
+{
+  "ErrorUserNotFound": "Používateľa sa nepodarilo nájsť",
+  "ErrorExpiredActivationLink": "Platnosť odkazu vypršala",
+  "ErrorInvalidActivationLink": "Neplatný odkaz na aktiváciu",
+  "ErrorConfirmURLError": "Neplatný e-mail alebo uplynula platnosť odkazu",
+  "LoginWithAccountNotFound": "Nepodarilo sa nájsť pridružený účet tretej strany. Musíte najskôr pripojiť svoj účet sociálnych sietí na stránke úpravy profilu.",
+  "InvalidUsernameOrPassword": "Nesprávne používateľské meno alebo heslo.",
+  "SsoSettingsDisabled": "Jednoduché prihlásenie je zakázané",
+  "ErrorNotAllowedOption": "Váš cenový plán túto možnosť nepodporuje",
+  "SsoSettingsEmptyToken": "Autentifikačný token nebol nájdený",
+  "SsoSettingsNotValidToken": "Neplatný token autentifikácie",
+  "SsoSettingsCantCreateUser": "Nepodarilo sa vytvoriť používateľa s týmto autentizačným tokenom",
+  "SsoSettingsUserTerminated": "Tento používateľ je zakázaný"
+}

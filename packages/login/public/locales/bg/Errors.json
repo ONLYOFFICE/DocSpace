@@ -1,0 +1,15 @@
+{
+  "ErrorUserNotFound": "Потребителят не можа да бъде намерен",
+  "ErrorExpiredActivationLink": "Връзката е изтекла",
+  "ErrorInvalidActivationLink": "Невалидна връзка за активиране",
+  "ErrorConfirmURLError": "Невалиден имейл или изтекла връзка",
+  "LoginWithBruteForce": "Разрешението е временно блокирано.",
+  "LoginWithAccountNotFound": "Не може да се намери свързан профил на трета страна. Първо трябва да свържете профила си за социални мрежи в страницата за редактиране на потребителския профил.",
+  "InvalidUsernameOrPassword": "Невалидно потребителско име или парола.",
+  "SsoSettingsDisabled": "Единичното влизане е деактивирано",
+  "ErrorNotAllowedOption": "Вашият ценови план не поддържа тази опция",
+  "SsoSettingsEmptyToken": "Токът за удостоверяване не можа да бъде намерен",
+  "SsoSettingsNotValidToken": "Невалиден маркер за удостоверяване",
+  "SsoSettingsCantCreateUser": "Потребителят не можа да се създаде с този маркер за удостоверяване",
+  "SsoSettingsUserTerminated": "Този потребител е деактивиран"
+}
