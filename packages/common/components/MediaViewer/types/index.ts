@@ -1,6 +1,7 @@
 declare global {
   interface Window {
     Tiff: new (arg: object) => any;
+    DocSpaceConfig: any;
   }
 }
 

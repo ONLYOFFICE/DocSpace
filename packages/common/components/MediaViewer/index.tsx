@@ -284,8 +284,9 @@ function MediaViewer({
   const onDelete = () => {
     const { playlist, onDelete } = props;
 
-    let currentFileId = playlist.find((file) => file.id === playlistPos)
-      ?.fileId;
+    let currentFileId = playlist.find(
+      (file) => file.id === playlistPos
+    )?.fileId;
 
     if (currentFileId === lastRemovedFileId) return;
 
@@ -302,8 +303,9 @@ function MediaViewer({
   const onDownload = () => {
     const { playlist, onDownload } = props;
 
-    let currentFileId = playlist.find((file) => file.id === playlistPos)
-      ?.fileId;
+    let currentFileId = playlist.find(
+      (file) => file.id === playlistPos
+    )?.fileId;
 
     if (!isNullOrUndefined(currentFileId)) onDownload(currentFileId);
   };
@@ -394,6 +396,7 @@ function MediaViewer({
   let isAudio = false;
   let canOpen = true;
   let isImage = false;
+  let isPdf = false;
 
   const archiveRoom =
     props.archiveRoomsId === targetFile?.rootFolderId ||
@@ -408,12 +411,16 @@ function MediaViewer({
     isImage = true;
   } else {
     isImage = false;
+
     isVideo = mapSupplied[ext]
       ? mapSupplied[ext]?.type == mediaTypes.video
       : false;
+
     isAudio = mapSupplied[ext]
       ? mapSupplied[ext]?.type == mediaTypes.audio
       : false;
+
+    isPdf = mapSupplied[ext] ? mapSupplied[ext]?.type == mediaTypes.pdf : false;
   }
 
   return (
@@ -437,6 +444,7 @@ function MediaViewer({
           isImage={isImage}
           isAudio={isAudio}
           isVideo={isVideo}
+          isPdf={isPdf}
           isPreviewFile={props.isPreviewFile}
           onDownloadClick={onDownload}
           archiveRoom={archiveRoom}

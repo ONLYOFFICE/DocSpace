@@ -14,6 +14,7 @@ import DesktopDetails from "../DesktopDetails";
 import ViewerPlayer from "../ViewerPlayer";
 
 import type ViewerProps from "./Viewer.props";
+import PDFViewer from "../PDFViewer";
 
 function Viewer(props: ViewerProps) {
   const timerIDRef = useRef<NodeJS.Timeout>();
@@ -197,8 +198,8 @@ function Viewer(props: ViewerProps) {
             />,
             containerRef.current
           )
-        : (props.isVideo || props.isAudio) &&
-          ReactDOM.createPortal(
+        : props.isVideo || props.isAudio
+        ? ReactDOM.createPortal(
             <ViewerPlayer
               isError={isError}
               src={props.fileUrl}
@@ -227,6 +228,11 @@ function Viewer(props: ViewerProps) {
               removePanelVisibleTimeout={removePanelVisibleTimeout}
               restartToolbarVisibleTimer={restartToolbarVisibleTimer}
             />,
+            containerRef.current
+          )
+        : props.isPdf &&
+          ReactDOM.createPortal(
+            <PDFViewer src={props.fileUrl ?? ""} />,
             containerRef.current
           )}
     </StyledViewerContainer>

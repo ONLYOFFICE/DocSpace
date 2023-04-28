@@ -37,7 +37,7 @@ class MediaViewerDataStore {
       return;
     }
 
-    if (!file.canOpenPlayer) return;
+    if (!file.canOpenPlayer && !file.fileExst === ".pdf") return;
 
     this.previewFile = file;
     this.id = file.id;
@@ -140,7 +140,9 @@ class MediaViewerDataStore {
     if (filesList.length > 0) {
       filesList.forEach((file) => {
         const canOpenPlayer =
-          file.viewAccessability.ImageView || file.viewAccessability.MediaView;
+          file.viewAccessability.ImageView ||
+          file.viewAccessability.MediaView ||
+          file.fileExst === ".pdf";
 
         if (canOpenPlayer) {
           playlist.push({
