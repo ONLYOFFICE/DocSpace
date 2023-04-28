@@ -405,13 +405,12 @@ const MainButtonMobile = (props) => {
             children
           )}
         </StyledDropDown>
-        <StyledAlertIcon>
-          {alert && !isOpen ? (
+
+        {alert && !isOpen && (
+          <StyledAlertIcon>
             <StyledButtonAlertIcon onClick={onAlertClickAction} size="medium" />
-          ) : (
-            <></>
-          )}
-        </StyledAlertIcon>
+          </StyledAlertIcon>
+        )}
       </div>
     </>
   );
