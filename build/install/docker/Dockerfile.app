@@ -14,7 +14,7 @@ ARG BUILD_PATH
 ARG BUILD_ARGS="build"
 ARG DEPLOY_ARGS="deploy"
 ARG DEBUG_INFO="true"
-AGS PUBLISH_CNF="Release"
+ARG PUBLISH_CNF="Release"
 
 LABEL onlyoffice.appserver.release-date="${RELEASE_DATE}" \
       maintainer="Ascensio System SIA <support@onlyoffice.com>"
