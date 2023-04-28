@@ -2616,7 +2616,9 @@ public class FileStorageService //: IFileStorageService
             { EventType.Remove, MessageAction.RoomInvitationLinkDeleted },
         };
 
-        return await SetAceLinkAsync(roomId, FileEntryType.Folder, SubjectType.InvitationLink, linkId, title, share, messageActions, expirationDate);
+        var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
+
+        return await SetAceLinkAsync(room, SubjectType.InvitationLink, linkId, title, share, messageActions, expirationDate);
     }
     
     public async Task<List<AceWrapper>> SetExternalLinkAsync<T>(T entryId, FileEntryType entryType, Guid linkId, string title, FileShare share, DateTime expirationDate = default, 
@@ -2628,8 +2630,11 @@ public class FileStorageService //: IFileStorageService
             { EventType.Update, MessageAction.ExternalLinkUpdated },
             { EventType.Remove, MessageAction.ExternalLinkDeleted },
         };
+
+        FileEntry<T> entry = entryType == FileEntryType.File ? (await GetFileDao<T>().GetFileAsync(entryId)).NotFoundIfNull() 
+            : (await GetFolderDao<T>().GetFolderAsync(entryId)).NotFoundIfNull();
         
-        return await SetAceLinkAsync(entryId, entryType, SubjectType.ExternalLink, linkId, title, share, messageActions, expirationDate, password, disabled, denyDownload, 1);
+        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, messageActions, expirationDate, password, disabled, denyDownload, 1);
     }
 
     public async Task<bool> SetAceLinkAsync<T>(T fileId, FileShare share)
@@ -3342,15 +3347,11 @@ public class FileStorageService //: IFileStorageService
         }
     }
     
-    private async Task<List<AceWrapper>> SetAceLinkAsync<T>(T entryId, FileEntryType entryType, SubjectType subjectType, Guid linkId, string title, FileShare share, 
+    private async Task<List<AceWrapper>> SetAceLinkAsync<T>(FileEntry<T> entry, SubjectType subjectType, Guid linkId, string title, FileShare share, 
         IDictionary<EventType, MessageAction> messageActions, DateTime expirationDate = default, string password = null, bool disabled = false, bool denyDownload = false, 
         uint minLinksCount = 0)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
-
-        FileEntry<T> entry = entryType == FileEntryType.File ? 
-            await GetFileDao<T>().GetFileAsync(entryId).NotFoundIfNull() : 
-            await GetFolderDao<T>().GetFolderAsync(entryId).NotFoundIfNull();
 
         var action = EventType.Create;
         
@@ -3413,9 +3414,9 @@ public class FileStorageService //: IFileStorageService
             throw GenerateException(e);
         }
         
-        return entryType == FileEntryType.File ? 
-            await GetSharedInfoAsync(new[] { entryId }, Array.Empty<T>()) : 
-            await GetSharedInfoAsync(Array.Empty<T>(), new[] { entryId });
+        return entry.FileEntryType == FileEntryType.File ? 
+            await GetSharedInfoAsync(new[] { entry.Id }, Array.Empty<T>()) : 
+            await GetSharedInfoAsync(Array.Empty<T>(), new[] { entry.Id });
     }
 
     private List<AceWrapper> GetFullAceWrappers(IEnumerable<FileShareParams> share)
