@@ -420,18 +420,13 @@ setup_nginx(){
 	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
-	NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-	NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES};!" -i ${NGINX_ROOT_DIR}/nginx.conf
-	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS};!" -i ${NGINX_ROOT_DIR}/nginx.conf
+	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_DIR}/nginx.conf 
+	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_DIR}/nginx.conf 
 
 	if [ "$DIST" = "RedHat" ]; then
 		# Remove default nginx settings
-		DELETION_LINE=$(sed -n '/server {/=' /etc/nginx/nginx.conf | head -n 1)
-		if [ -n "$DELETION_LINE" ]; then 
-			sed "$DELETION_LINE,\$d" -i /etc/nginx/nginx.conf
-			echo "}" >> /etc/nginx/nginx.conf
+		if ! grep -q "server {"  ${NGINX_DIR}/nginx.conf ; then
+			sed -e '$a}' -e '/server {/,$d' -i ${NGINX_DIR}/nginx.conf
 		fi
 
 		shopt -s nocasematch
