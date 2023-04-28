@@ -138,6 +138,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Copy,
                     FilesSecurityActions.Move,
                     FilesSecurityActions.Duplicate,
+                    FilesSecurityActions.Download,
                 }
             },
             {
@@ -156,6 +157,7 @@ public class FileSecurity : IFileSecurity
                     FilesSecurityActions.Mute,
                     FilesSecurityActions.EditAccess,
                     FilesSecurityActions.Duplicate,
+                    FilesSecurityActions.Download
                 }
             }
     };
