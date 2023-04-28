@@ -134,7 +134,7 @@
     <value>Muutos vie liian paljon aikaa.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Virhe asiakirjapalvelussa. Ihan outo.</value>
+    <value>Virhe asiakirjapalvelussa. Ihan outo</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>Tiedosto on avattu muokkausta varten, muokkaaja: {0}. Tällä hetkellä yhteistä muokkausta ei ole tuettu tälle tiedostomuodolle.</value>
@@ -146,7 +146,7 @@
     <value>Tyhjä tiedosto</value>
   </data>
   <data name="ErrorMassage_FileNotFound" xml:space="preserve">
-    <value>Tarvittavaa tiedostoa ei löydy. Ei sitten mistään.</value>
+    <value>Tarvittavaa tiedostoa ei löydy. Ei sitten mistään</value>
   </data>
   <data name="ErrorMassage_FileSizeConvert" xml:space="preserve">
     <value>Suurempaa kuin {0} tiedostoa ei muunneta</value>
@@ -161,7 +161,7 @@
     <value>Tiedosto joka on suurempi kuin {0} ei voida siirtää</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
-    <value>Kansiota ei voi kopioida sen alikansioon. Vähän niin kuin yrittäisi syödä oman päänsä.</value>
+    <value>Kansiota ei voi kopioida sen alikansioon. Vähän niin kuin yrittäisi syödä oman päänsä</value>
   </data>
   <data name="ErrorMassage_FolderNotFound" xml:space="preserve">
     <value>Vaadittua kansiota ei löydy</value>
@@ -179,7 +179,7 @@
     <value>Liian monta ladattavaa tiedostoa. Tässähän sekoaa täysin.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
-    <value>Tätä tiedostomuotoa ei tueta. Ei sitten niin mitenkään.</value>
+    <value>Tätä tiedostomuotoa ei tueta. Ei sitten niin mitenkään</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
     <value>Tallennuksen tekijä tuntematon</value>
@@ -203,7 +203,7 @@
     <value>Tiedostoa ei voi poistaa, koska se on avattu muokkaamista varten</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
-    <value>Kansiota ei voi poistaa, koska jokin sen tiedostoista on avattu muokattavaksi. Loogista, eiks je?</value>
+    <value>Kansiota ei voi poistaa, koska jokin sen tiedostoista on avattu muokattavaksi. Loogista, eiks je</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
     <value>Oikeutesi eivät riitä tiedoston poistamiseen</value>
@@ -215,7 +215,7 @@
     <value>Sinulla ei ole riittäviä oikeuksia tiedoston muokkaamiseen</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
-    <value>Olet jo muokkaamassa tätä asiakirjaa toisella välilehdellä. Nyt menee hankalaksi.</value>
+    <value>Olet jo muokkaamassa tätä asiakirjaa toisella välilehdellä. Nyt menee hankalaksi</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
     <value>Oikeutesi eivät riitä tiedoston tarkastelemiseen</value>
@@ -239,13 +239,13 @@
     <value>Kolmannen osapuolen kansiohässäkkää ei löydy. Yritin kyllä. Kokeile jotain outoa uudelleenkytkentää tiliisi. Tai jotain.</value>
   </data>
   <data name="ErrorMassage_StartEditing" xml:space="preserve">
-    <value>Editorin käynnistysvirhe. Liekö akku tyhjentynyt.</value>
+    <value>Editorin käynnistysvirhe. Liekö akku tyhjentynyt</value>
   </data>
   <data name="ErrorMassage_UpdateEditingFile" xml:space="preserve">
-    <value>Et voi päivittää tiedostoa, joka on avoinna muokkausta varten. Tietokone ei siihen pysty.</value>
+    <value>Et voi päivittää tiedostoa, joka on avoinna muokkausta varten. Tietokone ei siihen pysty</value>
   </data>
   <data name="ErrorMassage_ViewTrashItem" xml:space="preserve">
-    <value>Et voi esikatsella osia Roskakorissa. Ne ovat jo liian pilaantuneita.</value>
+    <value>Et voi esikatsella osia Roskakorissa. Ne ovat jo liian pilaantuneita</value>
   </data>
   <data name="Everyone" xml:space="preserve">
     <value>Kaikki</value>
@@ -266,7 +266,7 @@
     <value>Asiakirjat</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Luo ja muokkaa omia ja yhteisiä asiakirjoja sopivilla käyttöoikeuksilla|Myönnä muille käyttäjille asiakirjojen ja kansioiden luku- ja muokkausoikeuksia|Yhdistä Dropbox, Box ja muita pilvipalveluita/tilejä 'Omat Asiakirjat'  -osiossa.</value>
+    <value>Luo ja muokkaa omia ja yhteisiä asiakirjoja sopivilla käyttöoikeuksilla|Myönnä muille käyttäjille asiakirjojen ja kansioiden luku- ja muokkausoikeuksia|Yhdistä Dropbox, Box ja muita pilvipalveluita/tilejä 'Omat Asiakirjat'  -osiossa</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Etunimi</value>

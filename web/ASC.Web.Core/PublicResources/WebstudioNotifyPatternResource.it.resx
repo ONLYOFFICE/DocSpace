@@ -209,8 +209,7 @@ Se hai qualche domanda o necessiti di assistenza non esitare a contattarci su
 
 Cordiali Saluti,
 il team ONLYOFFICE®
-"www.onlyoffice.com":"http://onlyoffice.com/"
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_backup_created_tg" xml:space="preserve">
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) backup del portale creato
@@ -237,13 +236,7 @@ Si prega di seguire il link di seguito per completare l'operazione:
 
 $GreenButton
 
-Se non si desidera modificare il telefono cellulare o ricevere per errore questo messaggio, ignoralo o contatta l'amministratore del portale per scoprire i dettagli.
-
-Se hai domande o hai bisogno di assistenza, non esitate a contattarci all'indirizzo "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
-Cordiali saluti,
-Team di supporto ONLYOFFICE®
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+Se non si desidera modificare il telefono cellulare o ricevere per errore questo messaggio, ignoralo o contatta l'amministratore del portale per scoprire i dettagli.</value>
   </data>
   <data name="pattern_change_tfa" xml:space="preserve">
     <value>h1.Notifica di sicurezza 
@@ -415,7 +408,8 @@ $GreenButton
   </data>
   <data name="pattern_mailbox_created" xml:space="preserve">
     <value>Gentile $UserName,  
-Administrator ha creato un nuovo &lt;b&gt;$Address&lt;/b&gt; di posta per te sul portale "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+      Administrator ha creato un nuovo &lt;b&gt;$Address&lt;/b&gt; di posta per te sul portale "${__VirtualRootPath}":"${__VirtualRootPath}".
 
       Usa le seguenti impostazioni per ogni email client:
 
@@ -438,16 +432,16 @@ Administrator ha creato un nuovo &lt;b&gt;$Address&lt;/b&gt; di posta per te sul
   <data name="pattern_mailbox_password_changed" xml:space="preserve">
     <value>Gentile $UserName,
 
-La password per l'indirizzo &lt;b&gt;$Address&lt;/b&gt; è stata modificata.
+      La password per l'indirizzo &lt;b&gt;$Address&lt;/b&gt; è stata modificata.
 
-Se hai ricevuto questa email per errore, ti preghiamo di ignorarla o contattare l'amministratore del tuo portale per scoprire i dettagli.</value>
+      Se hai ricevuto questa email per errore, ti preghiamo di ignorarla o contattare l'amministratore del tuo portale per scoprire i dettagli.</value>
   </data>
   <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
     <value>Gentile $UserName,
 
-Administrator ha creato una nuova casella &lt;b&gt;$Address&lt;/b&gt; per te sul portale "${__VirtualRootPath}":"${__VirtualRootPath}"
+      Administrator ha creato una nuova casella &lt;b&gt;$Address&lt;/b&gt; per te sul portale "${__VirtualRootPath}":"${__VirtualRootPath}"
 
-Se hai ricevuto questa mail per errore, si prega di ignorare questo messaggio o contatta l'amministratore del portale per maggiori dettagli.</value>
+      Se hai ricevuto questa mail per errore, si prega di ignorare questo messaggio o contatta l'amministratore del portale per maggiori dettagli.</value>
   </data>
   <data name="pattern_migration_error" xml:space="preserve">
     <value>h1.Un errore di migrazione del portale verso la regione $RegionName
@@ -461,7 +455,7 @@ I migliori saluti,
 Team di supporto ONLYOFFICE®
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Per modificare il tipo di notifica, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL". </value>
+^Per modificare il tipo di notifica, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_server_failure" xml:space="preserve">
     <value>h1.Un errore di migrazione del portale in un'altra regione
@@ -672,7 +666,7 @@ Per visualizzare il tuo profilo vai al link di seguito:
 
 Cordiali saluti
 il Team di ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/" </value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_reassigns_completed" xml:space="preserve">
     <value>Gentile $UserName,
@@ -773,7 +767,7 @@ Team di ONLYOFFICE
   <data name="pattern_self_profile_updated_tg" xml:space="preserve">
     <value>[${__VirtualRootPath}](${__VirtualRootPath}) ‎Notifica di modifica del profilo portale ‎
 
-[$__AuthorName]($__AuthorUrl) Ha modificato i suoi dettagli sul portale [${__VirtualRootPath}](${__VirtualRootPath})</value>
+[$__AuthorName]($__AuthorUrl) Ha modificato i suoi dettagli sul portale [${__VirtualRootPath}](${__VirtualRootPath}).</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
     <value>h1.Ecco cosa c'è di nuovo nel tuo DocSpace il $Date
@@ -789,8 +783,7 @@ $activity
 Questo messaggio è stato generato automaticamente per testare le tue impostazioni SMTP. Se stai visualizzando questo messaggio significa che le impostazioni sono corrette e puoi usarle sul tuo portale.
 
 Cordiali Saluti
-il Team ONLYOFFICE
-</value>
+il Team ONLYOFFICE</value>
   </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Nuovo utente aggiunto al portale "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -812,10 +805,7 @@ Accetta l'invito facendo click sul link seguente e utilizza la tua login e passw
 
 $GreenButton
 
-Questo link è valido 7 giorni dalla ricezione di questo messaggio
-
-Cordialmente 
-il team di ONLYOFFICE</value>
+Questo link è valido 7 giorni dalla ricezione di questo messaggio.</value>
   </data>
   <data name="subject_activate_email" xml:space="preserve">
     <value>${LetterLogoText}. Attiva il tuo indirizzo email</value>
@@ -836,7 +826,7 @@ il team di ONLYOFFICE</value>
     <value>${LetterLogoText}. Cambio del proprietario del portale</value>
   </data>
   <data name="subject_dns_change" xml:space="preserve">
-    <value>${LetterLogoText}. Cambio dell'indirizzo del portale.</value>
+    <value>${LetterLogoText}. Cambio dell'indirizzo del portale</value>
   </data>
   <data name="subject_enterprise_guest_activation_v10" xml:space="preserve">
     <value>Unirsi su ${__VirtualRootPath}</value>
@@ -860,7 +850,7 @@ il team di ONLYOFFICE</value>
     <value>Messaggio dell'Utente agli Amministratori</value>
   </data>
   <data name="subject_join" xml:space="preserve">
-    <value>Invito ad unirsi al portale ${__VirtualRootPath} </value>
+    <value>Invito ad unirsi al portale ${__VirtualRootPath}</value>
   </data>
   <data name="subject_mailbox_created" xml:space="preserve">
     <value>${LetterLogoText}. Creazione dell'indirizzo mail</value>
@@ -872,10 +862,10 @@ il team di ONLYOFFICE</value>
     <value>${LetterLogoText}. Errore in un'altra regione di migrazione</value>
   </data>
   <data name="subject_migration_start" xml:space="preserve">
-    <value>Un'altra migrazione regione portale iniziata</value>
+    <value>${LetterLogoText}. Un'altra migrazione regione portale iniziata</value>
   </data>
   <data name="subject_migration_success" xml:space="preserve">
-    <value>Un'altra migrazione regione portale completato con successo</value>
+    <value>${LetterLogoText}. Un'altra migrazione regione portale completato con successo</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
     <value>Benvenuti su ONLYOFFICE per uso personale!</value>
@@ -887,7 +877,7 @@ il team di ONLYOFFICE</value>
     <value>ONLYOFFICE Personal. Si prega di attivare il tuo indirizzo email</value>
   </data>
   <data name="subject_personal_profile_delete" xml:space="preserve">
-    <value>Chiusura account personale ONLYOFFICE </value>
+    <value>Chiusura account personale ONLYOFFICE</value>
   </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
     <value>Disattivazione del portale ${__VirtualRootPath}</value>
@@ -896,7 +886,7 @@ il team di ONLYOFFICE</value>
     <value>Eliminazione del ${__VirtualRootPath} portale</value>
   </data>
   <data name="subject_portal_rename" xml:space="preserve">
-    <value>${LetterLogoText}. Cambio dell'indirizzo del portale.</value>
+    <value>${LetterLogoText}. Cambio dell'indirizzo del portale</value>
   </data>
   <data name="subject_profile_delete" xml:space="preserve">
     <value>Eliminazione del profilo dal ${__VirtualRootPath} portale</value>
@@ -935,7 +925,7 @@ il team di ONLYOFFICE</value>
     <value>Unisciti a ${__VirtualRootPath}</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
-    <value>${__VirtualRootPath} Notifica per il cambio profilo del portale </value>
+    <value>${__VirtualRootPath} Notifica per il cambio profilo del portale</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>messaggio di prova SMTP</value>
@@ -984,5 +974,93 @@ il team di ONLYOFFICE</value>
   </data>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>Aggiornato l'utente di DocSpace: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+ 
+Hai appena creato ONLYOFFICE DocSpace, un hub di documenti dove puoi migliorare la collaborazione con il tuo team, clienti, partner e altro ancora. Il suo indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Ti preghiamo di confermare la tua e-mail (il link è valido per 7 giorni):
+ 
+$GreenButton
+ 
+La tua tariffa è STARTUP. È assolutamente gratuita e include:
+ 
+* 1 amministratore, 2 utenti esperti
+* Fino a 12 stanze
+* Numero illimitato di utenti in ogni stanza
+* 2 GB di spazio sul disco
+ 
+Goditi un nuovo modo di collaborare sui documenti!
+ 
+Tanti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+ 
+Hai appena creato ONLYOFFICE DocSpace, un hub di documenti dove puoi migliorare la collaborazione con il tuo team, clienti, partner e altro ancora. Il suo indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Ti preghiamo di confermare la tua e-mail (il link è valido per 7 giorni):
+ 
+$GreenButton
+ 
+La tua tariffa è STARTUP. È assolutamente gratuita e include:
+ 
+* 1 amministratore, 2 utenti esperti
+* Fino a 12 stanze
+* Numero illimitato di utenti in ogni stanza
+* 2 GB di spazio sul disco
+ 
+Goditi un nuovo modo di collaborare sui documenti!
+ 
+Tanti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+ 
+Hai appena creato ONLYOFFICE DocSpace, un hub di documenti dove puoi migliorare la collaborazione con il tuo team, clienti, partner e altro ancora. Il suo indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Ti preghiamo di confermare la tua e-mail (il link è valido per 7 giorni):
+ 
+$GreenButton
+ 
+La tua tariffa è STARTUP. È assolutamente gratuita e include:
+ 
+* 1 amministratore, 2 utenti esperti
+* Fino a 12 stanze
+* Numero illimitato di utenti in ogni stanza
+* 2 GB di spazio sul disco
+ 
+Goditi un nuovo modo di collaborare sui documenti!
+ 
+Tanti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+ 
+Hai appena creato ONLYOFFICE DocSpace, un hub di documenti dove puoi migliorare la collaborazione con il tuo team, clienti, partner e altro ancora. Il suo indirizzo è "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Ti preghiamo di confermare la tua e-mail (il link è valido per 7 giorni):
+ 
+$GreenButton
+ 
+La tua tariffa è STARTUP. È assolutamente gratuita e include:
+ 
+* 1 amministratore, 2 utenti esperti
+* Fino a 12 stanze
+* Numero illimitato di utenti in ogni stanza
+* 2 GB di spazio sul disco
+ 
+Goditi un nuovo modo di collaborare sui documenti!
+ 
+Tanti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
   </data>
 </root>

@@ -59,8 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCol" xml:space="preserve">
-    <value>Akcja
-</value>
+    <value>Akcja</value>
   </data>
   <data name="ActionTypeCol" xml:space="preserve">
     <value>Typ akcji</value>
@@ -702,8 +701,7 @@
     <value>Błąd logowania. Profil wyłączony</value>
   </data>
   <data name="LoginFailInvalidCombination" xml:space="preserve">
-    <value>Błąd logowania. Niewłaściwa kombinacja hasła i nazwy użytkownika
-</value>
+    <value>Błąd logowania. Niewłaściwa kombinacja hasła i nazwy użytkownika</value>
   </data>
   <data name="LoginFailIpSecurity" xml:space="preserve">
     <value>Zabezpieczenie IP: logowanie nie powiodło się</value>
@@ -1165,7 +1163,7 @@
     <value>Projekty [{0}]. Zadanie usunięte: {1}</value>
   </data>
   <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekty [{0}]. Zadanie 1}. Plik odłączony: {2}</value>
+    <value>Projekty [{0}]. Zadanie {1}. Plik odłączony: {2}</value>
   </data>
   <data name="TaskMovedToMilestone" xml:space="preserve">
     <value>Projekty [{0}]. Etapy [{1}]. Zadanie przeniesione: {2}</value>
@@ -1325,5 +1323,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Został zaktualizowany klucz kontaktowy strony internetowej</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Pokój został utworzony</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Pokoje</value>
   </data>
 </root>

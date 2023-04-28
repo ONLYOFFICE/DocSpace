@@ -493,4 +493,64 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Брой администратори/опитни потребители:</value>
   </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>влизам</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Свържете услугата Bitly, за да съкратите връзките с покани за портала и споделените връзки в модула Документи.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>ID на кутия</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Клавиш Box</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Свържете приложението, за да управлявате файловете и папките на Box.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Активирайте приложението за двуфакторно удостоверяване чрез Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>Ключ DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Свържете приложението, за да добавите електронния знак DocuSign към документите.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Крайна точка за удостоверяване на DocuSign</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Свържете приложението, за да управлявате Dropbox файлове и папки.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Клавиш App</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Свържете приложението EasyBib, за да създадете библиографски списъци.</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Токен на приложението</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
 </root>

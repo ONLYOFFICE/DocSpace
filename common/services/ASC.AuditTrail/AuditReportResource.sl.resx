@@ -1258,4 +1258,10 @@
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Kontaktni obrazec ključa spletne strani posodobljen</value>
   </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Soba ustvarjena</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Săli</value>
+  </data>
 </root>

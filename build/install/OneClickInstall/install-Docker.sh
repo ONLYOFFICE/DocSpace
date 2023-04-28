@@ -285,6 +285,20 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-jh | --jwtheader )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_HEADER=$2
+				shift
+			fi
+		;;
+
+		-js | --jwtsecret )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_JWT_SECRET=$2
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -292,10 +306,13 @@ while [ "$1" != "" ]; do
 			echo "      -hub, --hub                       dockerhub name"
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
+			echo "      -u, --update                      use to update existing components (true|false)"
 			echo "      -ids, --installdocspace           install or update $PRODUCT (true|false)"
-			echo "      -tag, --dockertag                 select the version to install $PRODUCT (latest|develop|version number)"
+			echo "      -tag, --dockertag                 select the $PRODUCT version (latest|version number)"
 			echo "      -idocs, --installdocumentserver   install or update document server (true|false)"
 			echo "      -di, --documentserverimage        document server image name"
+			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
+			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"
 			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
 			echo "      -irb, --installrabbitmq           install or update rabbitmq (true|false)"	
 			echo "      -ird, --installredis              install or update redis (true|false)"
@@ -304,14 +321,13 @@ while [ "$1" != "" ]; do
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
-			echo "      -dsh, --docspdcehost              $PRODUCT host"
+			echo "      -dsh, --docspacehost              $PRODUCT host"
 			echo "      -esh, --elasticsearchhost         elasticsearch host"
 			echo "      -env, --environment               $PRODUCT environment"
 			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
 			echo "      -ip, --internalport               internal $PRODUCT port (default value 5050)"
 			echo "      -ep, --externalport               external $PRODUCT port (default value 80)"
 			echo "      -mk, --machinekey                 setting for core.machinekey"
-			echo "      -ls, --local_scripts              run the installation from local scripts"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
@@ -543,7 +559,7 @@ install_docker_compose () {
 }
 
 check_ports () {
-	RESERVED_PORTS=(443 2181 2888 3306 3888 8081 8099 9092 9200 9300 9800 9899 9999 33060);
+	RESERVED_PORTS=(3306 8092);
 	ARRAY_PORTS=();
 	USED_PORTS="";
 
@@ -746,8 +762,32 @@ set_jwt_secret () {
 		fi
 	fi
 
-	if [[ -z ${JWT_SECRET} ]] && [[ "$UPDATE" != "true" ]]; then
+	if [[ -z ${JWT_SECRET} ]]; then
 		DOCUMENT_SERVER_JWT_SECRET=$(get_random_str 32);
+	fi
+}
+
+set_jwt_header () {
+	CURRENT_JWT_HEADER="";
+
+	if [[ -z ${JWT_HEADER} ]]; then
+		CURRENT_JWT_HEADER=$(get_container_env_parameter  "${PACKAGE_SYSNAME}-document-server" "JWT_HEADER");
+
+		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
+			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
+		fi
+	fi	
+	
+	if [[ -z ${JWT_HEADER} ]]; then
+		CURRENT_JWT_HEADER=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "DOCUMENT_SERVER_JWT_HEADER");
+
+		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
+			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
+		fi
+	fi
+
+	if [[ -z ${JWT_HEADER} ]]; then
+		DOCUMENT_SERVER_JWT_HEADER="AuthorizationJwt"
 	fi
 }
 
@@ -957,9 +997,9 @@ start_installation () {
 	root_checking
 
 	get_os_info
-
 	check_os_info
-	
+	check_kernel
+
 	if [ "$UPDATE" != "true" ]; then
 		check_ports
 	fi
@@ -984,6 +1024,7 @@ start_installation () {
 	download_files
 
 	set_jwt_secret
+	set_jwt_header
 
 	set_core_machinekey
 

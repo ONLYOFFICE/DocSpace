@@ -329,7 +329,7 @@ Hörmətlə,
 ONLYOFFICE Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"</value>
  </data>
- <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+  <data name="pattern_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>Salam, $UserName!
 
 $__AuthorName sizi "${__VirtualRootPath}":"${__VirtualRootPath}" üçün qonaq istifadəçi kimi dəvət etdi. Linkə klikləməklə dəvəti qəbul edin:
@@ -411,7 +411,7 @@ $GreenButton
       Əgər bu məktubu səhvən almısınızsa, ona məhəl qoymayın və ya dəqiqləşdirmək üçün portal admininizlə əlaqə saxlayın.</value>
   </data>
   <data name="pattern_mailbox_password_changed" xml:space="preserve">
-    <value>   Salam $UserName,
+    <value>Salam $UserName,
 
        &lt;b&gt;$Address&lt;/b&gt; poçt qutusunun parolu dəyişdirildi.
 
@@ -721,11 +721,11 @@ Siz istifadəçinin başqaları ilə paylaşılan sənədlərini başqa aktiv is
 Sənədləri başqa istifadəçiyə təyin etmək və ya məlumatları silmək üçün "bu link":"$FromUserLink" istifadə edərək istifadəçi profilinə keçin.</value>
   </data>
   <data name="pattern_profile_updated" xml:space="preserve">
-    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" profiliniz dəyişdirildi
+    <value>h1."$__VirtualRootPath":"$__VirtualRootPath" profiliniz dəyişdirildi
 
 Salam $UserName,
 
-"${__VirtualRootPath}":"${__VirtualRootPath}" istifadəçi profiliniz "$__AuthorName":"$__AuthorUrl" olaraq dəyişdirildi.
+"$__VirtualRootPath":"$__VirtualRootPath" istifadəçi profiliniz "$__AuthorName":"$__AuthorUrl" olaraq dəyişdirildi.
 
 Profilinizə baxmaq üçün aşağıdakı linkə daxil olun:
 "$UserName":"$MyStaffLink"</value>
@@ -999,7 +999,7 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
     <value>${LetterLogoText}. Şifrə yardımı</value>
   </data>
   <data name="subject_change_phone" xml:space="preserve">
-    <value>${LetterLogoText}. Mobil telefonun dəyişdirilmə tələbi </value>
+    <value>${LetterLogoText}. Mobil telefonun dəyişdirilmə tələbi</value>
   </data>
   <data name="subject_change_tfa" xml:space="preserve">
     <value>${LetterLogoText}. Təhlükəsizlik haqqında bildiriş</value>
@@ -1016,7 +1016,7 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>ONLYOFFICE DocSpace-ə xoş gəlmisiniz!</value>
   </data>
- <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
+  <data name="subject_enterprise_whitelabel_guest_activation_v10" xml:space="preserve">
     <value>${__VirtualRootPath}-a qoşulun</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
@@ -1139,7 +1139,7 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="subject_user_ldap_activation" xml:space="preserve">
     <value>Siz ${__VirtualRootPath} proqramına qoşulmağa dəvət olundunuz</value>
   </data>
-   <data name="ActionFileCreated" xml:space="preserve">
+  <data name="ActionFileCreated" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; yeni sənəd yaradıldı: &lt;a href={1}&gt;{2}&lt;/a&gt; otaqda: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
   </data>
   <data name="ActionNewComment" xml:space="preserve">
@@ -1181,4 +1181,13 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>DocSpace istifadəçisi yeniləndi: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
- </root>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>ONLYOFFICE Şəxsi hesabınızdakı parolu dəyişmək istəyirsiniz? Təsdiqləmək üçün aşağıdakı düyməni basın.
+
+$GreenButton
+
+Link 7 gün ərzində etibarlıdır.
+
+Parolunuzu dəyişmək istəmirsiniz? Sadəcə bu mesaja əhəmiyyət verməyin.</value>
+  </data>
+</root>

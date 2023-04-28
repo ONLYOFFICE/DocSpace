@@ -71,7 +71,7 @@
     <value>Mesajınız başarıyla gönderildi. Portal yöneticisi sizinle iletişime geçecek.</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
-    <value>İşlemi onaylamak için bir bağlantı :email adresine gönderildi. (portal sahibinin e-posta adresi)</value>
+    <value>İşlemi onaylamak için bir bağlantı :email adresine gönderildi. (portal sahibinin e-posta adresi).</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>Şifre kurtarma işlemi LDAP kullanıcıları için kullanılamaz</value>
@@ -83,7 +83,7 @@
     <value>Özel</value>
   </data>
   <data name="DnsChangeMsg" xml:space="preserve">
-    <value>İşlemi onaylamak için bir bağlantı {0} adresine gönderildi. (portal sahibinin e-posta adresi)</value>
+    <value>İşlemi onaylamak için bir bağlantı {0} adresine gönderildi. (portal sahibinin e-posta adresi).</value>
   </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Yanlış eposta adresi</value>
@@ -92,7 +92,7 @@
     <value>Bu eylemi gerçekleştirmek için izin yok</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>Portala erişim sınırlandı</value>
+    <value>Portala erişim sınırlandı.</value>
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>Hatalı anahtarlar</value>
@@ -197,7 +197,7 @@
     <value>LDAP alanı bulunamadı.</value>
   </data>
   <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
-    <value>Grup bulunamadı</value>
+    <value>Grup bulunamadı.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
     <value>Geçersiz Kullanıcı Filtre değeri.</value>
@@ -293,7 +293,7 @@
     <value>Lisans hatalı</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Lisans süresi dolmuş</value>
+    <value>Lisans süresi dolmuş.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Portal sayısı bu lisans için geçerli maksimum sayıyı aşmaktadır</value>
@@ -432,5 +432,59 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Yönetici/uzman kullanıcı sayısı:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>giriş</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Bitly hizmetine bağlanarak portal davet linklerini ve Belgeler modülünde paylaşılmış linkleri kısalt.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Kutu ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Kutu Anahtarı</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Box belgelerini ve klasörlerini yönetmek için uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Clickatell ile iki aşamalı yetkilendirme uygulamasını etkinleştir.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign Anahtar</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Secret</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Belgelerinize DocuSign elektronik imza eklemek için uygulamaya bağlanın.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign yetkilendirme</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Dropbox belge ve klasörlerini yönetmek için uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>Dropbox Anahtar</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
   </data>
 </root>

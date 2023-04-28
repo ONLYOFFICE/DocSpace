@@ -77,10 +77,10 @@
     <value>SMS vasitəsi ilə</value>
   </data>
   <data name="ButtonTfaAppEnable" xml:space="preserve">
-    <value> Audentifikasiya tətbiqi ilə</value>
+    <value>Audentifikasiya tətbiqi ilə</value>
   </data>
   <data name="ChangePortalOwnerMsg" xml:space="preserve">
-    <value>Əməliyyatı təsdiq etmək üçün keçid: e-poçt ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+    <value>Əməliyyatı təsdiq etmək üçün keçid: e-poçt ünvanına göndərildi. (portal sahibinin e-poçt ünvanı).</value>
   </data>
   <data name="CouldNotRecoverPasswordForLdapUser" xml:space="preserve">
     <value>LDAP istifadəçisi üçün parol bərpa əməliyyatı qadağandır</value>
@@ -92,7 +92,7 @@
     <value>İstifadəçi seçimləri</value>
   </data>
   <data name="DnsChangeMsg" xml:space="preserve">
-    <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı)</value>
+    <value>Əməliyyatı təsdiq etmək üçün keçid {0} ünvanına göndərildi. (portal sahibinin e-poçt ünvanı).</value>
   </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
     <value>Yanlış Nümunə id.</value>
@@ -224,7 +224,7 @@
     <value>Uğurla yükləndi. {0}Bu lisenziya üçün dəstək {2} tarixindən etibarən mövcud deyil.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>Elektron poçt dəyişdirilmə instruksiyaları {0} elektron poçt ünvanına göndərildi.</value>
+    <value>Elektron poçt dəyişdirilmə instruksiyaları elektron poçt ünvanına göndərildi</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>{0} e-poçtu olan istifadəçi varsa, parol dəyişdirmə təlimatı bu e-poçt ünvanına göndərilib.</value>
@@ -369,5 +369,122 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Admin/ekspert istifadəçilərin sayı:</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Apple ID hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>İstifadəçilərinizə Apple ID-dən istifadə edərək ONLYOFFICE-a daxil olmaq üçün bu proqramı aktivləşdirin. {0}Apple Developers Portalına keçin və yeni tətbiq ONLYOFFICE inteqrasiyası yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 giriş açarı</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Tətbiq Müştəri ID-si</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Apple şəxsi açarı ilə daxil olmaq üçün yaradılan 10 simvollu açar identifikatoru</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Şəxsi açar Apple Developer-dən endirilib</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10 simvollu tərtibatçı hesabı Komanda ID-si</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>Selectel authPwd</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bir az</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>giriş</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Bitly xidməti ilə Sənədlər modulunda portal dəvəti keçidlərini və paylaşılan keçidləri qısaltmaq üçün bu proqramı aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Dəvət və sənəd bağlantılarını qısaltmaq üçün bu proqramı aktivləşdirin. {0}Bitly girişinizi və API açarınızı aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box açarı</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Box fayl və qovluqlarını idarə etmək üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Box hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Box-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Box tərtibatçıları səhifəsində hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Clickatell vasitəsilə iki faktorlu autentifikasiya üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+    <value>Clickatell xidməti ilə iki faktorlu autentifikasiyanı aktivləşdirmək üçün bu proqramdan istifadə edin. {0}SMS Platforma hesabınıza daxil olun və ONLYOFFICE üçün yeni inteqrasiya yaradın. ApiKey-ni kopyalayın və aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign Açarı</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Sirri</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Sənədlərinizi DocuSign ilə rəqəmsal imzalamaq üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign autentifikasiya son nöqtəsi</value>
+  </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>DocuSign istifadə edərək sənədləri rəqəmsal imzalamaq üçün bu proqramı aktivləşdirin. {0}DocuSign Admin Konsolunuza keçin və ONLYOFFICE inteqrasiyasını əlavə edin. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Dropbox fayl və qovluqlarını idarə etmək üçün tətbiqi aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Dropbox hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Dropbox-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Dropbox Developers vebsaytında hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>DropBox Açarı</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Proqram açarı</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>EasyBib ilə sənədlərdə biblioqrafik siyahılar yaratmaq üçün bu proqramı aktivləşdirin.</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Proqram nişanı</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
   </data>
 </root>

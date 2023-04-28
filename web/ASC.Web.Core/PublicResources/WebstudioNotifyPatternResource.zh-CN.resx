@@ -638,4 +638,84 @@ ONLYOFFICE团队</value>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>协作空间的用户已更新： &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
 </root>

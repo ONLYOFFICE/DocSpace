@@ -43,6 +43,7 @@ const Badges = ({
   isPaid = false,
   filter,
   getUsersList,
+  isSSO = false,
 }) => {
   const onClickPaid = () => {
     if (filter.payments === PaymentsType.Paid) return;
@@ -56,6 +57,17 @@ const Badges = ({
 
   return (
     <StyledBadgesContainer className="badges additional-badges">
+      {isSSO && (
+        <Badge
+          label="SSO"
+          color={"#FFFFFF"}
+          backgroundColor="#22C386"
+          fontSize={"9px"}
+          fontWeight={800}
+          noHover
+          lineHeight={"13px"}
+        />
+      )}
       {!withoutPaid && isPaid && (
         <StyledPaidBadge
           className="paid-badge"

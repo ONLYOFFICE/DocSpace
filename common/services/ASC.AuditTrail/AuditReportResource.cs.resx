@@ -617,16 +617,16 @@
     <value>Návštěvník importován: {0}</value>
   </data>
   <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Kategorie z historie událostí. Pořadí aktualizováno: {0} </value>
+    <value>Kategorie z historie událostí. Pořadí aktualizováno: {0}</value>
   </data>
   <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Kategorie událostí historie byla vytvořena[{0}]. </value>
+    <value>Kategorie událostí historie byla vytvořena[{0}]</value>
   </data>
   <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>Kategorie událostí historie byla smazána[{0}]. </value>
+    <value>Kategorie událostí historie byla smazána[{0}]</value>
   </data>
   <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>Kategorie událostí historie aktualizována[{0}]. </value>
+    <value>Kategorie událostí historie aktualizována[{0}]</value>
   </data>
   <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
     <value>Kategorie událostí historie[{0}]. Ikona aktualizována</value>
@@ -707,10 +707,10 @@
     <value>Přihlášení se nezdařilo. Neplatná kombinace uživatelského jména a heslo</value>
   </data>
   <data name="LoginFailIpSecurity" xml:space="preserve">
-    <value>Zabezpečení protokolu TCP/IP: Přihlášení se nezdařilo.</value>
+    <value>Zabezpečení protokolu TCP/IP: Přihlášení se nezdařilo</value>
   </data>
   <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
-    <value>Přihlášení se nezdařilo. Přiřazený účet sociální sítě nebyl nalezen.</value>
+    <value>Přihlášení se nezdařilo. Přiřazený účet sociální sítě nebyl nalezen</value>
   </data>
   <data name="LoginFailViaApi" xml:space="preserve">
     <value>Nepodařilo se přihlásit pomocí API</value>
@@ -806,7 +806,7 @@
     <value>Příležitost vytvořena: {0}</value>
   </data>
   <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Možnosti[{0}]. Vytvořena historie údálosti</value>
+    <value>Možnosti[{0}]. Vytvořena historie údálosti: {1}</value>
   </data>
   <data name="OpportunityCreatedTag" xml:space="preserve">
     <value>Možnosti[{0}]. Tag vytvořen: {1}</value>
@@ -833,7 +833,7 @@
     <value>Možnosti[{0}]. Přístup otevřen</value>
   </data>
   <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Možnosti[{0}]. Přístup omezen: {1}.</value>
+    <value>Možnosti[{0}]. Přístup omezen: {1}</value>
   </data>
   <data name="OpportunityStageCreated" xml:space="preserve">
     <value>Fáze příležitosti vytvořena: {0}</value>
@@ -1217,7 +1217,7 @@
     <value>Třetí Strana otevřena: {0}. Poskytovatel: {1}</value>
   </data>
   <data name="ThirdPartyUpdated" xml:space="preserve">
-    <value>Třetí Strana Aktualizována: {0}. Poskytovatel: {1}.</value>
+    <value>Třetí Strana Aktualizována: {0}. Poskytovatel: {1}</value>
   </data>
   <data name="TimeTrackingModule" xml:space="preserve">
     <value>Sledování času</value>
@@ -1307,7 +1307,7 @@
     <value>Uživatelé [{0}]. Stav byl aktualizován</value>
   </data>
   <data name="UsersUpdatedType" xml:space="preserve">
-    <value>Uživatelé [{0}]. Typ byl aktualizován </value>
+    <value>Uživatelé [{0}]. Typ byl aktualizován</value>
   </data>
   <data name="UserUnlinkedSocialAccount" xml:space="preserve">
     <value>Sociální účet odpojen. Poskytovatel: {0}</value>
@@ -1329,5 +1329,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Aktualizace klíče kontaktního formuláře webových stránek</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Místnost vytvořena</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Místnosti</value>
   </data>
 </root>

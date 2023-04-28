@@ -647,7 +647,7 @@
     <value>Import</value>
   </data>
   <data name="InvoiceCreated" xml:space="preserve">
-    <value>Rechnung erstellt: {0} </value>
+    <value>Rechnung erstellt: {0}</value>
   </data>
   <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
     <value>Standardmäßige Rechnungsbedingungen aktualisiert</value>
@@ -728,7 +728,7 @@
     <value>Anmeldung fehlgeschlagen. Ungültiges Recaptcha</value>
   </data>
   <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
-    <value>Anmeldung fehlgeschlagen. Verbundenes Konto des sozialen Netzwerks ist nicht gefunden.</value>
+    <value>Anmeldung fehlgeschlagen. Verbundenes Konto des sozialen Netzwerks ist nicht gefunden</value>
   </data>
   <data name="LoginFailViaApi" xml:space="preserve">
     <value>Fehlgeschlagene Anmeldung via API</value>
@@ -737,7 +737,7 @@
     <value>Fehlgeschlagene Anmeldung via API und SMS-Code</value>
   </data>
   <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
-    <value>Die Anmeldung über API &amp; soziale Netzwerke ist ausgefallen </value>
+    <value>Die Anmeldung über API &amp; soziale Netzwerke ist ausgefallen</value>
   </data>
   <data name="LoginFailViaApiTfa" xml:space="preserve">
     <value>Anmeldung über API und Authentifizierungsanwendung ist fehlgeschlagen</value>
@@ -758,7 +758,7 @@
     <value>Bericht über Anmeldehistorie ({0}-{1})</value>
   </data>
   <data name="LoginSuccess" xml:space="preserve">
-    <value>Erfolgreiche Anmeldung </value>
+    <value>Erfolgreiche Anmeldung</value>
   </data>
   <data name="LoginSuccessSocialAccount" xml:space="preserve">
     <value>Login über Konto im sozialen Netzwerk ist erfolgreich</value>
@@ -908,7 +908,7 @@
     <value>Benutzerfeld für Verkaufschance aktualisiert: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Profil des Unternehmens. Adresse aktualisiert.</value>
+    <value>Profil des Unternehmens. Adresse aktualisiert</value>
   </data>
   <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
     <value>Profil des Unternehmens. Unternehmensname aktualisiert: {0}</value>
@@ -1163,7 +1163,7 @@
     <value>SSO aktiviert</value>
   </data>
   <data name="StartBackupSetting" xml:space="preserve">
-    <value>Backup starten </value>
+    <value>Backup starten</value>
   </data>
   <data name="StartStorageDecryption" xml:space="preserve">
     <value>Entschlüsselung des Speichers anfangen</value>
@@ -1395,5 +1395,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Schlüssel des Formulars Kontakte der Webseite wurde aktualisiert</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Raum erstellt</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Raum</value>
   </data>
 </root>

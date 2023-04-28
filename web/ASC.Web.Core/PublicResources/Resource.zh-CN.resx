@@ -215,7 +215,7 @@
     <value>服务器无法保存设置。</value>
   </data>
   <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
-    <value>用户名或密码有误</value>
+    <value>用户名或密码有误。</value>
   </data>
   <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
     <value>找不到LDAP域名。</value>
@@ -314,7 +314,7 @@
     <value>当前LDAP服务器不支持StartTLS。</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>LDAP操作太多</value>
+    <value>LDAP操作太多。</value>
   </data>
   <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
     <value>无法获取用户/组对象的唯一ID。默认情况下，系统将尝试匹配以下标识符之一：entryUUID，nsuniqueid，GUID，objectSid。若没有属性对应于您的LDAP服务器，请在web.appsettings.config文件的ldap.unique.id设置中指定必要的属性。</value>
@@ -323,7 +323,7 @@
     <value>许可证有误</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>许可证已过期</value>
+    <value>许可证已过期。</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>门户数量超过许可证允许的数量</value>
@@ -335,7 +335,7 @@
     <value>上传成功</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>详细的email地址变更指引已发送到{0}的电子邮箱</value>
+    <value>详细的email地址变更指引已发送到的电子邮箱</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
     <value>若想更改号码，您需要删除当前的电话号码</value>
@@ -471,5 +471,68 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>管理员/高级用户的数:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>比特利</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>连接Bitly服务，以缩短文档模块中的门户网站邀请链接和共享链接。</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>盒子ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>盒子秘钥</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>连接应用程序，以管理Box文件和文件夹。</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>通过Clickatell启用双因素身份验证应用程序。</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign秘钥</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign密码</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>连接应用程序，将DocuSign电子标志添加到文档。</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign身份验证端点</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>连接应用程序，以管理Dropbox文件和文件夹。</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>DropBox秘钥</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>应用程序密钥</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>APP令牌</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
   </data>
 </root>

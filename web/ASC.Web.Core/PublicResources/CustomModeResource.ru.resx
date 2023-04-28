@@ -162,4 +162,13 @@ $GreenButton
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Зарегистрирован новый портал</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Хотите изменить пароль от своего аккаунта? Нажмите кнопку ниже для подтверждения.
+
+$GreenButton
+
+Ссылка действительна в течение 7 дней.
+
+Не хотите менять пароль? Просто проигнорируйте это сообщение.</value>
+  </data>
 </root>

@@ -3010,6 +3010,7 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
+        backupCheckedListItemBackground: "#3D3D3D",
       },
 
       payment: {

@@ -389,7 +389,7 @@
     <value>В файл CSV экспортированы задачи CRM: {0}</value>
   </data>
   <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>Из файла CSV импортированы задачи CRM: {0}</value>
+    <value>Из файла CSV импортированы задачи CRM</value>
   </data>
   <data name="CrmTasksModule" xml:space="preserve">
     <value>Задачи CRM</value>
@@ -719,7 +719,7 @@
     <value>Неудачная попытка входа. Профиль заблокирован</value>
   </data>
   <data name="LoginFailInvalidCombination" xml:space="preserve">
-    <value>Неудачная попытка входа. Неправильная комбинация имени пользователя и пароля </value>
+    <value>Неудачная попытка входа. Неправильная комбинация имени пользователя и пароля</value>
   </data>
   <data name="LoginFailIpSecurity" xml:space="preserve">
     <value>IP-безопасность: неудачная попытка входа</value>
@@ -1395,5 +1395,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Обновлен ключ формы Контакты с сайта</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Комната создана</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Комнаты</value>
   </data>
 </root>

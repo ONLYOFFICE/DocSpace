@@ -159,13 +159,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsPlus = () => {
-    const {
-      t,
-      isPrivacyFolder,
-      isRoomsFolder,
-      enablePlugins,
-      security,
-    } = this.props;
+    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins, security } =
+      this.props;
 
     const options = isRoomsFolder
       ? [
@@ -377,9 +372,8 @@ class SectionHeaderContent extends React.Component {
       return;
     }
 
-    this.props.setArchiveAction("unarchive");
     this.props.setRestoreAllArchive(true);
-    this.props.setArchiveDialogVisible(true);
+    this.props.setRestoreRoomDialogVisible(true);
   };
 
   onShowInfo = () => {
@@ -599,12 +593,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const {
-      t,
-      cbMenuItems,
-      getCheckboxItemLabel,
-      getCheckboxItemId,
-    } = this.props;
+    const { t, cbMenuItems, getCheckboxItemLabel, getCheckboxItemId } =
+      this.props;
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
@@ -631,12 +621,8 @@ class SectionHeaderContent extends React.Component {
   };
 
   onClickFolder = (id, isRootRoom) => {
-    const {
-      setSelectedNode,
-      setIsLoading,
-      fetchFiles,
-      moveToRoomsPage,
-    } = this.props;
+    const { setSelectedNode, setIsLoading, fetchFiles, moveToRoomsPage } =
+      this.props;
 
     if (isRootRoom) {
       return moveToRoomsPage();
@@ -732,7 +718,7 @@ class SectionHeaderContent extends React.Component {
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
                     isTrashFolder={isRecycleBinFolder}
-                    isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
+                    isRecycleBinFolder={isRecycleBinFolder}
                     isEmptyFilesList={
                       isArchiveFolder ? isEmptyArchive : isEmptyFilesList
                     }
@@ -815,9 +801,8 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
       setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
@@ -841,14 +826,8 @@ export default inject(
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
 
-    const {
-      title,
-      id,
-      roomType,
-      pathParts,
-      navigationPath,
-      security,
-    } = selectedFolderStore;
+    const { title, id, roomType, pathParts, navigationPath, security } =
+      selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
 
@@ -942,9 +921,8 @@ export default inject(
 
       setRestoreAllPanelVisible,
       isEmptyPage,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
 
       selectedFolder,
 

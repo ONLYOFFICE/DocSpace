@@ -252,7 +252,11 @@ class FilesActionStore {
     withoutDialog = false
   ) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { addActiveItems, getIsEmptyTrash } = this.filesStore;
+    const {
+      addActiveItems,
+      getIsEmptyTrash,
+      bufferSelection,
+    } = this.filesStore;
     const {
       secondaryProgressDataStore,
       clearActiveOperations,
@@ -263,7 +267,11 @@ class FilesActionStore {
     } = secondaryProgressDataStore;
     const { withPaging } = this.authStore.settingsStore;
 
-    const selection = newSelection ? newSelection : this.filesStore.selection;
+    const selection = newSelection
+      ? newSelection
+      : this.filesStore.selection.length
+      ? this.filesStore.selection
+      : [bufferSelection];
     const isThirdPartyFile = selection.some((f) => f.providerKey);
 
     const currentFolderId = this.selectedFolderStore.id;
@@ -1040,6 +1048,7 @@ class FilesActionStore {
       secondaryProgressDataStore,
       clearActiveOperations,
     } = this.uploadDataStore;
+
     const {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
@@ -1117,7 +1126,12 @@ class FilesActionStore {
 
             toastr.success(successTranslation);
           })
-          .then(() => setSelected("close"))
+          .then(() => {
+            const clearBuffer =
+              !this.dialogsStore.archiveDialogVisible &&
+              !this.dialogsStore.restoreRoomDialogVisible;
+            setSelected("close", clearBuffer);
+          })
           .catch((err) => {
             clearActiveOperations(null, items);
             setSecondaryProgressBarData({
@@ -1527,12 +1541,19 @@ class FilesActionStore {
       setArchiveAction,
       setArchiveDialogVisible,
       setInviteUsersWarningDialogVisible,
+      setRestoreRoomDialogVisible,
     } = this.dialogsStore;
     const { isGracePeriod } = this.authStore.currentTariffStatusStore;
 
     if (action === "unarchive" && isGracePeriod) {
       setInviteUsersWarningDialogVisible(true);
       return;
+    }
+
+    if (action === "archive") {
+      setArchiveDialogVisible(true);
+    } else {
+      setRestoreRoomDialogVisible(true);
     }
 
     setArchiveAction(action);

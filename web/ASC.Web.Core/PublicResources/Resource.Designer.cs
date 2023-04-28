@@ -2500,7 +2500,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The email change instructions have been successfuly sent.
+        ///   Looks up a localized string similar to The email change instructions have been successfully sent.
         /// </summary>
         public static string MessageEmailChangeInstuctionsSentOnEmail {
             get {

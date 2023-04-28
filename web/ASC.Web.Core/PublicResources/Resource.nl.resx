@@ -152,7 +152,7 @@
     <value>hoofdletters</value>
   </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
-    <value>De gebruiker kon niet worden gevonden </value>
+    <value>De gebruiker kon niet worden gevonden</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
     <value>De gebruiker met "{0}" e-mail kon niet worden gevonden</value>
@@ -212,7 +212,7 @@
     <value>Kon Groepsattribuut niet ophalen voor een of meerdere groepen.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
-    <value>Onjuiste Groepsfilter</value>
+    <value>Onjuiste Groepsfilter.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
     <value>Kon Groepsnaamattribuut niet ophalen voor een of meerdere groepen.</value>
@@ -287,7 +287,7 @@
     <value>Licentie is niet correct</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licentie is verlopen</value>
+    <value>Licentie is verlopen.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Het aantal portalen overschrijdt het aantal toegestaan voor de licentie</value>
@@ -296,7 +296,7 @@
     <value>Het aantal gebruikers overschrijdt het aantal toegestaan voor de licentie</value>
   </data>
   <data name="LicenseUploaded" xml:space="preserve">
-    <value>Succesvol geüpload </value>
+    <value>Succesvol geüpload</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>De e-mailwijzigingsinstructies zijn succesvol verzonden</value>
@@ -423,5 +423,62 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Het aantal beheerders/power users:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>inloggen</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Maak verbinding met de Bitly-service om uitnodigingslinks voor het portaal en gedeelde links in de Documentenmodule te verkorten.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Boxsleutel</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Verbind de applicatie om bestanden en mappen in Box te beheren.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Schakel de applicatie in voor de twee-factor authenticatie via Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign Sleutel</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Geheim</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Verbind de applicatie om DocuSign toe te voegen en elektronisch documenten te ondertekenen.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign authenticatie eindpunt</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Verbind de applicatie om bestanden en mappen in Dropbox te beheren.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>DropBox Sleutel</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
   </data>
 </root>

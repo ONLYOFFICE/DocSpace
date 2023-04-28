@@ -80,13 +80,13 @@
     <value>Discussie is aangemaakt op</value>
   </data>
   <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Gebeurtenis is aangemaakt op </value>
+    <value>Gebeurtenis is aangemaakt op</value>
   </data>
   <data name="ActionCreateFile" xml:space="preserve">
-    <value>Document is aangemaakt/geüpload op </value>
+    <value>Document is aangemaakt/geüpload op</value>
   </data>
   <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Map is aangemaakt op </value>
+    <value>Map is aangemaakt op</value>
   </data>
   <data name="ActionCreateForum" xml:space="preserve">
     <value>Forum is aangemaakt op</value>

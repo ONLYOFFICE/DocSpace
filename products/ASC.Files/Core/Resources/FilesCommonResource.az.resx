@@ -146,7 +146,7 @@
     <value>Sənədlərin DocuSign vasitəsilə göndərilməsi ləğv edildi</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Sənəd DocuSign vasitəsilə imzalanmaq üçün göndərildi.</value>
+    <value>Sənəd DocuSign vasitəsilə imzalanmaq üçün göndərildi</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Ləğv edildi</value>
@@ -197,13 +197,13 @@
     <value>Yanlış başlıq</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value>Hazırda fayl başqa istifadəçi tərəfindən kilidlənib.</value>
+    <value>Hazırda fayl başqa istifadəçi tərəfindən kilidlənib</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Ən azı {0} poçt mesajı göndərmək alınmadı. Bunun səbəbini öyrənmək üçün Poçt moduluna daxil olun.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Həddən çox endirmə var</value>
+    <value>Həddən çox endirmə var.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Üzr istəyirik, amma bu format dəstəklənmir</value>
@@ -245,7 +245,7 @@
     <value>Bu sənəd Sizin tərəfinizdən başqa bir nişanda redaktə olunur</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
-    <value>Bu faylı köçürmək üçün kifayət qədər icazəniz yoxdur.</value>
+    <value>Bu faylı köçürmək üçün kifayət qədər icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
     <value>Bu qovluğu köçürmək üçün kifayət qədər icazəniz yoxdur</value>
@@ -296,7 +296,7 @@
     <value>"{0}" qovluğunda fayl yaradıldı</value>
   </data>
   <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>Doldurula bilən OFORM sənədi hazırdır. {0} qovluğunda yadda saxlanıldı </value>
+    <value>Doldurula bilən OFORM sənədi hazırdır. {0} qovluğunda yadda saxlanıldı</value>
   </data>
   <data name="MessageFillFormDraftCreated" xml:space="preserve">
     <value>OFORM-un kopyası {0} qovluğunda yaradıldı. Formanı doldurun və nəticəni PDF və ya DOCX formatında yükləyin.</value>
