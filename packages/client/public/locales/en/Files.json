@@ -117,7 +117,6 @@
   "WithSubfolders": "With subfolders",
   "MarkAsVersion": "Mark as version",
   "MarkAsRevision": "Mark as revision",
-  "TableSettingsTitle": "Manage displayed columns"
-  "WithSubfolders": "With subfolders",
+  "TableSettingsTitle": "Manage displayed columns",
   "DocumentEdited": "Cannot perform the action because the document is being edited."
 }
