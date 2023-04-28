@@ -478,4 +478,7 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="ErrorMessage_MinLinksCount" xml:space="preserve">
     <value>The number of links cannot be less than {0}</value>
   </data>
+  <data name="DefaultExternalLinkTitle" xml:space="preserve">
+    <value>External link</value>
+  </data>
 </root>

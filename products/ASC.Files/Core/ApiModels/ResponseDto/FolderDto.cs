@@ -125,6 +125,7 @@ public class FolderDtoHelper : FileEntryDtoHelper
                 FolderType.ReviewRoom => RoomType.ReviewRoom,
                 FolderType.ReadOnlyRoom => RoomType.ReadOnlyRoom,
                 FolderType.CustomRoom => RoomType.CustomRoom,
+                FolderType.PublicRoom => RoomType.PublicRoom,
                 _ => null,
             };
 

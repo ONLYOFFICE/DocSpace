@@ -87,6 +87,12 @@ public class FileSecurity : IFileSecurity
             {
                 FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None
             }
+        },
+        {
+            FolderType.PublicRoom, new HashSet<FileShare>
+            {
+                FileShare.RoomAdmin, FileShare.Collaborator, FileShare.Read, FileShare.None,
+            }
         }
     };
 

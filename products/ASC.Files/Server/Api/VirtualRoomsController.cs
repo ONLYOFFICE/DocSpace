@@ -731,6 +731,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
             RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
             RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
             RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
+            RoomFilterType.PublicRoomOnly => FilterType.PublicRooms,
             _ => FilterType.None
         };
 
