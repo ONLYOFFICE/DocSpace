@@ -340,4 +340,97 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>管理者/パワーユーザー数:</value>
   </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>Ｓ３アクセスキー</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace APIキー</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>アプリケーションクライアント ID</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Sign in with Appleシクレットキー用に生成された10文字の鍵識別子</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>アプリケーションがApple IDを使用してポータルにサインインできるようにする。</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、ユーザーはApple IDを使ってONLYOFFICEにサインインできるようになります。{0}Apple Developersポータルにアクセスし、新規アプリONLYOFFICE integrationを作成します。以下、受け取ったデータを挿入してください：</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Apple Developerからダウンロードした秘密キー</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10文字の開発者アカウントのTeam ID</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>ログイン</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>ポータルの招待リンクと文書モジュール共有リンクをを短くするように、Bitlyサービスを接続します。</value>
+  </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>このアプリを有効にすると、文書と招待リンクを短くすることができます。{0}以下にBitlyログインとAPIキーを入力してください：</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Boxキー</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Boxファイルとフォルダを管理するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>このアプリを有効にすると、Boxアカウントを文書モジュールに接続して、Boxの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Box開発者ページでサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Clickatellを介して二要素認証のアプリを有効します。</value>
+  </data>
+  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+    <value>このアプリを使用して、Clickatellサービスでの二要素認証を有効にしてください。{0}SMSプラットフォームアカウントにサインインし、ONLYOFFICE用の新しいインテグレーションを作成します。apiKeyをコピーして、下に挿入してください:</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSignのキー</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSignの秘密なキー</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>DocuSignの電子サインを文書に追加するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign認証端点</value>
+  </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>このアプリを有効にすると、DocuSignを使用してデジタル的に文書を署名します。{0}DocuSign管理者コンソールでONLYOFFICE統合を追加してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Dropboxファイルとフォルダを管理するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>このアプリを有効にすると、Dropboxアカウントを文書モジュールに接続して、Dropboxの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Dropbox開発者ページでサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>Dropboxキー</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>アプリキー</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>EasyBibアプリを接続して、書誌リストを作成します。</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Appトークン</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
 </root>

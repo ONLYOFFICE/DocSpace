@@ -163,4 +163,13 @@ Beim Entfernen persönlicher Daten es wurde freigegeben:
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Neues Portal wurde registriert</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Möchten Sie das Passwort Ihres Cloud-Office-Kontos ändern? Klicken Sie auf die Schaltfläche unten.
+
+$GreenButton
+
+Der Link ist innerhalb von 7 Tagen gültig.
+
+Möchten Sie das Passwort nicht ändern? Ignorieren Sie diese Nachricht.</value>
+  </data>
 </root>

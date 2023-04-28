@@ -334,4 +334,16 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Število skrbnikov/naprednih uporabnikov:</value>
   </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box Kľúč</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
 </root>

@@ -1279,4 +1279,13 @@ Atenciosamente,
 Equipe ONLYOFFICE 
 "www.onlyoffice.com/pt":http://onlyoffice.com/pt</value>
   </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Quer mudar a senha em sua conta pessoal ONLYOFFICE? Clique no botão abaixo para confirmar.
+
+$GreenButton
+
+O link é válido por 7 dias.
+
+Não deseja alterar sua senha? Simplesmente ignore esta mensagem.</value>
+  </data>
 </root>

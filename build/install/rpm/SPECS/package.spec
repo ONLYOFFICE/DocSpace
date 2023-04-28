@@ -18,7 +18,8 @@ Common
 Summary:        Files-services
 Group:          Applications/Internet
 Requires:       %name-common  = %version-%release
-Requires:       dotnet-sdk-7.0, ffmpeg
+Requires:       dotnet-sdk-7.0
+Requires:       ffmpeg
 AutoReqProv:    no
 %description    files-services
 Files-services

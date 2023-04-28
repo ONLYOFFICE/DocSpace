@@ -180,4 +180,13 @@ A exclusão de dados pessoais permitida para liberar:
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Novo portal foi registrado</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Quer mudar a senha em sua conta de escritório na nuvem? Clique no botão abaixo para confirmar.
+
+$GreenButton
+
+O link é válido por 7 dias.
+
+Não deseja alterar sua senha? Simplesmente ignore esta mensagem.</value>
+  </data>
 </root>

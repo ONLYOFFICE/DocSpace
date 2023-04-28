@@ -430,4 +430,55 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>Zīmolrade un pielāgošana</value>
   </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>pieteikties</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Pievienojiet Bitly pakalpojumu, lai saīsinātu portāla ielūgumu saites un Dokumentu moduļa koplietošanas saites.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Laatikon tunnus</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box atslēga</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai pārvaldītu Box failus un mapes.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Iespējot lietotni divu faktoru autentifikācijai ar Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign atslēga</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign slēptā atslēga</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai dokumentiem pievienotu DocuSign digitālos parakstus.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign autentifikācijas galapunkts</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai pārvaldītu Dropbox failus un mapes.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>Dropbox atslēga</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
 </root>

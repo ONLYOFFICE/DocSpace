@@ -817,7 +817,7 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The invitation link is invalid or it&apos;s validity has expired.
+        ///   Looks up a localized string similar to The invitation link is invalid or its validity has expired.
         /// </summary>
         public static string ErrorMessage_InvintationLink {
             get {

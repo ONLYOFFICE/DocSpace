@@ -361,7 +361,7 @@
     <value>It is not possible to use this folder to store the room</value>
   </data>
   <data name="ErrorMessage_InvintationLink" xml:space="preserve">
-    <value>The invitation link is invalid or it's validity has expired</value>
+    <value>The invitation link is invalid or its validity has expired</value>
   </data>
   <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
     <value>The role is not available for this user type</value>

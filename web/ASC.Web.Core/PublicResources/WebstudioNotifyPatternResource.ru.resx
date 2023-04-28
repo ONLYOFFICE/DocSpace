@@ -1237,4 +1237,13 @@ $GreenButton
 команда ONLYOFFICE
 "www.onlyoffice.com":http://onlyoffice.com/ru</value>
   </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Хотите изменить пароль от своего аккаунта ONLYOFFICE Personal? Нажмите кнопку ниже для подтверждения.
+
+$GreenButton
+
+Ссылка действительна в течение 7 дней.
+
+Не хотите менять пароль? Просто проигнорируйте это сообщение.</value>
+  </data>
 </root>

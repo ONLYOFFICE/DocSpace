@@ -150,4 +150,11 @@ La procedura di rimozione dei dati dall'utente "$FromUserName":"$FromUserLink" �
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Il nuovo portale è stato registrato</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>‎Vuoi cambiare la password del tuo account cloud office? Fai clic sul pulsante qui sotto per confermare.
+
+$GreenButton
+
+‎Il link è valido per 7 giorni. Non vuoi cambiare la tua password? Basta ignorare questo messaggio.</value>
+  </data>
 </root>

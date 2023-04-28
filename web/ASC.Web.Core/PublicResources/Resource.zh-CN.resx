@@ -472,4 +472,67 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>管理员/高级用户的数:</value>
   </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>比特利</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>登录</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>连接Bitly服务，以缩短文档模块中的门户网站邀请链接和共享链接。</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>盒子ID</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>盒子秘钥</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>连接应用程序，以管理Box文件和文件夹。</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>通过Clickatell启用双因素身份验证应用程序。</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign秘钥</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign密码</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>连接应用程序，将DocuSign电子标志添加到文档。</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign身份验证端点</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>连接应用程序，以管理Dropbox文件和文件夹。</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>DropBox秘钥</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>应用程序密钥</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>APP令牌</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
 </root>
