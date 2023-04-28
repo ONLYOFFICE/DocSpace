@@ -12,6 +12,30 @@ const treeData = [
   },
 ];
 
+export default {
+  title: "Components/TreeMenu",
+  component: TreeMenu,
+  argTypes: {
+    disableSwitch: {
+      description: "Disables Switch",
+      control: "action",
+    },
+    showBadge: {
+      description: "Displays the badge",
+    },
+    newItems: {
+      description: "The number of new elements in the node",
+    },
+    title: {
+      description: "Title of the subTree",
+    },
+    data: {
+      description:
+        "Tree object that contains a key that facilitates building the tree structure",
+    },
+  },
+};
+
 const Template = ({
   data,
   title,
@@ -176,8 +200,8 @@ const Template = ({
   );
 };
 
-export const basic = Template.bind({});
-basic.args = {
+export const Default = Template.bind({});
+Default.args = {
   checkable: false,
   draggable: false,
   disabled: false,

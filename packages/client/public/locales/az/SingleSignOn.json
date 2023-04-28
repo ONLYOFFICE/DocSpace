@@ -17,6 +17,7 @@
   "HideAuthPage": "Doğrulama səhifəsini gizlədin",
   "LogoutEndpointUrl": "IdP Birdəfəlik Çıxış Son Nöqtə URL",
   "LogoutEndpointUrlTooltip": "Xidmət təminatçısı tərəfindən birdəfəlik çıxış üçün istifadə edilən URL",
+  "MetadataLoadError": "Metadata faylı köçürülməmişdir",
   "NameIDFormat": "Ad ID Format",
   "NewCertificate": "Yeni Sertifikat",
   "OpenCertificate": "İctimai Sertifikat",

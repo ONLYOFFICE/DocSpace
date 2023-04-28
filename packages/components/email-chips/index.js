@@ -335,7 +335,7 @@ EmailChips.propTypes = {
   options: PropTypes.arrayOf(PropTypes.object),
   /** Placeholder text for the input */
   placeholder: PropTypes.string,
-  /** The text that is displayed in the button for cleaning all chips */
+  /** The text displayed in the button that triggers cleaning all chips */
   clearButtonLabel: PropTypes.string,
   /** Warning text when entering an existing email */
   existEmailText: PropTypes.string,
@@ -345,11 +345,11 @@ EmailChips.propTypes = {
   exceededLimit: PropTypes.number,
   /** Warning text when entering the number of chips exceeding the limit */
   exceededLimitText: PropTypes.string,
-  /** Warning text when entering the number of characters in input exceeding the limit */
+  /** Warning text when the number of inputted characters exceeds the limit */
   exceededLimitInputText: PropTypes.string,
-  /** Warning text when entering the number of email characters exceeding the limit */
+  /** Warning text when the number of the email address characters exceeds the limit */
   chipOverLimitText: PropTypes.string,
-  /** Will be called when the selected items are changed */
+  /** Sets a callback function that will be called when the selected items are changed */
   onChange: PropTypes.func.isRequired,
 };
 

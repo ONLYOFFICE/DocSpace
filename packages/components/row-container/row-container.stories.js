@@ -16,6 +16,29 @@ export default {
   },
 };
 
+const fakeNames = [
+  "Ella Green",
+  "Kenneth Sandoval",
+  "Charles Douglas",
+  "Shirley Hall",
+  "Donna Thompson",
+  "Brenda Carter",
+  "Janet Scott",
+  "Gina Atkins",
+  "Lillie Taylor",
+  "Robert Ferguson",
+  "Ralph Fields",
+  "Richard Williams",
+  "Eric Hawkins",
+  "Michael Mills",
+  "Matthew Simpson",
+  "Judy Owen",
+  "Miguel Morrison",
+  "Jacob Knight",
+  "Holly Walker",
+  "Albert Clark",
+];
+
 const getRndString = (n) =>
   Math.random()
     .toString(36)
@@ -31,10 +54,7 @@ const fillFakeData = (n) => {
   for (let i = 0; i < n; i++) {
     data.push({
       id: getRndString(6),
-      userName:
-        getRndString(getRndNumber(2, 6)) +
-        " " +
-        getRndString(getRndNumber(2, 10)),
+      userName: fakeNames[i],
       avatar: "",
       role: getRndBool()
         ? "user"
@@ -66,7 +86,11 @@ const fakeData = fillFakeData(20);
 
 const Template = (args) => {
   return (
-    <RowContainer {...args} manualHeight="500px">
+    <RowContainer
+      {...args}
+      manualHeight="500px"
+      style={{ width: "95%", padding: "0 20px" }}
+    >
       {fakeData.map((user) => {
         const element = (
           <Avatar
@@ -100,18 +124,10 @@ const Template = (args) => {
               </Link>
               <>
                 {user.status === "pending" && (
-                  <SendClockReactSvg
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <SendClockReactSvg size="small" color="#3B72A7" />
                 )}
                 {user.status === "disabled" && (
-                  <CatalogSpamReactSvg
-                    size="small"
-                    isfill={true}
-                    color="#3B72A7"
-                  />
+                  <CatalogSpamReactSvg size="small" color="#3B72A7" />
                 )}
               </>
               {user.isHead ? (
@@ -162,3 +178,6 @@ const Template = (args) => {
 };
 
 export const Default = Template.bind({});
+Default.args = {
+  useReactWindow: false,
+};

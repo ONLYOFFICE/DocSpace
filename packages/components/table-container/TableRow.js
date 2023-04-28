@@ -65,7 +65,7 @@ const TableRow = (props) => {
               className="expandButton"
               getData={getOptions}
               directionX="right"
-              isNew={true}
+              displayType="toggle"
               onClick={onContextMenu}
               onClose={onHideContextMenu}
               title={title}

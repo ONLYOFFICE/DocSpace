@@ -20,7 +20,7 @@ export default function withCultureNames(WrappedComponent) {
         return {
           key: culture,
           label: t(`Culture_${culture}`),
-          icon: flagsIcons.get(`${culture}.react.svg`),
+          icon: flagsIcons?.get(`${culture}.react.svg`),
         };
       });
     };

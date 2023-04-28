@@ -17,6 +17,7 @@
   "HideAuthPage": "Slēpt autentifikācijas lapu",
   "LogoutEndpointUrl": "IdP vienas atteikšanās galapunkta vietrādis URL",
   "LogoutEndpointUrlTooltip": "Vienotās atteikšanās vietrādis URL pakalpojuma sniedzēja pusē",
+  "MetadataLoadError": "Metadatu fails nav pārsūtīts",
   "NameIDFormat": "NameId formāts",
   "NewCertificate": "Jauns sertifikāts",
   "OpenCertificate": "Publiskais sertifikāts",

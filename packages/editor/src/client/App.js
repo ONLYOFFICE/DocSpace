@@ -44,6 +44,7 @@ const App = ({ initialLanguage, initialI18nStoreASC, setTheme, ...rest }) => {
         icon = SpreadSheetIcoUrl;
         break;
       default:
+        icon = TextIcoUrl;
         break;
     }
 
