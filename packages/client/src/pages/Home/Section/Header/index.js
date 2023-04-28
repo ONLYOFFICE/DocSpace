@@ -732,6 +732,11 @@ const SectionHeaderContent = (props) => {
                   titles={{
                     trash: t("EmptyRecycleBin"),
                     trashWarning: t("TrashErasureWarning"),
+                    actions: isRoomsFolder
+                      ? t("Files:NewRoom")
+                      : t("Common:Actions"),
+                    contextMenu: t("Translations:TitleShowFolderActions"),
+                    infoPanel: t("Common:InfoPanel"),
                   }}
                   withMenu={!isRoomsFolder}
                   onPlusClick={onCreateRoom}
