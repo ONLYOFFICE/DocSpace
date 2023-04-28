@@ -481,4 +481,7 @@ Highest compatibility with docx, xlsx, pptx. </value>
   <data name="DefaultExternalLinkTitle" xml:space="preserve">
     <value>External link</value>
   </data>
+  <data name="ErrorMessage_SharePasswordManyAttempts" xml:space="preserve">
+    <value>You have tried too many times to enter your password. Please try again later</value>
+  </data>
 </root>

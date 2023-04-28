@@ -43,7 +43,7 @@ public class BruteForceLoginManager
         _distributedCache = distributedCache;
     }
 
-    public bool Increment(string key, string requestIp, bool throwException, out bool showRecaptcha)
+    public bool Increment(string key, string requestIp, bool throwException, out bool showRecaptcha, string exceptionMessage = null)
     {
         showRecaptcha = true;
         
@@ -53,7 +53,7 @@ public class BruteForceLoginManager
         {
             if (throwException)
             {
-                throw new BruteForceCredentialException();
+                throw new BruteForceCredentialException(exceptionMessage);
             }
 
             return false;
@@ -63,7 +63,7 @@ public class BruteForceLoginManager
         {
             if (GetFromCache<string>(blockCacheKey) != null)
             {
-                throw new BruteForceCredentialException();
+                throw new BruteForceCredentialException(exceptionMessage);
             }
             
             var historyCacheKey = GetHistoryCacheKey(key, requestIp);
@@ -85,7 +85,7 @@ public class BruteForceLoginManager
 
                 if (throwException)
                 {
-                    throw new BruteForceCredentialException();
+                    throw new BruteForceCredentialException(exceptionMessage);
                 }
 
                 return false;

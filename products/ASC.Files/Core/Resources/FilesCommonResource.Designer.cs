@@ -906,6 +906,15 @@ namespace ASC.Files.Core.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You have tried too many times to enter your password. Please try again later.
+        /// </summary>
+        public static string ErrorMessage_SharePasswordManyAttempts {
+            get {
+                return ResourceManager.GetString("ErrorMessage_SharePasswordManyAttempts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to You cannot edit archived rooms.
         /// </summary>
         public static string ErrorMessage_UpdateArchivedRoom {

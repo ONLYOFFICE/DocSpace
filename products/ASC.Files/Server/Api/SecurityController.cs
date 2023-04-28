@@ -289,7 +289,7 @@ public class SecurityControllerCommon : ApiControllerBase
     {
         var ip = MessageSettings.GetIP(_httpContextAccessor.HttpContext?.Request);
         
-        _ = _bruteForceLoginManager.Increment(key, ip, true, out _);
+        _ = _bruteForceLoginManager.Increment(key, ip, true, out _, FilesCommonResource.ErrorMessage_SharePasswordManyAttempts);
         
         var validationInfo =  await _externalShare.ValidateAsync(key, inDto.Password);
 
