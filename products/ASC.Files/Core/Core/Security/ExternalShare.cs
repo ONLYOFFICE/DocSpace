@@ -85,7 +85,7 @@ public class ExternalShare
     {
         var key = _httpContextAccessor.HttpContext?.Request.Query.GetRequestValue(FilesLinkUtility.FolderShareKey);
 
-        return string.IsNullOrEmpty(key) ? null : $"{FilesLinkUtility.FolderShareKey}={key}";
+        return string.IsNullOrEmpty(key) ? null : key;
     }
 
     public bool TryGetLinkId(out Guid linkId)
