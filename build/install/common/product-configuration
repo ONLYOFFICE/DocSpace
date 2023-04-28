@@ -8,6 +8,7 @@ PACKAGE_SYSNAME="onlyoffice"
 
 APP_DIR="/etc/${PACKAGE_SYSNAME}/${PRODUCT}"
 PRODUCT_DIR="/var/www/${PRODUCT}"
+LOG_DIR="/var/log/${PACKAGE_SYSNAME}/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 
 NGINX_DIR="/etc/nginx"
@@ -170,6 +171,13 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+
+		-mk | --machinekey )
+			if [ "$2" != "" ]; then
+				CORE_MACHINEKEY=$2
+				shift
+			fi
+		;;
 		
 		-? | -h | --help )
 			echo "  Usage: bash ${PRODUCT}-configuration [PARAMETER] [[PARAMETER], ...]"
@@ -191,6 +199,7 @@ while [ "$1" != "" ]; do
 			echo "      -mysqld, --mysqldatabase            ${PRODUCT} database name"
 			echo "      -mysqlu, --mysqluser                ${PRODUCT} database user"
 			echo "      -mysqlp, --mysqlpassword            ${PRODUCT} database password"
+			echo "      -mk, --machinekey                   setting for core.machinekey"
 			echo "      -e, --environment                   environment (default 'production')"
 			echo "      -?, -h, --help                      this help"
 			echo
@@ -206,11 +215,17 @@ while [ "$1" != "" ]; do
 done
 
 set_core_machinekey () {
-	if [ -f $APP_DIR/.private/machinekey ]; then
-		CORE_MACHINEKEY=$(cat $APP_DIR/.private/machinekey)
+	if [[ -f $APP_DIR/.private/machinekey ]] || [[ -n $CORE_MACHINEKEY ]]; then
+		CORE_MACHINEKEY=${CORE_MACHINEKEY:-$(cat $APP_DIR/.private/machinekey)};
 	else
 		CORE_MACHINEKEY=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12);
-		echo $CORE_MACHINEKEY >> $APP_DIR/.private/machinekey
+		if [ "$DIST" = "RedHat" ]; then
+			echo $CORE_MACHINEKEY >> $APP_DIR/.private/machinekey
+			chmod o-rwx $APP_DIR/.private/machinekey
+		elif [ "$DIST" = "Debian" ]; then
+			db_set ${PRODUCT}/machinekey $CORE_MACHINEKEY || true
+			echo ${PRODUCT} ${PRODUCT}/machinekey select $CORE_MACHINEKEY | debconf-set-selections || true
+		fi
 	fi
 
 	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
@@ -227,6 +242,8 @@ install_json() {
 }
 
 restart_services() {
+	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR
+
 	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
@@ -420,18 +437,13 @@ setup_nginx(){
 	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
     sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
-	NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-	NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES};!" -i ${NGINX_ROOT_DIR}/nginx.conf
-	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS};!" -i ${NGINX_ROOT_DIR}/nginx.conf
+	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_DIR}/nginx.conf 
+	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_DIR}/nginx.conf 
 
 	if [ "$DIST" = "RedHat" ]; then
 		# Remove default nginx settings
-		DELETION_LINE=$(sed -n '/server {/=' /etc/nginx/nginx.conf | head -n 1)
-		if [ -n "$DELETION_LINE" ]; then 
-			sed "$DELETION_LINE,\$d" -i /etc/nginx/nginx.conf
-			echo "}" >> /etc/nginx/nginx.conf
+		if ! grep -q "server {"  ${NGINX_DIR}/nginx.conf ; then
+			sed -e '$a}' -e '/server {/,$d' -i ${NGINX_DIR}/nginx.conf
 		fi
 
 		shopt -s nocasematch
@@ -627,11 +639,10 @@ product_configuration(){
 	#Creating environment configuration files 
 	enviromentFiles=("appsettings.$ENVIRONMENT.json" "apisystem.$ENVIRONMENT.json" "elastic.$ENVIRONMENT.json" "rabbitmq.$ENVIRONMENT.json")
 
-	for i in "${!enviromentFiles[@]}";
-	do
+	for i in "${!enviromentFiles[@]}"; do
 		if [ ! -e "$APP_DIR/${enviromentFiles[$i]}" ]; then
-			echo "{}" >> "$APP_DIR/${enviromentFiles[$i]}"
-			chown ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} "$APP_DIR/${enviromentFiles[$i]}"
+			echo "{}" > "$APP_DIR/${enviromentFiles[$i]}"
+			chmod o-rwx "$APP_DIR/${enviromentFiles[$i]}"
 		fi
 	done
 

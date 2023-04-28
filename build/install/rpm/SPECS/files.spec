@@ -30,12 +30,14 @@
 
 %files common
 %defattr(-, onlyoffice, onlyoffice, -)
-%config %{_sysconfdir}/onlyoffice/%{product}/
+%config %attr(640, onlyoffice, onlyoffice) %{_sysconfdir}/onlyoffice/%{product}/*
 %exclude %{_sysconfdir}/onlyoffice/%{product}/nginx
 %{_docdir}/%{name}-%{version}-%{release}/
 %config %{_sysconfdir}/logrotate.d/%{product}-common
 %{_var}/log/onlyoffice/%{product}/
 %dir %{_sysconfdir}/onlyoffice/
+%dir %{_sysconfdir}/onlyoffice/%{product}/
+%dir %{_sysconfdir}/onlyoffice/%{product}/.private/
 %dir %{_var}/log/onlyoffice/
 
 %files files-services
