@@ -791,11 +791,10 @@ public class FileSecurity : IFileSecurity
                     }
                 }
             }
-            else
+            else if (isAuthenticated)
             {
                 if (folder.FolderType == FolderType.VirtualRooms)
                 {
-                    // all can read VirtualRooms folder
                     return true;
                 }
 
