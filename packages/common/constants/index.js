@@ -99,10 +99,10 @@ export const FileType = Object.freeze({
  * @readonly
  */
 export const RoomsType = Object.freeze({
-  //FillingFormsRoom: 1, //TODO: Restore when certs will be done
+  // FillingFormsRoom: 1, //TODO: Restore when certs will be done
   EditingRoom: 2,
-  //ReviewRoom: 3, //TODO: Restore when certs will be done
-  //ReadOnlyRoom: 4, //TODO: Restore when certs will be done
+  // ReviewRoom: 3, //TODO: Restore when certs will be done
+  // ReadOnlyRoom: 4, //TODO: Restore when certs will be done
   CustomRoom: 5,
 });
 
