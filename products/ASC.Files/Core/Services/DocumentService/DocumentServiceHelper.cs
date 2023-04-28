@@ -43,6 +43,7 @@ public class DocumentServiceHelper
     private readonly FileTrackerHelper _fileTracker;
     private readonly EntryStatusManager _entryStatusManager;
     private readonly IServiceProvider _serviceProvider;
+    private readonly ExternalShare _externalShare;
 
     public DocumentServiceHelper(
         IDaoFactory daoFactory,
@@ -58,7 +59,8 @@ public class DocumentServiceHelper
         LockerManager lockerManager,
         FileTrackerHelper fileTracker,
         EntryStatusManager entryStatusManager,
-        IServiceProvider serviceProvider)
+        IServiceProvider serviceProvider, 
+        ExternalShare externalShare)
     {
         _daoFactory = daoFactory;
         _fileShareLink = fileShareLink;
@@ -74,6 +76,7 @@ public class DocumentServiceHelper
         _fileTracker = fileTracker;
         _entryStatusManager = entryStatusManager;
         _serviceProvider = serviceProvider;
+        _externalShare = externalShare;
     }
 
     public async Task<(File<T> File, Configuration<T> Configuration, bool LocatedInPrivateRoom)> GetParamsAsync<T>(T fileId, int version, string doc, bool editPossible, bool tryEdit, bool tryCoauth)
@@ -324,24 +327,27 @@ public class DocumentServiceHelper
             configuration.Document.IsLinkedForMe = !string.IsNullOrEmpty(sourceId);
         }
 
+        if (!_externalShare.TryGetLinkId(out _))
+        {
+            return (file, configuration, locatedInPrivateRoom);
+        }
+
+        configuration.Document.SharedLinkParam = FilesLinkUtility.FolderShareKey;
+        configuration.Document.SharedLinkKey = _externalShare.GetQueryKey();
+
         return (file, configuration, locatedInPrivateRoom);
     }
 
     private async Task<bool> CanDownloadAsync<T>(FileSecurity fileSecurity, File<T> file, FileShare linkRight)
     {
-        if (!file.DenyDownload)
+        var canDownload = linkRight != FileShare.Restrict && linkRight != FileShare.Read && linkRight != FileShare.Comment;
+
+        if (canDownload)
         {
             return true;
         }
 
-        var canDownload = linkRight != FileShare.Restrict && linkRight != FileShare.Read && linkRight != FileShare.Comment;
-
-        if (canDownload || _authContext.CurrentAccount.ID.Equals(ASC.Core.Configuration.Constants.Guest.ID))
-        {
-            return canDownload;
-        }
-
-        if (linkRight == FileShare.Read || linkRight == FileShare.Comment)
+        if (linkRight is FileShare.Read or FileShare.Comment)
         {
             var fileDao = _daoFactory.GetFileDao<T>();
             file = await fileDao.GetFileAsync(file.Id); // reset Access prop
