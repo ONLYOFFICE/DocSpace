@@ -229,4 +229,13 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>O número de administradores/utilizadores com poder:</value>
   </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
 </root>

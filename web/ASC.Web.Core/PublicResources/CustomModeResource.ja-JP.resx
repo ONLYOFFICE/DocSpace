@@ -153,4 +153,13 @@ ONLYOFFICEチーム</value>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>新しいポータルが作成された</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>クラウドオフィスアカウントのメールを変更したいですか？下のボタンをクリックして、クラウドにログイン*してください。
+
+$GreenButton
+
+このリンクは7日間有効です。
+
+メールを変更したくない場合は、このメッセージを無視してください。</value>
+  </data>
 </root>

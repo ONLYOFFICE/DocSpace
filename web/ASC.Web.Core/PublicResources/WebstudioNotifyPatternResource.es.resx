@@ -1145,4 +1145,13 @@ Equipo de ONLYOFFICE
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
   </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>¿Desea cambiar la contraseña de su cuenta de ONLYOFFICE Personal? Haga clic en el botón de abajo para confirmar.
+
+$GreenButton 
+
+El enlace es válido durante 7 días.
+
+¿No desea cambiar su contraseña? Simplemente ignore este mensaje.</value>
+  </data>
 </root>

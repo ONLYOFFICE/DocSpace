@@ -961,4 +961,25 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Nombre d'administrateurs/utilisateurs avancés :</value>
   </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Clé d'application du client</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Un identifiant de 10-caractères généré pour la connexion avec la clé privée Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Autoriser l’application de se connecter au portail avec un compte Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Activez cette application pour permettre à vos utilisateurs de se connecter à ONLYOFFICE avec Apple ID. {0}Allez au portail de développeur Apple et créez une nouvelle application d’intégration ONLYOFFICE. Insérer les données que vous avez reçues ci-dessous :</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Clée privée téléchargée du programme de développeur Apple</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID d’équipe de comptes développeurs de 10-caratères</value>
+  </data>
 </root>

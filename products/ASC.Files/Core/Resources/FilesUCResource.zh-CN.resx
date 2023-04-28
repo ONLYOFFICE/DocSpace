@@ -94,4 +94,7 @@
   <data name="VirtualRooms" xml:space="preserve">
     <value>房间</value>
   </data>
+  <data name="Personal" xml:space="preserve">
+    <value>个人</value>
+  </data>
 </root>

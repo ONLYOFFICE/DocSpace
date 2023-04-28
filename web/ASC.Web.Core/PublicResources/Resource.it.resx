@@ -919,4 +919,28 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Il numero di amministratori/utenti esperti:</value>
   </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Chiave identificativa di 10 caratteri generata per la chiave privata per l'accesso con Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Consenti all'applicazione di accedere al portale utilizzando un account Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Attiva questa app per consentire ai tuoi utenti di accedere a ONLYOFFICE utilizzando Apple ID. {0}Vai al Portale per gli sviluppatori Apple e crea una nuova integrazione per l'app ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Chiave privata scaricata da Apple Developer</value>
+  </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Attiva questa app per abbreviare i link d'invito e di documenti. {0}Inserisci il tuo login Bitly e la chiave API di seguito:</value>
+  </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Abilita questa app per connettere il tuo account Box al modulo Documenti. Potrai gestire, modificare e condividere file da Box con gli utenti ONLYOFFICE. {0}Accedi al tuo account nella pagina degli sviluppatori di Box e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>Attiva questa app per firmare digitalmente i documenti utilizzando DocuSign. {0}Vai alla tua Console di amministrazione DocuSign e aggiungi l'integrazione ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Attiva questa app per connettere il tuo account Dropbox al modulo Documenti. Potrai gestire, modificare e condividere file da Dropbox con gli utenti ONLYOFFICE. {0}Accedi al tuo account sul sito web degli sviluppatori di Dropbox e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
 </root>

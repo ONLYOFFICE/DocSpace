@@ -165,4 +165,13 @@ L'effacement des données personnelles permet de libérer :
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Nouveau portail a été enregistré</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Vous voulez changer le mot de passe de votre compte cloud office ? Cliquez sur le bouton ci-dessous pour confirmer.
+
+$GreenButton
+
+Le lien est valable pendant 7 jours.
+
+Vous ne voulez pas changer votre mot de passe ? Ignorez ce message.</value>
+  </data>
 </root>

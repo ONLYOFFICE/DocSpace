@@ -346,4 +346,55 @@
   <data name="TariffsFeature_whitelabel" xml:space="preserve">
     <value>Brändäys &amp; räätälöinti</value>
   </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>API avain</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>sisäänkirjautuminen</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Yhdistä Bitly palveluun, jotta voit lyhentää portaalin kutsun linkkejä ja jaettuja linkkejä asiakirjojen moduulissa.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Laatikon tunnus</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Laatikon avain</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voi hallita Laatikon tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>API avain</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign Avain</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Salainen tunnus</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Yhdistä sovellus, jotta voit lisätä sähköisen DocuSign allekirjoituksen asiakirjoihin.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign valtuutuksen päätepiste</value>
+  </data>
+  <data name="ConsumersDropBox" xml:space="preserve">
+    <value>DropBox</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit hallita Dropbox tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>Dropbox avain</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
 </root>
