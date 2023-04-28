@@ -12,8 +12,10 @@ case "$1" in
 		APP_HOST="$RET"
 		db_get {{product}}/port || true
 		APP_PORT="$RET"
+		db_get {{product}}/machinekey || true
+		CORE_MACHINEKEY="$RET"
 
-		args+=(-e "$ENVIRONMENT" -ash "$APP_HOST" -asp "$APP_PORT" );
+		args+=(-e "$ENVIRONMENT" -ash "$APP_HOST" -asp "$APP_PORT" -mk "$CORE_MACHINEKEY" );
 
 		db_get {{product}}/db-host || true
 		DB_HOST="$RET"
@@ -25,7 +27,7 @@ case "$1" in
 		DB_PWD="$RET"
 
 		args+=(-mysqlh "$DB_HOST" -mysqld "$DB_NAME" -mysqlu "$DB_USER" );
-                [ -n "$DB_PWD" ] && args+=(-mysqlp "$DB_PWD" );
+        [ -n "$DB_PWD" ] && args+=(-mysqlp "$DB_PWD" );
 
 		db_get {{product}}/redis-host || true
 		REDIS_HOST="$RET"
