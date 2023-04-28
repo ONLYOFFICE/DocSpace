@@ -2039,6 +2039,6 @@ export default inject(
       "PeopleTranslations",
       "ConnectDialog",
       "SmartBanner",
-    ])(observer(SectionFilterContent))
+    ])(withLoader(observer(SectionFilterContent))(<Loaders.Filter />))
   )
 );
