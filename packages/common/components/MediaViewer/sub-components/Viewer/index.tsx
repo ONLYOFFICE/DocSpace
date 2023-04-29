@@ -172,7 +172,9 @@ function Viewer(props: ViewerProps) {
       {props.playlist.length > 1 && !isFullscreen && !isMobile && (
         <>
           {isNotFirstElement && <PrevButton prevClick={prevClick} />}
-          {isNotLastElement && <NextButton nextClick={nextClick} />}
+          {isNotLastElement && (
+            <NextButton isPdfFIle={props.isPdf} nextClick={nextClick} />
+          )}
         </>
       )}
 
