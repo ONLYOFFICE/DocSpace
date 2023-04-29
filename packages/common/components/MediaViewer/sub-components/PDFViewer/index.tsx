@@ -1,5 +1,6 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
+import { isDesktop } from "react-device-detect";
 
 import { loadScript, combineUrl } from "@docspace/common/utils";
 
@@ -41,13 +42,21 @@ const PdfViewrWrapper = styled.div`
   justify-content: center;
   align-items: center;
 
+  padding-top: ${isDesktop ? "85px" : "0px"};
+  background: rgba(55, 55, 55, 0.6);
+
   #mainPanel {
     width: 100%;
     height: 100%;
 
     position: relative;
   }
-
+  #id_viewer {
+    ${isDesktop &&
+    css`
+      background: none !important;
+    `}
+  }
   .block_elem {
     position: absolute;
     padding: 0;
