@@ -1,4 +1,5 @@
 import { runInAction, makeAutoObservable } from "mobx";
+import moment from "moment";
 import {
   createWebhook,
   getAllWebhooks,
@@ -13,6 +14,13 @@ import {
 class WebhooksStore {
   webhooks = [];
   state = "pending"; // "pending", "done" or "error"
+  filterSettings = {
+    deliveryDate: null,
+    deliveryFrom: moment().startOf("day"),
+    deliveryTo: moment().endOf("day"),
+    status: [],
+  };
+  checkedEventIds = [];
 
   constructor() {
     makeAutoObservable(this);
@@ -102,6 +110,65 @@ class WebhooksStore {
 
   get isWebhooksEmpty() {
     return this.webhooks.length === 0;
+  }
+
+  setDeliveryDate = (date) => {
+    this.filterSettings = { ...this.filterSettings, deliveryDate: date };
+  };
+  setDeliveryFrom = (date) => {
+    this.filterSettings = { ...this.filterSettings, deliveryFrom: date };
+  };
+  setDeliveryTo = (date) => {
+    this.filterSettings = { ...this.filterSettings, deliveryTo: date };
+  };
+  toggleStatus = (statusCode) => {
+    this.filterSettings = {
+      ...this.filterSettings,
+      status: this.filterSettings.status.includes(statusCode)
+        ? this.filterSettings.status.filter((statusItem) => statusItem !== statusCode)
+        : [...this.filterSettings.status, statusCode],
+    };
+  };
+  isStatusSelected = (statusCode) => {
+    return this.filterSettings.status.includes(statusCode);
+  };
+  clearFilterSettings = () => {
+    this.filterSettings = {
+      deliveryDate: null,
+      deliveryFrom: moment().startOf("day"),
+      deliveryTo: moment().endOf("day"),
+      status: [],
+    };
+  };
+  clearFilterDate = () => {
+    this.filterSettings = {
+      deliveryDate: null,
+      deliveryFrom: moment().startOf("day"),
+      deliveryTo: moment().endOf("day"),
+      status: this.filterSettings.status,
+    };
+  };
+  clearFilterStatus = () => {
+    this.filterSettings = { ...this.filterSettings, status: [] };
+  };
+
+  toggleEventId = (id) => {
+    this.checkedEventIds = this.checkedEventIds.includes(id)
+      ? this.checkedEventIds.filter((checkedId) => checkedId !== id)
+      : [...this.checkedEventIds, id];
+  };
+  isIdChecked = (id) => {
+    return this.checkedEventIds.includes(id);
+  };
+  checkAllIds = (webhookEvents) => {
+    this.checkedEventIds = webhookEvents.map((event) => event.id);
+  };
+  emptyCheckedIds = () => {
+    this.checkedEventIds = [];
+  };
+
+  get isHeaderVisible() {
+    return this.checkedEventIds.length !== 0;
   }
 }
 
