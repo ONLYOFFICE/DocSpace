@@ -112,6 +112,35 @@ class WebhooksStore {
     return this.webhooks.length === 0;
   }
 
+  formatFilters = (filters) => {
+    const params = {};
+    if (filters.deliveryDate !== null) {
+      params.deliveryFrom =
+        filters.deliveryDate.format("YYYY-MM-DD") + "T" + filters.deliveryFrom.format("HH:mm:ss");
+
+      params.deliveryTo =
+        filters.deliveryDate.format("YYYY-MM-DD") + "T" + filters.deliveryTo.format("HH:mm:ss");
+    }
+
+    const statusEnum = {
+      "Not sent": 1,
+      "2XX": 2,
+      "3XX": 4,
+      "4XX": 8,
+      "5XX": 16,
+    };
+
+    if (filters.status.length > 0) {
+      const statusFlag = filters.status.reduce(
+        (sum, currentValue) => sum + statusEnum[currentValue],
+        0,
+      );
+      params.groupStatus = statusFlag;
+    }
+
+    return params;
+  };
+
   setDeliveryDate = (date) => {
     this.filterSettings = { ...this.filterSettings, deliveryDate: date };
   };

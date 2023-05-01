@@ -32,38 +32,21 @@ const Separator = styled.hr`
 `;
 
 const FilterDialog = (props) => {
-  const { visible, closeModal, applyFilters, filterSettings, isApplied, setIsApplied } = props;
+  const {
+    visible,
+    closeModal,
+    applyFilters,
+    filterSettings,
+    isApplied,
+    setIsApplied,
+    formatFilters,
+    setStatusFilters,
+  } = props;
 
   const handleApplyFilters = () => {
-    const params = {};
-    if (filterSettings.deliveryDate !== null) {
-      params.deliveryFrom =
-        filterSettings.deliveryDate.format("YYYY-MM-DD") +
-        "T" +
-        filterSettings.deliveryFrom.format("HH:mm:ss");
+    const params = formatFilters(filterSettings);
 
-      params.deliveryTo =
-        filterSettings.deliveryDate.format("YYYY-MM-DD") +
-        "T" +
-        filterSettings.deliveryTo.format("HH:mm:ss");
-    }
-
-    const statusEnum = {
-      "Not sent": 1,
-      "2XX": 2,
-      "3XX": 4,
-      "4XX": 8,
-      "5XX": 16,
-    };
-
-    if (filterSettings.status.length > 0) {
-      const statusFlag = filterSettings.status.reduce(
-        (sum, currentValue) => sum + statusEnum[currentValue],
-        0,
-      );
-      params.groupStatus = statusFlag;
-    }
-
+    setStatusFilters(filterSettings);
     setIsApplied(true);
 
     applyFilters(params);
@@ -94,7 +77,7 @@ const FilterDialog = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { filterSettings } = webhooksStore;
+  const { filterSettings, formatFilters } = webhooksStore;
 
-  return { filterSettings };
+  return { filterSettings, formatFilters };
 })(observer(FilterDialog));
