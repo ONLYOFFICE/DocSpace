@@ -32,7 +32,6 @@ const WebhookEventDetails = (props) => {
     (async () => {
       const [webhookDetailsData] = await getWebhookHistory({ eventId });
       setWebhookDetails(webhookDetailsData);
-      console.log(webhookDetailsData);
       setIsLoading(false);
     })();
   }, []);
