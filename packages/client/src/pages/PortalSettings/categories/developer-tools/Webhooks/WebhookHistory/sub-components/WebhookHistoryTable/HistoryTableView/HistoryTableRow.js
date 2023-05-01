@@ -18,6 +18,7 @@ const HistoryTableRow = (props) => {
   const navigate = useNavigate();
 
   const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
+  const handleRetryEvent = () => retryWebhookEvent(item.id);
 
   const contextOptions = [
     {
@@ -30,6 +31,7 @@ const HistoryTableRow = (props) => {
       key: "Retry dropdownItem",
       label: "Retry",
       icon: RetryIcon,
+      onClick: handleRetryEvent,
     },
   ];
 
@@ -66,7 +68,7 @@ const HistoryTableRow = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { checkedEventIds, toggleEventId, isIdChecked } = webhooksStore;
+  const { checkedEventIds, toggleEventId, isIdChecked, retryWebhookEvent } = webhooksStore;
 
-  return { checkedEventIds, toggleEventId, isIdChecked };
+  return { checkedEventIds, toggleEventId, isIdChecked, retryWebhookEvent };
 })(observer(HistoryTableRow));
