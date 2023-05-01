@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import moment from "moment";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
@@ -23,18 +23,39 @@ const StatusBarWrapper = styled.div`
 `;
 
 const StatusBar = (props) => {
-  const { filterSettings, clearFilterDate, toggleStatus, clearFilterSettings } = props;
+  const { statusFilters, setStatusFilters, formatFilters, applyFilters } = props;
+
+  const clearDate = () => {
+    setStatusFilters((prevStatusFilters) => ({ ...prevStatusFilters, deliveryDate: null }));
+  };
+
+  const unselectStatus = (statusCode) => {
+    setStatusFilters((prevStatusFilters) => ({
+      ...prevStatusFilters,
+      status: prevStatusFilters.status.filter((item) => item !== statusCode),
+    }));
+  };
+
+  const clearAll = () => {
+    applyFilters(
+      formatFilters({
+        deliveryDate: null,
+        status: [],
+      }),
+    );
+    setStatusFilters(null);
+  };
 
   const SelectedDateTime = () => {
     return (
       <SelectedItem
-        onClose={clearFilterDate}
+        onClose={clearDate}
         text={
-          moment(filterSettings.deliveryDate).format("DD MMM YYYY") +
+          moment(statusFilters.deliveryDate).format("DD MMM YYYY") +
           " " +
-          moment(filterSettings.deliveryFrom).format("HH:mm") +
+          moment(statusFilters.deliveryFrom).format("HH:mm") +
           " - " +
-          moment(filterSettings.deliveryTo).format("HH:mm")
+          moment(statusFilters.deliveryTo).format("HH:mm")
         }
         className="statusBarItem"
       />
@@ -43,15 +64,15 @@ const StatusBar = (props) => {
 
   const SelectedDate = () => (
     <SelectedItem
-      onClose={clearFilterDate}
-      text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
+      onClose={clearDate}
+      text={moment(statusFilters.deliveryDate).format("DD MMM YYYY")}
       className="statusBarItem"
     />
   );
 
-  const SelectedStatuses = filterSettings.status.map((statusCode) => (
+  const SelectedStatuses = statusFilters.status.map((statusCode) => (
     <SelectedItem
-      onClose={() => toggleStatus(statusCode)}
+      onClose={() => unselectStatus(statusCode)}
       text={statusCode}
       key={statusCode}
       className="statusBarItem"
@@ -62,14 +83,23 @@ const StatusBar = (props) => {
     return firstDate.format() === secondDate.format();
   };
 
-  return (
+  useEffect(() => {
+    applyFilters(formatFilters(statusFilters));
+    if (statusFilters.deliveryDate === null && statusFilters.status.length === 0) {
+      setStatusFilters(null);
+    }
+  }, [statusFilters]);
+
+  return statusFilters.deliveryDate === null && statusFilters.status.length === 0 ? (
+    ""
+  ) : (
     <StatusBarWrapper>
-      {filterSettings.deliveryDate !== null ? (
+      {statusFilters.deliveryDate !== null ? (
         !isEqualDates(
-          filterSettings.deliveryFrom,
-          filterSettings.deliveryFrom.clone().startOf("day"),
+          statusFilters.deliveryFrom,
+          statusFilters.deliveryFrom.clone().startOf("day"),
         ) ||
-        !isEqualDates(filterSettings.deliveryTo, filterSettings.deliveryTo.clone().endOf("day")) ? (
+        !isEqualDates(statusFilters.deliveryTo, statusFilters.deliveryTo.clone().endOf("day")) ? (
           <SelectedDateTime />
         ) : (
           <SelectedDate />
@@ -82,7 +112,7 @@ const StatusBar = (props) => {
         type="action"
         fontWeight={600}
         isHovered={true}
-        onClick={clearFilterSettings}
+        onClick={clearAll}
         color="#A3A9AE"
         className="statusActionItem">
         Clear all
@@ -92,7 +122,7 @@ const StatusBar = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { filterSettings, clearFilterDate, toggleStatus, clearFilterSettings } = webhooksStore;
+  const { formatFilters } = webhooksStore;
 
-  return { filterSettings, clearFilterDate, toggleStatus, clearFilterSettings };
+  return { formatFilters };
 })(observer(StatusBar));

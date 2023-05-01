@@ -58,6 +58,8 @@ const HistoryFilterHeader = (props) => {
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
 
+  const [statusFilters, setStatusFilters] = useState(null);
+
   const openFiltersModal = () => {
     setIsFiltersVisible(true);
   };
@@ -75,13 +77,20 @@ const HistoryFilterHeader = (props) => {
           <IconButton iconName={FilterReactSvrUrl} size={16} />
         </FilterButton>
       </ListHeader>
-      {isApplied && <StatusBar />}
+      {statusFilters !== null && (
+        <StatusBar
+          statusFilters={statusFilters}
+          setStatusFilters={setStatusFilters}
+          applyFilters={applyFilters}
+        />
+      )}
       <FilterDialog
         visible={isFiltersVisible}
         closeModal={closeFiltersModal}
         applyFilters={applyFilters}
         isApplied={isApplied}
         setIsApplied={setIsApplied}
+        setStatusFilters={setStatusFilters}
       />
     </div>
   );
