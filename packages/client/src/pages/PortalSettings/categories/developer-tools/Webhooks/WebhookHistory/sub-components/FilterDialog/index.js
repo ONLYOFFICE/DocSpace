@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
 
 import ModalDialog from "@docspace/components/modal-dialog";
@@ -32,24 +32,21 @@ const Separator = styled.hr`
 `;
 
 const FilterDialog = (props) => {
-  const {
-    visible,
-    closeModal,
-    applyFilters,
-    filterSettings,
-    isApplied,
-    setIsApplied,
-    formatFilters,
-    setStatusFilters,
-  } = props;
+  const { visible, closeModal, applyFilters, filterSettings, formatFilters, setStatusFilters } =
+    props;
+
+  const [isApplied, setIsApplied] = useState(false);
 
   const handleApplyFilters = () => {
-    const params = formatFilters(filterSettings);
+    if (filterSettings.deliveryTo > filterSettings.deliveryFrom) {
+      const params = formatFilters(filterSettings);
 
-    setStatusFilters(filterSettings);
-    setIsApplied(true);
+      setStatusFilters(filterSettings);
+      setIsApplied(true);
 
-    applyFilters(params);
+      applyFilters(params);
+      closeModal();
+    }
   };
 
   return (

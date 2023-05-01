@@ -56,7 +56,6 @@ const HistoryFilterHeader = (props) => {
   const { id } = useParams();
 
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
-  const [isApplied, setIsApplied] = useState(false);
 
   const [statusFilters, setStatusFilters] = useState(null);
 
@@ -88,8 +87,6 @@ const HistoryFilterHeader = (props) => {
         visible={isFiltersVisible}
         closeModal={closeFiltersModal}
         applyFilters={applyFilters}
-        isApplied={isApplied}
-        setIsApplied={setIsApplied}
         setStatusFilters={setStatusFilters}
       />
     </div>
