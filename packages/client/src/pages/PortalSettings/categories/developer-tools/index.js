@@ -49,7 +49,7 @@ const DeveloperToolsWrapper = (props) => {
       combineUrl(
         window.DocSpaceConfig?.proxy?.url,
         config.homepage,
-        `/portal-settings/developer/tools/${e.id}`,
+        `/portal-settings/developer-tools/${e.id}`,
       ),
     );
   };
