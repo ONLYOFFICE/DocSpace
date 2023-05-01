@@ -3,6 +3,9 @@ import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
 import Text from "@docspace/components/text";
 
+import Toast from "@docspace/components/toast";
+import toastr from "@docspace/components/toast/toastr";
+
 import { ToggleButton } from "@docspace/components";
 import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
@@ -26,7 +29,10 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
   const onDeleteClose = () => setIsDeleteOpened(false);
   const redirectToHistory = () => navigate(window.location.pathname + `/${webhook.id}`);
 
-  const handleWebhookUpdate = (webhookInfo) => editWebhook(webhook, webhookInfo);
+  const handleWebhookUpdate = async (webhookInfo) => {
+    await editWebhook(webhook, webhookInfo);
+    toastr.success("Key reset successfully", <b>Done</b>);
+  };
   const handleWebhookDelete = () => deleteWebhook(webhook);
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
@@ -95,6 +101,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
         header="Delete Webhook forever?"
         handleSubmit={handleWebhookDelete}
       />
+      <Toast />
     </>
   );
 };

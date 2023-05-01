@@ -10,15 +10,21 @@ import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import { StatusBadge } from "../../../../sub-components/StatusBadge";
 
+import Toast from "@docspace/components/toast";
+import toastr from "@docspace/components/toast/toastr";
+
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 const HistoryTableRow = (props) => {
-  const { item, toggleEventId, isIdChecked } = props;
+  const { item, toggleEventId, isIdChecked, retryWebhookEvent } = props;
   const navigate = useNavigate();
 
   const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
-  const handleRetryEvent = () => retryWebhookEvent(item.id);
+  const handleRetryEvent = async () => {
+    await retryWebhookEvent(item.id);
+    toastr.success("Webhook retry again", <b>Done</b>);
+  };
 
   const contextOptions = [
     {
@@ -47,23 +53,26 @@ const HistoryTableRow = (props) => {
   const isChecked = isIdChecked(item.id);
 
   return (
-    <TableRow contextOptions={contextOptions} checked={isChecked}>
-      <TableCell>
-        <TableCell checked={isChecked} className="noPadding">
-          <Checkbox onChange={onChange} isChecked={isChecked} title="TitleSelectFile" />
-        </TableCell>
+    <>
+      <TableRow contextOptions={contextOptions} checked={isChecked}>
+        <TableCell>
+          <TableCell checked={isChecked} className="noPadding">
+            <Checkbox onChange={onChange} isChecked={isChecked} title="TitleSelectFile" />
+          </TableCell>
 
-        <Text fontWeight={600}>{item.id}</Text>
-      </TableCell>
-      <TableCell>
-        <StatusBadge status={item.status} />
-      </TableCell>
-      <TableCell>
-        <Text fontWeight={600} fontSize="11px">
-          {formattedDelivery}
-        </Text>
-      </TableCell>
-    </TableRow>
+          <Text fontWeight={600}>{item.id}</Text>
+          <Toast />
+        </TableCell>
+        <TableCell>
+          <StatusBadge status={item.status} />
+        </TableCell>
+        <TableCell>
+          <Text fontWeight={600} fontSize="11px">
+            {formattedDelivery}
+          </Text>
+        </TableCell>
+      </TableRow>
+    </>
   );
 };
 
