@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import moment from "moment";
+import { inject, observer } from "mobx-react";
 
 import styled from "styled-components";
 
@@ -22,10 +23,13 @@ const TimePickerCell = styled.span`
   }
 `;
 
-export const DeliveryDatePicker = ({
+const DeliveryDatePicker = ({
   Selectors,
   filterSettings,
-  setFilterSettings,
+  setDeliveryDate,
+  setDeliveryFrom,
+  setDeliveryTo,
+  clearFilterDate,
   isApplied,
   setIsApplied,
 }) => {
@@ -37,22 +41,8 @@ export const DeliveryDatePicker = ({
 
   const showTimePicker = () => setIsTimeOpen(true);
 
-  const setDeliveryFrom = (date) =>
-    setFilterSettings((prevFilterSetting) => ({ ...prevFilterSetting, deliveryFrom: date }));
-
-  const setDeliveryTo = (date) =>
-    setFilterSettings((prevFilterSetting) => ({ ...prevFilterSetting, deliveryTo: date }));
-
-  const setDeliveryDate = (date) =>
-    setFilterSettings((prevFilterSetting) => ({ ...prevFilterSetting, deliveryDate: date }));
-
   const deleteSelectedDate = () => {
-    setFilterSettings((prevFilterSetting) => ({ ...prevFilterSetting, deliveryDate: null }));
-    setFilterSettings((prevFilterSetting) => ({
-      ...prevFilterSetting,
-      deliveryFrom: moment().startOf("day"),
-      deliveryTo: moment().endOf("day"),
-    }));
+    clearFilterDate();
     setIsTimeOpen(false);
     setIsApplied(false);
   };
@@ -101,38 +91,45 @@ export const DeliveryDatePicker = ({
       </Text>
     </TimePickerCell>
   );
-
-  const TimeSelector = () => (
-    <TimePickerCell>
-      <span className="timePickerItem">
-        <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
-          From
-        </Text>
-        <TimePicker date={filterSettings.deliveryFrom} setDate={setDeliveryFrom} />
-      </span>
-      <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
-        Before
-      </Text>
-      <TimePicker date={filterSettings.deliveryTo} setDate={setDeliveryTo} />
-    </TimePickerCell>
-  );
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
         Delivery date
       </Text>
       <Selectors>
-        {isApplied ? (
-          <SelectedDateTime />
-        ) : filterSettings.deliveryDate === null ? (
+        {filterSettings.deliveryDate === null ? (
           <DateSelector />
+        ) : isApplied ? (
+          <SelectedDateTime />
         ) : (
           <SelectedDate />
         )}
         {filterSettings.deliveryDate !== null &&
           !isApplied &&
-          (isTimeOpen ? <TimeSelector /> : <TimeSelectorAdder />)}
+          (isTimeOpen ? (
+            <TimePickerCell>
+              <span className="timePickerItem">
+                <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
+                  From
+                </Text>
+                <TimePicker date={filterSettings.deliveryFrom} setDate={setDeliveryFrom} />
+              </span>
+              <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
+                Before
+              </Text>
+              <TimePicker date={filterSettings.deliveryTo} setDate={setDeliveryTo} />
+            </TimePickerCell>
+          ) : (
+            <TimeSelectorAdder />
+          ))}
       </Selectors>
     </>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { filterSettings, setDeliveryDate, setDeliveryFrom, setDeliveryTo, clearFilterDate } =
+    webhooksStore;
+
+  return { filterSettings, setDeliveryDate, setDeliveryFrom, setDeliveryTo, clearFilterDate };
+})(observer(DeliveryDatePicker));
