@@ -37,11 +37,15 @@ const DeliveryDatePicker = ({
   const [isTimeOpen, setIsTimeOpen] = useState(false);
 
   const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
-  const closeCalendar = () => setIsCalendarOpen(false);
+  const closeCalendar = () => {
+    setIsApplied(false);
+    setIsCalendarOpen(false);
+  };
 
   const showTimePicker = () => setIsTimeOpen(true);
 
-  const deleteSelectedDate = () => {
+  const deleteSelectedDate = (e) => {
+    e.stopPropagation();
     clearFilterDate();
     setIsTimeOpen(false);
     setIsApplied(false);
@@ -70,17 +74,44 @@ const DeliveryDatePicker = ({
     />
   );
 
+  const SelectedDateWithCalendar = () => (
+    <span>
+      <SelectedItem
+        onClose={deleteSelectedDate}
+        text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
+        onClick={toggleCalendar}
+      />
+      {isCalendarOpen && (
+        <Calendar
+          selectedDate={filterSettings.deliveryDate}
+          setSelectedDate={setDeliveryDate}
+          onChange={closeCalendar}
+        />
+      )}
+    </span>
+  );
+
   const SelectedDateTime = () => (
-    <SelectedItem
-      onClose={deleteSelectedDate}
-      text={
-        moment(filterSettings.deliveryDate).format("DD MMM YYYY") +
-        " " +
-        moment(filterSettings.deliveryFrom).format("HH:mm") +
-        " - " +
-        moment(filterSettings.deliveryTo).format("HH:mm")
-      }
-    />
+    <span>
+      <SelectedItem
+        onClose={deleteSelectedDate}
+        text={
+          moment(filterSettings.deliveryDate).format("DD MMM YYYY") +
+          " " +
+          moment(filterSettings.deliveryFrom).format("HH:mm") +
+          " - " +
+          moment(filterSettings.deliveryTo).format("HH:mm")
+        }
+        onClick={toggleCalendar}
+      />
+      {isCalendarOpen && (
+        <Calendar
+          selectedDate={filterSettings.deliveryDate}
+          setSelectedDate={setDeliveryDate}
+          onChange={closeCalendar}
+        />
+      )}
+    </span>
   );
 
   const TimeSelectorAdder = () => (
@@ -91,6 +122,17 @@ const DeliveryDatePicker = ({
       </Text>
     </TimePickerCell>
   );
+
+  const isEqualDates = (firstDate, secondDate) => {
+    return firstDate.format() === secondDate.format();
+  };
+
+  const isTimeEqual =
+    isEqualDates(filterSettings.deliveryFrom, filterSettings.deliveryFrom.clone().startOf("day")) &&
+    isEqualDates(filterSettings.deliveryTo, filterSettings.deliveryTo.clone().endOf("day"));
+
+  const isTimeValid = filterSettings.deliveryTo > filterSettings.deliveryFrom;
+
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
@@ -100,7 +142,11 @@ const DeliveryDatePicker = ({
         {filterSettings.deliveryDate === null ? (
           <DateSelector />
         ) : isApplied ? (
-          <SelectedDateTime />
+          isTimeEqual ? (
+            <SelectedDateWithCalendar />
+          ) : (
+            <SelectedDateTime />
+          )
         ) : (
           <SelectedDate />
         )}
@@ -112,12 +158,20 @@ const DeliveryDatePicker = ({
                 <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
                   From
                 </Text>
-                <TimePicker date={filterSettings.deliveryFrom} setDate={setDeliveryFrom} />
+                <TimePicker
+                  date={filterSettings.deliveryFrom}
+                  setDate={setDeliveryFrom}
+                  hasError={!isTimeValid}
+                />
               </span>
               <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
                 Before
               </Text>
-              <TimePicker date={filterSettings.deliveryTo} setDate={setDeliveryTo} />
+              <TimePicker
+                date={filterSettings.deliveryTo}
+                setDate={setDeliveryTo}
+                hasError={!isTimeValid}
+              />
             </TimePickerCell>
           ) : (
             <TimeSelectorAdder />
