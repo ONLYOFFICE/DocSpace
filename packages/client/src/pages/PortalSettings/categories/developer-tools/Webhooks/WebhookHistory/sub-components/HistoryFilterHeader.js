@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import moment from "moment";
 import styled from "styled-components";
 
 import { Base } from "@docspace/components/themes";
@@ -7,9 +6,8 @@ import FilterReactSvrUrl from "PUBLIC_DIR/images/filter.react.svg?url";
 import IconButton from "@docspace/components/icon-button";
 
 import { useParams } from "react-router-dom";
-import { FilterDialog } from "./FilterDialog";
-
-import { SelectedItem } from "@docspace/components";
+import FilterDialog from "./FilterDialog";
+import StatusBar from "./StatusBar";
 
 const ListHeader = styled.header`
   display: flex;
@@ -53,18 +51,12 @@ const FilterButton = styled.div`
   }
 `;
 
-const HistoryFilterHeader = ({ applyFilters }) => {
+const HistoryFilterHeader = (props) => {
+  const { applyFilters } = props;
   const { id } = useParams();
 
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
   const [isApplied, setIsApplied] = useState(false);
-
-  const [filterSettings, setFilterSettings] = useState({
-    deliveryDate: null,
-    deliveryFrom: moment().startOf("day"),
-    deliveryTo: moment().endOf("day"),
-    status: [],
-  });
 
   const openFiltersModal = () => {
     setIsFiltersVisible(true);
@@ -83,13 +75,11 @@ const HistoryFilterHeader = ({ applyFilters }) => {
           <IconButton iconName={FilterReactSvrUrl} size={16} />
         </FilterButton>
       </ListHeader>
-
+      {isApplied && <StatusBar />}
       <FilterDialog
         visible={isFiltersVisible}
         closeModal={closeFiltersModal}
         applyFilters={applyFilters}
-        filterSettings={filterSettings}
-        setFilterSettings={setFilterSettings}
         isApplied={isApplied}
         setIsApplied={setIsApplied}
       />
