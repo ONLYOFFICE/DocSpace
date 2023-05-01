@@ -41,8 +41,12 @@ const RestoreRoomDialogComponent = (props) => {
   };
 
   const onAction = () => {
+    const itemsRestoreHaveRights = items.filter(
+      (item) => item.security.Move === true
+    );
+
     setRestoreRoomDialogVisible(false);
-    setArchiveAction("unarchive", items, t).then(() => {
+    setArchiveAction("unarchive", itemsRestoreHaveRights, t).then(() => {
       setRestoreAllArchive(false);
     });
   };

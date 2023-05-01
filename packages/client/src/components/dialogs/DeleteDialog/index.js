@@ -96,11 +96,13 @@ const DeleteDialogComponent = (props) => {
       successRemoveRooms: t("Files:RoomsRemoved"),
     };
 
-    const itemId = selection.map((s) => s.id);
-
     onClose();
 
-    await deleteRoomsAction(itemId, translations);
+    const itemsIdDeleteHaveRights = selection
+      .filter((select) => select.security.Delete === true)
+      .map((select) => select.id);
+
+    await deleteRoomsAction(itemsIdDeleteHaveRights, translations);
   };
 
   const onClose = () => {
@@ -214,23 +216,12 @@ const DeleteDialog = withTranslation([
 
 export default inject(
   ({ filesStore, dialogsStore, filesActionsStore, treeFoldersStore, auth }) => {
-    const {
-      selection,
-      isLoading,
-      bufferSelection,
-      setBufferSelection,
-    } = filesStore;
-    const {
-      deleteAction,
-      unsubscribeAction,
-      deleteRoomsAction,
-    } = filesActionsStore;
-    const {
-      isPrivacyFolder,
-      isRecycleBinFolder,
-      isPersonalRoom,
-      isRoom,
-    } = treeFoldersStore;
+    const { selection, isLoading, bufferSelection, setBufferSelection } =
+      filesStore;
+    const { deleteAction, unsubscribeAction, deleteRoomsAction } =
+      filesActionsStore;
+    const { isPrivacyFolder, isRecycleBinFolder, isPersonalRoom, isRoom } =
+      treeFoldersStore;
 
     const {
       deleteDialogVisible: visible,
