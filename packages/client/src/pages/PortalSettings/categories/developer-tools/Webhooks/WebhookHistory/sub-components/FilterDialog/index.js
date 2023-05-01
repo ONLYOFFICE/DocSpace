@@ -1,11 +1,12 @@
 import React from "react";
+import { inject, observer } from "mobx-react";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
 
 import { Button } from "@docspace/components";
-import { DeliveryDatePicker } from "./DeliveryDatePicker";
-import { StatusPicker } from "./StatusPicker";
+import DeliveryDatePicker from "./DeliveryDatePicker";
+import StatusPicker from "./StatusPicker";
 
 const Footer = styled.div`
   width: 100%;
@@ -30,16 +31,8 @@ const Separator = styled.hr`
   margin-bottom: 16px;
 `;
 
-export const FilterDialog = (props) => {
-  const {
-    visible,
-    closeModal,
-    applyFilters,
-    filterSettings,
-    setFilterSettings,
-    isApplied,
-    setIsApplied,
-  } = props;
+const FilterDialog = (props) => {
+  const { visible, closeModal, applyFilters, filterSettings, isApplied, setIsApplied } = props;
 
   const handleApplyFilters = () => {
     const params = {};
@@ -82,17 +75,11 @@ export const FilterDialog = (props) => {
       <ModalDialog.Body>
         <DeliveryDatePicker
           Selectors={Selectors}
-          filterSettings={filterSettings}
-          setFilterSettings={setFilterSettings}
           isApplied={isApplied}
           setIsApplied={setIsApplied}
         />
         <Separator />
-        <StatusPicker
-          Selectors={Selectors}
-          filterSettings={filterSettings}
-          setFilterSettings={setFilterSettings}
-        />
+        <StatusPicker Selectors={Selectors} />
         <Separator />
       </ModalDialog.Body>
 
@@ -105,3 +92,9 @@ export const FilterDialog = (props) => {
     </ModalDialog>
   );
 };
+
+export default inject(({ webhooksStore }) => {
+  const { filterSettings } = webhooksStore;
+
+  return { filterSettings };
+})(observer(FilterDialog));
