@@ -18,6 +18,8 @@ const TimeInput = styled.div`
 
   display: flex;
 
+  border-color: ${(props) => (props.hasError ? "#f21c0e" : "#d0d5da")};
+
   :focus {
     border-color: #4781d1;
   }
@@ -31,7 +33,7 @@ const TimeInput = styled.div`
   }
 `;
 
-export const TimePicker = ({ date, setDate, onChange, className }) => {
+export const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
   const timeInputRef = useRef(null);
@@ -117,7 +119,11 @@ export const TimePicker = ({ date, setDate, onChange, className }) => {
   };
 
   return (
-    <TimeInput ref={timeInputRef} onClick={focusHoursInput} className={className}>
+    <TimeInput
+      ref={timeInputRef}
+      onClick={focusHoursInput}
+      className={className}
+      hasError={hasError}>
       <TextInput
         withBorder={false}
         forwardedRef={hoursInputRef}
@@ -145,6 +151,7 @@ TimePicker.propTypes = {
 
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func,
+  hasError: PropTypes.bool,
 };
 
 TimePicker.defaultProps = {
@@ -152,4 +159,5 @@ TimePicker.defaultProps = {
   setDate: () => {},
   onChange: () => {},
   className: "",
+  hasError: false,
 };
