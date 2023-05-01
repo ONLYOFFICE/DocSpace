@@ -7,9 +7,14 @@ import commonInputStyle from "../text-input/common-input-styles";
 import Base from "../themes/base";
 import { CopyIcon } from "./svg";
 
-const ClearScrollbar = ({ isDisabled, heightScale, hasError, ...props }) => (
-  <Scrollbar {...props} />
-);
+const ClearScrollbar = ({
+  isDisabled,
+  heightScale,
+  hasError,
+  heightTextArea,
+  ...props
+}) => <Scrollbar {...props} />;
+
 const StyledScrollbar = styled(ClearScrollbar)`
   ${commonInputStyle};
 
@@ -28,8 +33,8 @@ const StyledScrollbar = styled(ClearScrollbar)`
   height: ${(props) =>
     props.heightScale
       ? "67vh"
-      : props.heighttextarea
-      ? props.heighttextarea + 2 + "px"
+      : props.heightTextArea
+      ? props.heightTextArea + 2 + "px"
       : "91px"} !important;
 
   background-color: ${(props) =>
@@ -50,6 +55,7 @@ const ClearTextareaAutosize = React.forwardRef(
       color,
       paddingLeftProp,
       isJSONField,
+      enableCopy,
       ...props
     },
     ref
@@ -120,7 +126,9 @@ StyledTextarea.defaultProps = {
   theme: Base,
 };
 
-const StyledCopyIcon = styled(CopyIcon)`
+const StyledCopyIcon = styled(({ isJSONField, heightScale, ...props }) => (
+  <CopyIcon {...props} />
+))`
   position: absolute;
   right: ${(props) =>
     props.isJSONField && props.heightScale ? "16px" : "8px"};
