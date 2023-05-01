@@ -179,27 +179,23 @@ const PortalSettingsRoutes = {
       element: <Payments />,
     },
     {
-      path: "developer",
-      element: <Navigate to="tools/javascript-sdk" />,
-    },
-    {
-      path: "developer/tools",
+      path: "developer-tools",
       element: <Navigate to="javascript-sdk" />,
     },
     {
-      path: "developer/tools/javascript-sdk",
+      path: "developer-tools/javascript-sdk",
       element: <DeveloperTools />,
     },
     {
-      path: "developer/tools/webhooks",
+      path: "developer-tools/webhooks",
       element: <DeveloperTools />,
     },
     {
-      path: "developer/tools/webhooks/:id",
+      path: "developer-tools/webhooks/:id",
       element: <WebhookHistory />,
     },
     {
-      path: "developer/tools/webhooks/:id/:eventId",
+      path: "developer-tools/webhooks/:id/:eventId",
       element: <WebhookDetails />,
     },
     {
