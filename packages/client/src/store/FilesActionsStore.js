@@ -1497,7 +1497,6 @@ class FilesActionStore {
 
   archiveRooms = (action) => {
     const {
-      setArchiveAction,
       setArchiveDialogVisible,
       setInviteUsersWarningDialogVisible,
       setRestoreRoomDialogVisible,
@@ -1514,9 +1513,6 @@ class FilesActionStore {
     } else {
       setRestoreRoomDialogVisible(true);
     }
-
-    setArchiveAction(action);
-    setArchiveDialogVisible(true);
   };
 
   deleteRooms = (t) => {
