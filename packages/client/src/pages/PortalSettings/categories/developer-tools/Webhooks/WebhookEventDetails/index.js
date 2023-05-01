@@ -38,7 +38,7 @@ const WebhookEventDetails = (props) => {
 
   return (
     <DetailsWrapper>
-      <DetailsNavigationHeader />
+      <DetailsNavigationHeader eventId={eventId} />
       {isLoading ? (
         <WebhookDetailsLoader />
       ) : (
