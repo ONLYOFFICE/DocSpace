@@ -40,7 +40,7 @@ const WebhookHistory = (props) => {
 
   return (
     <WebhookWrapper>
-      <HistoryHeader />
+      <HistoryHeader historyWebhooks={historyWebhooks} />
       {isLoading ? (
         <WebhookHistoryLoader />
       ) : (
