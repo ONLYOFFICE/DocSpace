@@ -40,7 +40,7 @@ const Textarea = ({
   copyInfoText,
   enableCopy,
   hasNumeration,
-  isFullHeight
+  isFullHeight,
 }) => {
   const areaRef = useRef(null);
   const [isError, setIsError] = useState(hasError);
@@ -112,7 +112,7 @@ const Textarea = ({
         isDisabled={isDisabled}
         hasError={isError}
         heightScale={heightScale}
-        heighttextarea={textareaHeight}
+        heightTextArea={textareaHeight}
       >
         <Toast />
 
@@ -140,8 +140,6 @@ const Textarea = ({
           color={color}
           autoFocus={autoFocus}
           ref={areaRef}
-          heighttextarea={heightTextArea}
-          hasNumeration={hasNumeration}
         />
       </ColorTheme>
     </Wrapper>
