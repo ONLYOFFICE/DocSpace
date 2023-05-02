@@ -60,7 +60,7 @@ class DialogsStore {
   createRoomDialogVisible = false;
   createRoomConfirmDialogVisible = false;
   changeUserTypeDialogVisible = false;
-  editLinkPanelIsVisible = true;
+  editLinkPanelIsVisible = false;
 
   constructor(
     authStore,
