@@ -278,8 +278,7 @@ export default inject(
     const { changeType: changeUserType } = peopleStore;
     const { roomType } = selectedFolderStore;
 
-    // const isPublicRoom = roomType === RoomsType.CustomRoom;
-    const isPublicRoom = true;
+    const isPublicRoom = roomType === RoomsType.PublicRoom;
 
     return {
       setView,
