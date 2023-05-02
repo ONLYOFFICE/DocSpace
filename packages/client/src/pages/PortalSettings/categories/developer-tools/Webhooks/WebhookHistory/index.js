@@ -9,6 +9,7 @@ import { WebhookHistoryLoader } from "../sub-components/Loaders";
 
 import { inject, observer } from "mobx-react";
 import { useParams } from "react-router-dom";
+import EmptyFilter from "./sub-components/EmptyFilter";
 
 const WebhookWrapper = styled.div`
   width: 100%;
@@ -18,6 +19,7 @@ const WebhookHistory = (props) => {
   const { getWebhookHistory } = props;
 
   const [isLoading, setIsLoading] = useState(true);
+  const [statusFilters, setStatusFilters] = useState(null);
 
   const { id } = useParams();
 
@@ -45,8 +47,16 @@ const WebhookHistory = (props) => {
         <WebhookHistoryLoader />
       ) : (
         <main>
-          <HistoryFilterHeader applyFilters={applyFilters} />
-          <WebhookHistoryTable historyWebhooks={historyWebhooks} />
+          <HistoryFilterHeader
+            applyFilters={applyFilters}
+            statusFilters={statusFilters}
+            setStatusFilters={setStatusFilters}
+          />
+          {historyWebhooks.length === 0 ? (
+            <EmptyFilter setStatusFilters={setStatusFilters} applyFilters={applyFilters} />
+          ) : (
+            <WebhookHistoryTable historyWebhooks={historyWebhooks} />
+          )}
         </main>
       )}
     </WebhookWrapper>

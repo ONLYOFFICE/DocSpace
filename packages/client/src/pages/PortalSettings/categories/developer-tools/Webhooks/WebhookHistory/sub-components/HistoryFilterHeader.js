@@ -52,12 +52,10 @@ const FilterButton = styled.div`
 `;
 
 const HistoryFilterHeader = (props) => {
-  const { applyFilters } = props;
+  const { applyFilters, statusFilters, setStatusFilters } = props;
   const { id } = useParams();
 
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
-
-  const [statusFilters, setStatusFilters] = useState(null);
 
   const openFiltersModal = () => {
     setIsFiltersVisible(true);
