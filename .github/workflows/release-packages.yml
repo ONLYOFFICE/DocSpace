@@ -97,36 +97,12 @@ jobs:
       contents: write
  
     steps:
-      - name: Generate GPG key
-        run: |
-          echo "echo Generating a GPG key"
-          echo "Key-Type: RSA" > gen-key-instruction
-          echo "Key-Length: 4096" >> gen-key-instruction
-          echo "Name-Real: Elbakyan-Shirak" >> gen-key-instruction
-          echo "Name-Email: el.shirak@internet.com" >> gen-key-instruction
-          echo "Expire-Date: 0" >> gen-key-instruction
-          echo "Passphrase: 42*Hello_I-love-you!1337" >> gen-key-instruction
-          echo "%commit" >> gen-key-instruction
-          echo "%echo Done!" >> gen-key-instruction
-          gpg --batch --gen-key gen-key-instruction
-          gpg --export --armor --output public.key el.shirak@internet.com
-          cat public.key
-          sudo rpm --import public.key
-          gpg --list-keys
-          # rpm -q gpg-pubkey --qf '%{name}-%{version}-%{release} --> %{summary}\n'
-          cat << EOF >> ~/.rpmmacros
-          %_signature gpg
-          %_gpg_path /root/.gnupg
-          %_gpg_name Elbakyan-Shirak
-          %__gpg /usr/bin/gpg
-          EOF
-          cat ~/.rpmmacros
-          sudo cp /home/runner/.rpmmacros ~
-          which gpg
-          pwd 
-          ls -la
+      - name: Import GPG 
+        uses: crazy-max/ghaction-import-gpg@v5
+        with: 
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
 
-          
       - name: Get files from repository.
         uses: actions/checkout@v2
 
@@ -154,14 +130,6 @@ jobs:
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
 
-      - name: Sign with marketplace 
-        uses: signalwire/sign-rpm-packages-action@v1.0.0
-        with:
-          gpg_file: /home/runner/public.key
-          gpg_name: Elbakyan-Shirak el.shirak@internet.com
-          target_path: /home/runner/work
-          target_folder: docspace
-          rpm_path: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
 
       - name: Sign packages and check 
         run: |
@@ -189,13 +157,10 @@ jobs:
           echo "........................................"
           
           export GPG_TTY=$(tty)
-          # GPG_TTY=$TTY sudo rpm --addsign
-          
-          sudo rpm --define "_gpg_name Elbakyan-Shirak" --addsign /home/runner/*.rpm
           rpm --checksig /home/runner/*.rpm
-          
-          rpm --define "_gpg_name Elbakyan-Shirak" --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
-          rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          rpm --define "_gpg_name Ascensio System SIA" --addsign /home/runner/*.rpm
+          rpm --checksig /home/runner/*.rpm
+
           
       
       - uses: ncipollo/release-action@v1
