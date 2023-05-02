@@ -156,6 +156,14 @@ jobs:
           ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm
           echo "........................................"
           
+          cat << EOF >> $HOME/.rpmmacros
+          %_signature gpg
+          %_gpg_name Ascensio System SIA
+          EOF
+          
+          rpm -qa gpg-pubkey
+          rpm -q gpg-pubkey --qf '%{NAME}-%{VERSION}-%{RELEASE}\t%{SUMMARY}\n'
+          
           export GPG_TTY=$(tty)
           rpm --checksig /home/runner/*.rpm
           rpmsign --define "_gpg_name Ascensio System SIA" --addsign /home/runner/*.rpm
