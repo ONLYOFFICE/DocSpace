@@ -68,7 +68,7 @@ const ErrorMessage = styled.p`
   padding: 20px 30px;
   background-color: rgba(0, 0, 0, 0.6);
 `;
-function PDFViewer({ src }: PDFViewerProps) {
+function PDFViewer({ src, handleChangeVersion }: PDFViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [file, setFile] = useState<ArrayBuffer | string | null>();
@@ -166,6 +166,18 @@ function PDFViewer({ src }: PDFViewerProps) {
           id="mainPanel"
         ></div>
       </PdfViewrWrapper>
+
+      <div
+        style={{
+          position: "fixed",
+          zIndex: 310,
+          left: "50px",
+          top: "50px",
+          cursor: "pointer",
+        }}
+      >
+        <button onClick={() => handleChangeVersion("2")}>Viewer V2</button>
+      </div>
     </>
   );
 }

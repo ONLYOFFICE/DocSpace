@@ -15,11 +15,25 @@ import ViewerPlayer from "../ViewerPlayer";
 
 import type ViewerProps from "./Viewer.props";
 import PDFViewer from "../PDFViewer";
+import PDFViewerV2 from "../PDFViewerV2";
 
 function Viewer(props: ViewerProps) {
   const timerIDRef = useRef<NodeJS.Timeout>();
 
   const containerRef = React.useRef(document.createElement("div"));
+
+  //#region for test pdf viewer
+
+  const [pdfVersion, setPdfVersion] = useState<string>(() => {
+    return localStorage.getItem("pdf-version") ?? "1";
+  });
+
+  const handleChangeVersion = (version: string) => {
+    setPdfVersion(version);
+    localStorage.setItem("pdf-version", version);
+  };
+
+  //#endregion
 
   const [panelVisible, setPanelVisible] = useState<boolean>(true);
   const [isOpenContextMenu, setIsOpenContextMenu] = useState<boolean>(false);
@@ -234,7 +248,17 @@ function Viewer(props: ViewerProps) {
           )
         : props.isPdf &&
           ReactDOM.createPortal(
-            <PDFViewer src={props.fileUrl ?? ""} />,
+            pdfVersion === "1" ? (
+              <PDFViewer
+                src={props.fileUrl ?? ""}
+                handleChangeVersion={handleChangeVersion}
+              />
+            ) : (
+              <PDFViewerV2
+                src={props.fileUrl ?? ""}
+                handleChangeVersion={handleChangeVersion}
+              />
+            ),
             containerRef.current
           )}
     </StyledViewerContainer>
