@@ -1360,4 +1360,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>房间</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>please</value>
+  </data>
 </root>
