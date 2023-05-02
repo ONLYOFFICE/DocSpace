@@ -128,6 +128,7 @@ const VersionRow = (props) => {
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
       isEditing={isEditing}
+      contextTitle={t("Common:Actions")}
     >
       <div className={`version-row_${index}`}>
         <Box displayProp="flex" className="row-header">
@@ -141,6 +142,13 @@ const VersionRow = (props) => {
             versionGroup={info.versionGroup}
             {...onClickProp}
             t={t}
+            title={
+              index > 0
+                ? isVersion
+                  ? t("Files:MarkAsRevision")
+                  : t("Files:MarkAsVersion")
+                : ""
+            }
           />
           <Link
             onClick={onOpenFile}
@@ -171,7 +179,7 @@ const VersionRow = (props) => {
             {showEditPanel && (
               <>
                 <Textarea
-                  className="version_edit-comment textarea-desktop"
+                  className="version_edit-comment"
                   onChange={onChange}
                   fontSize={12}
                   heightTextArea={54}

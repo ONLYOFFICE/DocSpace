@@ -37,9 +37,9 @@ const SelectorAddButton = (props) => {
 SelectorAddButton.propTypes = {
   /** Title text */
   title: PropTypes.string,
-  /** What the button will trigger when clicked */
+  /** Sets a callback function that is triggered when the button is clicked */
   onClick: PropTypes.func,
-  /** Tells when the button should present a disabled state */
+  /** Sets the button to present a disabled state */
   isDisabled: PropTypes.bool,
   /** Attribute className  */
   className: PropTypes.string,

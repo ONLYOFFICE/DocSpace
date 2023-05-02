@@ -17,6 +17,7 @@ export const StyledIcon = styled(IconButton)`
 
 const QuickButtons = (props) => {
   const {
+    t,
     item,
     theme,
     sectionWidth,
@@ -75,6 +76,7 @@ const QuickButtons = (props) => {
           color={colorLock}
           isDisabled={isDisabled}
           hoverColor={theme.filesQuickButtons.sharedColor}
+          title={t("UnblockVersion")}
         />
       )}
       {/* {fileExst && !isTrashFolder && displayBadges && (

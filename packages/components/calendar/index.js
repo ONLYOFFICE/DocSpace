@@ -90,13 +90,13 @@ Calendar.propTypes = {
   className: propTypes.string,
   /** Used as HTML `id` property  */
   id: propTypes.string,
-  /** Specifies the locale of calendar */
+  /** Specifies the calendar locale */
   locale: propTypes.string,
   /** Value of selected date (moment object)*/
   selectedDate: propTypes.object,
-  /** Allow you to handle changing events of component */
+  /** Allows handling the changing events of the component */
   onChange: propTypes.func,
-  /** Changes selected date state */
+  /** Changes the selected date state */
   setSelectedDate: propTypes.func,
   /** Specifies the minimum selectable date */
   minDate: propTypes.object,
