@@ -26,6 +26,7 @@ class DialogsStore {
   selectFileDialogVisible = false;
   convertPasswordDialogVisible = false;
   inviteUsersWarningDialogVisible = false;
+  unsavedChangesDialogVisible = false;
 
   isFolderActions = false;
   roomCreation = false;
@@ -59,6 +60,7 @@ class DialogsStore {
   createRoomDialogVisible = false;
   createRoomConfirmDialogVisible = false;
   changeUserTypeDialogVisible = false;
+  editLinkPanelIsVisible = true;
 
   constructor(
     authStore,
@@ -313,6 +315,14 @@ class DialogsStore {
     this.changeUserTypeDialogVisible = changeUserTypeDialogVisible;
   };
 
+  setEditLinkPanelIsVisible = (editLinkPanelIsVisible) => {
+    this.editLinkPanelIsVisible = editLinkPanelIsVisible;
+  };
+
+  setUnsavedChangesDialog = (unsavedChangesDialogVisible) => {
+    this.unsavedChangesDialogVisible = unsavedChangesDialogVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -338,7 +348,9 @@ class DialogsStore {
       this.inviteUsersWarningDialogVisible ||
       this.createRoomDialogVisible ||
       this.createRoomConfirmDialogVisible ||
-      this.changeUserTypeDialogVisible
+      this.changeUserTypeDialogVisible ||
+      this.editLinkPanelIsVisible ||
+      this.unsavedChangesDialogVisible
     );
   }
 
