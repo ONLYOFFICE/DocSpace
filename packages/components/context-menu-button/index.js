@@ -232,48 +232,50 @@ class ContextMenuButton extends React.Component {
             )}
           </DropDown>
         ) : (
-          <>
-            <Backdrop
-              onClick={this.onClose}
-              visible={isOpen}
-              zIndex={310}
-              isAside={true}
-            />
-            <Aside
-              visible={isOpen}
-              scale={false}
-              zIndex={310}
-              onClose={this.onClose}
-            >
-              <StyledContent>
-                <StyledHeaderContent>
-                  <Heading className="header" size="medium" truncate={true}>
-                    {asideHeader}
-                  </Heading>
-                </StyledHeaderContent>
-                <StyledBodyContent>
-                  {this.state.data.map(
-                    (item, index) =>
-                      item &&
-                      (item.label || item.icon || item.key) && (
-                        <Link
-                          className={`context-menu-button_link${
-                            item.isHeader ? "-header" : ""
-                          }`}
-                          key={item.key || index}
-                          fontSize={item.isHeader ? "15px" : "13px"}
-                          noHover={item.isHeader}
-                          fontWeight={600}
-                          onClick={this.onDropDownItemClick.bind(this, item)}
-                        >
-                          {item.label}
-                        </Link>
-                      )
-                  )}
-                </StyledBodyContent>
-              </StyledContent>
-            </Aside>
-          </>
+          displayType === "aside" && (
+            <>
+              <Backdrop
+                onClick={this.onClose}
+                visible={isOpen}
+                zIndex={310}
+                isAside={true}
+              />
+              <Aside
+                visible={isOpen}
+                scale={false}
+                zIndex={310}
+                onClose={this.onClose}
+              >
+                <StyledContent>
+                  <StyledHeaderContent>
+                    <Heading className="header" size="medium" truncate={true}>
+                      {asideHeader}
+                    </Heading>
+                  </StyledHeaderContent>
+                  <StyledBodyContent>
+                    {this.state.data.map(
+                      (item, index) =>
+                        item &&
+                        (item.label || item.icon || item.key) && (
+                          <Link
+                            className={`context-menu-button_link${
+                              item.isHeader ? "-header" : ""
+                            }`}
+                            key={item.key || index}
+                            fontSize={item.isHeader ? "15px" : "13px"}
+                            noHover={item.isHeader}
+                            fontWeight={600}
+                            onClick={this.onDropDownItemClick.bind(this, item)}
+                          >
+                            {item.label}
+                          </Link>
+                        )
+                    )}
+                  </StyledBodyContent>
+                </StyledContent>
+              </Aside>
+            </>
+          )
         )}
       </StyledOuter>
     );
