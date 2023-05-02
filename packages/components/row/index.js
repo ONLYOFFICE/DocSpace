@@ -40,6 +40,7 @@ class Row extends React.Component {
       getContextModel,
       isRoom,
       withoutBorder,
+      contextTitle,
     } = this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
@@ -168,6 +169,7 @@ class Row extends React.Component {
               directionX="right"
               displayType="toggle"
               onClick={onContextMenu}
+              title={contextTitle}
             />
           ) : (
             <div className="expandButton"> </div>

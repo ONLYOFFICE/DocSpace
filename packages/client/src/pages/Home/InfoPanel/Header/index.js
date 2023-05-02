@@ -104,6 +104,7 @@ const InfoPanelHeaderContent = (props) => {
               size="16"
               isFill={true}
               onClick={closeInfoPanel}
+              title={t("Common:InfoPanel")}
             />
           </div>
         )}
