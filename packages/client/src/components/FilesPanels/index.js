@@ -11,6 +11,7 @@ import {
   SelectFileDialog,
   HotkeyPanel,
   InvitePanel,
+  EditLinkPanel,
 } from "../panels";
 import {
   ConnectDialog,
@@ -24,6 +25,7 @@ import {
   InviteUsersWarningDialog,
   CreateRoomConfirmDialog,
   ChangeUserTypeDialog,
+  UnsavedChangesDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -60,6 +62,8 @@ const Panels = (props) => {
     inviteUsersWarningDialogVisible,
     preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
+    editLinkPanelIsVisible,
+    unsavedChangesDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -135,6 +139,10 @@ const Panels = (props) => {
     preparationPortalDialogVisible && (
       <PreparationPortalDialog key="preparation-portal-dialog" />
     ),
+    editLinkPanelIsVisible && <EditLinkPanel key="edit-link-panel" />,
+    unsavedChangesDialogVisible && (
+      <UnsavedChangesDialog key="unsaved-dialog-visible" />
+    ),
   ];
 };
 
@@ -167,13 +175,14 @@ export default inject(
       connectItem, //TODO:
       restoreAllPanelVisible,
       archiveDialogVisible,
-
+      unsavedChangesDialogVisible,
       createMasterForm,
       selectFileDialogVisible,
       setSelectFileDialogVisible,
       invitePanelOptions,
       inviteUsersWarningDialogVisible,
       changeUserTypeDialogVisible,
+      editLinkPanelIsVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -213,6 +222,8 @@ export default inject(
       inviteUsersWarningDialogVisible,
       confirmDialogIsLoading,
       changeUserTypeDialogVisible,
+      editLinkPanelIsVisible,
+      unsavedChangesDialogVisible,
     };
   }
 )(observer(Panels));

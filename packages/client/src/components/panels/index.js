@@ -9,6 +9,7 @@ import UploadPanel from "./UploadPanel";
 import SelectFileDialog from "./SelectFileDialog";
 import HotkeyPanel from "./HotkeysPanel";
 import InvitePanel from "./InvitePanel";
+import EditLinkPanel from "./EditLinkPanel";
 
 export {
   SharingPanel,
@@ -22,4 +23,5 @@ export {
   SelectFileDialog,
   HotkeyPanel,
   InvitePanel,
+  EditLinkPanel,
 };

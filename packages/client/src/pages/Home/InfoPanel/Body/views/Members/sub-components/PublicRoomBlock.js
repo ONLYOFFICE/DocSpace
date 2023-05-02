@@ -36,7 +36,7 @@ const PublicRoomBlock = ({ t, onCopyLink }) => {
         />
       </LinksBlock>
 
-      <LinkRow t={t} />
+      <LinkRow />
     </>
   );
 };
