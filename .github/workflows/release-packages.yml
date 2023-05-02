@@ -21,29 +21,11 @@ jobs:
       contents: write
       
     steps:
-      - name: Generate GPG key
-        run: |
-          export DEBEMAIL=mymail@example.com
-          export DEBFULLNAME="Elbakyan Shirak"
-          cat << EOF >> gen-key-instruction
-          Key-Type: RSA
-          Key-Length: 4096
-          Name-Real: Elbakyan-Shirak
-          Name-Email: el.shirak@internet.com"
-          Expire-Date: 0
-          Passphrase: 42*Hello_I-love-you!1337
-          %commit
-          %echo Done
-          EOF
-          gpg --batch --gen-key gen-key-instruction
-          gpg --list-keys
-          ls -la ~/.gnupg/private-keys-v1.d/
-          ls -la ~/.gnupg
-          gpg --export --armor --output public.key el.shirak@internet.com
-          cat public.key
-          gpg --import public.key
-          # gpg --import ~/.gnupg/private-keys-v1.d/*.key
-          
+      - name: Import GPG 
+        uses: crazy-max/ghaction-import-gpg@v5
+        with: 
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          passphrase: ${{ secrets.PASSPHRASE }}
           
       - name: Get files from repository
         uses: actions/checkout@v2
@@ -128,7 +110,7 @@ jobs:
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O ./SOURCES/document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
-          rpmbuild -D "_signature gpg" -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
 
 
       - name: Sign packages and check 
@@ -158,15 +140,15 @@ jobs:
           
           cat << EOF >> $HOME/.rpmmacros
           %_signature gpg
-          %_gpg_name Ascensio System SIA
+          %_gpg_path $HOME/.gnupg
+          %_gpg_name Ascensio System SIA <support@onlyoffice.com>
+          %__gpg /usr/bin/gpg
           EOF
           
-          rpm -qa gpg-pubkey
-          rpm -q gpg-pubkey --qf '%{NAME}-%{VERSION}-%{RELEASE}\t%{SUMMARY}\n'
+          gpg --export --armor --output onlyoficce-gpgkey.pub
+          rpm --import onlyoficce-gpgkey.pub
           
-          export GPG_TTY=$(tty)
-          rpm --checksig /home/runner/*.rpm
-          rpmsign --define "_gpg_name Ascensio System SIA" --addsign /home/runner/*.rpm
+          rpm --addsign /home/runner/*.rpm
           rpm --checksig /home/runner/*.rpm
 
           
@@ -178,4 +160,4 @@ jobs:
           tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
-          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          artifacts: /home/runner/*.rpm
