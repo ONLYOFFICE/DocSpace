@@ -128,7 +128,7 @@ jobs:
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O ./SOURCES/document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
-          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "_signature gpg" -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
 
 
       - name: Sign packages and check 
@@ -158,7 +158,7 @@ jobs:
           
           export GPG_TTY=$(tty)
           rpm --checksig /home/runner/*.rpm
-          rpm --define "_gpg_name Ascensio System SIA" --addsign /home/runner/*.rpm
+          rpmsign --define "_gpg_name Ascensio System SIA" --addsign /home/runner/*.rpm
           rpm --checksig /home/runner/*.rpm
 
           
