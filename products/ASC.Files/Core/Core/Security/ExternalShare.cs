@@ -33,7 +33,6 @@ public class ExternalShare
     private readonly IDaoFactory _daoFactory;
     private readonly CookiesManager _cookiesManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly SecurityContext _securityContext;
     private readonly CommonLinkUtility _commonLinkUtility;
     private Guid _linkId;
     private Guid _sessionId;
@@ -43,15 +42,13 @@ public class ExternalShare
         Global global, 
         IDaoFactory daoFactory, 
         CookiesManager cookiesManager,
-        IHttpContextAccessor httpContextAccessor, 
-        SecurityContext securityContext, 
+        IHttpContextAccessor httpContextAccessor,
         CommonLinkUtility commonLinkUtility)
     {
         _global = global;
         _daoFactory = daoFactory;
         _cookiesManager = cookiesManager;
         _httpContextAccessor = httpContextAccessor;
-        _securityContext = securityContext;
         _commonLinkUtility = commonLinkUtility;
     }
     
@@ -62,11 +59,61 @@ public class ExternalShare
         return _commonLinkUtility.GetFullAbsolutePath($"rooms/share?key={key}");
     }
     
-    public async Task<Status> GetStatusAsync(Guid linkId)
+    public async Task<Status> ValidateAsync(Guid linkId)
     {
         var record = await _daoFactory.GetSecurityDao<int>().GetSharesAsync(new [] { linkId }).FirstOrDefaultAsync();
 
-        return record == null ? Status.Invalid : GetStatus(record, null);
+        return record == null ? Status.Invalid : ValidateRecord(record, null);
+    }
+    
+    public Status ValidateRecord(FileShareRecord record, string password)
+    {
+        if (record.SubjectType != SubjectType.ExternalLink ||
+            record.Subject == FileConstant.ShareLinkId ||
+            record.Options == null)
+        {
+            return Status.Ok;
+        }
+        
+        if (record.Options.IsExpired())
+        {
+            return Status.Expired;
+        }
+
+        if (record.Options.Disabled)
+        {
+            return Status.Invalid;
+        }
+
+        if (string.IsNullOrEmpty(record.Options.Password))
+        {
+            return Status.Ok;
+        }
+        
+        if (string.IsNullOrEmpty(_passwordKey))
+        {
+            _passwordKey = _cookiesManager.GetCookies(CookiesType.ShareLink, record.Subject.ToString(), true);
+        }
+
+        if (_passwordKey == record.Options.Password)
+        {
+            return Status.Ok;
+        }
+
+        if (string.IsNullOrEmpty(password))
+        {
+            return Status.RequiredPassword;
+        }
+
+        if (CreatePasswordKey(password) == record.Options.Password)
+        {
+            _cookiesManager.SetCookies(CookiesType.ShareLink, record.Options.Password, true, record.Subject.ToString());
+            return Status.Ok;
+        }
+
+        _cookiesManager.ClearCookies(CookiesType.ShareLink, record.Subject.ToString());
+        
+        return Status.InvalidPassword;
     }
     
     public string CreatePasswordKey(string password)
@@ -86,6 +133,13 @@ public class ExternalShare
         var key = _httpContextAccessor.HttpContext?.Request.Query.GetRequestValue(FilesLinkUtility.FolderShareKey);
 
         return string.IsNullOrEmpty(key) ? null : key;
+    }
+    
+    public Guid ParseShareKey(string key)
+    {
+        ArgumentException.ThrowIfNullOrEmpty(key);
+        
+        return Signature.Read<Guid>(key, _global.GetDocDbKey());
     }
 
     public bool TryGetLinkId(out Guid linkId)
@@ -144,127 +198,6 @@ public class ExternalShare
         return true;
     }
 
-    public async Task<ValidationInfo> ValidateAsync(string key, string password = null)
-    {
-        var result = new ValidationInfo
-        {
-            Status = Status.Invalid, 
-            Access = FileShare.Restrict
-        };
-
-        var linkId = ParseShareKey(key);
-
-        var record = await _daoFactory.GetSecurityDao<int>().GetSharesAsync(new[] { linkId }).FirstOrDefaultAsync();
-
-        if (record == null)
-        {
-            return result;
-        }
-
-        var status = GetStatus(record, password);
-
-        if (status != Status.Ok)
-        {
-            result.Status = status;
-            return result;
-        }
-        
-        FileEntry entry;
-
-        if (int.TryParse(record.EntryId.ToString(), out var id))
-        {
-            var folder = await _daoFactory.GetFolderDao<int>().GetFolderAsync(id);
-
-            if (folder == null)
-            {
-                return result;
-            }
-
-            result.EntryId = folder.Id.ToString();
-            entry = folder;
-        }
-        else
-        {
-            var thirdPartyFolder = await _daoFactory.GetFolderDao<string>().GetFolderAsync(record.EntryId.ToString());
-            
-            if (thirdPartyFolder == null)
-            {
-                return result;
-            }
-
-            result.EntryId = thirdPartyFolder.Id;
-            entry = thirdPartyFolder;
-        }
-
-        if (entry.RootFolderType == FolderType.TRASH)
-        {
-            return result;
-        }
-
-        result.Status = Status.Ok;
-        result.Title = entry.Title;
-        result.Access = record.Share;
-
-        if (_securityContext.IsAuthenticated || !string.IsNullOrEmpty(_cookiesManager.GetCookies(CookiesType.AnonymousSessionKey)))
-        {
-            return result;
-        }
-        
-        _cookiesManager.SetCookies(CookiesType.AnonymousSessionKey, Signature.Create(Guid.NewGuid(), _global.GetDocDbKey()), true);
-
-        return result;
-    }
-
-    public Status GetStatus(FileShareRecord record, string password)
-    {
-        if (record.SubjectType != SubjectType.ExternalLink ||
-            record.Subject == FileConstant.ShareLinkId ||
-            record.Options == null)
-        {
-            return Status.Ok;
-        }
-        
-        if (record.Options.IsExpired())
-        {
-            return Status.Expired;
-        }
-
-        if (record.Options.Disabled)
-        {
-            return Status.Invalid;
-        }
-
-        if (string.IsNullOrEmpty(record.Options.Password))
-        {
-            return Status.Ok;
-        }
-        
-        if (string.IsNullOrEmpty(_passwordKey))
-        {
-            _passwordKey = _cookiesManager.GetCookies(CookiesType.ShareLink, record.Subject.ToString(), true);
-        }
-
-        if (_passwordKey == record.Options.Password)
-        {
-            return Status.Ok;
-        }
-
-        if (string.IsNullOrEmpty(password))
-        {
-            return Status.RequiredPassword;
-        }
-
-        if (CreatePasswordKey(password) == record.Options.Password)
-        {
-            _cookiesManager.SetCookies(CookiesType.ShareLink, record.Options.Password, true, record.Subject.ToString());
-            return Status.Ok;
-        }
-
-        _cookiesManager.ClearCookies(CookiesType.ShareLink, record.Subject.ToString());
-        
-        return Status.InvalidPassword;
-    }
-
     public ExternalShareData GetCurrentShareData()
     {
         _ = TryGetLinkId(out var linkId);
@@ -302,7 +235,7 @@ public class ExternalShare
         var session = new DownloadSession
         {
             Id = sessionId,
-            LinkId = linkId,
+            LinkId = linkId
         };
 
         return Signature.Create(session, _global.GetDocDbKey());
@@ -313,25 +246,31 @@ public class ExternalShare
         return Signature.Read<DownloadSession>(sessionKey, _global.GetDocDbKey());
     }
     
+    public string GetAnonymousSessionKey()
+    {
+        return _cookiesManager.GetCookies(CookiesType.AnonymousSessionKey);
+    }
+
+    public void SetAnonymousSessionKey()
+    {
+        _cookiesManager.SetCookies(CookiesType.AnonymousSessionKey, Signature.Create(Guid.NewGuid(), _global.GetDocDbKey()), true);
+    }
+    
     private string CreateShareKey(Guid linkId)
     {
         return Signature.Create(linkId, _global.GetDocDbKey());
-    }
-
-    private Guid ParseShareKey(string key)
-    {
-        ArgumentException.ThrowIfNullOrEmpty(key);
-        
-        return Signature.Read<Guid>(key, _global.GetDocDbKey());
     }
 }
 
 public class ValidationInfo
 {
     public Status Status { get; set; }
-    public string EntryId { get; set; }
+    public int TenantId { get; set; }
+    public string Id { get; set; }
     public string Title { get; set; }
     public FileShare Access { get; set; }
+    public FolderType FolderType { get; set; }
+    public Logo Logo { get; set; }
 }
 
 public class ExternalShareData
