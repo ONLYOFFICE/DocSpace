@@ -577,24 +577,26 @@ const PureHome = (props) => {
       sectionProps.uploadFiles = true;
       sectionProps.onDrop =
         isRecycleBinFolder || isPrivacyFolder ? null : onDrop;
-      sectionProps.showPrimaryProgressBar = primaryProgressDataVisible;
-      sectionProps.primaryProgressBarValue = primaryProgressDataPercent;
-      sectionProps.primaryProgressBarIcon = primaryProgressDataIcon;
-      sectionProps.showPrimaryButtonAlert = primaryProgressDataAlert;
-      sectionProps.showSecondaryProgressBar = secondaryProgressDataStoreVisible;
-      sectionProps.secondaryProgressBarValue =
-        secondaryProgressDataStorePercent;
-      sectionProps.secondaryProgressBarIcon = secondaryProgressDataStoreIcon;
-      sectionProps.showSecondaryButtonAlert = secondaryProgressDataStoreAlert;
+
       sectionProps.clearUploadedFilesHistory = clearUploadedFilesHistory;
       sectionProps.viewAs = viewAs;
       sectionProps.hideAside =
         primaryProgressDataVisible || secondaryProgressDataStoreVisible;
       sectionProps.isHeaderVisible = isHeaderVisible;
-      sectionProps.onOpenUploadPanel = showUploadPanel;
+
       sectionProps.isEmptyPage = isEmptyPage;
     }
   }
+
+  sectionProps.onOpenUploadPanel = showUploadPanel;
+  sectionProps.showPrimaryProgressBar = primaryProgressDataVisible;
+  sectionProps.primaryProgressBarValue = primaryProgressDataPercent;
+  sectionProps.primaryProgressBarIcon = primaryProgressDataIcon;
+  sectionProps.showPrimaryButtonAlert = primaryProgressDataAlert;
+  sectionProps.showSecondaryProgressBar = secondaryProgressDataStoreVisible;
+  sectionProps.secondaryProgressBarValue = secondaryProgressDataStorePercent;
+  sectionProps.secondaryProgressBarIcon = secondaryProgressDataStoreIcon;
+  sectionProps.showSecondaryButtonAlert = secondaryProgressDataStoreAlert;
 
   return (
     <>
@@ -604,12 +606,11 @@ const PureHome = (props) => {
         <AccountsDialogs />
       ) : (
         <>
-          <MediaViewer />
           <DragTooltip />
           <SelectionArea />
         </>
       )}
-
+      <MediaViewer />
       <Section {...sectionProps}>
         {(!isErrorRoomNotAvailable || isAccountsPage || isSettingsPage) && (
           <Section.SectionHeader>
@@ -635,16 +636,13 @@ const PureHome = (props) => {
         <Section.SectionBody>
           <Outlet />
         </Section.SectionBody>
-        {!isSettingsPage && (
-          <>
-            <Section.InfoPanelHeader>
-              <InfoPanelHeaderContent />
-            </Section.InfoPanelHeader>
-            <Section.InfoPanelBody>
-              <InfoPanelBodyContent />
-            </Section.InfoPanelBody>
-          </>
-        )}
+
+        <Section.InfoPanelHeader>
+          <InfoPanelHeaderContent />
+        </Section.InfoPanelHeader>
+        <Section.InfoPanelBody>
+          <InfoPanelBodyContent />
+        </Section.InfoPanelBody>
 
         {withPaging && !isSettingsPage && (
           <Section.SectionPaging>
