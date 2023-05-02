@@ -152,14 +152,16 @@ function ImageViewer({
     [src, isTiff, imageId]
   );
 
+  React.useEffect(() => {
+    if (!thumbnailSrc) setIsLoading(true);
+  }, []);
+
   const loadImage = React.useCallback(async () => {
     if (!src) return;
 
     if (isTiff) {
       return changeSource(src);
     }
-
-    console.log(isTiff, src);
 
     const res = await fetch(src);
     const blob = await res.blob();
@@ -180,7 +182,7 @@ function ImageViewer({
   }, [src, version]);
 
   useEffect(() => {
-    if (!imageId) return;
+    if (!imageId || thumbnailSrc) return;
 
     indexedDBHelper.getItem(IndexedDBStores.images, imageId).then((result) => {
       if (result && result.version === version) {
@@ -189,7 +191,7 @@ function ImageViewer({
         loadImage();
       }
     });
-  }, [src, imageId, version, isTiff, loadImage, changeSource]);
+  }, [src, imageId, version, isTiff, loadImage, changeSource, thumbnailSrc]);
 
   function resize() {
     if (!imgRef.current || isLoading) return;
@@ -983,7 +985,7 @@ function ImageViewer({
         <ViewerLoader isLoading={isLoading} />
         <ImageWrapper ref={imgWrapperRef} $isLoading={isLoading}>
           <Image
-            src={`${thumbnailSrc}&size=1280x720`}
+            src={thumbnailSrc ? `${thumbnailSrc}&size=1280x720` : ""}
             ref={imgRef}
             style={style}
             onDoubleClick={handleDoubleTapOrClick}
