@@ -1,6 +1,11 @@
 import React from "react";
 import EmailChips from ".";
 
+export default {
+  title: "Components/EmailChips",
+  component: EmailChips,
+};
+
 const Options = [
   { name: "Ivan Petrov", email: "myname@gmul.com", isValid: true },
   { name: "Donna Cross", email: "myname45@gmul.com", isValid: true },

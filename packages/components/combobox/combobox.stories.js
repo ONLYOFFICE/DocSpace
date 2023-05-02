@@ -8,6 +8,11 @@ import CatalogEmployeeReactSvgUrl from "PUBLIC_DIR/images/catalog.employee.react
 import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 
+export default {
+  title: "Components/ComboBox",
+  component: ComboBox,
+};
+
 const comboOptions = [
   {
     key: 1,

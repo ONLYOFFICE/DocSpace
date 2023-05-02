@@ -5,6 +5,11 @@ import toastr from "./toastr";
 import Button from "../button";
 import Link from "../link";
 
+export default {
+  title: "Components/Toast",
+  component: Toast,
+};
+
 const BaseTemplate = ({ type, data, title, timeout, withCross, ...args }) => {
   return (
     <>

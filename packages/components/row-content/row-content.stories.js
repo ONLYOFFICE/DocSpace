@@ -5,6 +5,11 @@ import Checkbox from "../checkbox";
 import SendClockReactSvg from "PUBLIC_DIR/images/send.clock.react.svg";
 import CatalogSpamReactSvg from "PUBLIC_DIR/images/catalog.spam.react.svg";
 
+export default {
+  title: "Components/RowContent",
+  component: RowContent,
+};
+
 const Template = (args) => {
   const [isChecked, setIsChecked] = useState(false);
   return (

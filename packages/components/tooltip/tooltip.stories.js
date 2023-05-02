@@ -3,6 +3,11 @@ import Link from "../link";
 import Text from "../text";
 import Tooltip from "./";
 
+export default {
+  title: "Components/Tooltip",
+  component: Tooltip,
+};
+
 const BodyStyle = { marginTop: 100, marginLeft: 200, position: "absolute" };
 
 const Template = (args) => {
