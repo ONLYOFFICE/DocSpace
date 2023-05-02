@@ -1603,7 +1603,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your $PortalUrl portal address was changed to the new &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; address.
         ///
-        ///*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third-party iCal links added to your calendar will also stop updating until you reload them..
+        ///*Note*: DNS settings and single sign-on options stop working until you change them..
         /// </summary>
         public static string pattern_portal_rename {
             get {

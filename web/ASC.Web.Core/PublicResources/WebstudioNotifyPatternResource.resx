@@ -729,7 +729,7 @@ Dear $UserDisplayName,
 
 Your $PortalUrl portal address was changed to the new "${__VirtualRootPath}":"${__VirtualRootPath}" address.
 
-*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third-party iCal links added to your calendar will also stop updating until you reload them.</value>
+*Note*: DNS settings and single sign-on options stop working until you change them.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Removal of the profile from the "${__VirtualRootPath}":"${__VirtualRootPath}" portal
