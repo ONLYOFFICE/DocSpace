@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Profile = AutoMapper.Profile;
 using Status = ASC.Files.Core.Security.Status;
 
 namespace ASC.Files.Core.ApiModels.ResponseDto;
@@ -31,6 +32,17 @@ namespace ASC.Files.Core.ApiModels.ResponseDto;
 public class ExternalShareDto : IMapFrom<ValidationInfo>
 {
     public Status Status { get; set; }
-    public string EntryId { get; set; }
+    public string Id { get; set; }
     public string Title { get; set; }
+    public RoomType? RoomType { get; set; }
+    public Logo Logo { get; set; }
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public int TenantId { get; set; }
+
+    public void Mapping(Profile profile)
+    {
+        profile.CreateMap<ValidationInfo, ExternalShareDto>()
+            .ForMember(dest => dest.RoomType, opt =>
+                opt.MapFrom(source => DocSpaceHelper.GetRoomType(source.FolderType)));
+    }
 }
