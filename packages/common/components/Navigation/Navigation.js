@@ -212,6 +212,7 @@ const Navigation = ({
               isRootFolder={isRootFolder}
               toggleInfoPanel={toggleInfoPanel}
               isInfoPanelVisible={isInfoPanelVisible}
+              titles={titles}
             />
           )}
         </>
