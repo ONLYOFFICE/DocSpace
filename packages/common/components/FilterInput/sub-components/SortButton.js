@@ -107,7 +107,8 @@ const StyledSortButton = styled.div`
         }
 
         .option-item__icon {
-          display: none;
+          display: flex;
+          visibility: hidden;
           cursor: pointer;
           ${(props) =>
             props.isDesc &&
@@ -122,7 +123,7 @@ const StyledSortButton = styled.div`
 
         :hover {
           .option-item__icon {
-            display: flex;
+            visibility: visible;
           }
         }
       }
@@ -132,7 +133,7 @@ const StyledSortButton = styled.div`
         cursor: auto;
 
         .selected-option-item__icon {
-          display: flex;
+          visibility: visible;
         }
       }
     }
