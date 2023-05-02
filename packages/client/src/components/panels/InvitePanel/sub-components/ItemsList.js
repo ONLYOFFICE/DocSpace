@@ -7,6 +7,7 @@ import Item from "./Item";
 
 import { StyledRow, ScrollList } from "../StyledInvitePanel";
 
+import { size } from "@docspace/components/utils/device";
 const FOOTER_HEIGHT = 70;
 const USER_ITEM_HEIGHT = 48;
 
@@ -19,6 +20,7 @@ const Row = memo(({ data, index, style }) => {
     setHasErrors,
     roomType,
     isOwner,
+    setIsOpenItemAccess,
   } = data;
 
   if (inviteItems === undefined) return;
@@ -36,6 +38,7 @@ const Row = memo(({ data, index, style }) => {
         setHasErrors={setHasErrors}
         roomType={roomType}
         isOwner={isOwner}
+        setIsOpenItemAccess={setIsOpenItemAccess}
       />
     </StyledRow>
   );
@@ -55,30 +58,45 @@ const ItemsList = ({
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const [isTotalListHeight, setIsTotalListHeight] = useState(false);
+  const [isOpenItemAccess, setIsOpenItemAccess] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
   const bodyRef = useRef();
   const { height } = useResizeObserver({ ref: bodyRef });
 
   const onBodyResize = useCallback(() => {
+    const scrollHeight = bodyRef?.current?.firstChild.scrollHeight;
     const heightList = height ? height : bodyRef.current.offsetHeight;
-
     const totalHeightItems = inviteItems.length * USER_ITEM_HEIGHT;
     const listAreaHeight = heightList;
 
     const calculatedHeight = scrollAllPanelContent
-      ? Math.max(totalHeightItems, listAreaHeight)
+      ? Math.max(
+          totalHeightItems,
+          listAreaHeight,
+          isOpenItemAccess && !isMobile ? scrollHeight : 0
+        )
       : heightList - FOOTER_HEIGHT;
 
     setBodyHeight(calculatedHeight);
     setOffsetTop(bodyRef.current.offsetTop);
 
     if (scrollAllPanelContent && totalHeightItems && listAreaHeight)
-      setIsTotalListHeight(totalHeightItems >= listAreaHeight);
+      setIsTotalListHeight(
+        totalHeightItems >= listAreaHeight && totalHeightItems >= scrollHeight
+      );
   }, [
     height,
     bodyRef?.current?.offsetHeight,
     inviteItems.length,
     scrollAllPanelContent,
+    isOpenItemAccess,
+    isMobile,
   ]);
+
+  const onCheckWidth = () => {
+    setIsMobile(window.innerWidth < size.smallTablet);
+  };
 
   useEffect(() => {
     onBodyResize();
@@ -88,17 +106,23 @@ const ItemsList = ({
     height,
     inviteItems.length,
     scrollAllPanelContent,
+    isOpenItemAccess,
   ]);
 
-  //Scroll blinking fix
-  const itemCount = React.useMemo(() => {
-    const countInviteItems = inviteItems.length;
+  useEffect(() => {
+    onCheckWidth();
+    window.addEventListener("resize", onCheckWidth);
+    return () => {
+      window.removeEventListener("resize", onCheckWidth);
+    };
+  }, []);
 
-    return scrollAllPanelContent &&
-      countInviteItems * USER_ITEM_HEIGHT > bodyHeight
-      ? countInviteItems - 1
-      : countInviteItems;
-  }, [scrollAllPanelContent, inviteItems.length, bodyHeight]);
+  const overflowStyle =
+    isOpenItemAccess && isMobile
+      ? "visible"
+      : scrollAllPanelContent
+      ? "hidden"
+      : "scroll";
 
   return (
     <ScrollList
@@ -106,11 +130,13 @@ const ItemsList = ({
       ref={bodyRef}
       scrollAllPanelContent={scrollAllPanelContent}
       isTotalListHeight={isTotalListHeight}
+      isOpenItemAccess={isOpenItemAccess}
     >
       <List
+        style={{ overflow: overflowStyle }}
         height={bodyHeight}
         width="auto"
-        itemCount={itemCount}
+        itemCount={inviteItems.length}
         itemSize={USER_ITEM_HEIGHT}
         itemData={{
           inviteItems,
@@ -120,8 +146,9 @@ const ItemsList = ({
           roomType,
           isOwner,
           t,
+          setIsOpenItemAccess,
         }}
-        outerElementType={CustomScrollbarsVirtualList}
+        outerElementType={!scrollAllPanelContent && CustomScrollbarsVirtualList}
       >
         {Row}
       </List>

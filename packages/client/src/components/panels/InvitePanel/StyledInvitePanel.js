@@ -15,7 +15,7 @@ import CrossIcon from "PUBLIC_DIR/images/cross.edit.react.svg";
 import DeleteIcon from "PUBLIC_DIR/images/mobile.actions.remove.react.svg";
 
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
-
+import { size } from "@docspace/components/utils/device";
 import Base from "@docspace/components/themes/base";
 
 const fillAvailableWidth = css`
@@ -42,6 +42,15 @@ const ScrollList = styled.div`
     props.scrollAllPanelContent && props.isTotalListHeight
       ? "auto"
       : props.offsetTop && `calc(100% - ${props.offsetTop}px)`};
+
+  @media (max-width: ${size.smallTablet}px) {
+    ${(props) =>
+      props.isOpenItemAccess &&
+      css`
+        z-index: 1;
+        position: fixed;
+      `};
+  }
 `;
 
 const StyledBlock = styled.div`
@@ -147,6 +156,12 @@ const StyledComboBox = styled(ComboBox)`
 
   .combo-button {
     border-radius: 3px;
+  }
+
+  @media (max-width: ${size.smallTablet}px) {
+    .dropdown-container {
+      z-index: 560;
+    }
   }
 `;
 
