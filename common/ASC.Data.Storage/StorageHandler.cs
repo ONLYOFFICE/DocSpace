@@ -58,9 +58,7 @@ public class StorageHandler
 
         if (_checkAuth && !securityContext.IsAuthenticated)
         {
-            var secureKey = context.Request.Query[Constants.SecureKeyHeader].FirstOrDefault() ?? string.Empty;
-
-            if (!SecureHelper.CheckSecureKeyHeader(secureKey, path, emailValidationKeyProvider))
+            if (!SecureHelper.CheckSecureKeyHeader(header, path, emailValidationKeyProvider))
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
                 return Task.CompletedTask;

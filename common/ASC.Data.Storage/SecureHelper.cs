@@ -51,18 +51,26 @@ public static class SecureHelper
         return Constants.SecureKeyHeader + ':' + ticks + '-' + key;
     }
 
-    public static bool CheckSecureKeyHeader(string header, string path, EmailValidationKeyProvider keyProvider)
+    public static bool CheckSecureKeyHeader(string queryHeaders, string path, EmailValidationKeyProvider keyProvider)
     {
-        if (string.IsNullOrEmpty(header))
+        if (string.IsNullOrEmpty(queryHeaders))
+        {
+            return false;
+        }
+        
+        var headers = queryHeaders.Length > 0 ? queryHeaders.Split('&').Select(HttpUtility.UrlDecode) : Array.Empty<string>();
+
+        var headerKey = headers.FirstOrDefault(h => h.StartsWith(Constants.SecureKeyHeader))?.
+            Replace(Constants.SecureKeyHeader + ':', string.Empty);
+
+        if (string.IsNullOrEmpty(headerKey))
         {
             return false;
         }
 
-        header = header.Replace(Constants.SecureKeyHeader + ':', string.Empty);
-
-        var separatorPosition = header.IndexOf('-');
-        var ticks = header[..separatorPosition];
-        var key = header[(separatorPosition + 1)..];
+        var separatorPosition = headerKey.IndexOf('-');
+        var ticks = headerKey[..separatorPosition];
+        var key = headerKey[(separatorPosition + 1)..];
 
         var result = keyProvider.ValidateEmailKey(path + '.' + ticks, key);
 
