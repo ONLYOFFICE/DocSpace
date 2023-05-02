@@ -924,7 +924,7 @@ public class FileSecurity : IFileSecurity
 
         if (ace is { SubjectType: SubjectType.ExternalLink } && 
             ace.Subject != userId && 
-            _externalShare.GetStatus(ace, null) != Status.Ok)
+            _externalShare.ValidateRecord(ace, null) != Status.Ok)
         {
             return false;
         }

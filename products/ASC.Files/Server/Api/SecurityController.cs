@@ -186,7 +186,7 @@ public class SecurityControllerCommon : ApiControllerBase
     private readonly SecurityControllerHelper _securityControllerHelper;
     private readonly BruteForceLoginManager _bruteForceLoginManager;
     private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ExternalShare _externalShare;
+    private readonly ExternalLinkHelper _externalLinkHelper;
     private readonly IMapper _mapper;
 
     public SecurityControllerCommon(
@@ -196,14 +196,14 @@ public class SecurityControllerCommon : ApiControllerBase
         FileDtoHelper fileDtoHelper,
         BruteForceLoginManager bruteForceLoginManager, 
         IHttpContextAccessor httpContextAccessor,
-        ExternalShare externalShare,
+        ExternalLinkHelper externalLinkHelper,
         IMapper mapper) : base(folderDtoHelper, fileDtoHelper)
     {
         _fileStorageService = fileStorageService;
         _securityControllerHelper = securityControllerHelper;
         _bruteForceLoginManager = bruteForceLoginManager;
         _httpContextAccessor = httpContextAccessor;
-        _externalShare = externalShare;
+        _externalLinkHelper = externalLinkHelper;
         _mapper = mapper;
     }
 
@@ -275,23 +275,23 @@ public class SecurityControllerCommon : ApiControllerBase
     }
     
     [AllowAnonymous]
-    [HttpGet("share/external/{key}")]
+    [HttpGet("share/{key}")]
     public async Task<ExternalShareDto> GetExternalShareDataAsync(string key)
     {
-        var validationInfo = await _externalShare.ValidateAsync(key);
+        var validationInfo = await _externalLinkHelper.ValidateAsync(key);
 
         return _mapper.Map<ValidationInfo, ExternalShareDto>(validationInfo);
     }
 
     [AllowAnonymous]
-    [HttpPost("share/external/{key}/password")]
+    [HttpPost("share/{key}/password")]
     public async Task<ExternalShareDto> ApplyExternalSharePasswordAsync(string key, ExternalShareRequestDto inDto)
     {
         var ip = MessageSettings.GetIP(_httpContextAccessor.HttpContext?.Request);
         
         _ = _bruteForceLoginManager.Increment(key, ip, true, out _, FilesCommonResource.ErrorMessage_SharePasswordManyAttempts);
         
-        var validationInfo =  await _externalShare.ValidateAsync(key, inDto.Password);
+        var validationInfo =  await _externalLinkHelper.ValidateAsync(key, inDto.Password);
 
         if (validationInfo.Status != Status.InvalidPassword)
         {

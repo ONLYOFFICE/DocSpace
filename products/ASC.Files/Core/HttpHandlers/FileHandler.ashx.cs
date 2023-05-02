@@ -88,6 +88,7 @@ public class FileHandlerService
     private readonly SocketManager _socketManager;
     private readonly ILogger<FileHandlerService> _logger;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly ExternalLinkHelper _externalLinkHelper;
     private readonly ExternalShare _externalShare;
 
     public FileHandlerService(
@@ -120,6 +121,7 @@ public class FileHandlerService
         InstanceCrypto instanceCrypto,
         IHttpClientFactory clientFactory,
         ThumbnailSettings thumbnailSettings,
+        ExternalLinkHelper externalLinkHelper, 
         ExternalShare externalShare)
     {
         _filesLinkUtility = filesLinkUtility;
@@ -151,6 +153,7 @@ public class FileHandlerService
         _logger = logger;
         _clientFactory = clientFactory;
         _thumbnailSettings = thumbnailSettings;
+        _externalLinkHelper = externalLinkHelper;
         _externalShare = externalShare;
     }
 
@@ -247,7 +250,7 @@ public class FileHandlerService
             var session = _externalShare.ParseDownloadSessionKey(sessionKey);
 
             if (session != null && _externalShare.TryGetSessionId(out var sessionId) && session.Id == sessionId &&
-                (await _externalShare.GetStatusAsync(session.LinkId)) == Status.Ok)
+                (await _externalShare.ValidateAsync(session.LinkId)) == Status.Ok)
             {
                 path = string.Format(@"{0}\{1}\{2}", session.LinkId, session.Id, filename);
             }
@@ -671,7 +674,7 @@ public class FileHandlerService
 
             if (!string.IsNullOrEmpty(share))
             {
-                var result = await _externalShare.ValidateAsync(share);
+                var result = await _externalLinkHelper.ValidateAsync(share);
 
                 if (result.Access != FileShare.Restrict)
                 {
