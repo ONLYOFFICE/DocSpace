@@ -55,8 +55,11 @@ jobs:
       
       - name: Sign packages and check 
         run: |
-          export GPG_TTY=$(tty)          
-          dpkg-sig --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+          export GPG_TTY=$(tty)         
+          keyID="$(gpg --list-keys --keyid-format short | awk '/^pub/ {print $2}' | cut -d'/' -f2)"
+          echo "keyID"
+          
+          dpkg-sig -k "$keyID" --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           dpkg-sig --verify /home/runner/work/DocSpace/DocSpace/build/install/*.deb
 
         
