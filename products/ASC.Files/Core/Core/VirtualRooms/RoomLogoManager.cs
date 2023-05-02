@@ -35,10 +35,10 @@ public class RoomLogoManager
     private const string ModuleName = "room_logos";
     private const string TempDomainPath = "logos_temp";
 
-    private static (SizeName, Size) _originalLogoSize = (SizeName.Original, new Size(1280, 1280));
-    private static (SizeName, Size) _largeLogoSize = (SizeName.Large, new Size(96, 96));
-    private static (SizeName, Size) _mediumLogoSize = (SizeName.Medium, new Size(32, 32));
-    private static (SizeName, Size) _smallLogoSize = (SizeName.Small, new Size(16, 16));
+    private static readonly (SizeName, Size) _originalLogoSize = (SizeName.Original, new Size(1280, 1280));
+    private static readonly (SizeName, Size) _largeLogoSize = (SizeName.Large, new Size(96, 96));
+    private static readonly (SizeName, Size) _mediumLogoSize = (SizeName.Medium, new Size(32, 32));
+    private static readonly (SizeName, Size) _smallLogoSize = (SizeName.Small, new Size(16, 16));
 
     private readonly IDaoFactory _daoFactory;
     private readonly FileSecurity _fileSecurity;
@@ -70,7 +70,7 @@ public class RoomLogoManager
     public bool EnableAudit { get; set; } = true;
     private IDataStore DataStore => _dataStore ??= _storageFactory.GetStorage(TenantId, ModuleName);
     private int TenantId => _tenantManager.GetCurrentTenant().Id;
-    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request?.Headers;
+    private IDictionary<string, StringValues> Headers => _httpContextAccessor?.HttpContext?.Request.Headers;
 
     public async Task<Folder<T>> CreateAsync<T>(T id, string tempFile, int x, int y, int width, int height)
     {
