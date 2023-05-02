@@ -1,7 +1,8 @@
-import json, sys, os
+import json, sys, os, netifaces
 from jsonpath_ng import jsonpath, parse
 from os import environ
 from multipledispatch import dispatch
+from netaddr import *
 
 filePath = None
 saveFilePath = None
@@ -134,7 +135,7 @@ saveFilePath = filePath
 filePath = "/app/onlyoffice/config/appsettings.json"
 jsonData = openJsonFile(filePath)
 #jsonUpdateValue = parseJsonValue(jsonValue)
-updateJsonData(jsonData, "$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false",)
+updateJsonData(jsonData,"$.ConnectionStrings.default.connectionString", "Server="+ MYSQL_HOST +";Port=3306;Database="+ MYSQL_DATABASE +";User ID="+ MYSQL_USER +";Password="+ MYSQL_PASSWORD +";Pooling=true;Character Set=utf8;AutoEnlist=false;SSL Mode=none;ConnectionReset=false",)
 updateJsonData(jsonData,"$.core.base-domain", APP_CORE_BASE_DOMAIN)
 updateJsonData(jsonData,"$.core.machinekey", APP_CORE_MACHINEKEY)
 updateJsonData(jsonData,"$.core.products.subfolder", "server")
@@ -144,6 +145,15 @@ updateJsonData(jsonData,"$.files.docservice.url.public", DOCUMENT_SERVER_URL_PUB
 updateJsonData(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_URL_INTERNAL)
 updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
+
+netmask = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('addr')
+ip_address = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('netmask')
+ip_address_netmask = '%s/%s' % (ip_address, netmask)
+interface_cidr = IPNetwork(ip_address_netmask)
+knownNetwork = str(interface_cidr)
+
+updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownNetworks", "[" + knownNetwork + "]")
+
 writeJsonFile(filePath, jsonData)
 
 filePath = "/app/onlyoffice/config/apisystem.json"
