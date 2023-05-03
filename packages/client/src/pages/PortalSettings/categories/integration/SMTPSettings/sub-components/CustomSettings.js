@@ -4,28 +4,39 @@ import { inject, observer } from "mobx-react";
 import TextInput from "@docspace/components/text-input";
 import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
-
-import StyledComponent from "../StyledComponent";
 import Checkbox from "@docspace/components/checkbox";
+import FieldContainer from "@docspace/components/field-container";
 
-const HOST = "host",
-  PORT = "port",
-  SENDER_EMAIL_ADDRESS = "senderAddress",
-  SENDER_DISPLAY_NAME = "senderDisplayName",
-  HOST_LOGIN = "credentialsUserName",
-  HOST_PASSWORD = "credentialsUserPassword",
-  ENABLE_SSL = "enableSSL",
-  AUTHENTICATION = "enableAuth",
-  USE_NTLM = "useNtlm";
+import { StyledComponent } from "../StyledComponent";
+import { SMTPSettingsFields } from "../constants";
+import { EmailInput } from "@docspace/components";
+import ButtonContainer from "./ButtonContainer";
+
+const {
+  HOST,
+  PORT,
+  SENDER_EMAIL_ADDRESS,
+  SENDER_DISPLAY_NAME,
+  HOST_LOGIN,
+  ENABLE_SSL,
+  HOST_PASSWORD,
+  AUTHENTICATION,
+  USE_NTLM,
+} = SMTPSettingsFields;
+
 const CustomSettings = (props) => {
-  const { t, smtpSettings } = props;
-  const [state, setState] = useState(smtpSettings);
+  const { t, settings, setSMTPSettings } = props;
+  const [emailError, setEmailError] = useState({
+    hasError: false,
+    isValid: true,
+    errors: [],
+  });
 
   const onChange = (e) => {
     const { name, value } = e.target;
 
-    setState({
-      ...state,
+    setSMTPSettings({
+      ...settings,
       [name]: value,
     });
   };
@@ -33,8 +44,8 @@ const CustomSettings = (props) => {
   const onChangeToggle = (e) => {
     const { checked } = e.currentTarget;
 
-    setState({
-      ...state,
+    setSMTPSettings({
+      ...settings,
       [AUTHENTICATION]: checked,
     });
   };
@@ -42,9 +53,26 @@ const CustomSettings = (props) => {
   const onChangeCheckbox = (e) => {
     const { checked, name } = e.target;
 
-    setState({
-      ...state,
+    setSMTPSettings({
+      ...settings,
       [name]: checked,
+    });
+  };
+
+  const onValidateEmailInput = (result) => {
+    const { isValid, errors } = result;
+
+    setEmailError({
+      ...emailError,
+      isValid,
+      errors,
+    });
+  };
+
+  const onSetValidationError = (hasError) => {
+    setEmailError({
+      ...emailError,
+      hasError,
     });
   };
 
@@ -56,66 +84,84 @@ const CustomSettings = (props) => {
     <div className="smtp-settings_auth">
       <ToggleButton
         className="smtp-settings_toggle"
-        isChecked={state[AUTHENTICATION]}
+        isChecked={settings[AUTHENTICATION]}
         onChange={onChangeToggle}
         label={t("Authentication")}
       />
-      <Text {...commonTextProps} className="smtp-settings_login">
-        {t("HostLogin")}
-      </Text>
+
+      <div className="smtp-settings_title smtp-settings_login">
+        <Text {...commonTextProps}>{t("HostLogin")}</Text>
+        <Text as="span" color="#F21C0E">
+          *
+        </Text>
+      </div>
       <TextInput
         className="smtp-settings_input"
         name={HOST_LOGIN}
         placeholder={t("EnterLogin")}
         onChange={onChange}
-        value={state[HOST_LOGIN]}
-        isDisabled={!state[AUTHENTICATION]}
+        value={settings[HOST_LOGIN]}
+        isDisabled={!settings[AUTHENTICATION]}
         scale
       />
-      <Text {...commonTextProps}>{t("HostPassword")}</Text>
 
+      <div className="smtp-settings_title">
+        <Text {...commonTextProps}>{t("HostPassword")}</Text>
+        <Text as="span" color="#F21C0E">
+          *
+        </Text>
+      </div>
       <TextInput
         className="smtp-settings_input"
         name={HOST_PASSWORD}
         placeholder={t("EnterPassword")}
         onChange={onChange}
-        value={state[HOST_PASSWORD]}
-        isDisabled={!state[AUTHENTICATION]}
+        value={settings[HOST_PASSWORD]}
+        isDisabled={!settings[AUTHENTICATION]}
         scale
       />
 
       <Checkbox
         name={USE_NTLM}
         label={t("AuthViaNTLM")}
-        isChecked={state[USE_NTLM]}
+        isChecked={settings[USE_NTLM]}
         onChange={onChangeCheckbox}
-        isDisabled={!state[AUTHENTICATION]}
+        isDisabled={!settings[AUTHENTICATION]}
       />
     </div>
   );
 
-  console.log("state", state);
   return (
     <StyledComponent>
-      <Text {...commonTextProps}>{t("Host")}</Text>
+      <div className="smtp-settings_title">
+        <Text {...commonTextProps}>{t("Host")}</Text>
+        <Text as="span" color="#F21C0E">
+          *
+        </Text>
+      </div>
       <TextInput
         className="smtp-settings_input"
         name={HOST}
         placeholder={t("EnterDomain")}
         onChange={onChange}
-        value={state[HOST]}
+        value={settings[HOST]}
         scale
       />
-      <Text {...commonTextProps}>{t("Port")}</Text>
+
+      <div className="smtp-settings_title">
+        <Text {...commonTextProps}>{t("Port")}</Text>{" "}
+        <Text as="span" color="#F21C0E">
+          *
+        </Text>
+      </div>
       <TextInput
         className="smtp-settings_input"
         name={PORT}
         placeholder={t("EnterPort")}
         onChange={onChange}
-        value={state[PORT].toString()}
+        value={settings[PORT].toString()}
         scale
       />
-
       {enableAuthComponent}
 
       <Text {...commonTextProps}>{t("SenderDisplayName")}</Text>
@@ -124,32 +170,51 @@ const CustomSettings = (props) => {
         name={SENDER_DISPLAY_NAME}
         placeholder={t("EnterName")}
         onChange={onChange}
-        value={state[SENDER_DISPLAY_NAME]}
+        value={settings[SENDER_DISPLAY_NAME]}
         scale
       />
-      <Text {...commonTextProps}>{t("SenderEmailAddress")}</Text>
-      <TextInput
+
+      <div className="smtp-settings_title">
+        <Text {...commonTextProps}>{t("SenderEmailAddress")}</Text>
+        <Text as="span" color="#F21C0E">
+          *
+        </Text>
+      </div>
+      <FieldContainer
         className="smtp-settings_input"
-        name={SENDER_EMAIL_ADDRESS}
-        placeholder={t("EnterEmail")}
-        onChange={onChange}
-        value={state[SENDER_EMAIL_ADDRESS]}
-        scale
-      />
+        isVertical
+        place="top"
+        hasError={emailError.hasError}
+        errorMessage={t("Common:IncorrectEmail")}
+      >
+        <EmailInput
+          value={settings[SENDER_EMAIL_ADDRESS]}
+          onChange={onChange}
+          onValidateInput={onValidateEmailInput}
+          hasError={emailError.hasError}
+          placeholder={t("EnterEmail")}
+          scale
+        />
+      </FieldContainer>
 
       <Checkbox
         name={ENABLE_SSL}
         label={t("EnableSSL")}
-        isChecked={state[ENABLE_SSL]}
+        isChecked={settings[ENABLE_SSL]}
         onChange={onChangeCheckbox}
+      />
+      <ButtonContainer
+        t={t}
+        onSetValidationError={onSetValidationError}
+        isEmailValid={emailError.isValid}
       />
     </StyledComponent>
   );
 };
 
 export default inject(({ setup }) => {
-  const { integration } = setup;
+  const { integration, setSMTPSettings } = setup;
   const { smtpSettings } = integration;
 
-  return { smtpSettings };
+  return { settings: smtpSettings.settings, setSMTPSettings };
 })(observer(CustomSettings));

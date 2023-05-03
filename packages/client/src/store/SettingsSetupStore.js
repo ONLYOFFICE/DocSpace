@@ -4,6 +4,7 @@ const { Filter } = api;
 import SelectionStore from "./SelectionStore";
 //import CommonStore from "./CommonStore";
 import authStore from "@docspace/common/store/AuthStore";
+import { setSMTPSettings } from "@docspace/common/api/settings";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { isMobile } from "react-device-detect";
@@ -46,7 +47,10 @@ class SettingsSetupStore {
   integration = {
     consumers: [],
     selectedConsumer: {},
-    smtpSettings: {},
+    smtpSettings: {
+      settings: {},
+      isInit: false,
+    },
   };
 
   dataManagement = {
@@ -118,8 +122,21 @@ class SettingsSetupStore {
     this.integration.consumers = consumers;
   };
 
+  setInitSMTPSettings = (settings) => {
+    this.integration.smtpSettings.initSettings = settings;
+    this.integration.smtpSettings.settings = settings;
+  };
+
   setSMTPSettings = (settings) => {
-    this.integration.smtpSettings = settings;
+    this.integration.smtpSettings.settings = settings;
+  };
+
+  setSMTPSettingsInit = (init) => {
+    this.integration.smtpSettings.isInit = init;
+  };
+
+  updateSMTPSettings = async () => {
+    await setSMTPSettings(this.integration.smtpSettings.settings);
   };
 
   setAddUsers = (func) => {
