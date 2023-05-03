@@ -85,7 +85,7 @@ const withHotkeys = (Component) => {
       isArchiveFolder ||
       isRoomsFolder ||
       isVisitor ||
-      !security.Create;
+      !security?.Create;
 
     const onCreate = (extension) => {
       if (folderWithNoAction) return;
