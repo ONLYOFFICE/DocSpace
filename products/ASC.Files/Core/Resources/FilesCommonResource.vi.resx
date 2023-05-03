@@ -179,7 +179,7 @@
     <value>Ít nhất {0} tin nhắn thư không thể gửi được. Vui lòng truy cập mô-đun Thư để xem lý do không gửi được.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Quá nhiều tập tin đang tải về</value>
+    <value>Quá nhiều tập tin đang tải về.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Rất tiếc, định dạng file này không được hỗ trợ</value>
@@ -275,8 +275,7 @@
     <value>Tài liệu</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Tạo và chỉnh sửa tài liệu riêng cũng như tài liệu được chia sẻ với quyền truy cập thích hợp|Trao cho người dùng khác quyền đọc/chỉnh sửa tài liệu và thư mục|Liên kết Dropbox, Box và tài khoản tài khác trong mục 'Tài liệu của tôi'
-</value>
+    <value>Tạo và chỉnh sửa tài liệu riêng cũng như tài liệu được chia sẻ với quyền truy cập thích hợp|Trao cho người dùng khác quyền đọc/chỉnh sửa tài liệu và thư mục|Liên kết Dropbox, Box và tài khoản tài khác trong mục 'Tài liệu của tôi'</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Tên</value>

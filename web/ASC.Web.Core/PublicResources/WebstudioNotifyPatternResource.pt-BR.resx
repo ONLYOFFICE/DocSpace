@@ -825,7 +825,7 @@ h3.Endereço do portal
 "${__VirtualRootPath}":"${__VirtualRootPath}"</value>
   </data>
   <data name="pattern_request_tariff1" xml:space="preserve">
-    <value>h1. Solicitação de tarefa SAAS para "$ {__ VirtualRootPath}": "$ {__ VirtualRootPath}"
+    <value>h1. Solicitação de tarefa SAAS para "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 h3.Primeiro nome
 $UserName
@@ -976,7 +976,7 @@ Seu portal está disponível novamente.</value>
   </data>
   <data name="pattern_user_has_join_tg" xml:space="preserve">
     <value>Novo usuário adicionado ao portal [${__VirtualRootPath}](${__VirtualRootPath})
-($__AuthorName]($__AuthorUrl) entrou em seu portal em [${__VirtualRootPath}](${__VirtualRootPath})</value>
+($__AuthorName]($__AuthorUrl) entrou em seu portal em [${__VirtualRootPath}](${__VirtualRootPath}).</value>
   </data>
   <data name="pattern_user_ldap_activation" xml:space="preserve">
     <value>Prezado $UserName,
@@ -1278,5 +1278,14 @@ Atenciosamente,
  
 Equipe ONLYOFFICE 
 "www.onlyoffice.com/pt":http://onlyoffice.com/pt</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Quer mudar a senha em sua conta pessoal ONLYOFFICE? Clique no botão abaixo para confirmar.
+
+$GreenButton
+
+O link é válido por 7 dias.
+
+Não deseja alterar sua senha? Simplesmente ignore esta mensagem.</value>
   </data>
 </root>

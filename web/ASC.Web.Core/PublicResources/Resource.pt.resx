@@ -146,7 +146,7 @@
     <value>Último nome</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>As instruções de alteração de e-mail foram enviadas para o endereço de email {0}</value>
+    <value>As instruções de alteração de e-mail foram enviadas para o endereço de email</value>
   </data>
   <data name="SmsAuthenticationMessageError" xml:space="preserve">
     <value>Código incorreto</value>
@@ -161,7 +161,7 @@
     <value>As configurações foram atualizadas com sucesso</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Instruções sobre como excluir o seu perfil foram enviadas para o seu endereço de e-mail</value>
+    <value>Instruções sobre como excluir o seu perfil foram enviadas para o {0} endereço de e-mail</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>O que há de novo</value>
@@ -228,5 +228,17 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>O número de administradores/utilizadores com poder:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
   </data>
 </root>

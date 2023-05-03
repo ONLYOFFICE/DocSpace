@@ -1,0 +1,19 @@
+{
+  "ErrorUserNotFound": "Il est impossible de trouver l'utilisateur",
+  "ErrorExpiredActivationLink": "Le lien a expiré",
+  "ErrorInvalidActivationLink": "Le lien d'activation non valide",
+  "ErrorConfirmURLError": "Adresse email non valide ou lien expiré",
+  "LoginWithBruteForce": "Autorisation temporairement bloquée",
+  "RecaptchaInvalid": "Recaptcha Invalide",
+  "LoginWithAccountNotFound": "Impossible de trouver le compte associé. Premièrement vous devez connecter votre compte de réseau social à la page d'édition du profil.",
+  "InvalidUsernameOrPassword": "Nom d'utilisateur ou mot de passe non valide(s).",
+  "SsoSettingsDisabled": "L'authentification unique est désactivée",
+  "ErrorNotAllowedOption": "Votre plan de paiement ne prend pas en charge cette option",
+  "SsoSettingsEmptyToken": "Impossible de trouver un jeton d'authentification",
+  "SsoSettingsNotValidToken": "Jeton d'authentification non valide",
+  "SsoSettingsCantCreateUser": "Il est impossible de créer l'utilisateur avec le jeton d'authentification",
+  "SsoSettingsUserTerminated": "Cet utilisateur est désactivé",
+  "SsoError": "Erreur interne du serveur",
+  "SsoAuthFailed": "Echec d'authentification",
+  "SsoAttributesNotFound": "Echec d'authentification (affirmation des attributs non trouvée)"
+}

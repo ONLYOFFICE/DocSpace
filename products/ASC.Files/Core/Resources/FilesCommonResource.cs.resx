@@ -125,7 +125,7 @@
     <value>Odesílání dokumentu pomocí DocuSign bylo zrušeno</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Dokument byl poslán k zapsání pomocí DocuSign.</value>
+    <value>Dokument byl poslán k zapsání pomocí DocuSign</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Zrušeno</value>
@@ -188,13 +188,13 @@
     <value>Omlouváme se, ale formát tohoto souboru není podporován</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>Autor, který provedl poslední změnu je neznámý.</value>
+    <value>Autor, který provedl poslední změnu je neznámý</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
     <value>Soubor byl poškozen při ukládání</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Nepodařilo se získat soubor, který chcete uložit.</value>
+    <value>Nepodařilo se získat soubor, který chcete uložit</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
     <value>Nemáte dostatečné oprávnění k provedení operace</value>
@@ -266,7 +266,7 @@
     <value>Soubor vytvořen ve složce "{0}"</value>
   </data>
   <data name="ProductAdminOpportunities" xml:space="preserve">
-    <value>Udělej to samé jako uživatel|Odkaz na Dropbox, Box a další účty v sekci "Běžné dokumenty"|Nastavení přístupních práv k dokumentům a složkám v sekci "Běžné dokumenty".</value>
+    <value>Udělej to samé jako uživatel|Odkaz na Dropbox, Box a další účty v sekci "Běžné dokumenty"|Nastavení přístupních práv k dokumentům a složkám v sekci "Běžné dokumenty"</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
     <value>Vytvářejte, upravujte a sdílejte dokumenty. Spolupracujte na nich v reálném čase. Je garantována 100% kompatibilita s MS Office formáty.</value>
@@ -278,7 +278,7 @@
     <value>Dokumenty</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Vytvořit a upravit vlastní dokumenty stejně tak jako sdílené dokumenty se správnými přístupními právy|Udělit přístup ke čtení/upravování dalším uživatelům k dokumentům a složkám|Odkaz na Dropbox, Box nebo další účty v sekci "Moje dokumenty" </value>
+    <value>Vytvořit a upravit vlastní dokumenty stejně tak jako sdílené dokumenty se správnými přístupními právy|Udělit přístup ke čtení/upravování dalším uživatelům k dokumentům a složkám|Odkaz na Dropbox, Box nebo další účty v sekci "Moje dokumenty"</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Křestní jméno</value>

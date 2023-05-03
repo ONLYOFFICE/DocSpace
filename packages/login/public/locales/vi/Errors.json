@@ -1,0 +1,14 @@
+{
+  "ErrorUserNotFound": "Không tìm thấy người dùng này",
+  "ErrorExpiredActivationLink": "Liên kết hết hạn",
+  "ErrorInvalidActivationLink": "Liên kết kích hoạt không hợp lệ",
+  "ErrorConfirmURLError": "Email không hợp lệ hoặc liên kết hết hạn",
+  "LoginWithAccountNotFound": "Không thể tìm thấy tài khoản liên kết bên thứ ba. Trước tiên bạn cần kết nối đến tài khoản mạng xã hội của mình ở trang chỉnh sửa hồ sơ.",
+  "InvalidUsernameOrPassword": "Tên người dùng hoặc mật khẩu không chính xác.",
+  "SsoSettingsDisabled": "Xác thực một lần tắt",
+  "ErrorNotAllowedOption": "Gói của bạn không hỗ trợ tùy chọn này",
+  "SsoSettingsEmptyToken": "Không tìm thấy token xác thực",
+  "SsoSettingsNotValidToken": "Token xác thực không hợp lệ",
+  "SsoSettingsCantCreateUser": "Không thể tạo người dùng bằng token xác thực này",
+  "SsoSettingsUserTerminated": "Người dùng này không hoạt động"
+}

@@ -128,7 +128,7 @@
     <value>Anulēts</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Slikts pieprāsījums</value>
+    <value>Slikts pieprāsījums.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
     <value>Jūs nevarat izvēlēties šo lietotāju</value>

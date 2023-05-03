@@ -134,19 +134,19 @@
     <value>Olaylar [{0}]. Erişim Engellendi: {1}</value>
   </data>
   <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Olaylar. Etiket Oluşturuldu:{0} </value>
+    <value>Olaylar. Etiket Oluşturuldu:{0}</value>
   </data>
   <data name="CasesDeleted" xml:space="preserve">
     <value>Silinen Olaylar: {0}</value>
   </data>
   <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Olaylar. Etiket Silindi:{0} </value>
+    <value>Olaylar. Etiket Silindi:{0}</value>
   </data>
   <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>CSV dosyasına Aktarılan Olaylar:{0} </value>
+    <value>CSV dosyasına Aktarılan Olaylar:{0}</value>
   </data>
   <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>CSV dosyasından Aktarılan Olaylar:{0} </value>
+    <value>CSV dosyasından Aktarılan Olaylar:{0}</value>
   </data>
   <data name="CasesModule" xml:space="preserve">
     <value>Olaylar</value>
@@ -263,13 +263,13 @@
     <value>Kişiler. Etiket Oluşturuldu: {0}</value>
   </data>
   <data name="ContactsDeleted" xml:space="preserve">
-    <value>Kişiler Silindi: {1}</value>
+    <value>Kişiler Silindi: {0}</value>
   </data>
   <data name="ContactsDeletedTag" xml:space="preserve">
     <value>Kişiler. Etiket Silindi: {0}</value>
   </data>
   <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Kişiler CSV Dosyasına Aktarıldı: {1}</value>
+    <value>Kişiler CSV Dosyasına Aktarıldı: {0}</value>
   </data>
   <data name="ContactsImportedFromCSV" xml:space="preserve">
     <value>Kişiler CSV Dosyasından Aktarıldı</value>
@@ -383,7 +383,7 @@
     <value>CRM Görevler CSV Dosyasına Aktarıldı: {0}</value>
   </data>
   <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM Görevler CSV Dosyasından Aktarıldı: {0}</value>
+    <value>CRM Görevler CSV Dosyasından Aktarıldı</value>
   </data>
   <data name="CrmTasksModule" xml:space="preserve">
     <value>CRM Görevler</value>
@@ -533,7 +533,7 @@
     <value>Dosya Kilidi Kaldırıldı: {0}</value>
   </data>
   <data name="FileUpdated" xml:space="preserve">
-    <value>Dosya Güncellendi:{0} </value>
+    <value>Dosya Güncellendi: {0}</value>
   </data>
   <data name="FileUpdatedAccess" xml:space="preserve">
     <value>Dosyalar[{0}].Erişim Güncellendi</value>
@@ -659,7 +659,7 @@
     <value>Fatura Numara Formatı Güncellendi</value>
   </data>
   <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Faturalar Silindi: {1}</value>
+    <value>Faturalar Silindi: {0}</value>
   </data>
   <data name="InvoiceSettingsModule" xml:space="preserve">
     <value>Fatura Ayarları</value>
@@ -740,7 +740,7 @@
     <value>API ile başarılı giriş</value>
   </data>
   <data name="LoginSuccessViaApiSms" xml:space="preserve">
-    <value>API &amp; SMS Kodu ile başarılı giriş </value>
+    <value>API &amp; SMS Kodu ile başarılı giriş</value>
   </data>
   <data name="LoginSuccessViaSms" xml:space="preserve">
     <value>SMS'le giriş başarılı</value>
@@ -1190,7 +1190,7 @@
     <value>Projeler[{0}]. Görevler[{1}].Görev Süresi Güncellendi: {2}</value>
   </data>
   <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Kilometre Taşlarıyla Bağlantısı Kaldırıldı</value>
+    <value>Projeler[{0}]. Görevler[{1}].Kilometre Taşlarıyla Bağlantısı Kaldırıldı.</value>
   </data>
   <data name="TaskUpdated" xml:space="preserve">
     <value>Projeler[{0}]. Görev Güncellendi: {1}</value>
@@ -1205,13 +1205,13 @@
     <value>Ekip Şablonu Değiştirildi</value>
   </data>
   <data name="ThirdPartyCreated" xml:space="preserve">
-    <value>Üçüncü Kişi Oluşturuldu:{0}. Sağlayıcı: {1} </value>
+    <value>Üçüncü Kişi Oluşturuldu:{0}. Sağlayıcı: {1}</value>
   </data>
   <data name="ThirdPartyDeleted" xml:space="preserve">
-    <value>Üçüncü Kişi Silindi:{0}. Sağlayıcı: {1} </value>
+    <value>Üçüncü Kişi Silindi:{0}. Sağlayıcı: {1}</value>
   </data>
   <data name="ThirdPartyUpdated" xml:space="preserve">
-    <value>Üçüncü Kişi Güncellendi:{0}. Sağlayıcı: {1} </value>
+    <value>Üçüncü Kişi Güncellendi:{0}. Sağlayıcı: {1}</value>
   </data>
   <data name="TimeTrackingModule" xml:space="preserve">
     <value>Süre Takibi</value>
@@ -1295,7 +1295,7 @@
     <value>Kullanıcılar</value>
   </data>
   <data name="UsersSentActivationInstructions" xml:space="preserve">
-    <value>Kullanıcılar [{0}]. Aktivasyon Kılavuzu Gönderildi </value>
+    <value>Kullanıcılar [{0}]. Aktivasyon Kılavuzu Gönderildi</value>
   </data>
   <data name="UsersUpdatedStatus" xml:space="preserve">
     <value>Kullanıcılar [{0}]. Güncellenmiş Durum</value>
@@ -1323,5 +1323,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>İnternet Sitesi İletişim Formu Anahtar Güncellendi</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Oda oluşturuldu</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Odalar</value>
   </data>
 </root>

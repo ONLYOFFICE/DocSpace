@@ -1,0 +1,19 @@
+{
+  "ErrorUserNotFound": "ユーザーが見つかりませんでした",
+  "ErrorExpiredActivationLink": "リンクの有効期限が切れてい",
+  "ErrorInvalidActivationLink": "無効なアクティベーションリンク",
+  "ErrorConfirmURLError": "無効なメールや期限切れのリンク",
+  "LoginWithBruteForce": "承認は一時的にブロックされました。 ",
+  "RecaptchaInvalid": "Recaptchaが間違っているようです",
+  "LoginWithAccountNotFound": "関連するサードパーティのアカウントを見つけることができません。あなたが最初のプロファイルの編集ページであなたのソーシャルネットワーキングのアカウントを接続する必要があります。",
+  "InvalidUsernameOrPassword": "ユーザ名またはパスワードが無効である。",
+  "SsoSettingsDisabled": "シングルサインオンは無効です",
+  "ErrorNotAllowedOption": "あなたの料金プランは、このオプションをサポートしていません",
+  "SsoSettingsEmptyToken": "認証トークンは見つかりません。",
+  "SsoSettingsNotValidToken": "無効な認証トークン",
+  "SsoSettingsCantCreateUser": "その認証トークンでユーザを作成できません",
+  "SsoSettingsUserTerminated": "ユーザーは無効ようにされた",
+  "SsoError": "内部サーバ・エラー",
+  "SsoAuthFailed": "認証に失敗しました",
+  "SsoAttributesNotFound": "認証に失敗しました（属性値アサーションが見つかりません）"
+}

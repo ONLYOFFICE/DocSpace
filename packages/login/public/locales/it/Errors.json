@@ -1,0 +1,18 @@
+{
+  "ErrorUserNotFound": "L'utente non è stato trovato",
+  "ErrorExpiredActivationLink": "Il collegamento è scaduto",
+  "ErrorInvalidActivationLink": "Collegamento di attivazione non valido",
+  "ErrorConfirmURLError": "Indirizzo email non valido o collegamento scaduto",
+  "LoginWithBruteForce": "Autorizzazione temporaneamente bloccata.",
+  "RecaptchaInvalid": "Recaptcha non valido",
+  "LoginWithAccountNotFound": "E' impossibile trovare l'account associato. Collega un account di rete sociale nella pagina di modifica del profilo.",
+  "InvalidUsernameOrPassword": "Nome utente o password non validi.",
+  "SsoSettingsDisabled": "L'accesso singolo è disattivato",
+  "ErrorNotAllowedOption": "Il tuo piano tariffario non supporta questa funzionalità",
+  "SsoSettingsEmptyToken": "Token di autenticazione non trovato",
+  "SsoSettingsNotValidToken": "Token di autenticazione non valido",
+  "SsoSettingsCantCreateUser": "Impossibile creare un utente con questo token di autenticazione",
+  "SsoSettingsUserTerminated": "Questo utente è disattivato",
+  "SsoAuthFailed": "Autenticazione fallita",
+  "SsoAttributesNotFound": "Autenticazione non riuscita (attributi di asserzione non trovati)"
+}

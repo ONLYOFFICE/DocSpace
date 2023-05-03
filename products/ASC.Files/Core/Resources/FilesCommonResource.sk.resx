@@ -194,7 +194,7 @@
     <value>Súbor bol poškodený, keď ste sa ho pokúsili uložiť</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
-    <value>Nepodarilo sa získať súbor, ktorý chcete uložiť.</value>
+    <value>Nepodarilo sa získať súbor, ktorý chcete uložiť</value>
   </data>
   <data name="ErrorMassage_SecurityException" xml:space="preserve">
     <value>Nemáte dostatočné práva na vykonanie operácie</value>

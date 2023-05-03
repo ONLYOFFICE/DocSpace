@@ -1,0 +1,14 @@
+{
+  "ErrorUserNotFound": "Kullanıcı bulunamadı",
+  "ErrorExpiredActivationLink": "Bağlantı sona erdi",
+  "ErrorInvalidActivationLink": "Geçersiz aktivasyon bağlantısı",
+  "ErrorConfirmURLError": "Geçersiz e-posta ya da süresi dolmuş bağlantı",
+  "LoginWithAccountNotFound": "İlişkili üçüncü parti hesap bulunamıyor. Sosyal ağ hesabınızı profil düzenleme sayfasında bağlamanız gerekiyor.<",
+  "InvalidUsernameOrPassword": "Geçersiz kullanıcı adı veya şifre.",
+  "SsoSettingsDisabled": "Tek giriş devre dışı bırakıldı",
+  "ErrorNotAllowedOption": "Fiyat planınız bu seçeneği desteklemiyor",
+  "SsoSettingsEmptyToken": "Şifre üretici bulunamadı",
+  "SsoSettingsNotValidToken": "Geçersiz şifre üreteci",
+  "SsoSettingsCantCreateUser": "Bu akıllı anahtarla kullanıcı oluşturulamadı",
+  "SsoSettingsUserTerminated": "Bu kullanıcı etkisiz kılınmış"
+}

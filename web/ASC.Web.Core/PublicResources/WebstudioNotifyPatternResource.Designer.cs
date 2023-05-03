@@ -893,7 +893,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
@@ -1004,7 +1004,7 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to Hello!
         ///
-        ///You are invited to join ONLYOFFICE DocSpace at  &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;o. Accept the invitation by clicking the link:
+        ///You are invited to join ONLYOFFICE DocSpace at &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Accept the invitation by clicking the link:
         ///
         ///$GreenButton
         ///
@@ -1096,13 +1096,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///      Dear $UserName,
+        ///   Looks up a localized string similar to Dear $UserName,
         ///
         ///      Administrator has created a new &lt;b&gt;$Address&lt;/b&gt; mailbox for you at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
         ///
         ///      Use the following settings for other email clients:
-        ///
         ///      Login: &lt;b&gt;$Login&lt;/b&gt;
         ///      Password: &quot;&lt;b&gt;set password&lt;/b&gt;&quot;:&quot;$MyStaffLink&quot;
         ///
@@ -1113,7 +1111,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///      Outgoing Mail (SMTP): 
         ///      Server: &lt;b&gt;$Server&lt;/b&gt;
-        ///      Port: &lt;b&gt;$Smt [rest of string was truncated]&quot;;.
+        ///      Port: &lt;b&gt;$SmtpPort&lt;/b&gt;        /// [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_mailbox_created {
             get {
@@ -1122,13 +1120,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///      Dear $UserName,
+        ///   Looks up a localized string similar to Dear $UserName,
         ///
         ///      The password for the &lt;b&gt;$Address&lt;/b&gt; mailbox has been changed.
         ///
-        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
-        ///    .
+        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details..
         /// </summary>
         public static string pattern_mailbox_password_changed {
             get {
@@ -1137,13 +1133,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to 
-        ///      Dear $UserName,
+        ///   Looks up a localized string similar to Dear $UserName,
         ///
         ///      Administrator has created a new &lt;b&gt;$Address&lt;/b&gt; mailbox for you at the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
         ///
-        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
-        ///    .
+        ///      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details..
         /// </summary>
         public static string pattern_mailbox_without_settings_created {
             get {
@@ -1158,12 +1152,11 @@ namespace ASC.Web.Core.PublicResources {
         ///Your portal is now available at the old address &quot;$PortalUrl&quot;:&quot;$PortalUrl&quot;
         ///
         ///If you have any questions or need assistance please feel free to contact us at &quot;support@onlyoffice.com&quot;:&quot;mailto:support@onlyoffice.com&quot;
-        ///
         ///Best regards,
         ///ONLYOFFICE™ Support Team
         ///&quot;www.onlyoffice.com&quot;:&quot;http://onlyoffice.com/&quot;
         ///
-        ///^To change the notification type, please manage your &quot;subscription [rest of string was truncated]&quot;;.
+        ///^To change the notification type, please manage your &quot;subscription s [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_migration_error {
             get {
@@ -1401,7 +1394,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///- Work with all popular formats. Highest compatibility with MS Office files.
         ///
-        ///- Create and co-edit &quot;ready-to-fill-out forms&quot;:&quot;https://www.only [rest of string was truncated]&quot;;.
+        ///- Create and co-edit &quot;ready-to-fill-out forms&quot;:&quot;http [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_after_registration1 {
             get {
@@ -1500,7 +1493,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///*Note*: After the deletion, your account and all data associated with it will be erased permanently in accordance with our &quot;Privacy statement&quot;:&quot;https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0&quot;.
         ///
-        ///&quot;Read more about account termination&quot;:&quot; [rest of string was truncated]&quot;;.
+        ///&quot;Read more about account terminati [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_personal_profile_delete {
             get {
@@ -1520,7 +1513,7 @@ namespace ASC.Web.Core.PublicResources {
         ///*Note*: this link is valid for 7 days only. Please complete the portal deactivation process within that period.
         ///
         ///You can reactivate your portal any time by clicking the following link:
-        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this link has no [rest of string was truncated]&quot;;.
+        ///p=. &quot;Reactivate Portal&quot;:&quot;$ActivateUrl&quot; (this  [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_portal_deactivate {
             get {
@@ -1549,16 +1542,16 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h1.Deletion of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal
+        ///   Looks up a localized string similar to h1.Deletion of the &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; space
         ///
         ///Dear $OwnerName,
         ///
-        ///You have requested to permanently delete your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal.
+        ///You have requested to permanently delete your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; space.
         ///
-        ///*Important! All the data stored on your portal, as well as your registration details will be lost and cannot be recovered.*
+        ///*Important! All the data stored in your space, as well as your registration details will be lost and cannot be recovered.*
         ///
         ///#if($AutoRenew == &quot;True&quot;)
-        ///Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your &quot;Avangate account&quot;:&quot;https://se [rest of string was truncated]&quot;;.
+        ///Before you delete the space, please make sure that automatic billing is turned off. You may check the status of automatic billing in your &quot;Avangate account&quot;:&quot;https [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_portal_delete {
             get {

@@ -160,7 +160,7 @@ A exclusão de dados pessoais permitida para liberar:
     <value>Faça o mesmo como um usuário|Conecte ao Dropbox, Box e outras contas na seção "Documentos comuns"|Configure o acesso direto aos documentos e pastas na seção "Documentos comuns"</value>
   </data>
   <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
-    <value>Crie e edite documentos próprios bem como documentos compartilhados com os direitos de acesso adequados|Forneça acesso de leitura/gravação para outros usuários aos documentos e pastas|Conecte a Dropbox, Box e outras contas na seção "Meus documentos".</value>
+    <value>Crie e edite documentos próprios bem como documentos compartilhados com os direitos de acesso adequados|Forneça acesso de leitura/gravação para outros usuários aos documentos e pastas|Conecte a Dropbox, Box e outras contas na seção "Meus documentos"</value>
   </data>
   <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
     <value>Bem vindo ao ONLYOFFICE Pessoal</value>
@@ -179,5 +179,14 @@ A exclusão de dados pessoais permitida para liberar:
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Novo portal foi registrado</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Quer mudar a senha em sua conta de escritório na nuvem? Clique no botão abaixo para confirmar.
+
+$GreenButton
+
+O link é válido por 7 dias.
+
+Não deseja alterar sua senha? Simplesmente ignore esta mensagem.</value>
   </data>
 </root>

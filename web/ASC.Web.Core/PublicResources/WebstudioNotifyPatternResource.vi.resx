@@ -452,7 +452,7 @@ h3.Chức vụ
 $Position
 
 h3.Email
-"$UserEmail":"mailto:$UserEmail"
+$UserEmailailto:$UserEmail"
 
 h3.Điện thoại
 $Phone
@@ -587,7 +587,7 @@ Trân trọng,
     <value>${LetterLogoText}. Đã bắt đầu khôi phục</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
-    <value>${__ VirtualRootPath} thông báo thay đổi hồ sơ cổng thông tin</value>
+    <value>${__VirtualRootPath} thông báo thay đổi hồ sơ cổng thông tin</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Tin nhắn SMTP thử nghiệm</value>

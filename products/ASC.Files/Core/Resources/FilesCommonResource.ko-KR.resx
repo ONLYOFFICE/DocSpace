@@ -85,9 +85,6 @@
   <data name="CommentCreateByDocuSign" xml:space="preserve">
     <value>DocuSign으로 만든 파일</value>
   </data>
-  <data name="CommentEdit" xml:space="preserve">
-    <value>편집되었습니다.</value>
-  </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>업로드 되었습니다</value>
   </data>
@@ -110,7 +107,7 @@
     <value>필요한 폴더를 찾을 수 없습니다</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>적어도 {0}개의 메일 메시지를 보낼 수 없음. 실패 원인이 무엇인지 확인하려면 메일 모듈 확인</value>
+    <value>적어도 {0}개의 메일 메시지를 보낼 수 없음. 실패 원인이 무엇인지 확인하려면 메일 모듈 확인.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
     <value>다운로드수가 너무 많습니다.</value>
@@ -128,10 +125,10 @@
     <value>만들 수있는 권한이 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
-    <value>파일이 열려 있기 때문에 삭제할 수 없습니다.</value>
+    <value>파일이 열려 있기 때문에 삭제할 수 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
-    <value>편집중인 파일이 있어 폴더를 삭제할 수 없습니다.</value>
+    <value>편집중인 파일이 있어 폴더를 삭제할 수 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
     <value>파일을 삭제하기에 충분한 권한이 없습니다</value>
@@ -158,7 +155,7 @@
     <value>폴더의 이름을 바꾸하기에 충분한 권한이 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
-    <value>파일이 편집중이므로 업데이트할 수 없습니다.</value>
+    <value>파일이 편집중이므로 업데이트할 수 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
     <value>폴더 콘텐츠를 볼 수있는 충분한 권한이 없습니다</value>
@@ -216,5 +213,8 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>공동 작업자</value>
+  </data>
+  <data name="CommentEdit" xml:space="preserve">
+    <value>편집되었습니다</value>
   </data>
 </root>
