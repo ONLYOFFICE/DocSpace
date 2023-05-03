@@ -622,7 +622,7 @@ const PureHome = (props) => {
           </Section.SectionHeader>
         )}
 
-        {((!isLoadedEmptyPage && !isErrorRoomNotAvailable) || isAccountsPage) &&
+        {((!isEmptyPage && !isErrorRoomNotAvailable) || isAccountsPage) &&
           !isSettingsPage && (
             <Section.SectionFilter>
               {isFrame ? (
@@ -736,8 +736,12 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const { setUploadPanelVisible, startUpload, uploaded, converted } =
-      uploadDataStore;
+    const {
+      setUploadPanelVisible,
+      startUpload,
+      uploaded,
+      converted,
+    } = uploadDataStore;
 
     const { uploadEmptyFolders, onClickBack } = filesActionsStore;
 
