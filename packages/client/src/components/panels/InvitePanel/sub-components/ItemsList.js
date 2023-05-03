@@ -19,6 +19,7 @@ const Row = memo(({ data, index, style }) => {
     setHasErrors,
     roomType,
     isOwner,
+    setIsOpenItemAccess,
   } = data;
 
   if (inviteItems === undefined) return;
@@ -36,6 +37,7 @@ const Row = memo(({ data, index, style }) => {
         setHasErrors={setHasErrors}
         roomType={roomType}
         isOwner={isOwner}
+        setIsOpenItemAccess={setIsOpenItemAccess}
       />
     </StyledRow>
   );
@@ -54,23 +56,39 @@ const ItemsList = ({
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
+  const [isTotalListHeight, setIsTotalListHeight] = useState(false);
+  const [isOpenItemAccess, setIsOpenItemAccess] = useState(false);
+
   const bodyRef = useRef();
   const { height } = useResizeObserver({ ref: bodyRef });
 
   const onBodyResize = useCallback(() => {
+    const scrollHeight = bodyRef?.current?.firstChild.scrollHeight;
     const heightList = height ? height : bodyRef.current.offsetHeight;
+    const totalHeightItems = inviteItems.length * USER_ITEM_HEIGHT;
+    const listAreaHeight = heightList;
 
     const calculatedHeight = scrollAllPanelContent
-      ? inviteItems.length * USER_ITEM_HEIGHT
+      ? Math.max(
+          totalHeightItems,
+          listAreaHeight,
+          isOpenItemAccess ? scrollHeight : 0
+        )
       : heightList - FOOTER_HEIGHT;
 
     setBodyHeight(calculatedHeight);
     setOffsetTop(bodyRef.current.offsetTop);
+
+    if (scrollAllPanelContent && totalHeightItems && listAreaHeight)
+      setIsTotalListHeight(
+        totalHeightItems >= listAreaHeight && totalHeightItems >= scrollHeight
+      );
   }, [
     height,
     bodyRef?.current?.offsetHeight,
     inviteItems.length,
     scrollAllPanelContent,
+    isOpenItemAccess,
   ]);
 
   useEffect(() => {
@@ -81,28 +99,23 @@ const ItemsList = ({
     height,
     inviteItems.length,
     scrollAllPanelContent,
+    isOpenItemAccess,
   ]);
 
-  let itemCount = inviteItems.length;
-
-  //Scroll blinking fix
-  if (scrollAllPanelContent) {
-    itemCount =
-      bodyHeight / inviteItems.length != USER_ITEM_HEIGHT
-        ? inviteItems.length - 1
-        : inviteItems.length;
-  }
+  const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
 
   return (
     <ScrollList
       offsetTop={offsetTop}
       ref={bodyRef}
       scrollAllPanelContent={scrollAllPanelContent}
+      isTotalListHeight={isTotalListHeight}
     >
       <List
+        style={{ overflow: overflowStyle }}
         height={bodyHeight}
         width="auto"
-        itemCount={itemCount}
+        itemCount={inviteItems.length}
         itemSize={USER_ITEM_HEIGHT}
         itemData={{
           inviteItems,
@@ -112,8 +125,9 @@ const ItemsList = ({
           roomType,
           isOwner,
           t,
+          setIsOpenItemAccess,
         }}
-        outerElementType={CustomScrollbarsVirtualList}
+        outerElementType={!scrollAllPanelContent && CustomScrollbarsVirtualList}
       >
         {Row}
       </List>
