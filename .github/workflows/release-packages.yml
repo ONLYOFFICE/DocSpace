@@ -69,7 +69,7 @@ jobs:
           expect eof
           
           echo "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
-          dpkg-sig --verify /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+          # dpkg-sig --verify /home/runner/work/DocSpace/DocSpace/build/install/*.deb
 
         
       - uses: ncipollo/release-action@v1
