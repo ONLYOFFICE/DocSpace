@@ -344,15 +344,15 @@ const RootFolderContainer = (props) => {
 
   useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
 
-  if (isLoading) {
-    return (
-      <Loaders.EmptyContainerLoader
-        style={{ display: "none", marginTop: 32 }}
-        id="empty-container-loader"
-        viewAs={viewAs}
-      />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Loaders.EmptyContainerLoader
+  //       style={{ display: "none", marginTop: 32 }}
+  //       id="empty-container-loader"
+  //       viewAs={viewAs}
+  //     />
+  //   );
+  // }
 
   return (
     <EmptyContainer
@@ -367,8 +367,12 @@ const RootFolderContainer = (props) => {
 
 export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
-      auth.settingsStore;
+    const {
+      isDesktopClient,
+      isEncryptionSupport,
+      organizationName,
+      theme,
+    } = auth.settingsStore;
 
     const {
       filter,
