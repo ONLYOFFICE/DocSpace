@@ -7,7 +7,6 @@ import Item from "./Item";
 
 import { StyledRow, ScrollList } from "../StyledInvitePanel";
 
-import { size } from "@docspace/components/utils/device";
 const FOOTER_HEIGHT = 70;
 const USER_ITEM_HEIGHT = 48;
 
@@ -59,7 +58,6 @@ const ItemsList = ({
   const [offsetTop, setOffsetTop] = useState(0);
   const [isTotalListHeight, setIsTotalListHeight] = useState(false);
   const [isOpenItemAccess, setIsOpenItemAccess] = useState(false);
-  const [isMobile, setIsMobile] = useState(false);
 
   const bodyRef = useRef();
   const { height } = useResizeObserver({ ref: bodyRef });
@@ -74,7 +72,7 @@ const ItemsList = ({
       ? Math.max(
           totalHeightItems,
           listAreaHeight,
-          isOpenItemAccess && !isMobile ? scrollHeight : 0
+          isOpenItemAccess ? scrollHeight : 0
         )
       : heightList - FOOTER_HEIGHT;
 
@@ -91,12 +89,7 @@ const ItemsList = ({
     inviteItems.length,
     scrollAllPanelContent,
     isOpenItemAccess,
-    isMobile,
   ]);
-
-  const onCheckWidth = () => {
-    setIsMobile(window.innerWidth < size.smallTablet);
-  };
 
   useEffect(() => {
     onBodyResize();
@@ -109,20 +102,7 @@ const ItemsList = ({
     isOpenItemAccess,
   ]);
 
-  useEffect(() => {
-    onCheckWidth();
-    window.addEventListener("resize", onCheckWidth);
-    return () => {
-      window.removeEventListener("resize", onCheckWidth);
-    };
-  }, []);
-
-  const overflowStyle =
-    isOpenItemAccess && isMobile
-      ? "visible"
-      : scrollAllPanelContent
-      ? "hidden"
-      : "scroll";
+  const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
 
   return (
     <ScrollList
