@@ -1182,4 +1182,383 @@ Distinti saluti,
 Team di ONLYOFFICE
 "www.onlyoffice.com":http://onlyoffice.com/it</value>
   </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Tieni presente che il periodo di grazia di $PaymentDelay‎ giorni per il tuo ONLYOFFICE DocSpace è attivato.
+
+Assicurati di pagare il tuo abbonamento Business prima della scadenza del periodo di grazia. Così, sarai in grado di utilizzare ulteriormente tutti i vantaggi del tuo ONLYOFFICE DocSpace.
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":https://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ecco tre semplici domande per te che possono aiutarci a rendere la tua esperienza utente ancora più confortevole.
+
+* Hai un grande team o molti clienti e partner con cui collaborare nel tuo ONLYOFFICE DocSpace?
+
+* Vorresti creare un numero qualsiasi di stanze per lavorare con numerosi documenti?
+
+* Vuoi usare ONLYOFFICE DocSpace sotto il tuo marchio?
+
+Se hai almeno risposto "sì" una volta, opta per il piano tariffario BUSINESS che ti consente di aggiungere qualsiasi numero desiderato di manager al tuo ONLYOFFICE DocSpace così come applicare le opzioni di branding.
+
+Per farlo, consulta la sezione "Pagamenti":"$PricingPage" del tuo ONLYOFFICE DocSpace. Lì troverai un collegamento individuale al Portale clienti Stripe dove potrai gestire facilmente tutti i dettagli di pagamento.
+
+_Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore è in grado di apportare modifiche all'abbonamento (regolare il numero di gestori). Gli utenti non hanno accesso ai dettagli dei pagamenti. Il proprietario dell'account ONLYOFFICE DocSpace può riassegnare il pagatore in qualsiasi momento successivo. _
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it
+</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ecco tre semplici domande per te che possono aiutarci a rendere la tua esperienza utente ancora più confortevole.
+
+* Hai un grande team o molti clienti e partner con cui collaborare nel tuo ONLYOFFICE DocSpace?
+
+* Vorresti creare un numero qualsiasi di stanze per lavorare con numerosi documenti?
+
+* Vuoi usare ONLYOFFICE DocSpace sotto il tuo marchio?
+
+Se hai almeno risposto "sì" una volta, opta per il piano tariffario BUSINESS che ti consente di aggiungere qualsiasi numero desiderato di manager al tuo ONLYOFFICE DocSpace così come applicare le opzioni di branding.
+
+Per farlo, consulta la sezione "Pagamenti":"$PricingPage" del tuo ONLYOFFICE DocSpace. Lì troverai un collegamento individuale al Portale clienti Stripe dove potrai gestire facilmente tutti i dettagli di pagamento.
+
+_Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore è in grado di apportare modifiche all'abbonamento (regolare il numero di gestori). Gli utenti non hanno accesso ai dettagli dei pagamenti. Il proprietario dell'account ONLYOFFICE DocSpace può riassegnare il pagatore in qualsiasi momento successivo. _
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ecco tre semplici domande per te che possono aiutarci a rendere la tua esperienza utente ancora più confortevole.
+
+* Hai un grande team o molti clienti e partner con cui collaborare nel tuo ONLYOFFICE DocSpace?
+
+* Vorresti creare un numero qualsiasi di stanze per lavorare con numerosi documenti?
+
+* Vuoi usare ONLYOFFICE DocSpace sotto il tuo marchio?
+
+Se hai almeno risposto "sì" una volta, opta per il piano tariffario BUSINESS che ti consente di aggiungere qualsiasi numero desiderato di manager al tuo ONLYOFFICE DocSpace così come applicare le opzioni di branding.
+
+Per farlo, consulta la sezione "Pagamenti":"$PricingPage" del tuo ONLYOFFICE DocSpace. Lì troverai un collegamento individuale al Portale clienti Stripe dove potrai gestire facilmente tutti i dettagli di pagamento.
+
+_Nota: la persona che paga l'abbonamento diventa il pagatore. Solo il pagatore è in grado di apportare modifiche all'abbonamento (regolare il numero di gestori). Gli utenti non hanno accesso ai dettagli dei pagamenti. Il proprietario dell'account ONLYOFFICE DocSpace può riassegnare il pagatore in qualsiasi momento successivo. _
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Ciao!
+
+Sei invitato a unirti a ONLYOFFICE DocSpace su "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando sul link:
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Ciao!
+
+Sei invitato a unirti a ONLYOFFICE DocSpace su "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando sul link:
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Ciao!
+
+Sei invitato a unirti a ONLYOFFICE DocSpace su "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando sul link:
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Ciao!
+
+Sei invitato a unirti a ONLYOFFICE DocSpace su "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando sul link:
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*# Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+
+*# Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+
+*# Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it
+</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*# Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+
+*# Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+
+*# Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*# Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+
+*# Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+
+*# Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+*# Lavorare con altri utenti nella stanza dove sei stato invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+*# Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+
+*# Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+
+*# Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.Messaggio dal portale "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Nome: $NomeUtente
+
+E-mail: $UserEmail
+ 
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ottieni le app di ONLYOFFICE gratuite per lavorare sui documenti da qualsiasi tuo dispositivo.
+
+# Per lavorare sui documenti offline su Windows, Linux e Mac, scarica "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/it/download-desktop.aspx".
+
+#Per modificare documenti su dispositivi mobili, scarica l'app ONLYOFFICE Documents per "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" o "Android":"https://play. google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Ottieni le app di ONLYOFFICE gratuite per lavorare sui documenti da qualsiasi tuo dispositivo.
+
+# Per lavorare sui documenti offline su Windows, Linux e Mac, scarica "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/it/download-desktop.aspx".
+
+#Per modificare documenti su dispositivi mobili, scarica l'app ONLYOFFICE Documents per "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" o "Android":"https://play. google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Salve!
+Si è verificato un tentativo di registrazione di un nuovo account "ONLYOFFICE Personal":"$PortalUrl" utilizzando questa email. Se eri tu, vogliamo informarti che l'account esiste già — procedi su ONLYOFFICE Personal e accedi.
+Se hai perso la tua password, puoi recuperarla nella "pagina recupero password":"$LinkToRecovery".
+Se non hai tentato di registrare un nuovo account, probabilmente qualcun altro lo ha fatto per errore. In questo caso, ignora questa email.
+
+Buona giornata!
+Team di ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>Il tuo ONLYOFFICE DocSpace è stato disattivato con successo. Tieni presente che tutti i tuoi dati verranno eliminati in conformità con la nostra "Informativa sulla privacy": "https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+Perché hai deciso di disattivarlo? Condividi la tua esperienza con noi.
+
+$GreenButton
+
+Grazie e buona fortuna!
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Regola le impostazioni di sicurezza del tuo ONLYOFFICE DocSpace per renderlo più sicuro:
+
+* Imposta la sicurezza della password.
+
+* Abilita l'autenticazione a due fattori e il Single Sign-On.
+
+* Determina i domini di posta affidabili e la durata della sessione.
+
+* Limita l'accesso da indirizzi IP specifici.
+
+* Consenti o limita i messaggi di amministrazione.
+
+* Gestisci i diritti di accesso dell'amministratore.
+
+* Esegui i backup dei dati.
+
+$GreenButton
+
+Visita il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" per saperne di più sulla configurazione e la gestione del tuo ONLYOFFICE DocSpace. Sei inoltre invitato a consultarlo in caso di domande sulla funzionalità.
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Non hai effettuato l'accesso nel tuo ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" per più di sei mesi.
+
+Dal momento che hai deciso di non usarlo più, il tuo ONLYOFFICE DocSpace e tutti i dati verranno cancellati in conformità con la nostra "Politica sulla privacy":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid= 5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+
+Apprezzeremmo il tuo feedback. Perché hai deciso di non utilizzare più il tuo ONLYOFFICE DocSpace?
+
+$GreenButton
+
+Se si è verificato un errore e desideri continuare a utilizzare ONLYOFFICE DocSpace, contatta il nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Salve!
+
+Sei invitato a unirti a ONLYOFFICE DocSpace su "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando sul link:
+
+$GreenButton
+
+Dopo aver cliccato sul link di invito, imposta una nuova password per il tuo account.
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Tieni presente che il tuo abbonamento a ONLYOFFICE DocSpace scade tra tre giorni. Successivamente, verrà attivato il periodo di grazia di $PaymentDelay giorni.
+
+Ti consigliamo di pagare ora il tuo abbonamento Business e di continuare a utilizzare tutti i vantaggi del tuo spazio documenti di ONLYOFFICE.
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Salve, $UserName!
+
+Tieni presente che il periodo di grazia di $PaymentDelay giorni per il tuo ONLYOFFICE DocSpace è terminato.
+
+Assicurati di pagare il tuo abbonamento Business il prima possibile. Così, sarai in grado di utilizzare tutti i vantaggi del tuo ONLYOFFICE DocSpace come prima.
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Ciao, $UserName!
+
+Tieni presente che il periodo di grazia di $PaymentDelay giorni per il tuo ONLYOFFICE DocSpace scadrà domani.
+
+Assicurati di pagare il tuo abbonamento Business oggi stesso. Così, sarai in grado di utilizzare ulteriormente tutti i vantaggi del tuo ONLYOFFICE DocSpace.
+
+$GreenButton
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Salve!
+
+Sei invitato a unirti alla stanza $Message su "${__VirtualRootPath}":"${__VirtualRootPath}". Accetta l'invito cliccando sul link:
+
+$GreenButton
+
+Dopo aver cliccato sul link di invito, imposta una nuova password per il tuo account.
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Vuoi cambiare la password del tuo account personale ONLYOFFICE? Fai clic sul pulsante in basso per confermare.
+
+$GreenButton
+
+Il collegamento è valido per 7 giorni.
+
+Non vuoi cambiare la tua password? Ignora questo messaggio.</value>
+  </data>
 </root>
