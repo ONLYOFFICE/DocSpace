@@ -14,6 +14,7 @@ const AccessSelector = ({
   isOwner,
   withRemove = false,
   filteredAccesses,
+  setIsOpenItemAccess,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
@@ -48,10 +49,6 @@ const AccessSelector = ({
 
   const isMobileHorizontalOrientation = isMobileOnly && horizontalOrientation;
 
-  const setDropDownMaxHeight = isMobileHorizontalOrientation
-    ? { dropDownMaxHeight: 150 }
-    : {};
-
   return (
     <StyledAccessSelector className="invite-panel_access-selector">
       <AccessRightSelect
@@ -60,17 +57,14 @@ const AccessSelector = ({
         accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
         noBorder={false}
         directionX="right"
-        directionY={isMobileHorizontalOrientation ? "both" : "bottom"}
-        fixedDirection={isMobileHorizontalOrientation ? false : true}
+        directionY="bottom"
+        fixedDirection={true}
         manualWidth={width + "px"}
-        isDefaultMode={
-          isMobileHorizontalOrientation ? isMobileHorizontalOrientation : false
-        }
-        withBackdrop={isMobileHorizontalOrientation ? false : isMobileOnly}
-        isAside={true}
+        isDefaultMode={false}
+        isAside={false}
         withBackground={isMobileHorizontalOrientation ? false : isMobileOnly}
-        isNoFixedHeightOptions={isMobileHorizontalOrientation}
-        {...setDropDownMaxHeight}
+        setIsOpenItemAccess={setIsOpenItemAccess}
+        hideMobileView={isMobileHorizontalOrientation}
       />
     </StyledAccessSelector>
   );

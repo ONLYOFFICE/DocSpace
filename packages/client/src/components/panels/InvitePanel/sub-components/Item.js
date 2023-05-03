@@ -29,6 +29,7 @@ const Item = ({
   roomType,
   isOwner,
   inputsRef,
+  setIsOpenItemAccess,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -141,6 +142,7 @@ const Item = ({
           isOwner={isOwner}
           withRemove={true}
           filteredAccesses={filteredAccesses}
+          setIsOpenItemAccess={setIsOpenItemAccess}
         />
       )}
     </>

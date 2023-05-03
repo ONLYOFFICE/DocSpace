@@ -20,6 +20,7 @@ const Row = memo(({ data, index, style }) => {
     roomType,
     isOwner,
     inputsRef,
+    setIsOpenItemAccess,
   } = data;
 
   if (inviteItems === undefined) return;
@@ -38,6 +39,7 @@ const Row = memo(({ data, index, style }) => {
         roomType={roomType}
         isOwner={isOwner}
         inputsRef={inputsRef}
+        setIsOpenItemAccess={setIsOpenItemAccess}
       />
     </StyledRow>
   );
@@ -58,7 +60,7 @@ const ItemsList = ({
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const [isTotalListHeight, setIsTotalListHeight] = useState(false);
-
+  const [isOpenItemAccess, setIsOpenItemAccess] = useState(false);
   const bodyRef = useRef();
   const { height } = useResizeObserver({ ref: bodyRef });
 
@@ -69,7 +71,11 @@ const ItemsList = ({
     const listAreaHeight = heightList;
 
     const calculatedHeight = scrollAllPanelContent
-      ? Math.max(totalHeightItems, listAreaHeight, 0)
+      ? Math.max(
+          totalHeightItems,
+          listAreaHeight,
+          isOpenItemAccess ? scrollHeight : 0
+        )
       : heightList - FOOTER_HEIGHT;
 
     setBodyHeight(calculatedHeight);
@@ -84,6 +90,7 @@ const ItemsList = ({
     bodyRef?.current?.offsetHeight,
     inviteItems.length,
     scrollAllPanelContent,
+    isOpenItemAccess,
   ]);
 
   useEffect(() => {
@@ -94,6 +101,7 @@ const ItemsList = ({
     height,
     inviteItems.length,
     scrollAllPanelContent,
+    isOpenItemAccess,
   ]);
 
   const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
@@ -119,6 +127,7 @@ const ItemsList = ({
           roomType,
           isOwner,
           inputsRef,
+          setIsOpenItemAccess,
           t,
         }}
         outerElementType={!scrollAllPanelContent && CustomScrollbarsVirtualList}
