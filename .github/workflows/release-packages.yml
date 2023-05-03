@@ -115,28 +115,16 @@ jobs:
 
       - name: Sign packages and check 
         run: |
-          cp /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm ~ 
-          ls -la ~
-          echo "//////////////////////////////////////"
+          # cp /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm ~ 
+          # ls -la ~
+          # echo "//////////////////////////////////////"
           
-          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
-          pwd
+          # ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
+          # pwd
           
-          sudo chmod -R 777 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
-          sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
-          sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
-          
-          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
-          echo "........................................"
-          
-          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
-          echo "........................................"
-          
-          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS
-          echo "........................................"
-          
-          ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm
-          echo "........................................"
+          # sudo chmod -R 777 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
+          # sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
+          # sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
           
           cat << EOF >> $HOME/.rpmmacros
           %_signature gpg
@@ -148,11 +136,10 @@ jobs:
           gpg --export --armor --output onlyoficce-gpgkey.pub
           rpm --import onlyoficce-gpgkey.pub
           
-          rpm --addsign /home/runner/*.rpm
-          rpm --checksig /home/runner/*.rpm
+          rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+          rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm # /home/runner/*.rpm
 
           
-      
       - uses: ncipollo/release-action@v1
         with:
           allowUpdates: true
