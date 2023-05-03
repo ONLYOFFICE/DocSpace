@@ -110,7 +110,6 @@ const ItemsList = ({
       ref={bodyRef}
       scrollAllPanelContent={scrollAllPanelContent}
       isTotalListHeight={isTotalListHeight}
-      isOpenItemAccess={isOpenItemAccess}
     >
       <List
         style={{ overflow: overflowStyle }}
