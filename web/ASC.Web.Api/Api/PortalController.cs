@@ -368,7 +368,7 @@ public class PortalController : ControllerBase
 
             if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
             {
-                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath, oldAlias);
             }
         }
         else

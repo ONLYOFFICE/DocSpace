@@ -876,7 +876,7 @@ public class StudioNotifyService
 
     #region Migration Portal
 
-    public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath)
+    public void PortalRenameNotify(Tenant tenant, string oldVirtualRootPath, string oldAlias)
     {
         var users = _userManager.GetUsers()
                 .Where(u => u.ActivationStatus.HasFlag(EmployeeActivationStatus.Activated));
@@ -895,6 +895,7 @@ public class StudioNotifyService
                     Actions.PortalRename,
                     new[] { _studioNotifyHelper.ToRecipient(u.Id) },
                     new[] { EMailSenderName },
+                    _commonLinkUtility.GetFullAbsolutePath("").Replace(oldAlias, tenant.Alias),
                     new TagValue(Tags.PortalUrl, oldVirtualRootPath),
                     new TagValue(Tags.UserDisplayName, u.DisplayUserName(_displayUserSettingsHelper)));
             }
