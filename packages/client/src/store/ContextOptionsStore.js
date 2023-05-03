@@ -400,6 +400,8 @@ class ContextOptionsStore {
   onMediaFileClick = (fileId, item) => {
     const itemId = typeof fileId !== "object" ? fileId : item.id;
     this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
+    // localStorage.setItem("isFirstUrl", window.location.href);
+    this.mediaViewerDataStore.saveFirstUrl(window.location.href);
     this.mediaViewerDataStore.changeUrl(itemId);
   };
 

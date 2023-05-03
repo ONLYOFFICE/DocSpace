@@ -1978,7 +1978,8 @@ class FilesActionStore {
       }
 
       if (isMediaOrImage) {
-        localStorage.setItem("isFirstUrl", window.location.href);
+        // localStorage.setItem("isFirstUrl", window.location.href);
+        this.mediaViewerDataStore.saveFirstUrl(window.location.href);
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;
