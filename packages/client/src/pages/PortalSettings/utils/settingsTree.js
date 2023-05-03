@@ -278,6 +278,14 @@ export const settingsTree = [
         tKey: "Plugins",
         isCategory: true,
       },
+      {
+        id: "portal-settings_catalog-smtp-settings",
+        key: "4-3",
+        icon: "",
+        link: "smtp-settings",
+        tKey: "SMTPSettings",
+        isCategory: true,
+      },
     ],
   },
   {

@@ -46,6 +46,7 @@ class SettingsSetupStore {
   integration = {
     consumers: [],
     selectedConsumer: {},
+    smtpSettings: {},
   };
 
   dataManagement = {
@@ -115,6 +116,10 @@ class SettingsSetupStore {
 
   setConsumers = (consumers) => {
     this.integration.consumers = consumers;
+  };
+
+  setSMTPSettings = (settings) => {
+    this.integration.smtpSettings = settings;
   };
 
   setAddUsers = (func) => {

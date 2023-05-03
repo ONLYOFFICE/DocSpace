@@ -53,7 +53,9 @@ const ThirdParty = lazy(() =>
 const SingleSignOn = lazy(() =>
   import("./categories/integration/SingleSignOn")
 );
-
+const SMTPSettings = lazy(() =>
+  import("./categories/integration/SMTPSettings")
+);
 const Backup = lazy(() => import("./categories/data-management/index"));
 
 const RestoreBackup = lazy(() =>
@@ -152,6 +154,7 @@ const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
   combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
   combineUrl(PROXY_BASE_URL, "/integration/plugins"),
+  combineUrl(PROXY_BASE_URL, "/integration/smtp-settings"),
 ];
 
 const PAYMENTS_URL = combineUrl(PROXY_BASE_URL, "/payments/portal-payments");
@@ -162,6 +165,8 @@ const THIRD_PARTY_URL = combineUrl(
 );
 
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
+
+const SMTP_Settings = combineUrl(PROXY_BASE_URL, "/integration/smtp-settings");
 
 const DELETE_DATA_URLS = [
   combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),
@@ -196,11 +201,12 @@ const Settings = () => {
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
+          <Route exact path={SMTP_Settings} component={SMTPSettings} />
           <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
-          <Redirect to={{pathname: ERROR_404_URL}} />
+          <Redirect to={{ pathname: ERROR_404_URL }} />
         </Switch>
       </Suspense>
     </Layout>

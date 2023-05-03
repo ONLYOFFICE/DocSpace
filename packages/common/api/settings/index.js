@@ -740,3 +740,27 @@ export function muteRoomNotification(id, isMute) {
 
   return request(options);
 }
+
+export function setSMTPSettings(data) {
+  const options = {
+    method: "post",
+    url: `/smtpsettings/smtp`,
+    data,
+  };
+
+  return request(options);
+}
+
+export function getSMTPSettings() {
+  return request({
+    method: "get",
+    url: `/smtpsettings/smtp`,
+  });
+}
+
+export function resetSMTPSettings() {
+  return request({
+    method: "delete",
+    url: `/smtpsettings/smtp`,
+  });
+}

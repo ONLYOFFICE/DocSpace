@@ -55,6 +55,8 @@ const getTreeItems = (data, path, t) => {
         return t("Common:PaymentsTitle");
       case "SingleSignOn":
         return t("SingleSignOn");
+      case "SMTPSettings":
+        return t("SMTPSettings");
       case "DeveloperTools":
         return t("DeveloperTools");
       default:
