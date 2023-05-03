@@ -591,6 +591,7 @@ public class FileSharing
                 Access = FileShare.Read,
                 Owner = false,
                 IsTemplate = true,
+                SubjectType = SubjectType.InvitationLink
             };
 
             var externalId = Guid.NewGuid();
@@ -602,7 +603,8 @@ public class FileSharing
                 SubjectGroup = true,
                 Access = FileShare.Read,
                 Owner = false,
-                IsTemplate = true
+                IsTemplate = true,
+                SubjectType = SubjectType.ExternalLink
             };
 
             result.Add(invitationAceTemplate);
