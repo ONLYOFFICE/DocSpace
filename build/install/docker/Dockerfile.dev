@@ -112,7 +112,7 @@ RUN mkdir -p /var/log/onlyoffice && \
     curl \
     vim \
     python3-pip && \
-    pip3 install --upgrade jsonpath-ng multipledispatch && \
+    pip3 install --upgrade jsonpath-ng multipledispatch netaddr netifaces && \
     rm -rf /var/lib/apt/lists/*
 
 COPY --from=base --chown=onlyoffice:onlyoffice /app/onlyoffice/config/* /app/onlyoffice/config/

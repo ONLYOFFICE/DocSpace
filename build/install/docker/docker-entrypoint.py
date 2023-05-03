@@ -146,13 +146,13 @@ updateJsonData(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_URL_I
 updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
 
-netmask = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('addr')
-ip_address = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('netmask')
+ip_address = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('addr')
+netmask = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('netmask')
 ip_address_netmask = '%s/%s' % (ip_address, netmask)
 interface_cidr = IPNetwork(ip_address_netmask)
 knownNetwork = str(interface_cidr)
 
-updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownNetworks", "[" + knownNetwork + "]")
+updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownNetworks", [knownNetwork])
 
 writeJsonFile(filePath, jsonData)
 
