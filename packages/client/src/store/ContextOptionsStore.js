@@ -400,6 +400,7 @@ class ContextOptionsStore {
   onMediaFileClick = (fileId, item) => {
     const itemId = typeof fileId !== "object" ? fileId : item.id;
     this.mediaViewerDataStore.setMediaViewerData({ visible: true, id: itemId });
+    this.mediaViewerDataStore.changeUrl(itemId);
   };
 
   onClickDeleteSelectedFolder = (t, isRoom) => {
