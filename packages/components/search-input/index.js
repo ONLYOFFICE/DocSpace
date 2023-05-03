@@ -132,24 +132,29 @@ class SearchInput extends React.Component {
 SearchInput.propTypes = {
   /** Used as HTML `id` property */
   id: PropTypes.string,
+  /** Sets the unique element name */
   name: PropTypes.string,
   /** Accepts class */
   className: PropTypes.string,
   /** Supported size of the input fields. */
   size: PropTypes.oneOf(["base", "middle", "big", "huge"]),
-  /** Value of the input */
+  /** Input value */
   value: PropTypes.string,
-  /** Indicates the input field has scale  */
+  /** Indicates that the input field has scale  */
   scale: PropTypes.bool,
   /** Placeholder text for the input */
   placeholder: PropTypes.string,
-  /** Called with the new value. Required when input is not read only. Parent should pass it back as `value` */
+  /** Sets a callback function that allows handling the component's changing events */
   onChange: PropTypes.func,
+  /** Sets a callback function that is triggered when the clear icon of the search input is clicked */
   onClearSearch: PropTypes.func,
-  /** Indicates that the field cannot be used (e.g not authorized, or changes not saved) */
+  /** Indicates that the field cannot be used (e.g not authorized, or the changes have not been saved) */
   isDisabled: PropTypes.bool,
+  /** Displays the Clear Button */
   showClearButton: PropTypes.bool,
+  /** Sets the refresh timeout of the input  */
   refreshTimeout: PropTypes.number,
+  /** Sets the input to refresh automatically */
   autoRefresh: PropTypes.bool,
   /** Child elements */
   children: PropTypes.any,

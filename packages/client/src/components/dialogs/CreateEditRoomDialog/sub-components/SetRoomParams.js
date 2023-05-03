@@ -8,7 +8,7 @@ import RoomType from "./RoomType";
 
 import PermanentSettings from "./PermanentSettings";
 import InputParam from "./Params/InputParam";
-// import ThirdPartyStorage from "./ThirdPartyStorage";
+import ThirdPartyStorage from "./ThirdPartyStorage";
 // import IsPrivateParam from "./IsPrivateParam";
 
 import withLoader from "@docspace/client/src/HOCs/withLoader";
@@ -117,8 +117,7 @@ const SetRoomParams = ({
         />
       )} */}
 
-      {/* //TODO: Uncomment when third-party storages will be stable
-       {!isEdit && enableThirdParty && (
+      {!isEdit && enableThirdParty && (
         <ThirdPartyStorage
           t={t}
           roomTitle={roomParams.title}
@@ -128,7 +127,7 @@ const SetRoomParams = ({
           setIsOauthWindowOpen={setIsOauthWindowOpen}
           isDisabled={isDisabled}
         />
-      )} */}
+      )}
       <div>
         <Text fontWeight={600} className="icon-editor_text">
           {t("Icon")}
