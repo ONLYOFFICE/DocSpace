@@ -114,8 +114,6 @@ public class FileSharingAceHelper
         var changed = false;
         string warning = null;
         var shares = (await _fileSecurity.GetSharesAsync(entry)).ToList();
-        var usersInRoomCount = shares.Count(r => !r.IsLink);
-        var i = 1;
 
         foreach (var w in aceWrappers.OrderByDescending(ace => ace.SubjectGroup))
         {
@@ -125,32 +123,35 @@ public class FileSharingAceHelper
             var existedShare = shares.FirstOrDefault(r => r.Subject == w.Id);
             var rightIsAvailable = FileSecurity.AvailableUserRights.TryGetValue(currentUserType, out var userAccesses)
                                   && userAccesses.Contains(w.Access);
-            
-            
-            if (room != null &&
-                FileSecurity.AvailableRoomRights.TryGetValue(room.FolderType, out var roomAccesses) && 
-                !roomAccesses.Contains(w.Access))
+
+            if (room != null)
             {
-                continue;
+                if (FileSecurity.AvailableRoomRights.TryGetValue(room.FolderType, out var roomAccesses) && !roomAccesses.Contains(w.Access))
+                {
+                    continue;
+                }
+
+                if (room.FolderType != FolderType.PublicRoom && w.SubjectType == SubjectType.ExternalLink)
+                {
+                    continue;
+                }
+
+                if (room.FolderType == FolderType.PublicRoom && w.Access == FileShare.Read && w.SubjectType != SubjectType.ExternalLink)
+                {
+                    continue;
+                }
             }
-            
-            if (room != null && existedShare is not { IsLink: true })
+
+            if (room != null && existedShare is not { IsLink: true } && !w.IsLink)
             {
                 if (currentUserType == EmployeeType.DocSpaceAdmin && !rightIsAvailable)
                 {
                     continue;
                 }
 
-                if (existedShare is { IsLink: false })
+                if (existedShare != null && !rightIsAvailable)
                 {
-                    if (!rightIsAvailable)
-                    {
-                        throw new InvalidOperationException(FilesCommonResource.ErrorMessage_RoleNotAvailable);
-                    }
-                }
-                else
-                {
-                    _usersInRoomChecker.CheckAdd(usersInRoomCount + (i++));
+                    throw new InvalidOperationException(FilesCommonResource.ErrorMessage_RoleNotAvailable);
                 }
 
                 try
@@ -172,6 +173,11 @@ public class FileSharingAceHelper
                 {
                     warning ??= e.Message;
                     w.Access = FileSecurity.GetHighFreeRole(room.FolderType);
+
+                    if (w.Access == FileShare.None)
+                    {
+                        continue;
+                    }
                 }
                 catch (Exception e)
                 {
