@@ -8,7 +8,9 @@ const FilesView = () => {
     <Consumer>
       {(context) => (
         <>
-          <SectionBodyContent sectionWidth={context.sectionWidth} />
+          {context.sectionWidth && (
+            <SectionBodyContent sectionWidth={context.sectionWidth} />
+          )}
         </>
       )}
     </Consumer>
