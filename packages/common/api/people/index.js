@@ -15,8 +15,6 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
       )}`
     : "";
 
-  console.log(filter, filter instanceof Filter);
-
   return request({
     method: "get",
     url: `/people${params}`,
