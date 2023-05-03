@@ -40,7 +40,7 @@ const ButtonContainer = (props) => {
 
     updateSMTPSettings();
   };
-  console.log("buttomn");
+
   return (
     <ButtonStyledComponent>
       <Button
