@@ -209,9 +209,9 @@ public class PortalController : ControllerBase
 
     [AllowNotPayment]
     [HttpGet("tariff")]
-    public Tariff GetTariff()
+    public Tariff GetTariff(bool refresh)
     {
-        return _tariffService.GetTariff(Tenant.Id);
+        return _tariffService.GetTariff(Tenant.Id, refresh: refresh);
     }
 
     [AllowNotPayment]
