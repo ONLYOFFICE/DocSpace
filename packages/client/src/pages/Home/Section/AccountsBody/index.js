@@ -36,12 +36,12 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    const { tReady, viewAs } = this.props;
+    const { tReady, accountsViewAs } = this.props;
 
     return (
       <Consumer>
         {(context) =>
-          viewAs === "table" ? (
+          accountsViewAs === "table" ? (
             <>
               <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
             </>
@@ -60,13 +60,13 @@ class SectionBodyContent extends React.Component {
 }
 
 export default inject(({ peopleStore }) => {
-  const { viewAs } = peopleStore;
+  const { viewAs: accountsViewAs } = peopleStore;
 
   const { setSelection, setBufferSelection } = peopleStore.selectionStore;
 
-  return { viewAs, setSelection, setBufferSelection };
+  return { accountsViewAs, setSelection, setBufferSelection };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(
-    withLoader(observer(SectionBodyContent))(<></>)
+    withLoader(observer(SectionBodyContent))()
   )
 );

@@ -94,7 +94,7 @@ StyledTableContainer.defaultProps = { theme: Base };
 const Table = ({
   peopleList,
   sectionWidth,
-  viewAs,
+  accountsViewAs,
   setViewAs,
   theme,
   isAdmin,
@@ -109,32 +109,38 @@ const Table = ({
   filterTotal,
   withPaging,
   canChangeUserType,
+  isFiltered,
 }) => {
   const ref = useRef(null);
   const [hideColumns, setHideColumns] = React.useState(false);
   useEffect(() => {
     const width = window.innerWidth;
 
-    if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
+    if (
+      accountsViewAs !== "tile" &&
+      ((accountsViewAs !== "table" && accountsViewAs !== "row") ||
+        !sectionWidth)
+    )
+      return;
     // 400 - it is desktop info panel width
     if (
       (width < 1025 && !infoPanelVisible) ||
-      ((width < 625 || (viewAs === "row" && width < 1025)) &&
+      ((width < 625 || (accountsViewAs === "row" && width < 1025)) &&
         infoPanelVisible) ||
       isMobile
     ) {
-      viewAs !== "row" && setViewAs("row");
+      accountsViewAs !== "row" && setViewAs("row");
     } else {
-      viewAs !== "table" && setViewAs("table");
+      accountsViewAs !== "table" && setViewAs("table");
     }
   }, [sectionWidth]);
 
   const columnStorageName = `${COLUMNS_SIZE}=${userId}`;
   const columnInfoPanelStorageName = `${INFO_PANEL_COLUMNS_SIZE}=${userId}`;
 
-  if (isLoading) return <></>;
+  // if (isLoading) return <></>;
 
-  return peopleList.length > 0 ? (
+  return peopleList.length !== 0 || !isFiltered ? (
     <StyledTableContainer useReactWindow={!withPaging} forwardedRef={ref}>
       <TableHeader
         columnStorageName={columnStorageName}
@@ -176,11 +182,16 @@ const Table = ({
 
 export default inject(
   ({ peopleStore, auth, accessRightsStore, filesStore }) => {
-    const { usersStore, filterStore, viewAs, setViewAs, changeType } =
-      peopleStore;
+    const {
+      usersStore,
+      filterStore,
+      viewAs: accountsViewAs,
+      setViewAs,
+      changeType,
+    } = peopleStore;
     const { theme, withPaging } = auth.settingsStore;
     const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
-    const { filterTotal } = filterStore;
+    const { filterTotal, isFiltered } = filterStore;
 
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
     const { isAdmin, isOwner, id: userId } = auth.userStore.user;
@@ -191,7 +202,7 @@ export default inject(
 
     return {
       peopleList,
-      viewAs,
+      accountsViewAs,
       setViewAs,
       theme,
       isAdmin,
@@ -205,6 +216,7 @@ export default inject(
       hasMoreAccounts,
       filterTotal,
       canChangeUserType,
+      isFiltered,
     };
   }
 )(observer(Table));

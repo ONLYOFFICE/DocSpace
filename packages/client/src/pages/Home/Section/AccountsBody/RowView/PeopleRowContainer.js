@@ -91,11 +91,11 @@ const StyledRowContainer = styled(RowContainer)`
 const PeopleRowContainer = ({
   peopleList,
   sectionWidth,
-  viewAs,
+  accountsViewAs,
   setViewAs,
   theme,
   infoPanelVisible,
-
+  isFiltered,
   fetchMoreAccounts,
   hasMoreAccounts,
   filterTotal,
@@ -105,23 +105,27 @@ const PeopleRowContainer = ({
   useEffect(() => {
     const width = window.innerWidth;
 
-    if ((viewAs !== "table" && viewAs !== "row") || !sectionWidth) return;
+    if (
+      (accountsViewAs !== "table" && accountsViewAs !== "row") ||
+      !sectionWidth
+    )
+      return;
     // 400 - it is desktop info panel width
     if (
       (width < 1025 && !infoPanelVisible) ||
-      ((width < 625 || (viewAs === "row" && width < 1025)) &&
+      ((width < 625 || (accountsViewAs === "row" && width < 1025)) &&
         infoPanelVisible) ||
       isMobile
     ) {
-      viewAs !== "row" && setViewAs("row");
+      accountsViewAs !== "row" && setViewAs("row");
     } else {
-      viewAs !== "table" && setViewAs("table");
+      accountsViewAs !== "table" && setViewAs("table");
     }
   }, [sectionWidth]);
 
   if (isLoading) return <></>;
 
-  return peopleList.length > 0 ? (
+  return peopleList.length !== 0 || !isFiltered ? (
     <StyledRowContainer
       className="people-row-container"
       useReactWindow={!withPaging}
@@ -146,10 +150,15 @@ const PeopleRowContainer = ({
 };
 
 export default inject(({ peopleStore, auth, filesStore }) => {
-  const { usersStore, filterStore, viewAs, setViewAs } = peopleStore;
+  const {
+    usersStore,
+    filterStore,
+    viewAs: accountsViewAs,
+    setViewAs,
+  } = peopleStore;
   const { theme, withPaging } = auth.settingsStore;
   const { peopleList, hasMoreAccounts, fetchMoreAccounts } = usersStore;
-  const { filterTotal } = filterStore;
+  const { filterTotal, isFiltered } = filterStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
@@ -157,7 +166,7 @@ export default inject(({ peopleStore, auth, filesStore }) => {
 
   return {
     peopleList,
-    viewAs,
+    accountsViewAs,
     setViewAs,
     theme,
     infoPanelVisible,
@@ -166,5 +175,6 @@ export default inject(({ peopleStore, auth, filesStore }) => {
     fetchMoreAccounts,
     hasMoreAccounts,
     filterTotal,
+    isFiltered,
   };
 })(observer(PeopleRowContainer));
