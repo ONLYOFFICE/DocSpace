@@ -56,17 +56,17 @@ jobs:
       - name: Sign packages and check 
         run: |
           keyID="$(gpg --list-keys --keyid-format short | awk '/^pub/ {print $2}' | cut -d'/' -f2)"
-          export GPG_TTY=$(tty)
+          # export GPG_TTY=$(tty)
           dpkg-sig -k $keyID --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           
-          gpg --edit-key $keyID
-          expect "gpg> "
-          send "trust\r"
-          expect "Your decision? "
-          send "5\r"
-          expect "gpg> "
-          send "quit\r"
-          expect eof
+          # gpg --edit-key $keyID
+          # expect "gpg> "
+          # send "trust\r"
+          # expect "Your decision? "
+          # send "5\r"
+          # expect "gpg> "
+          # send "quit\r"
+          # expect eof
           
           echo "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
           # dpkg-sig --verify /home/runner/work/DocSpace/DocSpace/build/install/*.deb
