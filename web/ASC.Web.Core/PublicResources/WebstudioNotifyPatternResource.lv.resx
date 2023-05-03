@@ -407,7 +407,7 @@ Sveicināti, $UserDisplayName,
 
 Jūsu $PortalUrl portāla adrese tika nomainīta uz jauno "${__VirtualRootPath}":"${__VirtualRootPath}" adresi.
 
-*Piezīme*: Visas kopīgotās dokumentu saites šobrīd nav pieejamas, kā arī DNS uzstādījumi un vienreizējās pierakstīšanās iespējas nedarbosies līdz to maiņai. Trešās puses iCal saites, kas ir pievienotas jūsu kalendāram, neatjaunināsies, līdz tos nepārlādēsit.</value>
+*Piezīme*: DNS uzstādījumi un vienreizējās pierakstīšanās iespējas nedarbosies līdz to maiņai.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Profila dzēšana no portāla "${__VirtualRootPath}":"${__VirtualRootPath}"

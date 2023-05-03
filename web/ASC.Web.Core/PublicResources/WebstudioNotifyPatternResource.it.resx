@@ -618,9 +618,9 @@ Team di supporto ONLYOFFICE®
 
 Gentile $UserDisplayName,
 
-Il tuo indirizzo dek portale $PortalUrl è stato cambiato nell'indirizzo "${__VirtualRootPath}":"${__VirtualRootPath}" 
+Il tuo indirizzo del portale $PortalUrl è stato cambiato con il nuovo indirizzo "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-* Nota *: tutti i collegamenti dei documenti condivisi sono inaccessibili ora, così come le impostazioni DNS e le opzioni di firma singola smettono di funzionare fino a quando non si modificano. I collegamenti iCal di terze parti aggiunti al tuo calendario smetteranno di aggiornarli fino a quando non verranno ricaricati.</value>
+*Nota*: le impostazioni DNS e le opzioni Single Sign-On smettono di funzionare finché non le modifichi.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Rimozione del profilo dal portale  "${__VirtualRootPath}":"${__VirtualRootPath}"

@@ -292,4 +292,13 @@ $GreenButton
 ONLYOFFICE Team
 "www.onlyoffice.com":http://onlyoffice.com/ja</value>
   </data>
+  <data name="pattern_portal_rename" xml:space="preserve">
+    <value>h1.ポータルサイトのアドレス変更
+
+$UserDisplayName 様
+
+$PortalUrl ポータルアドレスは、新しい"${__VirtualRootPath}":"${__VirtualRootPath}"アドレスに変更されました。
+
+*ご注意*： DNS設定とシングルサインオンオプションは、変更するまで機能しなくなります。</value>
+  </data>
 </root>
