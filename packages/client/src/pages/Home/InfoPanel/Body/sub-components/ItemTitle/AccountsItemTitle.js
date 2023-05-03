@@ -4,7 +4,7 @@ import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import DefaultUserPhoto from "PUBLIC_DIR/images/default_user_photo_size_82-82.png";
 import { Avatar, ContextMenuButton } from "@docspace/components";
-import Badges from "@docspace/client/src/pages/AccountsHome/Section/Body/Badges";
+import Badges from "@docspace/client/src/pages/Home/Section/AccountsBody/Badges";
 import { StyledAccountsItemTitle } from "../../styles/accounts";
 import { StyledTitle } from "../../styles/common";
 

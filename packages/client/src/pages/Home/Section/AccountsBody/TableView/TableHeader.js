@@ -140,7 +140,7 @@ class PeopleTableHeader extends React.Component {
       columnStorageName,
       columnInfoPanelStorageName,
       withPaging,
-      setHideColumns
+      setHideColumns,
     } = this.props;
     const { sortOrder } = filter;
 
@@ -168,12 +168,12 @@ class PeopleTableHeader extends React.Component {
   }
 }
 
-export default inject(({ auth, peopleStore }) => {
-  const { filterStore, usersStore, loadingStore } = peopleStore;
+export default inject(({ auth, peopleStore, filesStore }) => {
+  const { filterStore, usersStore } = peopleStore;
 
   const { filter } = filterStore;
   const { getUsersList } = usersStore;
-  const { setIsLoading } = loadingStore;
+  const { setIsLoading } = filesStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
   const { withPaging } = auth.settingsStore;

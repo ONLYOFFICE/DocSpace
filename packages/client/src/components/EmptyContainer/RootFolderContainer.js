@@ -65,7 +65,7 @@ const RootFolderContainer = (props) => {
     setAlreadyFetchingRooms,
     categoryType,
     isEmptyPage,
-    setIsEmptyPage,
+
     isVisitor,
     isCollaborator,
     sectionWidth,
@@ -104,14 +104,7 @@ const RootFolderContainer = (props) => {
   const roomHeader = "Welcome to DocSpace";
 
   useEffect(() => {
-    if (rootFolderType !== FolderType.COMMON) {
-      setIsEmptyPage(true);
-    } else {
-      setIsEmptyPage(false);
-    }
-
     return () => {
-      setIsEmptyPage(false);
       setIsLoadedEmptyPage(false);
     };
   }, []);
@@ -351,15 +344,15 @@ const RootFolderContainer = (props) => {
 
   useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
 
-  if (isLoading) {
-    return (
-      <Loaders.EmptyContainerLoader
-        style={{ display: "none", marginTop: 32 }}
-        id="empty-container-loader"
-        viewAs={viewAs}
-      />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Loaders.EmptyContainerLoader
+  //       style={{ display: "none", marginTop: 32 }}
+  //       id="empty-container-loader"
+  //       viewAs={viewAs}
+  //     />
+  //   );
+  // }
 
   return (
     <EmptyContainer
@@ -374,8 +367,12 @@ const RootFolderContainer = (props) => {
 
 export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
-      auth.settingsStore;
+    const {
+      isDesktopClient,
+      isEncryptionSupport,
+      organizationName,
+      theme,
+    } = auth.settingsStore;
 
     const {
       filter,
@@ -388,7 +385,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
@@ -415,7 +412,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
       security,
     };
