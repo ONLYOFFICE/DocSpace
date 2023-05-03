@@ -64,4 +64,9 @@
 &lt;br /&gt;「ご案内メール」の受信を希望しない場合は、こちらを押してください。&lt;a href="{1}" style="color: #7b7b7b;" target="_blank"&gt;受信解除&lt;/a&gt;
 &lt;br /&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>このメールは自動的に生成されるので、回答する必要はありません。&lt;br /&gt;&lt;a href="{0}" target="_blank"&gt;DocSpace&lt;/a&gt;の登録ユーザーであるため、このメールを受け取りました。
+&lt;br /&gt;DocSpaceの通知メールの配信を停止するには、ここをクリックしてください： &lt;a href="{1}"  target="_blank"&gt;購読中止&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>
