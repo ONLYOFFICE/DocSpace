@@ -68,7 +68,6 @@ jobs:
           # send "quit\r"
           # expect eof
           
-          echo "HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH"
           # dpkg-sig --verify /home/runner/work/DocSpace/DocSpace/build/install/*.deb
 
         
@@ -125,13 +124,6 @@ jobs:
 
       - name: Sign packages and check 
         run: |
-          # cp /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm ~ 
-          # ls -la ~
-          # echo "//////////////////////////////////////"
-          
-          # ls -la /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/
-          # pwd
-          
           # sudo chmod -R 777 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
           # sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
           # sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
@@ -143,11 +135,11 @@ jobs:
           %__gpg /usr/bin/gpg
           EOF
           
-          gpg --export --armor --output onlyoficce-gpgkey.pub
-          rpm --import onlyoficce-gpgkey.pub
+          # gpg --export --armor --output onlyoficce-gpgkey.pub
+          # rpm --import onlyoficce-gpgkey.pub
           
           rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
-          rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm # /home/runner/*.rpm
+          # rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm # /home/runner/*.rpm
 
           
       - uses: ncipollo/release-action@v1
@@ -157,4 +149,4 @@ jobs:
           tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
           name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
           body: Here you may find packages for DocSpace
-          artifacts: /home/runner/*.rpm
+          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
