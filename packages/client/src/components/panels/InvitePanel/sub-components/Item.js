@@ -27,6 +27,7 @@ const Item = ({
   setHasErrors,
   roomType,
   isOwner,
+  setIsOpenItemAccess,
 }) => {
   const { avatar, displayName, email, id, errors, access } = item;
 
@@ -144,6 +145,7 @@ const Item = ({
           directionY="bottom"
           isDefaultMode={false}
           fixedDirection={true}
+          setIsOpenItemAccess={setIsOpenItemAccess}
         />
       )}
     </>
