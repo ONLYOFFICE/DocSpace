@@ -49,6 +49,7 @@ const Navigation = ({
   isEmptyPage,
   isDesktop: isDesktopClient,
   isRoom,
+  hideInfoPanel,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -206,7 +207,7 @@ const Navigation = ({
           {isTrashFolder && !isEmptyPage && (
             <TrashWarning title={titles.trashWarning} />
           )}
-          {infoPanelIsVisible && (
+          {infoPanelIsVisible && !hideInfoPanel && (
             <ToggleInfoPanelButton
               id="info-panel-toggle--open"
               isRootFolder={isRootFolder}

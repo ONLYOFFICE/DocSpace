@@ -68,10 +68,10 @@ const EmptyScreen = ({ resetFilter, isEmptyGroup, setIsLoading, theme }) => {
   );
 };
 
-export default inject(({ auth, peopleStore }) => {
-  const { loadingStore, resetFilter, selectedGroupStore } = peopleStore;
+export default inject(({ auth, peopleStore, filesStore }) => {
+  const { resetFilter, selectedGroupStore } = peopleStore;
   const { isEmptyGroup } = selectedGroupStore;
-  const { setIsLoading } = loadingStore;
+  const { setIsLoading } = filesStore;
   return {
     resetFilter,
     isEmptyGroup,

@@ -2,11 +2,9 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
-import Loaders from "@docspace/common/components/Loaders";
-
 import { Consumer } from "@docspace/components/utils/context";
 
-import withPeopleLoader from "SRC_DIR/HOCs/withPeopleLoader";
+import withLoader from "SRC_DIR/HOCs/withLoader";
 
 import PeopleRowContainer from "./RowView/PeopleRowContainer";
 import TableView from "./TableView/TableContainer";
@@ -38,12 +36,12 @@ class SectionBodyContent extends React.Component {
   };
 
   render() {
-    const { tReady, viewAs } = this.props;
+    const { tReady, accountsViewAs } = this.props;
 
     return (
       <Consumer>
         {(context) =>
-          viewAs === "table" ? (
+          accountsViewAs === "table" ? (
             <>
               <TableView sectionWidth={context.sectionWidth} tReady={tReady} />
             </>
@@ -62,15 +60,13 @@ class SectionBodyContent extends React.Component {
 }
 
 export default inject(({ peopleStore }) => {
-  const { viewAs } = peopleStore;
+  const { viewAs: accountsViewAs } = peopleStore;
 
   const { setSelection, setBufferSelection } = peopleStore.selectionStore;
 
-  return { viewAs, setSelection, setBufferSelection };
+  return { accountsViewAs, setSelection, setBufferSelection };
 })(
   withTranslation(["People", "Common", "PeopleTranslations"])(
-    withPeopleLoader(observer(SectionBodyContent))(
-      <Loaders.Rows isRectangle={false} />
-    )
+    withLoader(observer(SectionBodyContent))()
   )
 );
