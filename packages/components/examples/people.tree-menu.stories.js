@@ -11,7 +11,10 @@ export default {
   component: TreeMenu,
   subcomponents: { TreeNode },
   parameters: { docs: { description: { component: "Example" } } },
-  argTypes: { data: { table: { disable: true } } },
+  argTypes: {
+    data: { table: { disable: true } },
+    disableSwitch: { description: "Disables Switch" },
+  },
 };
 
 const treeData = [

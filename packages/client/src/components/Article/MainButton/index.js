@@ -493,6 +493,7 @@ const ArticleMainButtonContent = (props) => {
           size="small"
           primary
           scale
+          title={t("Files:NewRoom")}
         />
       ) : (
         <MainButton
@@ -505,6 +506,7 @@ const ArticleMainButtonContent = (props) => {
           isDropdown={isDropdownMainButton}
           text={mainButtonText}
           model={model}
+          title={mainButtonText}
         />
       )}
 

@@ -14,13 +14,13 @@ import CampaignsBanner from "@docspace/components/campaigns-banner";
 
 ### Properties
 
-| Props         |      Type      | Required | Values | Default | Description       |
-| ------------- | :------------: | :------: | :----: | :-----: | ----------------- |
-| `headerLabel` |    `string`    |    ✅    |   -    |    -    |                   |
-| `textLabel`   |    `string`    |    ✅    |   -    |    -    |                   |
-| `img`         |    `string`    |    ✅    |   -    |    -    |                   |
-| `btnLabel`    |    `string`    |    ✅    |   -    |    -    |                   |
-| `btnLink`     |    `string`    |    ✅    |   -    |    -    |                   |
-| `className`   |    `string`    |    -     |   -    |    -    | Accepts class     |
-| `id`          |    `string`    |    -     |   -    |    -    | Accepts id        |
-| `style`       | `obj`, `array` |    -     |   -    |    -    | Accepts css style |
+| Props         |      Type      | Required | Values | Default | Description                                    |
+| ------------- | :------------: | :------: | :----: | :-----: | ---------------------------------------------- |
+| `headerLabel` |    `string`    |    ✅    |   -    |    -    | Label subheader                                |
+| `textLabel`   |    `string`    |    ✅    |   -    |    -    | Label                                          |
+| `img`         |    `string`    |    ✅    |   -    |    -    | Image source                                   |
+| `buttonLabel` |    `string`    |    ✅    |   -    |    -    | Header button text                             |
+| `link`        |    `string`    |    ✅    |   -    |    -    | The link that opens when the button is clicked |
+| `className`   |    `string`    |    -     |   -    |    -    | Accepts class                                  |
+| `id`          |    `string`    |    -     |   -    |    -    | Accepts id                                     |
+| `style`       | `obj`, `array` |    -     |   -    |    -    | Accepts css style                              |

@@ -51,13 +51,13 @@ class RowContainer extends React.PureComponent {
 }
 
 RowContainer.propTypes = {
-  /** Height of one Row element. Required for scroll to work properly */
+  /** Height of one Row element. Required for the proper functioning of the scroll */
   itemHeight: PropTypes.number,
-  /** Allows you to set fixed block height for Row */
+  /** Allows setting fixed block height for Row */
   manualHeight: PropTypes.string,
   /** Child elements */
   children: PropTypes.any.isRequired,
-  /** Use react-window for efficiently rendering large lists */
+  /** Enables react-window for efficient rendering of large lists */
   useReactWindow: PropTypes.bool,
   /** Accepts class */
   className: PropTypes.string,
@@ -65,11 +65,15 @@ RowContainer.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Called when the list scroll positions changes */
+  /** Sets a callback function that is called when the list scroll positions change */
   onScroll: PropTypes.func,
+  /** The property required for the infinite loader */
   filesLength: PropTypes.number,
+  /** The property required for the infinite loader */
   itemCount: PropTypes.number,
+  /** The property required for the infinite loader */
   loadMoreItems: PropTypes.func,
+  /** The property required for the infinite loader */
   hasMoreFiles: PropTypes.bool,
 };
 

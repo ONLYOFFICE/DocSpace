@@ -57,18 +57,28 @@ const ItemsList = ({
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
+  const [isTotalListHeight, setIsTotalListHeight] = useState(false);
+
   const bodyRef = useRef();
   const { height } = useResizeObserver({ ref: bodyRef });
 
   const onBodyResize = useCallback(() => {
+    const scrollHeight = bodyRef?.current?.firstChild.scrollHeight;
     const heightList = height ? height : bodyRef.current.offsetHeight;
+    const totalHeightItems = inviteItems.length * USER_ITEM_HEIGHT;
+    const listAreaHeight = heightList;
 
     const calculatedHeight = scrollAllPanelContent
-      ? inviteItems.length * USER_ITEM_HEIGHT
+      ? Math.max(totalHeightItems, listAreaHeight, 0)
       : heightList - FOOTER_HEIGHT;
 
     setBodyHeight(calculatedHeight);
     setOffsetTop(bodyRef.current.offsetTop);
+
+    if (scrollAllPanelContent && totalHeightItems && listAreaHeight)
+      setIsTotalListHeight(
+        totalHeightItems >= listAreaHeight && totalHeightItems >= scrollHeight
+      );
   }, [
     height,
     bodyRef?.current?.offsetHeight,
@@ -86,26 +96,20 @@ const ItemsList = ({
     scrollAllPanelContent,
   ]);
 
-  let itemCount = inviteItems.length;
-
-  //Scroll blinking fix
-  if (scrollAllPanelContent) {
-    itemCount =
-      bodyHeight / inviteItems.length != USER_ITEM_HEIGHT
-        ? inviteItems.length - 1
-        : inviteItems.length;
-  }
+  const overflowStyle = scrollAllPanelContent ? "hidden" : "scroll";
 
   return (
     <ScrollList
       offsetTop={offsetTop}
       ref={bodyRef}
       scrollAllPanelContent={scrollAllPanelContent}
+      isTotalListHeight={isTotalListHeight}
     >
       <List
+        style={{ overflow: overflowStyle }}
         height={bodyHeight}
         width="auto"
-        itemCount={itemCount}
+        itemCount={inviteItems.length}
         itemSize={USER_ITEM_HEIGHT}
         itemData={{
           inviteItems,
@@ -117,7 +121,7 @@ const ItemsList = ({
           inputsRef,
           t,
         }}
-        outerElementType={CustomScrollbarsVirtualList}
+        outerElementType={!scrollAllPanelContent && CustomScrollbarsVirtualList}
       >
         {Row}
       </List>
