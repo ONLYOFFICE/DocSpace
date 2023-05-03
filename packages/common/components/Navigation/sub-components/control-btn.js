@@ -121,6 +121,7 @@ const ControlButtons = ({
               getData={getContextOptionsPlus}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              title={titles?.actions}
             />
           )}
 
@@ -134,6 +135,7 @@ const ControlButtons = ({
             isFill
             getData={getContextOptionsFolder}
             isDisabled={false}
+            title={titles?.contextMenu}
           />
 
           {!isDesktop && (
@@ -153,6 +155,7 @@ const ControlButtons = ({
               getData={getContextOptionsPlus}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              title={titles?.actions}
             />
           )}
           {!isDesktop && (
