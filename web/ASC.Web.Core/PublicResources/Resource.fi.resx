@@ -397,4 +397,13 @@
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook avain</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit kirjautua portaaliin Facebook tilin kautta.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
 </root>

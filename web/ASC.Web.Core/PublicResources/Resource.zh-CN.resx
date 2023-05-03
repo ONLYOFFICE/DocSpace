@@ -541,4 +541,22 @@
   <data name="Tariffs_startup" xml:space="preserve">
     <value>初创</value>
   </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook秘钥</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>连接应用程序，以使用Facebook账户登录门户并搜索联系人。</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>网络API密钥</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>服务器秘钥</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>连接Firebase Cloud Messaging服务，以接收关于发送给您的邮件的通知。</value>
+  </data>
 </root>

@@ -346,4 +346,10 @@
   <data name="ConsumersclickatellapiKey" xml:space="preserve">
     <value>apiKey</value>
   </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Pripojte službu Firebase Cloud Messaging ak chcete dostávať notifikácie o správach, ktoré Vám boli zaslané.</value>
+  </data>
 </root>

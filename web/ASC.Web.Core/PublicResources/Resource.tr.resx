@@ -487,4 +487,22 @@
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Facebook hesabı kullanarak uygulamaya bağlan ve kişileri ara.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook Anahtar</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API anahtarı</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Sunucu anahtarı</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Firebase Bulut Mesajlaşma servisine bağlanarak size gönderilen mesajlar için bildirim alabilirsiniz.</value>
+  </data>
 </root>

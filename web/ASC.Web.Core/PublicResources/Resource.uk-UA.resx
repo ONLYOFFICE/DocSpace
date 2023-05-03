@@ -370,4 +370,22 @@
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Підключіть програму для входу на портал за допомогою облікового запису Facebook.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Ключ Facebook</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Опорний пункт</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Ключ веб-API</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Ключ сервера</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Підключіть Firebase Cloud Messaging, щоб отримувати сповіщення про повідомлення, надіслані вам.</value>
+  </data>
 </root>
