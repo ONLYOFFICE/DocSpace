@@ -50,14 +50,20 @@ jobs:
         run: |
           cd build/install/deb/ 
           find ../ -type f -exec sed -i "s/{{product}}/${{ env.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/$(echo ${{ github.ref }} | grep -oP '\d+\.\d+\.\d+' || echo "1.0.0" ).$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
           dpkg-buildpackage -us -uc
       
       - name: Sign packages and check 
         run: |
-          export GPG_TTY=$(tty)         
           keyID="$(gpg --list-keys --keyid-format short | awk '/^pub/ {print $2}' | cut -d'/' -f2)"
-          echo "keyID"
+          echo $keyID
+          echo "${{ secrets.PASSPHRASE }}" | gpg --batch --edit-key "$keyID" <<EOF
+          trust
+          5
+          y
+          quit
+          EOF
+          export GPG_TTY=$(tty)         
           
           dpkg-sig -k "$keyID" --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           dpkg-sig --verify /home/runner/work/DocSpace/DocSpace/build/install/*.deb
