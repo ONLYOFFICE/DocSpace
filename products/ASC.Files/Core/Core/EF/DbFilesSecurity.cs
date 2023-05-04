@@ -28,7 +28,7 @@ using Profile = AutoMapper.Profile;
 
 namespace ASC.Files.Core.EF;
 
-public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
+public class DbFilesSecurity : BaseEntity, IDbFile
 {
     public int TenantId { get; set; }
     public string EntryId { get; set; }
@@ -38,21 +38,11 @@ public class DbFilesSecurity : BaseEntity, IDbFile, IMapFrom<FileShareRecord>
     public Guid Owner { get; set; }
     public FileShare Share { get; set; }
     public DateTime TimeStamp { get; set; }
-    public string FileShareOptions { get; set; }
+    public string Options { get; set; }
 
     public override object[] GetKeys()
     {
         return new object[] { TenantId, EntryId, EntryType, Subject };
-    }
-
-    public void Mapping(Profile profile)
-    {
-        profile.CreateMap<FileShareRecord, DbFilesSecurity>()
-            .AfterMap((src, dest) =>
-            {
-                dest.TimeStamp = DateTime.UtcNow;
-                dest.FileShareOptions = src.Options != null ? JsonSerializer.Serialize(src.Options) : null;
-            });
     }
 }
 
@@ -114,7 +104,7 @@ public static class DbFilesSecurityExtension
 
             entity.Property(e => e.SubjectType).HasColumnName("subject_type");
 
-            entity.Property(e => e.FileShareOptions)
+            entity.Property(e => e.Options)
                 .HasColumnName("options")
                 .HasColumnType("text")
                 .HasCharSet("utf8")
@@ -163,7 +153,7 @@ public static class DbFilesSecurityExtension
 
             entity.Property(e => e.SubjectType).HasColumnName("subject_type");
 
-            entity.Property(e => e.FileShareOptions).HasColumnName("options");
+            entity.Property(e => e.Options).HasColumnName("options");
         });
     }
 
