@@ -104,6 +104,13 @@ const Item = ({
     setIsDragActive(false);
   }, []);
 
+  const onClickAction = React.useCallback(
+    (folderId) => {
+      onClick && onClick(folderId, item.title);
+    },
+    [onClick, item.title]
+  );
+
   return (
     <StyledDragAndDrop
       key={item.id}
@@ -123,7 +130,7 @@ const Item = ({
         showText={showText}
         text={item.title}
         isActive={isActive}
-        onClick={onClick}
+        onClick={onClickAction}
         onDrop={onMoveTo}
         isEndOfBlock={getEndOfBlock(item)}
         isDragging={isDragging}

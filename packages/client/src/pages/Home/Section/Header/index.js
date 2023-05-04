@@ -781,6 +781,7 @@ const SectionHeaderContent = (props) => {
   const headerMenu = isAccountsPage
     ? getAccountsHeaderMenu(t)
     : getHeaderMenu(t);
+
   const menuItems = getMenuItems();
 
   let tableGroupMenuVisible = headerMenu.length;
@@ -808,19 +809,23 @@ const SectionHeaderContent = (props) => {
     tableGroupMenuProps.isBlocked = isGroupMenuBlocked;
   }
 
-  const fromAccounts = location?.state?.fromAccounts;
-  const fromSettings = location?.state?.fromSettings;
+  const stateTitle = location?.state?.title;
+  const stateIsRoot = location?.state?.isRoot;
 
   const isRoot =
-    pathParts === null && (fromAccounts || fromSettings)
+    pathParts === null && stateIsRoot
       ? true
       : isRootFolder || isAccountsPage || isSettingsPage;
-  const currentTitle =
-    isSettingsPage || (!title && fromSettings)
-      ? t("Common:Settings")
-      : isAccountsPage || (!title && fromAccounts)
-      ? t("Common:Accounts")
-      : title;
+
+  const currentTitle = isSettingsPage
+    ? t("Common:Settings")
+    : isAccountsPage
+    ? t("Common:Accounts")
+    : !title && stateTitle
+    ? stateTitle
+    : title;
+
+  console.log(isRoot, currentTitle);
 
   return (
     <Consumer key="header">

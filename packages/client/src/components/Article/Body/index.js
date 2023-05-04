@@ -56,11 +56,16 @@ const ArticleBodyContent = (props) => {
   //   .filter((campaign) => campaign.length > 0);
 
   const onClick = React.useCallback(
-    (folderId) => {
+    (folderId, title) => {
       const { toggleArticleOpen } = props;
 
       let path = `/rooms`;
       let params = null;
+
+      const state = {
+        title,
+        isRoot: true,
+      };
 
       switch (folderId) {
         case myFolderId:
@@ -109,7 +114,7 @@ const ArticleBodyContent = (props) => {
 
       path += `/filter?${params}`;
 
-      navigate(path);
+      navigate(path, { state });
 
       if (isMobileOnly || isMobile()) {
         toggleArticleOpen();
