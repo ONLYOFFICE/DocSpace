@@ -10,7 +10,7 @@ import HistoryBlock from "./HistoryBlock";
 import NoHistory from "../NoItem/NoHistory";
 import { toastr } from "@docspace/components";
 
-const HISTORY_LOAD = 30000;
+const HISTORY_LOAD = 1500;
 const HISTORY_TIMEOUT = 30000;
 
 const History = ({
@@ -39,7 +39,7 @@ const History = ({
 
     let timerId = setTimeout(() => setShowLoader(true), HISTORY_LOAD);
     let timeoutTimerId = setTimeout(
-      () => toastr.error("History load timeout exceeded"),
+      () => toastr.error("History load timeout of 30000ms exceeded"),
       HISTORY_TIMEOUT
     );
 
