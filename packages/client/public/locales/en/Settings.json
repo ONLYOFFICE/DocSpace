@@ -166,7 +166,7 @@
   "ShowVideoGuides": "Show link to Video Guides",
   "SingleSignOn": "Single Sign-On",
   "SMTPSettings": "SMTP Settings",
-  "SMTPSettingsDescription": "The SMTP settings are needed to set up an email account which will be used to send notifications from the portal using your own SMTP server instead of the one {{portalName}} uses. Please fill in all the fields and click the 'Save' button. You can use the 'Send Test Mail' button to check if all the settings you entered are correct and work as supposed.",
+  "SMTPSettingsDescription": "The SMTP settings are needed to set up an email account which will be used to send notifications from the portal using your own SMTP server instead of the one {{organizationName}} uses. Please fill in all the fields and click the 'Save' button. You can use the 'Send Test Mail' button to check if all the settings you entered are correct and work as supposed.",
   "StoragePeriod": "Storage period",
   "StudioTimeLanguageSettings": "Language and Time Zone Settings",
   "SuccessfullySaveGreetingSettingsMessage": "Welcome Page settings have been successfully saved",

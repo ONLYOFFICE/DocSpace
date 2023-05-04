@@ -9,7 +9,7 @@ import CustomSettings from "./sub-components/CustomSettings";
 import { StyledComponent } from "./StyledComponent";
 
 const SMTPSettings = (props) => {
-  const { setInitSMTPSettings } = props;
+  const { setInitSMTPSettings, organizationName } = props;
 
   const { t, ready } = useTranslation(["SMTPSettings", "Settings", "Common"]);
   const [isInit, setIsInit] = useState(false);
@@ -34,12 +34,12 @@ const SMTPSettings = (props) => {
         </Text>
         <HelpButton
           className="smtp-settings_help-button"
-          tooltipContent={t("HelpText")}
+          tooltipContent={t("HelpText", { organizationName })}
           place="bottom"
         />
       </div>
       <Text className="smtp-settings_description">
-        {t("Settings:SMTPSettingsDescription")}
+        {t("Settings:SMTPSettingsDescription", { organizationName })}
       </Text>
 
       <CustomSettings t={t} />
@@ -47,8 +47,10 @@ const SMTPSettings = (props) => {
   );
 };
 
-export default inject(({ setup }) => {
+export default inject(({ auth, setup }) => {
+  const { settingsStore } = auth;
+  const { organizationName } = settingsStore;
   const { setInitSMTPSettings } = setup;
 
-  return { setInitSMTPSettings };
+  return { setInitSMTPSettings, organizationName };
 })(observer(SMTPSettings));
