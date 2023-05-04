@@ -15,6 +15,24 @@ const PublicRoomBlock = ({ t, onCopyLink }) => {
     toastr.success("onCloseBar");
   };
 
+  const link = {
+    id: 1,
+    label: "link1",
+    isDisabled: false,
+    expiryDate: true,
+    locked: true,
+  };
+  const link2 = {
+    id: 2,
+    label: "link2",
+    isDisabled: true,
+    expiryDate: false,
+    locked: false,
+  };
+  const links = [link, link2];
+
+  const defaultLink = { id: 0, label: t("SharingPanel:ExternalLink") };
+
   return (
     <>
       {barIsVisible && (
@@ -36,7 +54,11 @@ const PublicRoomBlock = ({ t, onCopyLink }) => {
         />
       </LinksBlock>
 
-      <LinkRow />
+      {links.length ? (
+        links.map((link) => <LinkRow link={link} key={link.id} />)
+      ) : (
+        <LinkRow link={defaultLink} />
+      )}
     </>
   );
 };

@@ -18,7 +18,7 @@ import ToggleBlock from "./ToggleBlock";
 import PasswordAccessBlock from "./PasswordAccessBlock";
 import LimitTimeBlock from "./LimitTimeBlock";
 
-const EditLinkPanel = ({ t, visible, setIsVisible }) => {
+const EditLinkPanel = ({ t, visible, setIsVisible, isEdit }) => {
   const [passwordAccessIsChecked, setPasswordAccessIsChecked] = useState(true);
   const [limitByTimeIsChecked, setLimitByTimeIsChecked] = useState(false);
   const [denyDownload, setDenyDownload] = useState(false);
@@ -47,7 +47,9 @@ const EditLinkPanel = ({ t, visible, setIsVisible }) => {
       />
       <Aside className="edit-link-panel" visible={visible} onClose={onClose}>
         <div className="edit-link_header">
-          <Heading className="edit-link_heading">{t("Files:EditLink")}</Heading>
+          <Heading className="edit-link_heading">
+            {isEdit ? t("Files:EditLink") : t("Files:AddNewLink")}
+          </Heading>
         </div>
         <StyledScrollbar stype="mediumBlack">
           <div className="edit-link_body">
@@ -95,11 +97,13 @@ const EditLinkPanel = ({ t, visible, setIsVisible }) => {
 };
 
 export default inject(({ dialogsStore }) => {
-  const { editLinkPanelIsVisible, setEditLinkPanelIsVisible } = dialogsStore;
+  const { editLinkPanelIsVisible, setEditLinkPanelIsVisible, linkIsEdit } =
+    dialogsStore;
 
   return {
     visible: editLinkPanelIsVisible,
     setIsVisible: setEditLinkPanelIsVisible,
+    isEdit: linkIsEdit,
   };
 })(
   withTranslation(["SharingPanel", "Common", "Files"])(observer(EditLinkPanel))

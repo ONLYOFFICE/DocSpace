@@ -61,6 +61,7 @@ class DialogsStore {
   createRoomConfirmDialogVisible = false;
   changeUserTypeDialogVisible = false;
   editLinkPanelIsVisible = false;
+  linkIsEdit = false;
 
   constructor(
     authStore,
@@ -317,6 +318,10 @@ class DialogsStore {
 
   setEditLinkPanelIsVisible = (editLinkPanelIsVisible) => {
     this.editLinkPanelIsVisible = editLinkPanelIsVisible;
+  };
+
+  setLinkIsEdit = (linkIsEdit) => {
+    this.linkIsEdit = linkIsEdit;
   };
 
   setUnsavedChangesDialog = (unsavedChangesDialogVisible) => {

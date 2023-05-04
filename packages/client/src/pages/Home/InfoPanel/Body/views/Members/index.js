@@ -42,6 +42,8 @@ const Members = ({
   changeUserType,
   isGracePeriod,
   isPublicRoom,
+  setEditLinkPanelIsVisible,
+  setLinkIsEdit,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -170,7 +172,8 @@ const Members = ({
   );
 
   const onCopyLink = () => {
-    toastr.success("onCopyLink");
+    setLinkIsEdit(false);
+    setEditLinkPanelIsVisible(true);
   };
 
   return (
@@ -272,8 +275,12 @@ export default inject(
       filesStore;
     const { id: selfId } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
-    const { setInvitePanelOptions, setInviteUsersWarningDialogVisible } =
-      dialogsStore;
+    const {
+      setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
+      setEditLinkPanelIsVisible,
+      setLinkIsEdit,
+    } = dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
     const { roomType } = selectedFolderStore;
@@ -303,6 +310,8 @@ export default inject(
       changeUserType,
       isGracePeriod,
       isPublicRoom,
+      setEditLinkPanelIsVisible,
+      setLinkIsEdit,
     };
   }
 )(

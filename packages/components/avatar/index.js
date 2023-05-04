@@ -118,7 +118,7 @@ const Avatar = (props) => {
                 data-for={uniqueTooltipId}
                 data-tip={tooltipContent}
               >
-                {roleIcon}
+                {props.roleIcon ? props.roleIcon : roleIcon}
               </RoleWrapper>
               {withTooltip && (
                 <Tooltip

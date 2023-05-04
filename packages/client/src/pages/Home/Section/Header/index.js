@@ -159,13 +159,8 @@ const SectionHeaderContent = (props) => {
   };
 
   const getContextOptionsPlus = () => {
-    const {
-      t,
-      isPrivacyFolder,
-      isRoomsFolder,
-      enablePlugins,
-      security,
-    } = props;
+    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins, security } =
+      props;
 
     const options = isRoomsFolder
       ? [
@@ -432,6 +427,36 @@ const SectionHeaderContent = (props) => {
 
     const isDisabled = isRecycleBinFolder || isRoom;
 
+    const links = [];
+    const isMultiExternalLink = links.length;
+
+    const publicAction = {
+      id: "header_option_copy-external-link",
+      key: "copy-external-link",
+      label: t("SharingPanel:CopyExternalLink"),
+      icon: CopyToReactSvgUrl,
+      // onClick: () => onClickCopyExternalLink(),
+      // disabled: !isPublicRoom,
+      items: [
+        {
+          id: "option_move-to",
+          key: "move-to",
+          label: t("MoveTo"),
+          icon: CopyToReactSvgUrl,
+          onClick: () => {},
+          disabled: false,
+        },
+        {
+          id: "option_move-to1",
+          key: "move-to1",
+          label: t("MoveTo"),
+          icon: CopyToReactSvgUrl,
+          onClick: () => {},
+          disabled: false,
+        },
+      ],
+    };
+
     if (isArchiveFolder) {
       return [
         {
@@ -518,14 +543,7 @@ const SectionHeaderContent = (props) => {
         onClick: () => onClickEditRoom(selectedFolder),
         disabled: !isRoom || !security?.EditRoom,
       },
-      {
-        id: "header_option_copy-external-link",
-        key: "copy-external-link",
-        label: t("SharingPanel:CopyExternalLink"),
-        icon: CopyToReactSvgUrl,
-        onClick: () => onClickCopyExternalLink(),
-        disabled: !isPublicRoom,
-      },
+      publicAction,
       {
         id: "header_option_invite-users-to-room",
         key: "invite-users-to-room",
@@ -644,12 +662,8 @@ const SectionHeaderContent = (props) => {
   };
 
   const onClickFolder = (id, isRootRoom) => {
-    const {
-      setSelectedNode,
-      setIsLoading,
-      fetchFiles,
-      moveToRoomsPage,
-    } = props;
+    const { setSelectedNode, setIsLoading, fetchFiles, moveToRoomsPage } =
+      props;
 
     if (isRootRoom) {
       return moveToRoomsPage();
@@ -854,14 +868,8 @@ export default inject(
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
 
-    const {
-      title,
-      id,
-      roomType,
-      pathParts,
-      navigationPath,
-      security,
-    } = selectedFolderStore;
+    const { title, id, roomType, pathParts, navigationPath, security } =
+      selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
 
