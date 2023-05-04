@@ -2,9 +2,9 @@ name: Release RPM DEB
 
 on:
   push:
-    # paths:
-    # - build/install/deb**
-    # - build/install/rpm**
+    paths:
+    - build/install/deb**
+    - build/install/rpm**
   workflow_dispatch:
   
 env:
@@ -60,29 +60,12 @@ jobs:
       - name: Sign packages and check 
         run: |
           keyID="$(gpg --list-keys --keyid-format short | awk '/^pub/ {print $2}' | cut -d'/' -f2)"
-          # export GPG_TTY=$(tty)
           dpkg-sig -k $keyID --sign builder /home/runner/work/DocSpace/DocSpace/build/install/*.deb
-          
-          # gpg --edit-key $keyID
-          # expect "gpg> "
-          # send "trust\r"
-          # expect "Your decision? "
-          # send "5\r"
-          # expect "gpg> "
-          # send "quit\r"
-          # expect eof
-          
-          # dpkg-sig --verify /home/runner/work/DocSpace/DocSpace/build/install/*.deb
-
         
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
-          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
-          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
-          body: Here you may find packages for DocSpace
-          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+      - name: Upload artifacrs to Nexus cloud 
+        run: |
+            curl -u ${{ secret.REPO_LOGIN }}:${{ secret.REPO_PASS }} ${{ secret.REPO_URL_4TESTING_DEB }} \
+            --upload-file /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           
           
   build_rpm:
@@ -131,32 +114,17 @@ jobs:
           rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" \
           -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
 
-
       - name: Sign packages and check 
         run: |
-          # sudo chmod -R 777 /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS
-          # sudo chown -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
-          # sudo chgrp -R $USER /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/
-          
           cat << EOF >> $HOME/.rpmmacros
           %_signature gpg
           %_gpg_path $HOME/.gnupg
           %_gpg_name Ascensio System SIA <support@onlyoffice.com>
           %__gpg /usr/bin/gpg
           EOF
-          
-          # gpg --export --armor --output onlyoficce-gpgkey.pub
-          # rpm --import onlyoficce-gpgkey.pub
-          
           rpm --addsign /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
-          # rpm --checksig /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm # /home/runner/*.rpm
-
           
-      - uses: ncipollo/release-action@v1
-        with:
-          allowUpdates: true
-          commit: "${{ steps.get_vars.outputs.BRANCH_NAME }}"
-          tag: "${{ steps.get_vars.outputs.VERSION }}-${{ env.BUILD_NUMBER }}"
-          name: DocSpace packeges release ${{ env.BUILD_NUMBER }}
-          body: Here you may find packages for DocSpace
-          artifacts: /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
+      - name: Upload artifact to Nexus cloud
+        run: |
+          curl -u ${{ secret.REPO_LOGIN }}:${{ secret.REPO_PASS }} ${{ secret.REPO_URL_4TESTING_RPM }} \
+          --upload-file /home/runner/work/DocSpace/DocSpace/build/install/rpm/SPECS/RPMS/x86_64/*.rpm
