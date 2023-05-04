@@ -29,6 +29,7 @@ const ButtonContainer = (props) => {
     resetSMTPSettings,
     isLoading,
     isDefaultSettings,
+    isSMTPInitialSettings,
   } = props;
 
   const [buttonOperation, setButtonOperation] = useState({
@@ -101,7 +102,7 @@ const ButtonContainer = (props) => {
         size="small"
         primary
         onClick={onClick}
-        isDisabled={isLoading || !isValidForm()}
+        isDisabled={isLoading || !isValidForm() || isSMTPInitialSettings}
         isLoading={buttonOperation.save}
       />
       <Button
@@ -127,10 +128,12 @@ export default inject(({ setup }) => {
     setSMTPSettingsLoading,
     updateSMTPSettings,
     resetSMTPSettings,
+    isSMTPInitialSettings,
   } = setup;
   const { smtpSettings } = integration;
   const { settings, isLoading, isDefaultSettings } = smtpSettings;
   return {
+    isSMTPInitialSettings,
     isDefaultSettings,
     settings,
     setSMTPSettingsLoading,

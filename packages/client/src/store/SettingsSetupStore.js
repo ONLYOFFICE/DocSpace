@@ -138,6 +138,17 @@ class SettingsSetupStore {
     this.integration.consumers = consumers;
   };
 
+  get isSMTPInitialSettings() {
+    const settings = this.integration.smtpSettings.settings;
+    const initialSettings = this.integration.smtpSettings.initSettings;
+
+    const fields = Object.keys(settings).filter(
+      (key) => settings[key] !== initialSettings[key]
+    );
+
+    return fields.length === 0;
+  }
+
   setSMTPFields = (result) => {
     const { isDefaultSettings, ...settings } = result;
 
@@ -150,6 +161,7 @@ class SettingsSetupStore {
       storeSettings[key] = settings[key];
     }
 
+    this.integration.smtpSettings.initSettings = { ...storeSettings };
   };
   setInitSMTPSettings = async () => {
     const result = await getSMTPSettings();
