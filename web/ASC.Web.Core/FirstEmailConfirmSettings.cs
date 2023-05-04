@@ -26,7 +26,7 @@
 
 namespace ASC.Web.Core;
 
-public class FisrtEmailConfirmSettings : ISettings<FisrtEmailConfirmSettings>
+public class FirstEmailConfirmSettings : ISettings<FirstEmailConfirmSettings>
 {
     public bool IsFirst { get; set; }
 
@@ -36,8 +36,8 @@ public class FisrtEmailConfirmSettings : ISettings<FisrtEmailConfirmSettings>
         get { return new Guid("{EE139F6C-8821-4011-8444-FD87882CD5F5}"); }
     }
 
-    public FisrtEmailConfirmSettings GetDefault()
+    public FirstEmailConfirmSettings GetDefault()
     {
-        return new FisrtEmailConfirmSettings();
+        return new FirstEmailConfirmSettings();
     }
 }
