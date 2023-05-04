@@ -25,6 +25,7 @@ const History = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
+  setView,
   isCollaborator,
 }) => {
   let history = selectionHistory;
@@ -37,15 +38,16 @@ const History = ({
     if (selection.isRoom) module = "rooms";
     else if (selection.isFolder) module = "folders";
 
-    let timerId = setTimeout(() => setShowLoader(true), HISTORY_LOAD);
-    let timeoutTimerId = setTimeout(
-      () => toastr.error("History load timeout of 30000ms exceeded"),
-      HISTORY_TIMEOUT
-    );
+    let loadTimerId = setTimeout(() => setShowLoader(true), HISTORY_LOAD);
+    let timeoutTimerId = setTimeout(() => {
+      toastr.error(`History load timeout of ${HISTORY_TIMEOUT}ms exceeded`);
+      setView("info_details");
+    }, HISTORY_TIMEOUT);
 
     let fetchedHistory = await getHistory(module, itemId);
     fetchedHistory = parseHistoryJSON(fetchedHistory);
-    clearTimeout(timerId);
+
+    clearTimeout(loadTimerId);
     clearTimeout(timeoutTimerId);
 
     if (isMount.current) {
@@ -151,6 +153,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     setSelectionHistory,
     getInfoPanelItemIcon,
     openUser,
+    setView,
   } = auth.infoPanelStore;
   const { personal, culture } = auth.settingsStore;
 
@@ -170,6 +173,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     setSelectionHistory,
     getInfoPanelItemIcon,
     getHistory,
+    setView,
     checkAndOpenLocationAction,
     openUser,
     isVisitor,
