@@ -1,30 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
-import { getSMTPSettings } from "@docspace/common/api/settings";
 
 import CustomSettings from "./sub-components/CustomSettings";
 import { StyledComponent } from "./StyledComponent";
 
 const SMTPSettings = (props) => {
-  const { standalone, setInitSMTPSettings } = props;
+  const { setInitSMTPSettings, isInit, resetChangedSMTPSettings } = props;
 
   const { t, ready } = useTranslation(["SMTPSettings", "Settings", "Common"]);
 
-  const [isInit, setIsInit] = useState(false);
-
-  const init = async () => {
-    const res = await getSMTPSettings();
-
-    setInitSMTPSettings(res);
-    setIsInit(true);
-  };
+  useEffect(() => {
+    return () => {
+      resetChangedSMTPSettings();
+    };
+  }, []);
   useEffect(() => {
     if (!ready) return;
 
-    init();
+    !isInit && setInitSMTPSettings();
   }, [ready]);
 
   if (!isInit) return <></>;
@@ -41,8 +37,9 @@ const SMTPSettings = (props) => {
 };
 
 export default inject(({ auth, setup }) => {
-  const { standalone } = auth.settingsStore;
-  const { setInitSMTPSettings } = setup;
+  const { setInitSMTPSettings, integration, resetChangedSMTPSettings } = setup;
+  const { smtpSettings } = integration;
+  const { isInit } = smtpSettings;
 
-  return { standalone, setInitSMTPSettings };
+  return { setInitSMTPSettings, isInit, resetChangedSMTPSettings };
 })(observer(SMTPSettings));

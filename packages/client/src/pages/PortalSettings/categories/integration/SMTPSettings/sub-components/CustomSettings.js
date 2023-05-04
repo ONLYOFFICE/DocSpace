@@ -25,7 +25,7 @@ const {
 } = SMTPSettingsFields;
 
 const CustomSettings = (props) => {
-  const { t, settings, setSMTPSettings } = props;
+  const { t, settings, setSMTPSettings, isLoading } = props;
   const [emailError, setEmailError] = useState({
     hasError: false,
     isValid: true,
@@ -87,6 +87,7 @@ const CustomSettings = (props) => {
         isChecked={settings[AUTHENTICATION]}
         onChange={onChangeToggle}
         label={t("Authentication")}
+        isDisabled={isLoading}
       />
 
       <div className="smtp-settings_title smtp-settings_login">
@@ -101,7 +102,7 @@ const CustomSettings = (props) => {
         placeholder={t("EnterLogin")}
         onChange={onChange}
         value={settings[HOST_LOGIN]}
-        isDisabled={!settings[AUTHENTICATION]}
+        isDisabled={isLoading || !settings[AUTHENTICATION]}
         scale
       />
 
@@ -117,7 +118,7 @@ const CustomSettings = (props) => {
         placeholder={t("EnterPassword")}
         onChange={onChange}
         value={settings[HOST_PASSWORD]}
-        isDisabled={!settings[AUTHENTICATION]}
+        isDisabled={isLoading || !settings[AUTHENTICATION]}
         scale
       />
 
@@ -126,7 +127,7 @@ const CustomSettings = (props) => {
         label={t("AuthViaNTLM")}
         isChecked={settings[USE_NTLM]}
         onChange={onChangeCheckbox}
-        isDisabled={!settings[AUTHENTICATION]}
+        isDisabled={isLoading || !settings[AUTHENTICATION]}
       />
     </div>
   );
@@ -140,6 +141,7 @@ const CustomSettings = (props) => {
         </Text>
       </div>
       <TextInput
+        isDisabled={isLoading}
         className="smtp-settings_input"
         name={HOST}
         placeholder={t("EnterDomain")}
@@ -155,6 +157,7 @@ const CustomSettings = (props) => {
         </Text>
       </div>
       <TextInput
+        isDisabled={isLoading}
         className="smtp-settings_input"
         name={PORT}
         placeholder={t("EnterPort")}
@@ -166,6 +169,7 @@ const CustomSettings = (props) => {
 
       <Text {...commonTextProps}>{t("SenderDisplayName")}</Text>
       <TextInput
+        isDisabled={isLoading}
         className="smtp-settings_input"
         name={SENDER_DISPLAY_NAME}
         placeholder={t("EnterName")}
@@ -188,6 +192,7 @@ const CustomSettings = (props) => {
         errorMessage={t("Common:IncorrectEmail")}
       >
         <EmailInput
+          isDisabled={isLoading}
           value={settings[SENDER_EMAIL_ADDRESS]}
           onChange={onChange}
           onValidateInput={onValidateEmailInput}
@@ -198,6 +203,7 @@ const CustomSettings = (props) => {
       </FieldContainer>
 
       <Checkbox
+        isDisabled={isLoading}
         name={ENABLE_SSL}
         label={t("EnableSSL")}
         isChecked={settings[ENABLE_SSL]}
@@ -215,6 +221,7 @@ const CustomSettings = (props) => {
 export default inject(({ setup }) => {
   const { integration, setSMTPSettings } = setup;
   const { smtpSettings } = integration;
+  const { settings, isLoading } = smtpSettings;
 
-  return { settings: smtpSettings.settings, setSMTPSettings };
+  return { settings, setSMTPSettings, isLoading };
 })(observer(CustomSettings));

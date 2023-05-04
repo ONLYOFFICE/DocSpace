@@ -35,5 +35,9 @@ const StyledComponent = styled.div`
 
 const ButtonStyledComponent = styled.div`
   margin-top: 20px;
+  max-width: 404px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
 `;
 export { StyledComponent, ButtonStyledComponent };

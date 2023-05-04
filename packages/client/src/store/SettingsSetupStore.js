@@ -4,7 +4,11 @@ const { Filter } = api;
 import SelectionStore from "./SelectionStore";
 //import CommonStore from "./CommonStore";
 import authStore from "@docspace/common/store/AuthStore";
-import { setSMTPSettings } from "@docspace/common/api/settings";
+import {
+  getSMTPSettings,
+  resetSMTPSettings,
+  setSMTPSettings,
+} from "@docspace/common/api/settings";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
 import { isMobile } from "react-device-detect";
@@ -48,8 +52,10 @@ class SettingsSetupStore {
     consumers: [],
     selectedConsumer: {},
     smtpSettings: {
+      initSettings: {},
       settings: {},
       isInit: false,
+      isLoading: false,
     },
   };
 
@@ -122,21 +128,40 @@ class SettingsSetupStore {
     this.integration.consumers = consumers;
   };
 
-  setInitSMTPSettings = (settings) => {
+  setInitSMTPSettings = async () => {
+    const settings = await getSMTPSettings();
+
     this.integration.smtpSettings.initSettings = settings;
     this.integration.smtpSettings.settings = settings;
+
+    this.setSMTPSettingsIsInit(true);
+  };
+
+  resetSMTPSettings = async () => {
+    const settings = await resetSMTPSettings(
+      this.integration.smtpSettings.settings
+    );
+
+    this.integration.smtpSettings.initSettings = settings;
+    this.integration.smtpSettings.settings = settings;
+  };
+
+  resetChangedSMTPSettings = () => {
+    this.integration.smtpSettings.settings = {
+      ...this.integration.smtpSettings.initSettings,
+    };
   };
 
   setSMTPSettings = (settings) => {
     this.integration.smtpSettings.settings = settings;
   };
 
-  setSMTPSettingsInit = (init) => {
+  setSMTPSettingsIsInit = (init) => {
     this.integration.smtpSettings.isInit = init;
   };
 
-  updateSMTPSettings = async () => {
-    await setSMTPSettings(this.integration.smtpSettings.settings);
+  setSMTPSettingsLoading = (loading) => {
+    this.integration.smtpSettings.isLoading = loading;
   };
 
   setAddUsers = (func) => {
