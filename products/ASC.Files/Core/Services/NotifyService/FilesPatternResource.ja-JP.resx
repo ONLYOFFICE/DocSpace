@@ -113,4 +113,16 @@ $Message</value>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>文書。[$DocumentTitle]($DocumentURL)フォルダにアクセスが付与されました</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName さんに文書へのコメントでメンションされました
+ 
+$__AuthorName さんに"$RoomTitle":"$RoomURL"ルームの"$DocumentTitle":"$DocumentURL"文書へのコメントでメンションされました：
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName さんがルームを削除しました
+ 
+$__AuthorName さんが次のルームを削除しました：$RoomTitle</value>
+  </data>
 </root>

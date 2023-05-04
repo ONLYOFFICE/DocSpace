@@ -493,4 +493,22 @@
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook klíč</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Připojte aplikaci k přihlášení do portálů pomocí Facebookového účtu.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API klíč</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Serverový klíč</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Připojte službu Firebase Cloud Messaging, abyste přijímali oznámení o odeslaných zprávách.</value>
+  </data>
 </root>

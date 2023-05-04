@@ -19,6 +19,7 @@ import { saveToSessionStorage, getFromSessionStorage } from "../../../utils";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 import LoaderCustomization from "../sub-components/loaderCustomization";
 import withLoading from "SRC_DIR/HOCs/withLoading";
+import { PortalRenamingDialog } from "SRC_DIR/components/dialogs";
 
 const PortalRenaming = (props) => {
   const {
@@ -38,9 +39,8 @@ const PortalRenaming = (props) => {
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
 
-  const portalNameDefaultFromSessionStorage = getFromSessionStorage(
-    "portalNameDefault"
-  );
+  const portalNameDefaultFromSessionStorage =
+    getFromSessionStorage("portalNameDefault");
 
   const portalNameInitially =
     portalNameFromSessionStorage === null ||
@@ -76,6 +76,8 @@ const PortalRenaming = (props) => {
 
   const [domainValidator, setDomainValidator] = useState(null);
 
+  const [isShowModal, setIsShowModal] = useState(false);
+
   useEffect(() => {
     getAllSettings().then((res) => {
       setDomainValidator(res.domainValidator);
@@ -98,9 +100,8 @@ const PortalRenaming = (props) => {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -124,6 +125,7 @@ const PortalRenaming = (props) => {
 
     setPortalRename(portalName)
       .then((res) => {
+        onCloseModal();
         toastr.success(t("SuccessfullySavePortalNameMessage"));
 
         setPortalName(portalName);
@@ -266,6 +268,14 @@ const PortalRenaming = (props) => {
     }
   }, [isSmallTablet, setIsCustomizationView]);
 
+  const onOpenModal = () => {
+    setIsShowModal(true);
+  };
+
+  const onCloseModal = () => {
+    setIsShowModal(false);
+  };
+
   const tooltipPortalRenamingTooltip = (
     <PortalRenamingTooltip t={t} domain={domain} />
   );
@@ -324,7 +334,7 @@ const PortalRenaming = (props) => {
         tabIndex={11}
         id="buttonsPortalRenaming"
         className="save-cancel-buttons"
-        onSaveClick={onSavePortalRename}
+        onSaveClick={onOpenModal}
         onCancelClick={onCancelPortalName}
         saveButtonLabel={t("Common:SaveButton")}
         cancelButtonLabel={t("Common:CancelButton")}
@@ -333,6 +343,12 @@ const PortalRenaming = (props) => {
         displaySettings={true}
         hasScroll={hasScroll}
       />
+      <PortalRenamingDialog
+        visible={isShowModal}
+        onClose={onCloseModal}
+        onSave={onSavePortalRename}
+        isSaving={isLoadingPortalNameSave}
+      />
     </StyledSettingsComponent>
   );
 };
@@ -340,12 +356,8 @@ const PortalRenaming = (props) => {
 export default inject(({ auth, setup, common }) => {
   const { theme, tenantAlias, baseDomain } = auth.settingsStore;
   const { setPortalRename, getAllSettings } = setup;
-  const {
-    isLoaded,
-    setIsLoadedPortalRenaming,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedPortalRenaming, initSettings, setIsLoaded } =
+    common;
   return {
     theme,
     setPortalRename,

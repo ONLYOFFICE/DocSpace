@@ -619,4 +619,22 @@
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Conecte o aplicativo para entrar no portal usando uma conta do Facebook.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Chave do Facebook</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Chave API Web</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Chave do servidor</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Conecte o serviço de mensagens em nuvem da Firebase para receber notificações sobre as mensagens enviadas para você.</value>
+  </data>
 </root>

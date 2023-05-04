@@ -238,4 +238,7 @@
   <data name="ConsumersclickatellapiKey" xml:space="preserve">
     <value>apiKey</value>
   </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
 </root>

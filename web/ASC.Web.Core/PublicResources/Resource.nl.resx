@@ -481,4 +481,22 @@
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook Sleutel</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Verbind de applicatie om in te loggen op het portaal met een Facebook-account.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API sleutel</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Serversleutel</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Verbind Firebase Cloud Messaging service om notificaties te ontvangen over de berichten die naar u worden gestuurd.</value>
+  </data>
 </root>

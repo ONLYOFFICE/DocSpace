@@ -162,4 +162,24 @@ $GreenButton
 
 メールを変更したくない場合は、このメッセージを無視してください。</value>
   </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>$UserName 様
+ 
+ONLYOFFICE DocSpaceへようこそ！あなたのユーザープロファイルは、"${__VirtualRootPath}":"${__VirtualRootPath}"に正常に追加されました。これで、次のことができるようになりました：
+ 
+*# 招待されたルームで他のユーザーと作業する*: リアルタイムの共同執筆のためのコラボレーションルームや、あらゆる目的のために柔軟な設定を持つカスタムルーム*.
+ 
+*# テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディアなど、さまざまな形式のファイルを扱うことができます。
+ 
+*# リアルタイムまたは段落ロックという2つの共同編集モードにより、文書*の共同編集が可能です。変更点を追跡し、内蔵のチャットを使ってリアルタイムでコミュニケーションしたり、オーディオやビデオ通話をすることができます。
+ 
+*# 任意のクラウドストレージ*を接続し、アプリケーションを切り替えることなく作業することができます。
+
+$GreenButton
+
+お困りの際は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/" をご覧いただくか、"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
+
+ONLYOFFICE チーム
+"www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
+  </data>
 </root>

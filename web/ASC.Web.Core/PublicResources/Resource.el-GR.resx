@@ -313,4 +313,10 @@
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Κλειδί εξυπηρετητή</value>
+  </data>
 </root>
