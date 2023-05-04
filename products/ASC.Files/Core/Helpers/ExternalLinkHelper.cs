@@ -24,7 +24,9 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Files.Core.Security;
+using Status = ASC.Files.Core.Security.Status;
+
+namespace ASC.Files.Core.Helpers;
 
 [Scope]
 public class ExternalLinkHelper
@@ -83,7 +85,6 @@ public class ExternalLinkHelper
         }
         
         result.Access = record.Share;
-        result.TenantId = record.TenantId;
 
         if (_securityContext.IsAuthenticated || !string.IsNullOrEmpty(_externalShare.GetAnonymousSessionKey()))
         {
