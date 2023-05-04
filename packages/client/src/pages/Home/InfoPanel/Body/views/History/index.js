@@ -8,6 +8,10 @@ import Loaders from "@docspace/common/components/Loaders";
 import { getRelativeDateDay } from "./../../helpers/HistoryHelper";
 import HistoryBlock from "./HistoryBlock";
 import NoHistory from "../NoItem/NoHistory";
+import { toastr } from "@docspace/components";
+
+const HISTORY_LOAD = 30000;
+const HISTORY_TIMEOUT = 30000;
 
 const History = ({
   t,
@@ -33,10 +37,16 @@ const History = ({
     if (selection.isRoom) module = "rooms";
     else if (selection.isFolder) module = "folders";
 
-    let timerId = setTimeout(() => setShowLoader(true), 1500);
+    let timerId = setTimeout(() => setShowLoader(true), HISTORY_LOAD);
+    let timeoutTimerId = setTimeout(
+      () => toastr.error("History load timeout exceeded"),
+      HISTORY_TIMEOUT
+    );
+
     let fetchedHistory = await getHistory(module, itemId);
     fetchedHistory = parseHistoryJSON(fetchedHistory);
     clearTimeout(timerId);
+    clearTimeout(timeoutTimerId);
 
     if (isMount.current) {
       if (!selectionHistory || selectionHistory.itemId !== itemId) {
