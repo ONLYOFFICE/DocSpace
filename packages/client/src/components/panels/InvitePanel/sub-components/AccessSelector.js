@@ -80,7 +80,6 @@ const AccessSelector = ({
           manualWidth={"fit-content"}
           isDefaultMode={true}
           isAside={false}
-          withBackground={isMobileOnly}
           setIsOpenItemAccess={setIsOpenItemAccess}
           manualY={"0px"}
         />
