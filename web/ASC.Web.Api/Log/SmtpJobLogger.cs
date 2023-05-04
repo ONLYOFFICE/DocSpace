@@ -26,11 +26,8 @@
 
 namespace ASC.Web.Api.Log;
 
-internal static partial class SmtpOperationLogger
+internal static partial class SmtpJobLogger
 {
     [LoggerMessage(Level = LogLevel.Error, Message = "LdapOperation finalization problem")]
-    public static partial void ErrorLdapOperationFinalizationProblem(this ILogger<SmtpOperation> logger, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Progress: {progress}% {status} {source}")]
-    public static partial void InformationProgress(this ILogger<SmtpOperation> logger, int progress, string status, string source);
+    public static partial void ErrorLdapOperationFinalizationProblem(this ILogger<SmtpJob> logger, Exception exception);
 }
