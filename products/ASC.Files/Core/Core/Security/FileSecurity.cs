@@ -1115,7 +1115,7 @@ public class FileSecurity : IFileSecurity
         return false;
     }
 
-    public Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share, SubjectType subjectType = default, FileShareOptions fileShareOptions = null)
+    public Task ShareAsync<T>(T entryId, FileEntryType entryType, Guid @for, FileShare share, SubjectType subjectType = default, FileShareOptions options = null)
     {
         var securityDao = _daoFactory.GetSecurityDao<T>();
         var r = new FileShareRecord
@@ -1127,7 +1127,7 @@ public class FileSecurity : IFileSecurity
             Owner = _authContext.CurrentAccount.ID,
             Share = share,
             SubjectType = subjectType,
-            Options = fileShareOptions,
+            Options = options,
         };
 
         return securityDao.SetShareAsync(r);
