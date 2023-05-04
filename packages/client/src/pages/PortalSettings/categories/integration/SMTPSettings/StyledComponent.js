@@ -6,6 +6,17 @@ const StyledComponent = styled.div`
   .smtp-settings_description {
     margin-bottom: 20px;
     max-width: 700px;
+    margin-top: 4px;
+  }
+
+  .smtp-settings_main-title {
+    display: flex;
+    div {
+      margin: auto 0;
+    }
+    .smtp-settings_help-button {
+      margin-left: 4px;
+    }
   }
   .smtp-settings_title {
     display: flex;
