@@ -226,6 +226,7 @@ public class StudioWhatsNewNotify
         var oldRoomTitle = activityInfo.RoomOldTitle;
 
         var targetUserNames = "";
+        var targetUserEmail = "";
 
         if (action == MessageAction.UsersUpdatedType)
         {
@@ -236,6 +237,7 @@ public class StudioWhatsNewNotify
         else if (activityInfo.TargetUsers != null)
         {
             var targetUser = _userManager.GetUsers(activityInfo.TargetUsers.FirstOrDefault());
+            targetUserEmail = targetUser.Email;
             targetUserNames = targetUser.DisplayUserName(_displayUserSettingsHelper);
         }
 
@@ -269,12 +271,12 @@ public class StudioWhatsNewNotify
         else if (action == MessageAction.UserCreated)
         {
             userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserCreated,
-                userName, userEmail, date);
+                targetUserNames, targetUserEmail, date);
         }
         else if (action == MessageAction.UserUpdated)
         {
             userActivityText = string.Format(WebstudioNotifyPatternResource.ActionUserUpdated,
-                userName, userEmail, date);
+                targetUserNames, targetUserEmail, date);
         }
         else if (action == MessageAction.FileUploaded)
         {
