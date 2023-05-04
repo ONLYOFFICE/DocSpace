@@ -93,7 +93,7 @@ $Message</value>
     <value>Dokumenty. Wszyscy sygnatariusze zakończeni $DocumentTitle</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>Dokumenty. Zmienił się status podpisania.</value>
+    <value>Dokumenty. Zmienił się status podpisania</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Dokumenty. Wiadomości zostały wysłane.</value>

@@ -89,7 +89,7 @@
     <value>Chiave api Rackspace</value>
   </data>
   <data name="ConsumersauthPwd" xml:space="preserve">
-    <value>authPwd Selectel </value>
+    <value>authPwd Selectel</value>
   </data>
   <data name="ConsumersauthUser" xml:space="preserve">
     <value>authUser Selectel</value>
@@ -107,7 +107,7 @@
     <value>Collega il servizio Bitly per abbreviare i collegamenti dell'invito al portale e i collegamenti condivisi nel modulo Documenti.</value>
   </data>
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
-    <value>Se aggiungi il servizio Bitly otterrai link abbreviati per invitare nuovi utenti nel portale ONLYOFFICE® e link abbreviati ai documenti nel modulo Documenti che sono stati condivisi con utenti esterni</value>
+    <value>Se aggiungi il servizio Bitly otterrai link abbreviati per invitare nuovi utenti nel portale ONLYOFFICE® e link abbreviati ai documenti nel modulo Documenti che sono stati condivisi con utenti esterni.</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
     <value>Box</value>
@@ -119,10 +119,10 @@
     <value>Chiave Box</value>
   </data>
   <data name="ConsumersBoxDescription" xml:space="preserve">
-    <value>Collega l'applicazione per gestire Box Files e cartelle</value>
+    <value>Collega l'applicazione per gestire Box Files e cartelle.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
-    <value>Se aggiungi un'applicazione del servizio Box sarai in grado di collegare il tuo account Box al modulo Documenti. Ciò ti consentirà di caricare e creare nuovi documenti su Box, modificare quelli esistenti, copiarli e/o cancellarli. condividere i file e cartelle con gli utenti del portale ONLYOFFICE®</value>
+    <value>Se aggiungi un'applicazione del servizio Box sarai in grado di collegare il tuo account Box al modulo Documenti. Ciò ti consentirà di caricare e creare nuovi documenti su Box, modificare quelli esistenti, copiarli e/o cancellarli. condividere i file e cartelle con gli utenti del portale ONLYOFFICE®.</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>
@@ -152,16 +152,16 @@
     <value>autenticazione endpoint DocuSign</value>
   </data>
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>Se aggiungi un'applicazione del servizio DocuSign sarai in grado di firmare i files dal modulo documenti. Ciò ti consentirà di inviare un file per la firma elettronica agli impiegati del portale ONLYOFFICE® tramite il servizio DocuSign. Il file firmato sarà salvato nel modulo Documenti di ONLYOFFICE®</value>
+    <value>Se aggiungi un'applicazione del servizio DocuSign sarai in grado di firmare i files dal modulo documenti. Ciò ti consentirà di inviare un file per la firma elettronica agli impiegati del portale ONLYOFFICE® tramite il servizio DocuSign. Il file firmato sarà salvato nel modulo Documenti di ONLYOFFICE®.</value>
   </data>
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>Dropbox</value>
   </data>
   <data name="ConsumersDropBoxDescription" xml:space="preserve">
-    <value>Connetti l'applicazione per gestire file e cartelle di Dropbox</value>
+    <value>Connetti l'applicazione per gestire file e cartelle di Dropbox.</value>
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
-    <value>Se aggiungi un'applicazione del servizio Dropbox sarai in grado di collegare il tuo account Dropbox al modulo Documenti. Ciò ti consentirà di caricare e creare nuovi documenti su Box, modificare quelli esistenti, copiarli e/o cancellarli. condividere i file e cartelle con gli utenti del portale ONLYOFFICE®</value>
+    <value>Se aggiungi un'applicazione del servizio Dropbox sarai in grado di collegare il tuo account Dropbox al modulo Documenti. Ciò ti consentirà di caricare e creare nuovi documenti su Box, modificare quelli esistenti, copiarli e/o cancellarli. condividere i file e cartelle con gli utenti del portale ONLYOFFICE®.</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>ID di Dropbox</value>
@@ -248,7 +248,7 @@
     <value>GoogleCloud json</value>
   </data>
   <data name="ConsumersGoogleDescription" xml:space="preserve">
-    <value>Collega il progetto per registrarsi al portale usando l'account Google e gestire così file e cartelle in Google Drive</value>
+    <value>Collega il progetto per registrarsi al portale usando l'account Google e gestire così file e cartelle in Google Drive.</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>Se aggiungi un progetto del sevizio Google sarai successivamente in grado di collegare il tuo account Google nella tua pagina del profilo così che tu possa registrarti al portale ONLYOFFICE® inoltre utilizzando l'account Google Drive nel modulo Documenti. Ciò ti consentirà di caricare e creare nuovi files in Google Drive, modificare quelli esistenti, copiarli e/o cancellarli, condividere file e cartelle con gli utenti del portale ONLYOFFICE®.</value>
@@ -257,10 +257,10 @@
     <value>LinkedIn</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
-    <value>Collega l'applicazione per registrarsi al portale usando l'account Linkedin</value>
+    <value>Collega l'applicazione per registrarsi al portale usando l'account Linkedin.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>Se aggiungi un'applicazione del servizio Linkedin sarai in grado di collegare il tuo account Linkedin al profilo così che tu possa entrare nel portale di ONLYOFFICE® direttamente. </value>
+    <value>Se aggiungi un'applicazione del servizio Linkedin sarai in grado di collegare il tuo account Linkedin al profilo così che tu possa entrare nel portale di ONLYOFFICE® direttamente.</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>ID di LinkedIn</value>
@@ -371,10 +371,10 @@
     <value>Chiave di OneDrive</value>
   </data>
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
-    <value>Collega l'applicazione per gestire file e cartelle in OneDrive</value>
+    <value>Collega l'applicazione per gestire file e cartelle in OneDrive.</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
-    <value>Se aggiungi un'applicazione del servizio OneDrive sarai in grado di collegare il tuo account OneDrive al modulo Documenti. Ciò ti consentirà di caricare e creare nuovi documenti su Box, modificare quelli esistenti, copiarli e/o cancellarli. condividere i file e cartelle con gli utenti del portale ONLYOFFICE®</value>
+    <value>Se aggiungi un'applicazione del servizio OneDrive sarai in grado di collegare il tuo account OneDrive al modulo Documenti. Ciò ti consentirà di caricare e creare nuovi documenti su Box, modificare quelli esistenti, copiarli e/o cancellarli. condividere i file e cartelle con gli utenti del portale ONLYOFFICE®.</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
     <value>SMS-Center</value>
@@ -422,7 +422,7 @@
     <value>Collega l'applicazione per registrarsi al portale utilizzando l'account Twitter e cercare contatti.</value>
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
-    <value>Aggiungendo un'applicazione del servizio Twitter potrai collegare il tuo account Twitter alla pagina del profilo, così facendo potrai usarlo per entrare nel portale ONLYOFFICE®. Inoltre sarai in grado di trovare un account Twitter di una persona nel modulo CRM e collegarla nella pagina 'Modifica persona/azienda' e visualizzare i suoi Tweet</value>
+    <value>Aggiungendo un'applicazione del servizio Twitter potrai collegare il tuo account Twitter alla pagina del profilo, così facendo potrai usarlo per entrare nel portale ONLYOFFICE®. Inoltre sarai in grado di trovare un account Twitter di una persona nel modulo CRM e collegarla nella pagina 'Modifica persona/azienda' e visualizzare i suoi Tweet.</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>API Key</value>
@@ -455,7 +455,7 @@
     <value>Collega l'applicazione per consentire la pubblicazione di documenti su WordPress.</value>
   </data>
   <data name="ConsumersWordpressInstruction" xml:space="preserve">
-    <value>Aggiungendo l'applicazione Wordpress potrai facilmente pubblicare documenti sul tuo sito Wordpress mantenendo la loro formattazione</value>
+    <value>Aggiungendo l'applicazione Wordpress potrai facilmente pubblicare documenti sul tuo sito Wordpress mantenendo la loro formattazione.</value>
   </data>
   <data name="ConsumerswpClientId" xml:space="preserve">
     <value>Chiave WordPress</value>
@@ -470,8 +470,7 @@
     <value>ID Client</value>
   </data>
   <data name="ConsumersyahooClientSecret" xml:space="preserve">
-    <value>Client Secret
-</value>
+    <value>Client Secret</value>
   </data>
   <data name="ConsumersYahooDescription" xml:space="preserve">
     <value>Collegare l'applicazione per importare i contatti di Yahoo.</value>
@@ -522,7 +521,7 @@
     <value>Chiavi danneggiate</value>
   </data>
   <data name="ErrorDisabledProfile" xml:space="preserve">
-    <value>Il tuo profilo è stato sospeso.</value>
+    <value>Il tuo profilo è stato sospeso</value>
   </data>
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
     <value>Un {!user} con questo indirizzo email è già registrato</value>
@@ -534,7 +533,7 @@
     <value>Il campo Email è vuoto</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
-    <value>L'indirizzo email corrente coincide con quello nuovo.</value>
+    <value>L'indirizzo email corrente coincide con quello nuovo</value>
   </data>
   <data name="ErrorEmptyFields" xml:space="preserve">
     <value>Compila tutti i campi</value>
@@ -570,7 +569,7 @@
     <value>da {0} a {1} caratteri</value>
   </data>
   <data name="ErrorPasswordMessage" xml:space="preserve">
-    <value>La password deve contenere </value>
+    <value>La password deve contenere</value>
   </data>
   <data name="ErrorPasswordNoDigits" xml:space="preserve">
     <value>cifre</value>
@@ -639,13 +638,13 @@
     <value>Login o password non è corretto.</value>
   </data>
   <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
-    <value>Dominio LDAP non trovato</value>
+    <value>Dominio LDAP non trovato.</value>
   </data>
   <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
-    <value>Nessun gruppo trovato</value>
+    <value>Nessun gruppo trovato.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
-    <value>Filtro utenti valore non è valido</value>
+    <value>Filtro utenti valore non è valido.</value>
   </data>
   <data name="LdapSettingsErrorLostRights" xml:space="preserve">
     <value>Hai tentato di togliere i diritti di amministratore da te stesso. I tuoi diritti di amministratore non sono stati modificati.</value>
@@ -663,7 +662,7 @@
     <value>Non è possibile ottenere l'Attributo di Gruppo per uno o più gruppi.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
-    <value>Filtro gruppo incorretto</value>
+    <value>Filtro gruppo incorretto.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
     <value>Impossibile ottenere attributo di nome gruppo per uno o più gruppi.</value>
@@ -672,8 +671,7 @@
     <value>Non è possibile ottenere l'Attributo di Login per uno o più utenti.</value>
   </data>
   <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
-    <value>Impossibile connettersi al server LDAP. Si prega di controllare se l'indirizzo del server e il numero porta sono corretti.
-</value>
+    <value>Impossibile connettersi al server LDAP. Si prega di controllare se l'indirizzo del server e il numero porta sono corretti.</value>
   </data>
   <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
     <value>Non è possibile ottenere l'Attributo del Utente per uno o più utenti.</value>
@@ -703,7 +701,7 @@
     <value>Recupero della lista di utenti dal server LDAP</value>
   </data>
   <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
-    <value>Impostazione dell'utente {0} come {1} amministratore </value>
+    <value>Impostazione dell'utente {0} come {1} amministratore</value>
   </data>
   <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
     <value>Caricamento delle informazioni di base LDAP</value>
@@ -745,13 +743,13 @@
     <value>Richiesta una modalità di autenticazione più sicura. Si prega di utilizzare SSL oppure abilitare l'autenticazione semplice sul server.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
-    <value>Il numero massimo di utenti è stato raggiunto per il piano tariffario corrente.</value>
+    <value>Il numero massimo di utenti è stato raggiunto per il piano tariffario corrente</value>
   </data>
   <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
-    <value>StartTLS non supportato per server LDAP corrente</value>
+    <value>StartTLS non supportato per server LDAP corrente.</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>Troppe operazioni LDAP</value>
+    <value>Troppe operazioni LDAP.</value>
   </data>
   <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
     <value>Impossibile ottenere l'unico ID dei oggetti utente/gruppo. Per impostazione predefinita, il sistema cercherà di prendere uno dei seguenti identificatori: entryUUID, nsuniqueid, GUID, objectSid. Se nessuno degli attributi corrisponde al tuo server LDAP, per favore specifica l'attributo necessario nell'impostazione ldap.unique.id del file web.appsettings.config.</value>
@@ -775,7 +773,7 @@
     <value>Caricato con successo. {0}Il supporto e gli aggiornamenti non sono disponibili per questa licenza dal {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>Le istruzioni di modifica dell'email sono state inviate a {0}</value>
+    <value>Le istruzioni di modifica dell'email sono state inviate</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>Se esiste un utente con l'e-mail {0}, l'istruzione di modifica della password è stata inviata a questo indirizzo e-mail.</value>
@@ -841,7 +839,7 @@
     <value>Le impostazioni sono state aggiornate con successo</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Le istruzioni di eliminazione del tuo profilo sono state inviate al tuo indirizzo email</value>
+    <value>Le istruzioni di eliminazione del tuo profilo sono state inviate al {0} indirizzo email</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>Codice non corretto</value>
@@ -920,5 +918,29 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Il numero di amministratori/utenti esperti:</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Chiave identificativa di 10 caratteri generata per la chiave privata per l'accesso con Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Consenti all'applicazione di accedere al portale utilizzando un account Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Attiva questa app per consentire ai tuoi utenti di accedere a ONLYOFFICE utilizzando Apple ID. {0}Vai al Portale per gli sviluppatori Apple e crea una nuova integrazione per l'app ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Chiave privata scaricata da Apple Developer</value>
+  </data>
+  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+    <value>Attiva questa app per abbreviare i link d'invito e di documenti. {0}Inserisci il tuo login Bitly e la chiave API di seguito:</value>
+  </data>
+  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+    <value>Abilita questa app per connettere il tuo account Box al modulo Documenti. Potrai gestire, modificare e condividere file da Box con gli utenti ONLYOFFICE. {0}Accedi al tuo account nella pagina degli sviluppatori di Box e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+    <value>Attiva questa app per firmare digitalmente i documenti utilizzando DocuSign. {0}Vai alla tua Console di amministrazione DocuSign e aggiungi l'integrazione ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
+  </data>
+  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+    <value>Attiva questa app per connettere il tuo account Dropbox al modulo Documenti. Potrai gestire, modificare e condividere file da Dropbox con gli utenti ONLYOFFICE. {0}Accedi al tuo account sul sito web degli sviluppatori di Dropbox e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
   </data>
 </root>

@@ -1,0 +1,14 @@
+{
+  "ErrorUserNotFound": "Lietotājs nevar būt atrasts",
+  "ErrorExpiredActivationLink": "Saites termiņš beidzies",
+  "ErrorInvalidActivationLink": "Nederīga aktivizācijas saite",
+  "ErrorConfirmURLError": "Nepareizs e-pasts vai vecs links",
+  "LoginWithAccountNotFound": "Nevar atrast saistīto trešo personu kontu. Vispirms Jums ir nepieciešams savienot savu sociāla tīkla kontu profila rediģēšanas lapā.",
+  "InvalidUsernameOrPassword": "Nepareizs lietotājvārds vai parole.",
+  "SsoSettingsDisabled": "Vienreizējā ieeja atspējota",
+  "ErrorNotAllowedOption": "Jūsu maksājumu plāns neatbalsta šo iespēju",
+  "SsoSettingsEmptyToken": "Neizdevās atrast autentifikācijas marķieri",
+  "SsoSettingsNotValidToken": "Nederīgs autentifikācijas marķieris",
+  "SsoSettingsCantCreateUser": "Neizdevās izveidot lietotāju ar šo autentifikācijas marķieri",
+  "SsoSettingsUserTerminated": "Šis lietotājs ir atspējots"
+}

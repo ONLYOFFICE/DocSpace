@@ -77,13 +77,13 @@
     <value>Ajustes de mensaje de administrador actualizados</value>
   </data>
   <data name="AdministratorOpenedFullAccess" xml:space="preserve">
-    <value>Administradores [{0}]. Se proporciona acceso completo </value>
+    <value>Administradores [{0}]. Se proporciona acceso completo</value>
   </data>
   <data name="AttachActionType" xml:space="preserve">
     <value>Adjuntar</value>
   </data>
   <data name="AuditSettingsUpdated" xml:space="preserve">
-    <value>Ajustes de tiempo de almacenamiento de rastro de auditoría se actualizaron. </value>
+    <value>Ajustes de tiempo de almacenamiento de rastro de auditoría se actualizaron</value>
   </data>
   <data name="AuditTrailReportDownloaded" xml:space="preserve">
     <value>Rastro de auditoría descargado</value>
@@ -266,13 +266,13 @@
     <value>Contactos [{0}]. Tarea creada: {1}</value>
   </data>
   <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Contactos. Etiqueta creada: {1}</value>
+    <value>Contactos. Etiqueta creada: {0}</value>
   </data>
   <data name="ContactsDeleted" xml:space="preserve">
     <value>Contactos borrados: {0}</value>
   </data>
   <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Contactos. Etiqueta borrada: {1}</value>
+    <value>Contactos. Etiqueta borrada: {0}</value>
   </data>
   <data name="ContactsExportedToCsv" xml:space="preserve">
     <value>Contactos exportados al archivo CSV: {0}</value>
@@ -290,10 +290,10 @@
     <value>Ajustes de etiqueta de contactos actualizados</value>
   </data>
   <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Nivel de temperatura de contacto creado:[{0}].</value>
+    <value>Nivel de temperatura de contacto creado:[{0}]</value>
   </data>
   <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Nivel de temperatura de contacto borrado:[{0}].</value>
+    <value>Nivel de temperatura de contacto borrado:[{0}]</value>
   </data>
   <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
     <value>Ajustes de nivel de temperatura actualizados</value>
@@ -338,7 +338,7 @@
     <value>Ajustes de archivos cookie han sido actualizados</value>
   </data>
   <data name="CopyActionType" xml:space="preserve">
-    <value>Copiar </value>
+    <value>Copiar</value>
   </data>
   <data name="CreateActionType" xml:space="preserve">
     <value>Crear</value>
@@ -713,7 +713,7 @@
     <value>Conexión fallida</value>
   </data>
   <data name="LoginFailBruteForce" xml:space="preserve">
-    <value>Fallo de acceso. Demasiados intentos.</value>
+    <value>Fallo de acceso. Demasiados intentos</value>
   </data>
   <data name="LoginFailDisabledProfile" xml:space="preserve">
     <value>Conexión fallida. Perfil desactivado</value>
@@ -722,13 +722,13 @@
     <value>Conexión fallida. Combinación de login y contraseña inválida</value>
   </data>
   <data name="LoginFailIpSecurity" xml:space="preserve">
-    <value>Seguridad IP: Conexión fallida </value>
+    <value>Seguridad IP: Conexión fallida</value>
   </data>
   <data name="LoginFailRecaptcha" xml:space="preserve">
     <value>Inicio de sesión falló. Recaptcha es inválida</value>
   </data>
   <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
-    <value>Conexión fallida. No se encuentra cuenta asociada </value>
+    <value>Conexión fallida. No se encuentra cuenta asociada</value>
   </data>
   <data name="LoginFailViaApi" xml:space="preserve">
     <value>Conexión vía API fallida</value>
@@ -749,7 +749,7 @@
     <value>Acceso vía SSO falló</value>
   </data>
   <data name="LoginFailViaTfaApp" xml:space="preserve">
-    <value>Acceso fallido vía aplicación de autenticador.</value>
+    <value>Acceso fallido vía aplicación de autenticador</value>
   </data>
   <data name="LoginHistoryReportDownloaded" xml:space="preserve">
     <value>Informe sobre historial de conexiones descargado</value>
@@ -914,7 +914,7 @@
     <value>Perfil de empresa. Nombre de empresa actualizada: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Perfil de empresa. Logo de factura actualizado: {0}</value>
+    <value>Perfil de empresa. Logo de factura actualizado</value>
   </data>
   <data name="OtherCrmSettingsModule" xml:space="preserve">
     <value>Otros ajustes</value>
@@ -1394,6 +1394,12 @@
     <value>Contraseña actualizada</value>
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Clave de formulario de contacto de sitio web actualizado.</value>
+    <value>Clave de formulario de contacto de sitio web actualizado</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>La sala se ha creado</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Salas</value>
   </data>
 </root>

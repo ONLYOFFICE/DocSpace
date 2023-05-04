@@ -154,9 +154,7 @@ Pokud máte nějaké dotazy nebo potřebujete pomoc, prosím neváhejte nás kon
 
 S pozdravem,
 ONLYOFFICE™ Support Team
-"www.onlyoffice.com":"http://onlyoffice.com/"
-
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_change_password" xml:space="preserve">
     <value>h1.Žádost o změnu hesla pro "${__VirtualRootPath}":"${__VirtualRootPath}" portál
@@ -390,8 +388,7 @@ Pokud máte nějaké dotazy nebo potřebujete pomoc, neváhejte nás kontaktovat
 
 S pozdravem,
 ONLYOFFICE™ Support Team
-"www.onlyoffice.com":"http://onlyoffice.com/"
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_portal_rename" xml:space="preserve">
     <value>h1.Změna dresy portálu
@@ -512,7 +509,7 @@ tým ONLYOFFICE</value>
     <value>${LetterLogoText}. Prosím, aktivujte svou e-mailovou adresu</value>
   </data>
   <data name="subject_backup_created" xml:space="preserve">
-    <value>${LetterLogoText}.${__ VirtualRootPath} byl vytvořen záložní portál </value>
+    <value>${LetterLogoText}.${__ VirtualRootPath} byl vytvořen záložní portál</value>
   </data>
   <data name="subject_change_password" xml:space="preserve">
     <value>${LetterLogoText} pomoc s heslem</value>
@@ -554,7 +551,7 @@ tým ONLYOFFICE</value>
     <value>${LetterLogoText}. Migrace portálu jiného regionu úspěšně dokončena</value>
   </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
-    <value>Deaktivace ${__VirtualRootPath} portálu </value>
+    <value>Deaktivace ${__VirtualRootPath} portálu</value>
   </data>
   <data name="subject_portal_delete" xml:space="preserve">
     <value>Vymazání ${__VirtualRootPath} portálu</value>
@@ -590,7 +587,7 @@ tým ONLYOFFICE</value>
     <value>Testovací zpráva SMTP</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
-    <value>Nový uživatel byl přidán ${LetterLogoText} do portálu </value>
+    <value>Nový uživatel byl přidán ${LetterLogoText} do portálu</value>
   </data>
   <data name="ActionFileCreated" xml:space="preserve">
     <value>&lt;b&gt;{0}&lt;/b&gt; vytvořil/a nový dokument: &lt;a href={1}&gt;{2}&lt;/a&gt; v místnosti: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>

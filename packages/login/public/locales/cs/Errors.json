@@ -1,0 +1,14 @@
+{
+  "ErrorUserNotFound": "Uživatel nemohl být nalezen",
+  "ErrorExpiredActivationLink": "Platnost odkazu vypršela",
+  "ErrorInvalidActivationLink": "Neplatný aktivační odkaz",
+  "ErrorConfirmURLError": "Neplatný e-mail nebo odkaz, kterému vypršela platnost",
+  "LoginWithAccountNotFound": "Nemůže najít přidružený účet třetí strany. Nejdříve musíte na první straně úpravy profilu připojit účet sociální sítě.",
+  "InvalidUsernameOrPassword": "Špatné uživatelské jméno nebo heslo.",
+  "SsoSettingsDisabled": "Funkce Single Sign-on je zakázána",
+  "ErrorNotAllowedOption": "Váš tarif nepodporuje tuto možnost",
+  "SsoSettingsEmptyToken": "Autentizační token nebyl nalezen",
+  "SsoSettingsNotValidToken": "Neplatný ověřovací token",
+  "SsoSettingsCantCreateUser": "Nelze vytvořit uživatele s tímto autentizačním tokenem",
+  "SsoSettingsUserTerminated": "Tento účet je deaktivován"
+}

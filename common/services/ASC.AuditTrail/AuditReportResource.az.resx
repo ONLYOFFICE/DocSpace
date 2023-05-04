@@ -713,7 +713,7 @@
     <value>Giriş uğursuz oldu</value>
   </data>
   <data name="LoginFailBruteForce" xml:space="preserve">
-    <value>Giriş Uğursuz oldu. Həddindən artıq cəhd </value>
+    <value>Giriş Uğursuz oldu. Həddindən artıq cəhd</value>
   </data>
   <data name="LoginFailDisabledProfile" xml:space="preserve">
     <value>Giriş Uğursuz oldu. Profil Qeyri-aktivdir</value>
@@ -1395,5 +1395,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Veb-sayt Əlaqə Forması Açarı Yeniləndi</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Otaq yaradıldı</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Otaqlar</value>
   </data>
 </root>

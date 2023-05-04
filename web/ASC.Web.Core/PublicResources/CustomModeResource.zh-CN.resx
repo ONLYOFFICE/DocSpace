@@ -62,6 +62,6 @@
     <value>具备普通用户的操作权限|在“公用文档”区中链结Dropbox、Box.net等第三方云储存服务中的文档资源|为“公用文档”区中文档和文件夹设置访问权限</value>
   </data>
   <data name="ProductUserOpportunitiesCustomMode" xml:space="preserve">
-    <value>创建和编辑自己创建的文档，以及修改自己有访问权限的共享文档|可设置其他用户对自己的文档、文件夹的浏览和编辑权限|在“我的文档”区中导入自己在Dropbox、Box.net等其他第三方云储存服务中的文档资源。</value>
+    <value>创建和编辑自己创建的文档，以及修改自己有访问权限的共享文档|可设置其他用户对自己的文档、文件夹的浏览和编辑权限|在“我的文档”区中导入自己在Dropbox、Box.net等其他第三方云储存服务中的文档资源</value>
   </data>
 </root>

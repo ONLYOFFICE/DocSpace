@@ -173,7 +173,7 @@
     <value>Невірний заголовок</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value> На даний момент файл заблоковано іншим користувачем</value>
+    <value>На даний момент файл заблоковано іншим користувачем</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Не можна надіслати щонайменше {0} поштових повідомлень. Будь ласка, відвідайте модуль пошти, щоб побачити причину невдачі.</value>

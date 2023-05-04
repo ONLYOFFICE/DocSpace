@@ -290,7 +290,7 @@
     <value>Kontaktin lämpötilan taso poistettu: {0}</value>
   </data>
   <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Kontaktin lämpötilan tason asetukset päivitetty: {0}</value>
+    <value>Kontaktin lämpötilan tason asetukset päivitetty</value>
   </data>
   <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
     <value>Kontaktin lämpötilan tasojen järjestys päivitetty: {0}</value>
@@ -347,7 +347,7 @@
     <value>Asiakkuudenhallinta</value>
   </data>
   <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>SMTP sähköposti lähetetty kontakteille: {0} </value>
+    <value>SMTP sähköposti lähetetty kontakteille: {0}</value>
   </data>
   <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
     <value>SMTP asetukset päivitetty</value>
@@ -710,7 +710,7 @@
     <value>Sisäänkirjautuminen epäonnistui API:n kautta</value>
   </data>
   <data name="LoginFailViaApiSms" xml:space="preserve">
-    <value>Sisäänkirjautuminen epäonnistui API:n &amp; SMS tekstiviestin koodin kautta.</value>
+    <value>Sisäänkirjautuminen epäonnistui API:n &amp; SMS tekstiviestin koodin kautta</value>
   </data>
   <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
     <value>Sisäänkirjautuminen API:n &amp; Somen kautta epäonnistui</value>
@@ -884,7 +884,7 @@
     <value>Muut</value>
   </data>
   <data name="OwnerChanged" xml:space="preserve">
-    <value>Omistaja vaihdettu: {0} </value>
+    <value>Omistaja vaihdettu: {0}</value>
   </data>
   <data name="OwnerSentChangeOwnerInstructions" xml:space="preserve">
     <value>Omistaja [{0}]. Lähetetty omistajan muutoksen ohjeistus</value>
@@ -941,7 +941,7 @@
     <value>Henkilöt. Lisätty: {0}</value>
   </data>
   <data name="PersonsMerged" xml:space="preserve">
-    <value>Henkilöt. Yhdistetty: {0} - {1} </value>
+    <value>Henkilöt. Yhdistetty: {0} - {1}</value>
   </data>
   <data name="PersonsModule" xml:space="preserve">
     <value>Henkilöt</value>
@@ -1079,7 +1079,7 @@
     <value>Projektit [{0}]. Tila päivitetty: {1}</value>
   </data>
   <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projektit [{0}]. Projektiryhmää päivitetty: {1}.</value>
+    <value>Projektit [{0}]. Projektiryhmää päivitetty: {1}</value>
   </data>
   <data name="ReportsModule" xml:space="preserve">
     <value>Raportit</value>
@@ -1184,7 +1184,7 @@
     <value>Projektit [{0}]. Tehtävät [{1}]. Aikaa päivitetty: {2}</value>
   </data>
   <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät [{1}]. Poistettu välitavoitteista</value>
+    <value>Projektit [{0}]. Tehtävät [{1}]. Poistettu välitavoitteista.</value>
   </data>
   <data name="TaskUpdated" xml:space="preserve">
     <value>Projektit [{0}]. Tehtävä päivitetty: {1}</value>
@@ -1199,7 +1199,7 @@
     <value>Tiimin mallipohja muutettu</value>
   </data>
   <data name="ThirdPartyCreated" xml:space="preserve">
-    <value>Kolmas osapuoli luotu: {0}. Toimittaja: {1} </value>
+    <value>Kolmas osapuoli luotu: {0}. Toimittaja: {1}</value>
   </data>
   <data name="ThirdPartyDeleted" xml:space="preserve">
     <value>Kolmas osapuoli poistettu: {0}. Toimittaja: {1}</value>
@@ -1247,7 +1247,7 @@
     <value>Käyttäjä luotu: {0}</value>
   </data>
   <data name="UserCreatedViaInvite" xml:space="preserve">
-    <value>Käyttäjä luotu kutsun kautta: {0} </value>
+    <value>Käyttäjä luotu kutsun kautta: {0}</value>
   </data>
   <data name="UserDeleted" xml:space="preserve">
     <value>Käyttäjä poistettu: {0}</value>
@@ -1262,7 +1262,7 @@
     <value>Käyttäjä tuotu: {0}</value>
   </data>
   <data name="UserLinkedSocialAccount" xml:space="preserve">
-    <value>Some tili linkitetty. Toimittaja: {0} </value>
+    <value>Some tili linkitetty. Toimittaja: {0}</value>
   </data>
   <data name="UsersDeleted" xml:space="preserve">
     <value>Käyttäjät. Poistettu: {0}</value>
@@ -1311,5 +1311,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Sivuston yhteydenottolomakkeen avain päivitetty</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Huone luotu</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Huoneet</value>
   </data>
 </root>

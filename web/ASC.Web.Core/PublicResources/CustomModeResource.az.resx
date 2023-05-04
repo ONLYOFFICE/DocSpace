@@ -178,4 +178,13 @@ ONLYOFFICE komandası</value>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Yeni portal qeydiyyatdan keçib</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Bulud ofis hesabınızdakı parolu dəyişmək istəyirsiniz? Təsdiqləmək üçün aşağıdakı düyməni basın.
+
+$GreenButton
+
+Link 7 gün ərzində etibarlıdır.
+
+Parolunuzu dəyişmək istəmirsiniz? Sadəcə bu mesaja əhəmiyyət verməyin.</value>
+  </data>
 </root>

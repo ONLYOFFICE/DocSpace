@@ -164,7 +164,7 @@
     <value>Actions [{0}]. Personne dissociée : {1}</value>
   </data>
   <data name="CaseUpdated" xml:space="preserve">
-    <value>Action mise à jour : {0} </value>
+    <value>Action mise à jour : {0}</value>
   </data>
   <data name="CaseUserFieldCreated" xml:space="preserve">
     <value>Champ d'utilisateur de l'action créé : {0}</value>
@@ -260,7 +260,7 @@
     <value>Champ d'utilisateur de l'entreprise mis à jour : {0}</value>
   </data>
   <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Message à l'administrateur envoyé </value>
+    <value>Message à l'administrateur envoyé</value>
   </data>
   <data name="ContactsCreatedCrmTasks" xml:space="preserve">
     <value>Contacts [{0}]. Tâche créée : {1}</value>
@@ -290,7 +290,7 @@
     <value>Paramètres de tag de contacts mis à jour</value>
   </data>
   <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Niveau de la température du contact créé {0}.</value>
+    <value>Niveau de la température du contact créé {0}</value>
   </data>
   <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
     <value>Niveau de la température du contact supprimé : {0}</value>
@@ -452,8 +452,7 @@
     <value>Paramètres DNS mis à jour</value>
   </data>
   <data name="DocumentServiceLocationSetting" xml:space="preserve">
-    <value>L'emplacement du service de document mis à jour
-</value>
+    <value>L'emplacement du service de document mis à jour</value>
   </data>
   <data name="DocumentsForcesave" xml:space="preserve">
     <value>Paramètres Forcesave sont mis à jour</value>
@@ -537,7 +536,7 @@
     <value>Document {1} a été signé via {0}</value>
   </data>
   <data name="FileSendAccessLink" xml:space="preserve">
-    <value>Lien partagé au fichier [{0}] est envoyé. Destinataires: [{1}]  </value>
+    <value>Lien partagé au fichier [{0}] est envoyé. Destinataires: [{1}]</value>
   </data>
   <data name="FilesModule" xml:space="preserve">
     <value>Fichiers</value>
@@ -555,7 +554,7 @@
     <value>Fichiers [{0}]. Accès mis à jour</value>
   </data>
   <data name="FileUpdatedRevisionComment" xml:space="preserve">
-    <value>Fichiers [{0}]. Révision {1}. Commentaire mis à jour </value>
+    <value>Fichiers [{0}]. Révision {1}. Commentaire mis à jour</value>
   </data>
   <data name="FileUploaded" xml:space="preserve">
     <value>Fichier chargé : {0}</value>
@@ -711,7 +710,7 @@
     <value>Lien</value>
   </data>
   <data name="LoginFail" xml:space="preserve">
-    <value>Connexion échouée </value>
+    <value>Connexion échouée</value>
   </data>
   <data name="LoginFailBruteForce" xml:space="preserve">
     <value>Échec de connexion. Trop d'essais</value>
@@ -726,7 +725,7 @@
     <value>Sécurité IP: connexion échouée</value>
   </data>
   <data name="LoginFailRecaptcha" xml:space="preserve">
-    <value>La tentative de connexion a échoué.Recaptcha est invalide </value>
+    <value>La tentative de connexion a échoué.Recaptcha est invalide</value>
   </data>
   <data name="LoginFailSocialAccountNotFound" xml:space="preserve">
     <value>Connexion échouée. Pas de compte social associé trouvé</value>
@@ -1396,5 +1395,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Clé du formulaire de contact du site mis à jour</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Salle créée</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Salles</value>
   </data>
 </root>

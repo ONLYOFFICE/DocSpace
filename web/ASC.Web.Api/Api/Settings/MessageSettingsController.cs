@@ -223,11 +223,7 @@ public class MessageSettingsController : BaseSettingsController
         }
         catch (FormatException)
         {
-            return Resource.ErrorNotCorrectEmail;
-        }
-        catch (Exception e)
-        {
-            return e.Message.HtmlEncode();
+            throw new Exception(Resource.ErrorNotCorrectEmail);
         }
     }
 }

@@ -192,12 +192,8 @@ class UsersStore {
   };
 
   getUserContextOptions = (isMySelf, statusType, userRole, status) => {
-    const {
-      isOwner,
-      isAdmin,
-      isVisitor,
-      isCollaborator,
-    } = this.peopleStore.authStore.userStore.user;
+    const { isOwner, isAdmin, isVisitor, isCollaborator } =
+      this.peopleStore.authStore.userStore.user;
 
     const options = [];
 
@@ -379,6 +375,7 @@ class UsersStore {
       title,
       firstName,
       lastName,
+      isSSO,
     } = user;
     const statusType = this.getStatusType(user);
     const role = this.getUserRole(user);
@@ -417,6 +414,7 @@ class UsersStore {
       position: title,
       firstName,
       lastName,
+      isSSO,
     };
   };
 

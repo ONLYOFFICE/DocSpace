@@ -86,7 +86,7 @@
     <value>Audit Trail Rapport ({0}-{1})</value>
   </data>
   <data name="AuthorizationKeysSetting" xml:space="preserve">
-    <value>Derde Partij Autorisatiesleutel geüpdatet </value>
+    <value>Derde Partij Autorisatiesleutel geüpdatet</value>
   </data>
   <data name="BrowserCol" xml:space="preserve">
     <value>Browser</value>
@@ -218,13 +218,13 @@
     <value>Bedrijven [{0}]. Persoon Gekoppeld: {1}</value>
   </data>
   <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Bedrijven [{0}]. Project Gekoppeld: {1} </value>
+    <value>Bedrijven [{0}]. Project Gekoppeld: {1}</value>
   </data>
   <data name="CompanyUnlinkedPerson" xml:space="preserve">
     <value>Bedrijven [{0}]. Persoon Ontkoppeld: {1}</value>
   </data>
   <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Bedrijven [{0}]. Project Ontkoppeld: {1} </value>
+    <value>Bedrijven [{0}]. Project Ontkoppeld: {1}</value>
   </data>
   <data name="CompanyUpdated" xml:space="preserve">
     <value>Bedrijf Geüpdatet: {0}</value>
@@ -239,10 +239,10 @@
     <value>Bedrijven [{0}]. Belangrijke Info Geüpdatet</value>
   </data>
   <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Bedrijven [{0}]. Temperatuurniveau Geüpdatet </value>
+    <value>Bedrijven [{0}]. Temperatuurniveau Geüpdatet</value>
   </data>
   <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Bedrijfsgebruiker Veld Aangemaakt: {0} </value>
+    <value>Bedrijfsgebruiker Veld Aangemaakt: {0}</value>
   </data>
   <data name="CompanyUserFieldDeleted" xml:space="preserve">
     <value>Bedrijf Gebruiker Veld Verwijderd: {0}</value>
@@ -272,7 +272,7 @@
     <value>Contacten Geëxporteerd naar CSV-bestand: {0}</value>
   </data>
   <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Contacten Geïmporteerd van CSV-bestand </value>
+    <value>Contacten Geïmporteerd van CSV-bestand</value>
   </data>
   <data name="ContactsModule" xml:space="preserve">
     <value>Contacten</value>
@@ -281,25 +281,25 @@
     <value>Instellingen</value>
   </data>
   <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Contacten Tag Instelingen Geüpdatet </value>
+    <value>Contacten Tag Instelingen Geüpdatet</value>
   </data>
   <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Contact Temperatuurniveau Aangemaakt: {0} </value>
+    <value>Contact Temperatuurniveau Aangemaakt: {0}</value>
   </data>
   <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Contact Temperatuurniveau Verwijderd {0} </value>
+    <value>Contact Temperatuurniveau Verwijderd {0}</value>
   </data>
   <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Contact Temperatuurniveau Instellingen Geüpdatet </value>
+    <value>Contact Temperatuurniveau Instellingen Geüpdatet</value>
   </data>
   <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
     <value>Contact Temperatuurniveaus Volgorde Geüpdatet: {0}</value>
   </data>
   <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Contact Temperatuurniveau Geüpdatet: {0} </value>
+    <value>Contact Temperatuurniveau Geüpdatet: {0}</value>
   </data>
   <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Contact Temperatuurniveau [{0}]. Kleur Geüpdatet </value>
+    <value>Contact Temperatuurniveau [{0}]. Kleur Geüpdatet</value>
   </data>
   <data name="ContactTypeCreated" xml:space="preserve">
     <value>Contacttype Aangemaakt: {0}</value>
@@ -329,7 +329,7 @@
     <value>Contactgebruiker Veld Geüpdatet: {0}</value>
   </data>
   <data name="CookieSettingsUpdated" xml:space="preserve">
-    <value>Cookie Instellingen Geüpdatet </value>
+    <value>Cookie Instellingen Geüpdatet</value>
   </data>
   <data name="CopyActionType" xml:space="preserve">
     <value>Kopiëren</value>
@@ -341,7 +341,7 @@
     <value>Alle gegevens geëxporteerd</value>
   </data>
   <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Standaardvaluta geüpdatet </value>
+    <value>Standaardvaluta geüpdatet</value>
   </data>
   <data name="CrmProduct" xml:space="preserve">
     <value>CRM</value>
@@ -350,8 +350,7 @@
     <value>SMTP Mail Verzonden naar Contacten: {0}</value>
   </data>
   <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>SMTP Instellingen Geüpdatet
-</value>
+    <value>SMTP Instellingen Geüpdatet</value>
   </data>
   <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
     <value>CRM Taakcategorie Volgorde Geüpdatet: {0}</value>
@@ -384,7 +383,7 @@
     <value>CRM Taken Geëxporteerd naar CSV-bestand: {0}</value>
   </data>
   <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM Taken Geïmporteerd Van CSV-bestand: {0}</value>
+    <value>CRM Taken Geïmporteerd Van CSV-bestand</value>
   </data>
   <data name="CrmTasksModule" xml:space="preserve">
     <value>CRM Taken</value>
@@ -402,7 +401,7 @@
     <value>Datum</value>
   </data>
   <data name="DefaultStartPageSettingsUpdated" xml:space="preserve">
-    <value>Standaard Startpagina Instellingen Geüpdatet </value>
+    <value>Standaard Startpagina Instellingen Geüpdatet</value>
   </data>
   <data name="DeleteActionType" xml:space="preserve">
     <value>Verwijderen</value>
@@ -420,7 +419,7 @@
     <value>Projecten [{0}]. Discussies [{1}]. Opmerking Verwijderd</value>
   </data>
   <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Geüpdatet </value>
+    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Geüpdatet</value>
   </data>
   <data name="DiscussionCreated" xml:space="preserve">
     <value>Projecten [{0}]. Discussie Aangemaakt: {1}</value>
@@ -441,10 +440,10 @@
     <value>Projecten [{0}]. Discussie Volgen Geüpdatet: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
-    <value>DNS Instellingen Geüpdatet </value>
+    <value>DNS Instellingen Geüpdatet</value>
   </data>
   <data name="DocumentServiceLocationSetting" xml:space="preserve">
-    <value>Documentservice Locatie Geüpdatet </value>
+    <value>Documentservice Locatie Geüpdatet</value>
   </data>
   <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
     <value>Overschrijf instellingen geactualiseerd</value>
@@ -456,10 +455,10 @@
     <value>Instellingen</value>
   </data>
   <data name="DocumentsThirdPartySettingsUpdated" xml:space="preserve">
-    <value>Derde Partij Instellingen Geüpdatet </value>
+    <value>Derde Partij Instellingen Geüpdatet</value>
   </data>
   <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
-    <value>Uploadformaten Instellingen Geüpdatet </value>
+    <value>Uploadformaten Instellingen Geüpdatet</value>
   </data>
   <data name="DownloadActionType" xml:space="preserve">
     <value>Downloaden</value>
@@ -522,7 +521,7 @@
     <value>Document {1} ondertekenend via {0}</value>
   </data>
   <data name="FileSendAccessLink" xml:space="preserve">
-    <value>Verstuurde gedeelde link voor het [{0}] bestand. Ontvangers: [{1}] </value>
+    <value>Verstuurde gedeelde link voor het [{0}] bestand. Ontvangers: [{1}]</value>
   </data>
   <data name="FilesModule" xml:space="preserve">
     <value>Bestanden</value>
@@ -537,10 +536,10 @@
     <value>Bestand Geüpdatet: {0}</value>
   </data>
   <data name="FileUpdatedAccess" xml:space="preserve">
-    <value>Bestanden [{0}]. Toegang Geüpdatet </value>
+    <value>Bestanden [{0}]. Toegang Geüpdatet</value>
   </data>
   <data name="FileUpdatedRevisionComment" xml:space="preserve">
-    <value>Bestanden [{0}]. Revisie {1}. Opmerking Geüpdatet </value>
+    <value>Bestanden [{0}]. Revisie {1}. Opmerking Geüpdatet</value>
   </data>
   <data name="FileUploaded" xml:space="preserve">
     <value>Bestand Geüpload: {0}</value>
@@ -573,7 +572,7 @@
     <value>Mappen</value>
   </data>
   <data name="FolderUpdatedAccess" xml:space="preserve">
-    <value>Mappen [{0}]. Toegang Geüpdatet </value>
+    <value>Mappen [{0}]. Toegang Geüpdatet</value>
   </data>
   <data name="FollowActionType" xml:space="preserve">
     <value>Volgen</value>
@@ -585,7 +584,7 @@
     <value>Algemeen</value>
   </data>
   <data name="GreetingSettingsUpdated" xml:space="preserve">
-    <value>Welkomstpagina Instellingen Geüpdatet </value>
+    <value>Welkomstpagina Instellingen Geüpdatet</value>
   </data>
   <data name="GroupCreated" xml:space="preserve">
     <value>Groep Aangemaakt: {0}</value>
@@ -618,7 +617,7 @@
     <value>Voorbije Gebeurtenissen Categorieën. Volgorde Geüpdatet: {0}</value>
   </data>
   <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Voorbije Gebeurtenis Categorie Aangemaakt: {0} </value>
+    <value>Voorbije Gebeurtenis Categorie Aangemaakt: {0}</value>
   </data>
   <data name="HistoryEventCategoryDeleted" xml:space="preserve">
     <value>Voorbije Gebeurtenis Categorie Verwijderd: {0}</value>
@@ -627,7 +626,7 @@
     <value>Voorbije Gebeurtenis Categorie Geüpdatet {0}</value>
   </data>
   <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>Voorbije Gebeurtenis Categorieën [{0}]. Icoon Geüpdatet </value>
+    <value>Voorbije Gebeurtenis Categorieën [{0}]. Icoon Geüpdatet</value>
   </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Importeren</value>
@@ -636,7 +635,7 @@
     <value>Factuur gemaakt: {0}</value>
   </data>
   <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Factuur Standaardvoorwaarden Geüpdatet </value>
+    <value>Factuur Standaardvoorwaarden Geüpdatet</value>
   </data>
   <data name="InvoiceDeleted" xml:space="preserve">
     <value>Factuur Verwijderd: {0}</value>
@@ -657,7 +656,7 @@
     <value>Factuur Item Geüpdatet: {0}</value>
   </data>
   <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Factuur Nummerformaat Geüpdatet </value>
+    <value>Factuur Nummerformaat Geüpdatet</value>
   </data>
   <data name="InvoicesDeleted" xml:space="preserve">
     <value>Facturen Verwijderd: {0}</value>
@@ -690,7 +689,7 @@
     <value>Taalinstellingen</value>
   </data>
   <data name="LicenseKeyUploaded" xml:space="preserve">
-    <value>Licentiesleutel geüpload </value>
+    <value>Licentiesleutel geüpload</value>
   </data>
   <data name="LinkActionType" xml:space="preserve">
     <value>Link</value>
@@ -756,7 +755,7 @@
     <value>Uitloggen</value>
   </data>
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
-    <value>Mailservice Instellingen Geüpdatet </value>
+    <value>Mailservice Instellingen Geüpdatet</value>
   </data>
   <data name="MilestoneCreated" xml:space="preserve">
     <value>Projecten [{0}]. Mijlpalen Aangemaakt: {1}</value>
@@ -792,7 +791,7 @@
     <value>Kansen Geëxporteerd Naar CSV-bestand: {0}</value>
   </data>
   <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Kansen Geïmporteerd van CSV-bestand </value>
+    <value>Kansen Geïmporteerd van CSV-bestand</value>
   </data>
   <data name="OpportunitiesModule" xml:space="preserve">
     <value>Kansen</value>
@@ -846,7 +845,7 @@
     <value>Kansfase Geüpdatet: {0}</value>
   </data>
   <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Kansfase Kleur Geüpdatet: {0} </value>
+    <value>Kansfase Kleur Geüpdatet: {0}</value>
   </data>
   <data name="OpportunityUnlinkedCompany" xml:space="preserve">
     <value>Kansen [{0}]. Bedrijf Ontkoppeld: {1}</value>
@@ -873,13 +872,13 @@
     <value>Kans Gebruikersveld Geüpdatet: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Organisatieprofiel. Adres Geüpdatet </value>
+    <value>Organisatieprofiel. Adres Geüpdatet</value>
   </data>
   <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Organisatieprofiel. Bedrijfsnaam Geüpdatet: {0} </value>
+    <value>Organisatieprofiel. Bedrijfsnaam Geüpdatet: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Organisatieprofiel. Factuurlogo Geüpdatet </value>
+    <value>Organisatieprofiel. Factuurlogo Geüpdatet</value>
   </data>
   <data name="OtherCrmSettingsModule" xml:space="preserve">
     <value>Andere Instellingen</value>
@@ -903,7 +902,7 @@
     <value>Pagina</value>
   </data>
   <data name="PasswordStrengthSettingsUpdated" xml:space="preserve">
-    <value>Wachtwoordsterkte Instellingen Geüpdatet </value>
+    <value>Wachtwoordsterkte Instellingen Geüpdatet</value>
   </data>
   <data name="PeopleProduct" xml:space="preserve">
     <value>Personen</value>
@@ -960,7 +959,7 @@
     <value>Personen [{0}]. Bedrijf Temperatuurniveau Geüpdatet</value>
   </data>
   <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Personen [{0}]. Foto Geüpdatet </value>
+    <value>Personen [{0}]. Foto Geüpdatet</value>
   </data>
   <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
     <value>Personen [{0}]. Belangrijke Info Geüpdatet</value>
@@ -975,7 +974,7 @@
     <value>Persoon Gebruikersveld Verwijderd: {0}</value>
   </data>
   <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Persoon Gebruikersvelden Volgorde Geüpdatet: {0} </value>
+    <value>Persoon Gebruikersvelden Volgorde Geüpdatet: {0}</value>
   </data>
   <data name="PersonUserFieldUpdated" xml:space="preserve">
     <value>Persoon Gebruikersveld Geüpdatet: {0}</value>
@@ -984,7 +983,7 @@
     <value>Platform</value>
   </data>
   <data name="PortalAccessSettingsUpdated" xml:space="preserve">
-    <value>Portaaltoegang Instellingen Geüpdatet </value>
+    <value>Portaaltoegang Instellingen Geüpdatet</value>
   </data>
   <data name="PortalDeactivated" xml:space="preserve">
     <value>Portaal Gedeactiveerd</value>
@@ -1014,7 +1013,7 @@
     <value>Producten [{0}]. Beheerder Verwijderd: {1}</value>
   </data>
   <data name="ProductsListUpdated" xml:space="preserve">
-    <value>Productenlijst Geüpdatet </value>
+    <value>Productenlijst Geüpdatet</value>
   </data>
   <data name="ProductsModule" xml:space="preserve">
     <value>Producten</value>
@@ -1074,10 +1073,10 @@
     <value>Projecten [{0}]. Persoon Ontkoppeld: {1}</value>
   </data>
   <data name="ProjectUpdated" xml:space="preserve">
-    <value>Project Geüpdatet: {0} </value>
+    <value>Project Geüpdatet: {0}</value>
   </data>
   <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projecten [{0}]. Leden [{1}]. Toegangsrechten Geüpdatet </value>
+    <value>Projecten [{0}]. Leden [{1}]. Toegangsrechten Geüpdatet</value>
   </data>
   <data name="ProjectUpdatedStatus" xml:space="preserve">
     <value>Projecten [{0}]. Status Geüpdatet: {1}</value>
@@ -1149,7 +1148,7 @@
     <value>Projecten [{0}]. Taken: [{1}]. Opmerking Verwijderd</value>
   </data>
   <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Geüpdatet </value>
+    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Geüpdatet</value>
   </data>
   <data name="TaskCreated" xml:space="preserve">
     <value>Projecten [{0}]. Taak Aangemaakt: {1}</value>
@@ -1215,13 +1214,13 @@
     <value>Tijd Bijhouden</value>
   </data>
   <data name="TimeZoneSettingsUpdated" xml:space="preserve">
-    <value>Tijdszone Instellingen Geüpdatet </value>
+    <value>Tijdszone Instellingen Geüpdatet</value>
   </data>
   <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
-    <value>Vertrouwde Maildomein Instellingen Geüpdatet </value>
+    <value>Vertrouwde Maildomein Instellingen Geüpdatet</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
-    <value>Twee-factor Authenticatie Instellingen Geüpdatet </value>
+    <value>Twee-factor Authenticatie Instellingen Geüpdatet</value>
   </data>
   <data name="UnfollowActionType" xml:space="preserve">
     <value>Niet meer volgen</value>
@@ -1233,7 +1232,7 @@
     <value>Ontkoppelen</value>
   </data>
   <data name="UpdateAccessActionType" xml:space="preserve">
-    <value>Toegang Geüpdatet </value>
+    <value>Toegang Geüpdatet</value>
   </data>
   <data name="UpdateActionType" xml:space="preserve">
     <value>Update</value>
@@ -1275,7 +1274,7 @@
     <value>Gebruikers Verwijderd: {0}</value>
   </data>
   <data name="UserSentActivationInstructions" xml:space="preserve">
-    <value>Gebruikers [{0}]. Verzonden Activeringsinstructies </value>
+    <value>Gebruikers [{0}]. Verzonden Activeringsinstructies</value>
   </data>
   <data name="UserSentDeleteInstructions" xml:space="preserve">
     <value>Verstuurde Instructies Profiel Verwijderen</value>
@@ -1293,7 +1292,7 @@
     <value>Gebruikers [{0}]. Activeringsinstructies Verzonden</value>
   </data>
   <data name="UsersUpdatedStatus" xml:space="preserve">
-    <value>Gebruikers [{0}]. Geüpdate Status </value>
+    <value>Gebruikers [{0}]. Geüpdate Status</value>
   </data>
   <data name="UsersUpdatedType" xml:space="preserve">
     <value>Gebruikers [{0}]. Geüpdate Type</value>
@@ -1305,18 +1304,24 @@
     <value>Gebruiker Geüpdatet: {0}</value>
   </data>
   <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
-    <value>Gebruikers [{0}]. Avatar Thumbnails Geüpdatet </value>
+    <value>Gebruikers [{0}]. Avatar Thumbnails Geüpdatet</value>
   </data>
   <data name="UserUpdatedLanguage" xml:space="preserve">
-    <value>Taal Geüpdatet </value>
+    <value>Taal Geüpdatet</value>
   </data>
   <data name="UserUpdatedMobileNumber" xml:space="preserve">
     <value>Gebruikers [{0}]. Mobiele Nummer Geüpdatet: {1}</value>
   </data>
   <data name="UserUpdatedPassword" xml:space="preserve">
-    <value>Wachtwoord Geüpdatet </value>
+    <value>Wachtwoord Geüpdatet</value>
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Website Contactformulier Sleutel Geüpdatet </value>
+    <value>Website Contactformulier Sleutel Geüpdatet</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Kamer aangemaakt</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Kamers</value>
   </data>
 </root>

@@ -23,6 +23,10 @@ const ProviderRow = styled.div`
     height: 24px;
     width: 24px;
     padding-left: 4px;
+
+    path {
+      fill: ${(props) => !props.theme.isBase && "#fff"};
+    }
   }
 
   .provider-name {

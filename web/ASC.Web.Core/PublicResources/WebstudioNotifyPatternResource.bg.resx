@@ -620,7 +620,7 @@ $activity</value>
     <value>${LetterLogoText}. Пренасочването на потребителски данни е неуспешно</value>
   </data>
   <data name="subject_remove_user_data_completed" xml:space="preserve">
-    <value>Премахването на потребителските данни е завършено</value>
+    <value>${LetterLogoText}. Премахването на потребителските данни е завършено</value>
   </data>
   <data name="subject_remove_user_data_failed" xml:space="preserve">
     <value>${LetterLogoText}. Премахването на потребителските данни не бе успешно</value>

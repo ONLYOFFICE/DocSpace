@@ -119,7 +119,7 @@
     <value>Wystąpił błąd podczas operacji wysyłania</value>
   </data>
   <data name="DocuSignStatusNotSended" xml:space="preserve">
-    <value>Wysyłanie dokumentu przez DocuSign zostało przerwane.</value>
+    <value>Wysyłanie dokumentu przez DocuSign zostało przerwane</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
     <value>Dokument został wysłany do podpisania przez DocuSign</value>
@@ -137,7 +137,7 @@
     <value>Konwersja zajmuje zbyt dużo czasu.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>W usłudze dokumentów wystąpił błąd.</value>
+    <value>W usłudze dokumentów wystąpił błąd</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>Plik jest otwarty do edycji przez {0}. Obecnie funkcja współtworzenia nie jest obsługiwana dla tego formatu pliku.</value>
@@ -188,7 +188,7 @@
     <value>Autor zapisu jest nieznany</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
-    <value>Plik został uszkodzony podczas próby jego zapisania.</value>
+    <value>Plik został uszkodzony podczas próby jego zapisania</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
     <value>Nie udało się pobrać pliku do zapisu</value>
@@ -263,7 +263,7 @@
     <value>Wszyscy</value>
   </data>
   <data name="Guest" xml:space="preserve">
-    <value>Anonimowy użytkownik </value>
+    <value>Anonimowy użytkownik</value>
   </data>
   <data name="MessageFileCreated" xml:space="preserve">
     <value>Plik utworzony w folderze "{0}"</value>
@@ -290,7 +290,7 @@
     <value>Nazwisko</value>
   </data>
   <data name="UnlockComment" xml:space="preserve">
-    <value>Plik jest odblokowany.</value>
+    <value>Plik jest odblokowany</value>
   </data>
   <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
     <value>Administrator DocSpace</value>
