@@ -404,7 +404,7 @@ Drogi $UserDisplayName,
 
 Twój portal $PortalUrl został zmieniony na nowy adres "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Uwaga*: wszystkie udostępnione linki dokumentów są teraz niedostępne, a także ustawienia DNS i opcje jednorazowego logowania przestają działać, dopóki ich nie zmienisz. Zewnętrzne linki iCal dodawane do kalendarza również przestaną się aktualizować do czasu ich ponownego załadowania.</value>
+*Uwaga*: ustawienia DNS i opcje jednorazowego logowania przestają działać, dopóki ich nie zmienisz.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Usuwanie profilu z portalu "${__VirtualRootPath}":"${__VirtualRootPath}"

@@ -411,7 +411,7 @@ Thân gửi $UserDisplayName,
 
 Địa chỉ cổng thông tin $PortalUrl của bạn đã được thay đổi sang địa chỉ mới "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Lưu ý*: Hiện tại sẽ không thể truy cập vào tất cả các liên kết tài liệu đã chia sẻ cũng như các thiết lập DNS và tùy chọn đăng nhập một lần sẽ ngừng hoạt động cho đến khi bạn thay đổi chúng. Các liên kết iCal của bên thứ ba được thêm vào lịch của bạn cũng sẽ ngừng cập nhật cho đến khi bạn tải lại chúng.</value>
+*Lưu ý*: Thiết lập DNS và tùy chọn đăng nhập một lần sẽ ngừng hoạt động cho đến khi bạn thay đổi chúng.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Xóa hồ sơ khỏi cổng "${__VirtualRootPath}":"${__VirtualRootPath}"

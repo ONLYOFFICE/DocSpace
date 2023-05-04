@@ -404,7 +404,7 @@ $GreenButton
 
 您的$PortalUrl门户地址已变更为新的 "${__VirtualRootPath}":"${__VirtualRootPath} "地址。
 
-*注意*：在您进行更改前，所有共享文档链接现在均无法访问，DNS设置和单点登录选项停止工作。添加到您的日历的第三方iCal链接也将停止更新，直到您重新加载它们。</value>
+*注意*：在您进行更改前，DNS 设置和单点登录选项停止工作。</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.从 "${__VirtualRootPath}":"${__VirtualRootPath}" 门户删除档案

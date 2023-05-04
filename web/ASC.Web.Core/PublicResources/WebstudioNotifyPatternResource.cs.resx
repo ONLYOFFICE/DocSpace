@@ -397,7 +397,7 @@ Vážený $UserDisplayName,
 
 Vaše $PortalUrl portálová adresa by změněna na novou "${__VirtualRootPath}":"${__VirtualRootPath}" adresu.
 
-*Poznámka*: Všechny sdílené odkazy dokumentu jsou nyní nedostupné, stejně jako nastavení DNS a možnosti jednotné přihlášení přestanou fungovat, dokud je nezměníte. Odkazy třetí strany iCal přidané do Vašeho kalendáře se přestanou aktualizovat, dokud je znovu načtete.</value>
+*Poznámka*: nastavení DNS a možnosti jednotné přihlášení přestanou fungovat, dokud je nezměníte.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Odstranění profilu z "${__VirtualRootPath}":"${__VirtualRootPath}" portálu 
