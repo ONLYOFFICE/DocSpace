@@ -28,14 +28,21 @@ class ComboBox extends React.Component {
 
   stopAction = (e) => e.preventDefault();
 
-  setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
+  setIsOpen = (isOpen) => {
+    this.setState({ isOpen: isOpen });
+    this.props.setIsOpenItemAccess(isOpen);
+  };
 
   handleClickOutside = (e) => {
+    const { setIsOpenItemAccess } = this.props;
+
     if (this.ref.current.contains(e.target)) return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
       this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
     });
+
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
   };
 
   comboBoxClick = (e) => {
@@ -45,6 +52,7 @@ class ComboBox extends React.Component {
       isDisabled,
       toggleAction,
       isLoading,
+      setIsOpenItemAccess,
     } = this.props;
 
     if (
@@ -59,20 +67,24 @@ class ComboBox extends React.Component {
     this.setState({ isOpen: !this.state.isOpen }, () => {
       toggleAction && toggleAction(e, this.state.isOpen);
     });
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
   };
 
   optionClick = (option) => {
+    const { setIsOpenItemAccess } = this.props;
     this.setState({
       isOpen: !this.state.isOpen,
       selectedOption: option,
     });
-
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
     this.props.onSelect && this.props.onSelect(option);
   };
 
   componentDidUpdate(prevProps) {
+    const { setIsOpenItemAccess } = this.props;
     if (this.props.opened !== prevProps.opened) {
       this.setIsOpen(this.props.opened);
+      setIsOpenItemAccess && setIsOpenItemAccess(this.props.opened);
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {
@@ -117,6 +129,7 @@ class ComboBox extends React.Component {
       withoutPadding,
       isLoading,
       isNoFixedHeightOptions,
+      hideMobileView,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -158,7 +171,7 @@ class ComboBox extends React.Component {
         : 6;
     }
 
-    const disableMobileView = optionsCount < 4;
+    const disableMobileView = optionsCount < 4 || hideMobileView;
 
     return (
       <StyledComboBox
