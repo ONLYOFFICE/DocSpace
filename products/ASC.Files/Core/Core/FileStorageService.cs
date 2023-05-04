@@ -2547,10 +2547,17 @@ public class FileStorageService<T> //: IFileStorageService
             try
             {
 
-                var eventTypes = new List<(UserInfo User, EventType EventType, FileShare Access)>();
+                var eventTypes = new List<(UserInfo User, EventType EventType, FileShare Access, string Email)>();
                 foreach (var ace in aceCollection.Aces)
                 {
                     var user = _userManager.GetUsers(ace.Id);
+
+                    if (user == Constants.LostUser)
+                    {
+                        eventTypes.Add((null, EventType.Create, ace.Access, ace.Email));
+                        continue;
+                    }
+
                     var userId = user.Id;
 
                     var userSubjects = _fileSecurity.GetUserSubjects(user.Id);
@@ -2572,7 +2579,7 @@ public class FileStorageService<T> //: IFileStorageService
                         eventType = EventType.Remove;
                     }
 
-                    eventTypes.Add((user, eventType, ace.Access));
+                    eventTypes.Add((user, eventType, ace.Access, null));
                 }
 
                 var (changed, warningMessage) = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
@@ -2582,7 +2589,7 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     foreach (var e in eventTypes)
                     {
-                        var user = e.User;              
+                        var user = e.User ?? _userManager.GetUserByEmail(e.Email);              
                         var name = user.DisplayUserName(false, _displayUserSettingsHelper);
 
                         var access = e.Access;                        
