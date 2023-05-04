@@ -27,6 +27,8 @@ APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CO
 APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE_MACHINEKEY") else "your_core_machinekey"
 APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
+APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
+APP_KNOWN_NETWORKS = os.environ["APP_KNOWN_NETWORKS"]
 
 DOCUMENT_SERVER_JWT_SECRET = os.environ["DOCUMENT_SERVER_JWT_SECRET"] if environ.get("DOCUMENT_SERVER_JWT_SECRET") else "your_jwt_secret"
 DOCUMENT_SERVER_JWT_HEADER = os.environ["DOCUMENT_SERVER_JWT_HEADER"] if environ.get("DOCUMENT_SERVER_JWT_HEADER") else "AuthorizationJwt"
@@ -151,8 +153,16 @@ netmask = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('netmask')
 ip_address_netmask = '%s/%s' % (ip_address, netmask)
 interface_cidr = IPNetwork(ip_address_netmask)
 knownNetwork = str(interface_cidr)
+knownProxies = "127.0.0.1"
+
+if not APP_KNOWN_NETWORKS:
+    knownNetwork = knownNetwork + "," + APP_KNOWN_NETWORKS
+
+if not APP_KNOWN_PROXIES:
+    knownProxies = knownProxies + "," + APP_KNOWN_PROXIES
 
 updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownNetworks", [knownNetwork])
+updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownProxies", [knownProxies])
 
 writeJsonFile(filePath, jsonData)
 
