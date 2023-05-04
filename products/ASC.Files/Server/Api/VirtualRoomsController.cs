@@ -687,7 +687,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// <param name="filterValue">
     /// Filter by name
     /// </param>
-    /// <param name="types">
+    /// <param name="type">
     /// Filter by room type
     /// </param>
     /// <param name="subjectId">
@@ -710,6 +710,12 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// </param>
     /// <param name="excludeSubject">
     /// Exclude subject from search
+    /// </param>
+    /// <param name="provider">
+    /// Filter by ThirdParty provider type
+    /// </param>
+    /// <param name="subjectFilter">
+    /// Filter by subject
     /// </param>
     /// <returns>
     /// Virtual Rooms content
