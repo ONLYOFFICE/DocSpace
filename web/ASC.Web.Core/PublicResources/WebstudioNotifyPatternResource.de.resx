@@ -673,7 +673,7 @@ Hallo $UserDisplayName,
 
 Ihre Portal-Adresse $PortalUrl wurde auf die neue Adresse "${__VirtualRootPath}":"${__VirtualRootPath}" geändert.
 
-*Hinweis*: Alle freigegebenen Dokumenten-Links jetzt nicht zugänglich sind, sowie DNS-Einstellungen und Single-Sign-On-Optionen nicht arbeiten, bis Sie sie ändern. Die Drittanbieter-Links iCal, die in Ihren Kalender hinzugefügt wurden, also nicht aktualisiert werden, bis Sie sie neu laden.</value>
+*Hinweis*: DNS-Einstellungen und Single-Sign-On Optionen funktionieren nicht, bis Sie diese ändern.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Löschen des Profils von "${__VirtualRootPath}":"${__VirtualRootPath}" Portal

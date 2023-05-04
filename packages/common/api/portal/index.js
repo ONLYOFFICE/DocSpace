@@ -236,8 +236,9 @@ export function getPortalQuota(refresh = false) {
   return request({ method: "get", url: "/portal/payment/quota", params });
 }
 
-export function getPortalTariff() {
-  return request({ method: "get", url: "/portal/tariff" });
+export function getPortalTariff(refresh = false) {
+  const params = refresh ? { refresh: true } : {};
+  return request({ method: "get", url: "/portal/tariff", params });
 }
 
 export function getPaymentAccount() {

@@ -405,7 +405,7 @@ Beste $OwnerName,
 
 Uw $PortalUrl portaaladres is veranderd naar het nieuwe "${__VirtualRootPath}":"${__VirtualRootPath}" adres.
 
-*Let op*: Alle gedeelde documenten zijn nu niet toegankelijk, evenals DNS-instellingen en opties voor single sign-on zijn gestopt met werken totdat u ze wijzigt. De iCal-links van derde partijen die aan uw kalender zijn toegevoegd, stoppen ook met updaten totdat u ze opnieuw laadt.</value>
+*Let op*: DNS-instellingen en opties voor single sign-on zijn gestopt met werken totdat u ze wijzigt.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Verwijdering van profiel van het "${__VirtualRootPath}":"${__VirtualRootPath}" portaal
