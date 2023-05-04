@@ -765,7 +765,7 @@ public class FileSecurity : IFileSecurity
                     return false;
                 }
 
-                if (action is FilesSecurityActions.Copy or FilesSecurityActions.Download or FilesSecurityActions.Duplicate && isRoom)
+                if (action is FilesSecurityActions.Copy or FilesSecurityActions.Duplicate && isRoom)
                 {
                     return false;
                 }
