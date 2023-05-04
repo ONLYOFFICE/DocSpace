@@ -25,8 +25,10 @@ const config = require("../../config").get(),
 module.exports = function () {
 
     function getBaseUrl(req) {
-        const url = req.headers["x-rewriter-url"] || req.protocol + "://" + req.get("host");
-        return url;
+        const proto = req.headers['x-forwarded-proto']?.split(',').shift();
+        const host = req.headers['x-forwarded-host']?.split(',').shift();
+
+        return `${proto}://${host}`;
     }
 
     function getPortalSsoHandlerUrl(req) {
