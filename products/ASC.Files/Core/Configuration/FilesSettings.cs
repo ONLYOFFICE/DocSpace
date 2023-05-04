@@ -88,9 +88,6 @@ public class FilesSettings : ISettings<FilesSettings>
 
     [JsonPropertyName("DefaultSharingAccessRights")]
     public List<FileShare> DefaultSharingAccessRightsSetting { get; set; }
-    
-    [JsonPropertyName("ExternalShare")]
-    public bool ExternalShare { get; set; }
 
     public FilesSettings GetDefault()
     {
@@ -113,7 +110,6 @@ public class FilesSettings : ISettings<FilesSettings>
             DownloadTarGzSetting = false,
             AutomaticallyCleanUpSetting = null,
             DefaultSharingAccessRightsSetting = null,
-            ExternalShare = true,
         };
     }
 
