@@ -136,6 +136,7 @@ public abstract class FoldersController<T> : ApiControllerBase
     /// <short>Folder information</short>
     /// <category>Folders</category>
     /// <returns>Folder info</returns>
+    [AllowAnonymous]
     [HttpGet("folder/{folderId}")]
     public Task<FolderDto<T>> GetFolderInfoAsync(T folderId)
     {

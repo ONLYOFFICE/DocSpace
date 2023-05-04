@@ -220,12 +220,14 @@ public class OperationController : ApiControllerBase
             yield return await GetFileEntryWrapperAsync(e);
         }
     }
+    
     /// <summary>
     ///  Finishes all the active file operations
     /// </summary>
     /// <short>Finish all</short>
     /// <category>File operations</category>
     /// <returns>Operation result</returns>
+    [AllowAnonymous]
     [HttpPut("fileops/terminate")]
     public async IAsyncEnumerable<FileOperationDto> TerminateTasks()
     {

@@ -183,6 +183,7 @@ public abstract class VirtualRoomsController<T> : ApiControllerBase
     /// <returns>
     /// Room info
     /// </returns>
+    [AllowAnonymous]
     [HttpGet("rooms/{id}")]
     public async Task<FolderDto<T>> GetRoomInfoAsync(T id)
     {
