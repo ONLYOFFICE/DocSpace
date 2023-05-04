@@ -33,10 +33,13 @@ jobs:
       - name: INSTALL tools & Prepare build /home/runner/work/DocSpace/DocSpace
         id: get_vars
         run: |
-          wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
+          wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | \
+          sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
           sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
-          echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          wget https://packages.microsoft.com/config/$(lsb_release -is | tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | \
+          sudo tee /etc/apt/sources.list.d/yarn.list
+          wget https://packages.microsoft.com/config/$(lsb_release -is | \
+          tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make
@@ -50,7 +53,8 @@ jobs:
         run: |
           cd build/install/deb/ 
           find ../ -type f -exec sed -i "s/{{product}}/${{ env.PRODUCT }}/g" {} ';'
-          sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" debian/changelog debian/control
+          sed -i "s/{{package_header_tag_version}}/${{ steps.get_vars.outputs.VERSION }}.$BUILD_NUMBER/g" \
+          debian/changelog debian/control
           dpkg-buildpackage -us -uc
       
       - name: Sign packages and check 
@@ -100,10 +104,13 @@ jobs:
       - name: INSTALL tools & Prepare build
         id: get_vars
         run: |
-          wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
+          wget -O - https://dl.yarnpkg.com/debian/pubkey.gpg | sudo gpg --no-default-keyring --keyring \
+          gnupg-ring:/usr/share/keyrings/yarnkey.gpg --import
           sudo chmod 644 /usr/share/keyrings/yarnkey.gpg
-          echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
-          wget https://packages.microsoft.com/config/$(lsb_release -is | tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+          echo "deb [signed-by=/usr/share/keyrings/yarnkey.gpg] https://dl.yarnpkg.com/debian/ stable main" | \
+          sudo tee /etc/apt/sources.list.d/yarn.list
+          wget https://packages.microsoft.com/config/$(lsb_release -is | \
+          tr [:upper:] [:lower:])/$(lsb_release -rs)/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
           sudo dpkg -i packages-microsoft-prod.deb
           wget -O - https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y dotnet-sdk-7.0 yarn nodejs dh-make rename
@@ -115,11 +122,14 @@ jobs:
         run: |
           cd build/install/rpm/SPECS
           mv ./SOURCES/product.rpmlintrc ./SOURCES/${{ env.PRODUCT }}.rpmlintrc
-          wget https://github.com/elshirak/${{ env.PRODUCT }}/archive/${{ env.BRANCH_NAME }}.tar.gz -O ./SOURCES/DocSpace-$(echo ${{ env.BRANCH_NAME }} | tr '/' '-').tar.gz 
-          wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz -O ./SOURCES/document-templates-main-community-server.tar.gz
+          wget https://github.com/elshirak/${{ env.PRODUCT }}/archive/${{ env.BRANCH_NAME }}.tar.gz \
+          -O ./SOURCES/DocSpace-$(echo ${{ env.BRANCH_NAME }} | tr '/' '-').tar.gz 
+          wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz \
+          -O ./SOURCES/document-templates-main-community-server.tar.gz
           wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
-          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
+          rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" \
+          -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
 
 
       - name: Sign packages and check 
