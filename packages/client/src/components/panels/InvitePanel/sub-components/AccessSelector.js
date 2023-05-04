@@ -51,21 +51,40 @@ const AccessSelector = ({
 
   return (
     <StyledAccessSelector className="invite-panel_access-selector">
-      <AccessRightSelect
-        selectedOption={selectedOption}
-        onSelect={onSelectAccess}
-        accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
-        noBorder={false}
-        directionX="right"
-        directionY="bottom"
-        fixedDirection={true}
-        manualWidth={width + "px"}
-        isDefaultMode={false}
-        isAside={false}
-        withBackground={isMobileHorizontalOrientation ? false : isMobileOnly}
-        setIsOpenItemAccess={setIsOpenItemAccess}
-        hideMobileView={isMobileHorizontalOrientation}
-      />
+      {!(isMobileOnly && !isMobileHorizontalOrientation) && (
+        <AccessRightSelect
+          selectedOption={selectedOption}
+          onSelect={onSelectAccess}
+          accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
+          noBorder={false}
+          directionX="right"
+          directionY="bottom"
+          fixedDirection={true}
+          manualWidth={width + "px"}
+          isDefaultMode={false}
+          isAside={false}
+          setIsOpenItemAccess={setIsOpenItemAccess}
+          hideMobileView={isMobileHorizontalOrientation}
+        />
+      )}
+
+      {isMobileOnly && !isMobileHorizontalOrientation && (
+        <AccessRightSelect
+          selectedOption={selectedOption}
+          onSelect={onSelectAccess}
+          accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
+          noBorder={false}
+          directionX="right"
+          directionY="top"
+          fixedDirection={true}
+          manualWidth={"fit-content"}
+          isDefaultMode={true}
+          isAside={false}
+          withBackground={isMobileOnly}
+          setIsOpenItemAccess={setIsOpenItemAccess}
+          manualY={"0px"}
+        />
+      )}
     </StyledAccessSelector>
   );
 };
