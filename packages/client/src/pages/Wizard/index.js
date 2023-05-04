@@ -354,7 +354,7 @@ const Wizard = (props) => {
               </Link>
             </StyledLink>
 
-            {/*isLicenseRequired && (
+            {isLicenseRequired && (
               <FieldContainer
                 className="license-filed"
                 isVertical={true}
@@ -375,7 +375,7 @@ const Wizard = (props) => {
                   hasError={hasErrorLicense}
                 />
               </FieldContainer>
-              )*/}
+            )}
             <StyledInfo>
               <Text color="#A3A9AE" fontWeight={400}>
                 {t("Domain")}
