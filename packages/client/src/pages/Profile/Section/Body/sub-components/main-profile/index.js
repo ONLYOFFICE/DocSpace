@@ -183,12 +183,14 @@ const MainProfile = (props) => {
               <Text fontWeight={600} truncate>
                 {profile.displayName}
               </Text>
-              <IconButton
-                className="edit-button"
-                iconName={PencilOutlineReactSvgUrl}
-                size="12"
-                onClick={() => setChangeNameVisible(true)}
-              />
+              {!profile.isSSO && (
+                <IconButton
+                  className="edit-button"
+                  iconName={PencilOutlineReactSvgUrl}
+                  size="12"
+                  onClick={() => setChangeNameVisible(true)}
+                />
+              )}
             </div>
             <div className="email-container">
               <div className="email-edit-container">
@@ -211,12 +213,14 @@ const MainProfile = (props) => {
                     place="bottom"
                   />
                 )}
-                <IconButton
-                  className="edit-button email-edit-button"
-                  iconName={PencilOutlineReactSvgUrl}
-                  size="12"
-                  onClick={() => setChangeEmailVisible(true)}
-                />
+                {!profile.isSSO && (
+                  <IconButton
+                    className="edit-button email-edit-button"
+                    iconName={PencilOutlineReactSvgUrl}
+                    size="12"
+                    onClick={() => setChangeEmailVisible(true)}
+                  />
+                )}
               </div>
               {withActivationBar && (
                 <div
@@ -430,13 +434,8 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const {
-    theme,
-    helpLink,
-    culture,
-    currentColorScheme,
-    documentationEmail,
-  } = auth.settingsStore;
+  const { theme, helpLink, culture, currentColorScheme, documentationEmail } =
+    auth.settingsStore;
   const { setIsLoading } = peopleStore.loadingStore;
 
   const {
