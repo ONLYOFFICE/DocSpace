@@ -1,5 +1,7 @@
 import styled, { css } from "styled-components";
 
+import { hugeMobile } from "@docspace/components/utils/device";
+
 const StyledComponent = styled.div`
   .smtp-settings_description {
     margin-bottom: 20px;
@@ -39,5 +41,9 @@ const ButtonStyledComponent = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   gap: 8px;
+
+  @media ${hugeMobile} {
+    grid-template-columns: 1fr;
+  }
 `;
 export { StyledComponent, ButtonStyledComponent };
