@@ -720,7 +720,7 @@ Caro(a) $UserDisplayName,
 
 Seu endereço do portal $PortalUrl foi alterado para o novo endereço "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Observe*: Todos os links dos documentos compartilhados estão inacessíveis agora, bem como as configurações de DNS e opções de login único pararam de funcionar até que você as altere. Os links iCal de terceiros adicionados ao seu calendário também vão parar de atualizar até que você os recarregue.</value>
+*Observe*: as configurações de DNS e opções de login único pararam de funcionar até que você as altere.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Remoção do perfil do portal "${__VirtualRootPath}":"${__VirtualRootPath}"

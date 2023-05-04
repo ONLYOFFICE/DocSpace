@@ -606,7 +606,7 @@ Bonjour  $UserDisplayName,
 
 L'adresse de votre portail $PortalUrl a été changé pour la nouvelle adresse "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Remarque*: Tous les liens sur les documents partagés sont inaccessibles, ainsi que les paramètres DNS et les options d'authentification unique (Single Sign-On) ont arrêté le travail jusqu'à ce que vous les modifiez. Les liens iCal de la troisième partie ajoutés à votre calendrier ne se renouvelerons pas jusqu'à ce que vous les rechargez.</value>
+*Remarque*: les paramètres DNS et les options d'authentification unique (Single Sign-On) ont arrêté le travail jusqu'à ce que vous les modifiez.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Suppression du profil du portail "${__VirtualRootPath}":"${__VirtualRootPath}" 
