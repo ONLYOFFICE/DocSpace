@@ -179,7 +179,7 @@ function Viewer(props: ViewerProps) {
 
   return (
     <StyledViewerContainer visible={props.visible}>
-      {!isFullscreen && !isMobile && panelVisible && (
+      {!isFullscreen && !isMobile && panelVisible && !props.isPdf && (
         <DesktopDetails title={props.title} onMaskClick={handleMaskClick} />
       )}
 
@@ -251,7 +251,12 @@ function Viewer(props: ViewerProps) {
             pdfVersion === "1" ? (
               <PDFViewer
                 src={props.fileUrl ?? ""}
+                title={props.title}
+                toolbar={props.toolbar}
+                onMask={handleMaskClick}
                 handleChangeVersion={handleChangeVersion}
+                generateContextMenu={props.generateContextMenu}
+                setIsOpenContextMenu={setIsOpenContextMenu}
               />
             ) : (
               <PDFViewerV2

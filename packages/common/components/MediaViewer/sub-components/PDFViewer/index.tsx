@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import styled, { css } from "styled-components";
+
 import { isDesktop } from "react-device-detect";
 
 import { loadScript, combineUrl } from "@docspace/common/utils";
@@ -7,69 +7,34 @@ import { loadScript, combineUrl } from "@docspace/common/utils";
 import PDFViewerProps from "./PDFViewer.props";
 import ViewerLoader from "../ViewerLoader";
 
-import "./lib/AllFonts.js";
+import {
+  ErrorMessage,
+  PdfViewrWrapper,
+  DesktopTopBar,
+  PDFToolbar,
+} from "./PDFViewer.styled";
 
-import "./lib/device_scale.js";
-import "./lib/browser.js";
-import "./lib/stringserialize.js";
-import "./lib/skin.js";
+import SideBar from "./ui/SideBar";
 
-import "./lib/font/loader.js";
-import "./lib/font/map.js";
-import "./lib/font/character.js";
-
-import "./lib/SerializeCommonWordExcel.js";
-import "./lib/Externals.js";
-import "./lib/GlobalLoaders.js";
-import "./lib/scroll.js";
-import "./lib/WorkEvents.js";
-import "./lib/Overlay.js";
-
-// import "./lib/bookmarks.js";
-
-import "./lib/file.js";
-import "./lib/api.js";
+import "./lib";
+import ImageViewerToolbar from "../ImageViewerToolbar";
+import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
+import { ToolbarActionType } from "../../helpers";
+import MainPanel from "./ui/MainPanel";
 
 const pdfViewerId = "pdf-viewer";
 
-const PdfViewrWrapper = styled.div`
-  position: fixed;
-  z-index: 305;
-
-  inset: 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  padding-top: ${isDesktop ? "85px" : "0px"};
-  background: rgba(55, 55, 55, 0.6);
-
-  #mainPanel {
-    width: 100%;
-    height: 100%;
-
-    position: relative;
-  }
-  #id_viewer {
-    ${isDesktop &&
-    css`
-      background: none !important;
-    `}
-  }
-  .block_elem {
-    position: absolute;
-    padding: 0;
-    margin: 0;
-  }
-`;
-
-const ErrorMessage = styled.p`
-  padding: 20px 30px;
-  background-color: rgba(0, 0, 0, 0.6);
-`;
-function PDFViewer({ src, handleChangeVersion }: PDFViewerProps) {
+function PDFViewer({
+  src,
+  title,
+  toolbar,
+  onMask,
+  generateContextMenu,
+  setIsOpenContextMenu,
+}: PDFViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+
+  const [isPanelOpen, setisPanelOpen] = useState<boolean>(false);
 
   const [file, setFile] = useState<ArrayBuffer | string | null>();
 
@@ -85,8 +50,24 @@ function PDFViewer({ src, handleChangeVersion }: PDFViewerProps) {
   const [isLoadingScript, setIsLoadingScript] = useState<boolean>(false);
   const [isLoadingFile, setIsLoadingFile] = useState<boolean>(false);
 
+  const resize = () => {
+    //@ts-ignore
+    window.Viewer && window.Viewer.resize();
+    //@ts-ignore
+    window.Thumbnails && window.Thumbnails.resize();
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", resize);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
   useLayoutEffect(() => {
     const origin = window.location.origin;
+    //@ts-ignore
     const path = window.DocSpaceConfig.pdfViewerUrl;
 
     if (!isLoadedViewerScript) {
@@ -96,11 +77,20 @@ function PDFViewer({ src, handleChangeVersion }: PDFViewerProps) {
         pdfViewerId,
         () => {
           //@ts-ignore
-          window.Viewer = new window.AscViewer.CViewer("mainPanel", {});
+          window.Viewer = new window.AscViewer.CViewer("mainPanel", {
+            theme: { type: "dark" },
+          });
+          //@ts-ignore
+          window.Thumbnails =
+            //@ts-ignore
+            window.Viewer.createThumbnails("viewer-thumbnail");
+          //@ts-ignore
+          window.Thumbnails.setZoom(0.2);
+
           setIsLoadedViewerScript(true);
           setIsLoadingScript(false);
         },
-        (event) => {
+        (event: any) => {
           setIsLoadingScript(false);
           setIsError(true);
           console.error(event);
@@ -136,7 +126,13 @@ function PDFViewer({ src, handleChangeVersion }: PDFViewerProps) {
       try {
         if (!containerRef.current?.hasChildNodes()) {
           //@ts-ignore
-          window.Viewer = new window.AscViewer.CViewer("mainPanel", {});
+          window.Viewer = new window.AscViewer.CViewer("mainPanel", {
+            theme: { type: "dark" },
+          });
+          //@ts-ignore
+          window.Thumbnails =
+            //@ts-ignore
+            window.Viewer.createThumbnails("viewer-thumbnail");
         }
         //@ts-ignore
         window.Viewer.open(file);
@@ -147,6 +143,21 @@ function PDFViewer({ src, handleChangeVersion }: PDFViewerProps) {
     }
   }, [file, isLoadedViewerScript, isLoadingFile]);
 
+  useEffect(() => {
+    if (isLoadedViewerScript && containerRef.current?.hasChildNodes()) resize();
+  }, [isPanelOpen, isLoadedViewerScript]);
+
+  function toolbarEvent(item: ToolbarItemType) {
+    switch (item.actionType) {
+      case ToolbarActionType.Panel:
+        setisPanelOpen((prev) => !prev);
+        break;
+
+      default:
+        break;
+    }
+  }
+
   if (isError) {
     return (
       <PdfViewrWrapper>
@@ -154,30 +165,32 @@ function PDFViewer({ src, handleChangeVersion }: PDFViewerProps) {
       </PdfViewrWrapper>
     );
   }
+
   return (
     <>
+      <DesktopTopBar
+        title={title}
+        onMaskClick={onMask}
+        isPanelOpen={isPanelOpen}
+      />
+
       <PdfViewrWrapper>
         <ViewerLoader isLoading={isLoadingFile || isLoadingScript} />
-        <div
+        <SideBar isPanelOpen={isPanelOpen} />
+        <MainPanel
           ref={containerRef}
-          style={{
-            visibility: isLoadingFile || isLoadingScript ? "hidden" : "visible",
-          }}
-          id="mainPanel"
-        ></div>
+          isLoading={isLoadingFile || isLoadingScript}
+        />
       </PdfViewrWrapper>
 
-      <div
-        style={{
-          position: "fixed",
-          zIndex: 310,
-          left: "50px",
-          top: "50px",
-          cursor: "pointer",
-        }}
-      >
-        <button onClick={() => handleChangeVersion("2")}>Viewer V2</button>
-      </div>
+      <PDFToolbar
+        toolbar={toolbar}
+        percentValue={1}
+        isPanelOpen={isPanelOpen}
+        toolbarEvent={toolbarEvent}
+        generateContextMenu={generateContextMenu}
+        setIsOpenContextMenu={setIsOpenContextMenu}
+      />
     </>
   );
 }

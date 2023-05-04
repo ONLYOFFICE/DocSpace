@@ -25,6 +25,7 @@ export enum KeyboardEventKeys {
 }
 
 export enum ToolbarActionType {
+  Panel = 0,
   ZoomIn = 1,
   ZoomOut = 2,
   Prev = 3,
