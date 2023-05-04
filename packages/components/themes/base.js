@@ -2999,6 +2999,10 @@ const Base = {
           iconButton: black,
           iconButtonDisabled: gray,
         },
+
+        smtp: {
+          requirementColor: "#F21C0E",
+        },
       },
 
       backup: {

@@ -3003,6 +3003,10 @@ const Dark = {
           iconButton: white,
           iconButtonDisabled: "#333",
         },
+
+        smtp: {
+          requirementColor: "#E06451",
+        },
       },
 
       backup: {

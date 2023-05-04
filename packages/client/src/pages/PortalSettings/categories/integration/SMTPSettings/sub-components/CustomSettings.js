@@ -25,7 +25,7 @@ const {
 } = SMTPSettingsFields;
 
 const CustomSettings = (props) => {
-  const { t, settings, setSMTPSettings, isLoading } = props;
+  const { t, settings, setSMTPSettings, isLoading, theme } = props;
   const [emailError, setEmailError] = useState({
     hasError: false,
     isValid: true,
@@ -80,6 +80,9 @@ const CustomSettings = (props) => {
     fontWeight: 600,
   };
 
+  const requirementColor = {
+    color: theme.client.settings.integration.smtp.requirementColor,
+  };
   const enableAuthComponent = (
     <div className="smtp-settings_auth">
       <ToggleButton
@@ -136,7 +139,7 @@ const CustomSettings = (props) => {
     <StyledComponent>
       <div className="smtp-settings_title">
         <Text {...commonTextProps}>{t("Host")}</Text>
-        <Text as="span" color="#F21C0E">
+        <Text as="span" {...requirementColor}>
           *
         </Text>
       </div>
@@ -152,7 +155,7 @@ const CustomSettings = (props) => {
 
       <div className="smtp-settings_title">
         <Text {...commonTextProps}>{t("Port")}</Text>{" "}
-        <Text as="span" color="#F21C0E">
+        <Text as="span" {...requirementColor}>
           *
         </Text>
       </div>
@@ -180,7 +183,7 @@ const CustomSettings = (props) => {
 
       <div className="smtp-settings_title">
         <Text {...commonTextProps}>{t("SenderEmailAddress")}</Text>
-        <Text as="span" color="#F21C0E">
+        <Text as="span" {...requirementColor}>
           *
         </Text>
       </div>
@@ -218,10 +221,12 @@ const CustomSettings = (props) => {
   );
 };
 
-export default inject(({ setup }) => {
+export default inject(({ auth, setup }) => {
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
   const { integration, setSMTPSettings } = setup;
   const { smtpSettings } = integration;
   const { settings, isLoading } = smtpSettings;
 
-  return { settings, setSMTPSettings, isLoading };
+  return { theme, settings, setSMTPSettings, isLoading };
 })(observer(CustomSettings));
