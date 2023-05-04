@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Aici puteți schimba adresa dvs de spațiu.",
   "PortalRenamingLabelText": "O nouă denumire de spațiu",
   "PortalRenamingMobile": "Introduceţi acea parte care va apărea pe lângă adresă de spaţiu {{domain}}. Rețineți: adresa dvs de spaţiu veche va deveni indisponibilă pentru utilizatorii noi odată ce faceţi clic pe butonul Salvare.",
+  "PortalRenamingModalText": "Sunteți pe cale să redenumiți portalul dvs. Sigur doriți să continuați?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Introduceţi acea parte care va apărea pe lângă adresă de spaţiu {{domain}}.",
   "ProductUserOpportunities": "Afișați profile și grupe",
   "RecoveryFileNotSelected": "Eroare la recuperarea. Fișierul de recuperare nu a fost selectat.",

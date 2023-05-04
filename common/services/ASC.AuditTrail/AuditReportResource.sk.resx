@@ -1336,4 +1336,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Miestností</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Kôš vyprázdnený</value>
+  </data>
 </root>

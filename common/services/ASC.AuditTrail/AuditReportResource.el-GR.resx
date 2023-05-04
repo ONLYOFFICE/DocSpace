@@ -643,4 +643,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Δωμάτια</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Ο Κάδος άδειασε</value>
+  </data>
 </root>

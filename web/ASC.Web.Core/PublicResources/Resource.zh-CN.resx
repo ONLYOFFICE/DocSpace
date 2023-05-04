@@ -392,7 +392,7 @@
     <value>字段映射无效</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
-    <value>问候区设置已保存！</value>
+    <value>问候区设置已保存</value>
   </data>
   <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
     <value>设置已更新</value>
@@ -470,7 +470,7 @@
     <value>品牌化&amp;个性定制</value>
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>管理员/高级用户数量</value>
+    <value>管理员/高级用户数量:</value>
   </data>
   <data name="ConsumersBitly" xml:space="preserve">
     <value>比特利</value>
@@ -503,10 +503,10 @@
     <value>通过Clickatell启用双因素身份验证应用程序。</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
-    <value>DocuSign秘钥</value>
+    <value>DocuSign</value>
   </data>
   <data name="ConsumersdocuSignClientId" xml:space="preserve">
-    <value>DocuSign密码</value>
+    <value>DocuSign秘钥</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
     <value>连接应用程序，将DocuSign电子标志添加到文档。</value>
@@ -522,9 +522,6 @@
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>DropBox ID</value>
-  </data>
-  <data name="ConsumersEasyBib" xml:space="preserve">
-    <value>DropBox秘钥</value>
   </data>
   <data name="ConsumerseasyBibappkey" xml:space="preserve">
     <value>应用程序密钥</value>
@@ -558,5 +555,155 @@
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
     <value>连接Firebase Cloud Messaging服务，以接收关于发送给您的邮件的通知。</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign密码</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>发件人ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>项目ID</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>输入用于存储备份的Google Cloud桶的名称。</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>使用谷歌账户连接项目以登录门户，并管理Google云端硬盘文件和文件夹。</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>连接应用程序，以使用领英账户登录门户。</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>领英秘钥</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>客户秘钥</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>机架空间云存储</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>专用容器</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>地区</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>输入用于存储备份的Amazon桶的唯一名称。</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>输入Amazon bucket所在的AWS区域。</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>选择云存储</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>专用容器</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>输入用于存储备份的Selectel专用容器的名称。</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>输入用于存储备份的Selectel公共容器的名称。</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>客户秘钥</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>连接应用程序，以管理OneDrive文件和文件夹。</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>通过短信中心启用双因素身份验证应用程序。</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>MD5散列为小写的密码</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>添加Twilio，以直接从浏览器呼叫CRM联系人。</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>来自Twilio的电话号码（需短信授权）</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>连接应用程序，以使用Twitter账户登录门户并搜索联系人。</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>启用雅虎联系人导入的应用程序。</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>未知的图片类型</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>图像尺寸超过允许的参数</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox秘钥</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google秘钥</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>领英ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>用户</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>短信中心</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>ログイン</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>账户Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>授权令牌</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>客户秘钥</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>密码</value>
   </data>
 </root>

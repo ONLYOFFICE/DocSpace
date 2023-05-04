@@ -1402,4 +1402,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Stanze</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Cestino svuotato</value>
+  </data>
 </root>

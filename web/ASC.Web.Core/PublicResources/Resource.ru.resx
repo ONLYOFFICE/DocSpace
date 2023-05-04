@@ -979,4 +979,19 @@
   <data name="ConsumersappleIdTeamId" xml:space="preserve">
     <value>10-значный Team ID аккаунта разработчика</value>
   </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Секрет клиента</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Неизвестный тип файла изображения</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Размер изображения превышает допустимые параметры</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
 </root>
