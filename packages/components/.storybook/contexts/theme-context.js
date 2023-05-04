@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import ThemeProvider from "../../theme-provider/";
 import { Base, Dark } from "../../themes/index";
 
-const ThemeWrapper = ({ theme, children }) => (
+export const ThemeWrapper = ({ theme, children }) => (
   <ThemeProvider theme={theme}>{children}</ThemeProvider>
 );
 
