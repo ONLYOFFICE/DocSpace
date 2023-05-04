@@ -40,7 +40,7 @@ const Item = ({
   const [inputValue, setInputValue] = useState(name);
   const [parseErrors, setParseErrors] = useState(errors);
 
-  const accesses = getAccessOptions(t, roomType, true, false, isOwner);
+  const accesses = getAccessOptions(t, roomType, true, true, isOwner);
 
   const filteredAccesses = filterUserRoleOptions(accesses, item, true);
 
