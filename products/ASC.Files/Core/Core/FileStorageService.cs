@@ -3203,6 +3203,11 @@ public class FileStorageService //: IFileStorageService
 
     public IEnumerable<JsonElement> CreateThumbnails(List<JsonElement> fileIds)
     {
+        if (!_authContext.IsAuthenticated && !_externalShare.TryGetLinkId(out _))
+        {
+            throw GenerateException(new SecurityException(FilesCommonResource.ErrorMassage_SecurityException));
+        }
+        
         try
         {
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
