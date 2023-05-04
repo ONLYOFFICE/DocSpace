@@ -5,47 +5,23 @@ import CatalogItem from "@docspace/components/catalog-item";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import withLoader from "../../../HOCs/withLoader";
-import { isMobile } from "@docspace/components/utils/device";
-import { isMobileOnly } from "react-device-detect";
 
 const iconUrl = CatalogSettingsReactSvgUrl;
 
-const PureSettingsItem = ({
-  expandedSetting,
-  setSelectedNode,
-  setExpandSettingsTree,
-  setSelectedFolder,
+const PureSettingsItem = ({ t, showText, isActive, onClick }) => {
+  // const { setting } = useParams();
 
-  t,
-  showText,
-  toggleArticleOpen,
-}) => {
-  const { setting } = useParams();
-  const navigate = useNavigate();
+  // React.useEffect(() => {
+  //   setSelectedNode([setting]);
+  // }, [setting, setSelectedNode]);
 
-  React.useEffect(() => {
-    setSelectedNode([setting]);
-  }, [setting, setSelectedNode]);
+  // React.useEffect(() => {
+  //   if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
+  // }, [expandedSetting, setExpandSettingsTree]);
 
-  React.useEffect(() => {
-    if (setting && !expandedSetting) setExpandSettingsTree(["settings"]);
-  }, [expandedSetting, setExpandSettingsTree]);
-
-  const onClick = React.useCallback(() => {
-    setSelectedFolder(null);
-
-    setSelectedNode(["common"]);
-    setExpandSettingsTree(["common"]);
-    if (isMobile() || isMobileOnly) toggleArticleOpen();
-    navigate("/settings/common");
-  }, [
-    setSelectedFolder,
-    setSelectedNode,
-    setExpandSettingsTree,
-    toggleArticleOpen,
-  ]);
-
-  const isActive = window.location.pathname.includes("settings");
+  const onClickAction = React.useCallback(() => {
+    onClick && onClick("settings");
+  }, [onClick]);
 
   return (
     <CatalogItem
@@ -53,7 +29,7 @@ const PureSettingsItem = ({
       text={t("Common:Settings")}
       icon={iconUrl}
       showText={showText}
-      onClick={onClick}
+      onClick={onClickAction}
       isActive={isActive}
       folderId="document_catalog-settings"
     />

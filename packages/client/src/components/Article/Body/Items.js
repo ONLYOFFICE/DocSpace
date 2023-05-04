@@ -122,7 +122,7 @@ const Item = ({
         icon={getFolderIcon(item)}
         showText={showText}
         text={item.title}
-        isActive={isActive(item)}
+        isActive={isActive}
         onClick={onClick}
         onDrop={onMoveTo}
         isEndOfBlock={getEndOfBlock(item)}
@@ -173,6 +173,8 @@ const Items = ({
   firstLoad,
   deleteAction,
   startDrag,
+
+  activeItem,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -357,7 +359,7 @@ const Items = ({
             item={item}
             dragging={dragging}
             getFolderIcon={getFolderIcon}
-            isActive={isActive}
+            isActive={item.id === activeItem}
             getEndOfBlock={getEndOfBlock}
             showText={showText}
             onClick={onClick}
@@ -373,9 +375,25 @@ const Items = ({
       });
 
       if (!firstLoad && !isVisitor)
-        items.splice(3, 0, <SettingsItem key="settings-item" />);
+        items.splice(
+          3,
+          0,
+          <SettingsItem
+            key="settings-item"
+            onClick={onClick}
+            isActive={activeItem === "settings"}
+          />
+        );
       if (!isVisitor && !isCollaborator)
-        items.splice(3, 0, <AccountsItem key="accounts-item" />);
+        items.splice(
+          3,
+          0,
+          <AccountsItem
+            key="accounts-item"
+            onClick={onClick}
+            isActive={activeItem === "accounts"}
+          />
+        );
 
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
@@ -400,6 +418,7 @@ const Items = ({
       isAdmin,
       isVisitor,
       firstLoad,
+      activeItem,
     ]
   );
 
@@ -446,11 +465,8 @@ export default inject(
     } = treeFoldersStore;
 
     const { id, pathParts, rootFolderType } = selectedFolderStore;
-    const {
-      moveDragItems,
-      uploadEmptyFolders,
-      deleteAction,
-    } = filesActionsStore;
+    const { moveDragItems, uploadEmptyFolders, deleteAction } =
+      filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
