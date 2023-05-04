@@ -7,7 +7,6 @@ import authStore from "@docspace/common/store/AuthStore";
 import {
   getSMTPSettings,
   resetSMTPSettings,
-  setSMTPSettings,
 } from "@docspace/common/api/settings";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -54,7 +53,6 @@ class SettingsSetupStore {
     smtpSettings: {
       initSettings: {},
       settings: {},
-      isInit: false,
       isLoading: false,
     },
   };
@@ -133,8 +131,6 @@ class SettingsSetupStore {
 
     this.integration.smtpSettings.initSettings = settings;
     this.integration.smtpSettings.settings = settings;
-
-    this.setSMTPSettingsIsInit(true);
   };
 
   resetSMTPSettings = async () => {
@@ -146,18 +142,8 @@ class SettingsSetupStore {
     this.integration.smtpSettings.settings = settings;
   };
 
-  resetChangedSMTPSettings = () => {
-    this.integration.smtpSettings.settings = {
-      ...this.integration.smtpSettings.initSettings,
-    };
-  };
-
   setSMTPSettings = (settings) => {
     this.integration.smtpSettings.settings = settings;
-  };
-
-  setSMTPSettingsIsInit = (init) => {
-    this.integration.smtpSettings.isInit = init;
   };
 
   setSMTPSettingsLoading = (loading) => {
