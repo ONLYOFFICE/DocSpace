@@ -7,6 +7,7 @@ import authStore from "@docspace/common/store/AuthStore";
 import {
   getSMTPSettings,
   resetSMTPSettings,
+  setSMTPSettings,
 } from "@docspace/common/api/settings";
 import { combineUrl } from "@docspace/common/utils";
 import config from "PACKAGE_FILE";
@@ -52,8 +53,19 @@ class SettingsSetupStore {
     selectedConsumer: {},
     smtpSettings: {
       initSettings: {},
-      settings: {},
+      settings: {
+        credentialsUserName: "",
+        credentialsUserPassword: "",
+        enableAuth: false,
+        enableSSL: false,
+        useNtlm: false,
+        host: "",
+        port: "25",
+        senderAddress: "",
+        senderDisplayName: "",
+      },
       isLoading: false,
+      isDefaultSettings: false,
     },
   };
 
@@ -126,20 +138,41 @@ class SettingsSetupStore {
     this.integration.consumers = consumers;
   };
 
-  setInitSMTPSettings = async () => {
-    const settings = await getSMTPSettings();
+  setSMTPFields = (result) => {
+    const { isDefaultSettings, ...settings } = result;
 
-    this.integration.smtpSettings.initSettings = settings;
-    this.integration.smtpSettings.settings = settings;
+    const storeSettings = this.integration.smtpSettings.settings;
+
+    this.integration.smtpSettings.isDefaultSettings = isDefaultSettings;
+
+    for (var key in settings) {
+      if (settings[key] === null) continue;
+      storeSettings[key] = settings[key];
+    }
+
+  };
+  setInitSMTPSettings = async () => {
+    const result = await getSMTPSettings();
+
+    if (!result) return;
+
+    this.setSMTPFields(result);
   };
 
   resetSMTPSettings = async () => {
-    const settings = await resetSMTPSettings(
+    const result = await resetSMTPSettings(
       this.integration.smtpSettings.settings
     );
 
-    this.integration.smtpSettings.initSettings = settings;
-    this.integration.smtpSettings.settings = settings;
+    if (!result) return;
+
+    this.setSMTPFields(result);
+  };
+
+  updateSMTPSettings = async () => {
+    await setSMTPSettings(this.integration.smtpSettings.settings);
+
+    this.setInitSMTPSettings();
   };
 
   setSMTPSettings = (settings) => {

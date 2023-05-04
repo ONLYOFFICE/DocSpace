@@ -25,9 +25,10 @@ const ButtonContainer = (props) => {
     onSetValidationError,
     settings,
     setSMTPSettingsLoading,
-    setInitSMTPSettings,
+    updateSMTPSettings,
     resetSMTPSettings,
     isLoading,
+    isDefaultSettings,
   } = props;
 
   const [buttonOperation, setButtonOperation] = useState({
@@ -60,8 +61,7 @@ const ButtonContainer = (props) => {
     }, [200]);
 
     try {
-      await setSMTPSettings(settings);
-      await setInitSMTPSettings();
+      await updateSMTPSettings();
       toastr.success(t("Settings:SuccessfullySaveSettingsMessage"));
     } catch (e) {
       toastr.error(e);
@@ -109,7 +109,7 @@ const ButtonContainer = (props) => {
         size="small"
         onClick={onClickDefaultSettings}
         isLoading={buttonOperation.reset}
-        isDisabled={isLoading}
+        isDisabled={isLoading || isDefaultSettings}
       />
       <Button
         label={t("SendTestMail")}
@@ -125,15 +125,16 @@ export default inject(({ setup }) => {
   const {
     integration,
     setSMTPSettingsLoading,
-    setInitSMTPSettings,
+    updateSMTPSettings,
     resetSMTPSettings,
   } = setup;
   const { smtpSettings } = integration;
-  const { settings, isLoading } = smtpSettings;
+  const { settings, isLoading, isDefaultSettings } = smtpSettings;
   return {
+    isDefaultSettings,
     settings,
     setSMTPSettingsLoading,
-    setInitSMTPSettings,
+    updateSMTPSettings,
     resetSMTPSettings,
     isLoading,
   };
