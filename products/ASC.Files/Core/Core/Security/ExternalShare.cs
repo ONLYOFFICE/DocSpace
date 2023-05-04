@@ -265,7 +265,6 @@ public class ExternalShare
 public class ValidationInfo
 {
     public Status Status { get; set; }
-    public int TenantId { get; set; }
     public string Id { get; set; }
     public string Title { get; set; }
     public FileShare Access { get; set; }

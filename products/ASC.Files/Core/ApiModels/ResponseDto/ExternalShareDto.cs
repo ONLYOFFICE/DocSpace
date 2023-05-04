@@ -36,8 +36,6 @@ public class ExternalShareDto : IMapFrom<ValidationInfo>
     public string Title { get; set; }
     public RoomType? RoomType { get; set; }
     public Logo Logo { get; set; }
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-    public int TenantId { get; set; }
 
     public void Mapping(Profile profile)
     {
