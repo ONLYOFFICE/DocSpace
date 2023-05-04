@@ -893,7 +893,7 @@ public class UserController : PeopleControllerBase
             if (activationstatus == EmployeeActivationStatus.Activated
                 && u.IsOwner(_tenantManager.GetCurrentTenant()))
             {
-                var settings = _settingsManager.Load<FisrtEmailConfirmSettings>();
+                var settings = _settingsManager.Load<FirstEmailConfirmSettings>();
 
                 if (settings.IsFirst)
                 {
