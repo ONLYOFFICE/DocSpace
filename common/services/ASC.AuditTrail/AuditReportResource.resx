@@ -458,7 +458,7 @@
     <value>Forcesave settings Updated</value>
   </data>
   <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
-    <value> Overwriting Settings Updated</value>
+    <value>Overwriting Settings Updated</value>
   </data>
   <data name="DocumentsProduct" xml:space="preserve">
     <value>Documents</value>
@@ -554,7 +554,7 @@
     <value>Files [{0}]. Access Updated</value>
   </data>
   <data name="FileUpdatedRevisionComment" xml:space="preserve">
-    <value>Files [{0}]. Revision {1}. Comment Updated </value>
+    <value>Files [{0}]. Revision {1}. Comment Updated</value>
   </data>
   <data name="FileUploaded" xml:space="preserve">
     <value>File Uploaded: {0}</value>

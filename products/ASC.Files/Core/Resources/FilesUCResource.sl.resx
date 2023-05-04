@@ -79,4 +79,7 @@
   <data name="VirtualRooms" xml:space="preserve">
     <value>Sobe</value>
   </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Osebno</value>
+  </data>
 </root>

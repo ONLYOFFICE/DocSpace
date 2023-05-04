@@ -86,7 +86,7 @@
     <value>이 작업을 수행 할 수있는 권한 없음</value>
   </data>
   <data name="ErrorEmailAlreadyExists" xml:space="preserve">
-    <value>{!User}의 이메일이 이미 등록 되어 있습니다.</value>
+    <value>{!User}의 이메일이 이미 등록 되어 있습니다</value>
   </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>이메일 필드는 비어 있습니다</value>

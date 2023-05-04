@@ -68,7 +68,7 @@
     <value>Додано адміністратора: {0}</value>
   </data>
   <data name="AdministratorDeleted" xml:space="preserve">
-    <value>Адміністратора видалено</value>
+    <value>Адміністратора видалено: {0}</value>
   </data>
   <data name="AdministratorMessageSettingsUpdated" xml:space="preserve">
     <value>Налаштування повідомлень адміністратора оновлено</value>
@@ -107,7 +107,7 @@
     <value>Заходи.[{0}]. Створено тег: {1}</value>
   </data>
   <data name="CaseDeleted" xml:space="preserve">
-    <value>Справу видалено: {0} </value>
+    <value>Справу видалено: {0}</value>
   </data>
   <data name="CaseDeletedHistoryEvent" xml:space="preserve">
     <value>Заходи[{0}]. Історію подій видалено: {1}</value>
@@ -116,7 +116,7 @@
     <value>Випадки[{0}].Тег видалено {1}</value>
   </data>
   <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Заходи[{0}].Індивідуальний файл.</value>
+    <value>Заходи[{0}]. Індивідуальний файл</value>
   </data>
   <data name="CaseLinkedCompany" xml:space="preserve">
     <value>Заходи [{0}]. Компанія зв'язана: {1}</value>
@@ -146,7 +146,7 @@
     <value>Заходи переміщено до файлу CSV: {0}</value>
   </data>
   <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>Заходи імпортовано з файлу CSV </value>
+    <value>Заходи імпортовано з файлу CSV</value>
   </data>
   <data name="CasesModule" xml:space="preserve">
     <value>Заходи</value>
@@ -254,7 +254,7 @@
     <value>Користувальницькі поля компанії оновлено: {0}</value>
   </data>
   <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Зв'язатися з адміністратором відправленої пошти </value>
+    <value>Зв'язатися з адміністратором відправленої пошти</value>
   </data>
   <data name="ContactsCreatedCrmTasks" xml:space="preserve">
     <value>Контакти[{0}]. Завдання створенно: {1}</value>
@@ -308,8 +308,7 @@
     <value>Тип зв'язку видалено: {0}</value>
   </data>
   <data name="ContactTypesModule" xml:space="preserve">
-    <value>Типи контактів
-</value>
+    <value>Типи контактів</value>
   </data>
   <data name="ContactTypesUpdatedOrder" xml:space="preserve">
     <value>Оновлено типи контактів: {0}</value>
@@ -387,7 +386,7 @@
     <value>Завдання CRM імпортовано з файлу CSV</value>
   </data>
   <data name="CrmTasksModule" xml:space="preserve">
-    <value>Завдання CRM </value>
+    <value>Завдання CRM</value>
   </data>
   <data name="CrmTaskUpdated" xml:space="preserve">
     <value>Завдання CRM оновлено: {0}</value>
@@ -417,10 +416,10 @@
     <value>Проекти[{0}]. Обговорення [{1}]. Створено коментар</value>
   </data>
   <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value> Проекти[{0}]. Обговорення [{1}]. Коментар видалено</value>
+    <value>Проекти[{0}]. Обговорення [{1}]. Коментар видалено</value>
   </data>
   <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value> Проекти[{0}]. Обговорення [{1}]. Коментар оновлено</value>
+    <value>Проекти[{0}]. Обговорення [{1}]. Коментар оновлено</value>
   </data>
   <data name="DiscussionCreated" xml:space="preserve">
     <value>Проекти[{0}]. Створено обговорення: {1}</value>
@@ -429,7 +428,7 @@
     <value>Проекти[{0}]. Обговорення видалено: {1}</value>
   </data>
   <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value> Проекти[{0}]. Обговорення [{1}]. Прикріплено файл: {2}</value>
+    <value>Проекти[{0}]. Обговорення [{1}]. Прикріплено файл: {2}</value>
   </data>
   <data name="DiscussionsModule" xml:space="preserve">
     <value>Обговорення</value>
@@ -465,8 +464,7 @@
     <value>Завантажити</value>
   </data>
   <data name="ExportActionType" xml:space="preserve">
-    <value>Експорт
-</value>
+    <value>Експорт</value>
   </data>
   <data name="FileChangeOwner" xml:space="preserve">
     <value>Встановити власника від [{0}] до {{1}]</value>
@@ -556,7 +554,7 @@
     <value>Створена папка: {0}</value>
   </data>
   <data name="FolderDeleted" xml:space="preserve">
-    <value>Папка виделена</value>
+    <value>Папка виделена: {0}</value>
   </data>
   <data name="FolderMoved" xml:space="preserve">
     <value>Папки [{0}]. Переміщено до папки: {1}</value>
@@ -568,7 +566,7 @@
     <value>Папки [{0}]. Переміщено до папки з перезаписом: {1}</value>
   </data>
   <data name="FolderRenamed" xml:space="preserve">
-    <value>Папка перейменована</value>
+    <value>Папка перейменована: {0}</value>
   </data>
   <data name="FoldersModule" xml:space="preserve">
     <value>Папки</value>
@@ -718,13 +716,13 @@
     <value>Не вдалося ввійти через API та SMS-код</value>
   </data>
   <data name="LoginFailViaApiSocialAccount" xml:space="preserve">
-    <value>Не вдалося увійти через API та соціальні медіа </value>
+    <value>Не вдалося увійти через API та соціальні медіа</value>
   </data>
   <data name="LoginFailViaSms" xml:space="preserve">
     <value>Не вдалося увійти за допомогою смс</value>
   </data>
   <data name="LoginFailViaSSO" xml:space="preserve">
-    <value>Не вдалося увійти за допомогою SSO </value>
+    <value>Не вдалося увійти за допомогою SSO</value>
   </data>
   <data name="LoginHistoryReportDownloaded" xml:space="preserve">
     <value>Звіт історії входу завантажено</value>
@@ -907,14 +905,13 @@
     <value>Налаштування надійності паролів оновлено</value>
   </data>
   <data name="PeopleProduct" xml:space="preserve">
-    <value>Користувачі
-</value>
+    <value>Користувачі</value>
   </data>
   <data name="PersonAttachedFiles" xml:space="preserve">
     <value>Користувачі[{0}]. Прикріплені файли: {1}</value>
   </data>
   <data name="PersonCreated" xml:space="preserve">
-    <value>Користувач створений: {0} </value>
+    <value>Користувач створений: {0}</value>
   </data>
   <data name="PersonCreatedCompanyTag" xml:space="preserve">
     <value>Користувачі[{0}]. Створений тег компанії: {1}</value>
@@ -962,7 +959,7 @@
     <value>Користувачі [{0}].Температурний рівень компанії оновлено</value>
   </data>
   <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Користувачі [{0}]. Фото оновлено: {1}</value>
+    <value>Користувачі [{0}]. Фото оновлено</value>
   </data>
   <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
     <value>Користувачі[{0}]. Основна інформація оновлена</value>
@@ -1007,7 +1004,7 @@
     <value>Продукти [{0}]. Доступ обмежений</value>
   </data>
   <data name="ProductAddedAdministrator" xml:space="preserve">
-    <value>Продукти [{0}]. Доступ обмежений</value>
+    <value>Продукти [{0}]. Доступ обмежений: {1}</value>
   </data>
   <data name="ProductCol" xml:space="preserve">
     <value>Продукт</value>
@@ -1040,7 +1037,7 @@
     <value>Проекти [{0}]. Компанія зв'язана: {1}</value>
   </data>
   <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Проекти. Контакти зв'язано: {1}</value>
+    <value>Проекти[{0}]. Контакти зв'язано: {1}</value>
   </data>
   <data name="ProjectLinkedPerson" xml:space="preserve">
     <value>Проекти [{0}]. Користувача зв'язано: {1}</value>
@@ -1085,7 +1082,7 @@
     <value>Projects [{0}]. Status Updated: {1}</value>
   </data>
   <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Проекти [{0}]. Команду оновлено: {1} - {2}</value>
+    <value>Проекти [{0}]. Команду оновлено: {1}</value>
   </data>
   <data name="ReportsModule" xml:space="preserve">
     <value>Звіти</value>
@@ -1145,13 +1142,13 @@
     <value>Проекти [{0}]. Завдання: {1}. Файл прикріплено: {2}</value>
   </data>
   <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Завдання: {1}. Коментар створено: {2}</value>
+    <value>Проекти [{0}]. Завдання: {1}. Коментар створено</value>
   </data>
   <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Проекти [{0}]. Завдання: {1}. Коментар видалено: {2}</value>
+    <value>Проекти [{0}]. Завдання: {1}. Коментар видалено</value>
   </data>
   <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Завдання: {1}. Коментар оновлено: {2}</value>
+    <value>Проекти [{0}]. Завдання: {1}. Коментар оновлено</value>
   </data>
   <data name="TaskCreated" xml:space="preserve">
     <value>Проекти [{0}]. Завданя створено: {1}</value>
@@ -1190,7 +1187,7 @@
     <value>Проекти [{0}]. Завдання [{1}]. Час роботи оновлено: {2}</value>
   </data>
   <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Проекти [{0}]. Завдання [{1}]. Від'єднано від основних етапів</value>
+    <value>Проекти [{0}]. Завдання [{1}]. Від'єднано від основних етапів.</value>
   </data>
   <data name="TaskUpdated" xml:space="preserve">
     <value>Проекти [{0}]. Завдання оновлено: {1}</value>
@@ -1232,8 +1229,7 @@
     <value>Невідомий акаунт</value>
   </data>
   <data name="UnlinkActionType" xml:space="preserve">
-    <value>Розірвати зв'язок
-</value>
+    <value>Розірвати зв'язок</value>
   </data>
   <data name="UpdateAccessActionType" xml:space="preserve">
     <value>Оновлений доступ</value>
@@ -1284,7 +1280,7 @@
     <value>Надіслати Видалення інструкції профілю</value>
   </data>
   <data name="UserSentEmailInstructions" xml:space="preserve">
-    <value>Користувачі [{0}]. Надіслані інструкції щодо зміни електронної пошти </value>
+    <value>Користувачі [{0}]. Надіслані інструкції щодо зміни електронної пошти</value>
   </data>
   <data name="UserSentPasswordInstructions" xml:space="preserve">
     <value>Користувачі [{0}]. Надіслані інструкції щодо зміни пароля</value>
@@ -1321,5 +1317,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Ключ контактної форми веб-сайту  оновлено</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Кімнату створено</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Кімнати</value>
   </data>
 </root>

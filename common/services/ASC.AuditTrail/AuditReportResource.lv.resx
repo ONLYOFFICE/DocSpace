@@ -386,7 +386,7 @@
     <value>CSV failā eksportētie CRM uzdevumi: {0}</value>
   </data>
   <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>No CSV faila importētie CRM uzdevumi: {0}</value>
+    <value>No CSV faila importētie CRM uzdevumi</value>
   </data>
   <data name="CrmTasksModule" xml:space="preserve">
     <value>CRM uzdevumi</value>
@@ -881,10 +881,10 @@
     <value>Organizācijas profils. Adrese atjaunināta</value>
   </data>
   <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Organizācijas profils. Uzņēmuma nosaukums atjaunināts:{0} </value>
+    <value>Organizācijas profils. Uzņēmuma nosaukums atjaunināts:{0}</value>
   </data>
   <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Organizācijas profils. Rēķina logo atjaunināts.</value>
+    <value>Organizācijas profils. Rēķina logo atjaunināts</value>
   </data>
   <data name="OtherCrmSettingsModule" xml:space="preserve">
     <value>Citi uzstādījumi</value>
@@ -1335,5 +1335,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Vietnes kontaktveidlapas atslēga atjaunināta</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Telpa ir izveidota</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Telpas</value>
   </data>
 </root>

@@ -122,7 +122,7 @@
     <value>Nimate dovolj dovoljenja za izvajanje operacije</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Ne morem dovoliti {0} ponudniku z danimi poverilnicami. </value>
+    <value>Ne morem dovoliti {0} ponudniku z danimi poverilnicami.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
     <value>Nimate dovolj dovoljenja za ustvarjanje</value>

@@ -79,4 +79,7 @@
   <data name="VirtualRooms" xml:space="preserve">
     <value>Huoneet</value>
   </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Henkilökohtainen</value>
+  </data>
 </root>

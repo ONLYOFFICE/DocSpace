@@ -186,7 +186,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetDisplayUrl(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
         user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, true, false, inDto.Type,
             false, true, true);
 
@@ -274,7 +274,7 @@ public class UserController : PeopleControllerBase
 
         UpdateContacts(inDto.Contacts, user, !inDto.FromInviteLink);
 
-        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetDisplayUrl(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + _tenantManager.GetCurrentTenant().Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
 
         user = await _userManagerWrapper.AddUser(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
             inDto.FromInviteLink && linkData is { IsCorrect: true }, true, true, byEmail);
@@ -889,6 +889,21 @@ public class UserController : PeopleControllerBase
 
             u.ActivationStatus = activationstatus;
             await _userManager.UpdateUserInfo(u);
+
+            if (activationstatus == EmployeeActivationStatus.Activated
+                && u.IsOwner(_tenantManager.GetCurrentTenant()))
+            {
+                var settings = _settingsManager.Load<FirstEmailConfirmSettings>();
+
+                if (settings.IsFirst)
+                {
+                    _studioNotifyService.SendAdminWelcome(u);
+
+                    settings.IsFirst = false;
+                    _settingsManager.Save(settings);
+                }
+            }
+
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }

@@ -68,10 +68,10 @@
     <value>Favoritos</value>
   </data>
   <data name="FilesWillBeCompressedTarGz" xml:space="preserve">
-    <value>Os arquivos serão compactados no arquivo {0}.tar.gz{1}.</value>
+    <value>Os arquivos serão compactados no arquivo {0}.tar.gz{1}</value>
   </data>
   <data name="FilesWillBeCompressedZip" xml:space="preserve">
-    <value>Os arquivos serão compactados no arquivo {0}.zip{1}.</value>
+    <value>Os arquivos serão compactados no arquivo {0}.zip{1}</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
     <value>Meus Documentos</value>
@@ -93,5 +93,8 @@
   </data>
   <data name="VirtualRooms" xml:space="preserve">
     <value>Salas</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Pessoal</value>
   </data>
 </root>

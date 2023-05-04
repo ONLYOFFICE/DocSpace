@@ -112,7 +112,7 @@ public class SecurityContext
                     ArgumentNullException.ThrowIfNull(request);
 
                     ipFrom = "from " + _httpContextAccessor?.HttpContext.Connection.RemoteIpAddress;
-                    address = "for " + request.Url();
+                    address = "for " + request.GetUrlRewriter();
                 }
                 _logger.InformationEmptyBearer(ipFrom, address);
             }
@@ -126,7 +126,7 @@ public class SecurityContext
 
                     ArgumentNullException.ThrowIfNull(request);
 
-                    address = "for " + request.Url();
+                    address = "for " + request.GetUrlRewriter();
                     ipFrom = "from " + _httpContextAccessor?.HttpContext.Connection.RemoteIpAddress;
                 }
 

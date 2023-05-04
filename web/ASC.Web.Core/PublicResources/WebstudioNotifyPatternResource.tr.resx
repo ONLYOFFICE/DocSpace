@@ -193,9 +193,7 @@ Herhangi bir sorunuz olursa veya yardıma ihtiyaç duyarsanız lütfen bizimle i
 
 Saygılarımızla,
 ONLYOFFICE™ Destek Ekibi
-"www.onlyoffice.com":"http://onlyoffice.com/"
-
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_change_password" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalı için şifre değişikliği talebi

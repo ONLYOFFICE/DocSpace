@@ -61,25 +61,19 @@
   <data name="pattern_DocuSignComplete" xml:space="preserve">
     <value>h1. 全ての署名者は $DocumentTitle を完成しました
 
-これは"$DocumentTitle":"$DocumentURL"が完成されたについて知らせるメールです。
-
-^"${__VirtualRootPath}":"${__VirtualRootPath}" ポータルの登録ユーザーであるのためにそのメールを送信されました。^</value>
+これは"$DocumentTitle":"$DocumentURL"が完成されたについて知らせるメールです。</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-詳しい情報は、DocuSign ユー ザ ー アカウントでサインインしてください。
-
-^"${__VirtualRootPath}":"${__VirtualRootPath}" ポータルの登録ユーザーであるのためにそのメールを送信されました。^</value>
+詳しい情報は、DocuSign ユー ザ ー アカウントでサインインしてください。</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1.メーリングは完了です。
 
 これは$MailsCount枚のメッセージの要求したメーリング過程が完了されたについて知らせるメールです。$Message
 
-成功に送信されたメールメッセージは”メール”モジュールの"Sent":"$__VirtualRootPath/addons/mail/#sent"フォルダで保存されています。
-
-^"${__VirtualRootPath}":"${__VirtualRootPath}" ポータルの登録ユーザーであるのためにそのメールを送信されました。^</value>
+成功に送信されたメールメッセージは”メール”モジュールの"Sent":"$__VirtualRootPath/addons/mail/#sent"フォルダで保存されています。</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1. 文書に付与されたアクセス: "$DocumentTitle":"$DocumentURL"
@@ -102,7 +96,7 @@ $Message</value>
     <value>文書。 すべての当事者が署名しました[$DocumentTitle]($DocumentURL)</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
-    <value>文書。署名ステータスが変更されました。</value>
+    <value>文書。署名ステータスが変更されました</value>
   </data>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>文書。メーリングは完了です。</value>
@@ -118,5 +112,17 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>文書。[$DocumentTitle]($DocumentURL)フォルダにアクセスが付与されました</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName さんに文書へのコメントでメンションされました
+ 
+$__AuthorName さんに"$RoomTitle":"$RoomURL"ルームの"$DocumentTitle":"$DocumentURL"文書へのコメントでメンションされました：
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName さんがルームを削除しました
+ 
+$__AuthorName さんが次のルームを削除しました：$RoomTitle</value>
   </data>
 </root>

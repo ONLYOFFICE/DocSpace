@@ -48,6 +48,7 @@ const FilesMediaViewer = (props) => {
     nextMedia,
     prevMedia,
     resetUrl,
+    getFirstUrl,
     firstLoad,
     setSelection,
   } = props;
@@ -160,7 +161,8 @@ const FilesMediaViewer = (props) => {
 
     setMediaViewerData({ visible: false, id: null });
 
-    const url = localStorage.getItem("isFirstUrl");
+    // const url = localStorage.getItem("isFirstUrl");
+    const url = getFirstUrl();
 
     if (!url) {
       return;
@@ -238,6 +240,7 @@ export default inject(
       id: currentMediaFileId,
       currentPostionIndex,
       setMediaViewerData,
+      getFirstUrl,
       playlist,
       previewFile,
       setToPreviewFile,
@@ -302,6 +305,7 @@ export default inject(
       onDuplicate,
       archiveRoomsId,
       setSelection,
+      getFirstUrl,
     };
   }
 )(

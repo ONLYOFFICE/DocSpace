@@ -24,6 +24,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { DocumentEditor } from "@onlyoffice/document-editor-react";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import styled from "styled-components";
+import { getEditorTheme } from "../helpers/utils";
 
 toast.configure();
 
@@ -581,6 +582,8 @@ function Editor({
         ...config.editorConfig.customization,
         goback: goBack,
       };
+
+      config.editorConfig.customization.uiTheme = getEditorTheme(user?.theme);
 
       config.document.info.favorite = null;
 

@@ -74,4 +74,16 @@ $Message</value>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Documente. Acces permis la dosarul: $DocumentTitle</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName v-a menționat în comentariu din documentul
+ 
+$__AuthorName v-a menționat în comentariu din documentul "$DocumentTitle":"$DocumentURL" în sala "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName a șters o sală
+ 
+$__AuthorName a șters sala: $RoomTitle</value>
+  </data>
 </root>

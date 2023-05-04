@@ -74,7 +74,7 @@
     <value>Vymazaný správca:{0}</value>
   </data>
   <data name="AdministratorMessageSettingsUpdated" xml:space="preserve">
-    <value>Aktualizované nastavenia správcovských správ </value>
+    <value>Aktualizované nastavenia správcovských správ</value>
   </data>
   <data name="AdministratorOpenedFullAccess" xml:space="preserve">
     <value>Správcovia{0}]. Úplný prístup bol otvorený</value>
@@ -461,7 +461,7 @@
     <value>Aktualizované nastavenia tretej strany</value>
   </data>
   <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
-    <value>Nahrávanie aktualizovaného nastavenia formátov </value>
+    <value>Nahrávanie aktualizovaného nastavenia formátov</value>
   </data>
   <data name="DownloadActionType" xml:space="preserve">
     <value>Stiahnuť</value>
@@ -539,7 +539,7 @@
     <value>Súbor aktualizovaný: {0}</value>
   </data>
   <data name="FileUpdatedAccess" xml:space="preserve">
-    <value>Súbory [{0}]. Prístup aktualizovaný </value>
+    <value>Súbory [{0}]. Prístup aktualizovaný</value>
   </data>
   <data name="FileUpdatedRevisionComment" xml:space="preserve">
     <value>Súbory [{0}]. Revízia {1}. Komentár bol aktualizovaný</value>
@@ -569,7 +569,7 @@
     <value>Priečinky[{0}]. Presunuté s prepísaním do priečinka: {1}</value>
   </data>
   <data name="FolderRenamed" xml:space="preserve">
-    <value>Priečinok premenovaný: {0} </value>
+    <value>Priečinok premenovaný: {0}</value>
   </data>
   <data name="FoldersModule" xml:space="preserve">
     <value>Priečinky</value>
@@ -737,7 +737,7 @@
     <value>Prihlásenie úspešné</value>
   </data>
   <data name="LoginSuccessSocialAccount" xml:space="preserve">
-    <value>Prihlásenie prostredníctvom účtu sociálnej siete bolo úspešné </value>
+    <value>Prihlásenie prostredníctvom účtu sociálnej siete bolo úspešné</value>
   </data>
   <data name="LoginSuccessViaApi" xml:space="preserve">
     <value>Úspešné prihlásenie cez API</value>
@@ -881,7 +881,7 @@
     <value>Profil Organizácie. Aktualizovaný názov spoločnosti: {0}</value>
   </data>
   <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Profil organizácie. Aktualizované logo faktúry </value>
+    <value>Profil organizácie. Aktualizované logo faktúry</value>
   </data>
   <data name="OtherCrmSettingsModule" xml:space="preserve">
     <value>Ďalšie nastavenia</value>
@@ -899,7 +899,7 @@
     <value>Vlastník [{0}]. Pokyny na deaktiváciu portálu boli odoslané</value>
   </data>
   <data name="OwnerSentPortalDeleteInstructions" xml:space="preserve">
-    <value>Vlastník [{0}]. Pokyny na odstránenie portálu boli odoslané.</value>
+    <value>Vlastník [{0}]. Pokyny na odstránenie portálu boli odoslané</value>
   </data>
   <data name="PageCol" xml:space="preserve">
     <value>Stránka</value>
@@ -986,7 +986,7 @@
     <value>Platforma</value>
   </data>
   <data name="PortalAccessSettingsUpdated" xml:space="preserve">
-    <value>Nastavenie prístupu na portál bolo aktualizované.</value>
+    <value>Nastavenie prístupu na portál bolo aktualizované</value>
   </data>
   <data name="PortalDeactivated" xml:space="preserve">
     <value>Portál deaktivovaný</value>
@@ -1088,8 +1088,7 @@
     <value>Projekty [{0}]. Tím aktualizovaný: {1}</value>
   </data>
   <data name="ReassignsActionType" xml:space="preserve">
-    <value>Prevádza späť/priraďuje
-</value>
+    <value>Prevádza späť/priraďuje</value>
   </data>
   <data name="ReportsModule" xml:space="preserve">
     <value>Reporty</value>
@@ -1221,8 +1220,7 @@
     <value>Aktualizácia tretej strany: {0}. Poskytovateľ: {1}</value>
   </data>
   <data name="TimeTrackingModule" xml:space="preserve">
-    <value>Sledovanie času
-</value>
+    <value>Sledovanie času</value>
   </data>
   <data name="TimeZoneSettingsUpdated" xml:space="preserve">
     <value>Nastavenie Časovej zóny bolo aktualizované</value>
@@ -1267,9 +1265,7 @@
     <value>Používateľ bol vytvorený prostredníctvom pozvania: {0}</value>
   </data>
   <data name="UserDataReassigns" xml:space="preserve">
-    <value>Znovu priradené údaje: od používateľa {0} užívateľovi {1}
-
-</value>
+    <value>Znovu priradené údaje: od používateľa {0} užívateľovi {1}</value>
   </data>
   <data name="UserDeleted" xml:space="preserve">
     <value>Používateľ vymazaný: {0}</value>
@@ -1333,5 +1329,11 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>Aktualizovaný kľúč kontaktného web-formulára</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Miestnosť vytvorená</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Miestností</value>
   </data>
 </root>

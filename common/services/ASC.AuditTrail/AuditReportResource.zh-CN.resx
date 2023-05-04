@@ -134,7 +134,7 @@
     <value>案例[{0}]。 访问已打开</value>
   </data>
   <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>案例[{0}]。 访问已限制</value>
+    <value>案例[{0}]。 访问已限制: {1}</value>
   </data>
   <data name="CasesCreatedTag" xml:space="preserve">
     <value>案例。 标签已创建：{0}</value>
@@ -809,7 +809,7 @@
     <value>导出到CSV文件的机会：{0}</value>
   </data>
   <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>从CSV文件导入的机会：{0}</value>
+    <value>从CSV文件导入的机会</value>
   </data>
   <data name="OpportunitiesModule" xml:space="preserve">
     <value>机会</value>
@@ -1353,5 +1353,14 @@
   </data>
   <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
     <value>网站联系表格已更新</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>房间已创建</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>房间</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>please</value>
   </data>
 </root>

@@ -25,6 +25,7 @@ declare global {
   type MatchType = {
     confirmedEmail?: string;
     message?: string;
+    messageKey?: number;
   };
 
   type PasswordHashType = {
