@@ -109,7 +109,8 @@ jobs:
           -O ./SOURCES/DocSpace-$(echo ${{ env.BRANCH_NAME }} | tr '/' '-').tar.gz 
           wget https://github.com/ONLYOFFICE/document-templates/archive/main/community-server.tar.gz \
           -O ./SOURCES/document-templates-main-community-server.tar.gz
-          wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz -O ./SOURCES/dictionaries-master.tar.gz
+          wget https://github.com/ONLYOFFICE/dictionaries/archive/master.tar.gz \
+          -O ./SOURCES/dictionaries-master.tar.gz
           sed -i -e '/BuildRequires/d' product.spec
           rpmbuild -D "GIT_BRANCH $(echo ${{ env.BRANCH_NAME }} | tr '/' '-')" -D "_topdir $(pwd)" \
           -D "version ${{ steps.get_vars.outputs.VERSION }}" -D "release ${{ env.BUILD_NUMBER }}" -ba product.spec
