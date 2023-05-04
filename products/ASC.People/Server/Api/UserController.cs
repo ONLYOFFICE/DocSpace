@@ -1002,10 +1002,6 @@ public class UserController : PeopleControllerBase
             user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
             user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
         }
-        if (self && !isDocSpaceAdmin)
-        {
-            _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
-        }
 
         // change user type
         var canBeGuestFlag = !user.IsOwner(Tenant) && !_userManager.IsDocSpaceAdmin(user) && user.GetListAdminModules(_webItemSecurity, _webItemManager).Count == 0 && !user.IsMe(_authContext);
