@@ -90,7 +90,7 @@ const StyledTableContainer = styled(TableContainer)`
       .table-container_file-name-cell,
       .table-container_row-context-menu-wrapper {
         border-bottom: ${(props) =>
-    `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
+          `1px solid ${props.theme.filesSection.tableView.row.borderColor}`};
       }
     }
   }
@@ -129,7 +129,6 @@ const Table = ({
   const tagRef = useRef(null);
 
   useEffect(() => {
-
     const width = window.innerWidth;
 
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
@@ -177,6 +176,10 @@ const Table = ({
       elementResizeDetector.listenTo(node, onResize);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (!isRooms) setTagCount(0);
+  }, [isRooms]);
 
   const filesListNode = useMemo(() => {
     return filesList.map((item, index) => (
