@@ -1,7 +1,6 @@
 {
   "Authentication": "Authentication",
   "AuthViaNTLM": "Auth via NTLM",
-  "CustomSettings": "Custom settings",
   "EnableSSL": "Enable SSL",
   "EnterDomain": "Enter domain",
   "EnterPort": "Enter port",
@@ -12,9 +11,7 @@
   "HostLogin": "Host login",
   "HostPassword": "Host password",
   "Host": "Host",
-  "MailServerSettings": "Mail Server Settings",
   "Port": "Port",
-  "Source": "Source",
   "SenderDisplayName": "Sender Display Name",
   "SenderEmailAddress": "Sender Email Address",
   "SendTestMail": "Send Test Mail",
