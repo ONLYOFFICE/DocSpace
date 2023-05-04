@@ -64,8 +64,8 @@ jobs:
         
       - name: Upload artifacrs to Nexus cloud 
         run: |
-            curl -u ${{ secret.REPO_LOGIN }}:${{ secret.REPO_PASS }} ${{ secret.REPO_URL_4TESTING_DEB }} \
-            --upload-file /home/runner/work/DocSpace/DocSpace/build/install/*.deb
+          curl -u ${{ secret.REPO_LOGIN }}:${{ secret.REPO_PASS }} ${{ secret.REPO_URL_4TESTING_DEB }} \
+          --upload-file /home/runner/work/DocSpace/DocSpace/build/install/*.deb
           
           
   build_rpm:
