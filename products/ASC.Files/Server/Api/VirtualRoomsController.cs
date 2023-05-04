@@ -715,7 +715,7 @@ public class VirtualRoomsCommonController : ApiControllerBase
     /// Virtual Rooms content
     /// </returns>
     [HttpGet("rooms")]
-    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomFilterType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
+    public async Task<FolderContentDto<int>> GetRoomsFolderAsync(RoomType? type, string subjectId, bool? searchInContent, bool? withSubfolders, SearchArea? searchArea, bool? withoutTags, string tags, bool? excludeSubject,
         ProviderFilter? provider, SubjectFilter? subjectFilter)
     {
         ErrorIfNotDocSpace();
@@ -725,13 +725,12 @@ public class VirtualRoomsCommonController : ApiControllerBase
 
         var filter = type switch
         {
-            RoomFilterType.FillingFormsRoomOnly => FilterType.FillingFormsRooms,
-            RoomFilterType.ReadOnlyRoomOnly => FilterType.ReadOnlyRooms,
-            RoomFilterType.EditingRoomOnly => FilterType.EditingRooms,
-            RoomFilterType.ReviewRoomOnly => FilterType.ReviewRooms,
-            RoomFilterType.CustomRoomOnly => FilterType.CustomRooms,
-            RoomFilterType.FoldersOnly => FilterType.FoldersOnly,
-            RoomFilterType.PublicRoomOnly => FilterType.PublicRooms,
+            RoomType.FillingFormsRoom => FilterType.FillingFormsRooms,
+            RoomType.ReadOnlyRoom => FilterType.ReadOnlyRooms,
+            RoomType.EditingRoom => FilterType.EditingRooms,
+            RoomType.ReviewRoom => FilterType.ReviewRooms,
+            RoomType.CustomRoom => FilterType.CustomRooms,
+            RoomType.PublicRoom => FilterType.PublicRooms,
             _ => FilterType.None
         };
 
