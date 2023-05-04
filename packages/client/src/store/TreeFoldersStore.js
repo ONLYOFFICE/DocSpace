@@ -145,6 +145,10 @@ class TreeFoldersStore {
     return this.archiveFolder ? this.archiveFolder.id : null;
   }
 
+  get recycleBinFolderId() {
+    return this.recycleBinFolder ? this.recycleBinFolder.id : null;
+  }
+
   get isPersonalRoom() {
     return (
       this.myFolder &&
