@@ -152,17 +152,17 @@ ip_address = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('addr')
 netmask = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('netmask')
 ip_address_netmask = '%s/%s' % (ip_address, netmask)
 interface_cidr = IPNetwork(ip_address_netmask)
-knownNetwork = str(interface_cidr)
-knownProxies = "127.0.0.1"
+knownNetwork = [str(interface_cidr)]
+knownProxies = ["127.0.0.1"]
 
-if not APP_KNOWN_NETWORKS:
-    knownNetwork = knownNetwork + "," + APP_KNOWN_NETWORKS
+if APP_KNOWN_NETWORKS:
+    knownNetwork= knownNetwork + [x.strip() for x in APP_KNOWN_NETWORKS.split(',')]
 
-if not APP_KNOWN_PROXIES:
-    knownProxies = knownProxies + "," + APP_KNOWN_PROXIES
+if APP_KNOWN_PROXIES:
+    knownNetwork= knownNetwork + [x.strip() for x in APP_KNOWN_PROXIES.split(',')]
 
-updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownNetworks", [knownNetwork])
-updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownProxies", [knownProxies])
+updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownNetworks", knownNetwork)
+updateJsonData(jsonData,"$.core.hosting.forwardedHeadersOptions.knownProxies", knownProxies)
 
 writeJsonFile(filePath, jsonData)
 
