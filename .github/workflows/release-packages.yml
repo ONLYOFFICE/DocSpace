@@ -2,9 +2,9 @@ name: Release RPM DEB
 
 on:
   push:
-    paths:
-    - build/install/deb**
-    - build/install/rpm**
+    # paths:
+    # - build/install/deb**
+    # - build/install/rpm**
   workflow_dispatch:
   
 env:
