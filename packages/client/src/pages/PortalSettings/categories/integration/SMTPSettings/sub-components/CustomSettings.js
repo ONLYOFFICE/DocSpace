@@ -195,6 +195,7 @@ const CustomSettings = (props) => {
         errorMessage={t("Common:IncorrectEmail")}
       >
         <EmailInput
+          name={SENDER_EMAIL_ADDRESS}
           isDisabled={isLoading}
           value={settings[SENDER_EMAIL_ADDRESS]}
           onChange={onChange}

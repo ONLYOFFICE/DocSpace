@@ -52,7 +52,7 @@ class SettingsSetupStore {
     consumers: [],
     selectedConsumer: {},
     smtpSettings: {
-      initSettings: {},
+      initialSettings: {},
       settings: {
         credentialsUserName: "",
         credentialsUserPassword: "",
@@ -140,7 +140,7 @@ class SettingsSetupStore {
 
   get isSMTPInitialSettings() {
     const settings = this.integration.smtpSettings.settings;
-    const initialSettings = this.integration.smtpSettings.initSettings;
+    const initialSettings = this.integration.smtpSettings.initialSettings;
 
     const fields = Object.keys(settings).filter(
       (key) => settings[key] !== initialSettings[key]
@@ -161,7 +161,7 @@ class SettingsSetupStore {
       storeSettings[key] = settings[key];
     }
 
-    this.integration.smtpSettings.initSettings = { ...storeSettings };
+    this.integration.smtpSettings.initialSettings = { ...storeSettings };
   };
   setInitSMTPSettings = async () => {
     const result = await getSMTPSettings();

@@ -3,7 +3,6 @@ import { inject, observer } from "mobx-react";
 
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
-import { setSMTPSettings } from "@docspace/common/api/settings";
 
 import { ButtonStyledComponent } from "../StyledComponent";
 import { SMTPSettingsFields } from "../constants";
