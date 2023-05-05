@@ -1369,4 +1369,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>ルーム</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>ゴミ箱を空にする</value>
+  </data>
 </root>

@@ -724,4 +724,25 @@
   <data name="ConsumersdocuSignClientId" xml:space="preserve">
     <value>Ключ DocuSign</value>
   </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 accesskey</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Ключ DropBox</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Ключ WordPress</value>
+  </data>
 </root>

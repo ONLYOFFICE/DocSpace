@@ -802,7 +802,7 @@ Ce message a été généré automatiquement pour tester vos paramètres SMTP. S
 
 
 Meilleures salutations,
-Équipe ONLYOFFICE </value>
+Équipe ONLYOFFICE</value>
   </data>
   <data name="pattern_storage_decryption_error" xml:space="preserve">
     <value>Bonjour, $UserName !

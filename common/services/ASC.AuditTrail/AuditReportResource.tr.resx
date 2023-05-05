@@ -1330,4 +1330,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Odalar</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Çökp kutusu boşaltıldı</value>
+  </data>
 </root>

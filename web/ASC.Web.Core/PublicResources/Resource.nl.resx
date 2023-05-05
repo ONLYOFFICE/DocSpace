@@ -610,4 +610,7 @@
   <data name="ConsumersYandexClientSecret" xml:space="preserve">
     <value>Wachtwoord</value>
   </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
 </root>
