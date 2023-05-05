@@ -1,21 +1,11 @@
 import { MINIMAL_VIEWPORTS } from "@storybook/addon-viewport";
 import { Base, Dark } from "../themes/index";
 import "../../common/opensansoffline.scss";
-import { ThemeWrapper } from "./contexts/theme-context";
+import globalTypes from "./globals";
+import ThemeWrapper from "./globals/theme-wrapper";
 
 const preview = {
-  globalTypes: {
-    theme: {
-      description: "Global theme for components",
-      defaultValue: "Light",
-      toolbar: {
-        title: "Theme",
-        icon: "circlehollow",
-        items: ["Light", "Dark"],
-        dynamicTitle: true,
-      },
-    },
-  },
+  globalTypes,
   parameters: {
     backgrounds: { disable: true },
     actions: { argTypesRegex: "^on[A-Z].*" },
