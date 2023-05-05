@@ -83,7 +83,6 @@ global using ASC.Core.Notify.Socket;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Storage;
-global using ASC.Data.Storage.DiscStorage;
 global using ASC.Data.Storage.ZipOperators;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Core;
@@ -226,6 +225,7 @@ global using static ASC.Web.Files.Services.DocumentService.DocumentServiceTracke
 global using static ASC.Web.Files.Utils.FileTracker;
 
 global using HttpException = ASC.Common.Web.HttpException;
+global using License = ASC.Core.Billing.License;
 global using SecurityContext = ASC.Core.SecurityContext;
 global using Constants = ASC.Core.Users.Constants;
 global using UserInfo = ASC.Core.Users.UserInfo;
