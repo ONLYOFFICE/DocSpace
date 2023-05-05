@@ -143,6 +143,8 @@ public class SmtpJob : DistributedTaskProgress
             PublishChanges();
 
             client.Send(FormatOptions.Default, mimeMessage);
+
+            Percentage = 100;
         }
         catch (AuthorizingException authError)
         {

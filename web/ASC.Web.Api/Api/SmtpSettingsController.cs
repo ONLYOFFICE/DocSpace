@@ -81,7 +81,7 @@ public class SmtpSettingsController : ControllerBase
 
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
 
-        var settingConfig = _mapper.Map<SmtpSettingsDto, SmtpSettings>(inDto);
+        var settingConfig = ToSmtpSettingsConfig(inDto);
 
         _coreConfiguration.SmtpSettings = settingConfig;
 
@@ -89,6 +89,26 @@ public class SmtpSettingsController : ControllerBase
         settings.CredentialsUserPassword = "";
 
         return settings;
+    }
+
+    private SmtpSettings ToSmtpSettingsConfig(SmtpSettingsDto inDto)
+    {
+        var settingsConfig = new SmtpSettings(
+            inDto.Host,
+            inDto.Port ?? SmtpSettings.DefaultSmtpPort,
+            inDto.SenderAddress,
+            inDto.SenderDisplayName)
+        {
+            EnableSSL = inDto.EnableSSL,
+            EnableAuth = inDto.EnableAuth
+        };
+
+        if (inDto.EnableAuth)
+        {
+            settingsConfig.SetCredentials(inDto.CredentialsUserName, inDto.CredentialsUserPassword);
+        }
+
+        return settingsConfig;
     }
 
     [HttpDelete("smtp")]
