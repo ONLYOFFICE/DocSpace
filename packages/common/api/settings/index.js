@@ -764,3 +764,17 @@ export function resetSMTPSettings() {
     url: `/smtpsettings/smtp`,
   });
 }
+
+export function sendingTestMail() {
+  return request({
+    method: "get",
+    url: `/smtpsettings/smtp/test`,
+  });
+}
+
+export function getSendingTestMailStatus() {
+  return request({
+    method: "get",
+    url: `/smtpsettings/smtp/test/status`,
+  });
+}

@@ -3,6 +3,10 @@ import { inject, observer } from "mobx-react";
 
 import Button from "@docspace/components/button";
 import toastr from "@docspace/components/toast/toastr";
+import {
+  getSendingTestMailStatus,
+  sendingTestMail,
+} from "@docspace/common/api/settings";
 
 import { ButtonStyledComponent } from "../StyledComponent";
 import { SMTPSettingsFields } from "../constants";
@@ -16,7 +20,8 @@ const {
   AUTHENTICATION,
 } = SMTPSettingsFields;
 
-let timerId = null;
+let timerId = null,
+  intervalId = null;
 const ButtonContainer = (props) => {
   const {
     t,
@@ -73,7 +78,72 @@ const ButtonContainer = (props) => {
     setButtonOperation({ ...buttonOperation, save: false });
   };
 
-  const onClickSendTestMail = async () => {};
+  const checkStatus = () => {
+    let isWaitRequest = false;
+    intervalId = setInterval(async () => {
+      if (isWaitRequest) {
+        return;
+      }
+
+      isWaitRequest = true;
+
+      const result = await getSendingTestMailStatus();
+
+      if (!result) {
+        intervalId && toastr.error(t("Common:UnexpectedError"));
+        clearInterval(intervalId);
+        intervalId = null;
+        isWaitRequest = false;
+
+        setSMTPSettingsLoading(false);
+        setButtonOperation({ ...buttonOperation, send: false });
+
+        return;
+      }
+
+      const { completed, error } = result;
+
+      if (completed) {
+        error?.length > 0
+          ? toastr.error(error)
+          : toastr.success(t("SuccessfullyCompletedOperation"));
+
+        clearInterval(intervalId);
+        intervalId = null;
+
+        setSMTPSettingsLoading(false);
+        setButtonOperation({ ...buttonOperation, send: false });
+      }
+
+      isWaitRequest = false;
+    }, 1000);
+  };
+  const onClickSendTestMail = async () => {
+    try {
+      setSMTPSettingsLoading(true);
+      setButtonOperation({ ...buttonOperation, send: true });
+
+      const result = await sendingTestMail();
+      if (!result) return;
+
+      const { completed, error } = result;
+
+      if (completed) {
+        toastr.error(error);
+        setSMTPSettingsLoading(false);
+        setButtonOperation({ ...buttonOperation, send: false });
+
+        return;
+      }
+
+      checkStatus();
+    } catch (e) {
+      toastr.error(e);
+
+      setSMTPSettingsLoading(false);
+      setButtonOperation({ ...buttonOperation, send: false });
+    }
+  };
 
   const onClickDefaultSettings = async () => {
     timerId = setTimeout(() => {
@@ -115,7 +185,8 @@ const ButtonContainer = (props) => {
         label={t("SendTestMail")}
         size="small"
         onClick={onClickSendTestMail}
-        isDisabled={isLoading}
+        isDisabled={isLoading || !isSMTPInitialSettings}
+        isLoading={buttonOperation.send}
       />
     </ButtonStyledComponent>
   );
