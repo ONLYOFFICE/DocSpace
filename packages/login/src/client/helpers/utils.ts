@@ -114,7 +114,7 @@ export const getMessageFromKey = (messageKey: number) => {
   return MessageKey[messageKey];
 }
 
-export const getMessageKeyTranslate = (t, message) => {
+export const getMessageKeyTranslate = (t: TFuncType, message: string) => {
   switch (message) {
     case "Error":
       return t("Common:Error");
