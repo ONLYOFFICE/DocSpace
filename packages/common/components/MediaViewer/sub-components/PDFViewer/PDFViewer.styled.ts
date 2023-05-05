@@ -50,6 +50,10 @@ export const DesktopTopBar = styled(DesktopDetails)<Panel>`
     margin-left: -7px;
     width: 28px;
   }
+
+  .title {
+    padding-right: 16px;
+  }
 `;
 
 export const PDFToolbar = styled(ImageViewerToolbar)<Panel>`
