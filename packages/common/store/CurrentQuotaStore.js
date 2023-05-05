@@ -24,12 +24,6 @@ class QuotasStore {
     makeAutoObservable(this);
   }
 
-  init = async () => {
-    if (this.isLoaded) return;
-
-    await this.setPortalQuota();
-  };
-
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
   };
@@ -214,6 +208,8 @@ class QuotasStore {
   setPortalQuotaValue = (res) => {
     this.currentPortalQuota = res;
     this.currentPortalQuotaFeatures = res.features;
+
+    this.setIsLoaded(true);
   };
 
   updateQuotaUsedValue = (featureId, value) => {
@@ -228,17 +224,7 @@ class QuotasStore {
   };
   setPortalQuota = async () => {
     try {
-      let refresh = false;
-      if (window.location.search === "?complete=true") {
-        window.history.replaceState(
-          {},
-          document.title,
-          window.location.pathname
-        );
-        refresh = true;
-      }
-
-      const res = await api.portal.getPortalQuota(refresh);
+      const res = await api.portal.getPortalQuota();
 
       if (!res) return;
 

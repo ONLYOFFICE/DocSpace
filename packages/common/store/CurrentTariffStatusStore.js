@@ -16,14 +16,6 @@ class CurrentTariffStatusStore {
     makeAutoObservable(this);
   }
 
-  init = async () => {
-    if (this.isLoaded) return;
-
-    await this.setPortalTariff();
-
-    this.setIsLoaded(true);
-  };
-
   setIsLoaded = (isLoaded) => {
     this.isLoaded = isLoaded;
   };
@@ -90,6 +82,12 @@ class CurrentTariffStatusStore {
     moment.locale(authStore.language);
     return getDaysRemaining(this.delayDueDate);
   }
+
+  setPortalTariffValue = async (res) => {
+    this.portalTariffStatus = res;
+
+    this.setIsLoaded(true);
+  };
 
   setPortalTariff = async () => {
     const res = await api.portal.getPortalTariff();
