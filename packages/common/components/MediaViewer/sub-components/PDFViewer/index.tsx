@@ -1,11 +1,11 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 
-import { isDesktop } from "react-device-detect";
-
 import { loadScript, combineUrl } from "@docspace/common/utils";
 
 import PDFViewerProps from "./PDFViewer.props";
 import ViewerLoader from "../ViewerLoader";
+import MainPanel from "./ui/MainPanel";
+import Sidebar from "./ui/Sidebar";
 
 import {
   ErrorMessage,
@@ -14,27 +14,25 @@ import {
   PDFToolbar,
 } from "./PDFViewer.styled";
 
-import SideBar from "./ui/SideBar";
+import { ToolbarActionType } from "../../helpers";
+import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 
 import "./lib";
-import ImageViewerToolbar from "../ImageViewerToolbar";
-import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
-import { ToolbarActionType } from "../../helpers";
-import MainPanel from "./ui/MainPanel";
 
+// import { isDesktop } from "react-device-detect";?
 const pdfViewerId = "pdf-viewer";
 
 function PDFViewer({
   src,
   title,
   toolbar,
+  isPDFSidebarOpen,
   onMask,
   generateContextMenu,
   setIsOpenContextMenu,
+  setIsPDFSidebarOpen,
 }: PDFViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [isPanelOpen, setisPanelOpen] = useState<boolean>(false);
 
   const [file, setFile] = useState<ArrayBuffer | string | null>();
 
@@ -136,6 +134,7 @@ function PDFViewer({
         }
         //@ts-ignore
         window.Viewer.open(file);
+        resize();
       } catch (error) {
         setIsError(true);
         console.log(error);
@@ -145,12 +144,12 @@ function PDFViewer({
 
   useEffect(() => {
     if (isLoadedViewerScript && containerRef.current?.hasChildNodes()) resize();
-  }, [isPanelOpen, isLoadedViewerScript]);
+  }, [isPDFSidebarOpen, isLoadedViewerScript]);
 
   function toolbarEvent(item: ToolbarItemType) {
     switch (item.actionType) {
       case ToolbarActionType.Panel:
-        setisPanelOpen((prev) => !prev);
+        setIsPDFSidebarOpen((prev) => !prev);
         break;
 
       default:
@@ -171,12 +170,15 @@ function PDFViewer({
       <DesktopTopBar
         title={title}
         onMaskClick={onMask}
-        isPanelOpen={isPanelOpen}
+        isPanelOpen={isPDFSidebarOpen}
       />
 
       <PdfViewrWrapper>
         <ViewerLoader isLoading={isLoadingFile || isLoadingScript} />
-        <SideBar isPanelOpen={isPanelOpen} />
+        <Sidebar
+          isPanelOpen={isPDFSidebarOpen}
+          setIsPDFSidebarOpen={setIsPDFSidebarOpen}
+        />
         <MainPanel
           ref={containerRef}
           isLoading={isLoadingFile || isLoadingScript}
@@ -186,7 +188,7 @@ function PDFViewer({
       <PDFToolbar
         toolbar={toolbar}
         percentValue={1}
-        isPanelOpen={isPanelOpen}
+        isPanelOpen={isPDFSidebarOpen}
         toolbarEvent={toolbarEvent}
         generateContextMenu={generateContextMenu}
         setIsOpenContextMenu={setIsOpenContextMenu}

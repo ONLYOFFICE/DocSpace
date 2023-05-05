@@ -4,6 +4,7 @@ interface PDFViewerProps {
   src: string;
   title: string;
   toolbar: ReturnType<typeof getPDFToolbar>;
+  isPDFSidebarOpen: boolean;
 
   onMask: VoidFunction;
   generateContextMenu: (
@@ -12,6 +13,7 @@ interface PDFViewerProps {
     bottom?: string
   ) => JSX.Element;
   setIsOpenContextMenu: Dispatch<SetStateAction<boolean>>;
+  setIsPDFSidebarOpen: Dispatch<SetStateAction<boolean>>;
   handleChangeVersion: (arg: string) => void; // temp
 }
 

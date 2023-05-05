@@ -34,7 +34,7 @@ function Viewer(props: ViewerProps) {
   };
 
   //#endregion
-
+  const [isPDFSidebarOpen, setIsPDFSidebarOpen] = useState<boolean>(false);
   const [panelVisible, setPanelVisible] = useState<boolean>(true);
   const [isOpenContextMenu, setIsOpenContextMenu] = useState<boolean>(false);
 
@@ -185,7 +185,9 @@ function Viewer(props: ViewerProps) {
 
       {props.playlist.length > 1 && !isFullscreen && !isMobile && (
         <>
-          {isNotFirstElement && <PrevButton prevClick={prevClick} />}
+          {isNotFirstElement && !isPDFSidebarOpen && (
+            <PrevButton prevClick={prevClick} />
+          )}
           {isNotLastElement && (
             <NextButton isPdfFIle={props.isPdf} nextClick={nextClick} />
           )}
@@ -257,6 +259,8 @@ function Viewer(props: ViewerProps) {
                 handleChangeVersion={handleChangeVersion}
                 generateContextMenu={props.generateContextMenu}
                 setIsOpenContextMenu={setIsOpenContextMenu}
+                isPDFSidebarOpen={isPDFSidebarOpen}
+                setIsPDFSidebarOpen={setIsPDFSidebarOpen}
               />
             ) : (
               <PDFViewerV2
