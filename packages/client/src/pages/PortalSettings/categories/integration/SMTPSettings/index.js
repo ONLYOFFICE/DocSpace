@@ -7,24 +7,40 @@ import HelpButton from "@docspace/components/help-button";
 
 import CustomSettings from "./sub-components/CustomSettings";
 import { StyledComponent } from "./StyledComponent";
+import Loaders from "@docspace/common/components/Loaders";
 
+let timerId = null;
 const SMTPSettings = (props) => {
   const { setInitSMTPSettings, organizationName } = props;
 
   const { t, ready } = useTranslation(["SMTPSettings", "Settings", "Common"]);
   const [isInit, setIsInit] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const init = async () => {
     await setInitSMTPSettings();
+
+    setIsLoading(false);
     setIsInit(true);
   };
   useEffect(() => {
-    if (!ready) return;
+    timerId = setTimeout(() => {
+      setIsLoading(true);
+    }, 400);
 
     init();
-  }, [ready]);
 
-  if (!isInit) return <></>;
+    () => {
+      clearTimeout(timerId);
+      timerId = null;
+    };
+  }, []);
+
+  const isLoadingContent = isLoading || !ready;
+
+  if (!isLoading && !isInit) return <></>;
+
+  if (isLoadingContent && !isInit) return <Loaders.SettingsSMTP />;
 
   return (
     <StyledComponent>
