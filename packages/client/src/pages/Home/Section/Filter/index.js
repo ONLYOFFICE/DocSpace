@@ -1149,7 +1149,7 @@ const SectionFilterContent = ({
             group: FilterGroups.filterType,
             label: t("Common:Type"),
             isHeader: true,
-            isLast: true,
+            isLast: !isTrash,
           },
           ...folders,
           {
@@ -1410,8 +1410,30 @@ const SectionFilterContent = ({
       ];
 
       filterOptions.push(...authorOption);
-
       filterOptions.push(...typeOptions);
+
+      if (isTrash) {
+        const roomOption = [
+          {
+            id: "filter_search-by-room-content-header",
+            key: "filter_search-by-room-content-header",
+            group: FilterGroups.filterRooms,
+            label: "Room",
+            isHeader: true,
+            isLast: true,
+          },
+          {
+            id: "filter_search-by-room-content",
+            key: "filter_search-by-room-content",
+            group: FilterGroups.filterRooms,
+            withoutHeader: true,
+            label: "Select room",
+            displaySelectorType: "button",
+            isLast: true,
+          },
+        ];
+        filterOptions.push(...roomOption);
+      }
     }
     return filterOptions;
   }, [
