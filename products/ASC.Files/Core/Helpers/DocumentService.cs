@@ -616,7 +616,7 @@ public static class DocumentService
         [JsonPropertyName("callback")]
         public string Callback { get; set; }
 
-        [JsonProperty(PropertyName = "key", Required = Required.Always)]
+        [JsonProperty(PropertyName = "key", Required = Required.AllowNull)]
         [JsonPropertyName("key")]
         public string Key { get; set; }
 
@@ -807,7 +807,7 @@ public static class DocumentService
         public string Url { get; set; }
 
         [JsonProperty(PropertyName = "token", DefaultValueHandling = DefaultValueHandling.Ignore)]
-[JsonPropertyName("token")]
+        [JsonPropertyName("token")]
         public string Token { get; set; }
     }
 
