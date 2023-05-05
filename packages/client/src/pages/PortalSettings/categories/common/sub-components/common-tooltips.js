@@ -52,7 +52,7 @@ export const LanguageTimeSettingsTooltip = ({
             className="display-block font-size"
             isHovered={true}
             target="_blank"
-            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+            href={`${helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`}
           >
             {{ learnMore }}
           </Link>
@@ -123,7 +123,7 @@ export const DNSSettingsTooltip = ({
           className="display-block font-size"
           isHovered={true}
           target="_blank"
-          href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+          href={`${helpLink}/administration/docspace-settings.aspx#alternativeurl`}
         >
           {t("Common:LearnMore")}
         </Link>
