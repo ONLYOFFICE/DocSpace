@@ -1402,4 +1402,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Otaqlar</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Zibil qutusu təmizləndi</value>
+  </data>
 </root>

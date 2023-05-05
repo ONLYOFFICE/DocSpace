@@ -982,4 +982,19 @@
   <data name="ConsumersappleIdTeamId" xml:space="preserve">
     <value>ID d’équipe de comptes développeurs de 10-caratères</value>
   </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Clé secrète du client</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Le type de fichier de l'image est inconnu</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Taille de l'image dépasse les paramètres autorisés</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
 </root>

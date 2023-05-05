@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Tässä voit vaihtaa tilasi osoitteen.",
   "PortalRenamingLabelText": "Uusi tilan nimi",
   "PortalRenamingMobile": "Syötä osa, joka ilmaantuu {{domain}} tilan osoitteen viereen. Huom: vanhan tilasi osoite ei ole enää saatavilla uusille käyttäjille, kun klikkaat Tallenna-painiketta.",
+  "PortalRenamingModalText": "Olet nimeämässä uudelleen sivustoasi. Oletko varma?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Syötä osa, joka ilmaantuu {{domain}} tilan osoitteen viereen.",
   "ProductUserOpportunities": "Tarkastele profiileja ja ryhmiä",
   "RecoveryFileNotSelected": "Palautusvirhe. Palautustiedostoa ei ole valittu.",

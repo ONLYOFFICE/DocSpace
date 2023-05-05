@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Šeit jūs varat mainīt savu portāla adresi.",
   "PortalRenamingLabelText": "Jauns portāla nosaukums",
   "PortalRenamingMobile": "Ievadiet daļu, kas tiks parādīta blakus {{domain}} telpas adresei. Lūdzu, ņemiet vērā: jūsu vecā telpas adrese nebūs pieejama jaunajiem lietotājiem, tiklīdz noklikšķināsiet uz pogas Saglabāt.",
+  "PortalRenamingModalText": "Jūs grasāties pārdēvēt savu portālu. Vai tiešām vēlaties turpināt?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Ievadiet daļu, kas tiks parādīta blakus {{domain}} telpas adresei.",
   "ProductUserOpportunities": "Skatiet profilus un grupas",
   "RecoveryFileNotSelected": "Atkopšanas kļūda. Atkopšanas fails nav atlasīts.",

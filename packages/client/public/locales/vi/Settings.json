@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Ở đây bạn có thể thay đổi địa chỉ không gian của bạn.",
   "PortalRenamingLabelText": "Tên không gian mới",
   "PortalRenamingMobile": "Nhập phần sẽ xuất hiện sau địa chỉ không gian {{domain}}. Xin lưu ý: địa chỉ không gian cũ của bạn sẽ có thể không khả dụng cho người dùng mới khi bạn nhấp vào nút Lưu.",
+  "PortalRenamingModalText": "Bạn sẽ đổi tên cổng thông tin của bạn. Bạn có chắc là muốn tiếp tục?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Nhập phần sẽ xuất hiện sau địa chỉ không gian {{domain}}.",
   "ProductUserOpportunities": "Xem hồ sơ và nhóm",
   "RecoveryFileNotSelected": "Lỗi khôi phục. Tập tin khôi phục không được chọn.",

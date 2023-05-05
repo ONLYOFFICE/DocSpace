@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Hier können Sie Ihre Bereichsadresse ändern.",
   "PortalRenamingLabelText": "Neuer Bereichsname",
   "PortalRenamingMobile": "Geben Sie den Teil ein, der neben der Adresse des {{domain}}-Space erscheint. Bitte beachten Sie: sobald Sie auf die Schaltfläche Speichern klicken, ist Ihre alte Space-Adresse für neue Benutzer nicht mehr verfügbar.",
+  "PortalRenamingModalText": "Sie sind im Begriff Ihr Portal umzubenennen. Sind Sie sicher, dass Sie fortsetzen wollen?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Geben Sie den Teil ein, der neben der {{domain}} Portal-Adresse angezeigt wird.",
   "ProductUserOpportunities": "Profile und Gruppen anschauen",
   "RecoveryFileNotSelected": "Fehler bei der Wiederherstellung. Datei zur Wiederherstellung nicht ausgewählt.",

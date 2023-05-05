@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "在此处，您可以更改您的协作空间地址。",
   "PortalRenamingLabelText": "协作空间的新名称",
   "PortalRenamingMobile": "输入将出现在{{domain}}空间地址旁边的部分。请注意：点击保存按钮之后，新用户无法访问以前的空间地址。",
+  "PortalRenamingModalText": "你将要重命名的门户。你真的要继续吗？",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> 输入将出现在{{domain}}空间地址旁边的部分。",
   "ProductUserOpportunities": "查看档案与群组",
   "RecoveryFileNotSelected": "恢复错误。未选择恢复文件",
