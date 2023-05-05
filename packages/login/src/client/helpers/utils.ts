@@ -114,13 +114,49 @@ export const getMessageFromKey = (messageKey: number) => {
   return MessageKey[messageKey];
 }
 
-export const getMessageKeyTranslate = (t, message) => {
+export const getMessageKeyTranslate = (t: TFuncType, message: string) => {
   switch (message) {
     case "Error":
       return t("Common:Error");
+    case "None":
+      return t("Errors:None");
+    case "ErrorUserNotFound":
+      return t("Errors:ErrorUserNotFound");
+    case "ErrorExpiredActivationLink":
+      return t("Errors:ErrorExpiredActivationLink");
+    case "ErrorInvalidActivationLink":
+      return t("Errors:ErrorInvalidActivationLink");
+    case "ErrorConfirmURLError":
+      return t("Errors:ErrorConfirmURLError");
     case "ErrorNotCorrectEmail":
       return t("Common:IncorrectEmail");
+    case "LoginWithBruteForce":
+      return t("Errors:LoginWithBruteForce");
+    case "RecaptchaInvalid":
+      return t("Errors:RecaptchaInvalid");
+    case "LoginWithAccountNotFound":
+      return t("Errors:LoginWithAccountNotFound");
+    case "InvalidUsernameOrPassword":
+      return t("Errors:InvalidUsernameOrPassword");
+    case "SsoSettingsDisabled":
+      return t("Errors:SsoSettingsDisabled");
+    case "ErrorNotAllowedOption":
+      return t("Errors:ErrorNotAllowedOption");
+    case "SsoSettingsEmptyToken":
+      return t("Errors:SsoSettingsEmptyToken");
+    case "SsoSettingsNotValidToken":
+      return t("Errors:SsoSettingsNotValidToken");
+    case "SsoSettingsCantCreateUser":
+      return t("Errors:SsoSettingsCantCreateUser");
+    case "SsoSettingsUserTerminated":
+      return t("Errors:SsoSettingsUserTerminated");
+    case "SsoError":
+      return t("Errors:SsoError");
+    case "SsoAuthFailed":
+      return t("Errors:SsoAuthFailed");
+    case "SsoAttributesNotFound":
+      return t("Errors:SsoAttributesNotFound");
     default:
-      return t(`Errors:${message}`)
+      return t("Common:Error");
   }
 }

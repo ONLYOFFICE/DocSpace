@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { withTranslation } from "react-i18next";
 
 import { inject, observer } from "mobx-react";
-import { isMobile } from "react-device-detect";
+import { isMobile, isDesktop } from "react-device-detect";
 
 import withLoading from "SRC_DIR/HOCs/withLoading";
 import Whitelabel from "./Branding/whitelabel";
@@ -60,7 +60,7 @@ const Branding = ({
   isSettingPaid,
   standalone,
 }) => {
-  const [viewDesktop, setViewDesktop] = useState(false);
+  const [isSmallWindow, setIsSmallWindow] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -78,14 +78,19 @@ const Branding = ({
   }, []);
 
   const onCheckView = () => {
-    if (!isMobile && window.innerWidth > 1024) {
-      setViewDesktop(true);
+    if (isDesktop && window.innerWidth < 795) {
+      setIsSmallWindow(true);
     } else {
-      setViewDesktop(false);
+      setIsSmallWindow(false);
     }
   };
 
-  if (!viewDesktop)
+  if (isSmallWindow)
+    return (
+      <BreakpointWarning sectionName={t("Settings:Branding")} isSmallWindow />
+    );
+
+  if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:Branding")} />;
 
   return (
