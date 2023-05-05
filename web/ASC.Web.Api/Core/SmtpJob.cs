@@ -43,6 +43,17 @@ public class SmtpJob : DistributedTaskProgress
         }
     }
 
+    private string? _currentOperation;
+    public string CurrentOperation
+    {
+        get => _currentOperation ?? this[nameof(_currentOperation)];
+        set
+        {
+            _currentOperation = value;
+            this[nameof(_currentOperation)] = value;
+        }
+    }
+
     private Guid _currentUser;
     private SmtpSettingsDto _smtpSettings;
 
@@ -75,23 +86,19 @@ public class SmtpJob : DistributedTaskProgress
     {
         try
         {
-            Percentage = 5;
-            PublishChanges();
+            SetProgress(5, "Setup tenant");
 
             _tenantManager.SetCurrentTenant(TenantId);
 
-            Percentage = 10;
-            PublishChanges();
+            SetProgress(10, "Setup user");
 
-            _securityContext.AuthenticateMeWithoutCookie(_currentUser); 
+            _securityContext.AuthenticateMeWithoutCookie(_currentUser);
 
-            Percentage = 15;
-            PublishChanges();
+            SetProgress(15, "Find user data");
 
             var currentUser = _userManager.GetUsers(_securityContext.CurrentAccount.ID);
 
-            Percentage = 20;
-            PublishChanges();
+            SetProgress(20, "Create mime message");
 
             var toAddress = new MailboxAddress(currentUser.UserName, currentUser.Email);
 
@@ -116,16 +123,14 @@ public class SmtpJob : DistributedTaskProgress
             mimeMessage.Headers.Add("Auto-Submitted", "auto-generated");
 
             using var client = GetSmtpClient();
-            Percentage = 40;
-            PublishChanges();
+            SetProgress(40, "Connect to host");
 
             client.Connect(_smtpSettings.Host, _smtpSettings.Port.GetValueOrDefault(25),
                 _smtpSettings.EnableSSL ? SecureSocketOptions.Auto : SecureSocketOptions.None);
 
             if (_smtpSettings.EnableAuth)
             {
-                Percentage = 60;
-                PublishChanges();
+                SetProgress(60, "Authenticate");
 
                 if (_smtpSettings.UseNtlm)
                 {
@@ -139,8 +144,7 @@ public class SmtpJob : DistributedTaskProgress
                 }
             }
 
-            Percentage = 80;
-            PublishChanges();
+            SetProgress(80, "Send test message");
 
             client.Send(FormatOptions.Default, mimeMessage);
 
@@ -186,6 +190,13 @@ public class SmtpJob : DistributedTaskProgress
         }
 
         return Task.CompletedTask;
+    }
+
+    private void SetProgress(int percentage, string status = null)
+    {
+        Percentage = percentage;
+        CurrentOperation = status ?? CurrentOperation;
+        PublishChanges();
     }
 
     private SmtpClient GetSmtpClient()

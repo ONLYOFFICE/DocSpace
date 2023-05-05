@@ -80,7 +80,8 @@ public class SmtpOperation
             Id = item.Id,
             Completed = item.IsCompleted,
             Percents = (int)item.Percentage,
-            Error = item.Exception != null ? item.Exception.Message : ""
+            Error = item.Exception != null ? item.Exception.Message : "",
+            Status = item.CurrentOperation
         };
 
         return result;
