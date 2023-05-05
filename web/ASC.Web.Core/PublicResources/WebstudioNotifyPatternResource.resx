@@ -261,7 +261,7 @@ Dear $OwnerName,
 
 A backup file containing data from your "${__VirtualRootPath}":"${__VirtualRootPath}" portal has been created.
 
-To learn more on the backup procedure please refer to our "Data backup":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" user guide.
+To learn more on the backup procedure please refer to our "Data backup":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" user guide.
 
 
 If you have any questions or need assistance please feel free to contact us at "support.onlyoffice.com":"http://support.onlyoffice.com"

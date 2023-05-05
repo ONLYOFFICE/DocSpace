@@ -642,12 +642,10 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///A backup file containing data from your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal has been created.
         ///
-        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx&quot; user guide.
+        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block&quot; user guide.
         ///
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support.onlyoffice.com&quot;
-        ///
-        ///Best  [rest of string was truncated]&quot;;.
+        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support. [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_backup_created {
             get {
