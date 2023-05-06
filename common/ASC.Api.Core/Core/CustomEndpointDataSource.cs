@@ -102,7 +102,7 @@ public static class EndpointExtension
                 var httpMethodMetadata = r.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault();
                 var disabled = r.Metadata.OfType<WebhookDisableAttribute>().FirstOrDefault();
 
-                if (disabled == null)
+                if (disabled == null && httpMethodMetadata != null)
                 {
                     foreach (var httpMethod in httpMethodMetadata.HttpMethods)
                     {
