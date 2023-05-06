@@ -38,23 +38,23 @@ public static class EntityFrameworkHelper
 [Scope]
 public class GeolocationHelper
 {
-    private readonly CreatorDbContext _creatorDbContext;
+    private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
     private readonly ILogger<GeolocationHelper> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly ICache _cache;
 
     public GeolocationHelper(
-        CreatorDbContext creatorDbContext,
+        IDbContextFactory<CustomDbContext> dbContextFactory,
         ILogger<GeolocationHelper> logger,
         IHttpContextAccessor httpContextAccessor,
         ICache cache)
     {
-        _creatorDbContext = creatorDbContext;
+        _dbContextFactory = dbContextFactory;
         _logger = logger;
         _httpContextAccessor = httpContextAccessor;
         _cache = cache;
     }
-    
+
     public IPGeolocationInfo GetIPGeolocation(IPAddress address)
     {
         try
@@ -63,11 +63,11 @@ public class GeolocationHelper
             var cacheKey = $"ip_geolocation_info_${address}";
             var fromCache = _cache.Get<IPGeolocationInfo>(cacheKey);
 
-            if (fromCache != null) return fromCache; 
+            if (fromCache != null) return fromCache;
 
-            using var dbContext = _creatorDbContext.CreateDbContext<CustomDbContext>(nameConnectionString: "default");
+            using var dbContext = _dbContextFactory.CreateDbContext();
 
-            var  addrType = address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? "ipv4" : "ipv6";
+            var addrType = address.AddressFamily == System.Net.Sockets.AddressFamily.InterNetwork ? "ipv4" : "ipv6";
 
             var result = dbContext.DbIPLookup
                 .Where(r => r.AddrType == addrType && r.IPStart.Compare(address.GetAddressBytes()) <= 0)
