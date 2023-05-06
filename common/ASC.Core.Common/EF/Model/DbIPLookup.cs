@@ -63,16 +63,15 @@ public static class DbIPLookupExtension
         modelBuilder.Entity<DbIPLookup>(entity =>
         {
             entity.ToTable("dbip_lookup")
-                 .UseCollation("utf8mb4_0900_ai_ci");
+                 .HasCharSet("utf8mb4");
 
             entity.HasKey(nameof(DbIPLookup.AddrType), nameof(DbIPLookup.IPStart));
 
             entity.Property(e => e.AddrType)
                 .IsRequired()
                 .HasColumnName("addr_type")
-                .HasColumnType("enum('ipv4','ipv6')")
-                .UseCollation("utf8mb4_0900_ai_ci");
-
+                .HasColumnType("enum('ipv4','ipv6')");
+       
             entity.Property(e => e.IPStart)
                 .IsRequired()
                 .HasColumnName("ip_start")
@@ -86,45 +85,36 @@ public static class DbIPLookupExtension
             entity.Property(e => e.Continent)
                 .IsRequired()
                 .HasColumnName("continent")
-                .HasColumnType("char(2)")
-                .UseCollation("utf8mb4_0900_ai_ci");
+                .HasColumnType("char(2)");
 
             entity.Property(e => e.Country)
                 .IsRequired()
                 .HasColumnName("country")
-                .HasColumnType("char(2)")
-                .UseCollation("utf8mb4_0900_ai_ci");
+                .HasColumnType("char(2)");
 
             entity.Property(e => e.StateProvCode)
                 .HasColumnName("stateprov_code")
-                .HasColumnType("varchar(15)")
-                .UseCollation("utf8mb4_0900_ai_ci");
-
+                .HasColumnType("varchar(15)");
 
             entity.Property(e => e.StateProv)
                 .IsRequired()
                 .HasColumnName("stateprov")
-                .HasColumnType("varchar(80)")
-                .UseCollation("utf8mb4_0900_ai_ci");
+                .HasColumnType("varchar(80)");
 
             entity.Property(e => e.District)
                 .IsRequired()
                 .HasColumnName("district")
-                .HasColumnType("varchar(80)")
-                .UseCollation("utf8mb4_0900_ai_ci");
+                .HasColumnType("varchar(80)");
 
 
             entity.Property(e => e.City)
                 .IsRequired()
                 .HasColumnName("city")
-                .HasColumnType("varchar(80)")
-                .UseCollation("utf8mb4_0900_ai_ci");
-
+                .HasColumnType("varchar(80)");
 
             entity.Property(e => e.ZipCode)
                 .HasColumnName("zipcode")
-                .HasColumnType("varchar(20)")
-                .UseCollation("utf8mb4_0900_ai_ci");
+                .HasColumnType("varchar(20)");
 
             entity.Property(e => e.Latitude)
                 .IsRequired()
@@ -144,21 +134,17 @@ public static class DbIPLookupExtension
             entity.Property(e => e.TimezoneOffset)
                 .IsRequired()
                 .HasColumnType("float")
-                .HasColumnName("timezone_offset");          
+                .HasColumnName("timezone_offset");
 
             entity.Property(e => e.TimezoneName)
                 .IsRequired()
                 .HasColumnName("timezone_name")
-                .HasColumnType("varchar(64)")
-                .UseCollation("utf8mb4_0900_ai_ci");
+                .HasColumnType("varchar(64)");
 
             entity.Property(e => e.WeatherCode)
                 .IsRequired()
                 .HasColumnName("weather_code")
-                .HasColumnType("varchar(10)")
-                .UseCollation("utf8mb4_0900_ai_ci");
-
-
+                .HasColumnType("varchar(10)");
         });
 
     }
