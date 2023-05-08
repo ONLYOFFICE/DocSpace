@@ -17,12 +17,14 @@ const List = styled.ul`
 
 const Item = styled.li`
   color: #ffffff;
-  padding: 0 16px;
+  padding: 1px 16px 0 16px;
   font-weight: 400;
   font-size: 13px;
   line-height: 20px;
 
   cursor: pointer;
+
+  margin-top: -1px;
 
   :hover {
     background: #474747;
