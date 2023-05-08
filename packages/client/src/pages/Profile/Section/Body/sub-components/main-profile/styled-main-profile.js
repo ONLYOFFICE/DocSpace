@@ -32,6 +32,25 @@ export const StyledWrapper = styled.div`
   }
 `;
 
+export const StyledAvatarWrapper = styled.div`
+  display: flex;
+
+  @media ${smallTablet} {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .badges-wrapper {
+    display: none;
+
+    @media ${smallTablet} {
+      display: flex;
+      position: fixed;
+      right: 16px;
+    }
+  }
+`;
+
 export const StyledInfo = styled.div`
   width: 100%;
   max-width: 100%;
@@ -62,8 +81,12 @@ export const StyledInfo = styled.div`
         display: flex;
         gap: 8px;
         height: 20px;
-        align-items: baseline;
+        align-items: center;
         line-height: 20px;
+      }
+
+      .sso-badge {
+        margin-left: 18px;
       }
 
       .profile-block-password {

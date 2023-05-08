@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Buradan alan adresinizi değiştirebilirsiniz.",
   "PortalRenamingLabelText": "Yeni alan adı",
   "PortalRenamingMobile": "{{domain}} alan adresinin yanında görünecek kısmı girin. Lütfen unutmayın: Kaydet düğmesine tıkladığınızda eski alan adresiniz yeni kullanıcılar tarafından kullanılamayacak.",
+  "PortalRenamingModalText": "Portalı yeniden adlandırmak üzeresiniz. Devam etmek istediğinize emin misiniz?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> {{domain}} alan adresinin yanında görünecek kısmı girin.",
   "ProductUserOpportunities": "Profilleri ve grupları görüntüle",
   "RecoveryFileNotSelected": "Kurtarma hatası. Kurtarma dosyası seçilmedi.",

@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Qui puoi modificare l'indirizzo del tuo spazio.",
   "PortalRenamingLabelText": "Nome dello spazio nuovo",
   "PortalRenamingMobile": "Inserisci la parte che verrà visualizzata accanto all'indirizzo dello spazio {{domain}}. Ti preghiamo di notare: il tuo vecchio indirizzo di spazio non sarà più disponibile per i nuovi utenti dopo aver fatto clic sul pulsante Salva.",
+  "PortalRenamingModalText": "Hai intenzione di rinominare il tuo portale. Sei sicuro di voler continuare?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Inserisci la parte che verrà visualizzata accanto all'indirizzo dello spazio {{domain}}.",
   "ProductUserOpportunities": "Visualizza profili e gruppi",
   "RecoveryFileNotSelected": "Errore di ripristino. File di ripristino non selezionato.",

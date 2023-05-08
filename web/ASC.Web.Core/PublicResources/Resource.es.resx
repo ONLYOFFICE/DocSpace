@@ -113,7 +113,7 @@
     <value>Habilite esta aplicación para acortar los enlaces de invitación y de documentos. {0}Inserte su login de Bitly y su clave de la API a continuación:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Clave</value>
+    <value>Cuadro</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>Box ID</value>
@@ -927,5 +927,44 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>El número de administradores/usuarios avanzados:</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>ID de Apple</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID del cliente de aplicación</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Un identificador de clave de 10 caracteres generado para la clave privada Iniciar sesión con Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Habilite la aplicación para iniciar sesión en el portal utilizando una cuenta de ID de Apple.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando su ID de Apple. {0}Vaya al Portal de Desarrolladores de Apple y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que usted recibió a continuación:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Clave privada descargada desde Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID de equipo de la cuenta de desarrollador de 10 caracteres</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Secreto del Cliente</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>El tipo de archivo desconocido</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Tamaño de imagen supera a los parámetros permitidos</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
   </data>
 </root>

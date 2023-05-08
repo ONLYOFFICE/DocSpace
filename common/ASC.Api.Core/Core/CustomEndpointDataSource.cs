@@ -76,13 +76,6 @@ public class CustomEndpointDataSource : EndpointDataSource
 
 public static class EndpointExtension
 {
-    private static readonly IReadOnlyList<string> _methodList = new List<string>
-    {
-        "POST",
-        "PUT",
-        "DELETE"
-    };
-
     public static async Task<IEndpointRouteBuilder> MapCustomAsync(this IEndpointRouteBuilder endpoints, bool webhooksEnabled = false, IServiceProvider serviceProvider = null)
     {
         endpoints.MapControllers();
@@ -109,7 +102,7 @@ public static class EndpointExtension
                 var httpMethodMetadata = r.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault();
                 var disabled = r.Metadata.OfType<WebhookDisableAttribute>().FirstOrDefault();
 
-                if (disabled == null)
+                if (disabled == null && httpMethodMetadata != null)
                 {
                     foreach (var httpMethod in httpMethodMetadata.HttpMethods)
                     {
@@ -118,7 +111,7 @@ public static class EndpointExtension
                 }
                 return result;
             })
-            .Where(r => _methodList.Contains(r.Method))
+            .Where(r => DbWorker.MethodList.Contains(r.Method))
             .DistinctBy(r => $"{r.Method}|{r.Route}")
             .ToList();
 

@@ -1342,4 +1342,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Telpas</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Atkritne iztukšota</value>
+  </data>
 </root>

@@ -889,6 +889,21 @@ public class UserController : PeopleControllerBase
 
             u.ActivationStatus = activationstatus;
             await _userManager.UpdateUserInfo(u);
+
+            if (activationstatus == EmployeeActivationStatus.Activated
+                && u.IsOwner(_tenantManager.GetCurrentTenant()))
+            {
+                var settings = _settingsManager.Load<FirstEmailConfirmSettings>();
+
+                if (settings.IsFirst)
+                {
+                    _studioNotifyService.SendAdminWelcome(u);
+
+                    settings.IsFirst = false;
+                    _settingsManager.Save(settings);
+                }
+            }
+
             yield return await _employeeFullDtoHelper.GetFull(u);
         }
     }
@@ -1001,10 +1016,6 @@ public class UserController : PeopleControllerBase
         {
             user.Status = inDto.Disable.Value ? EmployeeStatus.Terminated : EmployeeStatus.Active;
             user.TerminatedDate = inDto.Disable.Value ? DateTime.UtcNow : null;
-        }
-        if (self && !isDocSpaceAdmin)
-        {
-            _studioNotifyService.SendMsgToAdminAboutProfileUpdated();
         }
 
         // change user type

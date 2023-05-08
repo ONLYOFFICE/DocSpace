@@ -184,7 +184,7 @@ Vážený $OwnerName,
 
 Zálohový súbor obsahujúci dáta z Vášho "${__VirtualRootPath}":"${__VirtualRootPath}" portálu bol vytvorený.
 
-Viac informácií o zálohovaní nájdete v našej "Data backup":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" užívateľskej príručke.
+Viac informácií o zálohovaní nájdete v našej "Data backup":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" užívateľskej príručke.
 
 
 Ak máte nejaké otázky alebo potrebujete asistenciu, prosím neváhajte nás kontaktovať na "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -437,7 +437,7 @@ Vážený $UserDisplayName,
 
 Vaša $PortalUrl portálová adresa bola zmenená na novú "${__VirtualRootPath}":"${__VirtualRootPath}" adresu.
 
-*Poznámka*: Všetky odkazy na zdieľané dokumenty sú teraz nedostupné, rovnako ako nastavenia DNS a možnosti jednotného prihlásenia prestanú fungovať, kým ich nezmeníte. Odkazy tretej strany iCal pridané do vášho kalendára sa taktiež zastavia, kým ich znovu načítate.</value>
+*Poznámka*: nastavenia DNS a možnosti jednotného prihlásenia prestanú fungovať, kým ich nezmeníte.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Odstránenie profilu z "${__VirtualRootPath}":"${__VirtualRootPath}" portálu

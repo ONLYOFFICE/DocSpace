@@ -1130,7 +1130,6 @@ class FilesStore {
   };
 
   refreshFiles = async () => {
-    return;
     const res = await this.fetchFiles(this.selectedFolderStore.id, this.filter);
     return res;
   };
@@ -1143,7 +1142,7 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-
+    
     if (this.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();

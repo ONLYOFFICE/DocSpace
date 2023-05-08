@@ -1324,4 +1324,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Kamers</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Prullenmand geleegd</value>
+  </data>
 </root>

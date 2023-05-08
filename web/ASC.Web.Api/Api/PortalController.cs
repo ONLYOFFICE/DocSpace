@@ -209,9 +209,9 @@ public class PortalController : ControllerBase
 
     [AllowNotPayment]
     [HttpGet("tariff")]
-    public Tariff GetTariff()
+    public Tariff GetTariff(bool refresh)
     {
-        return _tariffService.GetTariff(Tenant.Id);
+        return _tariffService.GetTariff(Tenant.Id, refresh: refresh);
     }
 
     [AllowNotPayment]
@@ -368,7 +368,7 @@ public class PortalController : ControllerBase
 
             if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
             {
-                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath, oldAlias);
             }
         }
         else

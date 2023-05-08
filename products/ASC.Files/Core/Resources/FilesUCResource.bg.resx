@@ -79,4 +79,13 @@
   <data name="VirtualRooms" xml:space="preserve">
     <value>Стаи</value>
   </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Персонален</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Любими</value>
+  </data>
+  <data name="PrivacyRoom" xml:space="preserve">
+    <value>Частна стая</value>
+  </data>
 </root>

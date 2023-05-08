@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Burada sahə ünvanınızı dəyişə bilərsiniz.",
   "PortalRenamingLabelText": "Yeni sahə adı",
   "PortalRenamingMobile": "{{domain}} ünvanının yanında görünəcək hissəni daxil edin. Nəzərə alın: Yadda saxla düyməsinə kliklədikdən sonra köhnə sahə ünvanınız yeni istifadəçilər üçün əlçatan olmayacaq.",
+  "PortalRenamingModalText": "Portalınızın adını dəyişmək üzrəsiniz. Davam etmək istədiyinizdən əminsiniz?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> {{domain}} ünvanının yanında görünəcək hissəni daxil edin.",
   "ProductUserOpportunities": "Profillərə və qruplara baxın",
   "RecoveryFileNotSelected": "Bərpa xətası. Bərpa olunacaq fayl seçilməyib.",

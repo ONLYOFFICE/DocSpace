@@ -142,8 +142,12 @@ const IpSecurity = (props) => {
       return;
     }
 
+    const ipsObjectArr = ips.map((ip) => {
+      return { ip: ip };
+    });
+
     try {
-      await setIpRestrictions(ips);
+      await setIpRestrictions(ipsObjectArr);
       await setIpRestrictionsEnable(enable);
 
       saveToSessionStorage("defaultIPSettings", {

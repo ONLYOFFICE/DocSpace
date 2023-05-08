@@ -961,4 +961,37 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Количество администраторов/опытных пользователей:</value>
   </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID клиента приложения</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>10-значный идентификатор ключа, сгенерированный для входа в систему с помощью приватного ключа Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Подключите приложение для входа на портал по учетной записи Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Apple ID. {0}Перейдите на портал Apple Developers и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Приватный ключ, скачанный с Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10-значный Team ID аккаунта разработчика</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Секрет клиента</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Неизвестный тип файла изображения</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Размер изображения превышает допустимые параметры</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
 </root>

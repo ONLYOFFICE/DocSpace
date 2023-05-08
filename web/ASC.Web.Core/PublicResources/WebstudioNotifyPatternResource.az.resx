@@ -202,7 +202,7 @@ Hörmətli $OwnerName,
 
 "${__VirtualRootPath}":"${__VirtualRootPath}" portal məlumatınız olan ehtiyat faylı yaradıldı
 
-Yedəkləmə proseduru haqqında daha çox öyrənmək üçün "Məlumatların Yedəklənməsi": "http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" istifadəçi təlimatımıza baxın
+Yedəkləmə proseduru haqqında daha çox öyrənmək üçün "Məlumatların Yedəklənməsi": "https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" istifadəçi təlimatımıza baxın
 
 Hər hansı bir sualınız və ya köməyə ehtiyacınız olarsa, ünvanında bizimlə əlaqə saxlamaqdan çəkinməyin "support.onlyoffice.com": "http://support.onlyoffice.com"
 
@@ -1180,5 +1180,14 @@ Link yalnız 7 gün üçün keçərli olacaq.</value>
   </data>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>DocSpace istifadəçisi yeniləndi: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>ONLYOFFICE Şəxsi hesabınızdakı parolu dəyişmək istəyirsiniz? Təsdiqləmək üçün aşağıdakı düyməni basın.
+
+$GreenButton
+
+Link 7 gün ərzində etibarlıdır.
+
+Parolunuzu dəyişmək istəmirsiniz? Sadəcə bu mesaja əhəmiyyət verməyin.</value>
   </data>
 </root>

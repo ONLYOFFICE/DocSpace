@@ -53,10 +53,13 @@ class PureHome extends React.Component {
       setIsUpdatingRowItem,
       setIsPreview,
       selectedFolderStore,
+      removeFirstUrl,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
-      localStorage.removeItem("isFirstUrl");
+      // localStorage.removeItem("isFirstUrl");
+      // Media viewer
+      removeFirstUrl();
     }
 
     const categoryType = getCategoryType(location);
@@ -285,34 +288,48 @@ class PureHome extends React.Component {
   };
 
   showOperationToast = (type, qty, title) => {
-    const { t } = this.props;
+    const { t, refreshFiles } = this.props;
     switch (type) {
       case "move":
         if (qty > 1) {
-          return toastr.success(
-            <Trans t={t} i18nKey="MoveItems" ns="Files">
-              {{ qty }} elements has been moved
-            </Trans>
+          return (
+            toastr.success(
+              <Trans t={t} i18nKey="MoveItems" ns="Files">
+                {{ qty }} elements has been moved
+              </Trans>
+            ),
+            refreshFiles()
           );
         }
-        return toastr.success(
-          <Trans t={t} i18nKey="MoveItem" ns="Files">
-            {{ title }} moved
-          </Trans>
+        return (
+          toastr.success(
+            <Trans t={t} i18nKey="MoveItem" ns="Files">
+              {{ title }} moved
+            </Trans>
+          ),
+          refreshFiles()
         );
+
       case "duplicate":
         if (qty > 1) {
-          return toastr.success(
-            <Trans t={t} i18nKey="CopyItems" ns="Files">
-              {{ qty }} elements copied
-            </Trans>
+          return (
+            toastr.success(
+              <Trans t={t} i18nKey="CopyItems" ns="Files">
+                {{ qty }} elements copied
+              </Trans>
+            ),
+            refreshFiles()
           );
         }
-        return toastr.success(
-          <Trans t={t} i18nKey="CopyItem" ns="Files">
-            {{ title }} copied
-          </Trans>
+        return (
+          toastr.success(
+            <Trans t={t} i18nKey="CopyItem" ns="Files">
+              {{ title }} copied
+            </Trans>
+          ),
+          refreshFiles()
         );
+
       default:
         break;
     }
@@ -338,17 +355,10 @@ class PureHome extends React.Component {
       itemsSelectionLength,
       itemsSelectionTitle,
       setItemsSelectionTitle,
-      refreshFiles,
     } = this.props;
 
     if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
       this.props.setHeaderVisible(this.props.isHeaderVisible);
-    }
-
-    if (isProgressFinished !== prevProps.isProgressFinished) {
-      setTimeout(() => {
-        refreshFiles();
-      }, 100);
     }
 
     if (
@@ -673,12 +683,8 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders } = filesActionsStore;
 
@@ -687,7 +693,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setToPreviewFile, playlist } = mediaViewerDataStore;
+    const { setToPreviewFile, playlist, removeFirstUrl } = mediaViewerDataStore;
 
     const {
       isHeaderVisible,
@@ -759,6 +765,7 @@ export default inject(
       setToPreviewFile,
       setIsPreview,
       playlist,
+      removeFirstUrl,
 
       getFileInfo,
       gallerySelected,

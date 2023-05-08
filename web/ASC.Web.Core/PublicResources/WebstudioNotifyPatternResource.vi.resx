@@ -148,7 +148,7 @@ Thân gửi $OwnerName,
 
 Một file sao lưu chứa dữ liệu từ cổng "${__VirtualRootPath}":"${__VirtualRootPath}" của bạn đã được tạo.
 
-Để tìm hiểu thêm về quy trình sao lưu, vui lòng tham khảo hướng dẫn người dùng "Sao lưu dữ liệu":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" của chúng tôi.
+Để tìm hiểu thêm về quy trình sao lưu, vui lòng tham khảo hướng dẫn người dùng "Sao lưu dữ liệu":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" của chúng tôi.
 
 
 Nếu bạn có câu hỏi hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi tại "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -411,7 +411,7 @@ Thân gửi $UserDisplayName,
 
 Địa chỉ cổng thông tin $PortalUrl của bạn đã được thay đổi sang địa chỉ mới "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Lưu ý*: Hiện tại sẽ không thể truy cập vào tất cả các liên kết tài liệu đã chia sẻ cũng như các thiết lập DNS và tùy chọn đăng nhập một lần sẽ ngừng hoạt động cho đến khi bạn thay đổi chúng. Các liên kết iCal của bên thứ ba được thêm vào lịch của bạn cũng sẽ ngừng cập nhật cho đến khi bạn tải lại chúng.</value>
+*Lưu ý*: Thiết lập DNS và tùy chọn đăng nhập một lần sẽ ngừng hoạt động cho đến khi bạn thay đổi chúng.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Xóa hồ sơ khỏi cổng "${__VirtualRootPath}":"${__VirtualRootPath}"

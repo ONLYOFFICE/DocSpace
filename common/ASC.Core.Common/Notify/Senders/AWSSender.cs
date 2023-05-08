@@ -130,36 +130,17 @@ public class AWSSender : SmtpSender, IDisposable
             _semaphore.Release();
         }
 
-        var dest = new Destination
-        {
-            ToAddresses = m.Reciever.Split(new[] { '|' }, StringSplitOptions.RemoveEmptyEntries).Select(a => MailAddressUtils.Create(a).Address).ToList(),
-        };
+        var message = BuildMailMessage(m);
 
-        var subject = new Content(MimeHeaderUtils.EncodeMime(m.Subject)) { Charset = Encoding.UTF8.WebName, };
+        using var ms = new MemoryStream();
+        message.WriteTo(ms);
 
-        Body body;
-        if (m.ContentType == Pattern.HtmlContentType)
-        {
-            body = new Body(new Content(HtmlUtil.GetText(m.Content)) { Charset = Encoding.UTF8.WebName })
-            {
-                Html = new Content(GetHtmlView(m.Content)) { Charset = Encoding.UTF8.WebName }
-            };
-        }
-        else
-        {
-            body = new Body(new Content(m.Content) { Charset = Encoding.UTF8.WebName });
-        }
-
-        var from = MailAddressUtils.Create(m.Sender).ToEncodedString();
-        var request = new SendEmailRequest { Source = from, Destination = dest, Message = new Message(subject, body) };
-        if (!string.IsNullOrEmpty(m.ReplyTo))
-        {
-            request.ReplyToAddresses.Add(MailAddressUtils.Create(m.ReplyTo).Address);
-        }
+        var request = new SendRawEmailRequest(new RawMessage(ms));
 
         ThrottleIfNeeded();
 
-        var response = await _amazonEmailServiceClient.SendEmailAsync(request);
+        var response = await _amazonEmailServiceClient.SendRawEmailAsync(request);
+
         _lastSend = DateTime.UtcNow;
 
         return response != null ? NoticeSendResult.OK : NoticeSendResult.TryOnceAgain;

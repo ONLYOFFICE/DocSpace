@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Tu môžete zmeniť adresu priestoru.",
   "PortalRenamingLabelText": "Nový názov priestoru",
   "PortalRenamingMobile": "Zadajte časť, ktorá sa zobrazí vedľa {{domain}} adresy priestoru.\nPoznámka: Po kliknutí na tlačidlo Uložiť vaša stará adresa priestoru bude nedostupná pre nových používateľov.",
+  "PortalRenamingModalText": "Chystáte sa premenovať svoj portál. Naozaj chcete pokračovať?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Zadajte časť, ktorá sa zobrazí vedľa {{domain}} adresy priestoru.",
   "ProductUserOpportunities": "Zobraziť profily a skupiny",
   "RecoveryFileNotSelected": "Vyskytla sa chyba. Nie je vybratý zálohový súbor.",

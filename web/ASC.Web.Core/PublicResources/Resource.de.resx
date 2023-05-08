@@ -961,4 +961,40 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Die Anzahl der Admins/Power-User:</value>
   </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Client-ID der App</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Ein zehnstelliger Schlüsselbezeichner zur Anmeldung mit einem privaten Schlüssel von Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Verbinden Sie die App zur Authentifizierung beim Portal mit Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Verbinden Sie diese App, damit die Benutzer sich über Apple ID bei ONLYOFFICE anmelden können. {0}Öffnen Sie das Apple-Portal für Entwickler und erstellen Sie die neue ONLYOFFICE-Integration. Geben Sie die unten stehenden Daten ein:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Privater Schlüssel von Apple für Entwickler</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>Zehnstellige Team-ID für das Entwicklerkonto</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Geheimer Clientschlüssel</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Unbekannter Bilddateityp</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Bildgröße überschritt die zulässige Werte</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
 </root>

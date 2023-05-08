@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Puede cambiar la dirección de su espacio aquí.",
   "PortalRenamingLabelText": "Nuevo nombre del espacio",
   "PortalRenamingMobile": "Syötä osa, joka ilmaantuu {{domain}} tilan osoitteen viereen. Huom: vanhan tilasi osoite ei ole enää saatavilla uusille käyttäjille, kun klikkaat Tallenna-painiketta.",
+  "PortalRenamingModalText": "Usted está apunto de renombrar su portal. ¿Está seguro que quiere continuar?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Syötä osa, joka ilmaantuu {{domain}} tilan osoitteen viereen.",
   "ProductUserOpportunities": "Ver perfiles y grupos",
   "RecoveryFileNotSelected": "Error de recuperación. No se ha seleccionado el archivo de recuperación.",

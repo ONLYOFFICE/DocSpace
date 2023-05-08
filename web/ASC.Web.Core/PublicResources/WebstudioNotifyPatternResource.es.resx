@@ -202,7 +202,7 @@ Buenos días $OwnerName,
 
 Un archivo de copia de seguridad con los datos de su portal ONLYOFFICE™ "${__VirtualRootPath}":"${__VirtualRootPath}"  ha sido creado. 
 
-Para obtener más información sobre procedimiento de creación de copia de seguridad/restauración por favor consulte nuestra guía de usuario "¿Cómo crear y restaurar la copia de seguridad de portal ONLYOFFICE™?":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx"
+Para obtener más información sobre procedimiento de creación de copia de seguridad/restauración por favor consulte nuestra guía de usuario "¿Cómo crear y restaurar la copia de seguridad de portal ONLYOFFICE™?":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block"
 
 
 Si hay algunas preguntas o necesita ayuda no dude en ponerse en contacto con nosotros vía "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -611,7 +611,7 @@ Estimado(a) $UserDisplayName,
 
 Su $PortalUrl dirección de portal ha sido cambiado a la nueva dirección "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Note*: Todos los enlaces de documentos compartidos son inaccesibles ahora, así como la configuración de DNS y  opciones single sign-on dejan de funcionar hasta que los cambie. Los enlaces iCal de tercero añadido a su calendario también se detendrá la actualización hasta que vuelva a cargarlos.</value>
+*Ojo*: la configuración de DNS y las opciones de inicio de sesión dejan de funcionar hasta que las cambie.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Eliminación del Perfil del Portal "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -1144,5 +1144,14 @@ Equipo de ONLYOFFICE
   </data>
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>¿Desea cambiar la contraseña de su cuenta de ONLYOFFICE Personal? Haga clic en el botón de abajo para confirmar.
+
+$GreenButton 
+
+El enlace es válido durante 7 días.
+
+¿No desea cambiar su contraseña? Simplemente ignore este mensaje.</value>
   </data>
 </root>

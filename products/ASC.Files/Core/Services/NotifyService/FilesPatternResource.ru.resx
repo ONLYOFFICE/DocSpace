@@ -113,4 +113,16 @@ $Message</value>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Документы. Предоставлен доступ к папке: [$DocumentTitle]($DocumentURL)</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName упомянул(а) вас в комментарии к документу
+ 
+$__AuthorName упомянул(а) вас в комментарии к документу "$DocumentTitle":"$DocumentURL" в комнате "$RoomTitle":"$RoomURL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName удалил(а) комнату
+ 
+$__AuthorName удалил(а) комнату: $RoomTitle</value>
+  </data>
 </root>

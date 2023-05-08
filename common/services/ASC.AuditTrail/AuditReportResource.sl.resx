@@ -1264,4 +1264,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Săli</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Koš izpraznjen</value>
+  </data>
 </root>
