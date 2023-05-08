@@ -17,8 +17,6 @@ import {
 import { ToolbarActionType } from "../../helpers";
 import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 
-// import "./lib";
-
 // import { isDesktop } from "react-device-detect";?
 const pdfViewerId = "pdf-viewer";
 
