@@ -2,7 +2,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 
 import { loadScript, combineUrl } from "@docspace/common/utils";
 
-import PDFViewerProps from "./PDFViewer.props";
+import PDFViewerProps, { BookMark } from "./PDFViewer.props";
 import ViewerLoader from "../ViewerLoader";
 import MainPanel from "./ui/MainPanel";
 import Sidebar from "./ui/Sidebar";
@@ -17,7 +17,7 @@ import {
 import { ToolbarActionType } from "../../helpers";
 import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 
-import "./lib";
+// import "./lib";
 
 // import { isDesktop } from "react-device-detect";?
 const pdfViewerId = "pdf-viewer";
@@ -33,8 +33,11 @@ function PDFViewer({
   setIsPDFSidebarOpen,
 }: PDFViewerProps) {
   const containerRef = useRef<HTMLDivElement>(null);
+  const pdfViewer = useRef<any>(null);
+  const pdfThumbnail = useRef<any>(null);
 
   const [file, setFile] = useState<ArrayBuffer | string | null>();
+  const [bookmarks, setBookmarks] = useState<BookMark[]>([]);
 
   const [isError, setIsError] = useState<boolean>(false);
 
@@ -49,10 +52,8 @@ function PDFViewer({
   const [isLoadingFile, setIsLoadingFile] = useState<boolean>(false);
 
   const resize = () => {
-    //@ts-ignore
-    window.Viewer && window.Viewer.resize();
-    //@ts-ignore
-    window.Thumbnails && window.Thumbnails.resize();
+    pdfViewer.current?.resize();
+    pdfThumbnail.current?.resize();
   };
 
   useEffect(() => {
@@ -62,6 +63,31 @@ function PDFViewer({
       window.removeEventListener("resize", resize);
     };
   }, []);
+
+  const initViewer = () => {
+    console.log("init PDF Viewer");
+
+    //@ts-ignore
+    pdfViewer.current = new window.AscViewer.CViewer("mainPanel", {
+      theme: { type: "dark" },
+    });
+    //@ts-ignore
+    pdfThumbnail.current =
+      //@ts-ignore
+      pdfViewer.current.createThumbnails("viewer-thumbnail");
+    //@ts-ignore
+    pdfViewer.current.registerEvent(
+      "onStructure",
+      function (structure: BookMark[]) {
+        setBookmarks(structure);
+      }
+    );
+
+    console.log(pdfThumbnail.current);
+    console.log(pdfViewer.current);
+    // console.log(pdfViewer.current.navigate());
+    console.log(pdfViewer.current.navigateToPage);
+  };
 
   useLayoutEffect(() => {
     const origin = window.location.origin;
@@ -74,17 +100,7 @@ function PDFViewer({
         combineUrl(origin, path),
         pdfViewerId,
         () => {
-          //@ts-ignore
-          window.Viewer = new window.AscViewer.CViewer("mainPanel", {
-            theme: { type: "dark" },
-          });
-          //@ts-ignore
-          window.Thumbnails =
-            //@ts-ignore
-            window.Viewer.createThumbnails("viewer-thumbnail");
-          //@ts-ignore
-          window.Thumbnails.setZoom(0.2);
-
+          initViewer();
           setIsLoadedViewerScript(true);
           setIsLoadingScript(false);
         },
@@ -99,6 +115,7 @@ function PDFViewer({
 
   useEffect(() => {
     setIsLoadingFile(true);
+    setFile(undefined);
     fetch(src)
       .then((value) => {
         return value.blob();
@@ -123,17 +140,12 @@ function PDFViewer({
     if (isLoadedViewerScript && !isLoadingFile && file) {
       try {
         if (!containerRef.current?.hasChildNodes()) {
-          //@ts-ignore
-          window.Viewer = new window.AscViewer.CViewer("mainPanel", {
-            theme: { type: "dark" },
-          });
-          //@ts-ignore
-          window.Thumbnails =
-            //@ts-ignore
-            window.Viewer.createThumbnails("viewer-thumbnail");
+          console.log("");
+          initViewer();
         }
+        console.log("open");
         //@ts-ignore
-        window.Viewer.open(file);
+        pdfViewer.current?.open(file);
         resize();
       } catch (error) {
         setIsError(true);
@@ -157,6 +169,10 @@ function PDFViewer({
     }
   }
 
+  function navigate(page: number) {
+    pdfViewer.current.navigate(page);
+  }
+
   if (isError) {
     return (
       <PdfViewrWrapper>
@@ -176,7 +192,9 @@ function PDFViewer({
       <PdfViewrWrapper>
         <ViewerLoader isLoading={isLoadingFile || isLoadingScript} />
         <Sidebar
+          bookmarks={bookmarks}
           isPanelOpen={isPDFSidebarOpen}
+          navigate={navigate}
           setIsPDFSidebarOpen={setIsPDFSidebarOpen}
         />
         <MainPanel

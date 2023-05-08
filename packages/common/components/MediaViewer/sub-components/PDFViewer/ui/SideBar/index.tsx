@@ -1,59 +1,28 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
-import styled from "styled-components";
+import React, { useState } from "react";
+import Bookmarks from "../Bookmarks";
 
-import ArticleShowMenuReactSvgUrl from "PUBLIC_DIR/images/article-show-menu.react.svg";
+import SidebarProps from "./Sidebar.props";
+import {
+  HideSidebarIcon,
+  SidebarContainer,
+  SidebarHeader,
+  Thumbnails,
+} from "./Sidebar.styled";
+
 import ViewTilesIcon from "PUBLIC_DIR/images/view-tiles.react.svg";
 import ViewRowsIcon from "PUBLIC_DIR/images/view-rows.react.svg";
 
-type PanelProps = {
-  isPanelOpen: boolean;
-  setIsPDFSidebarOpen: Dispatch<SetStateAction<boolean>>;
-};
-
-const SidebarContainer = styled.aside<{ isPanelOpen: boolean }>`
-  display: flex;
-  flex-direction: column;
-
-  height: 100vh;
-  width: 100%;
-
-  background: #333333;
-
-  max-width: ${(props) => (props.isPanelOpen ? "306px" : "0px")};
-  visibility: ${(props) => (props.isPanelOpen ? "visible" : "hidden")};
-`;
-
-const SidebarHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30px;
-
-  svg {
-    cursor: pointer;
-    path {
-      fill: rgba(255, 255, 255, 0.6);
-    }
-  }
-`;
-
-const Thumbnails = styled.section`
-  height: 100%;
-  width: 100%;
-
-  position: relative;
-`;
-
-const HideSidebarIcon = styled(ArticleShowMenuReactSvgUrl)`
-  transform: rotate(180deg);
-`;
-
-// import ArticleShowMenuReactSvgUrl from "PUBLIC_DIR/images/article-show-menu.react.svg?url";
-
-function Sidebar({ isPanelOpen, setIsPDFSidebarOpen }: PanelProps) {
+function Sidebar({
+  bookmarks,
+  isPanelOpen,
+  setIsPDFSidebarOpen,
+  navigate,
+}: SidebarProps) {
   const [toggle, setToggle] = useState<boolean>(false);
 
-  const handleToggle = () => setToggle((prev) => !prev);
+  const handleToggle = () => {
+    setToggle((prev) => !prev);
+  };
 
   const closeSidebar = () => setIsPDFSidebarOpen(false);
 
@@ -65,7 +34,8 @@ function Sidebar({ isPanelOpen, setIsPDFSidebarOpen }: PanelProps) {
         })}
         <HideSidebarIcon onClick={closeSidebar} />
       </SidebarHeader>
-      <Thumbnails id="viewer-thumbnail" />
+      {toggle && <Bookmarks bookmarks={bookmarks} navigate={navigate} />}
+      <Thumbnails id="viewer-thumbnail" visible={!toggle} />
     </SidebarContainer>
   );
 }

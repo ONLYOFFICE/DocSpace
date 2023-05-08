@@ -17,4 +17,11 @@ interface PDFViewerProps {
   handleChangeVersion: (arg: string) => void; // temp
 }
 
+export type BookMark = {
+  description: string;
+  level: number;
+  page: number;
+  y: number;
+};
+
 export default PDFViewerProps;
