@@ -31,6 +31,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     withManager,
     withCollaborator,
     isLogout,
+    isEnterpriseEdition,
   } = rest;
 
   const { params, path } = computedMatch;
@@ -132,6 +133,19 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
               "/portal-settings/payments/portal-payments"
             ),
             state: { from: props.location },
+          }}
+        />
+      );
+    }
+
+    if (isPaymentsUrl && !isEnterpriseEdition) {
+      return (
+        <Redirect
+          to={{
+            pathname: combineUrl(
+              window.DocSpaceConfig?.proxy?.url,
+              "/portal-settings/"
+            ),
           }}
         />
       );
@@ -242,6 +256,7 @@ export default inject(({ auth }) => {
     settingsStore,
     currentTariffStatusStore,
     isLogout,
+    isEnterpriseEdition,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
@@ -254,6 +269,7 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   return {
+    isEnterpriseEdition,
     isNotPaidPeriod,
     user,
     isAuthenticated,

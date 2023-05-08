@@ -241,7 +241,13 @@ class ArticleBodyContent extends React.Component {
 
   catalogItems = () => {
     const { selectedKeys } = this.state;
-    const { showText, isNotPaidPeriod, t, isOwner } = this.props;
+    const {
+      showText,
+      isNotPaidPeriod,
+      t,
+      isOwner,
+      isEnterpriseEdition,
+    } = this.props;
 
     const items = [];
     let resultTree = [...settingsTree];
@@ -253,6 +259,12 @@ class ArticleBodyContent extends React.Component {
           e.tKey === "Common:PaymentsTitle" ||
           (isOwner && e.tKey === "PortalDeletion")
         );
+      });
+    }
+
+    if (!isEnterpriseEdition) {
+      resultTree = [...settingsTree].filter((e) => {
+        return e.tKey !== "Common:PaymentsTitle";
       });
     }
 
@@ -293,12 +305,13 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-  const { currentTariffStatusStore, userStore } = auth;
+  const { currentTariffStatusStore, userStore, isEnterpriseEdition } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
   const { isOwner } = user;
 
   return {
+    isEnterpriseEdition,
     showText: auth.settingsStore.showText,
     toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
     isLoadedArticleBody,
