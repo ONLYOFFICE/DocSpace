@@ -24,7 +24,9 @@ const SessionLifetimePage = lazy(() =>
   import("./categories/security/access-portal/sessionLifetime")
 );
 
-const CustomizationSettings = lazy(() => import("./categories/common/index.js"));
+const CustomizationSettings = lazy(() =>
+  import("./categories/common/index.js")
+);
 
 const DeveloperTools = lazy(() =>
   import("./categories/developer-tools/index.js")
@@ -184,19 +186,43 @@ const Settings = () => {
       <Panels />
       <Suspense fallback={null}>
         <Switch>
-          <Route exact path={CUSTOMIZATION_URLS} component={CustomizationSettings} />
+          <Route
+            exact
+            path={CUSTOMIZATION_URLS}
+            component={CustomizationSettings}
+          />
           <Route exact path={LTZ_URL} component={LanguageAndTimeZoneSettings} />
-          <Route exact path={WELCOME_PAGE_SETTINGS_URL} component={WelcomePageSettings} />
+          <Route
+            exact
+            path={WELCOME_PAGE_SETTINGS_URL}
+            component={WelcomePageSettings}
+          />
           <Route exact path={DNS_SETTINGS} component={DNSSettings} />
           <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
-          <Route exact path={PASSWORD_PAGE_URL} component={PasswordStrengthPage} />
-          <Route exact path={TRUSTED_MAIL_PAGE_URL} component={TrustedMailPage} />
+          <Route
+            exact
+            path={PASSWORD_PAGE_URL}
+            component={PasswordStrengthPage}
+          />
+          <Route
+            exact
+            path={TRUSTED_MAIL_PAGE_URL}
+            component={TrustedMailPage}
+          />
           <Route exact path={IP_SECURITY_PAGE_URL} component={IpSecurityPage} />
-          <Route exact path={ADMIN_MESSAGE_PAGE_URL} component={AdminMessagePage} />
-          <Route exact path={SESSION_LIFETIME_PAGE_URL} component={SessionLifetimePage} />
+          <Route
+            exact
+            path={ADMIN_MESSAGE_PAGE_URL}
+            component={AdminMessagePage}
+          />
+          <Route
+            exact
+            path={SESSION_LIFETIME_PAGE_URL}
+            component={SessionLifetimePage}
+          />
           <Route exact path={INTEGRATION_URLS} component={Integration} />
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />

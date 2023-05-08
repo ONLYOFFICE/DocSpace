@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import Button from "@docspace/components/button";
 import styled, { css } from "styled-components";
-import SalesDepartmentRequestDialog from "../../../../../components/dialogs/SalesDepartmentRequestDialog";
+import SalesDepartmentRequestDialog from "../../../../../../components/dialogs/SalesDepartmentRequestDialog";
 import { inject, observer } from "mobx-react";
 
 const StyledBody = styled.div`
