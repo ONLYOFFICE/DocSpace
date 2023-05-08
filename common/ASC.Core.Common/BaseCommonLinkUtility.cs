@@ -77,7 +77,16 @@ public class BaseCommonLinkUtility
             }
             else if (_serverRoot == null)
             {
-                _serverRoot = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                var serverRoot = coreBaseSettings.ServerRoot;
+
+                if (string.IsNullOrEmpty(serverRoot))
+                {
+                    _serverRoot = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                }
+                else
+                {
+                    ServerUri = serverRoot;
+                }
             }
         }
         catch (Exception error)
