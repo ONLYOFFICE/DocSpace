@@ -24,22 +24,35 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Core.Common.EF.Context;
+namespace ASC.Core.Common.Tenants;
 
-public class CustomDbContext : DbContext
+[Scope]
+internal class TenantQuotaPriceResolver : IValueResolver<DbQuota, TenantQuota, decimal>
 {
-    public DbSet<MobileAppInstall> MobileAppInstall { get; set; }
-    public DbSet<DbIPLookup> DbIPLookup { get; set; }
-    public DbSet<Regions> Regions { get; set; }
+    private readonly TenantManager _tenantManager;
+    private readonly RegionHelper _regionHelper;
 
-    public CustomDbContext(DbContextOptions<CustomDbContext> options) : base(options) { }
-
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    public TenantQuotaPriceResolver(TenantManager tenantManager, RegionHelper regionHelper)
     {
-        ModelBuilderWrapper
-               .From(modelBuilder, Database)
-               .AddMobileAppInstall()
-               .AddDbIPLookup()
-               .AddRegions();
+        _tenantManager = tenantManager;
+        _regionHelper = regionHelper;
+    }
+
+    public decimal Resolve(DbQuota source, TenantQuota destination, decimal destMember, ResolutionContext context)
+    {
+        var priceInfo = _tenantManager.GetProductPriceInfo(source.ProductId);
+
+        if (priceInfo != null)
+        {
+            var currentRegion = _regionHelper.GetCurrentRegionInfo(new Dictionary<string, Dictionary<string, decimal>>() { { source.ProductId, priceInfo } });
+            destination.PriceCurrencySymbol = currentRegion.CurrencySymbol;
+
+            if (priceInfo.ContainsKey(currentRegion.ISOCurrencySymbol))
+            {
+                return priceInfo[currentRegion.ISOCurrencySymbol];
+            }
+        }
+
+        return source.Price;
     }
 }
