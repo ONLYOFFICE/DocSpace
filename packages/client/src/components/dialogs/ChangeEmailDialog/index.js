@@ -51,6 +51,7 @@ class ChangeEmailDialogComponent extends React.Component {
       sendInstructionsToChangeEmail(id, email)
         .then((res) => {
           toastr.success(res);
+          window.location.reload();
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
