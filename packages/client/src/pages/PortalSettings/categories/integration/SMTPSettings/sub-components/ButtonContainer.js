@@ -26,7 +26,7 @@ const ButtonContainer = (props) => {
   const {
     t,
     isEmailValid,
-    onSetValidationError,
+    isPortValid,
     settings,
     setSMTPSettingsLoading,
     updateSMTPSettings,
@@ -34,6 +34,7 @@ const ButtonContainer = (props) => {
     isLoading,
     isDefaultSettings,
     isSMTPInitialSettings,
+    setSMTPErrors,
   } = props;
 
   const [buttonOperation, setButtonOperation] = useState({
@@ -43,10 +44,13 @@ const ButtonContainer = (props) => {
   });
 
   const isValidForm = () => {
+    const authInvalid =
+      settings[AUTHENTICATION] &&
+      (settings[HOST_PASSWORD]?.trim() === "" ||
+        settings[HOST_LOGIN]?.trim() === "");
+
     if (
-      (settings[AUTHENTICATION] &&
-        (settings[HOST_PASSWORD]?.trim() === "" ||
-          settings[HOST_LOGIN]?.trim() === "")) ||
+      authInvalid ||
       settings[HOST]?.trim() === "" ||
       settings[PORT]?.toString()?.trim() === "" ||
       settings[SENDER_EMAIL_ADDRESS]?.trim() === ""
@@ -55,10 +59,21 @@ const ButtonContainer = (props) => {
 
     return true;
   };
-  const onClick = async () => {
-    onSetValidationError(!isEmailValid);
 
-    if (!isEmailValid) return;
+  const setErrors = () => {
+    const array = [
+      { name: SENDER_EMAIL_ADDRESS, hasError: !isEmailValid },
+      { name: PORT, hasError: !isPortValid },
+    ];
+
+    setSMTPErrors(array);
+  };
+  const onClick = async () => {
+    if (!isEmailValid || !isPortValid) {
+      setErrors();
+
+      return;
+    }
 
     timerId = setTimeout(() => {
       setSMTPSettingsLoading(true);
@@ -199,6 +214,7 @@ export default inject(({ setup }) => {
     updateSMTPSettings,
     resetSMTPSettings,
     isSMTPInitialSettings,
+    setSMTPErrors,
   } = setup;
   const { smtpSettings } = integration;
   const { settings, isLoading, isDefaultSettings } = smtpSettings;
@@ -210,5 +226,6 @@ export default inject(({ setup }) => {
     updateSMTPSettings,
     resetSMTPSettings,
     isLoading,
+    setSMTPErrors,
   };
 })(observer(ButtonContainer));

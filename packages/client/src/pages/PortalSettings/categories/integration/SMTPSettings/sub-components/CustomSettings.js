@@ -25,7 +25,7 @@ const {
 } = SMTPSettingsFields;
 
 const CustomSettings = (props) => {
-  const { t, settings, setSMTPSettings, isLoading, theme } = props;
+  const { t, settings, setSMTPSettings, isLoading, theme, errors } = props;
   const [emailError, setEmailError] = useState({
     hasError: false,
     isValid: true,
@@ -66,13 +66,6 @@ const CustomSettings = (props) => {
       ...emailError,
       isValid,
       errors,
-    });
-  };
-
-  const onSetValidationError = (hasError) => {
-    setEmailError({
-      ...emailError,
-      hasError,
     });
   };
 
@@ -167,6 +160,7 @@ const CustomSettings = (props) => {
         onChange={onChange}
         value={settings[PORT].toString()}
         scale
+        hasError={errors[PORT]}
       />
       {enableAuthComponent}
 
@@ -191,7 +185,7 @@ const CustomSettings = (props) => {
         className="smtp-settings_input"
         isVertical
         place="top"
-        hasError={emailError.hasError}
+        hasError={errors[SENDER_EMAIL_ADDRESS]}
         errorMessage={t("Common:IncorrectEmail")}
       >
         <EmailInput
@@ -200,7 +194,7 @@ const CustomSettings = (props) => {
           value={settings[SENDER_EMAIL_ADDRESS]}
           onChange={onChange}
           onValidateInput={onValidateEmailInput}
-          hasError={emailError.hasError}
+          hasError={errors[SENDER_EMAIL_ADDRESS] ?? false}
           placeholder={t("EnterEmail")}
           scale
         />
@@ -215,8 +209,8 @@ const CustomSettings = (props) => {
       />
       <ButtonContainer
         t={t}
-        onSetValidationError={onSetValidationError}
         isEmailValid={emailError.isValid}
+        isPortValid={settings[PORT] !== 0 && settings[PORT] !== "0"}
       />
     </StyledComponent>
   );
@@ -225,9 +219,9 @@ const CustomSettings = (props) => {
 export default inject(({ auth, setup }) => {
   const { settingsStore } = auth;
   const { theme } = settingsStore;
-  const { integration, setSMTPSettings } = setup;
+  const { integration, setSMTPSettings, setSMTPErrors } = setup;
   const { smtpSettings } = integration;
-  const { settings, isLoading } = smtpSettings;
+  const { settings, isLoading, errors } = smtpSettings;
 
-  return { theme, settings, setSMTPSettings, isLoading };
+  return { theme, settings, setSMTPSettings, isLoading, setSMTPErrors, errors };
 })(observer(CustomSettings));

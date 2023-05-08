@@ -66,6 +66,7 @@ class SettingsSetupStore {
       },
       isLoading: false,
       isDefaultSettings: false,
+      errors: {},
     },
   };
 
@@ -161,6 +162,7 @@ class SettingsSetupStore {
       storeSettings[key] = settings[key];
     }
 
+    this.integration.smtpSettings.errors = {};
     this.integration.smtpSettings.initialSettings = { ...storeSettings };
   };
   setInitSMTPSettings = async () => {
@@ -193,6 +195,18 @@ class SettingsSetupStore {
 
   setSMTPSettingsLoading = (loading) => {
     this.integration.smtpSettings.isLoading = loading;
+  };
+
+  setSMTPErrors = (errorsArray) => {
+    let errors = {};
+    errorsArray.forEach((elem) => {
+      errors = {
+        ...errors,
+        [elem.name]: elem.hasError,
+      };
+    });
+
+    this.integration.smtpSettings.errors = { ...errors };
   };
 
   setAddUsers = (func) => {
