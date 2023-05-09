@@ -16,7 +16,7 @@ const WebhookWrapper = styled.div`
 `;
 
 const WebhookHistory = (props) => {
-  const { getWebhookHistory } = props;
+  const { getWebhookHistory, hideTitle, showTitle, emptyCheckedIds } = props;
 
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilters, setStatusFilters] = useState(null);
@@ -24,14 +24,17 @@ const WebhookHistory = (props) => {
   const { id } = useParams();
 
   useEffect(() => {
+    hideTitle();
     (async () => {
       const webhookHistoryData = await getWebhookHistory({ configId: id });
       setHistoryWebhooks(webhookHistoryData);
       setIsLoading(false);
     })();
+    return showTitle;
   }, []);
 
   const applyFilters = async ({ deliveryFrom, deliveryTo, groupStatus }) => {
+    emptyCheckedIds();
     const params = { configId: id, deliveryFrom, deliveryTo, groupStatus };
 
     const webhookHistoryData = await getWebhookHistory(params);
@@ -64,7 +67,7 @@ const WebhookHistory = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { getWebhookHistory } = webhooksStore;
+  const { getWebhookHistory, hideTitle, showTitle, emptyCheckedIds } = webhooksStore;
 
-  return { getWebhookHistory };
+  return { getWebhookHistory, hideTitle, showTitle, emptyCheckedIds };
 })(observer(WebhookHistory));

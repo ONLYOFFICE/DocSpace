@@ -20,7 +20,8 @@ const HeaderContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  max-width: calc(100vw - 32px);
+  width: 100vw;
+  min-height: 69px;
   height: 69px;
 
   .arrow-button {
@@ -41,10 +42,10 @@ const HeaderContainer = styled.div`
     margin: 0 0 0 -20px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-    width: calc(100% + 40px);
-    height: 68px;
+    width: 100%;
+    height: 69px;
 
-    @media ${tablet} {
+    /* @media ${tablet} {
       height: 60px;
       margin: 0 0 0 -16px;
       width: calc(100% + 32px);
@@ -68,7 +69,7 @@ const HeaderContainer = styled.div`
       height: 52px;
       margin: 0 0 0 -16px;
       width: calc(100% + 32px);
-    `}
+    `} */
   }
 `;
 

@@ -20,7 +20,7 @@ const EventDetailsHeader = styled.header`
 `;
 
 const WebhookEventDetails = (props) => {
-  const { getWebhookHistory } = props;
+  const { getWebhookHistory, hideTitle, showTitle } = props;
 
   const { id, eventId } = useParams();
 
@@ -29,11 +29,13 @@ const WebhookEventDetails = (props) => {
   const [webhookDetails, setWebhookDetails] = useState({});
 
   useEffect(() => {
+    hideTitle();
     (async () => {
       const [webhookDetailsData] = await getWebhookHistory({ eventId });
       setWebhookDetails(webhookDetailsData);
       setIsLoading(false);
     })();
+    return showTitle;
   }, []);
 
   return (
@@ -55,7 +57,7 @@ const WebhookEventDetails = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { getWebhookHistory } = webhooksStore;
+  const { getWebhookHistory, hideTitle, showTitle } = webhooksStore;
 
-  return { getWebhookHistory };
+  return { getWebhookHistory, hideTitle, showTitle };
 })(observer(WebhookEventDetails));

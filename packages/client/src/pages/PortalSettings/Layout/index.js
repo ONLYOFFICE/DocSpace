@@ -26,6 +26,7 @@ const Layout = ({
   language,
   children,
   addUsers,
+  isTitleVisible,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
@@ -35,9 +36,12 @@ const Layout = ({
     <>
       <ArticleSettings />
       <Section withBodyScroll={true} settingsStudio={true}>
-        <Section.SectionHeader>
-          <SectionHeaderContent />
-        </Section.SectionHeader>
+        {/* <Section.SectionHeader>{isTitleVisible && <SectionHeaderContent />}</Section.SectionHeader> */}
+        {isTitleVisible && (
+          <Section.SectionHeader>
+            <SectionHeaderContent />
+          </Section.SectionHeader>
+        )}
 
         <Section.SectionBody>{children}</Section.SectionBody>
         {addUsers && (
@@ -50,13 +54,15 @@ const Layout = ({
   );
 };
 
-export default inject(({ auth, setup }) => {
+export default inject(({ auth, setup, webhooksStore }) => {
   const { language, settingsStore } = auth;
   const { addUsers } = setup.headerAction;
+  const { isTitleVisible } = webhooksStore;
 
   return {
     language,
     setCurrentProductId: settingsStore.setCurrentProductId,
     addUsers,
+    isTitleVisible,
   };
 })(withLoading(observer(Layout)));

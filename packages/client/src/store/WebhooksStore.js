@@ -21,6 +21,7 @@ class WebhooksStore {
     status: [],
   };
   checkedEventIds = [];
+  isTitleVisible = true;
 
   constructor() {
     makeAutoObservable(this);
@@ -199,6 +200,13 @@ class WebhooksStore {
   get isHeaderVisible() {
     return this.checkedEventIds.length !== 0;
   }
+
+  hideTitle = () => {
+    this.isTitleVisible = false;
+  };
+  showTitle = () => {
+    this.isTitleVisible = true;
+  };
 }
 
 export default WebhooksStore;
