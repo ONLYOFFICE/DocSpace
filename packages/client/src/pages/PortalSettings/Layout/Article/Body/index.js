@@ -247,6 +247,7 @@ class ArticleBodyContent extends React.Component {
       t,
       isOwner,
       isEnterpriseEdition,
+      standalone,
     } = this.props;
 
     const items = [];
@@ -262,7 +263,7 @@ class ArticleBodyContent extends React.Component {
       });
     }
 
-    if (!isEnterpriseEdition) {
+    if (standalone && !isEnterpriseEdition) {
       resultTree = [...settingsTree].filter((e) => {
         return e.tKey !== "Common:PaymentsTitle";
       });
@@ -305,15 +306,22 @@ class ArticleBodyContent extends React.Component {
 
 export default inject(({ auth, common }) => {
   const { isLoadedArticleBody, setIsLoadedArticleBody } = common;
-  const { currentTariffStatusStore, userStore, isEnterpriseEdition } = auth;
+  const {
+    currentTariffStatusStore,
+    userStore,
+    isEnterpriseEdition,
+    settingsStore,
+  } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
   const { isOwner } = user;
+  const { standalone, showText, toggleArticleOpen } = settingsStore;
 
   return {
+    standalone,
     isEnterpriseEdition,
-    showText: auth.settingsStore.showText,
-    toggleArticleOpen: auth.settingsStore.toggleArticleOpen,
+    showText,
+    toggleArticleOpen,
     isLoadedArticleBody,
     setIsLoadedArticleBody,
     isNotPaidPeriod,
