@@ -101,6 +101,7 @@ const StyledBody = styled.div`
       word-break: break-word;
       .selection-panel_title {
         ${(props) => props.header && "padding-top: 16px"};
+        line-height: 16px;
       }
     }
     .selection-panel_footer {
