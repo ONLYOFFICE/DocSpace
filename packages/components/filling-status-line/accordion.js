@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 
 import ArrowReactSvgUrl from "PUBLIC_DIR/images/arrow.react.svg?url";
+
 import IconButton from "../icon-button";
 import Text from "../text";
 import Box from "../box";
@@ -9,8 +10,7 @@ import Avatar from "../avatar";
 
 const AccordionItem = styled.div`
   width: 100%;
-  margin-bottom: 15px;
-  outline: 1px solid grey;
+  margin-bottom: 10px;
 `;
 const AccordionItemInfo = styled.div`
   display: flex;
@@ -25,13 +25,28 @@ const AccordionItemInfo = styled.div`
     justify-content: center;
     cursor: pointer;
   }
+
+  .icon-button-rotate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transform: rotate(90deg);
+  }
 `;
 const AccordionItemHistory = styled.div`
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 5px 15px 42px;
+  padding: 15px 5px 15px 15px;
+`;
+
+const StyledDivider = styled.div`
+  height: 40px;
+  width: 2px;
+  background-color: #a3a9ae;
+  margin-right: 28px;
 `;
 
 const Accordion = ({ avatar, displayName, role, status, date }) => {
@@ -74,7 +89,7 @@ const Accordion = ({ avatar, displayName, role, status, date }) => {
           </Box>
         </Box>
         <IconButton
-          className="icon-button"
+          className={isOpen ? "icon-button-rotate" : "icon-button"}
           size={16}
           iconName={ArrowReactSvgUrl}
           isOpen={isOpen}
@@ -82,9 +97,13 @@ const Accordion = ({ avatar, displayName, role, status, date }) => {
       </AccordionItemInfo>
       {isOpen && (
         <AccordionItemHistory>
-          <Text fontSize="12px" lineHeight="16px" color="#657077">
-            {status}
-          </Text>
+          <Box displayProp="flex" alignItems="center">
+            <StyledDivider />
+            <Text fontSize="12px" lineHeight="16px" color="#657077">
+              {status}
+            </Text>
+          </Box>
+
           <Text fontSize="12px" lineHeight="16px" color="#657077">
             {date}
           </Text>

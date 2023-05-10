@@ -1,16 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import Accordion from "./accordion.js";
-import { Data } from "./data.js";
 
-const FillingStatusContainer = styled.div`
-  width: 100%;
-  max-width: 425px;
-`;
+import DoneReactSvg from "PUBLIC_DIR/images/done.react.svg";
+import { StyledFillingStatusContainer } from "./styled-filling-status-line.js";
+import Text from "../text";
+import Box from "../box";
+import { Data } from "./data.js";
 
 const FillingStatusLine = () => {
   return (
-    <FillingStatusContainer>
+    <StyledFillingStatusContainer>
       {Data.map((data) => {
         return (
           <Accordion
@@ -23,7 +23,13 @@ const FillingStatusLine = () => {
           />
         );
       })}
-    </FillingStatusContainer>
+      <Box displayProp="flex" alignItems="center">
+        <DoneReactSvg className="done-icon" />
+        <Text fontSize="14px" lineHeight="16px" color="#A3A9AE" isBold={true}>
+          Done
+        </Text>
+      </Box>
+    </StyledFillingStatusContainer>
   );
 };
 
