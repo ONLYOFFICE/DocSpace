@@ -109,7 +109,8 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
           }
         });
     } catch (error) {
-      toastr.error(error);
+      console.error(error);
+      toastr.error(t("Common:NotSupportedFormat"));
       timer.current && clearTimeout(timer.current);
       if (mount.current) {
         setLoadingFile(false);
