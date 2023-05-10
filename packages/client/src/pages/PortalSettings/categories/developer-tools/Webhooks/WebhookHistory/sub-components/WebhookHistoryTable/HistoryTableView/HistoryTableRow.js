@@ -77,7 +77,7 @@ const HistoryTableRow = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { checkedEventIds, toggleEventId, isIdChecked, retryWebhookEvent } = webhooksStore;
+  const { toggleEventId, isIdChecked, retryWebhookEvent } = webhooksStore;
 
-  return { checkedEventIds, toggleEventId, isIdChecked, retryWebhookEvent };
+  return { toggleEventId, isIdChecked, retryWebhookEvent };
 })(observer(HistoryTableRow));
