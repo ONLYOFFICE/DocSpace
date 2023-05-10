@@ -156,6 +156,7 @@
   "Next": "下一个",
   "NotFoundLanguage": "找不到您的语言？请通过<1>{{supportEmail}}</1>联系我们，参与翻译工作并获得奖励。",
   "NotFoundTitle": "什么也没找到",
+  "NotSupportedFormat": "很抱歉，系统暂不支持此文件格式",
   "OFORMsGallery": "OFORMs库",
   "OKButton": "确定",
   "Or": "或",

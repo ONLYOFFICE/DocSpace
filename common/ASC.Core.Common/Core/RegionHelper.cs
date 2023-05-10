@@ -50,7 +50,7 @@ public class RegionHelper
     {
         var defaultRegion = GetDefaultRegionInfo();
 
-        var countryCode = _httpContextAccessor.HttpContext.Request.Query["country"];
+        var countryCode = _httpContextAccessor.HttpContext?.Request.Query["country"];
 
         var currentRegion = GetRegionInfo(countryCode) ?? FindRegionInfo();
 
