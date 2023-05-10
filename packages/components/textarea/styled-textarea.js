@@ -150,7 +150,6 @@ StyledCopyIcon.defaultProps = {
 const Wrapper = styled.div`
   position: relative;
 
-  min-width: ${(props) => (props.isJSONField ? "600px" : "none")};
   max-width: 1200px;
 `;
 
