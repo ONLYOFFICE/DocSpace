@@ -1,9 +1,9 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const InfoText = styled.p`
-  width: 660px;
+  max-width: 660px;
 
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   line-height: 20px;
 
   color: #657077;
