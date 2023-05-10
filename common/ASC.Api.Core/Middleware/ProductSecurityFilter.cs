@@ -38,28 +38,9 @@ public class ProductSecurityFilter : IResourceFilter
 
     static ProductSecurityFilter()
     {
-        var blog = new Guid("6a598c74-91ae-437d-a5f4-ad339bd11bb2");
-        var bookmark = new Guid("28b10049-dd20-4f54-b986-873bc14ccfc7");
-        var forum = new Guid("853b6eb9-73ee-438d-9b09-8ffeedf36234");
-        var news = new Guid("3cfd481b-46f2-4a4a-b55c-b8c0c9def02c");
-        var wiki = new Guid("742cf945-cbbc-4a57-82d6-1600a12cf8ca");
-        var photo = new Guid("9d51954f-db9b-4aed-94e3-ed70b914e101");
-
         _products = new Dictionary<string, Guid>
                 {
-                    { "blog", blog },
-                    { "bookmark", bookmark },
-                    { "event", news },
-                    { "forum", forum },
-                    { "photo", photo },
-                    { "wiki", wiki },
-                    { "birthdays", WebItemManager.BirthdaysProductID },
-                    { "community", WebItemManager.CommunityProductID },
-                    { "crm", WebItemManager.CRMProductID },
-                    { "files", WebItemManager.DocumentsProductID },
-                    { "project", WebItemManager.ProjectsProductID },
-                    { "calendar", WebItemManager.CalendarProductID },
-                    { "mail", WebItemManager.MailProductID },
+                    { "files", WebItemManager.DocumentsProductID }
                 };
     }
 
