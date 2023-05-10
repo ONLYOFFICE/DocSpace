@@ -2,6 +2,6 @@
   "RequestDetails": "ご要望内容をこちらにご記入ください。",
   "SalesDepartmentRequest": "営業部への依頼",
   "SuccessfullySentMessage": "メッセージは正常に送信されました。営業部よりご連絡させていただきます。",
-  "YouWillBeContacted": "リクエスト作成後、営業担当よりご連絡させていただきます。",
-  "YourName": "お名前"
+  "YourName": "お名前",
+  "YouWillBeContacted": "リクエスト作成後、営業担当よりご連絡させていただきます。"
 }

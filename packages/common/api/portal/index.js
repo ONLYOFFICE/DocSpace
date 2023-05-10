@@ -245,7 +245,7 @@ export function getPaymentAccount() {
   return request({ method: "get", url: "/portal/payment/account" });
 }
 
-export function getPaymentLink(adminCount, backUrl, cancelToken) {
+export function getPaymentLink(adminCount, backUrl, signal) {
   return request({
     method: "put",
     url: `/portal/payment/url`,
@@ -253,7 +253,7 @@ export function getPaymentLink(adminCount, backUrl, cancelToken) {
       quantity: { admin: adminCount },
       backUrl,
     },
-    cancelToken,
+    signal,
   });
 }
 

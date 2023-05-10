@@ -50,7 +50,7 @@ public static class XrdsHelper
     //{
     //    Common.HttpContext.Current.Response.Headers.Append(
     //        "X-XRDS-Location",
-    //        new Uri(Common.HttpContext.Current.Request.GetUrlRewriter().ToString(), 
+    //        new Uri(Common.HttpContext.Current.Request.Url().ToString(), 
     //        Common.HttpContext.Current.Response.ApplyAppPathModifier(handlerVirtualPath)).AbsoluteUri);
     //}
 }

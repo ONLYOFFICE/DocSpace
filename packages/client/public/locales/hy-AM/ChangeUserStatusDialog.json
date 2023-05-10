@@ -1,7 +1,7 @@
 {
+  "ChangeUsersActiveStatus": "Միացրած",
+  "ChangeUsersDisableStatus": "Կասեցված",
   "ChangeUserStatusDialog": "'{{ userStatus }}'ունեցող օգտվողները կլինեն {{ status }}.",
   "ChangeUserStatusDialogHeader": "Փոխել օգտվողի կարգավիճակը",
-  "ChangeUserStatusDialogMessage": "Դուք չեք կարող փոխել կարգավիճակը DocSpace-ի սեփականատիրոջ և ձեզ համար",
-  "ChangeUsersActiveStatus": "Միացրած",
-  "ChangeUsersDisableStatus": "Կասեցված"
+  "ChangeUserStatusDialogMessage": "Դուք չեք կարող փոխել կարգավիճակը DocSpace-ի սեփականատիրոջ և ձեզ համար"
 }

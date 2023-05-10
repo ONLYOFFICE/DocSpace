@@ -184,7 +184,7 @@ Vážený $OwnerName,
 
 Zálohový súbor obsahujúci dáta z Vášho "${__VirtualRootPath}":"${__VirtualRootPath}" portálu bol vytvorený.
 
-Viac informácií o zálohovaní nájdete v našej "Data backup":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" užívateľskej príručke.
+Viac informácií o zálohovaní nájdete v našej "Data backup":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" užívateľskej príručke.
 
 
 Ak máte nejaké otázky alebo potrebujete asistenciu, prosím neváhajte nás kontaktovať na "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -247,13 +247,13 @@ p=. "Potvrdiť zmenu portálovej adresy":"$ConfirmDnsUpdate"
 
 Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
 
-*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
 
-*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+* *Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
 
-*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+* *Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
 
-*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+* *Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
 
 $GreenButton
 
@@ -268,13 +268,13 @@ Tím ONLYOFFICE
 
 Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
 
-*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
 
-*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+* *Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
 
-*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+* *Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
 
-*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+* *Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
 
 $GreenButton
 
@@ -289,13 +289,13 @@ Tím ONLYOFFICE
 
 Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
 
-*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
 
-*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+* *Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
 
-*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+* *Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
 
-*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+* *Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
 
 $GreenButton
 
@@ -310,13 +310,13 @@ Tím ONLYOFFICE
 
 Vitajte v ONLYOFFICE DocSpace! Váš používateľský profil bol úspešne pridaný do "${__VirtualRootPath}":"${__VirtualRootPath}". Teraz môžete:
 
-*#* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
+* Spolupracovať s ostatnými používateľmi v miestnosti, do ktorej ste pozvaní: *miestnosti na spoluprácu pre spolutvorbu v reálnom čase alebo vlastné miestnosti s flexibilným nastavením na akýkoľvek účel*.
 
-*# Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
+* *Prácovať s rôznymi formátmi súborov*: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, PDF, e-knihy, multimédiá.
 
-*# Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
+* *Spolupracovať na dokumentoch* pomocou dvoch režimov spoločnej úpravy: v reálnom čase alebo paragraph-locking. Sledujte zmeny, komunikujte v reálnom čase pomocou vstavaného chatu alebo uskutočňujte audio a video hovory. 
 
-*# Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
+* *Pripojiť akékoľvek úložisko typu cloud* a pracovať bez prepínania medzi aplikáciami. 
 
 $GreenButton
 

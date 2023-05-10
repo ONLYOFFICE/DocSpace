@@ -43,7 +43,7 @@ switch ( $env:DOCUMENT_SERVER_VERSION )
 }
 
 $nginx_version = '1.21.1'
-$psql_version = '9.5.4'
+$psql_version = '12.9'
 
 $path_prereq = "${pwd}\build\install\win\"
 
