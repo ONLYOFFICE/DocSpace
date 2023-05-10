@@ -343,4 +343,16 @@
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Сътрудник</value>
   </data>
- </root>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Сътрудник</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Персонализиран филтър</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Редактор</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Администратор на стаята</value>
+  </data>
+</root>

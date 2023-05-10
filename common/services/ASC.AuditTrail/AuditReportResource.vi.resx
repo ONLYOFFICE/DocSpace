@@ -1336,4 +1336,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Phòng</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Đã dọn sạch thùng rác</value>
+  </data>
 </root>

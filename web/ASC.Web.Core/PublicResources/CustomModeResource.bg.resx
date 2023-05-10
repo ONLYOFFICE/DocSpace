@@ -64,4 +64,10 @@
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>${LetterLogoText}. Премахването на потребителските данни е завършено</value>
   </data>
+  <data name="subject_personal_custom_mode_after_registration1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Моля, активирайте имейл адреса си</value>
+  </data>
 </root>

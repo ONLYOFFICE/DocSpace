@@ -455,10 +455,10 @@
     <value>Włącz aplikację do uwierzytelniania dwuczęściowego za pomocą narzędzia Clickatell.</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
-    <value>Klucz DocuSign</value>
+    <value>DocuSign</value>
   </data>
   <data name="ConsumersdocuSignClientId" xml:space="preserve">
-    <value>Tajny klucz DocuSign</value>
+    <value>Klucz DocuSign</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
     <value>Podłącz aplikację, aby dodać dokument elektroniczny DocuSign do dokumentów.</value>
@@ -471,9 +471,6 @@
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>DropBox ID</value>
-  </data>
-  <data name="ConsumersEasyBib" xml:space="preserve">
-    <value>DropBox Klucz</value>
   </data>
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
@@ -495,5 +492,98 @@
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
     <value>Połącz usługę Message Cloud Message dla Firebase, aby otrzymywać powiadomienia o wiadomościach wysyłanych do Ciebie.</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Tajny klucz DocuSign</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Identyfikator nadawcy</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID projektu</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Połącz projekt, aby zalogować się do portalu za pomocą konta Google i zarządzać plikami i folderami na Dysku Google.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Podłącz aplikację do logowania się do portalu za pomocą konta LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Klucz do Linkedin</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Podłączanie aplikacji do zarządzania plikami i folderami OneDrive.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Włącz aplikację do uwierzytelniania dwufunkcyjnego za pośrednictwem Centrum SMS.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Hasło lub hasło MD5 hash w małych</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Dodaj Twilio do zadzwonienia do kontaktów CRM bezpośrednio z przeglądarki.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Numer telefonu z Twilio (wymagany do autoryzacji SMS)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Podłącz aplikację do logowania się do portalu za pomocą konta Twitter i wyszukaj kontakty.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Włącz aplikację dla importu kontaktów Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Nieznany typ pliku graficznego</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Rozmiar obrazu przekracza dozwolone parametry</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox Klucz</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google klucz</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Zaloguj Się</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Konto Sid</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Hasło</value>
   </data>
 </root>

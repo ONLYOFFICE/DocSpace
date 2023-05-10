@@ -642,12 +642,10 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///A backup file containing data from your &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; portal has been created.
         ///
-        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx&quot; user guide.
+        ///To learn more on the backup procedure please refer to our &quot;Data backup&quot;:&quot;https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block&quot; user guide.
         ///
         ///
-        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support.onlyoffice.com&quot;
-        ///
-        ///Best  [rest of string was truncated]&quot;;.
+        ///If you have any questions or need assistance please feel free to contact us at &quot;support.onlyoffice.com&quot;:&quot;http://support. [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_backup_created {
             get {
@@ -878,11 +876,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_guest_welcome_v1 {
             get {
@@ -912,11 +910,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_user_welcome_v1 {
             get {
@@ -989,11 +987,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_guest_welcome_v1 {
             get {
@@ -1023,11 +1021,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_user_welcome_v1 {
             get {
@@ -1301,11 +1299,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_guest_welcome_v1 {
             get {
@@ -1350,11 +1348,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_user_welcome_v1 {
             get {
@@ -1603,7 +1601,7 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your $PortalUrl portal address was changed to the new &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot; address.
         ///
-        ///*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third-party iCal links added to your calendar will also stop updating until you reload them..
+        ///*Note*: DNS settings and single sign-on options stop working until you change them..
         /// </summary>
         public static string pattern_portal_rename {
             get {
@@ -2004,11 +2002,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_guest_welcome_v1 {
             get {
@@ -2133,11 +2131,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
-        ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+        ///* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
+        ///* *Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_user_welcome_v1 {
             get {

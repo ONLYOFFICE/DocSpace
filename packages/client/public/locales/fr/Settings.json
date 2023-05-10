@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Ici vous pouvez changer l'adresse de l’espace.",
   "PortalRenamingLabelText": "Nouveau nom de l’espace",
   "PortalRenamingMobile": "Entrez la partie qui apparaîtra à côté de l'adresse de l'espace {{domain}}. Veuillez noter que votre ancienne adresse de l'espace sera indisponible pour les nouveaux utilisateurs une fois que vous aurez cliqué sur le bouton \"Enregistrer\".",
+  "PortalRenamingModalText": "Vous êtes sur le point de renommer votre portail. Êtes-vous sûr de vouloir continuer?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Entrez la partie qui apparaîtra à côté de l'adresse de l'espace {{domain}}.",
   "ProductUserOpportunities": "Afficher les profils et groupes",
   "RecoveryFileNotSelected": "Erreur de récupération. Fichier de récupération non sélectionné.",

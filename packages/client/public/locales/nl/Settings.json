@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Hier kunt u uw ruimteadres veranderen.",
   "PortalRenamingLabelText": "Nieuwe ruimtenaam",
   "PortalRenamingMobile": "Voer het deel in dat zal verschijnen naast het {{domain}}} ruimteadres. Let op: uw oude ruimteadres is niet meer beschikbaar voor nieuwe gebruikers zodra u op de knop Opslaan klikt.",
+  "PortalRenamingModalText": "U staat op het punt om uw portaal een andere naam te geven. Weet u zeker dat u wilt doorgaan?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Voer het deel in dat zal verschijnen naast het {{domain}}} ruimteadres.",
   "ProductUserOpportunities": "Bekijk profielen en groepen",
   "RecoveryFileNotSelected": "Herstelfout. Herstelbestand niet geselecteerd.",

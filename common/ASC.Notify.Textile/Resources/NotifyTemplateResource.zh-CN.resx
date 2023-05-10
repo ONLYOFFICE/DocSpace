@@ -128,4 +128,9 @@
 &lt;/div&gt;
 &lt;/body&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>您好！这是系统自动生成的电子邮件，您无需回复。&lt;br /&gt;您收到此电子邮件是因为您是&lt;a href="{0}" target="_blank"&gt;协作空间&lt;/a&gt; 的注册用户。
+&lt;br /&gt;点击此处即可退订来自协作空间的电子邮件通知：&lt;a href="{1}"  target="_blank"&gt;退订&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

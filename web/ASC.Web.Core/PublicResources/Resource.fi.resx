@@ -371,10 +371,10 @@
     <value>API avain</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
-    <value>DocuSign Avain</value>
+    <value>DocuSign</value>
   </data>
   <data name="ConsumersdocuSignClientId" xml:space="preserve">
-    <value>DocuSign Salainen tunnus</value>
+    <value>DocuSign Avain</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
     <value>Yhdistä sovellus, jotta voit lisätä sähköisen DocuSign allekirjoituksen asiakirjoihin.</value>
@@ -391,9 +391,6 @@
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>DropBox ID</value>
   </data>
-  <data name="ConsumersEasyBib" xml:space="preserve">
-    <value>Dropbox avain</value>
-  </data>
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
   </data>
@@ -405,5 +402,98 @@
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
     <value>Firebase</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Salainen tunnus</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Yhdistä projekti, jotta voi kirjautua sisään käyttämällä Google tiliä ja hallinnoida Google Drive tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit kirjautua sisään käyttämällä LinkedIn tiliä.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin avain</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit hallita OneDrive tiedostoja ja kansioita.</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Yhdistä Twilio ja voit soittaa Asiakkuudenhallinnan kontakteja suoraan selaimessa.</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Yhdistä sovellus jotta voit kirjautua sisään käyttämällä Twitter tiliä ja etsiä kontakteja.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Tuntematon kuvatiedoston tyyppi</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Kuvan koko ylitti sallitut parametrit</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Dropbox avain</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google avain</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Sisäänkirjautuminen</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Tilin Sid arvo</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Valtuutuksen merkkijono</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Salasana</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
   </data>
 </root>

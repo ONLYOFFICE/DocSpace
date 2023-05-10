@@ -56,6 +56,7 @@ const StyledBody = styled.div`
     grid-template-areas: "tree files" "footer footer";
     grid-template-rows: auto max-content;
     margin-right: -4px;
+    padding-top: 12px;
     padding-bottom: 0;
 
     .selection-panel_files-body {

@@ -9,6 +9,8 @@ import Badges from "@docspace/client/src/pages/AccountsHome/Section/Body/Badges"
 import { StyledAccountsItemTitle } from "../../styles/accounts";
 import { StyledTitle } from "../../styles/common";
 
+import { SSO_LABEL } from "SRC_DIR/helpers/constants";
+
 const AccountsItemTitle = ({
   t,
   isSeveralItems,
@@ -73,7 +75,7 @@ const AccountsItemTitle = ({
         {isSSO && (
           <Badge
             className="sso-badge"
-            label="SSO"
+            label={SSO_LABEL}
             color={"#FFFFFF"}
             backgroundColor="#22C386"
             fontSize={"9px"}

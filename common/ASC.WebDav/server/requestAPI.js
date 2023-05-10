@@ -37,15 +37,10 @@ const renamingDuplicateElements = require('../helper/renamingDuplicateElements.j
 
 
 function getDomain(ctx) {
-    const rewriterUrl = ctx.headers.headers["x-rewriter-url"];
+    const proto = ctx.headers.headers['x-forwarded-proto']?.split(',').shift();
+    const host = ctx.headers.headers['x-forwarded-host']?.split(',').shift();
 
-    if (rewriterUrl) {
-        return rewriterUrl;
-    }
-
-    const protocol = isHttps ? "https://" : "http://";
-    const hostStr = ctx.headers.host;
-    return protocol + hostStr.split(":")[0] + onlyOfficePort;
+    return `${proto}://${host}`;
 }
 
 function instanceFunc(ctx, token = null, header = 'application/json', service = 'asc.files') {

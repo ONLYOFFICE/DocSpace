@@ -2547,10 +2547,17 @@ public class FileStorageService<T> //: IFileStorageService
             try
             {
 
-                var eventTypes = new List<(UserInfo User, EventType EventType, FileShare Access)>();
+                var eventTypes = new List<(UserInfo User, EventType EventType, FileShare Access, string Email)>();
                 foreach (var ace in aceCollection.Aces)
                 {
                     var user = _userManager.GetUsers(ace.Id);
+
+                    if (user == Constants.LostUser)
+                    {
+                        eventTypes.Add((null, EventType.Create, ace.Access, ace.Email));
+                        continue;
+                    }
+
                     var userId = user.Id;
 
                     var userSubjects = _fileSecurity.GetUserSubjects(user.Id);
@@ -2559,11 +2566,11 @@ public class FileStorageService<T> //: IFileStorageService
 
                     EventType eventType;
 
-                    if(usersRecords.Any() && ace.Access != FileShare.None && recordEntrys.Contains(entry.Id.ToString()))
+                    if (usersRecords.Any() && ace.Access != FileShare.None && recordEntrys.Contains(entry.Id.ToString()))
                     {
                         eventType = EventType.Update;
                     }
-                    else if(!usersRecords.Any() || !recordEntrys.Contains(entry.Id.ToString()))
+                    else if (!usersRecords.Any() || !recordEntrys.Contains(entry.Id.ToString()))
                     {
                         eventType = EventType.Create;
                     }
@@ -2572,7 +2579,7 @@ public class FileStorageService<T> //: IFileStorageService
                         eventType = EventType.Remove;
                     }
 
-                    eventTypes.Add((user, eventType, ace.Access));
+                    eventTypes.Add((user, eventType, ace.Access, null));
                 }
 
                 var (changed, warningMessage) = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
@@ -2582,10 +2589,10 @@ public class FileStorageService<T> //: IFileStorageService
                 {
                     foreach (var e in eventTypes)
                     {
-                        var user = e.User;              
+                        var user = e.User ?? _userManager.GetUserByEmail(e.Email);
                         var name = user.DisplayUserName(false, _displayUserSettingsHelper);
 
-                        var access = e.Access;                        
+                        var access = e.Access;
 
                         if (entry.FileEntryType == FileEntryType.Folder && DocSpaceHelper.IsRoom(((Folder<T>)entry).FolderType))
                         {
@@ -2680,7 +2687,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             var linkExist = (await _fileSecurity.GetSharesAsync(room))
                 .Any(r => r.Subject == linkId && r.SubjectType == SubjectType.InvitationLink);
-            
+
             if (linkExist)
             {
                 messageAction = MessageAction.RoomLinkUpdated;
@@ -2921,46 +2928,7 @@ public class FileStorageService<T> //: IFileStorageService
                 continue;
             }
 
-            if (!await _fileSecurity.CanReadAsync(file, recipient.Id))
-            {
-                if (!canShare.Value)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    var aces = new List<AceWrapper>
-                    {
-                        new AceWrapper
-                        {
-                            Access = FileShare.Read,
-                            Id = recipient.Id,
-                            SubjectGroup = false,
-                        }
-                    };
-
-                    var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null, null);
-
-                    showSharingSettings |= changed;
-                    if (showSharingSettings)
-                    {
-                        foreach (var ace in aces)
-                        {
-                            _ = _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Access));
-                        }
-                    }
-                    recipients.Add(recipient.Id);
-                }
-                catch (Exception e)
-                {
-                    throw GenerateException(e);
-                }
-            }
-            else
-            {
-                recipients.Add(recipient.Id);
-            }
+            recipients.Add(recipient.Id);
         }
 
         var fileLink = _filesLinkUtility.GetFileWebEditorUrl(file.Id);
@@ -2980,7 +2948,7 @@ public class FileStorageService<T> //: IFileStorageService
         {
             await _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.ErrorWithException(ex);
         }

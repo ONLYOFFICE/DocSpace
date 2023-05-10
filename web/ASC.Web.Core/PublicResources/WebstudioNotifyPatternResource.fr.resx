@@ -202,7 +202,7 @@ Cher(ère) $OwnerName,
 
 Le fichier de sauvegarde avec les données de votre portail "${__VirtualRootPath}":"${__VirtualRootPath}" a été créé. 
 
-Pour en savoir plus sur la procédure de la sauvegarde consultez notre guide d'utilisation "Sauvegarde de données":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx"
+Pour en savoir plus sur la procédure de la sauvegarde consultez notre guide d'utilisation "Sauvegarde de données":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block"
 
 Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter à "support.onlyoffice.com":"http://support.onlyoffice.com"
 
@@ -606,7 +606,7 @@ Bonjour  $UserDisplayName,
 
 L'adresse de votre portail $PortalUrl a été changé pour la nouvelle adresse "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Remarque*: Tous les liens sur les documents partagés sont inaccessibles, ainsi que les paramètres DNS et les options d'authentification unique (Single Sign-On) ont arrêté le travail jusqu'à ce que vous les modifiez. Les liens iCal de la troisième partie ajoutés à votre calendrier ne se renouvelerons pas jusqu'à ce que vous les rechargez.</value>
+*Remarque*: les paramètres DNS et les options d'authentification unique (Single Sign-On) ont arrêté le travail jusqu'à ce que vous les modifiez.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Suppression du profil du portail "${__VirtualRootPath}":"${__VirtualRootPath}" 
@@ -802,7 +802,7 @@ Ce message a été généré automatiquement pour tester vos paramètres SMTP. S
 
 
 Meilleures salutations,
-Équipe ONLYOFFICE </value>
+Équipe ONLYOFFICE</value>
   </data>
   <data name="pattern_storage_decryption_error" xml:space="preserve">
     <value>Bonjour, $UserName !

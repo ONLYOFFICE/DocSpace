@@ -140,6 +140,7 @@
   "PortalRenamingDescription": "Aqui, você pode alterar o endereço do seu espaço.",
   "PortalRenamingLabelText": "Nome do novo espaço",
   "PortalRenamingMobile": "Insira a parte que aparecerá ao lado do endereço do espaço {{domain}}. Observação: seu endereço de espaço antigo ficará indisponível para novos usuários assim que você clicar no botão Salvar.",
+  "PortalRenamingModalText": "Você está prestes a renomear o seu portal. Você tem certeza de que deseja continuar?",
   "PortalRenamingSettingsTooltip": "<0>{{text}}</0> Insira a parte que aparecerá ao lado do endereço do espaço {{domain}}.",
   "ProductUserOpportunities": "Visualizar perfis e grupos",
   "RecoveryFileNotSelected": "Erro de recuperação. Arquivo de recuperação não selecionado.",

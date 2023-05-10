@@ -5,7 +5,7 @@ SRC_PATH="/AppServer"
 BUILD_PATH="/publish"
 SELF_CONTAINED="false"
 ARGS=""
-
+PUBLISH_CNF="Release"
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -35,6 +35,12 @@ while [ "$1" != "" ]; do
             shift
           fi
     ;;
+	    -pc | --publish-configuration )
+          if [ "$2" != "" ]; then
+            PUBLISH_CNF=$2
+            shift
+          fi
+    ;;
         -? | -h | --help )
             echo " Usage: bash publish-backend.sh [PARAMETER] [[PARAMETER], ...]"
             echo "    Parameters:"
@@ -42,6 +48,7 @@ while [ "$1" != "" ]; do
             echo "      -bp, --buildpath           path where generated output is placed (by default=/publish)"
             echo "      -sc, --self-contained      publish the .NET runtime with your application (by default=false)"
             echo "      -ar, --arguments           additional arguments publish the .NET runtime with your application"
+            echo "      -pc, --publish-configuration dotnet publish configuration Ex. Release/Debug"
             echo "      -?, -h, --help             this help"
             echo "  Examples"
             echo "  bash publish-backend.sh -sp /app/AppServer"
@@ -66,7 +73,7 @@ for i in ${!servers_products_name_backend[@]}; do
   echo "== Publish ${servers_products_name_backend[$i]}.csproj project =="
   SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${servers_products_name_backend[$i]}".csproj)")"
   cd ${SERVICE_DIR}
-  dotnet publish -c Release --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/products/${servers_products_name_backend[$i]}/server/
+  dotnet publish -c ${PUBLISH_CNF} --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/products/${servers_products_name_backend[$i]}/server/
 done
 
 # Array of names backend services
@@ -87,7 +94,7 @@ for i in ${!services_name_backend[@]}; do
   echo "== Publish ${services_name_backend[$i]}.csproj project =="
   SERVICE_DIR="$(dirname "$(find ${SRC_PATH} -type f -name "${services_name_backend[$i]}".csproj)")"
   cd ${SERVICE_DIR}
-  dotnet publish -c Release --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/services/${services_name_backend[$i]}/service/
+  dotnet publish -c ${PUBLISH_CNF} --self-contained ${SELF_CONTAINED} ${ARGS} -o ${BUILD_PATH}/services/${services_name_backend[$i]}/service/
 done
 
 # Array of names backend services in directory common (Nodejs)

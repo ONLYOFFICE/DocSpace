@@ -799,7 +799,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersLinkedInInstructionV11 {
             get {

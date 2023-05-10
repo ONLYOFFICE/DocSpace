@@ -368,7 +368,7 @@ public class PortalController : ControllerBase
 
             if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
             {
-                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath, oldAlias);
             }
         }
         else
@@ -376,7 +376,7 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        var rewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+        var rewriter = _httpContextAccessor.HttpContext.Request.Url();
         return string.Format("{0}{1}{2}{3}/{4}",
                                 rewriter?.Scheme ?? Uri.UriSchemeHttp,
                                 Uri.SchemeDelimiter,

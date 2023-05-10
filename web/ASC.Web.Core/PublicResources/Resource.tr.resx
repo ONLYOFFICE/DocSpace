@@ -464,10 +464,10 @@
     <value>Clickatell ile iki aşamalı yetkilendirme uygulamasını etkinleştir.</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
-    <value>DocuSign Anahtar</value>
+    <value>DocuSign</value>
   </data>
   <data name="ConsumersdocuSignClientId" xml:space="preserve">
-    <value>DocuSign Secret</value>
+    <value>DocuSign Anahtar</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
     <value>Belgelerinize DocuSign elektronik imza eklemek için uygulamaya bağlanın.</value>
@@ -480,9 +480,6 @@
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>DropBox ID</value>
-  </data>
-  <data name="ConsumersEasyBib" xml:space="preserve">
-    <value>Dropbox Anahtar</value>
   </data>
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
@@ -504,5 +501,107 @@
   </data>
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
     <value>Firebase Bulut Mesajlaşma servisine bağlanarak size gönderilen mesajlar için bildirim alabilirsiniz.</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Gönderen ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Proje ID</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Google hesabı kullanarak portala bağlan ve Google Drive belge ve klasörlerini yönet.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>LinkedIn hesabı kullanarak uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin Anahtar</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Müşteri Gizliliği</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>OneDrive belge ve klasörlerini yönetmek için uygulamaya bağlan.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>SMS Center ile iki aşamalı yetkilendirme uygulamasını etkinleştir.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Şifre veya şifre MD5 hash, küçük harflerle</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>CRM kişilerini tarayıcıdan arayabilmek için Twilio ekle.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Twilio telefon numarası (SMS yetkilendirme için gereklidir)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Twitter hesabı kullanarak uygulamaya bağlan ve kişileri ara.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Yahoo kişi aktarımı uygulamasını etkinleştir.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Bilinmeyen resim dosyası tipi</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Resim boyutu izin verilenden büyük</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Dropbox Anahtar</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google Anahtar</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS Merkezi</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Giriş</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Hesap Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Yetki Dizgeciği</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Şifre</value>
   </data>
 </root>
