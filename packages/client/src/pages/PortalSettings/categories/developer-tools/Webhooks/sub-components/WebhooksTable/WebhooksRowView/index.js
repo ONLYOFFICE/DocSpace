@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
 import { isMobile } from "react-device-detect";
@@ -6,6 +7,10 @@ import { isMobile } from "react-device-detect";
 import RowContainer from "@docspace/components/row-container";
 
 import { WebhookRow } from "./WebhookRow";
+
+const StyledRowContainer = styled(RowContainer)`
+  margin-top: 16px;
+`;
 
 const WebhooksRowView = (props) => {
   const { webhooks, toggleEnabled, deleteWebhook, editWebhook, sectionWidth, viewAs, setViewAs } =
@@ -22,7 +27,7 @@ const WebhooksRowView = (props) => {
   }, [sectionWidth]);
 
   return (
-    <RowContainer useReactWindow={false}>
+    <StyledRowContainer useReactWindow={false}>
       {webhooks.map((webhook) => (
         <WebhookRow
           key={webhook.id}
@@ -33,7 +38,7 @@ const WebhooksRowView = (props) => {
           editWebhook={editWebhook}
         />
       ))}
-    </RowContainer>
+    </StyledRowContainer>
   );
 };
 

@@ -6,8 +6,10 @@ import WebhooksTable from "./sub-components/WebhooksTable";
 
 import { inject, observer } from "mobx-react";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { WebhookConfigsLoader } from "./sub-components/Loaders";
+
+import { isMobile } from "@docspace/components/utils/device";
 
 const MainWrapper = styled.div`
   width: 100%;
@@ -16,6 +18,17 @@ const MainWrapper = styled.div`
     display: flex;
     align-items: center;
   }
+`;
+
+const StyledCreateButton = styled(Button)`
+  ${() =>
+    isMobile() &&
+    css`
+      position: fixed;
+      z-index: 2;
+      width: calc(100% - 32px);
+      bottom: 16px;
+    `}
 `;
 
 const Webhooks = (props) => {
@@ -45,7 +58,12 @@ const Webhooks = (props) => {
   ) : state === "success" ? (
     <MainWrapper>
       <WebhookInfo />
-      <Button label="Create webhook" primary size="small" onClick={openModal} />
+      <StyledCreateButton
+        label="Create webhook"
+        primary
+        size={isMobile() ? "normal" : "small"}
+        onClick={openModal}
+      />
       {!isWebhooksEmpty && <WebhooksTable />}
       <WebhookDialog
         visible={isModalOpen}

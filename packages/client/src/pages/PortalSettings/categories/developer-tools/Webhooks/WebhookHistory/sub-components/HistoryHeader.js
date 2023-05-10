@@ -10,19 +10,25 @@ import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
 import { Hint } from "../../styled-components";
 
-import { tablet } from "@docspace/components/utils/device";
+import { tablet, mobile } from "@docspace/components/utils/device";
 
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
-import { isMobile, mobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
 
 const HeaderContainer = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  width: 100vw;
-  min-height: 69px;
-  height: 69px;
+  width: 100%;
+  min-height: 70px;
+  flex-wrap: wrap;
+
+  ${() =>
+    isMobile &&
+    css`
+      margin-bottom: 11px;
+    `}
 
   .arrow-button {
     margin-right: 18.5px;
@@ -30,12 +36,19 @@ const HeaderContainer = styled.div`
     @media ${tablet} {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
+      margin-right: 18.5px;
     }
   }
 
   .headline {
     font-size: 18px;
     margin-right: 16px;
+  }
+
+  .smallGroupAction {
+    margin-top: -49px;
+    height: 48px;
+    margin-left: -17px;
   }
 
   .table-container_group-menu {
@@ -45,7 +58,7 @@ const HeaderContainer = styled.div`
     width: 100%;
     height: 69px;
 
-    /* @media ${tablet} {
+    @media ${tablet} {
       height: 60px;
       margin: 0 0 0 -16px;
       width: calc(100% + 32px);
@@ -69,7 +82,7 @@ const HeaderContainer = styled.div`
       height: 52px;
       margin: 0 0 0 -16px;
       width: calc(100% + 32px);
-    `} */
+    `}
   }
 `;
 
@@ -119,13 +132,45 @@ const HistoryHeader = (props) => {
     </>
   );
 
+  const NavigationHeader = () => (
+    <>
+      <IconButton
+        iconName={ArrowPathReactSvgUrl}
+        size="17"
+        isFill={true}
+        onClick={onBack}
+        className="arrow-button"
+      />
+      <Headline type="content" truncate={true} className="headline">
+        History
+      </Headline>
+      <Hint backgroundColor="#F8F9F9" color="#555F65">
+        Deliveries are automatically deleted after 15 days
+      </Hint>
+    </>
+  );
+
   useEffect(() => {
     return emptyCheckedIds;
   }, []);
 
   return (
     <HeaderContainer>
-      {isHeaderVisible ? (
+      {isMobileOnly ? (
+        <>
+          {isHeaderVisible && (
+            <TableGroupMenu
+              checkboxOptions={menuItems}
+              onChange={handleGroupSelection}
+              isIndeterminate={true}
+              headerMenu={headerMenu}
+              withoutInfoPanelToggler
+              className="smallGroupAction"
+            />
+          )}
+          <NavigationHeader />
+        </>
+      ) : isHeaderVisible ? (
         <TableGroupMenu
           checkboxOptions={menuItems}
           onChange={handleGroupSelection}
@@ -134,21 +179,7 @@ const HistoryHeader = (props) => {
           withoutInfoPanelToggler
         />
       ) : (
-        <>
-          <IconButton
-            iconName={ArrowPathReactSvgUrl}
-            size="17"
-            isFill={true}
-            onClick={onBack}
-            className="arrow-button"
-          />
-          <Headline type="content" truncate={true} className="headline">
-            History
-          </Headline>
-          <Hint backgroundColor="#F8F9F9" color="#555F65">
-            Deliveries are automatically deleted after 15 days
-          </Hint>
-        </>
+        <NavigationHeader />
       )}
     </HeaderContainer>
   );

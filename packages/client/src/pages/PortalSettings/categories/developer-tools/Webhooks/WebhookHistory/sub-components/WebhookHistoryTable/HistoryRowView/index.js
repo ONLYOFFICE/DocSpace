@@ -1,10 +1,15 @@
 import React, { useEffect } from "react";
+import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
 import { isMobile } from "react-device-detect";
 
 import RowContainer from "@docspace/components/row-container";
-import { HistoryRow } from "./HistoryRow";
+import HistoryRow from "./HistoryRow";
+
+const StyledRowContainer = styled(RowContainer)`
+  margin-top: 11px;
+`;
 
 const HistoryRowView = (props) => {
   const { historyWebhooks, sectionWidth, viewAs, setViewAs } = props;
@@ -20,11 +25,11 @@ const HistoryRowView = (props) => {
   }, [sectionWidth]);
 
   return (
-    <RowContainer useReactWindow={false}>
+    <StyledRowContainer useReactWindow={false}>
       {historyWebhooks.map((item) => (
         <HistoryRow key={item.id} historyItem={item} sectionWidth={sectionWidth} />
       ))}
-    </RowContainer>
+    </StyledRowContainer>
   );
 };
 

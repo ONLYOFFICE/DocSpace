@@ -15,6 +15,10 @@ const StyledRowContent = styled(RowContent)`
     height: 100%;
     width: 100%;
   }
+
+  .mainIcons {
+    min-width: 76px;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -29,6 +33,7 @@ const ToggleButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  margin-left: -52px;
 `;
 
 const FlexWrapper = styled.div`

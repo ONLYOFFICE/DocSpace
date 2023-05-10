@@ -5,10 +5,11 @@ import styled from "styled-components";
 import { Text } from "@docspace/components";
 import { StatusBadge } from "../../sub-components/StatusBadge";
 
+import { tablet } from "@docspace/components/utils/device";
+
 const BarWrapper = styled.div`
   width: 100%;
   max-width: 1200px;
-  min-width: 600px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,13 +18,21 @@ const BarWrapper = styled.div`
 
   background: #f8f9f9;
   border-radius: 3px;
+  flex-wrap: wrap;
 `;
 
 const BarItem = styled.div`
   box-sizing: border-box;
-  width: 257.25px;
   height: 76px;
   padding: 16px;
+  flex-basis: 25%;
+
+  @media ${tablet} {
+    flex-basis: 50%;
+  }
+  @media (max-width: 440px) {
+    flex-basis: 100%;
+  }
 `;
 
 const BarItemHeader = ({ children }) => (
