@@ -1327,4 +1327,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Prullenmand geleegd</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Tags toegevoegd: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Verwijderde tags: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Kamer gearchiveerd</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Gebruiker toegevoegd: {0}. Rol: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Kamer verwijderd</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Link aangemaakt. Rol: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Link verwijderd</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Link bijgewerkt. Rol: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo aangemaakt</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo verwijderd</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Verwijderde gebruiker: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Kamer hernoemd: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Kamer niet meer gearchiveerd</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} toegewezen: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Tag aangemaakt: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Tags verwijderd: {0}</value>
+  </data>
 </root>

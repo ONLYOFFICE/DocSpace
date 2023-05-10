@@ -490,4 +490,10 @@
   <data name="ConsumersYandexClientSecret" xml:space="preserve">
     <value>Συνθηματικό</value>
   </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Επαγγελματικό</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Βασικό</value>
+  </data>
 </root>

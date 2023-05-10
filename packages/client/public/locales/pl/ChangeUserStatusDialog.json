@@ -1,7 +1,7 @@
 {
+  "ChangeUsersActiveStatus": "aktywny",
+  "ChangeUsersDisableStatus": "nieaktywny",
   "ChangeUserStatusDialog": "Użytkownicy o statusie '{{ userStatus }}' zostaną {{ status }}.",
   "ChangeUserStatusDialogHeader": "Zmień status",
-  "ChangeUserStatusDialogMessage": "Nie możesz zmienić swojego statusu, ani statusu właściciela DocSpace.",
-  "ChangeUsersActiveStatus": "aktywny",
-  "ChangeUsersDisableStatus": "nieaktywny"
+  "ChangeUserStatusDialogMessage": "Nie możesz zmienić swojego statusu, ani statusu właściciela DocSpace."
 }

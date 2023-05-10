@@ -316,4 +316,58 @@
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Spolupracovník</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Spolupracovník</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Odeslaný formulář</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Nová verze nemůže být stejná jako ta aktuální</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění ke kopírování souboru</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Nemáte dostatečné oprávnění ke kopírování složky</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Neplatný poskytovatel</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Tuto složku není možné použít k uložení místnosti</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Odkaz na pozvánku je neplatný nebo jeho platnost vypršela</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Tento poskytovatel je již připojen k místnosti</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Role není pro tento typ uživatele dostupná</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Nemáte dostatečné povolení k archivaci místnosti</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Ke kopírování do této složky nemáte oprávnění</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Nemáte oprávnění k úpravám místnosti</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>K přesunu do této složky nemáte oprávnění</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Nemáte dostatečné povolení ke zrušení archivace místnosti</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Archivované místnosti nelze upravovat</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Místnost nelze připnout</value>
+  </data>
 </root>

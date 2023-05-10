@@ -431,7 +431,7 @@
     <value>Branding a přizpůsobení</value>
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Počet administrátorů/přístupných uživatelů:</value>
+    <value>Počet správců/oprávněných uživatelů:</value>
   </data>
   <data name="ConsumersBitly" xml:space="preserve">
     <value>Bitly</value>
@@ -624,5 +624,11 @@
   </data>
   <data name="ConsumersYandexClientSecret" xml:space="preserve">
     <value>Heslo</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>

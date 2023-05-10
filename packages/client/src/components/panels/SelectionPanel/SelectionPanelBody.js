@@ -90,7 +90,12 @@ const SelectionPanelBody = ({
                 <div className="selection-panel_files-header">
                   {header}
 
-                  <Text color="#A3A9AE" className="selection-panel_title">
+                  <Text
+                    color="#A3A9AE"
+                    className="selection-panel_title"
+                    fontSize="12px"
+                    fontWeight={600}
+                  >
                     {folderSelection
                       ? t("FolderContents", { folderTitle })
                       : filesListTitle}
