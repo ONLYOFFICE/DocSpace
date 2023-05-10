@@ -119,7 +119,7 @@ export const getMessageKeyTranslate = (t: TFuncType, message: string) => {
     case "Error":
       return t("Common:Error");
     case "None":
-      return t("Errors:None");
+      return t("Common:UnknownError");
     case "ErrorUserNotFound":
       return t("Errors:ErrorUserNotFound");
     case "ErrorExpiredActivationLink":
