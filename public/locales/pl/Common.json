@@ -156,6 +156,7 @@
   "Next": "Dalej",
   "NotFoundLanguage": "Nie możesz znaleźć swojego języka? Skontaktuj się z nami pod adresem <1>{{supportEmail}}</1>, aby pomóc w tłumaczeniu i zdobyć za nie nagrody.",
   "NotFoundTitle": "Nie znaleziono",
+  "NotSupportedFormat": "Niestety, ten format pliku nie jest obsługiwany",
   "OFORMsGallery": "Galeria OFORM",
   "OKButton": "OK",
   "Or": "lub",

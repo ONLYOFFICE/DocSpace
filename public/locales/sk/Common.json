@@ -156,6 +156,7 @@
   "Next": "Nasledujúce",
   "NotFoundLanguage": "Nenašli ste svoj jazyk? Skontaktujte nás na <1>{{supportEmail}}</1> a môžete sa pridať k prekladateľom a získať odmeny.",
   "NotFoundTitle": "Nenašlo sa nič",
+  "NotSupportedFormat": "Ľutujeme, ale formát tohto súboru nie je podporovaný",
   "OFORMsGallery": "Galéria OFORM",
   "OKButton": "OK",
   "Or": "alebo",

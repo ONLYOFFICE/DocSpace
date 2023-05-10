@@ -156,6 +156,7 @@
   "Next": "Seuraava",
   "NotFoundLanguage": "Etkö löydä kieltäsi? Ota yhteyttä osoitteeseen <1>{{supportEmail}}</1> osallistuaksesi käännöstyöhön ja saadaksesi palkintoja.",
   "NotFoundTitle": "Mitään ei löytynyt",
+  "NotSupportedFormat": "Tätä tiedostomuotoa ei tueta. Ei sitten niin mitenkään",
   "OFORMsGallery": "OFORM-galleria",
   "OKButton": "OK",
   "Or": "tai",
