@@ -105,4 +105,16 @@ $Message</value>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Dokumenty. Přístup umožněn ke složce $DocumentTitle</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName vás zmínil v komentáři k dokumentu
+
+$__AuthorName vás zmínil v komentáři k dokumentu "$DocumentTitle":"$DocumentURL" v místnosti "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName smazal místnost
+
+$__AuthorName smazal místnost: $RoomTitle</value>
+  </data>
 </root>

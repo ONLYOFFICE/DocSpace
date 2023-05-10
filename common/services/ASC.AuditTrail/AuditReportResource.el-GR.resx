@@ -646,4 +646,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Ο Κάδος άδειασε</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Ετικέτες που προστέθηκαν: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Ετικέτες που διαγράφηκαν: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Το δωμάτιο αρχειοθετήθηκε</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Χρήστης που προστέθηκε: {0}. Ρόλος: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Το δωμάτιο διαγράφηκε</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Ο σύνδεσμος δημιουργήθηκε. Ρόλος: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Ο σύνδεσμος διαγράφηκε</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Ο σύνδεσμος ενημερώθηκε. Ρόλος: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Το λογότυπο δημιουργήθηκε</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Το λογότυπο διαγράφηκε</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Ο χρήστης διαγράφηκε: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Το δωμάτιο μετονομάστηκε: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Έγινε κατάργηση αρχειοθέτησης δωματίου</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>Ορίστηκε {0}: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Η ετικέτα δημιουργήθηκε: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Οι ετικέτες διαγράφηκαν: {0}</value>
+  </data>
 </root>

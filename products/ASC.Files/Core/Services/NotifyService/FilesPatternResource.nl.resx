@@ -100,4 +100,16 @@ $Message</value>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Documenten. Toegang verleend tot Map: $DocumentTitle</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName heeft u vermeld in het commentaar op het document
+
+$__AuthorName heeft u vermeld in het commentaar bij het "$DocumentTitle":"$DocumentURL" document in de kamer "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName heeft een kamer verwijderd
+
+$__AuthorName verwijderde de kamer: $RoomTitle</value>
+  </data>
 </root>

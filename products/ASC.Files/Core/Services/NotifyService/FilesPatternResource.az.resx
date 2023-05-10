@@ -82,6 +82,7 @@ $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1.$__DateTime, "$__AuthorName":"$__AuthorUrl" istifadəçisi
+
 "$DocumentTitle":"$DocumentURL" qovluğuna girişinizə bu giriş hüququları ilə icazə verdi: "$AccessRights".
 
 $Message</value>

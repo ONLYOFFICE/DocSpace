@@ -78,9 +78,7 @@ Veiksmīgi nosūtītās ziņas varat atrast savā Pasta moduļa mapē "Nosūtīt
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.Piekļuve piešķirta dokumentam: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" piešķir jums piekļuvi dokumentam "$DocumentTitle":"$DocumentURL" 
-
-ar piekļuves tiesībām: "$AccessRights".
+$__DateTime "$__AuthorName":"$__AuthorUrl" piešķir jums piekļuvi dokumentam "$DocumentTitle":"$DocumentURL" ar piekļuves tiesībām: "$AccessRights".
 
 $Message</value>
   </data>
@@ -105,5 +103,17 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Dokumenti. Nodrošināta piekļuve mapei $DocumentTitle</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName pieminēja jūs dokumenta komentārā
+
+$__AuthorName pieminēja jūs komentārā par dokumentu "$DocumentTitle":"$DocumentURL" telpā "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName izdzēsa telpu
+
+$__AuthorName izdzēsa telpu: $RoomTitle</value>
   </data>
 </root>
