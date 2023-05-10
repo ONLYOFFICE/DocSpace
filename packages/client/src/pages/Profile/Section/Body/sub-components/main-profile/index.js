@@ -402,6 +402,7 @@ const MainProfile = (props) => {
           visible={changeEmailVisible}
           onClose={() => setChangeEmailVisible(false)}
           user={profile}
+          profile={profile}
         />
       )}
 
@@ -434,8 +435,13 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const { theme, helpLink, culture, currentColorScheme, documentationEmail } =
-    auth.settingsStore;
+  const {
+    theme,
+    helpLink,
+    culture,
+    currentColorScheme,
+    documentationEmail,
+  } = auth.settingsStore;
   const { setIsLoading } = peopleStore.loadingStore;
 
   const {

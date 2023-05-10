@@ -43,6 +43,8 @@ const Dialogs = ({
           visible={changeEmail}
           onClose={closeDialogs}
           user={data}
+          profile={profile}
+          fromList
         />
       )}
       {changePassword && (
