@@ -72,6 +72,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
             {webhook.name}{" "}
           </Text>
           <StatusBadge status={webhook.status} />
+          <Toast />
         </TableCell>
         <TableCell>
           <Text as="span" fontSize="11px" color="#A3A9AE" fontWeight={600}>
@@ -101,7 +102,6 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
         header="Delete Webhook forever?"
         handleSubmit={handleWebhookDelete}
       />
-      <Toast />
     </>
   );
 };
