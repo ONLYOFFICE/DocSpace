@@ -7,8 +7,10 @@
     name: "frameDocSpace",
     type: "desktop", // TODO: ["desktop", "mobile"]
     frameId: "ds-frame",
-    mode: "manager", //TODO: ["manager", "editor", "viewer","room selector", "file selector", "folder selector", "user picker"]
+    mode: "manager", //TODO: ["manager", "editor", "viewer","room-selector", "file-selector", "system"]
     id: null,
+    locale: "en",
+    theme: "base",
     editorType: "embedded", //TODO: ["desktop", "embedded"]
     showHeader: false,
     showTitle: true,
@@ -106,11 +108,18 @@
           break;
         }
 
-        case "room selector":
-        case "file selector":
-        case "folder selector":
-        case "user picker": {
-          path = `/selector`;
+        case "room-selector": {
+          path = `/sdk/room-selector`;
+          break;
+        }
+
+        case "file-selector": {
+          path = `/sdk/file-selector`;
+          break;
+        }
+
+        case "system": {
+          path = `/sdk/system`;
           break;
         }
 
