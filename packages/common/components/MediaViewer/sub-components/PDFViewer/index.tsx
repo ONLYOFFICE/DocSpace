@@ -1,4 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
+import { isDesktop } from "react-device-detect";
 
 import { loadScript, combineUrl } from "@docspace/common/utils";
 
@@ -15,7 +16,10 @@ import {
 } from "./PDFViewer.styled";
 
 import { ToolbarActionType } from "../../helpers";
-import { ToolbarItemType } from "../ImageViewerToolbar/ImageViewerToolbar.props";
+import {
+  ImperativeHandle,
+  ToolbarItemType,
+} from "../ImageViewerToolbar/ImageViewerToolbar.props";
 
 // import { isDesktop } from "react-device-detect";?
 const pdfViewerId = "pdf-viewer";
@@ -24,6 +28,7 @@ function PDFViewer({
   src,
   title,
   toolbar,
+  mobileDetails,
   isPDFSidebarOpen,
   onMask,
   generateContextMenu,
@@ -33,6 +38,7 @@ function PDFViewer({
   const containerRef = useRef<HTMLDivElement>(null);
   const pdfViewer = useRef<any>(null);
   const pdfThumbnail = useRef<any>(null);
+  const toolbarRef = useRef<ImperativeHandle>(null);
 
   const [file, setFile] = useState<ArrayBuffer | string | null>();
   const [bookmarks, setBookmarks] = useState<BookMark[]>([]);
@@ -48,44 +54,20 @@ function PDFViewer({
 
   const [isLoadingScript, setIsLoadingScript] = useState<boolean>(false);
   const [isLoadingFile, setIsLoadingFile] = useState<boolean>(false);
-
-  const resize = () => {
-    pdfViewer.current?.resize();
-    pdfThumbnail.current?.resize();
-  };
+  const [isFileOpened, setIsFileOpened] = useState<boolean>(false);
 
   useEffect(() => {
     window.addEventListener("resize", resize);
 
     return () => {
       window.removeEventListener("resize", resize);
+      resetState();
     };
   }, []);
 
-  const initViewer = () => {
-    console.log("init PDF Viewer");
-
-    //@ts-ignore
-    pdfViewer.current = new window.AscViewer.CViewer("mainPanel", {
-      theme: { type: "dark" },
-    });
-    //@ts-ignore
-    pdfThumbnail.current =
-      //@ts-ignore
-      pdfViewer.current.createThumbnails("viewer-thumbnail");
-    //@ts-ignore
-    pdfViewer.current.registerEvent(
-      "onStructure",
-      function (structure: BookMark[]) {
-        setBookmarks(structure);
-      }
-    );
-
-    console.log(pdfThumbnail.current);
-    console.log(pdfViewer.current);
-    // console.log(pdfViewer.current.navigate());
-    console.log(pdfViewer.current.navigateToPage);
-  };
+  useEffect(() => {
+    resetState();
+  }, [src]);
 
   useLayoutEffect(() => {
     const origin = window.location.origin;
@@ -138,13 +120,11 @@ function PDFViewer({
     if (isLoadedViewerScript && !isLoadingFile && file) {
       try {
         if (!containerRef.current?.hasChildNodes()) {
-          console.log("");
           initViewer();
         }
-        console.log("open");
         //@ts-ignore
         pdfViewer.current?.open(file);
-        resize();
+        setIsFileOpened(true);
       } catch (error) {
         setIsError(true);
         console.log(error);
@@ -156,12 +136,69 @@ function PDFViewer({
     if (isLoadedViewerScript && containerRef.current?.hasChildNodes()) resize();
   }, [isPDFSidebarOpen, isLoadedViewerScript]);
 
+  const initViewer = () => {
+    console.log("init PDF Viewer");
+
+    //@ts-ignore
+    pdfViewer.current = new window.AscViewer.CViewer("mainPanel", {
+      theme: { type: "dark" },
+    });
+    //@ts-ignore
+    pdfThumbnail.current =
+      //@ts-ignore
+      pdfViewer.current.createThumbnails("viewer-thumbnail");
+    //@ts-ignore
+
+    pdfViewer.current.registerEvent(
+      "onStructure",
+      function (structure: BookMark[]) {
+        setBookmarks(structure);
+      }
+    );
+    pdfViewer.current.registerEvent("onZoom", function (currentZoom: number) {
+      toolbarRef.current?.setPercentValue(currentZoom);
+    });
+
+    pdfViewer.current.setZoomMode(2);
+  };
+
+  const resize = () => {
+    pdfViewer.current?.resize();
+    pdfThumbnail.current?.resize();
+  };
+
+  const resetState = () => {
+    setIsLoadingScript(false);
+    setIsFileOpened(false);
+    setIsLoadingFile(false);
+  };
+
   function toolbarEvent(item: ToolbarItemType) {
     switch (item.actionType) {
       case ToolbarActionType.Panel:
         setIsPDFSidebarOpen((prev) => !prev);
         break;
+      case ToolbarActionType.ZoomIn:
+        {
+          const currentZoom = pdfViewer.current.getZoom();
 
+          console.log({ currentZoom });
+
+          pdfViewer.current.setZoom(currentZoom + 10);
+        }
+        break;
+      case ToolbarActionType.ZoomOut:
+        {
+          const currentZoom = pdfViewer.current.getZoom();
+
+          console.log({ currentZoom });
+          pdfViewer.current.setZoom(currentZoom - 10);
+        }
+        break;
+
+      case ToolbarActionType.Reset:
+        pdfViewer.current.setZoomMode(2);
+        break;
       default:
         break;
     }
@@ -181,14 +218,20 @@ function PDFViewer({
 
   return (
     <>
-      <DesktopTopBar
-        title={title}
-        onMaskClick={onMask}
-        isPanelOpen={isPDFSidebarOpen}
-      />
+      {isDesktop ? (
+        <DesktopTopBar
+          title={title}
+          onMaskClick={onMask}
+          isPanelOpen={isPDFSidebarOpen}
+        />
+      ) : (
+        mobileDetails
+      )}
 
       <PdfViewrWrapper>
-        <ViewerLoader isLoading={isLoadingFile || isLoadingScript} />
+        <ViewerLoader
+          isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
+        />
         <Sidebar
           bookmarks={bookmarks}
           isPanelOpen={isPDFSidebarOpen}
@@ -197,18 +240,21 @@ function PDFViewer({
         />
         <MainPanel
           ref={containerRef}
-          isLoading={isLoadingFile || isLoadingScript}
+          isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
         />
       </PdfViewrWrapper>
 
-      <PDFToolbar
-        toolbar={toolbar}
-        percentValue={1}
-        isPanelOpen={isPDFSidebarOpen}
-        toolbarEvent={toolbarEvent}
-        generateContextMenu={generateContextMenu}
-        setIsOpenContextMenu={setIsOpenContextMenu}
-      />
+      {isDesktop && !(isLoadingFile || isLoadingScript) && (
+        <PDFToolbar
+          ref={toolbarRef}
+          toolbar={toolbar}
+          percentValue={1}
+          isPanelOpen={isPDFSidebarOpen}
+          toolbarEvent={toolbarEvent}
+          generateContextMenu={generateContextMenu}
+          setIsOpenContextMenu={setIsOpenContextMenu}
+        />
+      )}
     </>
   );
 }

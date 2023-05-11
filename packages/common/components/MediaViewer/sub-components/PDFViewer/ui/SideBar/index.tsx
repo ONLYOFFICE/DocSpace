@@ -29,9 +29,10 @@ function Sidebar({
   return (
     <SidebarContainer isPanelOpen={isPanelOpen}>
       <SidebarHeader>
-        {React.createElement(toggle ? ViewTilesIcon : ViewRowsIcon, {
-          onClick: handleToggle,
-        })}
+        {bookmarks.length > 0 &&
+          React.createElement(toggle ? ViewTilesIcon : ViewRowsIcon, {
+            onClick: handleToggle,
+          })}
         <HideSidebarIcon onClick={closeSidebar} />
       </SidebarHeader>
       {toggle && <Bookmarks bookmarks={bookmarks} navigate={navigate} />}

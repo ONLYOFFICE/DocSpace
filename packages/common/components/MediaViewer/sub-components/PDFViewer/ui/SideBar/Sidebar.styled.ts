@@ -43,4 +43,5 @@ export const Thumbnails = styled.section<{ visible: boolean }>`
 
 export const HideSidebarIcon = styled(ArticleShowMenuReactSvgUrl)`
   transform: rotate(180deg);
+  margin-left: auto;
 `;

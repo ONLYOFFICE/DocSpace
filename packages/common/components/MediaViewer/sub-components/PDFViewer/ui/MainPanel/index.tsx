@@ -1,10 +1,11 @@
 import React, { ForwardedRef, forwardRef } from "react";
+import { isDesktop } from "react-device-detect";
 import styled from "styled-components";
 
 const Wrapper = styled.section`
   width: 100%;
-  height: calc(100vh - 85px);
-  margin-top: 85px;
+  height: ${`calc(100vh - ${isDesktop ? "85" : "66"}px)`};
+  margin-top: ${isDesktop ? "85px" : "66px"};
 `;
 
 const Content = styled.div<{ isLoading: boolean }>`

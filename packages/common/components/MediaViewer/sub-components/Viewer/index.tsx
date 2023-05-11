@@ -256,10 +256,11 @@ function Viewer(props: ViewerProps) {
                 title={props.title}
                 toolbar={props.toolbar}
                 onMask={handleMaskClick}
+                isPDFSidebarOpen={isPDFSidebarOpen}
+                mobileDetails={mobileDetails}
                 handleChangeVersion={handleChangeVersion}
                 generateContextMenu={props.generateContextMenu}
                 setIsOpenContextMenu={setIsOpenContextMenu}
-                isPDFSidebarOpen={isPDFSidebarOpen}
                 setIsPDFSidebarOpen={setIsPDFSidebarOpen}
               />
             ) : (

@@ -5,6 +5,7 @@ interface PDFViewerProps {
   title: string;
   toolbar: ReturnType<typeof getPDFToolbar>;
   isPDFSidebarOpen: boolean;
+  mobileDetails: JSX.Element;
 
   onMask: VoidFunction;
   generateContextMenu: (
