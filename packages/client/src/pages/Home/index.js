@@ -396,6 +396,7 @@ class PureHome extends React.Component {
       setViewAs,
       hashSettings,
       logout,
+      login,
     } = this.props;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -489,10 +490,14 @@ class PureHome extends React.Component {
           res = hashSettings;
           break;
         }
-        case "logout":
+        case "login":
           {
-            res = logout();
+            const { email, passwordHash } = data;
+            res = login(email, passwordHash);
           }
+          break;
+        case "logout":
+          res = logout();
           break;
         default:
           res = "Wrong method";
@@ -812,6 +817,7 @@ export default inject(
 
       hashSettings,
       logout: auth.logout,
+      login: auth.login,
     };
   }
 )(withRouter(observer(Home)));

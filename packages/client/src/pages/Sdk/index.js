@@ -4,9 +4,13 @@ import Button from "@docspace/components/button";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 import RoomSelector from "../../components/RoomSelector";
 import SelectFolderDialog from "../../components/panels/SelectFolderDialog";
-import { frameCallEvent } from "@docspace/common/utils";
+import {
+  frameCallEvent,
+  frameCallbackData,
+  createPasswordHash,
+} from "@docspace/common/utils";
 
-const Selector = (props) => {
+const Sdk = (props) => {
   useEffect(() => {
     window.addEventListener("message", handleMessage, false);
     return () => {
@@ -14,8 +18,10 @@ const Selector = (props) => {
     };
   }, [handleMessage]);
 
+  const { mode } = props.match.params;
+
   const handleMessage = (e) => {
-    const { setFrameConfig } = props;
+    const { setFrameConfig, login, logout, hashSettings, user } = props;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
 
@@ -27,6 +33,28 @@ const Selector = (props) => {
       switch (methodName) {
         case "setConfig":
           res = setFrameConfig(data);
+          break;
+        case "createHash":
+          {
+            const { password, hashSettings } = data;
+            res = createPasswordHash(password, hashSettings);
+          }
+          break;
+        case "getUserInfo":
+          res = user;
+          break;
+        case "getHashSettings": {
+          res = hashSettings;
+          break;
+        }
+        case "login":
+          {
+            const { email, passwordHash } = data;
+            res = login(email, passwordHash);
+          }
+          break;
+        case "logout":
+          res = logout();
           break;
         default:
           res = "Wrong method";
@@ -47,21 +75,36 @@ const Selector = (props) => {
     frameCallEvent({ event: "onCloseCallback" });
   }, [frameCallEvent]);
 
-  return (
-    <RoomSelector
-      withCancelButton
-      withHeader={false}
-      onAccept={onSelect}
-      onCancel={onClose}
-    />
-  );
+  let component;
+
+  switch (mode) {
+    case "room-selector":
+      component = (
+        <RoomSelector
+          withCancelButton
+          withHeader={false}
+          onAccept={onSelect}
+          onCancel={onClose}
+        />
+      );
+      break;
+    default:
+      component = null;
+  }
+
+  return component;
 };
 
 export default inject(({ auth }) => {
-  const { theme, setFrameConfig, frameConfig } = auth.settingsStore;
+  const { login, logout, settingsStore } = auth;
+  const { theme, setFrameConfig, frameConfig, hashSettings } = settingsStore;
   return {
     theme,
     setFrameConfig,
     frameConfig,
+    login,
+    logout,
+    hashSettings,
+    user: auth.userStore.user,
   };
-})(observer(Selector));
+})(observer(Sdk));
