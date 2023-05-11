@@ -246,6 +246,24 @@
       return this.#iframe;
     }
 
+    initManager(frameConfig = {}) {
+      frameConfig.mode = "manager";
+
+      return this.initFrame(frameConfig);
+    }
+
+    initEditor(frameConfig = {}) {
+      frameConfig.mode = frameConfig.mode || "editor";
+
+      return this.initFrame(frameConfig);
+    }
+
+    initSelector(frameConfig = {}) {
+      frameConfig.mode = frameConfig.mode || "room selector";
+
+      return this.initFrame(frameConfig);
+    }
+
     destroyFrame() {
       const target = document.createElement("div");
 
@@ -255,8 +273,6 @@
       if (this.#iframe) {
         window.removeEventListener("message", this.#onMessage, false);
         this.#isConnected = false;
-
-        delete window.DocSpace[this.config.frameId];
 
         this.#iframe.parentNode &&
           this.#iframe.parentNode.replaceChild(target, this.#iframe);
@@ -349,12 +365,21 @@
     createHash(password, hashSettings) {
       return this.#getMethodPromise("createHash", { password, hashSettings });
     }
+
+    login(email, passwordHash) {
+      return this.#getMethodPromise("login", { email, passwordHash });
+    }
+
+    logout() {
+      return this.#getMethodPromise("logout");
+    }
   }
-  window.DocSpace = window.DocSpace || [];
 
   const config = getConfigFromParams();
 
-  window.DocSpace[config.frameId] = new DocSpace(config);
+  window.DocSpace = window.DocSpace || {};
 
-  window.DocSpace[config.frameId].initFrame();
+  window.DocSpace.SDK = new DocSpace(config);
+
+  window.DocSpace.SDK.initFrame();
 })();
