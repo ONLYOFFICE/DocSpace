@@ -8,6 +8,7 @@ import { ResponseDetails } from "./ResponseDetails";
 const SubmenuWrapper = styled.div`
   .sticky {
     z-index: 3;
+    top: 68px;
   }
 `;
 

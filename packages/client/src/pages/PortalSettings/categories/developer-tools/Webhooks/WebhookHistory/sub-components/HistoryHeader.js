@@ -17,7 +17,10 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
 
 const HeaderContainer = styled.div`
-  position: relative;
+  position: sticky;
+  top: 0;
+  background-color: ${(props) => props.theme.backgroundColor};
+  z-index: 200;
   display: flex;
   align-items: center;
   width: 100%;
@@ -45,44 +48,29 @@ const HeaderContainer = styled.div`
     margin-right: 16px;
   }
 
-  .smallGroupAction {
-    margin-top: -49px;
-    height: 48px;
-    margin-left: -17px;
-  }
-
   .table-container_group-menu {
     margin: 0 0 0 -20px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
-    width: 100%;
+    flex: 0 0 auto;
+
+    width: calc(100% + 45px);
     height: 69px;
 
-    @media ${tablet} {
-      height: 60px;
-      margin: 0 0 0 -16px;
-      width: calc(100% + 32px);
-    }
-
-    ${isMobile &&
-    css`
-      height: 60px;
-      margin: 0 0 0 -16px;
-      width: calc(100% + 32px);
-    `}
-
-    @media ${mobile} {
-      height: 52px;
-      margin: 0 0 0 -16px;
-      width: calc(100% + 32px);
-    }
-
-    ${isMobileOnly &&
-    css`
-      height: 52px;
-      margin: 0 0 0 -16px;
-      width: calc(100% + 32px);
-    `}
+    ${() =>
+      isMobile &&
+      css`
+        height: 60px;
+        margin: 0 0 0 -16px;
+        width: calc(100% + 32px);
+      `}
+    ${() =>
+      isMobileOnly &&
+      css`
+        height: 48px;
+        margin: -49px 0 0 -17px;
+        width: calc(100% + 32px);
+      `}
   }
 `;
 
@@ -165,7 +153,6 @@ const HistoryHeader = (props) => {
               isIndeterminate={true}
               headerMenu={headerMenu}
               withoutInfoPanelToggler
-              className="smallGroupAction"
             />
           )}
           <NavigationHeader />

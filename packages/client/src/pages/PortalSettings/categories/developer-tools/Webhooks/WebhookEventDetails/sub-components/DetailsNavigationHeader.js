@@ -16,7 +16,10 @@ import IconButton from "@docspace/components/icon-button";
 import { tablet } from "@docspace/components/utils/device";
 
 const HeaderContainer = styled.div`
-  position: relative;
+  position: sticky;
+  top: 0;
+  background-color: ${(props) => props.theme.backgroundColor};
+  z-index: 310;
   display: flex;
   align-items: center;
   max-width: calc(100vw - 32px);
