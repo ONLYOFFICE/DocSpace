@@ -61,8 +61,7 @@ const Members = ({
     if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
     let data = await getRoomMembers(roomId);
 
-    const links = data.filter((t) => t.sharedTo.shareLink);
-    setExternalLinks(links);
+    setExternalLinks(data);
 
     data = data.filter((m) => m.sharedTo.email || m.sharedTo.displayName);
     clearTimeout(timerId);

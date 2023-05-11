@@ -29,6 +29,7 @@ import LogoutConnectionDialog from "./LogoutConnectionDialog";
 import LogoutAllConnectionDialog from "./LogoutAllConnectionDialog";
 import CreateRoomConfirmDialog from "./CreateRoomConfirmDialog";
 import UnsavedChangesDialog from "./UnsavedChangesDialog";
+import DeleteLinkDialog from "./DeleteLinkDialog";
 
 export {
   EmptyTrashDialog,
@@ -62,4 +63,5 @@ export {
   InviteUsersWarningDialog,
   LogoutAllConnectionDialog,
   UnsavedChangesDialog,
+  DeleteLinkDialog,
 };

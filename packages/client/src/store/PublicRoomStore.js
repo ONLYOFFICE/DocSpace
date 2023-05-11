@@ -22,7 +22,8 @@ class PublicRoomStore {
     this.externalLinks[linkIndex] = dataLink;
   };
 
-  setExternalLinks = (externalLinks) => {
+  setExternalLinks = (links) => {
+    const externalLinks = links.filter((t) => t.sharedTo.shareLink);
     this.externalLinks = externalLinks;
   };
 

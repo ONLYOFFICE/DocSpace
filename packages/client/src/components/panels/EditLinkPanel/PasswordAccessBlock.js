@@ -43,7 +43,7 @@ const PasswordAccessBlock = (props) => {
               // tabIndex={3}
               // simpleView
               // passwordSettings={{ minLength: 0 }}
-              value={passwordValue}
+              inputValue={passwordValue}
               onChange={onChangePassword}
             />
 

@@ -21,22 +21,27 @@ import LimitTimeBlock from "./LimitTimeBlock";
 const EditLinkPanel = (props) => {
   const {
     t,
-    visible,
     roomId,
-    setIsVisible,
-    isEdit,
-    editExternalLink,
     linkId,
-    title,
+    isEdit,
+    visible,
+    password,
+    setIsVisible,
+    editExternalLink,
+    setExternalLinks,
   } = props;
+
+  const title = props.title ?? t("ExternalLink");
+  const isLocked = !!password;
 
   const [isLoading, setIsLoading] = useState(false);
 
-  const [linkNameValue, setLinkNameValue] = useState(title); //t("ExternalLink")
-  const [passwordValue, setPasswordValue] = useState("");
+  const [linkNameValue, setLinkNameValue] = useState(title);
+  const [passwordValue, setPasswordValue] = useState(password);
   const [expirationDate, setExpirationDate] = useState("");
 
-  const [passwordAccessIsChecked, setPasswordAccessIsChecked] = useState(false);
+  const [passwordAccessIsChecked, setPasswordAccessIsChecked] =
+    useState(isLocked);
   const [limitByTimeIsChecked, setLimitByTimeIsChecked] = useState(false);
   const [denyDownload, setDenyDownload] = useState(false);
 
@@ -50,8 +55,6 @@ const EditLinkPanel = (props) => {
 
   const onClose = () => setIsVisible(false);
   const onSave = () => {
-    setIsLoading(true);
-
     const options = {
       linkId,
       roomId,
@@ -61,8 +64,17 @@ const EditLinkPanel = (props) => {
       denyDownload,
     };
 
+    setIsLoading(true);
     editExternalLink(options)
-      .then(() => toastr.success(t("LinkEditedSuccessfully")))
+      .then((res) => {
+        setExternalLinks(res);
+
+        isEdit
+          ? toastr.success(t("Files:LinkEditedSuccessfully"))
+          : toastr.success(
+              "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
+            );
+      })
       .catch((err) => toastr.error(err?.message))
       .finally(() => {
         setIsLoading(false);
@@ -145,11 +157,11 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
   const { selectionParentRoom } = auth.infoPanelStore;
   const { editLinkPanelIsVisible, setEditLinkPanelIsVisible, linkParams } =
     dialogsStore;
-  const { externalLinks, editExternalLink } = publicRoomStore;
-  const { isEdit, linkId } = linkParams;
+  const { externalLinks, editExternalLink, setExternalLinks } = publicRoomStore;
+  const { isEdit } = linkParams;
 
+  const linkId = linkParams?.link?.sharedTo?.id;
   const link = externalLinks.find((l) => l?.sharedTo?.id === linkId);
-
   const template = externalLinks.find((t) => t?.sharedTo?.isTemplate);
 
   return {
@@ -160,6 +172,8 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     title: link?.sharedTo?.title,
     editExternalLink,
     roomId: selectionParentRoom.id,
+    setExternalLinks,
+    password: link?.sharedTo?.password,
   };
 })(
   withTranslation(["SharingPanel", "Common", "Files"])(observer(EditLinkPanel))

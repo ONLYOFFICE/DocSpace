@@ -1,5 +1,5 @@
 import { getNewFiles } from "@docspace/common/api/files";
-import { FileAction, ShareAccessRights } from "@docspace/common/constants";
+import { ShareAccessRights } from "@docspace/common/constants";
 import { makeAutoObservable, runInAction } from "mobx";
 import { Events } from "@docspace/common/constants";
 
@@ -38,6 +38,7 @@ class DialogsStore {
   restoreAllPanelVisible = false;
   archiveDialogVisible = false;
   eventDialogVisible = false;
+  deleteLinkDialogVisible = false;
 
   removeItem = null;
   connectItem = null;
@@ -328,6 +329,10 @@ class DialogsStore {
     this.unsavedChangesDialogVisible = unsavedChangesDialogVisible;
   };
 
+  setDeleteLinkDialogVisible = (visible) => {
+    this.deleteLinkDialogVisible = visible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -355,7 +360,8 @@ class DialogsStore {
       this.createRoomConfirmDialogVisible ||
       this.changeUserTypeDialogVisible ||
       this.editLinkPanelIsVisible ||
-      this.unsavedChangesDialogVisible
+      this.unsavedChangesDialogVisible ||
+      this.deleteLinkDialogVisible
     );
   }
 

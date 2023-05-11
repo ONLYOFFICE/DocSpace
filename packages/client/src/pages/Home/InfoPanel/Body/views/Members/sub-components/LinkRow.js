@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import copy from "copy-to-clipboard";
 import Avatar from "@docspace/components/avatar";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
@@ -30,9 +31,9 @@ const LinkRow = (props) => {
     editExternalLink,
     setExternalLink,
     canLinkDelete,
+    setDeleteLinkDialogVisible,
     ...rest
   } = props;
-  const { sharedTo } = link;
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -43,7 +44,7 @@ const LinkRow = (props) => {
     password,
     disabled,
     expirationDate,
-  } = sharedTo;
+  } = link.sharedTo;
 
   const isLocked = !!password;
   const expiryDate = !!expirationDate;
@@ -53,7 +54,7 @@ const LinkRow = (props) => {
 
   const onEditLink = () => {
     setEditLinkPanelIsVisible(true);
-    setLinkParams({ linkId: id, isEdit: true });
+    setLinkParams({ isEdit: true, link });
   };
 
   const onDisableLink = () => {
@@ -71,19 +72,18 @@ const LinkRow = (props) => {
   };
 
   const onLockClick = () => {
-    alert("onLockClick");
+    copy(password);
+    toastr.success("Password was copied TODO: need translation ");
   };
 
   const onDeleteLink = () => {
-    alert("show delete dialog");
-    setIsLoading(true);
-    editExternalLink({ roomId, linkId: id, title, access: 0 })
-      .then((res) => {
-        console.log("res", res);
-        // setExternalLink(id, res);
-      })
-      .catch((err) => toastr.error(err?.message))
-      .finally(() => setIsLoading(false));
+    setLinkParams({ link });
+    setDeleteLinkDialogVisible(true);
+  };
+
+  const onCopyExternalLink = () => {
+    copy(shareLink);
+    toastr.success(t("Files:LinkSuccessfullyCopied"));
   };
 
   const getData = () => {
@@ -137,10 +137,6 @@ const LinkRow = (props) => {
     ];
   };
 
-  const onCopyExternalLink = () => {
-    toastr.success("onCopyExternalLink"); // shareLink
-  };
-
   return (
     <StyledLinkRow {...rest}>
       <Avatar
@@ -192,8 +188,14 @@ const LinkRow = (props) => {
 
 export default inject(({ auth, dialogsStore, publicRoomStore }) => {
   const { selectionParentRoom } = auth.infoPanelStore;
-  const { setEditLinkPanelIsVisible, setLinkParams } = dialogsStore;
+  const {
+    setEditLinkPanelIsVisible,
+    setDeleteLinkDialogVisible,
+    setLinkParams,
+  } = dialogsStore;
   const { editExternalLink, externalLinks, setExternalLink } = publicRoomStore;
+
+  const links = externalLinks.filter((l) => !l.sharedTo.isTemplate);
 
   return {
     setEditLinkPanelIsVisible,
@@ -201,6 +203,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     editExternalLink,
     roomId: selectionParentRoom.id,
     setExternalLink,
-    canLinkDelete: externalLinks.length >= 1,
+    canLinkDelete: links.length > 1,
+    setDeleteLinkDialogVisible,
   };
 })(withTranslation(["SharingPanel", "Files", "Settings"])(observer(LinkRow)));

@@ -131,5 +131,8 @@
   "LinkEnabledSuccessfully": "Link enable successfully",
   "MarkAsVersion": "Mark as version",
   "MarkAsRevision": "Mark as revision",
-  "TableSettingsTitle": "Manage displayed columns"
+  "TableSettingsTitle": "Manage displayed columns",
+  "DeleteLink": "Delete link",
+  "DeleteLinkNote": "The link will be deleted permanently. You will not be able to undo this action.",
+  "LinkSuccessfullyCopied": "Link successfully copied"
 }

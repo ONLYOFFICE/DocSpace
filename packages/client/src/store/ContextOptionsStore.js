@@ -152,10 +152,8 @@ class ContextOptionsStore {
   };
 
   onClickMakeForm = (item, t) => {
-    const {
-      setConvertPasswordDialogVisible,
-      setFormCreationInfo,
-    } = this.dialogsStore;
+    const { setConvertPasswordDialogVisible, setFormCreationInfo } =
+      this.dialogsStore;
     const { title, id, folderId, fileExst } = item;
 
     const newTitle =
@@ -209,10 +207,8 @@ class ContextOptionsStore {
   };
 
   showVersionHistory = (id, security) => {
-    const {
-      fetchFileVersions,
-      setIsVerHistoryPanel,
-    } = this.versionHistoryStore;
+    const { fetchFileVersions, setIsVerHistoryPanel } =
+      this.versionHistoryStore;
 
     if (this.treeFoldersStore.isRecycleBinFolder) return;
 
@@ -242,9 +238,8 @@ class ContextOptionsStore {
 
   lockFile = (item, t) => {
     const { id, locked } = item;
-    const {
-      setSelection: setInfoPanelSelection,
-    } = this.authStore.infoPanelStore;
+    const { setSelection: setInfoPanelSelection } =
+      this.authStore.infoPanelStore;
 
     this.filesActionsStore
       .lockFileAction(id, !locked)
@@ -409,19 +404,13 @@ class ContextOptionsStore {
   };
 
   onClickDeleteSelectedFolder = (t, isRoom) => {
-    const {
-      setIsFolderActions,
-      setDeleteDialogVisible,
-      setIsRoomDelete,
-    } = this.dialogsStore;
+    const { setIsFolderActions, setDeleteDialogVisible, setIsRoomDelete } =
+      this.dialogsStore;
     const { confirmDelete } = this.settingsStore;
     const { deleteAction, deleteRoomsAction } = this.filesActionsStore;
     const { id: selectedFolderId } = this.selectedFolderStore;
-    const {
-      isThirdPartySelection,
-      getFolderInfo,
-      setBufferSelection,
-    } = this.filesStore;
+    const { isThirdPartySelection, getFolderInfo, setBufferSelection } =
+      this.filesStore;
 
     setIsFolderActions(true);
 
@@ -463,10 +452,8 @@ class ContextOptionsStore {
   onClickDelete = (item, t) => {
     const { id, title, providerKey, rootFolderId, isFolder, isRoom } = item;
 
-    const {
-      setRemoveItem,
-      setDeleteThirdPartyDialogVisible,
-    } = this.dialogsStore;
+    const { setRemoveItem, setDeleteThirdPartyDialogVisible } =
+      this.dialogsStore;
 
     if (id === this.selectedFolderStore.id) {
       this.onClickDeleteSelectedFolder(t, isRoom);
@@ -557,7 +544,9 @@ class ContextOptionsStore {
     window.dispatchEvent(event);
   };
 
-  onClickCopyExternalLink = () => {
+  onClickCopyExternalLink = (item, t) => {
+    console.log("item", item);
+    console.log("");
     toastr.success("TODO: onClickCopyExternalLink");
   };
 
@@ -940,7 +929,7 @@ class ContextOptionsStore {
         key: "external-link",
         label: t("SharingPanel:CopyExternalLink"),
         icon: CopyToReactSvgUrl,
-        onClick: this.onClickCopyExternalLink,
+        onClick: () => this.onClickCopyExternalLink(item, t),
         disabled: false,
       },
       {
@@ -1168,11 +1157,8 @@ class ContextOptionsStore {
     const { personal } = this.authStore.settingsStore;
     const { selection, allFilesIsEditing } = this.filesStore;
     const { setDeleteDialogVisible } = this.dialogsStore;
-    const {
-      isRecycleBinFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-    } = this.treeFoldersStore;
+    const { isRecycleBinFolder, isRoomsFolder, isArchiveFolder } =
+      this.treeFoldersStore;
 
     const { pinRooms, unpinRooms, deleteRooms } = this.filesActionsStore;
 

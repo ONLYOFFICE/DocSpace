@@ -26,6 +26,7 @@ import {
   CreateRoomConfirmDialog,
   ChangeUserTypeDialog,
   UnsavedChangesDialog,
+  DeleteLinkDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -64,6 +65,7 @@ const Panels = (props) => {
     changeUserTypeDialogVisible,
     editLinkPanelIsVisible,
     unsavedChangesDialogVisible,
+    deleteLinkDialogVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -141,8 +143,9 @@ const Panels = (props) => {
     ),
     editLinkPanelIsVisible && <EditLinkPanel key="edit-link-panel" />,
     unsavedChangesDialogVisible && (
-      <UnsavedChangesDialog key="unsaved-dialog-visible" />
+      <UnsavedChangesDialog key="unsaved-dialog" />
     ),
+    deleteLinkDialogVisible && <DeleteLinkDialog key="delete-link-dialog" />,
   ];
 };
 
@@ -183,6 +186,7 @@ export default inject(
       inviteUsersWarningDialogVisible,
       changeUserTypeDialogVisible,
       editLinkPanelIsVisible,
+      deleteLinkDialogVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -224,6 +228,7 @@ export default inject(
       changeUserTypeDialogVisible,
       editLinkPanelIsVisible,
       unsavedChangesDialogVisible,
+      deleteLinkDialogVisible,
     };
   }
 )(observer(Panels));
