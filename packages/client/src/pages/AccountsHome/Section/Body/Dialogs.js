@@ -43,7 +43,6 @@ const Dialogs = ({
           visible={changeEmail}
           onClose={closeDialogs}
           user={data}
-          profile={profile}
           fromList
         />
       )}
@@ -140,10 +139,8 @@ export default inject(({ auth, peopleStore }) => {
 
   const { user: profile } = auth.userStore;
 
-  const {
-    changeNameVisible,
-    setChangeNameVisible,
-  } = peopleStore.targetUserStore;
+  const { changeNameVisible, setChangeNameVisible } =
+    peopleStore.targetUserStore;
 
   const { tfaStore } = auth;
 
