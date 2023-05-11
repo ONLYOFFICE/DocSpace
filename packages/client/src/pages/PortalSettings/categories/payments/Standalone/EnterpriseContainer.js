@@ -13,13 +13,25 @@ import {
 } from "./StyledComponent";
 
 const EnterpriseContainer = (props) => {
-  const { buyUrl, salesEmail, t } = props;
+  const { buyUrl, salesEmail, t, isSubscriptionExpired, theme } = props;
   const onClickBuy = () => {
     window.open(buyUrl, "_blank");
   };
 
+  const subscriptionDescription = isSubscriptionExpired ? (
+    <Text className="payments_subscription-expired" isBold fontSize="14px">
+      {t("EnterpriseSubscriptionExpired")}
+    </Text>
+  ) : (
+    <Text as="span" fontWeight={400} fontSize="14px">
+      {t("EnterpriseSubscriptionExpiresDate", {
+        finalDate: "Tuesday, December 19, 2023.",
+      })}
+    </Text>
+  );
+
   return (
-    <StyledEnterpriseComponent>
+    <StyledEnterpriseComponent theme={theme}>
       <Text fontWeight={700} fontSize={"16px"}>
         {t("EnterpriseRenewSubscription")}
       </Text>
@@ -27,11 +39,7 @@ const EnterpriseContainer = (props) => {
         <Text isBold fontSize="14px" as="span">
           {t("EnterpriseEdition")}{" "}
         </Text>
-        <Text as="span" fontWeight={400} fontSize="14px">
-          {t("EnterpriseSubscriptionExpires", {
-            finalDate: "Tuesday, December 19, 2023.",
-          })}
-        </Text>
+        {subscriptionDescription}
       </div>
       <Text
         fontWeight={400}
@@ -70,8 +78,11 @@ const EnterpriseContainer = (props) => {
   );
 };
 
-export default inject(({ payments }) => {
+export default inject(({ auth, payments }) => {
   const { buyUrl, salesEmail } = payments;
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
+  const isSubscriptionExpired = true;
 
-  return { buyUrl, salesEmail };
+  return { theme, buyUrl, salesEmail, isSubscriptionExpired };
 })(withRouter(observer(EnterpriseContainer)));

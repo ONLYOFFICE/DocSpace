@@ -53,6 +53,16 @@ const StyledEnterpriseComponent = styled.div`
   .payments_support {
     max-width: 503px;
   }
+
+  .payments_subscription-expired {
+    max-width: fit-content;
+    border: 1px solid
+      ${(props) => props.theme.client.settings.payment.warningColor};
+    border-radius: 3px;
+    color: ${(props) => props.theme.client.settings.payment.warningColor};
+    padding: 5px 8px;
+    margin-top: 8px;
+  }
 `;
 export {
   StyledComponent,
