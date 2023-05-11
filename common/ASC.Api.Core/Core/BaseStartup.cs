@@ -197,6 +197,7 @@ public abstract class BaseStartup
             config.Filters.Add(new TypeFilterAttribute(typeof(TenantStatusFilter)));
             config.Filters.Add(new TypeFilterAttribute(typeof(PaymentFilter)));
             config.Filters.Add(new TypeFilterAttribute(typeof(IpSecurityFilter)));
+            config.Filters.Add(new TypeFilterAttribute(typeof(ProductSecurityFilter)));
             config.Filters.Add(new CustomResponseFilterAttribute());
             config.Filters.Add(new CustomExceptionFilterAttribute());
             config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
