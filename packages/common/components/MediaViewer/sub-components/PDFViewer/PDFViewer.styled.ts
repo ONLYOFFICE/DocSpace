@@ -46,9 +46,18 @@ export const DesktopTopBar = styled(DesktopDetails)<Panel>`
   width: ${(props) => (props.isPanelOpen ? "calc(100%  - 306px)" : "100%")};
 
   .mediaPlayerClose {
-    margin-top: -3px;
-    margin-left: -7px;
-    width: 28px;
+    position: fixed;
+    top: 13px;
+    right: 12px;
+    height: 17px;
+    &:hover {
+      background-color: transparent;
+    }
+    svg {
+      path {
+        fill: ${(props) => props.theme.mediaViewer.iconColor};
+      }
+    }
   }
 
   .title {

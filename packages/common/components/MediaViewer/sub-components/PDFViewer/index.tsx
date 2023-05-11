@@ -1,5 +1,5 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
-import { isDesktop } from "react-device-detect";
+import { isDesktop, isMobile } from "react-device-detect";
 
 import { loadScript, combineUrl } from "@docspace/common/utils";
 
@@ -20,6 +20,7 @@ import {
   ImperativeHandle,
   ToolbarItemType,
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
+import PageCount, { PageCountRef } from "./ui/PageCount";
 
 // import { isDesktop } from "react-device-detect";?
 const pdfViewerId = "pdf-viewer";
@@ -39,11 +40,10 @@ function PDFViewer({
   const pdfViewer = useRef<any>(null);
   const pdfThumbnail = useRef<any>(null);
   const toolbarRef = useRef<ImperativeHandle>(null);
+  const pageCountRef = useRef<PageCountRef>(null);
 
   const [file, setFile] = useState<ArrayBuffer | string | null>();
   const [bookmarks, setBookmarks] = useState<BookMark[]>([]);
-
-  const [isError, setIsError] = useState<boolean>(false);
 
   const [isLoadedViewerScript, setIsLoadedViewerScript] = useState<boolean>(
     () => {
@@ -51,7 +51,7 @@ function PDFViewer({
       return result !== null;
     }
   );
-
+  const [isError, setIsError] = useState<boolean>(false);
   const [isLoadingScript, setIsLoadingScript] = useState<boolean>(false);
   const [isLoadingFile, setIsLoadingFile] = useState<boolean>(false);
   const [isFileOpened, setIsFileOpened] = useState<boolean>(false);
@@ -158,8 +158,22 @@ function PDFViewer({
     pdfViewer.current.registerEvent("onZoom", function (currentZoom: number) {
       toolbarRef.current?.setPercentValue(currentZoom);
     });
+    pdfViewer.current.registerEvent(
+      "onCurrentPageChanged",
+      function (pageNum: number) {
+        pageCountRef.current?.setPageNumber(pageNum + 1);
+      }
+    );
+    pdfViewer.current.registerEvent(
+      "onPagesCount",
+      function (pagesCount: number) {
+        pageCountRef.current?.setPagesCount(pagesCount);
+      }
+    );
 
-    pdfViewer.current.setZoomMode(2);
+    if (isMobile) {
+      pdfViewer.current.setZoomMode(2);
+    }
   };
 
   const resize = () => {
@@ -243,6 +257,12 @@ function PDFViewer({
           isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
         />
       </PdfViewrWrapper>
+
+      <PageCount
+        ref={pageCountRef}
+        isPanelOpen={isPDFSidebarOpen}
+        visible={!isLoadingFile && !isLoadingScript}
+      />
 
       {isDesktop && !(isLoadingFile || isLoadingScript) && (
         <PDFToolbar
