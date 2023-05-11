@@ -12,6 +12,7 @@ import {
   HotkeyPanel,
   InvitePanel,
   EditLinkPanel,
+  EmbeddingPanel,
 } from "../panels";
 import {
   ConnectDialog,
@@ -66,6 +67,7 @@ const Panels = (props) => {
     editLinkPanelIsVisible,
     unsavedChangesDialogVisible,
     deleteLinkDialogVisible,
+    embeddingPanelIsVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -146,6 +148,7 @@ const Panels = (props) => {
       <UnsavedChangesDialog key="unsaved-dialog" />
     ),
     deleteLinkDialogVisible && <DeleteLinkDialog key="delete-link-dialog" />,
+    embeddingPanelIsVisible && <EmbeddingPanel key="embedding-panel" />,
   ];
 };
 
@@ -187,6 +190,7 @@ export default inject(
       changeUserTypeDialogVisible,
       editLinkPanelIsVisible,
       deleteLinkDialogVisible,
+      embeddingPanelIsVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -229,6 +233,7 @@ export default inject(
       editLinkPanelIsVisible,
       unsavedChangesDialogVisible,
       deleteLinkDialogVisible,
+      embeddingPanelIsVisible,
     };
   }
 )(observer(Panels));

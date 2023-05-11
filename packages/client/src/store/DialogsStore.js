@@ -62,6 +62,7 @@ class DialogsStore {
   createRoomConfirmDialogVisible = false;
   changeUserTypeDialogVisible = false;
   editLinkPanelIsVisible = false;
+  embeddingPanelIsVisible = false;
   linkParams = null;
 
   constructor(
@@ -333,6 +334,10 @@ class DialogsStore {
     this.deleteLinkDialogVisible = visible;
   };
 
+  setEmbeddingPanelIsVisible = (embeddingPanelIsVisible) => {
+    this.embeddingPanelIsVisible = embeddingPanelIsVisible;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -361,7 +366,8 @@ class DialogsStore {
       this.changeUserTypeDialogVisible ||
       this.editLinkPanelIsVisible ||
       this.unsavedChangesDialogVisible ||
-      this.deleteLinkDialogVisible
+      this.deleteLinkDialogVisible ||
+      this.embeddingPanelIsVisible
     );
   }
 

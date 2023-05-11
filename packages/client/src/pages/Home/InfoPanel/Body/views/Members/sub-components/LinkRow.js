@@ -24,14 +24,15 @@ import { StyledLinkRow } from "./StyledPublicRoom";
 const LinkRow = (props) => {
   const {
     t,
-    roomId,
-    setEditLinkPanelIsVisible,
-    setLinkParams,
     link,
-    editExternalLink,
-    setExternalLink,
+    roomId,
+    setLinkParams,
     canLinkDelete,
+    setExternalLink,
+    editExternalLink,
+    setEditLinkPanelIsVisible,
     setDeleteLinkDialogVisible,
+    setEmbeddingPanelIsVisible,
     ...rest
   } = props;
 
@@ -76,6 +77,11 @@ const LinkRow = (props) => {
     toastr.success("Password was copied TODO: need translation ");
   };
 
+  const onEmbeddingClick = () => {
+    setLinkParams({ link });
+    setEmbeddingPanelIsVisible(true);
+  };
+
   const onDeleteLink = () => {
     setLinkParams({ link });
     setDeleteLinkDialogVisible(true);
@@ -108,7 +114,7 @@ const LinkRow = (props) => {
         key: "embedding-settings-key",
         label: t("Files:EmbeddingSettings"),
         icon: CodeReactSvgUrl,
-        // onClick: () => args.onClickLabel("label2"),
+        onClick: onEmbeddingClick,
       },
       disabled
         ? {
@@ -191,6 +197,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
   const {
     setEditLinkPanelIsVisible,
     setDeleteLinkDialogVisible,
+    setEmbeddingPanelIsVisible,
     setLinkParams,
   } = dialogsStore;
   const { editExternalLink, externalLinks, setExternalLink } = publicRoomStore;
@@ -198,12 +205,13 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
   const links = externalLinks.filter((l) => !l.sharedTo.isTemplate);
 
   return {
-    setEditLinkPanelIsVisible,
     setLinkParams,
     editExternalLink,
     roomId: selectionParentRoom.id,
     setExternalLink,
     canLinkDelete: links.length > 1,
+    setEditLinkPanelIsVisible,
     setDeleteLinkDialogVisible,
+    setEmbeddingPanelIsVisible,
   };
 })(withTranslation(["SharingPanel", "Files", "Settings"])(observer(LinkRow)));
