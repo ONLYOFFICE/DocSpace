@@ -1,5 +1,5 @@
 import React from "react";
-import { HeaderContainer, Title } from "../styled-components";
+import { HeaderActionIcon, HeaderContainer, Title } from "../styled-components";
 import { HeaderButtons } from "./HeaderButtons";
 
 export const MonthsHeader = ({
@@ -32,7 +32,10 @@ export const MonthsHeader = ({
 
   return (
     <HeaderContainer>
-      <Title onClick={onTitleClick}>{observedDate.year()}</Title>
+      <Title onClick={onTitleClick}>
+        {observedDate.year()}
+        <HeaderActionIcon />
+      </Title>
       <HeaderButtons
         onLeftClick={onLeftClick}
         onRightClick={onRightClick}

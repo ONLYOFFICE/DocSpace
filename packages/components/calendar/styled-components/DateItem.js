@@ -6,15 +6,8 @@ export const DateItem = styled.button`
   font-weight: 600;
   font-size: 16px;
   border-radius: 50%;
-  color: ${(props) =>
-    props.disabled
-      ? props.theme.calendar.disabledColor
-      : props.focused
-      ? "#4781D1"
-      : props.theme.calendar.color};
 
   border: 2px solid;
-  border-color: ${(props) => (props.focused ? "#4781D1" : "transparent")};
   background-color: transparent;
 
   width: ${(props) => (props.big ? "60px" : "40px")};
@@ -27,9 +20,7 @@ export const DateItem = styled.button`
   :hover {
     cursor: ${(props) => (props.disabled ? "default" : "pointer")};
     background: ${(props) =>
-      props.disabled
-        ? "transparent"
-        : props.theme.calendar.onHoverBackground};
+      props.disabled ? "transparent" : props.theme.calendar.onHoverBackground};
   }
 `;
 DateItem.defaultProps = { theme: Base };

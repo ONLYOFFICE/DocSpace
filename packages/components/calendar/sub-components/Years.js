@@ -9,6 +9,7 @@ export const Years = ({
   selectedDate,
   minDate,
   maxDate,
+  isMobile
 }) => {
   return (
     <>
@@ -25,6 +26,7 @@ export const Years = ({
         selectedDate={selectedDate}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
     </>
   );

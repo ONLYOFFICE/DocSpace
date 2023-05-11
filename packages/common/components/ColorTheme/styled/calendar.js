@@ -1,10 +1,11 @@
-import styled, { css } from 'styled-components';
+import styled, { css } from "styled-components";
 import {
   Container,
   DateItem,
   CurrentDateItem,
   RoundButton,
-} from '@docspace/components/calendar/styled-components';
+  HeaderActionIcon,
+} from "@docspace/components/calendar/styled-components";
 
 const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
@@ -26,11 +27,7 @@ const getDefaultStyles = ({ $currentColorScheme }) =>
           : props.focused
           ? $currentColorScheme.main.accent
           : props.theme.calendar.color};
-      border-color: ${(props) => (props.focused ? $currentColorScheme.main.accent : 'transparent')};
-      :focus {
-        color: ${$currentColorScheme.main.accent};
-        border-color: ${$currentColorScheme.main.accent};
-      }
+      border-color: ${(props) => (props.focused ? $currentColorScheme.main.accent : "transparent")};
     }
     ${RoundButton} {
       :hover {
@@ -43,6 +40,9 @@ const getDefaultStyles = ({ $currentColorScheme }) =>
             props.disabled ? props.theme.calendar.disabledArrow : $currentColorScheme.main.accent};
         }
       }
+    }
+    ${HeaderActionIcon} {
+      border-color: ${$currentColorScheme.main.accent};
     }
   `;
 

@@ -9,6 +9,7 @@ export const DaysBody = ({
   selectedDate,
   minDate,
   maxDate,
+  isMobile,
 }) => {
   const daysElements = getDayElements(
     observedDate,
@@ -20,7 +21,7 @@ export const DaysBody = ({
   const weekdayElements = getWeekdayElements();
 
   return (
-    <DaysContainer>
+    <DaysContainer isMobile={isMobile}>
       {weekdayElements} {daysElements}
     </DaysContainer>
   );

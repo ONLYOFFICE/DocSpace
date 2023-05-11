@@ -9,6 +9,7 @@ export const Months = ({
   setSelectedScene,
   minDate,
   maxDate,
+  isMobile
 }) => {
   return (
     <>
@@ -26,6 +27,7 @@ export const Months = ({
         selectedDate={selectedDate}
         minDate={minDate}
         maxDate={maxDate}
+        isMobile={isMobile}
       />
     </>
   );

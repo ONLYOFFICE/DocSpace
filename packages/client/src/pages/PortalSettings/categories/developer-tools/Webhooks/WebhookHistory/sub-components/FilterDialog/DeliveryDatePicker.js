@@ -23,6 +23,12 @@ const TimePickerCell = styled.span`
   }
 `;
 
+const MobileCalendar = styled(Calendar)`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+`;
+
 const DeliveryDatePicker = ({
   Selectors,
   filterSettings,
@@ -51,19 +57,30 @@ const DeliveryDatePicker = ({
     setIsApplied(false);
   };
 
+  const CalendarElement = () =>
+    window.innerWidth >= 440 ? (
+      <Calendar
+        selectedDate={filterSettings.deliveryDate}
+        setSelectedDate={setDeliveryDate}
+        onChange={closeCalendar}
+        isMobile={false}
+      />
+    ) : (
+      <MobileCalendar
+        selectedDate={filterSettings.deliveryDate}
+        setSelectedDate={setDeliveryDate}
+        onChange={closeCalendar}
+        isMobile={true}
+      />
+    );
+
   const DateSelector = () => (
     <span>
       <SelectorAddButton title="add" onClick={toggleCalendar} style={{ marginRight: "8px" }} />
       <Text isInline fontWeight={600} color="#A3A9AE">
         Select date
       </Text>
-      {isCalendarOpen && (
-        <Calendar
-          selectedDate={filterSettings.deliveryDate}
-          setSelectedDate={setDeliveryDate}
-          onChange={closeCalendar}
-        />
-      )}
+      {isCalendarOpen && <CalendarElement />}
     </span>
   );
 
@@ -81,13 +98,7 @@ const DeliveryDatePicker = ({
         text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
         onClick={toggleCalendar}
       />
-      {isCalendarOpen && (
-        <Calendar
-          selectedDate={filterSettings.deliveryDate}
-          setSelectedDate={setDeliveryDate}
-          onChange={closeCalendar}
-        />
-      )}
+      {isCalendarOpen && <CalendarElement />}
     </span>
   );
 
@@ -104,13 +115,7 @@ const DeliveryDatePicker = ({
         }
         onClick={toggleCalendar}
       />
-      {isCalendarOpen && (
-        <Calendar
-          selectedDate={filterSettings.deliveryDate}
-          setSelectedDate={setDeliveryDate}
-          onChange={closeCalendar}
-        />
-      )}
+      {isCalendarOpen && <CalendarElement />}
     </span>
   );
 

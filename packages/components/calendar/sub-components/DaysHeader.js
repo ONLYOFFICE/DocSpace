@@ -1,5 +1,5 @@
 import React from "react";
-import { HeaderContainer, Title } from "../styled-components";
+import { HeaderContainer, Title, HeaderActionIcon } from "../styled-components";
 import { HeaderButtons } from "./HeaderButtons";
 
 export const DaysHeader = ({
@@ -33,6 +33,7 @@ export const DaysHeader = ({
         {observedDate.format("MMMM").charAt(0).toUpperCase() +
           observedDate.format("MMMM").substring(1)}{" "}
         {observedDate.year()}
+        <HeaderActionIcon />
       </Title>
       <HeaderButtons
         onLeftClick={onLeftClick}

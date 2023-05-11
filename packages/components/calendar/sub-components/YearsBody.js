@@ -10,7 +10,8 @@ export const YearsBody = ({
   setSelectedScene,
   selectedDate,
   minDate,
-  maxDate
+  maxDate,
+  isMobile,
 }) => {
   const years = getCalendarYears(observedDate);
   const yearElements = getYearElements(
@@ -22,5 +23,5 @@ export const YearsBody = ({
     maxDate
   );
 
-  return <YearsContainer>{yearElements}</YearsContainer>;
+  return <YearsContainer isMobile={isMobile}>{yearElements}</YearsContainer>;
 };

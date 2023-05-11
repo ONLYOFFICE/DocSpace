@@ -18,6 +18,7 @@ const Calendar = ({
   style,
   initialDate,
   onChange,
+  isMobile,
 }) => {
   moment.locale(locale);
 
@@ -41,7 +42,7 @@ const Calendar = ({
       );
     }
     initialDate.startOf("day");
-    // setSelectedDate(initialDate);   
+    // setSelectedDate(initialDate);
     setObservedDate(initialDate);
   }, []);
 
@@ -51,6 +52,7 @@ const Calendar = ({
       id={id}
       className={className}
       style={style}
+      isMobile={isMobile}
     >
       {selectedScene === 0 ? (
         <Days
@@ -61,6 +63,7 @@ const Calendar = ({
           handleDateChange={handleDateChange}
           minDate={minDate}
           maxDate={maxDate}
+          isMobile={isMobile}
         />
       ) : selectedScene === 1 ? (
         <Months
@@ -70,6 +73,7 @@ const Calendar = ({
           selectedDate={selectedDate}
           minDate={minDate}
           maxDate={maxDate}
+          isMobile={isMobile}
         />
       ) : (
         <Years
@@ -79,6 +83,7 @@ const Calendar = ({
           selectedDate={selectedDate}
           minDate={minDate}
           maxDate={maxDate}
+          isMobile={isMobile}
         />
       )}
     </ColorTheme>

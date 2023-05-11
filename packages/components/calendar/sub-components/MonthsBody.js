@@ -9,6 +9,7 @@ export const MonthsBody = ({
   selectedDate,
   minDate,
   maxDate,
+  isMobile,
 }) => {
   const months = getCalendarMonths(observedDate);
   const monthsElements = getMonthElements(
@@ -20,5 +21,7 @@ export const MonthsBody = ({
     maxDate
   );
 
-  return <MonthsContainer>{monthsElements}</MonthsContainer>;
+  return (
+    <MonthsContainer isMobile={isMobile}>{monthsElements}</MonthsContainer>
+  );
 };

@@ -6,6 +6,7 @@ export { PrevIcon } from "./PrevIcon";
 export { RoundButton } from "./RoundButton";
 export { Title } from "./Title";
 export { ButtonsContainer } from "./ButtonsContainer";
+export { HeaderActionIcon } from "./HeaderActionIcon";
 
 export { DaysContainer } from "./DaysContainer";
 export { Weekday } from "./Weekday";
