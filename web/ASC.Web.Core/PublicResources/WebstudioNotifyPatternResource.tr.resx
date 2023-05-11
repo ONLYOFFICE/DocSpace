@@ -676,4 +676,190 @@ ONLYOFFICE Ekibi</value>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>DocSpace kullanıcısı güncellendi: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>ONLYOFFICE hesabınızın şifresini değiştirmek mi istiyorsunuz? Onaylamak için aşağıdaki düğmeyi tıklayın.
+
+$GreenButton
+
+Bağlantı 7 gün boyunca geçerlidir.
+
+Şifrenizi değiştirmek istemiyorsanız bu mesajı yoksayın</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Belgeler üzerinde herhangi bir cihazınızdan çalışmak için ücretsiz ONLYOFFICE uygulamalarını edinin.
+
+# Windows, Linux ve Mac'te belgeler üzerinde çevrimdışı çalışmak için "ONLYOFFICE Masaüstü Editörleri":"https://www.onlyoffice.com/download-desktop.aspx" ni indirin.
+
+#Mobil cihazlarda doküman düzenlemek için "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" veya "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
 </root>
