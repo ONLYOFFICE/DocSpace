@@ -78,16 +78,13 @@
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.Надано доступ до документу: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" 
-
-надав Вам доступ до документу "$DocumentTitle":"$DocumentURL"
-
-з правами доступу: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" надав Вам доступ до документу "$DocumentTitle":"$DocumentURL" з правами доступу: "$AccessRights". 
 
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1.Надано доступ до папки:"$DocumentTitle":"$DocumentURL"
+
 $__DateTime "$__AuthorName":"$__AuthorUrl" надав вам доступ до "$DocumentTitle":"$DocumentURL" папки з наступними правами доступу: "$AccessRights". 
 
 $Message</value>

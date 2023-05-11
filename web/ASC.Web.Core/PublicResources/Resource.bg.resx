@@ -745,4 +745,10 @@
   <data name="ConsumerswpClientId" xml:space="preserve">
     <value>Ключ WordPress</value>
   </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Бизнес</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Стартъп</value>
+  </data>
 </root>

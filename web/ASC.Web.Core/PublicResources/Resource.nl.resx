@@ -422,7 +422,7 @@
     <value>Branding &amp; aanpassing</value>
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Het aantal beheerders/power users:</value>
+    <value>Aantal beheerders/power users:</value>
   </data>
   <data name="ConsumersBitly" xml:space="preserve">
     <value>Bitly</value>
@@ -612,5 +612,11 @@
   </data>
   <data name="ConsumersBox" xml:space="preserve">
     <value>Box</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>
