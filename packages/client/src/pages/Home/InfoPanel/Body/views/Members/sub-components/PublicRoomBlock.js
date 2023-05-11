@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 import IconButton from "@docspace/components/icon-button";
 import toastr from "@docspace/components/toast/toastr";
@@ -7,7 +8,7 @@ import PublicRoomBar from "./PublicRoomBar";
 import { LinksBlock } from "./StyledPublicRoom";
 import LinkRow from "./LinkRow";
 
-const PublicRoomBlock = ({ t, onCopyLink }) => {
+const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
   const [barIsVisible, setBarVisible] = useState(true);
 
   const onClose = () => {
@@ -15,23 +16,7 @@ const PublicRoomBlock = ({ t, onCopyLink }) => {
     toastr.success("onCloseBar");
   };
 
-  const link = {
-    id: 1,
-    label: "link1",
-    isDisabled: false,
-    expiryDate: true,
-    locked: true,
-  };
-  const link2 = {
-    id: 2,
-    label: "link2",
-    isDisabled: true,
-    expiryDate: false,
-    locked: false,
-  };
-  const links = [link, link2];
-
-  const defaultLink = { id: 0, label: t("SharingPanel:ExternalLink") };
+  // const defaultLink = { id: 0, label: t("SharingPanel:ExternalLink") };
 
   return (
     <>
@@ -54,13 +39,24 @@ const PublicRoomBlock = ({ t, onCopyLink }) => {
         />
       </LinksBlock>
 
-      {links.length ? (
-        links.map((link) => <LinkRow link={link} key={link.id} />)
+      {externalLinks.length ? (
+        externalLinks.map(
+          (link) =>
+            !link.sharedTo.isTemplate && (
+              <LinkRow link={link} key={link?.sharedTo?.id} />
+            )
+        )
       ) : (
-        <LinkRow link={defaultLink} />
+        <>{/* <LinkRow link={defaultLink} /> */}</>
       )}
     </>
   );
 };
 
-export default PublicRoomBlock;
+export default inject(({ publicRoomStore }) => {
+  const { externalLinks } = publicRoomStore;
+
+  return {
+    externalLinks,
+  };
+})(observer(PublicRoomBlock));

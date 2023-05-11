@@ -43,7 +43,9 @@ const Members = ({
   isGracePeriod,
   isPublicRoom,
   setEditLinkPanelIsVisible,
-  setLinkIsEdit,
+  setLinkParams,
+
+  setExternalLinks,
 }) => {
   const membersHelper = new MembersHelper({ t });
 
@@ -58,6 +60,9 @@ const Members = ({
     let timerId;
     if (members) timerId = setTimeout(() => setShowLoader(true), 1000);
     let data = await getRoomMembers(roomId);
+
+    const links = data.filter((t) => t.sharedTo.shareLink);
+    setExternalLinks(links);
 
     data = data.filter((m) => m.sharedTo.email || m.sharedTo.displayName);
     clearTimeout(timerId);
@@ -172,7 +177,7 @@ const Members = ({
   );
 
   const onCopyLink = () => {
-    setLinkIsEdit(false);
+    setLinkParams({ isEdit: false });
     setEditLinkPanelIsVisible(true);
   };
 
@@ -257,7 +262,14 @@ const Members = ({
 };
 
 export default inject(
-  ({ auth, filesStore, peopleStore, dialogsStore, selectedFolderStore }) => {
+  ({
+    auth,
+    filesStore,
+    peopleStore,
+    dialogsStore,
+    selectedFolderStore,
+    publicRoomStore,
+  }) => {
     const {
       setIsMobileHidden,
       selectionParentRoom,
@@ -271,22 +283,22 @@ export default inject(
       isScrollLocked,
       setIsScrollLocked,
     } = auth.infoPanelStore;
-    const {
-      getRoomMembers,
-      updateRoomMemberRole,
-      resendEmailInvitations,
-    } = filesStore;
+    const { getRoomMembers, updateRoomMemberRole, resendEmailInvitations } =
+      filesStore;
     const { id: selfId } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
     const {
       setInvitePanelOptions,
       setInviteUsersWarningDialogVisible,
       setEditLinkPanelIsVisible,
-      setLinkIsEdit,
+      setLinkParams,
     } = dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
-    const { roomType } = selectedFolderStore;
+    const { setExternalLinks } = publicRoomStore;
+
+    const roomType =
+      selectedFolderStore.roomType ?? selectionParentRoom?.roomType;
 
     const isPublicRoom = roomType === RoomsType.PublicRoom;
 
@@ -314,7 +326,8 @@ export default inject(
       isGracePeriod,
       isPublicRoom,
       setEditLinkPanelIsVisible,
-      setLinkIsEdit,
+      setLinkParams,
+      setExternalLinks,
     };
   }
 )(

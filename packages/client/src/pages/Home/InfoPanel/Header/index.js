@@ -28,7 +28,6 @@ const InfoPanelHeaderContent = (props) => {
     getIsAccounts,
     getIsTrash,
     isRootFolder,
-    isPublicRoom,
   } = props;
 
   const [isTablet, setIsTablet] = useState(false);
@@ -66,7 +65,7 @@ const InfoPanelHeaderContent = (props) => {
   const submenuData = [
     {
       id: "info_members",
-      name: isPublicRoom ? t("Common:LinksAndMembers") : t("Common:Members"),
+      name: t("Common:Members"),
       onClick: setMembers,
       content: null,
     },
@@ -146,10 +145,6 @@ export default inject(({ auth, selectedFolderStore }) => {
   } = auth.infoPanelStore;
   const { isRootFolder, roomType } = selectedFolderStore;
 
-  const isPublicRoom =
-    selection?.roomType === RoomsType.PublicRoom ||
-    roomType === RoomsType.PublicRoom;
-
   return {
     selection,
     setIsVisible,
@@ -162,6 +157,5 @@ export default inject(({ auth, selectedFolderStore }) => {
     getIsAccounts,
     getIsTrash,
     isRootFolder,
-    isPublicRoom,
   };
 })(withTranslation(["Common", "InfoPanel"])(InfoPanelHeaderContent));

@@ -4,9 +4,8 @@ import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
 
 const LinkBlock = (props) => {
-  const { t } = props;
+  const { t, isLoading, linkNameValue, setLinkNameValue } = props;
 
-  const [linkNameValue, setLinkNameValue] = useState("");
   const [linkValue, setLinkValue] = useState("");
 
   const onChangeLinkName = (e) => {
@@ -20,7 +19,7 @@ const LinkBlock = (props) => {
   };
 
   const onShortenClick = () => {
-    alert("onShortenClick");
+    alert("api in progress");
   };
 
   return (
@@ -37,6 +36,7 @@ const LinkBlock = (props) => {
         value={linkNameValue}
         onChange={onChangeLinkName}
         placeholder={t("ExternalLink")}
+        isDisabled={isLoading}
       />
 
       <TextInput
@@ -55,6 +55,7 @@ const LinkBlock = (props) => {
         fontWeight={600}
         isHovered
         type="action"
+        isDisabled={isLoading}
         onClick={onShortenClick}
       >
         {t("Shorten")}

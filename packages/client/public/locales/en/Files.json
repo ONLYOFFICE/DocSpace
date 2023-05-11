@@ -120,14 +120,16 @@
   "AddNewLink": "Add new link",
   "EmbeddingSettings": "Embedding settings",
   "DisableLink": "Disable link",
+  "EnableLink": "Enable link",
   "PasswordAccess": "Password access",
   "LimitByTimePeriod": "Limit by time period",
   "DenyDownload": "Deny download",
   "Clean": "Clean",
   "CopyPassword": "Copy password",
   "LinkEditedSuccessfully": "Link edited successfully",
+  "LinkDisabledSuccessfully": "Link disabled successfully",
+  "LinkEnabledSuccessfully": "Link enable successfully",
   "MarkAsVersion": "Mark as version",
   "MarkAsRevision": "Mark as revision",
-  "TableSettingsTitle": "Manage displayed columns",
-  "DocumentEdited": "Cannot perform the action because the document is being edited."
+  "TableSettingsTitle": "Manage displayed columns"
 }

@@ -323,3 +323,40 @@ export const acceptInvitationByLink = async () => {
 
   return await request(options);
 };
+
+export function editExternalLink(
+  roomId,
+  linkId,
+  title,
+  access,
+  expirationDate,
+  linkType,
+  password,
+  disabled,
+  denyDownload
+) {
+  return request({
+    method: "put",
+
+    url: `/files/rooms/${roomId}/links`,
+    data: {
+      linkId,
+      title,
+      access,
+      expirationDate,
+      linkType,
+      password,
+      disabled,
+      denyDownload,
+    },
+  });
+}
+
+export function getExternalLinks(roomId, type) {
+  const linkType = `?type=${type}`;
+
+  return request({
+    method: "get",
+    url: `files/rooms/${roomId}/links${linkType}`,
+  });
+}

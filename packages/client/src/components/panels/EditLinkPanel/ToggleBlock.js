@@ -3,6 +3,7 @@ import Text from "@docspace/components/text";
 import ToggleButton from "@docspace/components/toggle-button";
 
 const ToggleBlock = ({
+  isLoading,
   headerText,
   bodyText,
   isChecked,
@@ -16,6 +17,7 @@ const ToggleBlock = ({
           {headerText}
         </Text>
         <ToggleButton
+          isDisabled={isLoading}
           isChecked={isChecked}
           onChange={onChange}
           className="edit-link-toggle"
