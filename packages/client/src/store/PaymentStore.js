@@ -156,6 +156,14 @@ class PaymentStore {
         }
       });
   };
+
+  enterpriseInit = async () => {
+    if (this.isInitPaymentPage) return;
+
+    await this.getSettingsPayment();
+
+    this.isInitPaymentPage = true;
+  };
   getSettingsPayment = async () => {
     try {
       const newSettings = await getPaymentSettings();
