@@ -395,6 +395,7 @@ class PureHome extends React.Component {
       refreshFiles,
       setViewAs,
       hashSettings,
+      logout,
     } = this.props;
 
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
@@ -488,6 +489,11 @@ class PureHome extends React.Component {
           res = hashSettings;
           break;
         }
+        case "logout":
+          {
+            res = logout();
+          }
+          break;
         default:
           res = "Wrong method";
       }
@@ -664,8 +670,6 @@ export default inject(
       setIsPreview,
     } = filesStore;
 
-    const { hashSettings } = auth.settingsStore;
-
     const { gallerySelected } = oformsStore;
 
     const {
@@ -716,6 +720,7 @@ export default inject(
       frameConfig,
       isFrame,
       withPaging,
+      hashSettings,
     } = auth.settingsStore;
 
     if (!firstLoad) {
@@ -806,6 +811,7 @@ export default inject(
       isLoadedEmptyPage,
 
       hashSettings,
+      logout: auth.logout,
     };
   }
 )(withRouter(observer(Home)));

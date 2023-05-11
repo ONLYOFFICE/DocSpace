@@ -243,6 +243,10 @@
         this.#isConnected = true;
       }
 
+      window.DocSpace.SDK.frames = window.DocSpace.SDK.frames || [];
+
+      window.DocSpace.SDK.frames[this.config.frameId] = this;
+
       return this.#iframe;
     }
 
@@ -273,6 +277,8 @@
       if (this.#iframe) {
         window.removeEventListener("message", this.#onMessage, false);
         this.#isConnected = false;
+
+        delete window.DocSpace.SDK.frames[this.config.frameId];
 
         this.#iframe.parentNode &&
           this.#iframe.parentNode.replaceChild(target, this.#iframe);
@@ -380,6 +386,4 @@
   window.DocSpace = window.DocSpace || {};
 
   window.DocSpace.SDK = new DocSpace(config);
-
-  window.DocSpace.SDK.initFrame();
 })();
