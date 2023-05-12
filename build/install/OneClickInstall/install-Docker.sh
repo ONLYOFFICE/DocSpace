@@ -37,6 +37,7 @@ BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
 DOCKER_TAG=""
 GIT_BRANCH="develop"
+INSTALLATION_TYPE="ENTERPRISE"
 
 NETWORK=${PACKAGE_SYSNAME}
 
@@ -70,7 +71,6 @@ DATABASE_MIGRATION="true"
 ELK_VERSION=""
 ELK_HOST=""
 
-DOCUMENT_SERVER_IMAGE_NAME="onlyoffice/4testing-documentserver-ee:latest"
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_JWT_HEADER=""
 DOCUMENT_SERVER_HOST=""
@@ -299,6 +299,13 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-it | --installation_type )
+			if [ "$2" != "" ]; then
+				INSTALLATION_TYPE=$(echo "$2" | awk '{print toupper($0)}');
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage: bash $HELP_TARGET [PARAMETER] [[PARAMETER], ...]"
 			echo
@@ -324,6 +331,7 @@ while [ "$1" != "" ]; do
 			echo "      -dsh, --docspacehost              $PRODUCT host"
 			echo "      -esh, --elasticsearchhost         elasticsearch host"
 			echo "      -env, --environment               $PRODUCT environment"
+			echo "      -it, --installation_type          installation type (COMMUNITY|ENTERPRISE)"
 			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
 			echo "      -ip, --internalport               internal $PRODUCT port (default value 5050)"
 			echo "      -ep, --externalport               external $PRODUCT port (default value 80)"
@@ -993,8 +1001,18 @@ save_parameters_from_configs() {
 	fi
 }
 
+set_installation_type_data () {
+	if [ "$INSTALLATION_TYPE" == "COMMUNITY" ]; then
+		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"onlyoffice/documentserver:latest"}
+	elif [ "$INSTALLATION_TYPE" == "ENTERPRISE" ]; then
+		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"onlyoffice/documentserver-ee:latest"}
+	fi
+}
+
 start_installation () {
 	root_checking
+
+	set_installation_type_data
 
 	get_os_info
 	check_os_info
