@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using System.Text;
 using System.Xml;
 
 using NUnit.Framework;
@@ -46,7 +47,7 @@ public class Tests
         var resources = GetResources(directory);
         var netralresources = resources.Where(f => IsNetral(f.Name));
         _resources = new Dictionary<FileInfo, IEnumerable<FileInfo>>();
-        foreach(var resource in netralresources)
+        foreach (var resource in netralresources)
         {
             var nameWithoutExt = resource.FullName.Substring(0, resource.FullName.Length - 5);
             _resources.Add(resource, resources.Where(r => r.FullName.StartsWith(nameWithoutExt)));
@@ -56,7 +57,7 @@ public class Tests
     private bool IsNetral(string fileName)
     {
         var split = fileName.Split('.');
-        if (split.Length == 2) 
+        if (split.Length == 2)
         {
             return true;
         }
@@ -71,7 +72,7 @@ public class Tests
     {
         foreach (var file in directory.EnumerateFiles())
         {
-            if (IsResourceFile(file.Name)) 
+            if (IsResourceFile(file.Name))
             {
                 yield return file;
             }
@@ -112,13 +113,61 @@ public class Tests
     }
 
     [Test, Order(1)]
-    public void ResourceFilesExist()
+    public void LanguageTranslatedPercentTest()
+    {
+        var all = 0;
+        var setByCulture = new Dictionary<string, int>();
+        var allExist = true;
+        var message = new StringBuilder("Next languages translated less then 100%:\n\n");
+
+        foreach (var pair in _resources)
+        {
+            var set = new HashSet<string>();
+            var dictionary = new Dictionary<FileInfo, HashSet<string>>();
+            foreach (var resource in pair.Value)
+            {
+                var culture = GetCulture(resource.Name);
+                var valid = CultureHelper.IsValidCultureName(culture);
+                if (valid && !setByCulture.ContainsKey(culture))
+                {
+                    setByCulture.Add(culture, 0);
+                }
+
+                foreach (var entry in CreateTranslateDictionary(resource.FullName))
+                {
+                    if (!string.IsNullOrEmpty(entry.Value.ToString()))
+                    {
+                        set.Add(entry.Key.ToString());
+                        if (valid)
+                        {
+                            setByCulture[culture] += 1;
+                        }
+                    }
+                }
+            }
+
+            all += set.Count;
+        }
+
+        var counter = 0;
+        foreach (var pair in setByCulture.Where(r => r.Value != all).OrderByDescending(r => Math.Round((r.Value * 100.0) / all, 1)))
+        {
+            allExist = false;
+            message.AppendLine($"{++counter}. Language '{pair.Key}' translated by '{Math.Round((pair.Value * 100.0) / all, 1)}%'");
+        }
+
+        Assert.True(allExist, message.ToString());
+    }
+
+    [Test, Order(2)]
+    public void NotAllLanguageTranslatedTest()
     {
         var all = new HashSet<string>();
         var groupByFile = new Dictionary<FileInfo, HashSet<string>>();
         var allExist = true;
-        var message = "resource files is not exist: \n";
-        foreach(var pair in _resources)
+        var message = new StringBuilder("Next languages are not equal 'en' by translated files count: \n\n");
+
+        foreach (var pair in _resources)
         {
             var resources = pair.Value;
             var set = new HashSet<string>();
@@ -149,27 +198,36 @@ public class Tests
             groupByFile.Add(pair.Key, set);
         }
 
-        foreach(var pair in groupByFile)
+        var counter = 0;
+
+        foreach (var culture in all)
         {
-            var notExist = all.Where(l => !pair.Value.Contains(l));
-            if(notExist.Count() > 0)
+            var notExist = groupByFile.Where(l => !l.Value.Contains(culture)).ToList();
+
+            if (notExist.Any())
             {
                 allExist = false;
-                message += $"{pair.Key.Name}: \n";
-                message += string.Join(',', notExist) + "\n\n";
+                message.AppendLine($"{++counter}. Language '{culture}'. Not found files: \n");
+
+                foreach (var f in notExist)
+                {
+                    message.AppendLine($"{f.Key.FullName}");
+                }
+
+                message.AppendLine();
             }
         }
 
-        Assert.True(allExist, message);
+        Assert.True(allExist, message.ToString());
     }
 
-    [Test, Order(2)]
-    public void ResoureFilesFilled()
+    [Test, Order(3)]
+    public void NotTranslatedKeysTest()
     {
         var all = new Dictionary<FileInfo, HashSet<string>>();
         var groupByFile = new Dictionary<FileInfo, Dictionary<FileInfo, HashSet<string>>>();
         var allExist = true;
-        var message = "Next resources filled less then 100%: \n";
+        var message = new StringBuilder("Next languages are not equal 'en' by translated keys count:\n\n");
 
         foreach (var pair in _resources)
         {
@@ -192,51 +250,62 @@ public class Tests
             all.Add(pair.Key, set);
         }
 
-        foreach(var pair in groupByFile)
+        var counter = 0;
+
+        foreach (var pair in groupByFile)
         {
-            foreach(var keyValue in pair.Value)
+            foreach (var keyValue in pair.Value)
             {
-                var notExist = all[pair.Key].Where(l => !keyValue.Value.Contains(l));
-                if (notExist.Count() > 0)
+                var notExist = all[pair.Key].Where(l => !keyValue.Value.Contains(l)).ToList();
+                if (notExist.Any())
                 {
                     allExist = false;
-                    var x = notExist.Count();
+                    var x = notExist.Count;
                     var y = all[pair.Key].Count();
-                    var percent = (int)((double)(y - x) / y * 100);
 
-                    message += $"{keyValue.Key.Name}: {percent}%\n";
+                    var culture = GetCulture(keyValue.Key.Name);
+
+                    message.AppendLine($"{++counter}. Language ('{culture}'={x}/'en'={y}). Path '{pair.Key.FullName}' Not found keys:");
+                    message.AppendLine();
+
+                    foreach (var key in notExist)
+                    {
+                        message.AppendLine($"{key}");
+                    }
+
+                    message.AppendLine();
                 }
             }
         }
 
-        Assert.True(allExist, message);
+        Assert.True(allExist, message.ToString());
     }
 
-    [Test, Order(3)]
+    [Test, Order(4)]
     public void CompliesToRulePunctuationLead()
     {
         CompliesToRule("The punctuation at the start of the messages doesn't match up:\n", CheckRules.CompliesToRulePunctuationLead);
     }
 
-    [Test, Order(4)]
+    [Test, Order(5)]
     public void CompliesToRulePunctuationTail()
     {
         CompliesToRule("The punctuation at the end of the messages doesn't match up:\n", CheckRules.CompliesToRulePunctuationTail);
     }
 
-    [Test, Order(5)]
+    [Test, Order(6)]
     public void CompliesToRuleWhiteSpaceLead()
     {
         CompliesToRule("The whitespaces at the start of the sequence don't match up:\n", CheckRules.CompliesToRuleWhiteSpaceLead);
     }
 
-    [Test, Order(6)]
+    [Test, Order(7)]
     public void CompliesToRuleWhiteSpaceTail()
     {
         CompliesToRule("The whitespaces at the end of the sequence don't match up:\n", CheckRules.CompliesToRuleWhiteSpaceTail);
     }
 
-    [Test, Order(7)]
+    [Test, Order(8)]
     public void CompliesToRuleWhiteStringFormat()
     {
         CompliesToRule("This items contains string format parameter mismatches:\n", CheckRules.CompliesToRuleStringFormat);
@@ -244,32 +313,45 @@ public class Tests
 
     private void CompliesToRule(string message, Func<string, string, bool> compliesToRile)
     {
+        var result = new StringBuilder(message);
+        var counter = 0;
+
         var allRuleCheck = true;
         foreach (var pair in _resources)
         {
             var netral = CreateTranslateDictionary(pair.Key.FullName);
             foreach (var resource in pair.Value)
             {
-                var list = new List<string>();
+                var list = new Dictionary<string, (string, string)>();
                 foreach (var entry in CreateTranslateDictionary(resource.FullName))
                 {
                     if (netral.TryGetValue(entry.Key, out var value))
                     {
                         if (compliesToRile(value, entry.Value))
                         {
-                            list.Add(entry.Key);
+                            list.Add(entry.Key, (value, entry.Value));
                             allRuleCheck = false;
                         }
                     }
                 }
+
                 if (list.Count > 0)
                 {
-                    message += $"\n{resource.Name}: \n";
-                    message += string.Join(',', list) + "\n";
+                    var culture = GetCulture(resource.Name);
+
+                    result.AppendLine();
+
+                    foreach (var item in list)
+                    {
+                        result.AppendLine($"{++counter}. {resource.FullName}\n");
+                        result.AppendLine($"key:{item.Key}\n");
+                        result.AppendLine($"'en':{item.Value.Item1}\n");
+                        result.AppendLine($"'{culture}':{item.Value.Item2}\n");
+                    }
                 }
             }
         }
-        Assert.True(allRuleCheck, message);
+        Assert.True(allRuleCheck, result.ToString());
     }
 
     private Dictionary<string, string> CreateTranslateDictionary(string filePath)
@@ -300,5 +382,11 @@ public class Tests
         }
 
         return dictionary;
+    }
+
+    private string GetCulture(string fullName)
+    {
+        var split = fullName.Split('.');
+        return split[split.Length - 2];
     }
 }
