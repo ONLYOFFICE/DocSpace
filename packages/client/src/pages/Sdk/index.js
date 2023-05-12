@@ -27,13 +27,11 @@ const Sdk = ({
     };
   }, [handleMessage]);
 
-  useEffect(() => {
-    if (window.parent && !frameConfig) frameCallCommand("setConfig");
-  }, [frameConfig]);
+  if (window.parent && !frameConfig) frameCallCommand("setConfig");
 
   const { mode } = match.params;
 
-  const handleMessage = (e) => {
+  const handleMessage = async (e) => {
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
 
     if (eventData.data) {
@@ -51,9 +49,10 @@ const Sdk = ({
             res = createPasswordHash(password, hashSettings);
           }
           break;
-        case "getUserInfo":
+        case "getUserInfo": {
           res = user;
           break;
+        }
         case "getHashSettings": {
           res = hashSettings;
           break;
@@ -61,11 +60,11 @@ const Sdk = ({
         case "login":
           {
             const { email, passwordHash } = data;
-            res = login(email, passwordHash);
+            res = await login(email, passwordHash);
           }
           break;
         case "logout":
-          res = logout();
+          res = await logout();
           break;
         default:
           res = "Wrong method";
@@ -107,8 +106,9 @@ const Sdk = ({
 };
 
 export default inject(({ auth }) => {
-  const { login, logout, settingsStore } = auth;
+  const { login, logout, settingsStore, userStore } = auth;
   const { theme, setFrameConfig, frameConfig, hashSettings } = settingsStore;
+  const { user } = userStore;
   return {
     theme,
     setFrameConfig,
@@ -116,6 +116,6 @@ export default inject(({ auth }) => {
     login,
     logout,
     hashSettings,
-    user: auth.userStore.user,
+    user,
   };
 })(observer(Sdk));
