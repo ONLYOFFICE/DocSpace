@@ -265,7 +265,7 @@ public class Tests
 
                     var culture = GetCulture(keyValue.Key.Name);
 
-                    message.AppendLine($"{++counter}. Language ('{culture}'={x}/'en'={y}). Path '{pair.Key.FullName}' Not found keys:");
+                    message.AppendLine($"{++counter}. Language ('{culture}'={y - x}/'all keys'={y}). Path '{pair.Key.FullName}' Not found keys:");
                     message.AppendLine();
 
                     foreach (var key in notExist)
@@ -387,6 +387,12 @@ public class Tests
     private string GetCulture(string fullName)
     {
         var split = fullName.Split('.');
-        return split[split.Length - 2];
+        if (split.Count() == 3) {
+            return split[split.Length - 2];
+        }
+        else
+        {
+            return "neutral";
+        }
     }
 }
