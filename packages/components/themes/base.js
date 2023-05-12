@@ -3045,6 +3045,7 @@ const Base = {
         },
 
         warningColor: "#F21C0E",
+        color: "#F97A0B",
       },
     },
 

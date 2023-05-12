@@ -43,11 +43,7 @@ const StyledEnterpriseComponent = styled.div`
   margin-bottom: 35px;
   margin-top: 12px;
 
-  .payments_subscription {
-    margin-top: 12px;
-  }
-  .payments_renew-subscription,
-  .payments_subscription {
+  .payments_renew-subscription {
     max-width: 660px;
   }
   .payments_renew-subscription {
@@ -56,15 +52,39 @@ const StyledEnterpriseComponent = styled.div`
   .payments_support {
     max-width: 503px;
   }
+`;
+
+const StyledTitleComponent = styled.div`
+  .payments_subscription {
+    max-width: 660px;
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: baseline;
+    .title {
+      line-height: 16px;
+      ${(props) => props.limitedWidth && "max-width: 376px"};
+      span:first-child {
+        ${(props) => props.isSubscriptionExpired && "margin-top: 5px"};
+      }
+    }
+  }
 
   .payments_subscription-expired {
     max-width: fit-content;
     border: 1px solid
-      ${(props) => props.theme.client.settings.payment.warningColor};
+      ${(props) =>
+        props.theme.client.settings.payment[
+          props.isSubscriptionExpired ? "warningColor" : "color"
+        ]};
     border-radius: 3px;
-    color: ${(props) => props.theme.client.settings.payment.warningColor};
-    padding: 5px 8px;
-    margin-top: 8px;
+    color: ${(props) =>
+      props.theme.client.settings.payment[
+        props.isSubscriptionExpired ? "warningColor" : "color"
+      ]};
+    padding: 2px 8px;
+    height: fit-content;
   }
 `;
 
@@ -74,7 +94,7 @@ const StyledBenefitsBody = styled.div`
   border: ${(props) => props.theme.client.settings.payment.border};
   max-width: 660px;
 
-  padding: 24px;
+  padding: 23px;
 
   background: ${(props) =>
     props.theme.client.settings.payment.backgroundBenefitsColor};
@@ -107,4 +127,5 @@ export {
   StyledEnterpriseComponent,
   StyledButtonComponent,
   StyledBenefitsBody,
+  StyledTitleComponent,
 };

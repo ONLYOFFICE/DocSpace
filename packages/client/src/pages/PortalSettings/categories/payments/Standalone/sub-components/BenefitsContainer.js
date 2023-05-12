@@ -66,7 +66,7 @@ const BenefitsContainer = ({
         <div className="payments-benefits" key={index}>
           <ReactSVG src={item.imag} className="benefits-svg" />
           <div className="benefits-description">
-            <Text isBold>{item.title}</Text>
+            <Text fontWeight={600}>{item.title}</Text>
             <Text>{item.description}</Text>
           </div>
         </div>
@@ -76,7 +76,7 @@ const BenefitsContainer = ({
 
   return (
     <StyledBenefitsBody className="benefits-container" theme={theme}>
-      <Text fontSize={"16px"} isBold className="benefits-title">
+      <Text fontSize={"16px"} fontWeight={600} className="benefits-title">
         {title}
       </Text>
       {features()}
@@ -89,8 +89,8 @@ export default inject(({ auth }) => {
   const { theme } = settingsStore;
   const { portalPaymentQuotasFeatures } = paymentQuotasStore;
 
-  const isTrial = false,
-    isEnterprise = true,
+  const isTrial = true,
+    isEnterprise = false,
     isCommunity = false;
   return {
     theme,

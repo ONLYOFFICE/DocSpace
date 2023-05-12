@@ -3042,10 +3042,11 @@ const Dark = {
           iconsColor: "#858585",
         },
         contactContainer: {
-          textColor: "#A3A9AE",
-          linkColor: "#657077",
+          textColor: "#ADADAD",
+          linkColor: "#858585",
         },
         warningColor: "#E06451",
+        color: "#E17415",
       },
     },
 
