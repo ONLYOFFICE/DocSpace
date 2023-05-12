@@ -165,7 +165,7 @@ public class Tests
         var all = new HashSet<string>();
         var groupByFile = new Dictionary<FileInfo, HashSet<string>>();
         var allExist = true;
-        var message = new StringBuilder("Next languages are not equal 'en' by translated files count: \n\n");
+        var message = new StringBuilder("Next languages are missing from files: \n\n");
 
         foreach (var pair in _resources)
         {
@@ -176,8 +176,8 @@ public class Tests
                 var split = resource.Name.Split('.');
                 if (split.Length == 2)
                 {
-                    all.Add("neutral");
-                    set.Add("neutral");
+                    all.Add("en");
+                    set.Add("en");
                 }
                 else
                 {
@@ -190,8 +190,8 @@ public class Tests
                     }
                     else
                     {
-                        all.Add("neutral");
-                        set.Add("neutral");
+                        all.Add("en");
+                        set.Add("en");
                     }
                 }
             }
@@ -227,7 +227,7 @@ public class Tests
         var all = new Dictionary<FileInfo, HashSet<string>>();
         var groupByFile = new Dictionary<FileInfo, Dictionary<FileInfo, HashSet<string>>>();
         var allExist = true;
-        var message = new StringBuilder("Next languages are not equal 'en' by translated keys count:\n\n");
+        var message = new StringBuilder("Next languages do not have all keys:\n\n");
 
         foreach (var pair in _resources)
         {
@@ -392,7 +392,7 @@ public class Tests
         }
         else
         {
-            return "neutral";
+            return "en";
         }
     }
 }
