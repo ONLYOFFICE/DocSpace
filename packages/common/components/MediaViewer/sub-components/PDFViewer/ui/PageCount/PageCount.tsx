@@ -11,7 +11,7 @@ import { PageCountWrapper } from "./PageCount.styled";
 import PanelReactSvg from "PUBLIC_DIR/images/panel.react.svg";
 
 function PageCount(
-  { isPanelOpen, visible }: PageCountProps,
+  { isPanelOpen, visible, className }: PageCountProps,
   ref: ForwardedRef<PageCountRef>
 ) {
   const [pagesCount, setPagesCount] = useState<number>(0);
@@ -29,7 +29,7 @@ function PageCount(
   if (!visible) return <></>;
 
   return (
-    <PageCountWrapper isPanelOpen={isPanelOpen}>
+    <PageCountWrapper isPanelOpen={isPanelOpen} className={className}>
       {isMobile && <PanelReactSvg />}
       <div>
         <span>{pageNumber}</span> / <span>{pagesCount}</span>

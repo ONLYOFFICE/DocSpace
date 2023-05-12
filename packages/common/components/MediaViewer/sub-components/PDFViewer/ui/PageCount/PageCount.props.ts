@@ -1,6 +1,7 @@
 interface PageCountProps {
   visible: boolean;
   isPanelOpen: boolean;
+  className?: string;
 }
 
 export default PageCountProps;

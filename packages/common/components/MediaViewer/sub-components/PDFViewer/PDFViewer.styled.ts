@@ -1,12 +1,20 @@
-import styled, { css } from "styled-components";
-import { isDesktop } from "react-device-detect";
+import styled from "styled-components";
 
 import DesktopDetails from "../DesktopDetails";
 import ImageViewerToolbar from "../ImageViewerToolbar";
 
 type Panel = { isPanelOpen?: boolean };
 
-export const PdfViewrWrapper = styled.div`
+export const PDFViewerToolbarWrapper = styled.section`
+  .pdf-viewer_page-count:hover + .pdf-viewer_toolbar {
+    background: rgba(0, 0, 0, 0.8);
+  }
+  &:hover .pdf-viewer_page-count {
+    background: rgba(0, 0, 0, 0.8);
+  }
+`;
+
+export const PDFViewerWrapper = styled.div`
   position: fixed;
   z-index: 305;
   inset: 0;
@@ -22,10 +30,7 @@ export const PdfViewrWrapper = styled.div`
     position: relative;
   }
   #id_viewer {
-    ${isDesktop &&
-    css`
-      background: none !important;
-    `}
+    background: none !important;
   }
   .block_elem {
     position: absolute;

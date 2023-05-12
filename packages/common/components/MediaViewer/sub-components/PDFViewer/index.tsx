@@ -10,9 +10,10 @@ import Sidebar from "./ui/Sidebar";
 
 import {
   ErrorMessage,
-  PdfViewrWrapper,
+  PDFViewerWrapper,
   DesktopTopBar,
   PDFToolbar,
+  PDFViewerToolbarWrapper,
 } from "./PDFViewer.styled";
 
 import { ToolbarActionType } from "../../helpers";
@@ -24,6 +25,8 @@ import PageCount, { PageCountRef } from "./ui/PageCount";
 
 // import { isDesktop } from "react-device-detect";?
 const pdfViewerId = "pdf-viewer";
+const MaxScale = 5;
+const MinScale = 0.5;
 
 function PDFViewer({
   src,
@@ -143,11 +146,10 @@ function PDFViewer({
     pdfViewer.current = new window.AscViewer.CViewer("mainPanel", {
       theme: { type: "dark" },
     });
-    //@ts-ignore
+
     pdfThumbnail.current =
       //@ts-ignore
       pdfViewer.current.createThumbnails("viewer-thumbnail");
-    //@ts-ignore
 
     pdfViewer.current.registerEvent(
       "onStructure",
@@ -185,6 +187,7 @@ function PDFViewer({
     setIsLoadingScript(false);
     setIsFileOpened(false);
     setIsLoadingFile(false);
+    setIsPDFSidebarOpen(false);
   };
 
   function toolbarEvent(item: ToolbarItemType) {
@@ -193,25 +196,22 @@ function PDFViewer({
         setIsPDFSidebarOpen((prev) => !prev);
         break;
       case ToolbarActionType.ZoomIn:
-        {
-          const currentZoom = pdfViewer.current.getZoom();
-
-          console.log({ currentZoom });
-
-          pdfViewer.current.setZoom(currentZoom + 10);
-        }
-        break;
       case ToolbarActionType.ZoomOut:
-        {
-          const currentZoom = pdfViewer.current.getZoom();
+        if (!pdfViewer.current) return;
 
-          console.log({ currentZoom });
-          pdfViewer.current.setZoom(currentZoom - 10);
-        }
+        const currentZoom = pdfViewer.current.getZoom();
+
+        const changeBy =
+          ToolbarActionType.ZoomOut === item.actionType ? -10 : 10;
+
+        const newZoom = Math.round(currentZoom + changeBy);
+
+        if (newZoom < MinScale * 100 || newZoom > MaxScale * 100) return;
+
+        pdfViewer.current.setZoom(newZoom);
         break;
-
       case ToolbarActionType.Reset:
-        pdfViewer.current.setZoomMode(2);
+        pdfViewer.current.setZoom(100);
         break;
       default:
         break;
@@ -224,9 +224,9 @@ function PDFViewer({
 
   if (isError) {
     return (
-      <PdfViewrWrapper>
+      <PDFViewerWrapper>
         <ErrorMessage>Something went wrong</ErrorMessage>
-      </PdfViewrWrapper>
+      </PDFViewerWrapper>
     );
   }
 
@@ -242,7 +242,7 @@ function PDFViewer({
         mobileDetails
       )}
 
-      <PdfViewrWrapper>
+      <PDFViewerWrapper>
         <ViewerLoader
           isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
         />
@@ -256,25 +256,28 @@ function PDFViewer({
           ref={containerRef}
           isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
         />
-      </PdfViewrWrapper>
-
-      <PageCount
-        ref={pageCountRef}
-        isPanelOpen={isPDFSidebarOpen}
-        visible={!isLoadingFile && !isLoadingScript}
-      />
-
-      {isDesktop && !(isLoadingFile || isLoadingScript) && (
-        <PDFToolbar
-          ref={toolbarRef}
-          toolbar={toolbar}
-          percentValue={1}
+      </PDFViewerWrapper>
+      <PDFViewerToolbarWrapper>
+        <PageCount
+          ref={pageCountRef}
           isPanelOpen={isPDFSidebarOpen}
-          toolbarEvent={toolbarEvent}
-          generateContextMenu={generateContextMenu}
-          setIsOpenContextMenu={setIsOpenContextMenu}
+          className="pdf-viewer_page-count"
+          visible={!isLoadingFile && !isLoadingScript}
         />
-      )}
+
+        {isDesktop && !(isLoadingFile || isLoadingScript) && (
+          <PDFToolbar
+            ref={toolbarRef}
+            percentValue={1}
+            toolbar={toolbar}
+            className="pdf-viewer_toolbar"
+            toolbarEvent={toolbarEvent}
+            isPanelOpen={isPDFSidebarOpen}
+            generateContextMenu={generateContextMenu}
+            setIsOpenContextMenu={setIsOpenContextMenu}
+          />
+        )}
+      </PDFViewerToolbarWrapper>
     </>
   );
 }
