@@ -45,16 +45,16 @@ public class Tests
 
         var directory = new DirectoryInfo(basePath);
         var resources = GetResources(directory);
-        var netralresources = resources.Where(f => IsNetral(f.Name));
+        var neutralresources = resources.Where(f => IsNeutral(f.Name));
         _resources = new Dictionary<FileInfo, IEnumerable<FileInfo>>();
-        foreach (var resource in netralresources)
+        foreach (var resource in neutralresources)
         {
             var nameWithoutExt = resource.FullName.Substring(0, resource.FullName.Length - 5);
             _resources.Add(resource, resources.Where(r => r.FullName.StartsWith(nameWithoutExt)));
         }
     }
 
-    private bool IsNetral(string fileName)
+    private bool IsNeutral(string fileName)
     {
         var split = fileName.Split('.');
         if (split.Length == 2)
@@ -176,8 +176,8 @@ public class Tests
                 var split = resource.Name.Split('.');
                 if (split.Length == 2)
                 {
-                    all.Add("netral");
-                    set.Add("netral");
+                    all.Add("neutral");
+                    set.Add("neutral");
                 }
                 else
                 {
@@ -190,8 +190,8 @@ public class Tests
                     }
                     else
                     {
-                        all.Add("netral");
-                        set.Add("netral");
+                        all.Add("neutral");
+                        set.Add("neutral");
                     }
                 }
             }
@@ -319,13 +319,13 @@ public class Tests
         var allRuleCheck = true;
         foreach (var pair in _resources)
         {
-            var netral = CreateTranslateDictionary(pair.Key.FullName);
+            var neutral = CreateTranslateDictionary(pair.Key.FullName);
             foreach (var resource in pair.Value)
             {
                 var list = new Dictionary<string, (string, string)>();
                 foreach (var entry in CreateTranslateDictionary(resource.FullName))
                 {
-                    if (netral.TryGetValue(entry.Key, out var value))
+                    if (neutral.TryGetValue(entry.Key, out var value))
                     {
                         if (compliesToRile(value, entry.Value))
                         {
