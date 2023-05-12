@@ -115,36 +115,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Odłączyć</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusje [{1}]. Dołączone pliki: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusje [{1}]. Utworzono komentarz</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusje [{1}]. Komentarz usunięty</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusje [{1}]. Zaktualizowano komentarz</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusja utworzona: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusja usunięta: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusje [{1}]. Plik odłączony: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Dyskusje</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusja została zaktualizowana: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusja po zaktualizowaniu: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Zaktualizowano ustawienia DNS</value>
   </data>
@@ -397,21 +367,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Ustawienia usługi pocztowej zostały uaktualnione</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Etap Stworzono: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Usunięto etap: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Etapy</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Etap zaktualizowano: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projekty [{0}]. Etapy [{1}]. Status Aktualizacja: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Moduł</value>
   </data>
@@ -481,71 +436,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Produkty</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Utworzony projekt: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Szablony [{0}]. Utworzony projekt: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Usunięty projekt: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projekty [{0}]. Użytkownik usunięty: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Następujący projekt: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekty importowane z bazą danych: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projekty</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projekty</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Ustawienia</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Szablon projektu Utworzono: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Usunięto szablon projektu: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Szablon projektu Zaktualizowano: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Przerwać śledzenie projektu: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Zaktualizowano projekt: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projekty [{0}]. Członkowie [{1}]. Aktualizowano prawa dostępu</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projekty [{0}]. Status Aktualizacja: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projekty [{0}]. Zespół zaktualizowany: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Ponowne przypisanie</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Raporty</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Szablon raportu projektu utworzony: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Szablon raportu projektu usunięty: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Szablon raportu projektu został zaktualizowany: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Wysłać</value>
@@ -574,80 +466,8 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Uruchom migrację regionów portalu</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Anulowanie Utworzono: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Odesłanie usunięto: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Anulowanie zaktualizowano: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Zadania [{2}]. Status Aktualizacja: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Konto systemowe</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Dołączone pliki: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Utworzono komentarz</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Komentarz usunięty</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Zaktualizowano komentarz</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Utworzono zadanie: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projekty [{0}]. Dyskusje [{1}]. Utworzono zadanie: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Zadanie usunięte: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekty [{0}]. Zadanie {1}. Plik odłączony: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projekty [{0}]. Etapy [{1}]. Zadanie przeniesione: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania połączone: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Zadania</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania Odłączone: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Czas utworzenia zadania: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Usunięte czasy zadania: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Task Times [{0}]. Status Aktualizacja: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Czas realizacji zadania: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Odłączone etapy.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Zaktualizowano zadanie: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projekty [{0}]. Zaktualizowano zadanie: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projekty [{0}]. Zadania [{1}]. Status Aktualizacja: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Zmieniono szablon zespołu</value>

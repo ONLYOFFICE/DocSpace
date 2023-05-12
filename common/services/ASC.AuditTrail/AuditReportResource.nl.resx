@@ -115,36 +115,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Losmaken</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Bestanden Bijgevoegd: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Aangemaakt</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Verwijderd</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Geüpdatet</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Aangemaakt: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Verwijderd: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Bestand Ontkoppeld: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Discussies</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Geüpdatet: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Volgen Geüpdatet: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS Instellingen Geüpdatet</value>
   </data>
@@ -397,21 +367,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Mailservice Instellingen Geüpdatet</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen Aangemaakt: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen Verwijderd: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Mijlpalen</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen Geüpdatet: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen [{1}]. Status Geüpdatet: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Module</value>
   </data>
@@ -481,69 +436,6 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Producten</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Project Aangemaakt: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Sjablonen [{0}]. Project Aangemaakt: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Project Verwijderd: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projecten [{0}]. Lid Verwijderd: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Project Gevolgd: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projecten Geïmporteerd Van Basecamp: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projecten</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projecten</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Instellingen</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Projectsjabloon Aangemaakt: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Projectsjabloon Verwijderd: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Projectsjabloon Geüpdatet: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Project Ontvolgd: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Project Geüpdatet: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projecten [{0}]. Leden [{1}]. Toegangsrechten Geüpdatet</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Status Geüpdatet: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projecten [{0}]. Team Geüpdatet: {1}</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Rapporten</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Projectrapport Sjabloon Aangemaakt: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Projectrapport Sjabloon Verwijderd: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Projectrapport Sjabloon Geüpdatet: {0}</value>
-  </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Verzenden</value>
   </data>
@@ -571,80 +463,8 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Start portaalregio migratie</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaak Aangemaakt: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaak Verwijderd: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaak Geüpdatet: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaken [{2}]. Status Geüpdatet: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Systeemaccount</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Bestanden Bijgevoegd: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Aangemaakt</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Verwijderd</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Geüpdatet</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Aangemaakt: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Taken Aangemaakt: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Verwijderd: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projecten [{0}]. Taak: {1}. Bestand Ontkoppeld: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen [{1}]. Taak Verplaatst: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projecten [{0}]. Taken Gekoppeld: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Taken</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projecten [{0}]. Taken Ontkoppeld: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Taak Tijd Aangemaakt: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Taaktijden Verwijderd: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Taaktijden [{0}]. Status Geüpdatet: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Taak Tijd Geüpdatet: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Ontkoppeld Van Mijlpalen.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Geüpdatet: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Volgen Geüpdatet: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Status Geüpdatet: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Teamsjabloon Veranderd</value>

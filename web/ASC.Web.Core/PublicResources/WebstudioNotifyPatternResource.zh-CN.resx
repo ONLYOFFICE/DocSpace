@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>博客创建于</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>书签创建于</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM案例创建于</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>评论添加于</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM联系人创建于</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM机会创建于</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>讨论创建于</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>活动创建于</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>文档创建/上传于</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>文件夹创建于</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>论坛创建于</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>调查创建于</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>帖子创建于</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>里程碑创建于</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>项目创建于</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>聊天创建于</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>接受</value>
   </data>
@@ -132,9 +84,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>立即选择定价计划</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>了解更多&gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.激活您 "${__VirtualRootPath}":"$InviteLink" 门户的电邮。

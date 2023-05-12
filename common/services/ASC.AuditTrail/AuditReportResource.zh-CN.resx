@@ -118,36 +118,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>取消置顶</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>项目[{0}]。讨论[{1}]。文件已附加: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>项目[{0}]。讨论[{1}]。评论已创建</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>项目[{0}]。讨论[{1}]。评论已删除</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>项目[{0}]。讨论[{1}]。评论已更新</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>项目[{0}]。讨论已创建：{1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>项目[{0}]。讨论已删除：{1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>项目[{0}]。讨论[{1}]。文件已分离: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>讨论</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>项目[{0}]。讨论已更新：{1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>项目[{0}]。讨论 以下内容已更新：{1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS设置已更新</value>
   </data>
@@ -415,21 +385,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>邮件服务设置已更新</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>项目[{0}]。里程碑已创建：{1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>项目[{0}]。里程碑已删除：{1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>里程碑</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>项目[{0}]。里程碑已更新：{1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>项目[{0}]。里程碑[{1}]。状态已更新：{2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>模块</value>
   </data>
@@ -499,71 +454,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>产品</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>项目已创建: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>模板[{0}]。 项目已创建：{1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>项目已删除: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>项目[{0}]。会员已删除：{1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>项目已关注: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>从Basecamp导入的项目：{0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>项目</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>项目</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>设置</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>项目模板已创建: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>项目报告已删除: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>项目模板已更新: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>项目已取消关注: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>项目已更新: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>项目[{0}]。会员[{1}]。访问权限已更新</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>项目[{0}]。状态已更新：{1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>项目[{0}]。任务已更新: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>重新分配</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>报告</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>项目报告模板已创建: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>项目报告模板已删除: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>项目报告模板已更新: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>发送</value>
@@ -592,83 +484,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>开始门户地区迁移</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。子任务已创建：{2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。子任务已删除：{2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。子任务已更新：{2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。子任务已创建： [{2}]。状态已更新: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>系统账户</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>目标ID</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。文件已附加：{2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。评论已创建</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。评论已删除</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。评论已更新</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>项目[{0}]。 任务已创建：{1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>项目[{0}]。讨论[{1}]。任务已创建: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>项目[{0}]。 任务已删除：{1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>项目[{0}]。任务：{1}。文件已分离：{2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>项目[{0}]。里程碑[{1}]。任务已删除：{2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>项目[{0}]。任务已关联: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>任务</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>项目[{0}]。任务已取消关联: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。子任务时间已创建: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>任务时间已删除：{0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>任务时间[{0}]。状态已更新：{1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。子任务时间已更新: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。已从里程碑取消关联。</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>项目[{0}]。任务已更新：{1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>项目[{0}]。以下任务已更新：{1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>项目[{0}]。任务：[{1}]。状态已更新：{2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>团队模板已修改</value>

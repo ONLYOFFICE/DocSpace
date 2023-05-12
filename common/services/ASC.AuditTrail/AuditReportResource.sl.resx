@@ -109,36 +109,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Loči</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Datoteke pripete: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projekti [{0}]. razprave [{1}]. komentar ustvarjen</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Komentar izbrisan</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Komentar posodobljen</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava ustvarjena: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava izbrisana: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Samostojna datoteka: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Razprave</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava posodobljena: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava, ki ji sledim posodobljena: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS nastavitve posodobljene</value>
   </data>
@@ -355,21 +325,6 @@
   <data name="Logout" xml:space="preserve">
     <value>Izpis</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Mejnik ustvarjen: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Mejnik izbrisan: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Mejniki</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Mejnik posodobljen: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Mejniki [{1}]. Status Posodobljen: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Modul</value>
   </data>
@@ -436,69 +391,6 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Izdelki</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Projekt ustvarjen: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Predloge [{0}]. Projekt ustvarjen: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Projekt izbrisan: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projekti [{0}]. Član izbrisan: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Projekti, ki jim sledim: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekti uvoženi iz Basecamp-a: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projekti</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projekti</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Nastavitve</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Predloga projekta ustvarjena: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Predloga projekta izbrisana: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Predloga projekta posodobljena: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Projektu ne sledim več: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Projekt posodobljen: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projekti [{0}]. Člani [{1}]. Pravice dostopa posodobljene</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Status Posodobljen: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projekti [{0}]. Ekipa posodobljena: {1}</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Poročila</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Poročilo predloge projekta ustvarjeno: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Poročilo predloge projekta izbrisano: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Poročilo predloge projekta posodobljeno: {0}</value>
-  </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Pošlji</value>
   </data>
@@ -520,80 +412,8 @@
   <data name="SSOEnabled" xml:space="preserve">
     <value>SSO omogočen</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloga ustvarjena: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloga izbrisana: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloga posodobljena: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloge [{2}]. Status Posodobljen: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Račun sistema</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. datoteke pripete: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Komentar ustvarjen</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Komentar izbrisan</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projekt [{0}]. Naloge [{1}]. Komentar posodobljen</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga ustvarjena: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Naloga ustvarjena: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga izbrisana: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga: {1}. samostojna datoteka: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projekti [{0}]. Mejniki [{1}]. Naloga premaknjena: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge povezane: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Naloge</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge nepovezane: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Čas naloge ustvarjen: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Časi naloge izbrisani: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Časi naloge [{0}]. Status posodobljen: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Čas naloge posodobljen: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Nepovezano z mejniki.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga posodobljena: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga, ki ji sledim je posodobljena: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Status Posodobljen: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Predloga ekipe spremenjena</value>

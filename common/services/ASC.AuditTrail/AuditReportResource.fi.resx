@@ -115,36 +115,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Irrota</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelut [{1}]. Tiedosto lisätty: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelut [{1}]. Kommentti lisätty</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelut [{1}]. Kommentti poistettu</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelut [{1}]. Kommentti päivitetty</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelu lisätty: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelu poistettu: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelut [{1}]. Tiedosto poistettu: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Keskustelut</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelu päivitetty: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelun seuraaminen päivitetty: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Nimipalvelimen asetukset ovat päivitetty</value>
   </data>
@@ -394,21 +364,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Sähköposti palvelun asetukset päivitetty</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projektit [{0}]. Välitavoite lisätty: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projektit [{0}]. Välitavoite poistettu: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Välitavoitteet</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projektit [{0}]. Välitavoite päivitetty: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projektit [{0}]. Välitavoitteet [{1}]. Tila päivitetty: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Moduli</value>
   </data>
@@ -478,69 +433,6 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Tuotteet</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Projektit. Lisätty: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Mallipohjia [{0}]. Luotuja projekteja: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Projektit. Poistettu: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projektit [{0}]. Projektiryhmän jäsen poistettu: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Projektit. Seurattu: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekteja tuotu Basecamp-palvelusta: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projektit</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projektit</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Asetukset</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Projektit. Projektimalli lisätty: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Projektit. Projektimalli poistettu: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Projektit. Projektimalli päivitetty: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Projektit. Seuranta lopetettu: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Projektit. Päivitetty: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projektit [{0}]. Projektiryhmä [{1}]. Pääsyoikeudet päivitetty</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projektit [{0}]. Tila päivitetty: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projektit [{0}]. Projektiryhmää päivitetty: {1}</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Raportit</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Projektit. Raporttimalli lisätty: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Projektit. Raporttimalli poistettu: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Projektit. Raporttimalli päivitetty: {0}</value>
-  </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Lähetä</value>
   </data>
@@ -568,80 +460,8 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Aloita portaalin alueen migraatio</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Alitehtävä lisätty: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Alitehtävä poistettu: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Alitehtävä päivitetty: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Alitehtävät: [{2}]. Tila päivitetty: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Järjestelmän tili</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Tiedostoja liitetty: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Kommentti lisätty</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Kommentti poistettu</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Kommentti päivitetty</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävä lisätty: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projektit [{0}]. Keskustelut [{1}]. Tehtävä lisätty: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävä poistettu: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävä: {1}. Tiedoston linkki poistettu: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projektit [{0}]. Välitavoitteet [{1}]. Tehtävä siirretty: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät linkitetty: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Tehtävät</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävien linkki poistettu: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Aikaa lisätty: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Tehtävän ajat poistettu: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Tehtävän ajat [{0}]. Tila päivitetty: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät [{1}]. Aikaa päivitetty: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät [{1}]. Poistettu välitavoitteista.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävä päivitetty: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävän seuranta päivitetty: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projektit [{0}]. Tehtävät: {1}. Tila päivitetty: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Tiimin mallipohja muutettu</value>

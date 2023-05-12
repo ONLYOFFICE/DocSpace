@@ -124,36 +124,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>切り離す</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>プロジェクト［{0}］。議論［{1}］。添付されたファイル：{2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>プロジェクト［{0}］。議論［{1}］。コメントが作成されました</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>プロジェクト［{0}］。議論［{1}］。コメントが削除されました</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>プロジェクト［{0}］。議論［{1}］。コメントが更新されました</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>プロジェクト［{0}］。作成された議論：{1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>プロジェクト［{0}］。削除された議論：{1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>プロジェクト［{0}］。議論［{1}］。切り離されたファイル：{2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>議論</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>プロジェクト［{0}］。更新された議論：{1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>プロジェクト[{0}]。議論追跡を更新した：{1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS設定は更新です</value>
   </data>
@@ -430,21 +400,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>メールサービス設定は更新です</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>プロジェクト[{0}]。作成されたマイルストーン：{1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>プロジェクト[{0}]。削除されたマイルストーン：{1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>マイルストーン</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>プロジェクト[{0}]。更新されたマイルストーン：{1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>プロジェクト[{0}]。マイルストーン[{1}]。状態は更新されました：{2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>モジュール</value>
   </data>
@@ -520,71 +475,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>製品</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>作成されたプロジェクト：{0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>テンプレート[{0}]。プロジェクトは作成されました：{1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>削除されたプロジェクト：{0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>プロジェクト［{0}］。削除された加入者：{1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>追跡されているプロジェクト：{0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>プロジェクトはBasecampから挿入された：{0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>プロジェクト</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>プロジェクト</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>設定</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>プロジェクト・テンプレートを作成した：{0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>プロジェクト・テンプレートを削除した：{0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>プロジェクト・テンプレートを更新した：{0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>追跡されないようになったプロジェクト：{0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>更新されたプロジェクト：{0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>プロジェクト[{0}]。加入者[{1}]。アクセス権は変更されました</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>プロジェクト[{0}]。更新された状態：{1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>プロジェクト[{0}]。更新されたチーム：{1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>再割当て</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>レポート</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>プロジェクト・レポート・テンプレートを作成した：{0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>プロジェクト・レポート・テンプレートを削除した：{0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>プロジェクト・レポート・テンプレートを更新した：{0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>送信する</value>
@@ -619,83 +511,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>ポータル地域移行は開始です</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。作成されたサブタスク：{2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。削除されたサブタスク：{2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。更新されたサブタスク：{2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。サブタスク[{2}]。更新された状態：{3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>システムアカウント</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>対象ＩＤ</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。添付されたファイル：{2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。作成されたコメント</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。削除されたコメント</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。更新されたコメント</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>プロジェクト[{0}]。作成されたタスク：{1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>プロジェクト［{0}］。議論［{1}］。タスクは作成されました：{2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>プロジェクト[{0}]。削除されたタスク：{1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク{1}。切り離されたファイル：{2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>プロジェクト[{0}]。マイルストーン[{1}]。タスクは移動されました：{2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>プロジェクト[{0}]。リンクされたタスク：{1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>タスク</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>プロジェクト[{0}]。リンク削除されたタスク：{1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。タスクかかる時間を作成した：{2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>タスクかかる時間は削除された：{0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>タスクかかる時間 [{0}]。状態は更新された：{1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。タスクかかる時間を更新した：{2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。マイルストーンからリンク解除された。</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>プロジェクト[{0}]。更新されたタスク：{1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク追跡を更新した：{1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>プロジェクト[{0}]。タスク[{1}]。更新された状態：{2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>チームテンプレートを変更しました</value>

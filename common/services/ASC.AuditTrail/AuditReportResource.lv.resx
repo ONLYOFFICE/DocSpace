@@ -121,36 +121,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Atvienot</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projekti [{0}]. Diskusijas [{1}]. Pievienoti faili: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Diskusijas [{1}]. Izveidots komentārs</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Diskusijas [{1}]Komentārs dzēsts</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Diskusijas [{1}]Komentārs atjaunināts</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Izveidota diskusija: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Diskusija dzēsta: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projekti [{0}]. Diskusijas [{1}] Pievienots fails: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Diskusijas</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Atjaunināta diskusija: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projekti [{0}]. Sekošanai diskusijām atjaunināta: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Atjaunināti DNS uzstādījumi</value>
   </data>
@@ -403,21 +373,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Pasta servisa uzstādījumi atjaunināti</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Izveidots posms: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Dzēsts posms: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Posmi</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Atjaunināts posms: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Posmi [{1}]. Atjaunināts statuss: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Modulis</value>
   </data>
@@ -487,71 +442,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Produkti</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Izveidots projekts: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Veidnes [{0}].Izveidots projekts: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Dzēsts projekts: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projekti [{0}]. Dzēsts dalībnieks: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Sekots projektam: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekti importēti no Basecamp: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projekti</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projekti</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Iestatījumi</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Izveidota projekta veidne: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Dzēsta projekta veidne: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Atjaunināta projekta veidne: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Pārtraukta sekošana projektam: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Projekts atjaunināts: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projekti [{0}]. Dalībnieki [{1}]. Atjauninātas piekļuves tiesības</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Atjaunināts statuss: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projekti [{0}]. Atjaunināta komanda: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Pārzīmēšana</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Atskaites</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Izveidota projekta atskaites veidne: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Dzēsta projekta atskaites veidne: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Atjaunināta projekta atskaites veidne: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Nosūtīt</value>
@@ -580,83 +472,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Uzsākt portāla apgabala pārnesi</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Izveidots apakšuzdevums: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Dzēsts apakšuzdevums: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Atjaunināts apakšuzdevums: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Apakšuzdevumi [{2}]. Atjaunināts statuss: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Sistēmas konts</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>Mērķa ID</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Pievienoti faili: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Izveidots komentārs</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projekti [{0}].Uzdevumi [{1}]. Dzēsts komentārs</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Atjaunināts komentārs</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Izveidots uzdevums: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projekti [{0}]. Diskusijas [{1}]. Izveidots uzņēmums: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Dzēsts uzdevums: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevums: {1}. Atvienots fails: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projekti [{0}]. Posmi [{1}]. Pārvietots uzdevums: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projekti [{0}]. Saistīti uzdevumi: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Uzdevumi</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projekti [{0}]. Atvienoti uzdevumi: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Izveidots uzdevuma laiks: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Dzēsti uzdevuma laiki: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Uzdevuma izpildes laiki [{0}]. Atjaunināts statuss: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Atjaunināts uzdevuma laiks: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Atvienots no posmiem.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Atjaunināts uzdevums: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projekti [{0}]. Atjaunināta sekošana uzdevumam: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Uzdevumi [{1}]. Atjaunināts statuss: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Mainīta komandas veidne</value>

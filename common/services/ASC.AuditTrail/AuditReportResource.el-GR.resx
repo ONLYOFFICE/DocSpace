@@ -100,9 +100,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Αποσύνδεση</value>
   </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Συζητήσεις</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Οι Ρυθμίσεις DNS Ενημερώθηκαν</value>
   </data>
@@ -271,9 +268,6 @@
   <data name="Logout" xml:space="preserve">
     <value>Αποσύνδεση</value>
   </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Ορόσημα</value>
-  </data>
   <data name="MoveActionType" xml:space="preserve">
     <value>Μετακίνηση</value>
   </data>
@@ -322,33 +316,6 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Προϊόντα</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Το Έργο Δημιουργήθηκε: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Πρότυπα [{0}]. Έργο Που Δημιουργήθηκε: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Το Έργο Διαγράφηκε: {0}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Το Έργο Ακολουθήθηκε: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Έργα</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Έργα</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Ρυθμίσεις</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Έργο Που Ενημερώθηκε: {0}</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Αναφορές</value>
-  </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Αποστολή</value>
   </data>
@@ -363,9 +330,6 @@
   </data>
   <data name="StartBackupSetting" xml:space="preserve">
     <value>Εκκίνηση δημιουργίας αντιγράφων ασφαλείας</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Εργασίες</value>
   </data>
   <data name="TimeZoneSettingsUpdated" xml:space="preserve">
     <value>Οι Ρυθμίσεις Ζώνης Ώρας Ενημερώθηκαν</value>

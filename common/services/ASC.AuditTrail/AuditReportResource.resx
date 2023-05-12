@@ -1,5 +1,64 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
   <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
     <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
     <xsd:element name="root" msdata:IsDataSet="true">
@@ -53,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ActionCol" xml:space="preserve">
     <value>Action</value>
@@ -123,36 +182,6 @@
   </data>
   <data name="DetachActionType" xml:space="preserve">
     <value>Detach</value>
-  </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Files Attached: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Comment Created</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Comment Deleted</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Comment Updated</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projects [{0}]. Discussion Created: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Discussion Deleted: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. File Detached: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Discussions</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Discussion Updated: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projects [{0}]. Discussion  Following Updated: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS Settings Updated</value>
@@ -433,21 +462,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Mail Service Settings Updated</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projects [{0}]. Milestone Created: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Milestone Deleted: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Milestones</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Milestone Updated: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Milestones [{1}]. Status Updated: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Module</value>
   </data>
@@ -523,71 +537,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Products</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Project Created: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Templates [{0}]. Project Created: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Project Deleted: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projects [{0}]. Member Deleted: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Project Followed: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projects Imported From Basecamp: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projects</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projects</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Project Template Created: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Project Template Deleted: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Project Template Updated: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Project Unfollowed: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Project Updated: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projects [{0}]. Members [{1}]. Access Rights Updated</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Status Updated: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projects [{0}]. Team Updated: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Reassigns</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Reports</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Project Report Template Created: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Project Report Template Deleted: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Project Report Template Updated: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Send</value>
@@ -622,83 +573,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Start portal region migration</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtask Created: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtask Deleted: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtask Updated: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Subtasks [{2}]. Status Updated: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>System Account</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>Target ID</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Files Attached: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Comment Created</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Comment Deleted</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Comment Updated</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projects [{0}]. Task Created: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projects [{0}]. Discussions [{1}]. Task Created: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projects [{0}]. Task Deleted: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projects [{0}]. Task: {1}. File Detached: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projects [{0}]. Milestones [{1}]. Task Moved: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projects [{0}]. Tasks Linked: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Tasks</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projects [{0}]. Tasks Unlinked: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Task Time Created: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Task Times Deleted: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Task Times [{0}]. Status Updated: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Task Time Updated: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Unlinked From Milestones.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projects [{0}]. Task Updated: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projects [{0}]. Task Following Updated: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projects [{0}]. Tasks [{1}]. Status Updated: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Team Template Changed</value>

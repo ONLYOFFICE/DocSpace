@@ -118,36 +118,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Tách</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã đính kèm file: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã tạo bình luận</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã xóa bình luận</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã cập nhật bình luận</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã tạo thảo luận: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa thảo luận: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã tách file: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Thảo luận</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật thảo luận: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật theo dõi thảo luận: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Đã cập nhật Cài đặt DNS</value>
   </data>
@@ -400,21 +370,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Đã cập nhật Cài đặt Dịch vụ mail</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã tạo Mốc sự kiện: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa Mốc sự kiện: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Mốc sự kiện</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật Mốc sự kiện: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Mốc sự kiện [{1}]. Đã cập nhật Trạng thái: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Mô-đun</value>
   </data>
@@ -484,71 +439,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Sản phẩm</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Đã tạo dự án: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Templates [{0}]. Đã tạo Dự án: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Đã xóa dự án: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa thành viên: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Dự án được theo dõi: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Dự án nhập từ Basecamp: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Dự án</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Dự án</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Cài đặt</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Đã tạo Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Đã xóa Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Đã cập nhật Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Đã bỏ theo dõi dự án: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Đã cập nhật dự án: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Dự án [{0}]. Thành viên [{1}]. Đã cập nhật Quyền truy cập</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật trạng thái: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật Nhóm: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Phân bổ lại</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Báo cáo</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Đã tạo Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Đã xóa Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Đã cập nhật Mẫu báo cáo dự án: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Gửi</value>
@@ -577,83 +469,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Bắt đầu di chuyển vùng cổng thông tin</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã tạo nhiệm vụ con: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã xóa nhiệm vụ con: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật nhiệm vụ con: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Nhiệm vụ con [{2}]. Đã cập nhật Trạng thái: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Tài khoản Hệ thống</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>ID Đích</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã đính kèm File: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã tạo bình luận</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã xóa Bình luận</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật Bình luận</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã tạo nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã tạo nhiệm vụ: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ {1}. Đã tách File: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Dự án [{0}]. Mốc sự kiện [{1}]. Đã di chuyển nhiệm vụ: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Dự án [{0}]. Đã liên kết các Nhiệm vụ: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Nhiệm vụ</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Dự án [{0}]. Đã hủy liên kết các nhiệm vụ: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã tạo Thời gian Nhiệm vụ: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Đã xóa Thời gian Nhiệm vụ: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Thời gian Nhiệm vụ [{0}]. Đã cập nhật Trạng thái: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật Thời gian Nhiệm vụ: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã hủy liên kết từ Mốc sự kiện.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật Theo dõi Nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật Trạng thái: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Đã thay đổi Template Nhóm</value>

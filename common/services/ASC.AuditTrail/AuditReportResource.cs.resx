@@ -118,36 +118,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Odpojit</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze [{1}]. Soubory odebrány: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze [{1}]. Vytvořen komentář</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze [{1}]. Komentář odstraněn</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze [{1}]. Komentář aktualizován</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze vytvořena: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze odstraněna: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze [{1}]. Soubor odebrán: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Diskuze</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze aktualizována: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze byla aktualizována: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Aktualizováno DNS nastavení</value>
   </data>
@@ -400,21 +370,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Nastavení Mailových služeb bylo aktualizováno</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Milník vytvořen: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Milník odstraněn: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Milníky</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Milník aktualizován: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projekty [{0}]. Milníky [{1}]. Stav aktualizován: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Modul</value>
   </data>
@@ -484,71 +439,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Produkty</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Projekt vytvořen: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Šablony [{0}]. Projekt vytvořen: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Projekt odstraněn: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projekty [{0}]. Člen byl odstraněn: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Následující projekt: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekty importovány ze Základny: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projekty</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projekty</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Nastavení</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Byla vytvořena šablona projektu: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Byla odstraněna šablona projektu: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Byla aktualizována šablona projektu: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Projekt již není sledován: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Projekt aktualizován: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projekty [{0}]. Členové [{1}]. Přístupová práva aktualizována</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projekty [{0}]. Stav aktualizován: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projekty [{0}]. Tým aktualizován: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Změna přiřazení</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Reporty</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Byla vytvořena šablona pro záznamy projektu: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Byla odstraněna šablona pro záznamy projektu: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Byla aktualizována šablona pro záznamy projektu: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Odeslat</value>
@@ -577,83 +469,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Začít migraci portálu do jiného regionu</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Podúkol vytvořen: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Podúkol odstraněn: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Podúkol aktualizován: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Podúkoly [{2}]. Stav aktualizován: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Systémový účet</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>Target ID</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Soubory připojeny: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Úkoly [{1}]. Vytvořen komentář</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Komentář odstraněn</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Komentář aktualizován</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projekty [{0}]. Úkol vytvořen: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projekty [{0}]. Diskuze [{1}]. Vytvořen úkol: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projekty [{0}]. Úkol odstraněn: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekty [{0}]. Úkol: {1}. Soubor odebrán: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projekty [{0}]. Milníky [{1}]. Úkol přesunut: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projekty [{0}]. Úkoly připojeny: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Úkoly</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projekty [{0}]. Úkoly odpojeny: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Vytvořen čas práce na úkolu: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Pracovní čas na Úkolu byl odstraněn: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Pracovní čas na Úkolu [{0}]. Stav aktualizován: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Úkoly [{1}]. Aktualizován čas práce na úkolu: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projekty[{0}]. Úkoly [{1}]. Nejsou propojeny s Milníky.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projekty [{0}]. Úkol aktualizován: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projekty [{0}]. Následující úkol aktualizován: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projekty[{0}].Úkoly[{1}]. Aktualizován stav: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Byla změněna Týmová Šablona</value>

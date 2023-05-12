@@ -124,36 +124,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Отвързвам</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Проекти [{0}]. Дискусии [{1}]. Прикачени файлове: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Дискусии [{1}]. Коментарът е създаден</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Проекти [{0}]. Дискусии [{1}]. Коментарът е изтрит</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Дискусии [{1}]. Коментар Актуализиран</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Създаване на дискусия: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Проекти [{0}]. Дискусията бе изтрита: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Проекти [{0}]. Дискусии [{1}]. Файл откъснат: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Дискусии</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Обсъждане актуализирано: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Проекти [{0}]. Следната дискусия е актуализирана: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Актуализирани настройки на DNS</value>
   </data>
@@ -418,21 +388,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Настройки на пощенската услуга Актуализирани</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Създаден минал етап: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Проекти [{0}]. Изтрит етап: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Важни събития</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Milestone Updated: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Проекти [{0}]. Важни събития [{1}]. Състояние се актуализира: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Модул</value>
   </data>
@@ -502,71 +457,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Продукти</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Създаден проект: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Шаблони [{0}]. Създаден проект: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Проектът е изтрит: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Проекти [{0}]. Изтрит член: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Проследяване на проекта: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Проекти, внесени от Basecamp: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Проекти</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Проекти</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Настройки</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Създаден е шаблон на проекта: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Шаблонът за проекта е изтрит: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Шаблонът на проекта е актуализиран: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Проследяване на проекта: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Проектът е актуализиран: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Проекти [{0}]. Членове [{1}]. Права на достъп актуализирани</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Проекти [{0}]. Състояние се актуализира: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Проекти [{0}]. Екипът е актуализиран: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Преназначава</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Доклади</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Създаден е шаблон на отчета за проекта: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Изтрит е шаблонът на отчета за проекта: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Шаблонът на отчета за проекта е актуализиран: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Изпращам</value>
@@ -595,83 +487,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Стартирайте миграцията на региона на портала</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Създадена подзадача: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Изтрита подзадача: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Актуализирана подзадача: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Подзадачи [{2}]. Състояние се актуализира: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Системен акаунт</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>Целеви идентификатор</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Прикачени файлове: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Коментарът е създаден</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Коментарът е изтрит</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Коментар Актуализиран</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Създадена задача: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Проекти [{0}]. Дискусии [{1}]. Създадена задача: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Проекти [{0}]. Заданието е изтрита: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Проекти [{0}]. Задача: {1}. Файл откъснат: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Проекти [{0}]. Важни събития [{1}]. Преместена задача: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Проекти [{0}]. Свързани са задачи: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Задачи</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Проекти [{0}]. Свързани са задачи: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Създадено е време за задача: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Изтрити са задачите: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Време на задачите [{0}]. Състояние се актуализира: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Промененото време на задачата: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Прекъсна се връзката от етапите.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Проекти [{0}]. Task Updated: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Проекти [{0}]. Следната актуализация на задачата: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Проекти [{0}]. Задачи [{1}]. Състояние се актуализира: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Шаблонът на екипа е променен</value>

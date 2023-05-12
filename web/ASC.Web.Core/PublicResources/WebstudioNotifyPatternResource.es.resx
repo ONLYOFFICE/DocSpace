@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>El blog se ha creado en</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Marcador se ha creado en</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Caso CRM se ha creado en</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Comentario se ha añadido a</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Contacto CRM se ha creado en</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Oportunidad CRM se ha creado en</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Discusión se ha creado en</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Evento se ha creado en</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Documento se ha creado/subido a</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Carpeta se ha creado en</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Foro se ha creado en</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Encuesta creada en</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Mensaje creado en</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Hito se ha creado en</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Proyecto se ha creado en</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Tarea se ha creada en</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Aceptar</value>
   </data>
@@ -180,9 +132,6 @@
   </data>
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Aplicar descuento</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Saber más &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Activación de su correo electrónico para el portal "${__VirtualRootPath}":"$InviteLink".

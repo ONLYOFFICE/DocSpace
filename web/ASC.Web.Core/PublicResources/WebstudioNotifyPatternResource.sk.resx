@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog bol vytvorený na</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Záložka bola vytvorená na</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM prípad bol vytvorený na/v</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Komentár bol pridaný do/na</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM kontakt bol vytvorený na/v</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM príležitosť bola vytvorená na/v</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Diskusia bola vytvorená na/v</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Udalosť bola vytvorená na/v</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Dokument bol vytvorený / nahraný na</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Priečinok bol vytvorený na/v</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Fórum bolo vytvorené na/v</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Anketa bola vytvorená na</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Miesto/pošta bolo vytvorené v/na</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Medzník bol vytvorený v/na</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projekt bol vytvorený v/na</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Úloha bola vytvorená v</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Ovládací panel prístupu</value>
   </data>
@@ -162,9 +114,6 @@
   </data>
   <data name="ButtonStartFreeTrial" xml:space="preserve">
     <value>Vyskúšať skúšobnú verziu zadarmo</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Čítať viac &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Aktivujte si Váš e-mail pre "${__VirtualRootPath}":"$InviteLink" portál.

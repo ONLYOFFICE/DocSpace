@@ -124,36 +124,6 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Ayır</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirələr [{1}]. Fayllar Əlavə edildi: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirələr [{1}]. Şərh Yaradıldı</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirələr [{1}]. Şərh Silindi</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirələr [{1}]. Şərh Yeniləndi</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirə Yaradıldı: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirə Silindi: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirələr [{1}]. Fayl Ayrıldı: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Müzakirələr</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirə Yeniləndi: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirənin İzlənməsi Yeniləndi: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS Parametrləri Yeniləndi</value>
   </data>
@@ -433,21 +403,6 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Poçt Server Parametrləri Yeniləndi</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Layihələr [{0}]. Mərhələ Yaradıldı: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Layihələr [{0}]. Mərhələ Silindi: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Mərhələlər</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Layihələr [{0}]. Mərhələ Yeniləndi: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Layihələr [{0}]. Mərhələlər [{1}]. Status Yeniləndi: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Modul</value>
   </data>
@@ -523,71 +478,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Məhsullar</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Layihə Yaradıldı: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Şablonlar [{0}]. Layihə Yaradıldı: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Layihə Silindi: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Layihələr [{0}]. Üzv silindi: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Layihə İzləndi: {0}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Basecamp-dan İdxal edilən Layihələr: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Layihələr</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Layihələr</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Parametrlər</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Layihə Şablonu Yaradıldı: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Layihə Şablonu Silindi: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Layihə Şablonu Yeniləndi: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Layihə İzlənilmədi: {0}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Layihə Yeniləndi: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Layihələr [{0}]. Üzvlər [{1}]. Giriş Hüquqları Yeniləndi</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Layihələr [{0}]. Status Yeniləndi: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Layihələr [{0}]. Komanda Yeniləndi: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Yenidən təyin edir</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Hesabatlar</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Layihə Hesabatı Şablonu Yaradıldı: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Layihə Hesabatı Şablonu Silindi: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Layihə Hesabatı Şablonu Yeniləndi: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Göndər</value>
@@ -622,83 +514,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Portal bölgəsinin köçürülməsinə başla</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Alt tapşırıq Yaradıldı: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Alt tapşırıq Silindi: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Alt tapşırıq Yeniləndi: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Alt tapşırıqlar [{2}]. Status Yeniləndi: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Sistem Hesabı</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>Hədəf İD</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Fayllar Əlavə edildi: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Şərh Yaradıldı</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Şərh Silindi</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Şərh Yeniləndi</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıq Yaradıldı: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Layihələr [{0}]. Müzakirələr [{1}]. Tapşırıq Yaradıldı: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıq Silindi: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıq: {1}. Fayl Ayrıldı: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Layihələr [{0}]. Mərhələlər [{1}]. Tapşırıq Köçürüldü: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar Əlaqələndirildi: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Tapşırıqlar</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqların Əlaqəsi kəsildi: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Tapşırıq Vaxtı Yaradıldı: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Tapşırıq Vaxtları Silindi: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Tapşırıq vaxtları [{0}]. Status Yeniləndi: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Tapşırıq Vaxtı Yeniləndi: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Mərhələlər ilə Əlaqə kəsildi.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıq Yeniləndi: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırığın İzlənməsi Yeniləndi: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Layihələr [{0}]. Tapşırıqlar [{1}]. Status Yeniləndi: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Komanda Şablonu Dəyişildi</value>

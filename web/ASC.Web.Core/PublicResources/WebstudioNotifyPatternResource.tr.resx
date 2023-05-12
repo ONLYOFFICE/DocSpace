@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Yer imi oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM vaka oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Yorum eklenme tarihi</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM iletişim oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM fırsat oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Tartışma oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Etkinlik oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Belge oluşturulma/yüklenme tarihi</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Klasör oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Anket oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Gönderi oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Aşama oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Proje oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Görev oluşturulma tarihi</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Kabul et</value>
   </data>
@@ -165,9 +117,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Fiyatlandırma Planlarını Şimdi Seçin</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Daha Fazla Bilgi &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"$InviteLink" portalındaki e-posta adresinizi aktifleştirin.

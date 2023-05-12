@@ -64,82 +64,6 @@ public enum MessageAction
 
     #endregion
 
-    #region Projects
-
-    ProjectCreated = 2000,
-    ProjectCreatedFromTemplate = 2001,
-    ProjectUpdated = 2002,
-    ProjectUpdatedStatus = 2003,
-    ProjectFollowed = 2004,
-    ProjectUnfollowed = 2005,
-    ProjectDeleted = 2006,
-
-    ProjectDeletedMember = 2007,
-    ProjectUpdatedTeam = 2008,
-    ProjectUpdatedMemberRights = 2009,
-
-    ProjectLinkedCompany = 2010,
-    ProjectUnlinkedCompany = 2011,
-    ProjectLinkedPerson = 2012,
-    ProjectUnlinkedPerson = 2013,
-    ProjectLinkedContacts = 2014,
-
-    MilestoneCreated = 2015,
-    MilestoneUpdated = 2016,
-    MilestoneUpdatedStatus = 2017,
-    MilestoneDeleted = 2018,
-
-    TaskCreated = 2019,
-    TaskCreatedFromDiscussion = 2020,
-    TaskUpdated = 2021,
-    TaskUpdatedStatus = 2022,
-    TaskMovedToMilestone = 2023,
-    TaskUnlinkedMilestone = 2024,
-    TaskUpdatedFollowing = 2025,
-    TaskAttachedFiles = 2026,
-    TaskDetachedFile = 2027,
-    TasksLinked = 2028,
-    TasksUnlinked = 2029,
-    TaskDeleted = 2030,
-
-    TaskCommentCreated = 2031,
-    TaskCommentUpdated = 2032,
-    TaskCommentDeleted = 2033,
-
-    SubtaskCreated = 2034,
-    SubtaskUpdated = 2035,
-    SubtaskUpdatedStatus = 2036,
-    SubtaskDeleted = 2037,
-    SubtaskMoved = 2058,
-
-    DiscussionCreated = 2038,
-    DiscussionUpdated = 2039,
-    DiscussionUpdatedFollowing = 2040,
-    DiscussionAttachedFiles = 2041,
-    DiscussionDetachedFile = 2042,
-    DiscussionDeleted = 2043,
-
-    DiscussionCommentCreated = 2044,
-    DiscussionCommentUpdated = 2045,
-    DiscussionCommentDeleted = 2046,
-
-    TaskTimeCreated = 2047,
-    TaskTimeUpdated = 2048,
-    TaskTimesUpdatedStatus = 2049,
-    TaskTimesDeleted = 2050,
-
-    ReportTemplateCreated = 2051,
-    ReportTemplateUpdated = 2052,
-    ReportTemplateDeleted = 2053,
-
-    ProjectTemplateCreated = 2054,
-    ProjectTemplateUpdated = 2055,
-    ProjectTemplateDeleted = 2056,
-
-    ProjectsImportedFromBasecamp = 2057,
-
-    #endregion
-
     #region People
 
     UserCreated = 4000,
@@ -378,27 +302,4 @@ public enum MessageAction
     ContactSalesMailSent = 7004,
 
     #endregion
-
-    #region Partners
-
-    AcceptRequest = 8000,
-    RejectRequest = 8001,
-    BlockPartner = 8002,
-    UnblockPartner = 8003,
-    DeletePartner = 8004,
-    ChangePartner = 8005,
-    ConfirmPortal = 8006,
-    MarkInvoicePaid = 8007,
-    MarkInvoiceUnpaid = 8008,
-    AddHostedPartner = 8009,
-    RemoveHostedPartner = 8010,
-    MarkPartnerAuthorized = 8011,
-    MarkPartnerNotAuthorized = 8012,
-    ChangePartnerLevel = 8013,
-    ChangeHostedPartnerQuotas = 8014,
-    ChangeHostedPartner = 8015,
-    BillLumpSumInvoice = 8016,
-
-    #endregion
-
 }
