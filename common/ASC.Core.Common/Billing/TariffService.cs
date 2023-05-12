@@ -343,13 +343,12 @@ public class TariffService : ITariffService
     }
 
 
-    public void SetTariff(int tenantId, Tariff tariff)
+    public void SetTariff(int tenantId, Tariff tariff, List<TenantQuota> quotas = null)
     {
         ArgumentNullException.ThrowIfNull(tariff);
 
-        List<TenantQuota> quotas = null;
         if (tariff.Quotas == null ||
-            (quotas = tariff.Quotas.Select(q => _quotaService.GetTenantQuota(q.Id)).ToList()).Any(q => q == null))
+            (quotas ??= tariff.Quotas.Select(q => _quotaService.GetTenantQuota(q.Id)).ToList()).Any(q => q == null))
         {
             return;
         }
@@ -720,61 +719,61 @@ public class TariffService : ITariffService
         {
             try
             {
+            using var dbContext = _dbContextFactory.CreateDbContext();
+            var strategy = dbContext.Database.CreateExecutionStrategy();
+
+            strategy.Execute(() =>
+            {
                 using var dbContext = _dbContextFactory.CreateDbContext();
-                var strategy = dbContext.Database.CreateExecutionStrategy();
+                using var tx = dbContext.Database.BeginTransaction();
 
-                strategy.Execute(() =>
+                var stamp = tariffInfo.DueDate;
+                if (stamp.Equals(DateTime.MaxValue))
                 {
-                    using var dbContext = _dbContextFactory.CreateDbContext();
-                    using var tx = dbContext.Database.BeginTransaction();
+                    stamp = stamp.Date.Add(new TimeSpan(tariffInfo.DueDate.Hour, tariffInfo.DueDate.Minute, tariffInfo.DueDate.Second));
+                }
 
-                    var stamp = tariffInfo.DueDate;
-                    if (stamp.Equals(DateTime.MaxValue))
+                var efTariff = new DbTariff
+                {
+                    Id = tariffInfo.Id,
+                    Tenant = tenant,
+                    Stamp = stamp,
+                    CustomerId = tariffInfo.CustomerId,
+                    CreateOn = DateTime.UtcNow
+                };
+
+                if (efTariff.Id == default)
+                {
+                    efTariff.Id = (-tenant);
+                    tariffInfo.Id = efTariff.Id;
+                }
+
+                if (efTariff.CustomerId == default)
+                {
+                    efTariff.CustomerId = "";
+                }
+
+                efTariff = dbContext.AddOrUpdate(dbContext.Tariffs, efTariff);
+                dbContext.SaveChanges();
+
+                foreach (var q in tariffInfo.Quotas)
+                {
+                    dbContext.AddOrUpdate(dbContext.TariffRows, new DbTariffRow
                     {
-                        stamp = stamp.Date.Add(new TimeSpan(tariffInfo.DueDate.Hour, tariffInfo.DueDate.Minute, tariffInfo.DueDate.Second));
-                    }
+                        TariffId = efTariff.Id,
+                        Quota = q.Id,
+                        Quantity = q.Quantity,
+                        Tenant = tenant
+                    });
+                }
 
-                    var efTariff = new DbTariff
-                    {
-                        Id = tariffInfo.Id,
-                        Tenant = tenant,
-                        Stamp = stamp,
-                        CustomerId = tariffInfo.CustomerId,
-                        CreateOn = DateTime.UtcNow
-                    };
+                dbContext.SaveChanges();
 
-                    if (efTariff.Id == default)
-                    {
-                        efTariff.Id = (-tenant);
-                        tariffInfo.Id = efTariff.Id;
-                    }
+                inserted = true;
 
-                    if (efTariff.CustomerId == default)
-                    {
-                        efTariff.CustomerId = "";
-                    }
-
-                    efTariff = dbContext.AddOrUpdate(dbContext.Tariffs, efTariff);
-                    dbContext.SaveChanges();
-
-                    foreach (var q in tariffInfo.Quotas)
-                    {
-                        dbContext.AddOrUpdate(dbContext.TariffRows, new DbTariffRow
-                        {
-                            TariffId = efTariff.Id,
-                            Quota = q.Id,
-                            Quantity = q.Quantity,
-                            Tenant = tenant
-                        });
-                    }
-
-                    dbContext.SaveChanges();
-
-                    inserted = true;
-
-                    tx.Commit();
-                });
-            }
+                tx.Commit();
+            });
+        }
             catch (DbUpdateException)
             {
 

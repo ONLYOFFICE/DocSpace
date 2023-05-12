@@ -216,7 +216,7 @@ public class LicenseReader
             DueDate = license.DueDate,
         };
 
-        _tariffService.SetTariff(-1, tariff);
+        _tariffService.SetTariff(-1, tariff, new List<TenantQuota> { quota });
     }
 
     private void LogError(Exception error)

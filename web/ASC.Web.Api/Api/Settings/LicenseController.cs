@@ -172,7 +172,7 @@ public class LicenseController : BaseSettingsController
             DueDate = DateTime.Today.AddDays(DEFAULT_TRIAL_PERIOD)
         };
 
-        _tariffService.SetTariff(-1, tariff);
+        _tariffService.SetTariff(-1, tariff, new List<TenantQuota>() { quota });
 
         _messageService.Send(MessageAction.LicenseKeyUploaded);
 

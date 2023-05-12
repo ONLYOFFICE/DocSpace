@@ -398,7 +398,14 @@ public class TenantQuota : IMapFrom<DbQuota>
 
         if (!EqualityComparer<T>.Default.Equals(value, default))
         {
-            _featuresList.Add($"{name}:{value}");
+            if (value is bool)
+            {
+                _featuresList.Add($"{name}");
+            }
+            else
+            {
+                _featuresList.Add($"{name}:{value}");
+            }
         }
     }
 }
