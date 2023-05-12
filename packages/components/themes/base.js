@@ -2927,6 +2927,7 @@ const Base = {
 
     settings: {
       iconFill: black,
+      trashIcon: "#A3A9AE",
       article: {
         titleColor: grayMain,
         fillIcon: "dimgray",
