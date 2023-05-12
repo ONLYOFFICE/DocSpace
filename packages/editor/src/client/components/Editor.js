@@ -9,6 +9,7 @@ import {
   restoreDocumentsVersion,
   getEditDiff,
   getEditHistory,
+  createFile,
   updateFile,
   checkFillFormDraft,
   convertFile,
@@ -195,8 +196,17 @@ function Editor({
     }
   };
 
-  const getDefaultFileName = (format) => {
-    switch (format) {
+  const getDefaultFileName = () => {
+    const documentType = config?.documentType;
+
+    const fileExt =
+      documentType === "word"
+        ? "docx"
+        : documentType === "slide"
+        ? "pptx"
+        : "xlsx";
+
+    switch (fileExt) {
       case "docx":
         return t("Common:NewDocument");
       case "xlsx":
@@ -261,6 +271,23 @@ function Editor({
 
   const generateLink = (actionData) => {
     return encodeURIComponent(JSON.stringify(actionData));
+  };
+
+  const onSDKRequestCreateNew = (event) => {
+    const defaultFileName = getDefaultFileName();
+
+    createFile(fileInfo.folderId, defaultFileName)
+      .then((newFile) => {
+        const newUrl = combineUrl(
+          window.DocSpaceConfig?.proxy?.url,
+          config.homepage,
+          `/doceditor?fileId=${encodeURIComponent(newFile.id)}`
+        );
+        window.open(newUrl, "_blank");
+      })
+      .catch((e) => {
+        toastr.error(e);
+      });
   };
 
   const onSDKRequestRename = (event) => {
@@ -602,28 +629,6 @@ function Editor({
         };
       }
 
-      if (successAuth) {
-        const documentType = config?.documentType;
-
-        const fileExt =
-          documentType === "word"
-            ? "docx"
-            : documentType === "slide"
-            ? "pptx"
-            : "xlsx";
-
-        const defaultFileName = getDefaultFileName(fileExt);
-
-        if (!user.isVisitor && !isDesktopEditor)
-          config.editorConfig.createUrl = combineUrl(
-            window.location.origin,
-            window.DocSpaceConfig?.proxy?.url,
-            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
-              defaultFileName
-            )}`
-          );
-      }
-
       let //onRequestSharingSettings,
         onRequestRename,
         onRequestSaveAs,
@@ -634,7 +639,26 @@ function Editor({
         onRequestHistory,
         onRequestReferenceData,
         onRequestUsers,
-        onRequestSendNotify;
+        onRequestSendNotify,
+        onRequestCreateNew;
+
+      if (successAuth && !user.isVisitor) {
+        if (isDesktopEditor) {
+          onRequestCreateNew = onSDKRequestCreateNew;
+        } else {
+          //FireFox security issue fix (onRequestCreateNew will be blocked)
+          const documentType = config?.documentType;
+          const defaultFileName = getDefaultFileName();
+
+          config.editorConfig.createUrl = combineUrl(
+            window.location.origin,
+            window.DocSpaceConfig?.proxy?.url,
+            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
+              defaultFileName
+            )}`
+          );
+        }
+      }
 
       // if (isSharingAccess) {
       //   onRequestSharingSettings = onSDKRequestSharingSettings;
@@ -695,6 +719,7 @@ function Editor({
           onRequestRestore,
           onRequestUsers,
           onRequestSendNotify,
+          onRequestCreateNew,
         },
       };
 

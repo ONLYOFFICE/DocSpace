@@ -595,4 +595,10 @@
   <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
     <value>DocuSign Secret</value>
   </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
 </root>

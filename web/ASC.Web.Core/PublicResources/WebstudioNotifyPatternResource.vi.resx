@@ -637,4 +637,214 @@ Trân trọng,
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>Người dùng DocSpace đã được cập nhật: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>CHẤP NHẬN</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Chấp nhận</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>XÁC NHẬN</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Xác nhận</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Cộng tác trong DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Xác nhận Lời mời DocSpace</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Xác nhận Phòng Mời</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Truy cập Phần Thanh toán</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Bạn muốn thay đổi mật khẩu cho tài khoản ONLYOFFICE của mình? Hãy nhấp vào nút bên dưới để xác nhận.
+
+$GreenButton
+
+Liên kết có hiệu lực trong 7 ngày.
+
+Bạn không muốn thay đổi mật khẩu? Xin hãy bỏ qua tin nhắn này</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Hãy nhận các ứng dụng ONLYOFFICE miễn phí để làm việc trên các tài liệu từ bất kỳ thiết bị nào của bạn.
+
+# Để làm việc trên các tài liệu ngoại tuyến trên Windows, Linux và Mac, hãy tải "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Để chỉnh sửa tài liệu trên thiết bị di động, hãy tải ứng dụng ONLYOFFICE Documents cho "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" hay "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com": "http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
 </root>

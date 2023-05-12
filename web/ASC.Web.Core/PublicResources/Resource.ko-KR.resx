@@ -229,4 +229,10 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>관리자/고급 사용자 수:</value>
   </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>스타트업</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>비즈니스</value>
+  </data>
 </root>
