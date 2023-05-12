@@ -23,6 +23,7 @@
   "idpSignResponseRequest": "ຢືນ​ຢັນ​ການ​ຕອບ​ສະ​ຫນອງ​ການ​ອອກ​ຈາກ​ລະ​ບົບ​",
   "LogoutEndpointUrl": "IdP Single Logout URL ຈຸດສິ້ນສຸດ",
   "LogoutEndpointUrlTooltip": "URL ທີ່ໃຊ້ສໍາລັບການອອກຈາກລະບົບດຽວຢູ່ໃນດ້ານຜູ້ໃຫ້ບໍລິການ",
+  "MetadataLoadError": "ບໍ່ໄດ້ໂອນໄຟລ໌ metadata",
   "NameIDFormat": "ຮູບແບບ NameId",
   "NewCertificate": "ໃບຮັບຮອງໃໝ່",
   "OpenCertificate": "ໃບຢັ້ງຢືນສາທາລະນະ",

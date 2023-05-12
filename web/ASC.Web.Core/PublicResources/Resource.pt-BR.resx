@@ -566,7 +566,7 @@
     <value>Conecte o aplicativo para gerenciar os arquivos e pastas da Box.</value>
   </data>
   <data name="ConsumersBoxInstructionV11" xml:space="preserve">
-    <value>Habilite este aplicativo para conectar sua conta Box ao módulo Documentos. Você poderá gerenciar, editar e compartilhar arquivos do Box com usuários ONLYOFFICE. Assine sua conta na página de desenvolvedores do Box e crie um novo aplicativo para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+    <value>Habilite este aplicativo para conectar sua conta Box ao módulo Documentos. Você poderá gerenciar, editar e compartilhar arquivos do Box com usuários ONLYOFFICE. {0}Assine sua conta na página de desenvolvedores do Box e crie um novo aplicativo para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
     <value>Clickatell</value>

@@ -2344,6 +2344,15 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ${LetterLogoText} password assistance.
+        /// </summary>
+        public static string subject_change_password {
+            get {
+                return ResourceManager.GetString("subject_change_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Confirm changing your password.
         /// </summary>
         public static string subject_change_password_v115 {
