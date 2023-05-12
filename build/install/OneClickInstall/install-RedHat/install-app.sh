@@ -152,21 +152,15 @@ if [ "$PRODUCT_INSTALLED" = "false" ]; then
 		-mysqlu ${MYSQL_SERVER_USER} \
 		-mysqlp ${MYSQL_ROOT_PASS}
 elif [[ $PRODUCT_CHECK_UPDATE -eq $UPDATE_AVAILABLE_CODE ]]; then
-	ENVIRONMENT="$(cat /lib/systemd/system/${product}-api.service | grep -oP 'ENVIRONMENT=\K.*')"
-	USER_CONNECTIONSTRING=$(json -f /etc/onlyoffice/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
-	MYSQL_SERVER_HOST=$(echo $USER_CONNECTIONSTRING | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_DB_NAME=$(echo $USER_CONNECTIONSTRING | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_USER=$(echo $USER_CONNECTIONSTRING | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
-	MYSQL_SERVER_PORT=$(echo $USER_CONNECTIONSTRING | grep -oP 'Port=\K.*' | grep -o '^[^;]*')
-	MYSQL_ROOT_PASS=$(echo $USER_CONNECTIONSTRING | grep -oP 'Password=\K.*' | grep -o '^[^;]*')
-
+	ENVIRONMENT=$(grep -oP 'ENVIRONMENT=\K.*' /lib/systemd/system/${product}-api.service)
+	CONNECTION_STRING=$(json -f /etc/${package_sysname}/${product}/appsettings.$ENVIRONMENT.json ConnectionStrings.default.connectionString)
 	${package_manager} -y update ${product}
 	${product}-configuration \
-		-e ${ENVIRONMENT} \
-		-mysqlh ${MYSQL_SERVER_HOST} \
-		-mysqld ${MYSQL_SERVER_DB_NAME} \
-		-mysqlu ${MYSQL_SERVER_USER} \
-		-mysqlp ${MYSQL_ROOT_PASS}
+		-e $ENVIRONMENT \
+		-mysqlh $(grep -oP 'Server=\K[^;]*' <<< "$CONNECTION_STRING") \
+		-mysqld $(grep -oP 'Database=\K[^;]*' <<< "$CONNECTION_STRING") \
+		-mysqlu $(grep -oP 'User ID=\K[^;]*' <<< "$CONNECTION_STRING") \
+		-mysqlp $(grep -oP 'Password=\K[^;]*' <<< "$CONNECTION_STRING")
 fi
 
 echo ""
