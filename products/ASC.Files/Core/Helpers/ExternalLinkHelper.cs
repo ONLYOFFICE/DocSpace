@@ -85,6 +85,7 @@ public class ExternalLinkHelper
         }
         
         result.Access = record.Share;
+        result.TenantId = record.TenantId;
 
         if (_securityContext.IsAuthenticated || !string.IsNullOrEmpty(_externalShare.GetAnonymousSessionKey()))
         {

@@ -270,6 +270,7 @@ public class ValidationInfo
     public FileShare Access { get; set; }
     public FolderType FolderType { get; set; }
     public Logo Logo { get; set; }
+    public int TenantId { get; set; }
 }
 
 public class ExternalShareData

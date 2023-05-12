@@ -35,6 +35,7 @@ public class ExternalShareDto : IMapFrom<ValidationInfo>
     public string Id { get; set; }
     public string Title { get; set; }
     public RoomType? RoomType { get; set; }
+    public int TenantId { get; set; }
     public Logo Logo { get; set; }
 
     public void Mapping(Profile profile)
