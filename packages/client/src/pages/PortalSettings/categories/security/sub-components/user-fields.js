@@ -115,7 +115,7 @@ const UserFields = (props) => {
             <StyledInputWrapper key={`user-input-${index}`}>
               <TextInput
                 id={`user-input-${index}`}
-                isAutoFocussed={false}
+                isAutoFocussed={true}
                 value={input}
                 onChange={(e) => onChangeInput(e, index)}
                 onBlur={() => onBlur(index)}

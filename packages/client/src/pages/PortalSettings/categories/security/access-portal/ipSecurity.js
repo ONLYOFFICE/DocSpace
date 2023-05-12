@@ -135,6 +135,8 @@ const IpSecurity = (props) => {
   };
 
   const onSaveClick = async () => {
+    const newIps = ips.filter((ips) => ips.trim() !== "");
+    setIps(newIps);
     setIsSaving(true);
     const valid = ips.map((ip) => regexp.test(ip));
     if (valid.includes(false)) {
