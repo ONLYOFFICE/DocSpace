@@ -3041,6 +3041,10 @@ const Dark = {
         benefitsContainer: {
           iconsColor: "#858585",
         },
+        contactContainer: {
+          textColor: "#A3A9AE",
+          linkColor: "#657077",
+        },
         warningColor: "#E06451",
       },
     },

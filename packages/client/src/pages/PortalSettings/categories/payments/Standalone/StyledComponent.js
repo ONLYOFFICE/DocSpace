@@ -33,6 +33,9 @@ const StyledContactComponent = styled.div`
     p {
       margin-right: 4px;
     }
+    a {
+      text-decoration: underline;
+    }
   }
 `;
 

@@ -3039,6 +3039,11 @@ const Base = {
           iconsColor: "#657077",
         },
 
+        contactContainer: {
+          textColor: "#A3A9AE",
+          linkColor: "#657077",
+        },
+
         warningColor: "#F21C0E",
       },
     },
