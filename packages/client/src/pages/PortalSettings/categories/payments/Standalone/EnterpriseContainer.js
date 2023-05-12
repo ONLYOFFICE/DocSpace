@@ -11,6 +11,7 @@ import {
   StyledEnterpriseComponent,
   StyledButtonComponent,
 } from "./StyledComponent";
+import BenefitsContainer from "./sub-components/BenefitsContainer";
 
 const EnterpriseContainer = (props) => {
   const { buyUrl, salesEmail, t, isSubscriptionExpired, theme } = props;
@@ -41,12 +42,13 @@ const EnterpriseContainer = (props) => {
         </Text>
         {subscriptionDescription}
       </div>
+      {isSubscriptionExpired && <BenefitsContainer t={t} />}
       <Text
         fontWeight={400}
         fontSize="14px"
         className="payments_renew-subscription"
       >
-        {t("EnterpriseRenewal")}
+        {isSubscriptionExpired ? t("BuyLicense") : t("EnterpriseRenewal")}
       </Text>
       <StyledButtonComponent>
         <Button
