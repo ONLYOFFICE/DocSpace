@@ -3361,6 +3361,11 @@ public class FileStorageService //: IFileStorageService
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
+        if (linkId == default)
+        {
+            throw new ArgumentException(null, nameof(linkId));
+        }
+
         var action = EventType.Create;
         
         var links = (await _fileSecurity.GetSharesAsync(entry))
