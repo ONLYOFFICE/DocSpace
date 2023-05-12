@@ -112,7 +112,7 @@ export const getPDFToolbar = (): ReturnType<typeof getCustomToolbar> => {
       actionType: ToolbarActionType.Panel,
       render: (
         <div className="iconContainer zoomOut">
-          <PanelReactSvg size="scale" />
+          <PanelReactSvg size="scale" transform="rotate(180)" />
         </div>
       ),
     },
