@@ -8,9 +8,18 @@ import {
   frameCallEvent,
   frameCallbackData,
   createPasswordHash,
+  frameCallCommand,
 } from "@docspace/common/utils";
 
-const Sdk = (props) => {
+const Sdk = ({
+  frameConfig,
+  match,
+  setFrameConfig,
+  login,
+  logout,
+  hashSettings,
+  user,
+}) => {
   useEffect(() => {
     window.addEventListener("message", handleMessage, false);
     return () => {
@@ -18,11 +27,13 @@ const Sdk = (props) => {
     };
   }, [handleMessage]);
 
-  const { mode } = props.match.params;
+  useEffect(() => {
+    if (window.parent && !frameConfig) frameCallCommand("setConfig");
+  }, [frameConfig]);
+
+  const { mode } = match.params;
 
   const handleMessage = (e) => {
-    const { setFrameConfig, login, logout, hashSettings, user } = props;
-
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
 
     if (eventData.data) {
