@@ -122,7 +122,7 @@ public class SmtpSettingsController : ControllerBase
             _coreConfiguration.SmtpSettings = null;
         }
 
-        var current = _coreConfiguration.SmtpSettings;
+        var current = _coreConfiguration.DefaultSmtpSettings;
 
         var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
         settings.CredentialsUserPassword = "";

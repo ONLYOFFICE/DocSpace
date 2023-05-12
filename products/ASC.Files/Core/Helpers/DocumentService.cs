@@ -334,7 +334,11 @@ public static class DocumentService
 
         try
         {
-            var commandResponse = JsonConvert.DeserializeObject<CommandResponse>(dataResponse);
+            var commandResponse = JsonSerializer.Deserialize<CommandResponse>(dataResponse, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                PropertyNameCaseInsensitive = true
+            });
             return commandResponse;
         }
         catch (Exception ex)
@@ -858,7 +862,7 @@ public static class DocumentService
 
         public static void ProcessResponseError(string errorCode)
         {
-            if (!ErrorCodeExtensions.TryParse(errorCode, true, out ErrorCode code))
+            if (!ErrorCodeExtensions.TryParse(errorCode, true, out var code))
             {
                 code = ErrorCode.Unknown;
             }
