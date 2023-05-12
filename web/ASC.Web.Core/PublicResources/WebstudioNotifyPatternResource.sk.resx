@@ -690,4 +690,190 @@ ONLYOFFICE Team</value>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>Používateľ DocSpace bol aktualizovaný: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
   </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Chcete zmeniť heslo na svojom účte ONLYOFFICE? Kliknite na tlačidlo nižšie.
+
+$GreenButton
+
+Odkaz je platný 7 dní.
+
+Nechcete si zmeniť heslo? Jednoducho ignorujte túto správu</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Práve ste vytvorili ONLYOFFICE DocSpace, hub dokumentov, v ktorom môžete zlepšiť spoluprácu so svojím tímom, zákazníkmi, partnermi a ďalšími. Jeho adresa je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Potvrďte svoj e-mail (odkaz je platný 7 dní):
+
+$GreenButton
+
+Váš aktuálny tarifný plán je STARTUP. Je úplne bezplatný a zahŕňa:
+
+* 1 administrátora, 2 výkonných používateľov
+* Až 12 miestností
+* Neobmedzený počet používateľov v každej miestnosti
+* 2 GB priestoru na disku
+
+Užite si nový spôsob spolupráce na dokumentoch!
+
+Skutočne Váš,
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Práve ste vytvorili ONLYOFFICE DocSpace - hub dokumentov, v ktorom môžete zlepšiť spoluprácu so svojím tímom, zákazníkmi, partnermi a ďalšími. Jeho adresa je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Potvrďte svoj e-mail (odkaz je platný 7 dní):
+
+$GreenButton
+
+Váš aktuálny tarifný plán je STARTUP. Je úplne bezplatný a zahŕňa:
+
+* 1 administrátora, 2 pokročilých používateľov
+* Až 12 miestností
+* Neobmedzený počet používateľov v každej miestnosti
+* 2 GB priestoru na disku
+
+Užite si nový spôsob spolupráce na dokumentoch!
+
+Skutočne Váš,
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Práve ste vytvorili ONLYOFFICE DocSpace, hub dokumentov, v ktorom môžete zlepšiť spoluprácu so svojím tímom, zákazníkmi, partnermi a ďalšími. Jeho adresa je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Potvrďte svoj e-mail (odkaz je platný 7 dní):
+
+$GreenButton
+
+Váš aktuálny tarifný plán je STARTUP. Je úplne bezplatný a zahŕňa:
+
+* 1 administrátora, 2 výkonných používateľov
+* Až 12 miestností
+* Neobmedzený počet používateľov v každej miestnosti
+* 2 GB priestoru na disku
+
+Užite si nový spôsob spolupráce na dokumentoch!
+
+Skutočne Váš,
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Práve ste vytvorili ONLYOFFICE DocSpace - hub dokumentov, v ktorom môžete zlepšiť spoluprácu so svojím tímom, zákazníkmi, partnermi a ďalšími. Jeho adresa je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Potvrďte svoj e-mail (odkaz je platný 7 dní):
+
+$GreenButton
+
+Váš aktuálny tarifný plán je STARTUP. Je úplne bezplatný a zahŕňa:
+
+* 1 administrátora, 2 pokročilých používateľov
+* Až 12 miestností
+* Neobmedzený počet používateľov v každej miestnosti
+* 2 GB priestoru na disku
+
+Užite si nový spôsob spolupráce na dokumentoch!
+
+Skutočne Váš,
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Získajte bezplatné aplikácie ONLYOFFICE na spracovanie dokumentov z ľubovoľného zariadenia.
+
+# Ak chcete pracovať na dokumentoch offline v systémoch Windows, Linux a Mac, stiahnite si "ONLYOFFICE Desktop Editors": "https://www.onlyoffice.com/download-desktop.aspx".
+
+# Ak chcete upravovať dokumenty na mobilných zariadeniach, stiahnite si aplikáciu ONLYOFFICE Documents pre "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" alebo "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Skutočne Váš, 
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Dúfame, že sa vám bude páčiť práca s vašim ONLYOFFICE DocSpace. Tu je niekoľko tipov, ako si zefektívniť prácu s dokumentmi.
+
+*#1. Zvoľte si spôsob práce: * Usporiadajte si svoje pracovné postupy tak, ako potrebujete. Vytvorte miestnosti na spoluprácu pre spoluautorstvo v reálnom čase alebo vlastné miestnosti s flexibilnými nastaveniami na akýkoľvek účel.
+
+*#2. Pracujte s ľubovoľným obsahom, ktorý máte.* V miestnostiach môžete ukladať súbory rôznych formátov a pracovať s nimi: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, súbory PDF, elektronické knihy, multimédiá.
+
+*#3. Efektívne spoluautorstvo.* Spolupracujte na dokumentoch pomocou dvoch režimov spoluautorstva: v reálnom čase alebo s s uzamykaním paragrafov. Sledujte zmeny, komunikujte v reálnom čase pomocou zabudovaného chatu alebo uskutočňujte audio- a videohovory.
+
+*#4. Pripojte cloudy tretích strán.* Pripojte akékoľvek cloudové úložisko a pracujte bez prepínania medzi aplikáciami.
+
+$GreenButton
+
+Skutočne Váš, 
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Dúfame, že sa vám bude páčiť práca s vašim ONLYOFFICE DocSpace. Tu je niekoľko tipov, ako si zefektívniť prácu s dokumentmi.
+
+*#1. Zvoľte si spôsob práce: * Usporiadajte si svoje pracovné postupy tak, ako potrebujete. Vytvorte miestnosti na spoluprácu pre spoluautorstvo v reálnom čase alebo vlastné miestnosti s flexibilnými nastaveniami na akýkoľvek účel.
+
+*#2. Pracujte s ľubovoľným obsahom, ktorý máte.* V miestnostiach môžete ukladať súbory rôznych formátov a pracovať s nimi: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, súbory PDF, elektronické knihy, multimédiá.
+
+*#3. Efektívne spoluautorstvo.* Spolupracujte na dokumentoch pomocou dvoch režimov spoluautorstva: v reálnom čase alebo s s uzamykaním paragrafov. Sledujte zmeny, komunikujte v reálnom čase pomocou zabudovaného chatu alebo uskutočňujte audio- a videohovory.
+
+*#4. Pripojte cloudy tretích strán.* Pripojte akékoľvek cloudové úložisko a pracujte bez prepínania medzi aplikáciami.
+
+$GreenButton
+
+Skutočne Váš, 
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Dúfame, že sa vám bude páčiť práca s vašim ONLYOFFICE DocSpace. Tu je niekoľko tipov, ako si zefektívniť prácu s dokumentmi.
+
+*#1. Zvoľte si spôsob práce: * Usporiadajte si svoje pracovné postupy tak, ako potrebujete. Vytvorte miestnosti na spoluprácu pre spoluautorstvo v reálnom čase alebo vlastné miestnosti s flexibilnými nastaveniami na akýkoľvek účel.
+
+*#2. Pracujte s ľubovoľným obsahom, ktorý máte.* V miestnostiach môžete ukladať súbory rôznych formátov a pracovať s nimi: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, súbory PDF, elektronické knihy, multimédiá.
+
+*#3. Efektívne spoluautorstvo.* Spolupracujte na dokumentoch pomocou dvoch režimov spoluautorstva: v reálnom čase alebo s s uzamykaním paragrafov. Sledujte zmeny, komunikujte v reálnom čase pomocou zabudovaného chatu alebo uskutočňujte audio- a videohovory.
+
+*#4. Pripojte cloudy tretích strán.* Pripojte akékoľvek cloudové úložisko a pracujte bez prepínania medzi aplikáciami.
+
+$GreenButton
+
+Skutočne Váš, 
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Dobrý deň, $UserName!
+
+Dúfame, že sa vám bude páčiť práca s vašim ONLYOFFICE DocSpace. Tu je niekoľko tipov, ako si zefektívniť prácu s dokumentmi.
+
+*#1. Zvoľte si spôsob práce: * Usporiadajte si svoje pracovné postupy tak, ako potrebujete. Vytvorte miestnosti na spoluprácu pre spoluautorstvo v reálnom čase alebo vlastné miestnosti s flexibilnými nastaveniami na akýkoľvek účel.
+
+*#2. Pracujte s ľubovoľným obsahom, ktorý máte.* V miestnostiach môžete ukladať súbory rôznych formátov a pracovať s nimi: textové dokumenty, tabuľky, prezentácie, digitálne formuláre, súbory PDF, elektronické knihy, multimédiá.
+
+*#3. Efektívne spoluautorstvo.* Spolupracujte na dokumentoch pomocou dvoch režimov spoluautorstva: v reálnom čase alebo s s uzamykaním paragrafov. Sledujte zmeny, komunikujte v reálnom čase pomocou zabudovaného chatu alebo uskutočňujte audio- a videohovory.
+
+*#4. Pripojte cloudy tretích strán.* Pripojte akékoľvek cloudové úložisko a pracujte bez prepínania medzi aplikáciami.
+
+$GreenButton
+
+Skutočne Váš, 
+tím ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
 </root>

@@ -1169,7 +1169,7 @@ $GreenButton
  
 С уважением,
 команда ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ru"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
     <value>Здравствуйте, $UserName!
@@ -1191,7 +1191,7 @@ $GreenButton
  
 С уважением,
 команда ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ru"</value>
   </data>
   <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
     <value>Здравствуйте, $UserName!
@@ -1213,7 +1213,7 @@ $GreenButton
  
 С уважением,
 команда ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ru"</value>
   </data>
   <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
     <value>Здравствуйте, $UserName!
@@ -1235,7 +1235,7 @@ $GreenButton
  
 С уважением,
 команда ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ru"</value>
   </data>
   <data name="pattern_personal_change_password_v115" xml:space="preserve">
     <value>Хотите изменить пароль от своего аккаунта ONLYOFFICE Personal? Нажмите кнопку ниже для подтверждения.
@@ -1266,7 +1266,7 @@ $GreenButton
  
 С уважением,
 команда ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ru"</value>
   </data>
   <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
     <value>Здравствуйте, $UserName!

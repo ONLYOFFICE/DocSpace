@@ -507,7 +507,7 @@ setup_nginx(){
 }
 
 setup_docs() {
-	echo -n "Configuring Docs... "
+	echo -n "Configuring docs... "
 	local DS_CONF="/etc/${PACKAGE_SYSNAME}/documentserver/local.json"
 	local DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-localhost}
 	local DOCUMENT_SERVER_PORT=${DOCUMENT_SERVER_PORT:-$(grep -oP '(?<=:)\d+(?=\s)' $NGINX_CONF/ds.conf)}

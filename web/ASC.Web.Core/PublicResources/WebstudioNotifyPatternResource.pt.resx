@@ -117,4 +117,188 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Quer alterar a palavra*passe da sua conta ONLYOFFICE? Clique no botão abaixo para confirmar.
+
+$GreenButton
+
+O link é válido por 7 dias.
+
+Não quer alterar a sua palavra-passe? Simplesmente ignore esta mensagem.</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Acabou de criar um DocSpace na ONLYOFFICE, uma plataforma de documentos onde pode melhorar a colaboração com a sua equipa, clientes, parceiros, e muito mais. O seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Por favor confirme o seu email (o link é válido por 7 dias):
+
+$GreenButton
+
+O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
+
+* 1 administrador, 2 utilizadores com poder
+* Até 12 salas
+* Um número ilimitado de utilizadores em cada sala
+* 2 GB de armazenamento
+
+Desfrute de uma nova forma de colaborar em documentos!
+
+Com os melhores cumprimentos,
+A Equipa da ONLYOFFICE 
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Acabou de criar um DocSpace na ONLYOFFICE, uma plataforma de documentos onde pode melhorar a colaboração com a sua equipa, clientes, parceiros e muito mais. O seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Por favor confirme o seu email (o link é válido por 7 dias):
+$GreenButton
+
+O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
+
+* 1 administrador, 2 utilizadores com poder
+* Até 12 salas
+* Um número ilimitado de utilizadores em cada sala
+* 2 GB de armazenamento
+
+Desfrute de uma nova forma de colaborar em documentos!
+
+Com os melhores cumprimentos,
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Acabou de criar um DocSpace na ONLYOFFICE, uma plataforma de documentos onde pode melhorar a colaboração com a sua equipa, clientes, parceiros, e muito mais. O seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Por favor confirme o seu email (o link é válido por 7 dias):
+
+$GreenButton
+
+O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
+
+* 1 administrador, 2 utilizadores com poder
+* Até 12 salas
+* Um número ilimitado de utilizadores em cada sala
+* 2 GB de armazenamento
+
+Desfrute de uma nova forma de colaborar em documentos!
+
+Com os melhores cumprimentos,
+A Equipa da ONLYOFFICE 
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Acabou de criar um DocSpace na ONLYOFFICE, uma plataforma de documentos onde pode melhorar a colaboração com a sua equipa, clientes, parceiros e muito mais. O seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Por favor confirme o seu email (o link é válido por 7 dias):
+$GreenButton
+
+O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
+
+* 1 administrador, 2 utilizadores com poder
+* Até 12 salas
+* Um número ilimitado de utilizadores em cada sala
+* 2 GB de armazenamento
+
+Desfrute de uma nova forma de colaborar em documentos!
+
+Com os melhores cumprimentos,
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Obtenha as aplicações gratuitas da ONLYOFFICE para trabalhar em documentos através de qualquer um dos seus dispositivos.
+
+# Para trabalhar em documentos offline no Windows, Linux e Mac, faça o download da "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Para editar documentos nos seus dispositivos móveis, obtenha a Aplicação ONLYOFFICE Documents para "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" ou para "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Esperamos que goste de utilizar o seu DocSpace da ONLYOFFICE. Aqui estão algumas dicas sobre como tornar o trabalho com documentos mais eficaz.
+
+*#1. Organize seu fluxo de trabalho conforme necessário, criando salas de colaboração para coautoria em tempo real ou salas personalizadas com configurações flexíveis para qualquer finalidade.
+
+*#2. Armazene e trabalhe com ficheiros de diferentes formatos nas suas salas: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+*#3. Colabore eficazmente em documentos com dois modos de coedição: em tempo real ou com bloqueio de parágrafos. Acompanhe as alterações, comunique em tempo real utilizando o chat incorporado ou através de chamadas de áudio e vídeo.
+
+*#4. Associe nuvens de terceiros.* Ligue qualquer armazenamento em nuvem e trabalhe sem ter de sem alternar entre aplicações.
+
+$GreenButton
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE 
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Esperamos que goste de utilizar o seu DocSpace da ONLYOFFICE. Aqui estão algumas dicas sobre como tornar o trabalho com documentos mais eficaz.
+
+*#1. Organize seu fluxo de trabalho conforme necessário, criando salas de colaboração para coautoria em tempo real ou salas personalizadas com configurações flexíveis para qualquer finalidade.
+
+*#2. Armazene e trabalhe com ficheiros de diferentes formatos nas suas salas: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+*#3. Colabore eficazmente em documentos com dois modos de coedição: em tempo real ou com bloqueio de parágrafos. Acompanhe as alterações, comunique em tempo real utilizando o chat incorporado ou através de chamadas de áudio e vídeo.
+
+*#4. Associe nuvens de terceiros.* Ligue qualquer armazenamento em nuvem e trabalhe sem ter de sem alternar entre aplicações.
+
+$GreenButton
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE 
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Esperamos que goste de utilizar o seu DocSpace da ONLYOFFICE. Aqui estão algumas dicas sobre como tornar o trabalho com documentos mais eficaz.
+
+*#1. Organize seu fluxo de trabalho conforme necessário, criando salas de colaboração para coautoria em tempo real ou salas personalizadas com configurações flexíveis para qualquer finalidade.
+
+*#2. Armazene e trabalhe com ficheiros de diferentes formatos nas suas salas: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+*#3. Colabore eficazmente em documentos com dois modos de coedição: em tempo real ou com bloqueio de parágrafos. Acompanhe as alterações, comunique em tempo real utilizando o chat incorporado ou através de chamadas de áudio e vídeo.
+
+*#4. Associe nuvens de terceiros.* Ligue qualquer armazenamento em nuvem e trabalhe sem ter de sem alternar entre aplicações.
+
+$GreenButton
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE 
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Olá, $UserName!
+
+Esperamos que goste de utilizar o seu DocSpace da ONLYOFFICE. Aqui estão algumas dicas sobre como tornar o trabalho com documentos mais eficaz.
+
+*#1. Organize seu fluxo de trabalho conforme necessário, criando salas de colaboração para coautoria em tempo real ou salas personalizadas com configurações flexíveis para qualquer finalidade.
+
+*#2. Armazene e trabalhe com ficheiros de diferentes formatos nas suas salas: documentos de texto, folhas de cálculo, apresentações, formulários digitais, PDFs, e-books, multimédia.
+
+*#3. Colabore eficazmente em documentos com dois modos de coedição: em tempo real ou com bloqueio de parágrafos. Acompanhe as alterações, comunique em tempo real utilizando o chat incorporado ou através de chamadas de áudio e vídeo.
+
+*#4. Associe nuvens de terceiros.* Ligue qualquer armazenamento em nuvem e trabalhe sem ter de sem alternar entre aplicações.
+
+$GreenButton
+
+Com os melhores cumprimentos, 
+A Equipa da ONLYOFFICE 
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
 </root>

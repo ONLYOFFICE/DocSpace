@@ -64,7 +64,7 @@
   <data name="pattern_EditorMentions" xml:space="preserve">
     <value>h1. Ο/Η $__AuthorName σας ανέφερε στο σχόλιο του εγγράφου
 
-Ο/Η $__AuthorName σας ανέφερε στο σχόλιο του εγγράφου «$DocumentTitle»:«$DocumentURL» στο δωμάτιο «$RoomTitle»:«$RoomURL»:
+Ο/Η $__AuthorName σας ανέφερε στο σχόλιο του εγγράφου "$DocumentTitle":"$DocumentURL" στο δωμάτιο "$RoomTitle":"$RoomURL":
 
 $Message</value>
   </data>

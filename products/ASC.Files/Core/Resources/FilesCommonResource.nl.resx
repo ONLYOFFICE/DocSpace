@@ -125,7 +125,7 @@
     <value>Hersteld van versie van {0}</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Hersteld van de</value>
+    <value>Hersteld van de {0}</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Geupload</value>
@@ -390,5 +390,14 @@
   </data>
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>U kunt geen kamer vastpinnen</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Aangepaste filter</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collega</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
   </data>
 </root>
