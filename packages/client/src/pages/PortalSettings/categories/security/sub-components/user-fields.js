@@ -20,6 +20,9 @@ StyledPlusIcon.defaultProps = { theme: Base };
 const StyledTrashIcon = styled(TrashIcon)`
   ${commonIconsStyles}
   cursor: pointer;
+  path {
+    fill: ${(props) => props.theme.client.settings.trashIcon};
+  }
 `;
 
 const StyledInputWrapper = styled.div`
