@@ -83,11 +83,6 @@ namespace ASC.Migrations.MySql.Migrations
                     table.PrimaryKey("PK_Regions", x => x.Region);
                 })
                 .Annotation("MySql:CharSet", "utf8");
-
-            migrationBuilder.CreateIndex(
-                name: "ip_start",
-                table: "dbip_location",
-                column: "ip_start");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
