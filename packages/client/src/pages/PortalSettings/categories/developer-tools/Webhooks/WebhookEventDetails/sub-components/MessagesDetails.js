@@ -13,23 +13,25 @@ const SubmenuWrapper = styled.div`
 `;
 
 export const MessagesDetails = ({ webhookDetails }) => {
+  const menuData = [
+    {
+      id: "webhookRequest",
+      name: "Request",
+      content: <RequestDetails webhookDetails={webhookDetails} />,
+    },
+  ];
+
+  webhookDetails.status >= 200 &&
+    webhookDetails.status < 500 &&
+    menuData.push({
+      id: "webhookResponse",
+      name: "Response",
+      content: <ResponseDetails webhookDetails={webhookDetails} />,
+    });
+
   return (
     <SubmenuWrapper>
-      <Submenu
-        data={[
-          {
-            id: "webhookRequest",
-            name: "Request",
-            content: <RequestDetails webhookDetails={webhookDetails} />,
-          },
-          {
-            id: "webhookResponse",
-            name: "Response",
-            content: <ResponseDetails webhookDetails={webhookDetails} />,
-          },
-        ]}
-        startSelect={0}
-      />
+      <Submenu data={menuData} startSelect={0} />
     </SubmenuWrapper>
   );
 };

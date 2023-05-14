@@ -1,40 +1,70 @@
 import React from "react";
-import styled from "styled-components";
-import { Text, Textarea } from "@docspace/components";
+import styled, { css } from "styled-components";
+import { Text, Textarea, Button } from "@docspace/components";
 
-import DangerIcon from "PUBLIC_DIR/images/danger.toast.react.svg?url";
+import json_beautifier from "csvjson-json_beautifier";
 
 const DetailsWrapper = styled.div`
   width: 100%;
+
+  .textareaBody {
+    height: 50vh !important;
+  }
 `;
 
-const ErrorMessageTooltip = styled.div`
-  width: 100%;
-  padding: 8px 12px;
-  background: #f7cdbe;
+const LargePayloadStub = styled.div`
+  box-sizing: border-box;
 
-  box-shadow: 0px 5px 20px rgba(4, 15, 27, 0.07);
-  border-radius: 6px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
+
+  width: 100%;
+  max-width: 1200px;
+  padding: 12px 10px;
+  margin-top: 4px;
+
+  background: #f8f9f9;
+  border: 1px solid #eceef1;
+  border-radius: 3px;
+
+  ${window.innerWidth <= 440 &&
+  css`
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    row-gap: 16px;
+  `}
 `;
+
+function isJSON(jsonString) {
+  try {
+    const parsedJson = JSON.parse(jsonString);
+    return parsedJson && typeof parsedJson === "object";
+  } catch (e) {}
+
+  return false;
+}
 
 export const ResponseDetails = ({ webhookDetails }) => {
-  if (
-    !(
-      webhookDetails.hasOwnProperty("responseHeaders") ||
-      webhookDetails.hasOwnProperty("responsePayload")
-    )
-  ) {
-    return (
-      <ErrorMessageTooltip>
-        <img src={DangerIcon} alt="danger icon" style={{ marginRight: "8px" }} />
-        The SSL connection could not be established, see inner exception.
-      </ErrorMessageTooltip>
-    );
-  }
-
   const responsePayload = webhookDetails.responsePayload?.trim();
+
+  const beautifiedJSON = isJSON(responsePayload)
+    ? json_beautifier(JSON.parse(responsePayload), {
+        inlineShortArrays: true,
+      })
+    : responsePayload;
+
+  const numberOfLines = isJSON(responsePayload)
+    ? beautifiedJSON.split("\n").length
+    : responsePayload.split("\n").length;
+
+  const openRawPayload = () => {
+    const rawPayload = window.open("");
+    isJSON(responsePayload)
+      ? rawPayload.document.write(beautifiedJSON.replace(/(?:\r\n|\r|\n)/g, "<br/>"))
+      : rawPayload.document.write(responsePayload);
+    rawPayload.focus();
+  };
 
   return (
     <DetailsWrapper>
@@ -51,10 +81,24 @@ export const ResponseDetails = ({ webhookDetails }) => {
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
         Response post body
       </Text>
-      {responsePayload === "" ? (
+      {responsePayload.length > 4000 || numberOfLines > 100 ? (
+        <LargePayloadStub>
+          <Text fontWeight={600} color="#657077">
+            Payload is too large to display.
+          </Text>
+          <Button
+            size="small"
+            onClick={openRawPayload}
+            label="View raw payload"
+            scale={window.innerWidth <= 440}
+          />
+        </LargePayloadStub>
+      ) : responsePayload === "" ? (
         <Textarea isDisabled />
-      ) : (
+      ) : isJSON(responsePayload) ? (
         <Textarea value={responsePayload} isJSONField enableCopy hasNumeration isFullHeight />
+      ) : (
+        <Textarea value={responsePayload} enableCopy heightScale className="textareaBody" />
       )}
     </DetailsWrapper>
   );
