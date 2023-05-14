@@ -1,15 +1,18 @@
+import React from "react";
 import styled from "styled-components";
-import { DateItem } from "./DateItem";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-export const CurrentDateItem = styled(DateItem)`
+export const CurrentDateItem = styled(({ ...props }) => (
+  <ColorTheme themeId={ThemeType.DateItem} {...props} />
+))`
   border-radius: 50%;
-  color: white;
+  color: white !important;
 
-  :hover{
-    color: white;
+  :hover {
+    color: white !important;
   }
 
-  :focus{
-    color: white;
+  :focus {
+    color: white !important;
   }
 `;

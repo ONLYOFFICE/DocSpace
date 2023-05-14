@@ -19,6 +19,7 @@ const Calendar = ({
   initialDate,
   onChange,
   isMobile,
+  forwardedRef,
 }) => {
   moment.locale(locale);
 
@@ -53,6 +54,7 @@ const Calendar = ({
       className={className}
       style={style}
       isMobile={isMobile}
+      ref={forwardedRef}
     >
       {selectedScene === 0 ? (
         <Days

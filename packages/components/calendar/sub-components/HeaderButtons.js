@@ -1,10 +1,6 @@
 import React from "react";
-import {
-  ButtonsContainer,
-  RoundButton,
-  PrevIcon,
-  NextIcon,
-} from "../styled-components";
+import { ButtonsContainer, PrevIcon, NextIcon } from "../styled-components";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 export const HeaderButtons = ({
   onLeftClick,
@@ -14,17 +10,22 @@ export const HeaderButtons = ({
 }) => {
   return (
     <ButtonsContainer>
-      <RoundButton
+      <ColorTheme
+        themeId={ThemeType.RoundButton}
         style={{ marginRight: "12px" }}
         onClick={onLeftClick}
         disabled={isLeftDisabled}
       >
         <PrevIcon />
-      </RoundButton>
+      </ColorTheme>
 
-      <RoundButton onClick={onRightClick} disabled={isRightDisabled}>
+      <ColorTheme
+        themeId={ThemeType.RoundButton}
+        onClick={onRightClick}
+        disabled={isRightDisabled}
+      >
         <NextIcon />
-      </RoundButton>
+      </ColorTheme>
     </ButtonsContainer>
   );
 };

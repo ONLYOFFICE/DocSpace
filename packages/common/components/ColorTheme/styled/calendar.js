@@ -1,9 +1,7 @@
 import styled, { css } from "styled-components";
 import {
   Container,
-  DateItem,
   CurrentDateItem,
-  RoundButton,
   HeaderActionIcon,
 } from "@docspace/components/calendar/styled-components";
 
@@ -18,27 +16,6 @@ const getDefaultStyles = ({ $currentColorScheme }) =>
 
       :focus {
         background-color: ${$currentColorScheme.main.accent};
-      }
-    }
-    ${DateItem} {
-      color: ${(props) =>
-        props.disabled
-          ? props.theme.calendar.disabledColor
-          : props.focused
-          ? $currentColorScheme.main.accent
-          : props.theme.calendar.color};
-      border-color: ${(props) => (props.focused ? $currentColorScheme.main.accent : "transparent")};
-    }
-    ${RoundButton} {
-      :hover {
-        outline: ${(props) =>
-          props.disabled
-            ? `1px solid ${props.theme.calendar.outlineColor}`
-            : `2px solid ${$currentColorScheme.main.accent}`};
-        span {
-          border-color: ${(props) =>
-            props.disabled ? props.theme.calendar.disabledArrow : $currentColorScheme.main.accent};
-        }
       }
     }
     ${HeaderActionIcon} {

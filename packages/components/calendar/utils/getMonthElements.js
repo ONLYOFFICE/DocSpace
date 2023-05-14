@@ -1,10 +1,7 @@
 import React from "react";
 import moment from "moment";
-import {
-  CurrentDateItem,
-  DateItem,
-  SecondaryDateItem,
-} from "../styled-components";
+import { CurrentDateItem, SecondaryDateItem } from "../styled-components";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const onDateClick = (dateString, setObservedDate, setSelectedScene) => {
   setObservedDate((prevObservedDate) =>
@@ -30,7 +27,8 @@ export const getMonthElements = (
   const dateFormat = "YYYY-M";
 
   const monthsElements = months.map((month) => (
-    <DateItem
+    <ColorTheme
+      themeId={ThemeType.DateItem}
       big
       key={month.key}
       onClick={() => onClick(month.key)}
@@ -40,7 +38,7 @@ export const getMonthElements = (
       }
     >
       {month.value}
-    </DateItem>
+    </ColorTheme>
   ));
   for (let i = 12; i < 16; i++) {
     monthsElements[i] = (
@@ -80,7 +78,8 @@ export const getMonthElements = (
       );
     } else if (month.key === formattedDate) {
       monthsElements[index] = (
-        <DateItem
+        <ColorTheme
+          themeId={ThemeType.DateItem}
           big
           key={month.key}
           focused
@@ -91,7 +90,7 @@ export const getMonthElements = (
           }
         >
           {month.value}
-        </DateItem>
+        </ColorTheme>
       );
     }
   });
