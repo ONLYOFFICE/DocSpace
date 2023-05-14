@@ -155,8 +155,8 @@ const HistoryHeader = (props) => {
             <TableGroupMenu
               checkboxOptions={menuItems}
               onChange={handleGroupSelection}
-              isIndeterminate={true}
               headerMenu={headerMenu}
+              isChecked={historyWebhooks.length === checkedEventIds.length}
               withoutInfoPanelToggler
             />
           )}
@@ -166,8 +166,8 @@ const HistoryHeader = (props) => {
         <TableGroupMenu
           checkboxOptions={menuItems}
           onChange={handleGroupSelection}
-          isIndeterminate={true}
           headerMenu={headerMenu}
+          isChecked={historyWebhooks.length === checkedEventIds.length}
           withoutInfoPanelToggler
         />
       ) : (
