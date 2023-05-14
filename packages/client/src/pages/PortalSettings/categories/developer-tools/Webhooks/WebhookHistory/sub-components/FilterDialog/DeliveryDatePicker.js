@@ -9,7 +9,7 @@ import { SelectorAddButton } from "@docspace/components";
 import { SelectedItem } from "@docspace/components";
 
 import { Calendar } from "@docspace/components";
-import { TimePicker } from "../../../sub-components/TimePicker";
+import { TimePicker } from "@docspace/components";
 
 const TimePickerCell = styled.span`
   margin-left: 8px;

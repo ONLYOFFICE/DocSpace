@@ -33,7 +33,7 @@ const TimeInput = styled.div`
   }
 `;
 
-export const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
+const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
   const timeInputRef = useRef(null);
@@ -102,7 +102,8 @@ export const TimePicker = ({ date, setDate, onChange, className, hasError }) => 
 
   const focusHoursInput = (e) => {
     const target = e.target;
-    if (!minutesInputRef.current.contains(target)) hoursInputRef.current.select();
+    if (!minutesInputRef.current.contains(target))
+      hoursInputRef.current.select();
   };
   const focusMinutesInput = () => {
     minutesInputRef.current.select();
@@ -123,7 +124,8 @@ export const TimePicker = ({ date, setDate, onChange, className, hasError }) => 
       ref={timeInputRef}
       onClick={focusHoursInput}
       className={className}
-      hasError={hasError}>
+      hasError={hasError}
+    >
       <TextInput
         withBorder={false}
         forwardedRef={hoursInputRef}
@@ -145,19 +147,22 @@ export const TimePicker = ({ date, setDate, onChange, className, hasError }) => 
 };
 
 TimePicker.propTypes = {
+  /** Inital date */
   date: PropTypes.object,
+  /** State setter function */
   setDate: PropTypes.func,
+  /** Allows to set classname */
   className: PropTypes.string,
-
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func,
+  /** Indicates error */
   hasError: PropTypes.bool,
 };
 
 TimePicker.defaultProps = {
-  date: moment(),
-  setDate: () => {},
   onChange: () => {},
   className: "",
   hasError: false,
 };
+
+export default TimePicker;

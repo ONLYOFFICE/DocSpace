@@ -47,6 +47,7 @@ export { default as TabContainer } from "./tabs-container";
 export { default as Text } from "./text";
 export { default as Textarea } from "./textarea";
 export { default as TextInput } from "./text-input";
+export { default as TimePicker } from "./time-picker";
 export { default as Toast } from "./toast";
 export { default as toastr } from "./toast/toastr";
 export { default as ToggleButton } from "./toggle-button";
