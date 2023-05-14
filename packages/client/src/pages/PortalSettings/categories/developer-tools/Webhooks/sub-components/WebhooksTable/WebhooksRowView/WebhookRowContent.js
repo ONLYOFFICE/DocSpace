@@ -7,6 +7,8 @@ import { ToggleButton } from "@docspace/components";
 
 import { StatusBadge } from "../../StatusBadge";
 
+import { isMobileOnly } from "react-device-detect";
+
 const StyledRowContent = styled(RowContent)`
   display: flex;
   padding-bottom: 10px;
@@ -41,7 +43,6 @@ const FlexWrapper = styled.div`
 `;
 
 export const WebhookRowContent = ({ sectionWidth, webhook, isChecked, handleToggleEnabled }) => {
-
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
@@ -51,9 +52,12 @@ export const WebhookRowContent = ({ sectionWidth, webhook, isChecked, handleTogg
           </Text>
           <StatusBadge status={webhook.status} />
         </FlexWrapper>
-        <Text fontWeight={600} fontSize="12px" color="#A3A9AE">
-          {webhook.uri}
-        </Text>
+
+        {!isMobileOnly && (
+          <Text fontWeight={600} fontSize="12px" color="#A3A9AE">
+            {webhook.uri}
+          </Text>
+        )}
       </ContentWrapper>
 
       <ToggleButtonWrapper>
