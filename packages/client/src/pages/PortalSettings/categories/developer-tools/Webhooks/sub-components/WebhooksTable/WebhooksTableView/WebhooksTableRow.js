@@ -38,9 +38,12 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
 
   const handleWebhookUpdate = async (webhookInfo) => {
     await editWebhook(webhook, webhookInfo);
-    toastr.success("Key reset successfully", <b>Done</b>);
+    toastr.success("Webhook configuration edited successfully", <b>Done</b>);
   };
-  const handleWebhookDelete = () => deleteWebhook(webhook);
+  const handleWebhookDelete = async () => {
+    await deleteWebhook(webhook);
+    toastr.success("Webhook removed", <b>Done</b>);
+  };
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
     setIsChecked((prevIsChecked) => !prevIsChecked);

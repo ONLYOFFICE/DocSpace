@@ -10,11 +10,13 @@ import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
 import { Hint } from "../../styled-components";
 
-import { tablet, mobile } from "@docspace/components/utils/device";
+import { tablet } from "@docspace/components/utils/device";
 
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
 import { isMobile, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
+
+import toastr from "@docspace/components/toast/toastr";
 
 const HeaderContainer = styled.div`
   position: sticky;
@@ -92,13 +94,16 @@ const HistoryHeader = (props) => {
     isChecked ? checkAllIds(historyWebhooks) : emptyCheckedIds();
   };
 
+  const handleRetryAll = async () => {
+    await retryWebhookEvents(checkedEventIds);
+    toastr.success(`Webhooks redelivered: ${checkedEventIds.length}`, <b>Done</b>);
+  };
+
   const headerMenu = [
     {
       id: "retry-event-option",
       label: "Retry",
-      onClick: () => {
-        retryWebhookEvents(checkedEventIds);
-      },
+      onClick: handleRetryAll,
       iconUrl: RetryIcon,
     },
   ];

@@ -10,6 +10,8 @@ import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 
+import toastr from "@docspace/components/toast/toastr";
+
 import { useNavigate } from "react-router-dom";
 
 export const WebhookRow = ({
@@ -31,8 +33,14 @@ export const WebhookRow = ({
   const onDeleteClose = () => setIsDeleteOpened(false);
   const redirectToHistory = () => navigate(window.location.pathname + `/${webhook.id}`);
 
-  const handleWebhookUpdate = (webhookInfo) => editWebhook(webhook, webhookInfo);
-  const handleWebhookDelete = () => deleteWebhook(webhook);
+  const handleWebhookUpdate = async (webhookInfo) => {
+    editWebhook(webhook, webhookInfo);
+    toastr.success("Webhook configuration edited successfully", <b>Done</b>);
+  };
+  const handleWebhookDelete = async () => {
+    await deleteWebhook(webhook);
+    toastr.success("Webhook removed", <b>Done</b>);
+  };
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
     setIsChecked((prevIsChecked) => !prevIsChecked);

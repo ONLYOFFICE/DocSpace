@@ -18,7 +18,7 @@ const HistoryRow = (props) => {
   const redirectToDetails = () => navigate(window.location.pathname + `/${historyItem.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(historyItem.id);
-    toastr.success("Webhook retry again", <b>Done</b>);
+    toastr.success("Webhook redelivered", <b>Done</b>);
   };
   const handleOnSelect = () => toggleEventId(historyItem.id);
 
