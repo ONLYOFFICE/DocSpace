@@ -20,7 +20,7 @@ export const StatusBadge = ({ status }) => {
     <Badge
       backgroundColor={badgeColorScheme.backgroundColor}
       color={badgeColorScheme.color}
-      label={status}
+      label={status === 0 ? "Not sent" : status.toString()}
       fontSize="9px"
       fontWeight={700}
       noHover

@@ -41,6 +41,7 @@ const FlexWrapper = styled.div`
 `;
 
 export const WebhookRowContent = ({ sectionWidth, webhook, isChecked, handleToggleEnabled }) => {
+
   return (
     <StyledRowContent sectionWidth={sectionWidth}>
       <ContentWrapper>
@@ -48,7 +49,7 @@ export const WebhookRowContent = ({ sectionWidth, webhook, isChecked, handleTogg
           <Text fontWeight={600} fontSize="14px" style={{ marginRight: "8px" }}>
             {webhook.name}
           </Text>
-          {webhook.status && <StatusBadge status={webhook.status} />}
+          <StatusBadge status={webhook.status} />
         </FlexWrapper>
         <Text fontWeight={600} fontSize="12px" color="#A3A9AE">
           {webhook.uri}
