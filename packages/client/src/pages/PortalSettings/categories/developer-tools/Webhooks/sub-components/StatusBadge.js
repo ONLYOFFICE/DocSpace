@@ -15,6 +15,9 @@ export const StatusBadge = ({ status }) => {
       });
     }
   }, []);
+  if (status === undefined) {
+    return;
+  }
 
   return (
     <Badge
