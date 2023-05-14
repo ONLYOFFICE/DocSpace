@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Text from "@docspace/components/text";
 import RowContent from "@docspace/components/row-content";
 
-import Toast from "@docspace/components/toast";
+import { NoBoxShadowToast } from "../../../../styled-components";
 
 import { StatusBadge } from "../../../../sub-components/StatusBadge";
 
@@ -41,12 +41,12 @@ export const HistoryRowContent = ({ sectionWidth, historyItem }) => {
           <Text fontWeight={600} fontSize="14px" style={{ marginRight: "8px" }}>
             {historyItem.id}
           </Text>
-          {historyItem.status && <StatusBadge status={historyItem.status} />}
+          <StatusBadge status={historyItem.status} />
         </StatusHeader>
         <Text fontWeight={600} fontSize="12px" color="#A3A9AE">
           {formattedDelivery}
         </Text>
-        <Toast />
+        <NoBoxShadowToast />
       </ContentWrapper>
       <span></span>
     </StyledRowContent>

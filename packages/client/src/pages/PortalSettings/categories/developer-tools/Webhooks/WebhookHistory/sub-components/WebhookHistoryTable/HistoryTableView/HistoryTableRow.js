@@ -10,7 +10,7 @@ import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
 import { StatusBadge } from "../../../../sub-components/StatusBadge";
 
-import Toast from "@docspace/components/toast";
+import { NoBoxShadowToast } from "../../../../styled-components";
 import toastr from "@docspace/components/toast/toastr";
 
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
@@ -61,7 +61,7 @@ const HistoryTableRow = (props) => {
           </TableCell>
 
           <Text fontWeight={600}>{item.id}</Text>
-          <Toast />
+          <NoBoxShadowToast />
         </TableCell>
         <TableCell>
           <StatusBadge status={item.status} />

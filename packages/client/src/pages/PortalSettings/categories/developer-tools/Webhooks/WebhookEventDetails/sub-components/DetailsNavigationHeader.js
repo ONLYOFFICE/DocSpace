@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
-import Toast from "@docspace/components/toast";
+import { NoBoxShadowToast } from "../../styled-components";
 import toastr from "@docspace/components/toast/toastr";
 
 import { useNavigate } from "react-router-dom";
@@ -65,7 +65,7 @@ const DetailsNavigationHeader = (props) => {
       </Headline>
       <IconButton iconName={RetryIcon} size="17" isFill={true} onClick={handleRetryEvent} />
 
-      <Toast />
+      <NoBoxShadowToast />
     </HeaderContainer>
   );
 };

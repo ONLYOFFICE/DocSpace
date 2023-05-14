@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import styled from "styled-components";
 import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
 import Text from "@docspace/components/text";
 
-import Toast from "@docspace/components/toast";
+import { NoBoxShadowToast } from "../../../styled-components";
 import toastr from "@docspace/components/toast/toastr";
 
 import { ToggleButton } from "@docspace/components";
@@ -15,6 +16,12 @@ import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
 import { StatusBadge } from "../../StatusBadge";
 
 import { useNavigate } from "react-router-dom";
+
+const StyledTableRow = styled(TableRow)`
+  .mr-8 {
+    margin-right: 8px;
+  }
+`;
 
 export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
   const navigate = useNavigate();
@@ -66,13 +73,13 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
 
   return (
     <>
-      <TableRow contextOptions={contextOptions}>
+      <StyledTableRow contextOptions={contextOptions}>
         <TableCell>
-          <Text as="span" fontWeight={600}>
+          <Text as="span" fontWeight={600} className="mr-8">
             {webhook.name}{" "}
           </Text>
           <StatusBadge status={webhook.status} />
-          <Toast />
+          <NoBoxShadowToast />
         </TableCell>
         <TableCell>
           <Text as="span" fontSize="11px" color="#A3A9AE" fontWeight={600}>
@@ -87,7 +94,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
             onChange={handleToggleEnabled}
           />
         </TableCell>
-      </TableRow>
+      </StyledTableRow>
       <WebhookDialog
         visible={isSettingsOpened}
         onClose={closeSettings}
