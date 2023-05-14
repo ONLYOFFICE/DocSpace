@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import { inject, observer } from "mobx-react";
 
@@ -42,6 +42,9 @@ const DeliveryDatePicker = ({
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
 
+  const calendarRef = useRef();
+  const selectorRef = useRef();
+
   const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
   const closeCalendar = () => {
     setIsApplied(false);
@@ -57,6 +60,17 @@ const DeliveryDatePicker = ({
     setIsApplied(false);
   };
 
+  const handleClick = (e) => {
+    !selectorRef?.current?.contains(e.target) &&
+      !calendarRef?.current?.contains(e.target) &&
+      setIsCalendarOpen(false);
+  };
+
+  useEffect(() => {
+    document.addEventListener("click", handleClick, { capture: true });
+    return () => document.removeEventListener("click", handleClick, { capture: true });
+  }, []);
+
   const CalendarElement = () =>
     window.innerWidth >= 440 ? (
       <Calendar
@@ -64,6 +78,7 @@ const DeliveryDatePicker = ({
         setSelectedDate={setDeliveryDate}
         onChange={closeCalendar}
         isMobile={false}
+        forwardedRef={calendarRef}
       />
     ) : (
       <MobileCalendar
@@ -71,17 +86,18 @@ const DeliveryDatePicker = ({
         setSelectedDate={setDeliveryDate}
         onChange={closeCalendar}
         isMobile={true}
+        forwardedRef={calendarRef}
       />
     );
 
   const DateSelector = () => (
-    <span>
+    <div>
       <SelectorAddButton title="add" onClick={toggleCalendar} style={{ marginRight: "8px" }} />
       <Text isInline fontWeight={600} color="#A3A9AE">
         Select date
       </Text>
       {isCalendarOpen && <CalendarElement />}
-    </span>
+    </div>
   );
 
   const SelectedDate = () => (
@@ -92,18 +108,18 @@ const DeliveryDatePicker = ({
   );
 
   const SelectedDateWithCalendar = () => (
-    <span>
+    <div>
       <SelectedItem
         onClose={deleteSelectedDate}
         text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
         onClick={toggleCalendar}
       />
       {isCalendarOpen && <CalendarElement />}
-    </span>
+    </div>
   );
 
   const SelectedDateTime = () => (
-    <span>
+    <div>
       <SelectedItem
         onClose={deleteSelectedDate}
         text={
@@ -116,7 +132,7 @@ const DeliveryDatePicker = ({
         onClick={toggleCalendar}
       />
       {isCalendarOpen && <CalendarElement />}
-    </span>
+    </div>
   );
 
   const TimeSelectorAdder = () => (
@@ -143,7 +159,7 @@ const DeliveryDatePicker = ({
       <Text fontWeight={600} fontSize="15px">
         Delivery date
       </Text>
-      <Selectors>
+      <Selectors ref={selectorRef}>
         {filterSettings.deliveryDate === null ? (
           <DateSelector />
         ) : isApplied ? (
