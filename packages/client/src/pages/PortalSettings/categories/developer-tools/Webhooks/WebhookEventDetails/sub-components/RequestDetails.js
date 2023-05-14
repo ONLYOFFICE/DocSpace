@@ -44,6 +44,7 @@ export const RequestDetails = ({ webhookDetails }) => {
           hasNumeration
           isFullHeight
           isJSONField
+          copyInfoText="Request post header successfully copied to clipboard"
         />
       )}
 
@@ -56,6 +57,7 @@ export const RequestDetails = ({ webhookDetails }) => {
         enableCopy
         hasNumeration
         isFullHeight
+        copyInfoText="Request post body successfully copied to clipboard"
       />
     </DetailsWrapper>
   );

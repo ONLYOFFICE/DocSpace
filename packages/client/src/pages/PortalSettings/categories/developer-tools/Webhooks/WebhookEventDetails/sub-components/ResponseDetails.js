@@ -77,6 +77,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
         hasNumeration
         isFullHeight
         isJSONField
+        copyInfoText="Response post header successfully copied to clipboard"
       />
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
         Response post body
@@ -96,9 +97,22 @@ export const ResponseDetails = ({ webhookDetails }) => {
       ) : responsePayload === "" ? (
         <Textarea isDisabled />
       ) : isJSON(responsePayload) ? (
-        <Textarea value={responsePayload} isJSONField enableCopy hasNumeration isFullHeight />
+        <Textarea
+          value={responsePayload}
+          isJSONField
+          enableCopy
+          hasNumeration
+          isFullHeight
+          copyInfoText="Response post body successfully copied to clipboard"
+        />
       ) : (
-        <Textarea value={responsePayload} enableCopy heightScale className="textareaBody" />
+        <Textarea
+          value={responsePayload}
+          enableCopy
+          heightScale
+          className="textareaBody"
+          copyInfoText="Response post body successfully copied to clipboard"
+        />
       )}
     </DetailsWrapper>
   );
