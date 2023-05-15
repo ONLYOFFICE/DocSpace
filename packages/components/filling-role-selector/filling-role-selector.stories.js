@@ -9,7 +9,7 @@ export default {
 const Template = ({ props }) => {
   return (
     <>
-      <FillingRoleSelector {...props} style={{ width: "20%" }} />
+      <FillingRoleSelector {...props} />
     </>
   );
 };
