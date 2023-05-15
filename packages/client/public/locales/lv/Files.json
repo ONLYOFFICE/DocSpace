@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> pārvietots",
   "MoveItems": "<strong>{{qty}}</strong> elementi ir pārvietoti",
   "MoveOrCopy": "Pārvietot vai kopēt",
-  "MoveTo": "Pārvietot uz",
   "MoveToArchive": "Pārvietot uz arhīvu",
   "MoveToFolderMessage": "Jūs nevarat pārvietot mapi uz tās apakšmapi",
   "New": "Jauns",

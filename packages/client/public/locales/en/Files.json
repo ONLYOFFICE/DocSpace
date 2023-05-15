@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> moved",
   "MoveItems": "<strong>{{qty}}</strong> elements have been moved",
   "MoveOrCopy": "Move or copy",
-  "MoveTo": "Move to",
   "MoveToArchive": "Move to archive",
   "MoveToFolderMessage": "You can't move the folder to its subfolder",
   "New": "New",

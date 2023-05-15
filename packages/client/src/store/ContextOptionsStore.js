@@ -774,7 +774,7 @@ class ContextOptionsStore {
                 {
                   id: "option_move-to",
                   key: "move-to",
-                  label: t("MoveTo"),
+                  label: t("Common:MoveTo"),
                   icon: MoveReactSvgUrl,
                   onClick: this.onMoveAction,
                   disabled: false,
@@ -802,7 +802,7 @@ class ContextOptionsStore {
             {
               id: "option_move-to",
               key: "move-to",
-              label: t("MoveTo"),
+              label: t("Common:MoveTo"),
               icon: MoveReactSvgUrl,
               onClick: this.onMoveAction,
               disabled: false,
@@ -1337,7 +1337,7 @@ class ContextOptionsStore {
       },
       {
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         icon: MoveReactSvgUrl,
         onClick: this.onMoveAction,
         disabled: isRecycleBinFolder || !moveItems,

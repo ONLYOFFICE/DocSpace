@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> đã được chuyển ",
   "MoveItems": "<strong>{{qty}}</strong> thành phần đã được chuyển ",
   "MoveOrCopy": "Di chuyển hoặc Sao chép",
-  "MoveTo": "Chuyển tới",
   "MoveToArchive": "Di chuyển đến sao lưu",
   "MoveToFolderMessage": "Bạn không thể chuyển thư mục sang thư mục con của nó",
   "New": "Mới",

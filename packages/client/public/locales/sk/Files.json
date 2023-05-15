@@ -61,7 +61,6 @@
   "MoveItem": "<strong> {{title}} </strong> bolo presunuté",
   "MoveItems": "<strong>{{qty}}</strong> prvkov bolo presunutých",
   "MoveOrCopy": "Presunúť alebo Kopírovať",
-  "MoveTo": "Presunúť do",
   "MoveToArchive": "Presunúť do archívu",
   "MoveToFolderMessage": "Priečinok nemôžete presunúť do jeho podpriečinka",
   "New": "Nový",

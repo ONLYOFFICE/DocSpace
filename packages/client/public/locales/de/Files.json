@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> verschoben",
   "MoveItems": "Elemente verschoben: <strong>{{qty}}</strong>",
   "MoveOrCopy": "Verschieben oder kopieren",
-  "MoveTo": "Verschieben",
   "MoveToArchive": "Ins Archiv verschieben",
   "MoveToFolderMessage": "Ordner können nicht in Unterordner verschoben werden",
   "New": "Erstellen",

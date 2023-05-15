@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> verplaatst",
   "MoveItems": "<strong>{{qty}}</strong> elementen zijn verplaatst",
   "MoveOrCopy": "Verplaats of kopieer",
-  "MoveTo": "Verplaats naar",
   "MoveToArchive": "Verplaatsen naar archief",
   "MoveToFolderMessage": "U kunt de map niet naar zijn submap verplaatsen",
   "New": "Nieuw",

@@ -198,7 +198,7 @@ function MediaViewer({
       },
       {
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         icon: MoveReactSvgUrl,
         onClick: onMoveAction,
         disabled: !targetFile.security.Move,

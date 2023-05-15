@@ -1714,7 +1714,7 @@ class FilesActionStore {
         else
           return {
             id: "menu-move-to",
-            label: t("MoveTo"),
+            label: t("Common:MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
             iconUrl: MoveReactSvgUrl,
           };

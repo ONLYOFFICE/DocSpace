@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> 이동 완료",
   "MoveItems": "<strong>{{qty}}</strong> 요소 이동 완료",
   "MoveOrCopy": "이동 또는 복사",
-  "MoveTo": "이동 위치",
   "MoveToArchive": "아카이브로 이동",
   "MoveToFolderMessage": "해당 폴더를 하위 폴더로 이동할 수 없습니다",
   "New": "신규",

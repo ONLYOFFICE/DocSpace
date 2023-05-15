@@ -61,7 +61,6 @@
   "MoveItem": "Το <strong>{{title}}</strong> μετακινήθηκε",
   "MoveItems": "<strong>{{qty}}</strong> στοιχεία έχουν μετακινηθεί",
   "MoveOrCopy": "Μετακίνηση ή αντιγραφή",
-  "MoveTo": "Μετακίνηση σε",
   "MoveToArchive": "Μετακίνηση στο αρχείο",
   "MoveToFolderMessage": "Δεν μπορείτε να μετακινήσετε τον φάκελο στον υποφάκελό του",
   "New": "Νέο",

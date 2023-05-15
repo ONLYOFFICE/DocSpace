@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> ຍ້າຍ",
   "MoveItems": "<strong>{{qty}}</strong> ອົງປະກອບຕ່າງໆໄດ້ຖືກຍ້າຍໄປແລ້ວ",
   "MoveOrCopy": "ຍ້າຍ ຫຼື ສຳເນົາ",
-  "MoveTo": "ຍ້າຍ​ໄປ",
   "MoveToArchive": "ຍ້າຍໄປບ່ອນຊັບມ້ຽນ",
   "MoveToFolderMessage": "ທ່ານບໍ່ສາມາດຍ້າຍໂຟຣເດີໄປທີ່ໂຟຣເດີຍ່ອຍຂອງມັນ",
   "New": "ໃໝ່",

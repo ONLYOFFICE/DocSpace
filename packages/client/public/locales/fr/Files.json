@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> déplacé",
   "MoveItems": "<strong>{{qty}}</strong> éléments ont été déplacés",
   "MoveOrCopy": "Déplacer ou copier",
-  "MoveTo": "Déplacer vers",
   "MoveToArchive": "Déplacer dans l’archive",
   "MoveToFolderMessage": "Vous ne pouvez pas déplacer le dossier vers son sous-dossier",
   "New": "nouveau",

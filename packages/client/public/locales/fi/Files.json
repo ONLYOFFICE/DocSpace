@@ -61,7 +61,6 @@
   "MoveItem": "<strong> {{title}} </strong> siirretty",
   "MoveItems": "<strong> {{qty}} </strong> elementtiä on siirretty",
   "MoveOrCopy": "Siirrä tai Kopioi",
-  "MoveTo": "Siirrä",
   "MoveToArchive": "Siirrä arkistoon",
   "MoveToFolderMessage": "Et voi siirtää kansiota sen alikansioon",
   "New": "Uusi",

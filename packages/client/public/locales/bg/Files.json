@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> е преместен",
   "MoveItems": "<strong>{{qty}}</strong> елемента бяха преместени",
   "MoveOrCopy": "Преместване или копиране",
-  "MoveTo": "Премести в",
   "MoveToArchive": "Преместване в архив",
   "MoveToFolderMessage": "Не можете да преместите папката в нейната подпапка",
   "New": "Нов",

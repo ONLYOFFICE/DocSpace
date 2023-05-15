@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> deplasat",
   "MoveItems": "<strong>{{qty}}</strong> elemente au fost deplasate",
   "MoveOrCopy": "Mutare sau copiere",
-  "MoveTo": "Mutare în",
   "MoveToArchive": "Mutare în arhivă",
   "MoveToFolderMessage": "Nu puteți muta dosarul în subdosarul propriu",
   "New": "Nou",

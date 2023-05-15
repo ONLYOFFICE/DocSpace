@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong>を移動した",
   "MoveItems": "<strong>{{qty}}</strong>の要素が移動しました",
   "MoveOrCopy": "移動またはコピーする",
-  "MoveTo": "に移動します",
   "MoveToArchive": "アーカイブに移動する",
   "MoveToFolderMessage": "フォルダをそのサブフォルダに移動できません。",
   "New": "新しい",

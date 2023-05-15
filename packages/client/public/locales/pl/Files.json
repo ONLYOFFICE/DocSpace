@@ -61,7 +61,6 @@
   "MoveItem": "Przeniesiono <strong>{{title}}</strong>",
   "MoveItems": "Przeniesiono <strong>{{qty}}</strong> element(y/ów)",
   "MoveOrCopy": "Przenieś lub kopiuj",
-  "MoveTo": "Przenieś do",
   "MoveToArchive": "Przenieś do archiwum",
   "MoveToFolderMessage": "Nie można przenieść folderu do jego podfolderu",
   "New": "Nowe",

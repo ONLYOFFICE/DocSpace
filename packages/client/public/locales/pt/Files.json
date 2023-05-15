@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> movido",
   "MoveItems": "<strong>{{qty}}</strong> elementos foram movidos",
   "MoveOrCopy": "Mover ou copiar",
-  "MoveTo": "Mover para",
   "MoveToArchive": "Mover para o arquivo",
   "MoveToFolderMessage": "Não pode mover a pasta para a sua subpasta",
   "New": "Novo",

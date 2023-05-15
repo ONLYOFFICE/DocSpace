@@ -61,7 +61,6 @@
   "MoveItem": "<strong>{{title}}</strong> přesunuty",
   "MoveItems": "Prvky <strong>{{qty}}</strong> byly přesunuty",
   "MoveOrCopy": "Přesunout nebo kopírovat",
-  "MoveTo": "Přesunout do",
   "MoveToArchive": "Přesunout do archivu",
   "MoveToFolderMessage": "Složku nelze přesunout do podsložky",
   "New": "Nový",

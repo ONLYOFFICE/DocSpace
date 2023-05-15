@@ -159,8 +159,13 @@ class SectionHeaderContent extends React.Component {
   };
 
   getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins, security } =
-      this.props;
+    const {
+      t,
+      isPrivacyFolder,
+      isRoomsFolder,
+      enablePlugins,
+      security,
+    } = this.props;
 
     const options = isRoomsFolder
       ? [
@@ -545,7 +550,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_move-to",
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         onClick: this.onMoveAction,
         disabled: isDisabled || !security?.MoveTo,
         icon: MoveReactSvgUrl,
@@ -593,8 +598,12 @@ class SectionHeaderContent extends React.Component {
   };
 
   getMenuItems = () => {
-    const { t, cbMenuItems, getCheckboxItemLabel, getCheckboxItemId } =
-      this.props;
+    const {
+      t,
+      cbMenuItems,
+      getCheckboxItemLabel,
+      getCheckboxItemId,
+    } = this.props;
     const checkboxOptions = (
       <>
         {cbMenuItems.map((key) => {
@@ -621,8 +630,12 @@ class SectionHeaderContent extends React.Component {
   };
 
   onClickFolder = (id, isRootRoom) => {
-    const { setSelectedNode, setIsLoading, fetchFiles, moveToRoomsPage } =
-      this.props;
+    const {
+      setSelectedNode,
+      setIsLoading,
+      fetchFiles,
+      moveToRoomsPage,
+    } = this.props;
 
     if (isRootRoom) {
       return moveToRoomsPage();
@@ -827,8 +840,14 @@ export default inject(
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
 
-    const { title, id, roomType, pathParts, navigationPath, security } =
-      selectedFolderStore;
+    const {
+      title,
+      id,
+      roomType,
+      pathParts,
+      navigationPath,
+      security,
+    } = selectedFolderStore;
 
     const selectedFolder = { ...selectedFolderStore };
 
