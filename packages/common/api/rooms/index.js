@@ -360,3 +360,10 @@ export function getExternalLinks(roomId, type) {
     url: `files/rooms/${roomId}/links${linkType}`,
   });
 }
+
+export function validatePublicRoomKey(key) {
+  return request({
+    method: "get",
+    url: `files/share/${key}`,
+  });
+}
