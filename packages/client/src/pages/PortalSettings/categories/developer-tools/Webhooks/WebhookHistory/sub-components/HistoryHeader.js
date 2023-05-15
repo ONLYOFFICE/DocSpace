@@ -22,7 +22,7 @@ const HeaderContainer = styled.div`
   position: sticky;
   top: 0;
   background-color: ${(props) => props.theme.backgroundColor};
-  z-index: 200;
+  z-index: 201;
   display: flex;
   align-items: center;
   width: 100%;
@@ -33,6 +33,13 @@ const HeaderContainer = styled.div`
     isMobile &&
     css`
       margin-bottom: 11px;
+    `}
+
+  ${(props) =>
+    isMobileOnly &&
+    props.isHeaderVisible &&
+    css`
+      top: 48px;
     `}
 
   .arrow-button {
@@ -160,7 +167,7 @@ const HistoryHeader = (props) => {
   }, []);
 
   return (
-    <HeaderContainer>
+    <HeaderContainer isHeaderVisible={isHeaderVisible}>
       {isMobileOnly ? (
         <>
           {isHeaderVisible && <GroupMenu />}
