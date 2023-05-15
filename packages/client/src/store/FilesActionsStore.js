@@ -257,6 +257,8 @@ class FilesActionStore {
       addActiveItems,
       getIsEmptyTrash,
       bufferSelection,
+      activeFiles,
+      activeFolders,
     } = this.filesStore;
     const {
       secondaryProgressDataStore,
@@ -279,16 +281,6 @@ class FilesActionStore {
 
     const operationId = uniqueid("operation_");
 
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: translations.deleteOperation,
-      alert: false,
-      filesCount: selection.length,
-      operationId,
-    });
-
     const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
 
@@ -298,12 +290,31 @@ class FilesActionStore {
     let i = 0;
     while (selection.length !== i) {
       if (selection[i].fileExst || selection[i].contentLength) {
-        fileIds.push(selection[i].id);
+        // try to fix with one check later (see onDeleteMediaFile)
+        const isActiveFile = activeFiles.find((id) => id === selection[i].id);
+        !isActiveFile && fileIds.push(selection[i].id);
       } else {
-        folderIds.push(selection[i].id);
+        // try to fix with one check later (see onDeleteMediaFile)
+        const isActiveFolder = activeFolders.find(
+          (id) => id === selection[i].id
+        );
+        !isActiveFolder && folderIds.push(selection[i].id);
       }
       i++;
     }
+
+    if (!folderIds.length && !fileIds.length) return;
+    const filesCount = folderIds.length + fileIds.length;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+      filesCount,
+      operationId,
+    });
 
     addActiveItems(fileIds);
     addActiveItems(null, folderIds);
