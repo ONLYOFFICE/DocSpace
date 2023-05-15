@@ -2615,8 +2615,11 @@ public class FileStorageService //: IFileStorageService
     {
         FileEntry<T> entry = entryType == FileEntryType.File ? (await GetFileDao<T>().GetFileAsync(entryId)).NotFoundIfNull() 
             : (await GetFolderDao<T>().GetFolderAsync(entryId)).NotFoundIfNull();
-        
-        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, _actions[SubjectType.ExternalLink], expirationDate, password, disabled, denyDownload, 1);
+
+        var minLinksCount = (uint)(entry is Folder<T> { FolderType: FolderType.PublicRoom } ? 1 : 0);
+
+        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, _actions[SubjectType.ExternalLink], expirationDate, password, disabled, denyDownload, 
+            minLinksCount);
     }
 
     public async Task<bool> SetAceLinkAsync<T>(T fileId, FileShare share)
@@ -3342,7 +3345,7 @@ public class FileStorageService //: IFileStorageService
 
         if (linkId == default)
         {
-            throw new ArgumentException(null, nameof(linkId));
+            linkId = Guid.NewGuid();
         }
 
         var action = EventType.Create;
