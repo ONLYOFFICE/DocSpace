@@ -1405,4 +1405,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Zibil qutusu təmizləndi</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Əlavə edilmiş teqlər: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Silinmiş teqlər: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Otaq arxivləşdirildi</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Əlavə edilmiş istifadəçi: {0}. Rol: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Otaq silindi</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Link yaradıldı. Rol: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Link silindi</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Link yeniləndi. Rol: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Loqo yaradıldı</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Loqo silindi</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Silinmiş istifadəçi: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Otağın adı dəyişdirildi: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Otaq arxivdən çıxarıldı</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} təyin edildi: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Teq yaradıldı: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Teqlər silindi: {0}</value>
+  </data>
 </root>

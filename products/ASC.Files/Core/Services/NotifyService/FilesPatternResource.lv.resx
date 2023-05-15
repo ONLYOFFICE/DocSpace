@@ -116,4 +116,40 @@ $Message</value>
 
 $__AuthorName izdzēsa telpu: $RoomTitle</value>
   </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Visi parakstītāji pabeidza $DocumentTitle</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Minēts dokumentā</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Mapei ir piešķirta piekļuve: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Šifrētajam dokumentam ir piešķirta piekļuve: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Dokumenti. Mapei ir piešķirta piekļuve: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Dokumenti. Visi parakstītāji pabeidza [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Parakstīšanas statuss ir mainīts</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace paziņojums. Minēts dokumentā</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Nosūtīšana ir pabeigta.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace paziņojums. Telpa ir izdzēsta</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Dokumentam ir piešķirta piekļuve: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Dokumenti. Dokumentam ir piešķirta piekļuve: [$DocumentTitle]($DocumentURL)</value>
+  </data>
 </root>

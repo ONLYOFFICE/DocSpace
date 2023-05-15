@@ -666,4 +666,714 @@ $activity</value>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Нов потребител е добавен към портала ${LetterLogoText}</value>
   </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Искате ли да промените паролата на вашия ONLYOFFICE акаунт? Кликнете бутона по-долу, за да потвърдите.
+
+$GreenButton
+
+Линкът е валиден 7 дни.
+
+Не искате да променяте паролата си? Просто игнорирайте това съобщение</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Току-що създадохте ONLYOFFICE DocSpace, център за документи, където можете да поощрявате сътрудничеството с вашия екип, клиенти, партньори и други. Адресът му е "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Моля, потвърдете своя имейл адрес (линка е валиден 7 дни):
+
+$GreenButton
+
+Текущият Ви тарифен план е STARTUP. Той е напълно безплатен и включва:
+
+* 1 администратор, 2 опитни потребителя
+* До 12 стаи
+* Неограничен брой потребители във всяка стая
+* 2 GB дисково пространство
+
+Насладете се на нов начин за съвместна работа с документи!
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Току-що създадохте ONLYOFFICE DocSpace, център за документи, където можете да поощрявате сътрудничеството с вашия екип, клиенти, партньори и други. Адресът му е "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Моля, потвърдете своя имейл адрес (линка е валиден 7 дни):
+
+$GreenButton
+
+Текущият Ви тарифен план е STARTUP. Той е напълно безплатен и включва:
+
+* 1 администратор, 2 опитни потребителя
+* До 12 стаи
+* Неограничен брой потребители във всяка стая
+* 2 GB дисково пространство
+
+Насладете се на нов начин за съвместна работа с документи!
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Току-що създадохте ONLYOFFICE DocSpace, център за документи, където можете да поощрявате сътрудничеството с вашия екип, клиенти, партньори и други. Адресът му е "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Моля, потвърдете своя имейл адрес (линка е валиден 7 дни):
+
+$GreenButton
+
+Текущият Ви тарифен план е STARTUP. Той е напълно безплатен и включва:
+
+* 1 администратор, 2 опитни потребителя
+* До 12 стаи
+* Неограничен брой потребители във всяка стая
+* 2 GB дисково пространство
+
+Насладете се на нов начин за съвместна работа с документи!
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Току-що създадохте ONLYOFFICE DocSpace, център за документи, където можете да поощрявате сътрудничеството с вашия екип, клиенти, партньори и други. Адресът му е "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Моля, потвърдете своя имейл адрес (линка е валиден 7 дни):
+
+$GreenButton
+
+Текущият Ви тарифен план е STARTUP. Той е напълно безплатен и включва:
+
+* 1 администратор, 2 опитни потребителя
+* До 12 стаи
+* Неограничен брой потребители във всяка стая
+* 2 GB дисково пространство
+
+Насладете се на нов начин за съвместна работа с документи!
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Възползвайте се от безплатното ONLYOFFICE приложение, за да работите с документи от всяко от вашите устройства.
+
+# За да работите върху документи офлайн на Windows, Linux и Mac, изтеглете "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#За да редактирате документи на мобилни устройства, вземете приложението ONLYOFFICE Documents за "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Надяваме се да Ви хареса да използвате вашия ONLYOFFICE DocSpace. Ето няколко съвета как да направите работата си с документи по-ефективна.
+
+*#1. Изберете начина, по който работите.* Организирайте работния си процес според нуждите си, като създадете стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели.
+
+*#2. Работете с всякакъв тип съдържание, което имате на разположение.* Съхранявайте и работете с файлове с различни формати във вашите стаи: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+*#3. Ефективно съавторство.* Работете съвместно върху документи с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори.
+
+*#4. Свържете облаци на трети страни.* Свържете всяко облачно хранилище и работете без да превключвате между приложения.
+
+$GreenButton
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Надяваме се да Ви хареса да използвате вашия ONLYOFFICE DocSpace. Ето няколко съвета как да направите работата си с документи по-ефективна.
+
+*#1. Изберете начина, по който работите.* Организирайте работния си процес според нуждите си, като създадете стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели.
+
+*#2. Работете с всякакъв тип съдържание, което имате на разположение.* Съхранявайте и работете с файлове с различни формати във вашите стаи: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+*#3. Ефективно съавторство.* Работете съвместно върху документи с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори.
+
+*#4. Свържете облаци на трети страни.* Свържете всяко облачно хранилище и работете без да превключвате между приложения.
+
+$GreenButton
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Надяваме се да Ви хареса да използвате вашия ONLYOFFICE DocSpace. Ето няколко съвета как да направите работата си с документи по-ефективна.
+
+*#1. Изберете начина, по който работите.* Организирайте работния си процес според нуждите си, като създадете стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели.
+
+*#2. Работете с всякакъв тип съдържание, което имате на разположение.* Съхранявайте и работете с файлове с различни формати във вашите стаи: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+*#3. Ефективно съавторство.* Работете съвместно върху документи с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори.
+
+*#4. Свържете облаци на трети страни.* Свържете всяко облачно хранилище и работете без да превключвате между приложения.
+
+$GreenButton
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Надяваме се да Ви хареса да използвате вашия ONLYOFFICE DocSpace. Ето няколко съвета как да направите работата си с документи по-ефективна.
+
+*#1. Изберете начина, по който работите.* Организирайте работния си процес според нуждите си, като създадете стаи за сътрудничество и съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели.
+
+*#2. Работете с всякакъв тип съдържание, което имате на разположение.* Съхранявайте и работете с файлове с различни формати във вашите стаи: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+*#3. Ефективно съавторство.* Работете съвместно върху документи с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори.
+
+*#4. Свържете облаци на трети страни.* Свържете всяко облачно хранилище и работете без да превключвате между приложения.
+
+$GreenButton
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Ето три прости въпроса за вас, които могат да ни помогнат да направим вашето потребителско изживяване още по-удобно.
+
+* Имате ли голям екип или много клиенти и партньори, с които да сътрудничите във вашия ONLYOFFICE DocSpace? 
+
+* Искате ли да създадете произволен брой стаи за работа с множество документи? 
+
+* Искате ли да използвате ONLYOFFICE DocSpace със собствения си бранд?
+
+Ако имате поне един отговор „да“, изберете тарифен план БИЗНЕС, който ще Ви позволи да добавяте произволен брой мениджъри към вашия ONLYOFFICE DocSpace, както и да прилагате опции за брандиране.
+
+За да направите това, моля, разгледайте "Раздел плащания":"$PricingPage" на вашия ONLYOFFICE DocSpace. Там ще намерите индивидуален линк към портала за клиенти на Stripe, където лесно можете да обработвате всички подробности относно плащанията. 
+
+_Моля, обърнете внимание: Лицето, което плаща абонамента, става платец. Само платецът може да прави промени в абонамента (коригира броя на мениджърите). Потребителите нямат достъп до данните за плащанията. Собственикът ONLYOFFICE DocSpace акаунта може да преназначи платеца по всяко време по-късно. _
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Ето три прости въпроса за вас, които могат да ни помогнат да направим вашето потребителско изживяване още по-удобно.
+
+* Имате ли голям екип или много клиенти и партньори, с които да сътрудничите във вашия ONLYOFFICE DocSpace? 
+
+* Искате ли да създадете произволен брой стаи за работа с множество документи? 
+
+* Искате ли да използвате ONLYOFFICE DocSpace със собствения си бранд?
+
+Ако имате поне един отговор „да“, изберете тарифен план БИЗНЕС, който ще Ви позволи да добавяте произволен брой мениджъри към вашия ONLYOFFICE DocSpace, както и да прилагате опции за брандиране.
+
+За да направите това, моля, разгледайте "Раздел плащания":"$PricingPage" на вашия ONLYOFFICE DocSpace. Там ще намерите индивидуален линк към портала за клиенти на Stripe, където лесно можете да обработвате всички подробности относно плащанията. 
+
+_Моля, обърнете внимание: Лицето, което плаща абонамента, става платец. Само платецът може да прави промени в абонамента (коригира броя на мениджърите). Потребителите нямат достъп до данните за плащанията. Собственикът ONLYOFFICE DocSpace акаунта може да преназначи платеца по всяко време по-късно. _
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Ето три прости въпроса за вас, които могат да ни помогнат да направим вашето потребителско изживяване още по-удобно.
+
+* Имате ли голям екип или много клиенти и партньори, с които да сътрудничите във вашия ONLYOFFICE DocSpace? 
+
+* Искате ли да създадете произволен брой стаи за работа с множество документи? 
+
+* Искате ли да използвате ONLYOFFICE DocSpace със собствения си бранд?
+
+Ако имате поне един отговор „да“, изберете тарифен план БИЗНЕС, който ще Ви позволи да добавяте произволен брой мениджъри към вашия ONLYOFFICE DocSpace, както и да прилагате опции за брандиране.
+
+За да направите това, моля, разгледайте "Раздел плащания":"$PricingPage" на вашия ONLYOFFICE DocSpace. Там ще намерите индивидуален линк към портала за клиенти на Stripe, където лесно можете да обработвате всички подробности относно плащанията. 
+
+_Моля, обърнете внимание: Лицето, което плаща абонамента, става платец. Само платецът може да прави промени в абонамента (коригира броя на мениджърите). Потребителите нямат достъп до данните за плащанията. Собственикът ONLYOFFICE DocSpace акаунта може да преназначи платеца по всяко време по-късно. _
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Ето три прости въпроса за вас, които могат да ни помогнат да направим вашето потребителско изживяване още по-удобно.
+
+* Имате ли голям екип или много клиенти и партньори, с които да сътрудничите във вашия ONLYOFFICE DocSpace? 
+
+* Искате ли да създадете произволен брой стаи за работа с множество документи? 
+
+* Искате ли да използвате ONLYOFFICE DocSpace със собствения си бранд?
+
+Ако имате поне един отговор „да“, изберете тарифен план БИЗНЕС, който ще Ви позволи да добавяте произволен брой мениджъри към вашия ONLYOFFICE DocSpace, както и да прилагате опции за брандиране.
+
+За да направите това, моля, разгледайте "Раздел плащания":"$PricingPage" на вашия ONLYOFFICE DocSpace. Там ще намерите индивидуален линк към портала за клиенти на Stripe, където лесно можете да обработвате всички подробности относно плащанията. 
+
+_Моля, обърнете внимание: Лицето, което плаща абонамента, става платец. Само платецът може да прави промени в абонамента (коригира броя на мениджърите). Потребителите нямат достъп до данните за плащанията. Собственикът ONLYOFFICE DocSpace акаунта може да преназначи платеца по всяко време по-късно. _
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Здравейте!
+
+Поканени сте да се присъедините към ONLYOFFICE DocSpace на адрес "${__VirtualRootPath}":"${__VirtualRootPath}". Приемете поканата, като щракнете върху линка:
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Здравейте!
+
+Поканени сте да се присъедините към ONLYOFFICE DocSpace на адрес "${__VirtualRootPath}":"${__VirtualRootPath}". Приемете поканата, като щракнете върху линка:
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Здравейте!
+
+Поканени сте да се присъедините към ONLYOFFICE DocSpace на адрес "${__VirtualRootPath}":"${__VirtualRootPath}". Приемете поканата, като щракнете върху линка:
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Здравейте!
+
+Поканени сте да се присъедините към ONLYOFFICE DocSpace на адрес "${__VirtualRootPath}":"${__VirtualRootPath}". Приемете поканата, като щракнете върху линка:
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+* Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+* *Работа с файлове с различни формати*: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+* *Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+* *Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+* Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+* *Работа с файлове с различни формати*: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+* *Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+* *Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+* Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+* *Работа с файлове с различни формати*: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+* *Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+* *Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Добре дошли в ONLYOFFICE DocSpace! Вашият потребителски профил е успешно добавен към * "${__VirtualRootPath}":"${__VirtualRootPath}". Сега ще можете следното:
+
+* Работете с други потребители в стаята, в която сте поканени*: стаи за сътрудничество за съавторство в реално време или персонализирани стаи с гъвкави настройки за всякакви цели*.
+
+* *Работа с файлове с различни формати*: текстови документи, електронни таблици, презентации, цифрови форми, PDF файлове, електронни книги, мултимедия.
+
+* *Работете заедно с други върху документи* с два режима на съвместно редактиране: в реално време или със заключване на параграфи. Следете промените, общувайте в реално време, като използвате вградения чат или чрез аудио и видео разговори. 
+
+* *Свържете всяко облачно хранилище* и работете без да превключвате между приложения. 
+
+$GreenButton
+
+Ако имате нужда от помощ, прегледайте нашия "Помощен център":"https://helpcenter.onlyoffice.com/" или попитайте нашия "екип за обслужване на клиенти":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.Съобщение от портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Име: $UserName
+
+Имейл: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Възползвайте се от безплатното ONLYOFFICE приложение, за да работите с документи от всяко от вашите устройства.
+
+# За да работите върху документи офлайн на Windows, Linux и Mac, изтеглете "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#За да редактирате документи на мобилни устройства, вземете приложението ONLYOFFICE Documents за "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Възползвайте се от безплатното ONLYOFFICE приложение, за да работите с документи от всяко от вашите устройства.
+
+# За да работите върху документи офлайн на Windows, Linux и Mac, изтеглете "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#За да редактирате документи на мобилни устройства, вземете приложението ONLYOFFICE Documents за "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" или "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Привет!
+Имаше опит за регистриране на нов акаунт "ONLYOFFICE Personal":"$PortalUrl" чрез този имейл. Ако сте били вие, искаме да Ви информираме, че акаунтът вече съществува — продължете към ONLYOFFICE Personal и влезте.
+Ако сте загубили паролата си, можете да я възстановите на "страницата за възстановяване на парола":"$LinkToRecovery".
+Ако не сте се опитали да регистрирате нов акаунт, вероятно някой друг го е направил по погрешка. В този случай, моля, игнорирайте този имейл.
+
+Приятен ден!
+Екипът на ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Искате ли да промените паролата на вашия ONLYOFFICE Personal акаунт? Кликнете бутона по-долу, за да потвърдите.
+
+$GreenButton 
+
+Линкът е валиден 7 дни.
+
+Не искате да променяте паролата си? Просто игнорирайте това съобщение.</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>Вашият ONLYOFFICE DocSpace беше успешно деактивиран. Моля, имайте предвид, че всички ваши данни ще бъдат изтрити в съответствие с нашата "Декларация за поверителност":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUw NDg1MDIi0". 
+
+Защо решихте да напуснете? Споделете опита си с нас.
+ 
+$GreenButton
+
+Благодарим Ви и успех!
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Коригирайте настройките за сигурност на вашия ONLYOFFICE DocSpace, за да го направите по-сигурен:
+
+* Задайте сила на паролата.  
+
+* Активирайте двуфакторно удостоверяване и единично влизане.
+
+* Определете доверени пощенски домейни и продължителност на сесията.
+
+* Ограничете достъпа на конкретни IP адреси. 
+
+* Разрешавайте или ограничавайте администраторски съобщения.
+
+* Управлявайте администраторските права за достъп.
+
+* Правете резервни копия на данни.
+
+$GreenButton
+
+Посетете нашия "Помощен център":"https://helpcenter.onlyoffice.com/", за да научите повече за конфигурирането и управлението на вашия ONLYOFFICE DocSpace. Също така, там може да намерите информация, когато имате въпроси относно функционалността.
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Не сте влизали във вашия ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" повече от половин година. 
+
+Тъй като сте решили да не го използвате повече, вашият ONLYOFFICE DocSpace и всички данни ще бъдат изтрити в съответствие с нашата „Декларация за поверителност“:"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid= 5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Ще се радваме да чуем вашите отзиви. Защо решихте да спрете да използвате ONLYOFFICE DocSpace?
+
+$GreenButton
+
+Ако смятате, че това е грешка и искате да продължите да използвате ONLYOFFICE DocSpace, моля, свържете се с нашия "екип за поддръжка":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+С уважение, 
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Здравейте!
+
+Поканени сте да се присъедините към ONLYOFFICE DocSpace на адрес "${__VirtualRootPath}":"${__VirtualRootPath}". Приемете поканата, като щракнете върху линка:
+
+$GreenButton
+
+След като щракнете върху линка на поканата, моля, задайте нова парола за вашия акаунт.
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Моля, имайте предвид, че гратисният период от $PaymentDelay‎ дни за вашия ONLYOFFICE DocSpace е активиран.
+
+Уверете се, че сте платили своя бизнес абонамент преди изтичането на гратисния период. Така ще можете да използвате допълнително всички предимства на вашия ONLYOFFICE DocSpace.
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Моля, имайте предвид, че вашият абонамент за ONLYOFFICE DocSpace изтича след три дни. След това гратисният период от $PaymentDelay дни ще бъде активиран.
+
+Препоръчваме да платите бизнес абонамента си сега и да продължите да използвате всички предимства на вашия ONLYOFFICE DocSpace.
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Моля, имайте предвид, че гратисният период от $PaymentDelay дни за вашия ONLYOFFICE DocSpace е изтекъл.
+
+Уверете се, че ще платите вашия бизнес абонамент възможно най-скоро. Така ще можете да използвате всички предимства на вашия ONLYOFFICE DocSpace както преди.
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Здравей, $UserName!
+
+Моля, имайте предвид, че гратисният период от $PaymentDelay дни за вашето ONLYOFFICE DocSpace ще изтече утре.
+
+/Уверете се, че ще платите вашия Business абонамент днес. Така ще можете да използвате допълнително всички предимства на вашия ONLYOFFICE DocSpace.
+
+$GreenButton
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Здравейте!
+
+Поканени сте да се присъедините към $Message room на адрес "${__VirtualRootPath}":"${__VirtualRootPath}". Приемете поканата, като щракнете върху линка:
+
+$GreenButton
+
+След като щракнете върху линка на поканата, моля, задайте нова парола за вашия акаунт.
+
+С уважение,
+Екипът на ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Присъединете се към ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Присъединете се към ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Присъединете се към ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Присъединете се към ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Присъединете се към ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Присъединете се към ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Възползвайте се от безплатните ONLYOFFICE приложения</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Възползвайте се от безплатните ONLYOFFICE приложения</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Възползвайте се от безплатните ONLYOFFICE приложения</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Гратисният период за вашия ONLYOFFICE DocSpace изтече</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Какво е новото във вашия портал за $Date</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Гратисния период за вашия ONLYOFFICE DocSpace е активиран</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Вашият абонамент за ONLYOFFICE DocSpace е на път да изтече</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Гратисния период за вашия ONLYOFFICE DocSpace изтича утре</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Потвърдете промяната на паролата си</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Влезте в личния си ONLYOFFICE акаунт</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Открийте бизнес абонамента на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Открийте бизнес абонамента на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Открийте бизнес абонамента на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Открийте бизнес абонамента на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Няколко съвета за ефективна работа с вашите документи</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Няколко съвета за ефективна работа с вашите документи</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Няколко съвета за ефективна работа с вашите документи</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Няколко съвета за ефективна работа с вашите документи</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Конфигурирайте вашия ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ПРИЕМАМ</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Вашият ONLYOFFICE DocSpace ще бъде изтрит</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace е деактивиран</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Добре дошли в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ПОТВЪРЖДАВАНЕ</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Сътрудничество в DocSpace</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Посетете раздела за плащания</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Потвърдете поканата за DocSpace</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Заявка от отдел продажби</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Потвърдете поканата за стаята</value>
+  </data>
 </root>
