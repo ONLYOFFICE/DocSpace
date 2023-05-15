@@ -184,6 +184,7 @@ const DeliveryDatePicker = ({
                   date={filterSettings.deliveryFrom}
                   setDate={setDeliveryFrom}
                   hasError={!isTimeValid}
+                  tabIndex={1}
                 />
               </span>
               <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
@@ -193,6 +194,7 @@ const DeliveryDatePicker = ({
                 date={filterSettings.deliveryTo}
                 setDate={setDeliveryTo}
                 hasError={!isTimeValid}
+                tabIndex={2}
               />
             </TimePickerCell>
           ) : (
