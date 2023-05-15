@@ -5,6 +5,12 @@ declare global {
   }
 }
 
+export type ContextMenuAction = (file: IFile, t: TranslationType) => void;
+
+export type OmitSecondArg<F> = F extends (x: infer P, arg: any) => infer R
+  ? (file: P) => R
+  : never;
+
 export type TranslationType = (key: string, opt?: object) => string;
 
 export type NumberOrString = number | string;

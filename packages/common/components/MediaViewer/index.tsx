@@ -25,6 +25,7 @@ import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
 import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
+import { getPDFContextModel } from "./helpers/contextModel";
 
 function MediaViewer({
   playlistPos,
@@ -143,13 +144,17 @@ function MediaViewer({
   const getContextModel = () => {
     const {
       t,
+      onClickDownloadAs,
+      onClickLinkEdit,
       onClickDownload,
+      onPreviewClick,
       onClickRename,
       onClickDelete,
       onShowInfoPanel,
       onMoveAction,
       onCopyAction,
       onDuplicate,
+      onCopyLink,
     } = props;
 
     if (!targetFile) return [];
@@ -240,6 +245,20 @@ function MediaViewer({
         disabled: !targetFile.security.Delete,
       },
     ];
+
+    if (isPdf)
+      return getPDFContextModel(t, targetFile, {
+        onClickDownloadAs,
+        onMoveAction,
+        onCopyAction,
+        onClickRename,
+        onDuplicate,
+        onClickDelete,
+        onClickDownload,
+        onClickLinkEdit,
+        onPreviewClick,
+        onCopyLink,
+      });
 
     return isMobile
       ? model
