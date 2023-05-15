@@ -84,6 +84,7 @@ const HistoryHeader = (props) => {
     emptyCheckedIds,
     historyWebhooks,
     retryWebhookEvents,
+    isCheckedIdsEmpty,
   } = props;
   const navigate = useNavigate();
   const onBack = () => {
@@ -143,6 +144,17 @@ const HistoryHeader = (props) => {
     </>
   );
 
+  const GroupMenu = () => (
+    <TableGroupMenu
+      checkboxOptions={menuItems}
+      onChange={handleGroupSelection}
+      headerMenu={headerMenu}
+      isChecked={historyWebhooks.length === checkedEventIds.length}
+      isIndeterminate={!isCheckedIdsEmpty && historyWebhooks.length !== checkedEventIds.length}
+      withoutInfoPanelToggler
+    />
+  );
+
   useEffect(() => {
     return emptyCheckedIds;
   }, []);
@@ -151,25 +163,11 @@ const HistoryHeader = (props) => {
     <HeaderContainer>
       {isMobileOnly ? (
         <>
-          {isHeaderVisible && (
-            <TableGroupMenu
-              checkboxOptions={menuItems}
-              onChange={handleGroupSelection}
-              headerMenu={headerMenu}
-              isChecked={historyWebhooks.length === checkedEventIds.length}
-              withoutInfoPanelToggler
-            />
-          )}
+          {isHeaderVisible && <GroupMenu />}
           <NavigationHeader />
         </>
       ) : isHeaderVisible ? (
-        <TableGroupMenu
-          checkboxOptions={menuItems}
-          onChange={handleGroupSelection}
-          headerMenu={headerMenu}
-          isChecked={historyWebhooks.length === checkedEventIds.length}
-          withoutInfoPanelToggler
-        />
+        <GroupMenu />
       ) : (
         <NavigationHeader />
       )}
@@ -178,8 +176,21 @@ const HistoryHeader = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { isHeaderVisible, checkAllIds, emptyCheckedIds, checkedEventIds, retryWebhookEvents } =
-    webhooksStore;
+  const {
+    isHeaderVisible,
+    checkAllIds,
+    emptyCheckedIds,
+    checkedEventIds,
+    retryWebhookEvents,
+    isCheckedIdsEmpty,
+  } = webhooksStore;
 
-  return { isHeaderVisible, checkAllIds, emptyCheckedIds, checkedEventIds, retryWebhookEvents };
+  return {
+    isHeaderVisible,
+    checkAllIds,
+    emptyCheckedIds,
+    checkedEventIds,
+    retryWebhookEvents,
+    isCheckedIdsEmpty,
+  };
 })(observer(HistoryHeader));
