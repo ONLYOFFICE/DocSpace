@@ -34,6 +34,10 @@ function PDFViewer({
   toolbar,
   mobileDetails,
   isPDFSidebarOpen,
+  isFistImage,
+  isLastImage,
+  onNext,
+  onPrev,
   onMask,
   generateContextMenu,
   setIsOpenContextMenu,
@@ -190,6 +194,10 @@ function PDFViewer({
     setIsPDFSidebarOpen(false);
   };
 
+  const setZoom = (scale: number) => {
+    pdfViewer.current.setZoom(scale);
+  };
+
   function toolbarEvent(item: ToolbarItemType) {
     switch (item.actionType) {
       case ToolbarActionType.Panel:
@@ -208,10 +216,10 @@ function PDFViewer({
 
         if (newZoom < MinScale * 100 || newZoom > MaxScale * 100) return;
 
-        pdfViewer.current.setZoom(newZoom);
+        setZoom(newZoom);
         break;
       case ToolbarActionType.Reset:
-        pdfViewer.current.setZoom(100);
+        setZoom(100);
         break;
       default:
         break;
@@ -253,7 +261,13 @@ function PDFViewer({
           setIsPDFSidebarOpen={setIsPDFSidebarOpen}
         />
         <MainPanel
+          src={src}
           ref={containerRef}
+          setZoom={setZoom}
+          onNext={onNext}
+          onPrev={onPrev}
+          isFistImage={isFistImage}
+          isLastImage={isLastImage}
           isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
         />
       </PDFViewerWrapper>
@@ -262,7 +276,7 @@ function PDFViewer({
           ref={pageCountRef}
           isPanelOpen={isPDFSidebarOpen}
           className="pdf-viewer_page-count"
-          visible={!isLoadingFile && !isLoadingScript}
+          visible={!isLoadingFile && !isLoadingScript && isFileOpened}
         />
 
         {isDesktop && !(isLoadingFile || isLoadingScript) && (

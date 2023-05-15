@@ -7,6 +7,9 @@ interface PDFViewerProps {
   isPDFSidebarOpen: boolean;
   mobileDetails: JSX.Element;
 
+  isLastImage: boolean;
+  isFistImage: boolean;
+
   onMask: VoidFunction;
   generateContextMenu: (
     isOpen: boolean,
@@ -15,6 +18,10 @@ interface PDFViewerProps {
   ) => JSX.Element;
   setIsOpenContextMenu: Dispatch<SetStateAction<boolean>>;
   setIsPDFSidebarOpen: Dispatch<SetStateAction<boolean>>;
+
+  onPrev: VoidFunction;
+  onNext: VoidFunction;
+
   handleChangeVersion: (arg: string) => void; // temp
 }
 

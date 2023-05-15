@@ -262,6 +262,10 @@ function Viewer(props: ViewerProps) {
                 generateContextMenu={props.generateContextMenu}
                 setIsOpenContextMenu={setIsOpenContextMenu}
                 setIsPDFSidebarOpen={setIsPDFSidebarOpen}
+                isLastImage={!isNotLastElement}
+                isFistImage={!isNotFirstElement}
+                onPrev={props.onPrevClick}
+                onNext={props.onNextClick}
               />
             ) : (
               <PDFViewerV2
