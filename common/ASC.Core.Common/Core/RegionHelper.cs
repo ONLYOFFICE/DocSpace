@@ -94,7 +94,6 @@ public class RegionHelper
     {
         RegionInfo regionInfo = null;
 
-        var tenant = _tenantManager.GetCurrentTenant();
         var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
 
         if (geoinfo != null)
@@ -104,9 +103,13 @@ public class RegionHelper
 
         if (regionInfo == null)
         {
-            var owner = _userManager.GetUsers(tenant.OwnerId);
-            var culture = string.IsNullOrEmpty(owner.CultureName) ? tenant.GetCulture() : owner.GetCulture();
-            regionInfo = GetRegionInfo(culture.Name);
+            var tenant = _tenantManager.GetCurrentTenant(false);
+            if (tenant != null)
+            {
+                var owner = _userManager.GetUsers(tenant.OwnerId);
+                var culture = string.IsNullOrEmpty(owner.CultureName) ? tenant.GetCulture() : owner.GetCulture();
+                regionInfo = GetRegionInfo(culture.Name);
+            }
         }
 
         return regionInfo;
