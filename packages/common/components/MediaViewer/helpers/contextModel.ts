@@ -204,7 +204,7 @@ export const getMobileMediaContextModel = (
   return options;
 };
 
-export const getDesctopMediaContextModel = (
+export const getDesktopMediaContextModel = (
   t: TranslationType,
   targetFile: IFile,
   archiveRoom: boolean,

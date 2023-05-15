@@ -6,11 +6,13 @@ import ImageViewerToolbar from "../ImageViewerToolbar";
 type Panel = { isPanelOpen?: boolean };
 
 export const PDFViewerToolbarWrapper = styled.section`
-  .pdf-viewer_page-count:hover + .pdf-viewer_toolbar {
-    background: rgba(0, 0, 0, 0.8);
-  }
-  &:hover .pdf-viewer_page-count {
-    background: rgba(0, 0, 0, 0.8);
+  @media (hover: hover) {
+    .pdf-viewer_page-count:hover + .pdf-viewer_toolbar {
+      background: rgba(0, 0, 0, 0.8);
+    }
+    &:hover .pdf-viewer_page-count {
+      background: rgba(0, 0, 0, 0.8);
+    }
   }
 `;
 

@@ -19,7 +19,7 @@ import {
 } from "./helpers";
 
 import {
-  getDesctopMediaContextModel,
+  getDesktopMediaContextModel,
   getMobileMediaContextModel,
   getPDFContextModel,
 } from "./helpers/contextModel";
@@ -156,7 +156,7 @@ function MediaViewer({
 
     if (!targetFile) return [];
 
-    const desktopModel = getDesctopMediaContextModel(
+    const desktopModel = getDesktopMediaContextModel(
       t,
       targetFile,
       archiveRoom,
