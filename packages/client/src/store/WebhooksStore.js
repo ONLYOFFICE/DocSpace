@@ -22,6 +22,7 @@ class WebhooksStore {
   };
   checkedEventIds = [];
   isTitleVisible = true;
+  startIndex = 0;
 
   constructor() {
     makeAutoObservable(this);
@@ -107,6 +108,11 @@ class WebhooksStore {
 
   getWebhookHistory = async (params) => {
     return await getWebhooksJournal(params);
+  };
+  getWebhookHistoryBatch = async (params) => {
+    const historyWebhooks = await getWebhooksJournal({ ...params, logCount: 10, startIndex });
+    this.startIndex = this.startIndex + 10;
+    return historyWebhooks;
   };
 
   get isWebhooksEmpty() {
@@ -197,6 +203,10 @@ class WebhooksStore {
     this.checkedEventIds = [];
   };
 
+  get isCheckedIdsEmpty() {
+    return this.checkedEventIds.length === 0;
+  }
+  
   get isHeaderVisible() {
     return this.checkedEventIds.length !== 0;
   }
