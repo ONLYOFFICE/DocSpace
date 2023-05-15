@@ -6,6 +6,7 @@ export const Data = [
     status: "Filled and signed",
     avatar: null,
     date: "26.01.2023 17:56",
+    finished: true,
   },
   {
     id: 1,
@@ -14,6 +15,7 @@ export const Data = [
     status: "Filled and signed",
     avatar: null,
     date: "27.01.2023 13:56",
+    finished: true,
   },
   {
     id: 2,
@@ -22,5 +24,6 @@ export const Data = [
     status: "Start filling",
     avatar: null,
     date: "28.01.2023 14:43",
+    finished: false,
   },
 ];

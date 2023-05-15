@@ -10,7 +10,6 @@ import Avatar from "../avatar";
 
 const AccordionItem = styled.div`
   width: 100%;
-  margin-bottom: 10px;
 `;
 const AccordionItemInfo = styled.div`
   display: flex;
@@ -18,43 +17,59 @@ const AccordionItemInfo = styled.div`
   justify-content: space-between;
   cursor: pointer;
   height: 38px;
+  padding: 18px 0;
+
+  .user-avatar {
+    padding 1px;
+    border: 2px solid ${(props) => (props.finished ? "#4781D1" : "#A3A9AE")};
+    border-radius: 50%;
+  }
 
   .icon-button {
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transform: rotate(90deg);
   }
 
   .icon-button-rotate {
+    path {
+      fill: #4781d1;
+    }
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transform: rotate(90deg);
+    transform: rotate(270deg);
   }
 `;
+
 const AccordionItemHistory = styled.div`
-  height: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 5px 15px 15px;
+  padding-left: 15px;
 `;
 
-const StyledDivider = styled.div`
-  height: 40px;
-  width: 2px;
-  background-color: #a3a9ae;
-  margin-right: 28px;
+const ItemWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  border-left: 2px ${(props) => (props.finished ? "solid" : "dashed")};
+  border-color: ${(props) => (props.finished ? "#4781D1" : "#A3A9AE")};
+  min-height: 40px;
+
+  .status-text {
+    color: ${(props) => (props.finished ? "#4781D1" : "#657077")};
+  }
 `;
 
-const Accordion = ({ avatar, displayName, role, status, date }) => {
+const Accordion = ({ avatar, displayName, role, status, date, finished }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <AccordionItem>
-      <AccordionItemInfo onClick={() => setIsOpen(!isOpen)}>
+      <AccordionItemInfo finished={finished} onClick={() => setIsOpen(!isOpen)}>
         <Box displayProp="flex" alignItems="center">
           <Avatar
             className="user-avatar"
@@ -74,6 +89,7 @@ const Accordion = ({ avatar, displayName, role, status, date }) => {
               fontSize="14px"
               color="#333333"
               lineHeight="16px"
+              fontWeight="bold"
             >
               {displayName}
             </Text>
@@ -95,14 +111,37 @@ const Accordion = ({ avatar, displayName, role, status, date }) => {
           isOpen={isOpen}
         />
       </AccordionItemInfo>
+
+      <AccordionItemHistory>
+        <ItemWrapper finished={finished}>
+          <Text
+            fontSize="12px"
+            lineHeight="16px"
+            className="status-text"
+            style={{ marginLeft: "15px" }}
+          >
+            {status}
+          </Text>
+        </ItemWrapper>
+
+        <Text fontSize="12px" lineHeight="16px" color="#657077">
+          {date}
+        </Text>
+      </AccordionItemHistory>
+
       {isOpen && (
         <AccordionItemHistory>
-          <Box displayProp="flex" alignItems="center">
-            <StyledDivider />
-            <Text fontSize="12px" lineHeight="16px" color="#657077">
+          <ItemWrapper finished={finished}>
+            <Text
+              fontSize="12px"
+              lineHeight="16px"
+              color="#657077"
+              className="status-text"
+              style={{ marginLeft: "15px" }}
+            >
               {status}
             </Text>
-          </Box>
+          </ItemWrapper>
 
           <Text fontSize="12px" lineHeight="16px" color="#657077">
             {date}

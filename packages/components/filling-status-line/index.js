@@ -1,5 +1,4 @@
 import React from "react";
-import styled from "styled-components";
 import Accordion from "./accordion.js";
 
 import DoneReactSvg from "PUBLIC_DIR/images/done.react.svg";
@@ -20,12 +19,18 @@ const FillingStatusLine = () => {
             status={data.status}
             avatar={data.avatar}
             date={data.date}
+            finished={data.finished}
           />
         );
       })}
-      <Box displayProp="flex" alignItems="center">
+      <Box displayProp="flex" alignItems="center" marginProp="15px 0 0">
         <DoneReactSvg className="done-icon" />
-        <Text fontSize="14px" lineHeight="16px" color="#A3A9AE" isBold={true}>
+        <Text
+          fontSize="14px"
+          lineHeight="16px"
+          color="#A3A9AE"
+          fontWeight="bold"
+        >
           Done
         </Text>
       </Box>
