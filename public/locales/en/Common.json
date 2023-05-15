@@ -18,6 +18,7 @@
   "Archive": "Archive",
   "Attention": "Attention",
   "Audio": "Audio",
+  "Authorization": "Authorization",
   "BarMaintenanceDescription": "We apologize for any short-term technical issues in service functioning that may appear on {{targetDate}} during the update of {{productName}}.",
   "BarMaintenanceDisclaimer": "Please, make sure that all the changes are successfully saved during this day.",
   "BookNow": "Book now",
