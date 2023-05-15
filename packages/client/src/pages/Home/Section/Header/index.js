@@ -343,11 +343,11 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => {
-    const { activeFiles, activeFolders } = this.props;
+    const { activeFiles, activeFolders, emptyTrashInProgress } = this.props;
 
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
-    if (isExistActiveItems) return;
+    if (isExistActiveItems || emptyTrashInProgress) return;
 
     this.props.setEmptyTrashDialogVisible(true);
   };
@@ -822,6 +822,7 @@ export default inject(
       isGroupMenuBlocked,
       moveToRoomsPage,
       onClickBack,
+      emptyTrashInProgress,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -939,6 +940,7 @@ export default inject(
 
       moveToRoomsPage,
       onClickBack,
+      emptyTrashInProgress,
     };
   }
 )(
