@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import moment from "moment";
 
-import { getDaysRemaining } from "@docspace/common/utils";
+import { getDaysLeft, getDaysRemaining } from "@docspace/common/utils";
 
 import api from "../api";
 import { TariffState } from "../constants";
@@ -81,6 +81,18 @@ class CurrentTariffStatusStore {
   get delayDaysCount() {
     moment.locale(authStore.language);
     return getDaysRemaining(this.delayDueDate);
+  }
+
+  get isLicenseDateExpires() {
+    if (!this.dueDate) return;
+
+    return !moment(this.dueDate).isAfter();
+  }
+
+  get trialDaysLeft() {
+    if (!this.dueDate) return;
+
+    return getDaysLeft(this.dueDate);
   }
 
   setPortalTariffValue = async (res) => {

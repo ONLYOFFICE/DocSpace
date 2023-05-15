@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -22,12 +22,7 @@ const StandalonePage = (props) => {
     isEnterpriseEdition,
     isTrial,
   } = props;
-  const { t, ready } = useTranslation([
-    "Payments",
-    "Common",
-    "Settings",
-    "ChangePasswordDialog",
-  ]);
+  const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
 
   useEffect(() => {
     enterpriseInit();
@@ -58,7 +53,7 @@ const StandalonePage = (props) => {
 
   return (
     <StyledComponent>
-      {true ? <TrialContainer t={t} /> : <EnterpriseContainer t={t} />}
+      {isTrial ? <TrialContainer t={t} /> : <EnterpriseContainer t={t} />}
       <LicenseContainer t={t} />
       <ContactContainer t={t} />
     </StyledComponent>
@@ -73,11 +68,8 @@ export default inject(({ auth, payments }) => {
   } = auth;
 
   const { enterpriseInit, isInitPaymentPage } = payments;
-  const { isLoaded: isLoadedCurrentQuota } = currentQuotaStore;
+  const { isLoaded: isLoadedCurrentQuota, isTrial } = currentQuotaStore;
   const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
-
-  const isTrial = true,
-    isEnterprise = false;
 
   return {
     isTrial,

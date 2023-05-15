@@ -6,13 +6,14 @@ import { StyledTitleComponent } from "../StyledComponent";
 
 const TariffTitleContainer = ({
   t,
-  limitedWidth = true,
-  isSubscriptionExpired,
+  isLicenseDateExpires,
   isTrial,
+  trialDaysLeft,
+  paymentDate,
 }) => {
   const alertComponent = () => {
     if (isTrial) {
-      return isSubscriptionExpired ? (
+      return isLicenseDateExpires ? (
         <Text
           className="payments_subscription-expired"
           fontWeight={600}
@@ -26,13 +27,13 @@ const TariffTitleContainer = ({
           fontWeight={600}
           fontSize="14px"
         >
-          {t("FreeDaysLeft", { count: "12" })}
+          {t("FreeDaysLeft", { count: trialDaysLeft })}
         </Text>
       );
     }
 
     return (
-      isSubscriptionExpired && (
+      isLicenseDateExpires && (
         <Text className="payments_subscription-expired" isBold fontSize="14px">
           {t("EnterpriseSubscriptionExpired")}
         </Text>
@@ -43,24 +44,25 @@ const TariffTitleContainer = ({
   const expiresDate = () => {
     if (isTrial) {
       return t("TrialExpiresDate", {
-        finalDate: "Monday, May 15, 2023",
+        finalDate: paymentDate,
       });
     }
     return t("EnterpriseExpiresDate", {
-      finalDate: "Tuesday, December 19, 2023.",
+      finalDate: paymentDate,
     });
   };
+
   return (
     <StyledTitleComponent
-      isSubscriptionExpired={isSubscriptionExpired}
-      limitedWidth={limitedWidth}
+      isLicenseDateExpires={isLicenseDateExpires}
+      limitedWidth={isTrial ? true : isLicenseDateExpires}
     >
       <div className="payments_subscription">
         <div className="title">
           <Text fontWeight={600} fontSize="14px" as="span">
             {t("EnterpriseEdition")}{" "}
           </Text>
-          {!isSubscriptionExpired && (
+          {!isLicenseDateExpires && (
             <Text fontSize="14px" as="span">
               {expiresDate()}
             </Text>
@@ -72,8 +74,13 @@ const TariffTitleContainer = ({
   );
 };
 
-export default inject(({ payments }) => {
-  const {} = payments;
-
-  return {};
+export default inject(({ auth }) => {
+  const { currentTariffStatusStore, currentQuotaStore } = auth;
+  const {
+    trialDaysLeft,
+    paymentDate,
+    isLicenseDateExpires,
+  } = currentTariffStatusStore;
+  const { isTrial } = currentQuotaStore;
+  return { isTrial, trialDaysLeft, paymentDate, isLicenseDateExpires };
 })(observer(TariffTitleContainer));
