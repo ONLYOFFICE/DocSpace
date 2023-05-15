@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import moment from "moment";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { TextInput } from "@docspace/components";
 
@@ -20,6 +20,12 @@ const TimeInput = styled.div`
 
   border-color: ${(props) => (props.hasError ? "#f21c0e" : "#d0d5da")};
 
+  ${(props) =>
+    props.isFocused &&
+    css`
+      border-color: #4781d1;
+    `}
+
   :focus {
     border-color: #4781d1;
   }
@@ -33,10 +39,19 @@ const TimeInput = styled.div`
   }
 `;
 
-const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
+const TimePicker = ({
+  date,
+  setDate,
+  onChange,
+  className,
+  hasError,
+  tabIndex,
+}) => {
   const hoursInputRef = useRef(null);
   const minutesInputRef = useRef(null);
   const timeInputRef = useRef(null);
+
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const [hours, setHours] = useState(moment(date, "HH:mm").format("HH"));
 
@@ -114,9 +129,11 @@ const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
 
   const onHoursBlur = (e) => {
     e.target.value.length === 1 && handleHoursChange("0" + e.target.value);
+    setIsInputFocused(false);
   };
   const onMinutesBlur = (e) => {
     e.target.value.length === 1 && handleMinutesChange("0" + e.target.value);
+    setIsInputFocused(false);
   };
 
   return (
@@ -125,6 +142,7 @@ const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
       onClick={focusHoursInput}
       className={className}
       hasError={hasError}
+      isFocused={isInputFocused}
     >
       <TextInput
         withBorder={false}
@@ -132,6 +150,8 @@ const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
         value={hours}
         onChange={handleChangeHours}
         onBlur={onHoursBlur}
+        tabIndex={tabIndex}
+        onFocus={() => setIsInputFocused(true)}
       />
       :
       <TextInput
@@ -141,6 +161,7 @@ const TimePicker = ({ date, setDate, onChange, className, hasError }) => {
         onChange={handleChangeMinutes}
         onClick={focusMinutesInput}
         onBlur={onMinutesBlur}
+        onFocus={() => setIsInputFocused(true)}
       />
     </TimeInput>
   );
@@ -156,6 +177,8 @@ TimePicker.propTypes = {
   /** Allow you to handle changing events of component */
   onChange: PropTypes.func,
   /** Indicates error */
+  hasError: PropTypes.bool,
+  /** Tab index allows to make element focusable */
   hasError: PropTypes.bool,
 };
 
