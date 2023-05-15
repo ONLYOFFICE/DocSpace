@@ -415,7 +415,7 @@ const FilterBlock = ({
               <Button
                 id="filter_cancel-button"
                 size="normal"
-                label={t("CancelButton")}
+                label={t("Common:CancelButton")}
                 scale={true}
                 onClick={hideFilterBlock}
               />
