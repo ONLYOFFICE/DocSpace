@@ -52,6 +52,10 @@ class PublicRoomStore {
       denyDownload
     );
   };
+
+  validatePublicRoomKey = (key) => {
+    return api.rooms.validatePublicRoomKey(key);
+  };
 }
 
 export default PublicRoomStore;
