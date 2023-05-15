@@ -1047,7 +1047,7 @@ class ContextOptionsStore {
       {
         id: "option_rename",
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => this.onClickRename(item),
         disabled: false,

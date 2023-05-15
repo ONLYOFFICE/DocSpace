@@ -164,7 +164,7 @@ function MediaViewer({
       },
       {
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => onClickRename(targetFile),
         disabled: archiveRoom,
@@ -221,7 +221,7 @@ function MediaViewer({
       },
       {
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => onClickRename(targetFile),
         disabled: !targetFile.security.Rename,

@@ -566,7 +566,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_rename",
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         onClick: this.renameAction,
         disabled: isDisabled || !security?.Rename,
         icon: RenameReactSvgUrl,
