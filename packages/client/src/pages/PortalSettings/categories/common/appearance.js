@@ -463,6 +463,7 @@ const Appearance = (props) => {
     }
 
     setCurrentColorAccent(appliedColorAccent);
+    saveToSessionStorage("selectColorAccent", appliedColorAccent);
 
     setOpenHexColorPickerAccent(false);
   }, [
