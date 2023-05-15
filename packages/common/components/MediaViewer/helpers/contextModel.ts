@@ -7,6 +7,8 @@ import DownloadAsReactSvgUrl from "PUBLIC_DIR/images/download-as.react.svg?url";
 import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
 import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
 import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
+import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
+import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
 
 import {
   ContextMenuAction,
@@ -26,12 +28,13 @@ type Functions = {
   onClickLinkEdit: OmitSecondArg<ContextMenuAction>;
   onPreviewClick: OmitSecondArg<ContextMenuAction>;
   onCopyLink: ContextMenuAction;
+  onShowInfoPanel: OmitSecondArg<ContextMenuAction>;
 };
 
 export const getPDFContextModel = (
   t: TranslationType,
   item: IFile,
-  funcs: Functions
+  funcs: Omit<Functions, "onShowInfoPanel">
 ) => {
   const options = [
     {
@@ -111,6 +114,125 @@ export const getPDFContextModel = (
       icon: TrashReactSvgUrl,
       onClick: () => funcs.onClickDelete(item, t),
       disabled: !item.security.Delete,
+    },
+  ];
+
+  return options;
+};
+
+export const getMobileMediaContextModel = (
+  t: TranslationType,
+  targetFile: IFile,
+  funcs: Omit<
+    Functions,
+    "onClickDownloadAs" | "onCopyLink" | "onPreviewClick" | "onClickLinkEdit"
+  >
+) => {
+  const {
+    onShowInfoPanel,
+    onClickDownload,
+    onMoveAction,
+    onCopyAction,
+    onDuplicate,
+    onClickRename,
+    onClickDelete,
+  } = funcs;
+
+  const options = [
+    {
+      id: "option_room-info",
+      key: "room-info",
+      label: t("Common:Info"),
+      icon: InfoOutlineReactSvgUrl,
+      onClick: () => {
+        return onShowInfoPanel(targetFile);
+      },
+      disabled: false,
+    },
+    {
+      key: "download",
+      label: t("Common:Download"),
+      icon: DownloadReactSvgUrl,
+      onClick: () => onClickDownload(targetFile, t),
+      disabled: false,
+    },
+    {
+      key: "move-to",
+      label: t("MoveTo"),
+      icon: MoveReactSvgUrl,
+      onClick: onMoveAction,
+      disabled: !targetFile.security.Move,
+    },
+    {
+      id: "option_copy-to",
+      key: "copy-to",
+      label: t("Translations:Copy"),
+      icon: CopyReactSvgUrl,
+      onClick: onCopyAction,
+      disabled: !targetFile.security.Copy,
+    },
+    {
+      id: "option_create-copy",
+      key: "copy",
+      label: t("Common:Duplicate"),
+      icon: DuplicateReactSvgUrl,
+      onClick: () => onDuplicate(targetFile, t),
+      disabled: !targetFile.security.Duplicate,
+    },
+    {
+      key: "rename",
+      label: t("Rename"),
+      icon: RenameReactSvgUrl,
+      onClick: () => onClickRename(targetFile),
+      disabled: !targetFile.security.Rename,
+    },
+
+    {
+      key: "separator0",
+      isSeparator: true,
+      disabled: !targetFile.security.Delete,
+    },
+    {
+      key: "delete",
+      label: t("Common:Delete"),
+      icon: TrashReactSvgUrl,
+      onClick: () => onClickDelete(targetFile, t),
+      disabled: !targetFile.security.Delete,
+    },
+  ];
+
+  return options;
+};
+
+export const getDesctopMediaContextModel = (
+  t: TranslationType,
+  targetFile: IFile,
+  archiveRoom: boolean,
+  funcs: Pick<Functions, "onClickDownload" | "onClickRename" | "onClickDelete">
+) => {
+  const { onClickDelete, onClickDownload, onClickRename } = funcs;
+
+  const options = [
+    {
+      key: "download",
+      label: t("Common:Download"),
+      icon: DownloadReactSvgUrl,
+      onClick: () => onClickDownload(targetFile, t),
+      disabled: false,
+    },
+    {
+      key: "rename",
+      label: t("Rename"),
+      icon: RenameReactSvgUrl,
+      onClick: () => onClickRename(targetFile),
+      disabled: archiveRoom,
+    },
+    {
+      key: "delete",
+      label: t("Common:Delete"),
+      icon: TrashReactSvgUrl,
+      onClick: () => onClickDelete(targetFile, t),
+      disabled: archiveRoom,
     },
   ];
 

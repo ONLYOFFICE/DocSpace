@@ -18,14 +18,11 @@ import {
   mediaTypes,
 } from "./helpers";
 
-import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url";
-import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
-import DuplicateReactSvgUrl from "PUBLIC_DIR/images/duplicate.react.svg?url";
-import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
-import RenameReactSvgUrl from "PUBLIC_DIR/images/rename.react.svg?url";
-import TrashReactSvgUrl from "PUBLIC_DIR/images/trash.react.svg?url";
-import MoveReactSvgUrl from "PUBLIC_DIR/images/move.react.svg?url";
-import { getPDFContextModel } from "./helpers/contextModel";
+import {
+  getDesctopMediaContextModel,
+  getMobileMediaContextModel,
+  getPDFContextModel,
+} from "./helpers/contextModel";
 
 function MediaViewer({
   playlistPos,
@@ -159,92 +156,26 @@ function MediaViewer({
 
     if (!targetFile) return [];
 
-    const desktopModel = [
+    const desktopModel = getDesctopMediaContextModel(
+      t,
+      targetFile,
+      archiveRoom,
       {
-        key: "download",
-        label: t("Common:Download"),
-        icon: DownloadReactSvgUrl,
-        onClick: () => onClickDownload(targetFile, t),
-        disabled: false,
-      },
-      {
-        key: "rename",
-        label: t("Rename"),
-        icon: RenameReactSvgUrl,
-        onClick: () => onClickRename(targetFile),
-        disabled: archiveRoom,
-      },
-      {
-        key: "delete",
-        label: t("Common:Delete"),
-        icon: TrashReactSvgUrl,
-        onClick: () => onClickDelete(targetFile, t),
-        disabled: archiveRoom,
-      },
-    ];
+        onClickDownload,
+        onClickRename,
+        onClickDelete,
+      }
+    );
 
-    const model = [
-      {
-        id: "option_room-info",
-        key: "room-info",
-        label: t("Common:Info"),
-        icon: InfoOutlineReactSvgUrl,
-        onClick: () => {
-          return onShowInfoPanel(targetFile);
-        },
-        disabled: false,
-      },
-      {
-        key: "download",
-        label: t("Common:Download"),
-        icon: DownloadReactSvgUrl,
-        onClick: () => onClickDownload(targetFile, t),
-        disabled: false,
-      },
-      {
-        key: "move-to",
-        label: t("MoveTo"),
-        icon: MoveReactSvgUrl,
-        onClick: onMoveAction,
-        disabled: !targetFile.security.Move,
-      },
-      {
-        id: "option_copy-to",
-        key: "copy-to",
-        label: t("Translations:Copy"),
-        icon: CopyReactSvgUrl,
-        onClick: onCopyAction,
-        disabled: !targetFile.security.Copy,
-      },
-      {
-        id: "option_create-copy",
-        key: "copy",
-        label: t("Common:Duplicate"),
-        icon: DuplicateReactSvgUrl,
-        onClick: () => onDuplicate(targetFile, t),
-        disabled: !targetFile.security.Duplicate,
-      },
-      {
-        key: "rename",
-        label: t("Rename"),
-        icon: RenameReactSvgUrl,
-        onClick: () => onClickRename(targetFile),
-        disabled: !targetFile.security.Rename,
-      },
-
-      {
-        key: "separator0",
-        isSeparator: true,
-        disabled: !targetFile.security.Delete,
-      },
-      {
-        key: "delete",
-        label: t("Common:Delete"),
-        icon: TrashReactSvgUrl,
-        onClick: () => onClickDelete(targetFile, t),
-        disabled: !targetFile.security.Delete,
-      },
-    ];
+    const model = getMobileMediaContextModel(t, targetFile, {
+      onShowInfoPanel,
+      onClickDownload,
+      onMoveAction,
+      onCopyAction,
+      onDuplicate,
+      onClickRename,
+      onClickDelete,
+    });
 
     if (isPdf)
       return getPDFContextModel(t, targetFile, {
