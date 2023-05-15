@@ -79,6 +79,7 @@ const DeliveryDatePicker = ({
         onChange={closeCalendar}
         isMobile={false}
         forwardedRef={calendarRef}
+        className="calendar"
       />
     ) : (
       <MobileCalendar
