@@ -206,7 +206,7 @@ function MediaViewer({
       {
         id: "option_copy-to",
         key: "copy-to",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         icon: CopyReactSvgUrl,
         onClick: onCopyAction,
         disabled: !targetFile.security.Copy,

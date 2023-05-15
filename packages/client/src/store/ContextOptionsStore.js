@@ -782,7 +782,7 @@ class ContextOptionsStore {
                 {
                   id: "option_copy-to",
                   key: "copy-to",
-                  label: t("Translations:Copy"),
+                  label: t("Common:Copy"),
                   icon: CopyReactSvgUrl,
                   onClick: this.onCopyAction,
                   disabled: false,
@@ -810,7 +810,7 @@ class ContextOptionsStore {
             {
               id: "option_copy-to",
               key: "copy-to",
-              label: t("Translations:Copy"),
+              label: t("Common:Copy"),
               icon: CopyReactSvgUrl,
               onClick: this.onCopyAction,
               disabled: false,
@@ -1344,7 +1344,7 @@ class ContextOptionsStore {
       },
       {
         key: "copy-to",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         icon: CopyReactSvgUrl,
         onClick: this.onCopyAction,
         disabled: isRecycleBinFolder || !copyItems,

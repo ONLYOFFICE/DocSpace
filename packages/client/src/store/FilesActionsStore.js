@@ -1681,7 +1681,7 @@ class FilesActionStore {
         else
           return {
             id: "menu-copy",
-            label: t("Translations:Copy"),
+            label: t("Common:Copy"),
             onClick: () => setCopyPanelVisible(true),
             iconUrl: CopyToReactSvgUrl,
           };

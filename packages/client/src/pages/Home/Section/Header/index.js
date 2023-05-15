@@ -558,7 +558,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_copy",
         key: "copy",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         onClick: this.onCopyAction,
         disabled: isDisabled || !security?.CopyTo,
         icon: CopyReactSvgUrl,
