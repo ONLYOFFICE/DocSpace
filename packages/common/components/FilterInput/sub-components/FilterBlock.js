@@ -408,7 +408,7 @@ const FilterBlock = ({
                 id="filter_apply-button"
                 size="normal"
                 primary={true}
-                label={t("ApplyButton")}
+                label={t("Common:ApplyButton")}
                 scale={true}
                 onClick={onFilterAction}
               />
