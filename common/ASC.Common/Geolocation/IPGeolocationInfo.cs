@@ -34,6 +34,7 @@ public class IPGeolocationInfo
     public string TimezoneName { get; set; }
     public IPAddress IPStart { get; set; }
     public IPAddress IPEnd { get; set; }
+    public string Continent { get; set; }
 
 
     public static readonly IPGeolocationInfo Default = new IPGeolocationInfo

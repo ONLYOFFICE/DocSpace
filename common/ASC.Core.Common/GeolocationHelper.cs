@@ -79,7 +79,8 @@ public class GeolocationHelper
                     IPStart = new IPAddress(r.IPStart),
                     Key = r.Country,
                     TimezoneOffset = r.TimezoneOffset,
-                    TimezoneName = r.TimezoneName
+                    TimezoneName = r.TimezoneName,
+                    Continent = r.Continent
                 })
                 .FirstOrDefault();
 
@@ -104,7 +105,7 @@ public class GeolocationHelper
         {
             var ip = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress;
 
-            if (ip != IPAddress.Loopback)
+            if (!ip.Equals(IPAddress.Loopback))
             {
                 _logger.DebugRemoteIpAddress(ip.ToString());
 
