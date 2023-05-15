@@ -125,7 +125,7 @@ const HideArticleMenuButton = ({
             noSelect
             truncate
           >
-            {t("HideArticleMenu")}
+            {t("Common:HideArticleMenu")}
           </Text>
         </div>
       ) : (
