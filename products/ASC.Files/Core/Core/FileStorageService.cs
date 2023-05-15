@@ -530,14 +530,7 @@ public class FileStorageService //: IFileStorageService
     {
         var room = await InternalCreateNewFolderAsync(parentId, title, FolderType.PublicRoom, @private);
 
-        var messageActions = new Dictionary<EventType, MessageAction>
-        {
-            { EventType.Create, MessageAction.ExternalLinkCreated },
-            { EventType.Update, MessageAction.ExternalLinkUpdated },
-            { EventType.Remove, MessageAction.ExternalLinkDeleted }
-        };
-        
-        _ = await SetAceLinkAsync(room, SubjectType.ExternalLink, Guid.NewGuid(), FilesCommonResource.DefaultExternalLinkTitle, FileShare.Read, messageActions);
+        _ = await SetAceLinkAsync(room, SubjectType.ExternalLink, Guid.NewGuid(), FilesCommonResource.DefaultExternalLinkTitle, FileShare.Read, _actions[SubjectType.ExternalLink]);
 
         return room;
     }
@@ -2612,32 +2605,18 @@ public class FileStorageService //: IFileStorageService
     {
         var expirationDate = DateTime.UtcNow.Add(_invitationLinkHelper.IndividualLinkExpirationInterval);
 
-        var messageActions = new Dictionary<EventType, MessageAction>
-        {
-            { EventType.Create, MessageAction.RoomInvitationLinkCreated },
-            { EventType.Update, MessageAction.RoomInvitationLinkUpdated },
-            { EventType.Remove, MessageAction.RoomInvitationLinkDeleted },
-        };
-
         var room = await GetFolderDao<T>().GetFolderAsync(roomId).NotFoundIfNull();
 
-        return await SetAceLinkAsync(room, SubjectType.InvitationLink, linkId, title, share, messageActions, expirationDate);
+        return await SetAceLinkAsync(room, SubjectType.InvitationLink, linkId, title, share, _actions[SubjectType.InvitationLink], expirationDate);
     }
     
     public async Task<List<AceWrapper>> SetExternalLinkAsync<T>(T entryId, FileEntryType entryType, Guid linkId, string title, FileShare share, DateTime expirationDate = default, 
         string password = null, bool disabled = false, bool denyDownload = false)
     {
-        var messageActions = new Dictionary<EventType, MessageAction>
-        {
-            { EventType.Create, MessageAction.ExternalLinkCreated },
-            { EventType.Update, MessageAction.ExternalLinkUpdated },
-            { EventType.Remove, MessageAction.ExternalLinkDeleted },
-        };
-
         FileEntry<T> entry = entryType == FileEntryType.File ? (await GetFileDao<T>().GetFileAsync(entryId)).NotFoundIfNull() 
             : (await GetFolderDao<T>().GetFolderAsync(entryId)).NotFoundIfNull();
         
-        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, messageActions, expirationDate, password, disabled, denyDownload, 1);
+        return await SetAceLinkAsync(entry, SubjectType.ExternalLink, linkId, title, share, _actions[SubjectType.ExternalLink], expirationDate, password, disabled, denyDownload, 1);
     }
 
     public async Task<bool> SetAceLinkAsync<T>(T fileId, FileShare share)
@@ -3356,7 +3335,7 @@ public class FileStorageService //: IFileStorageService
     }
     
     private async Task<List<AceWrapper>> SetAceLinkAsync<T>(FileEntry<T> entry, SubjectType subjectType, Guid linkId, string title, FileShare share, 
-        IDictionary<EventType, MessageAction> messageActions, DateTime expirationDate = default, string password = null, bool disabled = false, bool denyDownload = false, 
+        IReadOnlyDictionary<EventType, MessageAction> messageActions, DateTime expirationDate = default, string password = null, bool disabled = false, bool denyDownload = false, 
         uint minLinksCount = 0)
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
@@ -3493,6 +3472,27 @@ public class FileStorageService //: IFileStorageService
         Create,
         Remove
     }
+    
+    private static readonly IReadOnlyDictionary<SubjectType, IReadOnlyDictionary<EventType, MessageAction>> _actions = 
+        new Dictionary<SubjectType, IReadOnlyDictionary<EventType, MessageAction>>
+        {
+            {
+                SubjectType.InvitationLink, new Dictionary<EventType, MessageAction>
+                {
+                    { EventType.Create, MessageAction.RoomInvitationLinkCreated },
+                    { EventType.Update, MessageAction.RoomInvitationLinkUpdated },
+                    { EventType.Remove, MessageAction.RoomInvitationLinkDeleted }
+                }
+            },
+            {
+                SubjectType.ExternalLink, new Dictionary<EventType, MessageAction>
+                {
+                    { EventType.Create, MessageAction.ExternalLinkCreated },
+                    { EventType.Update, MessageAction.ExternalLinkDeleted },
+                    { EventType.Remove, MessageAction.ExternalLinkUpdated }
+                }
+            }
+        };
 }
 
 public class FileModel<T, TTempate>
