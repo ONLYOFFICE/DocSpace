@@ -131,7 +131,7 @@ public class FileSharingAceHelper
                     continue;
                 }
 
-                if (room.FolderType != FolderType.PublicRoom && w.SubjectType == SubjectType.ExternalLink)
+                if (room.FolderType is not (FolderType.PublicRoom or FolderType.CustomRoom) && w.SubjectType == SubjectType.ExternalLink)
                 {
                     continue;
                 }
