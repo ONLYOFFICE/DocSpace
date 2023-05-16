@@ -758,13 +758,13 @@ export function removeWebhook(id) {
 }
 
 export function getWebhooksJournal(props) {
-  const { configId, eventId, logCount, startIndex, deliveryFrom, deliveryTo, groupStatus } = props;
+  const { configId, eventId, count, startIndex, deliveryFrom, deliveryTo, groupStatus } = props;
 
   const params = {};
 
   configId && (params.configId = configId);
   eventId && (params.eventId = eventId);
-  logCount && (params.logCount = logCount);
+  count && (params.count = count);
   startIndex && (params.startIndex = startIndex);
   deliveryFrom && (params.deliveryFrom = deliveryFrom);
   deliveryTo && (params.deliveryTo = deliveryTo);

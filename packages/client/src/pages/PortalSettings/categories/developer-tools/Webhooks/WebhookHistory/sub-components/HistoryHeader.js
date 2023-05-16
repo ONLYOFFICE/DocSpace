@@ -89,9 +89,9 @@ const HistoryHeader = (props) => {
     checkedEventIds,
     checkAllIds,
     emptyCheckedIds,
-    historyWebhooks,
     retryWebhookEvents,
-    isCheckedIdsEmpty,
+    isIndeterminate,
+    areAllIdsChecked,
   } = props;
   const navigate = useNavigate();
   const onBack = () => {
@@ -99,7 +99,7 @@ const HistoryHeader = (props) => {
   };
 
   const handleGroupSelection = (isChecked) => {
-    isChecked ? checkAllIds(historyWebhooks) : emptyCheckedIds();
+    isChecked ? checkAllIds() : emptyCheckedIds();
   };
 
   const handleRetryAll = async () => {
@@ -122,7 +122,7 @@ const HistoryHeader = (props) => {
         key="select-all-event-ids"
         label="Select all"
         data-index={0}
-        onClick={() => checkAllIds(historyWebhooks)}
+        onClick={() => checkAllIds()}
       />
       <DropDownItem
         key="unselect-all-event-ids"
@@ -156,8 +156,8 @@ const HistoryHeader = (props) => {
       checkboxOptions={menuItems}
       onChange={handleGroupSelection}
       headerMenu={headerMenu}
-      isChecked={historyWebhooks.length === checkedEventIds.length}
-      isIndeterminate={!isCheckedIdsEmpty && historyWebhooks.length !== checkedEventIds.length}
+      isChecked={areAllIdsChecked}
+      isIndeterminate={isIndeterminate}
       withoutInfoPanelToggler
     />
   );
@@ -189,7 +189,8 @@ export default inject(({ webhooksStore }) => {
     emptyCheckedIds,
     checkedEventIds,
     retryWebhookEvents,
-    isCheckedIdsEmpty,
+    isIndeterminate,
+    areAllIdsChecked,
   } = webhooksStore;
 
   return {
@@ -198,6 +199,7 @@ export default inject(({ webhooksStore }) => {
     emptyCheckedIds,
     checkedEventIds,
     retryWebhookEvents,
-    isCheckedIdsEmpty,
+    isIndeterminate,
+    areAllIdsChecked,
   };
 })(observer(HistoryHeader));

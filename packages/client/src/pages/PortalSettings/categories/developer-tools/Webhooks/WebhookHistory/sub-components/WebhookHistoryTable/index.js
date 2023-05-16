@@ -7,15 +7,15 @@ import HistoryTableView from "./HistoryTableView";
 import HistoryRowView from "./HistoryRowView";
 
 const WebhookHistoryTable = (props) => {
-  const { viewAs, historyWebhooks } = props;
+  const { viewAs } = props;
 
   return (
     <Consumer>
       {(context) =>
         viewAs === "table" ? (
-          <HistoryTableView sectionWidth={context.sectionWidth} historyWebhooks={historyWebhooks} />
+          <HistoryTableView sectionWidth={context.sectionWidth} />
         ) : (
-          <HistoryRowView sectionWidth={context.sectionWidth} historyWebhooks={historyWebhooks} />
+          <HistoryRowView sectionWidth={context.sectionWidth} />
         )
       }
     </Consumer>

@@ -22,6 +22,8 @@ class WebhooksStore {
   };
   checkedEventIds = [];
   isTitleVisible = true;
+
+  historyItems = [];
   startIndex = 0;
 
   constructor() {
@@ -106,13 +108,24 @@ class WebhooksStore {
     return await retryWebhooks(ids);
   };
 
-  getWebhookHistory = async (params) => {
-    return await getWebhooksJournal(params);
+  fetchWebhookHistory = async (params) => {
+    const historyData = await getWebhooksJournal(params);
+    this.historyItems = historyData.items;
+  };
+  getEvent = async (eventId) => {
+    const data = await getWebhooksJournal({ eventId });
+    return data.items[0];
   };
   getWebhookHistoryBatch = async (params) => {
-    const historyWebhooks = await getWebhooksJournal({ ...params, logCount: 10, startIndex });
-    this.startIndex = this.startIndex + 10;
+    const historyWebhooks = await getWebhooksJournal({ ...params, startIndex: this.startIndex });
+    this.startIndex = this.startIndex + params.count;
     return historyWebhooks;
+  };
+  setHistoryItems = (items) => {
+    this.historyItems = items;
+  };
+  addHistoryItems = (items) => {
+    this.historyItems = [...this.historyItems, ...items];
   };
 
   get isWebhooksEmpty() {
@@ -196,17 +209,19 @@ class WebhooksStore {
   isIdChecked = (id) => {
     return this.checkedEventIds.includes(id);
   };
-  checkAllIds = (webhookEvents) => {
-    this.checkedEventIds = webhookEvents.map((event) => event.id);
+  checkAllIds = () => {
+    this.checkedEventIds = this.historyItems.map((event) => event.id);
   };
   emptyCheckedIds = () => {
     this.checkedEventIds = [];
   };
-
-  get isCheckedIdsEmpty() {
-    return this.checkedEventIds.length === 0;
+  get areAllIdsChecked() {
+    return this.checkedEventIds.length === this.historyItems.length;
   }
-  
+  get isIndeterminate() {
+    return this.checkedEventIds.length > 0 && !this.areAllIdsChecked;
+  }
+
   get isHeaderVisible() {
     return this.checkedEventIds.length !== 0;
   }

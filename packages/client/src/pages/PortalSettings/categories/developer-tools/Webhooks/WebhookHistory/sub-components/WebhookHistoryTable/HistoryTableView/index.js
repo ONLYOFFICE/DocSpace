@@ -20,12 +20,7 @@ const TableWrapper = styled(TableContainer)`
 `;
 
 const HistoryTableView = (props) => {
-  const {
-    sectionWidth,
-    historyWebhooks,
-    viewAs,
-    setViewAs,
-  } = props;
+  const { sectionWidth, historyItems, viewAs, setViewAs } = props;
 
   const tableRef = useRef(null);
 
@@ -43,10 +38,19 @@ const HistoryTableView = (props) => {
       forwardedRef={tableRef}
       style={{
         gridTemplateColumns: "300px 100px 400px 24px",
-      }}>
+      }}
+      // useReactWindow
+    >
       <HistoryTableHeader sectionWidth={sectionWidth} tableRef={tableRef} />
-      <TableBody itemHeight={49}>
-        {historyWebhooks.map((item) => (
+      <TableBody
+        itemHeight={49}
+        // useReactWindow
+        // filesLength={historyItems.length}
+        // fetchMoreFiles={}
+        // hasMoreFiles={}
+        // itemCount={}
+      >
+        {historyItems.map((item) => (
           <HistoryTableRow key={item.id} item={{ ...item, title: item.id }} />
         ))}
       </TableBody>
@@ -54,17 +58,12 @@ const HistoryTableView = (props) => {
   );
 };
 
-export default inject(({ setup, filesStore }) => {
+export default inject(({ setup, webhooksStore }) => {
   const { viewAs, setViewAs } = setup;
-  const { filesList, setFirsElemChecked, setHeaderBorder, roomsFilterTotal, highlightFile } =
-    filesStore;
+  const { historyItems } = webhooksStore;
   return {
     viewAs,
     setViewAs,
-    filesList,
-    setFirsElemChecked,
-    setHeaderBorder,
-    roomsFilterTotal,
-    highlightFile,
+    historyItems,
   };
 })(observer(HistoryTableView));

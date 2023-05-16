@@ -15,7 +15,7 @@ const WebhookWrapper = styled.div`
 `;
 
 const WebhookHistory = (props) => {
-  const { getWebhookHistory, hideTitle, showTitle, emptyCheckedIds } = props;
+  const { historyItems, fetchWebhookHistory, hideTitle, showTitle, emptyCheckedIds } = props;
 
   const [isLoading, setIsLoading] = useState(true);
   const [statusFilters, setStatusFilters] = useState(null);
@@ -25,8 +25,7 @@ const WebhookHistory = (props) => {
   useEffect(() => {
     hideTitle();
     (async () => {
-      const webhookHistoryData = await getWebhookHistory({ configId: id });
-      setHistoryWebhooks(webhookHistoryData);
+      await fetchWebhookHistory({ configId: id });
       setIsLoading(false);
     })();
     return showTitle;
@@ -36,15 +35,12 @@ const WebhookHistory = (props) => {
     emptyCheckedIds();
     const params = { configId: id, deliveryFrom, deliveryTo, groupStatus };
 
-    const webhookHistoryData = await getWebhookHistory(params);
-    setHistoryWebhooks(webhookHistoryData);
+    await fetchWebhookHistory(params);
   };
-
-  const [historyWebhooks, setHistoryWebhooks] = useState([]);
 
   return (
     <WebhookWrapper>
-      <HistoryHeader historyWebhooks={historyWebhooks} />
+      <HistoryHeader />
       {isLoading ? (
         <WebhookHistoryLoader />
       ) : (
@@ -54,10 +50,10 @@ const WebhookHistory = (props) => {
             statusFilters={statusFilters}
             setStatusFilters={setStatusFilters}
           />
-          {historyWebhooks.length === 0 ? (
+          {historyItems.length === 0 ? (
             <EmptyFilter setStatusFilters={setStatusFilters} applyFilters={applyFilters} />
           ) : (
-            <WebhookHistoryTable historyWebhooks={historyWebhooks} />
+            <WebhookHistoryTable />
           )}
         </main>
       )}
@@ -66,7 +62,8 @@ const WebhookHistory = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { getWebhookHistory, hideTitle, showTitle, emptyCheckedIds } = webhooksStore;
+  const { historyItems, fetchWebhookHistory, hideTitle, showTitle, emptyCheckedIds } =
+    webhooksStore;
 
-  return { getWebhookHistory, hideTitle, showTitle, emptyCheckedIds };
+  return { historyItems, fetchWebhookHistory, hideTitle, showTitle, emptyCheckedIds };
 })(observer(WebhookHistory));

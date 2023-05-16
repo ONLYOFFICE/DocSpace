@@ -12,7 +12,7 @@ const StyledRowContainer = styled(RowContainer)`
 `;
 
 const HistoryRowView = (props) => {
-  const { historyWebhooks, sectionWidth, viewAs, setViewAs } = props;
+  const { historyItems, sectionWidth, viewAs, setViewAs } = props;
 
   useEffect(() => {
     if (viewAs !== "table" && viewAs !== "row") return;
@@ -26,18 +26,19 @@ const HistoryRowView = (props) => {
 
   return (
     <StyledRowContainer useReactWindow={false}>
-      {historyWebhooks.map((item) => (
+      {historyItems.map((item) => (
         <HistoryRow key={item.id} historyItem={item} sectionWidth={sectionWidth} />
       ))}
     </StyledRowContainer>
   );
 };
 
-export default inject(({ setup }) => {
+export default inject(({ setup, webhooksStore }) => {
   const { viewAs, setViewAs } = setup;
-
+  const { historyItems } = webhooksStore;
   return {
     viewAs,
     setViewAs,
+    historyItems,
   };
 })(observer(HistoryRowView));
