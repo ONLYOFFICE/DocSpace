@@ -23,18 +23,14 @@ const StatusBarWrapper = styled.div`
 `;
 
 const StatusBar = (props) => {
-  const { statusFilters, setStatusFilters, formatFilters, applyFilters } = props;
-
-  const clearDate = () => {
-    setStatusFilters((prevStatusFilters) => ({ ...prevStatusFilters, deliveryDate: null }));
-  };
-
-  const unselectStatus = (statusCode) => {
-    setStatusFilters((prevStatusFilters) => ({
-      ...prevStatusFilters,
-      status: prevStatusFilters.status.filter((item) => item !== statusCode),
-    }));
-  };
+  const {
+    historyFilters,
+    formatFilters,
+    applyFilters,
+    clearHistoryFilters,
+    clearDate,
+    unselectStatus,
+  } = props;
 
   const clearAll = () => {
     applyFilters(
@@ -43,7 +39,7 @@ const StatusBar = (props) => {
         status: [],
       }),
     );
-    setStatusFilters(null);
+    clearHistoryFilters();
   };
 
   const SelectedDateTime = () => {
@@ -51,11 +47,11 @@ const StatusBar = (props) => {
       <SelectedItem
         onClose={clearDate}
         text={
-          moment(statusFilters.deliveryDate).format("DD MMM YYYY") +
+          moment(historyFilters.deliveryDate).format("DD MMM YYYY") +
           " " +
-          moment(statusFilters.deliveryFrom).format("HH:mm") +
+          moment(historyFilters.deliveryFrom).format("HH:mm") +
           " - " +
-          moment(statusFilters.deliveryTo).format("HH:mm")
+          moment(historyFilters.deliveryTo).format("HH:mm")
         }
         className="statusBarItem"
       />
@@ -65,12 +61,12 @@ const StatusBar = (props) => {
   const SelectedDate = () => (
     <SelectedItem
       onClose={clearDate}
-      text={moment(statusFilters.deliveryDate).format("DD MMM YYYY")}
+      text={moment(historyFilters.deliveryDate).format("DD MMM YYYY")}
       className="statusBarItem"
     />
   );
 
-  const SelectedStatuses = statusFilters.status.map((statusCode) => (
+  const SelectedStatuses = historyFilters.status.map((statusCode) => (
     <SelectedItem
       onClose={() => unselectStatus(statusCode)}
       text={statusCode}
@@ -84,22 +80,22 @@ const StatusBar = (props) => {
   };
 
   useEffect(() => {
-    applyFilters(formatFilters(statusFilters));
-    if (statusFilters.deliveryDate === null && statusFilters.status.length === 0) {
-      setStatusFilters(null);
+    applyFilters(formatFilters(historyFilters));
+    if (historyFilters.deliveryDate === null && historyFilters.status.length === 0) {
+      clearHistoryFilters();
     }
-  }, [statusFilters]);
+  }, [historyFilters]);
 
-  return statusFilters.deliveryDate === null && statusFilters.status.length === 0 ? (
+  return historyFilters.deliveryDate === null && historyFilters.status.length === 0 ? (
     ""
   ) : (
     <StatusBarWrapper>
-      {statusFilters.deliveryDate !== null ? (
+      {historyFilters.deliveryDate !== null ? (
         !isEqualDates(
-          statusFilters.deliveryFrom,
-          statusFilters.deliveryFrom.clone().startOf("day"),
+          historyFilters.deliveryFrom,
+          historyFilters.deliveryFrom.clone().startOf("day"),
         ) ||
-        !isEqualDates(statusFilters.deliveryTo, statusFilters.deliveryTo.clone().endOf("day")) ? (
+        !isEqualDates(historyFilters.deliveryTo, historyFilters.deliveryTo.clone().endOf("day")) ? (
           <SelectedDateTime />
         ) : (
           <SelectedDate />
@@ -122,7 +118,8 @@ const StatusBar = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { formatFilters } = webhooksStore;
+  const { formatFilters, historyFilters, clearHistoryFilters, clearDate, unselectStatus } =
+    webhooksStore;
 
-  return { formatFilters };
+  return { formatFilters, historyFilters, clearHistoryFilters, clearDate, unselectStatus };
 })(observer(StatusBar));

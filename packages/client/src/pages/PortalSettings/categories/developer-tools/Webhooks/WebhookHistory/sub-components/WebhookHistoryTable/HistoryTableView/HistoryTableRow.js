@@ -1,5 +1,6 @@
 import React, { useMemo } from "react";
 import moment from "moment";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 
 import { useNavigate } from "react-router-dom";
@@ -15,6 +16,20 @@ import toastr from "@docspace/components/toast/toastr";
 
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
+
+const StyledTableRow = styled(TableRow)`
+  ${(props) =>
+    props.isHighlight &&
+    css`
+      .table-container_cell {
+        background-color: #f3f4f4;
+      }
+    `}
+`;
+
+const StyledWrapper = styled.div`
+  display: contents;
+`;
 
 const HistoryTableRow = (props) => {
   const { item, toggleEventId, isIdChecked, retryWebhookEvent } = props;
@@ -53,8 +68,12 @@ const HistoryTableRow = (props) => {
   const isChecked = isIdChecked(item.id);
 
   return (
-    <>
-      <TableRow contextOptions={contextOptions} checked={isChecked}>
+    <StyledWrapper>
+      <StyledTableRow
+        contextOptions={contextOptions}
+        checked={isChecked}
+        //  isHighlight={isChecked}
+      >
         <TableCell>
           <TableCell checked={isChecked} className="noPadding">
             <Checkbox onChange={onChange} isChecked={isChecked} title="TitleSelectFile" />
@@ -71,8 +90,8 @@ const HistoryTableRow = (props) => {
             {formattedDelivery}
           </Text>
         </TableCell>
-      </TableRow>
-    </>
+      </StyledTableRow>
+    </StyledWrapper>
   );
 };
 

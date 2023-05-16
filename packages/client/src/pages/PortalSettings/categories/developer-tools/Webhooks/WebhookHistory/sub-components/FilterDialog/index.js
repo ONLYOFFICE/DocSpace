@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
+import moment from "moment";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
@@ -35,16 +36,22 @@ const Separator = styled.hr`
 `;
 
 const FilterDialog = (props) => {
-  const { visible, closeModal, applyFilters, filterSettings, formatFilters, setStatusFilters } =
-    props;
+  const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters } = props;
+
+  const [filters, setFilters] = useState({
+    deliveryDate: null,
+    deliveryFrom: moment().startOf("day"),
+    deliveryTo: moment().endOf("day"),
+    status: [],
+  });
 
   const [isApplied, setIsApplied] = useState(false);
 
   const handleApplyFilters = () => {
-    if (filterSettings.deliveryTo > filterSettings.deliveryFrom) {
-      const params = formatFilters(filterSettings);
+    if (filters.deliveryTo > filters.deliveryFrom) {
+      const params = formatFilters(filters);
 
-      setStatusFilters(filterSettings);
+      setHistoryFilters(filters);
       setIsApplied(true);
 
       applyFilters(params);
@@ -60,9 +67,11 @@ const FilterDialog = (props) => {
           Selectors={Selectors}
           isApplied={isApplied}
           setIsApplied={setIsApplied}
+          filters={filters}
+          setFilters={setFilters}
         />
         <Separator />
-        <StatusPicker Selectors={Selectors} />
+        <StatusPicker Selectors={Selectors} filters={filters} setFilters={setFilters} />
         <Separator />
       </ModalDialog.Body>
 
@@ -77,7 +86,7 @@ const FilterDialog = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { filterSettings, formatFilters } = webhooksStore;
+  const { formatFilters, setHistoryFilters } = webhooksStore;
 
-  return { filterSettings, formatFilters };
+  return { formatFilters, setHistoryFilters };
 })(observer(FilterDialog));

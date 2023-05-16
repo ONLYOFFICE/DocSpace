@@ -35,6 +35,9 @@ const HistoryTableHeader = (props) => {
       sectionWidth={sectionWidth}
       showSettings={false}
       style={{ position: "absolute" }}
+      useReactWindow
+      setHideColumns={true}
+      infoPanelVisible={true}
     />
   );
 };

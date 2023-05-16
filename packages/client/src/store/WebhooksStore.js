@@ -14,17 +14,12 @@ import {
 class WebhooksStore {
   webhooks = [];
   state = "pending"; // "pending", "done" or "error"
-  filterSettings = {
-    deliveryDate: null,
-    deliveryFrom: moment().startOf("day"),
-    deliveryTo: moment().endOf("day"),
-    status: [],
-  };
   checkedEventIds = [];
   isTitleVisible = true;
-
+  historyFilters = null;
   historyItems = [];
   startIndex = 0;
+  totalItems = 0;
 
   constructor() {
     makeAutoObservable(this);
@@ -108,29 +103,49 @@ class WebhooksStore {
     return await retryWebhooks(ids);
   };
 
-  fetchWebhookHistory = async (params) => {
-    const historyData = await getWebhooksJournal(params);
-    this.historyItems = historyData.items;
+  fetchHistoryItems = async (params) => {
+    this.startIndex = 0;
+    const historyData = await getWebhooksJournal({ ...params, startIndex: this.startIndex });
+    runInAction(() => {
+      this.startIndex = params.count;
+      this.historyItems = historyData.items;
+      this.totalItems = historyData.total;
+    });
+  };
+  fetchMoreItems = async (params) => {
+    const historyData = await getWebhooksJournal({ ...params, startIndex: this.startIndex });
+    runInAction(() => {
+      this.startIndex = this.startIndex + params.count;
+      this.historyItems = [...this.historyItems, ...historyData.items];
+    });
   };
   getEvent = async (eventId) => {
     const data = await getWebhooksJournal({ eventId });
     return data.items[0];
   };
-  getWebhookHistoryBatch = async (params) => {
-    const historyWebhooks = await getWebhooksJournal({ ...params, startIndex: this.startIndex });
-    this.startIndex = this.startIndex + params.count;
-    return historyWebhooks;
-  };
-  setHistoryItems = (items) => {
-    this.historyItems = items;
-  };
-  addHistoryItems = (items) => {
-    this.historyItems = [...this.historyItems, ...items];
-  };
+  get hasMoreItems() {
+    return this.totalItems > this.historyItems.length;
+  }
 
   get isWebhooksEmpty() {
     return this.webhooks.length === 0;
   }
+
+  setHistoryFilters = (filters) => {
+    this.historyFilters = filters;
+  };
+  clearHistoryFilters = () => {
+    this.historyFilters = null;
+  };
+  clearDate = () => {
+    this.historyFilters = { ...this.historyFilters, deliveryDate: null };
+  };
+  unselectStatus = (statusCode) => {
+    this.historyFilters = {
+      ...this.historyFilters,
+      status: this.historyFilters.status.filter((item) => item !== statusCode),
+    };
+  };
 
   formatFilters = (filters) => {
     const params = {};
@@ -159,46 +174,6 @@ class WebhooksStore {
     }
 
     return params;
-  };
-
-  setDeliveryDate = (date) => {
-    this.filterSettings = { ...this.filterSettings, deliveryDate: date };
-  };
-  setDeliveryFrom = (date) => {
-    this.filterSettings = { ...this.filterSettings, deliveryFrom: date };
-  };
-  setDeliveryTo = (date) => {
-    this.filterSettings = { ...this.filterSettings, deliveryTo: date };
-  };
-  toggleStatus = (statusCode) => {
-    this.filterSettings = {
-      ...this.filterSettings,
-      status: this.filterSettings.status.includes(statusCode)
-        ? this.filterSettings.status.filter((statusItem) => statusItem !== statusCode)
-        : [...this.filterSettings.status, statusCode],
-    };
-  };
-  isStatusSelected = (statusCode) => {
-    return this.filterSettings.status.includes(statusCode);
-  };
-  clearFilterSettings = () => {
-    this.filterSettings = {
-      deliveryDate: null,
-      deliveryFrom: moment().startOf("day"),
-      deliveryTo: moment().endOf("day"),
-      status: [],
-    };
-  };
-  clearFilterDate = () => {
-    this.filterSettings = {
-      deliveryDate: null,
-      deliveryFrom: moment().startOf("day"),
-      deliveryTo: moment().endOf("day"),
-      status: this.filterSettings.status,
-    };
-  };
-  clearFilterStatus = () => {
-    this.filterSettings = { ...this.filterSettings, status: [] };
   };
 
   toggleEventId = (id) => {

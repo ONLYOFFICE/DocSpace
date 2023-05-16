@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
 
 import { Base } from "@docspace/components/themes";
 import FilterReactSvrUrl from "PUBLIC_DIR/images/filter.react.svg?url";
@@ -52,7 +53,7 @@ const FilterButton = styled.div`
 `;
 
 const HistoryFilterHeader = (props) => {
-  const { applyFilters, statusFilters, setStatusFilters } = props;
+  const { applyFilters, historyFilters } = props;
   const { id } = useParams();
 
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
@@ -74,18 +75,11 @@ const HistoryFilterHeader = (props) => {
           <IconButton iconName={FilterReactSvrUrl} size={16} />
         </FilterButton>
       </ListHeader>
-      {statusFilters !== null && (
-        <StatusBar
-          statusFilters={statusFilters}
-          setStatusFilters={setStatusFilters}
-          applyFilters={applyFilters}
-        />
-      )}
+      {historyFilters !== null && <StatusBar applyFilters={applyFilters} />}
       <FilterDialog
         visible={isFiltersVisible}
         closeModal={closeFiltersModal}
         applyFilters={applyFilters}
-        setStatusFilters={setStatusFilters}
       />
     </div>
   );
@@ -93,4 +87,9 @@ const HistoryFilterHeader = (props) => {
 
 FilterButton.defaultProps = { theme: Base };
 
-export default HistoryFilterHeader;
+export default inject(({ webhooksStore }) => {
+  const { historyFilters } = webhooksStore;
+  return {
+    historyFilters,
+  };
+})(observer(HistoryFilterHeader));

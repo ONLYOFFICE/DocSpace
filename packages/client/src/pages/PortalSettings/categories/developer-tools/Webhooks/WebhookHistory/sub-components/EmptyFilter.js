@@ -38,10 +38,10 @@ const EmptyFilterContent = styled.div`
 `;
 
 const EmptyFilter = (props) => {
-  const { setStatusFilters, applyFilters, formatFilters } = props;
+  const { applyFilters, formatFilters, clearHistoryFilters } = props;
 
   const clearFilters = () => {
-    setStatusFilters(null);
+    clearHistoryFilters(null);
     applyFilters(
       formatFilters({
         deliveryDate: null,
@@ -74,7 +74,7 @@ const EmptyFilter = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { formatFilters } = webhooksStore;
+  const { formatFilters, clearHistoryFilters } = webhooksStore;
 
-  return { formatFilters };
+  return { formatFilters, clearHistoryFilters };
 })(observer(EmptyFilter));

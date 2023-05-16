@@ -29,21 +29,22 @@ const MobileCalendar = styled(Calendar)`
   left: 0;
 `;
 
-const DeliveryDatePicker = ({
-  Selectors,
-  filterSettings,
-  setDeliveryDate,
-  setDeliveryFrom,
-  setDeliveryTo,
-  clearFilterDate,
-  isApplied,
-  setIsApplied,
-}) => {
+const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsApplied }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
+
+  const setDeliveryDate = (date) => {
+    setFilters((prevFilters) => ({ ...prevFilters, deliveryDate: date }));
+  };
+  const setDeliveryFrom = (date) => {
+    setFilters((prevFilters) => ({ ...prevFilters, deliveryFrom: date }));
+  };
+  const setDeliveryTo = (date) => {
+    setFilters((prevFilters) => ({ ...prevFilters, deliveryTo: date }));
+  };
 
   const toggleCalendar = () => setIsCalendarOpen((prevIsCalendarOpen) => !prevIsCalendarOpen);
   const closeCalendar = () => {
@@ -55,7 +56,12 @@ const DeliveryDatePicker = ({
 
   const deleteSelectedDate = (e) => {
     e.stopPropagation();
-    clearFilterDate();
+    setFilters((prevFilters) => ({
+      deliveryDate: null,
+      deliveryFrom: moment().startOf("day"),
+      deliveryTo: moment().endOf("day"),
+      status: prevFilters.status,
+    }));
     setIsTimeOpen(false);
     setIsApplied(false);
   };
@@ -74,7 +80,7 @@ const DeliveryDatePicker = ({
   const CalendarElement = () =>
     window.innerWidth >= 440 ? (
       <Calendar
-        selectedDate={filterSettings.deliveryDate}
+        selectedDate={filters.deliveryDate}
         setSelectedDate={setDeliveryDate}
         onChange={closeCalendar}
         isMobile={false}
@@ -83,7 +89,7 @@ const DeliveryDatePicker = ({
       />
     ) : (
       <MobileCalendar
-        selectedDate={filterSettings.deliveryDate}
+        selectedDate={filters.deliveryDate}
         setSelectedDate={setDeliveryDate}
         onChange={closeCalendar}
         isMobile={true}
@@ -104,7 +110,7 @@ const DeliveryDatePicker = ({
   const SelectedDate = () => (
     <SelectedItem
       onClose={deleteSelectedDate}
-      text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
+      text={moment(filters.deliveryDate).format("DD MMM YYYY")}
     />
   );
 
@@ -112,7 +118,7 @@ const DeliveryDatePicker = ({
     <div>
       <SelectedItem
         onClose={deleteSelectedDate}
-        text={moment(filterSettings.deliveryDate).format("DD MMM YYYY")}
+        text={moment(filters.deliveryDate).format("DD MMM YYYY")}
         onClick={toggleCalendar}
       />
       {isCalendarOpen && <CalendarElement />}
@@ -124,11 +130,11 @@ const DeliveryDatePicker = ({
       <SelectedItem
         onClose={deleteSelectedDate}
         text={
-          moment(filterSettings.deliveryDate).format("DD MMM YYYY") +
+          moment(filters.deliveryDate).format("DD MMM YYYY") +
           " " +
-          moment(filterSettings.deliveryFrom).format("HH:mm") +
+          moment(filters.deliveryFrom).format("HH:mm") +
           " - " +
-          moment(filterSettings.deliveryTo).format("HH:mm")
+          moment(filters.deliveryTo).format("HH:mm")
         }
         onClick={toggleCalendar}
       />
@@ -150,10 +156,10 @@ const DeliveryDatePicker = ({
   };
 
   const isTimeEqual =
-    isEqualDates(filterSettings.deliveryFrom, filterSettings.deliveryFrom.clone().startOf("day")) &&
-    isEqualDates(filterSettings.deliveryTo, filterSettings.deliveryTo.clone().endOf("day"));
+    isEqualDates(filters.deliveryFrom, filters.deliveryFrom.clone().startOf("day")) &&
+    isEqualDates(filters.deliveryTo, filters.deliveryTo.clone().endOf("day"));
 
-  const isTimeValid = filterSettings.deliveryTo > filterSettings.deliveryFrom;
+  const isTimeValid = filters.deliveryTo > filters.deliveryFrom;
 
   return (
     <>
@@ -161,7 +167,7 @@ const DeliveryDatePicker = ({
         Delivery date
       </Text>
       <Selectors ref={selectorRef}>
-        {filterSettings.deliveryDate === null ? (
+        {filters.deliveryDate === null ? (
           <DateSelector />
         ) : isApplied ? (
           isTimeEqual ? (
@@ -172,7 +178,7 @@ const DeliveryDatePicker = ({
         ) : (
           <SelectedDate />
         )}
-        {filterSettings.deliveryDate !== null &&
+        {filters.deliveryDate !== null &&
           !isApplied &&
           (isTimeOpen ? (
             <TimePickerCell>
@@ -181,7 +187,7 @@ const DeliveryDatePicker = ({
                   From
                 </Text>
                 <TimePicker
-                  date={filterSettings.deliveryFrom}
+                  date={filters.deliveryFrom}
                   setDate={setDeliveryFrom}
                   hasError={!isTimeValid}
                   tabIndex={1}
@@ -191,7 +197,7 @@ const DeliveryDatePicker = ({
                 Before
               </Text>
               <TimePicker
-                date={filterSettings.deliveryTo}
+                date={filters.deliveryTo}
                 setDate={setDeliveryTo}
                 hasError={!isTimeValid}
                 tabIndex={2}
@@ -206,8 +212,7 @@ const DeliveryDatePicker = ({
 };
 
 export default inject(({ webhooksStore }) => {
-  const { filterSettings, setDeliveryDate, setDeliveryFrom, setDeliveryTo, clearFilterDate } =
-    webhooksStore;
+  const {} = webhooksStore;
 
-  return { filterSettings, setDeliveryDate, setDeliveryFrom, setDeliveryTo, clearFilterDate };
+  return {};
 })(observer(DeliveryDatePicker));

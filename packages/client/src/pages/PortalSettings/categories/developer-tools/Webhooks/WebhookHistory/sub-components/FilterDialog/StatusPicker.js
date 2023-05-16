@@ -13,8 +13,19 @@ const RoundedButton = styled(Button)`
   margin-right: 8px;
 `;
 
-const StatusPicker = ({ Selectors, toggleStatus, isStatusSelected }) => {
-  const handleStatusClick = (e) => toggleStatus(e.target.textContent);
+const StatusPicker = ({ Selectors, filters, setFilters }) => {
+  const isStatusSelected = (statusCode) => {
+    return filters.status.includes(statusCode);
+  };
+  const handleStatusClick = (e) => {
+    const statusCode = e.target.textContent;
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      status: prevFilters.status.includes(statusCode)
+        ? prevFilters.status.filter((statusItem) => statusItem !== statusCode)
+        : [...prevFilters.status, statusCode],
+    }));
+  };
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
@@ -36,7 +47,7 @@ const StatusPicker = ({ Selectors, toggleStatus, isStatusSelected }) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { toggleStatus, isStatusSelected } = webhooksStore;
+  const {} = webhooksStore;
 
-  return { toggleStatus, isStatusSelected };
+  return {};
 })(observer(StatusPicker));
