@@ -33,6 +33,7 @@ export const ValidationResult = Object.freeze({
   Invalid: 1,
   Expired: 2,
   Password: 3,
+  InvalidPassword: 4,
 });
 
 export const GUID_EMPTY = "00000000-0000-0000-0000-000000000000";

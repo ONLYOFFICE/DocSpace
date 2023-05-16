@@ -24,6 +24,7 @@ const RoomPassword = (props) => {
     roomKey,
     validatePublicRoomPassword,
     setRoomData,
+    roomTitle,
   } = props;
 
   const [password, setPassword] = useState("");
@@ -57,8 +58,6 @@ const RoomPassword = (props) => {
       const res = await validatePublicRoomPassword(roomKey, password);
       setIsLoading(false);
 
-      console.log("res", res);
-
       switch (res?.status) {
         case ValidationResult.Ok:
           // Ok
@@ -72,7 +71,7 @@ const RoomPassword = (props) => {
         case ValidationResult.Expired:
           setError(); // Expired
           return;
-        case ValidationResult.Password:
+        case ValidationResult.InvalidPassword:
           setError(); // Invalid Password
           return;
       }
@@ -88,10 +87,6 @@ const RoomPassword = (props) => {
     }
   };
 
-  const EnterPassword = "Enter password";
-  const NeedPassword = "You need a password to access the room";
-  const roomName = "Certifications";
-
   return (
     <StyledPage>
       <StyledContent className="public-room-content">
@@ -101,7 +96,7 @@ const RoomPassword = (props) => {
           <FormWrapper>
             <div className="password-form">
               <Text fontSize="16px" fontWeight="600">
-                {EnterPassword}
+                {t("UploadPanel:EnterPassword")}
               </Text>
 
               <Text
@@ -109,12 +104,12 @@ const RoomPassword = (props) => {
                 fontWeight="400"
                 className="public-room-text"
               >
-                {NeedPassword}:
+                {t("Common:NeedPassword")}:
               </Text>
               <div className="public-room-name">
                 <PublicRoomIcon />
                 <Text fontSize="15px" fontWeight="600">
-                  {roomName}
+                  {roomTitle}
                 </Text>
               </div>
 
@@ -168,6 +163,7 @@ export default inject(({ auth, publicRoomStore }) => {
     auth.settingsStore;
 
   const { validatePublicRoomPassword, setRoomData } = publicRoomStore;
+  const { roomTitle } = publicRoomStore;
 
   return {
     theme,
@@ -179,5 +175,6 @@ export default inject(({ auth, publicRoomStore }) => {
 
     validatePublicRoomPassword,
     setRoomData,
+    roomTitle,
   };
-})(withTranslation(["Confirm", "Common", "Wizard"])(observer(RoomPassword)));
+})(withTranslation(["Common", "UploadPanel"])(observer(RoomPassword)));

@@ -9,13 +9,12 @@ import ShareReactSvgUrl from "PUBLIC_DIR/images/share.react.svg?url";
 import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 
 const SectionHeaderContent = (props) => {
-  const { t, theme, whiteLabelLogoUrls } = props;
+  const { t, theme, roomTitle, whiteLabelLogoUrls } = props;
 
   const logo = !theme.isBase
     ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
     : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
 
-  const roomName = "Certifications";
   const DownloadAll = "Download all";
   const ShareRoom = "Share room";
 
@@ -53,7 +52,7 @@ const SectionHeaderContent = (props) => {
       <img className="logo-icon_svg" src={logo} />
       <div className="public-room-header_separator" />
       <StyledHeadline type="content" truncate>
-        {roomName}
+        {roomTitle}
       </StyledHeadline>
       <ContextMenuButton
         // className="expandButton"
@@ -66,11 +65,15 @@ const SectionHeaderContent = (props) => {
   );
 };
 
-export default inject(({ auth }) => {
+export default inject(({ auth, publicRoomStore }) => {
   const { theme, whiteLabelLogoUrls } = auth.settingsStore;
+
+  const { roomTitle } = publicRoomStore;
 
   return {
     theme,
     whiteLabelLogoUrls,
+
+    roomTitle,
   };
 })(withTranslation("Common")(observer(SectionHeaderContent)));

@@ -1,22 +1,34 @@
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
+import { ValidationResult } from "../helpers/constants";
 
 class PublicRoomStore {
   externalLinks = [];
   roomTitle = null;
   roomId = null;
   isLoaded = false;
+  roomStatus = null;
+  roomType = null;
+
+  isLoading = false;
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  setIsLoading = (isLoading) => {
+    this.isLoading = isLoading;
+  };
 
   setRoomData = (data) => {
     const { id, roomType, status, title } = data;
 
     this.roomTitle = title;
     this.roomId = id;
-    this.isLoaded = true;
+    this.roomStatus = status;
+    this.roomType = roomType;
+
+    if (status === ValidationResult.Ok) this.isLoaded = true;
   };
 
   getExternalLinks = async (roomId) => {
@@ -65,7 +77,11 @@ class PublicRoomStore {
   };
 
   validatePublicRoomKey = (key) => {
-    return api.rooms.validatePublicRoomKey(key);
+    this.setIsLoading(true);
+    api.rooms
+      .validatePublicRoomKey(key)
+      .then((res) => this.setRoomData(res))
+      .finally(() => this.setIsLoading(false));
   };
 
   validatePublicRoomPassword = (key, password) => {

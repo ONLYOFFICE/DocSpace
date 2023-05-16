@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { observer, inject } from "mobx-react";
 import { useLocation } from "react-router-dom";
 import Section from "@docspace/common/components/Section";
@@ -12,33 +12,15 @@ import SectionBodyContent from "./Body";
 import RoomPassword from "./sub-components/RoomPassword";
 
 const PublicRoom = (props) => {
-  const { isLoaded, withPaging, validatePublicRoomKey } = props;
-
-  const [isLoad, setIsLoad] = useState(false);
-  const [isLoadingRoom, setIsLoadingRoom] = useState(false);
-  const [status, setStatus] = useState(ValidationResult.Invalid);
+  const { isLoaded, isLoading, roomStatus, withPaging, validatePublicRoomKey } =
+    props;
 
   const location = useLocation();
   const key = location.search.substring(5, location.search.length);
 
-  const validateKey = async () => {
-    setIsLoad(true);
-
-    setIsLoadingRoom(true);
-    const res = await validatePublicRoomKey(key);
-    //res?.status && setStatus(res?.status);
-    setStatus(3);
-    setIsLoadingRoom(false);
-
-    console.log("status res", res);
-    console.log("status", res.status);
-
-    // alert(res.status); //Status: 0 – Ok, 1 – Invalid, 2 – Expired, 3 – Required Password
-  };
-
   useEffect(() => {
-    !isLoad && validateKey();
-  }, [validateKey, isLoad]);
+    validatePublicRoomKey(key);
+  }, [validatePublicRoomKey]);
 
   const roomPage = () => (
     <Section
@@ -60,8 +42,18 @@ const PublicRoom = (props) => {
     </Section>
   );
 
+  const renderLoader = () => {
+    return (
+      <Section>
+        <Section.SectionBody>
+          <Loader className="pageLoader" type="rombs" size="40px" />
+        </Section.SectionBody>
+      </Section>
+    );
+  };
+
   const renderPage = () => {
-    switch (status) {
+    switch (roomStatus) {
       case ValidationResult.Ok:
         return roomPage();
       case ValidationResult.Invalid:
@@ -72,29 +64,23 @@ const PublicRoom = (props) => {
         return <RoomPassword roomKey={key} />;
 
       default:
-        return <></>;
+        return renderLoader();
     }
   };
 
-  return isLoadingRoom ? (
-    <Section>
-      <Section.SectionBody>
-        <Loader className="pageLoader" type="rombs" size="40px" />
-      </Section.SectionBody>
-    </Section>
-  ) : isLoaded ? (
-    roomPage()
-  ) : (
-    renderPage()
-  );
+  return isLoading ? renderLoader() : isLoaded ? roomPage() : renderPage();
 };
 
-export default inject(({ auth, filesStore, publicRoomStore }) => {
+export default inject(({ auth, publicRoomStore }) => {
   const { withPaging } = auth.settingsStore;
-  const { validatePublicRoomKey, isLoaded } = publicRoomStore;
+  const { validatePublicRoomKey, isLoaded, isLoading, roomStatus } =
+    publicRoomStore;
 
   return {
     isLoaded,
+    isLoading,
+    roomStatus,
+
     withPaging,
     validatePublicRoomKey,
   };
