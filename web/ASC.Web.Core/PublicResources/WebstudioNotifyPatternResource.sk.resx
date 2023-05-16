@@ -1190,6 +1190,7 @@ tím ONLYOFFICE
 Vezmite si prosím na vedomie, že tolerančné obdobie $PaymentDelay dní pre Váš ONLYOFFICE DocSpace skončilo.
 
 Postarajte sa, aby ste predplatné Business zaplatili čo najskôr. Takto budete môcť využívať všetky výhody svojho ONLYOFFICE DocSpace ako doteraz.
+
 $GreenButton
 
 Skutočne Váš,
@@ -1230,5 +1231,26 @@ tím ONLYOFFICE
   </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Prijať</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>AKCEPTOVAŤ</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Spolupracujte v DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Potvrdiť pozvánku do DocSpace</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Potvrdiť</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>POTVRDIŤ</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Potvrdiť pozvánku do miestnosti</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Navštívte sekciu Platby</value>
   </data>
 </root>

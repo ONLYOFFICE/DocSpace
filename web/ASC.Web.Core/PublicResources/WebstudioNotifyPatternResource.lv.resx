@@ -377,26 +377,20 @@ Sveicināti, $UserName,
 Jūsu lietotāja "$__VirtualRootPath":"$__VirtualRootPath" datus mainīja "$__AuthorName":"$__AuthorUrl".
 
 Lai aplūkotu profilu, sekojiet zemāk esošajai saitei: 
-"$UserName":"$MyStaffLink"
 
-
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+"$UserName":"$MyStaffLink"</value>
   </data>
   <data name="pattern_reassigns_completed" xml:space="preserve">
     <value>Sveicināti, $UserName,
 
-Ir veiksmīga datu pārnese no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink".
-
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Ir veiksmīga datu pārnese no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink".</value>
   </data>
   <data name="pattern_reassigns_failed" xml:space="preserve">
     <value>Sveicināti $UserName,
 
 Datu pārneses process no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink" neizdevās.
 
-Ziņa par kļūdu: $Message
-
-^Jūs saņemat šo ziņu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Ziņa par kļūdu: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
     <value>Sveicināti $UserName,
@@ -410,9 +404,7 @@ Datu noņemšana lietotājam "$FromUserName":"$FromUserLink" veiksmīgi pabeigta
 
 Datu noņemšana lietotājam "$FromUserName":"$FromUserLink" neizdevās.
 
-Kļūdas ziņojums: $Message
-
-^Jūs saņemat šo ziņu, jo esat reģistrējiet portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Kļūdas ziņojums: $Message</value>
   </data>
   <data name="pattern_request_license" xml:space="preserve">
     <value>h1.Uzņēmuma licences pieprasījums
@@ -460,7 +452,7 @@ Ar cieņu,
 ONLYOFFICE™ komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Jūs saņemat šo ziņu, jo esat reģistrēts lietotājs portālā"${__VirtualRootPath}":"${__VirtualRootPath}". Lai mainītu paziņojuma veidu, lūdzu, labojiet savus "abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
+^Lai mainītu paziņojuma veidu, lūdzu, labojiet savus "abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portāla profila maiņas paziņojums

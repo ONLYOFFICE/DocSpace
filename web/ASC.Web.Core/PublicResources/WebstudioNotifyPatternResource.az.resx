@@ -342,7 +342,6 @@ $GreenButton
       Admin "${__VirtualRootPath}":"${__VirtualRootPath}" portalında sizin üçün yeni &lt;b&gt;$Address&lt;/b&gt; poçt qutusu yaratdı.
 
       Digər e-poçt müştəriləri üçün aşağıdakı parametrlərdən istifadə edin:
-
       Giriş: &lt;b&gt;$Login&lt;/b&gt;
       Parol: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
 
@@ -1573,6 +1572,7 @@ ONLYOFFICE Komandası
 Bu e-poçtdan istifadə edərək yeni "ONLYOFFICE Personal":"$PortalUrl" hesabını qeydiyyatdan keçirməyə cəhd edildi. Əgər siz idinizsə, hesabınızın artıq mövcud olduğunu bildirmək istərdik — ONLYOFFICE Personal üzərinə aşağı sürüşdürün və daxil olun.
 Əgər şifrənizi itirmisinizsə, onu "şifrə bərpa səhifəsi":"$LinkToRecovery" vasitəsilə bərpa edə bilərsiniz.
 Yeni hesabı qeydiyyatdan keçirməyə çalışmamısınızsa, yəqin ki, başqası bunu səhvən edib. Bu halda, lütfən, bu e-poçta məhəl qoymayın.
+
 Gözəl gün arzu edirik!
 
 ONLYOFFICE komandası</value>
@@ -1692,7 +1692,7 @@ $GreenButton
 
 Hörmətlə,
 ONLYOFFICE Komandası
-"www.onlyoffice.com":https://onlyoffice.com/</value>
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_room_invite" xml:space="preserve">
     <value>Salam!

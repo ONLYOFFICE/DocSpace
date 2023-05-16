@@ -161,7 +161,7 @@
     <value>Αρχείο μεγαλύτερο από {0} δε θα τροποποιηθεί</value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>Αρχείο μεγαλύτερο από δε θα μετακινηθεί</value>
+    <value>Αρχείο μεγαλύτερο {0} από δε θα μετακινηθεί</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>Δεν μπορείτε να αντιγράψετε τον φάκελο στους υποφακέλους του</value>

@@ -704,4 +704,25 @@ Ekipa ONLYOFFICE
   <data name="ButtonAccept" xml:space="preserve">
     <value>Sprejmi</value>
   </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>SPREJMI</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Sodelujte v DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Potrdite povabilo DocSpace</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>POTRDI</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Potrdi</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Potrdite povabilo sobe</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Obiščite razdelek za plačila</value>
+  </data>
 </root>
