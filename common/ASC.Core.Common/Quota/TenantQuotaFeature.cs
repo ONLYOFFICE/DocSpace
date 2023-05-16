@@ -32,6 +32,7 @@ public class TenantQuotaFeature
     public virtual bool Visible { get; init; } = true;
     public virtual string Name { get; init; }
     public virtual bool Paid { get; init; }
+    public bool Standalone { get; init; }
 
     protected internal virtual void Multiply(int quantity)
     {
