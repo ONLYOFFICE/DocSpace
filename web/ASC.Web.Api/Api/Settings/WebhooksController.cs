@@ -114,7 +114,8 @@ public class WebhooksController : BaseSettingsController
 
         await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus))
         {
-            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
+            j.Log.Config = j.Config;
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j.Log);
         }
     }
 
