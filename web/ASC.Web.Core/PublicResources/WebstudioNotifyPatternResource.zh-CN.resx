@@ -559,7 +559,7 @@ ONLYOFFICE团队</value>
     <value>${LetterLogoText} 。另一个地区门户迁移成功完成</value>
   </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
-    <value>禁用${__ VirtualRootPath}门户</value>
+    <value>禁用${__VirtualRootPath}门户</value>
   </data>
   <data name="subject_portal_delete" xml:space="preserve">
     <value>删除${__VirtualRootPath}门户</value>
@@ -730,6 +730,7 @@ $GreenButton
   </data>
   <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！欢迎获取免费的 ONLYOFFICE 应用，在任意设备上处理文档！
 
 # 如要在 Windows、Linux 和 Mac 上离线处理文档，请下载 "ONLYOFFICE 桌面编辑器":"https://www.onlyoffice.com/download-desktop.aspx"。
@@ -742,6 +743,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
 
 *#1. 选择工作方式。* 创建用于实时共同创作的协作房间，或针对任意目的灵活设置自定义房间，根据需要组织您的工作流程。
@@ -760,6 +762,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
 
 *#1. 选择工作方式。* 创建用于实时共同创作的协作房间，或针对任意目的灵活设置自定义房间，根据需要组织您的工作流程。
@@ -797,7 +800,8 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
-您好！希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
+
+希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
 
 *#1. 选择工作方式。* 创建用于实时共同创作的协作房间，或针对任意目的灵活设置自定义房间，根据需要组织您的工作流程。
 
@@ -836,6 +840,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
 
 * 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
@@ -856,6 +861,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
 
 * 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
@@ -876,7 +882,8 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
-您好！以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
+
+以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
 
 * 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
 
@@ -940,6 +947,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
 
 * 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。
@@ -1000,7 +1008,8 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
-您好！欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
 
 *# 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。
 
@@ -1029,7 +1038,7 @@ $Body</value>
   </data>
   <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
-您好！
+
 欢迎获取免费的 ONLYOFFICE 应用，在任意设备上处理文档！
 
 # 如要在 Windows、Linux 和 Mac 上离线处理文档，请下载 "ONLYOFFICE 桌面编辑器":"https://www.onlyoffice.com/download-desktop.aspx"。
@@ -1042,7 +1051,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
-您好！
+
 欢迎获取免费的 ONLYOFFICE 应用，在任意设备上处理文档！
 
 # 如要在 Windows、Linux 和 Mac 上离线处理文档，请下载 "ONLYOFFICE 桌面编辑器":"https://www.onlyoffice.com/download-desktop.aspx"。
@@ -1077,6 +1086,7 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
     <value>尊敬的$UserName！，
+
 您好！欢迎调整您的 ONLYOFFICE 协作空间的安全设置，让其更为安全：
 
 * 设置密码强度。
@@ -1131,7 +1141,8 @@ ONLYOFFICE 团队
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
     <value>尊敬的$UserName！，
-您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已激活。
+
+请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已激活。
 
 请确保在宽限期到期之前支付您的企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
 

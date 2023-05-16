@@ -381,7 +381,6 @@ $GreenButton
       Der Administrator hat ein neues &lt;b&gt;$Address&lt;/ b&gt; Mailbox für Sie auf dem "${__VirtualRootPath}":"${__VirtualRootPath}" erstellt.
 
       Verwenden Sie die folgenden Einstellungen für andere E-Mail-Clients:
-
       Login: &lt;b&gt;$Login&lt;/b&gt;
       Passwort: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
 
@@ -893,6 +892,7 @@ $activity
     <value>SMTP Testnachricht
 
 Diese Nachricht wurde automatisch generiert, um Ihre SMTP-Einstellungen zu testen. Wenn Sie sie sehen, bedeutet dies, dass die Einstellungen korrekt sind und Sie können sie auf Ihrem Portal verwenden.
+
 
 Mit freundlichen Grüßen,
 ONLYOFFICE-Team</value>

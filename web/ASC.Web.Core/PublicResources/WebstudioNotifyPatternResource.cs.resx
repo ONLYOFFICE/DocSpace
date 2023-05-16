@@ -510,7 +510,7 @@ tým ONLYOFFICE</value>
     <value>${LetterLogoText}. Prosím, aktivujte svou e-mailovou adresu</value>
   </data>
   <data name="subject_backup_created" xml:space="preserve">
-    <value>${LetterLogoText}.${__ VirtualRootPath} byl vytvořen záložní portál</value>
+    <value>${LetterLogoText}. ${__VirtualRootPath} byl vytvořen záložní portál</value>
   </data>
   <data name="subject_change_password" xml:space="preserve">
     <value>${LetterLogoText} pomoc s heslem</value>
@@ -1175,8 +1175,7 @@ $GreenButton
 
 S přátelským pozdravem,
 Tým ONLYOFFICE
-"www.onlyoffice.com":"https://onlyoffice.com/"
-</value>
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
     <value>Dobrý den, $UserName!

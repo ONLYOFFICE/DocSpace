@@ -353,7 +353,7 @@
     <value>CRM</value>
   </data>
   <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>Verschikte Mails per SMTP Server</value>
+    <value>Verschikte Mails per SMTP Server: {0}</value>
   </data>
   <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
     <value>SMTP-Einstellungen wurden aktualisiert</value>

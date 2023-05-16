@@ -122,13 +122,13 @@
 
 Vítejte v ONLYOFFICE DocSpace! Váš uživatelský profil byl úspěšně přidán do "${__VirtualRootPath}":"${__VirtualRootPath}". Nyní můžete:
 
-*# Pracujte s ostatními uživateli v místnosti, do které jste pozváni*: místnosti pro spolupráci pro spoluautorství v reálném čase nebo vlastní místnosti s flexibilním nastavením pro libovolný účel*.
+* Pracujte s ostatními uživateli v místnosti, do které jste pozváni*: místnosti pro spolupráci pro spoluautorství v reálném čase nebo vlastní místnosti s flexibilním nastavením pro libovolný účel*.
 
-*# Práce se soubory různých formátů*: textové dokumenty, tabulky, prezentace, digitální formuláře, PDF, elektronické knihy, multimédia.
+* *Práce se soubory různých formátů*: textové dokumenty, tabulky, prezentace, digitální formuláře, PDF, elektronické knihy, multimédia.
 
-*# Spolupracujte na dokumentech* ve dvou režimech společné editace: v reálném čase nebo s uzamčením odstavce. Sledujte změny, komunikujte v reálném čase pomocí vestavěného chatu nebo uskutečňujte audio a video hovory. 
+* *Spolupracujte na dokumentech* ve dvou režimech společné editace: v reálném čase nebo s uzamčením odstavce. Sledujte změny, komunikujte v reálném čase pomocí vestavěného chatu nebo uskutečňujte audio a video hovory. 
 
-*# Připojte libovolné cloudové úložiště* a pracujte bez přepínání mezi aplikacemi. 
+* *Připojte libovolné cloudové úložiště* a pracujte bez přepínání mezi aplikacemi. 
 
 $GreenButton
 
@@ -136,7 +136,7 @@ Pokud potřebujete pomoc, projděte si naše "Centrum nápovědy":"https://helpc
 
 S přátelským pozdravem, 
 Tým ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
     <value>Chcete změnit heslo ke svému účtu cloud office? Klikněte na tlačítko níže pro potvrzení.

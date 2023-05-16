@@ -146,7 +146,7 @@
     <value>CSV dosyasına Aktarılan Olaylar:{0}</value>
   </data>
   <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>CSV dosyasından Aktarılan Olaylar:{0}</value>
+    <value>CSV dosyasından Aktarılan Olaylar</value>
   </data>
   <data name="CasesModule" xml:space="preserve">
     <value>Olaylar</value>

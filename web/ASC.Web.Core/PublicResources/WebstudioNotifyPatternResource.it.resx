@@ -412,7 +412,6 @@ $GreenButton
       Administrator ha creato un nuovo &lt;b&gt;$Address&lt;/b&gt; di posta per te sul portale "${__VirtualRootPath}":"${__VirtualRootPath}".
 
       Usa le seguenti impostazioni per ogni email client:
-
       Login: &lt;b&gt;$Login&lt;/b&gt;
       Password: "&lt;b&gt;imposta password&lt;/b&gt;":"$MyStaffLink"
 
@@ -676,7 +675,9 @@ Il processo di eliminazione dell'utente e la riassegnazione dei suoi dati a un a
   <data name="pattern_reassigns_failed" xml:space="preserve">
     <value>Gentile $UserName,
 
-La procedura di riassegnazione dei dati dall'utente "$FromUserName":"$FromUserLink" all'utente "$ToUserName":"$ToUserLink" non riuscita.</value>
+La procedura di riassegnazione dei dati dall'utente "$FromUserName":"$FromUserLink" all'utente "$ToUserName":"$ToUserLink" non riuscita.
+
+Messaggio di eccezione: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
     <value>Gentile $UserName,
@@ -782,6 +783,7 @@ $activity
 
 Questo messaggio è stato generato automaticamente per testare le tue impostazioni SMTP. Se stai visualizzando questo messaggio significa che le impostazioni sono corrette e puoi usarle sul tuo portale.
 
+
 Cordiali Saluti
 il Team ONLYOFFICE</value>
   </data>
@@ -789,6 +791,7 @@ il Team ONLYOFFICE</value>
     <value>h1.Nuovo utente aggiunto al portale "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 "$__AuthorName":"$__AuthorUrl" si è unito al potale su "${__VirtualRootPath}":"${__VirtualRootPath}".
+
 
 ^Se non desideri ricevere le notifiche su nuovi utenti, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL". ^</value>
   </data>
@@ -1322,8 +1325,7 @@ Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcen
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
@@ -1560,5 +1562,8 @@ $GreenButton
 Il collegamento è valido per 7 giorni.
 
 Non vuoi cambiare la tua password? Ignora questo messaggio.</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>CONFERMA</value>
   </data>
 </root>

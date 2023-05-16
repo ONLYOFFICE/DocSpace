@@ -116,7 +116,7 @@
     <value>Випадки[{0}].Тег видалено {1}</value>
   </data>
   <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Заходи[{0}]. Індивідуальний файл</value>
+    <value>Заходи[{0}]. Індивідуальний файл: {1}</value>
   </data>
   <data name="CaseLinkedCompany" xml:space="preserve">
     <value>Заходи [{0}]. Компанія зв'язана: {1}</value>
