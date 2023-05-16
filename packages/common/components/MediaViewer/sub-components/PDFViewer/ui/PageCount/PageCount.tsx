@@ -1,6 +1,7 @@
 import React, {
   ForwardedRef,
   forwardRef,
+  useCallback,
   useImperativeHandle,
   useState,
 } from "react";
@@ -11,7 +12,7 @@ import { PageCountWrapper } from "./PageCount.styled";
 import PanelReactSvg from "PUBLIC_DIR/images/panel.react.svg";
 
 function PageCount(
-  { isPanelOpen, visible, className }: PageCountProps,
+  { isPanelOpen, visible, className, setIsOpenMobileDrawer }: PageCountProps,
   ref: ForwardedRef<PageCountRef>
 ) {
   const [pagesCount, setPagesCount] = useState<number>(0);
@@ -26,11 +27,15 @@ function PageCount(
     },
   }));
 
+  const openMobileDrawer = useCallback(() => {
+    setIsOpenMobileDrawer(true);
+  }, []);
+
   if (!visible) return <></>;
 
   return (
     <PageCountWrapper isPanelOpen={isPanelOpen} className={className}>
-      {isMobile && <PanelReactSvg />}
+      {isMobile && <PanelReactSvg onClick={openMobileDrawer} />}
       <div>
         <span>{pageNumber}</span> / <span>{pagesCount}</span>
       </div>

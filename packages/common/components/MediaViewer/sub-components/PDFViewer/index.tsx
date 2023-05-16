@@ -1,4 +1,10 @@
-import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useRef,
+  useCallback,
+} from "react";
 import { isDesktop, isMobile } from "react-device-detect";
 
 import { loadScript, combineUrl } from "@docspace/common/utils";
@@ -22,6 +28,7 @@ import {
   ToolbarItemType,
 } from "../ImageViewerToolbar/ImageViewerToolbar.props";
 import PageCount, { PageCountRef } from "./ui/PageCount";
+import MobileDrawer from "./ui/MobileDrawer";
 
 // import { isDesktop } from "react-device-detect";?
 const pdfViewerId = "pdf-viewer";
@@ -62,6 +69,7 @@ function PDFViewer({
   const [isLoadingScript, setIsLoadingScript] = useState<boolean>(false);
   const [isLoadingFile, setIsLoadingFile] = useState<boolean>(false);
   const [isFileOpened, setIsFileOpened] = useState<boolean>(false);
+  const [isOpenMobileDrawer, setIsOpenMobileDrawer] = useState<boolean>(false);
 
   useEffect(() => {
     window.addEventListener("resize", resize);
@@ -140,8 +148,11 @@ function PDFViewer({
   }, [file, isLoadedViewerScript, isLoadingFile]);
 
   useEffect(() => {
-    if (isLoadedViewerScript && containerRef.current?.hasChildNodes()) resize();
-  }, [isPDFSidebarOpen, isLoadedViewerScript]);
+    if (isLoadedViewerScript && containerRef.current?.hasChildNodes()) {
+      console.log("resize");
+      resize();
+    }
+  }, [isPDFSidebarOpen, isLoadedViewerScript, isOpenMobileDrawer]);
 
   const initViewer = () => {
     console.log("init PDF Viewer");
@@ -152,7 +163,6 @@ function PDFViewer({
     });
 
     pdfThumbnail.current =
-      //@ts-ignore
       pdfViewer.current.createThumbnails("viewer-thumbnail");
 
     pdfViewer.current.registerEvent(
@@ -182,10 +192,14 @@ function PDFViewer({
     }
   };
 
-  const resize = () => {
+  const resize = useCallback(() => {
     pdfViewer.current?.resize();
     pdfThumbnail.current?.resize();
-  };
+  }, []);
+
+  const resizePDFThumbnail = useCallback(() => {
+    pdfThumbnail.current?.resize();
+  }, []);
 
   const resetState = () => {
     setIsLoadingScript(false);
@@ -254,12 +268,14 @@ function PDFViewer({
         <ViewerLoader
           isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
         />
-        <Sidebar
-          bookmarks={bookmarks}
-          isPanelOpen={isPDFSidebarOpen}
-          navigate={navigate}
-          setIsPDFSidebarOpen={setIsPDFSidebarOpen}
-        />
+        {isDesktop && (
+          <Sidebar
+            bookmarks={bookmarks}
+            isPanelOpen={isPDFSidebarOpen}
+            navigate={navigate}
+            setIsPDFSidebarOpen={setIsPDFSidebarOpen}
+          />
+        )}
         <MainPanel
           src={src}
           ref={containerRef}
@@ -271,11 +287,23 @@ function PDFViewer({
           isLoading={isLoadingFile || isLoadingScript || !isFileOpened}
         />
       </PDFViewerWrapper>
+
+      {isMobile && (
+        <MobileDrawer
+          bookmarks={bookmarks}
+          resizePDFThumbnail={resizePDFThumbnail}
+          isOpenMobileDrawer={isOpenMobileDrawer}
+          navigate={navigate}
+          setIsOpenMobileDrawer={setIsOpenMobileDrawer}
+        />
+      )}
+
       <PDFViewerToolbarWrapper>
         <PageCount
           ref={pageCountRef}
           isPanelOpen={isPDFSidebarOpen}
           className="pdf-viewer_page-count"
+          setIsOpenMobileDrawer={setIsOpenMobileDrawer}
           visible={!isLoadingFile && !isLoadingScript && isFileOpened}
         />
 
