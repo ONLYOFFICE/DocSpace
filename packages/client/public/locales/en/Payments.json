@@ -21,7 +21,6 @@
   "ErrorNotification": "Failed to update tariff plan. Try again later or contact the sales department.",
   "EnterpriseEdition": "You are using ONLYOFFICE DocSpace Enterprise Edition.",
   "EnterpriseExpiresDate": "Your subscription expires on {{finalDate}}",
-  "EnterpriseSubscriptionExpired": "Your subscription to support and updates has expired",
   "EnterpriseRenewal": "To continue getting support and updates, buy a renewal",
   "EnterpriseRenewSubscription": "Renew subscription for Enterprise",
   "EnterprisePersonalRenewal": "To get your personal renewal terms, contact your dedicated manager or write us at <1>{{email}}</1>",

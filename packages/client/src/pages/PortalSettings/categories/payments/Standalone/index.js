@@ -19,7 +19,7 @@ const StandalonePage = (props) => {
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
-    isEnterpriseEdition,
+    isEnterprise,
     isTrial,
   } = props;
   const { t, ready } = useTranslation(["Payments", "Common", "Settings"]);
@@ -35,7 +35,7 @@ const StandalonePage = (props) => {
   useEffect(() => {
     if (!isLoadedTariffStatus || !isLoadedCurrentQuota) return;
 
-    if (!isEnterpriseEdition) {
+    if (!isEnterprise) {
       history.push(
         combineUrl(window.DocSpaceConfig?.proxy?.url, "/portal-settings/")
       );
@@ -47,7 +47,7 @@ const StandalonePage = (props) => {
     !isLoadedTariffStatus ||
     !isLoadedCurrentQuota ||
     !ready ||
-    !isEnterpriseEdition
+    !isEnterprise
   )
     return <></>;
 
@@ -61,11 +61,7 @@ const StandalonePage = (props) => {
 };
 
 export default inject(({ auth, payments }) => {
-  const {
-    currentQuotaStore,
-    currentTariffStatusStore,
-    isEnterpriseEdition,
-  } = auth;
+  const { currentQuotaStore, currentTariffStatusStore, isEnterprise } = auth;
 
   const { enterpriseInit, isInitPaymentPage } = payments;
   const { isLoaded: isLoadedCurrentQuota, isTrial } = currentQuotaStore;
@@ -77,6 +73,6 @@ export default inject(({ auth, payments }) => {
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
-    isEnterpriseEdition,
+    isEnterprise,
   };
 })(withRouter(observer(StandalonePage)));

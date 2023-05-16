@@ -35,7 +35,7 @@ const TariffTitleContainer = ({
     return (
       isLicenseDateExpires && (
         <Text className="payments_subscription-expired" isBold fontSize="14px">
-          {t("EnterpriseSubscriptionExpired")}
+          {t("Common:SubscriptionExpired")}
         </Text>
       )
     );
