@@ -14,6 +14,7 @@ import { QuotaBarTypes } from "SRC_DIR/helpers/constants";
 
 import QuotasBar from "./QuotasBar";
 import ConfirmEmailBar from "./ConfirmEmailBar";
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const Bar = (props) => {
   const {
@@ -131,7 +132,7 @@ const Bar = (props) => {
   }, []);
 
   const sendActivationLinkAction = () => {
-    sendActivationLink && sendActivationLink(t);
+    sendActivationLink && sendActivationLink().then(showEmailActivationToast);
   };
 
   const onCloseActivationBar = () => {

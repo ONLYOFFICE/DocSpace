@@ -14,7 +14,7 @@ import IconButton from "@docspace/components/icon-button";
 import Badge from "@docspace/components/badge";
 import { isMobileOnly } from "react-device-detect";
 import toastr from "@docspace/components/toast/toastr";
-
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 import { getUserRole, convertLanguage } from "@docspace/common/utils";
 
 import { Trans } from "react-i18next";
@@ -84,7 +84,7 @@ const MainProfile = (props) => {
   const role = getUserRole(profile);
 
   const sendActivationLinkAction = () => {
-    sendActivationLink && sendActivationLink(t);
+    sendActivationLink && sendActivationLink().then(showEmailActivationToast);
   };
 
   const userAvatar = profile.hasAvatar
@@ -470,8 +470,13 @@ const MainProfile = (props) => {
 
 export default inject(({ auth, peopleStore }) => {
   const { withActivationBar, sendActivationLink } = auth.userStore;
-  const { theme, helpLink, culture, currentColorScheme, documentationEmail } =
-    auth.settingsStore;
+  const {
+    theme,
+    helpLink,
+    culture,
+    currentColorScheme,
+    documentationEmail,
+  } = auth.settingsStore;
   const { setIsLoading } = peopleStore.loadingStore;
 
   const {
