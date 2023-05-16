@@ -88,7 +88,6 @@ HELP_TARGET="install-Docker.sh";
 SKIP_HARDWARE_CHECK="false";
 
 EXTERNAL_PORT="80"
-SERVICE_PORT="5050"
 
 while [ "$1" != "" ]; do
 	case $1 in
@@ -128,7 +127,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-idocs | --installdocumentserver )
+		-idocs | --installdocs )
 			if [ "$2" != "" ]; then
 				INSTALL_DOCUMENT_SERVER=$2
 				shift
@@ -142,14 +141,14 @@ while [ "$1" != "" ]; do
 			fi
 		;;		
 		
-		-irb | --installrabbitmq )
+		-irbt | --installrabbitmq )
 			if [ "$2" != "" ]; then
 				INSTALL_RABBITMQ=$2
 				shift
 			fi
 		;;
 
-		-ird | --installredis )
+		-irds | --installredis )
 			if [ "$2" != "" ]; then
 				INSTALL_REDIS=$2
 				shift
@@ -198,7 +197,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
-		-esh | --elasticsearchhost )
+		-esh | --elastichost )
 			if [ "$2" != "" ]; then
 				ELK_HOST=$2
 				shift
@@ -208,13 +207,6 @@ while [ "$1" != "" ]; do
 		-skiphc | --skiphardwarecheck )
 			if [ "$2" != "" ]; then
 				SKIP_HARDWARE_CHECK=$2
-				shift
-			fi
-		;;
-
-		-ip | --internalport )
-			if [ "$2" != "" ]; then
-				SERVICE_PORT=$2
 				shift
 			fi
 		;;
@@ -261,7 +253,7 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-tag | --dockertag )
+		-dsv | --docspaceversion )
 			if [ "$2" != "" ]; then
 				DOCKER_TAG=$2
 				shift
@@ -276,9 +268,16 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 		
-		-di | --documentserverimage )
+		-docsi | --docsimage )
 			if [ "$2" != "" ]; then
 				DOCUMENT_SERVER_IMAGE_NAME=$2
+				shift
+			fi
+		;;
+		
+		-docsv | --docsversion )
+			if [ "$2" != "" ]; then
+				DOCUMENT_SERVER_VERSION=$2
 				shift
 			fi
 		;;
@@ -318,46 +317,47 @@ while [ "$1" != "" ]; do
 			echo "      -hub, --hub                       dockerhub name"
 			echo "      -un, --username                   dockerhub username"
 			echo "      -p, --password                    dockerhub password"
+			echo "      -it, --installation_type          installation type (community|enterprise)"
+			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
 			echo "      -u, --update                      use to update existing components (true|false)"
 			echo "      -ids, --installdocspace           install or update $PRODUCT (true|false)"
-			echo "      -tag, --dockertag                 select the $PRODUCT version (latest|version number)"
-			echo "      -idocs, --installdocumentserver   install or update document server (true|false)"
-			echo "      -di, --documentserverimage        document server image name"
+			echo "      -dsv, --docspaceversion           select the $PRODUCT version"
+			echo "      -dsh, --docspacehost              $PRODUCT host"
+			echo "      -env, --environment               $PRODUCT environment"
+			echo "      -mk, --machinekey                 setting for core.machinekey"
+			echo "      -ep, --externalport               external $PRODUCT port (default value 80)"
+			echo "      -idocs, --installdocs             install or update document server (true|false)"
+			echo "      -docsi, --docsimage               document server image name"
+			echo "      -docsv, --docsversion             document server version"
 			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
-			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"
-			echo "      -imysql, --installmysql           install or update mysql (true|false)"			
-			echo "      -irb, --installrabbitmq           install or update rabbitmq (true|false)"	
-			echo "      -ird, --installredis              install or update redis (true|false)"
+			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"	
+			echo "      -irbt, --installrabbitmq          install or update rabbitmq (true|false)"	
+			echo "      -irds, --installredis             install or update redis (true|false)"
+			echo "      -esh, --elastichost               elasticsearch host"
+			echo "      -imysql, --installmysql           install or update mysql (true|false)"		
 			echo "      -mysqlrp, --mysqlrootpassword     mysql server root password"
 			echo "      -mysqld, --mysqldatabase          $PRODUCT database name"
 			echo "      -mysqlu, --mysqluser              $PRODUCT database user"
 			echo "      -mysqlp, --mysqlpassword          $PRODUCT database password"
 			echo "      -mysqlh, --mysqlhost              mysql server host"
-			echo "      -dsh, --docspacehost              $PRODUCT host"
-			echo "      -esh, --elasticsearchhost         elasticsearch host"
-			echo "      -env, --environment               $PRODUCT environment"
-			echo "      -it, --installation_type          installation type (COMMUNITY|ENTERPRISE)"
-			echo "      -skiphc, --skiphardwarecheck      skip hardware check (true|false)"
-			echo "      -ip, --internalport               internal $PRODUCT port (default value 5050)"
-			echo "      -ep, --externalport               external $PRODUCT port (default value 80)"
-			echo "      -mk, --machinekey                 setting for core.machinekey"
 			echo "      -dbm, --databasemigration         database migration (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			echo "    Install all the components without document server:"
 			echo "      bash $HELP_TARGET -idocs false"
 			echo
-			echo "    Install Document Server only. Skip the installation of MYSQL and $PRODUCT:"
-			echo "      bash $HELP_TARGET -ids false -idocs true -imysql false -irb false -ird false"
+			echo "    Install Document Server only. Skip the installation of mysql, $PRODUCT, rabbitmq, redis:"
+			echo "      bash $HELP_TARGET -ids false -idocs true -imysql false -irbt false -irds false"
 			echo
-			echo "    Update all installed components. Stop the containers that need to be updated, remove them and run the latest versions of the corresponding components. The portal data should be picked up automatically:"
+			echo "    Update all installed components. Stop the containers that need to be updated, remove them and run the latest versions of the corresponding components."
+			echo "    The portal data should be picked up automatically:"
 			echo "      bash $HELP_TARGET -u true"
 			echo
 			echo "    Update Document Server only to version 7.2.1.34 and skip the update for all other components:"
-			echo "      bash $HELP_TARGET -u true -di onlyoffice/documentserver-ee:7.2.1.34 -ids false"
+			echo "      bash $HELP_TARGET -u true -docsi ${PACKAGE_SYSNAME}/documentserver-ee -docsv 7.2.1.34 -idocs true -ids false -irbt false -irds false"
 			echo
 			echo "    Update $PRODUCT only to version 1.2.0 and skip the update for all other components:"
-			echo "      bash $HELP_TARGET -u true -tag rc-v1.2.0 -idocs false"
+			echo "      bash $HELP_TARGET -u true -dsv v1.2.0 -idocs false -irbt false -irds false"
 			echo
 			exit 0
 		;;
@@ -938,9 +938,9 @@ set_docspace_params() {
 }
 
 set_installation_type_data () {
-	if [ "$INSTALLATION_TYPE" == "COMMUNITY" ]; then
+	if [ "$INSTALLATION_TYPE" == "community" ]; then
 		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver"}
-	elif [ "$INSTALLATION_TYPE" == "ENTERPRISE" ]; then
+	elif [ "$INSTALLATION_TYPE" == "enterprise" ]; then
 		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver-ee"}
 	fi
 }
@@ -1099,8 +1099,8 @@ start_installation () {
 	fi
 
 	echo ""
-	echo "Thank you for installing ONLYOFFICE ${PRODUCT^^}."
-	echo "In case you have any questions contact us via http://support.onlyoffice.com or visit our forum at http://dev.onlyoffice.org"
+	echo "Thank you for installing ${PACKAGE_SYSNAME^^} ${PRODUCT^^}."
+	echo "In case you have any questions contact us via http://support.${PACKAGE_SYSNAME}.com or visit our forum at http://dev.${PACKAGE_SYSNAME}.org"
 	echo ""
 
 	exit 0;
