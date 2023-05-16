@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Bookmark được tạo lúc</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Trường hợp CRM đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Bình luận được thêm lúc</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Liên hệ CRM đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Cơ hội CRM đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Thảo luận đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Sự kiện đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Tài liệu đã được tạo/đăng tải lên tại</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Thư mục đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Diễn đàn được tạo tại</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Thăm dò ý kiến đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Bài viết đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Mốc sự kiện đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Dự án được tạo tại</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Nhiệm vụ được tạo tại</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Truy cập Control Panel</value>
   </data>
@@ -126,9 +78,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Chọn Gói dịch vụ ngay bây giờ</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Tìm hiểu thêm &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Kích hoạt email của bạn cho cổng "${__VirtualRootPath}":"$InviteLink".

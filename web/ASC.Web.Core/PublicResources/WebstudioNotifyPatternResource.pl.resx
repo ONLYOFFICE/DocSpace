@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog został utworzony w</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Utworzono zakładkę w</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Sprawa CRM została utworzona w</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Komentarz został dodany w</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Kontakt CRM został utworzony w</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Możliwość CRM powstała w</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Dyskusja została utworzona w</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Wydarzenie zostało utworzone w</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Dokument został utworzony / przesłany na</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Folder został utworzony w</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum zostało utworzone w</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Ankietę utworzono w</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Post utworzono w</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Etap stworzony w</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projekt powstał w</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Zadanie zostało utworzone w</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Panel sterowania dostępem</value>
   </data>
@@ -126,9 +78,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Wybierz teraz plany cenowe</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Dowiedz się więcej &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Aktywuj Swój adres e-mail na stronie "${__VirtualRootPath}":"$InviteLink".

@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Bladwijzer is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM-casus is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Opmerking is toegevoegd op</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM-contact is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM kans is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Discussie is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Gebeurtenis is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Document is aangemaakt/geüpload op</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Map is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Poll is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Post is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Mijlpaal is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Project is aangemaakt op</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Taak is aangemaakt op</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Toegang Controlepaneel</value>
   </data>
@@ -126,9 +78,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Selecteer de Abonnementen Nu</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Meer Informatie &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Activeer uw e-mail voor "${__VirtualRootPath}":"$InviteLink" portaal.

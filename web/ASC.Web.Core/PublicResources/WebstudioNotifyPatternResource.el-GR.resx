@@ -58,24 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Το ιστολόγιο δημιουργήθηκε στο</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Ο σελιδοδείκτης δημιουργήθηκε στο</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Προστέθηκε σχόλιο στο</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Συζήτηση δημιουργήθηκε στο</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Το έγγραφο δημιουργήθηκε/ανέβηκε στο</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Ο φάκελος δημιουργήθηκε στο</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Αποδοχή</value>
   </data>
@@ -108,9 +90,6 @@
   </data>
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Χρήση έκπτωσης</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Μάθετε Περισσότερα &gt;&gt;</value>
   </data>
   <data name="subject_activate_email" xml:space="preserve">
     <value>${LetterLogoText}. Παρακαλώ ενεργοποιείστε την διεύθυνση email</value>

@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Блогът бе създаден на</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Маркерът бе създаден на</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM е създаден на</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Коментарът бе добавен в</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM контактът бе създаден в</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Възможност за CRM бе създадена на</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Дискусията бе създадена на</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Събитието бе създадено в</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Документът бе създаден/качен на адрес</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Папката бе създадена на</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Форумът бе създаден на</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Анкетата бе създадена на</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Публикацията бе създадена на</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Milestone бе създаден на</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Проектът бе създаден на</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Задачата бе създадена на</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Приемам</value>
   </data>
@@ -171,9 +123,6 @@
   </data>
   <data name="ButtonStartFreeTrial" xml:space="preserve">
     <value>Започнете безплатен пробен период</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Научете повече &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>Активирайте имейла си за "${__VirtualRootPath}": портал "$InviteLink". Здравейте!
