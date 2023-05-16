@@ -131,6 +131,7 @@ public class PortalController : ControllerBase
         _httpContextAccessor = httpContextAccessor;
     }
 
+    [AllowNotPayment]
     [HttpGet("")]
     public TenantDto Get()
     {
