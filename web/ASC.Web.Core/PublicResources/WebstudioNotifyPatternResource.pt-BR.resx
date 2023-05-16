@@ -1237,4 +1237,13 @@ O link é válido por 7 dias.
 
 Não deseja alterar sua senha? Simplesmente ignore esta mensagem.</value>
   </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Qual é a novidade em seu portal para $Date</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Confirme a mudança de sua senha</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
 </root>

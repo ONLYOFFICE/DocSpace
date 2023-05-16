@@ -1682,4 +1682,136 @@ $GreenButton
 команда ONLYOFFICE
 "www.onlyoffice.com":http://onlyoffice.com/ru</value>
   </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Новости Вашего портала за $Date</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Подтвердите изменение пароля</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Подтвердите приглашение в комнату</value>
+  </data>
+  <data name="subject_personal_already_exist" xml:space="preserve">
+    <value>Войдите в ваш аккаунт ONLYOFFICE Personal</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText}. Помощь с паролем</value>
+  </data>
+  <data name="subject_for_sales_notify" xml:space="preserve">
+    <value>Запрос в отдел продаж</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Подтвердите приглашение в DocSpace</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ПОДТВЕРДИТЬ</value>
+  </data>
+  <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_docspace_invite" xml:space="preserve">
+    <value>Присоединяйтесь к ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_room_invite" xml:space="preserve">
+    <value>Присоединяйтесь к ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Посетите раздел «Платежи»</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Льготный период для ONLYOFFICE DocSpace активирован</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Срок действия вашей подписки ONLYOFFICE DocSpace истекает</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Льготный период для вашего ONLYOFFICE DocSpace истек</value>
+  </data>
+  <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Льготный период для вашего ONLYOFFICE DocSpace истекает завтра</value>
+  </data>
+  <data name="subject_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Скачайте бесплатные приложения ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Скачайте бесплатные приложения ONLYOFFICE</value>
+  </data>
+  <data name="subject_personal_after_registration14_v1" xml:space="preserve">
+    <value>Скачайте бесплатные приложения ONLYOFFICE</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_saas_admin_activation_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="subject_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Присоединяйтесь к ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Присоединяйтесь к ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_user_activation_v1" xml:space="preserve">
+    <value>Присоединяйтесь к ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_activation_v1" xml:space="preserve">
+    <value>Присоединяйтесь к ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_modules_v1" xml:space="preserve">
+    <value>Присоединяйтесь к ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_user_welcome_v1" xml:space="preserve">
+    <value>Добро пожаловать в ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ПРИНЯТЬ</value>
+  </data>
+  <data name="subject_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Несколько советов для эффективной работы с документами</value>
+  </data>
+  <data name="subject_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Несколько советов для эффективной работы с документами</value>
+  </data>
+  <data name="subject_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Несколько советов для эффективной работы с документами</value>
+  </data>
+  <data name="subject_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Несколько советов для эффективной работы с документами</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Работайте совместно в DocSpace</value>
+  </data>
+  <data name="subject_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace был деактивирован</value>
+  </data>
+  <data name="subject_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Ваш ONLYOFFICE DocSpace будет удален</value>
+  </data>
+  <data name="subject_personal_change_password" xml:space="preserve">
+    <value>ONLYOFFICE Personal. Помощь с паролем</value>
+  </data>
+  <data name="subject_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Узнайте о бизнес-подписке на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Узнайте о бизнес-подписке на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Узнайте о бизнес-подписке на ONLYOFFICE DocSpace</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Узнайте о бизнес-подписке на ONLYOFFICE DocSpace</value>
+  </data>
 </root>

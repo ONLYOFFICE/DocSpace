@@ -1872,4 +1872,7 @@ ONLYOFFICE Team
   <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
     <value>Grace period for your ONLYOFFICE DocSpace expires tomorrow</value>
   </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} password assistance</value>
+  </data>
 </root>

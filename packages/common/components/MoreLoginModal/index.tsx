@@ -83,7 +83,7 @@ const MoreLoginModal: React.FC<IMoreLoginNodalProps> = (props) => {
       onClose={onClose}
       removeScroll={true}
     >
-      <ModalDialog.Header>{t("Authorization")}</ModalDialog.Header>
+      <ModalDialog.Header>{t("Common:Authorization")}</ModalDialog.Header>
       <ModalDialog.Body>
         {ssoUrl && (
           <ProviderRow key={`ProviderItemSSO`}>

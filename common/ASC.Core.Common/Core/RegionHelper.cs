@@ -49,10 +49,30 @@ public class RegionHelper
     public RegionInfo GetCurrentRegionInfo(IDictionary<string, Dictionary<string, decimal>> priceInfo = null)
     {
         var defaultRegion = GetDefaultRegionInfo();
+        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
 
         var countryCode = _httpContextAccessor.HttpContext?.Request.Query["country"];
 
-        var currentRegion = GetRegionInfo(countryCode) ?? FindRegionInfo();
+        var currentRegion = GetRegionInfo(countryCode);
+
+        if (currentRegion == null)
+        {
+            if (geoinfo != null)
+            {
+                currentRegion = GetRegionInfo(geoinfo.Key);
+            }
+
+            if (currentRegion == null)
+            {
+                var tenant = _tenantManager.GetCurrentTenant(false);
+                if (tenant != null)
+                {
+                    var owner = _userManager.GetUsers(tenant.OwnerId);
+                    var culture = string.IsNullOrEmpty(owner.CultureName) ? tenant.GetCulture() : owner.GetCulture();
+                    currentRegion = GetRegionInfo(culture.Name);
+                }
+            }
+        }
 
         if (currentRegion != null && !currentRegion.Name.Equals(defaultRegion.Name))
         {
@@ -61,6 +81,11 @@ public class RegionHelper
             if (priceInfo.Values.Any(value => value.ContainsKey(currentRegion.ISOCurrencySymbol)))
             {
                 return currentRegion;
+            }
+
+            if (geoinfo != null && !string.IsNullOrEmpty(geoinfo.Continent) && geoinfo.Continent == "EU")
+            {
+                return GetRegionInfo("ES");
             }
         }
 
@@ -74,42 +99,35 @@ public class RegionHelper
 
     public string GetCurrencyFromRequest()
     {
-        var regionInfo = GetDefaultRegionInfo();
+        var defaultRegion = GetDefaultRegionInfo();
         var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
 
         if (!string.IsNullOrEmpty(geoinfo.Key))
         {
             try
             {
-                regionInfo = new RegionInfo(geoinfo.Key);
+                var currentRegion = new RegionInfo(geoinfo.Key);
+
+                if (currentRegion != null && !currentRegion.Name.Equals(defaultRegion.Name))
+                {
+                    var priceInfo = _tenantManager.GetProductPriceInfo();
+
+                    if (priceInfo.Values.Any(value => value.ContainsKey(currentRegion.ISOCurrencySymbol)))
+                    {
+                        return currentRegion.ISOCurrencySymbol;
+                    }
+
+                    if (!string.IsNullOrEmpty(geoinfo.Continent) && geoinfo.Continent == "EU")
+                    {
+                        return "EUR";
+                    }
+                }
             }
             catch (Exception)
             {
             }
         }
-        return regionInfo.ISOCurrencySymbol;
-    }
-
-    private RegionInfo FindRegionInfo()
-    {
-        RegionInfo regionInfo = null;
-
-        var tenant = _tenantManager.GetCurrentTenant();
-        var geoinfo = _geolocationHelper.GetIPGeolocationFromHttpContext();
-
-        if (geoinfo != null)
-        {
-            regionInfo = GetRegionInfo(geoinfo.Key);
-        }
-
-        if (regionInfo == null)
-        {
-            var owner = _userManager.GetUsers(tenant.OwnerId);
-            var culture = string.IsNullOrEmpty(owner.CultureName) ? tenant.GetCulture() : owner.GetCulture();
-            regionInfo = GetRegionInfo(culture.Name);
-        }
-
-        return regionInfo;
+        return defaultRegion.ISOCurrencySymbol;
     }
 
     private RegionInfo GetRegionInfo(string isoTwoLetterCountryCode)
