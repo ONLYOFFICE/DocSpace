@@ -24,7 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-
 namespace ASC.Web.Api.Controllers.Settings;
 
 public class WebhooksController : BaseSettingsController
@@ -109,12 +108,16 @@ public class WebhooksController : BaseSettingsController
     public async IAsyncEnumerable<WebhooksLogDto> GetJournal(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? webhookId, int? configId, int? eventId, WebhookGroupStatus? groupStatus)
     {
         _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+
+        _context.SetTotalCount(await _webhookDbWorker.GetTotalByQuery(deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus));
+
         var startIndex = Convert.ToInt32(_context.StartIndex);
         var count = Convert.ToInt32(_context.Count);
 
         await foreach (var j in _webhookDbWorker.ReadJournal(startIndex, count, deliveryFrom, deliveryTo, hookUri, webhookId, configId, eventId, groupStatus))
         {
-            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j);
+            j.Log.Config = j.Config;
+            yield return _mapper.Map<WebhooksLog, WebhooksLogDto>(j.Log);
         }
     }
 
