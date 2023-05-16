@@ -149,7 +149,6 @@ function PDFViewer({
 
   useEffect(() => {
     if (isLoadedViewerScript && containerRef.current?.hasChildNodes()) {
-      console.log("resize");
       resize();
     }
   }, [isPDFSidebarOpen, isLoadedViewerScript, isOpenMobileDrawer]);

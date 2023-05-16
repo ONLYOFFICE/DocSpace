@@ -69,12 +69,6 @@ function MainPanel(
 
         api.start({ x: 0 });
       },
-      onPinch: ({ offset: [dScale] }) => {
-        if (isDesktop) return;
-        console.log("scale");
-        api.set({ scale: dScale });
-        setZoom(dScale * 100);
-      },
     },
     {
       drag: {

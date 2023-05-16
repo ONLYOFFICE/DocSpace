@@ -149,34 +149,34 @@ export const getPDFToolbar = (): ReturnType<typeof getCustomToolbar> => {
         </div>
       ),
     },
-    {
-      key: "context-separator-zoom",
-      actionType: -1,
-      noHover: true,
-      render: (
-        <div className="separator" style={{ height: "16px" }}>
-          <ViewerSeparator size="scale" />
-        </div>
-      ),
-    },
-    {
-      key: "rotateLeft",
-      actionType: ToolbarActionType.RotateLeft,
-      render: (
-        <div className="iconContainer rotateLeft">
-          <MediaRotateLeftIcon size="scale" />
-        </div>
-      ),
-    },
-    {
-      key: "rotateRight",
-      actionType: ToolbarActionType.RotateRight,
-      render: (
-        <div className="iconContainer rotateRight">
-          <MediaRotateRightIcon size="scale" />
-        </div>
-      ),
-    },
+    // {
+    //   key: "context-separator-zoom",
+    //   actionType: -1,
+    //   noHover: true,
+    //   render: (
+    //     <div className="separator" style={{ height: "16px" }}>
+    //       <ViewerSeparator size="scale" />
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   key: "rotateLeft",
+    //   actionType: ToolbarActionType.RotateLeft,
+    //   render: (
+    //     <div className="iconContainer rotateLeft">
+    //       <MediaRotateLeftIcon size="scale" />
+    //     </div>
+    //   ),
+    // },
+    // {
+    //   key: "rotateRight",
+    //   actionType: ToolbarActionType.RotateRight,
+    //   render: (
+    //     <div className="iconContainer rotateRight">
+    //       <MediaRotateRightIcon size="scale" />
+    //     </div>
+    //   ),
+    // },
     {
       key: "context-separator-rotate",
       actionType: -1,
