@@ -16,6 +16,7 @@ const ArticleAlerts = ({
   isLicenseExpiring,
   isLicenseDateExpires,
   isEnterprise,
+  isTrial,
 }) => {
   return (
     <StyledArticleAlertsComponent>
@@ -25,8 +26,11 @@ const ArticleAlerts = ({
         showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
 
       {isEnterprise &&
+        !isTrial &&
         (isLicenseExpiring || isLicenseDateExpires) &&
         showText && <ArticleEnterpriseAlert />}
+
+      {isEnterprise && isTrial && showText && <ArticleEnterpriseAlert />}
 
       {isTeamTrainingAlertAvailable && showText && <ArticleTeamTrainingAlert />}
     </StyledArticleAlertsComponent>
@@ -43,7 +47,7 @@ export default withRouter(
       currentTariffStatusStore,
       isEnterprise,
     } = auth;
-    const { isFreeTariff, isNonProfit } = currentQuotaStore;
+    const { isFreeTariff, isNonProfit, isTrial } = currentQuotaStore;
     const {
       isGracePeriod,
       isLicenseExpiring,
@@ -61,6 +65,7 @@ export default withRouter(
       isTeamTrainingAlertAvailable,
       isLicenseExpiring,
       isLicenseDateExpires,
+      isTrial,
     };
   })(observer(ArticleAlerts))
 );
