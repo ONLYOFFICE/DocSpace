@@ -66,7 +66,7 @@ const StyledTitleComponent = styled.div`
       line-height: 16px;
       ${(props) => props.limitedWidth && "max-width: 376px"};
       span:first-child {
-        ${(props) => props.isSubscriptionExpired && "margin-top: 5px"};
+        ${(props) => props.isLicenseDateExpires && "margin-top: 5px"};
       }
     }
   }
@@ -76,12 +76,12 @@ const StyledTitleComponent = styled.div`
     border: 1px solid
       ${(props) =>
         props.theme.client.settings.payment[
-          props.isSubscriptionExpired ? "warningColor" : "color"
+          props.isLicenseDateExpires ? "warningColor" : "color"
         ]};
     border-radius: 3px;
     color: ${(props) =>
       props.theme.client.settings.payment[
-        props.isSubscriptionExpired ? "warningColor" : "color"
+        props.isLicenseDateExpires ? "warningColor" : "color"
       ]};
     padding: 2px 8px;
     height: fit-content;

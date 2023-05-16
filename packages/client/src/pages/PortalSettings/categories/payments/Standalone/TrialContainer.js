@@ -10,33 +10,28 @@ import ButtonContainer from "./sub-components/ButtonContainer";
 import TariffTitleContainer from "./sub-components/TariffTitleContainer";
 
 const TrialContainer = (props) => {
-  const { salesEmail, t, isSubscriptionExpired, theme } = props;
+  const { t, theme } = props;
 
   return (
     <StyledEnterpriseComponent theme={theme}>
       <Text fontWeight={700} fontSize={"16px"}>
-        {t("SwitchFullEnterprise")}
+        {t("ActivateSwithToProHeader")}
       </Text>
-      <TariffTitleContainer
-        isSubscriptionExpired={isSubscriptionExpired}
-        t={t}
-        isTrial
-      />
+      <TariffTitleContainer t={t} />
 
       <BenefitsContainer t={t} />
       <Text fontSize="14px" className="payments_renew-subscription">
-        {t("BuyLicense")}
+        {t("ActivatePurchaseBuyLicense")}
       </Text>
       <ButtonContainer t={t} />
     </StyledEnterpriseComponent>
   );
 };
 
-export default inject(({ auth, payments }) => {
-  const { buyUrl, salesEmail } = payments;
-  const { settingsStore } = auth;
+export default inject(({ auth }) => {
+  const { settingsStore, currentTariffStatusStore } = auth;
+  const { isLicenseDateExpires } = currentTariffStatusStore;
   const { theme } = settingsStore;
-  const isSubscriptionExpired = true;
 
-  return { theme, buyUrl, salesEmail, isSubscriptionExpired };
+  return { theme, isLicenseDateExpires };
 })(withRouter(observer(TrialContainer)));

@@ -246,7 +246,7 @@ class ArticleBodyContent extends React.Component {
       isNotPaidPeriod,
       t,
       isOwner,
-      isEnterpriseEdition,
+      isEnterprise,
       standalone,
     } = this.props;
 
@@ -263,7 +263,7 @@ class ArticleBodyContent extends React.Component {
       });
     }
 
-    if (standalone && !isEnterpriseEdition) {
+    if (standalone && !isEnterprise) {
       resultTree = [...settingsTree].filter((e) => {
         return e.tKey !== "Common:PaymentsTitle";
       });
@@ -309,7 +309,7 @@ export default inject(({ auth, common }) => {
   const {
     currentTariffStatusStore,
     userStore,
-    isEnterpriseEdition,
+    isEnterprise,
     settingsStore,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
@@ -319,7 +319,7 @@ export default inject(({ auth, common }) => {
 
   return {
     standalone,
-    isEnterpriseEdition,
+    isEnterprise,
     showText,
     toggleArticleOpen,
     isLoadedArticleBody,

@@ -130,7 +130,7 @@ class AuthStore {
     return Promise.all(requests);
   };
 
-  get isEnterpriseEdition() {
+  get isEnterprise() {
     return this.tenantExtra.enterprise;
   }
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { ReactSVG } from "react-svg";
+import { useTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
 
@@ -11,41 +12,37 @@ import ScalabilityReactSvgUrl from "PUBLIC_DIR/images/scalability.react.svg?url"
 
 import { StyledBenefitsBody } from "../StyledComponent";
 
-const BenefitsContainer = ({
-  t,
-  theme,
-  isTrial,
-  isEnterprise,
-  isCommunity,
-}) => {
+const BenefitsContainer = ({ theme, isTrial, isEnterprise, isCommunity }) => {
+  const { t } = useTranslation("PaymentsEnterprise");
+
   const title =
-    isEnterprise || isTrial ? t("FullEnterpriseVersion") : t("FreeProFeatures");
+    isEnterprise || isTrial
+      ? t("ActivateToProBannerHeaderTrial")
+      : t("UpgradeToProBannerHeader");
 
   const features = () => {
     const techSupport = {
       imag: TechSupportReactSvgUrl,
-      title: "Tech support",
-      description: "Get quick professional help for all the issues you face",
+      title: t("UpgradeToProBannerItemSupportHeader"),
+      description: t("UpgradeToProBannerItemSupportDescr"),
     };
 
     const mobileEditing = {
       imag: MobileEditingReactSvgUrl,
-      title: "Mobile editing",
-      description: "Edit docs, sheets, and slides in mobile browsers",
+      title: t("UpgradeToProBannerItemMobileHeader"),
+      description: t("UpgradeToProBannerItemMobileDescr"),
     };
 
     const lifetimeLicense = {
       imag: LifetimeLicenseReactSvgUrl,
-      title: "Lifetime license",
-      description:
-        "+ 1-year subscription for functionality and security updates",
+      title: t("UpgradeToProBannerItemLicenseHeader"),
+      description: t("UpgradeToProBannerItemLicenseDescr"),
     };
 
     const scalabilityClustering = {
       imag: ScalabilityReactSvgUrl,
-      title: "Scalability and clustering",
-      description:
-        "Comfortably edit and collaborate on docs no matter what size your team is",
+      title: t("UpgradeToProBannerItemScalabilityHeader"),
+      description: t("UpgradeToProBannerItemScalabilityDescr"),
     };
 
     const featuresArray = [];

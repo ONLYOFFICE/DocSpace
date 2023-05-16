@@ -33,6 +33,10 @@ class QuotasStore {
     return this.currentPortalQuota.free;
   }
 
+  get isTrial() {
+    return this.currentPortalQuota.trial;
+  }
+
   get currentPlanCost() {
     if (this.currentPortalQuota.price) return this.currentPortalQuota.price;
     else return { value: 0, currencySymbol: "" };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
@@ -19,14 +19,14 @@ const StandalonePage = (props) => {
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
-    isEnterpriseEdition,
+    isEnterprise,
     isTrial,
   } = props;
   const { t, ready } = useTranslation([
+    "PaymentsEnterprise",
     "Payments",
     "Common",
     "Settings",
-    "ChangePasswordDialog",
   ]);
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const StandalonePage = (props) => {
   useEffect(() => {
     if (!isLoadedTariffStatus || !isLoadedCurrentQuota) return;
 
-    if (!isEnterpriseEdition) {
+    if (!isEnterprise) {
       history.push(
         combineUrl(window.DocSpaceConfig?.proxy?.url, "/portal-settings/")
       );
@@ -52,13 +52,13 @@ const StandalonePage = (props) => {
     !isLoadedTariffStatus ||
     !isLoadedCurrentQuota ||
     !ready ||
-    !isEnterpriseEdition
+    !isEnterprise
   )
     return <></>;
 
   return (
     <StyledComponent>
-      {true ? <TrialContainer t={t} /> : <EnterpriseContainer t={t} />}
+      {isTrial ? <TrialContainer t={t} /> : <EnterpriseContainer t={t} />}
       <LicenseContainer t={t} />
       <ContactContainer t={t} />
     </StyledComponent>
@@ -66,18 +66,11 @@ const StandalonePage = (props) => {
 };
 
 export default inject(({ auth, payments }) => {
-  const {
-    currentQuotaStore,
-    currentTariffStatusStore,
-    isEnterpriseEdition,
-  } = auth;
+  const { currentQuotaStore, currentTariffStatusStore, isEnterprise } = auth;
 
   const { enterpriseInit, isInitPaymentPage } = payments;
-  const { isLoaded: isLoadedCurrentQuota } = currentQuotaStore;
+  const { isLoaded: isLoadedCurrentQuota, isTrial } = currentQuotaStore;
   const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
-
-  const isTrial = true,
-    isEnterprise = false;
 
   return {
     isTrial,
@@ -85,6 +78,6 @@ export default inject(({ auth, payments }) => {
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
-    isEnterpriseEdition,
+    isEnterprise,
   };
 })(withRouter(observer(StandalonePage)));

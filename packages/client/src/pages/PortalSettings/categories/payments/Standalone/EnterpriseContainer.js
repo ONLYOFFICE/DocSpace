@@ -12,29 +12,27 @@ import ButtonContainer from "./sub-components/ButtonContainer";
 import TariffTitleContainer from "./sub-components/TariffTitleContainer";
 
 const EnterpriseContainer = (props) => {
-  const { salesEmail, t, isSubscriptionExpired, theme } = props;
+  const { salesEmail, t, isLicenseDateExpires, theme } = props;
 
   return (
     <StyledEnterpriseComponent theme={theme}>
       <Text fontWeight={700} fontSize={"16px"}>
-        {t("EnterpriseRenewSubscription")}
+        {t("ActivateRenewSubscriptionHeader")}
       </Text>
 
-      <TariffTitleContainer
-        t={t}
-        limitedWidth={isSubscriptionExpired}
-        isSubscriptionExpired={isSubscriptionExpired}
-      />
+      <TariffTitleContainer />
 
-      {isSubscriptionExpired && <BenefitsContainer t={t} />}
+      {isLicenseDateExpires && <BenefitsContainer t={t} />}
       <Text fontSize="14px" className="payments_renew-subscription">
-        {isSubscriptionExpired ? t("BuyLicense") : t("EnterpriseRenewal")}
+        {isLicenseDateExpires
+          ? t("ActivatePurchaseBuyLicense")
+          : t("ActivatePurchaseRenewLicense")}
       </Text>
       <ButtonContainer t={t} />
 
       <div className="payments_support">
         <Text>
-          <Trans i18nKey="EnterprisePersonalRenewal" ns="Payments" t={t}>
+          <Trans i18nKey="ActivateRenewDescr" ns="PaymentsEnterprise" t={t}>
             To get your personal renewal terms, contact your dedicated manager
             or write us at
             <ColorTheme
@@ -55,9 +53,9 @@ const EnterpriseContainer = (props) => {
 
 export default inject(({ auth, payments }) => {
   const { buyUrl, salesEmail } = payments;
-  const { settingsStore } = auth;
+  const { settingsStore, currentTariffStatusStore } = auth;
   const { theme } = settingsStore;
-  const isSubscriptionExpired = false;
 
-  return { theme, buyUrl, salesEmail, isSubscriptionExpired };
+  const { isLicenseDateExpires } = currentTariffStatusStore;
+  return { theme, buyUrl, salesEmail, isLicenseDateExpires };
 })(withRouter(observer(EnterpriseContainer)));
