@@ -800,30 +800,22 @@ set_jwt_header () {
 }
 
 set_core_machinekey () {
-	CURRENT_CORE_MACHINEKEY="";
-
-	if [[ -z ${CORE_MACHINEKEY} ]]; then
-		if file_exists ${BASE_DIR}/.private/machinekey; then
-			CURRENT_CORE_MACHINEKEY=$(cat ${BASE_DIR}/.private/machinekey);
-
-			if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
-				APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
-			fi
-		fi
-	fi
-
-	if [[ -z ${CORE_MACHINEKEY} ]]; then
-		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "$APP_CORE_MACHINEKEY");
+	if [[ -z ${APP_CORE_MACHINEKEY} ]]; then
+		CURRENT_CORE_MACHINEKEY=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_MACHINEKEY");
 
 		if [[ -n ${CURRENT_CORE_MACHINEKEY} ]]; then
 			APP_CORE_MACHINEKEY="$CURRENT_CORE_MACHINEKEY";
 		fi
 	fi
 
-	if [[ -z ${CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
+	if [[ -z ${APP_CORE_MACHINEKEY} ]] && [[ "$UPDATE" != "true" ]]; then
 		APP_CORE_MACHINEKEY=$(get_random_str 12);
-		mkdir -p ${BASE_DIR}/.private/
-		echo $APP_CORE_MACHINEKEY > ${BASE_DIR}/.private/machinekey
+	fi
+}
+
+		fi
+	fi
+
 	fi
 }
 
