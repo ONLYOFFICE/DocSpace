@@ -1264,4 +1264,55 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Săli</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Koš izpraznjen</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Izbrisane oznake: [{1}]</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Dodane oznake: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Soba arhivirana</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Dodan uporabnik: {0}. Vloga: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Soba izbrisana</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Povezava ustvarjena. Vloga: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Povezava izbrisana</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Povezava osvežena. Vloga: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logotip ustvarjen</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logotip izbrisan</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Izbrisan uporabnik: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Soba preimenovana: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Soba odarhivirana</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} dodeljen: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Oznaka ustvarjena: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Oznake izbrisane: {0}</value>
+  </data>
 </root>

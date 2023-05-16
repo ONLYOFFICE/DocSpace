@@ -1336,4 +1336,55 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Místnosti</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Koš je vyprázdněn</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Přidané tagy: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Smazané tagy: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Archivovaná místnost</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Přidán uživatel: {0}. Role: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Místnost smazána</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Vytvořený odkaz. Role: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Odkaz smazán</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Odkaz aktualizován. Role: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Vytvořené logo</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo odstraněno</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Smazaný uživatel: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Přejmenování místnosti: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Nearchivovaná místnost</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} jmenován: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Vytvořený tag: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Tagy smazány: {0}</value>
+  </data>
 </root>

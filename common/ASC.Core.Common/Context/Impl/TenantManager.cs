@@ -193,7 +193,7 @@ public class TenantManager
             tenant = context.Items[CurrentTenant] as Tenant;
             if (tenant == null && context.Request != null)
             {
-                tenant = GetTenant(context.Request.GetUrlRewriter().Host);
+                tenant = GetTenant(context.Request.Url().Host);
                 context.Items[CurrentTenant] = tenant;
             }
 
@@ -324,6 +324,17 @@ public class TenantManager
         var prices = TariffService.GetProductPriceInfo(productIds);
         var result = prices.ToDictionary(price => quotas.First(quota => quota.ProductId == price.Key).Name, price => price.Value);
         return result;
+    }
+
+    public Dictionary<string, decimal> GetProductPriceInfo(string productId)
+    {
+        if (string.IsNullOrEmpty(productId))
+        {
+            return null;
+        }
+
+        var prices = TariffService.GetProductPriceInfo(new[] { productId });
+        return prices.ContainsKey(productId) ? prices[productId] : null;
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)

@@ -78,4 +78,61 @@ $Message</value>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>문서. 폴더에 액세스 허가 : $DocumentTitle</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName님이 문서 주석에서 귀하를 언급했습니다
+
+$__AuthorName님이 "$RoomTitle":"$RoomURL" 방의"$DocumentTitle":"$DocumentURL" 문서의 주석에서 귀하를 언급했습니다:
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName님이 방을 삭제했습니다
+
+$__AuthorName님이 방을 삭제했습니다: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>모든 서명자가 $DocumentTitle을 완료했습니다</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>서명 상태가 변경되었습니다</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace 알림. 문서에서 언급되었습니다</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>문서에서 언급되었습니다</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>메일링이 완료되었습니다.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace 알림. 방이 삭제되었습니다</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>다음 문서에 대한 액세스 권한이 부여되었습니다: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>다음 암호화 문서에 대한 액세스 권한이 부여되었습니다: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>다음 폴더에 대한 액세스 권한이 부여되었습니다: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>문서. 다음 문서에 대한 액세스 권한이 부여되었습니다: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_DocuSignStatus" xml:space="preserve">
+    <value>문서. 서명 상태가 변경되었습니다</value>
+  </data>
+  <data name="subject_MailMergeEnd" xml:space="preserve">
+    <value>문서. 메일링이 완료되었습니다.</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>문서. 모든 서명자가 [$DocumentTitle]($DocumentURL)을 완료했습니다</value>
+  </data>
+  <data name="subject_DocuSignComplete" xml:space="preserve">
+    <value>문서. 모든 서명자가 $DocumentTitle을 완료했습니다</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>문서. 다음 폴더에 대한 액세스 권한이 부여되었습니다: [$DocumentTitle]($DocumentURL)</value>
+  </data>
 </root>

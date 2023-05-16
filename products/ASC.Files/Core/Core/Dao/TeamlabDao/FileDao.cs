@@ -393,7 +393,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return SaveFileAsync(file, fileStream, true);
     }
 
-    public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true)
+    public async Task<File<int>> SaveFileAsync(File<int> file, Stream fileStream, bool checkQuota = true, ChunkedUploadSession<int> uploadSession = null)
     {
         ArgumentNullException.ThrowIfNull(file);
 
@@ -555,6 +555,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
                     throw new Exception(saveException.Message, deleteException);
                 }
                 throw;
+            }
+        }
+        else
+        {
+            if(uploadSession != null)
+            {
+                await _chunkedUploadSessionHolder.MoveAsync(uploadSession, GetUniqFilePath(file));
             }
         }
 
@@ -1154,8 +1161,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await _chunkedUploadSessionHolder.FinalizeUploadSessionAsync(uploadSession);
 
         var file = await GetFileForCommitAsync(uploadSession);
-        await SaveFileAsync(file, null, uploadSession.CheckQuota);
-        await _chunkedUploadSessionHolder.MoveAsync(uploadSession, GetUniqFilePath(file));
+        await SaveFileAsync(file, null, uploadSession.CheckQuota, uploadSession);
 
         return file;
     }

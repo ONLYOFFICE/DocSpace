@@ -358,4 +358,61 @@
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Əməkdaş</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Əməkdaş</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Otaq Administratoru</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Redaktor</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Təqdim edilmiş forma</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Yeni versiya cari versiya ilə eyni ola bilməz</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Faylı kopyalamaq üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Qovluğu kopyalamaq üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Etibarsız provayder</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Otağı saxlamaq üçün bu qovluqdan istifadə etmək mümkün deyil</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Dəvət linki etibarsızdır və ya vaxtı keçmişdir</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Bu provayder artıq otağa qoşulub</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Rol bu istifadəçi növü üçün əlçatan deyil</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Otağı arxivləşdirmək üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Bu qovluğa kopyalamaq icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Otağı redaktə etmək icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Bu qovluğa köçürmək icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Otağı arxivdən çıxarmaq üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Arxivlənmiş otaqları redaktə edə bilməzsiniz</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Otağı sabitləyə bilməzsiniz</value>
+  </data>
 </root>

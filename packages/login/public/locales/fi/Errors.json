@@ -1,14 +1,14 @@
 {
-  "ErrorUserNotFound": "Käyttäjää ei löytynyt. Minne lie kadonnut.",
+  "ErrorConfirmURLError": "Virheellinen sähköpostiosoite tai vanhentunut linkki",
   "ErrorExpiredActivationLink": "Linkki on vanhentunut",
   "ErrorInvalidActivationLink": "Virheellinen aktivointilinkki",
-  "ErrorConfirmURLError": "Virheellinen sähköpostiosoite tai vanhentunut linkki",
-  "LoginWithAccountNotFound": "Kolmannen osapuolen tiliä ei löydy. Sinun täytyy ensin kytkeytyä sosiaalisen median tiliisi profiilisivulla.",
-  "InvalidUsernameOrPassword": "Virheellinen käyttäjänimi tai salasana.",
-  "SsoSettingsDisabled": "Kertakirjautuminen on poistettu käytöstä",
   "ErrorNotAllowedOption": "Sinun hintavaihtoehtosi ei tue tätä mahdollisuutta",
+  "ErrorUserNotFound": "Käyttäjää ei löytynyt. Minne lie kadonnut.",
+  "InvalidUsernameOrPassword": "Virheellinen käyttäjänimi tai salasana.",
+  "LoginWithAccountNotFound": "Kolmannen osapuolen tiliä ei löydy. Sinun täytyy ensin kytkeytyä sosiaalisen median tiliisi profiilisivulla.",
+  "SsoSettingsCantCreateUser": "Käyttäjää ei voitu luoda tällä tunnistautumistunnisteella",
+  "SsoSettingsDisabled": "Kertakirjautuminen on poistettu käytöstä",
   "SsoSettingsEmptyToken": "Kirjautumistunnistetta ei löytynyt",
   "SsoSettingsNotValidToken": "Tunniste ei kelpaa",
-  "SsoSettingsCantCreateUser": "Käyttäjää ei voitu luoda tällä tunnistautumistunnisteella",
   "SsoSettingsUserTerminated": "Tämä käyttäjä ei ole aktivoitu"
 }

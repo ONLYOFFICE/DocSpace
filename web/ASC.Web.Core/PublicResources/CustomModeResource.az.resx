@@ -187,4 +187,22 @@ Link 7 gün ərzində etibarlıdır.
 
 Parolunuzu dəyişmək istəmirsiniz? Sadəcə bu mesaja əhəmiyyət verməyin.</value>
   </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Salam, $UserName!
+
+ONLYOFFICE DocSpace-ə xoş gəlmisiniz! İstifadəçi profiliniz uğurla "${__VirtualRootPath}":"${__VirtualRootPath}"-a əlavə edildi.
+İndi edə bilərsiniz:
+
+*# Dəvət olunduğunuz otaqda digər istifadəçilərlə əməkdaşlıq edin*: real vaxtda birgə müəlliflik üçün əməkdaşlıq otaqları və ya istənilən məqsəd üçün çevik parametrləri olan şəxsi otaqlar*.
+*# Müxtəlif formatlı fayllarla işləmək*: mətn sənədləri, cədvəllər, təqdimatlar, rəqəmsal formalar, PDF-lər, elektron kitablar, multimedia.
+*# İki ümumi redaktə rejimi* ilə sənədlər üzərində əməkdaşlıq edin: real vaxt və ya paraqrafın kilidlənməsi. Dəyişiklikləri izləyin, daxili söhbətdən istifadə edərək real vaxtda ünsiyyət qurun və ya audio və video zənglər edin.
+*# İstənilən bulud yaddaşını* birləşdirin və proqramları dəyişmədən işləyin.
+
+$ GreenButton
+
+Köməyə ehtiyacınız varsa, "Yardım Mərkəzimizə":"https://helpcenter.onlyoffice.com/" baxın və ya "dəstək komandamızdan":"https://www.onlyoffice.com/support-contact-form.aspx" soruşun.
+Hörmətlə,
+ONLYOFFICE Komandası
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
 </root>

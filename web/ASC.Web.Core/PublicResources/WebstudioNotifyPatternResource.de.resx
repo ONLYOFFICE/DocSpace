@@ -202,7 +202,7 @@ Sehr geehrter Herr/ Sehr geehrte Frau $OwnerName,
 
 eine Backup-Datei mit allen Daten von Ihrem Portal "${__VirtualRootPath}":"${__VirtualRootPath}" wurde erstellt.
 
-Um mehr über den Backup- bzw. Wiederherstellungsvorgang zu erfahren, lesen Sie bitte unsere Anleitung "Erstellung und Wiederherstellung des Backups von einem ONLYOFFICE™-SaaS-Portal":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx".
+Um mehr über den Backup- bzw. Wiederherstellungsvorgang zu erfahren, lesen Sie bitte unsere Anleitung "Erstellung und Wiederherstellung des Backups von einem ONLYOFFICE™-SaaS-Portal":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block".
 
 Wenn Sie Fragen haben oder Hilfe brauchen, wenden Sie sich bitte an uns unter
 "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -301,13 +301,13 @@ Sie werden weitere Tipps zur Verwendung Ihres Web-Office erhalten. Sie können d
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Kollaborationsräume für Echtzeit-Ko-Autorenschaft oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Kollaborationsräume für Echtzeit-Ko-Autorenschaft oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -333,13 +333,13 @@ Sie werden weitere Tipps zur Verwendung Ihres Web-Office erhalten. Sie können d
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -482,13 +482,13 @@ Sie erhalten mehr Tipps für Ihr Online-Büro. Sie können dies jederzeit auf Ih
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -673,7 +673,7 @@ Hallo $UserDisplayName,
 
 Ihre Portal-Adresse $PortalUrl wurde auf die neue Adresse "${__VirtualRootPath}":"${__VirtualRootPath}" geändert.
 
-*Hinweis*: Alle freigegebenen Dokumenten-Links jetzt nicht zugänglich sind, sowie DNS-Einstellungen und Single-Sign-On-Optionen nicht arbeiten, bis Sie sie ändern. Die Drittanbieter-Links iCal, die in Ihren Kalender hinzugefügt wurden, also nicht aktualisiert werden, bis Sie sie neu laden.</value>
+*Hinweis*: DNS-Einstellungen und Single-Sign-On Optionen funktionieren nicht, bis Sie diese ändern.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Löschen des Profils von "${__VirtualRootPath}":"${__VirtualRootPath}" Portal
@@ -852,13 +852,13 @@ ONLYOFFICE Team
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -872,6 +872,7 @@ ONLYOFFICE-Team
     <value>h1.Benachrichtigung über die Profiländerung des Portals "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 "$__AuthorName":"$__AuthorUrl" hat sein/ihr Profil unter "${__VirtualRootPath}":"${__VirtualRootPath}" geändert.
+
 
 ^Wenn Sie keine Benachrichtigungen über die Profilaktualisierung erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
@@ -942,6 +943,7 @@ Ihr Portal steht wieder zur Verfügung.</value>
     <value>h1.Neuer Benutzer ist zum Portal "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt
 
 "$__AuthorName":"$__AuthorUrl" ist Ihrem Portal unter "${__VirtualRootPath}":"${__VirtualRootPath}" beigetreten.
+
 
 ^Wenn Sie keine Benachrichtigungen über neue Benutzer erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>

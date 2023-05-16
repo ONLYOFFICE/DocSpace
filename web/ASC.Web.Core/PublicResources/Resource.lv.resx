@@ -458,10 +458,10 @@
     <value>Iespējot lietotni divu faktoru autentifikācijai ar Clickatell.</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
-    <value>DocuSign atslēga</value>
+    <value>DocuSign</value>
   </data>
   <data name="ConsumersdocuSignClientId" xml:space="preserve">
-    <value>DocuSign slēptā atslēga</value>
+    <value>DocuSign atslēga</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
     <value>Pievienojiet lietotni, lai dokumentiem pievienotu DocuSign digitālos parakstus.</value>
@@ -475,10 +475,121 @@
   <data name="ConsumersDropBoxKey" xml:space="preserve">
     <value>DropBox ID</value>
   </data>
-  <data name="ConsumersEasyBib" xml:space="preserve">
-    <value>Dropbox atslēga</value>
-  </data>
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai ieietu portālā ar Facebook kontu.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook atslēga</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>API atslēga</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Servera atslēga</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign slēptā atslēga</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Sūtītāja ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Projekta ID</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Pievienojiet projektu, lai ieietu portālā ar Google kontu un pārvaldītu Google Drive failus un mapes.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai ieietu portālā ar LinkedIn kontu.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin atslēga</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai pārvaldītu OneDrive failus un mapes.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Iespējot lietotni divu faktoru autentifikācijai ar SMS centru.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Parole vai paroles MD5 hešs ar mazajiem burtiem</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Pievienojiet Twilio, lai varētu pa tiešo no pārlūka zvanīt CMR kontaktiem.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Tālruņa numurs no Twilio (nepieciešams SMS autorizācijai)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai ieietu portālā ar Twitter kontu un meklētu lietotājus.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Iespējot lietotni Yahoo kontaktu importēšanai.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Nezināms attēla faila veids</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Attēla izmērs pārsniedz atļautos parametrus</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Dropbox atslēga</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google atslēga</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Logins</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Konta Sid</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Parole</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>

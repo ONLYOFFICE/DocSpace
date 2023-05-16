@@ -53,10 +53,13 @@ class PureHome extends React.Component {
       setIsUpdatingRowItem,
       setIsPreview,
       selectedFolderStore,
+      removeFirstUrl,
     } = this.props;
 
     if (!window.location.href.includes("#preview")) {
-      localStorage.removeItem("isFirstUrl");
+      // localStorage.removeItem("isFirstUrl");
+      // Media viewer
+      removeFirstUrl();
     }
 
     const categoryType = getCategoryType(location);
@@ -680,12 +683,8 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders } = filesActionsStore;
 
@@ -694,7 +693,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setToPreviewFile, playlist } = mediaViewerDataStore;
+    const { setToPreviewFile, playlist, removeFirstUrl } = mediaViewerDataStore;
 
     const {
       isHeaderVisible,
@@ -766,6 +765,7 @@ export default inject(
       setToPreviewFile,
       setIsPreview,
       playlist,
+      removeFirstUrl,
 
       getFileInfo,
       gallerySelected,

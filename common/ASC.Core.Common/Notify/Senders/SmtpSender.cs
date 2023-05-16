@@ -203,7 +203,7 @@ public class SmtpSender : INotifySender
             }
         }
     }
-    private MimeMessage BuildMailMessage(NotifyMessage m)
+    protected MimeMessage BuildMailMessage(NotifyMessage m)
     {
         var mimeMessage = new MimeMessage
         {

@@ -6,6 +6,7 @@ package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
 product="docspace"
 GIT_BRANCH="develop"
+INSTALLATION_TYPE="ENTERPRISE"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
@@ -65,9 +66,17 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-it | --installation_type )
+			if [ "$2" != "" ]; then
+				INSTALLATION_TYPE=$(echo "$2" | awk '{print toupper($0)}');
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
 			echo "    Parameters:"
+			echo "      -it, --installation_type          installation type (COMMUNITY|ENTERPRISE)"
 			echo "      -u, --update                      use to update existing components (true|false)"
 			echo "      -je, --jwtenabled                 specifies the enabling the JWT validation (true|false)"
 			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"

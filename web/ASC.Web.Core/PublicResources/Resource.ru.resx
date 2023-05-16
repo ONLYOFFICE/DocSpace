@@ -979,4 +979,52 @@
   <data name="ConsumersappleIdTeamId" xml:space="preserve">
     <value>10-значный Team ID аккаунта разработчика</value>
   </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Секрет клиента</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Неизвестный тип файла изображения</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Размер изображения превышает допустимые параметры</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Подключите это приложение, чтобы пользователи могли входить в ONLYOFFICE, используя Microsoft. {0}Перейдите в Microsoft Azure и создайте новое приложение для интеграции ONLYOFFICE. Вставьте полученные данные ниже:</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>Имя пользователя бота</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Подключите аккаунт Telegram для получения оповещений портала через Telegram.</value>
+  </data>
+  <data name="PortalName" xml:space="preserve">
+    <value>Облачное пространство для ваших офисных документов</value>
+  </data>
+  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+    <value>Чтобы получать оповещения портала через Telegram, включите бота Telegram. Вы можете создать нового бота, используя BotFather в десктопном приложении Telegram. Чтобы использовать этого бота, пользователи портала должны включить оповещения Telegram на странице своего профиля. {0}Вставьте полученные имя пользователя бота и токен в поля ниже.</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>Токен бота</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Подключите приложение для входа на портал по учетной записи Microsoft.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID клиента приложения</value>
+  </data>
 </root>

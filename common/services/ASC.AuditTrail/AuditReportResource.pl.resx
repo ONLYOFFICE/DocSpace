@@ -1330,4 +1330,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Pokoje</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Opróżniono kosz</value>
+  </data>
 </root>

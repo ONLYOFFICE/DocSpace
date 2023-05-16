@@ -240,15 +240,16 @@ export function getPortalQuota(refresh = false) {
   return request({ method: "get", url: "/portal/payment/quota", params });
 }
 
-export function getPortalTariff() {
-  return request({ method: "get", url: "/portal/tariff" });
+export function getPortalTariff(refresh = false) {
+  const params = refresh ? { refresh: true } : {};
+  return request({ method: "get", url: "/portal/tariff", params });
 }
 
 export function getPaymentAccount() {
   return request({ method: "get", url: "/portal/payment/account" });
 }
 
-export function getPaymentLink(adminCount, backUrl, cancelToken) {
+export function getPaymentLink(adminCount, backUrl, signal) {
   return request({
     method: "put",
     url: `/portal/payment/url`,
@@ -256,7 +257,7 @@ export function getPaymentLink(adminCount, backUrl, cancelToken) {
       quantity: { admin: adminCount },
       backUrl,
     },
-    cancelToken,
+    signal,
   });
 }
 

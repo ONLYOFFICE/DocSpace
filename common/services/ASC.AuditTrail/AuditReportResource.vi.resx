@@ -1336,4 +1336,55 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Phòng</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Đã dọn sạch thùng rác</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Thẻ đã thêm: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Thẻ đã xóa: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Phòng đã lưu trữ</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Người dùng đã thêm: {0}. Vai trò: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Đã xóa phòng</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Đã tạo liên kết. Vai trò: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Đã xóa liên kết</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Đã cập nhật liên kết. Vai trò: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Đã tạo logo</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Đã xóa logo</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Người dùng đã xóa: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Đã đổi tên phòng: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Phòng chưa được lưu trữ</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} được chỉ định: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Đã tạo thẻ: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Đã xóa thẻ: {0}</value>
+  </data>
 </root>
