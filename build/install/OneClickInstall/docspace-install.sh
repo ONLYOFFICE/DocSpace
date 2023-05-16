@@ -31,7 +31,7 @@
  # terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  #
 
-PARAMETERS="";
+PARAMETERS="$PARAMETERS -it ENTERPRISE";
 DOCKER="";
 LOCAL_SCRIPTS="false"
 product="docspace"

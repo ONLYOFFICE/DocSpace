@@ -113,4 +113,16 @@ $Message</value>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>[OnlyOffice - Documents] Accès accordé au dossier [$DocumentTitle]($DocumentURL)</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName vous a mentionné dans le commentaire du document
+ 
+$__AuthorName vous a mentionné dans le commentaire du document "$DocumentTitle":"$DocumentURL" dans la salle "$RoomTitle":"$RoomURL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName a supprimé la salle
+ 
+$__AuthorName a supprimé la salle : $RoomTitle</value>
+  </data>
 </root>

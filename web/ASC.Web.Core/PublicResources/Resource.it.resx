@@ -943,4 +943,16 @@
   <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
     <value>Attiva questa app per connettere il tuo account Dropbox al modulo Documenti. Potrai gestire, modificare e condividere file da Dropbox con gli utenti ONLYOFFICE. {0}Accedi al tuo account sul sito web degli sviluppatori di Dropbox e crea una nuova app per l'integrazione di ONLYOFFICE. Inserisci di seguito i dati che hai ricevuto:</value>
   </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Tipo file immagine sconosciuto</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Dimensione dell'immagine supera i parametri consentiti</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
 </root>

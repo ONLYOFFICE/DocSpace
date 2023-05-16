@@ -161,7 +161,7 @@
     <value>설정이 성공적으로 업데이트되었습니다</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>프로필을 삭제하는 방법에 대한 지침은 귀하의 이메일 주소로 전송되었습니다</value>
+    <value>프로필을 삭제하는 방법에 대한 지침은 귀하의 {0} 이메일 주소로 전송되었습니다</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>새로운 소식</value>
@@ -228,5 +228,11 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>관리자/고급 사용자 수:</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>스타트업</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>비즈니스</value>
   </data>
 </root>

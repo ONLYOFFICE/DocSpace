@@ -51,7 +51,9 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 
     public override async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
     {
-        if (!await Skip(context.HttpContext))
+        var skip = await Skip(context.HttpContext);
+
+        if (!skip)
         {
             _bodyStream = context.HttpContext.Response.Body;
             context.HttpContext.Response.Body = _stream;
@@ -59,7 +61,7 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
 
         await base.OnResultExecutionAsync(context, next);
 
-        if (context.Cancel || await Skip(context.HttpContext))
+        if (context.Cancel || skip)
         {
             return;
         }
@@ -109,6 +111,11 @@ public class WebhooksGlobalFilterAttribute : ResultFilterAttribute, IDisposable
         var (method, routePattern) = GetData(context);
 
         if (routePattern == null)
+        {
+            return true;
+        }
+
+        if (!DbWorker.MethodList.Contains(method))
         {
             return true;
         }

@@ -2931,6 +2931,7 @@ const Dark = {
 
     settings: {
       iconFill: white,
+      trashIcon: "#858585",
       article: {
         titleColor: "#c4c4c4",
         fillIcon: "#c4c4c4",

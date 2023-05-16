@@ -1330,4 +1330,55 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Odalar</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Çökp kutusu boşaltıldı</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Eklenen etiketler: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Silinen etiketler: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Oda arşivlendi</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Kullanıcı eklendi: {0}. Rol: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Oda silindi</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Bağlantı oluşturuldu. Rol: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Bağlantı silindi</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Bağlantı güncellendi. Rol: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo oluşturuldu</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo silindi</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Silinen kullanıcı: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Odanın adı değiştirildi: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Oda arşivden çıkarıldı</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} atandı: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Etiket oluşturuldu: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Etiketler silindi: {0}</value>
+  </data>
 </root>

@@ -1,0 +1,707 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>ONLYOFFICE 계정의 비밀번호를 변경하고 싶으세요? 그러시다면 아래 버튼을 클릭하세요.
+
+$GreenButton
+
+이 링크는 7일 동안만 유효합니다.
+
+비밀번호를 변경하고 싶지 않으신가요? 그러시다면 이 메시지를 무시해주세요</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+방금 팀, 고객, 파트너 등과의 공동 작업을 강화할 수 있는 문서 허브인 ONLYOFFICE DocSpace를 생성하셨습니다: "${__VirtualRootPath}":"${__VirtualRootPath}". 
+
+이메일을 확인해주세요(이 링크는 7일 동안만 유효합니다): 
+
+$GreenButton
+
+현재 요금제는 스타트업으로 완전 무료이며 다음 혜택이 포함됩니다.
+
+* 관리자 1명, 고급 사용자 2명
+* 최대 방 12개
+* 각 방의 사용자 수 무제한
+* 디스크 공간2 GB
+
+새로운 방식의 공동 문서 작업을 즐기세요!
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+방금 팀, 고객, 파트너 등과의 공동 작업을 강화할 수 있는 문서 허브인 ONLYOFFICE DocSpace를 생성하셨습니다: "${__VirtualRootPath}":"${__VirtualRootPath}". 
+
+이메일을 확인해주세요(이 링크는 7일 동안만 유효합니다): 
+
+$GreenButton
+
+현재 요금제는 스타트업으로 완전 무료이며 다음 혜택이 포함됩니다.
+
+* 관리자 1명, 고급 사용자 2명
+* 최대 방 12개
+* 각 방의 사용자 수 무제한
+* 디스크 공간2 GB
+
+새로운 방식의 공동 문서 작업을 즐기세요!
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+방금 팀, 고객, 파트너 등과의 공동 작업을 강화할 수 있는 문서 허브인 ONLYOFFICE DocSpace를 생성하셨습니다: "${__VirtualRootPath}":"${__VirtualRootPath}". 
+
+이메일을 확인해주세요(이 링크는 7일 동안만 유효합니다): 
+
+$GreenButton
+
+현재 요금제는 스타트업으로 완전 무료이며 다음 혜택이 포함됩니다.
+
+* 관리자 1명, 고급 사용자 2명
+* 최대 방 12개
+* 각 방의 사용자 수 무제한
+* 디스크 공간2 GB
+
+새로운 방식의 공동 문서 작업을 즐기세요!
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+방금 팀, 고객, 파트너 등과의 공동 작업을 강화할 수 있는 문서 허브인 ONLYOFFICE DocSpace를 생성하셨습니다: "${__VirtualRootPath}":"${__VirtualRootPath}". 
+
+이메일을 확인해주세요(이 링크는 7일 동안만 유효합니다): 
+
+$GreenButton
+
+현재 요금제는 스타트업으로 완전 무료이며 다음 혜택이 포함됩니다.
+
+* 관리자 1명, 고급 사용자 2명
+* 최대 방 12개
+* 각 방의 사용자 수 무제한
+* 디스크 공간2 GB
+
+새로운 방식의 공동 문서 작업을 즐기세요!
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+무료 ONLYOFFICE 앱을 다운로드하고 갖고 계신 모든 장치에서 문서 작업을 하세요.
+
+# Windows, Linux, Mac에서 오프라인으로 문서 작업을 하려면 "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx"를 다운로드하세요.
+
+# 모바일 장치에서 문서를 편집하려면 "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" 또는 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"용ONLYOFFICE 문서 앱을 다운로드하세요. 
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace를 만족스럽게 사용하고 계시길 바랍니다. 다음은 보다 효과적인 문서 작업을 위한 몇 가지 팁입니다.
+
+*#1. 작업할 방식을 선택하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방을 생성하여 필요에 맞는 워크플로우를 구성하세요.
+
+*#2. 소유하는 모든 콘텐츠를 이용하세요.* 방에 다양한 형식의 파일(텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어)을 저장하고 작업하세요.
+
+*#3. 효율적으로 공동 저작하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)로 공동 작업하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+*#4. 제3자 클라우드 스토리지를 연결하세요.* 모든 클라우드 스토리지를 연결하고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace를 만족스럽게 사용하고 계시길 바랍니다. 다음은 보다 효과적인 문서 작업을 위한 몇 가지 팁입니다.
+
+*#1. 작업할 방식을 선택하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방을 생성하여 필요에 맞는 워크플로우를 구성하세요.
+
+*#2. 소유하는 모든 콘텐츠를 이용하세요.* 방에 다양한 형식의 파일(텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어)을 저장하고 작업하세요.
+
+*#3. 효율적으로 공동 저작하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)로 공동 작업하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+*#4. 제3자 클라우드 스토리지를 연결하세요.* 모든 클라우드 스토리지를 연결하고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace를 만족스럽게 사용하고 계시길 바랍니다. 다음은 보다 효과적인 문서 작업을 위한 몇 가지 팁입니다.
+
+*#1. 작업할 방식을 선택하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방을 생성하여 필요에 맞는 워크플로우를 구성하세요.
+
+*#2. 소유하는 모든 콘텐츠를 이용하세요.* 방에 다양한 형식의 파일(텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어)을 저장하고 작업하세요.
+
+*#3. 효율적으로 공동 저작하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)로 공동 작업하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+*#4. 제3자 클라우드 스토리지를 연결하세요.* 모든 클라우드 스토리지를 연결하고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace를 만족스럽게 사용하고 계시길 바랍니다. 다음은 보다 효과적인 문서 작업을 위한 몇 가지 팁입니다.
+
+*#1. 작업할 방식을 선택하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방을 생성하여 필요에 맞는 워크플로우를 구성하세요.
+
+*#2. 소유하는 모든 콘텐츠를 이용하세요.* 방에 다양한 형식의 파일(텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어)을 저장하고 작업하세요.
+
+*#3. 효율적으로 공동 저작하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)로 공동 작업하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+*#4. 제3자 클라우드 스토리지를 연결하세요.* 모든 클라우드 스토리지를 연결하고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+다음은 더 나은 사용자 경험을 만드는 데 도움이 되는 세 가지 간단한 질문입니다.
+
+* ONLYOFFICE DocSpace에서 공동 작업할 팀의 규모가 크거나 고객이나 파트너 수가 많은가요? 
+
+* 많은 문서 작업을 할 방을 제한 없이 만들고 싶으세요? 
+
+* 본인의 브랜드 아래 ONLYOFFICE DocSpace를 사용하고 싶으세요?
+
+하나 이상의 질문에 '네'라고 답한 경우 ONLYOFFICE DocSpace에 원하는 수의 관리자를 추가하고 브랜딩 옵션을 적용할 수 있는 비즈니스 요금제를 선택하세요.
+
+비즈니스 요금제를 선택하려면 ONLYOFFICE DocSpace의 "Payments section":"$PricingPage"를 참조하세요. 모든 결제 정보를 쉽게 처리할 수 있는 스트라이프 고객 포털에 대한 개별 링크를 찾을 수 있으실 것입니다. 
+
+_참고: 구독료를 지불하는 사람이 지불자이 되고 지불자만 구독을 변경할 수 있습니다(관리자 수 조정). 사용자는 결제 정보에 액세스할 수 없습니다. ONLYOFFICE DocSpace 계정의 소유자는 나중에 언제든지 지불자를 다시 지정할 수 있습니다. _
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+다음은 더 나은 사용자 경험을 만드는 데 도움이 되는 세 가지 간단한 질문입니다.
+
+* ONLYOFFICE DocSpace에서 공동 작업할 팀의 규모가 크거나 고객이나 파트너 수가 많은가요? 
+
+* 많은 문서 작업을 할 방을 제한 없이 만들고 싶으세요? 
+
+* 본인의 브랜드 아래 ONLYOFFICE DocSpace를 사용하고 싶으세요?
+
+하나 이상의 질문에 '네'라고 답한 경우 ONLYOFFICE DocSpace에 원하는 수의 관리자를 추가하고 브랜딩 옵션을 적용할 수 있는 비즈니스 요금제를 선택하세요.
+
+비즈니스 요금제를 선택하려면 ONLYOFFICE DocSpace의 "Payments section":"$PricingPage"를 참조하세요. 모든 결제 정보를 쉽게 처리할 수 있는 스트라이프 고객 포털에 대한 개별 링크를 찾을 수 있으실 것입니다. 
+
+_참고: 구독료를 지불하는 사람이 지불자이 되고 지불자만 구독을 변경할 수 있습니다(관리자 수 조정). 사용자는 결제 정보에 액세스할 수 없습니다. ONLYOFFICE DocSpace 계정의 소유자는 나중에 언제든지 지불자를 다시 지정할 수 있습니다. _
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+다음은 더 나은 사용자 경험을 만드는 데 도움이 되는 세 가지 간단한 질문입니다.
+
+* ONLYOFFICE DocSpace에서 공동 작업할 팀의 규모가 크거나 고객이나 파트너 수가 많은가요? 
+
+* 많은 문서 작업을 할 방을 제한 없이 만들고 싶으세요? 
+
+* 본인의 브랜드 아래 ONLYOFFICE DocSpace를 사용하고 싶으세요?
+
+하나 이상의 질문에 '네'라고 답한 경우 ONLYOFFICE DocSpace에 원하는 수의 관리자를 추가하고 브랜딩 옵션을 적용할 수 있는 비즈니스 요금제를 선택하세요.
+
+비즈니스 요금제를 선택하려면 ONLYOFFICE DocSpace의 "Payments section":"$PricingPage"를 참조하세요. 모든 결제 정보를 쉽게 처리할 수 있는 스트라이프 고객 포털에 대한 개별 링크를 찾을 수 있으실 것입니다. 
+
+_참고: 구독료를 지불하는 사람이 지불자이 되고 지불자만 구독을 변경할 수 있습니다(관리자 수 조정). 사용자는 결제 정보에 액세스할 수 없습니다. ONLYOFFICE DocSpace 계정의 소유자는 나중에 언제든지 지불자를 다시 지정할 수 있습니다. _
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+다음은 더 나은 사용자 경험을 만드는 데 도움이 되는 세 가지 간단한 질문입니다.
+
+* ONLYOFFICE DocSpace에서 공동 작업할 팀의 규모가 크거나 고객이나 파트너 수가 많은가요? 
+
+* 많은 문서 작업을 할 방을 제한 없이 만들고 싶으세요? 
+
+* 본인의 브랜드 아래 ONLYOFFICE DocSpace를 사용하고 싶으세요?
+
+하나 이상의 질문에 '네'라고 답한 경우 ONLYOFFICE DocSpace에 원하는 수의 관리자를 추가하고 브랜딩 옵션을 적용할 수 있는 비즈니스 요금제를 선택하세요.
+
+비즈니스 요금제를 선택하려면 ONLYOFFICE DocSpace의 "Payments section":"$PricingPage"를 참조하세요. 모든 결제 정보를 쉽게 처리할 수 있는 스트라이프 고객 포털에 대한 개별 링크를 찾을 수 있으실 것입니다. 
+
+_참고: 구독료를 지불하는 사람이 지불자이 되고 지불자만 구독을 변경할 수 있습니다(관리자 수 조정). 사용자는 결제 정보에 액세스할 수 없습니다. ONLYOFFICE DocSpace 계정의 소유자는 나중에 언제든지 지불자를 다시 지정할 수 있습니다. _
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}"의ONLYOFFICE DocSpace에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}"의ONLYOFFICE DocSpace에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}"의ONLYOFFICE DocSpace에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}"의ONLYOFFICE DocSpace에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이  "${__VirtualRootPath}":"${__VirtualRootPath}"에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요.* 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+도움이 필요한 경우 "Help Center":"https://helpcenter.onlyoffice.com/"를 참고하시거나 저희  "support team":"https://www.onlyoffice.com/support-contact-form.aspx"에 문의하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이  "${__VirtualRootPath}":"${__VirtualRootPath}"에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요.* 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+도움이 필요한 경우 "Help Center":"https://helpcenter.onlyoffice.com/"를 참고하시거나 저희  "support team":"https://www.onlyoffice.com/support-contact-form.aspx"에 문의하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이  "${__VirtualRootPath}":"${__VirtualRootPath}"에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요.* 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+도움이 필요한 경우 "Help Center":"https://helpcenter.onlyoffice.com/"를 참고하시거나 저희  "support team":"https://www.onlyoffice.com/support-contact-form.aspx"에 문의하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace에 오신 것을 환영합니다! 고객님의 사용자 프로필이  "${__VirtualRootPath}":"${__VirtualRootPath}"에 성공적으로 추가되었으며 이제 다음과 같은 작업을 하실 수 있습니다.
+
+* 초대 받은 방에서 다른 사용자와 작업하세요.* 실시간 공동 저작을 위한 공동 작업실 또는 다양한 목적을 위해 유연한 설정이 가능한 사용자 지정 방에서 공동으로 작업하세요*.
+
+* *다양한 형식의 파일을 작업하세요.* 텍스트 문서, 스프레드시트, 프레젠테이션, 디지털 양식, PDF, 전자책, 멀티미디어 형식의 파일을 이용하세요.
+
+* *문서를 공동으로 작업하세요.* 두 가지 공동 편집 모드(실시간 또는 단락 잠금)를 이용하고 변경 사항을 추적하며 내장된 채팅 또는 음성 및 영상 통화를 이용해 실시간으로 소통하세요.
+
+* *모든 클라우드 스토리지를 연결하세요.* 그리고 한 앱에서 편안하게 작업하세요.
+
+$GreenButton
+
+도움이 필요한 경우 "Help Center":"https://helpcenter.onlyoffice.com/"를 참고하시거나 저희 "support team":"https://www.onlyoffice.com/support-contact-form.aspx"에 문의하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" 포털의 메시지
+
+이름: $UserName
+
+이메일: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+무료 ONLYOFFICE 앱을 다운로드하고 갖고 계신 모든 장치에서 문서 작업을 하세요.
+
+# Windows, Linux, Mac에서 오프라인으로 문서 작업을 하려면 "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx"를 다운로드하세요.
+
+# 모바일 장치에서 문서를 편집하려면 "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" 또는 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"용ONLYOFFICE 문서 앱을 다운로드하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+무료 ONLYOFFICE 앱을 다운로드하고 갖고 계신 모든 장치에서 문서 작업을 하세요.
+
+# Windows, Linux, Mac에서 오프라인으로 문서 작업을 하려면 "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx"를 다운로드하세요.
+
+# 모바일 장치에서 문서를 편집하려면 "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" 또는 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"용ONLYOFFICE 문서 앱을 다운로드하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>안녕하세요!
+이 이메일을 이용하여 새로운 "ONLYOFFICE Personal":"$PortalUrl" 계정을 등록하려는 시도가 있었습니다. 새 계정을 등록하려고 한 것이 본인인 경우 이미 계정이 존재함을 알려드립니다. ONLYOFFICE Personal로 이동하여 로그인하세요.
+비밀번호를 분실한 경우 "password recovery page":"$LinkToRecovery"에서 복구할 수 있습니다.
+새 계정을 등록하려고 한 것이 본인이 아닌 경우 아마도 누군가 실수로 이메일을 입력했을 수 있습니다. 이 경우 이 이메일을 무시해주세요.
+
+좋은 하루 되세요!
+ONLYOFFICE 팀</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>ONLYOFFICE 개인 계정의 비밀번호를 변경하고 싶으세요? 그러시다면 아래 버튼을 클릭하세요.
+
+$GreenButton
+
+이 링크는 7일 동안만 유효합니다.
+
+비밀번호를 변경하고 싶지 않으신가요? 그러시다면 이 메시지를 무시해주세요.</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>고객님의 ONLYOFFICE DocSpace가 성공적으로 비활성화되었습니다. 고객님의 모든 데이터는 저희의 "Privacy Policy":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0"에 따라 삭제됩니다.
+
+떠나시는 이유가 무엇인가요? 고객님의 경험을 말씀해주세요.
+ 
+$GreenButton
+
+지금까지 정말 감사했습니다!
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+ONLYOFFICE DocSpace의 보안 설정을 조정하여 더 안전하게 만드세요.
+
+* 비밀번호 강도를 설정하세요.  
+
+* 이중 인증 및 싱글 사이온을 활성화하세요.
+
+* 신뢰할 수 있는 메일 도메인 및 세션 수명을 결정하세요.
+
+* 특정 IP 주소의 액세스를 제한하세요. 
+
+* 관리자 메시지를 허용하거나 제한하세요.  
+
+* 관리자 액세스 권한을 관리하세요.
+
+* 데이터 백업을 수행하세요.
+
+$GreenButton
+
+ONLYOFFICE DocSpace의 구성 및 관리에 대해 자세히 알아보려면 "Help Center":"https://helpcenter.onlyoffice.com/"를 방문하세요. 기능과 관련하여 궁금한 점이 있는 경우에도 도움이 될 수 있습니다.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>고객님께서는 고객님의 ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}"에 반 년 이상 로그인하지 않으셨습니다.
+
+더 이상 사용하지 않으심으로 고객님의 ONLYOFFICE DocSpace와 모든 데이터는 저희의 "Privacy Policy":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0"에 따라 삭제됩니다.
+
+피드백을 주시면 정말 감사하겠습니다. ONLYOFFICE DocSpace을 더 이상 사용하지 않으시는 이유가 무엇인가요?
+
+$GreenButton
+
+이것이 잘못 됐다고 생각하시며 계속 ONLYOFFICE DocSpace를 사용하길 원하시는 경우 "support team":"https://www.onlyoffice.com/support-contact-form.aspx"으로 연락주세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}"에서 ONLYOFFICE DocSpace에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
+
+$GreenButton
+
+초대 링크를 클릭한 후 계정의 새 비밀번호를 설정하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+고객님의 ONLYOFFICE DocSpace에 대한 $PaymentDelay일의 유예 기간이 시작되었음을 알려드립니다.
+
+유예 기간이 만료되기 전에 비즈니스 구독료를 지불하시고 ONLYOFFICE DocSpace의 모든 혜택을 계속 누리세요.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+고객님의 ONLYOFFICE DocSpace 구독이 3일 내에 만료될 예정임을 알려드립니다. 그 후에는 $PaymentDelay일의 유예 기간이 시작됩니다.
+
+지금 비즈니스 구독료를 지불하시고 ONLYOFFICE DocSpace의 모든 혜택을 계속 누리시기 바랍니다.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+고객님의 ONLYOFFICE DocSpace에 대한 $PaymentDelay일의 유예 기간이 끝났음을 알려드립니다.
+
+가능한 한 빨리 비즈니스 구독료를 지불하시고 이전과 같이 ONLYOFFICE DocSpace의 모든 혜택을 누리세요.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>$UserName님, 안녕하세요!
+
+고객님의 ONLYOFFICE DocSpace에 대한 $PaymentDelay일의 유예 기간이 내일 종료될 예정임을 알려드립니다.
+
+오늘 비즈니스 구독료를 지불하시고 ONLYOFFICE DocSpace의 모든 혜택을 계속 누리세요.
+
+$GreenButton
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>안녕하세요!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}”에서 $Message 방에 초대 받으셨습니다. 이 링크를 클릭하여 초대를 수락해주세요:
+
+$GreenButton
+
+초대 링크를 클릭한 후 계정의 새 비밀번호를 설정하세요.
+
+감사합니다,
+ONLYOFFICE 팀
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>수락</value>
+  </data>
+</root>

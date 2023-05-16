@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System.Linq;
-
-using Microsoft.AspNetCore.Builder;
-
 using JsonConverter = System.Text.Json.Serialization.JsonConverter;
 
 namespace ASC.Api.Core;
@@ -142,9 +138,7 @@ public abstract class BaseStartup
                 }
             };
 
-        services.AddControllers()
-            .AddXmlSerializerFormatters()
-            .AddJsonOptions(jsonOptions);
+        services.AddControllers().AddJsonOptions(jsonOptions);
 
         services.AddSingleton(jsonOptions);
 
@@ -207,11 +201,6 @@ public abstract class BaseStartup
             config.Filters.Add(new CustomResponseFilterAttribute());
             config.Filters.Add(new CustomExceptionFilterAttribute());
             config.Filters.Add(new TypeFilterAttribute(typeof(WebhooksGlobalFilterAttribute)));
-            config.Filters.Add(new TypeFilterAttribute(typeof(FormatFilter)));
-
-
-            config.OutputFormatters.RemoveType<XmlSerializerOutputFormatter>();
-            config.OutputFormatters.Add(new XmlOutputFormatter());
         });
 
         var authBuilder = services.AddAuthentication(options =>

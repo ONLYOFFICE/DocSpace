@@ -57,9 +57,10 @@ class AxiosClient {
   initSSR = (headers) => {
     this.isSSR = true;
 
-    const xRewriterUrl = headers["x-rewriter-url"];
-
-    const origin = apiOrigin || xRewriterUrl;
+    const proto = headers['x-forwarded-proto']?.split(',').shift();
+    const host = headers['x-forwarded-host']?.split(',').shift();
+    
+    const origin = apiOrigin || `${proto}://${host}`;
 
     const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
 

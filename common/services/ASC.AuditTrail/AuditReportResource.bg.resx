@@ -1375,4 +1375,55 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Стаи</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Кошчето е празно</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Добавени тагове: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Изтрити тагове: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Стаята е архивирана</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Добавен потребител: {0}. Роля: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Стаята е изтрита</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Линка е създаден. Роля: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Линка е изтрит</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Линка е актуализиран. Роля: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Логото е създадено</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Логото е изтрито</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Изтрит потребител: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Преименувана стая: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Стаята е деархивирана</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} назначи: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Създаден таг: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Изтрити тагове: {0}</value>
+  </data>
 </root>

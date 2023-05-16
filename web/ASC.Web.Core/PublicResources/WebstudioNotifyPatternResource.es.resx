@@ -202,7 +202,7 @@ Buenos días $OwnerName,
 
 Un archivo de copia de seguridad con los datos de su portal ONLYOFFICE™ "${__VirtualRootPath}":"${__VirtualRootPath}"  ha sido creado. 
 
-Para obtener más información sobre procedimiento de creación de copia de seguridad/restauración por favor consulte nuestra guía de usuario "¿Cómo crear y restaurar la copia de seguridad de portal ONLYOFFICE™?":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx"
+Para obtener más información sobre procedimiento de creación de copia de seguridad/restauración por favor consulte nuestra guía de usuario "¿Cómo crear y restaurar la copia de seguridad de portal ONLYOFFICE™?":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block"
 
 
 Si hay algunas preguntas o necesita ayuda no dude en ponerse en contacto con nosotros vía "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -611,7 +611,7 @@ Estimado(a) $UserDisplayName,
 
 Su $PortalUrl dirección de portal ha sido cambiado a la nueva dirección "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Note*: Todos los enlaces de documentos compartidos son inaccesibles ahora, así como la configuración de DNS y  opciones single sign-on dejan de funcionar hasta que los cambie. Los enlaces iCal de tercero añadido a su calendario también se detendrá la actualización hasta que vuelva a cargarlos.</value>
+*Ojo*: la configuración de DNS y las opciones de inicio de sesión dejan de funcionar hasta que las cambie.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Eliminación del Perfil del Portal "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -916,13 +916,13 @@ El enlace es válido solo durante 7 días.</value>
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 
@@ -937,13 +937,13 @@ Equipo de ONLYOFFICE
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 
@@ -958,13 +958,13 @@ Equipo de ONLYOFFICE
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 
@@ -979,13 +979,13 @@ Equipo de ONLYOFFICE
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 

@@ -949,4 +949,22 @@
   <data name="ConsumersappleIdTeamId" xml:space="preserve">
     <value>ID de equipo de la cuenta de desarrollador de 10 caracteres</value>
   </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Secreto del Cliente</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>El tipo de archivo desconocido</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Tamaño de imagen supera a los parámetros permitidos</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
 </root>

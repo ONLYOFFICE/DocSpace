@@ -157,4 +157,25 @@ $GreenButton
 
 ‎Il link è valido per 7 giorni. Non vuoi cambiare la tua password? Basta ignorare questo messaggio.</value>
   </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Ciao, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+* Lavorare con altri utenti nella stanza in cui sei invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+* *Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+
+* *Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+
+* *Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
+  </data>
 </root>

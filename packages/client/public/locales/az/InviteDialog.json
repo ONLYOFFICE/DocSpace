@@ -4,11 +4,11 @@
   "AddManuallyDescriptionRoom": "Mövcud DocSpace istifadəçilərini adlardan istifadə edərək otağa əlavə edin və ya yeni istifadəçiləri e-poçt vasitəsilə şəxsən dəvət edin",
   "EmailErrorMessage": "E-poçt ünvanı etibarlı deyil. Siz e-poçtu klikləməklə redaktə edə bilərsiniz.",
   "InviteAccountSearchPlaceholder": "İnsanları e-məktubla dəvət edin",
+  "Invited": "Dəvət edildi",
   "InviteRoomSearchPlaceholder": "İnsanları ad və ya e-məktubla dəvət edin",
   "InviteViaLink": "Keçidlə dəvət edin",
   "InviteViaLinkDescriptionAccounts": "DocSpace-də avtorizasiya üçün universal keçid yaradın",
   "InviteViaLinkDescriptionRoom": "Otağın avtorizasiyası üçün universal keçid yaradın",
-  "Invited": "Dəvət edildi",
   "LinkCopySuccess": "Link köçürüldü",
   "SendInvitation": "Dəvət göndərin"
 }

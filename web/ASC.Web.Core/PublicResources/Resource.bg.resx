@@ -524,7 +524,7 @@
     <value>Активирайте приложението за двуфакторно удостоверяване чрез Clickatell.</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
-    <value>Ключ DocuSign</value>
+    <value>DocuSign</value>
   </data>
   <data name="ConsumersDocuSignDescription" xml:space="preserve">
     <value>Свържете приложението, за да добавите електронния знак DocuSign към документите.</value>
@@ -552,5 +552,203 @@
   </data>
   <data name="ConsumersfacebookClientId" xml:space="preserve">
     <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Ключ Facebook</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Свържете приложението, за да влезете в портала, като използвате профил в Facebook.</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Ключ за уеб API</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Ключ на сървъра</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Свържете услугата Firebase Cloud Messaging, за да получавате известия за изпратените до вас съобщения.</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID на подателя</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID на проекта</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Свържете услугата Google Cloud Storage за архивиране и съхраняване на данни от портала.</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Свържете проекта, за да влезете в портала с помощта на профил в Google и да управлявате файлове и папки на Google Диск.</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Свържете приложението, за да влезете в портала, като използвате профил в LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Ключ на Linkedin</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Клиентска тайна</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Свържете услугата Rackspace Cloud Storage, за да архивирате и съхранявате данни от вашия портал.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Частни контейнери</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Област</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Свържете Amazon AWS S3, за да архивирате и съхранявате данни от вашия портал.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3 секретен ключ за достъп</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Свържете услугата Selectel Cloud Storage, за да архивирате и съхранявате данни от вашия портал.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Частни контейнери</value>
+  </data>
+  <data name="Consumersskydriveappsecret" xml:space="preserve">
+    <value>Клиентска тайна</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Свържете приложението, за да управлявате OneDrive файлове и папки.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Активирайте приложението за двуфакторно удостоверяване чрез SMS Center.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Парола или паролата MD5 hash в малки букви</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Добавете Twilio, за да можете да извиквате CRM контакти направо от браузъра.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Телефонен номер от Twilio (изисква се за SMS разрешение)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Свържете приложението, за да влезете в портала, като използвате профил в Twitter и потърсете контакти.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Свържете приложението за публикуване на документи в WordPress.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Активирайте приложението за импортиране на контакти в Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Неизвестен тип файл с изображение</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Размерът на изображението надвишава разрешените параметри</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Ключ Google</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Кофа</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>ID на Linkedin</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Упълномощен потребител</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMS център</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Влизам</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Сметка Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Означение за удостоверяване</value>
+  </data>
+  <data name="ConsumerstwitterAccessTokenSecret_Default" xml:space="preserve">
+    <value>Клиентска тайна</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Парола</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>Ключ DocuSign</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>S3 accesskey</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace apiKey</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Ключ DropBox</value>
+  </data>
+  <data name="ConsumersVk" xml:space="preserve">
+    <value>VK</value>
+  </data>
+  <data name="ConsumerswpClientId" xml:space="preserve">
+    <value>Ключ WordPress</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Бизнес</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Стартъп</value>
   </data>
 </root>

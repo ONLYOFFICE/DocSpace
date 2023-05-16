@@ -346,4 +346,19 @@
   <data name="ConsumersclickatellapiKey" xml:space="preserve">
     <value>apiKey</value>
   </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Pripojte službu Firebase Cloud Messaging ak chcete dostávať notifikácie o správach, ktoré Vám boli zaslané.</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Geslo</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
 </root>

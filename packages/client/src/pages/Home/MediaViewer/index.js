@@ -48,8 +48,11 @@ const FilesMediaViewer = (props) => {
     nextMedia,
     prevMedia,
     resetUrl,
+    getFirstUrl,
     firstLoad,
     setSelection,
+    activeFiles,
+    activeFolders,
   } = props;
 
   useEffect(() => {
@@ -134,6 +137,12 @@ const FilesMediaViewer = (props) => {
     if (files.length > 0) {
       let file = files.find((file) => file.id === id);
       if (file) {
+        // try to fix with one check later (see deleteAction)
+        const isActiveFile = activeFiles.find((id) => id === file.id);
+        const isActiveFolder = activeFolders.find((id) => id === file.id);
+
+        if (isActiveFile || isActiveFolder) return;
+
         setRemoveMediaItem(file);
         deleteItemAction(file.id, translations, true, file.providerKey);
       }
@@ -160,7 +169,8 @@ const FilesMediaViewer = (props) => {
 
     setMediaViewerData({ visible: false, id: null });
 
-    const url = localStorage.getItem("isFirstUrl");
+    // const url = localStorage.getItem("isFirstUrl");
+    const url = getFirstUrl();
 
     if (!url) {
       return;
@@ -232,12 +242,15 @@ export default inject(
       resetUrl,
       setSelection,
       setAlreadyFetchingRooms,
+      activeFiles,
+      activeFolders,
     } = filesStore;
     const {
       visible,
       id: currentMediaFileId,
       currentPostionIndex,
       setMediaViewerData,
+      getFirstUrl,
       playlist,
       previewFile,
       setToPreviewFile,
@@ -302,6 +315,9 @@ export default inject(
       onDuplicate,
       archiveRoomsId,
       setSelection,
+      getFirstUrl,
+      activeFiles,
+      activeFolders,
     };
   }
 )(

@@ -24,6 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
 
 namespace ASC.Web.Files.Utils;
@@ -477,7 +478,7 @@ public class FileConverter
             Account = _authContext.CurrentAccount.ID,
             Delete = false,
             StartDateTime = DateTime.UtcNow,
-            Url = _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null,
+            Url = _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetDisplayUrl() : null,
             Password = null,
             ServerRootPath = _baseCommonLinkUtility.ServerRootPath
         };
@@ -518,7 +519,7 @@ public class FileConverter
         }
 
         await _fileMarker.RemoveMarkAsNewAsync(file);
-        GetFileConverter<T>().Add(file, password, _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetUrlRewriter().ToString() : null, _baseCommonLinkUtility.ServerRootPath);
+        GetFileConverter<T>().Add(file, password, _tenantManager.GetCurrentTenant().Id, _authContext.CurrentAccount, deleteAfter, _httpContextAccesor?.HttpContext != null ? _httpContextAccesor.HttpContext.Request.GetDisplayUrl() : null, _baseCommonLinkUtility.ServerRootPath);
     }
 
     public bool IsConverting<T>(File<T> file)

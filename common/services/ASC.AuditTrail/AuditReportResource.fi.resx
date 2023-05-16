@@ -1318,4 +1318,7 @@
   <data name="RoomsModule" xml:space="preserve">
     <value>Huoneet</value>
   </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Roskakori tyhjennetty</value>
+  </data>
 </root>
