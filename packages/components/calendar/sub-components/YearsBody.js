@@ -1,7 +1,6 @@
 import React from "react";
-import moment from "moment";
 
-import { YearsContainer } from "../styled-components";
+import { CalendarContainer } from "../styled-components";
 import { getCalendarYears, getYearElements } from "../utils";
 
 export const YearsBody = ({
@@ -23,5 +22,9 @@ export const YearsBody = ({
     maxDate
   );
 
-  return <YearsContainer isMobile={isMobile}>{yearElements}</YearsContainer>;
+  return (
+    <CalendarContainer big isMobile={isMobile}>
+      {yearElements}
+    </CalendarContainer>
+  );
 };

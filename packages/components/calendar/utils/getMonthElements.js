@@ -1,6 +1,5 @@
 import React from "react";
 import moment from "moment";
-import { CurrentDateItem, SecondaryDateItem } from "../styled-components";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const onDateClick = (dateString, setObservedDate, setSelectedScene) => {
@@ -42,7 +41,9 @@ export const getMonthElements = (
   ));
   for (let i = 12; i < 16; i++) {
     monthsElements[i] = (
-      <SecondaryDateItem
+      <ColorTheme
+        themeId={ThemeType.DateItem}
+        isSecodary
         big
         key={months[i].key}
         onClick={() => onClick(months[i].key)}
@@ -52,7 +53,7 @@ export const getMonthElements = (
         }
       >
         {months[i].value}
-      </SecondaryDateItem>
+      </ColorTheme>
     );
   }
 
@@ -64,7 +65,9 @@ export const getMonthElements = (
   months.forEach((month, index) => {
     if (month.key === currentDate) {
       monthsElements[index] = (
-        <CurrentDateItem
+        <ColorTheme
+          themeId={ThemeType.DateItem}
+          isCurrent
           big
           key={month.key}
           onClick={() => onClick(month.key)}
@@ -74,7 +77,7 @@ export const getMonthElements = (
           }
         >
           {month.value}
-        </CurrentDateItem>
+        </ColorTheme>
       );
     } else if (month.key === formattedDate) {
       monthsElements[index] = (

@@ -1,5 +1,5 @@
 import React from "react";
-import { DaysContainer } from "../styled-components";
+import { CalendarContainer } from "../styled-components";
 
 import { getDayElements, getWeekdayElements } from "../utils";
 
@@ -21,8 +21,8 @@ export const DaysBody = ({
   const weekdayElements = getWeekdayElements();
 
   return (
-    <DaysContainer isMobile={isMobile}>
+    <CalendarContainer isMobile={isMobile}>
       {weekdayElements} {daysElements}
-    </DaysContainer>
+    </CalendarContainer>
   );
 };

@@ -1,5 +1,5 @@
 import React from "react";
-import { ButtonsContainer, PrevIcon, NextIcon } from "../styled-components";
+import { ButtonsContainer, ArrowIcon } from "../styled-components";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 export const HeaderButtons = ({
@@ -16,7 +16,7 @@ export const HeaderButtons = ({
         onClick={onLeftClick}
         disabled={isLeftDisabled}
       >
-        <PrevIcon />
+        <ArrowIcon previous />
       </ColorTheme>
 
       <ColorTheme
@@ -24,7 +24,7 @@ export const HeaderButtons = ({
         onClick={onRightClick}
         disabled={isRightDisabled}
       >
-        <NextIcon />
+        <ArrowIcon next />
       </ColorTheme>
     </ButtonsContainer>
   );

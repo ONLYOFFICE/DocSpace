@@ -8,16 +8,6 @@ import {
 const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
   css`
-    ${CurrentDateItem} {
-      background: ${$currentColorScheme.main.accent};
-      :hover {
-        background-color: ${$currentColorScheme.main.accent};
-      }
-
-      :focus {
-        background-color: ${$currentColorScheme.main.accent};
-      }
-    }
     ${HeaderActionIcon} {
       border-color: ${$currentColorScheme.main.accent};
     }

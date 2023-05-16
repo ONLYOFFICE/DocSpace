@@ -1,5 +1,5 @@
 import React from "react";
-import { MonthsContainer } from "../styled-components/MonthsContainer";
+import { CalendarContainer } from "../styled-components";
 import { getCalendarMonths, getMonthElements } from "../utils";
 
 export const MonthsBody = ({
@@ -22,6 +22,8 @@ export const MonthsBody = ({
   );
 
   return (
-    <MonthsContainer isMobile={isMobile}>{monthsElements}</MonthsContainer>
+    <CalendarContainer big isMobile={isMobile}>
+      {monthsElements}
+    </CalendarContainer>
   );
 };

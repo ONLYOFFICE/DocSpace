@@ -1,7 +1,6 @@
 import React from "react";
 import moment from "moment";
 
-import { CurrentDateItem, SecondaryDateItem } from "../styled-components";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 const onDateClick = (year, setObservedDate, setSelectedScene) => {
@@ -23,7 +22,9 @@ export const getYearElements = (
     onDateClick(year, setObservedDate, setSelectedScene);
 
   const yearElements = years.map((year) => (
-    <SecondaryDateItem
+    <ColorTheme
+      themeId={ThemeType.DateItem}
+      isSecondary
       big
       key={year}
       onClick={() => onClick(year)}
@@ -33,7 +34,7 @@ export const getYearElements = (
       }
     >
       {year}
-    </SecondaryDateItem>
+    </ColorTheme>
   ));
 
   for (let i = 1; i < 11; i++) {
@@ -76,7 +77,9 @@ export const getYearElements = (
   }
   if (currentYearIndex !== -1) {
     yearElements[currentYearIndex] = (
-      <CurrentDateItem
+      <ColorTheme
+        themeId={ThemeType.DateItem}
+        isCurrent
         big
         key={years[currentYearIndex]}
         onClick={() => onClick(years[currentYearIndex])}
@@ -88,7 +91,7 @@ export const getYearElements = (
         }
       >
         {years[currentYearIndex]}
-      </CurrentDateItem>
+      </ColorTheme>
     );
   }
 

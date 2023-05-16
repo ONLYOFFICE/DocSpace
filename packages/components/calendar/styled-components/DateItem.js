@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import Base from "../../themes/base";
 
 export const DateItem = styled.button`
@@ -22,5 +22,35 @@ export const DateItem = styled.button`
     background: ${(props) =>
       props.disabled ? "transparent" : props.theme.calendar.onHoverBackground};
   }
+
+  ${(props) =>
+    props.isCurrent &&
+    css`
+      color: white !important;
+
+      :hover {
+        color: white !important;
+      }
+
+      :focus {
+        color: white !important;
+      }
+    `}
+  ${(props) =>
+    props.isSecondary &&
+    css`
+      color: ${(props) =>
+        props.disabled
+          ? props.theme.calendar.disabledColor
+          : props.theme.calendar.pastColor} !important;
+
+      :hover {
+        cursor: ${(props) => (props.disabled ? "auto" : "pointer")};
+        color: ${(props) =>
+          props.disabled
+            ? props.theme.calendar.disabledColor
+            : props.theme.calendar.pastColor} !important;
+      }
+    `}
 `;
 DateItem.defaultProps = { theme: Base };
