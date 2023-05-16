@@ -38,6 +38,8 @@ STATUS=""
 DOCKER_TAG=""
 GIT_BRANCH="develop"
 INSTALLATION_TYPE="ENTERPRISE"
+IMAGE_NAME="${PACKAGE_SYSNAME}/${PRODUCT}-api"
+CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
 
 NETWORK=${PACKAGE_SYSNAME}
 
@@ -71,6 +73,8 @@ DATABASE_MIGRATION="true"
 ELK_VERSION=""
 ELK_HOST=""
 
+DOCUMENT_SERVER_IMAGE_NAME=""
+DOCUMENT_SERVER_VERSION=""
 DOCUMENT_SERVER_JWT_SECRET=""
 DOCUMENT_SERVER_JWT_HEADER=""
 DOCUMENT_SERVER_HOST=""
@@ -246,6 +250,7 @@ while [ "$1" != "" ]; do
 		-s | --status )
 			if [ "$2" != "" ]; then
 				STATUS=$2
+				IMAGE_NAME="${PACKAGE_SYSNAME}/${STATUS}${PRODUCT}-api"
 				shift
 			fi
 		;;
@@ -566,6 +571,18 @@ install_docker_compose () {
 	fi
 }
 
+install_jq () {
+	curl -s -o jq http://stedolan.github.io/jq/download/linux64/jq
+	chmod +x jq
+	cp jq /usr/bin
+	rm jq
+
+	if ! command_exists jq; then
+		echo "command jq not found"
+		exit 1;
+	fi
+}
+
 check_ports () {
 	RESERVED_PORTS=(3306 8092);
 	ARRAY_PORTS=();
@@ -580,11 +597,6 @@ check_ports () {
 		do
 			if [ "$RESERVED_PORT" -eq "$EXTERNAL_PORT" ] ; then
 				echo "External port $EXTERNAL_PORT is reserved. Select another port"
-				exit 1;
-			fi
-
-			if [ "$RESERVED_PORT" -eq "$SERVICE_PORT" ] ; then
-				echo "Internal port $SERVICE_PORT is reserved. Select another port"
 				exit 1;
 			fi
 		done
@@ -728,7 +740,6 @@ create_network () {
 get_container_env_parameter () {
 	local CONTAINER_NAME=$1;
 	local PARAMETER_NAME=$2;
-	VALUE="";
 
 	if [[ -z ${CONTAINER_NAME} ]]; then
 		echo "Empty container name"
@@ -746,9 +757,84 @@ get_container_env_parameter () {
 		if [[ -n ${CONTAINER_EXIST} ]]; then
 			VALUE=$(docker inspect --format='{{range .Config.Env}}{{println .}}{{end}}' ${CONTAINER_NAME} | grep "${PARAMETER_NAME}=" | sed 's/^.*=//');
 		fi
+
+		if [ -z $VALUE ] && [ -f $BASE_DIR/.env ]; then
+			VALUE=$(sed -n "/.*${PARAMETER_NAME}=/s///p" $BASE_DIR/.env)
+		fi
 	fi
 
 	echo "$VALUE"
+}
+
+get_available_version () {
+	if [[ -z "$1" ]]; then
+		echo "image name is empty";
+		exit 1;
+	fi
+
+	if ! command_exists curl ; then
+		install_curl;
+	fi
+
+	if ! command_exists jq ; then
+		install_jq
+	fi
+
+	CREDENTIALS="";
+	AUTH_HEADER="";
+	TAGS_RESP="";
+
+	if [[ -n ${HUB} ]]; then
+		DOCKER_CONFIG="$HOME/.docker/config.json";
+
+		if [[ -f "$DOCKER_CONFIG" ]]; then
+			CREDENTIALS=$(jq -r '.auths."'$HUB'".auth' < "$DOCKER_CONFIG");
+			if [ "$CREDENTIALS" == "null" ]; then
+				CREDENTIALS="";
+			fi
+		fi
+
+		if [[ -z ${CREDENTIALS} && -n ${USERNAME} && -n ${PASSWORD} ]]; then
+			CREDENTIALS=$(echo -n "$USERNAME:$PASSWORD" | base64);
+		fi
+
+		if [[ -n ${CREDENTIALS} ]]; then
+			AUTH_HEADER="Authorization: Basic $CREDENTIALS";
+		fi
+
+		REPO=$(echo $1 | sed "s/$HUB\///g");
+		TAGS_RESP=$(curl -s -H "$AUTH_HEADER" -X GET https://$HUB/v2/$REPO/tags/list);
+		TAGS_RESP=$(echo $TAGS_RESP | jq -r '.tags')
+	else
+		if [[ -n ${USERNAME} && -n ${PASSWORD} ]]; then
+			CREDENTIALS="{\"username\":\"$USERNAME\",\"password\":\"$PASSWORD\"}";
+		fi
+
+		if [[ -n ${CREDENTIALS} ]]; then
+			LOGIN_RESP=$(curl -s -H "Content-Type: application/json" -X POST -d "$CREDENTIALS" https://hub.docker.com/v2/users/login/);
+			TOKEN=$(echo $LOGIN_RESP | jq -r '.token');
+			AUTH_HEADER="Authorization: JWT $TOKEN";
+			sleep 1;
+		fi
+
+		TAGS_RESP=$(curl -s -H "$AUTH_HEADER" -X GET https://hub.docker.com/v2/repositories/$1/tags/);
+		TAGS_RESP=$(echo $TAGS_RESP | jq -r '.results[].name')
+	fi
+
+	VERSION_REGEX_1="[0-9]+\.[0-9]+\.[0-9]+"
+	VERSION_REGEX_2="[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+"
+	TAG_LIST=""
+
+	for item in $TAGS_RESP
+	do
+		if [[ $item =~ $VERSION_REGEX_1 ]] || [[ $item =~ $VERSION_REGEX_2 ]]; then
+			TAG_LIST="$item,$TAG_LIST"
+		fi
+	done
+
+	LATEST_TAG=$(echo $TAG_LIST | tr ',' '\n' | sort -t. -k 1,1n -k 2,2n -k 3,3n -k 4,4n | awk '/./{line=$0} END{print line}');
+
+	echo "$LATEST_TAG" | sed "s/\"//g"
 }
 
 set_jwt_secret () {
@@ -763,7 +849,7 @@ set_jwt_secret () {
 	fi
 
 	if [[ -z ${JWT_SECRET} ]]; then
-		CURRENT_JWT_SECRET=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "DOCUMENT_SERVER_JWT_SECRET");
+		CURRENT_JWT_SECRET=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_SECRET");
 
 		if [[ -n ${CURRENT_JWT_SECRET} ]]; then
 			DOCUMENT_SERVER_JWT_SECRET="$CURRENT_JWT_SECRET";
@@ -787,7 +873,7 @@ set_jwt_header () {
 	fi	
 	
 	if [[ -z ${JWT_HEADER} ]]; then
-		CURRENT_JWT_HEADER=$(get_container_env_parameter "${PACKAGE_SYSNAME}-api" "DOCUMENT_SERVER_JWT_HEADER");
+		CURRENT_JWT_HEADER=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_JWT_HEADER");
 
 		if [[ -n ${CURRENT_JWT_HEADER} ]]; then
 			DOCUMENT_SERVER_JWT_HEADER="$CURRENT_JWT_HEADER";
@@ -843,6 +929,19 @@ set_mysql_params () {
 	fi
 }
 
+set_docspace_params() {
+	ENV_EXTENSION=$(get_container_env_parameter "${CONTAINER_NAME}" "ENV_EXTENSION");
+	DOCUMENT_SERVER_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "DOCUMENT_SERVER_HOST");
+	ELK_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "ELK_HOST");
+	APP_CORE_BASE_DOMAIN=$(get_container_env_parameter "${CONTAINER_NAME}" "APP_CORE_BASE_DOMAIN");
+	[ -f ${BASE_DIR}/${PRODUCT}.yml ] && EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' ${BASE_DIR}/${PRODUCT}.yml)
+}
+
+set_installation_type_data () {
+	if [ "$INSTALLATION_TYPE" == "COMMUNITY" ]; then
+		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver"}
+	elif [ "$INSTALLATION_TYPE" == "ENTERPRISE" ]; then
+		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver-ee"}
 	fi
 }
 
@@ -851,7 +950,7 @@ download_files () {
 		install_service svn subversion
 	fi
 
-	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
+	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
 	
@@ -886,10 +985,9 @@ install_document_server () {
 		install_docker_compose
 	fi
 
-	reconfigure DOCUMENT_SERVER_IMAGE_NAME ${DOCUMENT_SERVER_IMAGE_NAME}
+	reconfigure DOCUMENT_SERVER_IMAGE_NAME "${DOCUMENT_SERVER_IMAGE_NAME}:${DOCUMENT_SERVER_VERSION:-$(get_available_version "$DOCUMENT_SERVER_IMAGE_NAME")}"
 	reconfigure DOCUMENT_SERVER_JWT_HEADER ${DOCUMENT_SERVER_JWT_HEADER}
 	reconfigure DOCUMENT_SERVER_JWT_SECRET ${DOCUMENT_SERVER_JWT_SECRET}
-	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 
 	docker-compose -f $BASE_DIR/ds.yml up -d
 }
@@ -914,111 +1012,31 @@ install_product () {
 	if ! command_exists docker-compose; then
 		install_docker_compose
 	fi
+
+	DOCKER_TAG="${DOCKER_TAG:-$(get_available_version ${IMAGE_NAME})}"
+	[ "${UPDATE}" = "true" ] && LOCAL_CONTAINER_TAG="$(docker inspect --format='{{index .Config.Image}}' ${CONTAINER_NAME} | awk -F':' '{print $2}')"
+
+	if [ "${UPDATE}" = "true" ] && [ "${LOCAL_CONTAINER_TAG}" != "${DOCKER_TAG}" ]; then
+		docker-compose -f $BASE_DIR/build.yml pull
+		docker-compose -f $BASE_DIR/migration-runner.yml -f $BASE_DIR/notify.yml -f $BASE_DIR/healthchecks.yml down
+		docker-compose -f $BASE_DIR/${PRODUCT}.yml down --volumes
+	fi
+
 	reconfigure ENV_EXTENSION ${ENV_EXTENSION}
 	reconfigure ELK_HOST ${ELK_HOST}
 	reconfigure ELK_VERSION ${ELK_VERSION}
-	reconfigure SERVICE_PORT ${SERVICE_PORT}
+	reconfigure DOCUMENT_SERVER_HOST ${DOCUMENT_SERVER_HOST}
 	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
 
-	if [[ -n $EXTERNAL_PORT ]]; then
-		sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
-	fi
+	[[ -n $EXTERNAL_PORT ]] && sed -i "s/8092:8092/${EXTERNAL_PORT}:8092/g" $BASE_DIR/${PRODUCT}.yml
 
 	docker-compose -f $BASE_DIR/migration-runner.yml up -d
 	docker-compose -f $BASE_DIR/${PRODUCT}.yml up -d
 	docker-compose -f $BASE_DIR/notify.yml up -d
 	docker-compose -f $BASE_DIR/healthchecks.yml up -d
-}
-
-get_local_image_RepoDigests() {
-   local CONTAINER_IMAGE=$1;
-   LOCAL_IMAGE_RepoDigest=$(docker inspect --format='{{index .RepoDigests 0}}' $CONTAINER_IMAGE)
-   if [ -z ${LOCAL_IMAGE_RepoDigest} ]; then
-        echo "Local docker image not found, check the name of docker image $CONTAINER_IMAGE"
-        exit 1 
-   fi
-   echo $LOCAL_IMAGE_RepoDigest
-}
-
-check_pull_image() {
-    local CONTAINER_IMAGE=$1;
-    CHECK_STATUS_IMAGE="$(docker pull  $CONTAINER_IMAGE | grep Status | awk '{print $2" "$3" "$4" "$5" "$6}')"
-    if [ "${CHECK_STATUS_IMAGE}" == "Image is up to date" ]; then
-        echo "No updates required"
-    fi
-}
-
-check_image_RepoDigest() {
-    local OLD_LOCAL_IMAGE_RepoDigest=$1
-    local NEW_LOCAL_IMAGE_RepoDigest=$2
-    if [ "${OLD_LOCAL_IMAGE_RepoDigest}" == "${NEW_LOCAL_IMAGE_RepoDigest}" ]; then
-       CHECK_RepoDigest="false";
-    else
-       CHECK_RepoDigest="true";
-    fi
-}
-
-docker_image_update() {
-    docker-compose -f $BASE_DIR/notify.yml -f $BASE_DIR/${PRODUCT}.yml down --volumes
-    docker-compose -f $BASE_DIR/build.yml pull
-}
-
-update_product () {
-	if ! command_exists docker-compose; then
-		install_docker_compose
-	fi
-	
-	IMAGE_NAME="onlyoffice-api"
-	CONTAINER_IMAGE=$(docker inspect --format='{{.Config.Image}}' $IMAGE_NAME)
-	
-	OLD_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
-	check_pull_image "${CONTAINER_IMAGE}"
-	NEW_LOCAL_IMAGE_RepoDigest=$(get_local_image_RepoDigests "${CONTAINER_IMAGE}")
-	check_image_RepoDigest ${OLD_LOCAL_IMAGE_RepoDigest} ${NEW_LOCAL_IMAGE_RepoDigest}
-
-	if [ ${CHECK_RepoDigest} == "true" ]; then
-		docker_image_update
-	fi
-}
-
-save_parameter() {
-	local VARIABLE_NAME=$1
-	local VARIABLE_VALUE=$2
-
-	if [[ -z ${VARIABLE_VALUE} ]]; then
-		sed -n "/.*${VARIABLE_NAME}=/s///p" $BASE_DIR/.env
-	else
-		echo $VARIABLE_VALUE
-	fi
-}
-
-save_parameters_from_configs() {
-	MYSQL_DATABASE=$(save_parameter MYSQL_DATABASE $MYSQL_DATABASE)
-	MYSQL_USER=$(save_parameter MYSQL_USER $MYSQL_USER)
-	MYSQL_PASSWORD=$(save_parameter MYSQL_PASSWORD $MYSQL_PASSWORD)
-	MYSQL_ROOT_PASSWORD=$(save_parameter MYSQL_ROOT_PASSWORD $MYSQL_ROOT_PASSWORD)
-	MYSQL_HOST=$(save_parameter MYSQL_HOST $MYSQL_HOST)
-	DOCUMENT_SERVER_JWT_SECRET=$(save_parameter DOCUMENT_SERVER_JWT_SECRET $DOCUMENT_SERVER_JWT_SECRET)
-	DOCUMENT_SERVER_JWT_HEADER=$(save_parameter DOCUMENT_SERVER_JWT_HEADER $DOCUMENT_SERVER_JWT_HEADER)
-	DOCUMENT_SERVER_HOST=$(save_parameter DOCUMENT_SERVER_HOST $DOCUMENT_SERVER_HOST)
-	ELK_HOST=$(save_parameter ELK_HOST $ELK_HOST)
-	SERVICE_PORT=$(save_parameter SERVICE_PORT $SERVICE_PORT)
-	APP_CORE_MACHINEKEY=$(save_parameter APP_CORE_MACHINEKEY $APP_CORE_MACHINEKEY)
-	APP_CORE_BASE_DOMAIN=$(save_parameter APP_CORE_BASE_DOMAIN $APP_CORE_BASE_DOMAIN)
-	if [ ${EXTERNAL_PORT} = "8092" ]; then 
-		EXTERNAL_PORT=$(grep -oP '(?<=- ).*?(?=:8092)' /app/onlyoffice/${PRODUCT}.yml)
-	fi
-}
-
-set_installation_type_data () {
-	if [ "$INSTALLATION_TYPE" == "COMMUNITY" ]; then
-		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"onlyoffice/documentserver:latest"}
-	elif [ "$INSTALLATION_TYPE" == "ENTERPRISE" ]; then
-		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"onlyoffice/documentserver-ee:latest"}
-	fi
 }
 
 start_installation () {
@@ -1047,11 +1065,7 @@ start_installation () {
 
 	docker_login
 
-	if [ "$UPDATE" = "true" ]; then
-		save_parameters_from_configs
-	fi
-
-	download_files
+	set_docspace_params
 
 	set_jwt_secret
 	set_jwt_header
@@ -1060,11 +1074,9 @@ start_installation () {
 
 	create_network
 
-	if [ "$UPDATE" = "true" ]; then
-		update_product
-	fi
 	set_mysql_params
 
+	download_files
 
 	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
 		install_mysql_server
