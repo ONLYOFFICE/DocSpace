@@ -179,69 +179,7 @@ public class DbWorker
 
     public IAsyncEnumerable<DbWebhooks> ReadJournal(int startIndex, int limit, DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, int? eventId, WebhookGroupStatus? webhookGroupStatus)
     {
-        var webhooksDbContext = _dbContextFactory.CreateDbContext();
-
-        var q = webhooksDbContext.WebhooksLogs
-            .AsNoTracking()
-            .OrderByDescending(t => t.Id)
-            .Where(r => r.TenantId == Tenant)
-            .Join(webhooksDbContext.WebhooksConfigs.AsNoTracking(), r => r.ConfigId, r => r.Id, (log, config) => new DbWebhooks { Log = log, Config = config });
-
-        if (deliveryFrom.HasValue)
-        {
-            var from = deliveryFrom.Value;
-            q = q.Where(r => r.Log.Delivery >= from);
-        }
-
-        if (deliveryTo.HasValue)
-        {
-            var to = deliveryTo.Value;
-            q = q.Where(r => r.Log.Delivery <= to);
-        }
-
-        if (!string.IsNullOrEmpty(hookUri))
-        {
-            q = q.Where(r => r.Config.Uri == hookUri);
-        }
-
-        if (hookId != null)
-        {
-            q = q.Where(r => r.Log.WebhookId == hookId);
-        }
-
-        if (configId != null)
-        {
-            q = q.Where(r => r.Log.ConfigId == configId);
-        }
-
-        if (eventId != null)
-        {
-            q = q.Where(r => r.Log.Id == eventId);
-        }
-
-        if (webhookGroupStatus != null && webhookGroupStatus != WebhookGroupStatus.None)
-        {
-            if ((webhookGroupStatus & WebhookGroupStatus.NotSent) != WebhookGroupStatus.NotSent)
-            {
-                q = q.Where(r => r.Log.Status != 0);
-            }
-            if ((webhookGroupStatus & WebhookGroupStatus.Status2xx) != WebhookGroupStatus.Status2xx)
-            {
-                q = q.Where(r => r.Log.Status < 200 || r.Log.Status >= 300);
-            }
-            if ((webhookGroupStatus & WebhookGroupStatus.Status3xx) != WebhookGroupStatus.Status3xx)
-            {
-                q = q.Where(r => r.Log.Status < 300 || r.Log.Status >= 400);
-            }
-            if ((webhookGroupStatus & WebhookGroupStatus.Status4xx) != WebhookGroupStatus.Status4xx)
-            {
-                q = q.Where(r => r.Log.Status < 400 || r.Log.Status >= 500);
-            }
-            if ((webhookGroupStatus & WebhookGroupStatus.Status5xx) != WebhookGroupStatus.Status5xx)
-            {
-                q = q.Where(r => r.Log.Status < 500);
-            }
-        }
+        var q = GetQueryForJournal(deliveryFrom, deliveryTo, hookUri, hookId, configId, eventId, webhookGroupStatus);
 
         if (startIndex != 0)
         {
@@ -254,6 +192,11 @@ public class DbWorker
         }
 
         return q.AsAsyncEnumerable();
+    }
+
+    public async Task<int> GetTotalByQuery(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, int? eventId, WebhookGroupStatus? webhookGroupStatus)
+    {
+        return await GetQueryForJournal(deliveryFrom, deliveryTo, hookUri, hookId, configId, eventId, webhookGroupStatus).CountAsync();
     }
 
     public async Task<WebhooksLog> ReadJournal(int id)
@@ -357,6 +300,75 @@ public class DbWorker
             .FirstOrDefaultAsync();
 
         return _mapper.Map<DbWebhook, Webhook>(webHook);
+    }
+
+    private IQueryable<DbWebhooks> GetQueryForJournal(DateTime? deliveryFrom, DateTime? deliveryTo, string hookUri, int? hookId, int? configId, int? eventId, WebhookGroupStatus? webhookGroupStatus)
+    {
+        var webhooksDbContext = _dbContextFactory.CreateDbContext();
+
+        var q = webhooksDbContext.WebhooksLogs
+            .AsNoTracking()
+            .OrderByDescending(t => t.Id)
+            .Where(r => r.TenantId == Tenant)
+            .Join(webhooksDbContext.WebhooksConfigs.AsNoTracking(), r => r.ConfigId, r => r.Id, (log, config) => new DbWebhooks { Log = log, Config = config });
+
+        if (deliveryFrom.HasValue)
+        {
+            var from = deliveryFrom.Value;
+            q = q.Where(r => r.Log.Delivery >= from);
+        }
+
+        if (deliveryTo.HasValue)
+        {
+            var to = deliveryTo.Value;
+            q = q.Where(r => r.Log.Delivery <= to);
+        }
+
+        if (!string.IsNullOrEmpty(hookUri))
+        {
+            q = q.Where(r => r.Config.Uri == hookUri);
+        }
+
+        if (hookId != null)
+        {
+            q = q.Where(r => r.Log.WebhookId == hookId);
+        }
+
+        if (configId != null)
+        {
+            q = q.Where(r => r.Log.ConfigId == configId);
+        }
+
+        if (eventId != null)
+        {
+            q = q.Where(r => r.Log.Id == eventId);
+        }
+
+        if (webhookGroupStatus != null && webhookGroupStatus != WebhookGroupStatus.None)
+        {
+            if ((webhookGroupStatus & WebhookGroupStatus.NotSent) != WebhookGroupStatus.NotSent)
+            {
+                q = q.Where(r => r.Log.Status != 0);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status2xx) != WebhookGroupStatus.Status2xx)
+            {
+                q = q.Where(r => r.Log.Status < 200 || r.Log.Status >= 300);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status3xx) != WebhookGroupStatus.Status3xx)
+            {
+                q = q.Where(r => r.Log.Status < 300 || r.Log.Status >= 400);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status4xx) != WebhookGroupStatus.Status4xx)
+            {
+                q = q.Where(r => r.Log.Status < 400 || r.Log.Status >= 500);
+            }
+            if ((webhookGroupStatus & WebhookGroupStatus.Status5xx) != WebhookGroupStatus.Status5xx)
+            {
+                q = q.Where(r => r.Log.Status < 500);
+            }
+        }
+
+        return q;
     }
 }
 public class DbWebhooks
