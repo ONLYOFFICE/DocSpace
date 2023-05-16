@@ -61,7 +61,7 @@ const TariffTitleContainer = ({
       <div className="payments_subscription">
         <div className="title">
           <Text fontWeight={600} fontSize="14px" as="span">
-            {t("ActivateTariffDescr")}
+            {t("ActivateTariffDescr")}{" "}
           </Text>
           {!isLicenseDateExpires && (
             <Text fontSize="14px" as="span">
