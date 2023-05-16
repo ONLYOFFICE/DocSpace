@@ -15,7 +15,7 @@ const LicenseContainer = (props) => {
   return (
     <div className="payments_license">
       <Text fontWeight={700} fontSize="16px">
-        {t("ActivateLicense")}
+        {t("Payments:ActivateLicense")}
       </Text>
 
       <Text
@@ -23,21 +23,21 @@ const LicenseContainer = (props) => {
         fontSize="14px"
         className="payments_license-description"
       >
-        {t("UploadActivationLicense")}
+        {t("ActivateUploadDescr")}
       </Text>
       <FileInput
         className="payments_file-input"
         scale
         size="base"
         accept=".lic"
-        placeholder={t("UploadLicenseFile")}
+        placeholder={t("Payments:UploadLicenseFile")}
         onInput={onLicenseFileHandler}
         // hasError={}
       />
       <StyledButtonComponent>
         <Button
           primary
-          label={t("Activate")}
+          label={t("Common:Activate")}
           size="small"
           onClick={onClickUpload}
           // isLoading={}

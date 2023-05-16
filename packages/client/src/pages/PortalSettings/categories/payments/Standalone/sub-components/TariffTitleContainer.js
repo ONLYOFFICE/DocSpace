@@ -1,16 +1,17 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 import Text from "@docspace/components/text";
 import { StyledTitleComponent } from "../StyledComponent";
 
 const TariffTitleContainer = ({
-  t,
   isLicenseDateExpires,
   isTrial,
   trialDaysLeft,
   paymentDate,
 }) => {
+  const { t } = useTranslation(["PaymentsEnterprise", "Payments", "Common"]);
   const alertComponent = () => {
     if (isTrial) {
       return isLicenseDateExpires ? (
@@ -19,7 +20,7 @@ const TariffTitleContainer = ({
           fontWeight={600}
           fontSize="14px"
         >
-          {t("TrialExpired")}
+          {t("Common:TrialExpired")}
         </Text>
       ) : (
         <Text
@@ -27,7 +28,7 @@ const TariffTitleContainer = ({
           fontWeight={600}
           fontSize="14px"
         >
-          {t("FreeDaysLeft", { count: trialDaysLeft })}
+          {t("Payments:FreeDaysLeft", { count: trialDaysLeft })}
         </Text>
       );
     }
@@ -35,7 +36,7 @@ const TariffTitleContainer = ({
     return (
       isLicenseDateExpires && (
         <Text className="payments_subscription-expired" isBold fontSize="14px">
-          {t("Common:SubscriptionExpired")}
+          {t("TopBottonsEnterpriseExpired")}
         </Text>
       )
     );
@@ -43,11 +44,11 @@ const TariffTitleContainer = ({
 
   const expiresDate = () => {
     if (isTrial) {
-      return t("TrialExpiresDate", {
+      return t("ActivateTariffEnterpriseTrialExpiration", {
         finalDate: paymentDate,
       });
     }
-    return t("EnterpriseExpiresDate", {
+    return t("ActivateTariffEnterpriseExpiration", {
       finalDate: paymentDate,
     });
   };
@@ -60,7 +61,7 @@ const TariffTitleContainer = ({
       <div className="payments_subscription">
         <div className="title">
           <Text fontWeight={600} fontSize="14px" as="span">
-            {t("EnterpriseEdition")}{" "}
+            {t("ActivateTariffDescr")}
           </Text>
           {!isLicenseDateExpires && (
             <Text fontSize="14px" as="span">

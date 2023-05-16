@@ -17,20 +17,22 @@ const EnterpriseContainer = (props) => {
   return (
     <StyledEnterpriseComponent theme={theme}>
       <Text fontWeight={700} fontSize={"16px"}>
-        {t("EnterpriseRenewSubscription")}
+        {t("ActivateRenewSubscriptionHeader")}
       </Text>
 
-      <TariffTitleContainer t={t} />
+      <TariffTitleContainer />
 
       {isLicenseDateExpires && <BenefitsContainer t={t} />}
       <Text fontSize="14px" className="payments_renew-subscription">
-        {isLicenseDateExpires ? t("BuyLicense") : t("EnterpriseRenewal")}
+        {isLicenseDateExpires
+          ? t("ActivatePurchaseBuyLicense")
+          : t("ActivatePurchaseRenewLicense")}
       </Text>
       <ButtonContainer t={t} />
 
       <div className="payments_support">
         <Text>
-          <Trans i18nKey="EnterprisePersonalRenewal" ns="Payments" t={t}>
+          <Trans i18nKey="ActivateRenewDescr" ns="PaymentsEnterprise" t={t}>
             To get your personal renewal terms, contact your dedicated manager
             or write us at
             <ColorTheme

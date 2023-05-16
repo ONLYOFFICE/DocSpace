@@ -15,13 +15,13 @@ const TrialContainer = (props) => {
   return (
     <StyledEnterpriseComponent theme={theme}>
       <Text fontWeight={700} fontSize={"16px"}>
-        {t("SwitchFullEnterprise")}
+        {t("ActivateSwithToProHeader")}
       </Text>
       <TariffTitleContainer t={t} />
 
       <BenefitsContainer t={t} />
       <Text fontSize="14px" className="payments_renew-subscription">
-        {t("BuyLicense")}
+        {t("ActivatePurchaseBuyLicense")}
       </Text>
       <ButtonContainer t={t} />
     </StyledEnterpriseComponent>

@@ -17,7 +17,11 @@ const ContactContainer = (props) => {
           fontWeight={600}
           color={theme.client.settings.payment.contactContainer.textColor}
         >
-          <Trans i18nKey="PurchaseQuestions" ns="Payments" t={t}>
+          <Trans
+            i18nKey="UpgradeToProBannerInformationPurchase"
+            ns="PaymentsEnterprise"
+            t={t}
+          >
             Ask purchase questions at
             <Link
               fontWeight="600"
@@ -37,7 +41,11 @@ const ContactContainer = (props) => {
           fontWeight={600}
           color={theme.client.settings.payment.contactContainer.textColor}
         >
-          <Trans i18nKey="TechAssistance" ns="Payments" t={t}>
+          <Trans
+            i18nKey="UpgradeToProBannerInformationSupport"
+            ns="PaymentsEnterprise"
+            t={t}
+          >
             Get tech assistance
             <Link
               target="_blank"
