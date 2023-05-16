@@ -813,8 +813,35 @@ set_core_machinekey () {
 	fi
 }
 
+set_mysql_params () {
+	if [[ -z ${MYSQL_PASSWORD} ]]; then
+		MYSQL_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_PASSWORD");
+
+		if [[ -z ${MYSQL_PASSWORD} ]]; then
+			MYSQL_PASSWORD=$(get_random_str 20);
 		fi
 	fi
+	
+	if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
+		MYSQL_ROOT_PASSWORD=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_ROOT_PASSWORD");
+
+		if [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
+			MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD:-$(get_random_str 20)};
+		fi
+	fi
+	
+	if [[ -z ${MYSQL_DATABASE} ]]; then
+		MYSQL_DATABASE=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_DATABASE");
+	fi
+
+	if [[ -z ${MYSQL_USER} ]]; then
+		MYSQL_USER=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_USER");
+	fi
+
+	if [[ -z ${MYSQL_HOST} ]]; then
+		MYSQL_HOST=$(get_container_env_parameter "${CONTAINER_NAME}" "MYSQL_HOST");
+	fi
+}
 
 	fi
 }
@@ -827,6 +854,11 @@ download_files () {
 	svn export --force https://github.com/ONLYOFFICE/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
+	
+	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
+	reconfigure MYSQL_USER ${MYSQL_USER}
+	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
+	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
 }
 
 reconfigure () {
@@ -843,20 +875,7 @@ install_mysql_server () {
 		install_docker_compose
 	fi
 
-	if [[ -z ${MYSQL_PASSWORD} ]] && [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
-		MYSQL_ROOT_PASSWORD=$(get_random_str 20 | sed -e 's/;/%/g' -e 's/=/%/g' -e 's/!/%/g');
-	elif [[ -z ${MYSQL_PASSWORD} ]] || [[ -z ${MYSQL_ROOT_PASSWORD} ]]; then
-		MYSQL_PASSWORD=${MYSQL_PASSWORD:-"$MYSQL_ROOT_PASSWORD"}
-		MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-"$MYSQL_PASSWORD"}
-	fi
-
 	reconfigure MYSQL_VERSION ${MYSQL_VERSION}
-	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
-	reconfigure MYSQL_USER ${MYSQL_USER}
-	reconfigure MYSQL_PASSWORD ${MYSQL_PASSWORD}
-	reconfigure MYSQL_ROOT_PASSWORD ${MYSQL_ROOT_PASSWORD}
-	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure DATABASE_MIGRATION ${DATABASE_MIGRATION}
 
 	docker-compose -f $BASE_DIR/db.yml up -d
@@ -899,6 +918,7 @@ install_product () {
 	reconfigure ELK_HOST ${ELK_HOST}
 	reconfigure ELK_VERSION ${ELK_VERSION}
 	reconfigure SERVICE_PORT ${SERVICE_PORT}
+	reconfigure MYSQL_HOST ${MYSQL_HOST}
 	reconfigure APP_CORE_MACHINEKEY ${APP_CORE_MACHINEKEY}
 	reconfigure APP_CORE_BASE_DOMAIN ${APP_CORE_BASE_DOMAIN}
 	reconfigure DOCKER_TAG ${DOCKER_TAG}
@@ -1043,6 +1063,8 @@ start_installation () {
 	if [ "$UPDATE" = "true" ]; then
 		update_product
 	fi
+	set_mysql_params
+
 
 	if [ "$INSTALL_MYSQL_SERVER" == "true" ]; then
 		install_mysql_server
