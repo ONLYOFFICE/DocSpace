@@ -2,7 +2,11 @@ import styled from "styled-components";
 import Base from "../themes/base";
 import { AddRoleButton, EveryoneRoleIcon } from "./svg";
 
-const StyledFillingRoleSelector = styled.div``;
+const StyledFillingRoleSelector = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
 
 const StyledRow = styled.div`
   height: 48px;
@@ -70,6 +74,8 @@ const StyledTooltip = styled.div`
   font-size: 12px;
   line-height: 16px;
   padding: 8px 12px;
+  height: 48px;
+  box-sizing: border-box;
 `;
 
 StyledFillingRoleSelector.defaultProps = { theme: Base };

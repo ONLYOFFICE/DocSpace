@@ -12,36 +12,25 @@ import {
 } from "./styled-filling-role-selector";
 
 const FillingRoleSelector = (props) => {
-  const { roles } = props;
+  const { roles, users, onClick } = props;
 
-  const mockRoles = [
-    { id: 3, role: "Director", order: 3, color: "#BB85E7" },
-    { id: 2, role: "Accountant", order: 2, color: "#70D3B0" },
-    { id: 1, role: "Employee", order: 1, color: "#FBCC86", everyone: true },
-  ];
-
-  const cloneRoles = JSON.parse(JSON.stringify(mockRoles));
+  const cloneRoles = JSON.parse(JSON.stringify(roles));
   const sortedInOrderRoles = cloneRoles.sort((a, b) =>
     a.order > b.order ? 1 : -1
   );
-
-  const onAddRole = () => {
-    console.log("click onAddRole");
-  };
-
-  const itemEveryoneRole = mockRoles.find((item) => item.everyone == true);
+  const everyoneRole = roles.find((item) => item.everyone == true);
 
   //TODO: Add correct translations
   return (
     <StyledFillingRoleSelector {...props}>
-      {itemEveryoneRole && (
+      {everyoneRole && (
         <>
           <StyledRow>
-            <StyledNumber>{itemEveryoneRole.order}</StyledNumber>
+            <StyledNumber>{everyoneRole.order}</StyledNumber>
             <StyledEveryoneRoleIcon />
             <StyledEveryoneRoleContainer>
               <div className="title">
-                <StyledRole>{itemEveryoneRole.role}</StyledRole>
+                <StyledRole>{everyoneRole.role}</StyledRole>
                 <StyledRole className="comment">(@Everyone)</StyledRole>
               </div>
 
@@ -63,7 +52,7 @@ const FillingRoleSelector = (props) => {
         return (
           <StyledRow>
             <StyledNumber>{item.order}</StyledNumber>
-            <StyledAddRoleButton onClick={onAddRole} color={item.color} />
+            <StyledAddRoleButton onClick={onClick} color={item.color} />
             <StyledRole>{item.role}</StyledRole>
           </StyledRow>
         );
@@ -72,7 +61,11 @@ const FillingRoleSelector = (props) => {
   );
 };
 
-FillingRoleSelector.propTypes = {};
+FillingRoleSelector.propTypes = {
+  roles: PropTypes.array,
+  users: PropTypes.array,
+  onClick: PropTypes.func,
+};
 
 FillingRoleSelector.defaultProps = {};
 
