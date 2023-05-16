@@ -38,17 +38,17 @@ const HistoryRow = (props) => {
   ];
 
   return (
-    <>
-      <Row
-        sectionWidth={sectionWidth}
-        key={historyItem.id}
-        contextOptions={contextOptions}
-        checkbox
-        checked={isIdChecked(historyItem.id)}
-        onSelect={handleOnSelect}>
-        <HistoryRowContent sectionWidth={sectionWidth} historyItem={historyItem} />
-      </Row>
-    </>
+    <Row
+      sectionWidth={sectionWidth}
+      key={historyItem.id}
+      contextOptions={contextOptions}
+      checkbox
+      checked={isIdChecked(historyItem.id)}
+      onSelect={handleOnSelect}
+      className={isIdChecked(historyItem.id) ? "selected-row-item" : ""}
+      onClick={handleOnSelect}>
+      <HistoryRowContent sectionWidth={sectionWidth} historyItem={historyItem} />
+    </Row>
   );
 };
 

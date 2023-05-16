@@ -10,6 +10,17 @@ import HistoryRow from "./HistoryRow";
 
 const StyledRowContainer = styled(RowContainer)`
   margin-top: 11px;
+
+  .row-list-item {
+    cursor: pointer;
+    &:hover {
+      background-color: #f3f4f4;
+    }
+  }
+
+  .row-list-item:has(.selected-row-item) {
+    background-color: #f3f4f4;
+  }
 `;
 
 const HistoryRowView = (props) => {

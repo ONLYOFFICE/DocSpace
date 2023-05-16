@@ -68,12 +68,8 @@ const HistoryTableRow = (props) => {
   const isChecked = isIdChecked(item.id);
 
   return (
-    <StyledWrapper>
-      <StyledTableRow
-        contextOptions={contextOptions}
-        checked={isChecked}
-        //  isHighlight={isChecked}
-      >
+    <StyledWrapper className={isChecked ? "selected-table-row" : ""} onClick={onChange}>
+      <StyledTableRow contextOptions={contextOptions} checked={isChecked}>
         <TableCell>
           <TableCell checked={isChecked} className="noPadding">
             <Checkbox onChange={onChange} isChecked={isChecked} title="TitleSelectFile" />

@@ -19,6 +19,21 @@ const TableWrapper = styled(TableContainer)`
   .noPadding {
     padding: 0;
   }
+
+  .table-list-item {
+    cursor: pointer;
+    &:hover {
+      background-color: #f3f4f4;
+    }
+  }
+
+  .table-list-item:has(.selected-table-row) {
+    background-color: #f3f4f4;
+  }
+  .div1 > .div2 {
+    background-color: red;
+    width: 50%;
+  }
 `;
 
 const HistoryTableView = (props) => {
