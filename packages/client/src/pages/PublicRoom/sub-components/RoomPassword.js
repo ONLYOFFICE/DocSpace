@@ -6,13 +6,12 @@ import Button from "@docspace/components/button";
 import FieldContainer from "@docspace/components/field-container";
 import { inject, observer } from "mobx-react";
 import { StyledPage, StyledBody, StyledContent } from "./RoomStyles";
-// import withLoader from "../withLoader";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
 import { createPasswordHash } from "@docspace/common/utils";
-import tryRedirectTo from "@docspace/common/utils/tryRedirectTo";
 import toastr from "@docspace/components/toast/toastr";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
+import { ValidationResult } from "../../../helpers/constants";
 
 import PublicRoomIcon from "PUBLIC_DIR/images/icons/32/room/public.svg";
 
@@ -21,72 +20,64 @@ const RoomPassword = (props) => {
     t,
     settings,
     hashSettings,
-    defaultPage,
-    logout,
-    changePassword,
-    linkData,
     getSettings,
+    roomKey,
+    validatePublicRoomPassword,
+    setRoomData,
   } = props;
 
   const [password, setPassword] = useState("");
   const [passwordValid, setPasswordValid] = useState(true);
-  const [isPasswordErrorShow, setIsPasswordErrorShow] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    if (!hashSettings) getSettings(true);
-  }, []);
+  // useEffect(() => {
+  //   if (!hashSettings) getSettings(true);
+  // }, []);
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
   };
 
-  const onValidatePassword = (res) => {
-    setPasswordValid(res);
-  };
-
-  const onBlurPassword = () => {
-    setIsPasswordErrorShow(true);
-  };
-
   const onSubmit = async () => {
-    setIsLoading(true);
-
     if (!password.trim()) {
       setPasswordValid(false);
-      setIsPasswordErrorShow(true);
     }
+
     if (!passwordValid || !password.trim()) {
       setIsLoading(false);
       return;
     }
 
+    setIsLoading(true);
     try {
-      const hash = createPasswordHash(password, hashSettings);
-      const { uid, confirmHeader } = linkData;
-      await changePassword(uid, hash, confirmHeader);
-      logout();
-      setIsLoading(false);
-      toastr.success(t("ChangePasswordSuccess"));
-      tryRedirectTo(defaultPage);
-    } catch (error) {
-      let errorMessage = "";
-      if (typeof error === "object") {
-        errorMessage =
-          error?.response?.data?.error?.message ||
-          error?.statusText ||
-          error?.message ||
-          "";
-      } else {
-        errorMessage = error;
-      }
-      console.error(errorMessage);
+      // const hash = createPasswordHash(password, hashSettings);
+      // await changePassword(hash);
 
-      if (errorMessage === "Invalid params") {
-        toastr.error(t("Common:SomethingWentWrong"));
-      } else {
-        toastr.error(t(`${errorMessage}`));
+      const res = await validatePublicRoomPassword(roomKey, password);
+      setIsLoading(false);
+
+      console.log("res", res);
+
+      switch (res?.status) {
+        case ValidationResult.Ok:
+          // Ok
+
+          setRoomData(res);
+
+          return;
+        case ValidationResult.Invalid:
+          setError(); // Invalid
+          return;
+        case ValidationResult.Expired:
+          setError(); // Expired
+          return;
+        case ValidationResult.Password:
+          setError(); // Invalid Password
+          return;
       }
+    } catch (error) {
+      console.log(error);
       setIsLoading(false);
     }
   };
@@ -130,40 +121,28 @@ const RoomPassword = (props) => {
               <FieldContainer
                 isVertical={true}
                 labelVisible={false}
-                hasError={isPasswordErrorShow && !passwordValid}
+                hasError={!passwordValid}
                 errorMessage={`${t(
                   "Common:PasswordLimitMessage"
                 )}: ${getPasswordErrorMessage(t, settings)}`}
               >
                 <PasswordInput
-                  simpleView={false}
+                  simpleView
                   passwordSettings={settings}
                   id="password"
                   inputName="password"
                   placeholder={t("Common:Password")}
                   type="password"
                   inputValue={password}
-                  hasError={isPasswordErrorShow && !passwordValid}
+                  hasError={!passwordValid}
                   size="large"
                   scale
                   tabIndex={1}
                   autoComplete="current-password"
                   onChange={onChangePassword}
-                  onValidateInput={onValidatePassword}
-                  onBlur={onBlurPassword}
                   onKeyDown={onKeyPress}
-                  tooltipPasswordTitle={`${t("Common:PasswordLimitMessage")}:`}
-                  tooltipPasswordLength={`${t(
-                    "Common:PasswordMinimumLength"
-                  )}: ${settings ? settings.minLength : 8}`}
-                  tooltipPasswordDigits={`${t("Common:PasswordLimitDigits")}`}
-                  tooltipPasswordCapital={`${t(
-                    "Common:PasswordLimitUpperCase"
-                  )}`}
-                  tooltipPasswordSpecial={`${t(
-                    "Common:PasswordLimitSpecialSymbols"
-                  )}`}
-                  generatePasswordTitle={t("Wizard:GeneratePassword")}
+                  isDisabled={isLoading}
+                  isDisableTooltip
                 />
               </FieldContainer>
             </div>
@@ -184,28 +163,21 @@ const RoomPassword = (props) => {
   );
 };
 
-export default inject(({ auth, setup }) => {
-  const {
-    hashSettings,
-    defaultPage,
-    passwordSettings,
-    theme,
-    getSettings,
-  } = auth.settingsStore;
-  const { changePassword } = setup;
+export default inject(({ auth, publicRoomStore }) => {
+  const { hashSettings, defaultPage, passwordSettings, theme, getSettings } =
+    auth.settingsStore;
+
+  const { validatePublicRoomPassword, setRoomData } = publicRoomStore;
 
   return {
     theme,
     settings: passwordSettings,
     hashSettings,
     defaultPage,
-    logout: auth.logout,
-    changePassword,
     isAuthenticated: auth.isAuthenticated,
     getSettings,
+
+    validatePublicRoomPassword,
+    setRoomData,
   };
-})(
-  withTranslation(["Confirm", "Common", "Wizard"])(
-    /* withLoader( */ observer(RoomPassword) /* ) */
-  )
-);
+})(withTranslation(["Confirm", "Common", "Wizard"])(observer(RoomPassword)));

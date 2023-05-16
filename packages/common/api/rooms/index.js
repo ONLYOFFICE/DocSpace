@@ -367,3 +367,11 @@ export function validatePublicRoomKey(key) {
     url: `files/share/${key}`,
   });
 }
+
+export function validatePublicRoomPassword(key, password) {
+  return request({
+    method: "post",
+    url: `files/share/${key}/password`,
+    data: { password },
+  });
+}

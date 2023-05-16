@@ -3,33 +3,27 @@ import { observer, inject } from "mobx-react";
 import { useLocation } from "react-router-dom";
 import Section from "@docspace/common/components/Section";
 import Loader from "@docspace/components/loader";
-import FilesFilter from "@docspace/common/api/files/filter";
 import { ValidationResult } from "../../helpers/constants";
 
 import SectionHeaderContent from "./Header";
-import SectionFilterContent from "../Home/Section/Filter";
-import SectionBodyContent from "../Home/Section/Body";
+import SectionFilterContent from "./Filter";
+import SectionBodyContent from "./Body";
 
 import RoomPassword from "./sub-components/RoomPassword";
 
 const PublicRoom = (props) => {
-  const {
-    fetchFiles,
-    withPaging,
-    setIsLoading,
-    setFirstLoad,
-    validatePublicRoomKey,
-  } = props;
+  const { isLoaded, withPaging, validatePublicRoomKey } = props;
 
   const [isLoad, setIsLoad] = useState(false);
   const [isLoadingRoom, setIsLoadingRoom] = useState(false);
   const [status, setStatus] = useState(ValidationResult.Invalid);
 
   const location = useLocation();
+  const key = location.search.substring(5, location.search.length);
 
   const validateKey = async () => {
     setIsLoad(true);
-    const key = location.search.substring(5, location.search.length);
+
     setIsLoadingRoom(true);
     const res = await validatePublicRoomKey(key);
     //res?.status && setStatus(res?.status);
@@ -46,44 +40,36 @@ const PublicRoom = (props) => {
     !isLoad && validateKey();
   }, [validateKey, isLoad]);
 
-  useEffect(() => {
-    const filterObj = FilesFilter.getDefault();
-    const folderId = filterObj.folder;
+  const roomPage = () => (
+    <Section
+      withBodyScroll
+      // withBodyAutoFocus={!isMobile}
+      withPaging={withPaging}
+    >
+      <Section.SectionHeader>
+        <SectionHeaderContent />
+      </Section.SectionHeader>
 
-    fetchFiles(folderId).finally(() => {
-      setIsLoading(false);
-      setFirstLoad(false);
-    });
-  }, [fetchFiles, setIsLoading, setFirstLoad]);
+      <Section.SectionFilter>
+        <SectionFilterContent />
+      </Section.SectionFilter>
+
+      <Section.SectionBody>
+        <SectionBodyContent />
+      </Section.SectionBody>
+    </Section>
+  );
 
   const renderPage = () => {
     switch (status) {
       case ValidationResult.Ok:
-        return (
-          <Section
-            withBodyScroll
-            // withBodyAutoFocus={!isMobile}
-            withPaging={withPaging}
-          >
-            <Section.SectionHeader>
-              <SectionHeaderContent />
-            </Section.SectionHeader>
-
-            <Section.SectionFilter>
-              <SectionFilterContent />
-            </Section.SectionFilter>
-
-            <Section.SectionBody>
-              <SectionBodyContent />
-            </Section.SectionBody>
-          </Section>
-        );
+        return roomPage();
       case ValidationResult.Invalid:
         return <></>;
       case ValidationResult.Expired:
         return <></>;
       case ValidationResult.Password:
-        return <RoomPassword />;
+        return <RoomPassword roomKey={key} />;
 
       default:
         return <></>;
@@ -96,6 +82,8 @@ const PublicRoom = (props) => {
         <Loader className="pageLoader" type="rombs" size="40px" />
       </Section.SectionBody>
     </Section>
+  ) : isLoaded ? (
+    roomPage()
   ) : (
     renderPage()
   );
@@ -103,14 +91,11 @@ const PublicRoom = (props) => {
 
 export default inject(({ auth, filesStore, publicRoomStore }) => {
   const { withPaging } = auth.settingsStore;
-  const { fetchFiles, setIsLoading, setFirstLoad } = filesStore;
-  const { validatePublicRoomKey } = publicRoomStore;
+  const { validatePublicRoomKey, isLoaded } = publicRoomStore;
 
   return {
-    fetchFiles,
+    isLoaded,
     withPaging,
-    setIsLoading,
-    setFirstLoad,
     validatePublicRoomKey,
   };
 })(observer(PublicRoom));

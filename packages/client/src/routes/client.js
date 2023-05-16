@@ -242,11 +242,11 @@ const ClientRoutes = [
   {
     path: "/rooms/share",
     element: (
-      <PrivateRoute>
+      <PublicRoute>
         <ErrorBoundary>
           <PublicRoom />
         </ErrorBoundary>
-      </PrivateRoute>
+      </PublicRoute>
     ),
   },
   {

@@ -3,10 +3,21 @@ import api from "@docspace/common/api";
 
 class PublicRoomStore {
   externalLinks = [];
+  roomTitle = null;
+  roomId = null;
+  isLoaded = false;
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  setRoomData = (data) => {
+    const { id, roomType, status, title } = data;
+
+    this.roomTitle = title;
+    this.roomId = id;
+    this.isLoaded = true;
+  };
 
   getExternalLinks = async (roomId) => {
     const type = 1;
@@ -55,6 +66,10 @@ class PublicRoomStore {
 
   validatePublicRoomKey = (key) => {
     return api.rooms.validatePublicRoomKey(key);
+  };
+
+  validatePublicRoomPassword = (key, password) => {
+    return api.rooms.validatePublicRoomPassword(key, password);
   };
 }
 
