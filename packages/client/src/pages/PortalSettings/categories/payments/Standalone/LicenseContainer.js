@@ -6,12 +6,20 @@ import Text from "@docspace/components/text";
 import FileInput from "@docspace/components/file-input";
 import Button from "@docspace/components/button";
 import { StyledButtonComponent } from "./StyledComponent";
+import { toastr } from "@docspace/components";
 
 const LicenseContainer = (props) => {
-  const { t } = props;
-  const onLicenseFileHandler = (file) => {};
+  const { t, setPaymentsLicense, acceptPaymentsLicense } = props;
+  const onLicenseFileHandler = (file) => {
+    let fd = new FormData();
+    fd.append("files", file);
 
-  const onClickUpload = () => {};
+    setPaymentsLicense(null, fd);
+  };
+
+  const onClickUpload = () => {
+    acceptPaymentsLicense();
+  };
   return (
     <div className="payments_license">
       <Text fontWeight={700} fontSize="16px">
@@ -49,7 +57,7 @@ const LicenseContainer = (props) => {
 };
 
 export default inject(({ payments }) => {
-  const {} = payments;
+  const { setPaymentsLicense, acceptPaymentsLicense } = payments;
 
-  return {};
+  return { setPaymentsLicense, acceptPaymentsLicense };
 })(withRouter(observer(LicenseContainer)));

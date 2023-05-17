@@ -198,12 +198,15 @@ class PaymentStore {
   };
 
   setPaymentsLicense = async (confirmKey, data) => {
-    const response = await setLicense(confirmKey, data);
+    try {
+      const message = await setLicense(confirmKey, data);
 
-    this.acceptPaymentsLicense();
-    this.getSettingsPayment();
+      toastr.success(message);
+    } catch (e) {
+      toastr.error(e);
+    }
 
-    return response;
+
   };
 
   acceptPaymentsLicense = async () => {
