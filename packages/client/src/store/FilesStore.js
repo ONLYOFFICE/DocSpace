@@ -51,6 +51,7 @@ class FilesStore {
   thirdPartyStore;
 
   accessRightsStore;
+  publicRoomStore;
 
   isLoaded = false;
   isLoading = false;
@@ -135,7 +136,8 @@ class FilesStore {
     treeFoldersStore,
     filesSettingsStore,
     thirdPartyStore,
-    accessRightsStore
+    accessRightsStore,
+    publicRoomStore
   ) {
     const pathname = window.location.pathname.toLowerCase();
     this.isEditor = pathname.indexOf("doceditor") !== -1;
@@ -148,6 +150,7 @@ class FilesStore {
     this.filesSettingsStore = filesSettingsStore;
     this.thirdPartyStore = thirdPartyStore;
     this.accessRightsStore = accessRightsStore;
+    this.publicRoomStore = publicRoomStore;
 
     this.roomsController = new AbortController();
     this.filesController = new AbortController();
@@ -1022,7 +1025,9 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
-    const key = `UserFilter=${this.authStore.userStore.user.id}`;
+    if (this.isPublicRoom) return;
+
+    const key = `UserFilter=${this.authStore.userStore.user?.id}`;
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
@@ -1140,6 +1145,23 @@ class FilesStore {
     return res;
   };
 
+  getFolder = (folderId, filterData, signal, isRooms) => {
+    if (window.location.pathname === "/rooms/share") {
+      if (typeof folderId !== "object") {
+        return api.rooms.getPublicRoom(folderId, this.publicRoomKey);
+      } else {
+        return api.rooms.getPublicRoom(
+          this.publicRoomStore.roomId,
+          this.publicRoomKey
+        );
+      }
+    } else if (isRooms) {
+      return api.rooms.getRooms(filterData, signal);
+    } else {
+      return api.files.getFolder(folderId, filterData, signal);
+    }
+  };
+
   fetchFiles = (
     folderId,
     filter,
@@ -1184,8 +1206,7 @@ class FilesStore {
 
     setSelectedNode([folderId + ""]);
 
-    return api.files
-      .getFolder(folderId, filterData, this.filesController.signal)
+    return this.getFolder(folderId, filterData, this.filesController.signal)
       .then(async (data) => {
         filterData.total = data.total;
 
@@ -1274,7 +1295,7 @@ class FilesStore {
             const folderInfo =
               data.current.id === folderId
                 ? data.current
-                : await api.files.getFolderInfo(folderId);
+                : await api.files.getFolderInfo(folderId, this.publicRoomKey);
 
             const {
               id,
@@ -1389,7 +1410,7 @@ class FilesStore {
     const filterData = !!filter ? filter.clone() : RoomsFilter.getDefault();
 
     const filterStorageItem = localStorage.getItem(
-      `UserRoomsFilter=${this.authStore.userStore.user.id}`
+      `UserRoomsFilter=${this.authStore.userStore.user?.id}`
     );
 
     if (filterStorageItem && !filter) {
@@ -1408,8 +1429,7 @@ class FilesStore {
     if (folderId) setSelectedNode([folderId + ""]);
 
     const request = () =>
-      api.rooms
-        .getRooms(filterData, this.roomsController.signal)
+      this.getFolder(_, filterData, this.roomsController.signal, true)
         .then(async (data) => {
           if (!folderId) setSelectedNode([data.current.id + ""]);
 
@@ -3516,6 +3536,17 @@ class FilesStore {
           searchInContent;
 
     return isFiltered;
+  }
+
+  get isPublicRoom() {
+    return this.publicRoomStore.isLoaded;
+  }
+
+  get publicRoomKey() {
+    if (window.location.pathname === "/rooms/share") {
+      return location.search.substring(5, location.search.length);
+    }
+    return null;
   }
 }
 
