@@ -205,14 +205,15 @@ class PaymentStore {
     } catch (e) {
       toastr.error(e);
     }
-
-
   };
 
-  acceptPaymentsLicense = async () => {
-    const response = await acceptLicense().then((res) => console.log(res));
-
-    return response;
+  acceptPaymentsLicense = async (t) => {
+    try {
+      await acceptLicense();
+      toastr.success(t("ActivateLicenseActivated"));
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   setPaymentAccount = async () => {

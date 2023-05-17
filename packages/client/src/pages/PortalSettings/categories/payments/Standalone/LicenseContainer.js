@@ -18,7 +18,7 @@ const LicenseContainer = (props) => {
   };
 
   const onClickUpload = () => {
-    acceptPaymentsLicense();
+    acceptPaymentsLicense(t);
   };
   return (
     <div className="payments_license">
