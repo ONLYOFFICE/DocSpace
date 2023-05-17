@@ -44,6 +44,10 @@ const SectionBodyContent = (props) => {
   } = props;
 
   useEffect(() => {
+    return () => window?.getSelection()?.removeAllRanges();
+  }, []);
+
+  useEffect(() => {
     const customScrollElm = document.querySelector(
       "#customScrollBar > .scroll-body"
     );
