@@ -26,6 +26,7 @@ export const LabledInput = ({
   onChange,
   name,
   mask,
+  hasError,
   required = false,
 }) => {
   return (
@@ -38,6 +39,7 @@ export const LabledInput = ({
         value={value}
         onChange={onChange}
         required={required}
+        hasError={hasError}
         {...(mask ? { mask: mask } : {})}
       />
     </Label>

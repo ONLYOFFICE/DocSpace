@@ -19,10 +19,20 @@ const Footer = styled.div`
   }
 `;
 
+function validateUrl(url) {
+  try {
+    new URL(url);
+  } catch (error) {
+    return false;
+  }
+  return true;
+}
+
 const WebhookDialog = (props) => {
   const { visible, onClose, header, isSettingsModal, onSubmit, webhook } = props;
 
   const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
+  const [isUrlValid, setIsUrlValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
 
   const [webhookInfo, setWebhookInfo] = useState({
@@ -50,7 +60,7 @@ const WebhookDialog = (props) => {
   };
 
   const handleSubmitClick = () => {
-    if (isPasswordValid || isResetVisible) {
+    if (isUrlValid && (isPasswordValid || isResetVisible)) {
       submitButtonRef.current.click();
     }
   };
@@ -84,6 +94,11 @@ const WebhookDialog = (props) => {
     });
   }, [webhook]);
 
+  useEffect(() => {
+    const isValid = validateUrl(webhookInfo.uri);
+    isValid !== isUrlValid && setIsUrlValid(isValid);
+  }, [webhookInfo.uri]);
+
   const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onModalClose();
 
   return (
@@ -106,6 +121,7 @@ const WebhookDialog = (props) => {
             name="uri"
             value={webhookInfo.uri}
             onChange={onInputChange}
+            hasError={!isUrlValid}
             required
           />
           <SSLVerification value={webhookInfo.ssl} onChange={onInputChange} />
