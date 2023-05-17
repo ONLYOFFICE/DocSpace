@@ -1,6 +1,5 @@
 {
   "AccessingProblem": "If you are an existing user and have problems accessing this space please contact the administrator.",
-  "ActivateLicense": "Activate license",
   "AdministratorDescription": "DocSpace configuration, room creation and administration, ability to invite and manage users in DocSpace and in virtual rooms, ability to manage access rights.",
   "Benefits": "Benefits",
   "BusinessExpired": "Your {{planName}} plan has expired on {{date}}",
@@ -41,7 +40,6 @@
   "UpgradePlan": "Upgrade plan",
   "UpgradePlanInfo": "By adding new users you will exceed the maximum number of room members allowed by your current pricing plan.",
   "UploadActivationLicense": "To activate the renewal you already bought, upload it below and click the Activate button.",
-  "UploadLicenseFile": "Upload license file",
   "UserNotFound": "User <1>{{email}}</1> is not found.",
   "UserNotFoundMatchingEmail": "We couldn’t find the user with the matching Stripe e-mail.",
   "YourPrice": "Your price"

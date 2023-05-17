@@ -1,5 +1,6 @@
 {
   "ActivateLicenseActivated": "License activated",
+  "ActivateLicense": "Activate license",
   "ActivatePurchaseBuyLicense": "To buy license, click the button below.",
   "ActivatePurchaseBuyNow": "Buy now",
   "ActivatePurchaseRenewLicense": "To continue getting support and updates, buy a renewal.",
@@ -34,5 +35,6 @@
   "UpgradeToProBannerItemScalabilityHeader": "Scalability and clustering.",
   "UpgradeToProBannerItemSupportDescr": "Get quick professional help for all the issues you face.",
   "UpgradeToProBannerItemSupportHeader": "Tech support.",
-  "UpgradeToProHeader": "Free access to pro features"
+  "UpgradeToProHeader": "Free access to pro features",
+  "UploadLicenseFile": "Upload license file"
 }

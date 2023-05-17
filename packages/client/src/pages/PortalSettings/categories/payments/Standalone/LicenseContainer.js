@@ -55,7 +55,7 @@ const LicenseContainer = (props) => {
   return (
     <div className="payments_license">
       <Text fontWeight={700} fontSize="16px">
-        {t("Payments:ActivateLicense")}
+        {t("ActivateLicense")}
       </Text>
 
       <Text
@@ -70,7 +70,7 @@ const LicenseContainer = (props) => {
         scale
         size="base"
         accept=".lic"
-        placeholder={t("Payments:UploadLicenseFile")}
+        placeholder={t("UploadLicenseFile")}
         onInput={onLicenseFileHandler}
         isDisabled={isLicenseUploading || isLoading}
         isLoading={isLicenseUploading}
