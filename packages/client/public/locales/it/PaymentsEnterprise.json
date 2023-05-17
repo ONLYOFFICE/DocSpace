@@ -9,7 +9,7 @@
   "ActivateTariffDescr": "‎Stai usando‎ ONLYOFFICE DocSpace Enterprise.",
   "ActivateTariffEnterpriseExpiration": "Your subscription expires on {{date}}.",
   "ActivateTariffEnterpriseTrialDescr": "You are using the trial version of ONLYOFFICE Workspace Enterprise Edition.",
-  "ActivateTariffEnterpriseTrialExpiration": "La tua prova scade il {0}.",
+  "ActivateTariffEnterpriseTrialExpiration": "La tua prova scade il {{date}}.",
   "ActivateToProBannerHeaderTrial": "Acquista la versione Enterprise completa per ottenere:",
   "ActivateUploadDescr": "To activate your license, upload it below and click the Activate.",
   "TopBottonsEnterpriseExpired": "Your subscription to support and updates has expired",
