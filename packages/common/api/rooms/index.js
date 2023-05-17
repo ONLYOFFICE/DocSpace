@@ -375,3 +375,10 @@ export function validatePublicRoomPassword(key, password) {
     data: { password },
   });
 }
+
+export function getPublicRoom(id, key) {
+  return request({
+    method: "get",
+    url: `files/${id}?share=${key}`,
+  });
+}
