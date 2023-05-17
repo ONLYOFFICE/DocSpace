@@ -14,7 +14,7 @@ import { objectToGetParams, loadScript } from "@docspace/common/utils";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
 import BreakpointWarning from "SRC_DIR/components/BreakpointWarning";
-import { SortByFieldName } from "../../../../helpers/constants";
+import { SortByFieldName } from "../../../../../helpers/constants";
 
 const Controls = styled(Box)`
   width: 500px;
