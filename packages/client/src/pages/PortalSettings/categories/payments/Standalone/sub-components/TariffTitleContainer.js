@@ -11,7 +11,7 @@ const TariffTitleContainer = ({
   trialDaysLeft,
   paymentDate,
 }) => {
-  const { t } = useTranslation(["PaymentsEnterprise", "Payments", "Common"]);
+  const { t } = useTranslation(["PaymentsEnterprise", "Common"]);
   const alertComponent = () => {
     if (isTrial) {
       return isLicenseDateExpires ? (
@@ -28,7 +28,7 @@ const TariffTitleContainer = ({
           fontWeight={600}
           fontSize="14px"
         >
-          {t("Payments:FreeDaysLeft", { count: trialDaysLeft })}
+          {t("FreeDaysLeft", { count: trialDaysLeft })}
         </Text>
       );
     }

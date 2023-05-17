@@ -22,12 +22,7 @@ const StandalonePage = (props) => {
     isEnterprise,
     isTrial,
   } = props;
-  const { t, ready } = useTranslation([
-    "PaymentsEnterprise",
-    "Payments",
-    "Common",
-    "Settings",
-  ]);
+  const { t, ready } = useTranslation(["PaymentsEnterprise", "Common"]);
 
   useEffect(() => {
     enterpriseInit();
