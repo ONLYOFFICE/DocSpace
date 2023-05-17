@@ -43,10 +43,13 @@ export function getReferenceData(object) {
   return request(options);
 }
 
-export function getFolderInfo(folderId) {
+export function getFolderInfo(folderId, shareKey) {
+  let key = "";
+  if (shareKey) key = `?share=${shareKey}`;
+
   const options = {
     method: "get",
-    url: `/files/folder/${folderId}`,
+    url: `/files/folder/${folderId}${key}`,
   };
 
   return request(options);
