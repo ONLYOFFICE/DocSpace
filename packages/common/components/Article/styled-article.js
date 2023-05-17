@@ -396,9 +396,9 @@ const StyledProfileWrapper = styled.div`
 const StyledArticleAlertsComponent = styled.div`
   margin: 32px 0;
 
-  div:last-child {
-    margin-top: 20px;
-  }
+  display: flex;
+  flex-wrap: wrap;
+  row-gap: 20px;
 `;
 export {
   StyledArticle,

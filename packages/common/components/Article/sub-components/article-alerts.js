@@ -17,21 +17,33 @@ const ArticleAlerts = ({
   isLicenseDateExpires,
   isEnterprise,
   isTrial,
+  standalone,
 }) => {
-  return (
-    <StyledArticleAlertsComponent>
-      {isPaymentPageAvailable &&
+  const paymentsAlertsComponent = () => {
+    if (!standalone) {
+      return (
+        isPaymentPageAvailable &&
         !isNonProfit &&
         (isFreeTariff || isGracePeriod) &&
-        showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />}
+        showText && <ArticlePaymentAlert isFreeTariff={isFreeTariff} />
+      );
+    }
 
-      {isEnterprise &&
-        !isTrial &&
-        (isLicenseExpiring || isLicenseDateExpires) &&
-        showText && <ArticleEnterpriseAlert />}
+    const isVisibleStandaloneAlert = isTrial
+      ? true
+      : isLicenseExpiring || isLicenseDateExpires;
 
-      {isEnterprise && isTrial && showText && <ArticleEnterpriseAlert />}
+    return (
+      isPaymentPageAvailable &&
+      isEnterprise &&
+      isVisibleStandaloneAlert &&
+      showText && <ArticleEnterpriseAlert />
+    );
+  };
 
+  return (
+    <StyledArticleAlertsComponent>
+      {paymentsAlertsComponent()}
       {isTeamTrainingAlertAvailable && showText && <ArticleTeamTrainingAlert />}
     </StyledArticleAlertsComponent>
   );
@@ -53,7 +65,7 @@ export default withRouter(
       isLicenseExpiring,
       isLicenseDateExpires,
     } = currentTariffStatusStore;
-    const { showText } = settingsStore;
+    const { showText, standalone } = settingsStore;
 
     return {
       isEnterprise,
@@ -66,6 +78,7 @@ export default withRouter(
       isLicenseExpiring,
       isLicenseDateExpires,
       isTrial,
+      standalone,
     };
   })(observer(ArticleAlerts))
 );
