@@ -1985,7 +1985,7 @@ export default inject(
 
     return {
       user,
-      userId: user.id,
+      userId: user?.id,
       selectedFolderId: selectedFolderStore.id,
       selectedItem: filter.selectedItem,
       filter,

@@ -182,7 +182,7 @@ export default inject(({ auth, peopleStore, filesStore }) => {
     filter,
     fetchPeople: getUsersList,
     setIsLoading,
-    userId: auth.userStore.user.id,
+    userId: auth.userStore.user?.id,
     infoPanelVisible,
     withPaging,
   };

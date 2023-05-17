@@ -5,15 +5,25 @@ import Section from "@docspace/common/components/Section";
 import Loader from "@docspace/components/loader";
 import { ValidationResult } from "../../helpers/constants";
 
-import SectionHeaderContent from "./Header";
-import SectionFilterContent from "./Filter";
-import SectionBodyContent from "./Body";
+import SectionHeaderContent from "../Home/Section/Header";
+import SectionFilterContent from "../Home/Section/Filter";
+import SectionBodyContent from "../Home/Section/Body";
+// import SectionHeaderContent from "./Header";
+// import SectionFilterContent from "./Filter";
+// import SectionBodyContent from "./Body";
 
 import RoomPassword from "./sub-components/RoomPassword";
 
 const PublicRoom = (props) => {
-  const { isLoaded, isLoading, roomStatus, withPaging, validatePublicRoomKey } =
-    props;
+  const {
+    isLoaded,
+    isLoading,
+    roomStatus,
+    roomId,
+    withPaging,
+    validatePublicRoomKey,
+    fetchFiles,
+  } = props;
 
   const location = useLocation();
   const key = location.search.substring(5, location.search.length);
@@ -21,6 +31,10 @@ const PublicRoom = (props) => {
   useEffect(() => {
     validatePublicRoomKey(key);
   }, [validatePublicRoomKey]);
+
+  useEffect(() => {
+    isLoaded && fetchFiles(roomId);
+  }, [fetchFiles, isLoaded]);
 
   const roomPage = () => (
     <Section
@@ -71,15 +85,19 @@ const PublicRoom = (props) => {
   return isLoading ? renderLoader() : isLoaded ? roomPage() : renderPage();
 };
 
-export default inject(({ auth, publicRoomStore }) => {
+export default inject(({ auth, filesStore, publicRoomStore }) => {
   const { withPaging } = auth.settingsStore;
-  const { validatePublicRoomKey, isLoaded, isLoading, roomStatus } =
+  const { validatePublicRoomKey, isLoaded, isLoading, roomStatus, roomId } =
     publicRoomStore;
 
+  const { fetchFiles } = filesStore;
+
   return {
+    roomId,
     isLoaded,
     isLoading,
     roomStatus,
+    fetchFiles,
 
     withPaging,
     validatePublicRoomKey,

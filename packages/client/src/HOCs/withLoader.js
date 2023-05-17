@@ -53,12 +53,15 @@ const withLoader = (WrappedComponent) => (Loader) => {
       }
     }, [isEditor, firstLoad, isLoaded, isMobile, inLoad]);
 
-    return (!isEditor && firstLoad && !isGallery) ||
-      !isLoaded ||
-      (isMobile && inLoad && !firstLoad) ||
-      (isLoadingFilesFind && !Loader) ||
-      !tReady ||
-      !isInit ? (
+    const isPublic = true;
+
+    return !isPublic &&
+      ((!isEditor && firstLoad && !isGallery) ||
+        !isLoaded ||
+        (isMobile && inLoad && !firstLoad) ||
+        (isLoadingFilesFind && !Loader) ||
+        !tReady ||
+        !isInit) ? (
       Loader ? (
         Loader
       ) : viewAs === "tile" ? (
@@ -74,13 +77,8 @@ const withLoader = (WrappedComponent) => (Loader) => {
   };
 
   return inject(({ auth, filesStore }) => {
-    const {
-      firstLoad,
-      isLoading,
-      viewAs,
-      isLoadingFilesFind,
-      isInit,
-    } = filesStore;
+    const { firstLoad, isLoading, viewAs, isLoadingFilesFind, isInit } =
+      filesStore;
     const { settingsStore } = auth;
     const { setIsBurgerLoading } = settingsStore;
     return {

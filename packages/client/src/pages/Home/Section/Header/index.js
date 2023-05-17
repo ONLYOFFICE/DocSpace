@@ -48,6 +48,7 @@ import Navigation from "@docspace/common/components/Navigation";
 import { Events, EmployeeType, RoomsType } from "@docspace/common/constants";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 import withLoader from "../../../../HOCs/withLoader";
+import { getLogoFromPath } from "@docspace/common/utils";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -181,6 +182,9 @@ const SectionHeaderContent = (props) => {
     setInvitePanelOptions,
     isEmptyPage,
     pathParts,
+    isPublicRoomInit,
+    theme,
+    whiteLabelLogoUrls,
   } = props;
 
   const navigate = useNavigate();
@@ -862,6 +866,10 @@ const SectionHeaderContent = (props) => {
       ? t("Common:Accounts")
       : title;
 
+  const logo = !theme.isBase
+    ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
+
   return (
     <Consumer key="header">
       {(context) => (
@@ -913,7 +921,8 @@ const SectionHeaderContent = (props) => {
                 onPlusClick={onCreateRoom}
                 isEmptyPage={isEmptyPage}
                 isRoom={isRoom}
-                hideInfoPanel={isSettingsPage}
+                hideInfoPanel={isSettingsPage || isPublicRoomInit}
+                withLogo={isPublicRoomInit && logo}
               />
             </div>
           )}
@@ -936,7 +945,8 @@ export default inject(
 
     contextOptionsStore,
   }) => {
-    const { isOwner, isAdmin } = auth.userStore.user;
+    const isOwner = auth.userStore.user?.isOwner;
+    const isAdmin = auth.userStore.user?.isAdmin;
 
     const {
       setSelected,
@@ -1006,7 +1016,7 @@ export default inject(
 
     const selectedFolder = { ...selectedFolderStore };
 
-    const { enablePlugins } = auth.settingsStore;
+    const { enablePlugins, theme, whiteLabelLogoUrls } = auth.settingsStore;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
@@ -1136,6 +1146,7 @@ export default inject(
       moveToRoomsPage,
       onClickBack,
       isPublicRoom,
+      isPublicRoomInit: filesStore.isPublicRoom,
 
       getAccountsHeaderMenu,
       isAccountsHeaderVisible,
@@ -1149,6 +1160,8 @@ export default inject(
       isAdmin,
       setInvitePanelOptions,
       isEmptyPage,
+      theme,
+      whiteLabelLogoUrls,
     };
   }
 )(
