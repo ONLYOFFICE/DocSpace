@@ -6,10 +6,10 @@ class PublicRoomStore {
   externalLinks = [];
   roomTitle = null;
   roomId = null;
-  isLoaded = false;
   roomStatus = null;
   roomType = null;
 
+  isLoaded = false;
   isLoading = false;
 
   constructor() {

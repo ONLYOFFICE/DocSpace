@@ -1984,10 +1984,15 @@ class FilesActionStore {
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
+    const isPublicRoom = this.filesStore.isPublicRoom;
 
     const urlFilter = getObjectByLocation(location);
 
     const isArchivedRoom = !!(CategoryType.Archive && urlFilter?.folder);
+
+    if (isPublicRoom) {
+      return this.backToParentFolder();
+    }
 
     if (categoryType === CategoryType.SharedRoom || isArchivedRoom) {
       if (isRoom) {
