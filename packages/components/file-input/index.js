@@ -7,6 +7,7 @@ import IconButton from "../icon-button";
 import Button from "../button";
 import TextInput from "../text-input";
 import StyledFileInput from "./styled-file-input";
+import Loader from "../loader";
 
 class FileInput extends Component {
   constructor(props) {
@@ -73,6 +74,7 @@ class FileInput extends Component {
       id,
       onInput, // eslint-disable-line no-unused-vars
       buttonLabel,
+      isLoading,
       ...rest
     } = this.props;
 
@@ -116,7 +118,7 @@ class FileInput extends Component {
           placeholder={placeholder}
           value={fileName}
           size={size}
-          isDisabled={isDisabled}
+          isDisabled={isDisabled || isLoading}
           hasError={hasError}
           hasWarning={hasWarning}
           scale={scale}
@@ -141,13 +143,17 @@ class FileInput extends Component {
           />
         ) : (
           <div className="icon" onClick={this.onIconFileClick}>
-            <IconButton
-              className="icon-button"
-              iconName={CatalogFolderReactSvgUrl}
-              color={"#A3A9AE"}
-              size={iconSize}
-              isDisabled={isDisabled}
-            />
+            {isLoading ? (
+              <Loader className="loader" size="20px" type="track" />
+            ) : (
+              <IconButton
+                className="icon-button"
+                iconName={CatalogFolderReactSvgUrl}
+                color={"#A3A9AE"}
+                size={iconSize}
+                isDisabled={isDisabled}
+              />
+            )}
           </div>
         )}
       </StyledFileInput>
@@ -174,6 +180,8 @@ FileInput.propTypes = {
   id: PropTypes.string,
   /** Indicates that the field cannot be used (e.g not authorised, or changes not saved) */
   isDisabled: PropTypes.bool,
+  /** Tells when the button should show loader icon */
+  isLoading: PropTypes.bool,
   /** Used as HTML `name` property */
   name: PropTypes.string,
   /** Called when a file is selected */
@@ -190,6 +198,7 @@ FileInput.defaultProps = {
   hasWarning: false,
   hasError: false,
   isDisabled: false,
+  isLoading: false,
   accept: "",
 };
 

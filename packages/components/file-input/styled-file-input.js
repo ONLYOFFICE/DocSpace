@@ -78,6 +78,10 @@ const StyledFileInput = styled.div`
       (props.isDisabled && props.theme.input.disabledBorderColor) ||
       props.theme.input.borderColor};
     cursor: ${(props) => (props.isDisabled ? "default" : "pointer")};
+
+    .loader {
+      padding-top: 5px;
+    }
   }
 
   .icon-button {
