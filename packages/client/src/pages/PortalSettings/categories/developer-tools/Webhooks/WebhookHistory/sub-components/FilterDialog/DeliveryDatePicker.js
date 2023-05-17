@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import moment from "moment";
 import { inject, observer } from "mobx-react";
 
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 import { Text } from "@docspace/components";
 import { SelectorAddButton } from "@docspace/components";
@@ -10,6 +10,7 @@ import { SelectedItem } from "@docspace/components";
 
 import { Calendar } from "@docspace/components";
 import { TimePicker } from "@docspace/components";
+import { isMobileOnly } from "react-device-detect";
 
 const TimePickerCell = styled.span`
   margin-left: 8px;
@@ -23,10 +24,15 @@ const TimePickerCell = styled.span`
   }
 `;
 
-const MobileCalendar = styled(Calendar)`
-  position: fixed;
-  bottom: 0;
-  left: 0;
+const StyledCalendar = styled(Calendar)`
+  position: absolute;
+  ${(props) =>
+    props.isMobile &&
+    css`
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    `}
 `;
 
 const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsApplied }) => {
@@ -77,25 +83,15 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
     return () => document.removeEventListener("click", handleClick, { capture: true });
   }, []);
 
-  const CalendarElement = () =>
-    window.innerWidth >= 440 ? (
-      <Calendar
-        selectedDate={filters.deliveryDate}
-        setSelectedDate={setDeliveryDate}
-        onChange={closeCalendar}
-        isMobile={false}
-        forwardedRef={calendarRef}
-        className="calendar"
-      />
-    ) : (
-      <MobileCalendar
-        selectedDate={filters.deliveryDate}
-        setSelectedDate={setDeliveryDate}
-        onChange={closeCalendar}
-        isMobile={true}
-        forwardedRef={calendarRef}
-      />
-    );
+  const CalendarElement = () => (
+    <StyledCalendar
+      selectedDate={filters.deliveryDate}
+      setSelectedDate={setDeliveryDate}
+      onChange={closeCalendar}
+      isMobile={isMobileOnly}
+      forwardedRef={calendarRef}
+    />
+  );
 
   const DateSelector = () => (
     <div>

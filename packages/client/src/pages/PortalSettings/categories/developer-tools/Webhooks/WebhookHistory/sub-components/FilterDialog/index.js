@@ -25,9 +25,6 @@ const Selectors = styled.div`
   position: relative;
   margin-top: 12px;
   margin-bottom: 16px;
-  .calendar {
-    position: absolute;
-  }
 `;
 
 const Separator = styled.hr`
