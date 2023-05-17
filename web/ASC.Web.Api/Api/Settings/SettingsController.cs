@@ -144,10 +144,12 @@ public class SettingsController : BaseSettingsController
             Personal = _coreBaseSettings.Personal,
             DocSpace = !_coreBaseSettings.DisableDocSpace,
             Standalone = _coreBaseSettings.Standalone,
+            BaseDomain = _coreBaseSettings.Basedomain,
             Version = _configuration["version:number"] ?? "",
             TenantStatus = (await _tenantManager.GetCurrentTenantAsync()).Status,
             TenantAlias = Tenant.Alias,
-            EnableAdmMess = studioAdminMessageSettings.Enable || await _tenantExtra.IsNotPaidAsync()
+            EnableAdmMess = studioAdminMessageSettings.Enable || await _tenantExtra.IsNotPaidAsync(),
+            LegalTerms = _setupInfo.LegalTerms
         };
 
         if (_authContext.IsAuthenticated)

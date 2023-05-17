@@ -225,7 +225,6 @@ CMD ["ASC.Files.dll", "ASC.Files"]
 FROM dotnetrun AS files_services
 RUN apt-get -y update && \
     apt-get install -yq ffmpeg
-
 WORKDIR ${BUILD_PATH}/products/ASC.Files/service/
 
 COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
@@ -261,13 +260,13 @@ COPY --from=base --chown=onlyoffice:onlyoffice ${BUILD_PATH}/services/ASC.Socket
 CMD  ["server.js", "ASC.Socket.IO"]
 
 ## ASC.SsoAuth ##
-# FROM noderun AS ssoauth
-# WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
+FROM noderun AS ssoauth
+WORKDIR ${BUILD_PATH}/services/ASC.SsoAuth/
 
-# COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
-# COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
+COPY --chown=onlyoffice:onlyoffice docker-entrypoint.py ./docker-entrypoint.py
+COPY --from=base --chown=onlyoffice:onlyoffice  ${BUILD_PATH}/services/ASC.SsoAuth/service/ .
 
-# CMD ["app.js", "ASC.SsoAuth"]
+CMD ["app.js", "ASC.SsoAuth"]
 
 ## ASC.Studio.Notify ##
 FROM dotnetrun AS studio_notify

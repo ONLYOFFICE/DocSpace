@@ -38,7 +38,7 @@ const ChangePricingPlanDialog = ({
   const allowedStorageSpace = getConvertedSize(t, allowedStorageSizeByQuota);
   const currentStorageSpace = getConvertedSize(t, usedTotalStorageSizeCount);
 
-  const planMUsersLimitations = (
+  const planUsersLimitations = (
     <Text as="span" fontSize="13px">
       <Trans t={t} i18nKey="PlanUsersLimit" ns="DowngradePlanDialog">
         You wish to downgrade the team to
@@ -77,7 +77,7 @@ const ChangePricingPlanDialog = ({
         <Text fontSize="13px" isBold className="cannot-downgrade-plan">
           {t("CannotChangePlan")}
         </Text>
-        {planMUsersLimitations}
+        {planUsersLimitations}
         <br />
         {storagePlanLimitations}
 
@@ -90,12 +90,6 @@ const ChangePricingPlanDialog = ({
           label={t("Common:OKButton")}
           size="normal"
           primary={true}
-          onClick={onCloseModal}
-          tabIndex={3}
-        />
-        <Button
-          label={t("Common:CancelButton")}
-          size="normal"
           onClick={onCloseModal}
           tabIndex={3}
         />

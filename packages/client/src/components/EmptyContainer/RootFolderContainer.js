@@ -3,6 +3,7 @@ import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
 import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
 import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
@@ -15,7 +16,6 @@ import Loaders from "@docspace/common/components/Loaders";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { combineUrl } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import history from "@docspace/common/history";
 import config from "PACKAGE_FILE";
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
@@ -65,7 +65,7 @@ const RootFolderContainer = (props) => {
     setAlreadyFetchingRooms,
     categoryType,
     isEmptyPage,
-    setIsEmptyPage,
+
     isVisitor,
     isCollaborator,
     sectionWidth,
@@ -73,6 +73,8 @@ const RootFolderContainer = (props) => {
     security,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
+
+  const navigate = useNavigate();
 
   const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
@@ -102,14 +104,7 @@ const RootFolderContainer = (props) => {
   const roomHeader = "Welcome to DocSpace";
 
   useEffect(() => {
-    if (rootFolderType !== FolderType.COMMON) {
-      setIsEmptyPage(true);
-    } else {
-      setIsEmptyPage(false);
-    }
-
     return () => {
-      setIsEmptyPage(false);
       setIsLoadedEmptyPage(false);
     };
   }, []);
@@ -138,13 +133,7 @@ const RootFolderContainer = (props) => {
 
         const pathname = `${url}?${filterParamsStr}`;
 
-        history.push(
-          combineUrl(
-            window.DocSpaceConfig?.proxy?.url,
-            config.homepage,
-            pathname
-          )
-        );
+        navigate(pathname);
       })
       .finally(() => {
         setIsLoading(false);
@@ -355,15 +344,15 @@ const RootFolderContainer = (props) => {
 
   useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
 
-  if (isLoading) {
-    return (
-      <Loaders.EmptyContainerLoader
-        style={{ display: "none", marginTop: 32 }}
-        id="empty-container-loader"
-        viewAs={viewAs}
-      />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Loaders.EmptyContainerLoader
+  //       style={{ display: "none", marginTop: 32 }}
+  //       id="empty-container-loader"
+  //       viewAs={viewAs}
+  //     />
+  //   );
+  // }
 
   return (
     <EmptyContainer
@@ -396,7 +385,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
@@ -423,7 +412,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
       security,
     };

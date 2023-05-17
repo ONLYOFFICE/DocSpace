@@ -52,9 +52,9 @@ public class QuotaHelper
         }
     }
 
-    public async Task<QuotaDto> GetCurrentQuotaAsync()
+    public async Task<QuotaDto> GetCurrentQuotaAsync(bool refresh = false)
     {
-        var quota = await _tenantManager.GetCurrentTenantQuotaAsync();
+        var quota = await _tenantManager.GetCurrentTenantQuotaAsync(refresh);
         var priceInfo = await _tenantManager.GetProductPriceInfoAsync();
         var currentRegion = await _regionHelper.GetCurrentRegionInfoAsync();
 

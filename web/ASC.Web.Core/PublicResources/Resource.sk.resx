@@ -323,9 +323,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Majiteľ</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Názov portálu</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Prístup k portálu</value>
   </data>
@@ -379,5 +376,68 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Čo je nové</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Sledovanie prihlásení a akcií používateľov</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maximálna veľkosť súboru</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Veľkosť súboru by nemala presahovať {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Počet administrátorov by nemal presahovať {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Počet administrátorov</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatické zálohovanie a obnovenie</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Neobmedzený počet aktívnych miestností</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Počet miestností by nemal presahovať {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} úložného priestoru</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Použitý objem úložiska by nemal presahovať {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Úložného priestoru</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Miestnosti:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Použitý objem úložiska:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Používateľov v miestnosti:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Neobmedzený počet používateľov</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Počet používateľov by nemal presahovať {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Používateľov v miestnosti</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Počet používateľov v miestnosti by nemal presahovať {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding a personalizácia</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Počet administrátorov/pokročilých používateľov:</value>
   </data>
 </root>

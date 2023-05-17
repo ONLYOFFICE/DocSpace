@@ -186,8 +186,14 @@ public class SsoHandlerService
                         _log.DebugUserAlreadyAuthenticated(context.User.Identity);
                     }
                 }
-
-                userInfo = await AddUser(userInfo);
+                try
+                {
+                    userInfo = await AddUser(userInfo);
+                }
+                catch(Exception ex)
+                {
+                    _log.WarningWithException("Failed to save user", ex);
+                }
 
                 var authKey = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(userInfo.Tenant, userInfo.Id, MessageAction.LoginSuccessViaSSO);
 
@@ -228,12 +234,12 @@ public class SsoHandlerService
         catch (SSOException e)
         {
             _log.ErrorWithException(e);
-            await WriteErrorToResponse(context, e.MessageKey);
+            RedirectToLogin(context, e.MessageKey);
         }
         catch (Exception e)
         {
             _log.ErrorWithException(e);
-            await WriteErrorToResponse(context, MessageKey.Error);
+            RedirectToLogin(context, MessageKey.Error);
         }
         finally
         {
@@ -241,12 +247,17 @@ public class SsoHandlerService
             //context.ApplicationInstance.CompleteRequest();
         }
     }
+    private void RedirectToLogin(HttpContext context, MessageKey messageKey)
+    {
+        context.Response.Redirect(_commonLinkUtility.GetDefault() + "/login/error?messageKey=" + messageKey, false);
+    }
 
+    //TODO
     private async Task WriteErrorToResponse(HttpContext context, MessageKey messageKey)
     {
-        context.Response.StatusCode = 500;
-        context.Response.ContentType = "text/plain";
-        await context.Response.WriteAsync(((int)messageKey).ToString());
+         context.Response.StatusCode = 500;
+         context.Response.ContentType = "text/plain";
+         await context.Response.WriteAsync(((int)messageKey).ToString());
     }
 
     private async Task<UserInfo> AddUser(UserInfo userInfo)
@@ -289,7 +300,7 @@ public class SsoHandlerService
                     throw new Exception(Resource.ErrorIncorrectUserName);
                 }
 
-                await _userManager.SaveUserInfo(newUserInfo);
+                await _userManager.UpdateUserInfo(newUserInfo);
             }
 
             /*var photoUrl = samlResponse.GetRemotePhotoUrl();

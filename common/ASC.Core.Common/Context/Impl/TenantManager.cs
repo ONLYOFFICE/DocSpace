@@ -380,17 +380,17 @@ public class TenantManager
         return (await QuotaService.GetTenantQuotasAsync()).Where(q => q.Tenant < 0 && (all || q.Visible)).OrderByDescending(q => q.Tenant).ToList();
     }
 
-    public async Task<TenantQuota> GetCurrentTenantQuotaAsync()
+    public async Task<TenantQuota> GetCurrentTenantQuotaAsync(bool refresh = false)
     {
-        return await GetTenantQuotaAsync((await GetCurrentTenantAsync()).Id);
+        return await GetTenantQuotaAsync((await GetCurrentTenantAsync()).Id, refresh);
     }
 
-    public async Task<TenantQuota> GetTenantQuotaAsync(int tenant)
+    public async Task<TenantQuota> GetTenantQuotaAsync(int tenant, bool refresh = false)
     {
         var defaultQuota = await QuotaService.GetTenantQuotaAsync(tenant) ?? await QuotaService.GetTenantQuotaAsync(Tenant.DefaultTenant) ?? TenantQuota.Default;
         if (defaultQuota.Tenant != tenant && TariffService != null)
         {
-            var tariff = await TariffService.GetTariffAsync(tenant);
+            var tariff = await TariffService.GetTariffAsync(tenant, refresh: refresh);
 
             TenantQuota currentQuota = null;
             foreach (var tariffRow in tariff.Quotas)

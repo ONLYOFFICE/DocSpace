@@ -17,6 +17,7 @@
   "HideAuthPage": "Nascondi pagina di autenticazione",
   "LogoutEndpointUrl": "URL dell’endpoint di accesso singolo IdP",
   "LogoutEndpointUrlTooltip": "L’URL utilizzato per il single logout sul lato del fornitore di servizi",
+  "MetadataLoadError": "File metadata non è stato trasferito",
   "NameIDFormat": "Formato NameId",
   "NewCertificate": "Nuovo certificato",
   "OpenCertificate": "Certificato pubblico",

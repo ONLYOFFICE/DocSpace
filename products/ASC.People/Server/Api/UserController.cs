@@ -444,7 +444,7 @@ public class UserController : PeopleControllerBase
             throw new Exception(Resource.ErrorUserNotFound);
         }
 
-        if (user.IsLDAP())
+        if (user.IsLDAP() || user.IsOwner(Tenant))
         {
             throw new SecurityException();
         }
@@ -687,15 +687,15 @@ public class UserController : PeopleControllerBase
         }
     }
 
+    [AllowNotPayment]
     [HttpPut("invite")]
     public async IAsyncEnumerable<EmployeeFullDto> ResendUserInvitesAsync(UpdateMembersRequestDto inDto)
     {
-        await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
-
         IEnumerable<UserInfo> users = null;
 
         if (inDto.ResendAll)
         {
+            await _permissionContext.DemandPermissionsAsync(new UserSecurityProvider(Guid.Empty, EmployeeType.User), Constants.Action_AddRemoveUser);
             users = (await _userManager.GetUsersAsync()).Where(u => u.ActivationStatus == EmployeeActivationStatus.Pending);
         }
         else
@@ -870,6 +870,7 @@ public class UserController : PeopleControllerBase
         return string.Format(Resource.MessageYourPasswordSendedToEmail, inDto.Email);
     }
 
+    [AllowNotPayment]
     [HttpPut("activationstatus/{activationstatus}")]
     [Authorize(AuthenticationSchemes = "confirm", Roles = "Activation,Everyone")]
     public async IAsyncEnumerable<EmployeeFullDto> UpdateEmployeeActivationStatus(EmployeeActivationStatus activationstatus, UpdateMembersRequestDto inDto)

@@ -26,6 +26,7 @@ const StyledSsoPage = styled.div`
       display: flex;
       .toggle-caption_title_badge {
         margin-left: 4px;
+        cursor: auto;
       }
     }
   }
@@ -142,7 +143,7 @@ const StyledSsoPage = styled.div`
       width: 350px;
     }
 
-    p > div {
+    .label > div {
       display: inline-flex;
       margin-left: 4px;
     }

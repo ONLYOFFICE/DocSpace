@@ -1,10 +1,10 @@
 import React from "react";
-//import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+import { useLocation, Outlet } from "react-router-dom";
 import { isMobile } from "react-device-detect";
+import { observer, inject } from "mobx-react";
+import { withTranslation, Trans } from "react-i18next";
 import axios from "axios";
-import toastr from "@docspace/components/toast/toastr";
-import Section from "@docspace/common/components/Section";
+
 import {
   showLoader,
   hideLoader,
@@ -12,48 +12,122 @@ import {
   frameCallCommand,
   getObjectByLocation,
 } from "@docspace/common/utils";
+
 import FilesFilter from "@docspace/common/api/files/filter";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
+import AccountsFilter from "@docspace/common/api/people/filter";
 import { getGroup } from "@docspace/common/api/groups";
 import { getUserById } from "@docspace/common/api/people";
-import { withTranslation, Trans } from "react-i18next";
+import { Events } from "@docspace/common/constants";
+import Section from "@docspace/common/components/Section";
+
+import toastr from "@docspace/components/toast/toastr";
+
+import DragTooltip from "SRC_DIR/components/DragTooltip";
+import { getCategoryType, setDocumentTitle } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 import {
-  SectionBodyContent,
   SectionFilterContent,
   SectionHeaderContent,
   SectionPagingContent,
 } from "./Section";
+import AccountsDialogs from "./Section/AccountsBody/Dialogs";
+
 import MediaViewer from "./MediaViewer";
 import SelectionArea from "./SelectionArea";
-import DragTooltip from "../../components/DragTooltip";
-import { observer, inject } from "mobx-react";
-//import config from "PACKAGE_FILE";
-import { Consumer } from "@docspace/components/utils/context";
-import { Events } from "@docspace/common/constants";
-import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { getCategoryType } from "SRC_DIR/helpers/utils";
-import { CategoryType } from "SRC_DIR/helpers/constants";
 import { InfoPanelBodyContent, InfoPanelHeaderContent } from "./InfoPanel";
 
-class PureHome extends React.Component {
-  componentDidMount() {
-    const {
-      fetchFiles,
-      fetchRooms,
-      alreadyFetchingRooms,
-      setAlreadyFetchingRooms,
-      //homepage,
-      setIsLoading,
-      setFirstLoad,
-      setToPreviewFile,
-      playlist,
+const PureHome = (props) => {
+  const {
+    fetchFiles,
+    fetchRooms,
+    alreadyFetchingRooms,
+    setAlreadyFetchingRooms,
+    //homepage,
+    setIsLoading,
+    setFirstLoad,
+    setToPreviewFile,
+    playlist,
 
-      getFileInfo,
-      gallerySelected,
-      setIsUpdatingRowItem,
-      setIsPreview,
-      selectedFolderStore,
-    } = this.props;
+    getFileInfo,
+    gallerySelected,
+    setIsUpdatingRowItem,
+    setIsPreview,
+    selectedFolderStore,
+    t,
+    startUpload,
+    setDragging,
+    dragging,
+    uploadEmptyFolders,
+    disableDrag,
+    uploaded,
+    converted,
+    setUploadPanelVisible,
+    clearPrimaryProgressData,
+    primaryProgressDataVisible,
+    isProgressFinished,
+    secondaryProgressDataStoreIcon,
+    itemsSelectionLength,
+    itemsSelectionTitle,
+    setItemsSelectionTitle,
+    refreshFiles,
+    isHeaderVisible,
+    setHeaderVisible,
+    setFrameConfig,
+    user,
+    folders,
+    files,
+    selection,
+    filesList,
+
+    createFile,
+    createFolder,
+    createRoom,
+
+    setViewAs,
+    viewAs,
+
+    firstLoad,
+
+    isPrivacyFolder,
+    isRecycleBinFolder,
+    isErrorRoomNotAvailable,
+
+    primaryProgressDataPercent,
+    primaryProgressDataIcon,
+    primaryProgressDataAlert,
+    clearUploadedFilesHistory,
+
+    secondaryProgressDataStoreVisible,
+    secondaryProgressDataStorePercent,
+
+    secondaryProgressDataStoreAlert,
+
+    tReady,
+    isFrame,
+    showTitle,
+    showFilter,
+    frameConfig,
+    withPaging,
+    isEmptyPage,
+    isLoadedEmptyPage,
+
+    setPortalTariff,
+
+    accountsViewAs,
+    fetchPeople,
+    setSelectedNode,
+    onClickBack,
+  } = props;
+
+  const location = useLocation();
+
+  const isAccountsPage = location.pathname.includes("accounts");
+  const isSettingsPage = location.pathname.includes("settings");
+
+  React.useEffect(() => {
+    if (isAccountsPage || isSettingsPage) return;
 
     if (!window.location.href.includes("#preview")) {
       localStorage.removeItem("isFirstUrl");
@@ -80,7 +154,7 @@ class PureHome extends React.Component {
           })
           .catch((err) => {
             toastr.error(err);
-            this.fetchDefaultFiles();
+            fetchDefaultFiles();
           });
       }, 1);
 
@@ -101,7 +175,7 @@ class PureHome extends React.Component {
 
       if (!filterObj) {
         setIsLoading(true);
-        this.fetchDefaultRooms();
+        fetchDefaultRooms();
 
         return;
       }
@@ -110,7 +184,7 @@ class PureHome extends React.Component {
 
       if (!filterObj) {
         setIsLoading(true);
-        this.fetchDefaultFiles();
+        fetchDefaultFiles();
 
         return;
       }
@@ -236,11 +310,14 @@ class PureHome extends React.Component {
         setAlreadyFetchingRooms(false);
       });
 
-    window.addEventListener("message", this.handleMessage, false);
-  }
+    window.addEventListener("message", handleMessage, false);
 
-  fetchDefaultFiles = () => {
-    const { fetchFiles, setIsLoading, setFirstLoad } = this.props;
+    return () => {
+      window.removeEventListener("message", handleMessage, false);
+    };
+  }, []);
+
+  const fetchDefaultFiles = () => {
     const filterObj = FilesFilter.getDefault();
     const folderId = filterObj.folder;
 
@@ -250,24 +327,14 @@ class PureHome extends React.Component {
     });
   };
 
-  fetchDefaultRooms = () => {
-    const { fetchRooms, setIsLoading, setFirstLoad } = this.props;
-
+  const fetchDefaultRooms = () => {
     fetchRooms().finally(() => {
       setIsLoading(false);
       setFirstLoad(false);
     });
   };
 
-  onDrop = (files, uploadToFolder) => {
-    const {
-      t,
-      startUpload,
-      setDragging,
-      dragging,
-      uploadEmptyFolders,
-      disableDrag,
-    } = this.props;
+  const onDrop = (files, uploadToFolder) => {
     dragging && setDragging(false);
 
     if (disableDrag) return;
@@ -284,8 +351,7 @@ class PureHome extends React.Component {
     }
   };
 
-  showOperationToast = (type, qty, title) => {
-    const { t } = this.props;
+  const showOperationToast = (type, qty, title) => {
     switch (type) {
       case "move":
         if (qty > 1) {
@@ -318,63 +384,60 @@ class PureHome extends React.Component {
     }
   };
 
-  showUploadPanel = () => {
-    const {
-      uploaded,
-      converted,
-      setUploadPanelVisible,
-      clearPrimaryProgressData,
-      primaryProgressDataVisible,
-    } = this.props;
+  const showUploadPanel = () => {
     setUploadPanelVisible(true);
 
     if (primaryProgressDataVisible && uploaded && converted)
       clearPrimaryProgressData();
   };
-  componentDidUpdate(prevProps) {
-    const {
-      isProgressFinished,
-      secondaryProgressDataStoreIcon,
-      itemsSelectionLength,
-      itemsSelectionTitle,
-    } = this.props;
 
-    if (this.props.isHeaderVisible !== prevProps.isHeaderVisible) {
-      this.props.setHeaderVisible(this.props.isHeaderVisible);
+  const prevProps = React.useRef({
+    isHeaderVisible: isHeaderVisible,
+    isProgressFinished: isProgressFinished,
+  });
+
+  React.useEffect(() => {
+    if (isHeaderVisible !== prevProps.current.isHeaderVisible) {
+      setHeaderVisible(isHeaderVisible);
     }
+
+    if (isProgressFinished !== prevProps.current.isProgressFinished) {
+      if (!isAccountsPage && !isSettingsPage) {
+        setTimeout(() => {
+          refreshFiles();
+        }, 100);
+      }
+    }
+
     if (
       isProgressFinished &&
       itemsSelectionTitle &&
-      isProgressFinished !== prevProps.isProgressFinished
+      isProgressFinished !== prevProps.current.isProgressFinished
     ) {
-      this.showOperationToast(
+      showOperationToast(
         secondaryProgressDataStoreIcon,
         itemsSelectionLength,
         itemsSelectionTitle
       );
+      setItemsSelectionTitle(null);
     }
-  }
+  }, [
+    isAccountsPage,
+    isHeaderVisible,
+    setHeaderVisible,
+    isProgressFinished,
+    refreshFiles,
+    itemsSelectionTitle,
+    showOperationToast,
+    setItemsSelectionTitle,
+  ]);
 
-  componentWillUnmount() {
-    window.removeEventListener("message", this.handleMessage, false);
-  }
+  React.useEffect(() => {
+    prevProps.current.isHeaderVisible = isHeaderVisible;
+    prevProps.current.isProgressFinished = isProgressFinished;
+  }, [isHeaderVisible, isProgressFinished]);
 
-  handleMessage = async (e) => {
-    const {
-      setFrameConfig,
-      user,
-      folders,
-      files,
-      selection,
-      filesList,
-      selectedFolderStore,
-      createFile,
-      createFolder,
-      createRoom,
-      refreshFiles,
-      setViewAs,
-    } = this.props;
-
+  const handleMessage = async (e) => {
     const eventData = typeof e.data === "string" ? JSON.parse(e.data) : e.data;
 
     if (eventData.data) {
@@ -464,86 +527,103 @@ class PureHome extends React.Component {
     }
   };
 
-  render() {
-    //console.log("Home render");
-    const {
-      viewAs,
+  if (window.parent && !frameConfig && !isAccountsPage && !isSettingsPage) {
+    frameCallCommand("setConfig");
+  }
 
-      firstLoad,
-      isHeaderVisible,
-      isPrivacyFolder,
-      isRecycleBinFolder,
-      isErrorRoomNotAvailable,
+  React.useEffect(() => {
+    window.addEventListener("popstate", onClickBack);
 
-      primaryProgressDataVisible,
-      primaryProgressDataPercent,
-      primaryProgressDataIcon,
-      primaryProgressDataAlert,
-      clearUploadedFilesHistory,
+    return () => {
+      window.removeEventListener("popstate", onClickBack);
+    };
+  }, []);
 
-      secondaryProgressDataStoreVisible,
-      secondaryProgressDataStorePercent,
-      secondaryProgressDataStoreIcon,
-      secondaryProgressDataStoreAlert,
+  React.useEffect(() => {
+    if (!isAccountsPage) return;
+    if (location.pathname.indexOf("/accounts/filter") > -1) {
+      setSelectedNode(["accounts", "filter"]);
 
-      dragging,
-      tReady,
-      isFrame,
-      showTitle,
-      showFilter,
-      frameConfig,
-      withPaging,
-      isEmptyPage,
-      isLoadedEmptyPage,
-    } = this.props;
-
-    if (window.parent && !frameConfig) {
-      frameCallCommand("setConfig");
+      const newFilter = AccountsFilter.getFilter(location);
+      //console.log("PEOPLE URL changed", pathname, newFilter);
+      fetchPeople(newFilter, true).catch((err) => {
+        if (err?.response?.status === 402) setPortalTariff();
+      });
     }
+  }, [isAccountsPage, location, setSelectedNode]);
 
-    return (
-      <>
-        <MediaViewer />
-        <DragTooltip />
-        <SelectionArea />
+  React.useEffect(() => {
+    if (!isSettingsPage) return;
+    setDocumentTitle(t("Common:Settings"));
+  }, [t, tReady, isSettingsPage]);
 
-        <Section
-          withPaging={withPaging}
-          dragging={dragging}
-          withBodyScroll
-          withBodyAutoFocus={!isMobile}
-          uploadFiles
-          onDrop={isRecycleBinFolder || isPrivacyFolder ? null : this.onDrop}
-          showPrimaryProgressBar={primaryProgressDataVisible}
-          primaryProgressBarValue={primaryProgressDataPercent}
-          primaryProgressBarIcon={primaryProgressDataIcon}
-          showPrimaryButtonAlert={primaryProgressDataAlert}
-          showSecondaryProgressBar={secondaryProgressDataStoreVisible}
-          secondaryProgressBarValue={secondaryProgressDataStorePercent}
-          secondaryProgressBarIcon={secondaryProgressDataStoreIcon}
-          showSecondaryButtonAlert={secondaryProgressDataStoreAlert}
-          clearUploadedFilesHistory={clearUploadedFilesHistory}
-          viewAs={viewAs}
-          hideAside={
-            primaryProgressDataVisible || secondaryProgressDataStoreVisible //TODO: use hideArticle action
-          }
-          isLoaded={!firstLoad}
-          isHeaderVisible={isHeaderVisible}
-          onOpenUploadPanel={this.showUploadPanel}
-          firstLoad={firstLoad}
-          isEmptyPage={isEmptyPage}
-        >
-          {!isErrorRoomNotAvailable && (
-            <Section.SectionHeader>
-              {isFrame ? (
-                showTitle && <SectionHeaderContent />
-              ) : (
-                <SectionHeaderContent />
-              )}
-            </Section.SectionHeader>
-          )}
+  let sectionProps = {};
 
-          {!isLoadedEmptyPage && !isErrorRoomNotAvailable && (
+  if (isSettingsPage) {
+    sectionProps.isInfoPanelAvailable = false;
+    sectionProps.viewAs = "settings";
+  } else {
+    sectionProps = {
+      withPaging,
+      withBodyScroll: true,
+      withBodyAutoFocus: !isMobile,
+      firstLoad,
+      isLoaded: !firstLoad,
+      viewAs: accountsViewAs,
+    };
+
+    if (!isAccountsPage) {
+      sectionProps.dragging = dragging;
+      sectionProps.uploadFiles = true;
+      sectionProps.onDrop =
+        isRecycleBinFolder || isPrivacyFolder ? null : onDrop;
+
+      sectionProps.clearUploadedFilesHistory = clearUploadedFilesHistory;
+      sectionProps.viewAs = viewAs;
+      sectionProps.hideAside =
+        primaryProgressDataVisible || secondaryProgressDataStoreVisible;
+      sectionProps.isHeaderVisible = isHeaderVisible;
+
+      sectionProps.isEmptyPage = isEmptyPage;
+    }
+  }
+
+  sectionProps.onOpenUploadPanel = showUploadPanel;
+  sectionProps.showPrimaryProgressBar = primaryProgressDataVisible;
+  sectionProps.primaryProgressBarValue = primaryProgressDataPercent;
+  sectionProps.primaryProgressBarIcon = primaryProgressDataIcon;
+  sectionProps.showPrimaryButtonAlert = primaryProgressDataAlert;
+  sectionProps.showSecondaryProgressBar = secondaryProgressDataStoreVisible;
+  sectionProps.secondaryProgressBarValue = secondaryProgressDataStorePercent;
+  sectionProps.secondaryProgressBarIcon = secondaryProgressDataStoreIcon;
+  sectionProps.showSecondaryButtonAlert = secondaryProgressDataStoreAlert;
+
+  return (
+    <>
+      {isSettingsPage ? (
+        <></>
+      ) : isAccountsPage ? (
+        <AccountsDialogs />
+      ) : (
+        <>
+          <DragTooltip />
+          <SelectionArea />
+        </>
+      )}
+      <MediaViewer />
+      <Section {...sectionProps}>
+        {(!isErrorRoomNotAvailable || isAccountsPage || isSettingsPage) && (
+          <Section.SectionHeader>
+            {isFrame ? (
+              showTitle && <SectionHeaderContent />
+            ) : (
+              <SectionHeaderContent />
+            )}
+          </Section.SectionHeader>
+        )}
+
+        {((!isEmptyPage && !isErrorRoomNotAvailable) || isAccountsPage) &&
+          !isSettingsPage && (
             <Section.SectionFilter>
               {isFrame ? (
                 showFilter && <SectionFilterContent />
@@ -553,36 +633,28 @@ class PureHome extends React.Component {
             </Section.SectionFilter>
           )}
 
-          <Section.SectionBody>
-            <Consumer>
-              {(context) => (
-                <>
-                  <SectionBodyContent sectionWidth={context.sectionWidth} />
-                </>
-              )}
-            </Consumer>
-          </Section.SectionBody>
+        <Section.SectionBody>
+          <Outlet />
+        </Section.SectionBody>
 
-          <Section.InfoPanelHeader>
-            <InfoPanelHeaderContent />
-          </Section.InfoPanelHeader>
+        <Section.InfoPanelHeader>
+          <InfoPanelHeaderContent />
+        </Section.InfoPanelHeader>
+        <Section.InfoPanelBody>
+          <InfoPanelBodyContent />
+        </Section.InfoPanelBody>
 
-          <Section.InfoPanelBody>
-            <InfoPanelBodyContent />
-          </Section.InfoPanelBody>
+        {withPaging && !isSettingsPage && (
+          <Section.SectionPaging>
+            <SectionPagingContent tReady={tReady} />
+          </Section.SectionPaging>
+        )}
+      </Section>
+    </>
+  );
+};
 
-          {withPaging && (
-            <Section.SectionPaging>
-              <SectionPagingContent tReady={tReady} />
-            </Section.SectionPaging>
-          )}
-        </Section>
-      </>
-    );
-  }
-}
-
-const Home = withTranslation("Files")(PureHome);
+const Home = withTranslation(["Files", "People"])(PureHome);
 
 export default inject(
   ({
@@ -591,7 +663,7 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     mediaViewerDataStore,
-    settingsStore,
+    peopleStore,
     filesActionsStore,
     oformsStore,
   }) => {
@@ -642,6 +714,7 @@ export default inject(
       setExpandedKeys,
       isRoomsFolder,
       isArchiveFolder,
+      setSelectedNode,
     } = treeFoldersStore;
 
     const {
@@ -660,6 +733,7 @@ export default inject(
       isSecondaryProgressFinished: isProgressFinished,
       itemsSelectionLength,
       itemsSelectionTitle,
+      setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
     const {
@@ -669,7 +743,7 @@ export default inject(
       converted,
     } = uploadDataStore;
 
-    const { uploadEmptyFolders } = filesActionsStore;
+    const { uploadEmptyFolders, onClickBack } = filesActionsStore;
 
     const selectionLength = isProgressFinished ? selection.length : null;
     const selectionTitle = isProgressFinished
@@ -678,6 +752,10 @@ export default inject(
 
     const { setToPreviewFile, playlist } = mediaViewerDataStore;
 
+    const { settingsStore, currentTariffStatusStore } = auth;
+
+    const { setPortalTariff } = currentTariffStatusStore;
+
     const {
       isHeaderVisible,
       setHeaderVisible,
@@ -685,7 +763,16 @@ export default inject(
       frameConfig,
       isFrame,
       withPaging,
-    } = auth.settingsStore;
+      showCatalog,
+    } = settingsStore;
+
+    const {
+      usersStore,
+
+      viewAs: accountsViewAs,
+    } = peopleStore;
+
+    const { getUsersList: fetchPeople } = usersStore;
 
     if (!firstLoad) {
       if (isLoading) {
@@ -724,6 +811,7 @@ export default inject(
       selectionTitle,
 
       itemsSelectionLength,
+      setItemsSelectionTitle,
       itemsSelectionTitle,
       isErrorRoomNotAvailable,
       isRoomsFolder,
@@ -771,6 +859,12 @@ export default inject(
       withPaging,
       isEmptyPage,
       isLoadedEmptyPage,
+      setPortalTariff,
+
+      accountsViewAs,
+      fetchPeople,
+      setSelectedNode,
+      onClickBack,
     };
   }
-)(withRouter(observer(Home)));
+)(observer(Home));

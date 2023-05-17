@@ -310,9 +310,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Eigenaar</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Portaalnaam</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portaaltoegang</value>
   </data>
@@ -363,5 +360,68 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>What's New</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Gebruikersaanmeldingen en acties bijhouden</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maximale bestandsgrootte</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>De bestandsgrootte mag niet groter zijn dan {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Het aantal beheerders mag niet groter zijn dan {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Aantal beheerders</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatische back-up en herstel</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Onbeperkt aantal actieve kamers</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Het aantal kamers mag niet meer zijn dan {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} opslagruimte</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>De gebruikte opslagruimte mag niet groter zijn dan {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Opslagruimte</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Kamers:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Opslagruimte gebruikt:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Gebruikers in kamer:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Onbeperkt aantal gebruikers</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Het aantal gebruikers mag niet groter zijn dan {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Gebruikers in kamer</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Het aantal gebruikers in de kamer mag niet groter zijn dan {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding &amp; aanpassing</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Het aantal beheerders/power users:</value>
   </data>
 </root>

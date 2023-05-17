@@ -124,7 +124,7 @@ public class NotifyHelper
             var hash = (await _authManager.GetUserPasswordStampAsync(user.Id)).ToString("s");
             var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-            Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
+            var greenButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
 
             await client.SendNoticeToAsync(
                 Actions.RestoreCompletedV115,
@@ -146,7 +146,7 @@ public class NotifyHelper
 
         if (users.Length > 0)
         {
-            var args = CreateArgs(region, url);
+            var args = await CreateArgsAsync(region, url);
             if (action == Actions.MigrationPortalSuccessV115)
             {
                 foreach (var user in users)
@@ -157,7 +157,7 @@ public class NotifyHelper
                     var hash = (await _authManager.GetUserPasswordStampAsync(user.Id)).ToString("s");
                     var confirmationUrl = url + "/" + _commonLinkUtility.GetConfirmationUrlRelative(newTenantId, user.Email, ConfirmType.PasswordChange, hash, user.Id);
 
-                    Func<string> greenButtonText = () => BackupResource.ButtonSetPassword;
+                    var greenButtonText = BackupResource.ResourceManager.GetString("ButtonSetPassword", GetCulture(user));
                     currentArgs.Add(TagValues.GreenButton(greenButtonText, confirmationUrl));
 
                     await client.SendNoticeToAsync(
@@ -180,7 +180,7 @@ public class NotifyHelper
         }
     }
 
-    private List<ITagValue> CreateArgs(string region, string url)
+    private async Task<List<ITagValue>> CreateArgsAsync(string region, string url)
     {
         var args = new List<ITagValue>()
                     {
@@ -192,16 +192,26 @@ public class NotifyHelper
         {
             args.Add(new TagValue(CommonTags.VirtualRootPath, url));
             args.Add(new TagValue(CommonTags.ProfileUrl, url + _commonLinkUtility.GetMyStaff()));
-
-            var attachment = _tenantLogoManager.GetMailLogoAsAttacmentAsync().Result;
-
-            if (attachment != null)
-            {
-                args.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                args.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-            }
+            args.Add(new TagValue(CommonTags.LetterLogo, await _tenantLogoManager.GetLogoDarkAsync(false)));
         }
 
         return args;
+    }
+
+    private CultureInfo GetCulture(UserInfo user)
+    {
+        CultureInfo culture = null;
+
+        if (!string.IsNullOrEmpty(user.CultureName))
+        {
+            culture = user.GetCulture();
+        }
+
+        if (culture == null)
+        {
+            culture = _tenantManager.GetCurrentTenant(false)?.GetCulture();
+        }
+
+        return culture;
     }
 }

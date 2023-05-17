@@ -7,9 +7,7 @@ import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import SaveCancelButtons from "@docspace/components/save-cancel-buttons";
 import { inject, observer } from "mobx-react";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
-import history from "@docspace/common/history";
+import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -33,13 +31,15 @@ const PortalRenaming = (props) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
+    domain,
   } = props;
+
+  const navigate = useNavigate();
 
   const portalNameFromSessionStorage = getFromSessionStorage("portalName");
 
-  const portalNameDefaultFromSessionStorage = getFromSessionStorage(
-    "portalNameDefault"
-  );
+  const portalNameDefaultFromSessionStorage =
+    getFromSessionStorage("portalNameDefault");
 
   const portalNameInitially =
     portalNameFromSessionStorage === null ||
@@ -97,9 +97,8 @@ const PortalRenaming = (props) => {
     }
 
     // TODO: Remove div with height 64 and remove settings-mobile class
-    const settingsMobile = document.getElementsByClassName(
-      "settings-mobile"
-    )[0];
+    const settingsMobile =
+      document.getElementsByClassName("settings-mobile")[0];
 
     if (settingsMobile) {
       settingsMobile.style.display = "none";
@@ -128,7 +127,7 @@ const PortalRenaming = (props) => {
         setPortalName(portalName);
         setPortalNameDefault(portalName);
 
-        window.location.href = res;
+        navigate(res);
       })
       .catch((error) => {
         let errorMessage = "";
@@ -251,27 +250,24 @@ const PortalRenaming = (props) => {
         ""
       );
 
-      const newUrl = combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/portal-settings/customization/general"
-      );
-
+      const newUrl = "/portal-settings/customization/general";
       if (newUrl === currentUrl) return;
 
-      history.push(newUrl);
+      navigate(newUrl);
     } else {
       setIsCustomizationView(false);
     }
   }, [isSmallTablet, setIsCustomizationView]);
 
-  const tooltipPortalRenamingTooltip = <PortalRenamingTooltip t={t} />;
+  const tooltipPortalRenamingTooltip = (
+    <PortalRenamingTooltip t={t} domain={domain} />
+  );
   const hasError = errorValue === null ? false : true;
 
   const settingsBlock = (
     <div className="settings-block">
       <div className="settings-block-description">
-        {t("PortalRenamingMobile")}
+        {t("PortalRenamingMobile", { domain })}
       </div>
       <FieldContainer
         id="fieldContainerPortalRenaming"
@@ -335,14 +331,10 @@ const PortalRenaming = (props) => {
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { theme, tenantAlias } = auth.settingsStore;
+  const { theme, tenantAlias, baseDomain } = auth.settingsStore;
   const { setPortalRename, getAllSettings } = setup;
-  const {
-    isLoaded,
-    setIsLoadedPortalRenaming,
-    initSettings,
-    setIsLoaded,
-  } = common;
+  const { isLoaded, setIsLoadedPortalRenaming, initSettings, setIsLoaded } =
+    common;
   return {
     theme,
     setPortalRename,
@@ -352,6 +344,7 @@ export default inject(({ auth, setup, common }) => {
     initSettings,
     setIsLoaded,
     getAllSettings,
+    domain: baseDomain,
   };
 })(
   withLoading(withTranslation(["Settings", "Common"])(observer(PortalRenaming)))

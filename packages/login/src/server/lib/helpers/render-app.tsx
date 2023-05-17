@@ -3,7 +3,7 @@ import { ServerStyleSheet } from "styled-components";
 import App from "../../../client/App";
 import { renderToString } from "react-dom/server";
 import { I18nextProvider, I18nextProviderProps } from "react-i18next";
-import { StaticRouter } from "react-router-dom";
+import { StaticRouter } from "react-router-dom/server";
 import GlobalStyle from "../../../client/components/GlobalStyle";
 const renderApp = (
   i18n: I18nextProviderProps,

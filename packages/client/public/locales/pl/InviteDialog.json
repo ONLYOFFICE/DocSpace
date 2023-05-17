@@ -1,7 +1,7 @@
 {
   "AddManually": "Dodaj ręcznie",
   "AddManuallyDescriptionAccounts": "Zaproś nowych użytkowników do DocSpace osobiście poprzez wiadomość e-mail",
-  "AddManuallyDescriptionRoom": "Dodaj istniejących użytkowników DocSpace do pokoju za pomocą nazw lub zaproś nowych użytkowników osobiście za pośrednictwem poczty elektronicznej.",
+  "AddManuallyDescriptionRoom": "Dodaj istniejących użytkowników DocSpace do pokoju za pomocą nazw lub zaproś nowych użytkowników osobiście za pośrednictwem poczty elektronicznej",
   "EmailErrorMessage": "Niepoprawny adres e-mail Możesz poprawić adres e-mail klikając go.",
   "InviteAccountSearchPlaceholder": "Zaproś ludzi poprzez e-mail",
   "InviteRoomSearchPlaceholder": "Zaproś ludzi po imieniu lub poprzez adres e-mail",

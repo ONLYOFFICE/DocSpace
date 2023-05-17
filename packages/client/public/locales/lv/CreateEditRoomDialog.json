@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Vispirms attiecīgais pakalpojums ir jāpievieno sadaļā Integrācija (Integration). Pretējā gadījumā savienojums nebūs iespējams.",
   "ThirdPartyStoragePermanentSettingDescription": "Files are stored in a third-party {{thirdpartyTitle}} storage in the \"{{thirdpartyFolderName}}\" folder.\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Lai pievienotu trešās puses krātuvi, jums ir jāpievieno atbilstošais pakalpojums DocSpace iestatījumu sadaļā Integrācija. Lai iespējotu integrāciju, sazinieties ar DocSpace īpašnieku vai administratoru.",
-  "ThirdPartyStorageTitle": "Trešās puses krātuve",
   "ViewOnlyRoomDescription": "Kopīgojiet visus gatavos dokumentus, pārskatus, dokumentāciju un citus failus skatīšanai.",
   "ViewOnlyRoomTitle": "Tikai skatīšanai paredzēta telpa"
 }

@@ -2554,7 +2554,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Portal Name.
+        ///   Looks up a localized string similar to Cloud space for your office docs.
         /// </summary>
         public static string PortalName {
             get {
@@ -2842,7 +2842,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Admins added:.
+        ///   Looks up a localized string similar to Number of admins/power users:.
         /// </summary>
         public static string TariffsFeature_used_manager {
             get {

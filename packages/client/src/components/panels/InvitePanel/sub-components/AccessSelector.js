@@ -12,11 +12,20 @@ const AccessSelector = ({
   containerRef,
   defaultAccess,
   isOwner,
+  withRemove = false,
+  filteredAccesses,
+  setIsOpenItemAccess,
 }) => {
   const [horizontalOrientation, setHorizontalOrientation] = useState(false);
   const width = containerRef?.current?.offsetWidth - 32;
 
-  const accessOptions = getAccessOptions(t, roomType, false, true, isOwner);
+  const accessOptions = getAccessOptions(
+    t,
+    roomType,
+    withRemove,
+    true,
+    isOwner
+  );
 
   const selectedOption = accessOptions.filter(
     (access) => access.access === +defaultAccess
@@ -40,30 +49,41 @@ const AccessSelector = ({
 
   const isMobileHorizontalOrientation = isMobileOnly && horizontalOrientation;
 
-  const setDropDownMaxHeight = isMobileHorizontalOrientation
-    ? { dropDownMaxHeight: 150 }
-    : {};
-
   return (
-    <StyledAccessSelector>
-      <AccessRightSelect
-        selectedOption={selectedOption}
-        onSelect={onSelectAccess}
-        accessOptions={accessOptions}
-        noBorder={false}
-        directionX="right"
-        directionY={isMobileHorizontalOrientation ? "both" : "bottom"}
-        fixedDirection={isMobileHorizontalOrientation ? false : true}
-        manualWidth={width + "px"}
-        isDefaultMode={
-          isMobileHorizontalOrientation ? isMobileHorizontalOrientation : false
-        }
-        withBackdrop={isMobileHorizontalOrientation ? false : isMobileOnly}
-        isAside={true}
-        withBackground={isMobileHorizontalOrientation ? false : isMobileOnly}
-        isNoFixedHeightOptions={isMobileHorizontalOrientation}
-        {...setDropDownMaxHeight}
-      />
+    <StyledAccessSelector className="invite-panel_access-selector">
+      {!(isMobileOnly && !isMobileHorizontalOrientation) && (
+        <AccessRightSelect
+          selectedOption={selectedOption}
+          onSelect={onSelectAccess}
+          accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
+          noBorder={false}
+          directionX="right"
+          directionY="bottom"
+          fixedDirection={true}
+          manualWidth={width + "px"}
+          isDefaultMode={false}
+          isAside={false}
+          setIsOpenItemAccess={setIsOpenItemAccess}
+          hideMobileView={isMobileHorizontalOrientation}
+        />
+      )}
+
+      {isMobileOnly && !isMobileHorizontalOrientation && (
+        <AccessRightSelect
+          selectedOption={selectedOption}
+          onSelect={onSelectAccess}
+          accessOptions={filteredAccesses ? filteredAccesses : accessOptions}
+          noBorder={false}
+          directionX="right"
+          directionY="top"
+          fixedDirection={true}
+          manualWidth={"fit-content"}
+          isDefaultMode={true}
+          isAside={false}
+          setIsOpenItemAccess={setIsOpenItemAccess}
+          manualY={"0px"}
+        />
+      )}
     </StyledAccessSelector>
   );
 };

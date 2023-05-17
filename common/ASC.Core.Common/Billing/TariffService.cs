@@ -147,7 +147,7 @@ public class TariffService : ITariffService
         _dbContextFactory = coreDbContextManager;
     }
 
-    public async Task<Tariff> GetTariffAsync(int tenantId, bool withRequestToPaymentSystem = true)
+    public async Task<Tariff> GetTariffAsync(int tenantId, bool withRequestToPaymentSystem = true, bool refresh = false)
     {
         //single tariff for all portals
         if (_coreBaseSettings.Standalone)
@@ -155,8 +155,7 @@ public class TariffService : ITariffService
             tenantId = -1;
         }
 
-        var tariff = await GetTariffFromCacheAsync(tenantId);
-        int? tariffId = null;
+        var tariff = refresh ? null : await GetTariffFromCacheAsync(tenantId);
 
         if (tariff == null)
         {
@@ -165,11 +164,12 @@ public class TariffService : ITariffService
 
             if (string.IsNullOrEmpty(_cache.Get<string>(GetTariffNeedToUpdateCacheKey(tenantId))))
             {
-                tariffId = tariff.Id;
+                UpdateCache(tariff.Id);
             }
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
+                var paymentFound = false;
 
                 try
                 {
@@ -222,24 +222,21 @@ public class TariffService : ITariffService
                     {
                         asynctariff = await CalculateTariffAsync(tenantId, asynctariff);
                         tariff = asynctariff;
-                        tariffId = asynctariff.Id;
                     }
 
+                    UpdateCache(tariff.Id);
+
+                    paymentFound = true;
                 }
                 catch (Exception error)
                 {
-                    if (tariff.Id != 0)
-                    {
-                        tariffId = tariff.Id;
-                    }
-
                     if (error is not BillingNotFoundException)
                     {
                         LogError(error, tenantId.ToString());
                     }
                 }
 
-                if (!tariffId.HasValue || tariffId.Value == 0)
+                if (!paymentFound)
                 {
                     var freeTariff = await tariff.Quotas.ToAsyncEnumerable().FirstOrDefaultAwaitAsync(async tariffRow =>
                     {
@@ -263,22 +260,23 @@ public class TariffService : ITariffService
                     {
                         asynctariff = await CalculateTariffAsync(tenantId, asynctariff);
                         tariff = asynctariff;
-                        tariffId = asynctariff.Id;
                     }
-                    else
-                    {
-                        tariffId = tariff.Id;
-                    }
+
+                    UpdateCache(tariff.Id);
                 }
             }
         }
-
-        if (tariffId.HasValue && tariffId.Value != 0)
+        else
         {
-            _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId.Value }, CacheNotifyAction.Insert);
+            tariff = await CalculateTariffAsync(tenantId, tariff);
         }
 
         return tariff;
+
+        void UpdateCache(int tariffId)
+        {
+            _notify.Publish(new TariffCacheItem { TenantId = tenantId, TariffId = tariffId }, CacheNotifyAction.Insert);
+        }
     }
 
     public async Task<bool> PaymentChangeAsync(int tenantId, Dictionary<string, int> quantity)
@@ -752,6 +750,7 @@ public class TariffService : ITariffService
                     if (efTariff.Id == default)
                     {
                         efTariff.Id = (-tenant);
+                        tariffInfo.Id = efTariff.Id;
                     }
 
                     if (efTariff.CustomerId == default)
@@ -973,14 +972,17 @@ public class TariffService : ITariffService
 
         _ = quotaSocketManager.ChangeQuotaFeatureValue(maxRoomCountFeatureName, maxRoomCount);
 
-        var currentQuota = await GetTenantQuotaFromTariffAsync(currenTariff);
-
-        var free = updatedQuota.Free;
-        if (currentQuota.Free != free)
+        if (currenTariff != null)
         {
-            var freeFeatureName = updatedQuota.GetFeature<FreeFeature>().Name;
+            var currentQuota = await GetTenantQuotaFromTariffAsync(currenTariff);
 
-            _ = quotaSocketManager.ChangeQuotaFeatureValue(freeFeatureName, free);
+            var free = updatedQuota.Free;
+            if (currentQuota.Free != free)
+            {
+                var freeFeatureName = updatedQuota.GetFeature<FreeFeature>().Name;
+
+                _ = quotaSocketManager.ChangeQuotaFeatureValue(freeFeatureName, free);
+            }
         }
     }
 

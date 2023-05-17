@@ -161,7 +161,7 @@ public class PortalController : ControllerBase
     private async Task<IActionResult> InternalRegisterAsync(TenantModel model, object error, Stopwatch sw)
     {
         model.PortalName = (model.PortalName ?? "").Trim();
-        var (exists, _) = await CheckExistingNamePortalAsync(model.PortalName);
+        (var exists, error) = await CheckExistingNamePortalAsync(model.PortalName);
 
         if (!exists)
         {

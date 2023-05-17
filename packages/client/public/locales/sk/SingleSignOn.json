@@ -1,7 +1,7 @@
 {
   "AddCertificate": "Pridať certifikát",
   "AdvancedSettings": "Rozšírené nastavenia",
-  "AdvancedSettingsTooltip": "Skryť predvolenú autorizačnú stránku a automaticky presmerovať na službu SSO",
+  "AdvancedSettingsTooltip": "Skryť predvolenú autorizačnú stránku a automaticky presmerovať na službu SSO.",
   "AttributeMatching": "Zobrazenie atribútov",
   "AttributeMatchingTooltip": "Zhoda atribútov jednotného prihlásenia so záznamami v sekcii „Účty“.",
   "Binding": "Spojenie:",
@@ -17,6 +17,7 @@
   "HideAuthPage": "Skryť autorizačnú stránku",
   "LogoutEndpointUrl": "URL koncového bodu s jedným odhlásením IdP",
   "LogoutEndpointUrlTooltip": "Adresa URL použitá na jednotné odhlásenie na strane poskytovateľa služby",
+  "MetadataLoadError": "Súbor s metaúdajmi nebol prenesený",
   "NameIDFormat": "Formát NameId",
   "NewCertificate": "Nový certifikát",
   "OpenCertificate": "Verejný certifikát",

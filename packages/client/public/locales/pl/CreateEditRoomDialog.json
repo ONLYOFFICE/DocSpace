@@ -20,9 +20,8 @@
   "ThirdPartyStorageComboBoxPlaceholder": "Wybierz pamięć",
   "ThirdPartyStorageDescription": "Użyj usług podmiotów trzecich jako pamięci dla tego pokoju. Nowy katalog do przechowywania danych z tego pokoju zostanie utworzony w podłączonej pamięci.",
   "ThirdPartyStorageNoStorageAlert": "Najpierw jednak musisz podłączyć odpowiednią usługę w sekcji „Integracja”. W przeciwnym razie połączenie będzie niemożliwe.",
-  "ThirdPartyStoragePermanentSettingDescription": "Pliki są przechowywane w pamięci zewnętrznej {{thirdpartyTitle}}, w katalogu „{{thirdpartyFolderName}}”.\n<strong>{{thirdpartyPath}}</strong>",
+  "ThirdPartyStoragePermanentSettingDescription": "Pliki są przechowywane w pamięci zewnętrznej {{thirdpartyTitle}}, w katalogu \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Aby podłączyć pamięć podmiotu trzeciego, musisz dodać odpowiednią usługę w sekcji Integracja, w ustawieniach DosSpace. Skontaktuj się z właścicielem DocSpace lub administratorem, aby włączyć integrację.",
-  "ThirdPartyStorageTitle": "Pamięć podmiotu trzeciego",
   "ViewOnlyRoomDescription": "Udostępniaj do wglądu gotowe dokumenty, raporty, dokumentacje oraz inne pliki.",
   "ViewOnlyRoomTitle": "Pokój tylko do odczytu"
 }

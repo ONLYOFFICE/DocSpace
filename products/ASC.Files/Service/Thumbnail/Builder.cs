@@ -394,7 +394,7 @@ public class Builder<T>
             });
         }
 
-        //        GC.Collect();
+        GC.Collect();
     }
 
     private async ValueTask CropAsync(Image sourceImg,

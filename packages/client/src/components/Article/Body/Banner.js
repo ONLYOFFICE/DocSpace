@@ -71,7 +71,7 @@ const Banner = () => {
           headerLabel={campaignTranslate.Header}
           subHeaderLabel={campaignTranslate.SubHeader}
           img={campaignImage}
-          btnLabel={campaignTranslate.ButtonLabel}
+          buttonLabel={campaignTranslate.ButtonLabel}
           link={campaignTranslate.Link}
         />
       )}

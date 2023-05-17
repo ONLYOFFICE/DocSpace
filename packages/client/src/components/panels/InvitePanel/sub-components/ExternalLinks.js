@@ -32,10 +32,12 @@ const ExternalLinks = ({
   setInvitationLinks,
   isOwner,
   getInfo,
+  onChangeExternalLinksVisible,
+  externalLinksVisible,
+  onChangeActiveLink,
+  activeLink,
 }) => {
-  const [linksVisible, setLinksVisible] = useState(false);
   const [actionLinksVisible, setActionLinksVisible] = useState(false);
-  const [activeLink, setActiveLink] = useState({});
 
   const inputsRef = useRef();
 
@@ -50,16 +52,16 @@ const ExternalLinks = ({
     if (roomId === -1) {
       link = shareLinks.find((l) => l.access === +defaultAccess);
 
-      setActiveLink(link);
+      onChangeActiveLink(link);
     } else {
       link = shareLinks[0];
 
-      !linksVisible ? editLink() : disableLink();
+      !externalLinksVisible ? editLink() : disableLink();
     }
 
-    setLinksVisible(!linksVisible);
+    onChangeExternalLinksVisible(!externalLinksVisible);
 
-    if (!linksVisible && withCopy) copyLink(link?.shareLink);
+    if (!externalLinksVisible && withCopy) copyLink(link?.shareLink);
   };
 
   const disableLink = () => {
@@ -76,7 +78,7 @@ const ExternalLinks = ({
         shareLinks[0].access
       );
     }
-    setActiveLink(shareLinks[0]);
+    onChangeActiveLink(shareLinks[0]);
   };
 
   const onSelectAccess = (access) => {
@@ -84,12 +86,12 @@ const ExternalLinks = ({
     if (roomId === -1) {
       link = shareLinks.find((l) => l.access === access.access);
 
-      setActiveLink(link);
+      onChangeActiveLink(link);
     } else {
       setInvitationLinks(roomId, shareLinks[0].id, "Invite", +access.access);
 
       link = shareLinks[0];
-      setActiveLink(shareLinks[0]);
+      onChangeActiveLink(shareLinks[0]);
     }
 
     copyLink(link.shareLink);
@@ -185,14 +187,17 @@ const ExternalLinks = ({
             </DropDown>
           </div>
         )}
-        <StyledToggleButton isChecked={linksVisible} onChange={toggleLinks} />
+        <StyledToggleButton
+          isChecked={externalLinksVisible}
+          onChange={toggleLinks}
+        />
       </StyledSubHeader>
       <StyledDescription>
         {roomId === -1
           ? t("InviteViaLinkDescriptionAccounts")
           : t("InviteViaLinkDescriptionRoom")}
       </StyledDescription>
-      {linksVisible && (
+      {externalLinksVisible && (
         <StyledInviteInputContainer key={activeLink.id}>
           <StyledInviteInput>
             <InputBlock

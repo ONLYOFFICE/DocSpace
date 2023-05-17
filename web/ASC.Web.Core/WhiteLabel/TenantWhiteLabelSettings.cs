@@ -629,10 +629,17 @@ public class TenantWhiteLabelSettingsHelper
         var ext = type switch
         {
             WhiteLabelLogoTypeEnum.Favicon => "ico",
+            WhiteLabelLogoTypeEnum.Notification => "png",
             _ => "svg"
         };
 
-        return _webImageSupplier.GetAbsoluteWebPath($"logo/" + BuildLogoFileName(type, ext, dark));
+        var path = type switch
+        {
+            WhiteLabelLogoTypeEnum.Notification => "notifications/",
+            _ => "logo/"
+        };
+
+        return _webImageSupplier.GetAbsoluteWebPath(path + BuildLogoFileName(type, ext, dark));
     }
 
     private async Task<string> GetPartnerStorageLogoPathAsync(WhiteLabelLogoTypeEnum type, bool dark)

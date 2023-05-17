@@ -29,16 +29,16 @@ namespace ASC.Geolocation;
 [Scope]
 public class GeolocationHelper
 {
-    private readonly IDbContextFactory<CustomDbContext> _dbContextFactory;
+    private readonly CreatorDbContext _creatorDbContext;
     private readonly ILogger<GeolocationHelper> _logger;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public GeolocationHelper(
-        IDbContextFactory<CustomDbContext> dbContextFactory,
+        CreatorDbContext creatorDbContext,
         ILogger<GeolocationHelper> logger,
         IHttpContextAccessor httpContextAccessor)
     {
-        _dbContextFactory = dbContextFactory;
+        _creatorDbContext = creatorDbContext;
         _logger = logger;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -47,7 +47,7 @@ public class GeolocationHelper
     {
         try
         {
-            using var dbContext = _dbContextFactory.CreateDbContext();
+            using var dbContext = _creatorDbContext.CreateDbContext<CustomDbContext>(nameConnectionString: "teamlabsite");
             var ipformatted = FormatIP(ip);
             var q = await dbContext.DbipLocation
                 .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)

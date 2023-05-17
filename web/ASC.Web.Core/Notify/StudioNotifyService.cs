@@ -168,20 +168,20 @@ public class StudioNotifyService
         var auditEventDate = DateTime.UtcNow;
 
         auditEventDate = new DateTime(
-            auditEventDate.Year, 
-            auditEventDate.Month, 
-            auditEventDate.Day, 
-            auditEventDate.Hour, 
-            auditEventDate.Minute, 
-            auditEventDate.Second, 
-            0, 
+            auditEventDate.Year,
+            auditEventDate.Month,
+            auditEventDate.Day,
+            auditEventDate.Hour,
+            auditEventDate.Minute,
+            auditEventDate.Second,
+            0,
             DateTimeKind.Utc);
 
         var hash = auditEventDate.ToString("s");
 
         var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(userInfo.Email, ConfirmType.PasswordChange, hash, userInfo.Id);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePassword;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonChangePassword", GetCulture(userInfo));
 
         var action = _coreBaseSettings.Personal
                          ? (_coreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChangeV115 : Actions.PersonalPasswordChangeV115)
@@ -206,7 +206,7 @@ public class StudioNotifyService
     {
         var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(email, ConfirmType.EmailChange, _authContext.CurrentAccount.ID);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeEmail;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonChangeEmail", GetCulture(user));
 
         var action = _coreBaseSettings.Personal
                          ? (_coreBaseSettings.CustomMode ? Actions.PersonalCustomModeEmailChangeV115 : Actions.PersonalEmailChangeV115)
@@ -224,7 +224,7 @@ public class StudioNotifyService
     {
         var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(email, ConfirmType.EmailActivation, null, user.Id);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonActivateEmail;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonActivateEmail", GetCulture(user));
 
         await _client.SendNoticeToAsync(
                 Actions.ActivateEmail,
@@ -237,7 +237,7 @@ public class StudioNotifyService
 
     public async Task SendEmailRoomInviteAsync(string email, string roomTitle, string confirmationUrl)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
+        var greenButtonText = WebstudioNotifyPatternResource.ButtonAccept;
 
         await _client.SendNoticeToAsync(
             Actions.SaasRoomInvite,
@@ -250,7 +250,7 @@ public class StudioNotifyService
 
     public async Task SendDocSpaceInviteAsync(string email, string confirmationUrl)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
+        var greenButtonText = WebstudioNotifyPatternResource.ButtonAccept;
 
         await _client.SendNoticeToAsync(
             Actions.SaasDocSpaceInvite,
@@ -316,7 +316,7 @@ public class StudioNotifyService
     {
         var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(userInfo.Email.ToLower(), ConfirmType.PhoneActivation);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangePhone;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonChangePhone", GetCulture(userInfo));
 
         await _client.SendNoticeToAsync(
         Actions.PhoneChange,
@@ -329,7 +329,7 @@ public class StudioNotifyService
     {
         var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(userInfo.Email.ToLower(), ConfirmType.TfaActivation);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonChangeTfa;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonChangeTfa", GetCulture(userInfo));
 
         await _client.SendNoticeToAsync(
         Actions.TfaChange,
@@ -352,7 +352,7 @@ public class StudioNotifyService
         var inviteUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(email, ConfirmType.EmpInvite, (int)emplType)
                     + string.Format("&emplType={0}", (int)emplType);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonJoin;
+        var greenButtonText = WebstudioNotifyPatternResource.ButtonJoin;
 
         await _client.SendNoticeToAsync(
                 Actions.JoinUsers,
@@ -405,7 +405,7 @@ public class StudioNotifyService
             notifyAction = Actions.SaasUserWelcomeV1;
         }
 
-        string greenButtonText() => WebstudioNotifyPatternResource.ButtonCollaborateDocSpace;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonCollaborateDocSpace", GetCulture(newUserInfo));
 
         await _client.SendNoticeToAsync(
         notifyAction,
@@ -444,9 +444,9 @@ public class StudioNotifyService
             notifyAction = Actions.SaasGuestWelcomeV1;
         }
 
-        string greenButtonText() => _tenantExtra.Enterprise
-                              ? WebstudioNotifyPatternResource.ButtonAccessYourPortal
-                              : WebstudioNotifyPatternResource.ButtonAccessYouWebOffice;
+        var greenButtonText = _tenantExtra.Enterprise
+                              ? WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonAccessYourPortal", GetCulture(newUserInfo))
+                              : WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonAccessYouWebOffice", GetCulture(newUserInfo));
 
         await _client.SendNoticeToAsync(
         notifyAction,
@@ -486,7 +486,7 @@ public class StudioNotifyService
 
         var confirmationUrl = await GenerateActivationConfirmUrlAsync(newUserInfo);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonAccept", GetCulture(newUserInfo));
 
         await _client.SendNoticeToAsync(
         notifyAction,
@@ -526,7 +526,7 @@ public class StudioNotifyService
 
         var confirmationUrl = await GenerateActivationConfirmUrlAsync(newUserInfo);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonAccept;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonAccept", GetCulture(newUserInfo));
 
         await _client.SendNoticeToAsync(
         notifyAction,
@@ -542,7 +542,9 @@ public class StudioNotifyService
     {
         var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.ProfileRemove, _authContext.CurrentAccount.ID, _authContext.CurrentAccount.ID);
 
-        string greenButtonText() => _coreBaseSettings.Personal ? WebstudioNotifyPatternResource.ButtonConfirmTermination : WebstudioNotifyPatternResource.ButtonRemoveProfile;
+        var greenButtonText = _coreBaseSettings.Personal ?
+            WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonAccept", GetCulture(user)) :
+            WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonRemoveProfile", GetCulture(user));
 
         var action = _coreBaseSettings.Personal
                          ? (_coreBaseSettings.CustomMode ? Actions.PersonalCustomModeProfileDelete : Actions.PersonalProfileDelete)
@@ -692,7 +694,7 @@ public class StudioNotifyService
     {
         var u = await _userManager.GetUsersAsync(t.OwnerId);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeactivatePortal;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonDeactivatePortal", GetCulture(u));
 
         await _client.SendNoticeToAsync(
                 Actions.PortalDeactivate,
@@ -707,7 +709,7 @@ public class StudioNotifyService
     {
         var u = await _userManager.GetUsersAsync(t.OwnerId);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonDeletePortal;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonDeletePortal", GetCulture(u));
 
         await _client.SendNoticeToAsync(
                 Actions.PortalDelete,
@@ -720,7 +722,7 @@ public class StudioNotifyService
 
     public async Task SendMsgPortalDeletionSuccessAsync(UserInfo owner, string url)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonLeaveFeedback;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonLeaveFeedback", GetCulture(owner));
 
         await _client.SendNoticeToAsync(
                 Actions.PortalDeleteSuccessV1,
@@ -736,7 +738,7 @@ public class StudioNotifyService
     {
         var u = await _userManager.GetUsersAsync(t.OwnerId);
 
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalAddressChange;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmPortalAddressChange", GetCulture(u));
 
         await _client.SendNoticeToAsync(
                 Actions.DnsChange,
@@ -751,7 +753,7 @@ public class StudioNotifyService
 
     public async Task SendMsgConfirmChangeOwnerAsync(UserInfo owner, UserInfo newOwner, string confirmOwnerUpdateUrl)
     {
-        static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmPortalOwnerUpdate;
+        var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmPortalOwnerUpdate", owner.GetCulture());
 
         await _client.SendNoticeToAsync(
         Actions.ConfirmOwnerChange,
@@ -786,10 +788,11 @@ public class StudioNotifyService
                 notifyAction = Actions.SaasAdminActivationV1;
             }
 
-            var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(u.Email, ConfirmType.EmailActivation);
+            var userId = u.Id;
+            var confirmationUrl = await _commonLinkUtility.GetConfirmationEmailUrlAsync(u.Email, ConfirmType.EmailActivation, null, userId);
             confirmationUrl += "&first=true";
 
-            static string greenButtonText() => WebstudioNotifyPatternResource.ButtonConfirmEmail;
+            var greenButtonText = WebstudioNotifyPatternResource.ResourceManager.GetString("ButtonConfirmEmail", GetCulture(u));
 
             await _client.SendNoticeToAsync(
             notifyAction,
@@ -1040,4 +1043,21 @@ public class StudioNotifyService
     }
 
     #endregion
+
+    private CultureInfo GetCulture(UserInfo user)
+    {
+        CultureInfo culture = null;
+
+        if (!string.IsNullOrEmpty(user.CultureName))
+        {
+            culture = user.GetCulture();
+        }
+
+        if (culture == null)
+        {
+            culture = _tenantManager.GetCurrentTenant(false)?.GetCulture();
+        }
+
+        return culture;
+    }
 }

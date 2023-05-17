@@ -24,6 +24,10 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using ASC.Core.Common.EF;
+
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Core.Data;
 
 [Scope]
@@ -258,7 +262,7 @@ public class EFUserService : IUserService
             if (sortBy == "type")
             {
                 var q1 = from user in q
-                         join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID 
+                         join userGroup in userDbContext.UserGroups.Where(g => !g.Removed && (g.UserGroupId == Users.Constants.GroupAdmin.ID || g.UserGroupId == Users.Constants.GroupUser.ID
                                  || g.UserGroupId == Users.Constants.GroupCollaborator.ID))
                          on user.Id equals userGroup.Userid into joinedGroup
                          from @group in joinedGroup.DefaultIfEmpty()

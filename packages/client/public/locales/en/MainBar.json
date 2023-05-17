@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "Storage and admins/power users limits are about to be exceeded.",
   "StorageQuotaDescription": "You can remove the unnecessary files or <1>{{clickHere}}</1> to find a more suitable  pricing plan for your DocSpace.",
   "StorageQuotaHeader": "Storage space amount is about to be exceeded: {{currentValue}} / {{maxValue}}",
-  "UserQuotaDescription": "<1>{{clickHere}}</1> to find a better pricing plan for your portal.",
+  "UserQuotaDescription": "<1>{{clickHere}}</1> to find a better pricing plan for your DocSpace.",
   "UserQuotaHeader": "The number of admins/power users is about to be exceeded: {{currentValue}} / {{maxValue}}."
 }

@@ -66,15 +66,15 @@ public class ThumbnailBuilderService : BackgroundService
         for (var i = 0; i < readers.Count; i++)
         {
             var reader = readers[i];
-      
+
             tasks.Add(Task.Run(async () =>
             {
                 await foreach (var fileData in reader.ReadAllAsync(stoppingToken))
                 {
                     await using var scope = _serviceScopeFactory.CreateAsyncScope();
 
-                    var commonLinkUtilitySettings = scope.ServiceProvider.GetService<CommonLinkUtilitySettings>();
-                    commonLinkUtilitySettings.ServerUri = fileData.BaseUri;
+                    var commonLinkUtility = scope.ServiceProvider.GetService<CommonLinkUtility>();
+                    commonLinkUtility.ServerUri = fileData.BaseUri;
 
                     var builder = scope.ServiceProvider.GetService<Builder<int>>();
 

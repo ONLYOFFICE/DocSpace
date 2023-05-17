@@ -9,6 +9,6 @@
   "StorageAndUserHeader": "Limity pamięci/użytkowników z większą liczbą uprawnień zostaną wkrótce przekroczone.",
   "StorageQuotaDescription": "Możesz usunąć niepotrzebne pliki lub <1>{{clickHere}}</1>, aby znaleźć bardziej odpowiedni plan cenowy dla swojego konta DocSpace.",
   "StorageQuotaHeader": "Ilość miejsca w pamięci zostanie wkrótce przekroczona: {{currentValue}} / {{maxValue}}",
-  "UserQuotaDescription": "<1>{{clickHere}}</1>, aby znaleźć lepszy plan cenowy dla swojego portalu.",
+  "UserQuotaDescription": "<1>{{clickHere}}</1>, aby znaleźć lepszy plan cenowy dla swojego DocSpace.",
   "UserQuotaHeader": "Liczba administratorów/użytkowników z większą liczbą uprawnień zostanie wkrótce przekroczona: {{currentValue}} / {{maxValue}}."
 }

@@ -122,28 +122,44 @@ class HelpButton extends React.Component {
 }
 
 HelpButton.propTypes = {
+  /** Displays the child elements  */
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node,
   ]),
+  /** Sets the tooltip content  */
   tooltipContent: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
+  /** Required to set additional properties of the tooltip */
   tooltipProps: PropTypes.object,
+  /** Sets the right offset for all the tooltips on the page */
   offsetRight: PropTypes.number,
+  /** Sets the left offset for all the tooltips on the page */
   offsetLeft: PropTypes.number,
+  /** Sets the top offset for all the tooltips on the page */
   offsetTop: PropTypes.number,
+  /** Sets the bottom offset for all the tooltips on the page */
   offsetBottom: PropTypes.number,
+  /** Sets the maximum width of the tooltip  */
   tooltipMaxWidth: PropTypes.string,
+  /** Sets the tooltip id */
   tooltipId: PropTypes.string,
+  /** Global tooltip placement */
   place: PropTypes.string,
+  /** Specifies the icon name */
   iconName: PropTypes.string,
+  /** Icon color */
   color: PropTypes.string,
+  /** The data-* attribute is used to store custom data private to the page or application. Required to display a tip over the hovered element */
   dataTip: PropTypes.string,
+  /** Sets a callback function that generates the tip content dynamically */
   getContent: PropTypes.func,
   /** Accepts class */
   className: PropTypes.string,
   /** Accepts id */
   id: PropTypes.string,
+  /** Accepts css style  */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Button height and width value */
   size: PropTypes.number,
 };
 

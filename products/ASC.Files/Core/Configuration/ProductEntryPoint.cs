@@ -169,7 +169,7 @@ public class ProductEntryPoint : Product
         var userRoomsWithRole = await GetUserRoomsWithRoleAsync(userId);
 
         var userRoomsWithRoleForSend = userRoomsWithRole.Where(r => !disabledRooms.Contains(r.Key));
-        var userRoomsForSend = userRoomsWithRole.Keys;
+        var userRoomsForSend = userRoomsWithRoleForSend.Select(r=> r.Key);
 
         var docSpaceAdmin = await _userManager.IsDocSpaceAdminAsync(userId);
 
@@ -181,9 +181,17 @@ public class ProductEntryPoint : Product
             {
                 UserId = e.UserId,
                 Action = (MessageAction)e.Action,
-                Data = e.Date,
-                FileTitle = e.Description[0]
+                Data = e.Date
             };
+
+            if (e.Action != (int)MessageAction.UserFileUpdated)
+            {
+                activityInfo.FileTitle = e.Description[0];
+            }
+            else
+            {
+                activityInfo.FileTitle = e.Description[1];
+            }
 
             if (e.Action == (int)MessageAction.UserCreated
             || e.Action == (int)MessageAction.UserUpdated)

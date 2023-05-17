@@ -4,7 +4,7 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import IconButton from "@docspace/components/icon-button";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   StyledHeadline,
   StyledContainer,
@@ -18,20 +18,22 @@ import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 const SectionHeaderContent = (props) => {
   const {
     t,
-    history,
-    match,
+
     isInfoPanelVisible,
     setIsInfoPanelVisible,
     setGallerySelected,
     categoryType,
   } = props;
 
+  const navigate = useNavigate();
+  const params = useParams();
+
   const onBackToFiles = () => {
     setGallerySelected(null);
 
     const filter = FilesFilter.getDefault();
 
-    filter.folder = match.params.folderId;
+    filter.folder = params.folderId;
 
     const filterParamsStr = filter.toUrlParams();
 
@@ -39,7 +41,7 @@ const SectionHeaderContent = (props) => {
 
     const pathname = `${url}?${filterParamsStr}`;
 
-    history.push(
+    navigate(
       combineUrl(window.DocSpaceConfig?.proxy?.url, config.homepage, pathname)
     );
   };
@@ -69,6 +71,7 @@ const SectionHeaderContent = (props) => {
             size="16"
             isFill={true}
             onClick={toggleInfoPanel}
+            title={t("Common:InfoPanel")}
           />
         </div>
       </StyledInfoPanelToggleWrapper>
@@ -86,4 +89,4 @@ export default inject(({ auth, filesStore, oformsStore }) => {
     setGallerySelected,
     categoryType,
   };
-})(withTranslation("Common")(withRouter(observer(SectionHeaderContent))));
+})(withTranslation("Common")(observer(SectionHeaderContent)));

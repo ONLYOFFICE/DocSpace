@@ -76,11 +76,8 @@ class AuthStore {
   updateTariff = async () => {
     this.setIsUpdatingTariff(true);
 
-    await Promise.all([
-      this.currentQuotaStore.setPortalQuota(),
-      this.currentTariffStatusStore.setPortalTariff(),
-    ]);
-
+    await this.currentQuotaStore.setPortalQuota();
+    await this.currentTariffStatusStore.setPortalTariff();
     await this.currentTariffStatusStore.setPayerInfo();
 
     this.setIsUpdatingTariff(false);
@@ -295,23 +292,6 @@ class AuthStore {
     this.reset(true);
     this.userStore.setUser(null);
     this.init();
-
-    // if (redirectToLogin) {
-    //   if (redirectPath) {
-    //     return window.location.replace(redirectPath);
-    //   }
-    //   if (personal) {
-    //     return window.location.replace("/");
-    //   } else {
-    //     this.reset(true);
-    //     this.userStore.setUser(null);
-    //     this.init();
-    //     return history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
-    //   }
-    // } else {
-    //   this.reset();
-    //   this.init();
-    // }
   };
 
   get isAuthenticated() {

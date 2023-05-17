@@ -1,7 +1,7 @@
 {
   "AddCertificate": "証明書の追加",
   "AdvancedSettings": "詳細設定",
-  "AdvancedSettingsTooltip": "デフォルトの認証ページを非表示にし、自動的にSSOサービスにリダイレクトする",
+  "AdvancedSettingsTooltip": "デフォルトの認証ページを非表示にし、自動的にSSOサービスにリダイレクトする。",
   "AttributeMatching": "属性マッピング",
   "AttributeMatchingTooltip": "シングルサインオンの属性と「アカウント」セクションの項目との対応関係。",
   "Binding": "バインド",
@@ -17,6 +17,7 @@
   "HideAuthPage": "認証ページを非表示にする",
   "LogoutEndpointUrl": "IdPシングルログアウトエンドポイントのURL",
   "LogoutEndpointUrlTooltip": "サービス提供者側でシングルログアウトに使用するURL",
+  "MetadataLoadError": "メタデータファイルが転送されていません",
   "NameIDFormat": "NameId フォーマット",
   "NewCertificate": "新しい証明書",
   "OpenCertificate": "公開証明書",

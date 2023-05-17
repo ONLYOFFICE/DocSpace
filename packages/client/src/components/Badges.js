@@ -75,6 +75,7 @@ const Badges = ({
   viewAs,
   onUnpinClick,
   isMutedBadge,
+  isArchiveFolderRoot,
 }) => {
   const {
     id,
@@ -148,7 +149,7 @@ const Badges = ({
     : {};
 
   return fileExst ? (
-    <div className="badges additional-badges temp-badges">
+    <div className="badges additional-badges">
       {isEditing && (
         <ColorTheme
           themeId={ThemeType.IconButton}
@@ -161,16 +162,18 @@ const Badges = ({
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
-      {item.viewAccessability?.Convert && !isTrashFolder && (
-        <ColorTheme
-          themeId={ThemeType.IconButton}
-          onClick={setConvertDialogVisible}
-          iconName={iconRefresh}
-          className="badge tablet-badge icons-group can-convert"
-          size={sizeBadge}
-          hoverColor={theme.filesBadges.hoverIconColor}
-        />
-      )}
+      {item.viewAccessability?.Convert &&
+        !isTrashFolder &&
+        !isArchiveFolderRoot && (
+          <ColorTheme
+            themeId={ThemeType.IconButton}
+            onClick={setConvertDialogVisible}
+            iconName={iconRefresh}
+            className="badge tablet-badge icons-group can-convert"
+            size={sizeBadge}
+            hoverColor={theme.filesBadges.hoverIconColor}
+          />
+        )}
       {version > 1 && (
         <BadgeWrapper {...onShowVersionHistoryProp} isTile={isTile}>
           <Badge
@@ -181,6 +184,7 @@ const Badges = ({
             {...onShowVersionHistoryProp}
             noHover={true}
             isVersionBadge={true}
+            title={t("ShowVersionHistory")}
           />
         </BadgeWrapper>
       )}

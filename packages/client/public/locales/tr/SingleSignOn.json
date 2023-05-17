@@ -1,7 +1,7 @@
 {
   "AddCertificate": "Sertifika ekle",
   "AdvancedSettings": "Gelişmiş Ayarlar",
-  "AdvancedSettingsTooltip": "Varsayılan kimlik doğrulama sayfasını gizle ve otomatik olarak SSO hizmetine yönlendir",
+  "AdvancedSettingsTooltip": "Varsayılan kimlik doğrulama sayfasını gizle ve otomatik olarak SSO hizmetine yönlendir.",
   "AttributeMatching": "Nitelik Haritalama",
   "AttributeMatchingTooltip": "Tekli Oturum Açma öznitelikleri 'Hesaplar' bölümündeki girişlere karşılık gelir.",
   "Binding": "Bağlayıcı:",
@@ -17,6 +17,7 @@
   "HideAuthPage": "Kimlik doğrulama sayfasını gizle",
   "LogoutEndpointUrl": "IdP Tek Oturum Kapatma Uç Noktası URL'si",
   "LogoutEndpointUrlTooltip": "Hizmet sağlayıcı tarafında tek oturum kapatma için kullanılan URL",
+  "MetadataLoadError": "Metadata dosyası transfer edilmedi",
   "NameIDFormat": "NameId Biçimi",
   "NewCertificate": "Yeni Sertifika",
   "OpenCertificate": "Kamu Sertifikası",

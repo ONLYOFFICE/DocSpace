@@ -31,7 +31,7 @@ public interface ITariffService
 {
     IDictionary<string, Dictionary<string, decimal>> GetProductPriceInfo(params string[] productIds);
     Task<IEnumerable<PaymentInfo>> GetPaymentsAsync(int tenantId);
-    Task<Tariff> GetTariffAsync(int tenantId, bool withRequestToPaymentSystem = true);
+    Task<Tariff> GetTariffAsync(int tenantId, bool withRequestToPaymentSystem = true, bool refresh = false);
     Task<Uri> GetShoppingUriAsync(int tenant, string currency = null, string language = null, string customerEmail = null, Dictionary<string, int> quantity = null, string backUrl = null);
     Task<Uri> GetShoppingUriAsync(int? tenant, int quotaId, string affiliateId, string currency = null, string language = null, string customerId = null, string quantity = null);
     Uri GetShoppingUri(string[] productIds, string affiliateId = null, string currency = null, string language = null, string customerId = null, string quantity = null);

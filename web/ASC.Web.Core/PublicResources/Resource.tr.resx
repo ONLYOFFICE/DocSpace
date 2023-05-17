@@ -316,9 +316,6 @@
   <data name="Owner" xml:space="preserve">
     <value>Sahip</value>
   </data>
-  <data name="PortalName" xml:space="preserve">
-    <value>Portal ismi</value>
-  </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Erişimi</value>
   </data>
@@ -372,5 +369,68 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Neler Yeni</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Kullanıcı girişlerini ve eylemlerini izleme</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maks. Dosya Boyutu</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Dosya boyutu {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Yönetici sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Yönetici sayısı</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Otomatik yedekleme ve kurtarma</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Sınırsız sayıda aktif oda</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Oda sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} depolama alanı</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Kullanılan depolama boyutu {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Depolama alanı</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Odalar:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Kullanılan depolama alanı:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Odadaki kullanıcılar:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Sınırsız sayıda kullanıcı</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Kullanıcı sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Odadaki kullanıcılar</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Odadaki kullanıcı sayısı {0} değerini geçmemelidir</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Markalaşma ve özelleştirme</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>Yönetici/uzman kullanıcı sayısı:</value>
   </data>
 </root>

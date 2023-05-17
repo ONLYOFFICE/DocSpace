@@ -17,26 +17,25 @@
 
 "use strict";
 
-const config = require("../../config").get(),
-    hash = require("./hash");
+const hash = require("./hash");
 
 var Coder = function() {
     return {
-        encodeData: function(data) {
+        encodeData: function(data, machinekey) {
             if (!data && typeof (data) !== "object")
                 return undefined;
 
             const jsonStr = JSON.stringify(data);
-            const dataEncoded = hash.encode(jsonStr, config["machinekey"] ? config["core"].machinekey : config.app.machinekey);
+            const dataEncoded = hash.encode(jsonStr, machinekey);
 
             return dataEncoded;
         },
 
-        decodeData: function(data) {
+        decodeData: function(data, machinekey) {
             if (!data && typeof (data) !== "string")
                 return undefined;
 
-            const jsonStr = hash.decode(data, config["core"].machinekey ? config["core"].machinekey : config.app.machinekey);
+            const jsonStr = hash.decode(data, machinekey);
             const dataDecoded = JSON.parse(jsonStr);          
 
             return dataDecoded;

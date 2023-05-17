@@ -72,7 +72,7 @@ public class RemoveUserDataController : ApiControllerBase
     {
         var user = await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID);
 
-        if (user.IsLDAP())
+        if (user.IsLDAP() || user.IsOwner(Tenant))
         {
             throw new SecurityException();
         }

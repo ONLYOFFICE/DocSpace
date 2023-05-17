@@ -16,7 +16,6 @@
   "LogoutBtn": "Изход",
   "LogoutDescription": "Забележка. Всички активни връзки с изключение на тази ще бъдат отписани, тъй като тази връзка се използва в момента.",
   "LogoutFrom": "Изход от {{platform}} {{browser}}?",
-  "MessageEmailActivationInstuctionsSentOnEmail": "Инструкциите за активиране на имейла бяха изпратени на имейл адрес <strong>{{ email }}</strong>.",
   "MyProfile": "Моят профил",
   "ProviderSuccessfullyConnected": "Доставчикът е свързан успешно",
   "ProviderSuccessfullyDisconnected": "Връзката с доставчика беше прекъсната успешно",

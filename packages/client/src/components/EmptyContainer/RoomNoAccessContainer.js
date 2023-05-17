@@ -5,14 +5,13 @@ import React from "react";
 
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { combineUrl } from "@docspace/common/utils";
+
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import history from "@docspace/common/history";
-import config from "PACKAGE_FILE";
 
 const RoomNoAccessContainer = (props) => {
   const {
@@ -29,6 +28,8 @@ const RoomNoAccessContainer = (props) => {
 
   const descriptionRoomNoAccess = t("NoAccessRoomDescription");
   const titleRoomNoAccess = t("NoAccessRoomTitle");
+
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const timer = setTimeout(onGoToShared, 5000);
@@ -49,13 +50,7 @@ const RoomNoAccessContainer = (props) => {
 
         const pathname = `${url}?${filterParamsStr}`;
 
-        history.push(
-          combineUrl(
-            window.DocSpaceConfig?.proxy?.url,
-            config.homepage,
-            pathname
-          )
-        );
+        navigate(pathname);
       })
       .finally(() => {
         setIsLoading(false);

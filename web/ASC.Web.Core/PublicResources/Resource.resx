@@ -890,7 +890,7 @@
     <value>Disk space quota exceeded</value>
   </data>
   <data name="PortalName" xml:space="preserve">
-    <value>Portal Name</value>
+    <value>Cloud space for your office docs</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Portal Access</value>
@@ -986,7 +986,7 @@
     <value>Storage space</value>
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
-    <value>Admins added:</value>
+    <value>Number of admins/power users:</value>
   </data>
   <data name="TariffsFeature_used_room" xml:space="preserve">
     <value>Rooms:</value>

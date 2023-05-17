@@ -66,6 +66,7 @@ public class SetupInfo
     public long ChunkUploadSize { get; set; }
     public long ProviderMaxUploadSize { get; private set; }
     public bool ThirdPartyAuthEnabled { get; private set; }
+    public string LegalTerms { get; private set; }
     public string NoTenantRedirectURL { get; private set; }
     public string NotifyAddress { get; private set; }
     public string TipsAddress { get; private set; }
@@ -155,6 +156,7 @@ public class SetupInfo
         ProviderMaxUploadSize = GetAppSettings("files:provider:max-upload-size", 1024L * 1024L * 1024L);
         ThirdPartyAuthEnabled = string.Equals(GetAppSettings("web:thirdparty-auth", "true"), "true");
         NoTenantRedirectURL = GetAppSettings("web.notenant-url", "");
+        LegalTerms = GetAppSettings("web:legalterms", "");
 
         NotifyAddress = GetAppSettings("web.promo-url", string.Empty);
         TipsAddress = GetAppSettings("web.promo-tips-url", string.Empty);

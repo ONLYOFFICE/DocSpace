@@ -54,8 +54,13 @@ const StyledComponent = styled.div`
   ${(props) => !props.isSettingPaid && UnavailableStyles}
 `;
 
-const Branding = ({ t, isLoadedCompanyInfoSettingsData, isSettingPaid }) => {
-  const [viewDesktop, setViewDesktop] = useState(false);
+const Branding = ({
+  t,
+  isLoadedCompanyInfoSettingsData,
+  isSettingPaid,
+  standalone,
+}) => {
+  // const [viewDesktop, setViewDesktop] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -65,48 +70,54 @@ const Branding = ({ t, isLoadedCompanyInfoSettingsData, isSettingPaid }) => {
     };
   }, []);
 
-  useEffect(() => {
-    onCheckView();
-    window.addEventListener("resize", onCheckView);
+  // useEffect(() => {
+  //   onCheckView();
+  //   window.addEventListener("resize", onCheckView);
 
-    return () => window.removeEventListener("resize", onCheckView);
-  }, []);
+  //   return () => window.removeEventListener("resize", onCheckView);
+  // }, []);
 
-  const onCheckView = () => {
-    if (!isMobile && window.innerWidth > 1024) {
-      setViewDesktop(true);
-    } else {
-      setViewDesktop(false);
-    }
-  };
+  // const onCheckView = () => {
+  //   if (!isMobile && window.innerWidth > 1024) {
+  //     setViewDesktop(true);
+  //   } else {
+  //     setViewDesktop(false);
+  //   }
+  // };
 
-  if (!viewDesktop)
+  if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:Branding")} />;
 
   return (
     <StyledComponent isSettingPaid={isSettingPaid}>
       <Whitelabel isSettingPaid={isSettingPaid} />
-      <hr />
-      {isLoadedCompanyInfoSettingsData ? (
-        <div className="section-description settings_unavailable">
-          {t("Settings:BrandingSectionDescription")}
-        </div>
-      ) : (
-        <LoaderBrandingDescription />
+      {standalone && (
+        <>
+          <hr />
+          {isLoadedCompanyInfoSettingsData ? (
+            <div className="section-description settings_unavailable">
+              {t("Settings:BrandingSectionDescription")}
+            </div>
+          ) : (
+            <LoaderBrandingDescription />
+          )}
+          <CompanyInfoSettings isSettingPaid={isSettingPaid} />
+          <AdditionalResources isSettingPaid={isSettingPaid} />
+        </>
       )}
-      <CompanyInfoSettings isSettingPaid={isSettingPaid} />
-      <AdditionalResources isSettingPaid={isSettingPaid} />
     </StyledComponent>
   );
 };
 
 export default inject(({ auth, setup, common }) => {
-  const { currentQuotaStore } = auth;
+  const { currentQuotaStore, settingsStore } = auth;
   const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   const { isLoadedCompanyInfoSettingsData } = common;
+  const { standalone } = settingsStore;
 
   return {
     isLoadedCompanyInfoSettingsData,
     isSettingPaid: isBrandingAndCustomizationAvailable,
+    standalone,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(Branding))));

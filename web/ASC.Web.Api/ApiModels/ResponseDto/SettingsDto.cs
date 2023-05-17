@@ -43,6 +43,7 @@ public class SettingsDto
     public bool Personal { get; set; }
     public bool DocSpace { get; set; }
     public bool Standalone { get; set; }
+    public string BaseDomain { get; set; }
     public string WizardToken { get; set; }
     public PasswordHasher PasswordHash { get; set; }
     public FirebaseDto Firebase { get; set; }
@@ -57,6 +58,7 @@ public class SettingsDto
     public string ZendeskKey { get; set; }
     public string BookTrainingEmail { get; set; }
     public string DocumentationEmail { get; set; }
+    public string LegalTerms { get; set; }
 
     public PluginsDto Plugins { get; set; }
 

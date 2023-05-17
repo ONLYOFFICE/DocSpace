@@ -1,7 +1,7 @@
 {
   "AddCertificate": "Dodaj certyfikat",
   "AdvancedSettings": "Ustawienia zaawansowane",
-  "AdvancedSettingsTooltip": "Ukryj domyślną stronę uwierzytelniania i automatycznie kieruj do usługi pojedynczego logowania",
+  "AdvancedSettingsTooltip": "Ukryj domyślną stronę uwierzytelniania i automatycznie kieruj do usługi pojedynczego logowania.",
   "AttributeMatching": "Mapowanie atrybutów",
   "AttributeMatchingTooltip": "Zgodność atrybutów pojedynczego logowania z wpisami sekcji „Konta”.",
   "Binding": "Powiązanie:",
@@ -17,6 +17,7 @@
   "HideAuthPage": "Ukryj stronę uwierzytelniania",
   "LogoutEndpointUrl": "Adres URL punktu końcowego pojedynczego wylogowania IdP",
   "LogoutEndpointUrlTooltip": "URL używany do pojedynczego wylogowania po stronie usługodawcy",
+  "MetadataLoadError": "Plik metadanych nie został przesłany",
   "NameIDFormat": "Format NameID",
   "NewCertificate": "Nowy Certyfikat",
   "OpenCertificate": "Certyfikat publiczny",

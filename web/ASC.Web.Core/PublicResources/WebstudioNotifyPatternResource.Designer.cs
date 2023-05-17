@@ -790,14 +790,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_admin_activation_v1 {
             get {
@@ -880,11 +878,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_guest_welcome_v1 {
             get {
@@ -914,11 +912,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_user_welcome_v1 {
             get {
@@ -937,14 +935,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_admin_activation_v1 {
             get {
@@ -993,11 +989,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_guest_welcome_v1 {
             get {
@@ -1027,11 +1023,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_enterprise_whitelabel_user_welcome_v1 {
             get {
@@ -1243,14 +1239,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_admin_activation_v1 {
             get {
@@ -1314,11 +1308,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_guest_welcome_v1 {
             get {
@@ -1363,11 +1357,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_opensource_user_welcome_v1 {
             get {
@@ -1866,14 +1860,12 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Your current tariff plan is STARTUP. It is absolutely free and includes:
         ///
-        ///* 1 manager
+        ///* 1 admin, 2 power users
         ///* Up to 12 rooms
-        ///* Up to 3 users in each room
+        ///* Unlimited number of users in each room
         ///* 2 GB disk space
         ///
-        ///Enjoy a new way of document collaboration!
-        ///
-        ///Truly  [rest of string was truncated]&quot;;.
+        ///Enjoy a new way of document [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_admin_activation_v1 {
             get {
@@ -2019,11 +2011,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing mo [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_guest_welcome_v1 {
             get {
@@ -2148,11 +2140,11 @@ namespace ASC.Web.Core.PublicResources {
         ///
         ///Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to &quot;${__VirtualRootPath}&quot;:&quot;${__VirtualRootPath}&quot;. Now you can:
         ///
-        ///*#* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+        ///*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
         ///
         ///*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
         ///
-        ///*# Collaborate on documents* with two co-editing  [rest of string was truncated]&quot;;.
+        ///*# Collaborate on documents* with two co-editing m [rest of string was truncated]&quot;;.
         /// </summary>
         public static string pattern_saas_user_welcome_v1 {
             get {

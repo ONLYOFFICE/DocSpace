@@ -95,7 +95,7 @@ public class TenantLogoManager
         if (WhiteLabelEnabled)
         {
             var tenantWhiteLabelSettings = await _settingsManager.LoadAsync<TenantWhiteLabelSettings>();
-            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.LoginPage, dark);
+            return await _tenantWhiteLabelSettingsHelper.GetAbsoluteLogoPathAsync(tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum.Notification, dark);
         }
 
         /*** simple scheme ***/
