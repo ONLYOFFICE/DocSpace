@@ -39,6 +39,8 @@ public class NotifyEngine : INotifyEngine, IDisposable
     private readonly Context _context;
     private readonly List<SendMethodWrapper> _sendMethods = new List<SendMethodWrapper>();
     private readonly Queue<NotifyRequest> _requests = new Queue<NotifyRequest>(1000);
+    private readonly Thread _notifyScheduler;
+    private readonly Thread _notifySender;
     private readonly AutoResetEvent _requestsEvent = new AutoResetEvent(false);
     private readonly AutoResetEvent _methodsEvent = new AutoResetEvent(false);
     private readonly Dictionary<string, IPatternStyler> _stylers = new Dictionary<string, IPatternStyler>();
@@ -54,6 +56,8 @@ public class NotifyEngine : INotifyEngine, IDisposable
         _context = context ?? throw new ArgumentNullException(nameof(context));
         _logger = options.CreateLogger("ASC.Notify");
         _serviceScopeFactory = serviceScopeFactory;
+        _notifyScheduler = new Thread(NotifySchedulerAsync) { IsBackground = true, Name = "NotifyScheduler" };
+        _notifySender = new Thread(NotifySenderAsync) { IsBackground = true, Name = "NotifySender" };
     }
 
     public void AddAction<T>() where T : INotifyEngineAction
@@ -65,7 +69,10 @@ public class NotifyEngine : INotifyEngine, IDisposable
     {
         lock (_requests)
         {
-            Task.Run(NotifySenderAsync);
+            if (!_notifySender.IsAlive)
+            {
+                _notifySender.Start();
+            }
 
             _requests.Enqueue(request);
         }
@@ -82,7 +89,10 @@ public class NotifyEngine : INotifyEngine, IDisposable
         var w = new SendMethodWrapper(method, cron, _logger);
         lock (_sendMethods)
         {
-            Task.Run(NotifySchedulerAsync);
+            if (!_notifyScheduler.IsAlive)
+            {
+                _notifyScheduler.Start();
+            }
 
             _sendMethods.Remove(w);
             _sendMethods.Add(w);
@@ -119,7 +129,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
-    private async Task NotifySchedulerAsync()
+    private async void NotifySchedulerAsync()
     {
         try
         {
@@ -186,7 +196,7 @@ public class NotifyEngine : INotifyEngine, IDisposable
     }
 
 
-    private async Task NotifySenderAsync()
+    private async void NotifySenderAsync()
     {
         try
         {

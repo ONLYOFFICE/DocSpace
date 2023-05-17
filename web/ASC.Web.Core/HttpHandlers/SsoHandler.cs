@@ -188,7 +188,7 @@ public class SsoHandlerService
                 }
                 try
                 {
-                    userInfo = await AddUser(userInfo);
+                    userInfo = await AddUserAsync(userInfo);
                 }
                 catch(Exception ex)
                 {
@@ -260,7 +260,7 @@ public class SsoHandlerService
          await context.Response.WriteAsync(((int)messageKey).ToString());
     }
 
-    private async Task<UserInfo> AddUser(UserInfo userInfo)
+    private async Task<UserInfo> AddUserAsync(UserInfo userInfo)
     {
         UserInfo newUserInfo;
 
@@ -300,7 +300,7 @@ public class SsoHandlerService
                     throw new Exception(Resource.ErrorIncorrectUserName);
                 }
 
-                await _userManager.UpdateUserInfo(newUserInfo);
+                await _userManager.UpdateUserInfoAsync(newUserInfo);
             }
 
             /*var photoUrl = samlResponse.GetRemotePhotoUrl();
