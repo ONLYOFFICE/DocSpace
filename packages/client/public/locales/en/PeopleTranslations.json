@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Account login type",
   "DeleteSelfProfile": "Delete profile",
   "DisabledEmployeeStatus": "Disabled",
   "DisableUserButton": "Disable",
@@ -12,6 +13,7 @@
   "RemoveData": "Delete personal data",
   "ResetAuth": "Reset authentication",
   "SendInviteAgain": "Send invitation once again",
+  "StandardLogin": "Standard login",
   "SuccessChangeUserStatus": "The user status was successfully changed",
   "SuccessDeletePersonalData": "Personal data has been successfully deleted",
   "SuccessSentInvitation": "The invitation was successfully sent",
