@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import { inject, observer } from "mobx-react";
 
@@ -18,17 +18,26 @@ const LicenseContainer = (props) => {
     isLoading,
   } = props;
 
+  const [isLicenseUploading, setIsLicenseUploading] = useState(false);
   useEffect(() => {
     return () => {
       clearTimeout(timerId);
       timerId = null;
     };
   });
-  const onLicenseFileHandler = (file) => {
+  const onLicenseFileHandler = async (file) => {
+    timerId = setTimeout(() => {
+      setIsLicenseUploading(true);
+    }, [100]);
+
     let fd = new FormData();
     fd.append("files", file);
 
-    setPaymentsLicense(null, fd);
+    await setPaymentsLicense(null, fd);
+
+    clearTimeout(timerId);
+    timerId = null;
+    setIsLicenseUploading(false);
   };
 
   const onClickUpload = async () => {
@@ -38,9 +47,9 @@ const LicenseContainer = (props) => {
 
     await acceptPaymentsLicense(t);
 
-    setIsLoading(false);
     clearTimeout(timerId);
     timerId = null;
+    setIsLoading(false);
   };
 
   return (
@@ -63,7 +72,8 @@ const LicenseContainer = (props) => {
         accept=".lic"
         placeholder={t("Payments:UploadLicenseFile")}
         onInput={onLicenseFileHandler}
-        isDisabled={isLoading}
+        isDisabled={isLicenseUploading || isLoading}
+        isLoading={isLicenseUploading}
       />
       <StyledButtonComponent>
         <Button
