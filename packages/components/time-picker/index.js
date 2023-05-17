@@ -59,12 +59,22 @@ const TimePicker = ({
 
   const handleHoursChange = (time) => {
     setHours(time);
-    setDate(moment(date.format("YYYY-MM-DD") + " " + time + ":" + minutes));
+    setDate(
+      moment(
+        date.format("YYYY-MM-DD") + " " + time + ":" + minutes,
+        "YYYY-MM-DD HH:mm"
+      )
+    );
     onChange(time);
   };
   const handleMinutesChange = (time) => {
     setMinutes(time);
-    setDate(moment(date.format("YYYY-MM-DD") + " " + hours + ":" + time));
+    setDate(
+      moment(
+        date.format("YYYY-MM-DD") + " " + hours + ":" + time,
+        "YYYY-MM-DD HH:mm"
+      )
+    );
     onChange(time);
   };
 
