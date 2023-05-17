@@ -39,14 +39,14 @@ const ArticleEnterpriseAlert = ({
       return t("Common:TrialDaysLeft", { count: trialDaysLeft });
     }
 
-    return "Enterprise Edition";
+    return t("TariffEnterprise");
   };
 
   const descriptionFunction = () => {
     if (isLicenseDateExpires) {
       if (isTrial) return;
 
-      return t("TopBottonsEnterpriseWarning", { date: paymentDate });
+      return t("SubscriptionIsExpiring", { date: paymentDate });
     }
 
     return t("Common:SubscriptionIsExpiring", { date: paymentDate });
