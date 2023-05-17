@@ -9,10 +9,17 @@ import {
   StyledRole,
   StyledEveryoneRoleContainer,
   StyledTooltip,
+  StyledAssignedRole,
+  StyledAvatar,
+  StyledUserRow,
 } from "./styled-filling-role-selector";
 
+import AvatarBaseReactSvgUrl from "PUBLIC_DIR/images/avatar.base.react.svg?url";
+import RemoveSvgUrl from "PUBLIC_DIR/images/remove.session.svg?url";
+
+import { ReactSVG } from "react-svg";
 const FillingRoleSelector = (props) => {
-  const { roles, users, onClick } = props;
+  const { roles, users, onClick, onRemoveUser } = props;
 
   const cloneRoles = JSON.parse(JSON.stringify(roles));
   const sortedInOrderRoles = cloneRoles.sort((a, b) =>
@@ -21,6 +28,8 @@ const FillingRoleSelector = (props) => {
   const everyoneRole = roles.find((item) => item.everyone == true);
 
   //TODO: Add correct translations
+  //TODO: Rename item
+  //TODO: Rename  onClick
   return (
     <StyledFillingRoleSelector {...props}>
       {everyoneRole && (
@@ -31,7 +40,7 @@ const FillingRoleSelector = (props) => {
             <StyledEveryoneRoleContainer>
               <div className="title">
                 <StyledRole>{everyoneRole.role}</StyledRole>
-                <StyledRole className="comment">(@Everyone)</StyledRole>
+                <StyledAssignedRole>@Everyone</StyledAssignedRole>
               </div>
 
               <div className="role-description">
@@ -47,10 +56,50 @@ const FillingRoleSelector = (props) => {
         </>
       )}
 
-      {sortedInOrderRoles.map((item) => {
+      {sortedInOrderRoles.map((item, index) => {
         if (item.everyone) return;
+
+        if (users) {
+          const roleWithUser = users.find((user) => user.role === item.role);
+          if (roleWithUser) {
+            return (
+              <StyledUserRow key={index}>
+                <div className="content">
+                  <StyledNumber>{item.order}</StyledNumber>
+                  <StyledAvatar
+                    src={
+                      roleWithUser.hasAvatar
+                        ? roleWithUser.avatar
+                        : AvatarBaseReactSvgUrl
+                    }
+                  />
+                  <div className="user-with-role">
+                    <StyledRole>
+                      {roleWithUser.firstName} {roleWithUser.lastName}
+                    </StyledRole>
+                    <StyledAssignedRole>{roleWithUser.role}</StyledAssignedRole>
+                  </div>
+                </div>
+
+                <ReactSVG
+                  src={RemoveSvgUrl}
+                  onClick={() => onRemoveUser(roleWithUser.id)}
+                />
+              </StyledUserRow>
+            );
+          } else {
+            return (
+              <StyledRow key={index}>
+                <StyledNumber>{item.order}</StyledNumber>
+                <StyledAddRoleButton onClick={onClick} color={item.color} />
+                <StyledRole>{item.role}</StyledRole>
+              </StyledRow>
+            );
+          }
+        }
+
         return (
-          <StyledRow>
+          <StyledRow key={index}>
             <StyledNumber>{item.order}</StyledNumber>
             <StyledAddRoleButton onClick={onClick} color={item.color} />
             <StyledRole>{item.role}</StyledRole>
@@ -65,6 +114,7 @@ FillingRoleSelector.propTypes = {
   roles: PropTypes.array,
   users: PropTypes.array,
   onClick: PropTypes.func,
+  onRemoveUser: PropTypes.func,
 };
 
 FillingRoleSelector.defaultProps = {};

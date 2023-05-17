@@ -15,11 +15,34 @@ const StyledRow = styled.div`
   gap: 8px;
 `;
 
+const StyledUserRow = styled.div`
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .content {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .user-with-role {
+    display: flex;
+  }
+`;
+
 const StyledNumber = styled.div`
   font-weight: 600;
   font-size: 14px;
   line-height: 16px;
   color: #a3a9ae;
+`;
+
+const StyledAvatar = styled.img`
+  height: 32px;
+  width: 32px;
+  border-radius: 50%;
 `;
 
 const StyledAddRoleButton = styled(AddRoleButton)`
@@ -46,17 +69,24 @@ const StyledRole = styled.div`
   line-height: 16px;
 `;
 
+const StyledAssignedRole = styled.div`
+  padding-left: 4px;
+  color: rgba(170, 170, 170, 1);
+
+  ::before {
+    content: "(";
+  }
+  ::after {
+    content: ")";
+  }
+`;
+
 const StyledEveryoneRoleContainer = styled.div`
   display: flex;
   flex-direction: column;
 
   .title {
     display: flex;
-  }
-
-  .comment {
-    padding-left: 4px;
-    color: rgba(170, 170, 170, 1);
   }
 
   .role-description {
@@ -89,4 +119,7 @@ export {
   StyledRole,
   StyledEveryoneRoleContainer,
   StyledTooltip,
+  StyledAssignedRole,
+  StyledAvatar,
+  StyledUserRow,
 };

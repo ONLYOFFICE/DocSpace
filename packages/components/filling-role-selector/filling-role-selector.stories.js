@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import FillingRoleSelector from ".";
 
 export default {
@@ -6,6 +6,7 @@ export default {
   component: FillingRoleSelector,
   argTypes: {
     onClick: { action: "onClick" },
+    onRemoveUser: { action: "onRemoveUser" },
   },
 };
 
@@ -21,14 +22,15 @@ const mockUsers = [
     firstName: "Makenna",
     lastName: "Lipshutz",
     role: "Accountant",
-    avatar: "",
+    avatar: "/images/user.avatar.example.react.svg",
+    hasAvatar: true,
   },
   {
     id: 2,
     firstName: "Randy",
     lastName: "Korsgaard",
     role: "Director",
-    avatar: "",
+    hasAvatar: false,
   },
 ];
 
@@ -47,12 +49,26 @@ Default.args = {
   roles: mockRoles,
 };
 
-const TemplateRolesFilledUsers = ({ onClick, ...args }) => {
+const TemplateRolesFilledUsers = ({
+  users,
+  onClick,
+  onRemoveUser,
+  ...args
+}) => {
+  const [usersAssigned, setUsersAssigned] = useState(mockUsers);
+
+  const onRemoveUserHandler = (id) => {
+    const newUsersAssigned = usersAssigned.filter((item) => item.id !== id);
+    setUsersAssigned(newUsersAssigned);
+  };
+
   return (
     <FillingRoleSelector
       {...args}
       style={{ width: "480px", padding: "16px" }}
-      onClick={(e) => onClick(e)}
+      // onClick={(e) => onClick(e)}
+      users={usersAssigned}
+      onRemoveUser={onRemoveUserHandler}
     />
   );
 };
@@ -60,6 +76,5 @@ const TemplateRolesFilledUsers = ({ onClick, ...args }) => {
 export const rolesFilledUsers = TemplateRolesFilledUsers.bind({});
 
 rolesFilledUsers.args = {
-  users: mockUsers,
   roles: mockRoles,
 };
