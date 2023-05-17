@@ -6,7 +6,7 @@
   "ActivateRenewDescr": "Pour obtenir les conditions de renouvellement personnelles, contactez votre responsable ou écrivez-nous à <1>{{email}}</1>",
   "ActivateRenewSubscriptionHeader": "Renouveler l'abonnement sur Enterprise",
   "ActivateSwithToProHeader": "Passer à la version Enterprise complète",
-  "ActivateTariffDescr": "Vous utilisez ONLYOFFICE Workspace Enterprise.",
+  "ActivateTariffDescr": "Vous utilisez ONLYOFFICE DocSpace Enterprise.",
   "ActivateTariffEnterpriseExpiration": "Votre abonnement expire le {{date}}.",
   "ActivateTariffEnterpriseTrialDescr": "Vous utilisez la version d'essai d'ONLYOFFICE Workspace Enterprise Edition.",
   "ActivateTariffEnterpriseTrialExpiration": "Votre période d'essai expire le {0}.",

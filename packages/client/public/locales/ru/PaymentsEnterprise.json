@@ -6,7 +6,7 @@
   "ActivateRenewDescr": "Чтобы получить персональные условия продления, свяжитесь со специально назначенным менеджером или напишите нам по адресу <1>{{email}}</1>",
   "ActivateRenewSubscriptionHeader": "Продлить подписку на Enterprise",
   "ActivateSwithToProHeader": "Перейдите на полную версию Enterprise",
-  "ActivateTariffDescr": "Вы используете ONLYOFFICE Workspace Enterprise.",
+  "ActivateTariffDescr": "Вы используете ONLYOFFICE DocSpace Enterprise.",
   "ActivateTariffEnterpriseExpiration": "Подписка истекает {{date}}.",
   "ActivateTariffEnterpriseTrialDescr": "Вы используете пробную версию ONLYOFFICE Workspace Enterprise Edition.",
   "ActivateTariffEnterpriseTrialExpiration": "Пробный период истекает {0}.",
