@@ -36,7 +36,6 @@ const Layout = ({
     <>
       <ArticleSettings />
       <Section withBodyScroll={true} settingsStudio={true}>
-        {/* <Section.SectionHeader>{isTitleVisible && <SectionHeaderContent />}</Section.SectionHeader> */}
         {isTitleVisible && (
           <Section.SectionHeader>
             <SectionHeaderContent />
