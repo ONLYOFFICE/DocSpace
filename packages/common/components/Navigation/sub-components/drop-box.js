@@ -25,6 +25,11 @@ const StyledBox = styled.div`
   position: absolute;
   top: 0px;
   left: ${isMobile ? "-16px" : "-20px"};
+  ${({ withLogo }) =>
+    withLogo &&
+    css`
+      left: 207px;
+    `};
 
   padding: ${isMobile ? "0 16px " : "0 20px"};
   padding-top: 18px;
@@ -109,6 +114,7 @@ const DropBox = React.forwardRef(
       isOpen,
       isDesktop,
       isDesktopClient,
+      withLogo,
     },
     ref
   ) => {
@@ -153,6 +159,7 @@ const DropBox = React.forwardRef(
           showText={showText}
           dropBoxWidth={dropBoxWidth}
           isDesktop={isDesktop}
+          withLogo={withLogo}
         >
           <StyledContainer
             canCreate={canCreate}

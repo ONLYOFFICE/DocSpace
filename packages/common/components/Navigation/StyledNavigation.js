@@ -20,8 +20,28 @@ const StyledContainer = styled.div`
 
   display: grid;
   align-items: center;
-  grid-template-columns: ${(props) =>
-    props.isRootFolder ? "auto 1fr" : "49px auto 1fr"};
+
+  grid-template-columns: ${({ isRootFolder, withLogo }) =>
+    isRootFolder
+      ? withLogo
+        ? "1fr auto 1fr"
+        : "auto 1fr"
+      : withLogo
+      ? "1fr 49px auto 1fr"
+      : "49px auto 1fr"};
+
+  .navigation-logo {
+    display: flex;
+    height: 24px;
+    margin-right: 16px;
+
+    .header_separator {
+      display: ${({ isRootFolder }) => (isRootFolder ? "block" : "none")};
+      border-left: 1px solid #dfe2e3;
+      margin: 0 0 0 15px;
+      height: 21px;
+    }
+  }
 
   height: 100%;
   ${(props) =>

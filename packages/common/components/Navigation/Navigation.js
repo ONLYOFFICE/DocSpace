@@ -50,6 +50,7 @@ const Navigation = ({
   isDesktop: isDesktopClient,
   isRoom,
   hideInfoPanel,
+  withLogo,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -162,6 +163,7 @@ const Navigation = ({
                 isInfoPanelVisible={isInfoPanelVisible}
                 onClickAvailable={onClickAvailable}
                 isDesktopClient={isDesktopClient}
+                withLogo={!!withLogo}
               />
             </>
           )}
@@ -176,7 +178,14 @@ const Navigation = ({
             isDesktop={isDesktop}
             isDesktopClient={isDesktopClient}
             isInfoPanelVisible={isInfoPanelVisible}
+            withLogo={!!withLogo}
           >
+            {withLogo && (
+              <div className="navigation-logo">
+                <img className="logo-icon_svg" src={withLogo} />
+                <div className="header_separator" />
+              </div>
+            )}
             <ArrowButton
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
