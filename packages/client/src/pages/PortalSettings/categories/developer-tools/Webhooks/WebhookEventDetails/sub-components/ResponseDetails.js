@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import { Text, Textarea, Button } from "@docspace/components";
 
 import json_beautifier from "csvjson-json_beautifier";
+import { isMobileOnly } from "react-device-detect";
 
 const DetailsWrapper = styled.div`
   width: 100%;
@@ -28,7 +29,7 @@ const LargePayloadStub = styled.div`
   border: 1px solid #eceef1;
   border-radius: 3px;
 
-  ${window.innerWidth <= 440 &&
+  ${isMobileOnly &&
   css`
     justify-content: flex-start;
     flex-wrap: wrap;
@@ -91,7 +92,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
             size="small"
             onClick={openRawPayload}
             label="View raw payload"
-            scale={window.innerWidth <= 440}
+            scale={isMobileOnly}
           />
         </LargePayloadStub>
       ) : responsePayload === "" ? (
