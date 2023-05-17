@@ -13,9 +13,6 @@ const StyledRowContainer = styled(RowContainer)`
 
   .row-list-item {
     cursor: pointer;
-    &:hover {
-      background-color: #f3f4f4;
-    }
   }
 
   .row-list-item:has(.selected-row-item) {
@@ -33,6 +30,7 @@ const HistoryRowView = (props) => {
     totalItems,
     fetchMoreItems,
     historyFilters,
+    formatFilters,
   } = props;
   const { id } = useParams();
 
@@ -69,7 +67,8 @@ const HistoryRowView = (props) => {
 
 export default inject(({ setup, webhooksStore }) => {
   const { viewAs, setViewAs } = setup;
-  const { historyItems, fetchMoreItems, hasMoreItems, totalItems, historyFilters } = webhooksStore;
+  const { historyItems, fetchMoreItems, hasMoreItems, totalItems, historyFilters, formatFilters } =
+    webhooksStore;
   return {
     viewAs,
     setViewAs,
@@ -78,5 +77,6 @@ export default inject(({ setup, webhooksStore }) => {
     hasMoreItems,
     totalItems,
     historyFilters,
+    formatFilters,
   };
 })(observer(HistoryRowView));
