@@ -17,7 +17,7 @@
   "UpgradeToProBannerHeader": "Get free access to pro features for 30 days",
   "UpgradeToProBannerInformationAboutShort": "Learn more about Enterprise Edition {0}on the official website{1}",
   "UpgradeToProBannerInformationDemo": "Richiedi una dimostrazione {0}qui{1}",
-  "UpgradeToProBannerInformationPurchase": "Per le domande sull'acquisto a {0}{2}{1}",
+  "UpgradeToProBannerInformationPurchase": "Per le domande sull'acquisto a <1>{{email}}</1>",
   "UpgradeToProBannerInformationSupport": "Get tech assistance <1>{{helpUrl}}</1>",
   "UpgradeToProBannerInstructionDescr": "Use the official documentation to upgrade:",
   "UpgradeToProBannerInstructionItemDocker": "Docker instruction.",
