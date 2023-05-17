@@ -100,8 +100,7 @@ class AuthStore {
             this.isQuotaAvailable &&
             this.settingsStore.tenantStatus !== TenantStatus.PortalRestore
           ) {
-            this.currentQuotaStore.init();
-            this.currentTariffStatusStore.init();
+            this.getTenantExtra();
           }
         })
       );
@@ -110,10 +109,6 @@ class AuthStore {
     }
 
     if (this.isAuthenticated && !skipRequest) {
-      if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
-        requests.push(this.getTenantExtra());
-      }
-
       this.settingsStore.tenantStatus !== TenantStatus.PortalRestore &&
         requests.push(this.settingsStore.getAdditionalResources());
 
