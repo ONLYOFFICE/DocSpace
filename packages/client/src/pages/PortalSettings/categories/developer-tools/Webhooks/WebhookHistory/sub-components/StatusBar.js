@@ -1,16 +1,22 @@
 import React, { useEffect } from "react";
 import moment from "moment";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 
 import { SelectedItem } from "@docspace/components";
 import Link from "@docspace/components/link";
+
+import { isMobile } from "react-device-detect";
 
 const StatusBarWrapper = styled.div`
   margin-top: 8px;
 
   .statusBarItem {
     margin-right: 4px;
+    ${isMobile &&
+    css`
+      margin-bottom: 4px;
+    `}
   }
 
   .statusBarItem:last-of-type {
