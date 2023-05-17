@@ -106,6 +106,7 @@ const StyledTooltip = styled.div`
   padding: 8px 12px;
   height: 48px;
   box-sizing: border-box;
+  margin: 8px 0;
 `;
 
 StyledFillingRoleSelector.defaultProps = { theme: Base };
