@@ -6,10 +6,24 @@ import Text from "@docspace/components/text";
 import FileInput from "@docspace/components/file-input";
 import Button from "@docspace/components/button";
 import { StyledButtonComponent } from "./StyledComponent";
-import { toastr } from "@docspace/components";
 
+let timerId;
 const LicenseContainer = (props) => {
-  const { t, setPaymentsLicense, acceptPaymentsLicense } = props;
+  const {
+    t,
+    setPaymentsLicense,
+    acceptPaymentsLicense,
+    isLicenseCorrect,
+    setIsLoading,
+    isLoading,
+  } = props;
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(timerId);
+      timerId = null;
+    };
+  });
   const onLicenseFileHandler = (file) => {
     let fd = new FormData();
     fd.append("files", file);
@@ -17,9 +31,18 @@ const LicenseContainer = (props) => {
     setPaymentsLicense(null, fd);
   };
 
-  const onClickUpload = () => {
-    acceptPaymentsLicense(t);
+  const onClickUpload = async () => {
+    timerId = setTimeout(() => {
+      setIsLoading(true);
+    }, [200]);
+
+    await acceptPaymentsLicense(t);
+
+    setIsLoading(false);
+    clearTimeout(timerId);
+    timerId = null;
   };
+
   return (
     <div className="payments_license">
       <Text fontWeight={700} fontSize="16px">
@@ -40,7 +63,7 @@ const LicenseContainer = (props) => {
         accept=".lic"
         placeholder={t("Payments:UploadLicenseFile")}
         onInput={onLicenseFileHandler}
-        // hasError={}
+        isDisabled={isLoading}
       />
       <StyledButtonComponent>
         <Button
@@ -48,8 +71,8 @@ const LicenseContainer = (props) => {
           label={t("Common:Activate")}
           size="small"
           onClick={onClickUpload}
-          // isLoading={}
-          // isDisabled={}
+          isLoading={isLoading}
+          isDisabled={!isLicenseCorrect}
         />
       </StyledButtonComponent>
     </div>
@@ -57,7 +80,19 @@ const LicenseContainer = (props) => {
 };
 
 export default inject(({ payments }) => {
-  const { setPaymentsLicense, acceptPaymentsLicense } = payments;
+  const {
+    setPaymentsLicense,
+    acceptPaymentsLicense,
+    isLicenseCorrect,
+    setIsLoading,
+    isLoading,
+  } = payments;
 
-  return { setPaymentsLicense, acceptPaymentsLicense };
+  return {
+    setPaymentsLicense,
+    acceptPaymentsLicense,
+    isLicenseCorrect,
+    setIsLoading,
+    isLoading,
+  };
 })(withRouter(observer(LicenseContainer)));

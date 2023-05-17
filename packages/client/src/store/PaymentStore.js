@@ -35,6 +35,7 @@ class PaymentStore {
   minAvailableTotalSizeValue = 107374182400;
 
   isInitPaymentPage = false;
+  isLicenseCorrect = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -197,13 +198,18 @@ class PaymentStore {
     }
   };
 
+  setIsLicenseCorrect = (isLicenseCorrect) => {
+    this.isLicenseCorrect = isLicenseCorrect;
+  };
   setPaymentsLicense = async (confirmKey, data) => {
     try {
       const message = await setLicense(confirmKey, data);
+      this.setIsLicenseCorrect(true);
 
       toastr.success(message);
     } catch (e) {
       toastr.error(e);
+      this.setIsLicenseCorrect(false);
     }
   };
 
