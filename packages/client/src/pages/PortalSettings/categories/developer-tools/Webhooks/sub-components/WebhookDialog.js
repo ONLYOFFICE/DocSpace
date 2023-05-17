@@ -73,6 +73,17 @@ const WebhookDialog = (props) => {
     return () => window.removeEventListener("keyup", onKeyPress);
   }, []);
 
+  useEffect(() => {
+    setWebhookInfo({
+      id: webhook ? webhook.id : 0,
+      name: webhook ? webhook.name : "",
+      uri: webhook ? webhook.uri : "",
+      secretKey: webhook ? webhook.secretKey : "",
+      enabled: webhook ? webhook.enabled : true,
+      ssl: webhook ? webhook.ssl : true,
+    });
+  }, [webhook]);
+
   const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onModalClose();
 
   return (
@@ -107,7 +118,6 @@ const WebhookDialog = (props) => {
             setIsPasswordValid={setIsPasswordValid}
             setIsResetVisible={setIsResetVisible}
           />
-          
 
           <button type="submit" ref={submitButtonRef} hidden></button>
         </form>
