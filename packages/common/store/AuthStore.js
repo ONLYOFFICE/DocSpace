@@ -100,8 +100,8 @@ class AuthStore {
             this.isQuotaAvailable &&
             this.settingsStore.tenantStatus !== TenantStatus.PortalRestore
           ) {
-            this.currentQuotaStore.init();
-            this.currentTariffStatusStore.init();
+            //this.currentQuotaStore.init();
+            //this.currentTariffStatusStore.init();
           }
         })
       );
