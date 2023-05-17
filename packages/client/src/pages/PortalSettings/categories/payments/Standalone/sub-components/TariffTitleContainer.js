@@ -45,11 +45,11 @@ const TariffTitleContainer = ({
   const expiresDate = () => {
     if (isTrial) {
       return t("ActivateTariffEnterpriseTrialExpiration", {
-        finalDate: paymentDate,
+        date: paymentDate,
       });
     }
     return t("ActivateTariffEnterpriseExpiration", {
-      finalDate: paymentDate,
+      date: paymentDate,
     });
   };
 

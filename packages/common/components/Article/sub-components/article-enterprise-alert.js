@@ -46,7 +46,7 @@ const ArticleEnterpriseAlert = ({
     if (isLicenseDateExpires) {
       if (isTrial) return;
 
-      return "Your subscription to support and updates has expired";
+      return t("TopBottonsEnterpriseWarning", { date: paymentDate });
     }
 
     return t("Common:SubscriptionIsExpiring", { date: paymentDate });
