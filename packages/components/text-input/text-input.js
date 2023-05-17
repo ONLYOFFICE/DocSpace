@@ -24,6 +24,7 @@ TextInput.propTypes = {
   type: PropTypes.oneOf(["text", "password", "email", "tel"]),
   /** Value of the input */
   value: PropTypes.string.isRequired,
+  /** Default maxLength value of the input */
   maxLength: PropTypes.number,
   /** Placeholder text for the input */
   placeholder: PropTypes.string,
@@ -31,7 +32,7 @@ TextInput.propTypes = {
   tabIndex: PropTypes.number,
   /** input text mask */
   mask: PropTypes.oneOfType([PropTypes.array, PropTypes.func]),
-  /** When true, adding or deleting characters will not affect the positions of existing characters. */
+  /** Allows to add or delete characters without changing the positions of the existing characters.*/
   keepCharPositions: PropTypes.bool,
   /** When guide is true, Text Mask always shows both placeholder characters and non-placeholder mask characters. */
   guide: PropTypes.bool,

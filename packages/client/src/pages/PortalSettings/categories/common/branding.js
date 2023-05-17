@@ -60,7 +60,7 @@ const Branding = ({
   isSettingPaid,
   standalone,
 }) => {
-  const [viewDesktop, setViewDesktop] = useState(false);
+  // const [viewDesktop, setViewDesktop] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -70,22 +70,22 @@ const Branding = ({
     };
   }, []);
 
-  useEffect(() => {
-    onCheckView();
-    window.addEventListener("resize", onCheckView);
+  // useEffect(() => {
+  //   onCheckView();
+  //   window.addEventListener("resize", onCheckView);
 
-    return () => window.removeEventListener("resize", onCheckView);
-  }, []);
+  //   return () => window.removeEventListener("resize", onCheckView);
+  // }, []);
 
-  const onCheckView = () => {
-    if (!isMobile && window.innerWidth > 1024) {
-      setViewDesktop(true);
-    } else {
-      setViewDesktop(false);
-    }
-  };
+  // const onCheckView = () => {
+  //   if (!isMobile && window.innerWidth > 1024) {
+  //     setViewDesktop(true);
+  //   } else {
+  //     setViewDesktop(false);
+  //   }
+  // };
 
-  if (!viewDesktop)
+  if (isMobile)
     return <BreakpointWarning sectionName={t("Settings:Branding")} />;
 
   return (

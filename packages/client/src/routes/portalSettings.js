@@ -164,15 +164,15 @@ const PortalSettingsRoutes = {
     },
     {
       path: "integration",
-      element: <Navigate to="integration/third-party-services" />,
+      element: <Integration />,
     },
     {
       path: "integration/third-party-services",
-      element: <ThirdParty />,
+      element: <Integration />,
     },
     {
       path: "integration/single-sign-on",
-      element: <SingleSignOn />,
+      element: <Integration />,
     },
     {
       path: "payments/portal-payments",

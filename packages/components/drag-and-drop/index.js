@@ -50,13 +50,15 @@ DragAndDrop.propTypes = {
   className: PropTypes.string,
   /** Sets the component as a dropzone */
   isDropZone: PropTypes.bool,
-  /** Show that the item is being dragged now. */
+  /** Shows that the item is being dragged now. */
   dragging: PropTypes.bool,
   /** Occurs when the mouse button is pressed */
   onMouseDown: PropTypes.func,
   /** Occurs when the dragged element is dropped on the drop target */
   onDrop: PropTypes.func,
+  /** Sets a callback function that is triggered when a draggable selection is dragged over the target */
   onDragOver: PropTypes.func,
+  /** Sets a callback function that is triggered when a draggable selection leaves the drop target */
   onDragLeave: PropTypes.func,
 };
 

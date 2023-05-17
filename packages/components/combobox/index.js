@@ -28,14 +28,22 @@ class ComboBox extends React.Component {
 
   stopAction = (e) => e.preventDefault();
 
-  setIsOpen = (isOpen) => this.setState({ isOpen: isOpen });
+  setIsOpen = (isOpen) => {
+    const { setIsOpenItemAccess } = this.props;
+    this.setState({ isOpen: isOpen });
+    setIsOpenItemAccess && setIsOpenItemAccess(isOpen);
+  };
 
   handleClickOutside = (e) => {
+    const { setIsOpenItemAccess } = this.props;
+
     if (this.ref.current.contains(e.target)) return;
 
     this.setState({ isOpen: !this.state.isOpen }, () => {
       this.props.toggleAction && this.props.toggleAction(e, this.state.isOpen);
     });
+
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
   };
 
   comboBoxClick = (e) => {
@@ -45,6 +53,7 @@ class ComboBox extends React.Component {
       isDisabled,
       toggleAction,
       isLoading,
+      setIsOpenItemAccess,
     } = this.props;
 
     if (
@@ -59,20 +68,24 @@ class ComboBox extends React.Component {
     this.setState({ isOpen: !this.state.isOpen }, () => {
       toggleAction && toggleAction(e, this.state.isOpen);
     });
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
   };
 
   optionClick = (option) => {
+    const { setIsOpenItemAccess } = this.props;
     this.setState({
       isOpen: !this.state.isOpen,
       selectedOption: option,
     });
-
+    setIsOpenItemAccess && setIsOpenItemAccess(!this.state.isOpen);
     this.props.onSelect && this.props.onSelect(option);
   };
 
   componentDidUpdate(prevProps) {
+    const { setIsOpenItemAccess } = this.props;
     if (this.props.opened !== prevProps.opened) {
       this.setIsOpen(this.props.opened);
+      setIsOpenItemAccess && setIsOpenItemAccess(this.props.opened);
     }
 
     if (this.props.selectedOption !== prevProps.selectedOption) {
@@ -107,8 +120,6 @@ class ComboBox extends React.Component {
       fixedDirection,
       withBlur,
       fillIcon,
-      isExternalLink,
-      isPersonal,
       offsetLeft,
       modernView,
       withBackdrop,
@@ -119,6 +130,7 @@ class ComboBox extends React.Component {
       withoutPadding,
       isLoading,
       isNoFixedHeightOptions,
+      hideMobileView,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -147,9 +159,8 @@ class ComboBox extends React.Component {
     let optionsCount = optionsLength;
 
     if (withAdvancedOptions) {
-      const advancedOptionsWithoutSeparator = advancedOptions.props.children.filter(
-        (option) => option.key !== "s1"
-      );
+      const advancedOptionsWithoutSeparator =
+        advancedOptions.props.children.filter((option) => option.key !== "s1");
 
       const advancedOptionsWithoutSeparatorLength =
         advancedOptionsWithoutSeparator.length;
@@ -161,7 +172,7 @@ class ComboBox extends React.Component {
         : 6;
     }
 
-    const disableMobileView = optionsCount < 4;
+    const disableMobileView = optionsCount < 4 || hideMobileView;
 
     return (
       <StyledComboBox
@@ -213,8 +224,6 @@ class ComboBox extends React.Component {
             isDefaultMode={isDefaultMode}
             fixedDirection={fixedDirection}
             withBlur={withBlur}
-            isExternalLink={isExternalLink}
-            isPersonal={isPersonal}
             offsetLeft={offsetLeft}
             withBackdrop={withBackdrop}
             isAside={isAside}
@@ -257,80 +266,85 @@ class ComboBox extends React.Component {
 }
 
 ComboBox.propTypes = {
-  /** If you need display options not basic options */
+  /** Displays advanced options */
   advancedOptions: PropTypes.element,
   /** Children elements */
   children: PropTypes.any,
   /** Accepts class */
   className: PropTypes.string,
-  /** X direction selection */
+  /** X direction position */
   directionX: PropTypes.oneOf(["left", "right"]),
-  /** Y direction selection */
+  /** Y direction position */
   directionY: PropTypes.oneOf(["bottom", "top", "both"]),
   /** Component Display Type */
   displayType: PropTypes.oneOf(["default", "toggle"]),
   /** Height of Dropdown */
   dropDownMaxHeight: PropTypes.number,
-  /** Display disabled items or not when displayType !== toggle */
+  /** Displays disabled items when displayType !== toggle */
   showDisabledItems: PropTypes.bool,
   /** Accepts id */
   id: PropTypes.string,
   /** Accepts id for dropdown container */
   dropDownId: PropTypes.string,
-  /** Indicates that component will have backdrop */
+  /** Indicates that component contains a backdrop */
   withBackdrop: PropTypes.bool,
   /** Indicates that component is disabled */
   isDisabled: PropTypes.bool,
   /** Indicates that component is displayed without borders */
   noBorder: PropTypes.bool,
-  /** Will be triggered whenever an ComboBox is selected option */
+  /** Is triggered whenever ComboBox is a selected option */
   onSelect: PropTypes.func,
-  /** Tells when a component is open */
+  /** Sets the component open */
   opened: PropTypes.bool,
   /** Combo box options */
   options: PropTypes.array.isRequired,
   /** Indicates that component is scaled by parent */
   scaled: PropTypes.bool,
-  /** Indicates that component`s options is scaled by ComboButton */
+  /** Indicates that component`s options are scaled by ComboButton */
   scaledOptions: PropTypes.bool,
   /** Selected option */
   selectedOption: PropTypes.object.isRequired,
-  /** Select component width, one of default */
+  /** Sets the component's width from the default settings */
   size: PropTypes.oneOf(["base", "middle", "big", "huge", "content"]),
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** The event will be raised when using `displayType: toggle` when clicking on a component */
+  /** The event is triggered by clicking on a component when `displayType: toggle` */
   toggleAction: PropTypes.func,
   /** Accepts css text-overflow */
   textOverflow: PropTypes.bool,
   /** Disables clicking on the icon */
   disableIconClick: PropTypes.bool,
-  /** Defines the operation mode of the component, by default with the portal */
+  /** Sets the operation mode of the component. The default option is set to portal mode */
   isDefaultMode: PropTypes.bool,
   /** Y offset */
   offsetDropDownY: PropTypes.string,
+  /** Sets an icon that is displayed in the combo button */
   comboIcon: PropTypes.string,
+  /** Sets the precise distance from the parent */
   manualY: PropTypes.string,
+  /** Sets the precise distance from the parent */
   manualX: PropTypes.string,
   /** Dropdown manual width */
   manualWidth: PropTypes.string,
+  /** Displays the selected option */
   displaySelectedOption: PropTypes.bool,
+  /** Disables position checking. Used for explicit direction setting */
   fixedDirection: PropTypes.bool,
-  /** Disable clicking on the item */
+  /** Disables clicking on the item */
   disableItemClick: PropTypes.bool,
   /** Indicates that component will fill selected item icon */
   fillIcon: PropTypes.bool,
-  isExternalLink: PropTypes.bool,
-  isPersonal: PropTypes.bool,
+  /** Sets the left offset for the dropdown */
   offsetLeft: PropTypes.number,
-  /** Tell when combo-box should displaying at modern view */
+  /** Sets the combo-box to be displayed in modern view */
   modernView: PropTypes.bool,
   /** Count of advanced options  */
   advancedOptionsCount: PropTypes.number,
   /** Accepts css tab-index style */
   tabIndex: PropTypes.number,
+  /** Disables the combo box padding */
   withoutPadding: PropTypes.bool,
-  /** Tells when a component is loading */
+  /** Indicates when the component is loading */
   isLoading: PropTypes.bool,
 };
 
@@ -349,7 +363,6 @@ ComboBox.defaultProps = {
   displaySelectedOption: false,
   fixedDirection: false,
   disableItemClick: false,
-  isExternalLink: false,
   modernView: false,
   tabIndex: -1,
   withoutPadding: false,
