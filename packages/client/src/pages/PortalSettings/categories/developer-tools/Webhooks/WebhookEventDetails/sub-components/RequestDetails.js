@@ -35,7 +35,7 @@ export const RequestDetails = ({ webhookDetails }) => {
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px" }}>
         Request post header
       </Text>
-      {webhookDetails.requestHeaders === "" ? (
+      {!webhookDetails.requestHeaders ? (
         <Textarea isDisabled />
       ) : (
         <Textarea
