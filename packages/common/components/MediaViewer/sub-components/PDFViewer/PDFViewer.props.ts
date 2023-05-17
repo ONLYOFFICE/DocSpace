@@ -21,8 +21,6 @@ interface PDFViewerProps {
 
   onPrev: VoidFunction;
   onNext: VoidFunction;
-
-  handleChangeVersion: (arg: string) => void; // temp
 }
 
 export type BookMark = {

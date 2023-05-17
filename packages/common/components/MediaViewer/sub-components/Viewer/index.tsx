@@ -22,18 +22,6 @@ function Viewer(props: ViewerProps) {
 
   const containerRef = React.useRef(document.createElement("div"));
 
-  //#region for test pdf viewer
-
-  const [pdfVersion, setPdfVersion] = useState<string>(() => {
-    return localStorage.getItem("pdf-version") ?? "1";
-  });
-
-  const handleChangeVersion = (version: string) => {
-    setPdfVersion(version);
-    localStorage.setItem("pdf-version", version);
-  };
-
-  //#endregion
   const [isPDFSidebarOpen, setIsPDFSidebarOpen] = useState<boolean>(false);
   const [panelVisible, setPanelVisible] = useState<boolean>(true);
   const [isOpenContextMenu, setIsOpenContextMenu] = useState<boolean>(false);
@@ -250,29 +238,21 @@ function Viewer(props: ViewerProps) {
           )
         : props.isPdf &&
           ReactDOM.createPortal(
-            pdfVersion === "1" ? (
-              <PDFViewer
-                src={props.fileUrl ?? ""}
-                title={props.title}
-                toolbar={props.toolbar}
-                onMask={handleMaskClick}
-                isPDFSidebarOpen={isPDFSidebarOpen}
-                mobileDetails={mobileDetails}
-                handleChangeVersion={handleChangeVersion}
-                generateContextMenu={props.generateContextMenu}
-                setIsOpenContextMenu={setIsOpenContextMenu}
-                setIsPDFSidebarOpen={setIsPDFSidebarOpen}
-                isLastImage={!isNotLastElement}
-                isFistImage={!isNotFirstElement}
-                onPrev={props.onPrevClick}
-                onNext={props.onNextClick}
-              />
-            ) : (
-              <PDFViewerV2
-                src={props.fileUrl ?? ""}
-                handleChangeVersion={handleChangeVersion}
-              />
-            ),
+            <PDFViewer
+              src={props.fileUrl ?? ""}
+              title={props.title}
+              toolbar={props.toolbar}
+              onMask={handleMaskClick}
+              isPDFSidebarOpen={isPDFSidebarOpen}
+              mobileDetails={mobileDetails}
+              generateContextMenu={props.generateContextMenu}
+              setIsOpenContextMenu={setIsOpenContextMenu}
+              setIsPDFSidebarOpen={setIsPDFSidebarOpen}
+              isLastImage={!isNotLastElement}
+              isFistImage={!isNotFirstElement}
+              onPrev={props.onPrevClick}
+              onNext={props.onNextClick}
+            />,
             containerRef.current
           )}
     </StyledViewerContainer>
