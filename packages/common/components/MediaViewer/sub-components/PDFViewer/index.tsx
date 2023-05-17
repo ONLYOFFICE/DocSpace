@@ -76,12 +76,14 @@ function PDFViewer({
 
     return () => {
       window.removeEventListener("resize", resize);
-      resetState();
     };
   }, []);
 
   useEffect(() => {
-    resetState();
+    return () => {
+      resetState();
+      pdfViewer.current?.close();
+    };
   }, [src]);
 
   useLayoutEffect(() => {
@@ -137,9 +139,7 @@ function PDFViewer({
         if (!containerRef.current?.hasChildNodes()) {
           initViewer();
         }
-        //@ts-ignore
         pdfViewer.current?.open(file);
-        setIsFileOpened(true);
       } catch (error) {
         setIsError(true);
         console.log(error);
@@ -170,15 +170,18 @@ function PDFViewer({
         setBookmarks(structure);
       }
     );
+
     pdfViewer.current.registerEvent("onZoom", function (currentZoom: number) {
       toolbarRef.current?.setPercentValue(currentZoom);
     });
+
     pdfViewer.current.registerEvent(
       "onCurrentPageChanged",
       function (pageNum: number) {
         pageCountRef.current?.setPageNumber(pageNum + 1);
       }
     );
+
     pdfViewer.current.registerEvent(
       "onPagesCount",
       function (pagesCount: number) {
@@ -186,12 +189,18 @@ function PDFViewer({
       }
     );
 
+    pdfViewer.current.registerEvent("onFileOpened", function () {
+      setIsFileOpened(true);
+    });
+
     if (isMobile) {
       pdfViewer.current.setZoomMode(2);
     }
   };
 
   const resize = useCallback(() => {
+    //@ts-ignore
+    window?.AscViewer?.checkApplicationScale();
     pdfViewer.current?.resize();
     pdfThumbnail.current?.resize();
   }, []);
