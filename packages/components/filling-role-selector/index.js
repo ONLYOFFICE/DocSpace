@@ -19,7 +19,7 @@ import RemoveSvgUrl from "PUBLIC_DIR/images/remove.session.svg?url";
 
 import { ReactSVG } from "react-svg";
 const FillingRoleSelector = (props) => {
-  const { roles, users, onClick, onRemoveUser } = props;
+  const { roles, users, onAddUser, onRemoveUser } = props;
 
   const cloneRoles = JSON.parse(JSON.stringify(roles));
   const sortedInOrderRoles = cloneRoles.sort((a, b) =>
@@ -91,7 +91,7 @@ const FillingRoleSelector = (props) => {
             return (
               <StyledRow key={index}>
                 <StyledNumber>{item.order}</StyledNumber>
-                <StyledAddRoleButton onClick={onClick} color={item.color} />
+                <StyledAddRoleButton onClick={onAddUser} color={item.color} />
                 <StyledRole>{item.role}</StyledRole>
               </StyledRow>
             );
@@ -101,7 +101,7 @@ const FillingRoleSelector = (props) => {
         return (
           <StyledRow key={index}>
             <StyledNumber>{item.order}</StyledNumber>
-            <StyledAddRoleButton onClick={onClick} color={item.color} />
+            <StyledAddRoleButton onClick={onAddUser} color={item.color} />
             <StyledRole>{item.role}</StyledRole>
           </StyledRow>
         );
@@ -113,7 +113,7 @@ const FillingRoleSelector = (props) => {
 FillingRoleSelector.propTypes = {
   roles: PropTypes.array,
   users: PropTypes.array,
-  onClick: PropTypes.func,
+  onAddUser: PropTypes.func,
   onRemoveUser: PropTypes.func,
 };
 

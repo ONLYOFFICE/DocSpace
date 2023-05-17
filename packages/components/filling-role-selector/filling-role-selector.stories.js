@@ -5,7 +5,7 @@ export default {
   title: "Components/FillingRoleSelector",
   component: FillingRoleSelector,
   argTypes: {
-    onClick: { action: "onClick" },
+    onAddUser: { action: "onAddUser" },
     onRemoveUser: { action: "onRemoveUser" },
   },
 };
@@ -34,12 +34,16 @@ const mockUsers = [
   },
 ];
 
-const Template = ({ onClick, ...args }) => {
+const Template = ({ onAddUser, ...args }) => {
+  const onAddUserHandler = () => {
+    onAddUser();
+  };
+
   return (
     <FillingRoleSelector
       {...args}
       style={{ width: "480px", padding: "16px" }}
-      onClick={(e) => onClick(e)}
+      onAddUser={onAddUserHandler}
     />
   );
 };
@@ -51,7 +55,7 @@ Default.args = {
 
 const TemplateRolesFilledUsers = ({
   users,
-  onClick,
+  onAddUser,
   onRemoveUser,
   ...args
 }) => {
@@ -62,13 +66,17 @@ const TemplateRolesFilledUsers = ({
     setUsersAssigned(newUsersAssigned);
   };
 
+  const onAddUserHandler = () => {
+    onAddUser();
+  };
+
   return (
     <FillingRoleSelector
       {...args}
       style={{ width: "480px", padding: "16px" }}
-      // onClick={(e) => onClick(e)}
       users={usersAssigned}
       onRemoveUser={onRemoveUserHandler}
+      onAddUser={onAddUserHandler}
     />
   );
 };
