@@ -5,8 +5,6 @@ import styled from "styled-components";
 import Text from "@docspace/components/text";
 import RowContent from "@docspace/components/row-content";
 
-import { NoBoxShadowToast } from "../../../../styled-components";
-
 import { StatusBadge } from "../../../../sub-components/StatusBadge";
 
 const StyledRowContent = styled(RowContent)`
@@ -46,7 +44,6 @@ export const HistoryRowContent = ({ sectionWidth, historyItem }) => {
         <Text fontWeight={600} fontSize="12px" color="#A3A9AE">
           {formattedDelivery}
         </Text>
-        <NoBoxShadowToast />
       </ContentWrapper>
       <span></span>
     </StyledRowContent>
