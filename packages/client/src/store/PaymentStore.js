@@ -209,8 +209,14 @@ class PaymentStore {
 
   acceptPaymentsLicense = async (t) => {
     try {
+      const { currentTariffStatusStore, currentQuotaStore } = authStore;
+      const { setPortalQuota } = currentQuotaStore;
+      const { setPortalTariff } = currentTariffStatusStore;
+
       await acceptLicense();
       toastr.success(t("ActivateLicenseActivated"));
+
+      await Promise.all([setPortalTariff(), setPortalQuota()]);
     } catch (e) {
       toastr.error(e);
     }
