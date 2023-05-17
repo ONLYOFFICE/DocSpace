@@ -50,6 +50,15 @@ export const PaymentsType = Object.freeze({
   Free: "1",
 });
 /**
+ * Enum for account login type.
+ * @readonly
+ */
+export const AccountLoginType = Object.freeze({
+  SSO: "0",
+  LDAP: "1",
+  STANDART: "2",
+});
+/**
  * Enum for filter subject.
  * @readonly
  */
