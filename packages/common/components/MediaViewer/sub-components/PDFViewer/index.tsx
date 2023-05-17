@@ -191,6 +191,7 @@ function PDFViewer({
 
     pdfViewer.current.registerEvent("onFileOpened", function () {
       setIsFileOpened(true);
+      pdfViewer.current.setTargetType("text");
     });
 
     if (isMobile) {
