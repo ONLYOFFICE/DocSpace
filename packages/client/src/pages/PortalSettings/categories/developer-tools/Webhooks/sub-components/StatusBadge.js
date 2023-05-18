@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Badge } from "@docspace/components";
+import Badge from "@docspace/components/badge";
 
 import { useTranslation } from "react-i18next";
 

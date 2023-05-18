@@ -2,8 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { inject, observer } from "mobx-react";
 
-import { Text } from "@docspace/components";
-import { Button } from "@docspace/components";
+import Text from "@docspace/components/text";
+import Button from "@docspace/components/button";
 import { useTranslation } from "react-i18next";
 
 const RoundedButton = styled(Button)`

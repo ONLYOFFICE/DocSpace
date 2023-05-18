@@ -4,12 +4,12 @@ import { inject, observer } from "mobx-react";
 
 import styled, { css } from "styled-components";
 
-import { Text } from "@docspace/components";
-import { SelectorAddButton } from "@docspace/components";
-import { SelectedItem } from "@docspace/components";
+import Text from "@docspace/components/text";
+import SelectorAddButton from "@docspace/components/selector-add-button";
+import SelectedItem from "@docspace/components/selected-item";
 
-import { Calendar } from "@docspace/components";
-import { TimePicker } from "@docspace/components";
+import Calendar from "@docspace/components/calendar";
+import TimePicker from "@docspace/components/time-picker";
 import { isMobileOnly } from "react-device-detect";
 
 import { useTranslation } from "react-i18next";

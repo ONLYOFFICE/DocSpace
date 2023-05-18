@@ -2,7 +2,7 @@ import React, { useMemo } from "react";
 import moment from "moment";
 import styled from "styled-components";
 
-import { Text } from "@docspace/components";
+import Text from "@docspace/components/text";
 import { StatusBadge } from "../../sub-components/StatusBadge";
 
 import { tablet } from "@docspace/components/utils/device";

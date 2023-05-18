@@ -5,7 +5,7 @@ import moment from "moment";
 import ModalDialog from "@docspace/components/modal-dialog";
 import styled from "styled-components";
 
-import { Button } from "@docspace/components";
+import Button from "@docspace/components/button";
 import DeliveryDatePicker from "./DeliveryDatePicker";
 import StatusPicker from "./StatusPicker";
 

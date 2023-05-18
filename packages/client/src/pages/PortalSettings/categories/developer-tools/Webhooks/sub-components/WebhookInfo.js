@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { InfoText } from "../styled-components";
 
-import { Link } from "@docspace/components";
+import Link from "@docspace/components/link";
 
 import { useTranslation } from "react-i18next";
 

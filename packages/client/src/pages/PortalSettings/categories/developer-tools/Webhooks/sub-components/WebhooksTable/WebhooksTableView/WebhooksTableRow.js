@@ -7,7 +7,7 @@ import Text from "@docspace/components/text";
 import { NoBoxShadowToast } from "../../../styled-components";
 import toastr from "@docspace/components/toast/toastr";
 
-import { ToggleButton } from "@docspace/components";
+import ToggleButton from "@docspace/components/toggle-button";
 import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";

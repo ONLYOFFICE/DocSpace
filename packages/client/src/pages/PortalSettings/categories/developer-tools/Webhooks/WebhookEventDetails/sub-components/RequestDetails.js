@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { Text, Textarea } from "@docspace/components";
+import Text from "@docspace/components/text";
+import Textarea from "@docspace/components/textarea";
 
 import DangerIcon from "PUBLIC_DIR/images/danger.toast.react.svg?url";
 import { useTranslation } from "react-i18next";

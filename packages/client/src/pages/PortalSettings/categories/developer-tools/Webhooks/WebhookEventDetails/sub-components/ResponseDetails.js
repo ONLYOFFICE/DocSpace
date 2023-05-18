@@ -1,6 +1,8 @@
 import React from "react";
 import styled, { css } from "styled-components";
-import { Text, Textarea, Button } from "@docspace/components";
+import Textarea from "@docspace/components/textarea";
+import Button  from "@docspace/components/button";
+import Text from "@docspace/components/text";
 
 import json_beautifier from "csvjson-json_beautifier";
 import { isMobileOnly } from "react-device-detect";

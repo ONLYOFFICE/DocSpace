@@ -6,7 +6,7 @@ import Link from "@docspace/components/link";
 
 import { Hint } from "../styled-components";
 
-import { PasswordInput } from "@docspace/components";
+import PasswordInput from "@docspace/components/password-input";
 import { inject, observer } from "mobx-react";
 
 import { useTranslation } from "react-i18next";

@@ -3,8 +3,8 @@ import styled from "styled-components";
 
 import EmptyFilterImg from "PUBLIC_DIR/images/empty_filter.react.svg?url";
 import ClearEmptyFilterIcon from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
-import { Text } from "@docspace/components";
-import { Link } from "@docspace/components";
+import Text from "@docspace/components/text";
+import Link from "@docspace/components/link";
 
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";

@@ -3,7 +3,7 @@ import moment from "moment";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 
-import { SelectedItem } from "@docspace/components";
+import SelectedItem from "@docspace/components/selected-item";
 import Link from "@docspace/components/link";
 
 import { isMobile } from "react-device-detect";
