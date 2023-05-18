@@ -155,7 +155,9 @@ const Members = ({
       visible: true,
       roomId: parentRoomId,
       hideSelector: false,
-      defaultAccess: ShareAccessRights.ReadOnly,
+      defaultAccess: isPublicRoom
+        ? ShareAccessRights.RoomManager
+        : ShareAccessRights.ReadOnly,
     });
   };
 
