@@ -361,4 +361,13 @@
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Collaborateur</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaborateur</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Éditeur</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrateur de la salle</value>
+  </data>
 </root>

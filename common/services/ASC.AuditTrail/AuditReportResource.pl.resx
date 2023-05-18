@@ -598,4 +598,52 @@
   <data name="TrashEmptied" xml:space="preserve">
     <value>Opróżniono kosz</value>
   </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Dodane znaczniki: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Usunięte znaczniki: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Pokój został zarchiwizowany</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Dodano użytkownika: {0}. Rola: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Pokój został usunięty</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Link został utworzony. Rola: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Link został usunięty</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Link został zaktualizowany. Rola: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo zostało utworzone</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo zostało usunięte</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Usunięty użytkownik: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Nazwa pokoju została zmieniona: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Archiwizacja pokoju została cofnięta</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} został(a) wyznaczony(a) na: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Utworzony znacznik: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Usunięte znaczniki: {0}</value>
+  </data>
 </root>
