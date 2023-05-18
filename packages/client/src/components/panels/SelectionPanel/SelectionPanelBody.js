@@ -95,6 +95,7 @@ const SelectionPanelBody = ({
                     className="selection-panel_title"
                     fontSize="12px"
                     fontWeight={600}
+                    noSelect
                   >
                     {folderSelection
                       ? t("FolderContents", { folderTitle })

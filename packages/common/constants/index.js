@@ -8,6 +8,8 @@ export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 export const LIVE_CHAT_LOCAL_STORAGE_KEY = "live_chat_state";
 export const MAX_FILE_COMMENT_LENGTH = 255;
+export const MIN_PERCENTAGE_FOR_DISPLAYING_UPLOADING_INDICATOR = 3;
+
 /**
  * Enum for employee activation status.
  * @readonly

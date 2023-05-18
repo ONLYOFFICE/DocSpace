@@ -2,7 +2,7 @@ import Base from "@docspace/components/themes/base";
 import styled, { keyframes, css } from "styled-components";
 import { desktop, tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
-
+import { MIN_PERCENTAGE_FOR_DISPLAYING_UPLOADING_INDICATOR } from "../../constants";
 const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
     position: absolute;
@@ -84,7 +84,7 @@ const StyledCircle = styled.div`
   }
 
   ${(props) =>
-    props.percent > 0
+    props.percent > MIN_PERCENTAGE_FOR_DISPLAYING_UPLOADING_INDICATOR
       ? css`
           .circle__mask {
             clip: rect(0px, 42px, 42px, 21px);
