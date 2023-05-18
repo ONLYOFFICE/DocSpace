@@ -17,6 +17,7 @@ import LinkBlock from "./LinkBlock";
 import ToggleBlock from "./ToggleBlock";
 import PasswordAccessBlock from "./PasswordAccessBlock";
 import LimitTimeBlock from "./LimitTimeBlock";
+import copy from "copy-to-clipboard";
 
 const EditLinkPanel = (props) => {
   const {
@@ -68,6 +69,9 @@ const EditLinkPanel = (props) => {
     editExternalLink(options)
       .then((res) => {
         setExternalLinks(res);
+
+        const link = res.find((l) => l?.sharedTo?.id === linkId);
+        copy(link?.sharedTo?.shareLink);
 
         isEdit
           ? toastr.success(t("Files:LinkEditedSuccessfully"))
