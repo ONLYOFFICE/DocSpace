@@ -192,6 +192,8 @@ const StyledProperties = styled.div`
       .property-content {
         white-space: pre-wrap;
         display: -webkit-box;
+        display: -moz-box;
+        display: -ms-box;
         word-break: break-word;
         overflow: hidden;
         -webkit-line-clamp: 3;
