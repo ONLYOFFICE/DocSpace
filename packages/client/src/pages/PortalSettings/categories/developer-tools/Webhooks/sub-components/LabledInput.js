@@ -3,15 +3,12 @@ import styled from "styled-components";
 
 import TextInput from "@docspace/components/text-input";
 
-const Label = styled.label`
+import Label from "@docspace/components/label";
+
+const StyledLabel = styled(Label)`
   display: block;
   margin-top: 20px;
-  font-family: "Open Sans";
-  font-weight: 600;
-  font-size: 13px;
   line-height: 20px;
-
-  color: #333333;
 
   input {
     margin-top: 4px;
@@ -30,8 +27,7 @@ export const LabledInput = ({
   required = false,
 }) => {
   return (
-    <Label>
-      <span>{label}</span>
+    <StyledLabel text={label}>
       <TextInput
         name={name}
         placeholder={placeholder}
@@ -42,6 +38,6 @@ export const LabledInput = ({
         hasError={hasError}
         {...(mask ? { mask: mask } : {})}
       />
-    </Label>
+    </StyledLabel>
   );
 };
