@@ -7,4 +7,5 @@ export const InfoText = styled.p`
   line-height: 20px;
 
   color: #657077;
+  white-space: break-spaces;
 `;
