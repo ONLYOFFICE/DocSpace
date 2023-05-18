@@ -8,7 +8,7 @@ const StyledFloatingButtonWrapper = styled.div`
     position: absolute;
     z-index: 300;
     right: 0;
-    bottom: 0;
+    bottom: ${(props) => (props.showTwoProgress ? "96px" : "0")};
 
     ${!isMobile &&
     css`
