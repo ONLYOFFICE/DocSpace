@@ -9,12 +9,11 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
     return fakePeople.getUserList(filter);
   }
 
-  const params =
-    filter && filter instanceof Filter
-      ? `/filter?${filter.toApiUrlParams(
-          "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
-        )}`
-      : "";
+  const params = filter
+    ? `/filter?${filter.toApiUrlParams(
+        "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
+      )}`
+    : "";
 
   return request({
     method: "get",
