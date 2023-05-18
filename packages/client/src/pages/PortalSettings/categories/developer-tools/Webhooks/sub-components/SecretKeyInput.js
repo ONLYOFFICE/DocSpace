@@ -34,13 +34,6 @@ const StyledInfoIcon = styled.img`
   }
 `;
 
-const InfoHint = styled(Hint)`
-  position: absolute;
-  z-index: 2;
-
-  width: 320px;
-`;
-
 const ReadMore = styled.a`
   display: inline-block;
   margin-top: 10px;
@@ -100,16 +93,15 @@ const SecretKeyInput = (props) => {
   return (
     <div>
       <Header>
-        {t("SecretKey")}{" "}
-        <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+        {t("SecretKey")} <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
       </Header>
 
-      <InfoHint hidden={!isHintVisible} onClick={handleHintDisapear}>
+      <Hint isTooltip hidden={!isHintVisible} onClick={handleHintDisapear}>
         {t("SecretKeyHint")} <br />
         <ReadMore href="">{t("ReadMore")}</ReadMore>
-      </InfoHint>
+      </Hint>
       {isResetVisible && (
-        <InfoHint>
+        <Hint>
           {t("SecretKeyWarning")} <br />
           <Link
             type="action"
@@ -119,7 +111,7 @@ const SecretKeyInput = (props) => {
             style={{ marginTop: "6px", display: "inline-block" }}>
             {t("ResetKey")}
           </Link>
-        </InfoHint>
+        </Hint>
       )}
       <div hidden={isResetVisible}>
         <PasswordInput

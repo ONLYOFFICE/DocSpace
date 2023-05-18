@@ -31,13 +31,6 @@ const StyledInfoIcon = styled.img`
   }
 `;
 
-const InfoHint = styled(Hint)`
-  position: absolute;
-  z-index: 2;
-
-  width: 320px;
-`;
-
 export const SSLVerification = ({ onChange, value }) => {
   const [isHintVisible, setIsHintVisible] = useState(false);
   const { t } = useTranslation(["Webhooks"]);
@@ -50,13 +43,12 @@ export const SSLVerification = ({ onChange, value }) => {
   return (
     <div>
       <Header>
-        {t("SSLVerification")}{" "}
-        <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+        {t("SSLVerification")} <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
       </Header>
 
-      <InfoHint hidden={!isHintVisible} onClick={toggleHint}>
+      <Hint isTooltip hidden={!isHintVisible} onClick={toggleHint}>
         {t("SSLHint")}
-      </InfoHint>
+      </Hint>
 
       <RadioButtonGroup
         fontSize="13px"
