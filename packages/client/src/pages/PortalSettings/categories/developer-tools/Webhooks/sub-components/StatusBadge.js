@@ -26,7 +26,7 @@ export const StatusBadge = ({ status }) => {
     <Badge
       backgroundColor={badgeColorScheme.backgroundColor}
       color={badgeColorScheme.color}
-      label={status === 0 ? t("NotSent", { ns: "Webhooks" }) : status.toString()}
+      label={status === 0 ? t("NotSent") : status.toString()}
       fontSize="9px"
       fontWeight={700}
       noHover

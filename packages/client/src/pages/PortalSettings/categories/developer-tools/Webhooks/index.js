@@ -39,7 +39,7 @@ const Webhooks = (props) => {
 
   const { t, ready } = useTranslation(["Webhooks", "Common"]);
 
-  setDocumentTitle(t("Webhooks", { ns: "Webhooks" }));
+  setDocumentTitle(t("Webhooks"));
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -63,7 +63,7 @@ const Webhooks = (props) => {
     <MainWrapper>
       <WebhookInfo />
       <StyledCreateButton
-        label={t("CreateWebhook", { ns: "Webhooks" })}
+        label={t("CreateWebhook")}
         primary
         size={isMobile() ? "normal" : "small"}
         onClick={openModal}
@@ -72,12 +72,12 @@ const Webhooks = (props) => {
       <WebhookDialog
         visible={isModalOpen}
         onClose={closeModal}
-        header={t("CreateWebhook", { ns: "Webhooks" })}
+        header={t("CreateWebhook")}
         onSubmit={onCreateWebhook}
       />
     </MainWrapper>
   ) : state === "error" ? (
-    t("Error", { ns: "Common" })
+    t("Common:Error")
   ) : (
     ""
   );

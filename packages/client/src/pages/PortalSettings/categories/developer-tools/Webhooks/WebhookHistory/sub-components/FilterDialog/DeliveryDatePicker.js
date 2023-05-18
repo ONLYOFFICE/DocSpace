@@ -100,12 +100,12 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
   const DateSelector = () => (
     <div>
       <SelectorAddButton
-        title={t("Add", { ns: "Webhooks" })}
+        title={t("Add")}
         onClick={toggleCalendar}
         style={{ marginRight: "8px" }}
       />
       <Text isInline fontWeight={600} color="#A3A9AE">
-        {t("SelectDate", { ns: "Webhooks" })}
+        {t("SelectDate")}
       </Text>
       {isCalendarOpen && <CalendarElement />}
     </div>
@@ -149,12 +149,12 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
   const TimeSelectorAdder = () => (
     <TimePickerCell>
       <SelectorAddButton
-        title={t("Add", { ns: "Webhooks" })}
+        title={t("Add")}
         onClick={showTimePicker}
         style={{ marginRight: "8px" }}
       />
       <Text isInline fontWeight={600} color="#A3A9AE">
-        {t("SelectDeliveryTime", { ns: "Webhooks" })}
+        {t("SelectDeliveryTime")}
       </Text>
     </TimePickerCell>
   );
@@ -172,7 +172,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
-        {t("DeliveryDate", { ns: "Webhooks" })}
+        {t("DeliveryDate")}
       </Text>
       <Selectors ref={selectorRef}>
         {filters.deliveryDate === null ? (
@@ -192,7 +192,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
             <TimePickerCell>
               <span className="timePickerItem">
                 <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
-                  {t("From", { ns: "Webhooks" })}
+                  {t("From")}
                 </Text>
                 <TimePicker
                   date={filters.deliveryFrom}
@@ -202,7 +202,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
                 />
               </span>
               <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
-                {t("Before", { ns: "Webhooks" })}
+                {t("Before")}
               </Text>
               <TimePicker
                 date={filters.deliveryTo}

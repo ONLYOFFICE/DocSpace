@@ -72,7 +72,7 @@ const HistoryFilterHeader = (props) => {
     <div>
       <ListHeader>
         <ListHeading>
-          {t("Webhook", { ns: "Webhooks" })} {id}
+          {t("Webhook")} {id}
         </ListHeading>
 
         <FilterButton onClick={openFiltersModal}>

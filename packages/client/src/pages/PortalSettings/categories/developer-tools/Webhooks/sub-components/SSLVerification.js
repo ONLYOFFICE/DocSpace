@@ -50,12 +50,12 @@ export const SSLVerification = ({ onChange, value }) => {
   return (
     <div>
       <Header>
-        {t("SSLVerification", { ns: "Webhooks" })}{" "}
+        {t("SSLVerification")}{" "}
         <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
       </Header>
 
       <InfoHint hidden={!isHintVisible} onClick={toggleHint}>
-        {t("SSLHint", { ns: "Webhooks" })}
+        {t("SSLHint")}
       </InfoHint>
 
       <RadioButtonGroup
@@ -65,11 +65,11 @@ export const SSLVerification = ({ onChange, value }) => {
         onClick={handleOnChange}
         options={[
           {
-            label: t("EnableSSL", { ns: "Webhooks" }),
+            label: t("EnableSSL"),
             value: "true",
           },
           {
-            label: t("DisableSSL", { ns: "Webhooks" }),
+            label: t("DisableSSL"),
             value: "false",
           },
         ]}

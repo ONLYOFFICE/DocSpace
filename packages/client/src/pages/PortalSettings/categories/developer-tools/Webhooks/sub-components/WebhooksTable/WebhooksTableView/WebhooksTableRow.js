@@ -41,14 +41,11 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
 
   const handleWebhookUpdate = async (webhookInfo) => {
     await editWebhook(webhook, webhookInfo);
-    toastr.success(
-      t("WebhookEditedSuccessfully", { ns: "Webhooks" }),
-      <b>{t("Done", { ns: "Common" })}</b>,
-    );
+    toastr.success(t("WebhookEditedSuccessfully"), <b>{t("Common:Done")}</b>);
   };
   const handleWebhookDelete = async () => {
     await deleteWebhook(webhook);
-    toastr.success(t("WebhookRemoved", { ns: "Webhooks" }), <b>{t("Done", { ns: "Common" })}</b>);
+    toastr.success(t("WebhookRemoved"), <b>{t("Common:Done")}</b>);
   };
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
@@ -58,13 +55,13 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
   const contextOptions = [
     {
       key: "Settings dropdownItem",
-      label: t("Settings", { ns: "Common" }),
+      label: t("Common:Settings"),
       icon: SettingsIcon,
       onClick: openSettings,
     },
     {
       key: "Webhook history dropdownItem",
-      label: t("WebhookHistory", { ns: "Webhooks" }),
+      label: t("WebhookHistory"),
       icon: HistoryIcon,
       onClick: redirectToHistory,
     },
@@ -74,7 +71,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
     },
     {
       key: "Delete webhook dropdownItem",
-      label: t("DeleteWebhook", { ns: "Webhooks" }),
+      label: t("DeleteWebhook"),
       icon: DeleteIcon,
       onClick: onDeleteOpen,
     },
@@ -107,7 +104,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
       <WebhookDialog
         visible={isSettingsOpened}
         onClose={closeSettings}
-        header={t("SettingsWebhook", { ns: "Webhooks" })}
+        header={t("SettingsWebhook")}
         isSettingsModal={true}
         webhook={webhook}
         onSubmit={handleWebhookUpdate}
@@ -115,7 +112,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
       <DeleteWebhookDialog
         visible={isDeleteOpened}
         onClose={onDeleteClose}
-        header={t("DeleteWebhookForeverQuestion", { ns: "Webhooks" })}
+        header={t("DeleteWebhookForeverQuestion")}
         handleSubmit={handleWebhookDelete}
       />
     </>

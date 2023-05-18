@@ -109,18 +109,18 @@ const WebhookDialog = (props) => {
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <form onSubmit={onFormSubmit}>
-          <Hint>{t("WebhookCreationHint", { ns: "Webhooks" })}</Hint>
+          <Hint>{t("WebhookCreationHint")}</Hint>
           <LabledInput
-            label={t("WebhookName", { ns: "Webhooks" })}
-            placeholder={t("EnterWebhookName", { ns: "Webhooks" })}
+            label={t("WebhookName")}
+            placeholder={t("EnterWebhookName")}
             name="name"
             value={webhookInfo.name}
             onChange={onInputChange}
             required
           />
           <LabledInput
-            label={t("PayloadUrl", { ns: "Webhooks" })}
-            placeholder={t("EnterUrl", { ns: "Webhooks" })}
+            label={t("PayloadUrl")}
+            placeholder={t("EnterUrl")}
             name="uri"
             value={webhookInfo.uri}
             onChange={onInputChange}
@@ -145,12 +145,12 @@ const WebhookDialog = (props) => {
       <ModalDialog.Footer>
         <Footer>
           <Button
-            label={isSettingsModal ? t("Save", { ns: "Webhooks" }) : t("Create", { ns: "Common" })}
+            label={isSettingsModal ? t("Save") : t("Common:Create")}
             size="normal"
             primary={true}
             onClick={handleSubmitClick}
           />
-          <Button label={t("Cancel", { ns: "Webhooks" })} size="normal" onClick={onModalClose} />
+          <Button label={t("Cancel")} size="normal" onClick={onModalClose} />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

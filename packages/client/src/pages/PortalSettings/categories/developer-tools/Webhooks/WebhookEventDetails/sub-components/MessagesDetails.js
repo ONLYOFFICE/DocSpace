@@ -18,7 +18,7 @@ export const MessagesDetails = ({ webhookDetails }) => {
   const menuData = [
     {
       id: "webhookRequest",
-      name: t("Request", { ns: "Webhooks" }),
+      name: t("Request"),
       content: <RequestDetails webhookDetails={webhookDetails} />,
     },
   ];
@@ -27,7 +27,7 @@ export const MessagesDetails = ({ webhookDetails }) => {
     webhookDetails.status < 500 &&
     menuData.push({
       id: "webhookResponse",
-      name: t("Response", { ns: "Webhooks" }),
+      name: t("Response"),
       content: <ResponseDetails webhookDetails={webhookDetails} />,
     });
 

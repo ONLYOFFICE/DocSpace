@@ -29,17 +29,17 @@ export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) 
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={onClose} displayType="modal">
       <ModalDialog.Header>{header}</ModalDialog.Header>
-      <ModalDialog.Body>{t("DeleteHint", { ns: "Webhooks" })}</ModalDialog.Body>
+      <ModalDialog.Body>{t("DeleteHint")}</ModalDialog.Body>
 
       <ModalDialog.Footer>
         <Footer>
           <Button
-            label={t("DeleteForever", { ns: "Webhooks" })}
+            label={t("DeleteForever")}
             size="normal"
             primary={true}
             onClick={handleSubmit}
           />
-          <Button label={t("Cancel", { ns: "Webhooks" })} size="normal" onClick={onClose} />
+          <Button label={t("Cancel")} size="normal" onClick={onClose} />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

@@ -39,11 +39,11 @@ const StatusPicker = ({ Selectors, filters, setFilters }) => {
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
-        {t("Status", { ns: "Webhooks" })}
+        {t("Status")}
       </Text>
       <Selectors>
         <RoundedButton
-          label={t("NotSent", { ns: "Webhooks" })}
+          label={t("NotSent")}
           onClick={() => handleStatusClick(StatusCodes[0])}
           primary={isStatusSelected(StatusCodes[0])}
         />

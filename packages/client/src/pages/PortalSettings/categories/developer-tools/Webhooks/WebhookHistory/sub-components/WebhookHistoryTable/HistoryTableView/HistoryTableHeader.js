@@ -10,7 +10,7 @@ const HistoryTableHeader = (props) => {
   const columns = useRef([
     {
       key: "Event ID",
-      title: t("EventID", { ns: "Webhooks" }),
+      title: t("EventID"),
       resizable: true,
       enable: true,
       default: true,
@@ -18,13 +18,13 @@ const HistoryTableHeader = (props) => {
     },
     {
       key: "Status",
-      title: t("Status", { ns: "Webhooks" }),
+      title: t("Status"),
       enable: true,
       resizable: true,
     },
     {
       key: "Delivery",
-      title: t("Delivery", { ns: "Webhooks" }),
+      title: t("Delivery"),
       enable: true,
       resizable: true,
     },

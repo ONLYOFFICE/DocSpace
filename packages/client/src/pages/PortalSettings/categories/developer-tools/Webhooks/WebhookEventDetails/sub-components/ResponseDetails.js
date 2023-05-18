@@ -72,7 +72,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
   return (
     <DetailsWrapper>
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px" }}>
-        {t("ResponsePostHeader", { ns: "Webhooks" })}
+        {t("ResponsePostHeader")}
       </Text>
       <Textarea
         value={webhookDetails.responseHeaders}
@@ -80,20 +80,20 @@ export const ResponseDetails = ({ webhookDetails }) => {
         hasNumeration
         isFullHeight
         isJSONField
-        copyInfoText={t("ResponseHeaderCopied", { ns: "Webhooks" })}
+        copyInfoText={t("ResponseHeaderCopied")}
       />
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
-        {t("ResponsePostBody", { ns: "Webhooks" })}
+        {t("ResponsePostBody")}
       </Text>
       {responsePayload.length > 4000 || numberOfLines > 100 ? (
         <LargePayloadStub>
           <Text fontWeight={600} color="#657077">
-            {t("PayloadIsTooLarge", { ns: "Webhooks" })}
+            {t("PayloadIsTooLarge")}
           </Text>
           <Button
             size="small"
             onClick={openRawPayload}
-            label={t("ViewRawPayload", { ns: "Webhooks" })}
+            label={t("ViewRawPayload")}
             scale={isMobileOnly}
           />
         </LargePayloadStub>
@@ -106,7 +106,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
           enableCopy
           hasNumeration
           isFullHeight
-          copyInfoText={t("ResponseBodyCopied", { ns: "Webhooks" })}
+          copyInfoText={t("ResponseBodyCopied")}
         />
       ) : (
         <Textarea
@@ -114,7 +114,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
           enableCopy
           heightScale
           className="textareaBody"
-          copyInfoText={t("ResponseBodyCopied", { ns: "Webhooks" })}
+          copyInfoText={t("ResponseBodyCopied")}
         />
       )}
     </DetailsWrapper>

@@ -58,15 +58,15 @@ const EmptyFilter = (props) => {
         <img src={EmptyFilterImg} alt="Empty filter" />
         <div className="emptyFilterText">
           <Text fontSize="16px" fontWeight={700} as="p" className="emptyFilterHeading">
-            {t("NothingFound", { ns: "Webhooks" })}
+            {t("NothingFound")}
           </Text>
           <Text fontSize="12px" color="#555F65">
-            {t("NoResultsMatched", { ns: "Webhooks" })}
+            {t("NoResultsMatched")}
           </Text>
           <span className="clearFilter" onClick={clearFilters}>
-            <img src={ClearEmptyFilterIcon} alt={t("ClearFilter", { ns: "Webhooks" })} className="clearFilterIcon" />
+            <img src={ClearEmptyFilterIcon} alt={t("ClearFilter")} className="clearFilterIcon" />
             <Link color="#657077" isHovered fontWeight={600}>
-              {t("ClearFilter", { ns: "Common" })}
+              {t("Common:ClearFilter")}
             </Link>
           </span>
         </div>

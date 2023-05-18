@@ -61,7 +61,7 @@ const FilterDialog = (props) => {
 
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={closeModal} displayType="aside">
-      <ModalDialog.Header>{t("SearchOptions", { ns: "Webhooks" })}</ModalDialog.Header>
+      <ModalDialog.Header>{t("SearchOptions")}</ModalDialog.Header>
       <ModalDialog.Body>
         <DeliveryDatePicker
           Selectors={Selectors}
@@ -78,12 +78,12 @@ const FilterDialog = (props) => {
       <ModalDialog.Footer>
         <Footer>
           <Button
-            label={t("Apply", { ns: "Webhooks" })}
+            label={t("Apply")}
             size="normal"
             primary={true}
             onClick={handleApplyFilters}
           />
-          <Button label={t("Cancel", { ns: "Webhooks" })} size="normal" onClick={closeModal} />
+          <Button label={t("Cancel")} size="normal" onClick={closeModal} />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

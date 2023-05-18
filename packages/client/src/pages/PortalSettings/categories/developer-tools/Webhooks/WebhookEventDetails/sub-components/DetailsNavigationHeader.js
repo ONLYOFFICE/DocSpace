@@ -50,10 +50,7 @@ const DetailsNavigationHeader = (props) => {
   };
   const handleRetryEvent = async () => {
     await retryWebhookEvent(eventId);
-    toastr.success(
-      t("WebhookRedilivered", { ns: "Webhooks" }),
-      <b>{t("Done", { ns: "Common" })}</b>,
-    );
+    toastr.success(t("WebhookRedilivered"), <b>{t("Common:Done")}</b>);
   };
 
   return (
@@ -66,7 +63,7 @@ const DetailsNavigationHeader = (props) => {
         className="arrow-button"
       />
       <Headline type="content" truncate={true} className="headline">
-        {t("WebhookDetails", { ns: "Webhooks" })}
+        {t("WebhookDetails")}
       </Headline>
       <IconButton iconName={RetryIcon} size="17" isFill={true} onClick={handleRetryEvent} />
 

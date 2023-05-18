@@ -100,24 +100,24 @@ const SecretKeyInput = (props) => {
   return (
     <div>
       <Header>
-        {t("SecretKey", { ns: "Webhooks" })}{" "}
+        {t("SecretKey")}{" "}
         <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
       </Header>
 
       <InfoHint hidden={!isHintVisible} onClick={handleHintDisapear}>
-        {t("SecretKeyHint", { ns: "Webhooks" })} <br />
-        <ReadMore href="">{t("ReadMore", { ns: "Webhooks" })}</ReadMore>
+        {t("SecretKeyHint")} <br />
+        <ReadMore href="">{t("ReadMore")}</ReadMore>
       </InfoHint>
       {isResetVisible && (
         <InfoHint>
-          {t("SecretKeyWarning", { ns: "Webhooks" })} <br />
+          {t("SecretKeyWarning")} <br />
           <Link
             type="action"
             fontWeight={600}
             isHovered={true}
             onClick={hideReset}
             style={{ marginTop: "6px", display: "inline-block" }}>
-            {t("ResetKey", { ns: "Webhooks" })}
+            {t("ResetKey")}
           </Link>
         </InfoHint>
       )}
@@ -126,7 +126,7 @@ const SecretKeyInput = (props) => {
           onChange={handleOnChange}
           value={value}
           inputName={name}
-          placeholder={t("EnterSecretKey", { ns: "Webhooks" })}
+          placeholder={t("EnterSecretKey")}
           onValidateInput={handleInputValidation}
           ref={secretKeyInputRef}
           hasError={!isPasswordValid}
@@ -141,7 +141,7 @@ const SecretKeyInput = (props) => {
           isHovered={true}
           onClick={generatePassword}
           style={{ marginTop: "6px", display: "inline-block" }}>
-          {t("Generate", { ns: "Webhooks" })}
+          {t("Generate")}
         </Link>
       </div>
     </div>

@@ -8,7 +8,7 @@ export const WebhookTableHeader = ({ sectionWidth, tableRef }) => {
   const columns = useRef([
     {
       key: "Name",
-      title: t("Name", { ns: "Common" }),
+      title: t("Common:Name"),
       resizable: true,
       enable: true,
       default: true,
@@ -16,13 +16,13 @@ export const WebhookTableHeader = ({ sectionWidth, tableRef }) => {
     },
     {
       key: "URL",
-      title: t("URL", { ns: "Webhooks" }),
+      title: t("URL"),
       enable: true,
       resizable: true,
     },
     {
       key: "State",
-      title: t("State", { ns: "Webhooks" }),
+      title: t("State"),
       enable: true,
       resizable: true,
     },

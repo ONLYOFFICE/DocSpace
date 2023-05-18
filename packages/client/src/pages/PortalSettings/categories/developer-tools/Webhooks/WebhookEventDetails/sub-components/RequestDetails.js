@@ -31,11 +31,11 @@ export const RequestDetails = ({ webhookDetails }) => {
       {webhookDetails.status === 0 && (
         <ErrorMessageTooltip>
           <img src={DangerIcon} alt="danger icon" style={{ marginRight: "8px" }} />
-          {t("FailedToConnect", { ns: "Webhooks" })}
+          {t("FailedToConnect")}
         </ErrorMessageTooltip>
       )}
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px" }}>
-        {t("RequestPostHeader", { ns: "Webhooks" })}
+        {t("RequestPostHeader")}
       </Text>
       {!webhookDetails.requestHeaders ? (
         <Textarea isDisabled />
@@ -46,12 +46,12 @@ export const RequestDetails = ({ webhookDetails }) => {
           hasNumeration
           isFullHeight
           isJSONField
-          copyInfoText={t("RequestHeaderCopied", { ns: "Webhooks" })}
+          copyInfoText={t("RequestHeaderCopied")}
         />
       )}
 
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
-        {t("RequestPostBody", { ns: "Webhooks" })}
+        {t("RequestPostBody")}
       </Text>
       <Textarea
         value={webhookDetails.requestPayload}
@@ -59,7 +59,7 @@ export const RequestDetails = ({ webhookDetails }) => {
         enableCopy
         hasNumeration
         isFullHeight
-        copyInfoText={t("RequestBodyCopied", { ns: "Webhooks" })}
+        copyInfoText={t("RequestBodyCopied")}
       />
     </DetailsWrapper>
   );

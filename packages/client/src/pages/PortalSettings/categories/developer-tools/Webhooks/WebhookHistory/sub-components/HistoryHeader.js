@@ -107,15 +107,15 @@ const HistoryHeader = (props) => {
   const handleRetryAll = async () => {
     await retryWebhookEvents(checkedEventIds);
     toastr.success(
-      `${t("WebhookRedilivered", { ns: "Webhooks" })}: ${checkedEventIds.length}`,
-      <b>{t("Done", { ns: "Common" })}</b>,
+      `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
+      <b>{t("Common:Done")}</b>,
     );
   };
 
   const headerMenu = [
     {
       id: "retry-event-option",
-      label: t("Retry", { ns: "Webhooks" }),
+      label: t("Retry"),
       onClick: handleRetryAll,
       iconUrl: RetryIcon,
     },
@@ -125,13 +125,13 @@ const HistoryHeader = (props) => {
     <>
       <DropDownItem
         key="select-all-event-ids"
-        label={t("SelectAll", { ns: "Commmon" })}
+        label={t("Common:SelectAll")}
         data-index={0}
         onClick={() => checkAllIds()}
       />
       <DropDownItem
         key="unselect-all-event-ids"
-        label={t("UnselectAll", { ns: "Webhooks" })}
+        label={t("UnselectAll")}
         data-index={1}
         onClick={emptyCheckedIds}
       />
@@ -148,10 +148,10 @@ const HistoryHeader = (props) => {
         className="arrow-button"
       />
       <Headline type="content" truncate={true} className="headline">
-        {t("History", { ns: "Webhooks" })}
+        {t("History")}
       </Headline>
       <Hint backgroundColor="#F8F9F9" color="#555F65">
-        {t("EventHint", { ns: "Webhooks" })}
+        {t("EventHint")}
       </Hint>
     </>
   );

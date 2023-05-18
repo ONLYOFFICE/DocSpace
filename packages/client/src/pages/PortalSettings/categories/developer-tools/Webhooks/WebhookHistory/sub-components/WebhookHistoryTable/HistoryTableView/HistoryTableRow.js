@@ -40,22 +40,19 @@ const HistoryTableRow = (props) => {
   const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(item.id);
-    toastr.success(
-      t("WebhookRedilivered", { ns: "Webhooks" }),
-      <b>{t("Done", { ns: "Common" })}</b>,
-    );
+    toastr.success(t("WebhookRedilivered"), <b>{t("Common:Done")}</b>);
   };
 
   const contextOptions = [
     {
       key: "Webhook details dropdownItem",
-      label: t("WebhookDetails", { ns: "Webhooks" }),
+      label: t("WebhookDetails"),
       icon: InfoIcon,
       onClick: redirectToDetails,
     },
     {
       key: "Retry dropdownItem",
-      label: t("Retry", { ns: "Webhooks" }),
+      label: t("Retry"),
       icon: RetryIcon,
       onClick: handleRetryEvent,
     },

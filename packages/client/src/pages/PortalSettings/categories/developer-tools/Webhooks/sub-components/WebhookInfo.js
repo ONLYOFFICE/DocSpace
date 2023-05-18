@@ -15,14 +15,14 @@ export const WebhookInfo = () => {
 
   return (
     <InfoWrapper>
-      <InfoText>{t("WebhooksInfo", { ns: "Webhooks" })}</InfoText>
+      <InfoText>{t("WebhooksInfo")}</InfoText>
       <Link
         fontWeight={600}
         color="#316DAA"
         isHovered
         type="page"
         href="https://api.onlyoffice.com/portals/basic">
-        {t("WebhooksGuide", { ns: "Webhooks" })}
+        {t("WebhooksGuide")}
       </Link>
     </InfoWrapper>
   );
