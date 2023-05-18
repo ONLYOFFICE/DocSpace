@@ -170,7 +170,7 @@ public class TenantExtra
         var diskQuota = await _tenantManager.GetCurrentTenantQuotaAsync();
         if (diskQuota != null)
         {
-            var usedSize = _maxTotalSizeStatistic.GetValueAsync().Result;
+            var usedSize = await _maxTotalSizeStatistic.GetValueAsync();
             var freeSize = Math.Max(diskQuota.MaxTotalSize - usedSize, 0);
             return Math.Min(freeSize, diskQuota.MaxFileSize);
         }
