@@ -18,7 +18,19 @@ const StyledModal = styled(ModalDialogContainer)`
 `;
 
 const UnsavedChangesDialogComponent = (props) => {
-  const { t, tReady, visible, setUnsavedChangesDialog } = props;
+  const {
+    t,
+    tReady,
+    visible,
+    setUnsavedChangesDialog,
+    setEditLinkPanelIsVisible,
+  } = props;
+
+  const onKeyPress = (e) => {
+    if (e.keyCode === 13) {
+      onCloseMenu();
+    }
+  };
 
   useEffect(() => {
     window.addEventListener("keydown", onKeyPress);
@@ -27,17 +39,12 @@ const UnsavedChangesDialogComponent = (props) => {
   }, []);
 
   const onCloseMenu = () => {
+    setEditLinkPanelIsVisible(false);
     onClose();
   };
 
   const onClose = () => {
     setUnsavedChangesDialog(false);
-  };
-
-  const onKeyPress = (e) => {
-    if (e.keyCode === 13) {
-      onCloseMenu();
-    }
   };
 
   return (
@@ -80,11 +87,15 @@ const UnsavedChangesDialog = withTranslation(["Files", "Settings"])(
 );
 
 export default inject(({ dialogsStore }) => {
-  const { unsavedChangesDialogVisible: visible, setUnsavedChangesDialog } =
-    dialogsStore;
+  const {
+    unsavedChangesDialogVisible: visible,
+    setUnsavedChangesDialog,
+    setEditLinkPanelIsVisible,
+  } = dialogsStore;
 
   return {
     visible,
     setUnsavedChangesDialog,
+    setEditLinkPanelIsVisible,
   };
 })(observer(UnsavedChangesDialog));

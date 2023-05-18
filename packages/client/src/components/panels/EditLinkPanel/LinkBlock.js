@@ -4,9 +4,15 @@ import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
 
 const LinkBlock = (props) => {
-  const { t, isLoading, linkNameValue, setLinkNameValue } = props;
-
-  const [linkValue, setLinkValue] = useState("");
+  const {
+    t,
+    isLoading,
+    shareLink,
+    linkNameValue,
+    setLinkNameValue,
+    linkValue,
+    setLinkValue,
+  } = props;
 
   const onChangeLinkName = (e) => {
     startTransition(() => {
@@ -14,12 +20,9 @@ const LinkBlock = (props) => {
     });
   };
 
-  const onChangeLink = (e) => {
-    // setLinkValue(e.target.value);
-  };
-
   const onShortenClick = () => {
     alert("api in progress");
+    // setLinkValue
   };
 
   return (
@@ -46,7 +49,6 @@ const LinkBlock = (props) => {
         isDisabled
         className="edit-link_link-input"
         value={linkValue}
-        onChange={onChangeLink}
         placeholder={t("ExternalLink")}
       />
 
