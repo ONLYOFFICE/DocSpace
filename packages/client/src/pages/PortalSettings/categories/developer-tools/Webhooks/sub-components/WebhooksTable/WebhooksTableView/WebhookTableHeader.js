@@ -1,11 +1,14 @@
 import React, { useRef } from "react";
 import TableHeader from "@docspace/components/table-container/TableHeader";
 
+import { useTranslation } from "react-i18next";
+
 export const WebhookTableHeader = ({ sectionWidth, tableRef }) => {
+  const { t } = useTranslation(["Webhooks", "Common"]);
   const columns = useRef([
     {
       key: "Name",
-      title: "Name",
+      title: t("Name", { ns: "Common" }),
       resizable: true,
       enable: true,
       default: true,
@@ -13,13 +16,13 @@ export const WebhookTableHeader = ({ sectionWidth, tableRef }) => {
     },
     {
       key: "URL",
-      title: "URL",
+      title: t("URL", { ns: "Webhooks" }),
       enable: true,
       resizable: true,
     },
     {
       key: "State",
-      title: "State",
+      title: t("State", { ns: "Webhooks" }),
       enable: true,
       resizable: true,
     },

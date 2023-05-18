@@ -9,6 +9,8 @@ import { Button } from "@docspace/components";
 import DeliveryDatePicker from "./DeliveryDatePicker";
 import StatusPicker from "./StatusPicker";
 
+import { useTranslation } from "react-i18next";
+
 const Footer = styled.div`
   width: 100%;
   display: flex;
@@ -34,6 +36,7 @@ const Separator = styled.hr`
 
 const FilterDialog = (props) => {
   const { visible, closeModal, applyFilters, formatFilters, setHistoryFilters } = props;
+  const { t } = useTranslation(["Webhooks"]);
 
   const [filters, setFilters] = useState({
     deliveryDate: null,
@@ -58,7 +61,7 @@ const FilterDialog = (props) => {
 
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={closeModal} displayType="aside">
-      <ModalDialog.Header>Search options</ModalDialog.Header>
+      <ModalDialog.Header>{t("SearchOptions", { ns: "Webhooks" })}</ModalDialog.Header>
       <ModalDialog.Body>
         <DeliveryDatePicker
           Selectors={Selectors}
@@ -74,8 +77,13 @@ const FilterDialog = (props) => {
 
       <ModalDialog.Footer>
         <Footer>
-          <Button label="Apply" size="normal" primary={true} onClick={handleApplyFilters} />
-          <Button label="Cancel" size="normal" onClick={closeModal} />
+          <Button
+            label={t("Apply", { ns: "Webhooks" })}
+            size="normal"
+            primary={true}
+            onClick={handleApplyFilters}
+          />
+          <Button label={t("Cancel", { ns: "Webhooks" })} size="normal" onClick={closeModal} />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

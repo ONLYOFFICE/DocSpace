@@ -6,6 +6,7 @@ import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
 import RadioButtonGroup from "@docspace/components/radio-button-group";
 
 import { Hint } from "../styled-components";
+import { useTranslation } from "react-i18next";
 
 const Header = styled.h1`
   font-family: "Open Sans";
@@ -39,6 +40,7 @@ const InfoHint = styled(Hint)`
 
 export const SSLVerification = ({ onChange, value }) => {
   const [isHintVisible, setIsHintVisible] = useState(false);
+  const { t } = useTranslation(["Webhooks"]);
 
   const handleOnChange = (e) => {
     onChange({ target: { name: e.target.name, value: e.target.value === "true" } });
@@ -48,11 +50,12 @@ export const SSLVerification = ({ onChange, value }) => {
   return (
     <div>
       <Header>
-        SSL verification <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+        {t("SSLVerification", { ns: "Webhooks" })}{" "}
+        <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
       </Header>
 
       <InfoHint hidden={!isHintVisible} onClick={toggleHint}>
-        By default, we verify SSL certificates when delivering payloads.
+        {t("SSLHint", { ns: "Webhooks" })}
       </InfoHint>
 
       <RadioButtonGroup
@@ -62,11 +65,11 @@ export const SSLVerification = ({ onChange, value }) => {
         onClick={handleOnChange}
         options={[
           {
-            label: "Enable SSL verification",
+            label: t("EnableSSL", { ns: "Webhooks" }),
             value: "true",
           },
           {
-            label: "Disable (not recommended)",
+            label: t("DisableSSL", { ns: "Webhooks" }),
             value: "false",
           },
         ]}

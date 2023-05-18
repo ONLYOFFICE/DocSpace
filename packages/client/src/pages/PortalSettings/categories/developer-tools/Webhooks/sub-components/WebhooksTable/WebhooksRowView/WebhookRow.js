@@ -13,6 +13,7 @@ import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 import toastr from "@docspace/components/toast/toastr";
 
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 export const WebhookRow = ({
   webhook,
@@ -22,6 +23,7 @@ export const WebhookRow = ({
   editWebhook,
 }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation(["Webhooks", "Common"]);
 
   const [isChecked, setIsChecked] = useState(webhook.enabled);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
@@ -35,11 +37,14 @@ export const WebhookRow = ({
 
   const handleWebhookUpdate = async (webhookInfo) => {
     editWebhook(webhook, webhookInfo);
-    toastr.success("Webhook configuration edited successfully", <b>Done</b>);
+    toastr.success(
+      t("WebhookEditedSuccessfully", { ns: "Webhooks" }),
+      <b>{t("Done", { ns: "Common" })}</b>,
+    );
   };
   const handleWebhookDelete = async () => {
     await deleteWebhook(webhook);
-    toastr.success("Webhook removed", <b>Done</b>);
+    toastr.success(t("WebhookRemoved", { ns: "Webhooks" }), <b>{t("Done", { ns: "Common" })}</b>);
   };
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
@@ -49,13 +54,13 @@ export const WebhookRow = ({
   const contextOptions = [
     {
       key: "Settings dropdownItem",
-      label: "Settings",
+      label: t("Settings", { ns: "Common" }),
       icon: SettingsIcon,
       onClick: openSettings,
     },
     {
       key: "Webhook history dropdownItem",
-      label: "Webhook history",
+      label: t("WebhookHistory", { ns: "Webhooks" }),
       icon: HistoryIcon,
       onClick: redirectToHistory,
     },
@@ -65,7 +70,7 @@ export const WebhookRow = ({
     },
     {
       key: "Delete webhook dropdownItem",
-      label: "Delete webhook",
+      label: t("DeleteWebhook", { ns: "Webhooks" }),
       icon: DeleteIcon,
       onClick: onDeleteOpen,
     },
@@ -88,7 +93,7 @@ export const WebhookRow = ({
       <WebhookDialog
         visible={isSettingsOpened}
         onClose={closeSettings}
-        header="Setting webhook"
+        header={t("SettingsWebhook", { ns: "Webhooks" })}
         isSettingsModal={true}
         webhook={webhook}
         onSubmit={handleWebhookUpdate}
@@ -96,7 +101,7 @@ export const WebhookRow = ({
       <DeleteWebhookDialog
         visible={isDeleteOpened}
         onClose={onDeleteClose}
-        header="Delete Webhook forever?"
+        header={t("DeleteWebhookForeverQuestion", { ns: "Webhooks" })}
         handleSubmit={handleWebhookDelete}
       />
     </>

@@ -11,6 +11,8 @@ import { WebhookConfigsLoader } from "./sub-components/Loaders";
 
 import { isMobile } from "@docspace/components/utils/device";
 
+import { useTranslation } from "react-i18next";
+
 const MainWrapper = styled.div`
   width: 100%;
 
@@ -35,7 +37,9 @@ const Webhooks = (props) => {
   const { state, loadWebhooks, addWebhook, isWebhookExist, isWebhooksEmpty, setDocumentTitle } =
     props;
 
-  setDocumentTitle("Webhooks");
+  const { t, ready } = useTranslation(["Webhooks", "Common"]);
+
+  setDocumentTitle(t("Webhooks", { ns: "Webhooks" }));
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -53,13 +57,13 @@ const Webhooks = (props) => {
     loadWebhooks();
   }, []);
 
-  return state === "pending" ? (
+  return state === "pending" || !ready ? (
     <WebhookConfigsLoader />
   ) : state === "success" ? (
     <MainWrapper>
       <WebhookInfo />
       <StyledCreateButton
-        label="Create webhook"
+        label={t("CreateWebhook", { ns: "Webhooks" })}
         primary
         size={isMobile() ? "normal" : "small"}
         onClick={openModal}
@@ -68,12 +72,12 @@ const Webhooks = (props) => {
       <WebhookDialog
         visible={isModalOpen}
         onClose={closeModal}
-        header="Create webhook"
+        header={t("CreateWebhook", { ns: "Webhooks" })}
         onSubmit={onCreateWebhook}
       />
     </MainWrapper>
   ) : state === "error" ? (
-    "error"
+    t("Error", { ns: "Common" })
   ) : (
     ""
   );

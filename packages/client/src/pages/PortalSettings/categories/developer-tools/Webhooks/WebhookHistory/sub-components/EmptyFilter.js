@@ -7,6 +7,7 @@ import { Text } from "@docspace/components";
 import { Link } from "@docspace/components";
 
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 const EmptyFilterWrapper = styled.div`
   width: 100%;
@@ -39,6 +40,7 @@ const EmptyFilterContent = styled.div`
 
 const EmptyFilter = (props) => {
   const { applyFilters, formatFilters, clearHistoryFilters } = props;
+  const { t } = useTranslation(["Webhooks", "Common"]);
 
   const clearFilters = () => {
     clearHistoryFilters(null);
@@ -56,15 +58,15 @@ const EmptyFilter = (props) => {
         <img src={EmptyFilterImg} alt="Empty filter" />
         <div className="emptyFilterText">
           <Text fontSize="16px" fontWeight={700} as="p" className="emptyFilterHeading">
-            Nothing found
+            {t("NothingFound", { ns: "Webhooks" })}
           </Text>
           <Text fontSize="12px" color="#555F65">
-            No results match this filter. Try a different one or clear filter to view all items.
+            {t("NoResultsMatched", { ns: "Webhooks" })}
           </Text>
           <span className="clearFilter" onClick={clearFilters}>
-            <img src={ClearEmptyFilterIcon} alt="Clear filter" className="clearFilterIcon" />
+            <img src={ClearEmptyFilterIcon} alt={t("ClearFilter", { ns: "Webhooks" })} className="clearFilterIcon" />
             <Link color="#657077" isHovered fontWeight={600}>
-              Clear filter
+              {t("ClearFilter", { ns: "Common" })}
             </Link>
           </span>
         </div>

@@ -16,6 +16,8 @@ import toastr from "@docspace/components/toast/toastr";
 import RetryIcon from "PUBLIC_DIR/images/refresh.react.svg?url";
 import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
+import { useTranslation } from "react-i18next";
+
 const StyledTableRow = styled(TableRow)`
   ${(props) =>
     props.isHighlight &&
@@ -32,24 +34,28 @@ const StyledWrapper = styled.div`
 
 const HistoryTableRow = (props) => {
   const { item, toggleEventId, isIdChecked, retryWebhookEvent } = props;
+  const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
 
   const redirectToDetails = () => navigate(window.location.pathname + `/${item.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(item.id);
-    toastr.success("Webhook redelivered", <b>Done</b>);
+    toastr.success(
+      t("WebhookRedilivered", { ns: "Webhooks" }),
+      <b>{t("Done", { ns: "Common" })}</b>,
+    );
   };
 
   const contextOptions = [
     {
       key: "Webhook details dropdownItem",
-      label: "Webhook details",
+      label: t("WebhookDetails", { ns: "Webhooks" }),
       icon: InfoIcon,
       onClick: redirectToDetails,
     },
     {
       key: "Retry dropdownItem",
-      label: "Retry",
+      label: t("Retry", { ns: "Webhooks" }),
       icon: RetryIcon,
       onClick: handleRetryEvent,
     },
@@ -71,7 +77,7 @@ const HistoryTableRow = (props) => {
       <StyledTableRow contextOptions={contextOptions} checked={isChecked}>
         <TableCell>
           <TableCell checked={isChecked} className="noPadding">
-            <Checkbox onChange={onChange} isChecked={isChecked} title="TitleSelectFile" />
+            <Checkbox onChange={onChange} isChecked={isChecked} />
           </TableCell>
 
           <Text fontWeight={600}>{item.id}</Text>

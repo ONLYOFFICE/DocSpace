@@ -12,21 +12,25 @@ import Webhooks from "./Webhooks";
 import AppLoader from "@docspace/common/components/AppLoader";
 import SSOLoader from "./sub-components/ssoLoader";
 
+import { useTranslation } from "react-i18next";
+
 const DeveloperToolsWrapper = (props) => {
   const { loadBaseInfo } = props;
   const [currentTab, setCurrentTab] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
+  const { t, ready } = useTranslation(["JavascriptSdk", "Webhooks"]);
+
   const data = [
     {
       id: "javascript-sdk",
-      name: "Javascript sdk",
+      name: t("JavascriptSdk", { ns: "JavascriptSdk" }),
       content: <JavascriptSDK />,
     },
     {
       id: "webhooks",
-      name: "Webhooks",
+      name: t("Webhooks", { ns: "Webhooks" }),
       content: <Webhooks />,
     },
   ];
@@ -54,7 +58,7 @@ const DeveloperToolsWrapper = (props) => {
     );
   };
 
-  if (!isLoading) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
+  if (!isLoading && !ready) return currentTab === 0 ? <SSOLoader /> : <AppLoader />;
 
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };

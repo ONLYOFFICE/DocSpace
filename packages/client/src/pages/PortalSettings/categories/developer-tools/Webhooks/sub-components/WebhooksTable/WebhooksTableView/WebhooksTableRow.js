@@ -16,6 +16,7 @@ import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
 import { StatusBadge } from "../../StatusBadge";
 
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const StyledTableRow = styled(TableRow)`
   .mr-8 {
@@ -25,6 +26,8 @@ const StyledTableRow = styled(TableRow)`
 
 export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
   const navigate = useNavigate();
+
+  const { t } = useTranslation(["Webhooks", "Common"]);
 
   const [isChecked, setIsChecked] = useState(webhook.enabled);
   const [isSettingsOpened, setIsSettingsOpened] = useState(false);
@@ -38,11 +41,14 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
 
   const handleWebhookUpdate = async (webhookInfo) => {
     await editWebhook(webhook, webhookInfo);
-    toastr.success("Webhook configuration edited successfully", <b>Done</b>);
+    toastr.success(
+      t("WebhookEditedSuccessfully", { ns: "Webhooks" }),
+      <b>{t("Done", { ns: "Common" })}</b>,
+    );
   };
   const handleWebhookDelete = async () => {
     await deleteWebhook(webhook);
-    toastr.success("Webhook removed", <b>Done</b>);
+    toastr.success(t("WebhookRemoved", { ns: "Webhooks" }), <b>{t("Done", { ns: "Common" })}</b>);
   };
   const handleToggleEnabled = () => {
     toggleEnabled(webhook);
@@ -52,13 +58,13 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
   const contextOptions = [
     {
       key: "Settings dropdownItem",
-      label: "Settings",
+      label: t("Settings", { ns: "Common" }),
       icon: SettingsIcon,
       onClick: openSettings,
     },
     {
       key: "Webhook history dropdownItem",
-      label: "Webhook history",
+      label: t("WebhookHistory", { ns: "Webhooks" }),
       icon: HistoryIcon,
       onClick: redirectToHistory,
     },
@@ -68,7 +74,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
     },
     {
       key: "Delete webhook dropdownItem",
-      label: "Delete webhook",
+      label: t("DeleteWebhook", { ns: "Webhooks" }),
       icon: DeleteIcon,
       onClick: onDeleteOpen,
     },
@@ -101,7 +107,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
       <WebhookDialog
         visible={isSettingsOpened}
         onClose={closeSettings}
-        header="Setting webhook"
+        header={t("SettingsWebhook", { ns: "Webhooks" })}
         isSettingsModal={true}
         webhook={webhook}
         onSubmit={handleWebhookUpdate}
@@ -109,7 +115,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
       <DeleteWebhookDialog
         visible={isDeleteOpened}
         onClose={onDeleteClose}
-        header="Delete Webhook forever?"
+        header={t("DeleteWebhookForeverQuestion", { ns: "Webhooks" })}
         handleSubmit={handleWebhookDelete}
       />
     </>

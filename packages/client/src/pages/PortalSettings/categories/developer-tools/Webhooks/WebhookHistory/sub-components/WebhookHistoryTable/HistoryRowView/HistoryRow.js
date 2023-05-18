@@ -11,27 +11,33 @@ import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 
 import toastr from "@docspace/components/toast/toastr";
 
+import { useTranslation } from "react-i18next";
+
 const HistoryRow = (props) => {
   const { historyItem, sectionWidth, toggleEventId, isIdChecked, retryWebhookEvent } = props;
+  const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
 
   const redirectToDetails = () => navigate(window.location.pathname + `/${historyItem.id}`);
   const handleRetryEvent = async () => {
     await retryWebhookEvent(historyItem.id);
-    toastr.success("Webhook redelivered", <b>Done</b>);
+    toastr.success(
+      t("WebhookRedilivered", { ns: "Webhooks" }),
+      <b>{t("Done", { ns: "Common" })}</b>,
+    );
   };
   const handleOnSelect = () => toggleEventId(historyItem.id);
 
   const contextOptions = [
     {
       key: "Webhook details dropdownItem",
-      label: "Webhook details",
+      label: t("WebhookDetails", { ns: "Webhooks" }),
       icon: InfoIcon,
       onClick: redirectToDetails,
     },
     {
       key: "Retry dropdownItem",
-      label: "Retry",
+      label: t("Retry", { ns: "Webhooks" }),
       icon: RetryIcon,
       onClick: handleRetryEvent,
     },

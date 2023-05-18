@@ -14,6 +14,7 @@ import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
 
 import { tablet } from "@docspace/components/utils/device";
+import { useTranslation } from "react-i18next";
 
 const HeaderContainer = styled.div`
   position: sticky;
@@ -42,13 +43,17 @@ const HeaderContainer = styled.div`
 
 const DetailsNavigationHeader = (props) => {
   const { eventId, retryWebhookEvent } = props;
+  const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
   const onBack = () => {
     navigate(-1);
   };
   const handleRetryEvent = async () => {
     await retryWebhookEvent(eventId);
-    toastr.success("Webhook retry again", <b>Done</b>);
+    toastr.success(
+      t("WebhookRedilivered", { ns: "Webhooks" }),
+      <b>{t("Done", { ns: "Common" })}</b>,
+    );
   };
 
   return (
@@ -61,7 +66,7 @@ const DetailsNavigationHeader = (props) => {
         className="arrow-button"
       />
       <Headline type="content" truncate={true} className="headline">
-        Webhook details
+        {t("WebhookDetails", { ns: "Webhooks" })}
       </Headline>
       <IconButton iconName={RetryIcon} size="17" isFill={true} onClick={handleRetryEvent} />
 

@@ -6,6 +6,7 @@ import styled from "styled-components";
 import { Hint } from "../styled-components";
 import { SSLVerification } from "./SSLVerification";
 import SecretKeyInput from "./SecretKeyInput";
+import { useTranslation } from "react-i18next";
 
 const Footer = styled.div`
   width: 100%;
@@ -34,6 +35,8 @@ const WebhookDialog = (props) => {
   const [isResetVisible, setIsResetVisible] = useState(isSettingsModal);
   const [isUrlValid, setIsUrlValid] = useState(false);
   const [isPasswordValid, setIsPasswordValid] = useState(false);
+
+  const { t } = useTranslation(["Webhooks", "Common"]);
 
   const [webhookInfo, setWebhookInfo] = useState({
     id: webhook ? webhook.id : 0,
@@ -106,18 +109,18 @@ const WebhookDialog = (props) => {
       <ModalDialog.Header>{header}</ModalDialog.Header>
       <ModalDialog.Body>
         <form onSubmit={onFormSubmit}>
-          <Hint>This webhook will be assigned to all events in DocSpace</Hint>
+          <Hint>{t("WebhookCreationHint", { ns: "Webhooks" })}</Hint>
           <LabledInput
-            label="Webhook name"
-            placeholder="Enter webhook name"
+            label={t("WebhookName", { ns: "Webhooks" })}
+            placeholder={t("EnterWebhookName", { ns: "Webhooks" })}
             name="name"
             value={webhookInfo.name}
             onChange={onInputChange}
             required
           />
           <LabledInput
-            label="Payload URL"
-            placeholder="Enter URL"
+            label={t("PayloadUrl", { ns: "Webhooks" })}
+            placeholder={t("EnterUrl", { ns: "Webhooks" })}
             name="uri"
             value={webhookInfo.uri}
             onChange={onInputChange}
@@ -142,12 +145,12 @@ const WebhookDialog = (props) => {
       <ModalDialog.Footer>
         <Footer>
           <Button
-            label={isSettingsModal ? "Save" : "Create"}
+            label={isSettingsModal ? t("Save", { ns: "Webhooks" }) : t("Create", { ns: "Common" })}
             size="normal"
             primary={true}
             onClick={handleSubmitClick}
           />
-          <Button label="Cancel" size="normal" onClick={onModalClose} />
+          <Button label={t("Cancel", { ns: "Webhooks" })} size="normal" onClick={onModalClose} />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

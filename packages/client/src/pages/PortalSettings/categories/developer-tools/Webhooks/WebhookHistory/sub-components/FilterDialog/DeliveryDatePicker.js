@@ -12,6 +12,8 @@ import { Calendar } from "@docspace/components";
 import { TimePicker } from "@docspace/components";
 import { isMobileOnly } from "react-device-detect";
 
+import { useTranslation } from "react-i18next";
+
 const TimePickerCell = styled.span`
   margin-left: 8px;
   display: inline-flex;
@@ -38,6 +40,8 @@ const StyledCalendar = styled(Calendar)`
 const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsApplied }) => {
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
+
+  const { t } = useTranslation(["Webhooks"]);
 
   const calendarRef = useRef();
   const selectorRef = useRef();
@@ -95,9 +99,13 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
 
   const DateSelector = () => (
     <div>
-      <SelectorAddButton title="add" onClick={toggleCalendar} style={{ marginRight: "8px" }} />
+      <SelectorAddButton
+        title={t("Add", { ns: "Webhooks" })}
+        onClick={toggleCalendar}
+        style={{ marginRight: "8px" }}
+      />
       <Text isInline fontWeight={600} color="#A3A9AE">
-        Select date
+        {t("SelectDate", { ns: "Webhooks" })}
       </Text>
       {isCalendarOpen && <CalendarElement />}
     </div>
@@ -140,9 +148,13 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
 
   const TimeSelectorAdder = () => (
     <TimePickerCell>
-      <SelectorAddButton title="add" onClick={showTimePicker} style={{ marginRight: "8px" }} />
+      <SelectorAddButton
+        title={t("Add", { ns: "Webhooks" })}
+        onClick={showTimePicker}
+        style={{ marginRight: "8px" }}
+      />
       <Text isInline fontWeight={600} color="#A3A9AE">
-        Select Delivery time
+        {t("SelectDeliveryTime", { ns: "Webhooks" })}
       </Text>
     </TimePickerCell>
   );
@@ -160,7 +172,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
-        Delivery date
+        {t("DeliveryDate", { ns: "Webhooks" })}
       </Text>
       <Selectors ref={selectorRef}>
         {filters.deliveryDate === null ? (
@@ -180,7 +192,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
             <TimePickerCell>
               <span className="timePickerItem">
                 <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
-                  From
+                  {t("From", { ns: "Webhooks" })}
                 </Text>
                 <TimePicker
                   date={filters.deliveryFrom}
@@ -190,7 +202,7 @@ const DeliveryDatePicker = ({ Selectors, filters, setFilters, isApplied, setIsAp
                 />
               </span>
               <Text isInline fontWeight={600} color="#A3A9AE" style={{ marginRight: "8px" }}>
-                Before
+                {t("Before", { ns: "Webhooks" })}
               </Text>
               <TimePicker
                 date={filters.deliveryTo}

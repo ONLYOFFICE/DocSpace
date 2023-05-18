@@ -4,6 +4,7 @@ import Submenu from "@docspace/components/submenu";
 
 import { RequestDetails } from "./RequestDetails";
 import { ResponseDetails } from "./ResponseDetails";
+import { useTranslation } from "react-i18next";
 
 const SubmenuWrapper = styled.div`
   .sticky {
@@ -13,10 +14,11 @@ const SubmenuWrapper = styled.div`
 `;
 
 export const MessagesDetails = ({ webhookDetails }) => {
+  const { t } = useTranslation(["Webhooks"]);
   const menuData = [
     {
       id: "webhookRequest",
-      name: "Request",
+      name: t("Request", { ns: "Webhooks" }),
       content: <RequestDetails webhookDetails={webhookDetails} />,
     },
   ];
@@ -25,7 +27,7 @@ export const MessagesDetails = ({ webhookDetails }) => {
     webhookDetails.status < 500 &&
     menuData.push({
       id: "webhookResponse",
-      name: "Response",
+      name: t("Response", { ns: "Webhooks" }),
       content: <ResponseDetails webhookDetails={webhookDetails} />,
     });
 

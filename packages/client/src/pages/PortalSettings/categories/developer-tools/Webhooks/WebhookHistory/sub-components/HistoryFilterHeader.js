@@ -9,6 +9,7 @@ import IconButton from "@docspace/components/icon-button";
 import { useParams } from "react-router-dom";
 import FilterDialog from "./FilterDialog";
 import StatusBar from "./StatusBar";
+import { useTranslation } from "react-i18next";
 
 const ListHeader = styled.header`
   display: flex;
@@ -54,6 +55,7 @@ const FilterButton = styled.div`
 
 const HistoryFilterHeader = (props) => {
   const { applyFilters, historyFilters } = props;
+  const { t } = useTranslation(["Webhooks"]);
   const { id } = useParams();
 
   const [isFiltersVisible, setIsFiltersVisible] = useState(false);
@@ -69,7 +71,9 @@ const HistoryFilterHeader = (props) => {
   return (
     <div>
       <ListHeader>
-        <ListHeading>Webhook {id}</ListHeading>
+        <ListHeading>
+          {t("Webhook", { ns: "Webhooks" })} {id}
+        </ListHeading>
 
         <FilterButton onClick={openFiltersModal}>
           <IconButton iconName={FilterReactSvrUrl} size={16} />

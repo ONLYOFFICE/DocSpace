@@ -17,6 +17,7 @@ import { isMobile, isMobileOnly } from "react-device-detect";
 import DropDownItem from "@docspace/components/drop-down-item";
 
 import toastr from "@docspace/components/toast/toastr";
+import { useTranslation } from "react-i18next";
 
 const HeaderContainer = styled.div`
   position: sticky;
@@ -97,6 +98,7 @@ const HistoryHeader = (props) => {
   const onBack = () => {
     navigate(-1);
   };
+  const { t } = useTranslation(["Webhooks", "Common"]);
 
   const handleGroupSelection = (isChecked) => {
     isChecked ? checkAllIds() : emptyCheckedIds();
@@ -104,13 +106,16 @@ const HistoryHeader = (props) => {
 
   const handleRetryAll = async () => {
     await retryWebhookEvents(checkedEventIds);
-    toastr.success(`Webhooks redelivered: ${checkedEventIds.length}`, <b>Done</b>);
+    toastr.success(
+      `${t("WebhookRedilivered", { ns: "Webhooks" })}: ${checkedEventIds.length}`,
+      <b>{t("Done", { ns: "Common" })}</b>,
+    );
   };
 
   const headerMenu = [
     {
       id: "retry-event-option",
-      label: "Retry",
+      label: t("Retry", { ns: "Webhooks" }),
       onClick: handleRetryAll,
       iconUrl: RetryIcon,
     },
@@ -120,13 +125,13 @@ const HistoryHeader = (props) => {
     <>
       <DropDownItem
         key="select-all-event-ids"
-        label="Select all"
+        label={t("SelectAll", { ns: "Commmon" })}
         data-index={0}
         onClick={() => checkAllIds()}
       />
       <DropDownItem
         key="unselect-all-event-ids"
-        label="Unselect all"
+        label={t("UnselectAll", { ns: "Webhooks" })}
         data-index={1}
         onClick={emptyCheckedIds}
       />
@@ -143,10 +148,10 @@ const HistoryHeader = (props) => {
         className="arrow-button"
       />
       <Headline type="content" truncate={true} className="headline">
-        History
+        {t("History", { ns: "Webhooks" })}
       </Headline>
       <Hint backgroundColor="#F8F9F9" color="#555F65">
-        Deliveries are automatically deleted after 15 days
+        {t("EventHint", { ns: "Webhooks" })}
       </Hint>
     </>
   );

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Button from "@docspace/components/button";
 import styled from "styled-components";
+import { useTranslation } from "react-i18next";
 
 const Footer = styled.div`
   width: 100%;
@@ -18,6 +19,8 @@ const Footer = styled.div`
 export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) => {
   const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onClose();
 
+  const { t } = useTranslation(["Webhooks"]);
+
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
     return () => window.removeEventListener("keyup", onKeyPress);
@@ -26,15 +29,17 @@ export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) 
   return (
     <ModalDialog withFooterBorder visible={visible} onClose={onClose} displayType="modal">
       <ModalDialog.Header>{header}</ModalDialog.Header>
-      <ModalDialog.Body>
-        The webhook will be deleted permanently. <br />
-        You will not be able to undo this action.
-      </ModalDialog.Body>
+      <ModalDialog.Body>{t("DeleteHint", { ns: "Webhooks" })}</ModalDialog.Body>
 
       <ModalDialog.Footer>
         <Footer>
-          <Button label="Delete forever" size="normal" primary={true} onClick={handleSubmit} />
-          <Button label="Cancel" size="normal" onClick={onClose} />
+          <Button
+            label={t("DeleteForever", { ns: "Webhooks" })}
+            size="normal"
+            primary={true}
+            onClick={handleSubmit}
+          />
+          <Button label={t("Cancel", { ns: "Webhooks" })} size="normal" onClick={onClose} />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>

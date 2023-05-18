@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { Text, Textarea } from "@docspace/components";
 
 import DangerIcon from "PUBLIC_DIR/images/danger.toast.react.svg?url";
+import { useTranslation } from "react-i18next";
 
 const DetailsWrapper = styled.div`
   width: 100%;
@@ -24,16 +25,17 @@ const ErrorMessageTooltip = styled.div`
 `;
 
 export const RequestDetails = ({ webhookDetails }) => {
+  const { t } = useTranslation(["Webhooks"]);
   return (
     <DetailsWrapper>
       {webhookDetails.status === 0 && (
         <ErrorMessageTooltip>
           <img src={DangerIcon} alt="danger icon" style={{ marginRight: "8px" }} />
-          We couldn’t deliver this payload: failed to connect to host
+          {t("FailedToConnect", { ns: "Webhooks" })}
         </ErrorMessageTooltip>
       )}
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px" }}>
-        Request post header
+        {t("RequestPostHeader", { ns: "Webhooks" })}
       </Text>
       {!webhookDetails.requestHeaders ? (
         <Textarea isDisabled />
@@ -44,12 +46,12 @@ export const RequestDetails = ({ webhookDetails }) => {
           hasNumeration
           isFullHeight
           isJSONField
-          copyInfoText="Request post header successfully copied to clipboard"
+          copyInfoText={t("RequestHeaderCopied", { ns: "Webhooks" })}
         />
       )}
 
       <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
-        Request post body
+        {t("RequestPostBody", { ns: "Webhooks" })}
       </Text>
       <Textarea
         value={webhookDetails.requestPayload}
@@ -57,7 +59,7 @@ export const RequestDetails = ({ webhookDetails }) => {
         enableCopy
         hasNumeration
         isFullHeight
-        copyInfoText="Request post body successfully copied to clipboard"
+        copyInfoText={t("RequestBodyCopied", { ns: "Webhooks" })}
       />
     </DetailsWrapper>
   );

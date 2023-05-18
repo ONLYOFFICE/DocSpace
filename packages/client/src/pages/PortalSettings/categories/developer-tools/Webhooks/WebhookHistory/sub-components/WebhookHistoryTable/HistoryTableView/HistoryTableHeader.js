@@ -1,14 +1,16 @@
 import React, { useRef } from "react";
 import TableHeader from "@docspace/components/table-container/TableHeader";
 import { inject, observer } from "mobx-react";
+import { useTranslation } from "react-i18next";
 
 const HistoryTableHeader = (props) => {
   const { sectionWidth, tableRef } = props;
+  const { t } = useTranslation(["Webhooks"]);
 
   const columns = useRef([
     {
       key: "Event ID",
-      title: "Event ID",
+      title: t("EventID", { ns: "Webhooks" }),
       resizable: true,
       enable: true,
       default: true,
@@ -16,13 +18,13 @@ const HistoryTableHeader = (props) => {
     },
     {
       key: "Status",
-      title: "Status",
+      title: t("Status", { ns: "Webhooks" }),
       enable: true,
       resizable: true,
     },
     {
       key: "Delivery",
-      title: "Delivery",
+      title: t("Delivery", { ns: "Webhooks" }),
       enable: true,
       resizable: true,
     },

@@ -9,6 +9,8 @@ import { Hint } from "../styled-components";
 import { PasswordInput } from "@docspace/components";
 import { inject, observer } from "mobx-react";
 
+import { useTranslation } from "react-i18next";
+
 const Header = styled.h1`
   font-family: "Open Sans";
   font-weight: 600;
@@ -62,6 +64,7 @@ const SecretKeyInput = (props) => {
   } = props;
 
   const [isHintVisible, setIsHintVisible] = useState(false);
+  const { t } = useTranslation(["Webhooks"]);
 
   const secretKeyInputRef = useRef(null);
 
@@ -97,25 +100,24 @@ const SecretKeyInput = (props) => {
   return (
     <div>
       <Header>
-        Secret key <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+        {t("SecretKey", { ns: "Webhooks" })}{" "}
+        <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
       </Header>
 
       <InfoHint hidden={!isHintVisible} onClick={handleHintDisapear}>
-        Setting a webhook secret allows you to verify requests sent to the payload URL. <br />
-        <ReadMore href="">Read more</ReadMore>
+        {t("SecretKeyHint", { ns: "Webhooks" })} <br />
+        <ReadMore href="">{t("ReadMore", { ns: "Webhooks" })}</ReadMore>
       </InfoHint>
       {isResetVisible && (
         <InfoHint>
-          You cannot retrieve your secret key again once it has been saved. If you've lost or
-          forgotten this secret key, you can reset it, but all integrations using this secret will
-          need to be updated. <br />
+          {t("SecretKeyWarning", { ns: "Webhooks" })} <br />
           <Link
             type="action"
             fontWeight={600}
             isHovered={true}
             onClick={hideReset}
             style={{ marginTop: "6px", display: "inline-block" }}>
-            Reset key
+            {t("ResetKey", { ns: "Webhooks" })}
           </Link>
         </InfoHint>
       )}
@@ -124,7 +126,7 @@ const SecretKeyInput = (props) => {
           onChange={handleOnChange}
           value={value}
           inputName={name}
-          placeholder="Enter secret key"
+          placeholder={t("EnterSecretKey", { ns: "Webhooks" })}
           onValidateInput={handleInputValidation}
           ref={secretKeyInputRef}
           hasError={!isPasswordValid}
@@ -139,7 +141,7 @@ const SecretKeyInput = (props) => {
           isHovered={true}
           onClick={generatePassword}
           style={{ marginTop: "6px", display: "inline-block" }}>
-          Generate
+          {t("Generate", { ns: "Webhooks" })}
         </Link>
       </div>
     </div>
