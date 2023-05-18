@@ -13,6 +13,7 @@ import SectionBodyContent from "../Home/Section/Body";
 // import SectionBodyContent from "./Body";
 
 import RoomPassword from "./sub-components/RoomPassword";
+import RoomErrors from "./sub-components/RoomErrors";
 
 const PublicRoom = (props) => {
   const {
@@ -71,9 +72,9 @@ const PublicRoom = (props) => {
       case ValidationResult.Ok:
         return roomPage();
       case ValidationResult.Invalid:
-        return <></>;
+        return <RoomErrors isInvalid />;
       case ValidationResult.Expired:
-        return <></>;
+        return <RoomErrors />;
       case ValidationResult.Password:
         return <RoomPassword roomKey={key} />;
 
