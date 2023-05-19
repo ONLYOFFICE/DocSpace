@@ -13,6 +13,7 @@ interface ViewerWrapperProps {
   isImage: boolean;
   isAudio: boolean;
   isVideo: boolean;
+  isPdf: boolean;
   isPreviewFile: boolean;
 
   archiveRoom: boolean;

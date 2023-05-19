@@ -8,6 +8,7 @@ interface ViewerProps {
   isVideo: boolean;
   visible: boolean;
   isImage: boolean;
+  isPdf: boolean;
 
   playlist: PlaylistType[];
   inactive: boolean;

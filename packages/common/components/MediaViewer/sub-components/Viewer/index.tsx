@@ -14,12 +14,15 @@ import DesktopDetails from "../DesktopDetails";
 import ViewerPlayer from "../ViewerPlayer";
 
 import type ViewerProps from "./Viewer.props";
+import PDFViewer from "../PDFViewer";
+import PDFViewerV2 from "../PDFViewerV2";
 
 function Viewer(props: ViewerProps) {
   const timerIDRef = useRef<NodeJS.Timeout>();
 
   const containerRef = React.useRef(document.createElement("div"));
 
+  const [isPDFSidebarOpen, setIsPDFSidebarOpen] = useState<boolean>(false);
   const [panelVisible, setPanelVisible] = useState<boolean>(true);
   const [isOpenContextMenu, setIsOpenContextMenu] = useState<boolean>(false);
 
@@ -164,14 +167,18 @@ function Viewer(props: ViewerProps) {
 
   return (
     <StyledViewerContainer visible={props.visible}>
-      {!isFullscreen && !isMobile && panelVisible && (
+      {!isFullscreen && !isMobile && panelVisible && !props.isPdf && (
         <DesktopDetails title={props.title} onMaskClick={handleMaskClick} />
       )}
 
       {props.playlist.length > 1 && !isFullscreen && !isMobile && (
         <>
-          {isNotFirstElement && <PrevButton prevClick={prevClick} />}
-          {isNotLastElement && <NextButton nextClick={nextClick} />}
+          {isNotFirstElement && !isPDFSidebarOpen && (
+            <PrevButton prevClick={prevClick} />
+          )}
+          {isNotLastElement && (
+            <NextButton isPdfFIle={props.isPdf} nextClick={nextClick} />
+          )}
         </>
       )}
 
@@ -197,8 +204,8 @@ function Viewer(props: ViewerProps) {
             />,
             containerRef.current
           )
-        : (props.isVideo || props.isAudio) &&
-          ReactDOM.createPortal(
+        : props.isVideo || props.isAudio
+        ? ReactDOM.createPortal(
             <ViewerPlayer
               isError={isError}
               src={props.fileUrl}
@@ -226,6 +233,25 @@ function Viewer(props: ViewerProps) {
               removeToolbarVisibleTimer={removeToolbarVisibleTimer}
               removePanelVisibleTimeout={removePanelVisibleTimeout}
               restartToolbarVisibleTimer={restartToolbarVisibleTimer}
+            />,
+            containerRef.current
+          )
+        : props.isPdf &&
+          ReactDOM.createPortal(
+            <PDFViewer
+              src={props.fileUrl ?? ""}
+              title={props.title}
+              toolbar={props.toolbar}
+              onMask={handleMaskClick}
+              isPDFSidebarOpen={isPDFSidebarOpen}
+              mobileDetails={mobileDetails}
+              generateContextMenu={props.generateContextMenu}
+              setIsOpenContextMenu={setIsOpenContextMenu}
+              setIsPDFSidebarOpen={setIsPDFSidebarOpen}
+              isLastImage={!isNotLastElement}
+              isFistImage={!isNotFirstElement}
+              onPrev={props.onPrevClick}
+              onNext={props.onNextClick}
             />,
             containerRef.current
           )}
