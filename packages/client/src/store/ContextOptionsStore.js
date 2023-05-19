@@ -683,7 +683,8 @@ class ContextOptionsStore {
     const hasInfoPanel = contextOptions.includes("show-info");
 
     //const emailSendIsDisabled = true;
-    const showSeparator0 = hasInfoPanel || !isMedia; // || !emailSendIsDisabled;
+    const showSeparator0 =
+      (hasInfoPanel || !isMedia) && !this.filesStore.isPublicRoom; // || !emailSendIsDisabled;
 
     const separator0 = showSeparator0
       ? {
@@ -922,7 +923,7 @@ class ContextOptionsStore {
         label: t("LinkForRoomMembers"),
         icon: InvitationLinkReactSvgUrl,
         onClick: () => this.onCopyLink(item, t),
-        disabled: false,
+        disabled: this.filesStore.isPublicRoom,
       },
       {
         id: "option_copy-external-link",
@@ -938,7 +939,7 @@ class ContextOptionsStore {
         label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
-        disabled: false,
+        disabled: this.filesStore.isPublicRoom,
       },
       ...pinOptions,
       ...muteOptions,
@@ -979,7 +980,7 @@ class ContextOptionsStore {
         label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
-        disabled: false,
+        disabled: this.filesStore.isPublicRoom,
       },
       {
         id: "option_block-unblock-version",
@@ -989,7 +990,7 @@ class ContextOptionsStore {
         onClick: () => this.lockFile(item, t),
         disabled: false,
       },
-      {
+      !this.filesStore.isPublicRoom && {
         key: "separator1",
         isSeparator: true,
       },
