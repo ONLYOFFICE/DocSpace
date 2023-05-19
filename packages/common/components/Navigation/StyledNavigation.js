@@ -79,11 +79,21 @@ const StyledContainer = styled.div`
 
   @media ${tablet} {
     width: 100%;
-    grid-template-columns: ${(props) =>
-      props.isRootFolder ? "1fr auto" : "49px 1fr auto"};
+    grid-template-columns: ${({ isRootFolder, withLogo }) =>
+      isRootFolder
+        ? withLogo
+          ? "242px 1fr auto"
+          : "1fr auto"
+        : withLogo
+        ? "226px 49px 1fr auto"
+        : "49px 1fr auto"};
   }
 
   @media ${mobile} {
+    .navigation-logo {
+      display: none;
+    }
+
     grid-template-columns: ${(props) =>
       props.isRootFolder ? "1fr auto" : "29px 1fr auto"};
   }
