@@ -20,6 +20,7 @@ import {
   DesktopTopBar,
   PDFToolbar,
   PDFViewerToolbarWrapper,
+  ErrorMessageWrapper,
 } from "./PDFViewer.styled";
 
 import { ToolbarActionType } from "../../helpers";
@@ -91,13 +92,15 @@ function PDFViewer({
     //@ts-ignore
     const path = window.DocSpaceConfig.pdfViewerUrl;
 
+    if (isError) return;
+
     if (!isLoadedViewerScript) {
       setIsLoadingScript(true);
       loadScript(
         combineUrl(origin, path),
         pdfViewerId,
         () => {
-          initViewer();
+          // initViewer();
           setIsLoadedViewerScript(true);
           setIsLoadingScript(false);
         },
@@ -108,11 +111,14 @@ function PDFViewer({
         }
       );
     }
-  }, []);
+  }, [isError]);
 
   useEffect(() => {
+    if (isError) return;
+
     setIsLoadingFile(true);
     setFile(undefined);
+
     fetch(src)
       .then((value) => {
         return value.blob();
@@ -131,14 +137,13 @@ function PDFViewer({
       .finally(() => {
         setIsLoadingFile(false);
       });
-  }, [src]);
+  }, [src, isError]);
 
   useEffect(() => {
     if (isLoadedViewerScript && !isLoadingFile && file) {
       try {
-        if (!containerRef.current?.hasChildNodes()) {
-          initViewer();
-        }
+        initViewer();
+
         pdfViewer.current?.open(file);
       } catch (error) {
         setIsError(true);
@@ -215,6 +220,7 @@ function PDFViewer({
     setIsFileOpened(false);
     setIsLoadingFile(false);
     setIsPDFSidebarOpen(false);
+    setIsError(false);
   };
 
   const setZoom = (scale: number) => {
@@ -255,9 +261,9 @@ function PDFViewer({
 
   if (isError) {
     return (
-      <PDFViewerWrapper>
+      <ErrorMessageWrapper onClick={onMask}>
         <ErrorMessage>Something went wrong</ErrorMessage>
-      </PDFViewerWrapper>
+      </ErrorMessageWrapper>
     );
   }
 

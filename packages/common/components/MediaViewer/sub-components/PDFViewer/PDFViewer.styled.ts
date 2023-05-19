@@ -41,9 +41,22 @@ export const PDFViewerWrapper = styled.div`
   }
 `;
 
+export const ErrorMessageWrapper = styled.section`
+  position: fixed;
+  z-index: 305;
+  inset: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: rgba(55, 55, 55, 0.6);
+`;
+
 export const ErrorMessage = styled.p`
   padding: 20px 30px;
   background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
 `;
 
 export const DesktopTopBar = styled(DesktopDetails)<Panel>`
