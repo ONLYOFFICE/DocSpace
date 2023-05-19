@@ -41,4 +41,5 @@ public interface ITariffService
     Uri GetAccountLink(int tenant, string backUrl);
     Task<bool> PaymentChange(int tenant, Dictionary<string, int> quantity);
     int GetPaymentDelay();
+    Tariff GetBillingInfo(int? tenant = null, int? id = null);
 }
