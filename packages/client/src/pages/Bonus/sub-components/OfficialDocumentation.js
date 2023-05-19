@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { observer, inject } from "mobx-react";
 
 import Text from "@docspace/components/text";
+import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledComponent } from "../StyledComponent";
 
@@ -12,14 +13,49 @@ const OfficialDocumentation = () => {
   return (
     <StyledComponent>
       <div className="official-documentation">
+        {"—"}
         <Text fontWeight={600}>
-          {"—" + " " + t("UpgradeToProBannerInstructionItemDocker")}
+          {t("UpgradeToProBannerInstructionItemDocker")}{" "}
+          <ColorTheme
+            tag="a"
+            themeId={ThemeType.Link}
+            fontSize="13px"
+            fontWeight="600"
+            href={""}
+            target="_blank"
+          >
+            {t("UpgradeToProBannerInstructionReadNow")}
+          </ColorTheme>
         </Text>
+
+        {"—"}
         <Text fontWeight={600}>
-          {"—" + " " + t("UpgradeToProBannerInstructionItemLinux")}
+          {t("UpgradeToProBannerInstructionItemLinux")}{" "}
+          <ColorTheme
+            tag="a"
+            themeId={ThemeType.Link}
+            fontSize="13px"
+            fontWeight="600"
+            href={""}
+            target="_blank"
+          >
+            {t("UpgradeToProBannerInstructionReadNow")}
+          </ColorTheme>
         </Text>
+
+        {"—"}
         <Text fontWeight={600}>
-          {"—" + " " + t("UpgradeToProBannerInstructionItemWindows")}
+          {t("UpgradeToProBannerInstructionItemWindows")}{" "}
+          <ColorTheme
+            tag="a"
+            themeId={ThemeType.Link}
+            fontSize="13px"
+            fontWeight="600"
+            href={""}
+            target="_blank"
+          >
+            {t("UpgradeToProBannerInstructionReadNow")}
+          </ColorTheme>
         </Text>
       </div>
     </StyledComponent>

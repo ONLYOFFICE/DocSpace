@@ -15,6 +15,7 @@
   "TopBottonsEnterpriseExpired": "Истек срок действия подписки на техническую поддержку и обновления",
   "TopBottonsEnterpriseWarning": "Подписка на техническую поддержку и обновления истекает {0}",
   "UpgradeToProBannerHeader": "Получите бесплатный доступ к профессиональным возможностям на 30 дней",
+  "UpgradeToProBannerInstructionReadNow": "Читать",
   "UpgradeToProBannerInformationAboutShort": "Узнайте больше об Enterprise Edition <1>на официальном сайте</1>",
   "UpgradeToProBannerInformationDemo": "Запросить демонстрацию <1>здесь</1>",
   "UpgradeToProBannerInformationPurchase": "Задать вопросы по покупке <1>{{email}}</1>",
