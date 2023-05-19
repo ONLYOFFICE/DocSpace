@@ -9,5 +9,5 @@
   },
   "wrongPortalNameUrl": "https://teamlab.info/wrongportalname.aspx?Site_Testing=4testing",
   "thumbnails1280x720": false,
-  "pdfViewerUrl": "ds-vpath/7.4.0-97/sdkjs/pdf/src/engine/viewer.js"
+  "pdfViewerUrl": "ds-vpath/sdkjs/pdf/src/engine/viewer.js"
 }
