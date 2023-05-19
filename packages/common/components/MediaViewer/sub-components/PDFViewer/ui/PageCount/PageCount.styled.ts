@@ -29,6 +29,8 @@ export const PageCountWrapper = styled.div<{ isPanelOpen: boolean }>`
     }
   }
 
+  user-select: none;
+
   transition: background 0.26s ease-out 0s;
 
   @media (hover: hover) {
