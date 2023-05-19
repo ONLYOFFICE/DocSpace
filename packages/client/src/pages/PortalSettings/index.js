@@ -63,6 +63,8 @@ const Backup = lazy(() => import("./categories/data-management/index"));
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup/index")
 );
+
+const Bonus = lazy(() => import("../Bonus"));
 const DeleteDataPage = lazy(() => import("./categories/delete-data"));
 
 const WhiteLabel = lazy(() =>
@@ -170,6 +172,8 @@ const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
 
 const SMTP_Settings = combineUrl(PROXY_BASE_URL, "/integration/smtp-settings");
 
+const bonus_Settings = combineUrl(combineUrl(PROXY_BASE_URL, "/bonus"));
+
 const DELETE_DATA_URLS = [
   combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),
   combineUrl(PROXY_BASE_URL, "/delete-data/deactivation"),
@@ -232,6 +236,7 @@ const Settings = () => {
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
+          <Route path={bonus_Settings} component={Bonus} />
           <Redirect to={{ pathname: ERROR_404_URL }} />
         </Switch>
       </Suspense>

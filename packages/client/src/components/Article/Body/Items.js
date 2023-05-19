@@ -23,6 +23,7 @@ import DragAndDrop from "@docspace/components/drag-and-drop";
 import { isMobile } from "react-device-detect";
 import SettingsItem from "./SettingsItem";
 import AccountsItem from "./AccountsItem";
+import BonusItem from "./BonusItem";
 
 const StyledDragAndDrop = styled(DragAndDrop)`
   display: contents;
@@ -173,6 +174,8 @@ const Items = ({
   deleteAction,
   startDrag,
   emptyTrashInProgress,
+  standalone,
+  isEnterprise,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -382,6 +385,9 @@ const Items = ({
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
 
+      if (standalone && !isEnterprise)
+        items.push(<BonusItem key="bonus-item" />);
+
       return items;
     },
     [
@@ -428,6 +434,9 @@ export default inject(
     uploadDataStore,
     dialogsStore,
   }) => {
+    const { isEnterprise, settingsStore } = auth;
+    const { showText, docSpace, standalone } = settingsStore;
+
     const {
       selection,
       bufferSelection,
@@ -458,6 +467,7 @@ export default inject(
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
+      isEnterprise,
       isAdmin: auth.isAdmin,
       isVisitor: auth.userStore.user.isVisitor,
       isCollaborator: auth.userStore.user.isCollaborator,
@@ -465,8 +475,9 @@ export default inject(
       commonId: commonFolderId,
       isPrivacy: isPrivacyFolder,
       currentId: id,
-      showText: auth.settingsStore.showText,
-      docSpace: auth.settingsStore.docSpace,
+      showText,
+      docSpace,
+      standalone,
       pathParts,
       data: treeFolders,
       selectedTreeNode,
