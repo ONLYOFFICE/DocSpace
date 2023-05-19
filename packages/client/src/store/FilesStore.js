@@ -1616,7 +1616,7 @@ class FilesStore {
         "delete",
       ];
 
-      if (!isPdf) {
+      if (!isPdf || !window.DocSpaceConfig.pdfViewer) {
         fileOptions = this.removeOptions(fileOptions, ["pdf-view"]);
       }
 

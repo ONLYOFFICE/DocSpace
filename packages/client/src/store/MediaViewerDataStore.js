@@ -37,7 +37,12 @@ class MediaViewerDataStore {
       return;
     }
 
-    if (!file.canOpenPlayer && !file.fileExst === ".pdf") return;
+    if (
+      !file.canOpenPlayer &&
+      !file.fileExst === ".pdf" &&
+      window.DocSpaceConfig.pdfViewer
+    )
+      return;
 
     this.previewFile = file;
     this.id = file.id;
@@ -142,7 +147,7 @@ class MediaViewerDataStore {
         const canOpenPlayer =
           file.viewAccessability.ImageView ||
           file.viewAccessability.MediaView ||
-          file.fileExst === ".pdf";
+          (file.fileExst === ".pdf" && window.DocSpaceConfig.pdfViewer);
 
         if (canOpenPlayer) {
           playlist.push({
