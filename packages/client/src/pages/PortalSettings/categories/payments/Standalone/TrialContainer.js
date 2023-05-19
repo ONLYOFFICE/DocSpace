@@ -5,7 +5,7 @@ import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 
 import { StyledEnterpriseComponent } from "./StyledComponent";
-import BenefitsContainer from "./sub-components/BenefitsContainer";
+import BenefitsContainer from "../../../../Bonus/BenefitsContainer";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import TariffTitleContainer from "./sub-components/TariffTitleContainer";
 
