@@ -316,7 +316,7 @@ _Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătito
  
 Cu deosebită considerație,
 Echipa ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
     <value>Stimate, $UserName!

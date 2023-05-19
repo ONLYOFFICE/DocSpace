@@ -82,4 +82,10 @@
   <data name="Personal" xml:space="preserve">
     <value>Osobní</value>
   </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Nedávné</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Oblíbené</value>
+  </data>
 </root>

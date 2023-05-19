@@ -312,6 +312,7 @@ ONLYOFFICE Komandası
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalından mesaj:
+
 E-poçt: $UserEmail
 
 $Body</value>
@@ -379,13 +380,11 @@ $RegionName bölgəsinə köçürülərkən xəta baş verdi. Zəhmət olmasa bi
 Portalınız indi köhnə "$PortalUrl":"$PortalUrl" ünvanında mövcuddur: 
 
 Hər hansı bir sualınız və ya köməyə ehtiyacınız olarsa,  ünvanında bizimlə əlaqə saxlamaqdan çəkinməyin "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Hörmətlə,
 ONLYOFFICE ™ Dəstək Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Bildiriş növünü dəyişdirmək üçün "abunəlik parametrlərinizi idarə edin":"$RecipientSubscriptionConfigURL".^
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+^Bildiriş növünü dəyişdirmək üçün "abunəlik parametrlərinizi idarə edin":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_server_failure" xml:space="preserve">
     <value>h1.Portalı başqa bölgəyə köçürərkən xəta
@@ -1698,6 +1697,7 @@ ONLYOFFICE Komandası
     <value>Salam!
 
 "${__VirtualRootPath}":"${__VirtualRootPath}" ünvanında $Mesaj otağına qoşulmağa dəvət olunursunuz. Linkə klikləməklə dəvəti qəbul edin:
+
 $GreenButton
 
 Dəvət linkinə kliklədikdən sonra hesabınız üçün yeni şifrə təyin edin.

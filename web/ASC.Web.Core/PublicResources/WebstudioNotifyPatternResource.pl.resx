@@ -434,6 +434,7 @@ Zespół wsparcia ONLYOFFICE ™
 
 Użytkownik "$__AuthorName":"$__AuthorUrl" zmienił swój profil na portalu "${__VirtualRootPath}":"${__VirtualRootPath}".
 
+
 ^Jeśli nie chcesz otrzymywać powiadomień o aktualizacjach profilu, proszę zmienić ustawienia subskrypcji":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
@@ -457,6 +458,7 @@ Zespół ONLYOFFICE</value>
     <value>h1. Nowy użytkownik jest dodawany do portalu "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 Użytkownik "$__AuthorName":"$__AuthorUrl" dołączył do portalu "${__VirtualRootPath}":"${__VirtualRootPath}".
+
 
 ^Jeśli nie chcesz otrzymywać powiadomień o nowych użytkowników, zmień "ustawienia subskrypcji":"$RecipientSubscriptionConfigURL".^</value>
   </data>

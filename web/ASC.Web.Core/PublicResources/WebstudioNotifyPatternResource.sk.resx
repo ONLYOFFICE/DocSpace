@@ -278,7 +278,9 @@ Tím ONLYOFFICE
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Správa z "${__VirtualRootPath}":"${__VirtualRootPath}" portálu
 
-Email: $E-mailUžívateľa</value>
+Email: $UserEmail
+
+$Body</value>
   </data>
   <data name="pattern_join" xml:space="preserve">
     <value>h1.Pozvánka na pripojenie sa k "${__VirtualRootPath}":"$InviteLink" portálu

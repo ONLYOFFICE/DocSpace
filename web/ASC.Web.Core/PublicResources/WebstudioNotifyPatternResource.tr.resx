@@ -470,6 +470,7 @@ ONLYOFFICE™ Destek Ekibi
 
 "$__AuthorName":"$__AuthorUrl" kullanıcısı "${__VirtualRootPath}":"${__VirtualRootPath}" portalında yer alan profilindeki bilgileri değiştirdi.
 
+
 ^Profil güncellemeleri hakkında bildirim almak istemiyorsanız, lütfen "abonelik ayarlarınızı" değiştirin:"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
@@ -493,6 +494,7 @@ ONLYOFFICE Ekibi</value>
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalına yeni kişi eklendi
 
 "$__AuthorName":"$__AuthorUrl" "${__VirtualRootPath}":"${__VirtualRootPath}" adresindeki portalınıza katıldı.
+
 
 ^Yeni kullanıcılar ile ilgili bildirimler almak istemiyorsanız lütfen "abonelik ayarları" bölümüne gidin:"$RecipientSubscriptionConfigURL".^</value>
   </data>
@@ -816,7 +818,6 @@ ONLYOFFICE Ekibi
 
 Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
 
-
 * ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
 
 * Çok sayıda belge ile çalışmak için herhangi bir sayıda oda oluşturmak ister misiniz?
@@ -881,7 +882,6 @@ ONLYOFFICE Ekibi
     <value>Merhaba, $UserName!
 
 Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
-
 
 * ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
 

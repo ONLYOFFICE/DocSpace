@@ -66,7 +66,7 @@
   </data>
   <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
     <value>尊敬的$UserName!，
-您好！
+
 欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
 
 * 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。

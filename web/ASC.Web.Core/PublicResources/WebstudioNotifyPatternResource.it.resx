@@ -178,8 +178,7 @@ Il team di supporto ONLYOFFICE®
   <data name="pattern_change_phone" xml:space="preserve">
     <value>h1.Richiesta cambio numero di cellulare
 
-Gentile $UserName,
-hai richiesto di modificare il numero cellulare usato per accedere al portale ${LetterLogoText}.
+Gentile $UserName, hai richiesto di modificare il numero cellulare usato per accedere al portale ${LetterLogoText}.
 
 Si prega di seguire il link di seguito per completare l'operazione:
 
@@ -398,7 +397,6 @@ Si è verificato un errore durante la migrazione in un'altra regione. Si prega d
 Il tuo portale è ora disponibile al vecchio indirizzo "$PortalUrl":"$PortalUrl"
 
 Se hai domande o hai bisogno di assistenza, non esitate a contattarci all'indirizzo "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 I migliori saluti,
 Team di supporto ONLYOFFICE®
 "www.onlyoffice.com":"http://onlyoffice.com/"
@@ -710,7 +708,9 @@ Team di ONLYOFFICE
   </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.cambio notifica profilo portale "${__VirtualRootPath}":"${__VirtualRootPath}"
+
 "$__AuthorName":"$__AuthorUrl" ha cambiato i suoi dettagli profilo nel portale "${__VirtualRootPath}":"${__VirtualRootPath}".
+
 
 ^Se non desideri ricevere le notifiche sugli aggiornamenti del profilo, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL".^</value>
   </data>

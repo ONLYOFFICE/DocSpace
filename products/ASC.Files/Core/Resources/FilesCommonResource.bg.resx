@@ -403,4 +403,16 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Не можете да фиксирате стая</value>
   </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Създаден за попълване на формуляра</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>OFORM документ за попълване е готов. Той е запазен в {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Копието на OFORM се създава в папката {0}. Моля, попълнете формуляра и изтеглете резултата като PDF или DOCX файл.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Файлът вече не е чернова за попълване на формуляра.</value>
+  </data>
 </root>

@@ -835,4 +835,10 @@
   <data name="ConsumersYandexClientSecret" xml:space="preserve">
     <value>パスワード</value>
   </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>地域</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>ログイン</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "账户登录方式",
   "DeleteSelfProfile": "删除档案",
   "DisabledEmployeeStatus": "已禁用",
   "DisableUserButton": "禁用",
@@ -12,6 +13,7 @@
   "RemoveData": "删除个人数据",
   "ResetAuth": "重置身份验证",
   "SendInviteAgain": "再次发送邀请",
+  "StandardLogin": "标准登录",
   "SuccessChangeUserStatus": "用户状态已成功变更",
   "SuccessDeletePersonalData": "个人数据已成功删除。",
   "SuccessSentInvitation": "邀请已成功发送",

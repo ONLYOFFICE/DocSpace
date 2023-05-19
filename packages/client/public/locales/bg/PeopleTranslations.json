@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Тип вход в акаунта",
   "DeleteSelfProfile": "Изтрий профил",
   "DisabledEmployeeStatus": "Деактивиран",
   "DisableUserButton": "Деактивирай",
@@ -12,6 +13,7 @@
   "RemoveData": "Изтрий лични данни",
   "ResetAuth": "Нулиране на удостоверяването",
   "SendInviteAgain": "Изпрати покана още веднъж",
+  "StandardLogin": "Стандартен вход",
   "SuccessChangeUserStatus": "Потребителският статус беше променен успешно",
   "SuccessDeletePersonalData": "Личните данни бяха изтрити успешно",
   "SuccessSentInvitation": "Поканата беше изпратена успешно",

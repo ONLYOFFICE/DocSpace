@@ -257,6 +257,7 @@ Nous allons partager avec vous les astuces pour profiter pleinement des fonction
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Message du portail "${__VirtualRootPath}":"${__VirtualRootPath}" 
+
 Email: $UserEmail
 
 $Body</value>
@@ -324,7 +325,6 @@ Une erreur s'est produite lors de la migration vers la région $RegionName. Veui
 Votre portail est maintenant disponible à l'ancienne adresse "$PortalUrl":"$PortalUrl"
 
 Si vous avez des questions ou besoin d'aide, n'hésitez pas à nous contacter à "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Meilleures salutations,
 Équipe d'assistance ONLYOFFICE™ 
 "www.onlyoffice.com":"http://onlyoffice.com/fr"
