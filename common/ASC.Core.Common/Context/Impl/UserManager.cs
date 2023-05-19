@@ -206,7 +206,7 @@ public class UserManager
 
     public async Task<UserInfo> GetUserByUserNameAsync(string username)
     {
-        var u = await _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, username);
+        var u = await _userService.GetUserByUserName(await _tenantManager.GetCurrentTenantIdAsync(), username);
 
         return u ?? Constants.LostUser;
     }
@@ -389,7 +389,7 @@ public class UserManager
 
     public async Task<UserInfo> UpdateUserInfoWithSyncCardDavAsync(UserInfo u)
     {
-        var oldUserData = await _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
+        var oldUserData = await _userService.GetUserByUserName(await _tenantManager.GetCurrentTenantIdAsync(), u.UserName);
 
         var newUser = await UpdateUserInfoAsync(u);
         
@@ -418,7 +418,7 @@ public class UserManager
             }
         }
 
-        var oldUserData = await _userService.GetUserByUserName((await _tenantManager.GetCurrentTenantAsync()).Id, u.UserName);
+        var oldUserData = await _userService.GetUserByUserName(await _tenantManager.GetCurrentTenantIdAsync(), u.UserName);
 
         if (oldUserData != null && !Equals(oldUserData, Constants.LostUser))
         {
@@ -434,7 +434,7 @@ public class UserManager
             await _countPaidUserChecker.CheckAppend();
         }
 
-        var newUser = await _userService.SaveUserAsync((await _tenantManager.GetCurrentTenantAsync()).Id, u);
+        var newUser = await _userService.SaveUserAsync(await _tenantManager.GetCurrentTenantIdAsync(), u);
         if (syncCardDav)
         {
             await SyncCardDavAsync(u, oldUserData, newUser);
@@ -488,7 +488,7 @@ public class UserManager
                 var cardDavUser = new CardDavItem(u.Id, u.FirstName, u.LastName, u.UserName, u.BirthDate, u.Sex, u.Title, u.Email, u.ContactsList, u.MobilePhone);
                 try
                 {
-                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, (await _tenantManager.GetCurrentTenantAsync()).Id, oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
+                    await _cardDavAddressbook.UpdateItemForAllAddBooks(allUserEmails, myUri, cardDavUser, await _tenantManager.GetCurrentTenantIdAsync(), oldUserData != null && oldUserData.Email != newUser.Email ? oldUserData.Email : null);
                 }
                 catch (Exception ex)
                 {
@@ -504,7 +504,7 @@ public class UserManager
 
     public async Task<IEnumerable<string>> GetDavUserEmailsAsync()
     {
-        return await _userService.GetDavUserEmailsAsync((await _tenantManager.GetCurrentTenantAsync()).Id);
+        return await _userService.GetDavUserEmailsAsync(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     public async Task<IEnumerable<int>> GetTenantsWithFeedsAsync(DateTime from)
@@ -701,7 +701,7 @@ public class UserManager
         var isUser = await this.IsUserAsync(user);
         var isPaidUser = await IsPaidUserAsync(user);
 
-        await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, (await _tenantManager.GetCurrentTenantAsync()).Id, _userFormatter), groupId),
+        await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, await _tenantManager.GetCurrentTenantIdAsync(), _userFormatter), groupId),
             Constants.Action_EditGroups);
 
         await _userService.SaveUserGroupRefAsync(Tenant.Id, new UserGroupRef(userId, groupId, UserGroupRefType.Contains));
@@ -745,7 +745,7 @@ public class UserManager
         var isUserBefore = await this.IsUserAsync(user);
         var isPaidUserBefore = await IsPaidUserAsync(user);
 
-        await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, (await _tenantManager.GetCurrentTenantAsync()).Id, _userFormatter), groupId),
+        await _permissionContext.DemandPermissionsAsync(new UserGroupObject(new UserAccount(user, await _tenantManager.GetCurrentTenantIdAsync(), _userFormatter), groupId),
             Constants.Action_EditGroups);
 
         await _userService.RemoveUserGroupRefAsync(Tenant.Id, userId, groupId, UserGroupRefType.Contains);

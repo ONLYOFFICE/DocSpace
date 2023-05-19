@@ -186,7 +186,7 @@ public class UserController : PeopleControllerBase
 
         await UpdateContactsAsync(inDto.Contacts, user);
 
-        _cache.Insert("REWRITE_URL" + (await _tenantManager.GetCurrentTenantAsync()).Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + await _tenantManager.GetCurrentTenantIdAsync(), HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
         user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, true, false, inDto.Type,
             false, true, true);
 
@@ -274,7 +274,7 @@ public class UserController : PeopleControllerBase
 
         await UpdateContactsAsync(inDto.Contacts, user, !inDto.FromInviteLink);
 
-        _cache.Insert("REWRITE_URL" + (await _tenantManager.GetCurrentTenantAsync()).Id, HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
+        _cache.Insert("REWRITE_URL" + await _tenantManager.GetCurrentTenantIdAsync(), HttpContext.Request.GetUrlRewriter().ToString(), TimeSpan.FromMinutes(5));
 
         user = await _userManagerWrapper.AddUserAsync(user, inDto.PasswordHash, inDto.FromInviteLink, true, inDto.Type,
             inDto.FromInviteLink && linkData is { IsCorrect: true }, true, true, byEmail);
@@ -1146,7 +1146,7 @@ public class UserController : PeopleControllerBase
             {
                 var usedSpace = Math.Max(0,
                     (await _quotaService.FindUserQuotaRowsAsync(
-                            (await _tenantManager.GetCurrentTenantAsync()).Id,
+                            await _tenantManager.GetCurrentTenantIdAsync(),
                             user.Id
                         ))
                 .Where(r => !string.IsNullOrEmpty(r.Tag)).Sum(r => r.Counter));

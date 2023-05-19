@@ -80,7 +80,7 @@ public class StaticUploader
             return null;
         }
 
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var key = GetCacheKey(tenantId.ToString(), relativePath);
 
         lock (_locker)

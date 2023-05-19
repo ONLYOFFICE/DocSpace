@@ -120,7 +120,7 @@ public class SsoHandlerService
                 throw new SSOException("Single sign-on settings are disabled", MessageKey.SsoSettingsDisabled);
             }
 
-            if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).Sso))
+            if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync())).Sso))
             {
                 throw new SSOException("Single sign-on settings are not paid", MessageKey.ErrorNotAllowedOption);
             }

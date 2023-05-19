@@ -100,7 +100,7 @@ public class TokenHelper
             App = token.App,
             Token = EncryptToken(token),
             UserId = _authContext.CurrentAccount.ID,
-            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+            TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
             ModifiedOn = DateTime.UtcNow
         };
 

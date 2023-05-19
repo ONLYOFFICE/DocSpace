@@ -70,7 +70,7 @@ public class EmailValidationKeyProvider
 
     public async Task<string> GetEmailKeyAsync(string email)
     {
-        return GetEmailKey((await _tenantManager.GetCurrentTenantAsync()).Id, email);
+        return GetEmailKey(await _tenantManager.GetCurrentTenantIdAsync(), email);
     }
 
     public string GetEmailKey(string email)
@@ -114,7 +114,7 @@ public class EmailValidationKeyProvider
     public async Task<ValidationResult> ValidateEmailKeyAsync(string email, string key, TimeSpan validInterval)
     {
         var result = await ValidateEmailKeyInternalAsync(email, key, validInterval);
-        _logger.DebugValidationResult(result, email, key, validInterval, (await _tenantManager.GetCurrentTenantAsync()).Id);
+        _logger.DebugValidationResult(result, email, key, validInterval, await _tenantManager.GetCurrentTenantIdAsync());
 
         return result;
     }
@@ -124,7 +124,7 @@ public class EmailValidationKeyProvider
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(email);
         ArgumentNullException.ThrowIfNull(key);
 
-        email = FormatEmail((await _tenantManager.GetCurrentTenantAsync()).Id, email);
+        email = FormatEmail(await _tenantManager.GetCurrentTenantIdAsync(), email);
         var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
         if (parts.Length != 2)
         {

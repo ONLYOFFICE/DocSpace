@@ -686,7 +686,7 @@ public class SettingsController : BaseSettingsController
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var saveAvailable = _coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).ThirdParty;
+        var saveAvailable = _coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync())).ThirdParty;
         if (!SetupInfo.IsVisibleSettings(nameof(ManagementType.ThirdPartyAuthorization))
             || !saveAvailable)
         {

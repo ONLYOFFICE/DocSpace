@@ -251,7 +251,7 @@ public class StorageController : BaseSettingsController, IDisposable
               },
               serverRootPath: serverRootPath,
               createBy: _securityContext.CurrentAccount.ID,
-              tenantId: (await _tenantManager.GetCurrentTenantAsync()).Id
+              tenantId: await _tenantManager.GetCurrentTenantIdAsync()
 
         ));
     }

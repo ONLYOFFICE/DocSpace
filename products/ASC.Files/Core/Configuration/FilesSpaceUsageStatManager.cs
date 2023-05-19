@@ -121,7 +121,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
 
     public async Task<long> GetUserSpaceUsageAsync(Guid userId)
     {
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var my = await _globalFolder.GetFolderMyAsync(_fileMarker, _daoFactory);
         var trash = await _globalFolder.GetFolderTrashAsync(_daoFactory);
 

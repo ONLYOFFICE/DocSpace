@@ -89,7 +89,7 @@ public class SecurityContext
         ArgumentNullException.ThrowIfNull(login);
         ArgumentNullException.ThrowIfNull(passwordHash);
 
-        var tenantid = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantid = await _tenantManager.GetCurrentTenantIdAsync();
         var u = await _userManager.GetUsersByPasswordHashAsync(tenantid, login, passwordHash);
 
         return await AuthenticateMeAsync(new UserAccount(u, tenantid, _userFormatter), funcLoginEvent);
@@ -136,7 +136,7 @@ public class SecurityContext
             return false;
         }
 
-        if (tenant != (await _tenantManager.GetCurrentTenantAsync()).Id)
+        if (tenant != await _tenantManager.GetCurrentTenantIdAsync())
         {
             return false;
         }
@@ -190,7 +190,7 @@ public class SecurityContext
 
     public async Task<string> AuthenticateMeAsync(Guid userId, Func<Task<int>> funcLoginEvent = null, List<Claim> additionalClaims = null)
     {
-        var account = await _authentication.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId);
+        var account = await _authentication.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), userId);
         return await AuthenticateMeAsync(account, funcLoginEvent, additionalClaims);
     }
 
@@ -208,7 +208,7 @@ public class SecurityContext
                 loginEventId = await funcLoginEvent();
             }
 
-            cookie = await _cookieStorage.EncryptCookieAsync((await _tenantManager.GetCurrentTenantAsync()).Id, account.ID, loginEventId);
+            cookie = await _cookieStorage.EncryptCookieAsync(await _tenantManager.GetCurrentTenantIdAsync(), account.ID, loginEventId);
         }
 
         return cookie;
@@ -259,7 +259,7 @@ public class SecurityContext
 
             roles.Add(Role.RoomAdministrators);
 
-            account = new UserAccount(u, (await _tenantManager.GetCurrentTenantAsync()).Id, _userFormatter);
+            account = new UserAccount(u, await _tenantManager.GetCurrentTenantIdAsync(), _userFormatter);
         }
 
         var claims = new List<Claim>
@@ -279,7 +279,7 @@ public class SecurityContext
 
     public async Task AuthenticateMeWithoutCookieAsync(Guid userId, List<Claim> additionalClaims = null)
     {
-        var account = await _authentication.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId);
+        var account = await _authentication.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), userId);
 
         await AuthenticateMeWithoutCookieAsync(account, additionalClaims);
     }
@@ -291,7 +291,7 @@ public class SecurityContext
 
     public async Task SetUserPasswordHashAsync(Guid userID, string passwordHash)
     {
-        var tenantid = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantid = await _tenantManager.GetCurrentTenantIdAsync();
         var u = await _userManager.GetUsersByPasswordHashAsync(tenantid, userID.ToString(), passwordHash);
         if (!Equals(u, Users.Constants.LostUser))
         {

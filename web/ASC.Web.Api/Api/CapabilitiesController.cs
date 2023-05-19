@@ -63,7 +63,7 @@ public class CapabilitiesController : ControllerBase
     [AllowNotPayment]
     public async Task<CapabilitiesDto> GetPortalCapabilitiesAsync()
     {
-        var quota = await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id);
+        var quota = await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync());
         var result = new CapabilitiesDto
         {
             LdapEnabled = false,

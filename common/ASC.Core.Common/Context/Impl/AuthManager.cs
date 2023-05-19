@@ -50,12 +50,12 @@ public class AuthManager
 
     public async Task SetUserPasswordHashAsync(Guid userID, string passwordHash)
     {
-        await _userService.SetUserPasswordHashAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userID, passwordHash);
+        await _userService.SetUserPasswordHashAsync(await _tenantManager.GetCurrentTenantIdAsync(), userID, passwordHash);
     }
 
     public async Task<DateTime> GetUserPasswordStampAsync(Guid userID)
     {
-        return await _userService.GetUserPasswordStampAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userID);
+        return await _userService.GetUserPasswordStampAsync(await _tenantManager.GetCurrentTenantIdAsync(), userID);
     }
 
     public async Task<IAccount> GetAccountByIDAsync(int tenantId, Guid id)
@@ -68,7 +68,7 @@ public class AuthManager
 
         var u = await _userManager.GetUsersAsync(id);
 
-        return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : Configuration.Constants.Guest;
+        return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? ToAccount(tenantId, u) : Configuration.Constants.Guest;
     }
 
     private IUserAccount ToAccount(int tenantId, UserInfo u)

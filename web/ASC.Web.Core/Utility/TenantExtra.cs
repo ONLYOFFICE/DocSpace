@@ -123,7 +123,7 @@ public class TenantExtra
 
     public async Task<Tariff> GetCurrentTariffAsync(bool withRequestToPaymentSystem = true)
     {
-        return await _tariffService.GetTariffAsync((await _tenantManager.GetCurrentTenantAsync()).Id, withRequestToPaymentSystem);
+        return await _tariffService.GetTariffAsync(await _tenantManager.GetCurrentTenantIdAsync(), withRequestToPaymentSystem);
     }
 
     public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()

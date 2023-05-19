@@ -224,6 +224,6 @@ public class SubscriptionManager
 
     private async Task<int> GetTenantAsync()
     {
-        return (await _tenantManager.GetCurrentTenantAsync()).Id;
+        return await _tenantManager.GetCurrentTenantIdAsync();
     }
 }

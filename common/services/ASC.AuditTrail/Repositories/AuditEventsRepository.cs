@@ -118,7 +118,7 @@ public class AuditEventsRepository
         int limit = 0,
         Guid? withoutUserId = null)
     {
-        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenant = await _tenantManager.GetCurrentTenantIdAsync();
         using var auditTrailContext = _dbContextFactory.CreateDbContext();
         var query =
            from q in auditTrailContext.AuditEvents

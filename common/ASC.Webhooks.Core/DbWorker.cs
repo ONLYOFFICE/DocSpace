@@ -140,7 +140,7 @@ public class DbWorker
 
     public async Task<WebhooksConfig> RemoveWebhookConfigAsync(int id)
     {
-        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenant = await _tenantManager.GetCurrentTenantIdAsync();
 
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
@@ -206,7 +206,7 @@ public class DbWorker
 
     public async Task<WebhooksLog> WriteToJournal(WebhooksLog webhook)
     {
-        webhook.TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        webhook.TenantId = await _tenantManager.GetCurrentTenantIdAsync();
         webhook.Uid = _authContext.CurrentAccount.ID;
 
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();

@@ -172,7 +172,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
     public async Task<bool> CanIndexByContentAsync(T t)
     {
-        return Support(t) && await _searchSettingsHelper.CanIndexByContentAsync<T>((await _tenantManager.GetCurrentTenantAsync()).Id);
+        return Support(t) && await _searchSettingsHelper.CanIndexByContentAsync<T>(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     public async Task<bool> Index(T data, bool immediately = true)
@@ -410,7 +410,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+            var tenant = await _tenantManager.GetCurrentTenantIdAsync();
             _indexer.Update(data, expression, tenant, immediately, fields);
         }
         catch (Exception e)
@@ -429,7 +429,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
 
         try
         {
-            var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+            var tenant = await _tenantManager.GetCurrentTenantIdAsync();
             _indexer.Update(data, expression, tenant, action, fields, immediately);
         }
         catch (Exception e)
@@ -492,7 +492,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
             return false;
         }
 
-        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenant = await _tenantManager.GetCurrentTenantIdAsync();
 
         return await QueueAsync(() => _indexer.Delete(expression, tenant, immediately));
     }

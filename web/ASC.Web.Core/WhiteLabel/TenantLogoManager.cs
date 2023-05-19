@@ -155,7 +155,7 @@ public class TenantLogoManager
 
     public async Task<bool> GetWhiteLabelPaidAsync()
     {
-        return (await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).WhiteLabel;
+        return (await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync())).WhiteLabel;
     }
 
     private readonly TenantWhiteLabelSettingsHelper _tenantWhiteLabelSettingsHelper;

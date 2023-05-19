@@ -92,7 +92,7 @@ public class MessageSettingsController : BaseSettingsController
     [HttpGet("cookiesettings")]
     public async Task<int> GetCookieSettingsAsync()
     {
-        return await _cookiesManager.GetLifeTimeAsync((await _tenantManager.GetCurrentTenantAsync()).Id);
+        return await _cookiesManager.GetLifeTimeAsync(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     [HttpPut("cookiesettings")]

@@ -171,7 +171,7 @@ public class ChunkedUploaderHandlerService
         if (request.Type(_instanceCrypto) == ChunkedRequestType.Initiate)
         {
             await _tenantManager.SetCurrentTenantAsync(request.TenantId);
-            await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, request.AuthKey(_instanceCrypto)));
+            await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), request.AuthKey(_instanceCrypto)));
             var cultureInfo = request.CultureInfo(_setupInfo);
             if (cultureInfo != null)
             {
@@ -187,7 +187,7 @@ public class ChunkedUploaderHandlerService
             if (uploadSession != null)
             {
                 await _tenantManager.SetCurrentTenantAsync(uploadSession.TenantId);
-                await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, uploadSession.UserId));
+                await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), uploadSession.UserId));
                 var culture = _setupInfo.GetPersonalCulture(uploadSession.CultureName).Value;
                 if (culture != null)
                 {

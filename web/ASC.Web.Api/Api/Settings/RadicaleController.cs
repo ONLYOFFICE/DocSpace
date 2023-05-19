@@ -103,7 +103,7 @@ public class RadicaleController : BaseSettingsController
             {
                 try
                 {
-                    await _dbRadicale.SaveCardDavUserAsync((await _tenantManager.GetCurrentTenantAsync()).Id, currUser.Id);
+                    await _dbRadicale.SaveCardDavUserAsync(await _tenantManager.GetCurrentTenantIdAsync(), currUser.Id);
                 }
                 catch (Exception ex)
                 {
@@ -137,7 +137,7 @@ public class RadicaleController : BaseSettingsController
         var authorization = _cardDavAddressbook.GetSystemAuthorization();
         var myUri = HttpContext.Request.GetUrlRewriter();
         var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), currentUserEmail, true, true);
-        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenant = await _tenantManager.GetCurrentTenantIdAsync();
         var davRequest = new DavRequest()
         {
             Url = requestUrlBook,

@@ -277,7 +277,7 @@ public class AuthenticationController : ControllerBase
             var action = viaEmail ? MessageAction.LoginSuccessViaApi : MessageAction.LoginSuccessViaApiSocialAccount;
             var token = await _cookiesManager.AuthenticateMeAndSetCookiesAsync(user.Tenant, user.Id, action);
 
-            var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+            var tenant = await _tenantManager.GetCurrentTenantIdAsync();
             var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
 
             return new AuthenticationTokenDto
@@ -426,7 +426,7 @@ public class AuthenticationController : ControllerBase
             }
             else
             {
-                if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).Oauth))
+                if (!(_coreBaseSettings.Standalone || (await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync())).Oauth))
                 {
                     throw new Exception(Resource.ErrorNotAllowedOption);
                 }
