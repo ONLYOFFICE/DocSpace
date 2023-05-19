@@ -127,16 +127,14 @@ class ArticleBodyContent extends React.Component {
       settingsTree
     );
 
-    if (CurrentSettingsCategoryKey && link === "") {
+    if (link === "") {
       link = getSelectedLinkByKey(CurrentSettingsCategoryKey, settingsTree);
     }
 
     if (props.tReady) props.setIsLoadedArticleBody(true);
 
     this.state = {
-      selectedKeys: CurrentSettingsCategoryKey
-        ? [CurrentSettingsCategoryKey]
-        : [[], []],
+      selectedKeys: [CurrentSettingsCategoryKey],
     };
   }
 
