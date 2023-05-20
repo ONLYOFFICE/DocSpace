@@ -40,7 +40,7 @@ public class ElasticSearchService
 
     public void Subscribe()
     {
-        _cacheNotify.Subscribe(async (a) =>
+        _cacheNotify.Subscribe((a) =>
         {
             ReIndex(a.Names.ToList(), a.Tenant);
         }, CacheNotifyAction.Any);
@@ -83,7 +83,6 @@ public class ElasticSearchService
             await settingsManager.ClearCacheAsync<SearchSettings>();
         });
     }
-}
     //public State GetState()
     //{
     //    return new State

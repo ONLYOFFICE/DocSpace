@@ -85,8 +85,6 @@ public class NotifyCleanerService : BackgroundService
             dbContext.NotifyInfo.RemoveRange(info);
             dbContext.NotifyQueue.RemoveRange(queue);
 
-            _logger.InformationClearNotifyMessages(info.Count(), info.Count());
-
             await dbContext.SaveChangesAsync();
 
         }
