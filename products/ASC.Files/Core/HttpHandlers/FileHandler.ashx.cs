@@ -24,12 +24,7 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using System;
-
-using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
-
-using static Dropbox.Api.UsersCommon.AccountType;
 
 using Image = SixLabors.ImageSharp.Image;
 using JsonException = System.Text.Json.JsonException;
@@ -158,11 +153,6 @@ public class FileHandlerService
             //context.Response.StatusDescription = "Payment Required.";
         }
 
-        await InternalInvokeAsync(context);
-    }
-
-    private async Task InternalInvokeAsync(HttpContext context)
-    {
         try
         {
             switch ((context.Request.Query[FilesLinkUtility.Action].FirstOrDefault() ?? "").ToLower())
@@ -1092,7 +1082,7 @@ public class FileHandlerService
                 context.Response.Headers.Add("Content-Disposition", ContentDispositionUtil.GetHeaderValue(".jpeg", true));
 
                 using (var stream = await fileDao.GetFileStreamAsync(file))
-                {                    
+                {
                     var processedImage = await Image.LoadAsync(stream);
 
                     processedImage.Mutate(x => x.Resize(new ResizeOptions
