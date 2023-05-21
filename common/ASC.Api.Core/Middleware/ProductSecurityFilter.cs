@@ -92,7 +92,7 @@ public class ProductSecurityFilter : IAsyncResourceFilter
                     CallContext.SetData("asc.web.product_id", pid);
                 }
 
-                if (!_webItemSecurity.IsAvailableForMeAsync(pid).GetAwaiter().GetResult())
+                if (!await _webItemSecurity.IsAvailableForMeAsync(pid))
                 {
                     context.Result = new StatusCodeResult((int)HttpStatusCode.Forbidden);
                     _logger.WarningPaymentRequired(controllerActionDescriptor.ControllerName, _authContext.CurrentAccount.ID);
