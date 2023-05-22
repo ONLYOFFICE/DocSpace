@@ -1227,6 +1227,7 @@ class FilesStore {
           if (filter && isEmptyList) {
             const {
               authorType,
+              roomId,
               search,
               withSubfolders,
               filterType,
@@ -1234,6 +1235,7 @@ class FilesStore {
             } = filter;
             const isFiltered =
               authorType ||
+              roomId ||
               search ||
               !withSubfolders ||
               filterType ||
@@ -3490,8 +3492,14 @@ class FilesStore {
       withoutTags,
     } = this.roomsFilter;
 
-    const { authorType, search, withSubfolders, filterType, searchInContent } =
-      this.filter;
+    const {
+      authorType,
+      roomId,
+      search,
+      withSubfolders,
+      filterType,
+      searchInContent,
+    } = this.filter;
 
     const isFiltered =
       isRoomsFolder || isArchiveFolder
@@ -3503,6 +3511,7 @@ class FilesStore {
           tags ||
           withoutTags
         : authorType ||
+          roomId ||
           search ||
           !withSubfolders ||
           filterType ||

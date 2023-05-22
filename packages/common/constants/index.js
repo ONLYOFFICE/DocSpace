@@ -407,7 +407,7 @@ export const FilterGroups = Object.freeze({
   filterType: "filter-filterType",
   filterAuthor: "filter-author",
   filterFolders: "filter-folders",
-  filterRooms: "filter-rooms",
+  filterRoom: "filter-room",
   filterContent: "filter-withContent",
   roomFilterProviderType: "filter-provider-type",
   roomFilterType: "filter-type",
@@ -425,4 +425,9 @@ export const FilterKeys = Object.freeze({
   me: "me",
   other: "other",
   user: "user",
+});
+
+export const FilterSelectorTypes = Object.freeze({
+  people: "people-selector",
+  rooms: "rooms-selector",
 });
