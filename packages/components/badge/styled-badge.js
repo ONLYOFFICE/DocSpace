@@ -11,11 +11,8 @@ const hoveredCss = css`
 `;
 
 const highCss = css`
-  background-color: #f2675a !important;
-  border-radius: 6px;
-  padding: 0 10px;
-  height: 24px;
   cursor: default;
+  padding: ${(props) => (props.compact ? 0 : "2px")} 10px;
   p {
     font-size: 13px;
     line-height: 20px;
@@ -34,11 +31,13 @@ const StyledBadge = styled.div`
   border-radius: ${(props) => props.borderRadius};
   width: fit-content;
   padding: ${(props) => props.theme.badge.padding};
+
   line-height: ${(props) => props.theme.badge.lineHeight};
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
   flex-shrink: 0;
   border: ${(props) => props.border};
+
   ${(props) => props.type === "high" && noBorderCss}
   &:hover {
     ${(props) => !props.noHover && hoveredCss};
@@ -58,6 +57,8 @@ const StyledInner = styled.div`
   height: ${(props) => props.height};
   text-align: center;
   user-select: none;
+  padding-top: ${(props) => props.compact && "2px"};
+  padding-bottom: ${(props) => props.compact && "2px"};
   line-height: ${(props) => props.lineHeight};
   display: flex;
   align-items: center;

@@ -49,20 +49,6 @@ const DropDownItem = (props) => {
     onClickAction(event);
   };
 
-  const handleBadgeStyle = () => {
-    if (backgroundColor === "white") {
-      return {
-        backgroundColor: backgroundColor,
-        border: "2px solid #4781D1",
-        color: "#555F65",
-      };
-    } else {
-      return {
-        backgroundColor: backgroundColor,
-      };
-    }
-  };
-
   return (
     <StyledDropdownItem
       {...rest}

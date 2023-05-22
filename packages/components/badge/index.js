@@ -25,6 +25,7 @@ const Badge = (props) => {
     maxWidth,
     height,
     type,
+    compact,
     isHovered,
     border,
     label,
@@ -42,6 +43,7 @@ const Badge = (props) => {
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
+        compact={compact}
         type={type}
         maxWidth={maxWidth}
         height={height}
@@ -95,6 +97,8 @@ Badge.propTypes = {
   noHover: PropTypes.bool,
   /** Type Badge */
   type: PropTypes.oneOf(["high", null]),
+  /** Compact badge */
+  compact: PropTypes.bool,
 };
 
 Badge.defaultProps = {
