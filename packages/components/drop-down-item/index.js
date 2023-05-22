@@ -49,8 +49,6 @@ const DropDownItem = (props) => {
     onClickAction(event);
   };
 
-  console.log("isSubMenu: ", isSubMenu, "withToggle: ", isSubMenu);
-
   return (
     <StyledDropdownItem
       {...rest}

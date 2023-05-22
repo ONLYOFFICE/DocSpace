@@ -8,6 +8,11 @@ import Badge from "@docspace/components/badge";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import StyledComboBox from "./styled-combobox";
+import { StyledComboBadgeBox } from "./styled-combobox";
+import {
+  StyledArrowIcon,
+  StyledTriangleDownIcon,
+} from "./sub-components/styled-combobutton.js";
 
 class ComboBox extends React.Component {
   constructor(props) {
@@ -193,7 +198,34 @@ class ComboBox extends React.Component {
         {...props}
       >
         {type === "badge" ? (
-          <Badge label={selectedOption.label} noHover={true} />
+          <StyledComboBadgeBox>
+            <Badge
+              label={selectedOption.label}
+              noHover={true}
+              backgroundColor={backgroundColor}
+            />
+            <StyledArrowIcon
+              displayArrow={optionsLength > 0}
+              noBorder={noBorder}
+              isOpen={isOpen}
+              modernView={modernView}
+              className="combo-buttons_arrow-icon"
+              isLoading={isLoading}
+            >
+              {optionsLength > 0 &&
+                (comboIcon ? (
+                  <ReactSVG
+                    src={comboIcon}
+                    className="combo-buttons_expander-icon"
+                  />
+                ) : (
+                  <StyledTriangleDownIcon
+                    size="scale"
+                    className="combo-buttons_expander-icon"
+                  />
+                ))}
+            </StyledArrowIcon>
+          </StyledComboBadgeBox>
         ) : (
           <ComboButton
             noBorder={noBorder}

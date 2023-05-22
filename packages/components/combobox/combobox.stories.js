@@ -179,4 +179,5 @@ export const badgeType = BadgeTypeTemplate.bind({});
 badgeType.args = {
   scaled: false,
   type: "badge",
+  backgroundColor: "blue",
 };

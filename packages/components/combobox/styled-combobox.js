@@ -57,4 +57,10 @@ StyledComboBox.defaultProps = {
   theme: Base,
 };
 
+export const StyledComboBadgeBox = styled.div`
+  display: flex;
+  gap: 4px;
+  cursor: pointer;
+`;
+
 export default StyledComboBox;
