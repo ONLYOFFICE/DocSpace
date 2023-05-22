@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
+import Badge from "@docspace/components/badge";
 import RightArrowReactSvgUrl from "PUBLIC_DIR/images/right.arrow.react.svg?url";
 
 import {
@@ -16,10 +17,12 @@ const DropDownItem = (props) => {
   const {
     isSeparator,
     label,
+    backgroundColor,
     icon,
     children,
     disabled,
     className,
+    type,
     theme,
     fillIcon,
     isSubMenu,
@@ -45,6 +48,8 @@ const DropDownItem = (props) => {
     stopPropagation(event);
     onClickAction(event);
   };
+
+  console.log("isSubMenu: ", isSubMenu, "withToggle: ", isSubMenu);
 
   return (
     <StyledDropdownItem
@@ -73,7 +78,15 @@ const DropDownItem = (props) => {
         </IconWrapper>
       )}
 
-      {isSeparator ? "\u00A0" : label ? label : children && children}
+      {type === "badge" ? (
+        <Badge label={label} noHover={true} backgroundColor={backgroundColor} />
+      ) : isSeparator ? (
+        "\u00A0"
+      ) : label ? (
+        label
+      ) : (
+        children && children
+      )}
 
       {isSubMenu && (
         <IconWrapper className="submenu-arrow">
@@ -83,7 +96,6 @@ const DropDownItem = (props) => {
           />
         </IconWrapper>
       )}
-
       {withToggle && (
         <WrapperToggle onClick={stopPropagation}>
           <ToggleButton isChecked={checked} onChange={onChange} noAnimation />

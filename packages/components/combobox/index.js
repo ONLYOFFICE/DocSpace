@@ -3,6 +3,8 @@ import React from "react";
 import equal from "fast-deep-equal/react";
 
 import ComboButton from "./sub-components/combo-button";
+import Badge from "@docspace/components/badge";
+
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import StyledComboBox from "./styled-combobox";
@@ -101,6 +103,7 @@ class ComboBox extends React.Component {
       directionY,
       scaled,
       size,
+      type,
       options,
       advancedOptions,
       isDisabled,
@@ -125,6 +128,7 @@ class ComboBox extends React.Component {
       withBackdrop,
       isAside,
       withBackground,
+      backgroundColor,
       advancedOptionsCount,
       isMobileView,
       withoutPadding,
@@ -132,7 +136,7 @@ class ComboBox extends React.Component {
       isNoFixedHeightOptions,
       hideMobileView,
     } = this.props;
-
+    console.log(this.props);
     const { tabIndex, ...props } = this.props;
 
     const { isOpen, selectedOption } = this.state;
@@ -188,24 +192,29 @@ class ComboBox extends React.Component {
         withoutPadding={withoutPadding}
         {...props}
       >
-        <ComboButton
-          noBorder={noBorder}
-          isDisabled={isDisabled}
-          selectedOption={selectedOption}
-          withOptions={optionsLength > 0}
-          optionsLength={optionsLength}
-          withAdvancedOptions={withAdvancedOptions}
-          innerContainer={children}
-          innerContainerClassName="optionalBlock"
-          isOpen={isOpen}
-          size={size}
-          scaled={scaled}
-          comboIcon={comboIcon}
-          modernView={modernView}
-          fillIcon={fillIcon}
-          tabIndex={tabIndex}
-          isLoading={isLoading}
-        />
+        {type === "badge" ? (
+          <Badge label={selectedOption.label} noHover={true} />
+        ) : (
+          <ComboButton
+            noBorder={noBorder}
+            isDisabled={isDisabled}
+            selectedOption={selectedOption}
+            withOptions={optionsLength > 0}
+            optionsLength={optionsLength}
+            withAdvancedOptions={withAdvancedOptions}
+            innerContainer={children}
+            innerContainerClassName="optionalBlock"
+            isOpen={isOpen}
+            size={size}
+            scaled={scaled}
+            comboIcon={comboIcon}
+            modernView={modernView}
+            fillIcon={fillIcon}
+            tabIndex={tabIndex}
+            isLoading={isLoading}
+          />
+        )}
+
         {displayType !== "toggle" && (
           <DropDown
             id={this.props.dropDownId}
@@ -250,6 +259,8 @@ class ComboBox extends React.Component {
                       textOverflow={textOverflow}
                       key={option.key}
                       disabled={disabled}
+                      backgroundColor={backgroundColor}
+                      type={type}
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
                       isModern={noBorder}
