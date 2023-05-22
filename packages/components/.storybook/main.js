@@ -1,7 +1,4 @@
 module.exports = {
-  core: {
-    builder: "webpack5",
-  },
   stories: [
     "../all/all.stories.js",
     // default page
