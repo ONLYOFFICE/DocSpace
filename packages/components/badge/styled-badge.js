@@ -10,6 +10,23 @@ const hoveredCss = css`
       : props.theme.badge.backgroundColor};
 `;
 
+const highCss = css`
+  background-color: #f2675a !important;
+  border-radius: 6px;
+  padding: 0 10px;
+  height: 24px;
+  cursor: default;
+  p {
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+`;
+
+const noBorderCss = css`
+  border: none;
+`;
+
 const StyledBadge = styled.div`
   display: ${(props) =>
     props.label.length > 0 || props.label != "0" ? "inline-block" : "none"};
@@ -21,10 +38,10 @@ const StyledBadge = styled.div`
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
   flex-shrink: 0;
+  ${(props) => props.type === "high" && noBorderCss}
   &:hover {
     ${(props) => !props.noHover && hoveredCss};
   }
-
   ${(props) => !props.noHover && props.isHovered && hoveredCss}
 `;
 StyledBadge.defaultProps = { theme: Base };
@@ -44,6 +61,7 @@ const StyledInner = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  ${(props) => props.type === "high" && highCss}
 `;
 
 StyledInner.defaultProps = { theme: Base };

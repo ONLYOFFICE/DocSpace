@@ -24,6 +24,7 @@ const Badge = (props) => {
     padding,
     maxWidth,
     height,
+    type,
     isHovered,
     label,
   } = props;
@@ -39,11 +40,13 @@ const Badge = (props) => {
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
+        type={type}
         maxWidth={maxWidth}
         height={height}
       >
         <StyledText
           textAlign="center"
+          type={type}
           fontWeight={fontWeight}
           color={color}
           fontSize={fontSize}
@@ -84,6 +87,8 @@ Badge.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Sets hovered state and link effects */
   isHovered: PropTypes.bool,
+  /** Sets hovered state and link effects */
+  onHovered: PropTypes.bool,
   /** Disables hover styles */
   noHover: PropTypes.bool,
 };
