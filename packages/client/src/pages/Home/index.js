@@ -493,7 +493,11 @@ class PureHome extends React.Component {
         case "login":
           {
             const { email, passwordHash } = data;
-            res = login(email, passwordHash);
+            try {
+              res = await login(email, passwordHash);
+            } catch (e) {
+              res = e;
+            }
           }
           break;
         case "logout":

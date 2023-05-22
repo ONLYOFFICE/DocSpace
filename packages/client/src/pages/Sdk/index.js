@@ -60,7 +60,11 @@ const Sdk = ({
         case "login":
           {
             const { email, passwordHash } = data;
-            res = await login(email, passwordHash);
+            try {
+              res = await login(email, passwordHash);
+            } catch (e) {
+              res = e;
+            }
           }
           break;
         case "logout":
@@ -69,7 +73,6 @@ const Sdk = ({
         default:
           res = "Wrong method";
       }
-
       frameCallbackData(res);
     }
   };
