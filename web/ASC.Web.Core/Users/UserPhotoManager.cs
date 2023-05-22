@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using static DotNetOpenAuth.OpenId.Extensions.AttributeExchange.WellKnownAttributes.Contact;
-
 namespace ASC.Web.Core.Users;
 
 [Transient]
@@ -528,7 +526,7 @@ public class UserPhotoManager
         data = TryParseImage(data, -1, OriginalFotoSize, out _, out var width, out var height);
         await _userManager.SaveUserPhotoAsync(userID, data);
         await SetUserPhotoThumbnailSettingsAsync(userID, width, height);
-     //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+        //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
     }
 
 
@@ -543,7 +541,7 @@ public class UserPhotoManager
         {
             await _userManager.SaveUserPhotoAsync(userID, data);
             await SetUserPhotoThumbnailSettingsAsync(userID, width, height);
-          // _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+            // _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
         }
 
         var store = await GetDataStoreAsync();
@@ -800,7 +798,7 @@ public class UserPhotoManager
             using var img = Image.Load(s);
 
             var imgFormat = img.Metadata.DecodedImageFormat;
-            
+
             byte[] data;
 
             if (img.Width != newWidth || img.Height != newHeight)
@@ -846,10 +844,10 @@ public class UserPhotoManager
             if (data != null)
             {
                 var img = Image.Load(data);
-                
+
                 format = img.Metadata.DecodedImageFormat;
 
-                return (img ,format);
+                return (img, format);
             }
         }
         catch { }
