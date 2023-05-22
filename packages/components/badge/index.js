@@ -91,6 +91,8 @@ Badge.propTypes = {
   onHovered: PropTypes.bool,
   /** Disables hover styles */
   noHover: PropTypes.bool,
+  /** Type Badge */
+  type: PropTypes.oneOf(["high", null]),
 };
 
 Badge.defaultProps = {
