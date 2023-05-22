@@ -90,15 +90,7 @@ const DropDownItem = (props) => {
         </IconWrapper>
       )}
 
-      {type === "badge" ? (
-        <Badge label={label} noHover={true} {...handleBadgeStyle()} />
-      ) : isSeparator ? (
-        "\u00A0"
-      ) : label ? (
-        label
-      ) : (
-        children && children
-      )}
+      {isSeparator ? "\u00A0" : label ? label : children && children}
 
       {isSubMenu && (
         <IconWrapper className="submenu-arrow">
