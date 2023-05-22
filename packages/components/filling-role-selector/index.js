@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { useTranslation } from "react-i18next";
 import { ReactSVG } from "react-svg";
 import {
   StyledFillingRoleSelector,
@@ -19,8 +18,14 @@ import AvatarBaseReactSvgUrl from "PUBLIC_DIR/images/avatar.base.react.svg?url";
 import RemoveSvgUrl from "PUBLIC_DIR/images/remove.session.svg?url";
 
 const FillingRoleSelector = (props) => {
-  const { roles, users, onAddUser, onRemoveUser } = props;
-  const { t } = useTranslation("Common");
+  const {
+    roles,
+    users,
+    onAddUser,
+    onRemoveUser,
+    descriptionEveryone,
+    descriptionTooltip,
+  } = props;
 
   //If the roles in the roles array come out of order
   const cloneRoles = JSON.parse(JSON.stringify(roles));
@@ -30,7 +35,6 @@ const FillingRoleSelector = (props) => {
 
   const everyoneRole = roles.find((item) => item.everyone);
 
-  //TODO: Fix translations to correct ones when they appear on layouts
   const everyoneRoleNode = (
     <>
       <StyledRow>
@@ -41,12 +45,10 @@ const FillingRoleSelector = (props) => {
             <StyledRole>{everyoneRole.name}</StyledRole>
             <StyledAssignedRole>{everyoneRole.everyone}</StyledAssignedRole>
           </div>
-          <div className="role-description">
-            {t("Common:DescriptionOfTheEveryoneRole")}
-          </div>
+          <div className="role-description">{descriptionEveryone}</div>
         </StyledEveryoneRoleContainer>
       </StyledRow>
-      <StyledTooltip>{t("Common:DescriptionOfTheRoleQueue")}</StyledTooltip>
+      <StyledTooltip>{descriptionTooltip}</StyledTooltip>
     </>
   );
 
@@ -91,14 +93,25 @@ const FillingRoleSelector = (props) => {
 };
 
 FillingRoleSelector.propTypes = {
-  /** Array of roles */
-  roles: PropTypes.array,
-  /** Array of assigned users per role */
-  users: PropTypes.array,
+  /** Accepts class */
+  className: PropTypes.string,
+  /** Role description text Everyone */
+  descriptionEveryone: PropTypes.string,
+  /** Tooltip text */
+  descriptionTooltip: PropTypes.string,
+  /** Accepts id */
+  id: PropTypes.string,
   /** The function of adding a user to a role */
   onAddUser: PropTypes.func,
   /** Function to remove a user from a role */
   onRemoveUser: PropTypes.func,
+  /** Array of roles */
+  roles: PropTypes.array,
+  /** Accepts CSS style */
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+
+  /** Array of assigned users per role */
+  users: PropTypes.array,
 };
 
 export default FillingRoleSelector;

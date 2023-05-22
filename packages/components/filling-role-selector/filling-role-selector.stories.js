@@ -38,6 +38,12 @@ const mockUsers = [
   },
 ];
 
+//TODO: Fix translations to correct ones when they appear on layouts
+const textRoleEveryone =
+  "The form is available for filling out by all participants of this room.";
+const textTooltip =
+  "Each form filled out by users from the first role will go in turn to the next users listed below.";
+
 const Template = ({ onAddUser, ...args }) => {
   const onAddUserHandler = () => {
     onAddUser();
@@ -56,6 +62,8 @@ export const Default = Template.bind({});
 
 Default.args = {
   roles: mockRoles,
+  descriptionEveryone: textRoleEveryone,
+  descriptionTooltip: textTooltip,
 };
 
 const TemplateRolesFilledUsers = ({
@@ -92,4 +100,6 @@ export const rolesFilledUsers = TemplateRolesFilledUsers.bind({});
 rolesFilledUsers.args = {
   roles: mockRoles,
   users: mockUsers,
+  descriptionEveryone: textRoleEveryone,
+  descriptionTooltip: textTooltip,
 };
