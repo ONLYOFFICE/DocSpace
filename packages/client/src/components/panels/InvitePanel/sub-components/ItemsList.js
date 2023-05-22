@@ -19,6 +19,7 @@ const Row = memo(({ data, index, style }) => {
     setHasErrors,
     roomType,
     isOwner,
+    inputsRef,
     setIsOpenItemAccess,
   } = data;
 
@@ -37,6 +38,7 @@ const Row = memo(({ data, index, style }) => {
         setHasErrors={setHasErrors}
         roomType={roomType}
         isOwner={isOwner}
+        inputsRef={inputsRef}
         setIsOpenItemAccess={setIsOpenItemAccess}
       />
     </StyledRow>
@@ -53,12 +55,12 @@ const ItemsList = ({
   isOwner,
   externalLinksVisible,
   scrollAllPanelContent,
+  inputsRef,
 }) => {
   const [bodyHeight, setBodyHeight] = useState(0);
   const [offsetTop, setOffsetTop] = useState(0);
   const [isTotalListHeight, setIsTotalListHeight] = useState(false);
   const [isOpenItemAccess, setIsOpenItemAccess] = useState(false);
-
   const bodyRef = useRef();
   const { height } = useResizeObserver({ ref: bodyRef });
 
@@ -124,8 +126,9 @@ const ItemsList = ({
           setHasErrors,
           roomType,
           isOwner,
-          t,
+          inputsRef,
           setIsOpenItemAccess,
+          t,
         }}
         outerElementType={!scrollAllPanelContent && CustomScrollbarsVirtualList}
       >
