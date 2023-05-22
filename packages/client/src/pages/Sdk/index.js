@@ -2,6 +2,7 @@ import React, { useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import AppLoader from "@docspace/common/components/AppLoader";
 import RoomSelector from "../../components/RoomSelector";
 import SelectFolderDialog from "../../components/panels/SelectFolderDialog";
 import {
@@ -102,7 +103,7 @@ const Sdk = ({
       );
       break;
     default:
-      component = null;
+      component = <AppLoader />;
   }
 
   return component;
