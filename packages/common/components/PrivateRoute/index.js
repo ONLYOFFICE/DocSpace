@@ -31,6 +31,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     withManager,
     withCollaborator,
     isLogout,
+    standalone,
   } = rest;
 
   const { params, path } = computedMatch;
@@ -81,7 +82,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     if (
       isLoaded &&
       ((!isNotPaidPeriod && isPortalUnavailableUrl) ||
-        (!user.isOwner && isPortalDeletionUrl))
+        (!user.isOwner && isPortalDeletionUrl) ||
+        (standalone && isPortalDeletionUrl))
     ) {
       return window.location.replace("/");
     }
@@ -251,6 +253,7 @@ export default inject(({ auth }) => {
     wizardCompleted,
     personal,
     tenantStatus,
+    standalone,
   } = settingsStore;
 
   return {
@@ -264,5 +267,6 @@ export default inject(({ auth }) => {
     tenantStatus,
     personal,
     isLogout,
+    standalone,
   };
 })(observer(PrivateRoute));

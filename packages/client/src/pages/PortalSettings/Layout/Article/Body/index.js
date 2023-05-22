@@ -289,7 +289,7 @@ class ArticleBodyContent extends React.Component {
       });
     }
 
-    if (!isOwner) {
+    if (!isOwner || standalone) {
       const index = resultTree.findIndex((n) => n.tKey === "PortalDeletion");
       if (index !== -1) {
         resultTree.splice(index, 1);
