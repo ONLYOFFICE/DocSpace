@@ -1148,10 +1148,17 @@ class FilesStore {
   getFolder = (folderId, filterData, signal, isRooms) => {
     if (window.location.pathname === "/rooms/share") {
       if (typeof folderId !== "object") {
-        return api.rooms.getPublicRoom(folderId, this.publicRoomKey);
+        return api.files.getFolder(
+          folderId,
+          filterData,
+          signal,
+          this.publicRoomKey
+        );
       } else {
-        return api.rooms.getPublicRoom(
+        return api.files.getFolder(
           this.publicRoomStore.roomId,
+          filterData,
+          signal,
           this.publicRoomKey
         );
       }
