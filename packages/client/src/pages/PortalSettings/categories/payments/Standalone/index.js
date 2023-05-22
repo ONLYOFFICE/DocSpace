@@ -4,8 +4,6 @@ import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 
 import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
-import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
 
 import LicenseContainer from "./LicenseContainer";
 import { StyledComponent } from "./StyledComponent";
@@ -19,14 +17,9 @@ const StandalonePage = (props) => {
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
-    isEnterprise,
     isTrial,
   } = props;
   const { t, ready } = useTranslation(["PaymentsEnterprise", "Common"]);
-
-  useEffect(() => {
-    enterpriseInit();
-  }, []);
 
   useEffect(() => {
     setDocumentTitle(t("Common:PaymentsTitle"));
@@ -35,19 +28,14 @@ const StandalonePage = (props) => {
   useEffect(() => {
     if (!isLoadedTariffStatus || !isLoadedCurrentQuota) return;
 
-    if (!isEnterprise) {
-      history.push(
-        combineUrl(window.DocSpaceConfig?.proxy?.url, "/portal-settings/")
-      );
-    }
+    enterpriseInit();
   }, [isLoadedTariffStatus, isLoadedCurrentQuota]);
 
   if (
     !isInitPaymentPage ||
     !isLoadedTariffStatus ||
     !isLoadedCurrentQuota ||
-    !ready ||
-    !isEnterprise
+    !ready
   )
     return <></>;
 
@@ -61,7 +49,7 @@ const StandalonePage = (props) => {
 };
 
 export default inject(({ auth, payments }) => {
-  const { currentQuotaStore, currentTariffStatusStore, isEnterprise } = auth;
+  const { currentQuotaStore, currentTariffStatusStore } = auth;
 
   const { enterpriseInit, isInitPaymentPage } = payments;
   const { isLoaded: isLoadedCurrentQuota, isTrial } = currentQuotaStore;
@@ -73,6 +61,5 @@ export default inject(({ auth, payments }) => {
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
-    isEnterprise,
   };
 })(withRouter(observer(StandalonePage)));

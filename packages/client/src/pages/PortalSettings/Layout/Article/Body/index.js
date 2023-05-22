@@ -262,6 +262,7 @@ class ArticleBodyContent extends React.Component {
       isOwner,
       isEnterprise,
       standalone,
+      isCommunity,
     } = this.props;
 
     const items = [];
@@ -277,16 +278,16 @@ class ArticleBodyContent extends React.Component {
       });
     }
 
-    if (!standalone) {
-      const index = resultTree.findIndex((el) => el.tKey === "Common:Bonus");
+    if (standalone) {
+      const deletionTKey = isCommunity
+        ? "Common:PaymentsTitle"
+        : "Common:Bonus";
+
+      const index = resultTree.findIndex((el) => el.tKey === deletionTKey);
+
       if (index !== -1) {
         resultTree.splice(index, 1);
       }
-    }
-    if (standalone && !isEnterprise) {
-      resultTree = [...settingsTree].filter((e) => {
-        return e.tKey !== "Common:PaymentsTitle";
-      });
     }
 
     if (!isOwner || standalone) {
@@ -335,6 +336,7 @@ export default inject(({ auth, common }) => {
     userStore,
     isEnterprise,
     settingsStore,
+    isCommunity,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
@@ -350,6 +352,7 @@ export default inject(({ auth, common }) => {
     setIsLoadedArticleBody,
     isNotPaidPeriod,
     isOwner,
+    isCommunity,
   };
 })(
   withLoading(

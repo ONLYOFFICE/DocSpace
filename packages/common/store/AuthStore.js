@@ -128,6 +128,9 @@ class AuthStore {
   get isEnterprise() {
     return this.tenantExtra.enterprise;
   }
+  get isCommunity() {
+    return this.tenantExtra.opensource;
+  }
 
   getTenantExtra = async () => {
     let refresh = false;

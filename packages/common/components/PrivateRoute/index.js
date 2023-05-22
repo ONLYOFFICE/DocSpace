@@ -32,6 +32,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
     withCollaborator,
     isLogout,
     standalone,
+    isCommunity,
   } = rest;
 
   const { params, path } = computedMatch;
@@ -83,7 +84,8 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
       isLoaded &&
       ((!isNotPaidPeriod && isPortalUnavailableUrl) ||
         (!user.isOwner && isPortalDeletionUrl) ||
-        (standalone && isPortalDeletionUrl))
+        (standalone && isPortalDeletionUrl) ||
+        (isCommunity && isPaymentsUrl))
     ) {
       return window.location.replace("/");
     }
@@ -244,6 +246,7 @@ export default inject(({ auth }) => {
     settingsStore,
     currentTariffStatusStore,
     isLogout,
+    isCommunity,
   } = auth;
   const { isNotPaidPeriod } = currentTariffStatusStore;
   const { user } = userStore;
@@ -257,6 +260,7 @@ export default inject(({ auth }) => {
   } = settingsStore;
 
   return {
+    isCommunity,
     isNotPaidPeriod,
     user,
     isAuthenticated,

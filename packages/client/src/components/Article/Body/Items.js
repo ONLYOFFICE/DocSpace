@@ -174,8 +174,7 @@ const Items = ({
   deleteAction,
   startDrag,
   emptyTrashInProgress,
-  standalone,
-  isEnterprise,
+  isCommunity,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -385,8 +384,7 @@ const Items = ({
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
 
-      if (standalone && !isEnterprise)
-        items.push(<BonusItem key="bonus-item" />);
+      if (isCommunity) items.push(<BonusItem key="bonus-item" />);
 
       return items;
     },
@@ -434,8 +432,8 @@ export default inject(
     uploadDataStore,
     dialogsStore,
   }) => {
-    const { isEnterprise, settingsStore } = auth;
-    const { showText, docSpace, standalone } = settingsStore;
+    const { settingsStore, isCommunity } = auth;
+    const { showText, docSpace } = settingsStore;
 
     const {
       selection,
@@ -467,7 +465,6 @@ export default inject(
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
-      isEnterprise,
       isAdmin: auth.isAdmin,
       isVisitor: auth.userStore.user.isVisitor,
       isCollaborator: auth.userStore.user.isCollaborator,
@@ -477,7 +474,6 @@ export default inject(
       currentId: id,
       showText,
       docSpace,
-      standalone,
       pathParts,
       data: treeFolders,
       selectedTreeNode,
@@ -498,6 +494,7 @@ export default inject(
       firstLoad,
       startDrag,
       emptyTrashInProgress,
+      isCommunity,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

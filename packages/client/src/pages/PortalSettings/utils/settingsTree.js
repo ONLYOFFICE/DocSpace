@@ -360,7 +360,7 @@ export const settingsTree = [
         id: "portal-settings_catalog-portal-bonus",
         key: "8-0",
         icon: "",
-        link: "bonus",
+        link: "",
         tKey: "Common:FreeProFeatures",
         isCategory: true,
       },
