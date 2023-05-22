@@ -64,10 +64,12 @@ export function getFolderPath(folderId) {
   return request(options);
 }
 
-export function getFolder(folderId, filter, signal) {
+export function getFolder(folderId, filter, signal, shareKey) {
   if (folderId && typeof folderId === "string") {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
   }
+
+  const key = shareKey ? `&share=${shareKey}` : "";
 
   const params =
     filter && filter instanceof FilesFilter
@@ -76,7 +78,7 @@ export function getFolder(folderId, filter, signal) {
 
   const options = {
     method: "get",
-    url: `/files/${params}`,
+    url: `/files/${params}${key}`,
     signal,
   };
 

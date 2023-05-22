@@ -8,9 +8,6 @@ import { ValidationResult } from "../../helpers/constants";
 import SectionHeaderContent from "../Home/Section/Header";
 import SectionFilterContent from "../Home/Section/Filter";
 import SectionBodyContent from "../Home/Section/Body";
-// import SectionHeaderContent from "./Header";
-// import SectionFilterContent from "./Filter";
-// import SectionBodyContent from "./Body";
 
 import RoomPassword from "./sub-components/RoomPassword";
 import RoomErrors from "./sub-components/RoomErrors";
