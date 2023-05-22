@@ -56,7 +56,7 @@ export default inject(({ dialogsStore, publicRoomStore }) => {
   return {
     visible: roomSharingPanelVisible,
     setIsVisible: setRoomSharingPanelVisible,
-    roomHref,
+    roomHref: roomHref ? roomHref : "",
   };
 })(
   withTranslation(["Files", "Common", "Translations"])(

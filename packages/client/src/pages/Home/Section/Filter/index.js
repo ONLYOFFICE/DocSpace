@@ -220,6 +220,7 @@ const SectionFilterContent = ({
   groups,
   fetchPeople,
   accountsFilter,
+  isPublicRoom,
 }) => {
   const location = useLocation();
 
@@ -1038,7 +1039,8 @@ const SectionFilterContent = ({
       return filterOptions;
     }
 
-    const tags = await fetchTags();
+    let tags = null;
+    if (!isPublicRoom) tags = await fetchTags();
     const connectedThirdParty = [];
 
     providers.forEach((item) => {
@@ -1046,7 +1048,7 @@ const SectionFilterContent = ({
       connectedThirdParty.push(item.provider_key);
     });
 
-    const isLastTypeOptionsRooms = !connectedThirdParty.length && !tags.length;
+    const isLastTypeOptionsRooms = !connectedThirdParty.length && !tags?.length;
 
     const folders =
       !isFavoritesFolder && !isRecentFolder
@@ -1423,6 +1425,7 @@ const SectionFilterContent = ({
     isAccountsPage,
     isFavoritesFolder,
     isRecentFolder,
+    isPublicRoom,
   ]);
 
   const getViewSettingsData = React.useCallback(() => {
@@ -1950,6 +1953,7 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       isEmptyPage,
+      isPublicRoom,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2025,6 +2029,7 @@ export default inject(
       groups,
       fetchPeople,
       accountsFilter,
+      isPublicRoom,
     };
   }
 )(

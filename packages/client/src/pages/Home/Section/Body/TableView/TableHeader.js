@@ -22,6 +22,7 @@ class FilesTableHeader extends React.Component {
       getColumns,
       columnStorageName,
       columnInfoPanelStorageName,
+      isPublicRoom,
     } = this.props;
 
     const defaultColumns = [];
@@ -153,6 +154,18 @@ class FilesTableHeader extends React.Component {
       ];
       defaultColumns.push(...columns);
     } else {
+      const authorBlock = !isPublicRoom
+        ? {
+            key: "Author",
+            title: t("ByAuthor"),
+            enable: this.props.authorColumnIsEnabled,
+            resizable: true,
+            sortBy: SortByFieldName.Author,
+            onClick: this.onFilter,
+            onChange: this.onColumnChange,
+          }
+        : {};
+
       const columns = [
         {
           key: "Name",
@@ -164,15 +177,7 @@ class FilesTableHeader extends React.Component {
           minWidth: 210,
           onClick: this.onFilter,
         },
-        {
-          key: "Author",
-          title: t("ByAuthor"),
-          enable: this.props.authorColumnIsEnabled,
-          resizable: true,
-          sortBy: SortByFieldName.Author,
-          onClick: this.onFilter,
-          onChange: this.onColumnChange,
-        },
+        { ...authorBlock },
         {
           key: "Created",
           title: t("ByCreation"),
@@ -436,6 +441,7 @@ export default inject(
       headerBorder,
       roomsFilter,
       fetchRooms,
+      isPublicRoom,
     } = filesStore;
     const {
       isRecentFolder,
@@ -524,6 +530,7 @@ export default inject(
       setColumnEnable,
       isRooms,
       isTrashFolder,
+      isPublicRoom,
     };
   }
 )(

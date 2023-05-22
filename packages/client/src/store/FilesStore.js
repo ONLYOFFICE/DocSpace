@@ -1025,11 +1025,11 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
-    if (this.isPublicRoom) return;
-
-    const key = `UserFilter=${this.authStore.userStore.user?.id}`;
-    const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
-    localStorage.setItem(key, value);
+    if (!this.isPublicRoom) {
+      const key = `UserFilter=${this.authStore.userStore.user?.id}`;
+      const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
+      localStorage.setItem(key, value);
+    }
 
     this.setFilterUrl(filter);
     this.filter = filter;
@@ -1084,6 +1084,11 @@ class FilesStore {
   };
 
   setFilterUrl = (filter) => {
+    //TODO: public filter
+    if (this.isPublicRoom) {
+      return;
+    }
+
     const filterParamsStr = filter.toUrlParams();
 
     const url = getCategoryUrl(this.categoryType, filter.folder);
