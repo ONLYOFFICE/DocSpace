@@ -17,7 +17,7 @@
     showMenu: false,
     showFilter: false,
     showAction: false,
-    destroyText: "Frame container",
+    destroyText: "",
     viewAs: "row", //TODO: ["row", "table", "tile"]
     filter: {
       //folder: "@my",
@@ -271,8 +271,26 @@
       return this.initFrame(frameConfig);
     }
 
-    initSelector(frameConfig = {}) {
-      frameConfig.mode = frameConfig.mode || "room selector";
+    initViewerEditor(frameConfig = {}) {
+      frameConfig.mode = frameConfig.mode || "viewer";
+
+      return this.initFrame(frameConfig);
+    }
+
+    initRoomSelector(frameConfig = {}) {
+      frameConfig.mode = frameConfig.mode || "room-selector";
+
+      return this.initFrame(frameConfig);
+    }
+
+    initFileSelector(frameConfig = {}) {
+      frameConfig.mode = frameConfig.mode || "file-selector";
+
+      return this.initFrame(frameConfig);
+    }
+
+    initSystem(frameConfig = {}) {
+      frameConfig.mode = frameConfig.mode || "system";
 
       return this.initFrame(frameConfig);
     }
