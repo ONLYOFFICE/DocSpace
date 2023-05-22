@@ -12,6 +12,9 @@ const ContactContainer = (props) => {
 
   const { helpUrl, salesEmail, theme } = props;
 
+  const officialWebsiteUrl = "/";
+  const demonstrationUrl = "/";
+
   return (
     <>
       <StyledContactComponent>
@@ -30,7 +33,7 @@ const ContactContainer = (props) => {
                 target="_blank"
                 tag="a"
                 fontWeight="600"
-                href={helpUrl}
+                href={officialWebsiteUrl}
                 color={theme.client.settings.payment.contactContainer.linkColor}
               >
                 on the official website
@@ -53,7 +56,7 @@ const ContactContainer = (props) => {
                 target="_blank"
                 tag="a"
                 fontWeight="600"
-                href={helpUrl}
+                href={demonstrationUrl}
                 color={theme.client.settings.payment.contactContainer.linkColor}
               >
                 here
