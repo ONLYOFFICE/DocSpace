@@ -249,6 +249,7 @@ $Body</value>
   </data>
   <data name="pattern_join" xml:space="preserve">
     <value>h1.Запрошення приєднатись до порталу "${__VirtualRootPath}":"$InviteLink"
+
 Доброго дня,
 
 Вас запросили приєднатися до порталу "${__VirtualRootPath}":"$InviteLink" в ${LetterLogoText} - платформи для управління документами та проектами. Приєднуйтесь до порталу та розпочніть співпрацювати з колегами чи друзями.
@@ -578,7 +579,7 @@ $GreenButton
 
 Посилання дійсне протягом 7 днів.
 
-Не хочете змінювати пароль? Просто проігноруйте це повідомлення.</value>
+Не хочете змінювати пароль? Просто проігноруйте це повідомлення</value>
   </data>
   <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
     <value>Вітаємо, $UserName!

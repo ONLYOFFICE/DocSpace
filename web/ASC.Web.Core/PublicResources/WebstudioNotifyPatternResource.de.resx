@@ -300,6 +300,7 @@ ONLYOFFICE-Team
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Nachricht von dem "${__VirtualRootPath}":"${__VirtualRootPath}" Portal
+
 Email: $UserEmail
 
 $Body</value>
@@ -367,7 +368,6 @@ Ein Fehler hat während der Migration zu $RegionName Region aufgetreten. Versuch
 Ihr Portal ist nun unter der alten Adresse "$PortalUrl":"$PortalUrl" verfügbar 
 
 Falls Sie einige Fragen haben oder Hilfe brauchen, kontaktieren Sie uns bitte unter "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Mit freundlichen Grüßen,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"

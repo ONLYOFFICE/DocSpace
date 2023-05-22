@@ -245,6 +245,7 @@ $GreenButton
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Ziņojums no portāla "${__VirtualRootPath}":"${__VirtualRootPath}"
+
 E-pasts: $UserEmail
 
 $Body</value>
@@ -475,11 +476,13 @@ $activity
 
 Šī ziņa tika izveidota automātiski, lai pārbaudītu jūsu SMTP uzstādījumus. Ja jūs to redzat, šie iestatījumi ir pareizi un jūs varat tos izmantot savā portālā.
 
+
 Ar cieņu,
 ONLYOFFICE komanda</value>
   </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Portālam "${__VirtualRootPath}":"${__VirtualRootPath}" pievienots jauns lietotājs
+
 "$__AuthorName":"$__AuthorUrl" pievienojās jūsu portālam "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 

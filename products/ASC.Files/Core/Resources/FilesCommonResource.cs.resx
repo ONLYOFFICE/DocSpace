@@ -370,4 +370,10 @@
   <data name="ErrorrMessage_PinRoom" xml:space="preserve">
     <value>Místnost nelze připnout</value>
   </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrátor místnosti</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Vlastní filtr</value>
+  </data>
 </root>

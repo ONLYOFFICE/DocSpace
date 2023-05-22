@@ -279,6 +279,7 @@ $GreenButton
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Сообщение с портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
 Email: $UserEmail
 
 $Body</value>
@@ -818,6 +819,7 @@ $GreenButton
 
 Пользователь "$__AuthorName":"$__AuthorUrl" изменил свой профиль на портале "${__VirtualRootPath}":"${__VirtualRootPath}".
 
+
 ^Если Вы не хотите получать оповещения об обновлениях профиля, пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_self_profile_updated_tg" xml:space="preserve">
@@ -888,6 +890,7 @@ $activity
     <value>h1.Новый пользователь добавлен на портал "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 Пользователь "$__AuthorName":"$__AuthorUrl" присоединился к порталу "${__VirtualRootPath}":"${__VirtualRootPath}".
+
 
 ^Если Вы не хотите получать оповещения о новых пользователях, пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>

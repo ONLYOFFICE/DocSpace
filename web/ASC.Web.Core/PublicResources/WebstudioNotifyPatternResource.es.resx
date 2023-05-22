@@ -258,6 +258,7 @@ Usted obtendrá más consejos útiles sobre cómo usar su oficina web. Usted pue
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Mensaje de Portal "${__VirtualRootPath}":"${__VirtualRootPath}" 
+
 Email: $UserEmail
 
 $Body</value>
@@ -386,8 +387,7 @@ Recibirá más consejos sobre cómo usar su oficina web. Puede cancelar las susc
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
     <value>Hola, $UserName
-Se ha registrado correctamente en ONLYOFFICE Personal 
-"${__VirtualRootPath}":"${__VirtualRootPath}".
+Se ha registrado correctamente en ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Conecte su almacenamiento de nube favorito: Dropbox, Google Drive, OneDrive o Box para crear un único espacio de trabajo para sus documentos, accesible desde cualquier lugar.
 
@@ -793,6 +793,7 @@ $activity
 
 Este mensaje ha sido generado automáticamente para probar su configuración SMTP. Si puede verlo esto significa que la configuración es correcta y usted puede usarla en su portal.
 
+
 Atentamente,
 Equipo ONLYOFFICE</value>
   </data>
@@ -842,6 +843,7 @@ Su portal está disponible de nuevo.</value>
     <value>h1.Nuevo usuario añadido al portal "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 "$__AuthorName":"$__AuthorUrl" se ha unido a su portal en "${__VirtualRootPath}":"${__VirtualRootPath}" .
+
 
 ^Si no desea recibir las notificaciones sobre nuevos usuarios, por favor, cambie los "ajustes de suscripción":"$RecipientSubscriptionConfigURL".^</value>
   </data>
@@ -1102,5 +1104,11 @@ $GreenButton
 El enlace es válido durante 7 días.
 
 ¿No desea cambiar su contraseña? Simplemente ignore este mensaje.</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ACEPTAR</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>CONFIRMAR</value>
   </data>
 </root>

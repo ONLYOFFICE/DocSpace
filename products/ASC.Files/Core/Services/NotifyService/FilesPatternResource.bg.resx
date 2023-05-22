@@ -64,6 +64,7 @@
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle 
+
 Влезте в своя DocuSign акаунт за повече информация.</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
