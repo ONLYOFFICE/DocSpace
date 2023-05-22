@@ -11,6 +11,7 @@ class DialogsStore {
   versionHistoryStore;
 
   sharingPanelVisible = false;
+  roomSharingPanelVisible = false;
   ownerPanelVisible = false;
   moveToPanelVisible = false;
   copyPanelVisible = false;
@@ -99,6 +100,10 @@ class DialogsStore {
 
   setSharingPanelVisible = (sharingPanelVisible) => {
     this.sharingPanelVisible = sharingPanelVisible;
+  };
+
+  setRoomSharingPanelVisible = (roomSharingPanelVisible) => {
+    this.roomSharingPanelVisible = roomSharingPanelVisible;
   };
 
   setIsFolderActions = (isFolderActions) => {

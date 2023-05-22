@@ -28,6 +28,7 @@ import {
   ChangeUserTypeDialog,
   UnsavedChangesDialog,
   DeleteLinkDialog,
+  RoomSharingDialog,
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
@@ -68,6 +69,7 @@ const Panels = (props) => {
     unsavedChangesDialogVisible,
     deleteLinkDialogVisible,
     embeddingPanelIsVisible,
+    roomSharingPanelVisible,
   } = props;
 
   const { t } = useTranslation(["Translations", "Common"]);
@@ -149,6 +151,7 @@ const Panels = (props) => {
     ),
     deleteLinkDialogVisible && <DeleteLinkDialog key="delete-link-dialog" />,
     embeddingPanelIsVisible && <EmbeddingPanel key="embedding-panel" />,
+    roomSharingPanelVisible && <RoomSharingDialog key="room-sharing-dialog" />,
   ];
 };
 
@@ -191,6 +194,7 @@ export default inject(
       editLinkPanelIsVisible,
       deleteLinkDialogVisible,
       embeddingPanelIsVisible,
+      roomSharingPanelVisible,
     } = dialogsStore;
 
     const { preparationPortalDialogVisible } = backup;
@@ -234,6 +238,7 @@ export default inject(
       unsavedChangesDialogVisible,
       deleteLinkDialogVisible,
       embeddingPanelIsVisible,
+      roomSharingPanelVisible,
     };
   }
 )(observer(Panels));

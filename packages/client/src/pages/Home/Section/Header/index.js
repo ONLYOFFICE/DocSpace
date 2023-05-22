@@ -185,6 +185,7 @@ const SectionHeaderContent = (props) => {
     isPublicRoomInit,
     theme,
     whiteLabelLogoUrls,
+    setRoomSharingPanelVisible,
   } = props;
 
   const navigate = useNavigate();
@@ -508,6 +509,14 @@ const SectionHeaderContent = (props) => {
     onCopyLink && onCopyLink({ ...selectedFolder, isFolder: true }, t);
   };
 
+  const onDownloadAll = () => {
+    alert("onDownloadAll");
+  };
+
+  const onShareRoom = () => {
+    setRoomSharingPanelVisible(true);
+  };
+
   const getContextOptionsFolder = () => {
     const {
       t,
@@ -530,7 +539,29 @@ const SectionHeaderContent = (props) => {
 
       security,
       isPublicRoom,
+      isPublicRoomInit,
     } = props;
+
+    if (isPublicRoomInit) {
+      return [
+        {
+          key: "public-room_edit",
+          label: t("Files:DownloadAll"),
+          icon: DownloadReactSvgUrl,
+          onClick: onDownloadAll,
+        },
+        {
+          key: "public-room_separator",
+          isSeparator: true,
+        },
+        {
+          key: "public-room_share",
+          label: t("Files:ShareRoom"),
+          icon: ShareReactSvgUrl,
+          onClick: onShareRoom,
+        },
+      ];
+    }
 
     const isDisabled = isRecycleBinFolder || isRoom;
 
@@ -886,7 +917,8 @@ const SectionHeaderContent = (props) => {
                 showText={showText}
                 isRootFolder={isRoot}
                 canCreate={
-                  security?.Create || isAccountsPage || !isSettingsPage
+                  (security?.Create || isAccountsPage || !isSettingsPage) &&
+                  !isPublicRoomInit
                 }
                 title={currentTitle}
                 isDesktop={isDesktop}
@@ -923,6 +955,7 @@ const SectionHeaderContent = (props) => {
                 isRoom={isRoom}
                 hideInfoPanel={isSettingsPage || isPublicRoomInit}
                 withLogo={isPublicRoomInit && logo}
+                isPublicRoom={isPublicRoomInit}
               />
             </div>
           )}
@@ -989,6 +1022,7 @@ export default inject(
       setArchiveAction,
       setInvitePanelOptions,
       setInviteUsersWarningDialogVisible,
+      setRoomSharingPanelVisible,
     } = dialogsStore;
 
     const {
@@ -1162,6 +1196,7 @@ export default inject(
       isEmptyPage,
       theme,
       whiteLabelLogoUrls,
+      setRoomSharingPanelVisible,
     };
   }
 )(

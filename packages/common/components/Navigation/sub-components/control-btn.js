@@ -105,6 +105,7 @@ const ControlButtons = ({
   titles,
   withMenu,
   onPlusClick,
+  isPublicRoom,
 }) => {
   const toggleInfoPanelAction = () => {
     toggleInfoPanel && toggleInfoPanel();
@@ -173,6 +174,21 @@ const ControlButtons = ({
               isRootFolder={isRootFolder}
               isInfoPanelVisible={isInfoPanelVisible}
               toggleInfoPanel={toggleInfoPanelAction}
+            />
+          )}
+
+          {isPublicRoom && (
+            <ContextMenuButton
+              id="header_optional-button"
+              zIndex={402}
+              className="option-button"
+              directionX="right"
+              iconName={VerticalDotsReactSvgUrl}
+              size={15}
+              isFill
+              getData={getContextOptionsFolder}
+              isDisabled={false}
+              title={titles?.contextMenu}
             />
           )}
         </>

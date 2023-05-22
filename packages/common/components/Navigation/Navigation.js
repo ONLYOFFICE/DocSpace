@@ -51,6 +51,7 @@ const Navigation = ({
   isRoom,
   hideInfoPanel,
   withLogo,
+  isPublicRoom,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -211,6 +212,7 @@ const Navigation = ({
               titles={titles}
               withMenu={withMenu}
               onPlusClick={onPlusClick}
+              isPublicRoom={isPublicRoom}
             />
           </StyledContainer>
           {isTrashFolder && !isEmptyPage && (

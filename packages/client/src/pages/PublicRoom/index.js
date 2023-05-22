@@ -15,6 +15,8 @@ import SectionBodyContent from "../Home/Section/Body";
 import RoomPassword from "./sub-components/RoomPassword";
 import RoomErrors from "./sub-components/RoomErrors";
 
+import { RoomSharingDialog } from "../../components/dialogs";
+
 const PublicRoom = (props) => {
   const {
     isLoaded,
@@ -24,6 +26,7 @@ const PublicRoom = (props) => {
     withPaging,
     validatePublicRoomKey,
     fetchFiles,
+    setRoomHref,
   } = props;
 
   const location = useLocation();
@@ -34,27 +37,33 @@ const PublicRoom = (props) => {
   }, [validatePublicRoomKey]);
 
   useEffect(() => {
-    isLoaded && fetchFiles(roomId);
+    isLoaded &&
+      fetchFiles(roomId).then((res) => {
+        setRoomHref(res?.links[0]?.href);
+      });
   }, [fetchFiles, isLoaded]);
 
   const roomPage = () => (
-    <Section
-      withBodyScroll
-      // withBodyAutoFocus={!isMobile}
-      withPaging={withPaging}
-    >
-      <Section.SectionHeader>
-        <SectionHeaderContent />
-      </Section.SectionHeader>
+    <>
+      <Section
+        withBodyScroll
+        // withBodyAutoFocus={!isMobile}
+        withPaging={withPaging}
+      >
+        <Section.SectionHeader>
+          <SectionHeaderContent />
+        </Section.SectionHeader>
 
-      <Section.SectionFilter>
-        <SectionFilterContent />
-      </Section.SectionFilter>
+        <Section.SectionFilter>
+          <SectionFilterContent />
+        </Section.SectionFilter>
 
-      <Section.SectionBody>
-        <SectionBodyContent />
-      </Section.SectionBody>
-    </Section>
+        <Section.SectionBody>
+          <SectionBodyContent />
+        </Section.SectionBody>
+      </Section>
+      <RoomSharingDialog />
+    </>
   );
 
   const renderLoader = () => {
@@ -88,8 +97,14 @@ const PublicRoom = (props) => {
 
 export default inject(({ auth, filesStore, publicRoomStore }) => {
   const { withPaging } = auth.settingsStore;
-  const { validatePublicRoomKey, isLoaded, isLoading, roomStatus, roomId } =
-    publicRoomStore;
+  const {
+    validatePublicRoomKey,
+    isLoaded,
+    isLoading,
+    roomStatus,
+    roomId,
+    setRoomHref,
+  } = publicRoomStore;
 
   const { fetchFiles } = filesStore;
 
@@ -99,6 +114,7 @@ export default inject(({ auth, filesStore, publicRoomStore }) => {
     isLoading,
     roomStatus,
     fetchFiles,
+    setRoomHref,
 
     withPaging,
     validatePublicRoomKey,

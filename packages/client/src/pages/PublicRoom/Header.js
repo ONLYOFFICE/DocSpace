@@ -15,9 +15,6 @@ const SectionHeaderContent = (props) => {
     ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
     : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
 
-  const DownloadAll = "Download all";
-  const ShareRoom = "Share room";
-
   const onDownloadAll = () => {
     alert("onDownloadAll");
   };
@@ -30,7 +27,7 @@ const SectionHeaderContent = (props) => {
     return [
       {
         key: "public-room_edit",
-        label: DownloadAll,
+        label: t("Files:DownloadAll"),
         icon: DownloadReactSvgUrl,
         onClick: onDownloadAll,
       },
@@ -40,7 +37,7 @@ const SectionHeaderContent = (props) => {
       },
       {
         key: "public-room_share",
-        label: ShareRoom,
+        label: t("Files:ShareRoom"),
         icon: ShareReactSvgUrl,
         onClick: onShareRoom,
       },
@@ -76,4 +73,4 @@ export default inject(({ auth, publicRoomStore }) => {
 
     roomTitle,
   };
-})(withTranslation("Common")(observer(SectionHeaderContent)));
+})(withTranslation(["Common", "Files"])(observer(SectionHeaderContent)));

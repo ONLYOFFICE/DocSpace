@@ -134,5 +134,7 @@
   "TableSettingsTitle": "Manage displayed columns",
   "DeleteLink": "Delete link",
   "DeleteLinkNote": "The link will be deleted permanently. You will not be able to undo this action.",
-  "LinkSuccessfullyCopied": "Link successfully copied"
+  "LinkSuccessfullyCopied": "Link successfully copied",
+  "ShareRoom": "Share room",
+  "DownloadAll": "Download all"
 }

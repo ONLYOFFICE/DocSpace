@@ -8,6 +8,7 @@ class PublicRoomStore {
   roomId = null;
   roomStatus = null;
   roomType = null;
+  roomHref = null;
 
   isLoaded = false;
   isLoading = false;
@@ -80,12 +81,18 @@ class PublicRoomStore {
     this.setIsLoading(true);
     api.rooms
       .validatePublicRoomKey(key)
-      .then((res) => this.setRoomData(res))
+      .then((res) => {
+        this.setRoomData(res);
+      })
       .finally(() => this.setIsLoading(false));
   };
 
   validatePublicRoomPassword = (key, password) => {
     return api.rooms.validatePublicRoomPassword(key, password);
+  };
+
+  setRoomHref = (roomHref) => {
+    this.roomHref = roomHref;
   };
 }
 

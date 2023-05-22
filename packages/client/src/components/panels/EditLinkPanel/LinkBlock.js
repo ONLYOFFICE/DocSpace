@@ -47,6 +47,7 @@ const LinkBlock = (props) => {
         size="base"
         withBorder
         isDisabled
+        isReadOnly
         className="edit-link_link-input"
         value={linkValue}
         placeholder={t("ExternalLink")}

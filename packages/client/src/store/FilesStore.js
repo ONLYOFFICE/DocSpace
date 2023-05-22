@@ -1358,7 +1358,11 @@ class FilesStore {
           this.setCreatedItem(null);
         }
 
-        return Promise.resolve(selectedFolder);
+        if (window.location.pathname === "/rooms/share") {
+          return Promise.resolve(data);
+        } else {
+          return Promise.resolve(selectedFolder);
+        }
       })
       .catch((err) => {
         console.error(err);
