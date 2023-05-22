@@ -43,7 +43,7 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
                     secretkey = table.Column<string>(name: "secret_key", type: "varchar(50)", maxLength: 50, nullable: true, defaultValueSql: "''")
                         .Annotation("MySql:CharSet", "utf8"),
                     tenantid = table.Column<uint>(name: "tenant_id", type: "int unsigned", nullable: false),
-                    uri = table.Column<string>(type: "varchar(50)", maxLength: 50, nullable: true, defaultValueSql: "''")
+                    uri = table.Column<string>(type: "text", nullable: true, defaultValueSql: "''", collation: "utf8_general_ci")
                         .Annotation("MySql:CharSet", "utf8"),
                     enabled = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'"),
                     ssl = table.Column<bool>(type: "tinyint(1)", nullable: false, defaultValueSql: "'1'")

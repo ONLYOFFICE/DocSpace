@@ -88,8 +88,7 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 
                     b.Property<string>("Uri")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("text")
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 

@@ -35,7 +35,7 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
                     name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
                     secretkey = table.Column<string>(name: "secret_key", type: "character varying(50)", maxLength: 50, nullable: true, defaultValueSql: "''"),
                     tenantid = table.Column<int>(name: "tenant_id", type: "int unsigned", nullable: false),
-                    uri = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true, defaultValueSql: "''"),
+                    uri = table.Column<string>(type: "text", nullable: true, defaultValueSql: "''"),
                     enabled = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true"),
                     ssl = table.Column<bool>(type: "boolean", nullable: false, defaultValueSql: "true")
                 },
