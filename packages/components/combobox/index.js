@@ -133,7 +133,6 @@ class ComboBox extends React.Component {
       withBackdrop,
       isAside,
       withBackground,
-      backgroundColor,
       advancedOptionsCount,
       isMobileView,
       withoutPadding,
@@ -141,9 +140,8 @@ class ComboBox extends React.Component {
       isNoFixedHeightOptions,
       hideMobileView,
     } = this.props;
-    console.log(this.props);
-    const { tabIndex, ...props } = this.props;
 
+    const { tabIndex, ...props } = this.props;
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
@@ -183,6 +181,20 @@ class ComboBox extends React.Component {
 
     const disableMobileView = optionsCount < 4 || hideMobileView;
 
+    const handleBadgeStyle = () => {
+      if (selectedOption.backgroundColor === "white") {
+        return {
+          backgroundColor: selectedOption.backgroundColor,
+          border: "2px solid #4781D1",
+          color: "#555F65",
+        };
+      } else {
+        return {
+          backgroundColor: selectedOption.backgroundColor,
+        };
+      }
+    };
+
     return (
       <StyledComboBox
         ref={this.ref}
@@ -202,7 +214,7 @@ class ComboBox extends React.Component {
             <Badge
               label={selectedOption.label}
               noHover={true}
-              backgroundColor={backgroundColor}
+              {...handleBadgeStyle()}
             />
             <StyledArrowIcon
               displayArrow={optionsLength > 0}
@@ -291,7 +303,7 @@ class ComboBox extends React.Component {
                       textOverflow={textOverflow}
                       key={option.key}
                       disabled={disabled}
-                      backgroundColor={backgroundColor}
+                      backgroundColor={option.backgroundColor}
                       type={type}
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
@@ -389,6 +401,8 @@ ComboBox.propTypes = {
   withoutPadding: PropTypes.bool,
   /** Indicates when the component is loading */
   isLoading: PropTypes.bool,
+  /**Type ComboBox */
+  type: PropTypes.oneOf(["badge", null]),
 };
 
 ComboBox.defaultProps = {

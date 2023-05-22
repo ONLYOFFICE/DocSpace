@@ -26,6 +26,7 @@ const Badge = (props) => {
     height,
     type,
     isHovered,
+    border,
     label,
   } = props;
 
@@ -34,6 +35,7 @@ const Badge = (props) => {
       {...props}
       isHovered={isHovered}
       onClick={onClick}
+      border={border}
       themeId={ThemeType.Badge}
     >
       <StyledInner

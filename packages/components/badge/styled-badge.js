@@ -38,11 +38,12 @@ const StyledBadge = styled.div`
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
   flex-shrink: 0;
+  border: ${(props) => props.border};
   ${(props) => props.type === "high" && noBorderCss}
   &:hover {
     ${(props) => !props.noHover && hoveredCss};
   }
-  ${(props) => !props.noHover && props.isHovered && hoveredCss}
+  ${(props) => !props.noHover && props.isHovered && hoveredCss};
 `;
 StyledBadge.defaultProps = { theme: Base };
 

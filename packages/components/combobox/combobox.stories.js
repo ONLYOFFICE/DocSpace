@@ -91,8 +91,10 @@ const BadgeTypeTemplate = (args) => (
     <ComboBox
       {...args}
       options={[
-        { key: 1, label: "Option 1" },
-        { key: 2, label: "Option 2" },
+        { key: 1, label: "Open", backgroundColor: "#4781D1" },
+        { key: 2, label: "Done", backgroundColor: "#444" },
+        { key: 3, label: "2nd turn", backgroundColor: "white" },
+        { key: 4, label: "3rd turn", backgroundColor: "white" },
       ]}
       selectedOption={{
         key: 0,
@@ -179,5 +181,6 @@ export const badgeType = BadgeTypeTemplate.bind({});
 badgeType.args = {
   scaled: false,
   type: "badge",
-  backgroundColor: "blue",
+  size: "content",
+  scaledOptions: true,
 };
