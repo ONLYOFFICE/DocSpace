@@ -78,10 +78,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
         linkedId = (await MappingIDAsync(linkedId)).ToString();
 
-        var sourceId = await filesDbContext.FilesLink
-            .Where(r => r.TenantId == TenantID && r.LinkedId == linkedId && r.LinkedFor == _authContext.CurrentAccount.ID)
-            .Select(r => r.SourceId)
-            .SingleOrDefaultAsync();
+        var sourceId = await LinkDaoQueries.GetSourceIdAsync(filesDbContext, TenantID, linkedId, _authContext.CurrentAccount.ID);
 
         return (await MappingIDAsync(sourceId))?.ToString();
     }
@@ -92,10 +89,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
         sourceId = (await MappingIDAsync(sourceId)).ToString();
 
-        var linkedId = await filesDbContext.FilesLink
-            .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
-            .Select(r => r.LinkedId)
-            .SingleOrDefaultAsync();
+        var linkedId = await LinkDaoQueries.GetLinkedIdAsync(filesDbContext, TenantID, sourceId, _authContext.CurrentAccount.ID);
 
         return (await MappingIDAsync(linkedId))?.ToString();
     }
@@ -106,9 +100,7 @@ internal class LinkDao : AbstractDao, ILinkDao
 
         sourceId = (await MappingIDAsync(sourceId)).ToString();
 
-        var link = await filesDbContext.FilesLink
-            .Where(r => r.TenantId == TenantID && r.SourceId == sourceId && r.LinkedFor == _authContext.CurrentAccount.ID)
-            .SingleOrDefaultAsync();
+        var link = await LinkDaoQueries.GetFileLinkAsync(filesDbContext, TenantID, sourceId, _authContext.CurrentAccount.ID);
 
         filesDbContext.FilesLink.Remove(link);
 
@@ -122,5 +114,34 @@ internal class LinkDao : AbstractDao, ILinkDao
         fileId = (await MappingIDAsync(fileId)).ToString();
 
         await filesDbContext.FilesLink.Where(r => r.TenantId == TenantID && (r.SourceId == fileId || r.LinkedId == fileId)).ExecuteDeleteAsync();
+        await LinkDaoQueries.DeleteFileLinks(filesDbContext, TenantID, fileId);
     }
+}
+
+file static class LinkDaoQueries
+{
+    public static readonly Func<FilesDbContext, int, string, Guid, Task<string>> GetSourceIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (FilesDbContext ctx, int tenantId, string linkedId, Guid id) =>
+        ctx.FilesLink
+            .Where(r => r.TenantId == tenantId && r.LinkedId == linkedId && r.LinkedFor == id)
+            .Select(r => r.SourceId)
+            .SingleOrDefault());
+
+    public static readonly Func<FilesDbContext, int, string, Guid, Task<string>> GetLinkedIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (FilesDbContext ctx, int tenantId, string sourceId, Guid id) =>
+        ctx.FilesLink
+            .Where(r => r.TenantId == tenantId && r.SourceId == sourceId && r.LinkedFor == id)
+            .Select(r => r.LinkedId)
+            .SingleOrDefault());
+    
+    public static readonly Func<FilesDbContext, int, string, Guid, Task<DbFilesLink>> GetFileLinkAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (FilesDbContext ctx, int tenantId, string sourceId, Guid id) =>
+        ctx.FilesLink
+            .Where(r => r.TenantId == tenantId && r.SourceId == sourceId && r.LinkedFor == id)
+            .SingleOrDefault());
+    
+    public static readonly Func<FilesDbContext, int, string, Task<int>> DeleteFileLinks = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (FilesDbContext ctx, int tenantId, string fileId) =>
+        ctx.FilesLink
+            .Where(r => r.TenantId == tenantId && (r.SourceId == fileId || r.LinkedId == fileId)).ExecuteDelete());
 }
