@@ -128,6 +128,7 @@ class FilesStore {
 
   highlightFile = {};
   thumbnails = new Set();
+  movingInProgress = false;
 
   constructor(
     authStore,
@@ -1142,7 +1143,6 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-    
     if (this.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();
@@ -3211,6 +3211,10 @@ class FilesStore {
 
   setTrashIsEmpty = (isEmpty) => {
     this.trashIsEmpty = isEmpty;
+  };
+
+  setMovingInProgress = (movingInProgress) => {
+    this.movingInProgress = movingInProgress;
   };
 
   setMainButtonMobileVisible = (visible) => {

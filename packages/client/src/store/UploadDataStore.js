@@ -1393,7 +1393,7 @@ class UploadDataStore {
       setSecondaryProgressBarData,
       clearSecondaryProgressData,
     } = this.secondaryProgressDataStore;
-    const { refreshFiles } = this.filesStore;
+    const { refreshFiles, setMovingInProgress } = this.filesStore;
 
     return moveToFolder(
       destFolderId,
@@ -1435,7 +1435,7 @@ class UploadDataStore {
         return Promise.reject(err);
       })
       .finally(() => {
-        refreshFiles();
+        refreshFiles().then(() => setMovingInProgress(false));
       });
   };
 
