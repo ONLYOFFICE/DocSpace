@@ -1148,8 +1148,6 @@ class FilesStore {
       this.roomsController = new AbortController();
     }
 
-    this.scrollToTop();
-
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
@@ -2695,12 +2693,8 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
