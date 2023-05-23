@@ -65,6 +65,7 @@ const ItemWrapper = styled.div`
   border-left: 2px ${(props) => (props.finished ? "solid" : "dashed")};
   border-color: ${(props) => (props.finished ? "#4781D1" : "#A3A9AE")};
   min-height: 40px;
+  margin: ${(props) => (props.finished ? "0" : "2px 0")};
 
   .filled-status-text {
     color: ${(props) => (props.finished ? "#4781D1" : "#657077")};
