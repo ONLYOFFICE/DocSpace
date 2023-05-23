@@ -10,6 +10,7 @@ import { StyledComponent } from "./StyledComponent";
 import ContactContainer from "./ContactContainer";
 import EnterpriseContainer from "./EnterpriseContainer";
 import TrialContainer from "./TrialContainer";
+import Loaders from "@docspace/common/components/Loaders";
 
 const StandalonePage = (props) => {
   const {
@@ -26,10 +27,10 @@ const StandalonePage = (props) => {
   }, [ready]);
 
   useEffect(() => {
-    if (!isLoadedTariffStatus || !isLoadedCurrentQuota) return;
+    if (!isLoadedTariffStatus || !isLoadedCurrentQuota || !ready) return;
 
     enterpriseInit();
-  }, [isLoadedTariffStatus, isLoadedCurrentQuota]);
+  }, [isLoadedTariffStatus, isLoadedCurrentQuota, ready]);
 
   if (
     !isInitPaymentPage ||
@@ -37,7 +38,11 @@ const StandalonePage = (props) => {
     !isLoadedCurrentQuota ||
     !ready
   )
-    return <></>;
+    return isTrial ? (
+      <Loaders.PaymentsStandaloneLoader />
+    ) : (
+      <Loaders.PaymentsStandaloneLoader isEnterprise />
+    );
 
   return (
     <StyledComponent>
