@@ -12,8 +12,8 @@ const ContactContainer = (props) => {
 
   const { helpUrl, salesEmail, theme } = props;
 
-  const officialWebsiteUrl = "/";
-  const demonstrationUrl = "/";
+  const officialWebsiteUrl = "https://www.onlyoffice.com/for-enterprises.aspx";
+  const demonstrationUrl = "https://www.onlyoffice.com/demo-order.aspx";
 
   return (
     <>
