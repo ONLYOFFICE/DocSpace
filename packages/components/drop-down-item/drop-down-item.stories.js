@@ -38,6 +38,7 @@ const Template = (args) => {
   return (
     <div style={{ height: "220px", position: "relative" }}>
       <DropDown
+        isDefaultMode={false}
         directionX={direction}
         open={true}
         style={{ top: "20px", left: "20px" }}
