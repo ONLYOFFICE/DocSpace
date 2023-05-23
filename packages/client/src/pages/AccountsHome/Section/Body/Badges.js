@@ -3,7 +3,7 @@ import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
-import { PaymentsType } from "@docspace/common/constants";
+import { PaymentsType, AccountLoginType } from "@docspace/common/constants";
 
 import Badge from "@docspace/components/badge";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
@@ -49,11 +49,15 @@ const Badges = ({
 }) => {
   const onClickPaid = () => {
     if (filter.payments === PaymentsType.Paid) return;
-
     const newFilter = filter.clone();
-
     newFilter.payments = PaymentsType.Paid;
+    getUsersList(newFilter, true);
+  };
 
+  const onClickSSO = () => {
+    if (filter.accountLoginType === AccountLoginType.SSO) return;
+    const newFilter = filter.clone();
+    newFilter.accountLoginType = AccountLoginType.SSO;
     getUsersList(newFilter, true);
   };
 
@@ -68,6 +72,7 @@ const Badges = ({
           fontWeight={800}
           noHover
           lineHeight={"13px"}
+          onClick={onClickSSO}
         />
       )}
       {!withoutPaid && isPaid && (

@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Yer imi oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM vaka oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Yorum eklenme tarihi</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM iletişim oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM fırsat oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Tartışma oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Etkinlik oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Belge oluşturulma/yüklenme tarihi</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Klasör oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Anket oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Gönderi oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Aşama oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Proje oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Görev oluşturulma tarihi</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Kabul et</value>
   </data>
@@ -165,9 +117,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Fiyatlandırma Planlarını Şimdi Seçin</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Daha Fazla Bilgi &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"$InviteLink" portalındaki e-posta adresinizi aktifleştirin.
@@ -521,6 +470,7 @@ ONLYOFFICE™ Destek Ekibi
 
 "$__AuthorName":"$__AuthorUrl" kullanıcısı "${__VirtualRootPath}":"${__VirtualRootPath}" portalında yer alan profilindeki bilgileri değiştirdi.
 
+
 ^Profil güncellemeleri hakkında bildirim almak istemiyorsanız, lütfen "abonelik ayarlarınızı" değiştirin:"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
@@ -544,6 +494,7 @@ ONLYOFFICE Ekibi</value>
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalına yeni kişi eklendi
 
 "$__AuthorName":"$__AuthorUrl" "${__VirtualRootPath}":"${__VirtualRootPath}" adresindeki portalınıza katıldı.
+
 
 ^Yeni kullanıcılar ile ilgili bildirimler almak istemiyorsanız lütfen "abonelik ayarları" bölümüne gidin:"$RecipientSubscriptionConfigURL".^</value>
   </data>
@@ -867,7 +818,6 @@ ONLYOFFICE Ekibi
 
 Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
 
-
 * ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
 
 * Çok sayıda belge ile çalışmak için herhangi bir sayıda oda oluşturmak ister misiniz?
@@ -932,7 +882,6 @@ ONLYOFFICE Ekibi
     <value>Merhaba, $UserName!
 
 Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
-
 
 * ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
 
@@ -1269,5 +1218,23 @@ ONLYOFFICE Ekibi
   </data>
   <data name="subject_change_password_v115" xml:space="preserve">
     <value>Parolanızı değiştirmeyi onaylayın</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>KABUL ET</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>DocSpace'te iş birliği yapın</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ONAYLA</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>DocSpace Davetini Onaylayın</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Oda Davetini Onaylayın</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Ödemeler Bölümünü Ziyaret Edin</value>
   </data>
 </root>

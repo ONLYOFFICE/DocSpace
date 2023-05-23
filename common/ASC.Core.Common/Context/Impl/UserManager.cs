@@ -187,6 +187,7 @@ public class UserManager
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
         EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
         string text,
         string sortBy,
         bool sortOrderAsc,
@@ -195,7 +196,7 @@ public class UserManager
         out int total,
         out int count)
     {
-        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
     public string[] GetUserNames(EmployeeStatus status)

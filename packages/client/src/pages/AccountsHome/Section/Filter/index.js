@@ -15,7 +15,9 @@ import {
   EmployeeType,
   EmployeeStatus,
   PaymentsType,
+  AccountLoginType,
 } from "@docspace/common/constants";
+import { SSO_LABEL } from "SRC_DIR/helpers/constants";
 
 const getStatus = (filterValues) => {
   const employeeStatus = result(
@@ -50,6 +52,17 @@ const getPayments = (filterValues) => {
   return employeeStatus || null;
 };
 
+const getAccountLoginType = (filterValues) => {
+  const accountLoginType = result(
+    find(filterValues, (value) => {
+      return value.group === "filter-login-type";
+    }),
+    "key"
+  );
+
+  return accountLoginType || null;
+};
+
 const getGroup = (filterValues) => {
   const groupId = result(
     find(filterValues, (value) => {
@@ -79,6 +92,7 @@ const SectionFilterContent = ({
     const role = getRole(data);
     const group = getGroup(data);
     const payments = getPayments(data);
+    const accountLoginType = getAccountLoginType(data);
 
     const newFilter = filter.clone();
 
@@ -101,6 +115,9 @@ const SectionFilterContent = ({
     newFilter.group = group;
 
     newFilter.payments = payments;
+
+    newFilter.accountLoginType = accountLoginType;
+
     //console.log(newFilter);
 
     setIsLoading(true);
@@ -215,7 +232,7 @@ const SectionFilterContent = ({
         group: "filter-account",
         label: t("ConnectDialog:Account"),
         isHeader: true,
-        isLast: true,
+        isLast: false,
       },
       {
         key: PaymentsType.Paid,
@@ -245,6 +262,32 @@ const SectionFilterContent = ({
     //   },
     // ];
 
+    const accountLoginTypeItems = [
+      {
+        key: "filter-login-type",
+        group: "filter-login-type",
+        label: t("PeopleTranslations:AccountLoginType"),
+        isHeader: true,
+        isLast: true,
+      },
+      {
+        key: AccountLoginType.SSO,
+        group: "filter-login-type",
+        label: SSO_LABEL,
+      },
+      //TODO: uncomment after ldap be ready
+      /*{
+        key: AccountLoginType.LDAP,
+        group: "filter-login-type",
+        label: t("PeopleTranslations:LDAPLbl"),
+      },*/
+      {
+        key: AccountLoginType.STANDART,
+        group: "filter-login-type",
+        label: t("PeopleTranslations:StandardLogin"),
+      },
+    ];
+
     const filterOptions = [];
 
     filterOptions.push(...statusItems);
@@ -252,6 +295,7 @@ const SectionFilterContent = ({
     // filterOptions.push(...roleItems);
     filterOptions.push(...accountItems);
     // filterOptions.push(...roomItems);
+    filterOptions.push(...accountLoginTypeItems);
 
     return filterOptions;
   };
@@ -361,6 +405,20 @@ const SectionFilterContent = ({
       });
     }
 
+    if (filter?.accountLoginType?.toString()) {
+      const label =
+        AccountLoginType.SSO === filter.accountLoginType.toString()
+          ? SSO_LABEL
+          : AccountLoginType.LDAP === filter.accountLoginType.toString()
+          ? t("PeopleTranslations:LDAPLbl")
+          : t("PeopleTranslations:StandardLogin");
+      filterValues.push({
+        key: filter.accountLoginType.toString(),
+        label: label,
+        group: "filter-login-type",
+      });
+    }
+
     if (filter.group) {
       const group = groups.find((group) => group.id === filter.group);
 
@@ -424,6 +482,7 @@ const SectionFilterContent = ({
     filter.role,
     filter.payments,
     filter.group,
+    filter.accountLoginType,
     t,
   ]);
 
@@ -447,6 +506,10 @@ const SectionFilterContent = ({
 
     if (group === "filter-account") {
       newFilter.payments = null;
+    }
+
+    if (group === "filter-login-type") {
+      newFilter.accountLoginType = null;
     }
 
     setIsLoading(true);
@@ -486,13 +549,8 @@ const SectionFilterContent = ({
 
 export default withRouter(
   inject(({ auth, peopleStore }) => {
-    const {
-      loadingStore,
-      filterStore,
-      usersStore,
-      groupsStore,
-      viewAs,
-    } = peopleStore;
+    const { loadingStore, filterStore, usersStore, groupsStore, viewAs } =
+      peopleStore;
     const { userStore, isLoaded, isAdmin } = auth;
     const { user } = userStore;
     const { groups } = groupsStore;

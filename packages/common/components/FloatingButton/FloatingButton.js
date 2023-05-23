@@ -40,6 +40,7 @@ const FloatingButton = (props) => {
     onClick,
     color,
     clearUploadedFilesHistory,
+    showTwoProgress,
     ...rest
   } = props;
 
@@ -67,7 +68,10 @@ const FloatingButton = (props) => {
   }, [percent, setAnimationCompleted]);
 
   return (
-    <StyledFloatingButtonWrapper className="layout-progress-bar_wrapper">
+    <StyledFloatingButtonWrapper
+      showTwoProgress={showTwoProgress}
+      className="layout-progress-bar_wrapper"
+    >
       <ColorTheme
         {...props}
         themeId={ThemeType.FloatingButton}

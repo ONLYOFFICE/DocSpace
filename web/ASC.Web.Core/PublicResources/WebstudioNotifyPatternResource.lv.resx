@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blogs izveidots</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Grāmatzīme izveidota</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM lieta tika izveidota</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Komentārs tika pievienots</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM kontakts tika izveidots</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM iespēja tika izveidota</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Diskusija tika izveidota</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Notikums tika izveidots</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Dokuments tika izveidots / augšupielādēts</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Mape izveidota</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Mape tika izveidota</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Aptauja izveidota</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Ieraksts tika izveidots</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Posms tika izveidots</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projekts tika izveidots</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Uzdevums tika izveidots</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Piekļuve vadības panelim</value>
   </data>
@@ -129,9 +81,6 @@
   </data>
   <data name="ButtonStartFreeTrial" xml:space="preserve">
     <value>Uzsākt bezmaksas izmēģinājumu</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Uzzināt vairāk&gt;&gt;</value>
   </data>
   <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Sveiki, $UserName!
@@ -296,6 +245,7 @@ $GreenButton
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Ziņojums no portāla "${__VirtualRootPath}":"${__VirtualRootPath}"
+
 E-pasts: $UserEmail
 
 $Body</value>
@@ -428,26 +378,20 @@ Sveicināti, $UserName,
 Jūsu lietotāja "$__VirtualRootPath":"$__VirtualRootPath" datus mainīja "$__AuthorName":"$__AuthorUrl".
 
 Lai aplūkotu profilu, sekojiet zemāk esošajai saitei: 
-"$UserName":"$MyStaffLink"
 
-
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+"$UserName":"$MyStaffLink"</value>
   </data>
   <data name="pattern_reassigns_completed" xml:space="preserve">
     <value>Sveicināti, $UserName,
 
-Ir veiksmīga datu pārnese no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink".
-
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Ir veiksmīga datu pārnese no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink".</value>
   </data>
   <data name="pattern_reassigns_failed" xml:space="preserve">
     <value>Sveicināti $UserName,
 
 Datu pārneses process no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink" neizdevās.
 
-Ziņa par kļūdu: $Message
-
-^Jūs saņemat šo ziņu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Ziņa par kļūdu: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
     <value>Sveicināti $UserName,
@@ -461,9 +405,7 @@ Datu noņemšana lietotājam "$FromUserName":"$FromUserLink" veiksmīgi pabeigta
 
 Datu noņemšana lietotājam "$FromUserName":"$FromUserLink" neizdevās.
 
-Kļūdas ziņojums: $Message
-
-^Jūs saņemat šo ziņu, jo esat reģistrējiet portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Kļūdas ziņojums: $Message</value>
   </data>
   <data name="pattern_request_license" xml:space="preserve">
     <value>h1.Uzņēmuma licences pieprasījums
@@ -511,7 +453,7 @@ Ar cieņu,
 ONLYOFFICE™ komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Jūs saņemat šo ziņu, jo esat reģistrēts lietotājs portālā"${__VirtualRootPath}":"${__VirtualRootPath}". Lai mainītu paziņojuma veidu, lūdzu, labojiet savus "abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
+^Lai mainītu paziņojuma veidu, lūdzu, labojiet savus "abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portāla profila maiņas paziņojums
@@ -534,11 +476,13 @@ $activity
 
 Šī ziņa tika izveidota automātiski, lai pārbaudītu jūsu SMTP uzstādījumus. Ja jūs to redzat, šie iestatījumi ir pareizi un jūs varat tos izmantot savā portālā.
 
+
 Ar cieņu,
 ONLYOFFICE komanda</value>
   </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Portālam "${__VirtualRootPath}":"${__VirtualRootPath}" pievienots jauns lietotājs
+
 "$__AuthorName":"$__AuthorUrl" pievienojās jūsu portālam "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 

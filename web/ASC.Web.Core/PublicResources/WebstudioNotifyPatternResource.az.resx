@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Bloq yaradıldı:</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Əlfəcin yaradıldı:</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM əməliyyatı yaradıldı</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Şərh əlavə edildi:</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM əlaqəsi yaradıldı</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM imkanı yaradıldı</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Müzakirə yaradıldı:</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Tədbir yaradıldı:</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Sənəd yaradıldı/endirildi:</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Qovluq yaradıldı:</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum yaradıldı:</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Sorğu yaradılıb</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Post yaradılıb</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Mərhələ yaradılmışdır</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Layihə yaradılıb</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Tapşırıq yaradıldı</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Qəbul et</value>
   </data>
@@ -180,9 +132,6 @@
   </data>
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Endirimdən istifadə edin</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Ətraflı məlumat &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.E-poçt ünvanınızın "${__VirtualRootPath}":"$InviteLink" portalında aktivləşdirilməsi.
@@ -363,6 +312,7 @@ ONLYOFFICE Komandası
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalından mesaj:
+
 E-poçt: $UserEmail
 
 $Body</value>
@@ -393,7 +343,6 @@ $GreenButton
       Admin "${__VirtualRootPath}":"${__VirtualRootPath}" portalında sizin üçün yeni &lt;b&gt;$Address&lt;/b&gt; poçt qutusu yaratdı.
 
       Digər e-poçt müştəriləri üçün aşağıdakı parametrlərdən istifadə edin:
-
       Giriş: &lt;b&gt;$Login&lt;/b&gt;
       Parol: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
 
@@ -431,13 +380,11 @@ $RegionName bölgəsinə köçürülərkən xəta baş verdi. Zəhmət olmasa bi
 Portalınız indi köhnə "$PortalUrl":"$PortalUrl" ünvanında mövcuddur: 
 
 Hər hansı bir sualınız və ya köməyə ehtiyacınız olarsa,  ünvanında bizimlə əlaqə saxlamaqdan çəkinməyin "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Hörmətlə,
 ONLYOFFICE ™ Dəstək Komandası
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Bildiriş növünü dəyişdirmək üçün "abunəlik parametrlərinizi idarə edin":"$RecipientSubscriptionConfigURL".^
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+^Bildiriş növünü dəyişdirmək üçün "abunəlik parametrlərinizi idarə edin":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_migration_server_failure" xml:space="preserve">
     <value>h1.Portalı başqa bölgəyə köçürərkən xəta
@@ -1624,6 +1571,7 @@ ONLYOFFICE Komandası
 Bu e-poçtdan istifadə edərək yeni "ONLYOFFICE Personal":"$PortalUrl" hesabını qeydiyyatdan keçirməyə cəhd edildi. Əgər siz idinizsə, hesabınızın artıq mövcud olduğunu bildirmək istərdik — ONLYOFFICE Personal üzərinə aşağı sürüşdürün və daxil olun.
 Əgər şifrənizi itirmisinizsə, onu "şifrə bərpa səhifəsi":"$LinkToRecovery" vasitəsilə bərpa edə bilərsiniz.
 Yeni hesabı qeydiyyatdan keçirməyə çalışmamısınızsa, yəqin ki, başqası bunu səhvən edib. Bu halda, lütfən, bu e-poçta məhəl qoymayın.
+
 Gözəl gün arzu edirik!
 
 ONLYOFFICE komandası</value>
@@ -1743,12 +1691,13 @@ $GreenButton
 
 Hörmətlə,
 ONLYOFFICE Komandası
-"www.onlyoffice.com":https://onlyoffice.com/</value>
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_room_invite" xml:space="preserve">
     <value>Salam!
 
 "${__VirtualRootPath}":"${__VirtualRootPath}" ünvanında $Mesaj otağına qoşulmağa dəvət olunursunuz. Linkə klikləməklə dəvəti qəbul edin:
+
 $GreenButton
 
 Dəvət linkinə kliklədikdən sonra hesabınız üçün yeni şifrə təyin edin.

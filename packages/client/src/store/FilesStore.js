@@ -128,6 +128,7 @@ class FilesStore {
 
   highlightFile = {};
   thumbnails = new Set();
+  movingInProgress = false;
 
   constructor(
     authStore,
@@ -1142,13 +1143,10 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-    
     if (this.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();
     }
-
-    this.scrollToTop();
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -2695,12 +2693,8 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -3211,6 +3205,10 @@ class FilesStore {
 
   setTrashIsEmpty = (isEmpty) => {
     this.trashIsEmpty = isEmpty;
+  };
+
+  setMovingInProgress = (movingInProgress) => {
+    this.movingInProgress = movingInProgress;
   };
 
   setMainButtonMobileVisible = (visible) => {

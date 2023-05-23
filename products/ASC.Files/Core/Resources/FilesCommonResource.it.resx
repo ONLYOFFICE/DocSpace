@@ -362,4 +362,13 @@ Massima compatibilità con docx, xlsx, pptx.</value>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Collaboratore</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaboratore</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editore</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Amministratore di stanza</value>
+  </data>
 </root>

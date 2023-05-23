@@ -346,4 +346,13 @@
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>コラボレーター</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>コラボレーター</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>編集者</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>ルームの管理者</value>
+  </data>
 </root>

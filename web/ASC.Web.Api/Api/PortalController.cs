@@ -134,6 +134,7 @@ public class PortalController : ControllerBase
         _quotaHelper = quotaHelper;
     }
 
+    [AllowNotPayment]
     [HttpGet("")]
     public TenantDto Get()
     {

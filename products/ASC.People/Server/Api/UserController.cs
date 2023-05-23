@@ -581,13 +581,13 @@ public class UserController : PeopleControllerBase
             _apiContext.SetDataFiltered();
         }
 
-        return GetFullByFilter(status, groupId, null, null, null, null);
+        return GetFullByFilter(status, groupId, null, null, null, null, null);
     }
 
     [HttpGet("filter")]
-    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
+    public async IAsyncEnumerable<EmployeeFullDto> GetFullByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
@@ -633,9 +633,9 @@ public class UserController : PeopleControllerBase
     }
 
     [HttpGet("simple/filter")]
-    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments)
+    public async IAsyncEnumerable<EmployeeDto> GetSimpleByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
-        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments);
+        var users = GetByFilter(employeeStatus, groupId, activationStatus, employeeType, isAdministrator, payments, accountLoginType);
 
         foreach (var user in users)
         {
@@ -1321,7 +1321,7 @@ public class UserController : PeopleControllerBase
         return string.Empty;
     }
 
-    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)
+    private IQueryable<UserInfo> GetByFilter(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments, AccountLoginType? accountLoginType)
     {
         if (_coreBaseSettings.Personal)
         {
@@ -1385,7 +1385,7 @@ public class UserController : PeopleControllerBase
             includeGroups.Add(adminGroups);
         }
 
-        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
+        var users = _userManager.GetUsers(isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, _apiContext.FilterValue, _apiContext.SortBy, !_apiContext.SortDescending, _apiContext.Count, _apiContext.StartIndex, out var total, out var count);
 
         _apiContext.SetTotalCount(total).SetCount(count);
 

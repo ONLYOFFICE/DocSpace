@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog creato alle</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Segnalibro creato alle</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Caso CRM creato alle</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Commento aggiunto alle</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Contatto CRM creato alle</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Opportunità CRM creata alle</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Discussione creata alle</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Evento creato alle</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Documento creato/caricato alle</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Cartella creata alle</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum creato alle</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Voto creato alle</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Post creato alle</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Milestone è stato creato alle</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Progetto creato alle</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Attività creata alle</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Accetta</value>
   </data>
@@ -181,9 +133,6 @@
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Usa lo sconto</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Per saperne di più &gt;&gt;</value>
-  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Attiva la tua email per "${__VirtualRootPath}":"$InviteLink" portale.
 
@@ -229,8 +178,7 @@ Il team di supporto ONLYOFFICE®
   <data name="pattern_change_phone" xml:space="preserve">
     <value>h1.Richiesta cambio numero di cellulare
 
-Gentile $UserName,
-hai richiesto di modificare il numero cellulare usato per accedere al portale ${LetterLogoText}.
+Gentile $UserName, hai richiesto di modificare il numero cellulare usato per accedere al portale ${LetterLogoText}.
 
 Si prega di seguire il link di seguito per completare l'operazione:
 
@@ -412,7 +360,6 @@ $GreenButton
       Administrator ha creato un nuovo &lt;b&gt;$Address&lt;/b&gt; di posta per te sul portale "${__VirtualRootPath}":"${__VirtualRootPath}".
 
       Usa le seguenti impostazioni per ogni email client:
-
       Login: &lt;b&gt;$Login&lt;/b&gt;
       Password: "&lt;b&gt;imposta password&lt;/b&gt;":"$MyStaffLink"
 
@@ -450,7 +397,6 @@ Si è verificato un errore durante la migrazione in un'altra regione. Si prega d
 Il tuo portale è ora disponibile al vecchio indirizzo "$PortalUrl":"$PortalUrl"
 
 Se hai domande o hai bisogno di assistenza, non esitate a contattarci all'indirizzo "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 I migliori saluti,
 Team di supporto ONLYOFFICE®
 "www.onlyoffice.com":"http://onlyoffice.com/"
@@ -676,7 +622,9 @@ Il processo di eliminazione dell'utente e la riassegnazione dei suoi dati a un a
   <data name="pattern_reassigns_failed" xml:space="preserve">
     <value>Gentile $UserName,
 
-La procedura di riassegnazione dei dati dall'utente "$FromUserName":"$FromUserLink" all'utente "$ToUserName":"$ToUserLink" non riuscita.</value>
+La procedura di riassegnazione dei dati dall'utente "$FromUserName":"$FromUserLink" all'utente "$ToUserName":"$ToUserLink" non riuscita.
+
+Messaggio di eccezione: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
     <value>Gentile $UserName,
@@ -760,7 +708,9 @@ Team di ONLYOFFICE
   </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1.cambio notifica profilo portale "${__VirtualRootPath}":"${__VirtualRootPath}"
+
 "$__AuthorName":"$__AuthorUrl" ha cambiato i suoi dettagli profilo nel portale "${__VirtualRootPath}":"${__VirtualRootPath}".
+
 
 ^Se non desideri ricevere le notifiche sugli aggiornamenti del profilo, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL".^</value>
   </data>
@@ -782,6 +732,7 @@ $activity
 
 Questo messaggio è stato generato automaticamente per testare le tue impostazioni SMTP. Se stai visualizzando questo messaggio significa che le impostazioni sono corrette e puoi usarle sul tuo portale.
 
+
 Cordiali Saluti
 il Team ONLYOFFICE</value>
   </data>
@@ -789,6 +740,7 @@ il Team ONLYOFFICE</value>
     <value>h1.Nuovo utente aggiunto al portale "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 "$__AuthorName":"$__AuthorUrl" si è unito al potale su "${__VirtualRootPath}":"${__VirtualRootPath}".
+
 
 ^Se non desideri ricevere le notifiche su nuovi utenti, gestisci le tue "impostazioni di sottoscrizione":"$RecipientSubscriptionConfigURL". ^</value>
   </data>
@@ -1322,8 +1274,7 @@ Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcen
 
 Distinti saluti,
 Team di ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/it
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/it"</value>
   </data>
   <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
     <value>Salve, $UserName!
@@ -1560,5 +1511,8 @@ $GreenButton
 Il collegamento è valido per 7 giorni.
 
 Non vuoi cambiare la tua password? Ignora questo messaggio.</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>CONFERMA</value>
   </data>
 </root>

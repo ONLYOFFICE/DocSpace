@@ -34,6 +34,7 @@ class SectionBodyContent extends React.Component {
     ) {
       setSelection([]);
       setBufferSelection(null);
+      window?.getSelection()?.removeAllRanges();
     }
   };
 

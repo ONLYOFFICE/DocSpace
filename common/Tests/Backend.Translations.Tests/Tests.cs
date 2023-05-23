@@ -45,16 +45,16 @@ public class Tests
 
         var directory = new DirectoryInfo(basePath);
         var resources = GetResources(directory);
-        var netralresources = resources.Where(f => IsNetral(f.Name));
+        var neutralresources = resources.Where(f => IsNeutral(f.Name));
         _resources = new Dictionary<FileInfo, IEnumerable<FileInfo>>();
-        foreach (var resource in netralresources)
+        foreach (var resource in neutralresources)
         {
             var nameWithoutExt = resource.FullName.Substring(0, resource.FullName.Length - 5);
             _resources.Add(resource, resources.Where(r => r.FullName.StartsWith(nameWithoutExt)));
         }
     }
 
-    private bool IsNetral(string fileName)
+    private bool IsNeutral(string fileName)
     {
         var split = fileName.Split('.');
         if (split.Length == 2)
@@ -165,7 +165,7 @@ public class Tests
         var all = new HashSet<string>();
         var groupByFile = new Dictionary<FileInfo, HashSet<string>>();
         var allExist = true;
-        var message = new StringBuilder("Next languages are not equal 'en' by translated files count: \n\n");
+        var message = new StringBuilder("Next languages are missing from files: \n\n");
 
         foreach (var pair in _resources)
         {
@@ -176,8 +176,8 @@ public class Tests
                 var split = resource.Name.Split('.');
                 if (split.Length == 2)
                 {
-                    all.Add("netral");
-                    set.Add("netral");
+                    all.Add("en");
+                    set.Add("en");
                 }
                 else
                 {
@@ -190,8 +190,8 @@ public class Tests
                     }
                     else
                     {
-                        all.Add("netral");
-                        set.Add("netral");
+                        all.Add("en");
+                        set.Add("en");
                     }
                 }
             }
@@ -227,7 +227,7 @@ public class Tests
         var all = new Dictionary<FileInfo, HashSet<string>>();
         var groupByFile = new Dictionary<FileInfo, Dictionary<FileInfo, HashSet<string>>>();
         var allExist = true;
-        var message = new StringBuilder("Next languages are not equal 'en' by translated keys count:\n\n");
+        var message = new StringBuilder("Next languages do not have all keys:\n\n");
 
         foreach (var pair in _resources)
         {
@@ -265,7 +265,7 @@ public class Tests
 
                     var culture = GetCulture(keyValue.Key.Name);
 
-                    message.AppendLine($"{++counter}. Language ('{culture}'={x}/'en'={y}). Path '{pair.Key.FullName}' Not found keys:");
+                    message.AppendLine($"{++counter}. Language ('{culture}'={y - x}/'all keys'={y}). Path '{pair.Key.FullName}' Not found keys:");
                     message.AppendLine();
 
                     foreach (var key in notExist)
@@ -319,13 +319,13 @@ public class Tests
         var allRuleCheck = true;
         foreach (var pair in _resources)
         {
-            var netral = CreateTranslateDictionary(pair.Key.FullName);
+            var neutral = CreateTranslateDictionary(pair.Key.FullName);
             foreach (var resource in pair.Value)
             {
                 var list = new Dictionary<string, (string, string)>();
                 foreach (var entry in CreateTranslateDictionary(resource.FullName))
                 {
-                    if (netral.TryGetValue(entry.Key, out var value))
+                    if (neutral.TryGetValue(entry.Key, out var value))
                     {
                         if (compliesToRile(value, entry.Value))
                         {
@@ -387,6 +387,12 @@ public class Tests
     private string GetCulture(string fullName)
     {
         var split = fullName.Split('.');
-        return split[split.Length - 2];
+        if (split.Count() == 3) {
+            return split[split.Length - 2];
+        }
+        else
+        {
+            return "en";
+        }
     }
 }

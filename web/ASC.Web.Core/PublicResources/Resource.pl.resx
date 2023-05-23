@@ -586,4 +586,10 @@
   <data name="ConsumersYandexClientSecret" xml:space="preserve">
     <value>Hasło</value>
   </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Biznes</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
 </root>

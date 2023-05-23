@@ -997,4 +997,10 @@
   <data name="ConsumersTelegram" xml:space="preserve">
     <value>Telegram</value>
   </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
 </root>

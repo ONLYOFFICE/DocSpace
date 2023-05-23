@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Блог був створений у</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Закладка була створена на</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Корпорація CRM була створена на</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Коментар було додано в</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Контакт CRM був створений на</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM можливість була створена на</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Обговорення було створено на</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Подію було створено на</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Документ був створений / завантажений на</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Папка була створена в</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Форум був створений в</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Опитування було створено в</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Пост був створений в</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Етап був створений у</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Проект був створений у</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Чат був створений у</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Панель управління доступом</value>
   </data>
@@ -126,9 +78,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Виберіть цінові плани прямо зараз</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Детальніше&gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Активуйте свою електронну пошту для порталу "${__VirtualRootPath}":"$InviteLink"
@@ -300,6 +249,7 @@ $Body</value>
   </data>
   <data name="pattern_join" xml:space="preserve">
     <value>h1.Запрошення приєднатись до порталу "${__VirtualRootPath}":"$InviteLink"
+
 Доброго дня,
 
 Вас запросили приєднатися до порталу "${__VirtualRootPath}":"$InviteLink" в ${LetterLogoText} - платформи для управління документами та проектами. Приєднуйтесь до порталу та розпочніть співпрацювати з колегами чи друзями.
@@ -629,7 +579,7 @@ $GreenButton
 
 Посилання дійсне протягом 7 днів.
 
-Не хочете змінювати пароль? Просто проігноруйте це повідомлення.</value>
+Не хочете змінювати пароль? Просто проігноруйте це повідомлення</value>
   </data>
   <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
     <value>Вітаємо, $UserName!
@@ -1211,5 +1161,26 @@ $GreenButton
   </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Прийняти</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ПРИЙНЯТИ</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Співпрацювати в DocSpace</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ПІДТВЕРДИТИ</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Підтвердити</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Підтвердити запрошення до DocSpace</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Підтвердити запрошення до кімнати</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Відвідати розділ «Платежі»</value>
   </data>
 </root>

@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog foi criado em</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Favorito foi criado em</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Caso CRM foi criado em</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Comentário foi adicionado em</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Contato CRM foi criado em</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Oportunidade CRM foi criado em</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Discussão foi criada em</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Evento foi criado em</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Documento foi criado/carregado em</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Pasta foi criada em</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Fórum foi criado em</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Enquete foi criada em</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Post foi criado em</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Marco foi criado em</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projeto foi criado em</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Tarefa foi criada em</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Aceitar</value>
   </data>
@@ -180,9 +132,6 @@
   </data>
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Aplicar desconto</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Saiba mais &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Ative seu e-mail para o portal "${__VirtualRootPath}":"$InviteLink".
@@ -1296,5 +1245,8 @@ Não deseja alterar sua senha? Simplesmente ignore esta mensagem.</value>
   </data>
   <data name="subject_enterprise_admin_activation_v1" xml:space="preserve">
     <value>Bem-vindo ao ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ACEITAR</value>
   </data>
 </root>

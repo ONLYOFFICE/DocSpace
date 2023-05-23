@@ -154,6 +154,7 @@ A Equipa da ONLYOFFICE
 Acabou de criar um DocSpace na ONLYOFFICE, uma plataforma de documentos onde pode melhorar a colaboração com a sua equipa, clientes, parceiros e muito mais. O seu endereço é "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Por favor confirme o seu email (o link é válido por 7 dias):
+
 $GreenButton
 
 O seu plano de preços atual é o STARTUP. É totalmente gratuito e inclui:
@@ -705,5 +706,26 @@ A Equipa da ONLYOFFICE
   </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Aceitar</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ACEITAR</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Colabore no DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Confirmar Convite para o DocSpace</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>CONFIRMAR</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Confirmar</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Confirmar Convite para a Sala</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Visitar a Secção dos Pagamentos</value>
   </data>
 </root>

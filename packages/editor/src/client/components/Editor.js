@@ -196,7 +196,7 @@ function Editor({
     }
   };
 
-  const getDefaultFileName = () => {
+  const getDefaultFileName = (withExt = false) => {
     const documentType = config?.documentType;
 
     const fileExt =
@@ -204,20 +204,31 @@ function Editor({
         ? "docx"
         : documentType === "slide"
         ? "pptx"
-        : "xlsx";
+        : documentType === "cell"
+        ? "xlsx"
+        : "docxf";
+
+    let fileName = t("Common:NewDocument");
 
     switch (fileExt) {
-      case "docx":
-        return t("Common:NewDocument");
       case "xlsx":
-        return t("Common:NewSpreadsheet");
+        fileName = t("Common:NewSpreadsheet");
+        break;
       case "pptx":
-        return t("Common:NewPresentation");
+        fileName = t("Common:NewPresentation");
+        break;
       case "docxf":
-        return t("Common:NewMasterForm");
+        fileName = t("Common:NewMasterForm");
+        break;
       default:
-        return t("Common:NewFolder");
+        break;
     }
+
+    if (withExt) {
+      fileName = `${fileName}.${fileExt}`;
+    }
+
+    return fileName;
   };
 
   const throttledChangeTitle = throttle(() => changeTitle(), 500);
@@ -274,7 +285,7 @@ function Editor({
   };
 
   const onSDKRequestCreateNew = (event) => {
-    const defaultFileName = getDefaultFileName();
+    const defaultFileName = getDefaultFileName(true);
 
     createFile(fileInfo.folderId, defaultFileName)
       .then((newFile) => {
@@ -647,16 +658,21 @@ function Editor({
           onRequestCreateNew = onSDKRequestCreateNew;
         } else {
           //FireFox security issue fix (onRequestCreateNew will be blocked)
-          const documentType = config?.documentType;
+          const documentType = config?.documentType || "word";
           const defaultFileName = getDefaultFileName();
 
-          config.editorConfig.createUrl = combineUrl(
-            window.location.origin,
-            window.DocSpaceConfig?.proxy?.url,
-            `/filehandler.ashx?action=create&doctype=${documentType}&title=${encodeURIComponent(
-              defaultFileName
-            )}`
+          const url = new URL(
+            combineUrl(
+              window.location.origin,
+              window.DocSpaceConfig?.proxy?.url,
+              "/filehandler.ashx"
+            )
           );
+          url.searchParams.append("action", "create");
+          url.searchParams.append("doctype", documentType);
+          url.searchParams.append("title", defaultFileName);
+
+          config.editorConfig.createUrl = url.toString();
         }
       }
 

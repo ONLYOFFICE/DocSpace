@@ -1,4 +1,5 @@
 {
+  "AccountLoginType": "Тип входа в аккаунт",
   "DeleteSelfProfile": "Удалить профиль",
   "DisabledEmployeeStatus": "Заблокирован",
   "DisableUserButton": "Заблокировать",
@@ -12,6 +13,7 @@
   "RemoveData": "Удалить личные данные",
   "ResetAuth": "Сбросить аутентификацию",
   "SendInviteAgain": "Отправить приглашение ещё раз",
+  "StandardLogin": "Стандартный вход",
   "SuccessChangeUserStatus": "Статус пользователя успешно изменен",
   "SuccessDeletePersonalData": "Персональные данные успешно удалены",
   "SuccessSentInvitation": "Приглашение было успешно отправлено",

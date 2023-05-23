@@ -320,6 +320,9 @@ class Section extends React.Component {
                             icon={secondaryProgressBarIcon}
                             percent={secondaryProgressBarValue}
                             alert={showSecondaryButtonAlert}
+                            showTwoProgress={
+                              showPrimaryProgressBar && showSecondaryProgressBar
+                            }
                           />
                         </>
                       ) : showPrimaryProgressBar &&

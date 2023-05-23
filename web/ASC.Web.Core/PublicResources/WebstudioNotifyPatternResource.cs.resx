@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog byl vytvořen na</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Záložka byla vytvořena na</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Případ CRM byl vytvořen na</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Komentář byl přidán na</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Kontakt CRM byl vytvořen na</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Příležitost CRM byla vytvořena na</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Diskuze byla vytvořena v</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Událost byla vytvořena v</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Dokument byl vytvořen/nahrán na</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Složka byla vytvořena na</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum bylo vytvořeno na</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Anketa byla vytvořena na</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Příspěvek byl vytvořen na</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Milník byl vytvořen na</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projekt byl vytvořen na</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Úkol byl vytvořen na</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Přístupový ovládací panel</value>
   </data>
@@ -126,9 +78,6 @@
   </data>
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Vyberte si cenový plán hned teď</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Dozvědět se více &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Aktivujte Váš e-mail pro "${__VirtualRootPath}":"$InviteLink" portál.
@@ -314,7 +263,6 @@ tým ONLYOFFICE
     <value>h1.Chyba při migraci portálu dalšího regionu
 
 Při migraci do  $RegionName regionu se objevila chyba. Prosím, zkuste to znovu později. Váš portál je teď dostupný na staré adrese "$PortalUrl":"$PortalUrl"
-
 Pokud máte nějaké dotazy nebo potřebujete pomoc, neváhejte nás kontaktovat na "support@onlyoffice.com":"mailto:support@onlyoffice.com"
 
 S pozdravem,
@@ -510,7 +458,7 @@ tým ONLYOFFICE</value>
     <value>${LetterLogoText}. Prosím, aktivujte svou e-mailovou adresu</value>
   </data>
   <data name="subject_backup_created" xml:space="preserve">
-    <value>${LetterLogoText}.${__ VirtualRootPath} byl vytvořen záložní portál</value>
+    <value>${LetterLogoText}. ${__VirtualRootPath} byl vytvořen záložní portál</value>
   </data>
   <data name="subject_change_password" xml:space="preserve">
     <value>${LetterLogoText} pomoc s heslem</value>
@@ -1175,8 +1123,7 @@ $GreenButton
 
 S přátelským pozdravem,
 Tým ONLYOFFICE
-"www.onlyoffice.com":"https://onlyoffice.com/"
-</value>
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
   </data>
   <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
     <value>Dobrý den, $UserName!

@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
-    <value>Pozdravljen, $UserName!
-
-Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj lahko:
-
-* Delate z drugimi uporabniki v sobi, v katero ste povabljeni*: sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen*.
-
-* *Delate z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
-
-* *Sodelujete pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirate v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
-
-* *Povežete katero koli shrambo v oblaku* in delate brez preklapljanja med aplikacijami. 
-
-$GreenButton
-
-Če potrebujete pomoč, pobrskajte v našem "Centru za pomoč":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
-
-S spoštovanjem, 
-ekipa ONLYOFFICE
-"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  <data name="POST|api/2.0/files/file/{fileId}/startedit_Description" xml:space="preserve">
+    <value>Rozpocznij edycję</value>
   </data>
-  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
-    <value>Ali želite spremeniti geslo v svojem računu za pisarno v oblaku? Kliknite spodnji gumb za potrditev.
-
-$GreenButton
-
-Povezava je veljavna 7 dni.
-
-Ne želite spremeniti gesla? Prezrite to sporočilo.</value>
+  <data name="POST|api/2.0/files/file/{fileId}/startedit" xml:space="preserve">
+    <value>Rozpocznij edycję opisu</value>
   </data>
 </root>

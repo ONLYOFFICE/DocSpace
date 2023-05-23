@@ -361,4 +361,10 @@
   <data name="AceStatusEnum_Editing" xml:space="preserve">
     <value>可编辑</value>
   </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>协作者</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>房间管理员</value>
+  </data>
 </root>

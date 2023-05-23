@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Создан блог в</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Создана закладка в</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Создано мероприятие CRM в</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Добавлен комментарий в</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Создан контакт CRM в</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Создана сделка CRM в</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Создано обсуждение в</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Создано событие в</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Создан/загружен документ в</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Создана папка в</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Создан форум в</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Создан опрос в</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Создана запись в</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Создана веха в</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Создан проект в</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Создана задача в</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Принять</value>
   </data>
@@ -180,9 +132,6 @@
   </data>
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Использовать скидку</value>
-  </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Подробнее &gt;&gt;</value>
   </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Активируйте Ваш адрес электронной почты на портале "${__VirtualRootPath}":"$InviteLink".
@@ -330,6 +279,7 @@ $GreenButton
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Сообщение с портала "${__VirtualRootPath}":"${__VirtualRootPath}"
+
 Email: $UserEmail
 
 $Body</value>
@@ -869,6 +819,7 @@ $GreenButton
 
 Пользователь "$__AuthorName":"$__AuthorUrl" изменил свой профиль на портале "${__VirtualRootPath}":"${__VirtualRootPath}".
 
+
 ^Если Вы не хотите получать оповещения об обновлениях профиля, пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_self_profile_updated_tg" xml:space="preserve">
@@ -939,6 +890,7 @@ $activity
     <value>h1.Новый пользователь добавлен на портал "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 Пользователь "$__AuthorName":"$__AuthorUrl" присоединился к порталу "${__VirtualRootPath}":"${__VirtualRootPath}".
+
 
 ^Если Вы не хотите получать оповещения о новых пользователях, пожалуйста, измените "параметры подписки":"$RecipientSubscriptionConfigURL".^</value>
   </data>
