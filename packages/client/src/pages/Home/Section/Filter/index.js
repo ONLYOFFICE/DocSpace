@@ -1411,7 +1411,7 @@ const SectionFilterContent = ({
         },
       ];
 
-      filterOptions.push(...authorOption);
+      !isPublicRoom && filterOptions.push(...authorOption);
 
       filterOptions.push(...typeOptions);
     }
