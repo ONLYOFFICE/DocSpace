@@ -1150,30 +1150,6 @@ class FilesStore {
     return res;
   };
 
-  getFolder = (folderId, filterData, signal, isRooms) => {
-    if (window.location.pathname === "/rooms/share") {
-      if (typeof folderId !== "object") {
-        return api.files.getFolder(
-          folderId,
-          filterData,
-          signal,
-          this.publicRoomKey
-        );
-      } else {
-        return api.files.getFolder(
-          this.publicRoomStore.roomId,
-          filterData,
-          signal,
-          this.publicRoomKey
-        );
-      }
-    } else if (isRooms) {
-      return api.rooms.getRooms(filterData, signal);
-    } else {
-      return api.files.getFolder(folderId, filterData, signal);
-    }
-  };
-
   fetchFiles = (
     folderId,
     filter,
@@ -1218,7 +1194,13 @@ class FilesStore {
 
     setSelectedNode([folderId + ""]);
 
-    return this.getFolder(folderId, filterData, this.filesController.signal)
+    return api.files
+      .getFolder(
+        folderId,
+        filterData,
+        this.filesController.signal,
+        this.publicRoomKey
+      )
       .then(async (data) => {
         filterData.total = data.total;
 
@@ -1445,7 +1427,8 @@ class FilesStore {
     if (folderId) setSelectedNode([folderId + ""]);
 
     const request = () =>
-      this.getFolder(_, filterData, this.roomsController.signal, true)
+      api.rooms
+        .getRooms(filterData, this.roomsController.signal)
         .then(async (data) => {
           if (!folderId) setSelectedNode([data.current.id + ""]);
 
