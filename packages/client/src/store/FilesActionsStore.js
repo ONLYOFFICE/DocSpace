@@ -501,40 +501,44 @@ class FilesActionStore {
     const fileIds = fileConvertIds.map((f) => f.key || f);
     addActiveItems(fileIds, folderIds);
 
+    const shareKey = this.filesStore.publicRoomKey;
+
     try {
-      await downloadFiles(fileConvertIds, folderIds).then(async (res) => {
-        const data = res[0] ? res[0] : null;
-        const pbData = {
-          icon: "file",
-          label,
-          operationId,
-        };
-
-        const item =
-          data?.finished && data?.url
-            ? data
-            : await this.uploadDataStore.loopFilesOperations(
-                data,
-                pbData,
-                true
-              );
-
-        clearActiveOperations(fileIds, folderIds);
-        this.setIsBulkDownload(false);
-
-        if (item.url) {
-          window.location.href = item.url;
-        } else {
-          setSecondaryProgressBarData({
-            visible: true,
-            alert: true,
+      await downloadFiles(fileConvertIds, folderIds, shareKey).then(
+        async (res) => {
+          const data = res[0] ? res[0] : null;
+          const pbData = {
+            icon: "file",
+            label,
             operationId,
-          });
-        }
+          };
 
-        setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
-        !item.url && toastr.error(translations.error, null, 0, true);
-      });
+          const item =
+            data?.finished && data?.url
+              ? data
+              : await this.uploadDataStore.loopFilesOperations(
+                  data,
+                  pbData,
+                  true
+                );
+
+          clearActiveOperations(fileIds, folderIds);
+          this.setIsBulkDownload(false);
+
+          if (item.url) {
+            window.location.href = item.url;
+          } else {
+            setSecondaryProgressBarData({
+              visible: true,
+              alert: true,
+              operationId,
+            });
+          }
+
+          setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
+          !item.url && toastr.error(translations.error, null, 0, true);
+        }
+      );
     } catch (err) {
       this.setIsBulkDownload(false);
       clearActiveOperations(fileIds, folderIds);

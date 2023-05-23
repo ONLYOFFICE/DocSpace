@@ -563,9 +563,14 @@ export function uploadFile(url, data) {
   return axios.post(url, data);
 }
 
-export function downloadFiles(fileIds, folderIds) {
+export function downloadFiles(fileIds, folderIds, shareKey) {
   const data = { fileIds, folderIds };
-  return request({ method: "put", url: "/files/fileops/bulkdownload", data });
+  const share = shareKey ? `?share=${shareKey}` : "";
+  return request({
+    method: "put",
+    url: `/files/fileops/bulkdownload${share}`,
+    data,
+  });
 }
 
 export function getProgress() {
