@@ -158,7 +158,7 @@ class PaymentStore {
       });
   };
 
-  enterpriseInit = async () => {
+  standaloneInit = async () => {
     if (this.isInitPaymentPage) return;
 
     await this.getSettingsPayment();

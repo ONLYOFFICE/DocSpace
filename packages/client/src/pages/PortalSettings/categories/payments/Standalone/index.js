@@ -14,7 +14,7 @@ import Loaders from "@docspace/common/components/Loaders";
 
 const StandalonePage = (props) => {
   const {
-    enterpriseInit,
+    standaloneInit,
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
@@ -29,7 +29,7 @@ const StandalonePage = (props) => {
   useEffect(() => {
     if (!isLoadedTariffStatus || !isLoadedCurrentQuota || !ready) return;
 
-    enterpriseInit();
+    standaloneInit();
   }, [isLoadedTariffStatus, isLoadedCurrentQuota, ready]);
 
   if (
@@ -56,13 +56,13 @@ const StandalonePage = (props) => {
 export default inject(({ auth, payments }) => {
   const { currentQuotaStore, currentTariffStatusStore } = auth;
 
-  const { enterpriseInit, isInitPaymentPage } = payments;
+  const { standaloneInit, isInitPaymentPage } = payments;
   const { isLoaded: isLoadedCurrentQuota, isTrial } = currentQuotaStore;
   const { isLoaded: isLoadedTariffStatus } = currentTariffStatusStore;
 
   return {
     isTrial,
-    enterpriseInit,
+    standaloneInit,
     isInitPaymentPage,
     isLoadedTariffStatus,
     isLoadedCurrentQuota,
