@@ -24,6 +24,11 @@ const PublicRoom = (props) => {
     validatePublicRoomKey,
     fetchFiles,
     setRoomHref,
+
+    showSecondaryProgressBar,
+    secondaryProgressBarValue,
+    secondaryProgressBarIcon,
+    showSecondaryButtonAlert,
   } = props;
 
   const location = useLocation();
@@ -40,12 +45,20 @@ const PublicRoom = (props) => {
       });
   }, [fetchFiles, isLoaded]);
 
+  const sectionProps = {
+    showSecondaryProgressBar,
+    secondaryProgressBarValue,
+    secondaryProgressBarIcon,
+    showSecondaryButtonAlert,
+  };
+
   const roomPage = () => (
     <>
       <Section
         withBodyScroll
         // withBodyAutoFocus={!isMobile}
         withPaging={withPaging}
+        {...sectionProps}
       >
         <Section.SectionHeader>
           <SectionHeaderContent />
@@ -92,28 +105,42 @@ const PublicRoom = (props) => {
   return isLoading ? renderLoader() : isLoaded ? roomPage() : renderPage();
 };
 
-export default inject(({ auth, filesStore, publicRoomStore }) => {
-  const { withPaging } = auth.settingsStore;
-  const {
-    validatePublicRoomKey,
-    isLoaded,
-    isLoading,
-    roomStatus,
-    roomId,
-    setRoomHref,
-  } = publicRoomStore;
+export default inject(
+  ({ auth, filesStore, publicRoomStore, uploadDataStore }) => {
+    const { withPaging } = auth.settingsStore;
+    const {
+      validatePublicRoomKey,
+      isLoaded,
+      isLoading,
+      roomStatus,
+      roomId,
+      setRoomHref,
+    } = publicRoomStore;
 
-  const { fetchFiles } = filesStore;
+    const { fetchFiles } = filesStore;
 
-  return {
-    roomId,
-    isLoaded,
-    isLoading,
-    roomStatus,
-    fetchFiles,
-    setRoomHref,
+    const {
+      visible: showSecondaryProgressBar,
+      percent: secondaryProgressBarValue,
+      icon: secondaryProgressBarIcon,
+      alert: showSecondaryButtonAlert,
+    } = uploadDataStore.secondaryProgressDataStore;
 
-    withPaging,
-    validatePublicRoomKey,
-  };
-})(observer(PublicRoom));
+    return {
+      roomId,
+      isLoaded,
+      isLoading,
+      roomStatus,
+      fetchFiles,
+      setRoomHref,
+
+      withPaging,
+      validatePublicRoomKey,
+
+      showSecondaryProgressBar,
+      secondaryProgressBarValue,
+      secondaryProgressBarIcon,
+      showSecondaryButtonAlert,
+    };
+  }
+)(observer(PublicRoom));
