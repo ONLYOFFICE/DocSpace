@@ -186,6 +186,7 @@ const SectionHeaderContent = (props) => {
     theme,
     whiteLabelLogoUrls,
     setRoomSharingPanelVisible,
+    downloadAction,
   } = props;
 
   const navigate = useNavigate();
@@ -423,9 +424,9 @@ const SectionHeaderContent = (props) => {
   const onDownloadAction = () => {
     setBufferSelection(currentFolderId);
     setIsFolderActions(true);
-    props
-      .downloadAction(t("Translations:ArchivingData"), [currentFolderId])
-      .catch((err) => toastr.error(err));
+    downloadAction(t("Translations:ArchivingData"), [currentFolderId]).catch(
+      (err) => toastr.error(err)
+    );
   };
 
   const renameAction = () => {
@@ -510,7 +511,8 @@ const SectionHeaderContent = (props) => {
   };
 
   const onDownloadAll = () => {
-    alert("onDownloadAll");
+    onDownloadAction();
+    // downloadAction(t("Translations:ArchivingData"), currentFolderId);
   };
 
   const onShareRoom = () => {
