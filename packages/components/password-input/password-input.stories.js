@@ -2,6 +2,12 @@ import React, { useState, useEffect } from "react";
 import PasswordInput from ".";
 import TextInput from "../text-input";
 
+const disable = {
+  table: {
+    disable: true,
+  },
+};
+
 export default {
   title: "Components/PasswordInput",
   component: PasswordInput,
@@ -13,10 +19,10 @@ export default {
     },
   },
   argTypes: {
-    settingMinLength: { description: "Property for story" },
-    settingsUpperCase: { description: "Property for story" },
-    settingsDigits: { description: "Property for story" },
-    settingsSpecSymbols: { description: "Property for story" },
+    settingMinLength: disable,
+    settingsUpperCase: disable,
+    settingsDigits: disable,
+    settingsSpecSymbols: disable,
   },
 };
 

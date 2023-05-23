@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Paging from "./";
 
+const disable = {
+  table: {
+    disable: true,
+  },
+};
+
 export default {
   title: "Components/Paging",
   component: Paging,
@@ -16,13 +22,10 @@ export default {
     onSelectCount: { action: "onSelectCount" },
     previousAction: { action: "onPrevious" },
     nextAction: { action: "onNext" },
-    selectedCount: {
-      control: { type: "select", options: [25, 50, 100] },
-      description: "Property for story",
-    },
-    pageCount: { description: "Property for story" },
-    displayItems: { description: "Property for story" },
-    displayCount: { description: "Property for story" },
+    selectedCount: disable,
+    pageCount: disable,
+    displayItems: disable,
+    displayCount: disable,
   },
 };
 
