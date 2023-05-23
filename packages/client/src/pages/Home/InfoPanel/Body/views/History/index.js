@@ -44,22 +44,16 @@ const History = ({
       setView("info_details");
     }, HISTORY_TIMEOUT);
 
-    let fetchedHistory = await getHistory(module, itemId);
-    fetchedHistory = parseHistoryJSON(fetchedHistory);
-
-    clearTimeout(loadTimerId);
-    clearTimeout(timeoutTimerId);
-
-    if (isMount.current) {
-      if (!selectionHistory || selectionHistory.itemId !== itemId) {
-        setSelectionHistory({
-          itemId,
-          isFile: !selection.isFolder && !selection.isRoom,
-          ...fetchedHistory,
-        });
-      }
-      setShowLoader(false);
-    }
+    getHistory(module, itemId)
+      .then((data) => {
+        const parsedHistory = parseHistoryJSON(data);
+        if (isMount.current) setHistory(parsedHistory);
+      })
+      .finally(() => {
+        clearTimeout(loadTimerId);
+        clearTimeout(timeoutTimerId);
+        if (isMount.current) setShowLoader(false);
+      });
   };
 
   const parseHistoryJSON = (fetchedHistory) => {
