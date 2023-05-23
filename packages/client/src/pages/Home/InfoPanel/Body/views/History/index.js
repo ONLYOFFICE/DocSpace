@@ -28,31 +28,48 @@ const History = ({
   setView,
   isCollaborator,
 }) => {
-  let history = selectionHistory;
-  const [showLoader, setShowLoader] = useState(false);
+  const abortControllerRef = useRef(new AbortController());
+
+  const [history, setHistory] = useState(null);
+  const [historyIsLoading, setHistoryIsLoading] = useState(false);
+  const [isShowLoader, setIsShowLoader] = useState(false);
 
   const isMount = useRef(true);
 
   const fetchHistory = async (itemId) => {
+    if (historyIsLoading) {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = new AbortController();
+    }
+
+    setHistoryIsLoading(true);
+
     let module = "files";
     if (selection.isRoom) module = "rooms";
     else if (selection.isFolder) module = "folders";
 
-    let loadTimerId = setTimeout(() => setShowLoader(true), HISTORY_LOAD);
+    let loadTimerId = setTimeout(() => setIsShowLoader(true), HISTORY_LOAD);
     let timeoutTimerId = setTimeout(() => {
       toastr.error(`History load timeout of ${HISTORY_TIMEOUT}ms exceeded`);
       setView("info_details");
     }, HISTORY_TIMEOUT);
 
-    getHistory(module, itemId)
+    getHistory(module, itemId, abortControllerRef.current?.signal)
       .then((data) => {
         const parsedHistory = parseHistoryJSON(data);
-        if (isMount.current) setHistory(parsedHistory);
+        if (isMount.current) {
+          setHistory(parsedHistory);
+          setSelection({ ...selection, history: parsedHistory });
+        }
+      })
+      .catch((err) => {
+        if (!abortControllerRef.current?.aborted) console.log(err);
       })
       .finally(() => {
         clearTimeout(loadTimerId);
         clearTimeout(timeoutTimerId);
-        if (isMount.current) setShowLoader(false);
+        setHistoryIsLoading(false);
+        if (isMount.current) setIsShowLoader(false);
       });
   };
 
@@ -100,13 +117,16 @@ const History = ({
   useEffect(() => {
     if (!isMount.current) return;
     fetchHistory(selection.id);
-  }, [selection]);
+  }, [selection.id]);
 
   useEffect(() => {
-    return () => (isMount.current = false);
+    return () => {
+      abortControllerRef.current?.abort();
+      isMount.current = false;
+    };
   }, []);
 
-  if (showLoader) return <Loaders.InfoPanelViewLoader view="history" />;
+  if (isShowLoader) return <Loaders.InfoPanelViewLoader view="history" />;
   if (!history) return <></>;
   if (history?.feeds?.length === 0) return <NoHistory t={t} />;
 

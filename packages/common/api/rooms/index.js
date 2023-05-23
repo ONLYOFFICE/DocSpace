@@ -59,10 +59,11 @@ export function updateRoomMemberRole(id, data) {
   });
 }
 
-export function getHistory(module, id) {
+export function getHistory(module, id, signal = null) {
   const options = {
     method: "get",
     url: `/feed/filter?module=${module}&withRelated=true&id=${id}`,
+    signal,
   };
 
   return request(options).then((res) => {
