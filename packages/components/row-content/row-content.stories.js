@@ -17,13 +17,7 @@ const Template = (args) => {
       <h3>Base demo</h3>
       <div style={{ height: "16px" }}></div>
       <RowContent {...args}>
-        <Link
-          type="page"
-          title="Demo"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="Demo" isBold={true} fontSize="15px">
           Demo
         </Link>
         <>
@@ -56,13 +50,7 @@ const Template = (args) => {
         </Link>
       </RowContent>
       <RowContent>
-        <Link
-          type="page"
-          title="Demo Demo"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="Demo Demo" isBold={true} fontSize="15px">
           Demo Demo
         </Link>
         <>
@@ -92,13 +80,7 @@ const Template = (args) => {
         </Link>
       </RowContent>
       <RowContent>
-        <Link
-          type="page"
-          title="Demo Demo Demo"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="Demo Demo Demo" isBold={true} fontSize="15px">
           Demo Demo Demo
         </Link>
         <></>
@@ -131,7 +113,6 @@ const Template = (args) => {
           title="Demo Demo Demo Demo"
           isBold={true}
           fontSize="15px"
-          color="#333333"
         >
           Demo Demo Demo Demo
         </Link>
@@ -167,13 +148,7 @@ const Template = (args) => {
       <h3>Custom elements</h3>
       <div style={{ height: "16px" }}></div>
       <RowContent disableSideInfo={true}>
-        <Link
-          type="page"
-          title="John Doe"
-          isBold={true}
-          fontSize="15px"
-          color="#333333"
-        >
+        <Link type="page" title="John Doe" isBold={true} fontSize="15px">
           John Doe
         </Link>
         <></>
