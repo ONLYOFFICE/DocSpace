@@ -57,8 +57,8 @@ const StyledInner = styled.div`
   height: ${(props) => props.height};
   text-align: center;
   user-select: none;
-  padding-top: ${(props) => props.compact && "2px"};
-  padding-bottom: ${(props) => props.compact && "2px"};
+  padding-top: ${(props) => !props.compact && "2px"};
+  padding-bottom: ${(props) => !props.compact && "2px"};
   line-height: ${(props) => props.lineHeight};
   display: flex;
   align-items: center;
