@@ -56,7 +56,7 @@ const BenefitsContainer = ({ theme, isTrial, isEnterprise }) => {
           )
         : featuresArray.push(lifetimeLicense, techSupport);
     } else {
-      featuresArray.push(mobileEditing, techSupport);
+      featuresArray.push(scalabilityClustering, mobileEditing, techSupport);
     }
 
     return featuresArray.map((item, index) => {
