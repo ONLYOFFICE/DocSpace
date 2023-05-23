@@ -1,12 +1,13 @@
 import React from "react";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
+import { observer, inject } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledComponent } from "../StyledComponent";
 
-const OfficialDocumentation = () => {
+const OfficialDocumentation = ({ dataBackupUrl }) => {
   const { t } = useTranslation("PaymentsEnterprise");
 
   const dockerLink =
@@ -64,8 +65,34 @@ const OfficialDocumentation = () => {
           </ColorTheme>
         </Text>
       </div>
+
+      <Text className="upgrade-info">
+        <Trans
+          i18nKey="UpgradeToProBannerInstructionNote"
+          ns="PaymentsEnterprise"
+          t={t}
+        >
+          Please note that the editors will be unavailable during the upgrade.
+          We also recommend to
+          <ColorTheme
+            tag="a"
+            themeId={ThemeType.Link}
+            fontWeight="600"
+            href={dataBackupUrl}
+            target="_blank"
+          >
+            backup your data
+          </ColorTheme>
+          before you start.
+        </Trans>
+      </Text>
     </StyledComponent>
   );
 };
 
-export default OfficialDocumentation;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+  const { dataBackupUrl } = settingsStore;
+
+  return { dataBackupUrl };
+})(observer(OfficialDocumentation));

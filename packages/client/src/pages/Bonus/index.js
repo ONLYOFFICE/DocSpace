@@ -30,26 +30,6 @@ const Bonus = ({ helpUrl, getSettingsPayment }) => {
 
       <OfficialDocumentation />
 
-      <Text fontWeight={600} className="upgrade-info">
-        <Trans
-          i18nKey="UpgradeToProBannerInstructionNote"
-          ns="PaymentsEnterprise"
-          t={t}
-        >
-          Please note that the editors will be unavailable during the upgrade.
-          We also recommend to
-          <ColorTheme
-            tag="a"
-            themeId={ThemeType.Link}
-            fontWeight="600"
-            href={helpUrl}
-          >
-            backup your data
-          </ColorTheme>
-          before you start.
-        </Trans>
-      </Text>
-
       <ContactContainer />
     </StyledComponent>
   );
