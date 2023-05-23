@@ -1,6 +1,5 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
-import { observer, inject } from "mobx-react";
 
 import Text from "@docspace/components/text";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
@@ -9,6 +8,13 @@ import { StyledComponent } from "../StyledComponent";
 
 const OfficialDocumentation = () => {
   const { t } = useTranslation("PaymentsEnterprise");
+
+  const dockerLink =
+    "https://helpcenter.onlyoffice.com/installation/docspace-enterprise-install-docker.aspx";
+  const linuxDocker =
+    "https://helpcenter.onlyoffice.com/installation/docspace-enterprise-install-linux.aspx";
+  const windowsDocker =
+    "https://helpcenter.onlyoffice.com/installation/docspace-enterprise-install-windows.aspx";
 
   return (
     <StyledComponent>
@@ -21,7 +27,7 @@ const OfficialDocumentation = () => {
             themeId={ThemeType.Link}
             fontSize="13px"
             fontWeight="600"
-            href={""}
+            href={dockerLink}
             target="_blank"
           >
             {t("UpgradeToProBannerInstructionReadNow")}
@@ -36,7 +42,7 @@ const OfficialDocumentation = () => {
             themeId={ThemeType.Link}
             fontSize="13px"
             fontWeight="600"
-            href={""}
+            href={linuxDocker}
             target="_blank"
           >
             {t("UpgradeToProBannerInstructionReadNow")}
@@ -51,7 +57,7 @@ const OfficialDocumentation = () => {
             themeId={ThemeType.Link}
             fontSize="13px"
             fontWeight="600"
-            href={""}
+            href={windowsDocker}
             target="_blank"
           >
             {t("UpgradeToProBannerInstructionReadNow")}
@@ -62,9 +68,4 @@ const OfficialDocumentation = () => {
   );
 };
 
-export default inject(({ auth }) => {
-  const { settingsStore } = auth;
-  const { theme } = settingsStore;
-
-  return {};
-})(observer(OfficialDocumentation));
+export default OfficialDocumentation;
