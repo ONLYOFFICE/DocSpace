@@ -52,6 +52,13 @@ const AccordionItemHistory = styled.div`
   padding-left: 15px;
 `;
 
+const AccordionItemDetailHistory = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 15px;
+`;
+
 const ItemWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -59,12 +66,24 @@ const ItemWrapper = styled.div`
   border-color: ${(props) => (props.finished ? "#4781D1" : "#A3A9AE")};
   min-height: 40px;
 
-  .status-text {
+  .filled-status-text {
     color: ${(props) => (props.finished ? "#4781D1" : "#657077")};
   }
 `;
 
-const Accordion = ({ avatar, displayName, role, status, date, finished }) => {
+const Accordion = ({
+  avatar,
+  displayName,
+  role,
+  startFillingStatus,
+  startFillingDate,
+  filledAndSignedStatus,
+  filledAndSignedDate,
+  returnedByUser,
+  returnedByUserDate,
+  comment,
+  finished,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -108,7 +127,6 @@ const Accordion = ({ avatar, displayName, role, status, date, finished }) => {
           className={isOpen ? "icon-button-rotate" : "icon-button"}
           size={16}
           iconName={ArrowReactSvgUrl}
-          isOpen={isOpen}
         />
       </AccordionItemInfo>
 
@@ -117,36 +135,74 @@ const Accordion = ({ avatar, displayName, role, status, date, finished }) => {
           <Text
             fontSize="12px"
             lineHeight="16px"
-            className="status-text"
+            className="filled-status-text"
             style={{ marginLeft: "15px" }}
           >
-            {status}
+            {filledAndSignedStatus}
           </Text>
         </ItemWrapper>
 
         <Text fontSize="12px" lineHeight="16px" color="#657077">
-          {date}
+          {filledAndSignedDate}
         </Text>
       </AccordionItemHistory>
 
       {isOpen && (
-        <AccordionItemHistory>
-          <ItemWrapper finished={finished}>
-            <Text
-              fontSize="12px"
-              lineHeight="16px"
-              color="#657077"
-              className="status-text"
-              style={{ marginLeft: "15px" }}
-            >
-              {status}
-            </Text>
-          </ItemWrapper>
+        <>
+          <AccordionItemDetailHistory>
+            <ItemWrapper finished={finished}>
+              <Text
+                fontSize="12px"
+                lineHeight="16px"
+                color="#657077"
+                className="status-text"
+                style={{ marginLeft: "15px" }}
+              >
+                {startFillingStatus}
+              </Text>
+            </ItemWrapper>
 
-          <Text fontSize="12px" lineHeight="16px" color="#657077">
-            {date}
-          </Text>
-        </AccordionItemHistory>
+            <Text fontSize="12px" lineHeight="16px" color="#657077">
+              {startFillingDate}
+            </Text>
+          </AccordionItemDetailHistory>
+
+          {returnedByUser && (
+            <AccordionItemDetailHistory>
+              <ItemWrapper finished={finished}>
+                <Text
+                  fontSize="12px"
+                  lineHeight="16px"
+                  color="#657077"
+                  className="status-text"
+                  style={{ marginLeft: "15px" }}
+                >
+                  {returnedByUser}
+                </Text>
+              </ItemWrapper>
+
+              <Text fontSize="12px" lineHeight="16px" color="#657077">
+                {returnedByUserDate}
+              </Text>
+            </AccordionItemDetailHistory>
+          )}
+
+          {comment && (
+            <AccordionItemDetailHistory>
+              <ItemWrapper finished={finished}>
+                <Text
+                  fontSize="12px"
+                  lineHeight="16px"
+                  color="#657077"
+                  className="status-text"
+                  style={{ marginLeft: "15px" }}
+                >
+                  {comment}
+                </Text>
+              </ItemWrapper>
+            </AccordionItemDetailHistory>
+          )}
+        </>
       )}
     </AccordionItem>
   );

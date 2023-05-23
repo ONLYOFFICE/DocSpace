@@ -16,9 +16,14 @@ const FillingStatusLine = () => {
             key={data.id}
             displayName={data.displayName}
             role={data.role}
-            status={data.status}
+            startFillingStatus={data.startFillingStatus}
+            startFillingDate={data.startFillingDate}
+            filledAndSignedStatus={data.filledAndSignedStatus}
+            filledAndSignedDate={data.filledAndSignedDate}
+            returnedByUser={data.returnedByUser}
+            returnedByUserDate={data.returnedByUserDate}
+            comment={data.comment}
             avatar={data.avatar}
-            date={data.date}
             finished={data.finished}
           />
         );
