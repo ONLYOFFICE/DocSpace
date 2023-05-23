@@ -6,23 +6,13 @@ export default {
   title: "Components/MainButton",
   component: MainButton,
   parameters: { docs: { description: { component: "Components/MainButton" } } },
-  clickAction: { action: "clickAction" },
-  clickActionSecondary: { action: "clickActionSecondary" },
+  onAction: { action: "onAction" },
   clickItem: { action: "clickItem", table: { disable: true } },
 };
 
-const Template = ({
-  clickAction,
-  clickActionSecondary,
-  clickItem,
-  ...args
-}) => {
+const Template = ({ onAction, clickItem, ...args }) => {
   const clickMainButtonHandler = (e, credentials) => {
-    clickAction(e, credentials);
-  };
-
-  const clickSecondaryButtonHandler = (e, credentials) => {
-    clickActionSecondary(e, credentials);
+    onAction(e, credentials);
   };
 
   const itemsModel = [
@@ -76,8 +66,7 @@ const Template = ({
     <div style={{ width: "280px" }}>
       <MainButton
         {...args}
-        clickAction={clickMainButtonHandler}
-        clickActionSecondary={clickSecondaryButtonHandler}
+        onAction={clickMainButtonHandler}
         model={itemsModel}
       ></MainButton>
     </div>
