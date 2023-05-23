@@ -28,13 +28,12 @@ const History = ({
   setView,
   isCollaborator,
 }) => {
+  const isMount = useRef(true);
   const abortControllerRef = useRef(new AbortController());
 
   const [history, setHistory] = useState(null);
   const [historyIsLoading, setHistoryIsLoading] = useState(false);
   const [isShowLoader, setIsShowLoader] = useState(false);
-
-  const isMount = useRef(true);
 
   const fetchHistory = async (itemId) => {
     if (historyIsLoading) {
@@ -63,13 +62,15 @@ const History = ({
         }
       })
       .catch((err) => {
-        if (!abortControllerRef.current?.aborted) console.log(err);
+        if (err.message !== "canceled") console.error(err);
       })
       .finally(() => {
         clearTimeout(loadTimerId);
         clearTimeout(timeoutTimerId);
-        setHistoryIsLoading(false);
-        if (isMount.current) setIsShowLoader(false);
+        if (isMount.current) {
+          setHistoryIsLoading(false);
+          setIsShowLoader(false);
+        }
       });
   };
 
