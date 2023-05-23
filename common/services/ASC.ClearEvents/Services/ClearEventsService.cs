@@ -95,7 +95,10 @@ public class ClearEventsService : IHostedService, IDisposable
         using var scope = _serviceScopeFactory.CreateScope();
         using var ef = scope.ServiceProvider.GetService<IDbContextFactory<MessagesContext>>().CreateDbContext();
         var table = compile.Invoke(ef);
-        await table
+        int count;
+        do
+        {
+            count = await table
                 .Join(ef.Tenants, r => r.TenantId, r => r.Id, (audit, tenant) => audit)
                 .Select(r => new
                 {
@@ -109,6 +112,10 @@ public class ClearEventsService : IHostedService, IDisposable
                     .Where(a => a.TenantId == r.TenantId && a.Id == TenantAuditSettings.Guid)
                     .Select(r => JsonExtensions.JsonValue(nameof(r.Data).ToLower(), settings))
                     .FirstOrDefault() ?? TenantAuditSettings.MaxLifeTime.ToString())))
-                .Select(r => r.ef).ExecuteDeleteAsync();
+                .Select(r => r.ef)
+                .Take(1000)
+                .ExecuteDeleteAsync();
+        }
+        while(count == 1000);
     }
 }

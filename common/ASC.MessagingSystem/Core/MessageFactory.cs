@@ -49,7 +49,7 @@ public class MessageFactory
                 Ip = MessageSettings.GetIP(request),
                 Initiator = initiator,
                 Date = dateTime.HasValue ? dateTime.Value : DateTime.UtcNow,
-                TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+                TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
                 UserId = _authContext.CurrentAccount.ID,
                 Page = MessageSettings.GetReferer(request),
                 Action = action,
@@ -73,7 +73,7 @@ public class MessageFactory
             var message = new EventMessage
             {
                 Date = DateTime.UtcNow,
-                TenantId = userData == null ? (await _tenantManager.GetCurrentTenantAsync()).Id : userData.TenantId,
+                TenantId = userData == null ? await _tenantManager.GetCurrentTenantIdAsync() : userData.TenantId,
                 UserId = userData == null ? _authContext.CurrentAccount.ID : userData.UserId,
                 Action = action,
                 Description = description,
@@ -109,7 +109,7 @@ public class MessageFactory
             {
                 Initiator = initiator,
                 Date = DateTime.UtcNow,
-                TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+                TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
                 Action = action,
                 Description = description,
                 Target = target
@@ -130,7 +130,7 @@ public class MessageFactory
             var message = new EventMessage
             {
                 Date = DateTime.UtcNow,
-                TenantId = userData == null ? (await _tenantManager.GetCurrentTenantAsync()).Id : userData.TenantId,
+                TenantId = userData == null ? await _tenantManager.GetCurrentTenantIdAsync() : userData.TenantId,
                 UserId = userData == null ? _authContext.CurrentAccount.ID : userData.UserId,
                 Action = action,
                 Active = true

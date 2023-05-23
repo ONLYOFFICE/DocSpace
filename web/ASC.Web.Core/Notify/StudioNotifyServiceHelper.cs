@@ -91,7 +91,7 @@ public class StudioNotifyServiceHelper
     {
         var item = new NotifyItem
         {
-            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+            TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
             UserId = _authContext.CurrentAccount.ID.ToString(),
             Action = (NotifyAction)action,
             CheckSubsciption = checkSubsciption,

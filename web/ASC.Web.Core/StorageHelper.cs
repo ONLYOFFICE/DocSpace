@@ -86,7 +86,7 @@ public class StorageHelper
 
         try
         {
-            var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, StorageName);
+            var store = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), StorageName);
 
             var fileName = Path.GetFileName(logoPath);
 
@@ -103,7 +103,7 @@ public class StorageHelper
 
     private async Task<string> SaveLogoAsync(string fileName, byte[] data)
     {
-        var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, StorageName);
+        var store = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), StorageName);
 
         using var stream = new MemoryStream(data);
         stream.Seek(0, SeekOrigin.Begin);

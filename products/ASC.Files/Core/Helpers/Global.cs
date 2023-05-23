@@ -259,7 +259,7 @@ public class GlobalStore
 
     public async Task<IDataStore> GetStoreAsync(bool currentTenant = true)
     {
-        return await _storageFactory.GetStorageAsync(currentTenant ? (await _tenantManager.GetCurrentTenantAsync()).Id : null, FileConstant.StorageModule);
+        return await _storageFactory.GetStorageAsync(currentTenant ? await _tenantManager.GetCurrentTenantIdAsync() : null, FileConstant.StorageModule);
     }
 
 
@@ -373,7 +373,7 @@ public class GlobalFolder
             return default;
         }
 
-        var key = $"vrooms/{(await _tenantManager.GetCurrentTenantAsync()).Id}";
+        var key = $"vrooms/{await _tenantManager.GetCurrentTenantIdAsync()}";
 
         if (DocSpaceFolderCache.TryGetValue(key, out var result))
         {
@@ -397,7 +397,7 @@ public class GlobalFolder
             return default;
         }
 
-        var key = $"archive/{(await _tenantManager.GetCurrentTenantAsync()).Id}";
+        var key = $"archive/{await _tenantManager.GetCurrentTenantIdAsync()}";
 
         if (!DocSpaceFolderCache.TryGetValue(key, out var result))
         {
@@ -429,7 +429,7 @@ public class GlobalFolder
             return default;
         }
 
-        var cacheKey = $"my/{(await _tenantManager.GetCurrentTenantAsync()).Id}/{_authContext.CurrentAccount.ID}";
+        var cacheKey = $"my/{await _tenantManager.GetCurrentTenantIdAsync()}/{_authContext.CurrentAccount.ID}";
 
         var myFolderId = UserRootFolderCache.GetOrAdd(cacheKey, (a) => new Lazy<int>(() => GetFolderIdAndProcessFirstVisitAsync(daoFactory, true).Result));
 
@@ -438,13 +438,13 @@ public class GlobalFolder
 
     protected internal async Task SetFolderMyAsync(object value)
     {
-        var cacheKey = string.Format("my/{0}/{1}", (await _tenantManager.GetCurrentTenantAsync()).Id, value);
+        var cacheKey = string.Format("my/{0}/{1}", await _tenantManager.GetCurrentTenantIdAsync(), value);
         UserRootFolderCache.Remove(cacheKey, out _);
     }
 
     public async Task<bool> IsFirstVisit(IDaoFactory daoFactory)
     {
-        var cacheKey = string.Format("my/{0}/{1}", (await _tenantManager.GetCurrentTenantAsync()).Id, _authContext.CurrentAccount.ID);
+        var cacheKey = string.Format("my/{0}/{1}", await _tenantManager.GetCurrentTenantIdAsync(), _authContext.CurrentAccount.ID);
 
         if (!UserRootFolderCache.TryGetValue(cacheKey, out var _))
         {
@@ -624,7 +624,7 @@ public class GlobalFolder
             return 0;
         }
 
-        var cacheKey = string.Format("privacy/{0}/{1}", (await _tenantManager.GetCurrentTenantAsync()).Id, _authContext.CurrentAccount.ID);
+        var cacheKey = string.Format("privacy/{0}/{1}", await _tenantManager.GetCurrentTenantIdAsync(), _authContext.CurrentAccount.ID);
 
         if (!PrivacyFolderCache.TryGetValue(cacheKey, out var privacyFolderId))
         {
@@ -668,7 +668,7 @@ public class GlobalFolder
 
     public async Task SetFolderTrashAsync(object value)
     {
-        var cacheKey = string.Format("trash/{0}/{1}", (await _tenantManager.GetCurrentTenantAsync()).Id, value);
+        var cacheKey = string.Format("trash/{0}/{1}", await _tenantManager.GetCurrentTenantIdAsync(), value);
         TrashFolderCache.Remove(cacheKey);
     }
 
@@ -690,7 +690,7 @@ public class GlobalFolder
             return id;
         }
 
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var userId = _authContext.CurrentAccount.ID;
 
         var task = new Task(async () => await CreateSampleDocumentsAsync(_serviceProvider, tenantId, userId, id, my), 

@@ -126,7 +126,7 @@ public class SocketManager : SocketServiceClient
 
     private async Task<string> GetFileRoomAsync<T>(T fileId, Guid? owner = null)
     {
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var ownerData = owner.HasValue ? "-" + owner.Value : "";
 
         return $"{tenantId}-FILE-{fileId}{ownerData}";
@@ -134,7 +134,7 @@ public class SocketManager : SocketServiceClient
 
     private async Task<string> GetFolderRoomAsync<T>(T folderId, Guid? owner = null)
     {
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var ownerData = owner.HasValue ? "-" + owner.Value : "";
 
         return $"{tenantId}-DIR-{folderId}{ownerData}";

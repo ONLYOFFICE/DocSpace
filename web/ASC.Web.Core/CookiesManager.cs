@@ -137,7 +137,7 @@ public class CookiesManager
 
         if (!session)
         {
-            var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+            var tenant = await _tenantManager.GetCurrentTenantIdAsync();
             expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
         }
 
@@ -182,7 +182,7 @@ public class CookiesManager
     public async Task ResetUserCookieAsync(Guid? userId = null)
     {
         var currentUserId = _securityContext.CurrentAccount.ID;
-        var tenant = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenant = await _tenantManager.GetCurrentTenantIdAsync();
         var settings = await _tenantCookieSettingsHelper.GetForUserAsync(userId ?? currentUserId);
         settings.Index = settings.Index + 1;
         await _tenantCookieSettingsHelper.SetForUserAsync(userId ?? currentUserId, settings);
@@ -265,7 +265,7 @@ public class CookiesManager
 
     public async Task<int> GetLoginEventIdAsync(MessageAction action)
     {
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var userId = _securityContext.CurrentAccount.ID;
         var data = new MessageUserData(tenantId, userId);
 

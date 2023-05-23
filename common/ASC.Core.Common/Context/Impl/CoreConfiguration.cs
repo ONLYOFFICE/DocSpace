@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Google.Protobuf.WellKnownTypes;
-
 namespace ASC.Core;
 
 [Singletone]
@@ -354,7 +352,7 @@ public class CoreConfiguration
 
     public async Task SetSmtpSettingsAsync(SmtpSettings value)
     {
-        await SaveSettingAsync("SmtpSettings", value?.Serialize(), (await _tenantManager.GetCurrentTenantAsync()).Id);
+        await SaveSettingAsync("SmtpSettings", value?.Serialize(), await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     private readonly CoreSettings _coreSettings;
@@ -394,7 +392,7 @@ public class CoreConfiguration
 
     public async Task<T> GetSectionAsync<T>(string sectionName) where T : class
     {
-        return await GetSectionAsync<T>((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName);
+        return await GetSectionAsync<T>(await _tenantManager.GetCurrentTenantIdAsync(), sectionName);
     }
 
     public async Task<T> GetSectionAsync<T>(int tenantId, string sectionName) where T : class
@@ -410,7 +408,7 @@ public class CoreConfiguration
 
     public async Task SaveSectionAsync<T>(string sectionName, T section) where T : class
     {
-        await SaveSectionAsync((await _tenantManager.GetCurrentTenantAsync()).Id, sectionName, section);
+        await SaveSectionAsync(await _tenantManager.GetCurrentTenantIdAsync(), sectionName, section);
     }
 
     public async Task SaveSectionAsync<T>(T section) where T : class

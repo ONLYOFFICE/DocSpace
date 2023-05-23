@@ -481,7 +481,7 @@ public class FileConverter
             Result = string.Empty,
             Processed = "",
             Id = string.Empty,
-            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+            TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
             Account = _authContext.CurrentAccount.ID,
             Delete = false,
             StartDateTime = DateTime.UtcNow,

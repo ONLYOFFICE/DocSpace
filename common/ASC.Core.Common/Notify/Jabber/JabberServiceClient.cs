@@ -260,7 +260,7 @@ public class JabberServiceClient
 
     private async Task<int> GetCurrentTenantIdAsync()
     {
-        return (await _tenantManager.GetCurrentTenantAsync()).Id;
+        return await _tenantManager.GetCurrentTenantIdAsync();
     }
 
     private async Task<string> GetCurrentUserNameAsync()

@@ -236,7 +236,7 @@ public class WebItemSecurity
             await _authorizationManager.AddAceAsync(a);
         }
 
-        _webItemSecurityCache.Publish((await _tenantManager.GetCurrentTenantAsync()).Id);
+        _webItemSecurityCache.Publish(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     public async Task<WebItemSecurityInfo> GetSecurityInfoAsync(string id)
@@ -326,7 +326,7 @@ public class WebItemSecurity
             await _userManager.RemoveUserFromGroupAsync(userid, productid);
         }
 
-        _webItemSecurityCache.Publish((await _tenantManager.GetCurrentTenantAsync()).Id);
+        _webItemSecurityCache.Publish(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     public async Task<bool> IsProductAdministratorAsync(Guid productid, Guid userid)

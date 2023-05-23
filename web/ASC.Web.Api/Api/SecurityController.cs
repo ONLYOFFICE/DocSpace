@@ -194,7 +194,7 @@ public class SecurityController : ControllerBase
 
         await DemandAuditPermissionAsync();
 
-        var settings = await _settingsManager.LoadAsync<TenantAuditSettings>((await _tenantManager.GetCurrentTenantAsync()).Id);
+        var settings = await _settingsManager.LoadAsync<TenantAuditSettings>(await _tenantManager.GetCurrentTenantIdAsync());
 
         var to = DateTime.UtcNow;
         var from = to.Subtract(TimeSpan.FromDays(settings.LoginHistoryLifeTime));
@@ -216,7 +216,7 @@ public class SecurityController : ControllerBase
 
         await DemandAuditPermissionAsync();
 
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
 
         var settings = await _settingsManager.LoadAsync<TenantAuditSettings>(tenantId);
 
@@ -241,7 +241,7 @@ public class SecurityController : ControllerBase
 
         DemandBaseAuditPermission();
 
-        return await _settingsManager.LoadAsync<TenantAuditSettings>((await _tenantManager.GetCurrentTenantAsync()).Id);
+        return await _settingsManager.LoadAsync<TenantAuditSettings>(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     [HttpPost("audit/settings/lifetime")]
@@ -261,7 +261,7 @@ public class SecurityController : ControllerBase
             throw new ArgumentException("AuditTrailLifeTime");
         }
 
-        await _settingsManager.SaveAsync(wrapper.Settings, (await _tenantManager.GetCurrentTenantAsync()).Id);
+        await _settingsManager.SaveAsync(wrapper.Settings, await _tenantManager.GetCurrentTenantIdAsync());
         await _messageService.SendAsync(MessageAction.AuditSettingsUpdated);
 
         return wrapper.Settings;

@@ -112,7 +112,7 @@ public class FirebaseHelper
     public async Task<FireBaseUser> RegisterUserDeviceAsync(string fbDeviceToken, bool isSubscribed, string application)
     {
         var userId = _authContext.CurrentAccount.ID;
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
 
         return await _firebaseDao.RegisterUserDeviceAsync(userId, tenantId, fbDeviceToken, isSubscribed, application);
     }
@@ -120,7 +120,7 @@ public class FirebaseHelper
     public async Task<FireBaseUser> UpdateUserAsync(string fbDeviceToken, bool isSubscribed, string application)
     {
         var userId = _authContext.CurrentAccount.ID;
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
 
         return await _firebaseDao.UpdateUserAsync(userId, tenantId, fbDeviceToken, isSubscribed, application);
     }

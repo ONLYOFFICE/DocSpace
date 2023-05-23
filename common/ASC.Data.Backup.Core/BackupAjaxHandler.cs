@@ -150,7 +150,7 @@ public class BackupAjaxHandler
 
         var scheduleRequest = new CreateScheduleRequest
         {
-            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+            TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
             Cron = cronParams.ToString(),
             NumberOfBackupsStored = backupsStored,
             StorageType = storageType,
@@ -217,7 +217,7 @@ public class BackupAjaxHandler
 
             var Schedule = new CreateScheduleRequest
             {
-                TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+                TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
                 Cron = schedule.CronParams.ToString(),
                 NumberOfBackupsStored = schedule.BackupsStored == null ? 0 : (int)schedule.BackupsStored,
                 StorageType = schedule.StorageType,
@@ -299,7 +299,7 @@ public class BackupAjaxHandler
     {
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        var quota = await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id);
+        var quota = await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync());
         if (!SetupInfo.IsVisibleSettings("Restore") ||
             (!_coreBaseSettings.Standalone && !quota.AutoBackupRestore))
         {
@@ -320,7 +320,7 @@ public class BackupAjaxHandler
         await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("AutoBackup") ||
-            (!_coreBaseSettings.Standalone && !(await _tenantManager.GetTenantQuotaAsync((await _tenantManager.GetCurrentTenantAsync()).Id)).AutoBackupRestore))
+            (!_coreBaseSettings.Standalone && !(await _tenantManager.GetTenantQuotaAsync(await _tenantManager.GetCurrentTenantIdAsync())).AutoBackupRestore))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "AutoBackup");
         }
@@ -377,12 +377,12 @@ public class BackupAjaxHandler
 
     private async Task<int> GetCurrentTenantIdAsync()
     {
-        return (await _tenantManager.GetCurrentTenantAsync()).Id;
+        return await _tenantManager.GetCurrentTenantIdAsync();
     }
 
     public async Task<string> GetTmpFilePathAsync()
     {
-        var discStore = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, BackupTempModule, (IQuotaController)null) as DiscDataStore;
+        var discStore = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), BackupTempModule, (IQuotaController)null) as DiscDataStore;
         var folder = discStore.GetPhysicalPath("", "");
 
         if (!Directory.Exists(folder))

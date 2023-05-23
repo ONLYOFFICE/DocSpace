@@ -893,7 +893,7 @@ public class FileStorageService //: IFileStorageService
                     file = await fileDao.SaveFileAsync(file, null);
                 }
 
-                int counter = 0;
+                var counter = 0;
 
                 foreach (var size in _thumbnailSettings.Sizes)
                 {
@@ -1954,7 +1954,7 @@ public class FileStorageService //: IFileStorageService
 
     public async Task DeleteDocuSignAsync()
     {
-         await _docuSignToken.DeleteTokenAsync();
+        await _docuSignToken.DeleteTokenAsync();
     }
 
     public async Task<string> SendDocuSignAsync<T>(T fileId, DocuSignData docuSignData)
@@ -2698,7 +2698,7 @@ public class FileStorageService //: IFileStorageService
     {
         File<T> file = null;
         var fileDao = _daoFactory.GetFileDao<T>();
-        if (portalName == (await _tenantManager.GetCurrentTenantAsync()).Id.ToString())
+        if (portalName == (await _tenantManager.GetCurrentTenantIdAsync()).ToString())
         {
             file = await fileDao.GetFileAsync(fileId);
         }
@@ -2751,7 +2751,7 @@ public class FileStorageService //: IFileStorageService
             ReferenceData = new FileReferenceData<T>
             {
                 FileKey = file.Id,
-                InstanceId = (await _tenantManager.GetCurrentTenantAsync()).Id.ToString()
+                InstanceId = (await _tenantManager.GetCurrentTenantIdAsync()).ToString()
             },
             Url = await _documentServiceConnector.ReplaceCommunityAdressAsync(await _pathProvider.GetFileStreamUrlAsync(file, lastVersion: true)),
             FileType = file.ConvertedExtension.Trim('.')
@@ -2913,7 +2913,7 @@ public class FileStorageService //: IFileStorageService
         {
             await _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.ErrorWithException(ex);
         }
@@ -3218,7 +3218,7 @@ public class FileStorageService //: IFileStorageService
         {
             var (fileIntIds, _) = FileOperationsManager.GetIds(fileIds);
 
-            _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(_authContext.CurrentAccount.ID, (await _tenantManager.GetCurrentTenantAsync()).Id)
+            _eventBus.Publish(new ThumbnailRequestedIntegrationEvent(_authContext.CurrentAccount.ID, await _tenantManager.GetCurrentTenantIdAsync())
             {
                 BaseUrl = _baseCommonLinkUtility.GetFullAbsolutePath(""),
                 FileIds = fileIntIds

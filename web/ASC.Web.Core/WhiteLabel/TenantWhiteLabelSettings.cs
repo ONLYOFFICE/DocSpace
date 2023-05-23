@@ -340,7 +340,7 @@ public class TenantWhiteLabelSettingsHelper
             try
             {
                 tenantWhiteLabelSettings.SetIsDefault(type, true);
-                var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
+                var store = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), ModuleName);
                 await DeleteLogoFromStore(tenantWhiteLabelSettings, store, type, false);
                 await DeleteLogoFromStore(tenantWhiteLabelSettings, store, type, true);
             }
@@ -357,7 +357,7 @@ public class TenantWhiteLabelSettingsHelper
 
     public async Task SetLogoAsync(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, string logoFileExt, byte[] data, bool dark, IDataStore storage = null)
     {
-        var store = storage ?? await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
+        var store = storage ?? await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), ModuleName);
 
         #region delete from storage if already exists
 
@@ -608,7 +608,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private async Task<string> GetAbsoluteStorageLogoPath(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
     {
-        var store = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
+        var store = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), ModuleName);
         var fileName = BuildLogoFileName(type, tenantWhiteLabelSettings.GetExt(type), dark);
 
         if (await store.IsFileAsync(fileName))
@@ -682,7 +682,7 @@ public class TenantWhiteLabelSettingsHelper
 
     private async Task<Stream> GetStorageLogoData(TenantWhiteLabelSettings tenantWhiteLabelSettings, WhiteLabelLogoTypeEnum type, bool dark)
     {
-        var storage = await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, ModuleName);
+        var storage = await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), ModuleName);
 
         if (storage == null)
         {

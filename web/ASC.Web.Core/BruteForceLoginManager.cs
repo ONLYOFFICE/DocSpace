@@ -94,7 +94,7 @@ public class BruteForceLoginManager
             }
 
             user = await _userManager.GetUsersByPasswordHashAsync(
-                   (await _tenantManager.GetCurrentTenantAsync()).Id,
+                   await _tenantManager.GetCurrentTenantIdAsync(),
                    login,
                    passwordHash);
 

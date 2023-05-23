@@ -417,7 +417,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = DefaultCommonShare,
                         Subject = Constants.GroupEveryone.ID,
-                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+                        TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
                         Owner = _authContext.CurrentAccount.ID
                     }
                 };
@@ -448,7 +448,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = DefaultMyShare,
                         Subject = entry.RootCreateBy,
-                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+                        TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
                         Owner = entry.RootCreateBy
                     }
                 };
@@ -472,7 +472,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = DefaultPrivacyShare,
                         Subject = entry.RootCreateBy,
-                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+                        TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
                         Owner = entry.RootCreateBy
                     }
                 };
@@ -525,7 +525,7 @@ public class FileSecurity : IFileSecurity
                         EntryType = entry.FileEntryType,
                         Share = FileShare.Read,
                         Subject = Constants.GroupEveryone.ID,
-                        TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+                        TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
                         Owner = entry.RootCreateBy
                     }
                 };
@@ -604,7 +604,7 @@ public class FileSecurity : IFileSecurity
         var user = await _userManager.GetUsersAsync(userId);
         var isOutsider = await _userManager.IsOutsiderAsync(user);
         var isUser = await _userManager.IsUserAsync(user);
-        var isAuthenticated = (await _authManager.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId)).IsAuthenticated;
+        var isAuthenticated = (await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), userId)).IsAuthenticated;
         var isDocSpaceAdmin = await _fileSecurityCommon.IsDocSpaceAdministratorAsync(userId);
         var isCollaborator = await _userManager.IsCollaboratorAsync(user);
 
@@ -645,7 +645,7 @@ public class FileSecurity : IFileSecurity
         }
 
         var isUser = await _userManager.IsUserAsync(user);
-        var isAuthenticated = (await _authManager.GetAccountByIDAsync((await _tenantManager.GetCurrentTenantAsync()).Id, userId)).IsAuthenticated;
+        var isAuthenticated = (await _authManager.GetAccountByIDAsync(await _tenantManager.GetCurrentTenantIdAsync(), userId)).IsAuthenticated;
         var isDocSpaceAdmin = await _fileSecurityCommon.IsDocSpaceAdministratorAsync(userId);
         var isCollaborator = await _userManager.IsCollaboratorAsync(user);
 
@@ -1100,7 +1100,7 @@ public class FileSecurity : IFileSecurity
         var securityDao = _daoFactory.GetSecurityDao<T>();
         var r = new FileShareRecord
         {
-            TenantId = (await _tenantManager.GetCurrentTenantAsync()).Id,
+            TenantId = await _tenantManager.GetCurrentTenantIdAsync(),
             EntryId = entryId,
             EntryType = entryType,
             Subject = @for,

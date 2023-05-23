@@ -568,7 +568,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
 
     public async Task<string> GetConfirmationUrlRelativeAsync(string email, ConfirmType confirmType, object postfix = null, Guid userId = default)
     {
-        return GetConfirmationUrlRelative((await _tenantManager.GetCurrentTenantAsync()).Id, email, confirmType, postfix, userId);
+        return GetConfirmationUrlRelative(await _tenantManager.GetCurrentTenantIdAsync(), email, confirmType, postfix, userId);
     }
 
     public string GetConfirmationUrlRelative(int tenantId, string email, ConfirmType confirmType, object postfix = null, Guid userId = default)

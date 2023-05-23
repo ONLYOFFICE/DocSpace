@@ -45,7 +45,7 @@ public class TenantManager
     internal CoreBaseSettings CoreBaseSettings { get; set; }
     internal CoreSettings CoreSettings { get; set; }
 
-    private readonly static SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+    private static readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
 
     static TenantManager()
     {
@@ -311,6 +311,11 @@ public class TenantManager
     public async Task<Tenant> GetCurrentTenantAsync()
     {
         return await GetCurrentTenantAsync(true);
+    }
+
+    public async Task<int> GetCurrentTenantIdAsync()
+    {
+        return (await GetCurrentTenantAsync(true)).Id;
     }
 
     public Tenant GetCurrentTenant()

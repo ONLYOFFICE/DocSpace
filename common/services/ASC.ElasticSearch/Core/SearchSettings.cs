@@ -130,7 +130,7 @@ public class SearchSettingsHelper
         settings.Data = JsonConvert.SerializeObject(items);
         await _settingsManager.SaveAsync(settings);
 
-        var action = new ReIndexAction() { Tenant = (await _tenantManager.GetCurrentTenantAsync()).Id };
+        var action = new ReIndexAction() { Tenant = await _tenantManager.GetCurrentTenantIdAsync() };
         action.Names.AddRange(toReIndex.Select(r => r.ID).ToList());
 
         _cacheNotify.Publish(action, CacheNotifyAction.Any);
@@ -170,7 +170,7 @@ public class SearchSettingsHelper
 
     public async Task<bool> CanSearchByContentAsync(Type t)
     {
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         if (!await CanIndexByContentAsync(t, tenantId))
         {
             return false;

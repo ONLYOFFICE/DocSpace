@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using static DotNetOpenAuth.OpenId.Extensions.AttributeExchange.WellKnownAttributes.Contact;
-
 namespace ASC.Web.Core.Users;
 
 [Transient]
@@ -520,7 +518,7 @@ public class UserPhotoManager
         }
 
         await _userManager.SaveUserPhotoAsync(idUser, null);
-        _userPhotoManagerCache.ClearCache(idUser, (await _tenantManager.GetCurrentTenantAsync()).Id);
+        _userPhotoManagerCache.ClearCache(idUser, await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     public async Task SyncPhotoAsync(Guid userID, byte[] data)
@@ -528,7 +526,7 @@ public class UserPhotoManager
         data = TryParseImage(data, -1, OriginalFotoSize, out _, out var width, out var height);
         await _userManager.SaveUserPhotoAsync(userID, data);
         await SetUserPhotoThumbnailSettingsAsync(userID, width, height);
-     //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+        //   _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
     }
 
 
@@ -543,7 +541,7 @@ public class UserPhotoManager
         {
             await _userManager.SaveUserPhotoAsync(userID, data);
             await SetUserPhotoThumbnailSettingsAsync(userID, width, height);
-          // _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
+            // _userPhotoManagerCache.ClearCache(userID, _tenantManager.GetCurrentTenant().Id);
         }
 
         var store = await GetDataStoreAsync();
@@ -683,7 +681,7 @@ public class UserPhotoManager
             throw new ImageWeightLimitException();
         }
 
-        var resizeTask = new ResizeWorkerItem((await _tenantManager.GetCurrentTenantAsync()).Id, userID, data, maxFileSize, size, await GetDataStoreAsync(), await _settingsManager.LoadAsync<UserPhotoThumbnailSettings>(userID));
+        var resizeTask = new ResizeWorkerItem(await _tenantManager.GetCurrentTenantIdAsync(), userID, data, maxFileSize, size, await GetDataStoreAsync(), await _settingsManager.LoadAsync<UserPhotoThumbnailSettings>(userID));
         var key = $"{userID}{size}";
         resizeTask["key"] = key;
 
@@ -800,7 +798,7 @@ public class UserPhotoManager
             using var img = Image.Load(s);
 
             var imgFormat = img.Metadata.DecodedImageFormat;
-            
+
             byte[] data;
 
             if (img.Width != newWidth || img.Height != newHeight)
@@ -846,10 +844,10 @@ public class UserPhotoManager
             if (data != null)
             {
                 var img = Image.Load(data);
-                
+
                 format = img.Metadata.DecodedImageFormat;
 
-                return (img ,format);
+                return (img, format);
             }
         }
         catch { }
@@ -914,7 +912,7 @@ public class UserPhotoManager
     private IDataStore _dataStore;
     private async ValueTask<IDataStore> GetDataStoreAsync()
     {
-        return _dataStore ??= await _storageFactory.GetStorageAsync((await _tenantManager.GetCurrentTenantAsync()).Id, "userPhotos");
+        return _dataStore ??= await _storageFactory.GetStorageAsync(await _tenantManager.GetCurrentTenantIdAsync(), "userPhotos");
     }
 
     public static CacheSize ToCache(Size size)

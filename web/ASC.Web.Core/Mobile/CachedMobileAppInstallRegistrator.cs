@@ -82,6 +82,6 @@ public class CachedMobileAppInstallRegistrator : IMobileAppInstallRegistrator
     {
         var cacheKey = appType.HasValue ? userEmail + "/" + appType.ToString() : userEmail;
 
-        return string.Format("{0}:mobile:{1}", (await _tenantManager.GetCurrentTenantAsync()).Id, cacheKey);
+        return string.Format("{0}:mobile:{1}", await _tenantManager.GetCurrentTenantIdAsync(), cacheKey);
     }
 }

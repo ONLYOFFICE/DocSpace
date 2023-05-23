@@ -128,7 +128,7 @@ public class DbLoginEventsManager
 
     public async Task ResetCacheAsync()
     {
-        var tenantId = (await _tenantManager.GetCurrentTenantAsync()).Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
         var userId = _authContext.CurrentAccount.ID;
         ResetCache(tenantId, userId);
     }

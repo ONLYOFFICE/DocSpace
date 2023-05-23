@@ -29,8 +29,9 @@ class ComboBox extends React.Component {
   stopAction = (e) => e.preventDefault();
 
   setIsOpen = (isOpen) => {
+    const { setIsOpenItemAccess } = this.props;
     this.setState({ isOpen: isOpen });
-    this.props.setIsOpenItemAccess(isOpen);
+    setIsOpenItemAccess && setIsOpenItemAccess(isOpen);
   };
 
   handleClickOutside = (e) => {
