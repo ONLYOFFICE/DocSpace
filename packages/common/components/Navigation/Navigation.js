@@ -12,7 +12,7 @@ import { Consumer } from "@docspace/components/utils/context";
 import DomHelpers from "@docspace/components/utils/domHelpers";
 import Backdrop from "@docspace/components/backdrop";
 
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { ReactSVG } from "react-svg";
 import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
@@ -52,6 +52,7 @@ const Navigation = ({
   hideInfoPanel,
   withLogo,
   isPublicRoom,
+  titleIcon,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -191,12 +192,15 @@ const Navigation = ({
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
-            <Text
-              title={title}
-              isOpen={false}
-              isRootFolder={isRootFolder}
-              onClick={toggleDropBox}
-            />
+            <div className="title-block">
+              {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
+              <Text
+                title={title}
+                isOpen={false}
+                isRootFolder={isRootFolder}
+                onClick={toggleDropBox}
+              />
+            </div>
             <ControlButtons
               personal={personal}
               isRootFolder={isRootFolder}

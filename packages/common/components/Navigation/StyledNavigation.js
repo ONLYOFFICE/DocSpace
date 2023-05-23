@@ -77,6 +77,23 @@ const StyledContainer = styled.div`
     align-items: center;
   }
 
+  .title-block {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    gap: 8px;
+
+    .title-icon {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
   @media ${tablet} {
     width: 100%;
     grid-template-columns: ${({ isRootFolder, withLogo }) =>

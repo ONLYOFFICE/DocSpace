@@ -26,6 +26,7 @@ import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url
 import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
 import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
 import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
+import PublicRoomIconUrl from "PUBLIC_DIR/images/public-room.react.svg?url";
 
 import React from "react";
 import { inject, observer } from "mobx-react";
@@ -187,6 +188,7 @@ const SectionHeaderContent = (props) => {
     whiteLabelLogoUrls,
     setRoomSharingPanelVisible,
     downloadAction,
+    isPublicRoom,
   } = props;
 
   const navigate = useNavigate();
@@ -958,6 +960,7 @@ const SectionHeaderContent = (props) => {
                 hideInfoPanel={isSettingsPage || isPublicRoomInit}
                 withLogo={isPublicRoomInit && logo}
                 isPublicRoom={isPublicRoomInit}
+                titleIcon={isPublicRoom && PublicRoomIconUrl}
               />
             </div>
           )}
