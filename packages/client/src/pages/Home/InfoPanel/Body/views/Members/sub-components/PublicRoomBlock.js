@@ -22,7 +22,7 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
     <>
       {barIsVisible && (
         <PublicRoomBar
-          headerText={t("CreateEditRoomDialog:PublicRoomTitle")}
+          headerText={t("Files:PublicRoom")}
           bodyText={t("CreateEditRoomDialog:PublicRoomBarDescription")}
           onClose={onClose}
         />

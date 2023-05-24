@@ -13,7 +13,7 @@ export const getRoomTypeTitleTranslation = (roomType = 1, t) => {
     case RoomsType.CustomRoom:
       return t("CreateEditRoomDialog:CustomRoomTitle");
     case RoomsType.PublicRoom:
-      return t("CreateEditRoomDialog:PublicRoomTitle");
+      return t("Files:PublicRoom");
   }
 };
 
