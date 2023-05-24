@@ -213,11 +213,6 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return await InternalDownloadStreamAsync(file, offset);
-    }
-
-    private async Task<Stream> InternalDownloadStreamAsync(DriveFile file, int offset = 0)
-    {
         var downloadArg = $"{file.Id}?alt=media";
 
         var ext = MimeMapping.GetExtention(file.MimeType);
@@ -563,7 +558,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
     {
         var file = await GetFileAsync(fileId);
         var newFile = await CopyEntryAsync(toFolderId, fileId, newFileName);
-        
+
         await DeleteItemAsync(file);
         return newFile;
     }

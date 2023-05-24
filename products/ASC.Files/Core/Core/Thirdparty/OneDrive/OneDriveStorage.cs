@@ -138,11 +138,6 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullException.ThrowIfNull(file.File);
 
-        return await InternalDownloadStreamAsync(file, offset);
-    }
-
-    private async Task<Stream> InternalDownloadStreamAsync(Item file, int offset = 0)
-    {
         var fileStream = await OnedriveClient
             .Drive
             .Items[file.Id]

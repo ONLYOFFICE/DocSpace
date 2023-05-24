@@ -99,7 +99,7 @@ internal class BoxStorage : IThirdPartyStorage<BoxFile, BoxFolder, BoxItem>
         try
         {
             return _boxClient.FilesManager.GetInformationAsync(fileId, _boxFields);
-        }       
+        }
         catch (Exception ex)
         {
             if (ex.InnerException is BoxSDK.Exceptions.BoxAPIException boxException && boxException.Error.Status == ((int)HttpStatusCode.NotFound).ToString())
@@ -121,11 +121,6 @@ internal class BoxStorage : IThirdPartyStorage<BoxFile, BoxFolder, BoxItem>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return await InternalDownloadStreamAsync(file, offset);
-    }
-
-    private async Task<Stream> InternalDownloadStreamAsync(BoxFile file, int offset = 0)
-    {
         if (offset > 0 && file.Size.HasValue)
         {
             return await _boxClient.FilesManager.DownloadAsync(file.Id, startOffsetInBytes: offset, endOffsetInBytes: (int)file.Size - 1);
