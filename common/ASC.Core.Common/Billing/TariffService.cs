@@ -136,7 +136,7 @@ public class TariffService : ITariffService
         _serviceProvider = serviceProvider;
         _coreBaseSettings = coreBaseSettings;
 
-        var paymentConfiguration = configuration.GetSection("core:payment").Get<PaymentConfiguration>();
+        var paymentConfiguration = configuration.GetSection("core:payment").Get<PaymentConfiguration>() ?? new PaymentConfiguration();
         _paymentDelay = paymentConfiguration.Delay;
         _trialEnabled = paymentConfiguration.TrialEnabled;
 
