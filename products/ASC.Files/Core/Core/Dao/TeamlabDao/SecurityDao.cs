@@ -434,20 +434,15 @@ internal class ThirdPartySecurityDao : SecurityBaseDao<string>, ISecurityDao<str
         return result;
     }
 
-    private Task GetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders)
+    private async ValueTask GetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders)
     {
         var selector = _selectorFactory.GetSelector(folderId);
         var folderDao = selector.GetFolderDao(folderId);
         if (folderDao == null)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalGetFoldersForShareAsync(folderId, folders, folderDao, selector);
-    }
-
-    private async Task InternalGetFoldersForShareAsync(string folderId, ICollection<FileEntry<string>> folders, IFolderDao<string> folderDao, IDaoSelector selector)
-    {
         var folder = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
 
         if (folder != null)

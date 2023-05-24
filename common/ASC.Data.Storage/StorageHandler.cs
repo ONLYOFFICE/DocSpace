@@ -48,7 +48,7 @@ public class StorageHandler
         _checkAuth = checkAuth;
     }
 
-    public async Task InvokeAsync(HttpContext context, TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
+    public async ValueTask InvokeAsync(HttpContext context, TenantManager tenantManager, SecurityContext securityContext, StorageFactory storageFactory, EmailValidationKeyProvider emailValidationKeyProvider)
     {
         var storage = await storageFactory.GetStorageAsync((await tenantManager.GetCurrentTenantAsync()).Id, _module);
         var path = CrossPlatform.PathCombine(_path, GetRouteValue("pathInfo", context).Replace('/', Path.DirectorySeparatorChar));
@@ -78,11 +78,6 @@ public class StorageHandler
             }
         }
 
-        await InternalInvokeAsync(context, storage, path, header);
-    }
-
-    private async Task InternalInvokeAsync(HttpContext context, IDataStore storage, string path, string header)
-    {
         if (!await storage.IsFileAsync(_domain, path))
         {
             context.Response.StatusCode = (int)HttpStatusCode.NotFound;

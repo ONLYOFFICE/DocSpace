@@ -412,18 +412,13 @@ public class FileMarker
         }
     }
 
-    public async Task MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
+    public async ValueTask MarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
     {
         if (fileEntry == null)
         {
             return;
         }
 
-        await InternalMarkAsNewAsync(fileEntry, userIDs);
-    }
-
-    private async Task InternalMarkAsNewAsync<T>(FileEntry<T> fileEntry, List<Guid> userIDs = null)
-    {
         userIDs ??= new List<Guid>();
 
         var taskData = _serviceProvider.GetService<AsyncTaskData<T>>();
@@ -455,18 +450,13 @@ public class FileMarker
         _serviceProvider.GetService<FileMarkerHelper>().Add(taskData);
     }
 
-    public async Task RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
+    public async ValueTask RemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
     {
         if (fileEntry == null)
         {
             return;
         }
 
-        await InternalRemoveMarkAsNewAsync(fileEntry, userID);
-    }
-
-    public async Task InternalRemoveMarkAsNewAsync<T>(FileEntry<T> fileEntry, Guid userID = default)
-    {
         userID = userID.Equals(default) ? _authContext.CurrentAccount.ID : userID;
 
         var tagDao = _daoFactory.GetTagDao<T>();

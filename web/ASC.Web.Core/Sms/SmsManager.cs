@@ -108,7 +108,7 @@ public class SmsManager
         return mobilePhone;
     }
 
-    public async Task PutAuthCodeAsync(UserInfo user, bool again)
+    public async ValueTask PutAuthCodeAsync(UserInfo user, bool again)
     {
         if (user == null || Equals(user, Constants.LostUser))
         {
@@ -132,11 +132,6 @@ public class SmsManager
             throw new Exception(Resource.SmsTooMuchError);
         }
 
-        await InternalPutAuthCodeAsync(mobilePhone, key);
-    }
-
-    private async Task InternalPutAuthCodeAsync(string mobilePhone, string key)
-    {
         if (await _smsSender.SendSMSAsync(mobilePhone, string.Format(Resource.SmsAuthenticationMessageToUser, key)))
         {
             await _tenantManager.SetTenantQuotaRowAsync(new TenantQuotaRow { Tenant = await _tenantManager.GetCurrentTenantIdAsync(), Path = "/sms", Counter = 1, LastModified = DateTime.UtcNow }, true);

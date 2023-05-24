@@ -413,7 +413,7 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         return uploadSession;
     }
 
-    public async Task TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
+    public async ValueTask TransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -422,11 +422,6 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
             throw new InvalidOperationException("Can't upload chunk for given upload session.");
         }
 
-        await InternalTransferAsync(googleDriveSession, stream, chunkLength, lastChunk);
-    }
-
-    private async Task InternalTransferAsync(ResumableUploadSession googleDriveSession, Stream stream, long chunkLength, bool lastChunk)
-    {
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(googleDriveSession.Location),

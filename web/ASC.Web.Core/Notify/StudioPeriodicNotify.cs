@@ -85,7 +85,7 @@ public class StudioPeriodicNotify
         _log = log.CreateLogger("ASC.Notify");
     }
 
-    public async Task SendSaasLettersAsync(string senderName, DateTime scheduleDate)
+    public async ValueTask SendSaasLettersAsync(string senderName, DateTime scheduleDate)
     {
         _log.InformationStartSendSaasTariffLetters();
 
@@ -96,11 +96,6 @@ public class StudioPeriodicNotify
             _log.InformationEndSendSaasTariffLetters();
         }
 
-        await InternalSendSaasLettersAsync(senderName, scheduleDate, activeTenants);
-    }
-
-    private async Task InternalSendSaasLettersAsync(string senderName, DateTime scheduleDate, List<Tenant> activeTenants)
-    {
         var nowDate = scheduleDate.Date;
 
         foreach (var tenant in activeTenants)
