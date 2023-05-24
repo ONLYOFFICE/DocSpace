@@ -41,7 +41,7 @@ public class CountUserChecker : TenantQuotaFeatureCheckerCount<CountUserFeature>
 
     public override void CheckAdd(int tenantId, int newValue)
     {
-        if (_tariffService.GetTariff(tenantId).State >= TariffState.NotPaid)
+        if (_tariffService.GetTariff(tenantId).State > TariffState.Paid)
         {
             throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "users");
         }
