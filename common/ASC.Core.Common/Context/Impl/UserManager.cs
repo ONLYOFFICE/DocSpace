@@ -175,7 +175,7 @@ public class UserManager
                 users = users.WhereAwait(async u => await this.IsUserAsync(u));
                 break;
         }
-        
+
         return await users.ToArrayAsync();
     }
 
@@ -196,7 +196,7 @@ public class UserManager
         return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
-    public async Task<string[]> GetUserNamesAsyncAsync(EmployeeStatus status)
+    public async Task<string[]> GetUserNamesAsync(EmployeeStatus status)
     {
         return (await GetUsersAsync(status))
             .Select(u => u.UserName)
@@ -224,7 +224,7 @@ public class UserManager
     }
     public async Task<bool> IsUserNameExistsAsync(string username)
     {
-        return (await GetUserNamesAsyncAsync(EmployeeStatus.All))
+        return (await GetUserNamesAsync(EmployeeStatus.All))
             .Contains(username, StringComparer.CurrentCultureIgnoreCase);
     }
 
@@ -278,7 +278,7 @@ public class UserManager
 
     public bool UserExists(Guid id)
     {
-        return UserExists (GetUsers(id));
+        return UserExists(GetUsers(id));
     }
 
     public bool UserExists(UserInfo user)
@@ -392,7 +392,7 @@ public class UserManager
         var oldUserData = await _userService.GetUserByUserName(await _tenantManager.GetCurrentTenantIdAsync(), u.UserName);
 
         var newUser = await UpdateUserInfoAsync(u);
-        
+
         if (_coreBaseSettings.DisableDocSpace)
         {
             await SyncCardDavAsync(u, oldUserData, newUser);
