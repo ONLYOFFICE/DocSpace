@@ -1294,7 +1294,7 @@ $GreenButton
  
 С уважением, 
 команда ONLYOFFICE
-"www.onlyoffice.com":http://onlyoffice.com/ru</value>
+"www.onlyoffice.com":"http://onlyoffice.com/ru"</value>
   </data>
   <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
     <value>Здравствуйте, $UserName!
