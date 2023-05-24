@@ -284,6 +284,10 @@ class SettingsStore {
     return this.isLoaded && !this.wizardToken;
   }
 
+  get isPublicRoom() {
+    return window.location.pathname === "/rooms/share";
+  }
+
   setMainBarVisible = (visible) => {
     this.mainBarVisible = visible;
   };
@@ -315,9 +319,13 @@ class SettingsStore {
   getSettings = async () => {
     let newSettings = null;
 
+    const publicKey = this.isPublicRoom
+      ? location.search.substring(5, location.search.length)
+      : null;
+
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
       newSettings = window.__ASC_INITIAL_EDITOR_STATE__.portalSettings;
-    else newSettings = await api.settings.getSettings(true);
+    else newSettings = await api.settings.getSettings(true, publicKey);
 
     if (window["AscDesktopEditor"] !== undefined || this.personal) {
       const dp = combineUrl(
@@ -659,7 +667,11 @@ class SettingsStore {
   }
 
   get socketHelper() {
-    return new SocketIOHelper(this.socketUrl);
+    const publicKey = this.isPublicRoom
+      ? location.search.substring(5, location.search.length)
+      : null;
+
+    return new SocketIOHelper(this.socketUrl, publicKey);
   }
 
   getBuildVersionInfo = async () => {
