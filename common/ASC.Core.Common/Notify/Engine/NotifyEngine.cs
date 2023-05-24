@@ -129,6 +129,16 @@ public class NotifyEngine : INotifyEngine, IDisposable
         }
     }
 
+    internal void UnregisterSendMethod(Func<DateTime, Task> method)
+    {
+        ArgumentNullException.ThrowIfNull(method);
+
+        lock (_sendMethods)
+        {
+            _sendMethods.Remove(new SendMethodWrapper(method, null, _logger));
+        }
+    }
+
     private async void NotifySchedulerAsync()
     {
         try

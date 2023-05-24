@@ -174,7 +174,11 @@ public class WorkContext
     public void UnregisterSendMethod(Action<DateTime> method)
     {
         NotifyEngine.UnregisterSendMethod(method);
+    }
 
+    public void UnregisterSendMethod(Func<DateTime, Task> method)
+    {
+        NotifyEngine.UnregisterSendMethod(method);
     }
 }
 
