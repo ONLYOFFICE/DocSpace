@@ -63,7 +63,8 @@ const QuickButtons = (props) => {
 
   const isAvailableLockFile =
     !folderCategory && fileExst && displayBadges && item.security.Lock;
-  const isAvailableDownloadFile = isPublicRoom && item.security.Download;
+  const isAvailableDownloadFile =
+    isPublicRoom && item.security.Download && viewAs === "tile";
 
   return (
     <div className="badges additional-badges">

@@ -104,12 +104,12 @@ const LinkRow = (props) => {
         key: "edit-link-separator",
         isSeparator: true,
       },
-      {
-        key: "share-key",
-        label: t("Files:Share"),
-        icon: ShareReactSvgUrl,
-        // onClick: () => args.onClickLabel("label2"),
-      },
+      // {
+      //   key: "share-key",
+      //   label: t("Files:Share"),
+      //   icon: ShareReactSvgUrl,
+      //   // onClick: () => args.onClickLabel("label2"),
+      // },
       {
         key: "embedding-settings-key",
         label: t("Files:EmbeddingSettings"),
