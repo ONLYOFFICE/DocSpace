@@ -15,11 +15,8 @@ export default {
   },
   argTypes: {
     type: {
-      description: "Accepts room type",
-      control: {
-        type: "select",
-        options: ["EditingRoom", "CustomRoom"],
-      },
+      options: ["EditingRoom", "CustomRoom"],
+      control: { type: "select" },
     },
   },
 };
