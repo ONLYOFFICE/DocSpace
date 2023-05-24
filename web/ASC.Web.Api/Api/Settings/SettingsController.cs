@@ -149,7 +149,8 @@ public class SettingsController : BaseSettingsController
             TenantStatus = _tenantManager.GetCurrentTenant().Status,
             TenantAlias = Tenant.Alias,
             EnableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid(),
-            LegalTerms = _setupInfo.LegalTerms
+            LegalTerms = _setupInfo.LegalTerms,
+            SocketUrl = _configuration["web:hub:url"] ?? ""
         };
 
         if (_authContext.IsAuthenticated)
@@ -162,7 +163,6 @@ public class SettingsController : BaseSettingsController
             settings.UtcHoursOffset = settings.UtcOffset.TotalHours;
             settings.OwnerId = Tenant.OwnerId;
             settings.NameSchemaId = _customNamingPeople.Current.Id;
-            settings.SocketUrl = _configuration["web:hub:url"] ?? "";
             settings.DomainValidator = _tenantDomainValidator;
             settings.ZendeskKey = _setupInfo.ZendeskKey;
             settings.BookTrainingEmail = _setupInfo.BookTrainingEmail;
