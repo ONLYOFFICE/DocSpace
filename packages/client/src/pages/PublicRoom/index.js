@@ -13,6 +13,7 @@ import RoomPassword from "./sub-components/RoomPassword";
 import RoomErrors from "./sub-components/RoomErrors";
 
 import { RoomSharingDialog } from "../../components/dialogs";
+import SelectionArea from "../Home/SelectionArea";
 
 const PublicRoom = (props) => {
   const {
@@ -73,6 +74,7 @@ const PublicRoom = (props) => {
         </Section.SectionBody>
       </Section>
       <RoomSharingDialog />
+      <SelectionArea />
     </>
   );
 
