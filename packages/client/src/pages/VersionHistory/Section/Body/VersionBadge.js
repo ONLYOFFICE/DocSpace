@@ -1,6 +1,6 @@
 import React from "react";
 import Text from "@docspace/components/text";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import VersionMarkIcon from "@docspace/common/components/VersionMarkIcon";
 const VersionBadge = ({
   className,

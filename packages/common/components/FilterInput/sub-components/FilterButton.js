@@ -8,7 +8,7 @@ import FilterBlock from "./FilterBlock";
 
 import StyledButton from "./StyledButton";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 const FilterButton = ({
   t,
   onFilter,
