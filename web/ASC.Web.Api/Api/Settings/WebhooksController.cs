@@ -138,7 +138,7 @@ public class WebhooksController : BaseSettingsController
             throw new ItemNotFoundException();
         }
 
-        if (item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+        if (item.Status == 0)
         {
             throw new HttpException(HttpStatusCode.Forbidden);
         }
