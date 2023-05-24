@@ -29,8 +29,9 @@ class ComboBox extends React.Component {
   stopAction = (e) => e.preventDefault();
 
   setIsOpen = (isOpen) => {
+    const { setIsOpenItemAccess } = this.props;
     this.setState({ isOpen: isOpen });
-    this.props.setIsOpenItemAccess(isOpen);
+    setIsOpenItemAccess && setIsOpenItemAccess(isOpen);
   };
 
   handleClickOutside = (e) => {
@@ -129,6 +130,7 @@ class ComboBox extends React.Component {
       withoutPadding,
       isLoading,
       isNoFixedHeightOptions,
+      hideMobileView,
     } = this.props;
 
     const { tabIndex, ...props } = this.props;
@@ -170,7 +172,7 @@ class ComboBox extends React.Component {
         : 6;
     }
 
-    const disableMobileView = optionsCount < 4;
+    const disableMobileView = optionsCount < 4 || hideMobileView;
 
     return (
       <StyledComboBox

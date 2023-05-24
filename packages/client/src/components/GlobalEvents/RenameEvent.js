@@ -1,12 +1,9 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
-
 import toastr from "@docspace/components/toast/toastr";
-
-import { getTitleWithoutExst } from "../../helpers/files-helpers";
-
 import Dialog from "./sub-components/Dialog";
+import { getTitleWithoutExtension } from "SRC_DIR/helpers/filesUtils";
 
 const RenameEvent = ({
   type,
@@ -34,13 +31,13 @@ const RenameEvent = ({
   const { t } = useTranslation(["Files"]);
 
   React.useEffect(() => {
-    setStartValue(getTitleWithoutExst(item, false));
+    setStartValue(getTitleWithoutExtension(item, false));
 
     setEventDialogVisible(true);
   }, [item]);
 
   const onUpdate = React.useCallback((e, value) => {
-    const originalTitle = getTitleWithoutExst(item);
+    const originalTitle = getTitleWithoutExtension(item);
 
     let timerId;
 
@@ -138,12 +135,8 @@ export default inject(
     uploadDataStore,
     dialogsStore,
   }) => {
-    const {
-      setIsLoading,
-      addActiveItems,
-      updateFile,
-      renameFolder,
-    } = filesStore;
+    const { setIsLoading, addActiveItems, updateFile, renameFolder } =
+      filesStore;
 
     const { id, setSelectedFolder } = selectedFolderStore;
 
