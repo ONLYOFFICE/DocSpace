@@ -221,6 +221,7 @@ class PaymentStore {
 
       await acceptLicense();
       toastr.success(t("ActivateLicenseActivated"));
+      localStorage.removeItem("enterpriseAlertClose");
 
       await Promise.all([setPortalTariff(), setPortalQuota()]);
     } catch (e) {

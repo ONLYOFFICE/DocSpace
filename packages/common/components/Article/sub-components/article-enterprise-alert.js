@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
-import { useTranslation, Trans } from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 import { combineUrl } from "@docspace/common/utils";
 import history from "@docspace/common/history";
@@ -21,10 +21,20 @@ const ArticleEnterpriseAlert = ({
   trialDaysLeft,
   isTrial,
   paymentDate,
+  isEnterprise,
 }) => {
   const { t, ready } = useTranslation("Common");
 
-  const onClick = () => {
+  const [isClose, setIsClose] = useState(
+    localStorage.getItem("enterpriseAlertClose")
+  );
+
+  const onCloseClick = () => {
+    localStorage.setItem("enterpriseAlertClose", true);
+    setIsClose(true);
+  };
+
+  const onAlertClick = () => {
     const paymentPageUrl = combineUrl(
       PROXY_BASE_URL,
       "/payments/portal-payments"
@@ -64,6 +74,8 @@ const ArticleEnterpriseAlert = ({
 
   const isShowLoader = !ready;
 
+  if (isEnterprise && isClose) return <></>;
+
   return isShowLoader ? (
     <Loaders.Rectangle width="210px" height="88px" />
   ) : (
@@ -71,7 +83,8 @@ const ArticleEnterpriseAlert = ({
       id="document_catalog-payment-alert"
       borderColor={color}
       titleColor={color}
-      onAlertClick={onClick}
+      onAlertClick={onAlertClick}
+      onCloseClick={onCloseClick}
       title={title}
       titleFontSize="11px"
       description={description}
@@ -84,7 +97,12 @@ const ArticleEnterpriseAlert = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { currentQuotaStore, settingsStore, currentTariffStatusStore } = auth;
+    const {
+      currentQuotaStore,
+      settingsStore,
+      currentTariffStatusStore,
+      isEnterprise,
+    } = auth;
     const { isTrial } = currentQuotaStore;
     const { theme } = settingsStore;
     const {
@@ -93,6 +111,7 @@ export default withRouter(
       paymentDate,
     } = currentTariffStatusStore;
     return {
+      isEnterprise,
       isTrial,
       isLicenseDateExpired,
       trialDaysLeft,
