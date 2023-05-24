@@ -183,12 +183,12 @@ const SectionHeaderContent = (props) => {
     setInvitePanelOptions,
     isEmptyPage,
     pathParts,
-    isPublicRoomInit,
+    isPublicRoom,
     theme,
     whiteLabelLogoUrls,
     setRoomSharingPanelVisible,
     downloadAction,
-    isPublicRoom,
+    isPublicRoomType,
   } = props;
 
   const navigate = useNavigate();
@@ -542,11 +542,11 @@ const SectionHeaderContent = (props) => {
       canDeleteAll,
 
       security,
+      isPublicRoomType,
       isPublicRoom,
-      isPublicRoomInit,
     } = props;
 
-    if (isPublicRoomInit) {
+    if (isPublicRoom) {
       return [
         {
           key: "public-room_edit",
@@ -578,7 +578,7 @@ const SectionHeaderContent = (props) => {
       label: t("SharingPanel:CopyExternalLink"),
       icon: CopyToReactSvgUrl,
       // onClick: () => onClickCopyExternalLink(),
-      // disabled: !isPublicRoom,
+      // disabled: !isPublicRoomType,
       items: [
         {
           id: "option_move-to",
@@ -642,7 +642,7 @@ const SectionHeaderContent = (props) => {
         key: "link-for-room-members",
         label: t("LinkForRoomMembers"),
         onClick: onCopyLinkAction,
-        disabled: isRecycleBinFolder || isPersonalRoom || isPublicRoom,
+        disabled: isRecycleBinFolder || isPersonalRoom || isPublicRoomType,
         icon: InvitationLinkReactSvgUrl,
       },
       {
@@ -922,7 +922,7 @@ const SectionHeaderContent = (props) => {
                 isRootFolder={isRoot}
                 canCreate={
                   (security?.Create || isAccountsPage || !isSettingsPage) &&
-                  !isPublicRoomInit
+                  !isPublicRoom
                 }
                 title={currentTitle}
                 isDesktop={isDesktop}
@@ -957,9 +957,9 @@ const SectionHeaderContent = (props) => {
                 onPlusClick={onCreateRoom}
                 isEmptyPage={isEmptyPage}
                 isRoom={isRoom}
-                hideInfoPanel={isSettingsPage || isPublicRoomInit}
-                withLogo={isPublicRoomInit && logo}
-                isPublicRoom={isPublicRoomInit}
+                hideInfoPanel={isSettingsPage || isPublicRoom}
+                withLogo={isPublicRoom && logo}
+                isPublicRoom={isPublicRoom}
                 titleIcon={isPublicRoom && PublicRoomIconUrl}
               />
             </div>
@@ -980,7 +980,7 @@ export default inject(
     treeFoldersStore,
     filesActionsStore,
     settingsStore,
-
+    publicRoomStore,
     contextOptionsStore,
   }) => {
     const isOwner = auth.userStore.user?.isOwner;
@@ -1059,7 +1059,7 @@ export default inject(
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
     const isRoom = !!roomType;
-    const isPublicRoom = roomType === RoomsType.PublicRoom;
+    const isPublicRoomType = roomType === RoomsType.PublicRoom;
 
     const {
       onClickEditRoom,
@@ -1184,8 +1184,8 @@ export default inject(
 
       moveToRoomsPage,
       onClickBack,
-      isPublicRoom,
-      isPublicRoomInit: filesStore.isPublicRoom,
+      isPublicRoomType,
+      isPublicRoom: publicRoomStore.isPublicRoom,
 
       getAccountsHeaderMenu,
       isAccountsHeaderVisible,

@@ -1025,7 +1025,7 @@ class FilesStore {
 
   //TODO: FILTER
   setFilesFilter = (filter) => {
-    if (!this.isPublicRoom) {
+    if (!this.publicRoomStore.isPublicRoom) {
       const key = `UserFilter=${this.authStore.userStore.user?.id}`;
       const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
       localStorage.setItem(key, value);
@@ -1085,7 +1085,7 @@ class FilesStore {
 
   setFilterUrl = (filter) => {
     //TODO: public filter
-    if (this.isPublicRoom) {
+    if (this.publicRoomStore.isPublicRoom) {
       return;
     }
 
@@ -1199,7 +1199,7 @@ class FilesStore {
         folderId,
         filterData,
         this.filesController.signal,
-        this.publicRoomKey
+        this.publicRoomStore.publicKey
       )
       .then(async (data) => {
         filterData.total = data.total;
@@ -1289,7 +1289,10 @@ class FilesStore {
             const folderInfo =
               data.current.id === folderId
                 ? data.current
-                : await api.files.getFolderInfo(folderId, this.publicRoomKey);
+                : await api.files.getFolderInfo(
+                    folderId,
+                    this.publicRoomStore.publicKey
+                  );
 
             const {
               id,
@@ -1885,7 +1888,7 @@ class FilesStore {
       const canViewRoomInfo = item.security?.Read;
       const canMuteRoom = item.security?.Mute;
 
-      const isPublicRoom = item.roomType === RoomsType.PublicRoom;
+      const isPublicRoomType = item.roomType === RoomsType.PublicRoom;
 
       let roomOptions = [
         "select",
@@ -1980,7 +1983,7 @@ class FilesStore {
         }
       }
 
-      if (!isPublicRoom) {
+      if (!isPublicRoomType) {
         roomOptions = this.removeOptions(roomOptions, ["external-link"]);
       }
 
@@ -3535,17 +3538,6 @@ class FilesStore {
           searchInContent;
 
     return isFiltered;
-  }
-
-  get isPublicRoom() {
-    return this.publicRoomStore.isLoaded;
-  }
-
-  get publicRoomKey() {
-    if (window.location.pathname === "/rooms/share") {
-      return location.search.substring(5, location.search.length);
-    }
-    return null;
   }
 }
 

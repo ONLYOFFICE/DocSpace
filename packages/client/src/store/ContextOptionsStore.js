@@ -60,6 +60,7 @@ class ContextOptionsStore {
   versionHistoryStore;
   settingsStore;
   selectedFolderStore;
+  publicRoomStore;
 
   constructor(
     authStore,
@@ -71,7 +72,8 @@ class ContextOptionsStore {
     uploadDataStore,
     versionHistoryStore,
     settingsStore,
-    selectedFolderStore
+    selectedFolderStore,
+    publicRoomStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -84,6 +86,7 @@ class ContextOptionsStore {
     this.versionHistoryStore = versionHistoryStore;
     this.settingsStore = settingsStore;
     this.selectedFolderStore = selectedFolderStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   onOpenFolder = (item) => {
@@ -684,7 +687,7 @@ class ContextOptionsStore {
 
     //const emailSendIsDisabled = true;
     const showSeparator0 =
-      (hasInfoPanel || !isMedia) && !this.filesStore.isPublicRoom; // || !emailSendIsDisabled;
+      (hasInfoPanel || !isMedia) && !this.publicRoomStore.isPublicRoom; // || !emailSendIsDisabled;
 
     const separator0 = showSeparator0
       ? {
@@ -923,7 +926,7 @@ class ContextOptionsStore {
         label: t("LinkForRoomMembers"),
         icon: InvitationLinkReactSvgUrl,
         onClick: () => this.onCopyLink(item, t),
-        disabled: this.filesStore.isPublicRoom,
+        disabled: this.publicRoomStore.isPublicRoom,
       },
       {
         id: "option_copy-external-link",
@@ -939,7 +942,7 @@ class ContextOptionsStore {
         label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
-        disabled: this.filesStore.isPublicRoom,
+        disabled: this.publicRoomStore.isPublicRoom,
       },
       ...pinOptions,
       ...muteOptions,
@@ -980,7 +983,7 @@ class ContextOptionsStore {
         label: t("Common:Info"),
         icon: InfoOutlineReactSvgUrl,
         onClick: () => this.onShowInfoPanel(item),
-        disabled: this.filesStore.isPublicRoom,
+        disabled: this.publicRoomStore.isPublicRoom,
       },
       {
         id: "option_block-unblock-version",
@@ -990,7 +993,7 @@ class ContextOptionsStore {
         onClick: () => this.lockFile(item, t),
         disabled: false,
       },
-      !this.filesStore.isPublicRoom && {
+      !this.publicRoomStore.isPublicRoom && {
         key: "separator1",
         isSeparator: true,
       },

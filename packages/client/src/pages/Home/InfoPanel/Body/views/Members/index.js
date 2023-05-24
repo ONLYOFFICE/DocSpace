@@ -41,7 +41,7 @@ const Members = ({
   setInviteUsersWarningDialogVisible,
   changeUserType,
   isGracePeriod,
-  isPublicRoom,
+  isPublicRoomType,
   setEditLinkPanelIsVisible,
   setLinkParams,
 
@@ -155,7 +155,7 @@ const Members = ({
       visible: true,
       roomId: parentRoomId,
       hideSelector: false,
-      defaultAccess: isPublicRoom
+      defaultAccess: isPublicRoomType
         ? ShareAccessRights.RoomManager
         : ShareAccessRights.ReadOnly,
     });
@@ -184,7 +184,7 @@ const Members = ({
 
   return (
     <>
-      {isPublicRoom && <PublicRoomBlock t={t} onCopyLink={onCopyLink} />}
+      {isPublicRoomType && <PublicRoomBlock t={t} onCopyLink={onCopyLink} />}
 
       <StyledUserTypeHeader>
         <Text className="title">
@@ -301,7 +301,7 @@ export default inject(
     const roomType =
       selectedFolderStore.roomType ?? selectionParentRoom?.roomType;
 
-    const isPublicRoom = roomType === RoomsType.PublicRoom;
+    const isPublicRoomType = roomType === RoomsType.PublicRoom;
 
     return {
       setView,
@@ -325,7 +325,7 @@ export default inject(
       resendEmailInvitations,
       changeUserType,
       isGracePeriod,
-      isPublicRoom,
+      isPublicRoomType,
       setEditLinkPanelIsVisible,
       setLinkParams,
       setExternalLinks,

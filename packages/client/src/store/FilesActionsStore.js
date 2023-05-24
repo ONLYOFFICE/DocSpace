@@ -55,6 +55,7 @@ class FilesActionStore {
   dialogsStore;
   mediaViewerDataStore;
   accessRightsStore;
+  publicRoomStore;
 
   isBulkDownload = false;
   isLoadedSearchFiles = false;
@@ -69,7 +70,8 @@ class FilesActionStore {
     settingsStore,
     dialogsStore,
     mediaViewerDataStore,
-    accessRightsStore
+    accessRightsStore,
+    publicRoomStore
   ) {
     makeAutoObservable(this);
     this.authStore = authStore;
@@ -81,6 +83,7 @@ class FilesActionStore {
     this.dialogsStore = dialogsStore;
     this.mediaViewerDataStore = mediaViewerDataStore;
     this.accessRightsStore = accessRightsStore;
+    this.publicRoomStore = publicRoomStore;
   }
 
   setIsBulkDownload = (isBulkDownload) => {
@@ -501,7 +504,7 @@ class FilesActionStore {
     const fileIds = fileConvertIds.map((f) => f.key || f);
     addActiveItems(fileIds, folderIds);
 
-    const shareKey = this.filesStore.publicRoomKey;
+    const shareKey = this.publicRoomStore.publicKey;
 
     try {
       await downloadFiles(fileConvertIds, folderIds, shareKey).then(
@@ -1988,7 +1991,7 @@ class FilesActionStore {
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
-    const isPublicRoom = this.filesStore.isPublicRoom;
+    const isPublicRoom = this.publicRoomStore.isPublicRoom;
 
     const urlFilter = getObjectByLocation(location);
 

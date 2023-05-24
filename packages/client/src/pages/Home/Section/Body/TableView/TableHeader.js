@@ -428,7 +428,14 @@ class FilesTableHeader extends React.Component {
 }
 
 export default inject(
-  ({ auth, filesStore, selectedFolderStore, treeFoldersStore, tableStore }) => {
+  ({
+    auth,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+    tableStore,
+    publicRoomStore,
+  }) => {
     const { isVisible: infoPanelVisible } = auth.infoPanelStore;
 
     const {
@@ -441,7 +448,6 @@ export default inject(
       headerBorder,
       roomsFilter,
       fetchRooms,
-      isPublicRoom,
     } = filesStore;
     const {
       isRecentFolder,
@@ -530,7 +536,7 @@ export default inject(
       setColumnEnable,
       isRooms,
       isTrashFolder,
-      isPublicRoom,
+      isPublicRoom: publicRoomStore.isPublicRoom,
     };
   }
 )(

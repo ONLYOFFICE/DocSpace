@@ -1936,6 +1936,7 @@ export default inject(
     selectedFolderStore,
     tagsStore,
     peopleStore,
+    publicRoomStore,
   }) => {
     const {
       fetchFiles,
@@ -1953,7 +1954,6 @@ export default inject(
       setClearSearch,
       isLoadedEmptyPage,
       isEmptyPage,
-      isPublicRoom,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2029,7 +2029,7 @@ export default inject(
       groups,
       fetchPeople,
       accountsFilter,
-      isPublicRoom,
+      isPublicRoom: publicRoomStore.isPublicRoom,
     };
   }
 )(

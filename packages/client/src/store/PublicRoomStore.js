@@ -9,6 +9,7 @@ class PublicRoomStore {
   roomStatus = null;
   roomType = null;
   roomHref = null;
+  publicKey = null;
 
   isLoaded = false;
   isLoading = false;
@@ -82,6 +83,7 @@ class PublicRoomStore {
     api.rooms
       .validatePublicRoomKey(key)
       .then((res) => {
+        this.publicKey = key;
         this.setRoomData(res);
       })
       .finally(() => this.setIsLoading(false));
@@ -94,6 +96,10 @@ class PublicRoomStore {
   setRoomHref = (roomHref) => {
     this.roomHref = roomHref;
   };
+
+  get isPublicRoom() {
+    return this.isLoaded;
+  }
 }
 
 export default PublicRoomStore;

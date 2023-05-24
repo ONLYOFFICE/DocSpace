@@ -111,7 +111,8 @@ const filesActionsStore = new FilesActionsStore(
   settingsStore,
   dialogsStore,
   mediaViewerDataStore,
-  accessRightsStore
+  accessRightsStore,
+  publicRoomStore
 );
 
 const contextOptionsStore = new ContextOptionsStore(
@@ -124,7 +125,8 @@ const contextOptionsStore = new ContextOptionsStore(
   uploadDataStore,
   versionHistoryStore,
   settingsStore,
-  selectedFolderStore
+  selectedFolderStore,
+  publicRoomStore
 );
 
 const hotkeyStore = new HotkeyStore(
