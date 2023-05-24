@@ -960,7 +960,9 @@ const SectionHeaderContent = (props) => {
                 hideInfoPanel={isSettingsPage || isPublicRoom}
                 withLogo={isPublicRoom && logo}
                 isPublicRoom={isPublicRoom}
-                titleIcon={isPublicRoom && PublicRoomIconUrl}
+                titleIcon={
+                  isPublicRoomType && !isPublicRoom && PublicRoomIconUrl
+                }
               />
             </div>
           )}
