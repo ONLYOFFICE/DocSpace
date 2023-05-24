@@ -5,7 +5,7 @@ import { observer, inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
-import { StyledComponent } from "../StyledComponent";
+import StyledComponent from "../StyledComponent";
 
 const OfficialDocumentation = ({ dataBackupUrl }) => {
   const { t } = useTranslation("PaymentsEnterprise");

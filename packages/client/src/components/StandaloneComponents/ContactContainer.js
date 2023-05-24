@@ -6,65 +6,71 @@ import { Trans, useTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 
-import { StyledContactComponent } from "../PortalSettings/categories/payments/Standalone/StyledComponent";
+import { StyledContactComponent } from "./StyledComponent";
 const ContactContainer = (props) => {
   const { t } = useTranslation("PaymentsEnterprise");
 
-  const { helpUrl, salesEmail, theme } = props;
+  const { helpUrl, salesEmail, theme, isCommunity } = props;
 
   const officialWebsiteUrl = "https://www.onlyoffice.com/for-enterprises.aspx";
   const demonstrationUrl = "https://www.onlyoffice.com/demo-order.aspx";
 
   return (
     <>
-      <StyledContactComponent>
-        <div className="payments_contact">
-          <Text
-            fontWeight={600}
-            color={theme.client.settings.payment.contactContainer.textColor}
-          >
-            <Trans
-              i18nKey="UpgradeToProBannerInformationAboutShort"
-              ns="PaymentsEnterprise"
-              t={t}
+      {isCommunity && (
+        <StyledContactComponent>
+          <div className="payments_contact">
+            <Text
+              fontWeight={600}
+              color={theme.client.settings.payment.contactContainer.textColor}
             >
-              Learn more about Enterprise Edition
-              <Link
-                target="_blank"
-                tag="a"
-                fontWeight="600"
-                href={officialWebsiteUrl}
-                color={theme.client.settings.payment.contactContainer.linkColor}
+              <Trans
+                i18nKey="UpgradeToProBannerInformationAboutShort"
+                ns="PaymentsEnterprise"
+                t={t}
               >
-                on the official website
-              </Link>
-            </Trans>
-          </Text>
-        </div>
-        <div className="payments_contact">
-          <Text
-            fontWeight={600}
-            color={theme.client.settings.payment.contactContainer.textColor}
-          >
-            <Trans
-              i18nKey="UpgradeToProBannerInformationDemo"
-              ns="PaymentsEnterprise"
-              t={t}
+                Learn more about Enterprise Edition
+                <Link
+                  target="_blank"
+                  tag="a"
+                  fontWeight="600"
+                  href={officialWebsiteUrl}
+                  color={
+                    theme.client.settings.payment.contactContainer.linkColor
+                  }
+                >
+                  on the official website
+                </Link>
+              </Trans>
+            </Text>
+          </div>
+          <div className="payments_contact">
+            <Text
+              fontWeight={600}
+              color={theme.client.settings.payment.contactContainer.textColor}
             >
-              Request demonstration
-              <Link
-                target="_blank"
-                tag="a"
-                fontWeight="600"
-                href={demonstrationUrl}
-                color={theme.client.settings.payment.contactContainer.linkColor}
+              <Trans
+                i18nKey="UpgradeToProBannerInformationDemo"
+                ns="PaymentsEnterprise"
+                t={t}
               >
-                here
-              </Link>
-            </Trans>
-          </Text>
-        </div>
-      </StyledContactComponent>
+                Request demonstration
+                <Link
+                  target="_blank"
+                  tag="a"
+                  fontWeight="600"
+                  href={demonstrationUrl}
+                  color={
+                    theme.client.settings.payment.contactContainer.linkColor
+                  }
+                >
+                  here
+                </Link>
+              </Trans>
+            </Text>
+          </div>
+        </StyledContactComponent>
+      )}
       <StyledContactComponent>
         <div className="payments_contact">
           <Text
@@ -118,8 +124,8 @@ const ContactContainer = (props) => {
 };
 
 export default inject(({ auth, payments }) => {
-  const { settingsStore } = auth;
+  const { settingsStore, isCommunity } = auth;
   const { helpUrl, salesEmail } = payments;
   const { theme } = settingsStore;
-  return { helpUrl, salesEmail, theme };
+  return { helpUrl, salesEmail, theme, isCommunity };
 })(withRouter(observer(ContactContainer)));

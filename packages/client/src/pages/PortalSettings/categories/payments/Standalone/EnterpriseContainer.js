@@ -7,7 +7,7 @@ import Text from "@docspace/components/text";
 import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
 
 import { StyledEnterpriseComponent } from "./StyledComponent";
-import BenefitsContainer from "../../../../Bonus/BenefitsContainer";
+import BenefitsContainer from "SRC_DIR/components/StandaloneComponents/BenefitsContainer";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import TariffTitleContainer from "./sub-components/TariffTitleContainer";
 

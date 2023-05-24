@@ -7,7 +7,7 @@ import { setDocumentTitle } from "@docspace/client/src/helpers/filesUtils";
 
 import LicenseContainer from "./LicenseContainer";
 import { StyledComponent } from "./StyledComponent";
-import ContactContainer from "./ContactContainer";
+import ContactContainer from "SRC_DIR/components/StandaloneComponents/ContactContainer";
 import EnterpriseContainer from "./EnterpriseContainer";
 import TrialContainer from "./TrialContainer";
 import Loaders from "@docspace/common/components/Loaders";
@@ -48,7 +48,7 @@ const StandalonePage = (props) => {
     <StyledComponent>
       {isTrial ? <TrialContainer t={t} /> : <EnterpriseContainer t={t} />}
       <LicenseContainer t={t} />
-      <ContactContainer t={t} />
+      <ContactContainer />
     </StyledComponent>
   );
 };

@@ -5,10 +5,10 @@ import { observer, inject } from "mobx-react";
 import Text from "@docspace/components/text";
 import Loaders from "@docspace/common/components/Loaders";
 
-import BenefitsContainer from "./BenefitsContainer";
-import { StyledComponent } from "./StyledComponent";
+import BenefitsContainer from "SRC_DIR/components/StandaloneComponents/BenefitsContainer";
+import StyledComponent from "./StyledComponent";
 import OfficialDocumentation from "./sub-components/OfficialDocumentation";
-import ContactContainer from "./ContactContainer";
+import ContactContainer from "SRC_DIR/components/StandaloneComponents/ContactContainer";
 
 const Bonus = ({ standaloneInit, isInitPaymentPage }) => {
   const { t, ready } = useTranslation("PaymentsEnterprise");
