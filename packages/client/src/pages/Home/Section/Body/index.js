@@ -251,12 +251,12 @@ const SectionBodyContent = (props) => {
     }
   };
 
-  //console.log("Files Home SectionBodyContent render", props);
+  if (isEmptyFilesList && movingInProgress) return false;
 
   return (
     <Consumer>
       {(context) =>
-        isEmptyFilesList && !movingInProgress ? (
+        isEmptyFilesList ? (
           <>
             <EmptyContainer sectionWidth={context.sectionWidth} />
           </>

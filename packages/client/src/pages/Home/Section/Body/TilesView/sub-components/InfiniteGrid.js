@@ -82,14 +82,14 @@ const InfiniteGrid = (props) => {
     const listItem = list[list.length - 1];
 
     const isFile = useTempList
-      ? card?.props?.children?.props?.className?.includes("file")
-      : listItem?.props?.className?.includes("isFile");
+      ? card.props.children.props.className.includes("file")
+      : listItem.props.className.includes("isFile");
 
     if (isFile) return "isFile";
 
     const isFolder = useTempList
-      ? card?.props?.children?.props?.className?.includes("folder")
-      : listItem?.props?.className?.includes("isFolder");
+      ? card.props.children.props.className.includes("folder")
+      : listItem.props.className.includes("isFolder");
 
     if (isFolder) return "isFolder";
 
