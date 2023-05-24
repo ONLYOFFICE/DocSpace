@@ -12,7 +12,7 @@ import ButtonContainer from "./sub-components/ButtonContainer";
 import TariffTitleContainer from "./sub-components/TariffTitleContainer";
 
 const EnterpriseContainer = (props) => {
-  const { salesEmail, t, isLicenseDateExpires, theme } = props;
+  const { salesEmail, t, isLicenseDateExpired, theme } = props;
 
   return (
     <StyledEnterpriseComponent theme={theme}>
@@ -22,9 +22,9 @@ const EnterpriseContainer = (props) => {
 
       <TariffTitleContainer />
 
-      {isLicenseDateExpires && <BenefitsContainer t={t} />}
+      {isLicenseDateExpired && <BenefitsContainer t={t} />}
       <Text fontSize="14px" className="payments_renew-subscription">
-        {isLicenseDateExpires
+        {isLicenseDateExpired
           ? t("ActivatePurchaseBuyLicense")
           : t("ActivatePurchaseRenewLicense")}
       </Text>
@@ -56,6 +56,6 @@ export default inject(({ auth, payments }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
   const { theme } = settingsStore;
 
-  const { isLicenseDateExpires } = currentTariffStatusStore;
-  return { theme, buyUrl, salesEmail, isLicenseDateExpires };
+  const { isLicenseDateExpired } = currentTariffStatusStore;
+  return { theme, buyUrl, salesEmail, isLicenseDateExpired };
 })(withRouter(observer(EnterpriseContainer)));

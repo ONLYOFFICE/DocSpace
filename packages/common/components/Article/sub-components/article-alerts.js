@@ -14,7 +14,7 @@ const ArticleAlerts = ({
   isPaymentPageAvailable,
   isTeamTrainingAlertAvailable,
   isLicenseExpiring,
-  isLicenseDateExpires,
+  isLicenseDateExpired,
   isEnterprise,
   isTrial,
   standalone,
@@ -31,7 +31,7 @@ const ArticleAlerts = ({
 
     const isVisibleStandaloneAlert = isTrial
       ? true
-      : isLicenseExpiring || isLicenseDateExpires;
+      : isLicenseExpiring || isLicenseDateExpired;
 
     return (
       isPaymentPageAvailable &&
@@ -63,7 +63,7 @@ export default withRouter(
     const {
       isGracePeriod,
       isLicenseExpiring,
-      isLicenseDateExpires,
+      isLicenseDateExpired,
     } = currentTariffStatusStore;
     const { showText, standalone } = settingsStore;
 
@@ -76,7 +76,7 @@ export default withRouter(
       isPaymentPageAvailable,
       isTeamTrainingAlertAvailable,
       isLicenseExpiring,
-      isLicenseDateExpires,
+      isLicenseDateExpired,
       isTrial,
       standalone,
     };

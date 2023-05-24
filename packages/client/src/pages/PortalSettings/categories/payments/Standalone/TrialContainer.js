@@ -30,8 +30,8 @@ const TrialContainer = (props) => {
 
 export default inject(({ auth }) => {
   const { settingsStore, currentTariffStatusStore } = auth;
-  const { isLicenseDateExpires } = currentTariffStatusStore;
+  const { isLicenseDateExpired } = currentTariffStatusStore;
   const { theme } = settingsStore;
 
-  return { theme, isLicenseDateExpires };
+  return { theme, isLicenseDateExpired };
 })(withRouter(observer(TrialContainer)));

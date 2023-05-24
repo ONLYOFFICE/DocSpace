@@ -6,7 +6,7 @@ import Text from "@docspace/components/text";
 import { StyledTitleComponent } from "../StyledComponent";
 
 const TariffTitleContainer = ({
-  isLicenseDateExpires,
+  isLicenseDateExpired,
   isTrial,
   trialDaysLeft,
   paymentDate,
@@ -14,7 +14,7 @@ const TariffTitleContainer = ({
   const { t } = useTranslation(["PaymentsEnterprise", "Common"]);
   const alertComponent = () => {
     if (isTrial) {
-      return isLicenseDateExpires ? (
+      return isLicenseDateExpired ? (
         <Text
           className="payments_subscription-expired"
           fontWeight={600}
@@ -34,7 +34,7 @@ const TariffTitleContainer = ({
     }
 
     return (
-      isLicenseDateExpires && (
+      isLicenseDateExpired && (
         <Text className="payments_subscription-expired" isBold fontSize="14px">
           {t("TopBottonsEnterpriseExpired")}
         </Text>
@@ -55,15 +55,15 @@ const TariffTitleContainer = ({
 
   return (
     <StyledTitleComponent
-      isLicenseDateExpires={isLicenseDateExpires}
-      limitedWidth={isTrial ? true : isLicenseDateExpires}
+      isLicenseDateExpired={isLicenseDateExpired}
+      limitedWidth={isTrial ? true : isLicenseDateExpired}
     >
       <div className="payments_subscription">
         <div className="title">
           <Text fontWeight={600} fontSize="14px" as="span">
             {t("ActivateTariffDescr")}{" "}
           </Text>
-          {!isLicenseDateExpires && (
+          {!isLicenseDateExpired && (
             <Text fontSize="14px" as="span">
               {expiresDate()}
             </Text>
@@ -80,8 +80,8 @@ export default inject(({ auth }) => {
   const {
     trialDaysLeft,
     paymentDate,
-    isLicenseDateExpires,
+    isLicenseDateExpired,
   } = currentTariffStatusStore;
   const { isTrial } = currentQuotaStore;
-  return { isTrial, trialDaysLeft, paymentDate, isLicenseDateExpires };
+  return { isTrial, trialDaysLeft, paymentDate, isLicenseDateExpired };
 })(observer(TariffTitleContainer));

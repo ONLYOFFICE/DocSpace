@@ -17,7 +17,7 @@ const PROXY_BASE_URL = combineUrl(
 const ArticleEnterpriseAlert = ({
   theme,
   toggleArticleOpen,
-  isLicenseDateExpires,
+  isLicenseDateExpired,
   trialDaysLeft,
   isTrial,
   paymentDate,
@@ -35,7 +35,7 @@ const ArticleEnterpriseAlert = ({
 
   const titleFunction = () => {
     if (isTrial) {
-      if (isLicenseDateExpires) return t("Common:TrialExpired");
+      if (isLicenseDateExpired) return t("Common:TrialExpired");
       return t("Common:TrialDaysLeft", { count: trialDaysLeft });
     }
 
@@ -43,10 +43,10 @@ const ArticleEnterpriseAlert = ({
   };
 
   const descriptionFunction = () => {
-    if (isLicenseDateExpires) {
+    if (isLicenseDateExpired) {
       if (isTrial) return;
 
-      return t("SubscriptionIsExpiring", { date: paymentDate });
+      return t("Common:SubscriptionExpired");
     }
 
     return t("Common:SubscriptionIsExpiring", { date: paymentDate });
@@ -58,7 +58,7 @@ const ArticleEnterpriseAlert = ({
 
   const description = descriptionFunction();
 
-  const color = isLicenseDateExpires
+  const color = isLicenseDateExpired
     ? theme.catalog.paymentAlert.warningColor
     : theme.catalog.paymentAlert.color;
 
@@ -88,13 +88,13 @@ export default withRouter(
     const { isTrial } = currentQuotaStore;
     const { theme } = settingsStore;
     const {
-      isLicenseDateExpires,
+      isLicenseDateExpired,
       trialDaysLeft,
       paymentDate,
     } = currentTariffStatusStore;
     return {
       isTrial,
-      isLicenseDateExpires,
+      isLicenseDateExpired,
       trialDaysLeft,
       paymentDate,
       theme,

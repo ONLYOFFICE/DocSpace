@@ -48,6 +48,10 @@ class CurrentTariffStatusStore {
     return this.portalTariffStatus.portalStatus;
   }
 
+  get licenseDate() {
+    return this.portalTariffStatus.licenseDate;
+  }
+
   setPayerInfo = async () => {
     try {
       if (!this.customerId || !this.customerId?.length) {
@@ -74,12 +78,19 @@ class CurrentTariffStatusStore {
     return moment(this.dueDate).format("LL");
   }
 
+  isValidDate = (date) => {
+    return moment(date).year() !== 9999;
+  };
   get isPaymentDateValid() {
-    moment.locale(authStore.language);
-    if (this.dueDate === null) return "";
-    return moment(this.dueDate).year() !== 9999;
-  }
+    if (this.dueDate === null) return false;
 
+    return this.isValidDate(this.dueDate);
+  }
+  get isLicenseDateExpired() {
+    if (!this.licenseDate) return;
+
+    return this.isValidDate(this.licenseDate);
+  }
   get gracePeriodEndDate() {
     moment.locale(authStore.language);
     if (this.delayDueDate === null) return "";
@@ -92,11 +103,6 @@ class CurrentTariffStatusStore {
     return getDaysRemaining(this.delayDueDate);
   }
 
-  get isLicenseDateExpires() {
-    if (!this.dueDate) return;
-
-    return !moment(this.dueDate).isAfter();
-  }
   get isLicenseExpiring() {
     if (!this.dueDate || !authStore.isEnterprise) return;
 
