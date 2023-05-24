@@ -191,9 +191,7 @@ const VersionRow = (props) => {
               </>
             )}
 
-            <Text className="version_text" truncate={true}>
-              {info.comment}
-            </Text>
+            <Text className="version_text">{info.comment}</Text>
           </>
         </Box>
         {showEditPanel && (
