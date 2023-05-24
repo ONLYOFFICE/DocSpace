@@ -22,7 +22,7 @@ import ButtonPlusIcon from "PUBLIC_DIR/images/actions.button.plus.react.svg";
 import ButtonMinusIcon from "PUBLIC_DIR/images/actions.button.minus.react.svg";
 import CloseIcon from "PUBLIC_DIR/images/close-icon.react.svg";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledButtonAlertIcon = styled(ButtonAlertIcon)`
   ${commonIconsStyles}
@@ -88,7 +88,7 @@ const FloatingButton = (props) => {
           </div>
 
           <StyledFloatingButton className="circle__background" color={color}>
-            <IconBox>
+            <IconBox className="icon-box">
               {icon == "upload" ? (
                 <ButtonUploadIcon />
               ) : icon == "file" ? (
