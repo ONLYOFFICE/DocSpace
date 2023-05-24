@@ -106,9 +106,17 @@ const Item = ({
 
   const onClickAction = React.useCallback(
     (folderId) => {
-      onClick && onClick(folderId, item.title);
+      const isEmpty = item.filesCount === 0 && item.foldersCount === 0;
+
+      onClick && onClick(folderId, item.title, isEmpty, item.rootFolderType);
     },
-    [onClick, item.title]
+    [
+      onClick,
+      item.title,
+      item.filesCount,
+      item.foldersCount,
+      item.rootFolderType,
+    ]
   );
 
   return (
@@ -120,12 +128,13 @@ const Item = ({
       dragging={dragging && isDragging}
       onDragOver={onDragOver}
       onDragLeave={onDragLeave}
+      className={"document-catalog"}
     >
       <CatalogItem
         key={item.id}
         id={item.id}
         folderId={folderId}
-        className={`tree-drag ${item.folderClassName}`}
+        className={`tree-drag ${item.folderClassName} document-catalog`}
         icon={getFolderIcon(item)}
         showText={showText}
         text={item.title}

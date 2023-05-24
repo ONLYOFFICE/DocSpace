@@ -1,5 +1,7 @@
 import React from "react";
 import { observer, inject } from "mobx-react";
+import { useLocation } from "react-router-dom";
+
 import RootFolderContainer from "./RootFolderContainer";
 import EmptyFilterContainer from "./EmptyFilterContainer";
 import EmptyFolderContainer from "./EmptyFolderContainer";
@@ -26,6 +28,8 @@ const EmptyContainer = ({
   isGracePeriod,
   setInviteUsersWarningDialogVisible,
 }) => {
+  const location = useLocation();
+
   linkStyles.color = theme.filesEmptyContainer.linkColor;
 
   const onCreate = (e) => {
@@ -61,9 +65,14 @@ const EmptyContainer = ({
     );
   }
 
+  const isRootEmptyPage =
+    parentId === null && location.state
+      ? location.state?.isRoot
+      : parentId === 0;
+
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
-  ) : parentId === 0 ? (
+  ) : isRootEmptyPage ? (
     <RootFolderContainer
       onCreate={onCreate}
       linkStyles={linkStyles}

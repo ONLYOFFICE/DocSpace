@@ -586,6 +586,13 @@ class FilesStore {
     }
   };
 
+  clearFiles = (isEmpty) => {
+    this.setIsEmptyPage(isEmpty);
+    this.setFolders([]);
+    this.setFiles([]);
+    this.selectedFolderStore.setSelectedFolder(null);
+  };
+
   setActiveFiles = (activeFiles) => {
     this.activeFiles = activeFiles;
   };
@@ -1094,13 +1101,13 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    window.DocSpace.navigate(newUrl, {
-      state: {
-        fromAccounts:
-          window.DocSpace.location.pathname.includes("accounts/filter"),
-        fromSettings: window.DocSpace.location.pathname.includes("settings"),
-      },
-    });
+    // window.DocSpace.navigate(newUrl, {
+    //   state: {
+    //     fromAccounts:
+    //       window.DocSpace.location.pathname.includes("accounts/filter"),
+    //     fromSettings: window.DocSpace.location.pathname.includes("settings"),
+    //   },
+    // });
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
@@ -2566,6 +2573,7 @@ class FilesStore {
     const items = [...newFolders, ...this.files];
 
     if (items.length > 0 && this.isEmptyPage) {
+      console.log("set false");
       this.setIsEmptyPage(false);
     }
 

@@ -43,6 +43,10 @@ const ArticleBodyContent = (props) => {
     recycleBinFolderId,
 
     isVisitor,
+    setIsLoading,
+
+    clearFiles,
+    selectedFolderId,
   } = props;
 
   const navigate = useNavigate();
@@ -56,7 +60,7 @@ const ArticleBodyContent = (props) => {
   //   .filter((campaign) => campaign.length > 0);
 
   const onClick = React.useCallback(
-    (folderId, title) => {
+    (folderId, title, isEmpty, rootFolderType) => {
       const { toggleArticleOpen } = props;
 
       let path = `/rooms`;
@@ -65,6 +69,8 @@ const ArticleBodyContent = (props) => {
       const state = {
         title,
         isRoot: true,
+        isEmpty,
+        rootFolderType,
       };
 
       switch (folderId) {
@@ -74,20 +80,28 @@ const ArticleBodyContent = (props) => {
           params = myFilter.toUrlParams();
           path += "/personal";
 
+          if (activeItem === myFolderId && folderId === selectedFolderId)
+            return;
+
           break;
         case archiveFolderId:
           const archiveFilter = RoomsFilter.getDefault();
           archiveFilter.searchArea = RoomSearchArea.Archive;
           params = archiveFilter.toUrlParams();
           path += "/archived";
-
+          if (activeItem === archiveFolderId && folderId === selectedFolderId)
+            return;
           break;
         case recycleBinFolderId:
           const recycleBinFilter = FilesFilter.getDefault();
           recycleBinFilter.folder = folderId;
           params = recycleBinFilter.toUrlParams();
           path = "/files/trash";
-
+          if (
+            activeItem === recycleBinFolderId &&
+            folderId === selectedFolderId
+          )
+            return;
           break;
         case "accounts":
           const accountsFilter = AccountsFilter.getDefault();
@@ -96,6 +110,7 @@ const ArticleBodyContent = (props) => {
 
           break;
         case "settings":
+          clearFiles(isEmpty);
           navigate("/settings/common");
 
           if (isMobileOnly || isMobile()) {
@@ -108,10 +123,13 @@ const ArticleBodyContent = (props) => {
           roomsFilter.searchArea = RoomSearchArea.Active;
           params = roomsFilter.toUrlParams();
           path += "/shared";
-
+          if (activeItem === roomsFolderId && folderId === selectedFolderId)
+            return;
           break;
       }
 
+      clearFiles(isEmpty);
+      setIsLoading(true);
       path += `/filter?${params}`;
 
       navigate(path, { state });
@@ -120,7 +138,14 @@ const ArticleBodyContent = (props) => {
         toggleArticleOpen();
       }
     },
-    [roomsFolderId, archiveFolderId, myFolderId, recycleBinFolderId]
+    [
+      roomsFolderId,
+      archiveFolderId,
+      myFolderId,
+      recycleBinFolderId,
+      activeItem,
+      selectedFolderId,
+    ]
   );
 
   const onShowNewFilesPanel = React.useCallback(
@@ -211,13 +236,21 @@ const ArticleBodyContent = (props) => {
 };
 
 export default inject(
-  ({ auth, filesStore, treeFoldersStore, dialogsStore, settingsStore }) => {
-    const { firstLoad } = filesStore;
+  ({
+    auth,
+    filesStore,
+    treeFoldersStore,
+    dialogsStore,
+    selectedFolderStore,
+  }) => {
+    const { firstLoad, setIsLoading, clearFiles } = filesStore;
 
     const { roomsFolderId, archiveFolderId, myFolderId, recycleBinFolderId } =
       treeFoldersStore;
 
     const { setNewFilesPanelVisible } = dialogsStore;
+
+    const selectedFolderId = selectedFolderStore.id;
 
     const {
       showText,
@@ -246,6 +279,11 @@ export default inject(
       archiveFolderId,
       myFolderId,
       recycleBinFolderId,
+
+      setIsLoading,
+
+      clearFiles,
+      selectedFolderId,
     };
   }
 )(

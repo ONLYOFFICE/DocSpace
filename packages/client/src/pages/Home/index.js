@@ -108,21 +108,12 @@ const PureHome = (props) => {
     fetchPeople,
     setSelectedNode,
     onClickBack,
-    setSelectedFolder,
-    setFolders,
-    setFiles,
   } = props;
 
   const location = useLocation();
 
   const isAccountsPage = location.pathname.includes("/accounts/filter");
   const isSettingsPage = location.pathname.includes("settings");
-
-  const clearFiles = React.useCallback(() => {
-    setSelectedFolder(null);
-    setFolders([]);
-    setFiles([]);
-  }, []);
 
   const { onDrop } = useFiles({
     t,
@@ -174,13 +165,13 @@ const PureHome = (props) => {
     isAccountsPage,
     location,
     setIsLoading,
-    clearFiles,
+
     setSelectedNode,
     fetchPeople,
     setPortalTariff,
   });
 
-  useSettings({ t, isSettingsPage, location, clearFiles });
+  useSettings({ t, isSettingsPage, location });
 
   useSDK({
     frameConfig,

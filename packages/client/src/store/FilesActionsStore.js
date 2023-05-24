@@ -40,10 +40,12 @@ import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { muteRoomNotification } from "@docspace/common/api/settings";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import AccountsFilter from "@docspace/common/api/people/filter";
 import { RoomSearchArea } from "@docspace/common/constants";
 import { getObjectByLocation } from "@docspace/common/utils";
 
 import uniqueid from "lodash/uniqueId";
+import FilesFilter from "@docspace/common/api/files/filter";
 
 class FilesActionStore {
   authStore;
@@ -1907,9 +1909,9 @@ class FilesActionStore {
     const {
       isLoading,
       setIsLoading,
-      fetchFiles,
       openDocEditor,
       isPrivacyFolder,
+      clearFiles,
     } = this.filesStore;
     const { isRecycleBinFolder } = this.treeFoldersStore;
     const { setMediaViewerData } = this.mediaViewerDataStore;
@@ -1927,14 +1929,27 @@ class FilesActionStore {
     if (isRecycleBinFolder || isLoading) return;
 
     if (isFolder) {
-      setIsLoading(true);
+      const { filesCount, foldersCount, isRoom, rootFolderType, title } = item;
 
-      fetchFiles(id, null, true, false)
-        .catch((err) => {
-          toastr.error(err);
-          setIsLoading(false);
-        })
-        .finally(() => setIsLoading(false));
+      const isEmpty = filesCount === 0 && foldersCount === 0;
+      setIsLoading(true);
+      clearFiles(isEmpty);
+      let path =
+        rootFolderType === FolderType.Rooms ||
+        rootFolderType === FolderType.Archive
+          ? rootFolderType === FolderType.Rooms
+            ? `rooms/shared/${id}`
+            : "rooms/archived"
+          : "rooms/personal";
+
+      const filter = FilesFilter.getDefault();
+      filter.folder = id;
+
+      path = `${path}/filter?${filter.toUrlParams()}`;
+
+      const state = { title, isRoot: false, isEmpty, rootFolderType };
+
+      window.DocSpace.navigate(path, { state });
     } else {
       if (canConvert) {
         setConvertItem({ ...item, isOpen: true });
@@ -1979,8 +1994,9 @@ class FilesActionStore {
   };
 
   onClickBack = () => {
-    const { roomType, parentId, setSelectedFolder } = this.selectedFolderStore;
+    const { roomType } = this.selectedFolderStore;
     const { setSelectedNode } = this.treeFoldersStore;
+    const { clearFiles, setIsLoading } = this.filesStore;
 
     const categoryType = getCategoryType(location);
     const isRoom = !!roomType;
@@ -2012,49 +2028,102 @@ class FilesActionStore {
     }
 
     if (categoryType === CategoryType.Settings) {
-      setSelectedFolder(null);
+      clearFiles(isEmpty);
+
       setSelectedNode(["common"]);
+
+      return navigate("/settings/common");
     }
 
     if (categoryType === CategoryType.Accounts) {
-      setSelectedFolder(null);
+      const accountsFilter = AccountsFilter.getDefault();
+      params = accountsFilter.toUrlParams();
+      path = "/accounts";
+
+      clearFiles();
+      setIsLoading(true);
+
       setSelectedNode(["accounts", "filter"]);
+
+      path += `/filter?${params}`;
+
+      return navigate(path);
     }
   };
 
   moveToRoomsPage = () => {
-    const { setIsLoading, fetchRooms, setAlreadyFetchingRooms } =
-      this.filesStore;
+    const { clearFiles, setIsLoading } = this.filesStore;
 
     const categoryType = getCategoryType(location);
 
-    setIsLoading(true);
-    setAlreadyFetchingRooms(true);
-
     const filter = RoomsFilter.getDefault();
+
+    let path = `rooms/shared`;
+
+    const state = {
+      title: this.selectedFolderStore?.navigationPath[0]?.title || "",
+      isRoot: true,
+      isEmpty: false,
+      rootFolderType: this.selectedFolderStore.rootFolderType,
+    };
+    setIsLoading(true);
+    clearFiles(false);
 
     if (categoryType == CategoryType.Archive) {
       filter.searchArea = RoomSearchArea.Archive;
+      path = "rooms/archived";
     }
 
-    fetchRooms(null, filter).finally(() => {
-      setIsLoading(false);
-    });
+    path = `${path}/filter?${filter.toUrlParams()}`;
+
+    window.DocSpace.navigate(path, { state });
   };
 
   backToParentFolder = () => {
-    const { setIsLoading, fetchFiles } = this.filesStore;
+    const { setIsLoading, clearFiles } = this.filesStore;
 
     let id = this.selectedFolderStore.parentId;
+
+    const { navigationPath, rootFolderType } = this.selectedFolderStore;
 
     if (!id) {
       const urlFilter = getObjectByLocation(location);
       id = urlFilter.folder;
     }
 
-    setIsLoading(true);
+    let path = "";
+    switch (rootFolderType) {
+      case FolderType.Rooms:
+        path = `rooms/shared/${id}`;
+        break;
+      case FolderType.Archive:
+        path = `rooms/archived`;
+        break;
+      case FolderType.USER:
+        path = `rooms/personal`;
+        break;
+      case FolderType.TRASH:
+        path = `files/trash`;
+        break;
+    }
 
-    fetchFiles(id, null, true, false).finally(() => setIsLoading(false));
+    const filter = FilesFilter.getDefault();
+
+    filter.folder = id;
+
+    const state = {
+      title: navigationPath[0]?.title || "",
+      isRoot: navigationPath.length === 1,
+      isEmpty: false,
+      rootFolderType: rootFolderType,
+    };
+
+    setIsLoading(true);
+    clearFiles(false);
+
+    path = `${path}/filter?${filter.toUrlParams()}`;
+
+    window.DocSpace.navigate(path, { state });
   };
 
   setGroupMenuBlocked = (blocked) => {

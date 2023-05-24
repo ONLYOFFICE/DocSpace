@@ -9,7 +9,7 @@ const useAccounts = ({
   isAccountsPage,
   location,
   setIsLoading,
-  clearFiles,
+
   setSelectedNode,
   fetchPeople,
   setPortalTariff,
@@ -18,7 +18,7 @@ const useAccounts = ({
     if (!isAccountsPage) return;
     setIsLoading(true);
     setSelectedNode(["accounts", "filter"]);
-    clearFiles();
+
     const newFilter = AccountsFilter.getFilter(location);
 
     setDocumentTitle(t("Common:Accounts"));
@@ -30,7 +30,7 @@ const useAccounts = ({
       .finally(() => {
         setIsLoading(false);
       });
-  }, [isAccountsPage, location]);
+  }, [isAccountsPage, location.pathname, location.search]);
 };
 
 export default useAccounts;

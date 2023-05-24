@@ -39,8 +39,8 @@ import { useNavigate, useLocation } from "react-router-dom";
 import Loaders from "@docspace/common/components/Loaders";
 import Navigation from "@docspace/common/components/Navigation";
 import TrashWarning from "@docspace/common/components/Navigation/sub-components/trash-warning";
-import { Events, EmployeeType } from "@docspace/common/constants";
-
+import { Events, EmployeeType, FolderType } from "@docspace/common/constants";
+import FilesFilter from "@docspace/common/api/files/filter";
 import { resendInvitesAgain } from "@docspace/common/api/people";
 
 import DropDownItem from "@docspace/components/drop-down-item";
@@ -48,7 +48,7 @@ import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
 import toastr from "@docspace/components/toast/toastr";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
-
+import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 import withLoader from "../../../../HOCs/withLoader";
 
@@ -178,7 +178,7 @@ const SectionHeaderContent = (props) => {
     getCheckboxItemId,
     setSelectedNode,
     setIsLoading,
-    fetchFiles,
+
     moveToRoomsPage,
     setIsInfoPanelVisible,
 
@@ -195,6 +195,8 @@ const SectionHeaderContent = (props) => {
     setInvitePanelOptions,
     isEmptyPage,
     pathParts,
+
+    clearFiles,
   } = props;
 
   const navigate = useNavigate();
@@ -748,10 +750,45 @@ const SectionHeaderContent = (props) => {
     }
 
     setSelectedNode(id);
+
+    const rootFolderType = selectedFolder.rootFolderType;
+
+    let path = "";
+
+    switch (rootFolderType) {
+      case FolderType.Rooms:
+        path = `rooms/shared/${id}`;
+        break;
+      case FolderType.Archive:
+        path = `rooms/archived`;
+        break;
+      case FolderType.USER:
+        path = `rooms/personal`;
+        break;
+      case FolderType.TRASH:
+        path = `files/trash`;
+        break;
+    }
+
+    const filter = FilesFilter.getDefault();
+
+    filter.folder = id;
+
+    const itemIdx = selectedFolder.navigationPath.findIndex((v) => v.id === id);
+
+    const state = {
+      title: selectedFolder.navigationPath[itemIdx]?.title || "",
+      isRoot: itemIdx === 0,
+      isEmpty: false,
+      rootFolderType: rootFolderType,
+    };
+
     setIsLoading(true);
-    fetchFiles(id, null, true, false)
-      .catch((err) => toastr.error(err))
-      .finally(() => setIsLoading(false));
+    clearFiles(false);
+
+    path = `${path}/filter?${filter.toUrlParams()}`;
+
+    window.DocSpace.navigate(path, { state });
   };
 
   const onInvite = (e) => {
@@ -824,8 +861,6 @@ const SectionHeaderContent = (props) => {
     : !title && stateTitle
     ? stateTitle
     : title;
-
-  console.log(isRoot, currentTitle);
 
   return (
     <Consumer key="header">
@@ -917,17 +952,17 @@ export default inject(
       getFolderInfo,
       setBufferSelection,
       setIsLoading,
-      fetchFiles,
+
       fetchRooms,
       activeFiles,
       activeFolders,
-
-      setAlreadyFetchingRooms,
 
       roomsForRestore,
       roomsForDelete,
 
       isEmptyPage,
+
+      clearFiles,
     } = filesStore;
 
     const {
@@ -1064,15 +1099,13 @@ export default inject(
       hideContextMenuInsideArchiveRoom,
 
       setIsLoading,
-      fetchFiles,
+
       fetchRooms,
 
       activeFiles,
       activeFolders,
 
       isRoomsFolder,
-
-      setAlreadyFetchingRooms,
 
       enablePlugins,
 
@@ -1110,6 +1143,8 @@ export default inject(
       isAdmin,
       setInvitePanelOptions,
       isEmptyPage,
+
+      clearFiles,
     };
   }
 )(

@@ -3,7 +3,7 @@ import PersonSvgUrl from "PUBLIC_DIR/images/person.svg?url";
 import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
 import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url";
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { FolderType } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
@@ -12,11 +12,10 @@ import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
-import Loaders from "@docspace/common/components/Loaders";
+
 import RoomsFilter from "@docspace/common/api/rooms/filter";
-import { combineUrl } from "@docspace/common/utils";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
-import config from "PACKAGE_FILE";
+
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
 import EmptyScreenPersonalDarkUrl from "PUBLIC_DIR/images/empty_screen_personal_dark.svg?url";
@@ -75,6 +74,7 @@ const RootFolderContainer = (props) => {
   const personalDescription = t("EmptyFolderDecription");
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const emptyScreenHeader = t("EmptyScreenFolder");
   const archiveHeader = t("ArchiveEmptyScreenHeader");
@@ -141,7 +141,7 @@ const RootFolderContainer = (props) => {
   };
 
   const getEmptyFolderProps = () => {
-    switch (rootFolderType) {
+    switch (rootFolderType || location?.state?.rootFolderType) {
       case FolderType.USER:
         return {
           headerText: emptyScreenHeader,
@@ -355,24 +355,22 @@ const RootFolderContainer = (props) => {
   // }
 
   return (
-    <EmptyContainer
-      headerText={headerText}
-      isEmptyPage={isEmptyPage}
-      sectionWidth={sectionWidth}
-      style={{ marginTop: 32 }}
-      {...emptyFolderProps}
-    />
+    emptyFolderProps && (
+      <EmptyContainer
+        headerText={headerText}
+        isEmptyPage={isEmptyPage}
+        sectionWidth={sectionWidth}
+        style={{ marginTop: 32 }}
+        {...emptyFolderProps}
+      />
+    )
   );
 };
 
 export default inject(
   ({ auth, filesStore, treeFoldersStore, selectedFolderStore }) => {
-    const {
-      isDesktopClient,
-      isEncryptionSupport,
-      organizationName,
-      theme,
-    } = auth.settingsStore;
+    const { isDesktopClient, isEncryptionSupport, organizationName, theme } =
+      auth.settingsStore;
 
     const {
       filter,

@@ -2,11 +2,9 @@ import React from "react";
 
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
 
-const useSettings = ({ t, isSettingsPage, location, clearFiles }) => {
+const useSettings = ({ t, isSettingsPage, location }) => {
   React.useEffect(() => {
     if (!isSettingsPage) return;
-
-    clearFiles();
 
     setDocumentTitle(t("Common:Settings"));
   }, [isSettingsPage, location]);
