@@ -131,6 +131,15 @@ public class ZoomLoginProvider : BaseLoginProvider<ZoomLoginProvider>
         return RequestProfile(accessToken);
     }
 
+    public LoginProfile GetMinimalProfile(string uid)
+    {
+        return new LoginProfile(Signature, InstanceCrypto)
+        {
+            Id = uid,
+            Provider = ProviderConstants.Zoom
+        };
+    }
+
     internal LoginProfile ProfileFromZoom(string zoomProfile)
     {
         var jsonProfile = JsonConvert.DeserializeObject<ZoomProfile>(zoomProfile);
