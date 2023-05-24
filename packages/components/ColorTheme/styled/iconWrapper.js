@@ -1,6 +1,4 @@
-import styled from "styled-components";
-import { Base } from "@docspace/components/themes";
-
+import styled, { css } from "styled-components";
 const StyledIconWrapper = styled.div`
   width: 17px;
   display: flex;
@@ -23,6 +21,17 @@ const StyledIconWrapper = styled.div`
   }
 `;
 
-StyledIconWrapper.defaultProps = { theme: Base };
+const getDefaultStyles = ({ $currentColorScheme }) =>
+  $currentColorScheme &&
+  css`
+    svg {
+      path:nth-child(2) {
+        fill: ${$currentColorScheme.main.accent};
+      }
+      circle {
+        stroke: ${$currentColorScheme.main.accent};
+      }
+    }
+  `;
 
-export default StyledIconWrapper;
+export default styled(StyledIconWrapper)(getDefaultStyles);

@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import { Base } from "@docspace/components/themes";
+import styled, { css } from "styled-components";
+import Base from "@docspace/components/themes/base";
 
 const StyledPreparationPortalProgress = styled.div`
   .preparation-portal_progress {
@@ -36,6 +36,14 @@ const StyledPreparationPortalProgress = styled.div`
   }
 `;
 
+const getDefaultStyles = ({ $currentColorScheme, theme }) =>
+  $currentColorScheme &&
+  css`
+    .preparation-portal_progress-line {
+      background: ${theme.isBase ? $currentColorScheme.main.accent : "#FFFFFF"};
+    }
+  `;
+
 StyledPreparationPortalProgress.defaultProps = { theme: Base };
 
-export default StyledPreparationPortalProgress;
+export default styled(StyledPreparationPortalProgress)(getDefaultStyles);

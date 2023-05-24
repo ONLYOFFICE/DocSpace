@@ -1,4 +1,3 @@
-import { Base } from "@docspace/components/themes";
 import styled, { css } from "styled-components";
 
 const StyledIndicator = styled.div`
@@ -13,6 +12,14 @@ const StyledIndicator = styled.div`
   z-index: 10;
 `;
 
-StyledIndicator.defaultProps = { theme: Base };
+const getDefaultStyles = ({ $currentColorScheme }) =>
+  $currentColorScheme &&
+  css`
+    background: ${$currentColorScheme.main.accent};
 
-export default StyledIndicator;
+    &:hover {
+      background: ${$currentColorScheme.main.accent};
+    }
+  `;
+
+export default styled(StyledIndicator)(getDefaultStyles);
