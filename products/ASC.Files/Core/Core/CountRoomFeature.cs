@@ -40,7 +40,7 @@ public class CountRoomChecker : TenantQuotaFeatureCheckerCount<CountRoomFeature>
 
     public override void CheckAdd(int tenantId, int newValue)
     {
-        if (_tariffService.GetTariff(tenantId).State > TariffState.Paid)
+        if (_tariffService.GetTariff(tenantId).State >= TariffState.NotPaid)
         {
             throw new BillingNotFoundException(Resource.ErrorNotAllowedOption, "room");
         }
@@ -70,7 +70,7 @@ public class CountRoomCheckerStatistic : ITenantQuotaFeatureStat<CountRoomFeatur
         {
             return 0;
         }
-        
+
         return await folderDao.GetFoldersAsync(parentId).CountAsync();
     }
 }
