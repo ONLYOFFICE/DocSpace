@@ -1,7 +1,7 @@
-export const getErrorsStats = (userId, version, language, error) => {
+export const getCrashReport = (userId, version, language, error) => {
   const reportTime = new Date();
 
-  const errors = {
+  const report = {
     url: window.origin,
     id: userId,
     version: version,
@@ -13,5 +13,5 @@ export const getErrorsStats = (userId, version, language, error) => {
     localStorage: window.localStorage,
     reportTime: reportTime,
   };
-  console.log("errors", errors);
+  console.log("report", report);
 };
