@@ -1,4 +1,5 @@
 ﻿import FileActionsLockedReactSvgUrl from "PUBLIC_DIR/images/file.actions.locked.react.svg?url";
+import FileActionsDownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 import LockedReactSvgUrl from "PUBLIC_DIR/images/locked.react.svg?url";
 import FileActionsFavoriteReactSvgUrl from "PUBLIC_DIR/images/file.actions.favorite.react.svg?url";
 import FavoriteReactSvgUrl from "PUBLIC_DIR/images/favorite.react.svg?url";
@@ -22,10 +23,12 @@ const QuickButtons = (props) => {
     theme,
     sectionWidth,
     onClickLock,
+    onClickDownload,
     isDisabled,
     onClickFavorite,
     viewAs,
     folderCategory,
+    isPublicRoom,
   } = props;
 
   const { id, locked, fileStatus, title, fileExst } = item;
@@ -35,9 +38,7 @@ const QuickButtons = (props) => {
 
   const isTile = viewAs === "tile";
 
-  const iconLock = locked
-    ? FileActionsLockedReactSvgUrl
-    : LockedReactSvgUrl;
+  const iconLock = locked ? FileActionsLockedReactSvgUrl : LockedReactSvgUrl;
 
   const colorLock = locked
     ? theme.filesQuickButtons.sharedColor
@@ -60,7 +61,9 @@ const QuickButtons = (props) => {
 
   const setFavorite = () => onClickFavorite(isFavorite);
 
-  const isAvailableLockFile = !folderCategory && fileExst && displayBadges;
+  const isAvailableLockFile =
+    !folderCategory && fileExst && displayBadges && item.security.Lock;
+  const isAvailableDownloadFile = isPublicRoom && item.security.Download;
 
   return (
     <div className="badges additional-badges">
@@ -77,6 +80,19 @@ const QuickButtons = (props) => {
           isDisabled={isDisabled}
           hoverColor={theme.filesQuickButtons.sharedColor}
           title={t("UnblockVersion")}
+        />
+      )}
+      {isAvailableDownloadFile && (
+        <ColorTheme
+          themeId={ThemeType.IconButton}
+          iconName={FileActionsDownloadReactSvgUrl}
+          className="badge download-file icons-group"
+          size={sizeQuickButton}
+          onClick={onClickDownload}
+          color={colorLock}
+          isDisabled={isDisabled}
+          hoverColor={theme.filesQuickButtons.sharedColor}
+          title={t("Common:Download")}
         />
       )}
       {/* {fileExst && !isTrashFolder && displayBadges && (

@@ -613,8 +613,6 @@ class Tile extends React.PureComponent {
       });
     }
 
-    console.log("tags", tags);
-
     return (
       <StyledTile
         ref={this.tile}
