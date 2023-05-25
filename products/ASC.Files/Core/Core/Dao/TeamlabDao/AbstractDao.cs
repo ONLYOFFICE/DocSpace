@@ -217,5 +217,5 @@ file static class AbstractDaoQueries
                 .Where(r => r.HashId == hashId)
                 .AsNoTracking()
                 .Select(r => r.Id)
-                .FirstOrDefault();
+                .FirstOrDefault());
 }
