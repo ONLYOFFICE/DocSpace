@@ -2,7 +2,6 @@ import React from "react";
 import PropTypes from "prop-types";
 import { ReactSVG } from "react-svg";
 
-import Badge from "@docspace/components/badge";
 import RightArrowReactSvgUrl from "PUBLIC_DIR/images/right.arrow.react.svg?url";
 
 import {
@@ -17,12 +16,10 @@ const DropDownItem = (props) => {
   const {
     isSeparator,
     label,
-    backgroundColor,
     icon,
     children,
     disabled,
     className,
-    type,
     theme,
     fillIcon,
     isSubMenu,

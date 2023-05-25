@@ -91,10 +91,20 @@ const BadgeTypeTemplate = (args) => (
     <ComboBox
       {...args}
       options={[
-        { key: 1, label: "Open", backgroundColor: "#4781D1" },
-        { key: 2, label: "Done", backgroundColor: "#444" },
-        { key: 3, label: "2nd turn", backgroundColor: "white" },
-        { key: 4, label: "3rd turn", backgroundColor: "white" },
+        { key: 1, label: "Open", backgroundColor: "#4781D1", color: "#fff" },
+        { key: 2, label: "Done", backgroundColor: "#444", color: "#fff" },
+        {
+          key: 3,
+          label: "2nd turn",
+          backgroundColor: "white",
+          color: "#555F65",
+        },
+        {
+          key: 4,
+          label: "3rd turn",
+          backgroundColor: "white",
+          color: "#555F65",
+        },
       ]}
       selectedOption={{
         key: 0,

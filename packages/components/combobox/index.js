@@ -3,16 +3,10 @@ import React from "react";
 import equal from "fast-deep-equal/react";
 
 import ComboButton from "./sub-components/combo-button";
-import Badge from "@docspace/components/badge";
 
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import StyledComboBox from "./styled-combobox";
-import { StyledComboBadgeBox } from "./styled-combobox";
-import {
-  StyledArrowIcon,
-  StyledTriangleDownIcon,
-} from "./sub-components/styled-combobutton.js";
 
 class ComboBox extends React.Component {
   constructor(props) {
@@ -140,7 +134,6 @@ class ComboBox extends React.Component {
       isNoFixedHeightOptions,
       hideMobileView,
     } = this.props;
-
     const { tabIndex, ...props } = this.props;
     const { isOpen, selectedOption } = this.state;
 
@@ -181,20 +174,6 @@ class ComboBox extends React.Component {
 
     const disableMobileView = optionsCount < 4 || hideMobileView;
 
-    const handleBadgeStyle = () => {
-      if (selectedOption.backgroundColor === "white") {
-        return {
-          backgroundColor: selectedOption.backgroundColor,
-          border: "2px solid #4781D1",
-          color: "#555F65",
-        };
-      } else {
-        return {
-          backgroundColor: selectedOption.backgroundColor,
-        };
-      }
-    };
-
     return (
       <StyledComboBox
         ref={this.ref}
@@ -209,55 +188,25 @@ class ComboBox extends React.Component {
         withoutPadding={withoutPadding}
         {...props}
       >
-        {type === "badge" ? (
-          <StyledComboBadgeBox>
-            <Badge
-              label={selectedOption.label}
-              noHover={true}
-              {...handleBadgeStyle()}
-            />
-            <StyledArrowIcon
-              displayArrow={optionsLength > 0}
-              noBorder={noBorder}
-              isOpen={isOpen}
-              modernView={modernView}
-              className="combo-buttons_arrow-icon"
-              isLoading={isLoading}
-            >
-              {optionsLength > 0 &&
-                (comboIcon ? (
-                  <ReactSVG
-                    src={comboIcon}
-                    className="combo-buttons_expander-icon"
-                  />
-                ) : (
-                  <StyledTriangleDownIcon
-                    size="scale"
-                    className="combo-buttons_expander-icon"
-                  />
-                ))}
-            </StyledArrowIcon>
-          </StyledComboBadgeBox>
-        ) : (
-          <ComboButton
-            noBorder={noBorder}
-            isDisabled={isDisabled}
-            selectedOption={selectedOption}
-            withOptions={optionsLength > 0}
-            optionsLength={optionsLength}
-            withAdvancedOptions={withAdvancedOptions}
-            innerContainer={children}
-            innerContainerClassName="optionalBlock"
-            isOpen={isOpen}
-            size={size}
-            scaled={scaled}
-            comboIcon={comboIcon}
-            modernView={modernView}
-            fillIcon={fillIcon}
-            tabIndex={tabIndex}
-            isLoading={isLoading}
-          />
-        )}
+        <ComboButton
+          noBorder={noBorder}
+          isDisabled={isDisabled}
+          selectedOption={selectedOption}
+          withOptions={optionsLength > 0}
+          optionsLength={optionsLength}
+          withAdvancedOptions={withAdvancedOptions}
+          innerContainer={children}
+          innerContainerClassName="optionalBlock"
+          isOpen={isOpen}
+          size={size}
+          scaled={scaled}
+          comboIcon={comboIcon}
+          modernView={modernView}
+          fillIcon={fillIcon}
+          tabIndex={tabIndex}
+          isLoading={isLoading}
+          type={type}
+        />
 
         {displayType !== "toggle" && (
           <DropDown
@@ -304,7 +253,6 @@ class ComboBox extends React.Component {
                       key={option.key}
                       disabled={disabled}
                       backgroundColor={option.backgroundColor}
-                      type={type}
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
                       isModern={noBorder}

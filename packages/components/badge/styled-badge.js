@@ -13,9 +13,9 @@ const hoveredCss = css`
 const highCss = css`
   cursor: default;
   padding: ${(props) => (props.compact ? 0 : "2px")} 10px;
+  border-radius: 6px;
   p {
     font-size: 13px;
-    line-height: 20px;
     font-weight: 400;
   }
 `;
@@ -36,7 +36,7 @@ const StyledBadge = styled.div`
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
   flex-shrink: 0;
-  border: ${(props) => props.border};
+  border: ${(props) => props.backgroundColor === "white" && props.border};
 
   ${(props) => props.type === "high" && noBorderCss}
   &:hover {

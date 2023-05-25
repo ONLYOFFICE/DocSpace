@@ -78,6 +78,7 @@ const StyledComboButton = styled.div`
 
   ${(props) =>
     !props.noBorder &&
+    !props.type &&
     `
     border:  ${props.theme.comboBox.button.border};
     border-radius: ${props.theme.comboBox.button.borderRadius};
@@ -274,6 +275,9 @@ const StyledLoader = styled(Loader)`
     props.displaySize === "content" ? "-16px" : "-8px"};
   margin-top: 2px;
 `;
+const StyledComboBadgeBox = styled.div`
+  margin-right: 4px;
+`;
 
 export {
   StyledArrowIcon,
@@ -282,4 +286,5 @@ export {
   StyledComboButton,
   StyledTriangleDownIcon,
   StyledLoader,
+  StyledComboBadgeBox,
 };

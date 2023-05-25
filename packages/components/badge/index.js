@@ -50,7 +50,7 @@ const Badge = (props) => {
       >
         <StyledText
           textAlign="center"
-          type={type}
+          backgroundColor={backgroundColor}
           fontWeight={fontWeight}
           color={color}
           fontSize={fontSize}
@@ -99,6 +99,8 @@ Badge.propTypes = {
   type: PropTypes.oneOf(["high", null]),
   /** Compact badge */
   compact: PropTypes.bool,
+  /**Border badge */
+  border: PropTypes.string,
 };
 
 Badge.defaultProps = {
