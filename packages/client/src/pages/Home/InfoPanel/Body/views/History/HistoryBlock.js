@@ -23,6 +23,7 @@ const HistoryBlock = ({
   openUser,
   isVisitor,
   isCollaborator,
+  withFileList,
   isLastEntity,
 }) => {
   const { target, initiator, json, groupedFeeds } = feed;
@@ -39,8 +40,6 @@ const HistoryBlock = ({
   const userAvatar = initiator.hasAvatar
     ? initiator.avatarSmall
     : DefaultUserAvatarSmall;
-
-  const isSelectedFile = selectionIsFile;
 
   return (
     <StyledHistoryBlock
@@ -78,7 +77,7 @@ const HistoryBlock = ({
           selectionParentRoom={selectionParentRoom}
         />
 
-        {isItemAction && !isSelectedFile && (
+        {isItemAction && withFileList && (
           <HistoryBlockItemList
             t={t}
             items={[json, ...groupedFeeds]}

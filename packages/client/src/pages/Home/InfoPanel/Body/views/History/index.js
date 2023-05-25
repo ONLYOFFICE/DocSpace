@@ -1,21 +1,25 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, {
+  Suspense,
+  useState,
+  useEffect,
+  useRef,
+  useTransition,
+} from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import { StyledHistoryList, StyledHistorySubtitle } from "../../styles/history";
 
 import Loaders from "@docspace/common/components/Loaders";
-import { getRelativeDateDay } from "./../../helpers/HistoryHelper";
+import { parseHistory } from "./../../helpers/HistoryHelper";
 import HistoryBlock from "./HistoryBlock";
 import NoHistory from "../NoItem/NoHistory";
-import { toastr } from "@docspace/components";
-
-const HISTORY_LOAD = 1500;
-const HISTORY_TIMEOUT = 30000;
 
 const History = ({
   t,
   selection,
+  selectionHistory,
+  setSelectionHistory,
   selectedFolder,
   selectionHistory,
   setSelectionHistory,
@@ -25,94 +29,41 @@ const History = ({
   checkAndOpenLocationAction,
   openUser,
   isVisitor,
-  setView,
   isCollaborator,
 }) => {
   const isMount = useRef(true);
   const abortControllerRef = useRef(new AbortController());
 
-  const [history, setHistory] = useState(null);
-  const [historyIsLoading, setHistoryIsLoading] = useState(false);
-  const [isShowLoader, setIsShowLoader] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [withFileList, setWithFileList] = useState(
+    selection.isFolder || selection.isRoom
+  );
 
   const fetchHistory = async (itemId) => {
-    if (historyIsLoading) {
+    if (isLoading) {
       abortControllerRef.current?.abort();
       abortControllerRef.current = new AbortController();
-    }
-
-    setHistoryIsLoading(true);
+    } else setIsLoading(true);
 
     let module = "files";
     if (selection.isRoom) module = "rooms";
     else if (selection.isFolder) module = "folders";
 
-    let loadTimerId = setTimeout(() => setIsShowLoader(true), HISTORY_LOAD);
-    let timeoutTimerId = setTimeout(() => {
-      toastr.error(`History load timeout of ${HISTORY_TIMEOUT}ms exceeded`);
-      setView("info_details");
-    }, HISTORY_TIMEOUT);
-
     getHistory(module, itemId, abortControllerRef.current?.signal)
       .then((data) => {
-        const parsedHistory = parseHistoryJSON(data);
-        if (isMount.current) {
-          setHistory(parsedHistory);
-          setSelection({ ...selection, history: parsedHistory });
-        }
+        const parsedHistory = parseHistory(t, data);
+        setWithFileList(selection.isFolder || selection.isRoom);
+        if (isMount.current)
+          startTransition(() => setSelectionHistory(parsedHistory));
       })
       .catch((err) => {
         if (err.message !== "canceled") console.error(err);
       })
       .finally(() => {
-        clearTimeout(loadTimerId);
-        clearTimeout(timeoutTimerId);
-        if (isMount.current) {
-          setHistoryIsLoading(false);
-          setIsShowLoader(false);
-        }
+        if (isMount.current) setIsLoading(false);
       });
-  };
-
-  const parseHistoryJSON = (fetchedHistory) => {
-    let feeds = fetchedHistory.feeds;
-    let parsedFeeds = [];
-
-    for (let i = 0; i < feeds.length; i++) {
-      const feedsJSON = JSON.parse(feeds[i].json);
-      const feedDay = getRelativeDateDay(t, feeds[i].modifiedDate);
-
-      let newGroupedFeeds = [];
-      if (feeds[i].groupedFeeds) {
-        let groupFeeds = feeds[i].groupedFeeds;
-        for (let j = 0; j < groupFeeds.length; j++)
-          newGroupedFeeds.push(
-            !!groupFeeds[j].target
-              ? groupFeeds[j].target
-              : JSON.parse(groupFeeds[j].json)
-          );
-      }
-
-      if (parsedFeeds.length && parsedFeeds.at(-1).day === feedDay)
-        parsedFeeds.at(-1).feeds.push({
-          ...feeds[i],
-          json: feedsJSON,
-          groupedFeeds: newGroupedFeeds,
-        });
-      else
-        parsedFeeds.push({
-          day: feedDay,
-          feeds: [
-            {
-              ...feeds[i],
-              json: feedsJSON,
-              groupedFeeds: newGroupedFeeds,
-            },
-          ],
-        });
-    }
-
-    return { ...fetchedHistory, feedsByDays: parsedFeeds };
   };
 
   useEffect(() => {
@@ -127,14 +78,13 @@ const History = ({
     };
   }, []);
 
-  if (isShowLoader) return <Loaders.InfoPanelViewLoader view="history" />;
-  if (!history) return <></>;
-  if (history?.feeds?.length === 0) return <NoHistory t={t} />;
+  if (!selectionHistory) return <Loaders.InfoPanelViewLoader view="history" />;
+  if (!selectionHistory?.length) return <NoHistory t={t} />;
 
   return (
-    <>
+    <Suspense fallback={<Loaders.InfoPanelViewLoader view="history" />}>
       <StyledHistoryList>
-        {history.feedsByDays.map(({ day, feeds }) => [
+        {selectionHistory.map(({ day, feeds }) => [
           <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
           ...feeds.map((feed, i) => (
             <HistoryBlock
@@ -150,12 +100,13 @@ const History = ({
               openUser={openUser}
               isVisitor={isVisitor}
               isCollaborator={isCollaborator}
+              withFileList={withFileList}
               isLastEntity={i === feeds.length - 1}
             />
           )),
         ])}
       </StyledHistoryList>
-    </>
+    </Suspense>
   );
 };
 
@@ -163,12 +114,11 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   const { userStore } = auth;
   const {
     selection,
-    selectionParentRoom,
     selectionHistory,
     setSelectionHistory,
+    selectionParentRoom,
     getInfoPanelItemIcon,
     openUser,
-    setView,
   } = auth.infoPanelStore;
   const { personal, culture } = auth.settingsStore;
 
@@ -183,12 +133,11 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     personal,
     culture,
     selection,
-    selectionParentRoom,
     selectionHistory,
     setSelectionHistory,
+    selectionParentRoom,
     getInfoPanelItemIcon,
     getHistory,
-    setView,
     checkAndOpenLocationAction,
     openUser,
     isVisitor,
