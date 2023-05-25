@@ -83,6 +83,7 @@ const DropDownItem = (props) => {
           />
         </IconWrapper>
       )}
+
       {withToggle && (
         <WrapperToggle onClick={stopPropagation}>
           <ToggleButton isChecked={checked} onChange={onChange} noAnimation />

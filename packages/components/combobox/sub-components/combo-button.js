@@ -8,7 +8,6 @@ import {
   StyledOptionalItem,
   StyledTriangleDownIcon,
   StyledLoader,
-  StyledComboBadgeBox,
 } from "./styled-combobutton";
 
 import Text from "../../text";
@@ -86,15 +85,13 @@ const ComboButton = (props) => {
         </StyledIcon>
       )}
       {type === "badge" ? (
-        <StyledComboBadgeBox>
-          <Badge
-            label={selectedOption.label}
-            noHover={true}
-            color={selectedOption.color}
-            backgroundColor={selectedOption.backgroundColor}
-            border={"2px solid #4781D1"}
-          />
-        </StyledComboBadgeBox>
+        <Badge
+          label={selectedOption.label}
+          noHover={true}
+          color={selectedOption.color}
+          backgroundColor={selectedOption.backgroundColor}
+          border={"2px solid #4781D1"}
+        />
       ) : (
         <Text
           noBorder={noBorder}

@@ -33,6 +33,7 @@ const hoverModernViewButton = css`
 const StyledComboButton = styled.div`
   display: flex;
   align-items: center;
+  gap: ${(props) => props.type && "4px"};
   justify-content: center;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -275,9 +276,6 @@ const StyledLoader = styled(Loader)`
     props.displaySize === "content" ? "-16px" : "-8px"};
   margin-top: 2px;
 `;
-const StyledComboBadgeBox = styled.div`
-  margin-right: 4px;
-`;
 
 export {
   StyledArrowIcon,
@@ -286,5 +284,4 @@ export {
   StyledComboButton,
   StyledTriangleDownIcon,
   StyledLoader,
-  StyledComboBadgeBox,
 };
