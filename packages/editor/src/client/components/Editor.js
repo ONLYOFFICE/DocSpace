@@ -507,17 +507,15 @@ function Editor({
   const onSDKRequestUsers = async (event) => {
     try {
       const c = event?.data?.c;
-      const res = await (c == "protect"
+      const users = await (c == "protect"
         ? getProtectUsers(fileInfo.id)
         : getSharedUsers(fileInfo.id));
 
-      const users = res.map((item) => ({
-        email: item.email,
-        name: item.name,
-      }));
-
       if (c !== "protect") {
-        usersInRoom = users;
+        usersInRoom = users.map((item) => ({
+          email: item.email,
+          name: item.name,
+        }));
       }
 
       docEditor.setUsers({
