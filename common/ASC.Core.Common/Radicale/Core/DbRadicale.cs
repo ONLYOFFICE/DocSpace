@@ -46,7 +46,7 @@ public class DbRadicale
     public async Task RemoveCardDavUserAsync(int tenant, Guid id)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        var userDav = await userDbContext.UsersDav.FirstOrDefaultAsync(r => r.TenantId == tenant && r.UserId == id);
+        var userDav = await Queries.GetUserDavAsync(userDbContext, tenant, id);
         if (userDav != null)
         {
             userDbContext.UsersDav.Remove(userDav);
@@ -57,7 +57,17 @@ public class DbRadicale
     public async Task<bool> IsExistCardDavUserAsync(int tenant, Guid id)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        return await userDbContext.UsersDav.AnyAsync(r => r.TenantId == tenant && r.UserId == id);
+        return await Queries.UserDavAnyAsync(userDbContext, tenant, id);
     }
+}
 
+file static class Queries
+{
+    public static readonly Func<UserDbContext, int, Guid, Task<UserDav>> GetUserDavAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (UserDbContext ctx, int tenantId, Guid userId) =>
+        ctx.UsersDav.FirstOrDefault(r => r.TenantId == tenantId && r.UserId == userId));
+    
+    public static readonly Func<UserDbContext, int, Guid, Task<bool>> UserDavAnyAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (UserDbContext ctx, int tenantId, Guid userId) =>
+        ctx.UsersDav.Any(r => r.TenantId == tenantId && r.UserId == userId);
 }
