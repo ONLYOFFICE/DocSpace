@@ -101,10 +101,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
         var now = DateTime.UtcNow;
-        var lastIndexed = await webstudioDbContext.WebstudioIndex
-            .Where(r => r.IndexName == Wrapper.IndexName)
-            .Select(r => r.LastModified)
-            .FirstOrDefaultAsync();
+        var lastIndexed = await Queries.GetLastIndexedAsync(webstudioDbContext, Wrapper.IndexName);
 
         if (lastIndexed.Equals(DateTime.MinValue))
         {
@@ -437,7 +434,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     private async Task ClearAsync()
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var index = await webstudioDbContext.WebstudioIndex.Where(r => r.IndexName == Wrapper.IndexName).FirstOrDefaultAsync();
+        var index = await Queries.GetIndexAsync(webstudioDbContext, Wrapper.IndexName);
 
         if (index != null)
         {
@@ -673,4 +670,21 @@ static class CamelCaseExtension
     {
         return str.ToLowerInvariant()[0] + str.Substring(1);
     }
+}
+
+
+file static class Queries
+{
+    public static readonly Func<WebstudioDbContext, string, Task<DateTime>> GetLastIndexedAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (WebstudioDbContext ctx, string indexName) =>
+        ctx.WebstudioIndex
+            .Where(r => r.IndexName == indexName)
+            .Select(r => r.LastModified)
+            .FirstOrDefault());
+    
+    public static readonly Func<WebstudioDbContext, string, Task<DbWebstudioIndex>> GetIndexAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (WebstudioDbContext ctx, string indexName) =>
+        ctx.WebstudioIndex
+            .Where(r => r.IndexName == indexName)
+            .FirstOrDefault());
 }
