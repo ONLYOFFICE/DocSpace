@@ -34,7 +34,7 @@ import { ThemeType } from "./constants";
 
 const ColorTheme = forwardRef(
   ({ isVersion, themeId, hoverColor, ...props }, ref) => {
-    const { portalTheme: currentColorScheme } = useContext(ThemeContext);
+    const { currentColorScheme } = useContext(ThemeContext);
 
     switch (themeId) {
       case ThemeType.Button: {

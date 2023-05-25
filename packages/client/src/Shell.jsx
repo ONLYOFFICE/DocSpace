@@ -403,7 +403,7 @@ const ThemeProviderWrapper = inject(({ auth, loginStore }) => {
     currentColorScheme = settingsStore.currentColorScheme || false;
   }
 
-  return { theme: settingsStore.theme, portalTheme: currentColorScheme };
+  return { theme: settingsStore.theme, currentColorScheme };
 })(observer(ThemeProvider));
 
 export default () => (
