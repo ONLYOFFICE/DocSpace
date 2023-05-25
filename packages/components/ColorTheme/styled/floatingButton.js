@@ -1,6 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
-import StyledCircleWrapFloatingButton from "./sub-components/StyledCircleWrapFloatingButton";
+import { StyledCircleWrap } from "@docspace/components/FloatingButton/StyledFloatingButton";
 
 const getDefaultStyles = ({ $currentColorScheme, color, displayProgress }) =>
   $currentColorScheme &&
@@ -26,6 +26,6 @@ const getDefaultStyles = ({ $currentColorScheme, color, displayProgress }) =>
     }
   `;
 
-StyledCircleWrapFloatingButton.defaultProps = { theme: Base };
+StyledCircleWrap.defaultProps = { theme: Base };
 
-export default styled(StyledCircleWrapFloatingButton)(getDefaultStyles);
+export default styled(StyledCircleWrap)(getDefaultStyles);

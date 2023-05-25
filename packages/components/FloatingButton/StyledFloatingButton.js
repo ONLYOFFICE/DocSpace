@@ -3,6 +3,20 @@ import styled, { keyframes, css } from "styled-components";
 import { desktop, tablet } from "@docspace/components/utils/device";
 import { isMobile } from "react-device-detect";
 
+const StyledCircleWrap = styled.div`
+  position: relative;
+  z-index: 500;
+  width: 48px;
+  height: 48px;
+  background: ${(props) =>
+    props.color ? props.color : props.theme.floatingButton.backgroundColor};
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: ${(props) => props.theme.floatingButton.boxShadow};
+`;
+
+StyledCircleWrap.defaultProps = { theme: Base };
+
 const StyledFloatingButtonWrapper = styled.div`
   @media ${desktop} {
     position: absolute;
@@ -162,6 +176,7 @@ const StyledAlertIcon = styled.div`
 export {
   StyledFloatingButtonWrapper,
   StyledCircle,
+  StyledCircleWrap,
   StyledFloatingButton,
   StyledAlertIcon,
   IconBox,
