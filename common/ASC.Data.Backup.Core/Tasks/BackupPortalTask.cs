@@ -260,9 +260,10 @@ public class BackupPortalTask : PortalTaskBase
 
     private async Task<IEnumerable<BackupFileInfo>> GetFiles(int tenantId)
     {
-        var files = (await GetFilesToProcess(tenantId)).ToList();
         using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = await backupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToListAsync();
+        var exclude = await Queries.GetBackupRecordsAsync(backupRecordContext, tenantId).ToListAsync();
+
+        var files = (await GetFilesToProcess(tenantId)).ToList();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
@@ -626,7 +627,7 @@ public class BackupPortalTask : PortalTaskBase
         var files = (await GetFilesToProcess(TenantId)).ToList();
 
         using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = await backupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToListAsync();
+        var exclude = await Queries.GetBackupRecordsAsync(backupRecordContext, TenantId).ToListAsync();
 
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
@@ -739,5 +740,14 @@ public class BackupPortalTask : PortalTaskBase
 
         _logger.DebugEndBackupStorage();
     }
+}
+
+file static class Queries
+{
+    public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> GetBackupRecordsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (BackupsContext ctx, int tenantId) =>
+        ctx.Backups.Where(b => b.TenantId == tenantId 
+            && b.StorageType == 0
+            && b.StoragePath != null));
 
 }
