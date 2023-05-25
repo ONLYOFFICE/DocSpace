@@ -507,25 +507,22 @@ function Editor({
   const onSDKRequestUsers = async (event) => {
     try {
       const c = event?.data?.c;
-      let res;
+      const res = await (c == "protect"
+        ? getProtectUsers(fileInfo.id)
+        : getSharedUsers(fileInfo.id));
 
-      switch (c) {
-        case "protect":
-          res = await getProtectUsers(fileInfo.id);
-          break;
-        default:
-          res = await getSharedUsers(fileInfo.id);
-          break;
-      }
-
-      usersInRoom = res.map((item) => ({
+      const users = res.map((item) => ({
         email: item.email,
         name: item.name,
       }));
 
+      if (c !== "protect") {
+        usersInRoom = users;
+      }
+
       docEditor.setUsers({
         c,
-        users: usersInRoom,
+        users,
       });
     } catch (e) {
       docEditor.showMessage(e?.message || "Connection is lost");
