@@ -11,7 +11,6 @@ import {
   StyledFilterBlockItemContent,
   StyledFilterBlockItemSelector,
   StyledFilterBlockItemSelectorText,
-  StyledFilterBlockItemTag,
   StyledFilterBlockItemTagText,
   StyledFilterBlockItemTagIcon,
   StyledFilterBlockItemToggle,
