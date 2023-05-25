@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
-import { Base } from "@docspace/components/themes";
-import StyledCircleWrapLoadingButton from "./sub-components/StyledCircleWrapLoadingButton";
+import { StyledCircleWrap } from "./sub-components/StyledLoadingButton";
 
 const getDefaultStyles = ({ $currentColorScheme }) =>
   $currentColorScheme &&
@@ -14,8 +13,4 @@ const getDefaultStyles = ({ $currentColorScheme }) =>
     }
   `;
 
-StyledCircleWrapLoadingButton.defaultProps = {
-  theme: Base,
-};
-
-export default styled(StyledCircleWrapLoadingButton)(getDefaultStyles);
+export default styled(StyledCircleWrap)(getDefaultStyles);
