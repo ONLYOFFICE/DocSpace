@@ -1,5 +1,7 @@
 export const getCrashReport = (userId, version, language, error) => {
-  const reportTime = new Date();
+  const currentTime = new Date();
+  const reportTime = currentTime.toTimeString();
+  const lsObject = JSON.stringify(window.localStorage) || "";
 
   const report = {
     url: window.origin,
@@ -7,11 +9,12 @@ export const getCrashReport = (userId, version, language, error) => {
     version: version,
     platform: navigator?.platform,
     userAgent: navigator?.userAgent,
-    language: language,
+    language: language || "en",
     errorMessage: error?.message,
     errorStack: error?.stack,
-    localStorage: window.localStorage,
+    localStorage: lsObject,
     reportTime: reportTime,
   };
-  console.log("report", report);
+
+  return report;
 };
