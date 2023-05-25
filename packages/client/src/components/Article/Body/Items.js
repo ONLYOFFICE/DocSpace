@@ -175,6 +175,7 @@ const Items = ({
   startDrag,
   emptyTrashInProgress,
   isCommunity,
+  isPaymentPageAvailable,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -384,7 +385,8 @@ const Items = ({
       if (!isVisitor) items.splice(3, 0, <CatalogDivider key="other-header" />);
       else items.splice(2, 0, <CatalogDivider key="other-header" />);
 
-      if (isCommunity) items.push(<BonusItem key="bonus-item" />);
+      if (isCommunity && isPaymentPageAvailable)
+        items.push(<BonusItem key="bonus-item" />);
 
       return items;
     },
@@ -432,7 +434,7 @@ export default inject(
     uploadDataStore,
     dialogsStore,
   }) => {
-    const { settingsStore, isCommunity } = auth;
+    const { settingsStore, isCommunity, isPaymentPageAvailable } = auth;
     const { showText, docSpace } = settingsStore;
 
     const {
@@ -495,6 +497,7 @@ export default inject(
       startDrag,
       emptyTrashInProgress,
       isCommunity,
+      isPaymentPageAvailable,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));
