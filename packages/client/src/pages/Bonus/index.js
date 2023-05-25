@@ -33,12 +33,9 @@ const Bonus = ({ standaloneInit, isInitPaymentPage }) => {
 };
 
 export default inject(({ auth, payments }) => {
-  const { settingsStore } = auth;
-  const { theme } = settingsStore;
   const { standaloneInit, isInitPaymentPage } = payments;
 
   return {
-    theme,
     standaloneInit,
     isInitPaymentPage,
   };

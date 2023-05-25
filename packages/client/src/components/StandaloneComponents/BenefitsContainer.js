@@ -12,7 +12,7 @@ import ScalabilityReactSvgUrl from "PUBLIC_DIR/images/scalability.react.svg?url"
 
 import { StyledBenefitsBody } from "./StyledComponent";
 
-const BenefitsContainer = ({ theme, isTrial, isEnterprise }) => {
+const BenefitsContainer = ({ isTrial, isEnterprise }) => {
   const { t } = useTranslation("PaymentsEnterprise");
 
   const title = isEnterprise
@@ -73,7 +73,7 @@ const BenefitsContainer = ({ theme, isTrial, isEnterprise }) => {
   };
 
   return (
-    <StyledBenefitsBody className="benefits-container" theme={theme}>
+    <StyledBenefitsBody className="benefits-container">
       <Text fontSize={"16px"} fontWeight={600} className="benefits-title">
         {title}
       </Text>
@@ -85,16 +85,15 @@ const BenefitsContainer = ({ theme, isTrial, isEnterprise }) => {
 export default inject(({ auth }) => {
   const {
     paymentQuotasStore,
-    settingsStore,
+
     currentQuotaStore,
     isEnterprise,
   } = auth;
-  const { theme } = settingsStore;
+
   const { portalPaymentQuotasFeatures } = paymentQuotasStore;
 
   const { isTrial } = currentQuotaStore;
   return {
-    theme,
     features: portalPaymentQuotasFeatures,
     isTrial,
     isEnterprise,

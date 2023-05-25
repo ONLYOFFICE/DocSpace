@@ -10,10 +10,10 @@ import ButtonContainer from "./sub-components/ButtonContainer";
 import TariffTitleContainer from "./sub-components/TariffTitleContainer";
 
 const TrialContainer = (props) => {
-  const { t, theme } = props;
+  const { t } = props;
 
   return (
-    <StyledEnterpriseComponent theme={theme}>
+    <StyledEnterpriseComponent>
       <Text fontWeight={700} fontSize={"16px"}>
         {t("ActivateSwithToProHeader")}
       </Text>
@@ -29,9 +29,8 @@ const TrialContainer = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { settingsStore, currentTariffStatusStore } = auth;
+  const { currentTariffStatusStore } = auth;
   const { isLicenseDateExpired } = currentTariffStatusStore;
-  const { theme } = settingsStore;
 
-  return { theme, isLicenseDateExpired };
+  return { isLicenseDateExpired };
 })(withRouter(observer(TrialContainer)));
