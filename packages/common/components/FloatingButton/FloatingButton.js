@@ -6,7 +6,6 @@ import {
   StyledFloatingButtonWrapper,
   StyledFloatingButton,
   StyledAlertIcon,
-  StyledCircleWrap,
   StyledCircle,
   IconBox,
 } from "./StyledFloatingButton";

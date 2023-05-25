@@ -1,17 +1,6 @@
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
-
-const StyledCircleWrap = styled.div`
-  position: relative;
-  z-index: 500;
-  width: 48px;
-  height: 48px;
-  background: ${(props) =>
-    props.color ? props.color : props.theme.floatingButton.backgroundColor};
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: ${(props) => props.theme.floatingButton.boxShadow};
-`;
+import StyledCircleWrapFloatingButton from "./sub-components/StyledCircleWrapFloatingButton";
 
 const getDefaultStyles = ({ $currentColorScheme, color, displayProgress }) =>
   $currentColorScheme &&
@@ -37,6 +26,6 @@ const getDefaultStyles = ({ $currentColorScheme, color, displayProgress }) =>
     }
   `;
 
-StyledCircleWrap.defaultProps = { theme: Base };
+StyledCircleWrapFloatingButton.defaultProps = { theme: Base };
 
-export default styled(StyledCircleWrap)(getDefaultStyles);
+export default styled(StyledCircleWrapFloatingButton)(getDefaultStyles);
