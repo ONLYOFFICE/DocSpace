@@ -21,6 +21,7 @@ import {
 } from "@docspace/components/utils/device";
 import ToggleInfoPanelButton from "./sub-components/toggle-infopanel-btn";
 import TrashWarning from "./sub-components/trash-warning";
+import NavigationLogo from "./sub-components/logo-block";
 
 const Navigation = ({
   tReady,
@@ -51,6 +52,7 @@ const Navigation = ({
   isRoom,
   hideInfoPanel,
   withLogo,
+  burgerLogo,
   isPublicRoom,
   titleIcon,
   ...rest
@@ -165,7 +167,8 @@ const Navigation = ({
                 isInfoPanelVisible={isInfoPanelVisible}
                 onClickAvailable={onClickAvailable}
                 isDesktopClient={isDesktopClient}
-                withLogo={!!withLogo}
+                withLogo={withLogo}
+                burgerLogo={burgerLogo}
               />
             </>
           )}
@@ -183,10 +186,11 @@ const Navigation = ({
             withLogo={!!withLogo}
           >
             {withLogo && (
-              <div className="navigation-logo">
-                <img className="logo-icon_svg" src={withLogo} />
-                <div className="header_separator" />
-              </div>
+              <NavigationLogo
+                className="navigation-logo"
+                logo={withLogo}
+                burgerLogo={burgerLogo}
+              />
             )}
             <ArrowButton
               isRootFolder={isRootFolder}

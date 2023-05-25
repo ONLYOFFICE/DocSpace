@@ -904,6 +904,9 @@ const SectionHeaderContent = (props) => {
   const logo = !theme.isBase
     ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
     : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
+  const burgerLogo = !theme.isBase
+    ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[5].path.light);
 
   return (
     <Consumer key="header">
@@ -959,6 +962,7 @@ const SectionHeaderContent = (props) => {
                 isRoom={isRoom}
                 hideInfoPanel={isSettingsPage || isPublicRoom}
                 withLogo={isPublicRoom && logo}
+                burgerLogo={isPublicRoom && burgerLogo}
                 isPublicRoom={isPublicRoom}
                 titleIcon={
                   isPublicRoomType && !isPublicRoom && PublicRoomIconUrl

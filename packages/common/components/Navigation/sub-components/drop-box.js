@@ -10,8 +10,9 @@ import Text from "./text";
 import ControlButtons from "./control-btn";
 import Item from "./item";
 import StyledContainer from "../StyledNavigation";
+import NavigationLogo from "./logo-block";
 
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   tablet,
   mobile,
@@ -87,6 +88,7 @@ const Row = React.memo(({ data, index, style }) => {
       isRootRoom={data[0][index].isRootRoom}
       isRoot={isRoot}
       onClick={data[1]}
+      withLogo={data[0].withLogo}
       style={{ ...style }}
     />
   );
@@ -115,6 +117,7 @@ const DropBox = React.forwardRef(
       isDesktop,
       isDesktopClient,
       withLogo,
+      burgerLogo,
     },
     ref
   ) => {
@@ -150,6 +153,8 @@ const DropBox = React.forwardRef(
       );
     }, [sectionHeight]);
 
+    const isTabletView = (isTabletUtils() || isTablet) && !isMobileOnly;
+
     return (
       <>
         <StyledBox
@@ -166,7 +171,15 @@ const DropBox = React.forwardRef(
             isDropBoxComponent={true}
             isInfoPanelVisible={isInfoPanelVisible}
             isDesktopClient={isDesktopClient}
+            withLogo={!!withLogo && isTabletView}
           >
+            {withLogo && (
+              <NavigationLogo
+                logo={withLogo}
+                burgerLogo={burgerLogo}
+                className="navigation-logo"
+              />
+            )}
             <ArrowButton
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
@@ -191,7 +204,10 @@ const DropBox = React.forwardRef(
             width={"auto"}
             itemCount={countItems}
             itemSize={getItemSize}
-            itemData={[navigationItems, onClickAvailable]}
+            itemData={[
+              { ...navigationItems, ...{ withLogo: !!withLogo } },
+              onClickAvailable,
+            ]}
             outerElementType={CustomScrollbarsVirtualList}
           >
             {Row}

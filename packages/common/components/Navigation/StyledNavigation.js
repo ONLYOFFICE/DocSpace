@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { isMobile, isMobileOnly } from "react-device-detect";
+import { isMobile, isMobileOnly, isTablet } from "react-device-detect";
 import {
   tablet,
   mobile,
@@ -30,16 +30,59 @@ const StyledContainer = styled.div`
       ? "1fr 49px auto 1fr"
       : "49px auto 1fr"};
 
+  .drop-box-logo {
+    display: none;
+
+    @media ${tablet} {
+      display: grid;
+    }
+  }
+
   .navigation-logo {
     display: flex;
     height: 24px;
     margin-right: 16px;
+
+    @media ${tablet} {
+      .logo-icon_svg {
+        display: none;
+      }
+    }
 
     .header_separator {
       display: ${({ isRootFolder }) => (isRootFolder ? "block" : "none")};
       border-left: 1px solid #dfe2e3;
       margin: 0 0 0 15px;
       height: 21px;
+    }
+
+    .header-burger {
+      cursor: pointer;
+      display: none;
+      align-items: center;
+
+      img {
+        height: 28px;
+        width: 28px;
+      }
+
+      @media ${tablet} {
+        display: flex;
+      }
+
+      ${isTablet &&
+      css`
+        display: flex;
+      `}
+
+      @media ${mobile} {
+        display: none;
+      }
+
+      ${isMobileOnly &&
+      css`
+        display: none !important;
+      `}
     }
   }
 
@@ -99,10 +142,10 @@ const StyledContainer = styled.div`
     grid-template-columns: ${({ isRootFolder, withLogo }) =>
       isRootFolder
         ? withLogo
-          ? "242px 1fr auto"
+          ? "59px 1fr auto"
           : "1fr auto"
         : withLogo
-        ? "226px 49px 1fr auto"
+        ? "43px 49px 1fr auto"
         : "49px 1fr auto"};
   }
 
