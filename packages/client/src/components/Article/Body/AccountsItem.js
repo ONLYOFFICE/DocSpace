@@ -1,8 +1,10 @@
-﻿import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
-import React from "react";
-import CatalogItem from "@docspace/components/catalog-item";
+﻿import React from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
+
+import CatalogItem from "@docspace/components/catalog-item";
+
+import CatalogAccountsReactSvgUrl from "PUBLIC_DIR/images/catalog.accounts.react.svg?url";
 
 import withLoader from "../../../HOCs/withLoader";
 

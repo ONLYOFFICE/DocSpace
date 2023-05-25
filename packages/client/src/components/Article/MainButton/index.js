@@ -106,8 +106,6 @@ const ArticleMainButtonContent = (props) => {
     isRoomsFolder,
     isArchiveFolder,
 
-    selectedTreeNode,
-
     enablePlugins,
 
     currentColorScheme,
@@ -124,7 +122,11 @@ const ArticleMainButtonContent = (props) => {
     setInviteUsersWarningDialogVisible,
   } = props;
 
-  const isAccountsPage = selectedTreeNode[0] === "accounts";
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isAccountsPage = location.pathname.includes("/accounts/filter");
+  const isSettingsPage = location.pathname.includes("settings");
 
   const inputFilesElement = React.useRef(null);
   const inputFolderElement = React.useRef(null);
@@ -133,9 +135,6 @@ const ArticleMainButtonContent = (props) => {
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
   const [isDropdownMainButton, setIsDropdownMainButton] = React.useState(true);
-
-  const navigate = useNavigate();
-  const location = useLocation();
 
   const onCreate = React.useCallback(
     (e) => {
@@ -227,16 +226,12 @@ const ArticleMainButtonContent = (props) => {
   }, [resendInvitesAgain]);
 
   React.useEffect(() => {
-    const isSettingFolder =
-      location.pathname.endsWith("/settings/common") ||
-      location.pathname.endsWith("/settings/admin");
-
     const isFolderHiddenDropdown =
       isArchiveFolder ||
       isFavoritesFolder ||
       isRecentFolder ||
       isRecycleBinFolder ||
-      isSettingFolder;
+      isSettingsPage;
 
     if (isFolderHiddenDropdown) {
       setIsDropdownMainButton(false);
@@ -248,11 +243,11 @@ const ArticleMainButtonContent = (props) => {
     isFavoritesFolder,
     isRecentFolder,
     isRecycleBinFolder,
-    location.pathname,
+    isSettingsPage,
   ]);
 
   React.useEffect(() => {
-    if (isRoomsFolder) return;
+    if (isRoomsFolder || isSettingsPage) return;
 
     const formActions = [
       {
@@ -439,6 +434,7 @@ const ArticleMainButtonContent = (props) => {
     isPrivacy,
     currentFolderId,
     isAccountsPage,
+    isSettingsPage,
     enablePlugins,
     isRoomsFolder,
     isOwner,
@@ -452,15 +448,15 @@ const ArticleMainButtonContent = (props) => {
     onUploadFolderClick,
   ]);
 
-  const canInvite =
-    isAccountsPage &&
-    selectedTreeNode.length > 1 &&
-    selectedTreeNode[1] === "filter";
   const mainButtonText = isAccountsPage
     ? t("Common:Invite")
     : t("Common:Actions");
 
-  const isDisabled = isAccountsPage ? !canInvite : !security?.Create;
+  const isDisabled = isSettingsPage
+    ? isSettingsPage
+    : isAccountsPage
+    ? !isAccountsPage
+    : !security?.Create;
 
   const isProfile = location.pathname === "/accounts/view/@self";
 
@@ -470,7 +466,7 @@ const ArticleMainButtonContent = (props) => {
         <>
           {!isArticleLoading &&
             !isProfile &&
-            (security?.Create || canInvite) && (
+            (security?.Create || isAccountsPage) && (
               <MobileView
                 t={t}
                 titleProp={t("Upload")}
@@ -543,7 +539,6 @@ export default inject(
     uploadDataStore,
     treeFoldersStore,
     selectedFolderStore,
-    accessRightsStore,
   }) => {
     const {
       isLoaded,

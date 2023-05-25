@@ -155,14 +155,11 @@ const Item = ({
   );
 };
 
-let dataMainTree = [];
 const Items = ({
   t,
   data,
   showText,
-  pathParts,
-  rootFolderType,
-  selectedTreeNode,
+
   onClick,
   onBadgeClick,
 
@@ -192,43 +189,8 @@ const Items = ({
 
   activeItem,
 }) => {
-  useEffect(() => {
-    data.forEach((elem) => {
-      const elemId = elem.id;
-      dataMainTree.push(elemId.toString());
-    });
-  }, [data]);
-
-  const isActive = React.useCallback(
-    (item) => {
-      if (selectedTreeNode.length > 0) {
-        const isMainFolder = dataMainTree.indexOf(selectedTreeNode[0]) !== -1;
-
-        if (
-          rootFolderType === FolderType.Rooms &&
-          item.rootFolderType === FolderType.Rooms
-        ) {
-          return true;
-        }
-
-        if (pathParts && pathParts.includes(item.id) && !isMainFolder)
-          return true;
-
-        if (
-          (selectedTreeNode[0] === "@my" || selectedTreeNode[0] === "@rooms") &&
-          item.key === "0-0"
-        ) {
-          return true;
-        }
-        return `${item.id}` === selectedTreeNode[0];
-      }
-    },
-    [selectedTreeNode, pathParts, docSpace, rootFolderType]
-  );
   const getEndOfBlock = React.useCallback(
     (item) => {
-      if (docSpace) return false;
-
       switch (item.key) {
         case "0-3":
         case "0-5":
@@ -420,7 +382,6 @@ const Items = ({
       t,
       dragging,
       getFolderIcon,
-      isActive,
       onClick,
       onMoveTo,
       getEndOfBlock,
@@ -444,7 +405,6 @@ const Items = ({
 Items.propTypes = {
   data: PropTypes.array,
   showText: PropTypes.bool,
-  selectedTreeNode: PropTypes.array,
   onClick: PropTypes.func,
   onClickBadge: PropTypes.func,
   onHide: PropTypes.func,
@@ -472,15 +432,10 @@ export default inject(
 
     const { startUpload } = uploadDataStore;
 
-    const {
-      selectedTreeNode,
-      treeFolders,
-      myFolderId,
-      commonFolderId,
-      isPrivacyFolder,
-    } = treeFoldersStore;
+    const { treeFolders, myFolderId, commonFolderId, isPrivacyFolder } =
+      treeFoldersStore;
 
-    const { id, pathParts, rootFolderType } = selectedFolderStore;
+    const { id } = selectedFolderStore;
     const { moveDragItems, uploadEmptyFolders, deleteAction } =
       filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
@@ -495,9 +450,9 @@ export default inject(
       currentId: id,
       showText: auth.settingsStore.showText,
       docSpace: auth.settingsStore.docSpace,
-      pathParts,
+
       data: treeFolders,
-      selectedTreeNode,
+
       draggableItems: dragging
         ? bufferSelection
           ? [bufferSelection]
@@ -511,7 +466,7 @@ export default inject(
       uploadEmptyFolders,
       setEmptyTrashDialogVisible,
       trashIsEmpty,
-      rootFolderType,
+
       firstLoad,
       startDrag,
     };
