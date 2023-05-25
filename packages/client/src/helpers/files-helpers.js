@@ -39,13 +39,6 @@ export const getAccessIcon = (access) => {
   }
 };
 
-export const getTitleWithoutExst = (item, fromTemplate) => {
-  const titleWithoutExst = item.title.split(".").slice(0, -1).join(".");
-  return titleWithoutExst && item.fileExst && !fromTemplate
-    ? titleWithoutExst
-    : item.title;
-};
-
 export const checkProtocol = (fileId, withRedirect) =>
   new Promise((resolve, reject) => {
     const onBlur = () => {
