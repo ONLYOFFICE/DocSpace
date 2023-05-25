@@ -37,13 +37,13 @@ const Badge = (props) => {
       isHovered={isHovered}
       onClick={onClick}
       border={border}
+      compact={compact}
       themeId={ThemeType.Badge}
     >
       <StyledInner
         backgroundColor={backgroundColor}
         borderRadius={borderRadius}
         padding={padding}
-        compact={compact}
         type={type}
         maxWidth={maxWidth}
         height={height}

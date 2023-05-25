@@ -51,7 +51,6 @@ HighBadge.args = {
   type: "high",
   label: "High",
   backgroundColor: "#f2675a",
-  compact: true,
 };
 HighBadge.argTypes = {
   type: { control: "radio" },
