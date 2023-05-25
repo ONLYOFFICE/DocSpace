@@ -80,26 +80,6 @@ public class NotifyEngine : INotifyEngine, IDisposable
         _requestsEvent.Set();
     }
 
-
-    internal void RegisterSendMethod(Action<DateTime> method, string cron)
-    {
-        ArgumentNullException.ThrowIfNull(method);
-        ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(cron);
-
-        var w = new SendMethodWrapper(method, cron, _logger);
-        lock (_sendMethods)
-        {
-            if (!_notifyScheduler.IsAlive)
-            {
-                _notifyScheduler.Start();
-            }
-
-            _sendMethods.Remove(w);
-            _sendMethods.Add(w);
-        }
-        _methodsEvent.Set();
-    }
-
     internal void RegisterSendMethod(Func<DateTime, Task> method, string cron)
     {
         ArgumentNullException.ThrowIfNull(method);
@@ -117,16 +97,6 @@ public class NotifyEngine : INotifyEngine, IDisposable
             _sendMethods.Add(w);
         }
         _methodsEvent.Set();
-    }
-
-    internal void UnregisterSendMethod(Action<DateTime> method)
-    {
-        ArgumentNullException.ThrowIfNull(method);
-
-        lock (_sendMethods)
-        {
-            _sendMethods.Remove(new SendMethodWrapper(method, null, _logger));
-        }
     }
 
     internal void UnregisterSendMethod(Func<DateTime, Task> method)
