@@ -42,18 +42,6 @@ const StyledFloatingButtonWrapper = styled.div`
   }
 `;
 
-const StyledCircleWrap = styled.div`
-  position: relative;
-  z-index: 500;
-  width: 48px;
-  height: 48px;
-  background: ${(props) =>
-    props.color ? props.color : props.theme.floatingButton.backgroundColor};
-  border-radius: 50%;
-  cursor: pointer;
-  box-shadow: ${(props) => props.theme.floatingButton.boxShadow};
-`;
-
 const rotate360 = keyframes`
   from {
     transform: rotate(0deg);
@@ -62,8 +50,6 @@ const rotate360 = keyframes`
     transform: rotate(360deg);
   }
 `;
-
-StyledCircleWrap.defaultProps = { theme: Base };
 
 const StyledCircle = styled.div`
   .circle__mask,
@@ -175,7 +161,6 @@ const StyledAlertIcon = styled.div`
 
 export {
   StyledFloatingButtonWrapper,
-  StyledCircleWrap,
   StyledCircle,
   StyledFloatingButton,
   StyledAlertIcon,
