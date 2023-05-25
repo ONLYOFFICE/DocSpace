@@ -176,7 +176,8 @@ public class SettingsController : BaseSettingsController
                 StorageBucket = _configuration["firebase:storageBucket"] ?? "",
                 MessagingSenderId = _configuration["firebase:messagingSenderId"] ?? "",
                 AppId = _configuration["firebase:appId"] ?? "",
-                MeasurementId = _configuration["firebase:measurementId"] ?? ""
+                MeasurementId = _configuration["firebase:measurementId"] ?? "",
+                DataBaseUrl = _configuration["firebase:databaseURL"] ?? ""
             };
 
             settings.HelpLink = _commonLinkUtility.GetHelpLink(_settingsManager, _additionalWhiteLabelSettingsHelper, true);
