@@ -3264,6 +3264,58 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
+    public async Task<List<MentionWrapper>> ProtectUsersAsync<T>(T fileId)
+    {
+        if (!_authContext.IsAuthenticated || _coreBaseSettings.Personal)
+        {
+            return null;
+        }
+
+        var fileDao = GetFileDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+
+        var users = new List<MentionWrapper>();
+        if (file.RootFolderType == FolderType.BUNCH)
+        {
+            //todo: request project team
+            return new List<MentionWrapper>(users);
+        }
+
+        var acesForObject = await _fileSharing.GetSharedInfoAsync(file);
+
+        var usersInfo = new List<UserInfo>();
+        foreach (var ace in acesForObject)
+        {
+            if (ace.Access == FileShare.Restrict || ace.Id.Equals(FileConstant.ShareLinkId))
+            {
+                continue;
+            }
+
+            if (ace.SubjectGroup)
+            {
+                usersInfo.AddRange(_userManager.GetUsersByGroup(ace.Id));
+            }
+            else
+            {
+                usersInfo.Add(_userManager.GetUsers(ace.Id));
+            }
+        }
+
+        users = usersInfo.Distinct()
+                         .Where(user => !user.Id.Equals(_authContext.CurrentAccount.ID)
+                                        && !user.Id.Equals(Constants.LostUser.Id))
+                         .Select(user => new MentionWrapper(user, _displayUserSettingsHelper))
+                         .ToList();
+
+        users = users
+            .OrderBy(user => user.User, UserInfoComparer.Default)
+            .ToList();
+
+        return new List<MentionWrapper>(users);
+    }
+
     public string GetHelpCenter()
     {
         return string.Empty; //TODO: Studio.UserControls.Common.HelpCenter.HelpCenter.RenderControlToString();
