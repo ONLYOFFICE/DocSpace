@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { tablet, hugeMobile } from "@docspace/components/utils/device";
+import Base from "@docspace/components/themes/base";
 
 const LoginContainer = styled.div`
   user-select: none;
@@ -260,5 +261,7 @@ const LoginContainer = styled.div`
     color: ${(props) => props.theme.login.textColor};
   }
 `;
+
+LoginContainer.defaultProps = { theme: Base };
 
 export default LoginContainer;
