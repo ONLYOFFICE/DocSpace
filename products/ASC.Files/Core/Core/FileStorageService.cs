@@ -3295,7 +3295,7 @@ public class FileStorageService //: IFileStorageService
 
             if (ace.SubjectGroup)
             {
-                usersInfo.AddRange(_userManager.GetUsersByGroup(ace.Id));
+                usersInfo.AddRange(await _userManager.GetUsersByGroupAsync(ace.Id));
             }
             else
             {
