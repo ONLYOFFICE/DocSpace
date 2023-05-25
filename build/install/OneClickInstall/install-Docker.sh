@@ -938,9 +938,9 @@ set_docspace_params() {
 }
 
 set_installation_type_data () {
-	if [ "$INSTALLATION_TYPE" == "community" ]; then
+	if [ "$INSTALLATION_TYPE" == "COMMUNITY" ]; then
 		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver"}
-	elif [ "$INSTALLATION_TYPE" == "enterprise" ]; then
+	elif [ "$INSTALLATION_TYPE" == "ENTERPRISE" ]; then
 		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver-ee"}
 	fi
 }
