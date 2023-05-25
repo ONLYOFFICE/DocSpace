@@ -1,13 +1,15 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import equal from "fast-deep-equal/react";
+import Dropzone from "react-dropzone";
 import CatalogFolderReactSvgUrl from "PUBLIC_DIR/images/catalog.folder.react.svg?url";
-
+import { withTranslation } from "react-i18next";
 import IconButton from "../icon-button";
 import Button from "../button";
 import TextInput from "../text-input";
 import StyledFileInput from "./styled-file-input";
 import Loader from "../loader";
+import toastr from "../toast/toastr";
 
 class FileInput extends Component {
   constructor(props) {
@@ -25,39 +27,19 @@ class FileInput extends Component {
     return !equal(this.props, nextProps) || !equal(this.state, nextState);
   }
 
-  onIconFileClick = (e) => {
-    const { isDisabled } = this.props;
+  onDrop = (acceptedFiles) => {
+    const { onInput, t } = this.props;
 
-    if (isDisabled) {
-      return false;
+    if (acceptedFiles.length === 0) {
+      toastr.error(t("Common:NotSupportedFormat"));
+      return;
     }
-    e.target.blur();
-    this.inputRef.current.click();
-  };
 
-  onChangeHandler = (e) => {
     this.setState({
-      fileName: e.target.value,
+      fileName: acceptedFiles[0].name,
     });
-  };
 
-  onInputFile = () => {
-    const { onInput } = this.props;
-
-    if (this.inputRef.current.files.length > 0) {
-      this.setState(
-        {
-          fileName: this.inputRef.current.files[0].name,
-          file: this.inputRef.current.files[0],
-        },
-        () => {
-          if (onInput) {
-            this.inputRef.current.value = "";
-            onInput(this.state.file);
-          }
-        }
-      );
-    }
+    onInput(acceptedFiles[0]);
   };
 
   render() {
@@ -105,58 +87,64 @@ class FileInput extends Component {
     }
 
     return (
-      <StyledFileInput
-        size={size}
-        scale={scale ? 1 : 0}
-        hasError={hasError}
-        hasWarning={hasWarning}
-        isDisabled={isDisabled}
-        {...rest}
+      <Dropzone
+        onDrop={this.onDrop}
+        {...(accept && { accept: [accept] })}
+        noClick={isDisabled || isLoading}
       >
-        <TextInput
-          className="text-input"
-          placeholder={placeholder}
-          value={fileName}
-          size={size}
-          isDisabled={isDisabled || isLoading}
-          hasError={hasError}
-          hasWarning={hasWarning}
-          scale={scale}
-          onFocus={this.onIconFileClick}
-          onChange={this.onChangeHandler}
-        />
-        <input
-          type="file"
-          id={id}
-          ref={this.inputRef}
-          style={{ display: "none" }}
-          accept={accept}
-          onInput={this.onInputFile}
-        />
-
-        {buttonLabel ? (
-          <Button
+        {({ getRootProps, getInputProps }) => (
+          <StyledFileInput
+            size={size}
+            scale={scale ? 1 : 0}
+            hasError={hasError}
+            hasWarning={hasWarning}
             isDisabled={isDisabled}
-            label={buttonLabel}
-            onClick={this.onIconFileClick}
-            size={buttonSize}
-          />
-        ) : (
-          <div className="icon" onClick={this.onIconFileClick}>
-            {isLoading ? (
-              <Loader className="loader" size="20px" type="track" />
-            ) : (
-              <IconButton
-                className="icon-button"
-                iconName={CatalogFolderReactSvgUrl}
-                color={"#A3A9AE"}
-                size={iconSize}
+            {...rest}
+            {...getRootProps()}
+          >
+            <TextInput
+              isReadOnly
+              className="text-input"
+              placeholder={placeholder}
+              value={fileName}
+              size={size}
+              isDisabled={isDisabled || isLoading}
+              hasError={hasError}
+              hasWarning={hasWarning}
+              scale={scale}
+            />
+            <input
+              type="file"
+              id={id}
+              ref={this.inputRef}
+              style={{ display: "none" }}
+              {...getInputProps()}
+            />
+
+            {buttonLabel ? (
+              <Button
                 isDisabled={isDisabled}
+                label={buttonLabel}
+                size={buttonSize}
               />
+            ) : (
+              <div className="icon">
+                {isLoading ? (
+                  <Loader className="loader" size="20px" type="track" />
+                ) : (
+                  <IconButton
+                    className="icon-button"
+                    iconName={CatalogFolderReactSvgUrl}
+                    color={"#A3A9AE"}
+                    size={iconSize}
+                    isDisabled={isDisabled}
+                  />
+                )}
+              </div>
             )}
-          </div>
+          </StyledFileInput>
         )}
-      </StyledFileInput>
+      </Dropzone>
     );
   }
 }
@@ -202,4 +190,4 @@ FileInput.defaultProps = {
   accept: "",
 };
 
-export default FileInput;
+export default withTranslation("Common")(FileInput);
