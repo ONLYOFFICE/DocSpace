@@ -1,11 +1,7 @@
 import styled, { css } from "styled-components";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import Base from "@docspace/components/themes/base";
-import IconButton from "@docspace/components/icon-button";
-
-export const StyledIcon = styled(IconButton)`
-  ${commonIconsStyles}
-`;
+import StyledIcon from "./sub-components/StyledIcon";
 
 const getDefaultStyles = ({
   $currentColorScheme,

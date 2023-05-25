@@ -14,10 +14,6 @@ import { Base } from "@docspace/components/themes";
 
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
-export const StyledIcon = styled(IconButton)`
-  ${commonIconsStyles}
-`;
-
 const StyledWrapper = styled.div`
   display: flex;
   justify-content: center;

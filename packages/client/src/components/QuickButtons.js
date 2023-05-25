@@ -11,10 +11,6 @@ import { FileStatus } from "@docspace/common/constants";
 
 import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
-export const StyledIcon = styled(IconButton)`
-  ${commonIconsStyles}
-`;
-
 const QuickButtons = (props) => {
   const {
     t,
