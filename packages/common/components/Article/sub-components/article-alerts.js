@@ -29,9 +29,8 @@ const ArticleAlerts = ({
       );
     }
 
-    const isVisibleStandaloneAlert = isTrial
-      ? true
-      : isLicenseExpiring || isLicenseDateExpired;
+    const isVisibleStandaloneAlert =
+      isTrial || isLicenseExpiring || isLicenseDateExpired;
 
     return (
       isPaymentPageAvailable &&
