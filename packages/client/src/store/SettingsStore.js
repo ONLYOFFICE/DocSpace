@@ -100,16 +100,16 @@ class SettingsStore {
     this.expandedSetting = expandedSetting;
   };
 
-  getFilesSettings = () => {
+  getFilesSettings = (shareKey) => {
     if (this.isLoadedSettingsTree) return Promise.resolve();
 
     return api.files
-      .getSettingsFiles()
+      .getSettingsFiles(shareKey)
       .then((settings) => {
         this.setFilesSettings(settings);
         this.setIsLoaded(true);
 
-        if (!settings.enableThirdParty) return;
+        if (!settings.enableThirdParty || shareKey) return;
 
         return axios
           .all([

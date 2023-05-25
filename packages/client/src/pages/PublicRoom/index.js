@@ -25,6 +25,7 @@ const PublicRoom = (props) => {
     validatePublicRoomKey,
     fetchFiles,
     setRoomHref,
+    getFilesSettings,
 
     showSecondaryProgressBar,
     secondaryProgressBarValue,
@@ -39,11 +40,16 @@ const PublicRoom = (props) => {
     validatePublicRoomKey(key);
   }, [validatePublicRoomKey]);
 
+  const fetchRoomFiles = async () => {
+    await getFilesSettings(key);
+
+    fetchFiles(roomId).then((res) => {
+      setRoomHref(res?.links[0]?.href);
+    });
+  };
+
   useEffect(() => {
-    isLoaded &&
-      fetchFiles(roomId).then((res) => {
-        setRoomHref(res?.links[0]?.href);
-      });
+    if (isLoaded) fetchRoomFiles();
   }, [fetchFiles, isLoaded]);
 
   const sectionProps = {
@@ -108,7 +114,7 @@ const PublicRoom = (props) => {
 };
 
 export default inject(
-  ({ auth, filesStore, publicRoomStore, uploadDataStore }) => {
+  ({ auth, filesStore, publicRoomStore, uploadDataStore, settingsStore }) => {
     const { withPaging } = auth.settingsStore;
     const {
       validatePublicRoomKey,
@@ -120,6 +126,7 @@ export default inject(
     } = publicRoomStore;
 
     const { fetchFiles } = filesStore;
+    const { getFilesSettings } = settingsStore;
 
     const {
       visible: showSecondaryProgressBar,
@@ -135,6 +142,7 @@ export default inject(
       roomStatus,
       fetchFiles,
       setRoomHref,
+      getFilesSettings,
 
       withPaging,
       validatePublicRoomKey,

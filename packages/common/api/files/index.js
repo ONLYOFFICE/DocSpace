@@ -793,8 +793,10 @@ export function openConnectWindow(service) {
   return request({ method: "get", url: `thirdparty/${service}` });
 }
 
-export function getSettingsFiles() {
-  return request({ method: "get", url: `/files/settings` });
+export function getSettingsFiles(shareKey) {
+  const key = shareKey ? `?share=${shareKey}` : "";
+
+  return request({ method: "get", url: `/files/settings${key}` });
 }
 
 export function markAsFavorite(ids) {
