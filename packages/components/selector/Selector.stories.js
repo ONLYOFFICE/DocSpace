@@ -29,7 +29,11 @@ export default {
     },
   },
   argTypes: {
-    height: { description: "Property for story" },
+    height: {
+      table: {
+        disable: true,
+      },
+    },
   },
 };
 
