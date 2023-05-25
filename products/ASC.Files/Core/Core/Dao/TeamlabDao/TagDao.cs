@@ -464,18 +464,13 @@ internal abstract class BaseTagDao<T> : AbstractDao
         _semaphore.Release();
     }
 
-    private async Task UpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
+    private async ValueTask UpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
     {
         if (tag == null)
         {
             return;
         }
 
-        await InternalUpdateNewTagsInDbAsync(tag, createOn, createdBy);
-    }
-
-    private async Task InternalUpdateNewTagsInDbAsync(Tag tag, DateTime createOn, Guid createdBy = default)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var mappedId = (await MappingIDAsync(tag.EntryId)).ToString();
         var tagId = tag.Id;
@@ -583,18 +578,13 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
     }
 
-    private async Task RemoveTagInDbAsync(Tag tag)
+    private async ValueTask RemoveTagInDbAsync(Tag tag)
     {
         if (tag == null)
         {
             return;
         }
 
-        await InternalRemoveTagInDbAsync(tag);
-    }
-
-    private async Task InternalRemoveTagInDbAsync(Tag tag)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var id = await TagDaoQueries.GetFirstTagIdAsync(filesDbContext, TenantID, tag.Owner, tag.Name, tag.Type);

@@ -24,8 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using Google.Api.Gax.ResourceNames;
-
 using ThumbnailSize = Dropbox.Api.Files.ThumbnailSize;
 
 namespace ASC.Files.Thirdparty.Dropbox;
@@ -183,11 +181,6 @@ internal class DropboxStorage : IThirdPartyStorage<FileMetadata, FolderMetadata,
         var filePath = MakeId(file);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(filePath);
 
-        return await InternalDownloadStreamAsync(filePath, offset);
-    }
-
-    private async Task<Stream> InternalDownloadStreamAsync(string filePath, int offset = 0)
-    {
         using var response = await _dropboxClient.Files.DownloadAsync(filePath);
         var tempBuffer = _tempStream.Create();
         using (var str = await response.GetContentAsStreamAsync())

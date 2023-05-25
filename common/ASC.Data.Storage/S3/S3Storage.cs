@@ -1020,18 +1020,13 @@ public class S3Storage : BaseStorage
         return new UnencodedUri(baseUri, signedPart);
     }
 
-    private async Task InvalidateCloudFrontAsync(params string[] paths)
+    private async ValueTask InvalidateCloudFrontAsync(params string[] paths)
     {
         if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
         {
             return;
         }
 
-        await InternalInvalidateCloudFrontAsync(paths);
-    }
-
-    private async Task InternalInvalidateCloudFrontAsync(params string[] paths)
-    {
         using var cfClient = GetCloudFrontClient();
         var invalidationRequest = new CreateInvalidationRequest
         {
@@ -1173,18 +1168,13 @@ public class S3Storage : BaseStorage
         return string.IsNullOrEmpty(_recycleDir) ? "" : $"{_recycleDir}/{path.TrimStart('/')}";
     }
 
-    private async Task RecycleAsync(IAmazonS3 client, string domain, string key)
+    private async ValueTask RecycleAsync(IAmazonS3 client, string domain, string key)
     {
         if (string.IsNullOrEmpty(_recycleDir))
         {
             return;
         }
 
-        await InternalRecycleAsync(client, domain, key);
-    }
-
-    private async Task InternalRecycleAsync(IAmazonS3 client, string domain, string key)
-    {
         await CopyFileAsync(client, key, GetRecyclePath(key), domain, S3MetadataDirective.REPLACE, S3StorageClass.Glacier);
     }
 

@@ -649,7 +649,7 @@ internal class FileDao : AbstractDao, IFileDao<int>
         return await GetFileAsync(file.Id);
     }
 
-    private async Task DeleteVersionAsync(File<int> file)
+    private async ValueTask DeleteVersionAsync(File<int> file)
     {
         if (file == null
             || file.Id == default
@@ -658,11 +658,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             return;
         }
 
-        await InternalDeleteVersionAsync(file);
-    }
-
-    private async Task InternalDeleteVersionAsync(File<int> file)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var removeFiles = await FileDaoQueries.GetDbFilesByVersionAsync(filesDbContext, TenantID, file.Id, file.Version).ToListAsync();
@@ -692,18 +687,13 @@ internal class FileDao : AbstractDao, IFileDao<int>
         await DeleteFileAsync(fileId, true);
     }
 
-    private async Task DeleteFileAsync(int fileId, bool deleteFolder)
+    private async ValueTask DeleteFileAsync(int fileId, bool deleteFolder)
     {
         if (fileId == default)
         {
             return;
         }
 
-        await InternalDeleteFileAsync(fileId, deleteFolder);
-    }
-
-    private async Task InternalDeleteFileAsync(int fileId, bool deleteFolder)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 

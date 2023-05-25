@@ -66,7 +66,7 @@ public class CommonChunkedUploadSessionHolder
         return await DataStore.GetReadStreamAsync(_domain, GetPathWithId(sessionId));
     }
 
-    public async Task InitAsync(CommonChunkedUploadSession chunkedUploadSession)
+    public async ValueTask InitAsync(CommonChunkedUploadSession chunkedUploadSession)
     {
         if (chunkedUploadSession.BytesTotal < MaxChunkUploadSize && chunkedUploadSession.BytesTotal != -1)
         {
@@ -74,11 +74,6 @@ public class CommonChunkedUploadSessionHolder
             return;
         }
 
-        await InternalInitAsync(chunkedUploadSession);
-    }
-
-    private async Task InternalInitAsync(CommonChunkedUploadSession chunkedUploadSession)
-    {
         var tempPath = Guid.NewGuid().ToString();
         var uploadId = await DataStore.InitiateChunkedUploadAsync(_domain, tempPath);
 

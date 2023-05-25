@@ -138,11 +138,6 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullException.ThrowIfNull(file.File);
 
-        return await InternalDownloadStreamAsync(file, offset);
-    }
-
-    private async Task<Stream> InternalDownloadStreamAsync(Item file, int offset = 0)
-    {
         var fileStream = await OnedriveClient
             .Drive
             .Items[file.Id]
@@ -292,7 +287,7 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
         return uploadSession;
     }
 
-    public async Task TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
+    public async ValueTask TransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
     {
         ArgumentNullException.ThrowIfNull(stream);
 
@@ -301,11 +296,6 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
             throw new InvalidOperationException("Can't upload chunk for given upload session.");
         }
 
-        await InternalTransferAsync(oneDriveSession, stream, chunkLength);
-    }
-
-    private async Task InternalTransferAsync(ResumableUploadSession oneDriveSession, Stream stream, long chunkLength)
-    {
         var request = new HttpRequestMessage
         {
             RequestUri = new Uri(oneDriveSession.Location),

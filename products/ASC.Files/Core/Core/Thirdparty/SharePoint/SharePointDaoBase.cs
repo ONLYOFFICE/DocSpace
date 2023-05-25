@@ -119,18 +119,13 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
         return string.Format(" ({0}){1}", index + 1, staticText);
     }
 
-    protected async Task UpdatePathInDBAsync(string oldValue, string newValue)
+    protected async ValueTask UpdatePathInDBAsync(string oldValue, string newValue)
     {
         if (oldValue.Equals(newValue))
         {
             return;
         }
 
-        await InternalUpdatePathInDBAsync(oldValue, newValue);
-    }
-
-    private async Task InternalUpdatePathInDBAsync(string oldValue, string newValue)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 

@@ -204,7 +204,7 @@ public class PortalController : ControllerBase
     [HttpGet("userscount")]
     public async Task<long> GetUsersCountAsync()
     {
-        return _coreBaseSettings.Personal ? 1 : (await _userManager.GetUserNamesAsyncAsync(EmployeeStatus.Active)).Length;
+        return _coreBaseSettings.Personal ? 1 : (await _userManager.GetUserNamesAsync(EmployeeStatus.Active)).Length;
     }
 
     [AllowNotPayment]

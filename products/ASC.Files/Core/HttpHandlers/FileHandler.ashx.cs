@@ -151,6 +151,7 @@ public class FileHandlerService
         {
             context.Response.StatusCode = (int)HttpStatusCode.PaymentRequired;
             //context.Response.StatusDescription = "Payment Required.";
+            return;
         }
 
         try
@@ -204,7 +205,7 @@ public class FileHandlerService
         }
     }
 
-    private async Task BulkDownloadFile(HttpContext context)
+    private async ValueTask BulkDownloadFile(HttpContext context)
     {
         if (!_securityContext.IsAuthenticated)
         {
@@ -243,11 +244,7 @@ public class FileHandlerService
         }
 
         context.Response.Clear();
-        await InternalBulkDownloadFile(context, store, path, filename);
-    }
 
-    private async Task InternalBulkDownloadFile(HttpContext context, IDataStore store, string path, string filename)
-    {
         try
         {
             var flushed = false;
@@ -1200,7 +1197,7 @@ public class FileHandlerService
         return file.Id + ":" + file.Version + ":" + file.Title.GetHashCode() + ":" + file.ContentLength;
     }
 
-    private async Task CreateFile(HttpContext context)
+    private async ValueTask CreateFile(HttpContext context)
     {
         if (!_securityContext.IsAuthenticated)
         {
@@ -1212,11 +1209,6 @@ public class FileHandlerService
             return;
         }
 
-        await InternalCreateFile(context);
-    }
-
-    private async Task InternalCreateFile(HttpContext context)
-    {
         var folderId = context.Request.Query[FilesLinkUtility.FolderId].FirstOrDefault();
         if (string.IsNullOrEmpty(folderId))
         {
@@ -1274,7 +1266,7 @@ public class FileHandlerService
         }
         catch (Exception ex)
         {
-            await InternalWriteError(context, ex, responseMessage);
+            await WriteError(context, ex, responseMessage);
             return;
         }
 
@@ -1282,7 +1274,7 @@ public class FileHandlerService
 
         if (responseMessage)
         {
-            await InternalWriteOk(context, folder, file);
+            await WriteOk(context, folder, file);
             return;
         }
 
@@ -1292,7 +1284,7 @@ public class FileHandlerService
                     : (_filesLinkUtility.GetFileWebEditorUrl(file.Id) + "#message/" + HttpUtility.UrlEncode(string.Format(FilesCommonResource.MessageFileCreated, folder.Title))));
     }
 
-    private async Task InternalWriteError(HttpContext context, Exception ex, bool responseMessage)
+    private async Task WriteError(HttpContext context, Exception ex, bool responseMessage)
     {
         _logger.ErrorFileHandler(ex);
 
@@ -1305,7 +1297,7 @@ public class FileHandlerService
         return;
     }
 
-    private async Task InternalWriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
+    private async Task WriteOk<T>(HttpContext context, Folder<T> folder, File<T> file)
     {
         var message = string.Format(FilesCommonResource.MessageFileCreated, folder.Title);
         if (_fileUtility.CanWebRestrictedEditing(file.Title))
@@ -1470,7 +1462,7 @@ public class FileHandlerService
         }
     }
 
-    private async Task TrackFileAsync<T>(HttpContext context, T fileId)
+    private async ValueTask TrackFileAsync<T>(HttpContext context, T fileId)
     {
         var auth = context.Request.Query[FilesLinkUtility.AuthKey].FirstOrDefault();
         _logger.DebugDocServiceTrackFileid(fileId.ToString());
@@ -1483,11 +1475,6 @@ public class FileHandlerService
             throw new HttpException((int)HttpStatusCode.Forbidden, FilesCommonResource.ErrorMassage_SecurityException);
         }
 
-        await InternalTrackFileAsync(context, fileId);
-    }
-
-    private async Task InternalTrackFileAsync<T>(HttpContext context, T fileId)
-    {
         TrackerData fileData;
         try
         {
