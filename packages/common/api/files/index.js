@@ -66,10 +66,7 @@ export function getFolder(folderId, filter, signal) {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
   }
 
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
+  const params = filter ? `${folderId}?${filter.toApiUrlParams()}` : folderId;
 
   const options = {
     method: "get",
