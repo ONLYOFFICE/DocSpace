@@ -42,7 +42,7 @@ class SnackBar extends React.Component {
   }
 
   onActionClick = (e) => {
-    this.props.clickAction && this.props.clickAction(e);
+    this.props.onAction && this.props.onAction(e);
   };
 
   componentDidMount() {
@@ -202,7 +202,7 @@ SnackBar.propTypes = {
   /** Displays the icon */
   showIcon: PropTypes.bool,
   /** Sets a callback function that is triggered when the Snackbar is clicked */
-  clickAction: PropTypes.func,
+  onAction: PropTypes.func,
   /** Sets the font size  */
   fontSize: PropTypes.string,
   /** Sets the font weight */

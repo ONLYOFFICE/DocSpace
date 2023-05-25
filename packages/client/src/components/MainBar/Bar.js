@@ -286,7 +286,7 @@ const Bar = (props) => {
   ) : htmlLink && !firstLoad && tReady ? (
     <SnackBar
       onLoad={onLoad}
-      clickAction={onClose}
+      onAction={onClose}
       isCampaigns={true}
       htmlContent={htmlLink}
     />
