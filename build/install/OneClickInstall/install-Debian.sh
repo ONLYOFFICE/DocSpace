@@ -5,7 +5,7 @@ set -e
 package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
 product="docspace"
-GIT_BRANCH="develop"
+GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
@@ -119,7 +119,6 @@ fi
 # add onlyoffice repo
 mkdir -p -m 700 $HOME/.gnupg
 echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://download.onlyoffice.com/repo/debian squeeze main" | tee /etc/apt/sources.list.d/onlyoffice.list
-echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://static.teamlab.info.s3.amazonaws.com/repo/4testing/debian stable main" | sudo tee /etc/apt/sources.list.d/onlyoffice4testing.list
 curl -fsSL https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/onlyoffice.gpg --import
 chmod 644 /usr/share/keyrings/onlyoffice.gpg
 
