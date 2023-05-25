@@ -69,5 +69,5 @@ file static class Queries
     
     public static readonly Func<UserDbContext, int, Guid, Task<bool>> UserDavAnyAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (UserDbContext ctx, int tenantId, Guid userId) =>
-        ctx.UsersDav.Any(r => r.TenantId == tenantId && r.UserId == userId);
+        ctx.UsersDav.Any(r => r.TenantId == tenantId && r.UserId == userId));
 }

@@ -238,12 +238,7 @@ public class SettingsManager
             }
 
             using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-            var result = await webstudioDbContext.WebstudioSettings
-                    .Where(r => r.Id == def.ID)
-                    .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.UserId == userId)
-                    .Select(r => r.Data)
-                    .FirstOrDefaultAsync();
+            var result = await Queries.GetDataAsync(webstudioDbContext, tenantId, def.ID, userId);
 
             if (result != null)
             {
@@ -280,12 +275,7 @@ public class SettingsManager
             }
 
             using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-            var result = webstudioDbContext.WebstudioSettings
-                    .Where(r => r.Id == def.ID)
-                    .Where(r => r.TenantId == tenantId)
-                    .Where(r => r.UserId == userId)
-                    .Select(r => r.Data)
-                    .FirstOrDefault();
+            var result = Queries.GetData(webstudioDbContext, tenantId, def.ID, userId);
 
             if (result != null)
             {
@@ -324,11 +314,7 @@ public class SettingsManager
 
             if (data.SequenceEqual(defaultData))
             {
-                var s = await webstudioDbContext.WebstudioSettings
-                        .Where(r => r.Id == settings.ID)
-                        .Where(r => r.TenantId == tenantId)
-                        .Where(r => r.UserId == userId)
-                        .FirstOrDefaultAsync();
+                var s = await Queries.GetWebStudioSettingsAsync(webstudioDbContext, tenantId, settings.ID, userId);
 
                 if (s != null)
                 {
@@ -382,11 +368,7 @@ public class SettingsManager
 
             if (data.SequenceEqual(defaultData))
             {
-                var s = webstudioDbContext.WebstudioSettings
-                        .Where(r => r.Id == settings.ID)
-                        .Where(r => r.TenantId == tenantId)
-                        .Where(r => r.UserId == userId)
-                        .FirstOrDefault();
+                var s = Queries.GetWebStudioSettings(webstudioDbContext, tenantId, settings.ID, userId);
 
                 if (s != null)
                 {
@@ -438,4 +420,41 @@ public class SettingsManager
     {
         return JsonSerializer.Serialize(settings);
     }
+}
+
+file static class Queries
+{
+    public static readonly Func<WebstudioDbContext, int, Guid, Guid, Task<string>> GetDataAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (WebstudioDbContext ctx, int tenantId, Guid id, Guid userId) =>
+        ctx.WebstudioSettings
+                .Where(r => r.Id == id)
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => r.UserId == userId)
+                .Select(r => r.Data)
+                .FirstOrDefault());
+    
+    public static readonly Func<WebstudioDbContext, int, Guid, Guid, string> GetData = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (WebstudioDbContext ctx, int tenantId, Guid id, Guid userId) =>
+        ctx.WebstudioSettings
+                .Where(r => r.Id == id)
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => r.UserId == userId)
+                .Select(r => r.Data)
+                .FirstOrDefault());
+    
+    public static readonly Func<WebstudioDbContext, int, Guid, Guid, Task<DbWebstudioSettings>> GetWebStudioSettingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (WebstudioDbContext ctx, int tenantId, Guid id, Guid userId) =>
+        ctx.WebstudioSettings
+                .Where(r => r.Id == id)
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => r.UserId == userId)
+                .FirstOrDefault());
+    
+    public static readonly Func<WebstudioDbContext, int, Guid, Guid, DbWebstudioSettings> GetWebStudioSettings = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (WebstudioDbContext ctx, int tenantId, Guid id, Guid userId) =>
+        ctx.WebstudioSettings
+                .Where(r => r.Id == id)
+                .Where(r => r.TenantId == tenantId)
+                .Where(r => r.UserId == userId)
+                .FirstOrDefault());
 }

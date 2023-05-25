@@ -98,7 +98,7 @@ class DbQuotaService : IQuotaService
         {
             if (exchange)
             {
-                await Queries.UpdateCounterAsync(coreDbContext, row.Tenant, row.UserId, row.Path, row.Counter)
+                await Queries.UpdateCounterAsync(coreDbContext, row.Tenant, row.UserId, row.Path, row.Counter);
             }
             else
             {
@@ -140,7 +140,7 @@ file static class Queries
         ctx.QuotaRows
             .Find(new object[] { tenantId, userId, path }));  
     
-    public static readonly Func<CoreDbContext, int, Guid, string, long, Task<DbQuotaRow>> UpdateCounterAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    public static readonly Func<CoreDbContext, int, Guid, string, long, Task<int>> UpdateCounterAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (CoreDbContext ctx, int tenantId, Guid userId, string path, long counter) =>
         ctx.QuotaRows
             .Where(r => r.Path == path 
