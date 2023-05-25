@@ -27,7 +27,6 @@
 global using System.Collections;
 global using System.Collections.Concurrent;
 global using System.Diagnostics;
-global using System.Diagnostics.CodeAnalysis;
 global using System.Globalization;
 global using System.Linq.Expressions;
 global using System.Net;
@@ -83,7 +82,6 @@ global using ASC.Core.Notify.Socket;
 global using ASC.Core.Tenants;
 global using ASC.Core.Users;
 global using ASC.Data.Storage;
-global using ASC.Data.Storage.DiscStorage;
 global using ASC.Data.Storage.ZipOperators;
 global using ASC.ElasticSearch;
 global using ASC.ElasticSearch.Core;
