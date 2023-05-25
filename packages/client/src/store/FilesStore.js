@@ -1090,16 +1090,14 @@ class FilesStore {
   };
 
   setFilterUrl = (filter) => {
-    //TODO: public filter
-    if (this.publicRoomStore.isPublicRoom) {
-      return;
-    }
-
     const filterParamsStr = filter.toUrlParams();
 
     const url = getCategoryUrl(this.categoryType, filter.folder);
+    const shareKey = this.publicRoomStore.publicKey
+      ? `key=${this.publicRoomStore.publicKey}&`
+      : "";
 
-    const pathname = `${url}?${filterParamsStr}`;
+    const pathname = `${url}?${shareKey}${filterParamsStr}`;
 
     const currentUrl = window.location.href.replace(window.location.origin, "");
     const newUrl = combineUrl(
@@ -1226,10 +1224,12 @@ class FilesStore {
         }
 
         runInAction(() => {
-          this.categoryType = getCategoryTypeByFolderType(
-            data.current.rootFolderType,
-            data.current.parentId
-          );
+          if (!this.publicRoomStore.isPublicRoom) {
+            this.categoryType = getCategoryTypeByFolderType(
+              data.current.rootFolderType,
+              data.current.parentId
+            );
+          }
         });
 
         if (this.isPreview) {

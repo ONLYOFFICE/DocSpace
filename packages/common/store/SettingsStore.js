@@ -319,8 +319,12 @@ class SettingsStore {
   getSettings = async () => {
     let newSettings = null;
 
+    const lastKeySymbol = location.search.indexOf("&");
+    const lastIndex =
+      lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
+
     const publicKey = this.isPublicRoom
-      ? location.search.substring(5, location.search.length)
+      ? location.search.substring(5, lastIndex)
       : null;
 
     if (window?.__ASC_INITIAL_EDITOR_STATE__?.portalSettings)
@@ -667,8 +671,12 @@ class SettingsStore {
   }
 
   get socketHelper() {
+    const lastKeySymbol = location.search.indexOf("&");
+    const lastIndex =
+      lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
+
     const publicKey = this.isPublicRoom
-      ? location.search.substring(5, location.search.length)
+      ? location.search.substring(5, lastIndex)
       : null;
 
     return new SocketIOHelper(this.socketUrl, publicKey);

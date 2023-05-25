@@ -14,6 +14,7 @@ import RoomErrors from "./sub-components/RoomErrors";
 
 import { RoomSharingDialog } from "../../components/dialogs";
 import SelectionArea from "../Home/SelectionArea";
+import FilesFilter from "@docspace/common/api/files/filter";
 
 const PublicRoom = (props) => {
   const {
@@ -34,18 +35,49 @@ const PublicRoom = (props) => {
   } = props;
 
   const location = useLocation();
-  const key = location.search.substring(5, location.search.length);
+  const lastKeySymbol = location.search.indexOf("&");
+
+  const lastIndex =
+    lastKeySymbol === -1 ? location.search.length : lastKeySymbol;
+  const key = location.search.substring(5, lastIndex);
 
   useEffect(() => {
     validatePublicRoomKey(key);
   }, [validatePublicRoomKey]);
 
+  const setPublicRoomFilter = (filterObj) => {
+    const newFilter = new FilesFilter();
+
+    newFilter.filterType = filterObj.filterType;
+    newFilter.page = filterObj.page;
+    newFilter.pageCount = filterObj.pageCount;
+    newFilter.search = filterObj.search;
+    newFilter.sortBy = filterObj.sortBy;
+    newFilter.sortOrder = filterObj.sortOrder;
+    newFilter.total = filterObj.total;
+    newFilter.viewAs = filterObj.viewAs;
+    newFilter.withSubfolders = filterObj.withSubfolders;
+    newFilter.folder = filterObj.folder;
+
+    return newFilter;
+  };
+
   const fetchRoomFiles = async () => {
     await getFilesSettings(key);
 
-    fetchFiles(roomId).then((res) => {
-      setRoomHref(res?.links[0]?.href);
-    });
+    const filterObj = FilesFilter.getFilter(window.location);
+
+    if (filterObj?.folder && filterObj?.folder !== "@my") {
+      const filter = setPublicRoomFilter(filterObj);
+
+      fetchFiles(filter.folder, filter).then((res) => {
+        setRoomHref(res?.links[0]?.href);
+      });
+    } else {
+      fetchFiles(roomId).then((res) => {
+        setRoomHref(res?.links[0]?.href);
+      });
+    }
   };
 
   useEffect(() => {

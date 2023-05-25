@@ -69,7 +69,11 @@ export function getFolder(folderId, filter, signal, shareKey) {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
   }
 
-  const key = shareKey ? `&share=${shareKey}` : "";
+  const key = shareKey
+    ? filter && filter instanceof FilesFilter
+      ? `&share=${shareKey}`
+      : `?share=${shareKey}`
+    : "";
 
   const params =
     filter && filter instanceof FilesFilter
