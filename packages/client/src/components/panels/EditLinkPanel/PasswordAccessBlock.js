@@ -4,6 +4,7 @@ import PasswordInput from "@docspace/components/password-input";
 import IconButton from "@docspace/components/icon-button";
 import Link from "@docspace/components/link";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+import copy from "copy-to-clipboard";
 
 const PasswordAccessBlock = (props) => {
   const { t, isLoading, isChecked, passwordValue, setPasswordValue } = props;
@@ -15,11 +16,11 @@ const PasswordAccessBlock = (props) => {
   };
 
   const onCleanClick = () => {
-    alert("onCleanClick");
+    setPasswordValue("");
   };
 
   const onCopyClick = () => {
-    alert("onCopyClick");
+    copy(passwordValue);
   };
 
   const onChangePassword = (e) => {
@@ -38,7 +39,6 @@ const PasswordAccessBlock = (props) => {
               ref={passwordInputRef}
               // scale //doesn't work
               simpleView
-              // hasError={!isPasswordValid}
               isDisabled={isLoading}
               // tabIndex={3}
               // simpleView

@@ -3,6 +3,7 @@ import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import copy from "copy-to-clipboard";
 import isEqual from "lodash/isEqual";
+import { createPasswordHash } from "@docspace/common/utils";
 
 import Heading from "@docspace/components/heading";
 import Backdrop from "@docspace/components/backdrop";
@@ -28,22 +29,22 @@ const EditLinkPanel = (props) => {
     linkId,
     isEdit,
     visible,
-    password,
+    // password,
     setIsVisible,
     editExternalLink,
     setExternalLinks,
     shareLink,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
+    hashSettings,
   } = props;
 
   const title = props.title ?? t("ExternalLink");
-  const isLocked = !!password;
 
   const [isLoading, setIsLoading] = useState(false);
 
   const [linkNameValue, setLinkNameValue] = useState(title);
-  const [passwordValue, setPasswordValue] = useState(password);
+  const [passwordValue, setPasswordValue] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
 
   const [linkValue, setLinkValue] = useState(shareLink);
@@ -68,12 +69,14 @@ const EditLinkPanel = (props) => {
 
   const onClose = () => setIsVisible(false);
   const onSave = () => {
+    const passwordHash = createPasswordHash(passwordValue, hashSettings);
+
     const options = {
       linkId,
       roomId,
       title: linkNameValue,
       expirationDate,
-      password: passwordValue,
+      password: passwordHash,
       denyDownload,
     };
 
@@ -217,6 +220,7 @@ const EditLinkPanel = (props) => {
 
 export default inject(({ auth, dialogsStore, publicRoomStore }) => {
   const { selectionParentRoom } = auth.infoPanelStore;
+  const { hashSettings } = auth.settingsStore;
   const {
     editLinkPanelIsVisible,
     setEditLinkPanelIsVisible,
@@ -241,11 +245,13 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     editExternalLink,
     roomId: selectionParentRoom.id,
     setExternalLinks,
-    password: link?.sharedTo?.password,
+    isLocked: !!password,
+    // password: link?.sharedTo?.password,
     shareLink,
     externalLinks,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
+    hashSettings,
   };
 })(
   withTranslation(["SharingPanel", "Common", "Files"])(observer(EditLinkPanel))

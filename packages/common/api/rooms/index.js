@@ -368,10 +368,10 @@ export function validatePublicRoomKey(key) {
   });
 }
 
-export function validatePublicRoomPassword(key, password) {
+export function validatePublicRoomPassword(key, passwordHash) {
   return request({
     method: "post",
     url: `files/share/${key}/password`,
-    data: { password },
+    data: { password: passwordHash },
   });
 }

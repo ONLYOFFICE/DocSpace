@@ -88,8 +88,8 @@ class PublicRoomStore {
       .finally(() => this.setIsLoading(false));
   };
 
-  validatePublicRoomPassword = (key, password) => {
-    return api.rooms.validatePublicRoomPassword(key, password);
+  validatePublicRoomPassword = (key, passwordHash) => {
+    return api.rooms.validatePublicRoomPassword(key, passwordHash);
   };
 
   get isPublicRoom() {

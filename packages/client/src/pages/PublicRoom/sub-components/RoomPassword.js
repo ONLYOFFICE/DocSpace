@@ -52,10 +52,9 @@ const RoomPassword = (props) => {
 
     setIsLoading(true);
     try {
-      // const hash = createPasswordHash(password, hashSettings);
-      // await changePassword(hash);
+      const passwordHash = createPasswordHash(password, hashSettings);
 
-      const res = await validatePublicRoomPassword(roomKey, password);
+      const res = await validatePublicRoomPassword(roomKey, passwordHash);
       setIsLoading(false);
 
       switch (res?.status) {
