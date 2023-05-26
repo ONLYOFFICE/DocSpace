@@ -1100,6 +1100,7 @@ class FilesStore {
           window.DocSpace.location.pathname.includes("accounts/filter"),
         fromSettings: window.DocSpace.location.pathname.includes("settings"),
       },
+      replace: !location.search,
     });
   };
 
@@ -2758,8 +2759,12 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      this.filesSettingsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
