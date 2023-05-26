@@ -32,7 +32,6 @@ const StyledBadge = styled.div`
   border: ${(props) => props.theme.badge.border};
   border-radius: ${(props) => props.borderRadius};
   width: fit-content;
-  padding: ${(props) => props.theme.badge.padding};
   line-height: ${(props) => props.lineHeight};
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
