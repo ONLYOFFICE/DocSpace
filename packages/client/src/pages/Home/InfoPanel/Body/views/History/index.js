@@ -45,9 +45,11 @@ const History = ({
 
     getHistory(module, itemId, abortControllerRef.current?.signal)
       .then((data) => {
-        const parsedHistory = parseHistory(t, data);
         if (isMount.current)
-          startTransition(() => setSelectionHistory(parsedHistory));
+          startTransition(() => {
+            const parsedHistory = parseHistory(t, data);
+            setSelectionHistory(parsedHistory);
+          });
       })
       .catch((err) => {
         if (err.message !== "canceled") console.error(err);
