@@ -3,8 +3,10 @@ import React from "react";
 import { inject, observer } from "mobx-react";
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
+import NoUserSelect from "@docspace/components/utils/commonStyles";
 
 const StyledIcon = styled.img`
+  ${NoUserSelect}
   ${(props) =>
     props.isRoom &&
     css`

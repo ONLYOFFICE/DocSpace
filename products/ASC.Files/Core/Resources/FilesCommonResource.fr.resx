@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AceShareLink" xml:space="preserve">
-    <value>A l'extérieur du portail </value>
+    <value>A l'extérieur du portail</value>
   </data>
   <data name="AceStatusEnum_Comment" xml:space="preserve">
     <value>Commentaire</value>
@@ -128,7 +128,7 @@
     <value>Remplacé</value>
   </data>
   <data name="CommentRevert" xml:space="preserve">
-    <value>Restauré(e) à partir de la révision de</value>
+    <value>Restauré(e) à partir de la révision de {0}</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
     <value>Restaurée à partir de la modification du document de {0}</value>
@@ -164,7 +164,7 @@
     <value>Conversion prend trop de temps.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Une erreur s'est produite dans le service de documents </value>
+    <value>Une erreur s'est produite dans le service de documents</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>Le fichier est ouvert pour l'édition par {0}. Actuellement, la coédition n'est pas prise en charge pour ce type de fichier.</value>
@@ -311,10 +311,10 @@
     <value>Faire la même chose qu'un utilisateur|Lier Dropbox, Box et d'autres comptes dans la section 'Documents communs'|Définir les droits d'accès aux documents et aux dossiers dans la section 'Documents communs'</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Créez, modifiez et partagez des documents. Travaillez à plusieurs sur les documents en temps réel. Compatibilité maximale garantie avec les fichiers docx, xlsx et pptx. </value>
+    <value>Créez, modifiez et partagez des documents. Travaillez à plusieurs sur les documents en temps réel. Compatibilité maximale garantie avec les fichiers docx, xlsx et pptx.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
-    <value>Éditez, partagez et collaborez sur les documents bureautiques en temps réel. Créez et gérez les documents communs accessibles à toute l'équipe. Compatibilité maximale avec docx, xlsx, pptx. </value>
+    <value>Éditez, partagez et collaborez sur les documents bureautiques en temps réel. Créez et gérez les documents communs accessibles à toute l'équipe. Compatibilité maximale avec docx, xlsx, pptx.</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
     <value>Affichez et téléchargez les documents partagés. Téléchargez les fichiers vers les dossiers partagés. Compatibilité maximale garantie avec les fichiers docx, xlsx, pptx.</value>
@@ -360,5 +360,14 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Collaborateur</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaborateur</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Éditeur</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrateur de la salle</value>
   </data>
 </root>

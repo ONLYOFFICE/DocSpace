@@ -41,7 +41,12 @@ const SectionBodyContent = (props) => {
     filesList,
     uploaded,
     onClickBack,
+    movingInProgress,
   } = props;
+
+  useEffect(() => {
+    return () => window?.getSelection()?.removeAllRanges();
+  }, []);
 
   useEffect(() => {
     const customScrollElm = document.querySelector(
@@ -246,12 +251,12 @@ const SectionBodyContent = (props) => {
     }
   };
 
-  //console.log("Files Home SectionBodyContent render", props);
+  if (isEmptyFilesList && movingInProgress) return <></>;
 
   return (
     <Consumer>
       {(context) =>
-        isEmptyFilesList || null ? (
+        isEmptyFilesList ? (
           <>
             <EmptyContainer sectionWidth={context.sectionWidth} />
           </>
@@ -301,6 +306,7 @@ export default inject(
       scrollToItem,
       setScrollToItem,
       filesList,
+      movingInProgress,
     } = filesStore;
     return {
       dragging,
@@ -325,6 +331,7 @@ export default inject(
       filesList,
       uploaded: uploadDataStore.uploaded,
       onClickBack: filesActionsStore.onClickBack,
+      movingInProgress,
     };
   }
 )(

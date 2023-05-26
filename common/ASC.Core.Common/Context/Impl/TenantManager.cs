@@ -326,6 +326,17 @@ public class TenantManager
         return result;
     }
 
+    public Dictionary<string, decimal> GetProductPriceInfo(string productId)
+    {
+        if (string.IsNullOrEmpty(productId))
+        {
+            return null;
+        }
+
+        var prices = TariffService.GetProductPriceInfo(new[] { productId });
+        return prices.ContainsKey(productId) ? prices[productId] : null;
+    }
+
     public TenantQuota SaveTenantQuota(TenantQuota quota)
     {
         quota = QuotaService.SaveTenantQuota(quota);

@@ -58,9 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
- <data name="Archive" xml:space="preserve">
+  <data name="Archive" xml:space="preserve">
     <value>Archiv</value>
-  </data> 
+  </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Gemeinsame Dokumente</value>
   </data>
@@ -93,5 +93,8 @@
   </data>
   <data name="VirtualRooms" xml:space="preserve">
     <value>Räume</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Persönlich</value>
   </data>
 </root>

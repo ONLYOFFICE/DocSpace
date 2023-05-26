@@ -30,7 +30,7 @@
   "QuotaPaidUserLimitError": "已达到付费用户限制。<1>付款</1>",
   "RenewSubscription": "将订阅更新至 {{planName}} 版本",
   "RoomManagerDescription": "房间管理和归档，用户邀请和管理可为房间指派多名管理员。",
-  "StartupSuggestion": "借助 {{planName}} 版本完成更多",
+  "StartupSuggestion": "升级为 {{planName}} 版获得更多权限",
   "StartupTitle": "您正在使用免费 {{planName}} 版本",
   "StripeCustomerPortal": "前往 Stripe 客户门户",
   "TotalPricePerMonth": "<1>{{currencySymbol}}</1><2>{{price}}</2><3>/月</3>",

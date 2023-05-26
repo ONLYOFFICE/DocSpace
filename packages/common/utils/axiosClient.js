@@ -57,9 +57,10 @@ class AxiosClient {
   initSSR = (headers) => {
     this.isSSR = true;
 
-    const xRewriterUrl = headers["x-rewriter-url"];
+    const proto = headers["x-forwarded-proto"]?.split(",").shift();
+    const host = headers["x-forwarded-host"]?.split(",").shift();
 
-    const origin = apiOrigin || xRewriterUrl;
+    const origin = apiOrigin || `${proto}://${host}`;
 
     const apiBaseURL = combineUrl(origin, proxyURL, apiPrefix);
 
@@ -142,7 +143,7 @@ class AxiosClient {
               url: "/authentication/logout",
             }).then(() => {
               this.setWithCredentialsStatus(false);
-              window.location.href = loginURL;
+              window.location.href = `${loginURL}?authError=true`;
             });
             break;
           case 402:

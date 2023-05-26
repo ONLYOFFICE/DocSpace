@@ -52,17 +52,17 @@ const LoginForm: React.FC<ILoginFormProps> = ({
   const [isDisabled, setIsDisabled] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
-  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] = useState(
-    IS_ROOMS_MODE
-  );
+  const [isWithoutPasswordLogin, setIsWithoutPasswordLogin] =
+    useState(IS_ROOMS_MODE);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const { t, ready } = useTranslation(["Login", "Common"]);
 
-  const { message, confirmedEmail } = match || {
+  const { message, confirmedEmail, authError } = match || {
     message: "",
     confirmedEmail: "",
+    authError: "",
   };
 
   const authCallback = (profile: string) => {
@@ -108,6 +108,7 @@ const LoginForm: React.FC<ILoginFormProps> = ({
     const text = `${messageEmailConfirmed} ${messageAuthorize}`;
 
     confirmedEmail && ready && toastr.success(text);
+    authError && ready && toastr.error(t("Common:ProviderLoginError"));
 
     focusInput();
 

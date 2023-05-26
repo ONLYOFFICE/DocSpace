@@ -24,10 +24,6 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-using ASC.Core.Common.EF;
-
-using Microsoft.EntityFrameworkCore;
-
 namespace ASC.Core.Data;
 
 [Scope]
@@ -212,16 +208,16 @@ public class EFUserService : IUserService
             .ToList();
     }
 
-    public IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
+    public IQueryable<UserInfo> GetUsers(int tenant, bool isDocSpaceAdmin, EmployeeStatus? employeeStatus, List<List<Guid>> includeGroups, List<Guid> excludeGroups, EmployeeActivationStatus? activationStatus, AccountLoginType? accountLoginType, string text, string sortBy, bool sortOrderAsc, long limit, long offset, out int total, out int count)
     {
         var userDbContext = _dbContextFactory.CreateDbContext();
         var totalQuery = GetUserQuery(userDbContext, tenant);
-        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        totalQuery = GetUserQueryForFilter(userDbContext, totalQuery, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text);
         total = totalQuery.Count();
 
         var q = GetUserQuery(userDbContext, tenant);
 
-        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text);
+        q = GetUserQueryForFilter(userDbContext, q, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text);
 
         var orderedQuery = q.OrderBy(r => r.ActivationStatus == EmployeeActivationStatus.Pending);
         q = orderedQuery;
@@ -632,6 +628,7 @@ public class EFUserService : IUserService
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
         EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
         string text)
     {
         q = q.Where(r => !r.Removed);
@@ -699,6 +696,19 @@ public class EFUserService : IUserService
                 u.Title.Contains(text) ||
                 u.Location.Contains(text) ||
                 u.Email.Contains(text));
+        }
+
+        switch (accountLoginType)
+        {
+            case AccountLoginType.LDAP:
+                q = q.Where(r => r.Sid != null);
+                break;
+            case AccountLoginType.SSO:
+                q = q.Where(r => r.SsoNameId != null);
+                break;
+            case AccountLoginType.Standart:
+                q = q.Where(r => r.SsoNameId == null && r.Sid == null);
+                break;
         }
 
         return q;

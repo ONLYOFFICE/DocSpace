@@ -76,6 +76,11 @@ const MobileView = ({
   React.useEffect(() => {
     let currentPrimaryNumEl = primaryNumEl;
 
+    const uploadedFileCount = files.filter(
+      (item) => item.percent === 100 && !item.cancel
+    ).length;
+    const fileLength = files.filter((item) => !item.cancel).length;
+
     if (primaryCurrentFile.current === null && primaryProgressDataLoadingFile) {
       primaryCurrentFile.current = primaryProgressDataLoadingFile.uniqueId;
       currentPrimaryNumEl = 0;
@@ -105,7 +110,7 @@ const MobileView = ({
         status:
           primaryProgressDataPercent === 100 && !primaryProgressDataErrors
             ? t("FilesUploaded")
-            : `${currentPrimaryNumEl}/${files.length}`,
+            : `${uploadedFileCount}/${fileLength}`,
         onClick: showUploadPanel,
         onCancel: clearUploadPanel,
       },

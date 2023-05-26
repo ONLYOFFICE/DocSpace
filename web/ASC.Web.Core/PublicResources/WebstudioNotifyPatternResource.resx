@@ -117,54 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog was created at</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Bookmark was created at</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM case was created at</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Comment was added at</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM contact was created at</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM opportunity was created at</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Discussion was created at</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Event was created at</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Document was created/uploaded at</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Folder was created at</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum was created at</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Poll was created at</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Post was created at</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Milestone was created at</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Project was created at</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Task was created at</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Accept</value>
   </data>
@@ -240,9 +192,6 @@
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Use discount</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Learn More &gt;&gt;</value>
-  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Activate your email for "${__VirtualRootPath}":"$InviteLink" portal.
 
@@ -261,7 +210,7 @@ Dear $OwnerName,
 
 A backup file containing data from your "${__VirtualRootPath}":"${__VirtualRootPath}" portal has been created.
 
-To learn more on the backup procedure please refer to our "Data backup":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" user guide.
+To learn more on the backup procedure please refer to our "Data backup":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" user guide.
 
 
 If you have any questions or need assistance please feel free to contact us at "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -349,13 +298,13 @@ You will get more tips on how to use your web-office. You can cancel the subscri
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps.
 
 $GreenButton
 
@@ -381,13 +330,13 @@ You will get more tips on how to use your web-office. You can cancel the subscri
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps.
 
 $GreenButton
 
@@ -425,13 +374,11 @@ $GreenButton
 *Note*: this link is valid for 48 hours only. Please complete the operation within that period.</value>
   </data>
   <data name="pattern_mailbox_created" xml:space="preserve">
-    <value>
-      Dear $UserName,
+    <value>Dear $UserName,
 
       Administrator has created a new &lt;b&gt;$Address&lt;/b&gt; mailbox for you at the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
 
       Use the following settings for other email clients:
-
       Login: &lt;b&gt;$Login&lt;/b&gt;
       Password: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
 
@@ -446,26 +393,21 @@ $GreenButton
       SSL/TLS: &lt;b&gt;$Encryption&lt;/b&gt;
       Requires Authentication: &lt;b&gt;Yes&lt;/b&gt;
 
-      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
-    </value>
+      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.</value>
   </data>
   <data name="pattern_mailbox_password_changed" xml:space="preserve">
-    <value>
-      Dear $UserName,
+    <value>Dear $UserName,
 
       The password for the &lt;b&gt;$Address&lt;/b&gt; mailbox has been changed.
 
-      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
-    </value>
+      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.</value>
   </data>
   <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
-    <value>
-      Dear $UserName,
+    <value>Dear $UserName,
 
       Administrator has created a new &lt;b&gt;$Address&lt;/b&gt; mailbox for you at the "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
 
-      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.
-    </value>
+      If you received this email by mistake, please ignore it or contact your portal administrator to find out the details.</value>
   </data>
   <data name="pattern_migration_error" xml:space="preserve">
     <value>h1.Another region portal migration error
@@ -474,7 +416,6 @@ An error has occurred while migrating to the $RegionName region. Please, try onc
 Your portal is now available at the old address "$PortalUrl":"$PortalUrl"
 
 If you have any questions or need assistance please feel free to contact us at "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Best regards,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
@@ -537,13 +478,13 @@ You will get more tips on how to use your web-office. You can cancel the subscri
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps.
 
 $GreenButton
 
@@ -681,19 +622,19 @@ ONLYOFFICE™ Support Team
 [www.onlyoffice.com](http://onlyoffice.com/)</value>
   </data>
   <data name="pattern_portal_delete" xml:space="preserve">
-    <value>h1.Deletion of the "${__VirtualRootPath}":"${__VirtualRootPath}" portal
+    <value>h1.Deletion of the "${__VirtualRootPath}":"${__VirtualRootPath}" space
 
 Dear $OwnerName,
 
-You have requested to permanently delete your "${__VirtualRootPath}":"${__VirtualRootPath}" portal.
+You have requested to permanently delete your "${__VirtualRootPath}":"${__VirtualRootPath}" space.
 
-*Important! All the data stored on your portal, as well as your registration details will be lost and cannot be recovered.*
+*Important! All the data stored in your space, as well as your registration details will be lost and cannot be recovered.*
 
 #if($AutoRenew == "True")
-Before you delete the portal, please make sure that automatic billing is turned off. You may check the status of automatic billing in your "Avangate account":"https://secure.avangate.com/myaccount/".
+Before you delete the space, please make sure that automatic billing is turned off. You may check the status of automatic billing in your "Avangate account":"https://secure.avangate.com/myaccount/".
 #end
 
-If you still want to delete your "${__VirtualRootPath}":"${__VirtualRootPath}" portal please follow the link below to confirm the operation:
+If you still want to delete your "${__VirtualRootPath}":"${__VirtualRootPath}" space please follow the link below to confirm the operation:
 
 $GreenButton
 
@@ -737,7 +678,7 @@ Dear $UserDisplayName,
 
 Your $PortalUrl portal address was changed to the new "${__VirtualRootPath}":"${__VirtualRootPath}" address.
 
-*Note*: All the shared documents links are inaccessible now, as well as DNS settings and single sign-on options stop working until you change them. The third-party iCal links added to your calendar will also stop updating until you reload them.</value>
+*Note*: DNS settings and single sign-on options stop working until you change them.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Removal of the profile from the "${__VirtualRootPath}":"${__VirtualRootPath}" portal
@@ -916,13 +857,13 @@ ONLYOFFICE Team
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps.
 
 $GreenButton
 
@@ -1528,13 +1469,13 @@ ONLYOFFICE Team
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps.
 
 $GreenButton
 
@@ -1549,13 +1490,13 @@ ONLYOFFICE Team
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps. 
 
 $GreenButton
 
@@ -1570,13 +1511,13 @@ ONLYOFFICE Team
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps.
 
 $GreenButton
 
@@ -1619,13 +1560,13 @@ ONLYOFFICE Team
 
 Welcome to ONLYOFFICE DocSpace! Your user profile has been successfully added to "${__VirtualRootPath}":"${__VirtualRootPath}". Now you can:
 
-*# Work with other users in the room you are invited to*: collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
+* Work with other users in the room you are invited to: *collaboration rooms for real-time co-authoring or custom rooms with flexible settings for any purpose*.
 
-*# Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
+* *Work with files of different formats*: text documents, spreadsheets, presentations, digital forms, PDFs, e-books, multimedia.
 
-*# Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
+* *Collaborate on documents* with two co-editing modes: real-time or paragraph-locking. Track changes, communicate in real-time using the built-in chat or making audio and video calls. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps.
 
 $GreenButton
 
@@ -1659,7 +1600,7 @@ ONLYOFFICE Team
   <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
-You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
+You are invited to join ONLYOFFICE DocSpace at "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
 $GreenButton
 
@@ -1670,7 +1611,7 @@ ONLYOFFICE Team
   <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
     <value>Hello!
 
-You are invited to join ONLYOFFICE DocSpace at  "${__VirtualRootPath}":"${__VirtualRootPath}"o. Accept the invitation by clicking the link:
+You are invited to join ONLYOFFICE DocSpace at "${__VirtualRootPath}":"${__VirtualRootPath}". Accept the invitation by clicking the link:
 
 $GreenButton
 
@@ -1930,5 +1871,8 @@ ONLYOFFICE Team
   </data>
   <data name="subject_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
     <value>Grace period for your ONLYOFFICE DocSpace expires tomorrow</value>
+  </data>
+  <data name="subject_change_password" xml:space="preserve">
+    <value>${LetterLogoText} password assistance</value>
   </data>
 </root>

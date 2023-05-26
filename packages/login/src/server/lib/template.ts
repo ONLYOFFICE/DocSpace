@@ -32,7 +32,7 @@ const template: Template = (
   t
 ) => {
   const documentTitle = t
-    ? `${t("Authorization")} – ${organizationName}`
+    ? `${t("Common:Authorization")} – ${organizationName}`
     : title;
 
   const favicon = getLogoFromPath(

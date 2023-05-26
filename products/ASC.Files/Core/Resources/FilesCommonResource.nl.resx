@@ -125,7 +125,7 @@
     <value>Hersteld van versie van {0}</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Hersteld van de</value>
+    <value>Hersteld van de {0}</value>
   </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>Geupload</value>
@@ -146,7 +146,7 @@
     <value>Niet geldig</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Onjuiste aanvraag</value>
+    <value>Onjuiste aanvraag.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
     <value>U kunt deze gebruiker niet selecteren</value>
@@ -158,10 +158,10 @@
     <value>Er is een fout opgetreden in de Documenten Service</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>Het bestand is geopend voor bewerking</value>
+    <value>Het bestand is geopend voor bewerking.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
-    <value>Het bestand is geopend voor bewerken in een mobiele applicatie door {0}.</value>
+    <value>Het bestand is geopend voor bewerken in een mobiele applicatie door {0}</value>
   </data>
   <data name="ErrorMassage_EmptyFile" xml:space="preserve">
     <value>Leeg bestand</value>
@@ -194,7 +194,7 @@
     <value>Het bestand is momenteel vergrendeld door een andere gebruiker</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>Ten minste {0} mail berichten</value>
+    <value>Ten minste {0} mail berichten.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
     <value>Te veel downloads.</value>
@@ -215,7 +215,7 @@
     <value>U heeft onvoldoende rechten om deze bewerking uit te voeren</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Met de verstrekte logingegevens werd geen toegang verleend tot {0}</value>
+    <value>Met de verstrekte logingegevens werd geen toegang verleend tot {0}.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
     <value>U heeft geen voldoende aanmaak rechten</value>
@@ -239,10 +239,10 @@
     <value>Dit document wordt al bewerkt door jou in een ander tabblad</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
-    <value>U heeft onvoldoende machtiging om het bestand te verplaatsen.</value>
+    <value>U heeft onvoldoende machtiging om het bestand te verplaatsen</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
-    <value>U heeft onvoldoende machtiging om de map te verplaatsen.</value>
+    <value>U heeft onvoldoende machtiging om de map te verplaatsen</value>
   </data>
   <data name="ErrorMassage_SecurityException_ReadFile" xml:space="preserve">
     <value>U heeft onvoldoende rechten om het bestand te bekijken</value>
@@ -342,5 +342,62 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Collega</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Ingezonden formulier</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>De nieuwe versie kan niet hetzelfde zijn als de huidige</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>U heeft geen toestemming om het bestand te kopiëren</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>U heeft geen toestemming om de map te kopiëren</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Ongeldige provider</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Het is niet mogelijk om in deze map de kamer op te slaan</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>De uitnodigingslink is ongeldig of de geldigheidsduur ervan is verstreken</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Deze provider is al verbonden met de kamer</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>De rol is niet beschikbaar voor dit gebruikerstype</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>U heeft geen toestemming om de kamer te archiveren</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>U heeft geen toestemming om naar deze map te kopiëren</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>U heeft geen toestemming om de kamer te bewerken</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>U heeft geen toestemming om naar deze map te verplaatsen</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>U heeft geen toestemming om de kamer niet meer te archiveren</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>U kunt gearchiveerde ruimtes niet bewerken</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>U kunt geen kamer vastpinnen</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Aangepaste filter</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collega</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
   </data>
 </root>

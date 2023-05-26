@@ -158,11 +158,10 @@
     <value>Verbinden Sie die Anwendung, um Ihre Dokumente mit DocuSign zu signieren.</value>
   </data>
   <data name="ConsumersdocuSignHost" xml:space="preserve">
-    <value>DocuSign Authentifizierungsendpunkt </value>
+    <value>DocuSign Authentifizierungsendpunkt</value>
   </data>
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>Wenn man die Anwendung des DocuSign-Dienstes hinzufügt, kann man Dateien aus dem Modul "Dokumente" signieren. Dies ermöglicht Ihnen, Dateien  über DocuSugn für eine elektronische Signatur an die Mitarbeiter des ONLYOFFICE ™ Portals zu schicken. Die signierte Datei wird im ONLYOFFICE Modul gespeichert. 
-</value>
+    <value>Wenn man die Anwendung des DocuSign-Dienstes hinzufügt, kann man Dateien aus dem Modul "Dokumente" signieren. Dies ermöglicht Ihnen, Dateien  über DocuSugn für eine elektronische Signatur an die Mitarbeiter des ONLYOFFICE ™ Portals zu schicken. Die signierte Datei wird im ONLYOFFICE Modul gespeichert.</value>
   </data>
   <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
     <value>Erlauben Sie dieser App, Dokumente mit DocuSign digital zu unterschreiben. {0}Öffnen Sie Ihre DocuSign Admin-Konsole und ermöglichen Sie die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
@@ -213,9 +212,7 @@
     <value>Verbinden Sie die Anwendung, um sich ins Portal via Facebook anzumelden.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
-    <value>Wenn man die Anwendung des Facebook -Dienstes hinzufügt, kann man sein Facebook-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen Facebook-Login-Daten an. Sie können auch ein Facebook-Konto des Kontakts im CRM-Modul finden und mit "Person / Firma bearbeiten" verknüpfen.
-
-</value>
+    <value>Wenn man die Anwendung des Facebook -Dienstes hinzufügt, kann man sein Facebook-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen Facebook-Login-Daten an. Sie können auch ein Facebook-Konto des Kontakts im CRM-Modul finden und mit "Person / Firma bearbeiten" verknüpfen.</value>
   </data>
   <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
     <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über Facebook und Import von Facebook-Kontakten ins CRM-Modul zu ermöglichen. {0}Öffnen Sie das Facebook-Portal für Entwickler und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
@@ -272,8 +269,7 @@
     <value>Verbinden Sie das Projekt mithilfe eines Google-Kontos und verwalten Sie Google Drive-Dateien und Ordner.</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
-    <value>Wenn Sie ein Projekt des Google-Dienstes hinzufügen, können Sie Ihr Google-Konto mit Ihrer Profilseite verbinden, sodass Sie sich im ONLYOFFICE ™ -Portal anmelden und Ihr Google Drive-Konto im Modul Dokumente verbinden können. Dies ermöglicht Ihnen, neue Dateien in Google Drive hochzuladen und zu erstellen, bestehende zu bearbeiten, sie zu kopieren und zu löschen, Dateien und Ordner den ONLYOFFICE ™ Portalbenutzern freizugeben.
-</value>
+    <value>Wenn Sie ein Projekt des Google-Dienstes hinzufügen, können Sie Ihr Google-Konto mit Ihrer Profilseite verbinden, sodass Sie sich im ONLYOFFICE ™ -Portal anmelden und Ihr Google Drive-Konto im Modul Dokumente verbinden können. Dies ermöglicht Ihnen, neue Dateien in Google Drive hochzuladen und zu erstellen, bestehende zu bearbeiten, sie zu kopieren und zu löschen, Dateien und Ordner den ONLYOFFICE ™ Portalbenutzern freizugeben.</value>
   </data>
   <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
     <value>Erlauben Sie dieser App, die Verbindung von Google Drive mit dem Modul Dokumente zu ermöglichen. Dadurch können Sie Dateien aus Ihrem Google Drive-Konto verwalten, bearbeiten und für ONLYOFFICE-Benutzer freigeben. {0}Öffnen Sie Google APIs Console und erstellen Sie ein neues Projekt für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
@@ -285,7 +281,7 @@
     <value>Verbinden Sie die Anwendung, um sich ins Portal via LinkedIn anzumelden.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>Wenn man die Anwendung des LinkedIn-Dienstes hinzufügt, kann man sein LinkedIn-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen LinkedIn-Login-Daten an. </value>
+    <value>Wenn man die Anwendung des LinkedIn-Dienstes hinzufügt, kann man sein LinkedIn-Konto mit der Profilseite verknüpfen. So meldet man sich ins ONLYOFFICE™ Portal mit eigenen LinkedIn-Login-Daten an.</value>
   </data>
   <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
     <value>Erlauben Sie dieser App, Einloggen bei ONLYOFFICE über LinkedIn-Konten zu ermöglichen. {0}Öffnen Sie die LinkedIn-Seite für Entwickler (LinkedIn Developers) und erstellen Sie eine neue App für die Integration mit ONLYOFFICE. Fügen Sie die erhaltenen Daten unten ein:</value>
@@ -672,10 +668,10 @@
     <value>Die Benutzer können nicht erstellt werden, die empfangenen Daten können falsch sein.</value>
   </data>
   <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
-    <value>Fehler des Servers beim Abrufen der Einstellungsdaten</value>
+    <value>Fehler des Servers beim Abrufen der Einstellungsdaten.</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
-    <value>Fehler des Servers beim Speichern der Einstellungsdaten</value>
+    <value>Fehler des Servers beim Speichern der Einstellungsdaten.</value>
   </data>
   <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
     <value>Ungültiges Login oder Kennwort.</value>
@@ -687,7 +683,7 @@
     <value>Die Gruppen können nicht gefunden werden.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
-    <value>Ungültiger Wert des Benutzerfilters</value>
+    <value>Ungültiger Wert des Benutzerfilters.</value>
   </data>
   <data name="LdapSettingsErrorLostRights" xml:space="preserve">
     <value>Sie haben versucht, Administratorrechte sich selbst wegzunehmen. Ihre Administratorrechte waren nicht betroffen.</value>
@@ -714,7 +710,7 @@
     <value>Ungültiger Wert vom Attribut des Benutzernamens.</value>
   </data>
   <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
-    <value>Verbindung mit dem LDAP-Server kann nicht hergestellt werden. Bitte prüfen Sie, ob die Serveradresse und die Port-Nummer richtig sind. </value>
+    <value>Verbindung mit dem LDAP-Server kann nicht hergestellt werden. Bitte prüfen Sie, ob die Serveradresse und die Port-Nummer richtig sind.</value>
   </data>
   <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
     <value>Ungültiger Wert vom Attribut des Benutzers.</value>
@@ -723,7 +719,7 @@
     <value>Interner Serverfehler.</value>
   </data>
   <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
-    <value>Ändern von LDAP-Benutzer auf normale Portal-Benutzer </value>
+    <value>Ändern von LDAP-Benutzer auf normale Portal-Benutzer</value>
   </data>
   <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
     <value>Benutzer wird hinzugefügt</value>
@@ -768,7 +764,7 @@
     <value>Einstellungen werden gespeichert</value>
   </data>
   <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
-    <value>Bild speichern </value>
+    <value>Bild speichern</value>
   </data>
   <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
     <value>Benutzer werden gespeichert</value>
@@ -786,7 +782,7 @@
     <value>Ein sichererer Authentifizierungstyp ist erforderlich. Bitte verwenden Sie verschlüsselte Verbindung oder aktivieren Sie eine normale Authentifizierung auf dem Server.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
-    <value>Das Benutzerlimit für den aktuellen Zahlungsplan wurde erreicht.</value>
+    <value>Das Benutzerlimit für den aktuellen Zahlungsplan wurde erreicht</value>
   </data>
   <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
     <value>StartTLS zur aktuellen LDAP-Server ist nicht unterstützt.</value>
@@ -810,7 +806,7 @@
     <value>Die Anzahl der Benutzer übersteigt die zugelassene Lizenz</value>
   </data>
   <data name="LicenseUploaded" xml:space="preserve">
-    <value>Erfolgreich hochgeladen </value>
+    <value>Erfolgreich hochgeladen</value>
   </data>
   <data name="LicenseUploadedOverdue" xml:space="preserve">
     <value>Erfolgreich hochgeladen. {0}Support und Updates sind ab dieser Lizenz nicht mehr verfügbar {2}.{1}</value>
@@ -897,7 +893,7 @@
     <value>Sie haben zu viele Kurzmitteilungen gesendet. Bitte versuchen Sie es später erneut.</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
-    <value>Region US West (Oregon) </value>
+    <value>Region US West (Oregon)</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Neues</value>
@@ -964,5 +960,41 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Die Anzahl der Admins/Power-User:</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Client-ID der App</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Ein zehnstelliger Schlüsselbezeichner zur Anmeldung mit einem privaten Schlüssel von Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Verbinden Sie die App zur Authentifizierung beim Portal mit Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Verbinden Sie diese App, damit die Benutzer sich über Apple ID bei ONLYOFFICE anmelden können. {0}Öffnen Sie das Apple-Portal für Entwickler und erstellen Sie die neue ONLYOFFICE-Integration. Geben Sie die unten stehenden Daten ein:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Privater Schlüssel von Apple für Entwickler</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>Zehnstellige Team-ID für das Entwicklerkonto</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Geheimer Clientschlüssel</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Unbekannter Bilddateityp</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Bildgröße überschritt die zulässige Werte</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
   </data>
 </root>
