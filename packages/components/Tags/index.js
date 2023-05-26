@@ -1,5 +1,5 @@
 import React from "react";
-
+import PropTypes from "prop-types";
 import Tag from "@docspace/components/tag";
 
 import StyledTags from "./StyledTags";
@@ -118,6 +118,21 @@ const Tags = ({ id, className, style, tags, columnCount, onSelectTag }) => {
         ))}
     </StyledTags>
   );
+};
+
+Tag.propTypes = {
+  /** Accepts the tags */
+  tags: PropTypes.array,
+  /** Accepts the tag column count */
+  columnCount: PropTypes.number,
+  /** Accepts class */
+  className: PropTypes.string,
+  /** Accepts id */
+  id: PropTypes.string,
+  /** Accepts css style */
+  style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+  /** Accepts the function that is called when the tag is selected */
+  onSelectTag: PropTypes.func,
 };
 
 export default Tags;
