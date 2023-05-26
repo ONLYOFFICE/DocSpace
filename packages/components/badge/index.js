@@ -52,6 +52,7 @@ const Badge = (props) => {
           textAlign="center"
           backgroundColor={backgroundColor}
           fontWeight={fontWeight}
+          borderRadius={borderRadius}
           color={color}
           fontSize={fontSize}
         >

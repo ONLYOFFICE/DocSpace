@@ -13,6 +13,8 @@ const hoveredCss = css`
 const highCss = css`
   cursor: default;
   padding: 3px 10px;
+  border-radius: 6px;
+
   p {
     font-size: 13px;
     font-weight: 400;
@@ -32,6 +34,8 @@ const StyledBadge = styled.div`
   border: ${(props) => props.theme.badge.border};
   border-radius: ${(props) => props.borderRadius};
   width: fit-content;
+  padding: ${(props) => props.theme.badge.padding};
+
   height: ${(props) => props.height};
   line-height: ${(props) => props.lineHeight};
   cursor: pointer;
@@ -58,9 +62,7 @@ const StyledInner = styled.div`
   text-align: center;
   user-select: none;
   line-height: ${(props) =>
-    props.compact || props.backgroundColor === "white"
-      ? "0.8"
-      : props.lineHeight};
+    props.compact || props.backgroundColor === "white" ? "0.8" : "1.5"};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,6 +74,7 @@ StyledInner.defaultProps = { theme: Base };
 const StyledText = styled(Text)`
   color: ${(props) =>
     props.color ? props.color : props.theme.badge.color} !important;
+  border-radius: ${(props) => props.borderRadius};
 `;
 
 StyledText.defaultProps = { theme: Base };
