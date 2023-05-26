@@ -37,6 +37,7 @@ const Badge = (props) => {
       isHovered={isHovered}
       onClick={onClick}
       border={border}
+      height={height}
       themeId={ThemeType.Badge}
     >
       <StyledInner
@@ -109,7 +110,6 @@ Badge.defaultProps = {
   borderRadius: "11px",
   padding: "0px 5px",
   maxWidth: "50px",
-  height: "16px",
   isHovered: false,
   noHover: false,
 };

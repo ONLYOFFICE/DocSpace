@@ -13,7 +13,6 @@ const hoveredCss = css`
 const highCss = css`
   cursor: default;
   padding: 3px 10px;
-  border-radius: 6px;
   p {
     font-size: 13px;
     font-weight: 400;
@@ -22,6 +21,7 @@ const highCss = css`
 
 const noBorderCss = css`
   border: none;
+  border-radius: 6px;
 `;
 
 const StyledBadge = styled.div`
@@ -32,6 +32,7 @@ const StyledBadge = styled.div`
   border: ${(props) => props.theme.badge.border};
   border-radius: ${(props) => props.borderRadius};
   width: fit-content;
+  height: ${(props) => props.height};
   line-height: ${(props) => props.lineHeight};
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
