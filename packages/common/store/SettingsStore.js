@@ -148,6 +148,8 @@ class SettingsStore {
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
 
+  interfaceDirection = "LTR";
+
   constructor() {
     makeAutoObservable(this);
   }
@@ -807,6 +809,10 @@ class SettingsStore {
 
   deleteAppearanceTheme = async (id) => {
     return api.settings.deleteAppearanceTheme(id);
+  };
+
+  setInterfaceDirection = (direction) => {
+    this.interfaceDirection = direction;
   };
 }
 
