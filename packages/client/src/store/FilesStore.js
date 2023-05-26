@@ -1094,15 +1094,13 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    const isUrlWithoutSearch = !!!location.search;
-
     window.DocSpace.navigate(newUrl, {
       state: {
         fromAccounts:
           window.DocSpace.location.pathname.includes("accounts/filter"),
         fromSettings: window.DocSpace.location.pathname.includes("settings"),
       },
-      replace: isUrlWithoutSearch,
+      replace: !location.search,
     });
   };
 
