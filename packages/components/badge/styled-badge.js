@@ -12,7 +12,7 @@ const hoveredCss = css`
 
 const highCss = css`
   cursor: default;
-  padding: 0 10px;
+  padding: 3px 10px;
   border-radius: 6px;
   p {
     font-size: 13px;
@@ -33,10 +33,7 @@ const StyledBadge = styled.div`
   border-radius: ${(props) => props.borderRadius};
   width: fit-content;
   padding: ${(props) => props.theme.badge.padding};
-  box-sizing: border-box;
-  height: ${(props) => (props.type ? "24px" : props.height)};
-  height: ${(props) => props.compact && "12px"};
-  line-height: ${(props) => props.theme.badge.lineHeight};
+  line-height: ${(props) => props.lineHeight};
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
   flex-shrink: 0;
@@ -56,14 +53,14 @@ const StyledInner = styled.div`
       ? props.backgroundColor
       : props.theme.badge.backgroundColor};
   border-radius: ${(props) => props.borderRadius};
-  padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxWidth};
-  height: ${(props) => (props.type ? "24px" : props.height)};
-  height: ${(props) => props.compact && "12px"};
-
+  padding: ${(props) => props.padding};
   text-align: center;
   user-select: none;
-  line-height: ${(props) => props.lineHeight};
+  line-height: ${(props) =>
+    props.compact || props.backgroundColor === "white"
+      ? "0.8"
+      : props.lineHeight};
   display: flex;
   align-items: center;
   justify-content: center;

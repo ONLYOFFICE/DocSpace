@@ -91,7 +91,6 @@ const ComboButton = (props) => {
           color={selectedOption.color}
           backgroundColor={selectedOption.backgroundColor}
           border={"2px solid #4781D1"}
-          height="16px"
         />
       ) : (
         <Text

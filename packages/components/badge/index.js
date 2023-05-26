@@ -37,7 +37,6 @@ const Badge = (props) => {
       isHovered={isHovered}
       onClick={onClick}
       border={border}
-      compact={compact}
       themeId={ThemeType.Badge}
     >
       <StyledInner
@@ -45,8 +44,8 @@ const Badge = (props) => {
         borderRadius={borderRadius}
         padding={padding}
         type={type}
+        compact={compact}
         maxWidth={maxWidth}
-        height={height}
       >
         <StyledText
           textAlign="center"
@@ -108,7 +107,7 @@ Badge.defaultProps = {
   fontSize: "11px",
   fontWeight: 800,
   borderRadius: "11px",
-  padding: "0 5px",
+  padding: "0px 5px",
   maxWidth: "50px",
   height: "16px",
   isHovered: false,
