@@ -90,7 +90,8 @@ const ComboButton = (props) => {
           noHover={true}
           color={selectedOption.color}
           backgroundColor={selectedOption.backgroundColor}
-          border={"2px solid #4781D1"}
+          border={`2px solid ${selectedOption.border}`}
+          compact={!!selectedOption.border}
         />
       ) : (
         <Text

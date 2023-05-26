@@ -41,7 +41,7 @@ const StyledBadge = styled.div`
   cursor: pointer;
   overflow: ${(props) => props.theme.badge.overflow};
   flex-shrink: 0;
-  border: ${(props) => props.backgroundColor === "white" && props.border};
+  border: ${(props) => props.border};
 
   ${(props) => props.type === "high" && noBorderCss}
   &:hover {
@@ -61,8 +61,7 @@ const StyledInner = styled.div`
   padding: ${(props) => props.padding};
   text-align: center;
   user-select: none;
-  line-height: ${(props) =>
-    props.compact || props.backgroundColor === "white" ? "0.8" : "1.5"};
+  line-height: ${(props) => (props.compact ? "0.8" : "1.5")};
   display: flex;
   align-items: center;
   justify-content: center;
