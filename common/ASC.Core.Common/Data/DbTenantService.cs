@@ -224,7 +224,7 @@ public class DbTenantService : ITenantService
     {
         ArgumentNullException.ThrowIfNull(tenant);
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();//+
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         if (!string.IsNullOrEmpty(tenant.MappedDomain))
         {
@@ -289,7 +289,7 @@ public class DbTenantService : ITenantService
     {
         var postfix = auto ? "_auto_deleted" : "_deleted";
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();//+
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         var alias = await Queries.GetAliasAsync(tenantDbContext, id);
 
@@ -310,27 +310,27 @@ public class DbTenantService : ITenantService
 
     public async Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync()
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();//+
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.GetTenantVersionsAsync(tenantDbContext).ToListAsync();
     }
 
 
     public async Task<byte[]> GetTenantSettingsAsync(int tenant, string key)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();//+
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.GetBytesAsync(tenantDbContext, tenant, key);
     }
 
     public byte[] GetTenantSettings(int tenant, string key)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();//+
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return Queries.GetBytes(tenantDbContext, tenant, key);
     }
 
 
     public async Task SetTenantSettingsAsync(int tenant, string key, byte[] data)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();//+
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
         if (data == null || data.Length == 0)
         {
             var settings = await Queries.GetCoreSettingsAsync(tenantDbContext, tenant, key);
@@ -358,7 +358,7 @@ public class DbTenantService : ITenantService
 
     public void SetTenantSettings(int tenant, string key, byte[] data)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();//+
+        using var tenantDbContext = _dbContextFactory.CreateDbContext();
         if (data == null || data.Length == 0)
         {
             var settings = Queries.GetCoreSettings(tenantDbContext, tenant, key);
