@@ -66,9 +66,7 @@ public class FilesControllerThirdparty : FilesController<string>
     {
         fileId = "app-" + fileId;
         var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
-        var wrapper = await app.GetFileAsync(fileId?.ToString());
-        var file = wrapper.File;
-        var editable = wrapper.Editable;
+        (var file, var editable) = await app.GetFileAsync(fileId?.ToString());
         var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
         return await GetFileEntryWrapperAsync(docParams.File);
     }

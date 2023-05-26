@@ -75,9 +75,7 @@ public class EditorControllerThirdparty : EditorController<string>
     {
         fileId = "app-" + fileId;
         var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
-        var wrapper = await app.GetFileAsync(fileId?.ToString());
-        var file = wrapper.File;
-        var editable = wrapper.Editable;
+        (var file, var editable) = await app.GetFileAsync(fileId?.ToString());
         var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
         var configuration = docParams.Configuration;
         configuration.Document.Url = app.GetFileStreamUrl(file);

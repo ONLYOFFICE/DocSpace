@@ -151,19 +151,19 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         return AccessTokenUrl;
     }
 
-    public async Task<FileWithEditableWrapper> GetFileAsync(string fileId)
+    public async Task<(File<string>, bool)> GetFileAsync(string fileId)
     {
         _logger.DebugBoxAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
-        var token = await _tokenHelper.GetTokenAsync(AppAttr);
+        var token = _tokenHelper.GetToken(AppAttr);
 
         var boxFile = GetBoxFile(fileId, token);
-        var wrapper = new FileWithEditableWrapper();
+        var editable = true;
 
         if (boxFile == null)
         {
-            return wrapper;
+            return (null, editable);
         }
 
         var jsonFile = JObject.Parse(boxFile);
@@ -198,12 +198,11 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 var lockedUserId = lockedBy.Value<string>("id");
                 _logger.DebugBoxAppLockedBy(lockedUserId);
 
-                wrapper.Editable = await CurrentUserAsync(lockedUserId);
+                editable = CurrentUser(lockedUserId);
             }
         }
 
-        wrapper.File = file;
-        return wrapper;
+        return (file, editable);
     }
 
     public string GetFileStreamUrl(File<string> file)
