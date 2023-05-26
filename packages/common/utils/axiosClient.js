@@ -113,16 +113,6 @@ class AxiosClient {
 
       if (response.request.responseType === "text") return response.data;
 
-      if (
-        response.data.response.hasOwnProperty("total") &&
-        response.data.links
-      ) {
-        return {
-          ...response.data.response,
-          ...{ links: response.data.links },
-        };
-      }
-
       return response.data.response;
     };
 

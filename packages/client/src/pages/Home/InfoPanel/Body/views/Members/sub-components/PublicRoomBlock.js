@@ -13,7 +13,7 @@ const PublicRoomBlock = ({ t, externalLinks, onCopyLink }) => {
 
   const onClose = () => {
     setBarVisible(!barIsVisible);
-    toastr.success("onCloseBar");
+    // toastr.success("onCloseBar");
   };
 
   // const defaultLink = { id: 0, label: t("SharingPanel:ExternalLink") };

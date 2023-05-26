@@ -25,7 +25,6 @@ const PublicRoom = (props) => {
     withPaging,
     validatePublicRoomKey,
     fetchFiles,
-    setRoomHref,
     getFilesSettings,
 
     showSecondaryProgressBar,
@@ -70,13 +69,9 @@ const PublicRoom = (props) => {
     if (filterObj?.folder && filterObj?.folder !== "@my") {
       const filter = setPublicRoomFilter(filterObj);
 
-      fetchFiles(filter.folder, filter).then((res) => {
-        setRoomHref(res?.links[0]?.href);
-      });
+      fetchFiles(filter.folder, filter);
     } else {
-      fetchFiles(roomId).then((res) => {
-        setRoomHref(res?.links[0]?.href);
-      });
+      fetchFiles(roomId);
     }
   };
 
@@ -148,14 +143,8 @@ const PublicRoom = (props) => {
 export default inject(
   ({ auth, filesStore, publicRoomStore, uploadDataStore, settingsStore }) => {
     const { withPaging } = auth.settingsStore;
-    const {
-      validatePublicRoomKey,
-      isLoaded,
-      isLoading,
-      roomStatus,
-      roomId,
-      setRoomHref,
-    } = publicRoomStore;
+    const { validatePublicRoomKey, isLoaded, isLoading, roomStatus, roomId } =
+      publicRoomStore;
 
     const { fetchFiles } = filesStore;
     const { getFilesSettings } = settingsStore;
@@ -173,7 +162,6 @@ export default inject(
       isLoading,
       roomStatus,
       fetchFiles,
-      setRoomHref,
       getFilesSettings,
 
       withPaging,

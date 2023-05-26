@@ -20,7 +20,9 @@ const StyledDeleteDialog = styled(ModalDialog)`
   }
 `;
 
-const RoomSharingDialog = ({ t, tReady, visible, setIsVisible, roomHref }) => {
+const RoomSharingDialog = ({ t, tReady, visible, setIsVisible }) => {
+  const roomHref = window.location.href;
+
   const onClose = () => {
     setIsVisible(false);
   };
@@ -49,14 +51,12 @@ const RoomSharingDialog = ({ t, tReady, visible, setIsVisible, roomHref }) => {
   );
 };
 
-export default inject(({ dialogsStore, publicRoomStore }) => {
+export default inject(({ dialogsStore }) => {
   const { setRoomSharingPanelVisible, roomSharingPanelVisible } = dialogsStore;
-  const { roomHref } = publicRoomStore;
 
   return {
     visible: roomSharingPanelVisible,
     setIsVisible: setRoomSharingPanelVisible,
-    roomHref: roomHref ? roomHref : "",
   };
 })(
   withTranslation(["Files", "Common", "Translations"])(
