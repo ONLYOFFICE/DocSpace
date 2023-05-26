@@ -102,6 +102,7 @@ const PaymentContainer = (props) => {
     paymentDate,
     t,
     isNonProfit,
+    isPaymentDateValid,
   } = props;
   const renderTooltip = () => {
     return (
@@ -252,7 +253,7 @@ const PaymentContainer = (props) => {
         </Text>
       );
 
-    if (isPaidPeriod)
+    if (isPaidPeriod && isPaymentDateValid)
       return (
         <Text
           noSelect
@@ -356,6 +357,7 @@ export default inject(({ auth, payments }) => {
     paymentDate,
     gracePeriodEndDate,
     delayDaysCount,
+    isPaymentDateValid,
   } = currentTariffStatusStore;
 
   const { planCost, tariffPlanTitle, portalPaymentQuotas } = paymentQuotasStore;
@@ -389,5 +391,6 @@ export default inject(({ auth, payments }) => {
     portalTariffStatus,
     portalPaymentQuotas,
     isNonProfit,
+    isPaymentDateValid,
   };
 })(withRouter(observer(PaymentContainer)));

@@ -2927,6 +2927,7 @@ const Base = {
 
     settings: {
       iconFill: black,
+      trashIcon: "#A3A9AE",
       article: {
         titleColor: grayMain,
         fillIcon: "dimgray",
@@ -3006,6 +3007,7 @@ const Base = {
         separatorBorder: "1px solid #eceef1",
         warningColor: "#f21c0e",
         textColor: "#A3A9AE",
+        backupCheckedListItemBackground: "#F3F4F4",
       },
 
       payment: {

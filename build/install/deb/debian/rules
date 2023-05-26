@@ -49,8 +49,8 @@ override_dh_auto_build:
 		cp ${CURRENT_PATH}/debian/source/lintian-overrides ${CURRENT_PATH}/debian/$$i.lintian-overrides; \
 	done
 
-override_dh_fixperms:
-	dh_fixperms
+execute_after_dh_fixperms:
+	chmod o-rwx debian/${PRODUCT}-common/etc/onlyoffice/${PRODUCT}/*
 
 override_dh_auto_install:
 	dh_systemd_enable --no-enable

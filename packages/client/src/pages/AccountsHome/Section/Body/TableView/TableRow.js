@@ -143,6 +143,7 @@ const PeopleTableRow = (props) => {
     role,
     isVisitor,
     isCollaborator,
+    isSSO,
   } = item;
 
   const isPending = statusType === "pending" || statusType === "disabled";
@@ -363,7 +364,7 @@ const PeopleTableRow = (props) => {
               ? displayName
               : email}
           </Link>
-          <Badges statusType={statusType} isPaid={!isVisitor} />
+          <Badges statusType={statusType} isPaid={!isVisitor} isSSO={isSSO} />
         </TableCell>
 
         <TableCell className={"table-cell_type"}>{typeCell}</TableCell>

@@ -113,7 +113,7 @@
     <value>Habilite esta aplicación para acortar los enlaces de invitación y de documentos. {0}Inserte su login de Bitly y su clave de la API a continuación:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
-    <value>Clave</value>
+    <value>Cuadro</value>
   </data>
   <data name="ConsumersboxClientId" xml:space="preserve">
     <value>Box ID</value>
@@ -137,7 +137,7 @@
     <value>apiKey</value>
   </data>
   <data name="ConsumersClickatellDescription" xml:space="preserve">
-    <value>Habilitar la aplicación de autenticación de dos factores vía Clickatell</value>
+    <value>Habilitar la aplicación de autenticación de dos factores vía Clickatell.</value>
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Al añadir la aplicación del servicio Clickatell usted podrá habilitar la autenticación de dos factores y recibir un SMS con un código que le permite ingresar al portal ONLYOFFICE.</value>
@@ -509,10 +509,10 @@
     <value>Personalizado</value>
   </data>
   <data name="DnsChangeMsg" xml:space="preserve">
-    <value>Un enlace para confirmar la operación ha sido enviada al :correo electrónico (la dirección del correo electrónico del propietario del portal).</value>
+    <value>Un enlace para confirmar la operación ha sido enviada al correo electrónico {0} (la dirección del correo electrónico del propietario del portal).</value>
   </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
-    <value>Id. incorrecta de instancia</value>
+    <value>Id. incorrecta de instancia.</value>
   </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>Dirección de correo electrónico incorrecta</value>
@@ -533,7 +533,7 @@
     <value>{!User} con este correo electrónico ya está registrado</value>
   </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
-    <value>No se permite el registro para los correos electrónicos de este dominio </value>
+    <value>No se permite el registro para los correos electrónicos de este dominio</value>
   </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>Campo de correo electrónico está vacío</value>
@@ -551,7 +551,7 @@
     <value>Imposible encontrar el archivo subido</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>El tamaño del archivo de la imagen es demasiado grande </value>
+    <value>El tamaño del archivo de la imagen es demasiado grande</value>
   </data>
   <data name="ErrorIncorrectUserName" xml:space="preserve">
     <value>Nombre o apellido incorrecto</value>
@@ -608,7 +608,7 @@
     <value>Imposible encontrar usuario con el correo electrónico "{0}"</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
-    <value>Región UE (Frankfurt) </value>
+    <value>Región UE (Frankfurt)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
     <value>El tamaño de archivo máximo está superado</value>
@@ -620,10 +620,10 @@
     <value>bytes,KB,MB,GB,TB</value>
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
-    <value>El enlace para confirmar su cuenta ha sido enviado al e-mail especificado. </value>
+    <value>El enlace para confirmar su cuenta ha sido enviado al e-mail especificado</value>
   </data>
   <data name="FirstName" xml:space="preserve">
-    <value>Nombre </value>
+    <value>Nombre</value>
   </data>
   <data name="LastName" xml:space="preserve">
     <value>Apellido</value>
@@ -635,7 +635,7 @@
     <value>No se ha podido crear usuarios, los datos recibidos son incorrectos.</value>
   </data>
   <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
-    <value>El servidor no pudo recuperar ajustes. </value>
+    <value>El servidor no pudo recuperar ajustes.</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>El servidor no pudo guardar ajustes.</value>
@@ -644,7 +644,7 @@
     <value>Contraseña o login inválido.</value>
   </data>
   <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
-    <value>El dominio LDAP no es encontrado</value>
+    <value>El dominio LDAP no es encontrado.</value>
   </data>
   <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
     <value>No se puede encontrar grupos.</value>
@@ -746,7 +746,7 @@
     <value>Actualizando fotos de usuarios</value>
   </data>
   <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
-    <value>Se requiere un tipo de autenticación más seguro. Por favor use conexión cifrada o active autenticación simple en el servidor. </value>
+    <value>Se requiere un tipo de autenticación más seguro. Por favor use conexión cifrada o active autenticación simple en el servidor.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
     <value>Se ha alcanzado el límite de usuarios permitido en el plan de precios</value>
@@ -788,7 +788,7 @@
     <value>Si existe un usuario con el correo electrónico {0}, la instrucción para cambiar la contraseña se ha enviado a esta dirección de correo electrónico.</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
-    <value>Para cambiar el número, usted necesita borrar su número de teléfono actual </value>
+    <value>Para cambiar el número, usted necesita borrar su número de teléfono actual</value>
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Región</value>
@@ -797,7 +797,7 @@
     <value>Propietario</value>
   </data>
   <data name="PersonalFreeSpaceException" xml:space="preserve">
-    <value>Cuota de espacio en disco excedida </value>
+    <value>Cuota de espacio en disco excedida</value>
   </data>
   <data name="PortalSecurity" xml:space="preserve">
     <value>Acceso a portal</value>
@@ -818,7 +818,7 @@
     <value>Código: {0}</value>
   </data>
   <data name="SmsAuthenticationTimeout" xml:space="preserve">
-    <value>El tiempo de utilizar el código ha expirado. Por favor,  solicite un mensaje nuevo</value>
+    <value>El tiempo de utilizar el código ha expirado. Por favor,  solicite un mensaje nuevo.</value>
   </data>
   <data name="SmsNotAvailable" xml:space="preserve">
     <value>Los ajustes SSO no están disponibles</value>
@@ -848,7 +848,7 @@
     <value>Ajustes se han actualizado con éxito</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Las instrucciones para borrar su perfil se han enviado al correo electrónico {0} </value>
+    <value>Las instrucciones para borrar su perfil se han enviado al correo electrónico {0}</value>
   </data>
   <data name="TfaAppAuthMessageError" xml:space="preserve">
     <value>Código incorrecto</value>
@@ -927,5 +927,53 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>El número de administradores/usuarios avanzados:</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>ID de Apple</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID del cliente de aplicación</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Un identificador de clave de 10 caracteres generado para la clave privada Iniciar sesión con Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Habilite la aplicación para iniciar sesión en el portal utilizando una cuenta de ID de Apple.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Habilite esta aplicación para permitir a sus usuarios iniciar sesión en ONLYOFFICE usando su ID de Apple. {0}Vaya al Portal de Desarrolladores de Apple y cree una nueva aplicación de integración de ONLYOFFICE. Inserte los datos que usted recibió a continuación:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Clave privada descargada desde Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID de equipo de la cuenta de desarrollador de 10 caracteres</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Secreto del Cliente</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>El tipo de archivo desconocido</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Tamaño de imagen supera a los parámetros permitidos</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>Región</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>

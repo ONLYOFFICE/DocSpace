@@ -82,113 +82,11 @@
   <data name="ColorThemeChanged" xml:space="preserve">
     <value>Το Χρώμα Θέματος Άλλαξε</value>
   </data>
-  <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Κοινές Ρυθμίσεις</value>
-  </data>
-  <data name="CompaniesMerged" xml:space="preserve">
-    <value>Εταιρείες Που Συγχωνέφθηκαν: {0} - {1}</value>
-  </data>
-  <data name="CompaniesModule" xml:space="preserve">
-    <value>Εταιρείες</value>
-  </data>
-  <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Εταιρείες [{0}]. Αρχεία Που Επισυνάφθηκαν: {1}</value>
-  </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Εταιρεία Που Δημιουργήθηκε: {0}</value>
-  </data>
-  <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Εταιρεία [{0}]. Ετικέτα Που Δημιουργήθηκε: {1}</value>
-  </data>
-  <data name="CompanyDeleted" xml:space="preserve">
-    <value>Εταιρεία Που Διαγράφηκε: {0}</value>
-  </data>
-  <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Εταιρείες [{0}]. Ετικέτα Που Διαγράφηκε: {1}</value>
-  </data>
-  <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Εταιρείες [{0}]. Το Αρχείο Αποσυνδέθηκε: {1}</value>
-  </data>
-  <data name="CompanyUpdated" xml:space="preserve">
-    <value>Η Εταιρεία Που Ενημερώθηκε: {0}</value>
-  </data>
-  <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Εταιρείες [{0}]. Η Φωτογραφία Ενημερώθηκε</value>
-  </data>
-  <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Εταιρείες [{0}]. Το Επίπεδο Θερμοκρασίας Ενημερώθηκε</value>
-  </data>
-  <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Επαφές [{0}]. Εργασία Που Δημιουργήθηκε: {1}</value>
-  </data>
-  <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Επαφές. Ετικέτα Που Δημιουργήθηκε: {0}</value>
-  </data>
-  <data name="ContactsDeleted" xml:space="preserve">
-    <value>Διεγραμμένες Επαφές: {0}</value>
-  </data>
-  <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Επαφές. Ετικέτα Που Διαγράφηκε: {0}</value>
-  </data>
-  <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Επαφές Που Εξήχθησαν Σε Αρχείο CSV: {0}</value>
-  </data>
-  <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Επαφής Που Εισήχθησαν Από Αρχείο CSV </value>
-  </data>
-  <data name="ContactsModule" xml:space="preserve">
-    <value>Επαφές</value>
-  </data>
-  <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Ρυθμίσεις</value>
-  </data>
-  <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Το Επίπεδο Θερμοκρασίας Επαφής Δημιουργήθηκε: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Το Επίπεδο Θερμοκρασίας Επαφής Διαγράφηκε: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Οι Ρυθμίσεις Επιπέδου Θερμοκρασίας Επαφής Ενημερώθηκαν</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Το Επίπεδο Θερμοκρασίας Επαφής Που Ενημερώθηκε: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Επίπεδο Θερμοκρασίας Επαφής [{0}]. Το Χρώμα Ενημερώηκε</value>
-  </data>
-  <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Τύπος Επαφής Που Δημιουργήθηκε: {0}</value>
-  </data>
-  <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Τύπος Επαφης Που Διαγράφηκε: {0}</value>
-  </data>
-  <data name="ContactTypesModule" xml:space="preserve">
-    <value>Τύποι Επαφών</value>
-  </data>
-  <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Τύπος Επαφής Που Ενημερώθηκε: {0}</value>
-  </data>
   <data name="CopyActionType" xml:space="preserve">
     <value>Αντιγραφή</value>
   </data>
   <data name="CreateActionType" xml:space="preserve">
     <value>Δημιουργία</value>
-  </data>
-  <data name="CrmAllDataExported" xml:space="preserve">
-    <value>Όλα τα Δεδομένα Εξάχθηκαν</value>
-  </data>
-  <data name="CrmProduct" xml:space="preserve">
-    <value>CRM</value>
-  </data>
-  <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>Οι Εργασίες CRM Εξάχθηκαν στο Αρχείο CSV: {0}</value>
-  </data>
-  <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>Οι CRM Εργασίες Εισάχθηκαν από το Αρχείο CSV</value>
-  </data>
-  <data name="CrmTasksModule" xml:space="preserve">
-    <value>Εργασίες CRM</value>
   </data>
   <data name="DateCol" xml:space="preserve">
     <value>Ημερομηνία</value>
@@ -201,9 +99,6 @@
   </data>
   <data name="DetachActionType" xml:space="preserve">
     <value>Αποσύνδεση</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Συζητήσεις</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Οι Ρυθμίσεις DNS Ενημερώθηκαν</value>
@@ -319,24 +214,6 @@
   <data name="ImportActionType" xml:space="preserve">
     <value>Εισαγωγή</value>
   </data>
-  <data name="InvoiceCreated" xml:space="preserve">
-    <value>Το Τιμολόγιο Δημιουργήθηκε: {0}</value>
-  </data>
-  <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Το Τιμολόγιο Διαγράφηκε: {0}</value>
-  </data>
-  <data name="InvoiceDownloaded" xml:space="preserve">
-    <value>Το Τιμολόγιο Ελήφθη: {0}</value>
-  </data>
-  <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Τιμολόγια που Διαγράφηκαν: {0}</value>
-  </data>
-  <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Ρυθμίσεις Τιμολογίου</value>
-  </data>
-  <data name="InvoicesModule" xml:space="preserve">
-    <value>Τιμολόγια</value>
-  </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
   </data>
@@ -356,7 +233,7 @@
     <value>Αποτυχία Σύνδεσης. Πάρα πολλές προσπάθειες</value>
   </data>
   <data name="LoginFailDisabledProfile" xml:space="preserve">
-    <value>Αποτυχία Σύνδεσης. Το Προφίλ Απενεργοποιήθηκε.</value>
+    <value>Αποτυχία Σύνδεσης. Το Προφίλ Απενεργοποιήθηκε</value>
   </data>
   <data name="LoginFailInvalidCombination" xml:space="preserve">
     <value>Η Σύνδεση Απέτυχε. Μη έγκυρος συνδυασμός ονόματος χρήστη-συνθηματικού</value>
@@ -391,47 +268,8 @@
   <data name="Logout" xml:space="preserve">
     <value>Αποσύνδεση</value>
   </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Ορόσημα</value>
-  </data>
   <data name="MoveActionType" xml:space="preserve">
     <value>Μετακίνηση</value>
-  </data>
-  <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Ευκαιρίες</value>
-  </data>
-  <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Ευκαιρίες [{0}]. Αρχεία Που Επισυνάφθηκαν: {1}</value>
-  </data>
-  <data name="OpportunityCreated" xml:space="preserve">
-    <value>Δημιουργήθηκε Ευκαιρία: {0}</value>
-  </data>
-  <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Διαγράφηκε Ευκαιρία: {0}</value>
-  </data>
-  <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Ευκαιρίες [{0}]. Διαγράφηκε Ετικέτα: {1}</value>
-  </data>
-  <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Ευκαιρίες [{0}]. Αρχείο Που Αποσυνδέθηκε: {1}</value>
-  </data>
-  <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Ευκαιρίες [{0}]. Εταιρεία Που Συνδέθηκε: {1}</value>
-  </data>
-  <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Ευκαιρίες [{0}]. Η Πρόσβαση Άνοιξε</value>
-  </data>
-  <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Ευκαιρίες [{0}]. Πρόσβαση Που Περιορίστηκε: {1}</value>
-  </data>
-  <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Ευκαιρίες [{0}]. Εταιρεία Που Αποσυνδέθηκε: {1}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Προφίλ Οργανισμού. Η Διεύθυνση Ενημερώθηκε</value>
-  </data>
-  <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Άλλες Ρυθμίσεις</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
     <value>Άλλα</value>
@@ -444,24 +282,6 @@
   </data>
   <data name="PeopleProduct" xml:space="preserve">
     <value>Άνθρωποι</value>
-  </data>
-  <data name="PersonCreated" xml:space="preserve">
-    <value>Δημιουργήθηκε Άτομο: {0}</value>
-  </data>
-  <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Άτομα [{0}]. Ετικέτα Που Δημιουργήθηκε: {1}</value>
-  </data>
-  <data name="PersonDeleted" xml:space="preserve">
-    <value>Διαγράφηκε Άτομο: {0}</value>
-  </data>
-  <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Άτομα [{0}]. Ετικέτα Που Διαγράφηκε: {1}</value>
-  </data>
-  <data name="PersonsModule" xml:space="preserve">
-    <value>Άτομα</value>
-  </data>
-  <data name="PersonUpdated" xml:space="preserve">
-    <value>Ενημερώθηκε Άτομο: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
     <value>Πλατφόρμα</value>
@@ -496,39 +316,6 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Προϊόντα</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Το Έργο Δημιουργήθηκε: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Πρότυπα [{0}]. Έργο Που Δημιουργήθηκε: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Το Έργο Διαγράφηκε: {0}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Το Έργο Ακολουθήθηκε: {0}</value>
-  </data>
-  <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Έργα [{0}]. Εταιρεία Που Συνδέθηκε: {1}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Έργα</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Έργα</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Ρυθμίσεις</value>
-  </data>
-  <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Έργα [{0}]. Εταιρεία Που Αποσυνδέθηκε: {1}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Έργο Που Ενημερώθηκε: {0}</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Αναφορές</value>
-  </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Αποστολή</value>
   </data>
@@ -543,9 +330,6 @@
   </data>
   <data name="StartBackupSetting" xml:space="preserve">
     <value>Εκκίνηση δημιουργίας αντιγράφων ασφαλείας</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Εργασίες</value>
   </data>
   <data name="TimeZoneSettingsUpdated" xml:space="preserve">
     <value>Οι Ρυθμίσεις Ζώνης Ώρας Ενημερώθηκαν</value>
@@ -636,5 +420,62 @@
   </data>
   <data name="UserUpdatedPassword" xml:space="preserve">
     <value>Το Συνθηματικό Ενημερώθηκε</value>
+  </data>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Το δωμάτιο δημιουργήθηκε</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Δωμάτια</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Ο Κάδος άδειασε</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Ετικέτες που προστέθηκαν: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Ετικέτες που διαγράφηκαν: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Το δωμάτιο αρχειοθετήθηκε</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Χρήστης που προστέθηκε: {0}. Ρόλος: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Το δωμάτιο διαγράφηκε</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Ο σύνδεσμος δημιουργήθηκε. Ρόλος: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Ο σύνδεσμος διαγράφηκε</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Ο σύνδεσμος ενημερώθηκε. Ρόλος: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Το λογότυπο δημιουργήθηκε</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Το λογότυπο διαγράφηκε</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Ο χρήστης διαγράφηκε: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Το δωμάτιο μετονομάστηκε: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Έγινε κατάργηση αρχειοθέτησης δωματίου</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>Ορίστηκε {0}: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Η ετικέτα δημιουργήθηκε: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Οι ετικέτες διαγράφηκαν: {0}</value>
   </data>
 </root>

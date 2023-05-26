@@ -85,7 +85,7 @@ namespace ASC.Files.Core.Services.NotifyService {
         /// <summary>
         ///   Looks up a localized string similar to h1. $__AuthorName mentioned you in the document comment
         ///
-        ///$__AuthorName mentioned you in the comment to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; documen in the room &quot;$RoomTitle&quot;:&quot;$RoomURL&quot;:
+        ///$__AuthorName mentioned you in the comment to the &quot;$DocumentTitle&quot;:&quot;$DocumentURL&quot; document in the room &quot;$RoomTitle&quot;:&quot;$RoomURL&quot;:
         ///
         ///$Message.
         /// </summary>

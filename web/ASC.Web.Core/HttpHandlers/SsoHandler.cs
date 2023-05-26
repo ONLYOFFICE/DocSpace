@@ -234,12 +234,12 @@ public class SsoHandlerService
         catch (SSOException e)
         {
             _log.ErrorWithException(e);
-            RedirectToLogin(context, e.MessageKey);
+            RedirectToLogin(context, (int)e.MessageKey);
         }
         catch (Exception e)
         {
             _log.ErrorWithException(e);
-            RedirectToLogin(context, MessageKey.Error);
+            RedirectToLogin(context, (int)MessageKey.Error);
         }
         finally
         {
@@ -247,9 +247,9 @@ public class SsoHandlerService
             //context.ApplicationInstance.CompleteRequest();
         }
     }
-    private void RedirectToLogin(HttpContext context, MessageKey messageKey)
+    private void RedirectToLogin(HttpContext context, int messageKey)
     {
-        context.Response.Redirect(_commonLinkUtility.GetDefault() + "/login/error?messageKey=" + messageKey, false);
+        context.Response.Redirect("/login/error?messageKey=" + messageKey, false);
     }
 
     //TODO

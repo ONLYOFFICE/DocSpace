@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { inject, observer } from "mobx-react";
 import { withRouter } from "react-router";
 import { useTranslation, Trans } from "react-i18next";
@@ -15,27 +15,12 @@ const PROXY_BASE_URL = combineUrl(
 );
 
 const ArticlePaymentAlert = ({
-  pricePerManager,
   isFreeTariff,
   theme,
-  currencySymbol,
-  setPortalPaymentQuotas,
   currentTariffPlanTitle,
   toggleArticleOpen,
-  tariffPlanTitle,
-  isQuotaLoaded,
-  isQuotasLoaded,
 }) => {
   const { t, ready } = useTranslation("Common");
-
-  useEffect(async () => {
-    if (isFreeTariff && isQuotaLoaded)
-      try {
-        await setPortalPaymentQuotas();
-      } catch (e) {
-        console.error(e);
-      }
-  }, [isQuotaLoaded]);
 
   const onClick = () => {
     const paymentPageUrl = combineUrl(
@@ -55,16 +40,11 @@ const ArticlePaymentAlert = ({
   );
 
   const description = isFreeTariff
-    ? pricePerManager && (
-        <Trans t={t} i18nKey="PerUserMonth" ns="Common">
-          From {{ currencySymbol }}
-          {{ price: pricePerManager }} per admin/power user /month
-        </Trans>
-      )
+    ? t("Common:GetMoreOptions")
     : t("Common:PayBeforeTheEndGracePeriod");
 
   const additionalDescription = isFreeTariff
-    ? t("Common:ActivateBusinessPlan", { planName: tariffPlanTitle })
+    ? t("Common:ActivatePremiumFeatures")
     : t("Common:GracePeriodActivated");
 
   const color = isFreeTariff
@@ -72,9 +52,6 @@ const ArticlePaymentAlert = ({
     : theme.catalog.paymentAlert.warningColor;
 
   const isShowLoader = !ready;
-
-  if (!isQuotaLoaded) return <></>;
-  if (isFreeTariff && !isQuotasLoaded) return <></>;
 
   return isShowLoader ? (
     <Loaders.Rectangle width="210px" height="88px" />
@@ -95,29 +72,14 @@ const ArticlePaymentAlert = ({
 
 export default withRouter(
   inject(({ auth }) => {
-    const { paymentQuotasStore, currentQuotaStore, settingsStore } = auth;
-    const {
-      currentTariffPlanTitle,
-      isLoaded: isQuotaLoaded,
-    } = currentQuotaStore;
+    const { currentQuotaStore, settingsStore } = auth;
+    const { currentTariffPlanTitle } = currentQuotaStore;
     const { theme, toggleArticleOpen } = settingsStore;
-    const {
-      setPortalPaymentQuotas,
-      planCost,
-      tariffPlanTitle,
-      isLoaded: isQuotasLoaded,
-    } = paymentQuotasStore;
 
     return {
       toggleArticleOpen,
-      setPortalPaymentQuotas,
-      pricePerManager: planCost.value,
       theme,
-      currencySymbol: planCost.currencySymbol,
       currentTariffPlanTitle,
-      tariffPlanTitle,
-      isQuotaLoaded,
-      isQuotasLoaded,
     };
   })(observer(ArticlePaymentAlert))
 );

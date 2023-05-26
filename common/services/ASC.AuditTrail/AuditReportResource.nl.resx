@@ -86,250 +86,16 @@
     <value>Audit Trail Rapport ({0}-{1})</value>
   </data>
   <data name="AuthorizationKeysSetting" xml:space="preserve">
-    <value>Derde Partij Autorisatiesleutel geüpdatet </value>
+    <value>Derde Partij Autorisatiesleutel geüpdatet</value>
   </data>
   <data name="BrowserCol" xml:space="preserve">
     <value>Browser</value>
   </data>
-  <data name="CaseAttachedFiles" xml:space="preserve">
-    <value>Casussen [{0}]. Bestanden Bijgevoegd: {1}</value>
-  </data>
-  <data name="CaseClosed" xml:space="preserve">
-    <value>Verzoek Gesloten: {0}</value>
-  </data>
-  <data name="CaseCreated" xml:space="preserve">
-    <value>Verzoek Aangemaakt: {0}</value>
-  </data>
-  <data name="CaseCreatedHistoryEvent" xml:space="preserve">
-    <value>Casussen [{0}]. Voorbije Gebeurtenis Aangemaakt: {1}</value>
-  </data>
-  <data name="CaseCreatedTag" xml:space="preserve">
-    <value>Casussen [{0}]. Tag Aangemaakt: {1}</value>
-  </data>
-  <data name="CaseDeleted" xml:space="preserve">
-    <value>Verzoek Verwijderd: {0}</value>
-  </data>
-  <data name="CaseDeletedHistoryEvent" xml:space="preserve">
-    <value>Casussen [{0}]. Voorbije Gebeurtenis Verwijderd: {1}</value>
-  </data>
-  <data name="CaseDeletedTag" xml:space="preserve">
-    <value>Casussen [{0}]. Tag Verwijderd: {1}</value>
-  </data>
-  <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Casussen [{0}]. Bestand Verwijderd: {1}</value>
-  </data>
-  <data name="CaseLinkedCompany" xml:space="preserve">
-    <value>Casussen [{0}]. Bedrijf Gelinkt: {1}</value>
-  </data>
-  <data name="CaseLinkedPerson" xml:space="preserve">
-    <value>Casussen [{0}]. Persoon Gelinkt: {1}</value>
-  </data>
-  <data name="CaseOpened" xml:space="preserve">
-    <value>Verzoek Geopend: {0}</value>
-  </data>
-  <data name="CaseOpenedAccess" xml:space="preserve">
-    <value>Casussen [{0}]. Toegang Geopend</value>
-  </data>
-  <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>Casussen [{0}]. Toegang Beperkt: {1}</value>
-  </data>
-  <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Casussen. Tag Aangemaakt: {0}</value>
-  </data>
-  <data name="CasesDeleted" xml:space="preserve">
-    <value>Casussen Verwijderd: {0}</value>
-  </data>
-  <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Casussen. Tag Verwijderd: {0}</value>
-  </data>
-  <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>Casussen Geëxporteerd naar CSV-bestand: {0}</value>
-  </data>
-  <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>Casussen Geïmporteerd uit CSV-bestand</value>
-  </data>
-  <data name="CasesModule" xml:space="preserve">
-    <value>Casussen</value>
-  </data>
-  <data name="CaseUnlinkedCompany" xml:space="preserve">
-    <value>Casussen [{0}]. Bedrijf Ontkoppeld: {1}</value>
-  </data>
-  <data name="CaseUnlinkedPerson" xml:space="preserve">
-    <value>Casussen [{0}]. Persoon Ontkoppeld: {1}</value>
-  </data>
-  <data name="CaseUpdated" xml:space="preserve">
-    <value>Verzoek Geüpdatet: {0}</value>
-  </data>
-  <data name="CaseUserFieldCreated" xml:space="preserve">
-    <value>Casusgebruiker Veld Aangemaakt: {0}</value>
-  </data>
-  <data name="CaseUserFieldDeleted" xml:space="preserve">
-    <value>Casusgebruiker Veld Verwijderd: {0}</value>
-  </data>
-  <data name="CaseUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Casusgebruiker Velden Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="CaseUserFieldUpdated" xml:space="preserve">
-    <value>Casusgebruiker Veld Geüpdatet: {0}</value>
-  </data>
   <data name="ColorThemeChanged" xml:space="preserve">
     <value>Kleurthema Veranderd</value>
   </data>
-  <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Algemene Instellingen</value>
-  </data>
-  <data name="CompaniesMerged" xml:space="preserve">
-    <value>Bedrijven samengevoegd: {0} - {1}</value>
-  </data>
-  <data name="CompaniesModule" xml:space="preserve">
-    <value>Bedrijven</value>
-  </data>
-  <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Bedrijven [{0}]. Bestanden Bijgevoegd: {1}</value>
-  </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Bedrijf gemaakt: {0}</value>
-  </data>
-  <data name="CompanyCreatedHistoryEvent" xml:space="preserve">
-    <value>Bedrijven [{0}]. Voorbije Gebeurtenis Aangemaakt: {1}</value>
-  </data>
-  <data name="CompanyCreatedPersonsTag" xml:space="preserve">
-    <value>Bedrijven [{0}]. Personen Tag Aangemaakt: {1}</value>
-  </data>
-  <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Bedrijven [{0}]. Tag Aangemaakt: {1}</value>
-  </data>
-  <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Bedrijf Aangemaakt met Webformulier: {0}</value>
-  </data>
-  <data name="CompanyDeleted" xml:space="preserve">
-    <value>Bedrijf verwijderd: {0}</value>
-  </data>
-  <data name="CompanyDeletedHistoryEvent" xml:space="preserve">
-    <value>Bedrijven [{0}]. Voorbije Gebeurtenis Verwijderd: {1}</value>
-  </data>
-  <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Bedrijven [{0}]. Tag Verwijderd: {1}</value>
-  </data>
-  <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Bedrijven [{0}]. Bestand Ontkoppeld: {1}</value>
-  </data>
-  <data name="CompanyLinkedPerson" xml:space="preserve">
-    <value>Bedrijven [{0}]. Persoon Gekoppeld: {1}</value>
-  </data>
-  <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Bedrijven [{0}]. Project Gekoppeld: {1} </value>
-  </data>
-  <data name="CompanyUnlinkedPerson" xml:space="preserve">
-    <value>Bedrijven [{0}]. Persoon Ontkoppeld: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Bedrijven [{0}]. Project Ontkoppeld: {1} </value>
-  </data>
-  <data name="CompanyUpdated" xml:space="preserve">
-    <value>Bedrijf Geüpdatet: {0}</value>
-  </data>
-  <data name="CompanyUpdatedPersonsTemperatureLevel" xml:space="preserve">
-    <value>Bedrijven [{0}]. Persoon Temperatuurniveau Geüpdatet</value>
-  </data>
-  <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Bedrijven [{0}]. Foto Geüpdatet</value>
-  </data>
-  <data name="CompanyUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Bedrijven [{0}]. Belangrijke Info Geüpdatet</value>
-  </data>
-  <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Bedrijven [{0}]. Temperatuurniveau Geüpdatet </value>
-  </data>
-  <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Bedrijfsgebruiker Veld Aangemaakt: {0} </value>
-  </data>
-  <data name="CompanyUserFieldDeleted" xml:space="preserve">
-    <value>Bedrijf Gebruiker Veld Verwijderd: {0}</value>
-  </data>
-  <data name="CompanyUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Bedrijf Gebruiker Velden Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="CompanyUserFieldUpdated" xml:space="preserve">
-    <value>Bedrijf Gebruiker Veld Geüpdatet: {0}</value>
-  </data>
-  <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Contact Beheerder Mail Verzonden</value>
-  </data>
-  <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Contacten [{0}]. Taak Aangemaakt: {1}</value>
-  </data>
-  <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Contacten. Tag Aangemaakt: {0}</value>
-  </data>
-  <data name="ContactsDeleted" xml:space="preserve">
-    <value>Contacten Verwijderd: {0}</value>
-  </data>
-  <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Contacten. Tag Verwijderd: {0}</value>
-  </data>
-  <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Contacten Geëxporteerd naar CSV-bestand: {0}</value>
-  </data>
-  <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Contacten Geïmporteerd van CSV-bestand </value>
-  </data>
-  <data name="ContactsModule" xml:space="preserve">
-    <value>Contacten</value>
-  </data>
-  <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Instellingen</value>
-  </data>
-  <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Contacten Tag Instelingen Geüpdatet </value>
-  </data>
-  <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Contact Temperatuurniveau Aangemaakt: {0} </value>
-  </data>
-  <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Contact Temperatuurniveau Verwijderd {0} </value>
-  </data>
-  <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Contact Temperatuurniveau Instellingen Geüpdatet </value>
-  </data>
-  <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
-    <value>Contact Temperatuurniveaus Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Contact Temperatuurniveau Geüpdatet: {0} </value>
-  </data>
-  <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Contact Temperatuurniveau [{0}]. Kleur Geüpdatet </value>
-  </data>
-  <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Contacttype Aangemaakt: {0}</value>
-  </data>
-  <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Contacttype Verwijderd: {0}</value>
-  </data>
-  <data name="ContactTypesModule" xml:space="preserve">
-    <value>Contacttypes</value>
-  </data>
-  <data name="ContactTypesUpdatedOrder" xml:space="preserve">
-    <value>Contacttypes Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Contacttype Geüpdatet: {0}</value>
-  </data>
-  <data name="ContactUserFieldCreated" xml:space="preserve">
-    <value>Contactgebruiker Veld Aangemaakt: {0}</value>
-  </data>
-  <data name="ContactUserFieldDeleted" xml:space="preserve">
-    <value>Contactgebruiker Veld Verwijderd: {0}</value>
-  </data>
-  <data name="ContactUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Contact Gebruikersvelden Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="ContactUserFieldUpdated" xml:space="preserve">
-    <value>Contactgebruiker Veld Geüpdatet: {0}</value>
-  </data>
   <data name="CookieSettingsUpdated" xml:space="preserve">
-    <value>Cookie Instellingen Geüpdatet </value>
+    <value>Cookie Instellingen Geüpdatet</value>
   </data>
   <data name="CopyActionType" xml:space="preserve">
     <value>Kopiëren</value>
@@ -337,72 +103,11 @@
   <data name="CreateActionType" xml:space="preserve">
     <value>Aanmaken</value>
   </data>
-  <data name="CrmAllDataExported" xml:space="preserve">
-    <value>Alle gegevens geëxporteerd</value>
-  </data>
-  <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Standaardvaluta geüpdatet </value>
-  </data>
-  <data name="CrmProduct" xml:space="preserve">
-    <value>CRM</value>
-  </data>
-  <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>SMTP Mail Verzonden naar Contacten: {0}</value>
-  </data>
-  <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>SMTP Instellingen Geüpdatet
-</value>
-  </data>
-  <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
-    <value>CRM Taakcategorie Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryCreated" xml:space="preserve">
-    <value>CRM Taakcategorie Aangemaakt: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryDeleted" xml:space="preserve">
-    <value>CRM Taakcategorie Verwijderd: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdated" xml:space="preserve">
-    <value>CRM Taakcategorie Geüpdatet: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdatedIcon" xml:space="preserve">
-    <value>CRM Taakcategorie Icoon Geüpdatet: {0}</value>
-  </data>
-  <data name="CrmTaskClosed" xml:space="preserve">
-    <value>CRM Taak Gesloten: {0}</value>
-  </data>
-  <data name="CrmTaskCreated" xml:space="preserve">
-    <value>CRM Taak Aangemaakt: {0}</value>
-  </data>
-  <data name="CrmTaskDeleted" xml:space="preserve">
-    <value>CRM Taak Verwijderd: {0}</value>
-  </data>
-  <data name="CrmTaskOpened" xml:space="preserve">
-    <value>CRM Taak Geopend: {0}</value>
-  </data>
-  <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>CRM Taken Geëxporteerd naar CSV-bestand: {0}</value>
-  </data>
-  <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM Taken Geïmporteerd Van CSV-bestand: {0}</value>
-  </data>
-  <data name="CrmTasksModule" xml:space="preserve">
-    <value>CRM Taken</value>
-  </data>
-  <data name="CrmTaskUpdated" xml:space="preserve">
-    <value>CRM Taken Geüpdatet: {0}</value>
-  </data>
-  <data name="CrmTestMailSent" xml:space="preserve">
-    <value>Testmail Verzonden</value>
-  </data>
-  <data name="CurrencyRateUpdated" xml:space="preserve">
-    <value>Wisselkoers Geüpdatet: {0} - {1}</value>
-  </data>
   <data name="DateCol" xml:space="preserve">
     <value>Datum</value>
   </data>
   <data name="DefaultStartPageSettingsUpdated" xml:space="preserve">
-    <value>Standaard Startpagina Instellingen Geüpdatet </value>
+    <value>Standaard Startpagina Instellingen Geüpdatet</value>
   </data>
   <data name="DeleteActionType" xml:space="preserve">
     <value>Verwijderen</value>
@@ -410,41 +115,11 @@
   <data name="DetachActionType" xml:space="preserve">
     <value>Losmaken</value>
   </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Bestanden Bijgevoegd: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Aangemaakt</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Verwijderd</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Opmerking Geüpdatet </value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Aangemaakt: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Verwijderd: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Bestand Ontkoppeld: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Discussies</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Geüpdatet: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projecten [{0}]. Discussie Volgen Geüpdatet: {1}</value>
-  </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
-    <value>DNS Instellingen Geüpdatet </value>
+    <value>DNS Instellingen Geüpdatet</value>
   </data>
   <data name="DocumentServiceLocationSetting" xml:space="preserve">
-    <value>Documentservice Locatie Geüpdatet </value>
+    <value>Documentservice Locatie Geüpdatet</value>
   </data>
   <data name="DocumentsOverwritingSettingsUpdated" xml:space="preserve">
     <value>Overschrijf instellingen geactualiseerd</value>
@@ -456,10 +131,10 @@
     <value>Instellingen</value>
   </data>
   <data name="DocumentsThirdPartySettingsUpdated" xml:space="preserve">
-    <value>Derde Partij Instellingen Geüpdatet </value>
+    <value>Derde Partij Instellingen Geüpdatet</value>
   </data>
   <data name="DocumentsUploadingFormatsSettingsUpdated" xml:space="preserve">
-    <value>Uploadformaten Instellingen Geüpdatet </value>
+    <value>Uploadformaten Instellingen Geüpdatet</value>
   </data>
   <data name="DownloadActionType" xml:space="preserve">
     <value>Downloaden</value>
@@ -522,7 +197,7 @@
     <value>Document {1} ondertekenend via {0}</value>
   </data>
   <data name="FileSendAccessLink" xml:space="preserve">
-    <value>Verstuurde gedeelde link voor het [{0}] bestand. Ontvangers: [{1}] </value>
+    <value>Verstuurde gedeelde link voor het [{0}] bestand. Ontvangers: [{1}]</value>
   </data>
   <data name="FilesModule" xml:space="preserve">
     <value>Bestanden</value>
@@ -537,10 +212,10 @@
     <value>Bestand Geüpdatet: {0}</value>
   </data>
   <data name="FileUpdatedAccess" xml:space="preserve">
-    <value>Bestanden [{0}]. Toegang Geüpdatet </value>
+    <value>Bestanden [{0}]. Toegang Geüpdatet</value>
   </data>
   <data name="FileUpdatedRevisionComment" xml:space="preserve">
-    <value>Bestanden [{0}]. Revisie {1}. Opmerking Geüpdatet </value>
+    <value>Bestanden [{0}]. Revisie {1}. Opmerking Geüpdatet</value>
   </data>
   <data name="FileUploaded" xml:space="preserve">
     <value>Bestand Geüpload: {0}</value>
@@ -573,7 +248,7 @@
     <value>Mappen</value>
   </data>
   <data name="FolderUpdatedAccess" xml:space="preserve">
-    <value>Mappen [{0}]. Toegang Geüpdatet </value>
+    <value>Mappen [{0}]. Toegang Geüpdatet</value>
   </data>
   <data name="FollowActionType" xml:space="preserve">
     <value>Volgen</value>
@@ -585,7 +260,7 @@
     <value>Algemeen</value>
   </data>
   <data name="GreetingSettingsUpdated" xml:space="preserve">
-    <value>Welkomstpagina Instellingen Geüpdatet </value>
+    <value>Welkomstpagina Instellingen Geüpdatet</value>
   </data>
   <data name="GroupCreated" xml:space="preserve">
     <value>Groep Aangemaakt: {0}</value>
@@ -614,74 +289,8 @@
   <data name="GuestImported" xml:space="preserve">
     <value>Gast Geïmporteerd: {0}</value>
   </data>
-  <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Voorbije Gebeurtenissen Categorieën. Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Voorbije Gebeurtenis Categorie Aangemaakt: {0} </value>
-  </data>
-  <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>Voorbije Gebeurtenis Categorie Verwijderd: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>Voorbije Gebeurtenis Categorie Geüpdatet {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>Voorbije Gebeurtenis Categorieën [{0}]. Icoon Geüpdatet </value>
-  </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Importeren</value>
-  </data>
-  <data name="InvoiceCreated" xml:space="preserve">
-    <value>Factuur gemaakt: {0}</value>
-  </data>
-  <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Factuur Standaardvoorwaarden Geüpdatet </value>
-  </data>
-  <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Factuur Verwijderd: {0}</value>
-  </data>
-  <data name="InvoiceDownloaded" xml:space="preserve">
-    <value>Factuur Gedownload: {0}</value>
-  </data>
-  <data name="InvoiceItemCreated" xml:space="preserve">
-    <value>Factuur Item Aangemaakt: {0}</value>
-  </data>
-  <data name="InvoiceItemDeleted" xml:space="preserve">
-    <value>Factuur Item Verwijderd: {0}</value>
-  </data>
-  <data name="InvoiceItemsDeleted" xml:space="preserve">
-    <value>Factuur Items Verwijderd: {0}</value>
-  </data>
-  <data name="InvoiceItemUpdated" xml:space="preserve">
-    <value>Factuur Item Geüpdatet: {0}</value>
-  </data>
-  <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Factuur Nummerformaat Geüpdatet </value>
-  </data>
-  <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Facturen Verwijderd: {0}</value>
-  </data>
-  <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Factuur Instellingen</value>
-  </data>
-  <data name="InvoicesModule" xml:space="preserve">
-    <value>Facturen</value>
-  </data>
-  <data name="InvoicesUpdatedStatus" xml:space="preserve">
-    <value>Facturen [{0}]. Status Geüpdatet: {1}</value>
-  </data>
-  <data name="InvoiceTaxCreated" xml:space="preserve">
-    <value>Factuur Belasting Aangemaakt: {0}</value>
-  </data>
-  <data name="InvoiceTaxDeleted" xml:space="preserve">
-    <value>Factuur Belasting Verwijderd: {0}</value>
-  </data>
-  <data name="InvoiceTaxUpdated" xml:space="preserve">
-    <value>Factuur Belasting Geüpdatet: {0}</value>
-  </data>
-  <data name="InvoiceUpdated" xml:space="preserve">
-    <value>Factuur Geüpdatet: {0}</value>
   </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
@@ -690,7 +299,7 @@
     <value>Taalinstellingen</value>
   </data>
   <data name="LicenseKeyUploaded" xml:space="preserve">
-    <value>Licentiesleutel geüpload </value>
+    <value>Licentiesleutel geüpload</value>
   </data>
   <data name="LinkActionType" xml:space="preserve">
     <value>Link</value>
@@ -756,133 +365,13 @@
     <value>Uitloggen</value>
   </data>
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
-    <value>Mailservice Instellingen Geüpdatet </value>
-  </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen Aangemaakt: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen Verwijderd: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Mijlpalen</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen Geüpdatet: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen [{1}]. Status Geüpdatet: {2}</value>
+    <value>Mailservice Instellingen Geüpdatet</value>
   </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Module</value>
   </data>
   <data name="MoveActionType" xml:space="preserve">
     <value>Verplaatsen</value>
-  </data>
-  <data name="OpportunitiesCreatedTag" xml:space="preserve">
-    <value>Kansen. Tag Aangemaakt: {0}</value>
-  </data>
-  <data name="OpportunitiesDeleted" xml:space="preserve">
-    <value>Kansen Verwijderd: {0}</value>
-  </data>
-  <data name="OpportunitiesDeletedTag" xml:space="preserve">
-    <value>Kansen. Tag Verwijderd: {0}</value>
-  </data>
-  <data name="OpportunitiesExportedToCsv" xml:space="preserve">
-    <value>Kansen Geëxporteerd Naar CSV-bestand: {0}</value>
-  </data>
-  <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Kansen Geïmporteerd van CSV-bestand </value>
-  </data>
-  <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Kansen</value>
-  </data>
-  <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Kansen [{0}]. Bestanden Bijgevoegd: {1}</value>
-  </data>
-  <data name="OpportunityCreated" xml:space="preserve">
-    <value>Kansen Aangemaakt: {0}</value>
-  </data>
-  <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Kansen [{0}]. Voorbije Gebeurtenis Aangemaakt: {1}</value>
-  </data>
-  <data name="OpportunityCreatedTag" xml:space="preserve">
-    <value>Kansen [{0}]. Tag Aangemaakt: {1}</value>
-  </data>
-  <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Kansen Verwijderd: {0}</value>
-  </data>
-  <data name="OpportunityDeletedHistoryEvent" xml:space="preserve">
-    <value>Kansen [{0}]. Voorbije Gebeurtenis Verwijderd: {1}</value>
-  </data>
-  <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Kansen [{0}]. Tag Verwijderd: {1}</value>
-  </data>
-  <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Kansen [{0}]. Bestand Ontkoppeld: {1}</value>
-  </data>
-  <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Kansen [{0}]. Bedrijf Gelinkt: {1}</value>
-  </data>
-  <data name="OpportunityLinkedPerson" xml:space="preserve">
-    <value>Kansen [{0}]. Persoon Gekoppeld: {1}</value>
-  </data>
-  <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Kansen [{0}]. Toegang Geopend</value>
-  </data>
-  <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Kansen [{0}]. Toegang Beperkt: {1}</value>
-  </data>
-  <data name="OpportunityStageCreated" xml:space="preserve">
-    <value>Kansfase Aangemaakt: {0}</value>
-  </data>
-  <data name="OpportunityStageDeleted" xml:space="preserve">
-    <value>Kansfase Verwijderd: {0}</value>
-  </data>
-  <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
-    <value>Kansfase Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdated" xml:space="preserve">
-    <value>Kansfase Geüpdatet: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Kansfase Kleur Geüpdatet: {0} </value>
-  </data>
-  <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Kansen [{0}]. Bedrijf Ontkoppeld: {1}</value>
-  </data>
-  <data name="OpportunityUnlinkedPerson" xml:space="preserve">
-    <value>Kansen [{0}]. Persoon Ontkoppeld: {1}</value>
-  </data>
-  <data name="OpportunityUpdated" xml:space="preserve">
-    <value>Kans Geüpdatet: {0}</value>
-  </data>
-  <data name="OpportunityUpdatedStage" xml:space="preserve">
-    <value>Kansfase Geüpdatet: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldCreated" xml:space="preserve">
-    <value>Kans Gebruikersveld Aangemaakt: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldDeleted" xml:space="preserve">
-    <value>Kans Gebruikersveld Verwijderd: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Kans Gebruikersvelden Volgorde Geüpdatet: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldUpdated" xml:space="preserve">
-    <value>Kans Gebruikersveld Geüpdatet: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Organisatieprofiel. Adres Geüpdatet </value>
-  </data>
-  <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Organisatieprofiel. Bedrijfsnaam Geüpdatet: {0} </value>
-  </data>
-  <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Organisatieprofiel. Factuurlogo Geüpdatet </value>
-  </data>
-  <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Andere Instellingen</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
     <value>Anderen</value>
@@ -903,88 +392,16 @@
     <value>Pagina</value>
   </data>
   <data name="PasswordStrengthSettingsUpdated" xml:space="preserve">
-    <value>Wachtwoordsterkte Instellingen Geüpdatet </value>
+    <value>Wachtwoordsterkte Instellingen Geüpdatet</value>
   </data>
   <data name="PeopleProduct" xml:space="preserve">
     <value>Personen</value>
-  </data>
-  <data name="PersonAttachedFiles" xml:space="preserve">
-    <value>Personen [{0}]. Bestanden Bijgevoegd: {1}</value>
-  </data>
-  <data name="PersonCreated" xml:space="preserve">
-    <value>Persoon Aangemaakt: {0}</value>
-  </data>
-  <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Personen [{0}]. Bedrijfstag Aangemaakt: {1}</value>
-  </data>
-  <data name="PersonCreatedHistoryEvent" xml:space="preserve">
-    <value>Personen [{0}]. Voorbije Gebeurtenis Aangemaakt: {1}</value>
-  </data>
-  <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag Aangemaakt: {1}</value>
-  </data>
-  <data name="PersonCreatedWithWebForm" xml:space="preserve">
-    <value>Persoon Aangemaakt met Webformulier: {0}</value>
-  </data>
-  <data name="PersonDeleted" xml:space="preserve">
-    <value>Persoon Verwijderd: {0}</value>
-  </data>
-  <data name="PersonDeletedHistoryEvent" xml:space="preserve">
-    <value>Personen [{0}]. Voorbije Gebeurtenis Verwijderd: {1}</value>
-  </data>
-  <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Personen [{0}]. Tag Verwijderd: {1}</value>
-  </data>
-  <data name="PersonDetachedFile" xml:space="preserve">
-    <value>Personen [{0}]. Bestand Ontkoppeld: {1}</value>
-  </data>
-  <data name="PersonLinkedProject" xml:space="preserve">
-    <value>Personen [{0}]. Project Gelinkt: {1}</value>
-  </data>
-  <data name="PersonsCreated" xml:space="preserve">
-    <value>Personen Aangemaakt: {0}</value>
-  </data>
-  <data name="PersonsMerged" xml:space="preserve">
-    <value>Personen Samengevoegd: {0} - {1}</value>
-  </data>
-  <data name="PersonsModule" xml:space="preserve">
-    <value>Personen</value>
-  </data>
-  <data name="PersonUnlinkedProject" xml:space="preserve">
-    <value>Personen [{0}]. Project Ontkoppeld: {1}</value>
-  </data>
-  <data name="PersonUpdated" xml:space="preserve">
-    <value>Persoon Geüpdatet: {0}</value>
-  </data>
-  <data name="PersonUpdatedCompanyTemperatureLevel" xml:space="preserve">
-    <value>Personen [{0}]. Bedrijf Temperatuurniveau Geüpdatet</value>
-  </data>
-  <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Personen [{0}]. Foto Geüpdatet </value>
-  </data>
-  <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Personen [{0}]. Belangrijke Info Geüpdatet</value>
-  </data>
-  <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Personen [{0}]. Temperatuurniveau Geüpdatet</value>
-  </data>
-  <data name="PersonUserFieldCreated" xml:space="preserve">
-    <value>Persoon Gebruikersveld Aangemaakt: {0}</value>
-  </data>
-  <data name="PersonUserFieldDeleted" xml:space="preserve">
-    <value>Persoon Gebruikersveld Verwijderd: {0}</value>
-  </data>
-  <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Persoon Gebruikersvelden Volgorde Geüpdatet: {0} </value>
-  </data>
-  <data name="PersonUserFieldUpdated" xml:space="preserve">
-    <value>Persoon Gebruikersveld Geüpdatet: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
     <value>Platform</value>
   </data>
   <data name="PortalAccessSettingsUpdated" xml:space="preserve">
-    <value>Portaaltoegang Instellingen Geüpdatet </value>
+    <value>Portaaltoegang Instellingen Geüpdatet</value>
   </data>
   <data name="PortalDeactivated" xml:space="preserve">
     <value>Portaal Gedeactiveerd</value>
@@ -1014,88 +431,10 @@
     <value>Producten [{0}]. Beheerder Verwijderd: {1}</value>
   </data>
   <data name="ProductsListUpdated" xml:space="preserve">
-    <value>Productenlijst Geüpdatet </value>
+    <value>Productenlijst Geüpdatet</value>
   </data>
   <data name="ProductsModule" xml:space="preserve">
     <value>Producten</value>
-  </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Project Aangemaakt: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Sjablonen [{0}]. Project Aangemaakt: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Project Verwijderd: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projecten [{0}]. Lid Verwijderd: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Project Gevolgd: {0}</value>
-  </data>
-  <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Projecten [{0}]. Bedrijf Gekoppeld: {1}</value>
-  </data>
-  <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Projecten [{0}]. Contacten Gekoppeld: {1}</value>
-  </data>
-  <data name="ProjectLinkedPerson" xml:space="preserve">
-    <value>Projecten [{0}]. Persoon Gekoppeld: {1}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projecten Geïmporteerd Van Basecamp: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projecten</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projecten</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Instellingen</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Projectsjabloon Aangemaakt: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Projectsjabloon Verwijderd: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Projectsjabloon Geüpdatet: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Project Ontvolgd: {0}</value>
-  </data>
-  <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Projecten [{0}]. Bedrijf Ontkoppeld: {1}</value>
-  </data>
-  <data name="ProjectUnlinkedPerson" xml:space="preserve">
-    <value>Projecten [{0}]. Persoon Ontkoppeld: {1}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Project Geüpdatet: {0} </value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projecten [{0}]. Leden [{1}]. Toegangsrechten Geüpdatet </value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Status Geüpdatet: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projecten [{0}]. Team Geüpdatet: {1}</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Rapporten</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Projectrapport Sjabloon Aangemaakt: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Projectrapport Sjabloon Verwijderd: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Projectrapport Sjabloon Geüpdatet: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Verzenden</value>
@@ -1124,80 +463,8 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Start portaalregio migratie</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaak Aangemaakt: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaak Verwijderd: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaak Geüpdatet: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Subtaken [{2}]. Status Geüpdatet: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Systeemaccount</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Bestanden Bijgevoegd: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Aangemaakt</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Verwijderd</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Opmerking Geüpdatet </value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Aangemaakt: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projecten [{0}]. Discussies [{1}]. Taken Aangemaakt: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Verwijderd: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projecten [{0}]. Taak: {1}. Bestand Ontkoppeld: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projecten [{0}]. Mijlpalen [{1}]. Taak Verplaatst: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projecten [{0}]. Taken Gekoppeld: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Taken</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projecten [{0}]. Taken Ontkoppeld: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Taak Tijd Aangemaakt: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Taaktijden Verwijderd: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Taaktijden [{0}]. Status Geüpdatet: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Taak Tijd Geüpdatet: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Ontkoppeld Van Mijlpalen.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Geüpdatet: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projecten [{0}]. Taak Volgen Geüpdatet: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projecten [{0}]. Taken: [{1}]. Status Geüpdatet: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Teamsjabloon Veranderd</value>
@@ -1215,13 +482,13 @@
     <value>Tijd Bijhouden</value>
   </data>
   <data name="TimeZoneSettingsUpdated" xml:space="preserve">
-    <value>Tijdszone Instellingen Geüpdatet </value>
+    <value>Tijdszone Instellingen Geüpdatet</value>
   </data>
   <data name="TrustedMailDomainSettingsUpdated" xml:space="preserve">
-    <value>Vertrouwde Maildomein Instellingen Geüpdatet </value>
+    <value>Vertrouwde Maildomein Instellingen Geüpdatet</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
-    <value>Twee-factor Authenticatie Instellingen Geüpdatet </value>
+    <value>Twee-factor Authenticatie Instellingen Geüpdatet</value>
   </data>
   <data name="UnfollowActionType" xml:space="preserve">
     <value>Niet meer volgen</value>
@@ -1233,7 +500,7 @@
     <value>Ontkoppelen</value>
   </data>
   <data name="UpdateAccessActionType" xml:space="preserve">
-    <value>Toegang Geüpdatet </value>
+    <value>Toegang Geüpdatet</value>
   </data>
   <data name="UpdateActionType" xml:space="preserve">
     <value>Update</value>
@@ -1275,7 +542,7 @@
     <value>Gebruikers Verwijderd: {0}</value>
   </data>
   <data name="UserSentActivationInstructions" xml:space="preserve">
-    <value>Gebruikers [{0}]. Verzonden Activeringsinstructies </value>
+    <value>Gebruikers [{0}]. Verzonden Activeringsinstructies</value>
   </data>
   <data name="UserSentDeleteInstructions" xml:space="preserve">
     <value>Verstuurde Instructies Profiel Verwijderen</value>
@@ -1293,7 +560,7 @@
     <value>Gebruikers [{0}]. Activeringsinstructies Verzonden</value>
   </data>
   <data name="UsersUpdatedStatus" xml:space="preserve">
-    <value>Gebruikers [{0}]. Geüpdate Status </value>
+    <value>Gebruikers [{0}]. Geüpdate Status</value>
   </data>
   <data name="UsersUpdatedType" xml:space="preserve">
     <value>Gebruikers [{0}]. Geüpdate Type</value>
@@ -1305,18 +572,72 @@
     <value>Gebruiker Geüpdatet: {0}</value>
   </data>
   <data name="UserUpdatedAvatarThumbnails" xml:space="preserve">
-    <value>Gebruikers [{0}]. Avatar Thumbnails Geüpdatet </value>
+    <value>Gebruikers [{0}]. Avatar Thumbnails Geüpdatet</value>
   </data>
   <data name="UserUpdatedLanguage" xml:space="preserve">
-    <value>Taal Geüpdatet </value>
+    <value>Taal Geüpdatet</value>
   </data>
   <data name="UserUpdatedMobileNumber" xml:space="preserve">
     <value>Gebruikers [{0}]. Mobiele Nummer Geüpdatet: {1}</value>
   </data>
   <data name="UserUpdatedPassword" xml:space="preserve">
-    <value>Wachtwoord Geüpdatet </value>
+    <value>Wachtwoord Geüpdatet</value>
   </data>
-  <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Website Contactformulier Sleutel Geüpdatet </value>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Kamer aangemaakt</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Kamers</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Prullenmand geleegd</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Tags toegevoegd: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Verwijderde tags: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Kamer gearchiveerd</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Gebruiker toegevoegd: {0}. Rol: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Kamer verwijderd</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Link aangemaakt. Rol: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Link verwijderd</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Link bijgewerkt. Rol: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo aangemaakt</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo verwijderd</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Verwijderde gebruiker: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Kamer hernoemd: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Kamer niet meer gearchiveerd</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} toegewezen: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Tag aangemaakt: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Tags verwijderd: {0}</value>
   </data>
 </root>

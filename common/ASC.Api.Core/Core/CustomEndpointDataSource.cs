@@ -62,7 +62,6 @@ public class CustomEndpointDataSource : EndpointDataSource
                 {
                     var order = constraintRouteAttr != null ? r.Order : r.Order + 2;
                     endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText, defaults, policies), order + 1, r.Metadata, r.DisplayName));
-                    endpoints.Add(new RouteEndpoint(r.RequestDelegate, RoutePatternFactory.Parse(r.RoutePattern.RawText + ".{format}", defaults, policies), order, r.Metadata, r.DisplayName));
                 }
 
             }).ToList();
@@ -76,13 +75,6 @@ public class CustomEndpointDataSource : EndpointDataSource
 
 public static class EndpointExtension
 {
-    private static readonly IReadOnlyList<string> _methodList = new List<string>
-    {
-        "POST",
-        "PUT",
-        "DELETE"
-    };
-
     public static async Task<IEndpointRouteBuilder> MapCustomAsync(this IEndpointRouteBuilder endpoints, bool webhooksEnabled = false, IServiceProvider serviceProvider = null)
     {
         endpoints.MapControllers();
@@ -109,7 +101,7 @@ public static class EndpointExtension
                 var httpMethodMetadata = r.Metadata.OfType<HttpMethodMetadata>().FirstOrDefault();
                 var disabled = r.Metadata.OfType<WebhookDisableAttribute>().FirstOrDefault();
 
-                if (disabled == null)
+                if (disabled == null && httpMethodMetadata != null)
                 {
                     foreach (var httpMethod in httpMethodMetadata.HttpMethods)
                     {
@@ -118,7 +110,7 @@ public static class EndpointExtension
                 }
                 return result;
             })
-            .Where(r => _methodList.Contains(r.Method))
+            .Where(r => DbWorker.MethodList.Contains(r.Method))
             .DistinctBy(r => $"{r.Method}|{r.Route}")
             .ToList();
 
