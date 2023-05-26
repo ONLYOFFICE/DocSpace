@@ -550,7 +550,7 @@
   <data name="ConsumersBitlyDescription" xml:space="preserve">
     <value>Conecte o serviço Bitly para encurtar os links compartilhados e os links de convite do portal no módulo Documentos.</value>
   </data>
-  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>Habilitar este aplicativo para encurtar os links de convite e documento. {0}Inserir seu login Bitly e a chave API abaixo:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
@@ -565,7 +565,7 @@
   <data name="ConsumersBoxDescription" xml:space="preserve">
     <value>Conecte o aplicativo para gerenciar os arquivos e pastas da Box.</value>
   </data>
-  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para conectar sua conta Box ao módulo Documentos. Você poderá gerenciar, editar e compartilhar arquivos do Box com usuários ONLYOFFICE. {0}Assine sua conta na página de desenvolvedores do Box e crie um novo aplicativo para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
@@ -577,7 +577,7 @@
   <data name="ConsumersClickatellDescription" xml:space="preserve">
     <value>Habilitar o aplicativo para autenticação de dois fatores via Clickatell.</value>
   </data>
-  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Use este aplicativo para permitir a autenticação de dois fatores com o serviço Clickatell. {0}Ingresse em sua conta da plataforma SMS e crie uma nova integração para ONLYOFFICE. Copie uma apiKey e insira-a abaixo:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
@@ -592,13 +592,13 @@
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>Endpoint de autenticação DocuSign</value>
   </data>
-  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>Habilitar este aplicativo para assinar digitalmente documentos usando DocuSign. {0} Vá para seu DocuSign Admin Console e adicione a integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersDropBoxDescription" xml:space="preserve">
     <value>Conectar o aplicativo para gerenciar arquivos e pastas da Dropbox.</value>
   </data>
-  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para conectar sua conta Dropbox ao módulo Documentos. Você será capaz de gerenciar, editar e compartilhar arquivos do Dropbox com usuários ONLYOFFICE. {0}Assine sua conta no website Dropbox Developers e crie um novo aplicativo para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
@@ -655,7 +655,7 @@
   <data name="ConsumersGoogleDescription" xml:space="preserve">
     <value>Conecte o projeto para entrar no portal usando uma conta do Google e gerenciar os arquivos e pastas do Google Drive.</value>
   </data>
-  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para conectar sua conta Google Drive ao módulo Documentos. Você será capaz de gerenciar, editar e compartilhar arquivos do Google Drive com usuários do ONLYOFFICE. {0}Vá ao console das APIs do Google e crie um novo projeto para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
@@ -733,13 +733,13 @@
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>Conecte o aplicativo para gerenciar os arquivos e pastas do OneDrive.</value>
   </data>
-  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para conectar sua conta OneDrive ao módulo Documentos. Você será capaz de gerenciar, editar e compartilhar arquivos da OneDrive com usuários ONLYOFFICE. {0}Ingresse em sua conta Microsoft Azure e crie um novo aplicativo para integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersSmscDescription" xml:space="preserve">
     <value>Habilitar o aplicativo para a autenticação de dois fatores via SMS Center.</value>
   </data>
-  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>Use este aplicativo para permitir a autenticação de dois fatores com o serviço SMS Center. {0}Inserir login de sua conta smsc e sua senha (ou senha MD5 hash) em minúsculas:</value>
   </data>
   <data name="Consumerssmscpsw" xml:space="preserve">
@@ -748,13 +748,13 @@
   <data name="ConsumersTelegramDescription" xml:space="preserve">
     <value>Collega l'account Telegram per ricevere le notifiche del portale tramite Telegram.</value>
   </data>
-  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
     <value>Para receber notificações do portal via Telegram, habilite o Telegram bot. Você pode criar um novo bot usando BotFather in Telegram Desktop. Para usar este bot, os usuários do portal precisam ativar as notificações por telegrama em sua página de perfil. {0}Colar o nome de usuário do bot e o token que você recebeu nos campos abaixo.</value>
   </data>
   <data name="ConsumersTwilioDescription" xml:space="preserve">
     <value>Adicionar Twilio para poder chamar contatos CRM diretamente do navegador.</value>
   </data>
-  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para permitir que seus usuários chamem seus contatos a partir do módulo CRM usando o Twilio. {0} Vá para o Twilio Console e cole os seguintes dados abaixo:</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
@@ -763,7 +763,7 @@
   <data name="ConsumersTwitterDescription" xml:space="preserve">
     <value>Conecte o aplicativo para entrar no portal usando uma conta do Twitter e pesquisar por contatos.</value>
   </data>
-  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para permitir que seus usuários acessem a ONLYOFFICE usando seu Twitter e vinculem as contas de seus clientes no Twitter ao módulo CRM. {0} Vá para o Portal de Desenvolvedores do Twitter e crie um novo aplicativo de integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersVkDescription" xml:space="preserve">
@@ -772,7 +772,7 @@
   <data name="ConsumersWordpressDescription" xml:space="preserve">
     <value>Habilitar o aplicativo para publicar documentos diretamente no WordPress.</value>
   </data>
-  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Habilite este aplicativo para adicionar novos usuários do portal a partir de sua lista de contatos do Yahoo. {0}Vá para a página Criar aplicativo na Rede de Desenvolvedores Yahoo e crie um novo aplicativo para integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
   </data>
   <data name="ConsumersYandexDescription" xml:space="preserve">

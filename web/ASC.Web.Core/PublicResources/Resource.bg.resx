@@ -773,49 +773,25 @@
     <value>Изберете authUser</value>
   </data>
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
-    <value>Ако добавите услугата Bitly, ще получите по-кратки линкове за покана на нови потребители към ONLYOFFICE™ портала и по-кратки линкове към документи в модула Документи, които са били споделени с външни потребители.</value>
-  </data>
-  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да съкратите поканата и линковете към документи. {0}Въведете данните си за вход в Bitly и API ключа по-долу:</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
-    <value>Ако добавите приложение към услугата Box ще можете да свържете своя Box акаунт в модул Документи. Това ще позволи да качвате и създавате нови файлове в Box, да редактирате съществуващи, да ги копирате и изтривате, да споделяте файлове и папки с потребителите на ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да свържете Box акаунта си към модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от Box с потребители на ONLYOFFICE. {0}Влезте в акаунта си от девелъпър страницата на Box и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
-    <value>Добавяйки приложението за услуга Clickatell, вие ще можете да активирате двуфакторната автентификация и да получавате SMS с код, позволяващ на потребителя да влезе в портала ONLYOFFICE.</value>
-  </data>
-  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
     <value>Използвайте това приложение, за да активирате двуфакторно удостоверяване с услугата Clickatell. {0}Влезте в акаунта си в SMS Platform и създайте нова интеграция за ONLYOFFICE. Копирайте apiKey и го поставете по-долу:</value>
   </data>
   <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
     <value>DocuSign Secret</value>
   </data>
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>Ако добавите приложение на услугата DocuSign ще можете да подписвате файлове от модул Документи. Това ще позволи изпращане на файл за електронен подпис до служителите в ONLYOFFICE™  портала чрез услугата DocuSugn. Подписаният файл ще бъде записан в модула Документи на ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
     <value>Разрешете това приложение за цифрово подписване на документи с помощта на DocuSign. {0}Отидете на вашата DocuSign администраторска конзола и добавете интеграция за ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
-    <value>Ако добавите приложение на услугата Dropbox, ще можете да свържете своя Dropbox акаунт в модул Документи. Това ще позволи да качвате и създавате нови файлове в Dropbox, да редактирате съществуващи файлове, да копирате и изтривате, споделяте файлове и папки с потребители в ONLYOFFICE™ портала.</value>
-  </data>
-  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да свържете вашия Dropbox акаунт към модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от Dropbox с потребители на ONLYOFFICE. {0}Влезте в акаунта си на уебсайта за девелъпъри на Dropbox и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
   </data>
-  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
-    <value>Когато добавите приложението EasyBib, можете лесно да създавате библиографски списъци във вашите документи.</value>
-  </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
-    <value>Ако добавите приложение на услугата Facebook, ще можете да свържете вашия Facebook акаунт на страницата на вашия профил, така че да можете да влезете в портала ONLYOFFICE™, като го използвате. Също така ще можете да намерите Facebook акаунтите на контакти в CRM модула и да ги свържете на страницата „Редактиране на лице/фирма“.</value>
-  </data>
-  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE с помощта на Facebook и да свържат Facebook акаунтите на своите клиенти към CRM модула. {0}Отидете в девелъпър портала на Facebook и създайте ново приложение ONLYOFFICE интеграция. Въведете данните, които сте получили по-долу:</value>
-  </data>
-  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
-    <value>Ако свържете Firebase Cloud Messaging, ще можете да получавате известия за съобщенията, изпратени до вас, дори когато сте офлайн.</value>
   </data>
   <data name="ConsumersGoogleCloud" xml:space="preserve">
     <value>Google Cloud Storage</value>
@@ -823,22 +799,13 @@
   <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
     <value>Въведете името на Google Cloud bucket за съхраняване на резервни копия.</value>
   </data>
-  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
-    <value>Когато добавите услугата Google Cloud Storage към портала си, можете да я използвате, за да създавате резервни копия на портала си, като се уверите, че никога няма да загубите данни. Използвайте тази услуга за съхранение на данни и статично съдържание от вашия портал.</value>
-  </data>
   <data name="ConsumersGoogleCloudjson" xml:space="preserve">
     <value>GoogleCloud json</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
-    <value>Ако добавите проект на услугата Google, ще можете да свържете вашия Google акаунт на страницата на профила си, така че да може да влизате в ONLYOFFICE™ портала, използвайки Google акаунта си, както и да свържете Google Drive акаунта си в модула Документи. Това ще позволи да качвате и създавате нови файлове в Google Drive, да редактирате съществуващи, да ги копирате и изтривате, да споделяте файлове и папки с потребителите на портала ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да свържете Google Drive акаунта си с модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от Google Drive с потребители на ONLYOFFICE. {0}Отидете в API конзолата на Google и създайте нов проект за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>Ако добавите приложение от услугата LinkedIn, ще можете да свържете своя LinkedIn акаунт на страницата на вашия профил, така че да можете да влизате в портала ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE, използвайки своите LinkedIn акаунти. {0}Отидете на уебсайта за разработчици на LinkedIn и създайте нова интеграция на ONLYOFFICE приложението. Въведете данните, които сте получили по-долу:</value>
   </data>
   <data name="ConsumersMailruClientId" xml:space="preserve">
@@ -865,9 +832,6 @@
   <data name="ConsumersRackspace" xml:space="preserve">
     <value>Rackspace Cloud Storage</value>
   </data>
-  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
-    <value>Добавяйки услугата на Rackspace Cloud Storage към вашия портал ще можете да създавате резервни копия на портала си, като сте сигурни, че никога няма да изгубите ценни данни. Използвайте тази услуга за съхранение на данни и статично съдържание от вашия портал.</value>
-  </data>
   <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
     <value>Въведете URL адреса на частния контейнер на Rackspace за съхранение на резервни копия.</value>
   </data>
@@ -886,9 +850,6 @@
   <data name="ConsumersS3bucketDescription" xml:space="preserve">
     <value>Въведете уникалното име на кофата на Amazon за съхранение на резервни копия.</value>
   </data>
-  <data name="ConsumersS3Instruction" xml:space="preserve">
-    <value>Когато добавите Amazon AWS S3 към вашия портал, ще можете да го използвате, за да създавате резервни копия на портала си, като се уверите, че никога няма да загубите данни. Използвайте тази услуга за съхранение на данни и статично съдържание от вашия портал.</value>
-  </data>
   <data name="ConsumersS3region" xml:space="preserve">
     <value>Област</value>
   </data>
@@ -900,9 +861,6 @@
   </data>
   <data name="ConsumersSelectelauthPwd" xml:space="preserve">
     <value>Парола за достъп до хранилището</value>
-  </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>Когато добавите услугата Selectel Cloud Storage към вашия портал, ще можете да я ползвате за създавате резервни копия на вашия портал, като се уверите, че никога няма да загубите данни. Използвайте тази услуга за съхранение на данни и статично съдържание от вашия портал.</value>
   </data>
   <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
     <value>Въведете името на частния Selectel контейнер за съхранение на архиви.</value>
@@ -917,15 +875,9 @@
     <value>ID на приложението</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
-    <value>Ако добавите приложение на услугата OneDrive, ще можете да свържете вашия OneDrive акаунт в модул Документи. Това ще Ви позволи да качвате и създавате нови файлове в OneDrive, да редактирате съществуващи такива, да ги копирате и изтривате, да споделяте файлове и папки с потребителите на ONLYOFFICE™ портала.</value>
-  </data>
-  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да свържете вашия OneDrive акаунт към модула за документи. Ще можете да управлявате, редактирате и споделяте файлове от OneDrive с потребители на ONLYOFFICE. {0}Влезте в акаунта си в Microsoft Azure и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
-    <value>Добавяйки приложението SMS Center услуги, ще можете да активирате двуфакторната автентификация и да получавате SMS с код, позволяващ на потребителя да се впише в ONLYOFFICE портала. Приложението SMS Center е полезно като доставчик за страните от ОНД.</value>
-  </data>
-  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
     <value>Използвайте това приложение, за да активирате двуфакторно удостоверяване с услугата SMS Center. {0}Въведете вашето име за вход в smsc акаунта и вашата парола (или парола MD5 хеш) с малки букви:</value>
   </data>
   <data name="ConsumersTelegramBotName" xml:space="preserve">
@@ -937,22 +889,16 @@
   <data name="ConsumersTelegramDescription" xml:space="preserve">
     <value>Свържете Telegram акаунт, за да получавате известия за портала си през Telegram.</value>
   </data>
-  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
     <value>За да получавате известия за портала си през Telegram, активирайте Telegram bot. Можете да създадете нов бот с помощта на BotFather в Telegram Desktop. За да използват този бот, потребителите на портала трябва да активират известията на Telegram на страницата на своя профил. {0}Поставете потребителското име на бота и токена, който сте получили, в полетата по-долу.</value>
   </data>
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
-    <value>След като добавите Twilio, ще можете да се обаждате на всеки CRM контакт директно от браузъра.</value>
-  </data>
-  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да позволите на вашите потребители да се обаждат на своите контакти от CRM модула с помощта на Twilio. {0}Отидете на Twilio Console и поставете следните данни по-долу:</value>
   </data>
   <data name="ConsumerstwitterAccessToken_Default" xml:space="preserve">
     <value>ID на клиента</value>
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
-    <value>Ако добавите приложение на Twitter, ще можете да свържете вашия Twitter акаунт на страницата профила си, така че да можете да влизате в ONLYOFFICE™ портала. Също така ще можете да намерите акаунт в Twitter на дадено лице в CRM модула и да го свържете на страницата „Редактиране на лице/компания“ и след това да ще имате достъп до стената им с новини в Twitter.</value>
-  </data>
-  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да позволите на вашите потребители да влизат в ONLYOFFICE, ползвайки техния Twitter и да свържат Twitter акаунтите на своите клиенти към CRM модула. {0}Отидете на портала за разработчици на Twitter и създайте нова интеграция за ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
@@ -976,9 +922,6 @@
   <data name="ConsumersVkInstruction" xml:space="preserve">
     <value>Когато добавите приложението VK, можете да активирате влизането в портал с VK акаунт от страницата на вашия профил.</value>
   </data>
-  <data name="ConsumersWordpressInstruction" xml:space="preserve">
-    <value>Добавяйки приложението WordPress, можете лесно да публикувате документи на вашия WordPress уебсайт, запазвайки тяхното форматиране.</value>
-  </data>
   <data name="ConsumerswpClientSecret" xml:space="preserve">
     <value>WordPress тайна</value>
   </data>
@@ -989,9 +932,6 @@
     <value>Тайна на клиента</value>
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
-    <value>Добавяйки приложението за Yahoo услуги, ще можете да добавяте нови потребители на портала ONLYOFFICE от списъка с контакти.</value>
-  </data>
-  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
     <value>Активирайте това приложение, за да добавите нови потребители на портала от вашия списък с контакти в Yahoo. {0}Отидете на страницата за създаване на приложение в Yahoo Developer Network и създайте ново приложение за интегриране на ONLYOFFICE. Въведете данните, които сте получили по-долу:</value>
   </data>
   <data name="ConsumersYandexClientId" xml:space="preserve">
