@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
@@ -43,12 +43,6 @@ const SectionBodyContent = (props) => {
     onClickBack,
     movingInProgress,
   } = props;
-
-  const [showEmptyContainer, setShowEmptyContainer] = useState(false);
-
-  useEffect(() => {
-    setShowEmptyContainer(!movingInProgress && isEmptyFilesList);
-  }, [movingInProgress, isEmptyFilesList]);
 
   useEffect(() => {
     return () => window?.getSelection()?.removeAllRanges();
@@ -257,12 +251,12 @@ const SectionBodyContent = (props) => {
     }
   };
 
-  //console.log("Files Home SectionBodyContent render", props);
+  if (isEmptyFilesList && movingInProgress) return <></>;
 
   return (
     <Consumer>
       {(context) =>
-        showEmptyContainer ? (
+        isEmptyFilesList ? (
           <>
             <EmptyContainer sectionWidth={context.sectionWidth} />
           </>

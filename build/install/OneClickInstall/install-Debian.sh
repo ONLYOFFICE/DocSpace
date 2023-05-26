@@ -5,7 +5,7 @@ set -e
 package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
 product="docspace"
-GIT_BRANCH="develop"
+GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
@@ -76,7 +76,7 @@ while [ "$1" != "" ]; do
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
 			echo "    Parameters:"
-			echo "      -it, --installation_type          installation type (COMMUNITY|ENTERPRISE)"
+			echo "      -it, --installation_type          installation type (community|enterprise)"
 			echo "      -u, --update                      use to update existing components (true|false)"
 			echo "      -je, --jwtenabled                 specifies the enabling the JWT validation (true|false)"
 			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
@@ -119,7 +119,6 @@ fi
 # add onlyoffice repo
 mkdir -p -m 700 $HOME/.gnupg
 echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://download.onlyoffice.com/repo/debian squeeze main" | tee /etc/apt/sources.list.d/onlyoffice.list
-echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://static.teamlab.info.s3.amazonaws.com/repo/4testing/debian stable main" | sudo tee /etc/apt/sources.list.d/onlyoffice4testing.list
 curl -fsSL https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/onlyoffice.gpg --import
 chmod 644 /usr/share/keyrings/onlyoffice.gpg
 

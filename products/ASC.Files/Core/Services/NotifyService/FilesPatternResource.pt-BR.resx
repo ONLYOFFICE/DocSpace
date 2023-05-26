@@ -134,4 +134,16 @@ $Message</value>
   <data name="subject_MailMergeEnd_push" xml:space="preserve">
     <value>O envio está concluído.</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName mencionou você no comentário do documento
+ 
+$__AuthorName mencionou você no comentário para o "$DocumentTitle":"$DocumentURL" documento na sala "$RoomTitle":"$RoomURL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName excluindo uma sala
+ 
+$__AuthorName deletando a sala:$RoomTitle</value>
+  </data>
 </root>

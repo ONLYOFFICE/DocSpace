@@ -36,7 +36,7 @@ PRODUCT="docspace"
 BASE_DIR="/app/$PACKAGE_SYSNAME";
 STATUS=""
 DOCKER_TAG=""
-GIT_BRANCH="develop"
+GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
 IMAGE_NAME="${PACKAGE_SYSNAME}/${PRODUCT}-api"
 CONTAINER_NAME="${PACKAGE_SYSNAME}-api"
@@ -938,9 +938,9 @@ set_docspace_params() {
 }
 
 set_installation_type_data () {
-	if [ "$INSTALLATION_TYPE" == "community" ]; then
+	if [ "$INSTALLATION_TYPE" == "COMMUNITY" ]; then
 		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver"}
-	elif [ "$INSTALLATION_TYPE" == "enterprise" ]; then
+	elif [ "$INSTALLATION_TYPE" == "ENTERPRISE" ]; then
 		DOCUMENT_SERVER_IMAGE_NAME=${DOCUMENT_SERVER_IMAGE_NAME:-"${PACKAGE_SYSNAME}/${STATUS}documentserver-ee"}
 	fi
 }

@@ -31,11 +31,11 @@
  # terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
  #
 
-PARAMETERS="$PARAMETERS -it ENTERPRISE";
+PARAMETERS="$PARAMETERS -it COMMUNITY";
 DOCKER="";
 LOCAL_SCRIPTS="false"
 product="docspace"
-GIT_BRANCH="develop"
+GIT_BRANCH="master"
 FILE_NAME="$(basename "$0")"
 
 while [ "$1" != "" ]; do
@@ -140,7 +140,6 @@ if [ -z "$DOCKER" ]; then
 	read_installation_method;
 fi
 
-#DOWNLOAD_URL_PREFIX="http://download.onlyoffice.com/install-appserver/"
 DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall"
 
 if [ "$DOCKER" == "true" ]; then

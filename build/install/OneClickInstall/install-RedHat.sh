@@ -5,7 +5,7 @@ set -e
 package_manager="yum"
 package_sysname="onlyoffice";
 product="docspace"
-GIT_BRANCH="develop"
+GIT_BRANCH="master"
 INSTALLATION_TYPE="ENTERPRISE"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
@@ -85,7 +85,7 @@ while [ "$1" != "" ]; do
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
 			echo "    Parameters:"
-			echo "      -it, --installation_type          installation type (COMMUNITY|ENTERPRISE)"
+			echo "      -it, --installation_type          installation type (community|enterprise)"
 			echo "      -u, --update                      use to update existing components (true|false)"
 			echo "      -je, --jwtenabled                 specifies the enabling the JWT validation (true|false)"
 			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
@@ -122,16 +122,6 @@ enabled=1
 gpgkey=https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE
 END
 
-cat > /etc/yum.repos.d/onlyoffice4testing.repo <<END
-[onlyoffice4testing]
-name=onlyoffice4testing repo
-baseurl=http://static.teamlab.info.s3.amazonaws.com/repo/4testing/centos/main/noarch/
-gpgcheck=1
-enabled=1
-gpgkey=https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE
-END
-
-#DOWNLOAD_URL_PREFIX="https://download.onlyoffice.com/install-appserver/install-RedHat"
 DOWNLOAD_URL_PREFIX="https://raw.githubusercontent.com/ONLYOFFICE/${product}/${GIT_BRANCH}/build/install/OneClickInstall/install-RedHat"
 
 if [ "$LOCAL_SCRIPTS" = "true" ]; then
