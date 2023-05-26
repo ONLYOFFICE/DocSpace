@@ -265,3 +265,10 @@ export const connectedCloudsTypeIcon = (key) => {
     default:
   }
 };
+
+export const getTitleWithoutExtension = (item, fromTemplate) => {
+  const titleWithoutExst = item.title.split(".").slice(0, -1).join(".");
+  return titleWithoutExst && item.fileExst && !fromTemplate
+    ? titleWithoutExst
+    : item.title;
+};

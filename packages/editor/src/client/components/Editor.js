@@ -14,6 +14,7 @@ import {
   convertFile,
   getReferenceData,
   getSharedUsers,
+  getProtectUsers,
   sendEditorNotify,
 } from "@docspace/common/api/files";
 import { EditorWrapper } from "../components/StyledEditor";
@@ -503,22 +504,26 @@ function Editor({
     }
   };
 
-  const onSDKRequestUsers = async () => {
+  const onSDKRequestUsers = async (event) => {
     try {
-      const res = await getSharedUsers(fileInfo.id);
+      const c = event?.data?.c;
+      const users = await (c == "protect"
+        ? getProtectUsers(fileInfo.id)
+        : getSharedUsers(fileInfo.id));
 
-      res.map((item) => {
-        return usersInRoom.push({
+      if (c !== "protect") {
+        usersInRoom = users.map((item) => ({
           email: item.email,
           name: item.name,
-        });
-      });
+        }));
+      }
 
       docEditor.setUsers({
-        users: usersInRoom,
+        c,
+        users,
       });
     } catch (e) {
-      console.error(e);
+      docEditor.showMessage(e?.message || "Connection is lost");
     }
   };
 

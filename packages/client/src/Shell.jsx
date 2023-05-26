@@ -393,10 +393,17 @@ const ShellWrapper = inject(({ auth, backup }) => {
   };
 })(observer(Shell));
 
-const ThemeProviderWrapper = inject(({ auth }) => {
+const ThemeProviderWrapper = inject(({ auth, loginStore }) => {
   const { settingsStore } = auth;
+  let currentColorScheme = false;
 
-  return { theme: settingsStore.theme };
+  if (loginStore) {
+    currentColorScheme = loginStore.currentColorScheme;
+  } else if (auth) {
+    currentColorScheme = settingsStore.currentColorScheme || false;
+  }
+
+  return { theme: settingsStore.theme, currentColorScheme };
 })(observer(ThemeProvider));
 
 export default () => (
