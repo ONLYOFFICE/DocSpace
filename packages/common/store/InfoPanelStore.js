@@ -30,6 +30,7 @@ class InfoPanelStore {
 
   updateRoomMembers = null;
   isScrollLocked = false;
+  historyWithFileList = false;
 
   authStore = null;
   settingsStore = null;
@@ -66,7 +67,10 @@ class InfoPanelStore {
   setSelectionParentRoom = (obj) => (this.selectionParentRoom = obj);
   setSelectionHistory = (obj) => (this.selectionHistory = obj);
 
-  setSelectionHistory = (obj) => (this.selectionHistory = obj);
+  setSelectionHistory = (obj) => {
+    this.selectionHistory = obj;
+    this.historyWithFileList = this.selection.isFolder || this.selection.isRoom;
+  };
 
   setView = (view) => {
     this.roomsView = view;

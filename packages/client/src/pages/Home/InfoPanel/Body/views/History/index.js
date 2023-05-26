@@ -1,10 +1,4 @@
-import React, {
-  Suspense,
-  useState,
-  useEffect,
-  useRef,
-  useTransition,
-} from "react";
+import React, { useState, useEffect, useRef, useTransition } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
@@ -20,6 +14,7 @@ const History = ({
   selection,
   selectionHistory,
   setSelectionHistory,
+  historyWithFileList,
   selectedFolder,
   selectionHistory,
   setSelectionHistory,
@@ -37,9 +32,6 @@ const History = ({
   const [isPending, startTransition] = useTransition();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [withFileList, setWithFileList] = useState(
-    selection.isFolder || selection.isRoom
-  );
 
   const fetchHistory = async (itemId) => {
     if (isLoading) {
@@ -54,7 +46,6 @@ const History = ({
     getHistory(module, itemId, abortControllerRef.current?.signal)
       .then((data) => {
         const parsedHistory = parseHistory(t, data);
-        setWithFileList(selection.isFolder || selection.isRoom);
         if (isMount.current)
           startTransition(() => setSelectionHistory(parsedHistory));
       })
@@ -82,31 +73,28 @@ const History = ({
   if (!selectionHistory?.length) return <NoHistory t={t} />;
 
   return (
-    <Suspense fallback={<Loaders.InfoPanelViewLoader view="history" />}>
-      <StyledHistoryList>
-        {selectionHistory.map(({ day, feeds }) => [
-          <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
-          ...feeds.map((feed, i) => (
-            <HistoryBlock
-              t={t}
-              key={feed.json.Id}
-              selectionIsFile={history?.isFile}
-              feed={feed}
-              selection={selection}
-              selectedFolder={selectedFolder}
-              selectionParentRoom={selectionParentRoom}
-              getInfoPanelItemIcon={getInfoPanelItemIcon}
-              checkAndOpenLocationAction={checkAndOpenLocationAction}
-              openUser={openUser}
-              isVisitor={isVisitor}
-              isCollaborator={isCollaborator}
-              withFileList={withFileList}
-              isLastEntity={i === feeds.length - 1}
-            />
-          )),
-        ])}
-      </StyledHistoryList>
-    </Suspense>
+    <StyledHistoryList>
+      {selectionHistory.map(({ day, feeds }) => [
+        <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
+        ...feeds.map((feed, i) => (
+          <HistoryBlock
+            key={feed.json.Id}
+            t={t}
+            feed={feed}
+            selection={selection}
+            selectedFolder={selectedFolder}
+            selectionParentRoom={selectionParentRoom}
+            getInfoPanelItemIcon={getInfoPanelItemIcon}
+            checkAndOpenLocationAction={checkAndOpenLocationAction}
+            openUser={openUser}
+            isVisitor={isVisitor}
+            isCollaborator={isCollaborator}
+            withFileList={historyWithFileList}
+            isLastEntity={i === feeds.length - 1}
+          />
+        )),
+      ])}
+    </StyledHistoryList>
   );
 };
 
@@ -116,6 +104,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     selection,
     selectionHistory,
     setSelectionHistory,
+    historyWithFileList,
     selectionParentRoom,
     getInfoPanelItemIcon,
     openUser,
@@ -135,6 +124,7 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     selection,
     selectionHistory,
     setSelectionHistory,
+    historyWithFileList,
     selectionParentRoom,
     getInfoPanelItemIcon,
     getHistory,
