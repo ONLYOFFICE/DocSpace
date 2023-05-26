@@ -151,7 +151,7 @@ internal class ProviderAccountDao : IProviderDao
         }
     }
 
-    public virtual Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
+    public virtual async Task<int> SaveProviderInfoAsync(string providerKey, string customerTitle, AuthData authData, FolderType folderType)
     {
         ProviderTypes prKey;
         try

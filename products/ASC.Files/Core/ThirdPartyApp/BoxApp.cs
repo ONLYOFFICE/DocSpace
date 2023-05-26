@@ -156,10 +156,10 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         _logger.DebugBoxAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
-        var token = _tokenHelper.GetToken(AppAttr);
+        var token = await _tokenHelper.GetTokenAsync(AppAttr);
 
         var boxFile = GetBoxFile(fileId, token);
-        var editable = true;
+        var editable = false;
 
         if (boxFile == null)
         {
@@ -198,7 +198,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
                 var lockedUserId = lockedBy.Value<string>("id");
                 _logger.DebugBoxAppLockedBy(lockedUserId);
 
-                editable = CurrentUser(lockedUserId);
+                editable = await CurrentUserAsync(lockedUserId);
             }
         }
 

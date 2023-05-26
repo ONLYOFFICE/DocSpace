@@ -278,7 +278,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public async ValueTask IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+    public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
     {
         var t = _serviceProvider.GetService<T>();
         if (!Support(t) || data.Count == 0)
@@ -559,9 +559,9 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public Task<bool> SupportAsync(T t)
+    public async Task<bool> SupportAsync(T t)
     {
-        return _factoryIndexerCommon.CheckStateAsync();
+        return await _factoryIndexerCommon.CheckStateAsync();
     }
 
     private Task<bool> QueueAsync(Action actionData)

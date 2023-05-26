@@ -510,15 +510,15 @@ public class PortalController : ControllerBase
         }
     }
 
-    private async ValueTask<(bool exists, object error)> CheckExistingNamePortalAsync(string portalName)
+    private async ValueTask<(bool, object)> CheckExistingNamePortalAsync(string portalName)
     {
+        object error = null;
         if (string.IsNullOrEmpty(portalName))
         {
-            object error = new { error = "portalNameEmpty", message = "PortalName is required" };
+            error = new { error = "portalNameEmpty", message = "PortalName is required" };
             return (false, error);
         }
 
-        object error = null;
         try
         {
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))

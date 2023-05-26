@@ -277,7 +277,7 @@ public class GoogleCloudStorage : BaseStorage
         }
     }
 
-    public override Task DeleteFilesAsync(string domain, List<string> paths)
+    public async override Task DeleteFilesAsync(string domain, List<string> paths)
     {
         if (paths.Count == 0)
         {

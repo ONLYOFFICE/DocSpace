@@ -106,11 +106,11 @@ internal class DropboxStorage : IThirdPartyStorage<FileMetadata, FolderMetadata,
         }
     }
 
-    public Task<FileMetadata> GetFileAsync(string filePath)
+    public async Task<FileMetadata> GetFileAsync(string filePath)
     {
         if (string.IsNullOrEmpty(filePath) || filePath == "/")
         {
-            return Task.FromResult<FileMetadata>(null);
+            return null;
         }
 
         try

@@ -544,17 +544,17 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
             var subfolders =
                 await filesDbContext.Tree
-                .Where(r => r.ParentId == id)
+                .Where(r => r.ParentId == folderId)
                 .Select(r => r.FolderId)
                 .ToListAsync();
 
-            if (!subfolders.Contains(id))
+            if (!subfolders.Contains(folderId))
             {
-                subfolders.Add(id); // chashed folder_tree
+                subfolders.Add(folderId); // chashed folder_tree
             }
 
             var parent = await Query(filesDbContext.Folders)
-                .Where(r => r.Id == id)
+                .Where(r => r.Id == folderId)
                 .Select(r => r.ParentId)
                 .FirstOrDefaultAsync();
 
@@ -583,7 +583,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 .ExecuteDeleteAsync();
 
             var originToDelete = Query(filesDbContext.Tag)
-                .Where(t => t.Name == id.ToString() || subfoldersStrings.Contains(t.Name));
+                .Where(t => t.Name == folderId.ToString() || subfoldersStrings.Contains(t.Name));
 
             await Query(filesDbContext.TagLink)
                 .Where(l => originToDelete.Select(t => t.Id).Contains(l.TagId))
@@ -597,7 +597,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 .ExecuteDeleteAsync();
 
             await Query(filesDbContext.BunchObjects)
-                .Where(r => r.LeftNode == id.ToString())
+                .Where(r => r.LeftNode == folderId.ToString())
                 .ExecuteDeleteAsync();
 
             await tx.CommitAsync();

@@ -171,18 +171,18 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
         return AccessTokenUrl;
     }
 
-    public async Task<FileWithEditableWrapper> GetFileAsync(string fileId)
+    public async Task<(File<string>, bool)> GetFileAsync(string fileId)
     {
         _logger.DebugGoogleDriveAppGetFile(fileId);
         fileId = ThirdPartySelector.GetFileId(fileId);
 
         var token = await _tokenHelper.GetTokenAsync(AppAttr);
         var driveFile = GetDriveFile(fileId, token);
-        var wrapper = new FileWithEditableWrapper();
+        var editable = false;
 
         if (driveFile == null)
         {
-            return wrapper;
+            return (null, editable);
         }
 
         var jsonFile = JObject.Parse(driveFile);
@@ -202,9 +202,9 @@ public class GoogleDriveApp : Consumer, IThirdPartyApp, IOAuthProvider
             file.CreateByString = owners[0]["displayName"].Value<string>();
         }
 
-        wrapper.Editable = jsonFile["capabilities"]["canEdit"].Value<bool>();
-        wrapper.File = file;
-        return wrapper;
+        editable = jsonFile["capabilities"]["canEdit"].Value<bool>();
+
+        return (file, editable);
     }
 
     public string GetFileStreamUrl(File<string> file)
