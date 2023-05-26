@@ -3,6 +3,7 @@ import React from "react";
 import equal from "fast-deep-equal/react";
 
 import ComboButton from "./sub-components/combo-button";
+
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
 import StyledComboBox from "./styled-combobox";
@@ -101,6 +102,7 @@ class ComboBox extends React.Component {
       directionY,
       scaled,
       size,
+      type,
       options,
       advancedOptions,
       isDisabled,
@@ -132,9 +134,7 @@ class ComboBox extends React.Component {
       isNoFixedHeightOptions,
       hideMobileView,
     } = this.props;
-
     const { tabIndex, ...props } = this.props;
-
     const { isOpen, selectedOption } = this.state;
 
     const dropDownMaxHeightProp = dropDownMaxHeight
@@ -205,7 +205,9 @@ class ComboBox extends React.Component {
           fillIcon={fillIcon}
           tabIndex={tabIndex}
           isLoading={isLoading}
+          type={type}
         />
+
         {displayType !== "toggle" && (
           <DropDown
             id={this.props.dropDownId}
@@ -250,6 +252,7 @@ class ComboBox extends React.Component {
                       textOverflow={textOverflow}
                       key={option.key}
                       disabled={disabled}
+                      backgroundColor={option.backgroundColor}
                       onClick={this.optionClick.bind(this, option)}
                       fillIcon={fillIcon}
                       isModern={noBorder}
@@ -346,6 +349,8 @@ ComboBox.propTypes = {
   withoutPadding: PropTypes.bool,
   /** Indicates when the component is loading */
   isLoading: PropTypes.bool,
+  /**Type ComboBox */
+  type: PropTypes.oneOf(["badge", null]),
 };
 
 ComboBox.defaultProps = {

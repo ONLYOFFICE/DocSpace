@@ -12,11 +12,7 @@ import { isTablet } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 import { Base } from "@docspace/components/themes";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-
-export const StyledIcon = styled(IconButton)`
-  ${commonIconsStyles}
-`;
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledWrapper = styled.div`
   display: flex;
