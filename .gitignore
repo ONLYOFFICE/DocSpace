@@ -51,3 +51,5 @@ TestsResults/
 **/.yarn/cache
 **/.yarn/install-state.gz
 licenses.csv
+
+.idea
