@@ -12,7 +12,7 @@ const ErrorContainer = (props) => {
     headerText,
     bodyText,
     buttonText,
-    buttonUrl,
+    onClickButton,
     children,
     customizedBodyText,
     ...rest
@@ -354,7 +354,7 @@ const ErrorContainer = (props) => {
         </Text>
       )}
 
-      {buttonText && buttonUrl && (
+      {buttonText && onClickButton && (
         <div id="button-container">
           <Button
             theme={rest?.theme}
@@ -363,7 +363,7 @@ const ErrorContainer = (props) => {
             scale
             primary
             label={buttonText}
-            onClick={() => (window.location.href = buttonUrl)}
+            onClick={onClickButton}
           />
         </div>
       )}
@@ -376,7 +376,7 @@ ErrorContainer.propTypes = {
   headerText: PropTypes.string,
   bodyText: PropTypes.string,
   buttonText: PropTypes.string,
-  buttonUrl: PropTypes.string,
+  onClickButton: PropTypes.func,
   children: PropTypes.any,
 };
 
