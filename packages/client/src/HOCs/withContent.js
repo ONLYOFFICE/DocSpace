@@ -11,7 +11,7 @@ import getCorrectDate from "@docspace/components/utils/getCorrectDate";
 import { LANGUAGE } from "@docspace/common/constants";
 import config from "PACKAGE_FILE";
 //import EditingWrapperComponent from "../components/EditingWrapperComponent";
-import { getTitleWithoutExst } from "../helpers/files-helpers";
+import { getTitleWithoutExtension } from "SRC_DIR/helpers/filesUtils";
 //import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";
 //import ItemIcon from "../components/ItemIcon";
 import { getCookie } from "@docspace/common/utils";
@@ -125,20 +125,13 @@ export default function withContent(WrappedContent) {
       } = filesStore;
 
       const { clearActiveOperations, fileCopyAs } = uploadDataStore;
-      const {
-        isRecycleBinFolder,
-        isPrivacyFolder,
-        isArchiveFolder,
-      } = treeFoldersStore;
+      const { isRecycleBinFolder, isPrivacyFolder, isArchiveFolder } =
+        treeFoldersStore;
 
       const { replaceFileStream, setEncryptionAccess } = auth;
 
-      const {
-        culture,
-        personal,
-        folderFormValidation,
-        isDesktopClient,
-      } = auth.settingsStore;
+      const { culture, personal, folderFormValidation, isDesktopClient } =
+        auth.settingsStore;
 
       const {
         setConvertPasswordDialogVisible,
@@ -146,7 +139,7 @@ export default function withContent(WrappedContent) {
         setFormCreationInfo,
       } = dialogsStore;
 
-      const titleWithoutExt = getTitleWithoutExst(item, false);
+      const titleWithoutExt = getTitleWithoutExtension(item, false);
 
       return {
         createFile,

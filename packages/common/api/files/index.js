@@ -984,6 +984,16 @@ export function getSharedUsers(fileId) {
 
   return request(options);
 }
+
+export function getProtectUsers(fileId) {
+  const options = {
+    method: "get",
+    url: `/files/file/${fileId}/protectusers`,
+  };
+
+  return request(options);
+}
+
 export function sendEditorNotify(fileId, actionLink, emails, message) {
   return request({
     method: "post",
