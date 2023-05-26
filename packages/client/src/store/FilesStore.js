@@ -2573,7 +2573,6 @@ class FilesStore {
     const items = [...newFolders, ...this.files];
 
     if (items.length > 0 && this.isEmptyPage) {
-      console.log("set false");
       this.setIsEmptyPage(false);
     }
 

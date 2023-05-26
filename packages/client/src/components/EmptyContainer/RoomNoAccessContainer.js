@@ -18,9 +18,7 @@ const RoomNoAccessContainer = (props) => {
     t,
     setIsLoading,
     linkStyles,
-    fetchRooms,
-    setAlreadyFetchingRooms,
-    categoryType,
+
     isEmptyPage,
     sectionWidth,
     theme,
@@ -39,22 +37,11 @@ const RoomNoAccessContainer = (props) => {
   const onGoToShared = () => {
     setIsLoading(true);
 
-    setAlreadyFetchingRooms(true);
-    fetchRooms(null, null)
-      .then(() => {
-        const filter = RoomsFilter.getDefault();
+    const filter = RoomsFilter.getDefault();
 
-        const filterParamsStr = filter.toUrlParams();
+    const filterParamsStr = filter.toUrlParams();
 
-        const url = getCategoryUrl(categoryType, filter.folder);
-
-        const pathname = `${url}?${filterParamsStr}`;
-
-        navigate(pathname);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    navigate(`rooms/shared/filter?${filterParamsStr}`);
   };
 
   const goToButtons = (
@@ -94,16 +81,12 @@ const RoomNoAccessContainer = (props) => {
 export default inject(({ auth, filesStore }) => {
   const {
     setIsLoading,
-    fetchRooms,
-    categoryType,
-    setAlreadyFetchingRooms,
+
     isEmptyPage,
   } = filesStore;
   return {
     setIsLoading,
-    fetchRooms,
-    categoryType,
-    setAlreadyFetchingRooms,
+
     isEmptyPage,
     theme: auth.settingsStore.theme,
   };

@@ -100,7 +100,6 @@ const PureHome = (props) => {
     frameConfig,
     withPaging,
     isEmptyPage,
-    isLoadedEmptyPage,
 
     setPortalTariff,
 
@@ -164,14 +163,16 @@ const PureHome = (props) => {
     t,
     isAccountsPage,
     location,
+
     setIsLoading,
+    setFirstLoad,
 
     setSelectedNode,
     fetchPeople,
     setPortalTariff,
   });
 
-  useSettings({ t, isSettingsPage, location });
+  useSettings({ t, isSettingsPage, setFirstLoad, setIsLoading });
 
   useSDK({
     frameConfig,
@@ -341,7 +342,7 @@ export default inject(
       refreshFiles,
       setViewAs,
       isEmptyPage,
-      isLoadedEmptyPage,
+
       disableDrag,
       isErrorRoomNotAvailable,
       setIsPreview,
@@ -488,7 +489,7 @@ export default inject(
       setViewAs,
       withPaging,
       isEmptyPage,
-      isLoadedEmptyPage,
+
       setPortalTariff,
 
       accountsViewAs,

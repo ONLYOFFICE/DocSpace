@@ -22,7 +22,7 @@ const EmptyContainer = ({
   isFiltered,
   parentId,
   theme,
-  setCreateRoomDialogVisible,
+
   sectionWidth,
   isRoomNotFoundOrMoved,
   isGracePeriod,
@@ -100,8 +100,7 @@ export default inject(
 
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const { setCreateRoomDialogVisible, setInviteUsersWarningDialogVisible } =
-      dialogsStore;
+    const { setInviteUsersWarningDialogVisible } = dialogsStore;
 
     const isRoomNotFoundOrMoved =
       isFiltered === null &&
@@ -111,7 +110,6 @@ export default inject(
     return {
       theme: auth.settingsStore.theme,
       isFiltered,
-      setCreateRoomDialogVisible,
 
       parentId: selectedFolderStore.parentId,
       isRoomNotFoundOrMoved,

@@ -6,20 +6,23 @@ import EmptyScreenCorporateSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate
 import EmptyScreenCorporateDarkSvgUrl from "PUBLIC_DIR/images/empty_screen_corporate_dark.svg?url";
 import { inject, observer } from "mobx-react";
 import React, { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { withTranslation } from "react-i18next";
 import EmptyContainer from "./EmptyContainer";
 import Link from "@docspace/components/link";
 import Box from "@docspace/components/box";
 import { Text } from "@docspace/components";
 import { ReactSVG } from "react-svg";
+import FilesFilter from "@docspace/common/api/files/filter";
+import RoomsFilter from "@docspace/common/api/rooms/filter";
 import Loaders from "@docspace/common/components/Loaders";
 import { showLoader, hideLoader } from "./EmptyFolderContainerUtils";
+import { FolderType, RoomSearchArea } from "@docspace/common/constants";
 
 const EmptyFolderContainer = ({
   t,
   onCreate,
-  fetchFiles,
-  fetchRooms,
+
   setIsLoading,
   parentId,
   linkStyles,
@@ -30,33 +33,70 @@ const EmptyFolderContainer = ({
 
   onClickInviteUsers,
   folderId,
-  tReady,
-  isLoadedFetchFiles,
-  viewAs,
-  setIsLoadedEmptyPage,
+
   theme,
+
+  navigationPath,
+  rootFolderType,
+  clearFiles,
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const onBackToParentFolder = () => {
     setIsLoading(true);
 
-    isRooms
-      ? fetchRooms(parentId).finally(() => setIsLoading(false))
-      : fetchFiles(parentId).finally(() => setIsLoading(false));
-  };
+    if (isRooms) {
+      const path =
+        rootFolderType === FolderType.Archive
+          ? "rooms/archived"
+          : "rooms/shared";
 
-  useEffect(() => {
-    if (isLoadedFetchFiles && tReady) {
-      setIsLoadedEmptyPage(true);
+      const newFilter = RoomsFilter.getDefault();
+
+      newFilter.searchArea =
+        rootFolderType === FolderType.Archive
+          ? RoomSearchArea.Archive
+          : RoomSearchArea.Active;
+
+      const state = {
+        title: navigationPath[0].title,
+        isRoot: true,
+        isEmpty: false,
+        rootFolderType,
+      };
+
+      clearFiles(false);
+
+      navigate(`${path}/filter?${newFilter.toUrlParams()}`, {
+        state,
+      });
     } else {
-      setIsLoadedEmptyPage(false);
-    }
-  }, [isLoadedFetchFiles, tReady]);
+      let path = location.pathname.split("/filter")[0];
+      const splittedPath = path.split("/");
+      if (splittedPath.length > 3) {
+        splittedPath[3] = `${parentId}`;
+      }
+      const newFilter = FilesFilter.getDefault();
+      newFilter.folder = `${parentId}`;
 
-  useEffect(() => {
-    return () => {
-      setIsLoadedEmptyPage(false);
-    };
-  }, []);
+      const parentIdx = navigationPath.findIndex((v) => v.id === parentId);
+
+      const parentItem = navigationPath[parentIdx];
+
+      const state = {
+        title: parentItem.title,
+        isRoot: navigationPath.length === 1,
+        isEmpty: false,
+        rootFolderType,
+      };
+
+      clearFiles(false);
+      navigate(`${splittedPath.join("/")}/filter?${newFilter.toUrlParams()}`, {
+        state,
+      });
+    }
+  };
 
   const onInviteUsersClick = () => {
     if (!isRooms) return;
@@ -147,21 +187,6 @@ const EmptyFolderContainer = ({
     ? EmptyScreenAltSvgUrl
     : EmptyScreenAltSvgDarkUrl;
 
-  useEffect(
-    () => (!isLoadedFetchFiles || !tReady ? showLoader() : hideLoader()),
-    [isLoadedFetchFiles, tReady]
-  );
-
-  if (!isLoadedFetchFiles || !tReady) {
-    return (
-      <Loaders.EmptyContainerLoader
-        style={{ display: "none", marginTop: 32 }}
-        id="empty-container-loader"
-        viewAs={viewAs}
-      />
-    );
-  }
-
   return (
     <EmptyContainer
       headerText={isRooms ? t("RoomCreated") : t("EmptyScreenFolder")}
@@ -187,21 +212,15 @@ export default inject(
     selectedFolderStore,
     contextOptionsStore,
   }) => {
-    const {
-      fetchFiles,
-      fetchRooms,
-
-      isLoadedFetchFiles,
-      viewAs,
-      setIsLoadedEmptyPage,
-    } = filesStore;
+    const { clearFiles } = filesStore;
     const {
       navigationPath,
       parentId,
-      access,
+
       id: folderId,
       roomType,
       security,
+      rootFolderType,
     } = selectedFolderStore;
 
     let id;
@@ -219,19 +238,19 @@ export default inject(
     const canInviteUsers = isRooms && security?.EditAccess; // skip sub-folders
 
     return {
-      fetchFiles,
-      fetchRooms,
       setIsLoading: filesStore.setIsLoading,
       parentId: id ?? parentId,
       isRooms,
       canCreateFiles,
       canInviteUsers,
 
+      navigationPath,
+      rootFolderType,
+      clearFiles,
+
       onClickInviteUsers,
       folderId,
-      isLoadedFetchFiles,
-      viewAs,
-      setIsLoadedEmptyPage,
+
       theme: auth.settingsStore.theme,
     };
   }

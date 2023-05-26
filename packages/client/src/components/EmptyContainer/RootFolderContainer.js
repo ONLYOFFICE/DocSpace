@@ -5,7 +5,7 @@ import EmptyFolderImageSvgUrl from "PUBLIC_DIR/images/empty-folder-image.svg?url
 import React, { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
-import { FolderType } from "@docspace/common/constants";
+import { FolderType, RoomSearchArea } from "@docspace/common/constants";
 import { inject, observer } from "mobx-react";
 import { withTranslation, Trans } from "react-i18next";
 import EmptyContainer from "./EmptyContainer";
@@ -14,6 +14,7 @@ import Text from "@docspace/components/text";
 import Box from "@docspace/components/box";
 
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import FilesFilter from "@docspace/common/api/files/filter";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
@@ -70,6 +71,10 @@ const RootFolderContainer = (props) => {
     sectionWidth,
     setIsLoadedEmptyPage,
     security,
+
+    myFolder,
+    roomsFolder,
+    clearFiles,
   } = props;
   const personalDescription = t("EmptyFolderDecription");
 
@@ -103,41 +108,44 @@ const RootFolderContainer = (props) => {
 
   const roomHeader = "Welcome to DocSpace";
 
-  useEffect(() => {
-    return () => {
-      setIsLoadedEmptyPage(false);
-    };
-  }, []);
-
-  useEffect(() => {
-    setIsLoadedEmptyPage(!isLoading);
-  }, [isLoading]);
-
   const onGoToPersonal = () => {
-    const newFilter = filter.clone();
+    const newFilter = FilesFilter.getDefault();
+
+    newFilter.folder = myFolderId;
+
+    const isEmpty = myFolder.filesCount + myFolder.foldersCount === 0;
+
+    const state = {
+      title: myFolder.title,
+      isEmpty,
+      isRoot: true,
+      rootFolderType: myFolder.rootFolderType,
+    };
+
+    clearFiles(isEmpty);
     setIsLoading(true);
-    fetchFiles(myFolderId, newFilter).finally(() => setIsLoading(false));
+
+    navigate(`/rooms/personal/filter?${newFilter.toUrlParams()}`, { state });
   };
 
   const onGoToShared = () => {
+    const newFilter = RoomsFilter.getDefault();
+
+    newFilter.searchArea = RoomSearchArea.Active;
+
+    const isEmpty = roomsFolder.foldersCount === 0;
+
+    const state = {
+      title: roomsFolder.title,
+      isEmpty,
+      isRoot: true,
+      rootFolderType: roomsFolder.rootFolderType,
+    };
+
+    clearFiles(isEmpty);
     setIsLoading(true);
 
-    setAlreadyFetchingRooms(true);
-    fetchRooms(null, null)
-      .then(() => {
-        const filter = RoomsFilter.getDefault();
-
-        const filterParamsStr = filter.toUrlParams();
-
-        const url = getCategoryUrl(categoryType, filter.folder);
-
-        const pathname = `${url}?${filterParamsStr}`;
-
-        navigate(pathname);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    navigate(`/rooms/shared/filter?${newFilter.toUrlParams()}`, { state });
   };
 
   const getEmptyFolderProps = () => {
@@ -383,11 +391,13 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
+      clearFiles,
 
       setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
-    const { isPrivacyFolder, myFolderId } = treeFoldersStore;
+    const { isPrivacyFolder, myFolderId, myFolder, roomsFolder } =
+      treeFoldersStore;
 
     return {
       theme,
@@ -413,6 +423,10 @@ export default inject(
 
       setIsLoadedEmptyPage,
       security,
+
+      myFolder,
+      roomsFolder,
+      clearFiles,
     };
   }
 )(withTranslation(["Files"])(observer(RootFolderContainer)));
