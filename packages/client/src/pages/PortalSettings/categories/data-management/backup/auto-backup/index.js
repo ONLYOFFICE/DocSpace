@@ -27,7 +27,7 @@ import ThirdPartyStorageModule from "./sub-components/ThirdPartyStorageModule";
 //import { getThirdPartyCommonFolderTree } from "@docspace/common/api/files";
 import ButtonContainer from "./sub-components/ButtonContainer";
 import AutoBackupLoader from "@docspace/common/components/Loaders/AutoBackupLoader";
-import FloatingButton from "@docspace/components/FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 import Badge from "@docspace/components/badge";
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 

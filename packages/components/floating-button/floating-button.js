@@ -8,7 +8,7 @@ import {
   StyledAlertIcon,
   StyledCircle,
   IconBox,
-} from "./StyledFloatingButton";
+} from "./styled-floating-button";
 
 import ButtonUploadIcon from "PUBLIC_DIR/images/button.upload.react.svg";
 import ButtonFileIcon from "PUBLIC_DIR/images/button.file.react.svg";
