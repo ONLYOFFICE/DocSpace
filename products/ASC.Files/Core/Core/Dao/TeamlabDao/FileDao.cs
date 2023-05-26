@@ -131,11 +131,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
-        return await InternalGetFileAsync(parentId, title);
-    }
-
-    private async Task<File<int>> InternalGetFileAsync(int parentId, string title)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var dbFile = await FileDaoQueries.GetDbFileQueryByTitleAsync(filesDbContext, TenantID, title, parentId);
@@ -537,11 +532,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             throw new ArgumentException("No file id or folder id toFolderId determine provider");
         }
 
-        return await InternalReplaceFileVersionAsync(file, fileStream);
-    }
-
-    private async Task<File<int>> InternalReplaceFileVersionAsync(File<int> file, Stream fileStream)
-    {
         var maxChunkedUploadSize = await _setupInfo.MaxChunkedUploadSize(_tenantManager, _maxTotalSizeStatistic);
 
         if (maxChunkedUploadSize < file.ContentLength)
@@ -775,11 +765,6 @@ internal class FileDao : AbstractDao, IFileDao<int>
             return default;
         }
 
-        return await InternalMoveFileAsync(fileId, toFolderId);
-    }
-
-    private async Task<int> InternalMoveFileAsync(int fileId, int toFolderId)
-    {
         var trashIdTask = _globalFolder.GetFolderTrashAsync(_daoFactory);
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
@@ -1232,14 +1217,8 @@ internal class FileDao : AbstractDao, IFileDao<int>
     {
         ArgumentNullException.ThrowIfNull(file);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(changes);
-
         ArgumentNullException.ThrowIfNull(differenceStream);
 
-        await InternalSaveEditHistoryAsync(file, changes, differenceStream);
-    }
-
-    private async Task InternalSaveEditHistoryAsync(File<int> file, string changes, Stream differenceStream)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         await FileDaoQueries.UpdateChangesAsync(filesDbContext, TenantID, file.Id, file.Version, changes.Trim());

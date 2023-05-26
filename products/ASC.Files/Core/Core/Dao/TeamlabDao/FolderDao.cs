@@ -109,11 +109,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
-        return await InternalGetFolderAsync(title, parentId);
-    }
-
-    private async Task<Folder<int>> InternalGetFolderAsync(string title, int parentId)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var dbFolder = await FolderDaoQueries.GetDbFolderQueryByTitleAndParentIdAsync(filesDbContext, TenantID, title, parentId);
@@ -359,11 +354,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return await InternalSaveFolderAsync(folder, transaction);
-    }
-
-    private async Task<int> InternalSaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
-    {
         var folderId = folder.Id;
 
         if (transaction == null)
@@ -507,11 +497,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             throw new ArgumentNullException(nameof(folderId));
         }
 
-        await InternalDeleteFolderAsync(folderId);
-    }
-
-    private async Task InternalDeleteFolderAsync(int id)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
@@ -521,9 +506,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
             var subfolders = await FolderDaoQueries.GetSubfolderIdsAsync(filesDbContext, id).ToListAsync();
 
-            if (!subfolders.Contains(id))
+            if (!subfolders.Contains(folderId))
             {
-                subfolders.Add(id); // chashed folder_tree
+                subfolders.Add(folderId); // chashed folder_tree
             }
 
             var parent = await FolderDaoQueries.GetParentIdByIdAsync(filesDbContext, TenantID, id);
@@ -1015,11 +1000,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(module);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(bunch);
 
-        return await InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
-    }
-
-    private async Task<int> InternalGetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var key = $"{module}/{bunch}/{data}";

@@ -188,11 +188,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return await InternalGetFileStreamAsync(file, offset);
-    }
-
-    private async Task<Stream> InternalGetFileStreamAsync(File<string> file, long offset)
-    {
         var fileId = file.Id;
         var selector = _selectorFactory.GetSelector(fileId);
         file.Id = selector.ConvertId(fileId);
@@ -208,11 +203,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return await InternalIsSupportedPreSignedUriAsync(file);
-    }
-
-    private async Task<bool> InternalIsSupportedPreSignedUriAsync(File<string> file)
-    {
         var fileId = file.Id;
         var selector = _selectorFactory.GetSelector(fileId);
         file.Id = selector.ConvertId(fileId);
@@ -228,11 +218,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return await InternalGetPreSignedUriAsync(file, expires);
-    }
-
-    private async Task<Uri> InternalGetPreSignedUriAsync(File<string> file, TimeSpan expires)
-    {
         var fileId = file.Id;
         var selector = _selectorFactory.GetSelector(fileId);
         file.Id = selector.ConvertId(fileId);
@@ -248,11 +233,6 @@ internal class ProviderFileDao : ProviderDaoBase, IFileDao<string>
     {
         ArgumentNullException.ThrowIfNull(file);
 
-        return await InternalSaveFileAsync(file, fileStream);
-    }
-
-    private async Task<File<string>> InternalSaveFileAsync(File<string> file, Stream fileStream)
-    {
         var fileId = file.Id;
         var folderId = file.ParentId;
 

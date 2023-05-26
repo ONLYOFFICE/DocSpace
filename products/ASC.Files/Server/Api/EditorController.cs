@@ -75,9 +75,7 @@ public class EditorControllerThirdparty : EditorController<string>
     {
         fileId = "app-" + fileId;
         var app = _thirdPartySelector.GetAppByFileId(fileId?.ToString());
-        var wrapper = await app.GetFileAsync(fileId?.ToString());
-        var file = wrapper.File;
-        var editable = wrapper.Editable;
+        (var file, var editable) = await app.GetFileAsync(fileId?.ToString());
         var docParams = await _documentServiceHelper.GetParamsAsync(file, true, editable ? FileShare.ReadWrite : FileShare.Read, false, editable, editable, editable, false);
         var configuration = docParams.Configuration;
         configuration.Document.Url = app.GetFileStreamUrl(file);
@@ -255,6 +253,12 @@ public abstract class EditorController<T> : ApiControllerBase
     {
         return await _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
     }
+
+    [HttpGet("file/{fileId}/protectusers")]
+    public async Task<List<MentionWrapper>> ProtectUsers(T fileId)
+    {
+        return await _fileStorageService.ProtectUsersAsync(fileId);
+    }
 }
 
 public class EditorController : ApiControllerBase
@@ -302,7 +306,14 @@ public class EditorController : ApiControllerBase
             throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
         }
 
-        return await InternalCheckDocServiceUrlAsync();
+        await _documentServiceConnector.CheckDocServiceUrlAsync();
+
+        return new[]
+        {
+            _filesLinkUtility.DocServiceUrl,
+            _filesLinkUtility.DocServiceUrlInternal,
+            _filesLinkUtility.DocServicePortalUrl
+        };
     }
 
     /// <visible>false</visible>
@@ -316,29 +327,12 @@ public class EditorController : ApiControllerBase
             return url;
         }
 
-        return await InternalGetDocServiceUrlAsync(url);
-    }
-
-    private async Task<object> InternalGetDocServiceUrlAsync(string url)
-    {
         var dsVersion = await _documentServiceConnector.GetVersionAsync();
 
         return new
         {
             version = dsVersion,
             docServiceUrlApi = url,
-        };
-    }
-
-    private async Task<IEnumerable<string>> InternalCheckDocServiceUrlAsync()
-    {
-        await _documentServiceConnector.CheckDocServiceUrlAsync();
-
-        return new[]
-        {
-            _filesLinkUtility.DocServiceUrl,
-            _filesLinkUtility.DocServiceUrlInternal,
-            _filesLinkUtility.DocServicePortalUrl
         };
     }
 }

@@ -578,11 +578,6 @@ public class SettingsController : BaseSettingsController
             return new List<UsageSpaceStatItemDto>();
         }
 
-        return await InternalGetSpaceUsageStatistics(webitem);
-    }
-
-    private async Task<List<UsageSpaceStatItemDto>> InternalGetSpaceUsageStatistics(IWebItem webitem)
-    {
         var statData = await webitem.Context.SpaceUsageStatManager.GetStatDataAsync();
 
         return statData.ConvertAll(it => new UsageSpaceStatItemDto

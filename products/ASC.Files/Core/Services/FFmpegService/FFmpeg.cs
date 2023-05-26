@@ -65,7 +65,7 @@ public class FFmpegService
         return _fFmpegFormats.Contains(extension);
     }
 
-    public async Task<Stream> Convert(Stream inputStream, string inputFormat)
+    public async ValueTask<Stream> ConvertAsync(Stream inputStream, string inputFormat)
     {
         if (inputStream == null)
         {
@@ -77,11 +77,6 @@ public class FFmpegService
             throw new ArgumentException(nameof(inputFormat));
         }
 
-        return await ConvertInternalAsync(inputStream, inputFormat);
-    }
-
-    private async Task<Stream> ConvertInternalAsync(Stream inputStream, string inputFormat)
-    {
         var startInfo = PrepareFFmpeg(inputFormat);
 
         using var process = Process.Start(startInfo);

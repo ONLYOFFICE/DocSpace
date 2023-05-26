@@ -209,15 +209,10 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         }
     }
 
-    public Task<string> SaveFolderAsync(Folder<string> folder)
+    public async Task<string> SaveFolderAsync(Folder<string> folder)
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return InternalSaveFolderAsync(folder);
-    }
-
-    private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
-    {
         if (folder.Id != null)
         {
             return await RenameFolderAsync(folder, folder.Title);

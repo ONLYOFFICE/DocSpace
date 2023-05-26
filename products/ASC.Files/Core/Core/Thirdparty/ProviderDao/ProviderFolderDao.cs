@@ -63,11 +63,6 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             return null;
         }
 
-        return await InternalGetFolderAsync(folderId, selector);
-    }
-
-    private async Task<Folder<string>> InternalGetFolderAsync(string folderId, IDaoSelector selector)
-    {
         var folderDao = selector.GetFolderDao(folderId);
         var result = await folderDao.GetFolderAsync(selector.ConvertId(folderId));
 
@@ -234,11 +229,6 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return await InternalSaveFolderAsync(folder);
-    }
-
-    private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
-    {
         if (folder.Id != null)
         {
             var folderId = folder.Id;
@@ -375,11 +365,6 @@ internal class ProviderFolderDao : ProviderDaoBase, IFolderDao<string>
             return new Dictionary<string, string>();
         }
 
-        return await InternalCanMoveOrCopyAsync(to, matchedIds, selector);
-    }
-
-    private async Task<IDictionary<string, string>> InternalCanMoveOrCopyAsync(string to, string[] matchedIds, IDaoSelector selector)
-    {
         var folderDao = selector.GetFolderDao(matchedIds.FirstOrDefault());
 
         return await folderDao.CanMoveOrCopyAsync(matchedIds, to);

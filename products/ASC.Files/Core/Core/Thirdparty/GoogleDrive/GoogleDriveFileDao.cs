@@ -56,12 +56,6 @@ internal class GoogleDriveFileDao : ThirdPartyFileDao<DriveFile, DriveFile, Driv
             return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
         }
 
-        return await InternalCreateUploadSessionAsync(file, contentLength);
-    }
-
-
-    private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)
-    {
         var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
         DriveFile driveFile;

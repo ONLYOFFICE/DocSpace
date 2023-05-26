@@ -652,7 +652,88 @@ public class UserController : PeopleControllerBase
             throw new MethodAccessException("Method is only available on personal.onlyoffice.com");
         }
 
-        return await InternalRegisterUserOnPersonalAsync(inDto);
+        try
+        {
+            if (_coreBaseSettings.CustomMode)
+            {
+                inDto.Lang = "ru-RU";
+            }
+
+            var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
+
+            if (cultureInfo != null)
+            {
+                CultureInfo.CurrentUICulture = cultureInfo;
+            }
+
+            inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
+
+            if (!inDto.Email.TestEmailRegex())
+            {
+                throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
+            }
+
+            if (!SetupInfo.IsSecretEmail(inDto.Email)
+                && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
+            {
+                var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
+
+                if (string.IsNullOrEmpty(inDto.RecaptchaResponse)
+                    || !await _recaptcha.ValidateRecaptchaAsync(inDto.RecaptchaResponse, ip))
+                {
+                    throw new RecaptchaException(Resource.RecaptchaInvalid);
+                }
+            }
+
+            var newUserInfo = await _userManager.GetUserByEmailAsync(inDto.Email);
+
+            if (await _userManager.UserExistsAsync(newUserInfo.Id))
+            {
+                if (!SetupInfo.IsSecretEmail(inDto.Email) || _securityContext.IsAuthenticated)
+                {
+                    await _studioNotifyService.SendAlreadyExistAsync(inDto.Email);
+                    return string.Empty;
+                }
+
+                try
+                {
+                    await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
+                    await _userManager.DeleteUserAsync(newUserInfo.Id);
+                }
+                finally
+                {
+                    _securityContext.Logout();
+                }
+            }
+            if (!inDto.Spam)
+            {
+                try
+                {
+                    //TODO
+                    //const string _databaseID = "com";
+                    //using (var db = DbManager.FromHttpContext(_databaseID))
+                    //{
+                    //    db.ExecuteNonQuery(new SqlInsert("template_unsubscribe", false)
+                    //                           .InColumnValue("email", email.ToLowerInvariant())
+                    //                           .InColumnValue("reason", "personal")
+                    //        );
+                    //    Log.Debug(String.Format("Write to template_unsubscribe {0}", email.ToLowerInvariant()));
+                    //}
+                }
+                catch (Exception ex)
+                {
+                    _logger.DebugWriteToTemplateUnsubscribe(inDto.Email.ToLowerInvariant(), ex);
+                }
+            }
+
+            await _studioNotifyService.SendInvitePersonalAsync(inDto.Email);
+        }
+        catch (Exception ex)
+        {
+            return ex.Message;
+        }
+
+        return string.Empty;
     }
 
     [HttpPut("delete", Order = -1)]
@@ -1220,92 +1301,6 @@ public class UserController : PeopleControllerBase
 
             throw new Exception(string.Format(Resource.ReassignDataRemoveUserError, userName));
         }
-    }
-
-    private async Task<string> InternalRegisterUserOnPersonalAsync(RegisterPersonalUserRequestDto inDto)
-    {
-        try
-        {
-            if (_coreBaseSettings.CustomMode)
-            {
-                inDto.Lang = "ru-RU";
-            }
-
-            var cultureInfo = _setupInfo.GetPersonalCulture(inDto.Lang).Value;
-
-            if (cultureInfo != null)
-            {
-                CultureInfo.CurrentUICulture = cultureInfo;
-            }
-
-            inDto.Email.ThrowIfNull(new ArgumentException(Resource.ErrorEmailEmpty, "email"));
-
-            if (!inDto.Email.TestEmailRegex())
-            {
-                throw new ArgumentException(Resource.ErrorNotCorrectEmail, "email");
-            }
-
-            if (!SetupInfo.IsSecretEmail(inDto.Email)
-                && !string.IsNullOrEmpty(_setupInfo.RecaptchaPublicKey) && !string.IsNullOrEmpty(_setupInfo.RecaptchaPrivateKey))
-            {
-                var ip = Request.Headers["X-Forwarded-For"].ToString() ?? Request.GetUserHostAddress();
-
-                if (string.IsNullOrEmpty(inDto.RecaptchaResponse)
-                    || !await _recaptcha.ValidateRecaptchaAsync(inDto.RecaptchaResponse, ip))
-                {
-                    throw new RecaptchaException(Resource.RecaptchaInvalid);
-                }
-            }
-
-            var newUserInfo = await _userManager.GetUserByEmailAsync(inDto.Email);
-
-            if (await _userManager.UserExistsAsync(newUserInfo.Id))
-            {
-                if (!SetupInfo.IsSecretEmail(inDto.Email) || _securityContext.IsAuthenticated)
-                {
-                    await _studioNotifyService.SendAlreadyExistAsync(inDto.Email);
-                    return string.Empty;
-                }
-
-                try
-                {
-                    await _securityContext.AuthenticateMeAsync(Core.Configuration.Constants.CoreSystem);
-                    await _userManager.DeleteUserAsync(newUserInfo.Id);
-                }
-                finally
-                {
-                    _securityContext.Logout();
-                }
-            }
-            if (!inDto.Spam)
-            {
-                try
-                {
-                    //TODO
-                    //const string _databaseID = "com";
-                    //using (var db = DbManager.FromHttpContext(_databaseID))
-                    //{
-                    //    db.ExecuteNonQuery(new SqlInsert("template_unsubscribe", false)
-                    //                           .InColumnValue("email", email.ToLowerInvariant())
-                    //                           .InColumnValue("reason", "personal")
-                    //        );
-                    //    Log.Debug(String.Format("Write to template_unsubscribe {0}", email.ToLowerInvariant()));
-                    //}
-                }
-                catch (Exception ex)
-                {
-                    _logger.DebugWriteToTemplateUnsubscribe(inDto.Email.ToLowerInvariant(), ex);
-                }
-            }
-
-            await _studioNotifyService.SendInvitePersonalAsync(inDto.Email);
-        }
-        catch (Exception ex)
-        {
-            return ex.Message;
-        }
-
-        return string.Empty;
     }
 
     private async Task<IQueryable<UserInfo>> GetByFilterAsync(EmployeeStatus? employeeStatus, Guid? groupId, EmployeeActivationStatus? activationStatus, EmployeeType? employeeType, bool? isDocSpaceAdministrator, Payments? payments)

@@ -30,15 +30,9 @@ public interface IThirdPartyApp
 {
     Task<bool> RequestAsync(HttpContext context);
     string GetRefreshUrl();
-    Task<FileWithEditableWrapper> GetFileAsync(string fileId);
+    Task<(File<string>, bool)> GetFileAsync(string fileId);
     string GetFileStreamUrl(File<string> file);
     Task SaveFileAsync(string fileId, string fileType, string downloadUrl, Stream stream);
-}
-
-public class FileWithEditableWrapper
-{
-    public File<string> File { get; set; }
-    public bool Editable { get; set; }
 }
 
 [Scope(Additional = typeof(ThirdPartySelectorExtension))]

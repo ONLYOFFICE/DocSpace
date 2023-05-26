@@ -409,7 +409,7 @@ public class FileHandlerService
                                 fileStream = await fileDao.GetFileStreamAsync(file);
 
                                 _logger.InformationConvertingToMp4(file.Title, file.Id.ToString());
-                                var stream = await _fFmpegService.Convert(fileStream, ext);
+                                var stream = await _fFmpegService.ConvertAsync(fileStream, ext);
                                 await store.SaveAsync(string.Empty, mp4Path, stream, mp4Name);
                             }
 

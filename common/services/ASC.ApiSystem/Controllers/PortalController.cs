@@ -102,7 +102,7 @@ public class PortalController : ControllerBase
     [HttpPost("register")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:registerportal")]
-    public async Task<IActionResult> RegisterAsync(TenantModel model)
+    public async ValueTask<IActionResult> RegisterAsync(TenantModel model)
     {
         if (model == null)
         {
@@ -155,11 +155,6 @@ public class PortalController : ControllerBase
             return BadRequest(error);
         }
 
-        return await InternalRegisterAsync(model, error, sw);
-    }
-
-    private async Task<IActionResult> InternalRegisterAsync(TenantModel model, object error, Stopwatch sw)
-    {
         model.PortalName = (model.PortalName ?? "").Trim();
         (var exists, error) = await CheckExistingNamePortalAsync(model.PortalName);
 
@@ -405,7 +400,7 @@ public class PortalController : ControllerBase
 
     [HttpPost("validateportalname")]
     [AllowCrossSiteJson]
-    public async Task<IActionResult> CheckExistingNamePortalAsync(TenantModel model)
+    public async ValueTask<IActionResult> CheckExistingNamePortalAsync(TenantModel model)
     {
         if (model == null)
         {
@@ -416,11 +411,6 @@ public class PortalController : ControllerBase
             });
         }
 
-        return await InternalCheckExistingNamePortalAsync(model);
-    }
-
-    private async Task<IActionResult> InternalCheckExistingNamePortalAsync(TenantModel model)
-    {
         var (exists, error) = await CheckExistingNamePortalAsync((model.PortalName ?? "").Trim());
 
         if (!exists)
@@ -520,20 +510,15 @@ public class PortalController : ControllerBase
         }
     }
 
-    private async Task<(bool exists, object error)> CheckExistingNamePortalAsync(string portalName)
+    private async ValueTask<(bool, object)> CheckExistingNamePortalAsync(string portalName)
     {
+        object error = null;
         if (string.IsNullOrEmpty(portalName))
         {
-            object error = new { error = "portalNameEmpty", message = "PortalName is required" };
+            error = new { error = "portalNameEmpty", message = "PortalName is required" };
             return (false, error);
         }
 
-        return await internalCheckExistingNamePortalAsync(portalName);
-    }
-
-    private async Task<(bool exists, object error)> internalCheckExistingNamePortalAsync(string portalName)
-    {
-        object error = null;
         try
         {
             if (!string.IsNullOrEmpty(_apiSystemHelper.ApiCacheUrl))

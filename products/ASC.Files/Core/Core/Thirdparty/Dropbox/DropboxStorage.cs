@@ -89,11 +89,6 @@ internal class DropboxStorage : IThirdPartyStorage<FileMetadata, FolderMetadata,
             return new FolderMetadata(string.Empty, "/");
         }
 
-        return await InternalGetFolderAsync(folderPath);
-    }
-
-    private async Task<FolderMetadata> InternalGetFolderAsync(string folderPath)
-    {
         try
         {
             var metadata = await _dropboxClient.Files.GetMetadataAsync(folderPath);
@@ -111,18 +106,13 @@ internal class DropboxStorage : IThirdPartyStorage<FileMetadata, FolderMetadata,
         }
     }
 
-    public Task<FileMetadata> GetFileAsync(string filePath)
+    public async Task<FileMetadata> GetFileAsync(string filePath)
     {
         if (string.IsNullOrEmpty(filePath) || filePath == "/")
         {
-            return Task.FromResult<FileMetadata>(null);
+            return null;
         }
 
-        return InternalGetFileAsync(filePath);
-    }
-
-    private async Task<FileMetadata> InternalGetFileAsync(string filePath)
-    {
         try
         {
             var data = await _dropboxClient.Files.GetMetadataAsync(filePath);

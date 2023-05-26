@@ -164,14 +164,14 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         }
     }
 
-    public Task<List<DriveFile>> GetItemsAsync(string folderId)
+    public async Task<List<DriveFile>> GetItemsAsync(string folderId)
     {
-        return GetItemsInternalAsync(folderId);
+        return await GetItemsInternalAsync(folderId);
     }
 
-    public Task<List<DriveFile>> GetItemsAsync(string folderId, bool? folders)
+    public async Task<List<DriveFile>> GetItemsAsync(string folderId, bool? folders)
     {
-        return GetItemsInternalAsync(folderId, folders);
+        return await GetItemsInternalAsync(folderId, folders);
     }
 
     private async Task<List<DriveFile>> GetItemsInternalAsync(string folderId, bool? folders = null)
@@ -359,15 +359,10 @@ internal class GoogleDriveStorage : IThirdPartyStorage<DriveFile, DriveFile, Dri
         return file;
     }
 
-    public async Task<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
+    public async ValueTask<ResumableUploadSession> CreateResumableSessionAsync(DriveFile driveFile, long contentLength)
     {
         ArgumentNullException.ThrowIfNull(driveFile);
 
-        return await InternalCreateResumableSessionAsync(driveFile, contentLength);
-    }
-
-    private async Task<ResumableUploadSession> InternalCreateResumableSessionAsync(DriveFile driveFile, long contentLength)
-    {
         var fileId = string.Empty;
         var method = "POST";
         var body = string.Empty;
