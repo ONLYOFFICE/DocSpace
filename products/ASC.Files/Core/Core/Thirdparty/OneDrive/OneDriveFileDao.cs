@@ -55,11 +55,6 @@ internal class OneDriveFileDao : ThirdPartyFileDao<Item, Item, Item>
             return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
         }
 
-        return await InternalCreateUploadSessionAsync(file, contentLength);
-    }
-
-    private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)
-    {
         var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
         Item onedriveFile;

@@ -183,11 +183,6 @@ public class WebPath
             throw new ArgumentException($"bad path format {relativePath} remove '~'", nameof(relativePath));
         }
 
-        return await InternalGetPathAsync(relativePath);
-    }
-
-    private async Task<string> InternalGetPathAsync(string relativePath)
-    {
         if (_coreBaseSettings.Standalone && await ServiceProvider.GetService<StaticUploader>().CanUploadAsync()) //hack for skip resolve DistributedTaskQueueOptionsManager
         {
             try

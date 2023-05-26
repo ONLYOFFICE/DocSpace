@@ -592,7 +592,7 @@ public class FileStorageService //: IFileStorageService
         return await InternalCreateNewFolderAsync(parentId, title, FolderType.EditingRoom, privacy);
     }
 
-    private async Task<Folder<T>> InternalCreateNewFolderAsync<T>(T parentId, string title, FolderType folderType = FolderType.DEFAULT, bool privacy = false)
+    private async ValueTask<Folder<T>> InternalCreateNewFolderAsync<T>(T parentId, string title, FolderType folderType = FolderType.DEFAULT, bool privacy = false)
     {
         var folderDao = GetFolderDao<T>();
 
@@ -793,18 +793,13 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
-    public async Task<File<T>> CreateNewFileAsync<T, TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
+    public async ValueTask<File<T>> CreateNewFileAsync<T, TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
     {
         if (string.IsNullOrEmpty(fileWrapper.Title) || fileWrapper.ParentId == null)
         {
             throw new ArgumentException();
         }
 
-        return await InternalCreateNewFileAsync(fileWrapper, enableExternalExt);
-    }
-
-    private async Task<File<T>> InternalCreateNewFileAsync<T, TTemplate>(FileModel<T, TTemplate> fileWrapper, bool enableExternalExt = false)
-    {
         var fileDao = GetFileDao<T>();
         var folderDao = GetFolderDao<T>();
 
@@ -1681,7 +1676,7 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
-    public async Task<Folder<string>> GetBackupThirdPartyAsync()
+    public async ValueTask<Folder<string>> GetBackupThirdPartyAsync()
     {
         var providerDao = GetProviderDao<string>();
         if (providerDao == null)
@@ -1689,11 +1684,6 @@ public class FileStorageService //: IFileStorageService
             return null;
         }
 
-        return await InternalBackupGetThirdPartyAsync(providerDao);
-    }
-
-    private async Task<Folder<string>> InternalBackupGetThirdPartyAsync(IProviderDao providerDao)
-    {
         var providerInfo = await providerDao.GetProvidersInfoAsync(FolderType.ThirdpartyBackup).SingleOrDefaultAsync();
 
         if (providerInfo != null)
@@ -1737,7 +1727,7 @@ public class FileStorageService //: IFileStorageService
         }
     }
 
-    public async Task<Folder<string>> SaveThirdPartyAsync(ThirdPartyParams thirdPartyParams)
+    public async ValueTask<Folder<string>> SaveThirdPartyAsync(ThirdPartyParams thirdPartyParams)
     {
         var providerDao = GetProviderDao<string>();
 
@@ -1746,11 +1736,6 @@ public class FileStorageService //: IFileStorageService
             return null;
         }
 
-        return await InternalSaveThirdPartyAsync(thirdPartyParams, providerDao);
-    }
-
-    private async Task<Folder<string>> InternalSaveThirdPartyAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
-    {
         var folderDaoInt = _daoFactory.GetFolderDao<int>();
         var folderDao = GetFolderDao<string>();
 
@@ -1830,7 +1815,7 @@ public class FileStorageService //: IFileStorageService
         return folder;
     }
 
-    public async Task<Folder<string>> SaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams)
+    public async ValueTask<Folder<string>> SaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams)
     {
         var providerDao = GetProviderDao<string>();
 
@@ -1839,11 +1824,6 @@ public class FileStorageService //: IFileStorageService
             return null;
         }
 
-        return await InternalSaveThirdPartyBackupAsync(thirdPartyParams, providerDao);
-    }
-
-    private async Task<Folder<string>> InternalSaveThirdPartyBackupAsync(ThirdPartyParams thirdPartyParams, IProviderDao providerDao)
-    {
         ErrorIf(thirdPartyParams == null, FilesCommonResource.ErrorMassage_BadRequest);
         ErrorIf(!_filesSettingsHelper.EnableThirdParty, FilesCommonResource.ErrorMassage_SecurityException_Create);
 
@@ -1896,7 +1876,7 @@ public class FileStorageService //: IFileStorageService
         return folder;
     }
 
-    public async Task<object> DeleteThirdPartyAsync(string providerId)
+    public async ValueTask<object> DeleteThirdPartyAsync(string providerId)
     {
         var providerDao = GetProviderDao<string>();
         if (providerDao == null)
@@ -1904,11 +1884,6 @@ public class FileStorageService //: IFileStorageService
             return null;
         }
 
-        return await InternalDeleteThirdPartyAsync(providerId, providerDao);
-    }
-
-    private async Task<object> InternalDeleteThirdPartyAsync(string providerId, IProviderDao providerDao)
-    {
         var curProviderId = Convert.ToInt32(providerId);
         var providerInfo = await providerDao.GetProviderInfoAsync(curProviderId);
 
@@ -2313,18 +2288,13 @@ public class FileStorageService //: IFileStorageService
         return favorite;
     }
 
-    public async Task<List<FileEntry<T>>> AddToFavoritesAsync<T>(IEnumerable<T> foldersId, IEnumerable<T> filesId)
+    public async ValueTask<List<FileEntry<T>>> AddToFavoritesAsync<T>(IEnumerable<T> foldersId, IEnumerable<T> filesId)
     {
         if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
-        return await InternalAddToFavoritesAsync(foldersId, filesId);
-    }
-
-    private async Task<List<FileEntry<T>>> InternalAddToFavoritesAsync<T>(IEnumerable<T> foldersId, IEnumerable<T> filesId)
-    {
         var tagDao = GetTagDao<T>();
         var fileDao = GetFileDao<T>();
         var folderDao = GetFolderDao<T>();
@@ -2383,18 +2353,13 @@ public class FileStorageService //: IFileStorageService
 
     #region Templates Manager
 
-    public async Task<List<FileEntry<T>>> AddToTemplatesAsync<T>(IEnumerable<T> filesId)
+    public async ValueTask<List<FileEntry<T>>> AddToTemplatesAsync<T>(IEnumerable<T> filesId)
     {
         if (await _userManager.IsUserAsync(_authContext.CurrentAccount.ID))
         {
             throw new SecurityException(FilesCommonResource.ErrorMassage_SecurityException);
         }
 
-        return await InternalAddToTemplatesAsync(filesId);
-    }
-
-    private async Task<List<FileEntry<T>>> InternalAddToTemplatesAsync<T>(IEnumerable<T> filesId)
-    {
         var tagDao = GetTagDao<T>();
         var fileDao = GetFileDao<T>();
 

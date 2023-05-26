@@ -165,12 +165,6 @@ public class DiscDataStore : BaseStorage
         ArgumentNullException.ThrowIfNull(stream);
 
         //Try seek to start
-        return await InternalSaveAsync(domain, path, buffered);
-    }
-
-    private async Task<Uri> InternalSaveAsync(string domain, string path, Stream buffered)
-    {
-        //Try seek to start
         if (buffered.CanSeek)
         {
             buffered.Seek(0, SeekOrigin.Begin);

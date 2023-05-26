@@ -64,11 +64,6 @@ public class DocumentServiceLicense
             return null;
         }
 
-        return await InternalGetDocumentServiceLicenseAsync();
-    }
-
-    private async Task<CommandResponse> InternalGetDocumentServiceLicenseAsync()
-    {
         var cacheKey = "DocumentServiceLicense";
         var commandResponse = _cache.Get<CommandResponse>(cacheKey);
         if (commandResponse == null)

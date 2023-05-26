@@ -243,11 +243,6 @@ internal class OneDriveStorage : IThirdPartyStorage<Item, Item, Item>
     {
         ArgumentNullException.ThrowIfNull(onedriveFile);
 
-        return await InternalCreateResumableSessionAsync(onedriveFile, contentLength);
-    }
-
-    private async Task<ResumableUploadSession> InternalCreateResumableSessionAsync(Item onedriveFile, long contentLength)
-    {
         var folderId = onedriveFile.ParentReference.Id;
         var fileName = onedriveFile.Name;
 

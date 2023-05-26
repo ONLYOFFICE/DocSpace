@@ -306,7 +306,14 @@ public class EditorController : ApiControllerBase
             throw new Exception("Mixed Active Content is not allowed. HTTPS address for Document Server is required.");
         }
 
-        return await InternalCheckDocServiceUrlAsync();
+        await _documentServiceConnector.CheckDocServiceUrlAsync();
+
+        return new[]
+        {
+            _filesLinkUtility.DocServiceUrl,
+            _filesLinkUtility.DocServiceUrlInternal,
+            _filesLinkUtility.DocServicePortalUrl
+        };
     }
 
     /// <visible>false</visible>
@@ -320,29 +327,12 @@ public class EditorController : ApiControllerBase
             return url;
         }
 
-        return await InternalGetDocServiceUrlAsync(url);
-    }
-
-    private async Task<object> InternalGetDocServiceUrlAsync(string url)
-    {
         var dsVersion = await _documentServiceConnector.GetVersionAsync();
 
         return new
         {
             version = dsVersion,
             docServiceUrlApi = url,
-        };
-    }
-
-    private async Task<IEnumerable<string>> InternalCheckDocServiceUrlAsync()
-    {
-        await _documentServiceConnector.CheckDocServiceUrlAsync();
-
-        return new[]
-        {
-            _filesLinkUtility.DocServiceUrl,
-            _filesLinkUtility.DocServiceUrlInternal,
-            _filesLinkUtility.DocServicePortalUrl
         };
     }
 }

@@ -52,11 +52,6 @@ internal class DropboxFileDao : ThirdPartyFileDao<FileMetadata, FolderMetadata, 
             return new ChunkedUploadSession<string>(RestoreIds(file), contentLength) { UseChunks = false };
         }
 
-        return await InternalCreateUploadSessionAsync(file, contentLength);
-    }
-
-    private async Task<ChunkedUploadSession<string>> InternalCreateUploadSessionAsync(File<string> file, long contentLength)
-    {
         var uploadSession = new ChunkedUploadSession<string>(file, contentLength);
 
         var storage = (DropboxStorage)await ProviderInfo.StorageAsync;

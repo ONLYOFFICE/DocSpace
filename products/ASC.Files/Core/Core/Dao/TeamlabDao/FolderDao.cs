@@ -111,11 +111,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(title);
 
-        return await InternalGetFolderAsync(title, parentId);
-    }
-
-    private async Task<Folder<int>> InternalGetFolderAsync(string title, int parentId)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var query = GetFolderQuery(filesDbContext, r => r.Title == title && r.ParentId == parentId).AsNoTracking()
@@ -394,11 +389,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return await InternalSaveFolderAsync(folder, transaction);
-    }
-
-    private async Task<int> InternalSaveFolderAsync(Folder<int> folder, IDbContextTransaction transaction)
-    {
         var folderId = folder.Id;
 
         if (transaction == null)
@@ -545,11 +535,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             throw new ArgumentNullException(nameof(folderId));
         }
 
-        await InternalDeleteFolderAsync(folderId);
-    }
-
-    private async Task InternalDeleteFolderAsync(int id)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
@@ -1154,11 +1139,6 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(module);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(bunch);
 
-        return await InternalGetFolderIDAsync(module, bunch, data, createIfNotExists);
-    }
-
-    private async Task<int> InternalGetFolderIDAsync(string module, string bunch, string data, bool createIfNotExists)
-    {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var key = $"{module}/{bunch}/{data}";

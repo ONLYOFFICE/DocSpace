@@ -281,14 +281,9 @@ public class GoogleCloudStorage : BaseStorage
     {
         if (paths.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalDeleteFilesAsync(domain, paths);
-    }
-
-    private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
-    {
         var keysToDel = new List<string>();
 
         long quotaUsed = 0;

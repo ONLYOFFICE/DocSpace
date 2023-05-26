@@ -278,7 +278,7 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
         }
     }
 
-    public async Task IndexAsync(List<T> data, bool immediately = true, int retry = 0)
+    public async ValueTask IndexAsync(List<T> data, bool immediately = true, int retry = 0)
     {
         var t = _serviceProvider.GetService<T>();
         if (!Support(t) || data.Count == 0)
@@ -286,11 +286,6 @@ public class FactoryIndexer<T> : IFactoryIndexer where T : class, ISearchItem
             return;
         }
 
-        await InternalIndexAsync(data, immediately, retry);
-    }
-
-    private async Task InternalIndexAsync(List<T> data, bool immediately, int retry)
-    {
         try
         {
             await _indexer.IndexAsync(data, immediately).ConfigureAwait(false);
@@ -691,7 +686,7 @@ public class FactoryIndexer
         }
     }
 
-    public Task<bool> CheckStateAsync(bool cacheState = true)
+    public async ValueTask<bool> CheckStateAsync(bool cacheState = true)
     {
         const string key = "elasticsearch";
 
@@ -700,15 +695,10 @@ public class FactoryIndexer
             var cacheValue = _cache.Get<string>(key);
             if (!string.IsNullOrEmpty(cacheValue))
             {
-                return Task.FromResult(Convert.ToBoolean(cacheValue));
+                return Convert.ToBoolean(cacheValue);
             }
         }
 
-        return InternalCheckStateAsync(cacheState, key);
-    }
-
-    private async Task<bool> InternalCheckStateAsync(bool cacheState, string key)
-    {
         var cacheTime = DateTime.UtcNow.AddMinutes(15);
 
         try

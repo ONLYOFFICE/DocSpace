@@ -332,18 +332,13 @@ internal class SecurityDao : SecurityBaseDao<int>, ISecurityDao<int>
     {
     }
 
-    public Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<int> entry)
+    public async Task<IEnumerable<FileShareRecord>> GetSharesAsync(FileEntry<int> entry)
     {
         if (entry == null)
         {
-            return Task.FromResult(Enumerable.Empty<FileShareRecord>());
+            return Enumerable.Empty<FileShareRecord>();
         }
 
-        return InternalGetSharesAsync(entry);
-    }
-
-    private async Task<IEnumerable<FileShareRecord>> InternalGetSharesAsync(FileEntry<int> entry)
-    {
         var files = new List<string>();
         var foldersInt = new List<int>();
 
