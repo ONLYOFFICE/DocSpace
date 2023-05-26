@@ -504,14 +504,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
-            var subfolders = await FolderDaoQueries.GetSubfolderIdsAsync(filesDbContext, id).ToListAsync();
+            var subfolders = await FolderDaoQueries.GetSubfolderIdsAsync(filesDbContext, folderId).ToListAsync();
 
             if (!subfolders.Contains(folderId))
             {
                 subfolders.Add(folderId); // chashed folder_tree
             }
 
-            var parent = await FolderDaoQueries.GetParentIdByIdAsync(filesDbContext, TenantID, id);
+            var parent = await FolderDaoQueries.GetParentIdByIdAsync(filesDbContext, TenantID, folderId);
 
             var folderToDelete = await FolderDaoQueries.GetDbfoldersForDeleteAsync(filesDbContext, TenantID, subfolders).ToListAsync();
 
@@ -530,13 +530,13 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             await FolderDaoQueries.DeleteTagsAsync(filesDbContext, TenantID);
 
-            await FolderDaoQueries.DeleteTagLinkByTagOriginAsync(filesDbContext, TenantID, id.ToString(), subfoldersStrings);
+            await FolderDaoQueries.DeleteTagLinkByTagOriginAsync(filesDbContext, TenantID, folderId.ToString(), subfoldersStrings);
 
-            await FolderDaoQueries.DeleteTagOriginAsync(filesDbContext, TenantID, id.ToString(), subfoldersStrings);
+            await FolderDaoQueries.DeleteTagOriginAsync(filesDbContext, TenantID, folderId.ToString(), subfoldersStrings);
 
             await FolderDaoQueries.DeleteFilesSecurityAsync(filesDbContext, TenantID, subfoldersStrings);
 
-            await FolderDaoQueries.DeleteBunchObjectsAsync(filesDbContext, TenantID, id.ToString());
+            await FolderDaoQueries.DeleteBunchObjectsAsync(filesDbContext, TenantID, folderId.ToString());
 
             await tx.CommitAsync();
             await RecalculateFoldersCountAsync(parent);
