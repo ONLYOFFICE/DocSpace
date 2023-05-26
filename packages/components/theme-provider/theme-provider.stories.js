@@ -121,4 +121,4 @@ const ColorTemplate = (args) => {
   );
 };
 
-export const CurrentColorTemplate = ColorTemplate.bind({});
+export const CurrentColorTheme = ColorTemplate.bind({});
