@@ -415,7 +415,7 @@
   <data name="ConsumersBitlyDescription" xml:space="preserve">
     <value>Bitly xidməti ilə Sənədlər modulunda portal dəvəti keçidlərini və paylaşılan keçidləri qısaltmaq üçün bu proqramı aktivləşdirin.</value>
   </data>
-  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>Dəvət və sənəd bağlantılarını qısaltmaq üçün bu proqramı aktivləşdirin. {0}Bitly girişinizi və API açarınızı aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
@@ -430,7 +430,7 @@
   <data name="ConsumersBoxDescription" xml:space="preserve">
     <value>Box fayl və qovluqlarını idarə etmək üçün tətbiqi aktivləşdirin.</value>
   </data>
-  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>Box hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Box-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Box tərtibatçıları səhifəsində hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
@@ -442,7 +442,7 @@
   <data name="ConsumersClickatellDescription" xml:space="preserve">
     <value>Clickatell vasitəsilə iki faktorlu autentifikasiya üçün tətbiqi aktivləşdirin.</value>
   </data>
-  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>Clickatell xidməti ilə iki faktorlu autentifikasiyanı aktivləşdirmək üçün bu proqramdan istifadə edin. {0}SMS Platforma hesabınıza daxil olun və ONLYOFFICE üçün yeni inteqrasiya yaradın. ApiKey-ni kopyalayın və aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
@@ -457,7 +457,7 @@
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>DocuSign autentifikasiya son nöqtəsi</value>
   </data>
-  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>DocuSign istifadə edərək sənədləri rəqəmsal imzalamaq üçün bu proqramı aktivləşdirin. {0}DocuSign Admin Konsolunuza keçin və ONLYOFFICE inteqrasiyasını əlavə edin. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersDropBoxDescription" xml:space="preserve">
@@ -466,7 +466,7 @@
   <data name="ConsumersDropBox" xml:space="preserve">
     <value>DropBox</value>
   </data>
-  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>Dropbox hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Dropbox-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Dropbox Developers vebsaytında hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
@@ -490,7 +490,7 @@
   <data name="ConsumersFacebookDescription" xml:space="preserve">
     <value>Facebook hesabından istifadə edərək portala daxil olmaq üçün tətbiqi aktivləşdirin.</value>
   </data>
-  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>İstifadəçilərinizə Facebook-dan istifadə edərək ONLYOFFICE-a daxil olmaq və müştərilərinin Facebook hesablarını CRM modulu ilə əlaqələndirmək üçün bu proqramı aktivləşdirin. {0}Facebook Developers Portalına keçin və ONLYOFFICE inteqrasiyası üçün yeni tətbiq yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
@@ -523,7 +523,7 @@
   <data name="ConsumersGoogleDescription" xml:space="preserve">
     <value>Google hesabından istifadə edərək portala daxil olmaq və Google Disk fayl və qovluqlarını idarə etmək üçün layihəni qoşun.</value>
   </data>
-  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>Google Disk hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə Google Diskdən faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Google API konsoluna keçin və ONLYOFFICE inteqrasiyası üçün yeni layihə yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersLinkedInDescription" xml:space="preserve">
@@ -610,13 +610,13 @@
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>OneDrive fayl və qovluqlarını idarə etmək üçün tətbiqi aktivləşdirin.</value>
   </data>
-  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>OneDrive hesabınızı Sənədlər moduluna qoşmaq üçün bu proqramı aktivləşdirin. Siz ONLYOFFICE istifadəçiləri ilə OneDrive-dan faylları idarə edə, redaktə edə və paylaşa biləcəksiniz. {0}Microsoft Azure hesabınıza daxil olun və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersSmscDescription" xml:space="preserve">
     <value>SMS Mərkəzi vasitəsilə iki faktorlu autentifikasiya üçün tətbiqi aktivləşdirin.</value>
   </data>
-  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>SMS Mərkəzi xidməti ilə iki faktorlu autentifikasiyanı aktivləşdirmək üçün bu proqramdan istifadə edin. {0}SMS hesabınıza girişinizi və parolunuzu (və ya parol MD5 hash) kiçik hərflə daxil edin:</value>
   </data>
   <data name="Consumerssmscpsw" xml:space="preserve">
@@ -631,13 +631,13 @@
   <data name="ConsumersTelegramDescription" xml:space="preserve">
     <value>Telegram vasitəsilə portal bildirişləri almaq üçün Telegram hesabını qoşun.</value>
   </data>
-  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
     <value>Telegram vasitəsilə portal bildirişləri almaq üçün Telegram botunu aktiv edin. Telegram Desktop-da BotFather istifadə edərək yeni bot yarada bilərsiniz. Bu botdan istifadə etmək üçün portal istifadəçiləri öz Profil Səhifələrində Telegram bildirişlərini aktivləşdirməlidirlər. {0}Aşağıdakı sahələrə botun istifadəçi adını və aldığınız nişanı yerləşdirin.</value>
   </data>
   <data name="ConsumersTwilioDescription" xml:space="preserve">
     <value>Twilio ilə CRM kontaktlarına zəng etmək üçün bu proqramı aktivləşdirin.</value>
   </data>
-  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>İstifadəçilərinizə Twilio-dan istifadə edərək CRM modulundan kontaktlarına zəng etmək imkanı vermək üçün bu proqramı aktiv edin. {0}Twilio Panelinə keçin və aşağıdakı məlumatları yerləşdirin:</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
@@ -646,7 +646,7 @@
   <data name="ConsumersTwitterDescription" xml:space="preserve">
     <value>Twitter hesabından istifadə edərək portala daxil olmaq və kontaktları axtarmaq üçün tətbiqi aktivləşdirin.</value>
   </data>
-  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>İstifadəçilərinizə Twitter-dən istifadə edərək ONLYOFFICE-a daxil olmaq və müştərilərinin Twitter hesablarını CRM modulu ilə əlaqələndirmək üçün bu proqramı işə salın. {0}Twitter Developers Portalına keçin və yeni tətbiq ONLYOFFICE inteqrasiyası yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersVkDescription" xml:space="preserve">
@@ -658,7 +658,7 @@
   <data name="ConsumersYahooDescription" xml:space="preserve">
     <value>Yahoo xidmətindən istifadəçiləri daxil etmək üçün tətbiqi aktivləşdirin.</value>
   </data>
-  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>Yahoo kontakt siyahınızdan yeni portal istifadəçiləri əlavə etmək üçün bu proqramı aktiv edin. {0}Yahoo Developer Network-də Tətbiq Yaradın səhifəsinə keçin və ONLYOFFICE inteqrasiyası üçün yeni proqram yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersYandexDescription" xml:space="preserve">
@@ -934,71 +934,17 @@
   <data name="ConsumersyahooClientSecret" xml:space="preserve">
     <value>Müştəri sirri</value>
   </data>
-  <data name="ConsumersBitlyInstruction" xml:space="preserve">
-    <value>Bitly xidmətini əlavə etsəniz, yeni istifadəçiləri ONLYOFFICE™ portalına dəvət etmək üçün qısaldılmış keçidlər və xarici istifadəçilərlə paylaşılan Sənədlər modulunda sənədlərə qısaldılmış keçidlər alacaqsınız.</value>
-  </data>
-  <data name="ConsumersBoxInstruction" xml:space="preserve">
-    <value>Box xidmətinin tətbiqini əlavə etsəniz, Sənədlər modulunda Box hesabınızı əlaqələndirə bilərsiniz. Bu, Box-da yeni faylları yükləməyə və yaratmağa, mövcud olanları redaktə etməyə, köçürməyə və silməyə, ONLYOFFICE™ portal istifadəçiləri ilə fayl və qovluqları paylaşmağa imkan verəcək.</value>
-  </data>
-  <data name="ConsumersClickatellInstruction" xml:space="preserve">
-    <value>Clickatell xidmət proqramını əlavə etməklə iki faktorlu autentifikasiyanı aktivləşdirə və istifadəçiyə ONLYOFFICE portalına daxil olmaq imkanı verən kodla SMS ala biləcəksiniz.</value>
-  </data>
-  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>DocuSign xidmətinin tətbiqini əlavə etsəniz, Sənədlər modulundan faylları imzalaya bilərsiniz. Bu, elektron imza üçün faylın DocuSugn xidməti vasitəsilə ONLYOFFICE™ portal işçilərinə göndərilməsinə imkan verəcək. İmzalanmış fayl ONLYOFFICE™ Sənədlər modulunda saxlanacaq.</value>
-  </data>
-  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
-    <value>Dropbox xidmətinin tətbiqini əlavə etsəniz, Dropbox hesabınızı Sənədlər modulunda əlaqələndirə bilərsiniz. Bu, Dropbox-da yeni faylları yükləməyə və yaratmağa, mövcud olanları redaktə etməyə, onları köçürməyə və silməyə, ONLYOFFICE™ portal istifadəçiləri ilə fayl və qovluqları paylaşmağa imkan verəcək.</value>
-  </data>
-  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
-    <value>EasyBib tətbiqini əlavə etdiyiniz zaman sənədlərinizdə asanlıqla biblioqrafik siyahılardan yarada bilərsiniz.</value>
-  </data>
-  <data name="ConsumersFacebookInstruction" xml:space="preserve">
-    <value>Facebook xidmətinin tətbiqini əlavə etsəniz, ONLYOFFICE™ portalından istifadə edərək daxil ola bilmək üçün Facebook hesabınızı profil səhifənizlə əlaqələndirə biləcəksiniz. Həmçinin CRM modulunda şəxsin Facebook hesabını tapa və onu "Şəxsi/şirkəti redaktə et" səhifəsinə bağlaya bilərsiniz.</value>
-  </data>
-  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
-    <value>Firebase Cloud Messaging-ə qoşulsanız, hətta şəbəkə xaricində olduqda belə sizə göndərilən mesajlar haqqında bildirişlər ala bilərsiniz.</value>
-  </data>
-  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
-    <value>Google Cloud Storage xidmətini portalınıza əlavə etdiyiniz zaman ondan heç bir məlumatın itirilməməsinə əmin olaraq portalınızın ehtiyat nüsxələrini yaratmaq üçün istifadə edə bilərsiniz. Məlumatları və statik məzmunu portalınızda saxlamaq üçün də ondan istifadə edin.</value>
-  </data>
-  <data name="ConsumersGoogleInstruction" xml:space="preserve">
-    <value>Google xidmətinin layihəsini əlavə etsəniz, Google hesabınızı profil səhifənizlə əlaqələndirə biləcəksiniz ki, ondan ONLYOFFICE™ portalına daxil olmaq və Google Disk hesabınızı Sənədlər modulunda əlaqələndirmək üçün istifadə edə bilərsiniz. Bu, sizə Google Diskə yeni fayllar yükləməyə və yaratmağa, mövcud faylları redaktə etməyə, onları köçürməyə və silməyə, ONLYOFFICE™ portal istifadəçiləri ilə fayl və qovluqları paylaşmağa imkan verəcək.</value>
-  </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>LinkedIn xidmətinin tətbiqini əlavə etsəniz, ONLYOFFICE™ portalından istifadə edərək daxil ola bilmək üçün profil səhifənizlə LinkedIn hesabınızı əlaqələndirə biləcəksiniz.</value>
-  </data>
-  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
     <value>İstifadəçilərinizə LinkedIn hesabından istifadə edərək ONLYOFFICE-a daxil olmağa icazə vermək üçün bu proqramı aktiv edin. {0}LinkedIn Developers vebsaytına keçin və yeni ONLYOFFICE inteqrasiyası tətbiqi yaradın. Aldığınız məlumatları aşağıya daxil edin:</value>
   </data>
   <data name="ConsumersMailruInstruction" xml:space="preserve">
     <value>Mail.ru tətbiqini əlavə etdikdə, profil səhifənizdəki Mail.ru hesabından istifadə edərək portala girişi aktivləşdirə bilərsiniz.</value>
   </data>
-  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
-    <value>Rackspace Cloud Storage xidmətini portalınıza əlavə etdiyiniz zaman ondan heç bir məlumatın itirilməməsinə əmin olaraq portalınızın ehtiyat nüsxələrini yaratmaq üçün istifadə edə bilərsiniz. Məlumatları və statik məzmunu portalınızda saxlamaq üçün də ondan istifadə edin.</value>
-  </data>
   <data name="ConsumersRackspaceregion" xml:space="preserve">
     <value>Region</value>
   </data>
-  <data name="ConsumersS3Instruction" xml:space="preserve">
-    <value>Amazon AWS S3-ü portalınıza əlavə etdiyiniz zaman ondan heç bir məlumatın itirilməməsinə əmin olaraq portalınızın ehtiyat nüsxələrini yaratmaq üçün istifadə edə bilərsiniz. Məlumatları və statik məzmunu portalınızda saxlamaq üçün də ondan istifadə edin.</value>
-  </data>
   <data name="ConsumersS3region" xml:space="preserve">
     <value>Region</value>
-  </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>Selectel Cloud Storage xidmətini portalınıza əlavə etdiyiniz zaman ondan heç bir məlumatın itirilməməsinə əmin olaraq portalınızın ehtiyat nüsxələrini yaratmaq üçün istifadə edə bilərsiniz. Məlumatları və statik məzmunu portalınızda saxlamaq üçün də ondan istifadə edin.</value>
-  </data>
-  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
-    <value>OneDrive xidmətinin tətbiqini əlavə etsəniz, OneDrive hesabınızı Sənədlər modulunda əlaqələndirə bilərsiniz. Bu, OneDrive-da yeni faylları yükləməyə və yaratmağa, mövcud olanları redaktə etməyə, köçürməyə və silməyə, ONLYOFFICE™ portal istifadəçiləri ilə fayl və qovluqları paylaşmağa imkan verəcək.</value>
-  </data>
-  <data name="ConsumersSmscInstruction" xml:space="preserve">
-    <value>SMS Center xidmət proqramını əlavə etməklə iki faktorlu autentifikasiyanı aktivləşdirə və istifadəçiyə ONLYOFFICE portalına daxil olmağa imkan verən kodla SMS ala biləcəksiniz. SMS Mərkəzi tətbiqi MDB ölkələri üçün provayder kimi faydalıdır.</value>
-  </data>
-  <data name="ConsumersTwilioInstruction" xml:space="preserve">
-    <value>Twilio əlavə etdikdən sonra  istənilən CRM kontaktına birbaşa brauzerdən zəng edə biləcəksiniz.</value>
-  </data>
-  <data name="ConsumersTwitterInstruction" xml:space="preserve">
-    <value>Twitter xidmətinin tətbiqini əlavə etsəniz, ONLYOFFICE™ portalından istifadə edərək daxil ola bilmək üçün Twitter hesabınızı profil səhifənizlə əlaqələndirə biləcəksiniz. Həmçinin CRM modulunda şəxsin Twitter hesabını tapa və onu “Şəxsi/şirkəti redaktə et” səhifəsinə bağlaya və sonra Twitter xəbər lentinə baxa bilərsiniz.</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
     <value>API Açarı</value>
@@ -1008,12 +954,6 @@
   </data>
   <data name="ConsumersVkInstruction" xml:space="preserve">
     <value>VK tətbiqini əlavə edərkən, profil səhifənizdəki VK hesabından istifadə edərək portala girişi aktivləşdirə bilərsiniz.</value>
-  </data>
-  <data name="ConsumersWordpressInstruction" xml:space="preserve">
-    <value>WordPress tətbiqini əlavə etməklə, sənədləri formatlarını saxlayaraq WordPress veb saytınızda asanlıqla dərc edə bilərsiniz.</value>
-  </data>
-  <data name="ConsumersYahooInstruction" xml:space="preserve">
-    <value>Yahoo xidmət proqramını əlavə etməklə əlaqə siyahısından ONLYOFFICE portalına yeni istifadəçilər əlavə edə biləcəksiniz.</value>
   </data>
   <data name="ConsumersYandexInstruction" xml:space="preserve">
     <value>Yandex tətbiqini əlavə etdikdə, profil səhifənizdəki Yandex hesabından istifadə edərək portala daxil olmağı aktivləşdirə bilərsiniz.</value>
