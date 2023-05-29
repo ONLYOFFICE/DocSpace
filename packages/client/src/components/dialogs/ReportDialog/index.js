@@ -1,4 +1,7 @@
+import FileReactSvgUrl from "PUBLIC_DIR/images/icons/24/file.svg?url";
+
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -7,9 +10,30 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import Textarea from "@docspace/components/textarea";
 
-import ModalDialogContainer from "../ModalDialogContainer";
-
 import { getCrashReport } from "SRC_DIR/helpers/crashReport";
+
+const ModalDialogContainer = styled(ModalDialog)`
+  #modal-dialog {
+    width: 520px;
+    max-height: 560px;
+  }
+
+  .report-description {
+    margin-bottom: 16px;
+  }
+
+  .report-wrapper {
+    margin-top: 8px;
+    height: 56px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+
+    .image {
+      width: 24px;
+    }
+  }
+`;
 
 const ReportDialog = (props) => {
   const { t, ready } = useTranslation(["Common"]);
