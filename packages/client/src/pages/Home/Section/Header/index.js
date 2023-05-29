@@ -572,14 +572,15 @@ const SectionHeaderContent = (props) => {
     const isMultiExternalLink = externalLinks.length > 1;
 
     const roomLinks = externalLinks.map((link) => {
-      if (!link.sharedTo.title) {
-      }
       return {
         // id: "option_move-to",
         key: `external-link_${link.sharedTo.id}`,
         label: link.sharedTo.title,
         icon: InvitationLinkReactSvgUrl,
-        onClick: () => copy(link.sharedTo.shareLink),
+        onClick: () => {
+          copy(link.sharedTo.shareLink);
+          toastr.success(t("Files:LinkSuccessfullyCopied"));
+        },
         disabled: link.sharedTo.disabled,
       };
     });
@@ -598,7 +599,10 @@ const SectionHeaderContent = (props) => {
           key: "copy-external-link",
           label: t("SharingPanel:CopyExternalLink"),
           icon: CopyToReactSvgUrl,
-          onClick: () => copy(roomLinks[0]?.sharedTo?.shareLink),
+          onClick: () => {
+            copy(roomLinks[0]?.sharedTo?.shareLink);
+            toastr.success(t("Files:LinkSuccessfullyCopied"));
+          },
           disabled: !isPublicRoomType,
         };
 

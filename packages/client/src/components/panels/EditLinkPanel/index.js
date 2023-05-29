@@ -92,9 +92,8 @@ const EditLinkPanel = (props) => {
           toastr.success(t("Files:LinkEditedSuccessfully"));
         } else {
           copy(link?.sharedTo?.shareLink);
-          toastr.success(
-            "Lorem ipsum dolor sit amet, consectetuer adipiscing elit."
-          );
+
+          toastr.success(t("Files:LinkAddedSuccessfully"));
         }
       })
       .catch((err) => toastr.error(err?.message))

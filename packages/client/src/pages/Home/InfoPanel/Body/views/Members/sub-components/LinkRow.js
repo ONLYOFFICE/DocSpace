@@ -74,7 +74,7 @@ const LinkRow = (props) => {
 
   const onLockClick = () => {
     copy(password);
-    toastr.success("Password was copied TODO: need translation ");
+    toastr.success(t("Files:PasswordSuccessfullyCopied"));
   };
 
   const onEmbeddingClick = () => {

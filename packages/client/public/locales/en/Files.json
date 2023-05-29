@@ -137,5 +137,7 @@
   "LinkSuccessfullyCopied": "Link successfully copied",
   "ShareRoom": "Share room",
   "DownloadAll": "Download all",
-  "PublicRoom": "Public room"
+  "PublicRoom": "Public room",
+  "PasswordSuccessfullyCopied": "Password successfully copied",
+  "LinkAddedSuccessfully": "Link added successfully"
 }
