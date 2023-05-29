@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
+import { isMobileOnly } from "react-device-detect";
 
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
@@ -132,14 +133,14 @@ const ReportDialog = (props) => {
           label={t("SendButton")}
           size="normal"
           primary
-          scale
+          scale={isMobileOnly}
           onClick={onClickSend}
         />
         <Button
           key="CancelButton"
           label={t("CancelButton")}
           size="normal"
-          scale
+          scale={isMobileOnly}
           onClick={onClose}
         />
       </ModalDialog.Footer>
