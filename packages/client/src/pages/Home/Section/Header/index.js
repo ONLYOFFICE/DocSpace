@@ -953,7 +953,6 @@ export default inject(
       setBufferSelection,
       setIsLoading,
 
-      fetchRooms,
       activeFiles,
       activeFolders,
 
@@ -1099,8 +1098,6 @@ export default inject(
       hideContextMenuInsideArchiveRoom,
 
       setIsLoading,
-
-      fetchRooms,
 
       activeFiles,
       activeFolders,

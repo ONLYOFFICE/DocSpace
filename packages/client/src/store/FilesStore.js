@@ -1033,7 +1033,7 @@ class FilesStore {
     const value = `${filter.sortBy},${filter.pageCount},${filter.sortOrder}`;
     localStorage.setItem(key, value);
 
-    this.setFilterUrl(filter);
+    // this.setFilterUrl(filter);
     this.filter = filter;
 
     runInAction(() => {
@@ -1060,7 +1060,7 @@ class FilesStore {
 
     if (!this.authStore.settingsStore.withPaging) filter.pageCount = 100;
 
-    this.setFilterUrl(filter, true);
+    // this.setFilterUrl(filter, true);
     this.roomsFilter = filter;
 
     runInAction(() => {
@@ -1167,7 +1167,9 @@ class FilesStore {
     filterData.folder = folderId;
 
     if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
-      return this.fetchRooms();
+      return window.DocSpace.navigate(
+        `rooms/shared/filter?${RoomsFilter.getDefault().toUrlParams()}`
+      );
 
     this.setIsErrorRoomNotAvailable(false);
     this.setIsLoadedFetchFiles(false);

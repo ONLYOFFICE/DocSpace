@@ -104,7 +104,7 @@ class FilesActionStore {
       filter,
       fetchFiles,
       roomsFilter,
-      fetchRooms,
+
       isEmptyLastPageAfterOperation,
       resetFilterPage,
     } = this.filesStore;
@@ -133,16 +133,14 @@ class FilesActionStore {
     }
 
     if (isRoomsFolder || isArchiveFolder || isArchiveFolderRoot) {
-      fetchRooms(
-        updatedFolder,
-        newFilter ? newFilter : roomsFilter.clone()
-      ).finally(() => {
-        this.dialogsStore.setIsFolderActions(false);
-        return setTimeout(
-          () => clearSecondaryProgressData(operationId),
-          TIMEOUT
-        );
-      });
+      const currentFilter = newFilter ? newFilter : roomsFilter.clone();
+
+      window.DocSpace.navigate(
+        `${window.DocSpace.location.pathname}?${currentFilter.toUrlParams()}`
+      );
+
+      this.dialogsStore.setIsFolderActions(false);
+      return setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
     } else {
       fetchFiles(
         updatedFolder,
@@ -1154,9 +1152,7 @@ class FilesActionStore {
   };
 
   selectTag = (tag) => {
-    const { roomsFilter, fetchRooms, setIsLoading } = this.filesStore;
-
-    const { id } = this.selectedFolderStore;
+    const { roomsFilter, setIsLoading } = this.filesStore;
 
     const newFilter = roomsFilter.clone();
 
@@ -1180,13 +1176,13 @@ class FilesActionStore {
     }
 
     setIsLoading(true);
-
-    fetchRooms(id, newFilter).finally(() => setIsLoading(false));
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
+    );
   };
 
   selectOption = ({ option, value }) => {
-    const { roomsFilter, fetchRooms, setIsLoading } = this.filesStore;
-    const { id } = this.selectedFolderStore;
+    const { roomsFilter, setIsLoading } = this.filesStore;
 
     const newFilter = roomsFilter.clone();
     const tags = newFilter.tags ? [...newFilter.tags] : [];
@@ -1201,7 +1197,9 @@ class FilesActionStore {
     }
 
     setIsLoading(true);
-    fetchRooms(id, newFilter).finally(() => setIsLoading(false));
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams()}`
+    );
   };
 
   selectRowAction = (checked, file) => {

@@ -54,22 +54,18 @@ const RootFolderContainer = (props) => {
     onCreate,
     onCreateRoom,
     myFolderId,
-    filter,
-    fetchFiles,
+
     setIsLoading,
     rootFolderType,
     linkStyles,
     isLoading,
-    viewAs,
-    fetchRooms,
-    setAlreadyFetchingRooms,
-    categoryType,
+
     isEmptyPage,
 
     isVisitor,
     isCollaborator,
     sectionWidth,
-    setIsLoadedEmptyPage,
+
     security,
 
     myFolder,
@@ -382,18 +378,13 @@ export default inject(
 
     const {
       filter,
-      fetchFiles,
+
       privacyInstructions,
       isLoading,
       setIsLoading,
-      viewAs,
-      fetchRooms,
-      categoryType,
-      setAlreadyFetchingRooms,
+
       isEmptyPage,
       clearFiles,
-
-      setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
     const { isPrivacyFolder, myFolderId, myFolder, roomsFolder } =
@@ -415,13 +406,9 @@ export default inject(
       isLoading,
       setIsLoading,
       rootFolderType,
-      viewAs,
-      fetchRooms,
-      categoryType,
-      setAlreadyFetchingRooms,
+
       isEmptyPage,
 
-      setIsLoadedEmptyPage,
       security,
 
       myFolder,

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useCallback, useMemo } from "react";
 import elementResizeDetectorMaker from "element-resize-detector";
 import TableContainer from "@docspace/components/table-container";
 import { inject, observer } from "mobx-react";
+import { useNavigate, useLocation } from "react-router-dom";
 import TableRow from "./TableRow";
 import TableHeader from "./TableHeader";
 import TableBody from "@docspace/components/table-container/TableBody";
@@ -128,6 +129,9 @@ const Table = ({
   const ref = useRef(null);
   const tagRef = useRef(null);
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     const width = window.innerWidth;
 
@@ -223,6 +227,8 @@ const Table = ({
         containerRef={ref}
         tagRef={onSetTagRef}
         setHideColumns={setHideColumns}
+        navigate={navigate}
+        location={location}
       />
 
       <TableBody
