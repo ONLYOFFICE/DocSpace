@@ -92,7 +92,7 @@ class PeopleTableHeader extends React.Component {
   };
 
   onFilter = (sortBy) => {
-    const { filter, setIsLoading, fetchPeople } = this.props;
+    const { filter, setIsLoading, navigate, location } = this.props;
     const newFilter = filter.clone();
 
     if (newFilter.sortBy === sortBy && sortBy !== "AZ") {
@@ -116,18 +116,20 @@ class PeopleTableHeader extends React.Component {
     }
 
     setIsLoading(true);
-    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
+
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
   onIconClick = () => {
-    const { filter, setIsLoading, fetchPeople } = this.props;
+    const { filter, setIsLoading, navigate, location } = this.props;
     const newFilter = filter.clone();
 
     newFilter.sortOrder =
       newFilter.sortOrder === "ascending" ? "descending" : "ascending";
 
     setIsLoading(true);
-    fetchPeople(newFilter, true).finally(() => setIsLoading(false));
+
+    navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
   };
 
   render() {
@@ -169,10 +171,10 @@ class PeopleTableHeader extends React.Component {
 }
 
 export default inject(({ auth, peopleStore, filesStore }) => {
-  const { filterStore, usersStore } = peopleStore;
+  const { filterStore } = peopleStore;
 
   const { filter } = filterStore;
-  const { getUsersList } = usersStore;
+
   const { setIsLoading } = filesStore;
 
   const { isVisible: infoPanelVisible } = auth.infoPanelStore;
@@ -180,7 +182,7 @@ export default inject(({ auth, peopleStore, filesStore }) => {
 
   return {
     filter,
-    fetchPeople: getUsersList,
+
     setIsLoading,
     userId: auth.userStore.user.id,
     infoPanelVisible,

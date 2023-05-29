@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import styled, { css } from "styled-components";
 import { inject, observer } from "mobx-react";
 import { isMobile } from "react-device-detect";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import TableContainer from "@docspace/components/table-container";
 import TableBody from "@docspace/components/table-container/TableBody";
@@ -113,6 +114,10 @@ const Table = ({
 }) => {
   const ref = useRef(null);
   const [hideColumns, setHideColumns] = React.useState(false);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   useEffect(() => {
     const width = window.innerWidth;
 
@@ -148,6 +153,8 @@ const Table = ({
         sectionWidth={sectionWidth}
         containerRef={ref}
         setHideColumns={setHideColumns}
+        navigate={navigate}
+        location={location}
       />
       <TableBody
         infoPanelVisible={infoPanelVisible}
