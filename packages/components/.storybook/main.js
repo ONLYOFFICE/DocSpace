@@ -2,7 +2,7 @@ module.exports = {
   stories: [
     "../all/all.stories.js",
     // default page
-    "../**/*.stories.@(js|jsx|ts|tsx)", //"../**/*.stories.@(js|mdx)",
+    "../**/*.stories.@(js|jsx|ts|tsx|mdx)", //"../**/*.stories.@(js|mdx)",
   ],
 
   staticDirs: ["../../../public"],

@@ -1,4 +1,10 @@
-import { Meta, Story, ArgsTable, Canvas } from "@storybook/addon-docs/blocks";
+import {
+  Meta,
+  Story,
+  ArgsTable,
+  Canvas,
+  Controls,
+} from "@storybook/addon-docs/blocks";
 import CatalogEmployeeReactSvg from "PUBLIC_DIR/images/catalog.employee.react.svg?url";
 import ComboBox from "./";
 import * as stories from "./combobox.stories.js";
@@ -20,30 +26,23 @@ import * as stories from "./combobox.stories.js";
 Custom combo box input
 
 <Canvas>
-  <Story story={stories.basic} name="Default" />
+  <div
+    style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    <Story story={stories.basic} />
+    <Story story={stories.baseOption} name="Base Option" />
+    <Story story={stories.advancedOption} />
+    <Story story={stories.badgeType} />
+  </div>
 </Canvas>
 
 ### Properties
 
-<ArgsTable story="Default" />
-
-### Base options
-
-<Canvas
-  parameters={{
-    source: {
-      code: stories.baseOption,
-    },
-  }}
->
-  <Story story={stories.baseOption} name="Base Option" />
-</Canvas>
-
-### Advanced options
-
-<Canvas>
-  <Story story={stories.advancedOption} name="Advanced Options" />
-</Canvas>
+<Controls />
 
 ```js
 import ComboBox from "@docspace/components/combobox";
