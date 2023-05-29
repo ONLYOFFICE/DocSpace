@@ -1977,6 +1977,9 @@ class FilesActionStore {
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;
+
+        if (this.publicRoomStore.isPublicRoom) return;
+
         window.DocSpace.navigate(url);
         return;
       }

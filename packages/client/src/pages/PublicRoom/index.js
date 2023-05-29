@@ -14,6 +14,8 @@ import RoomErrors from "./sub-components/RoomErrors";
 
 import { RoomSharingDialog } from "../../components/dialogs";
 import SelectionArea from "../Home/SelectionArea";
+import MediaViewer from "../Home/MediaViewer";
+
 import FilesFilter from "@docspace/common/api/files/filter";
 
 const PublicRoom = (props) => {
@@ -108,6 +110,7 @@ const PublicRoom = (props) => {
       </Section>
       <RoomSharingDialog />
       <SelectionArea />
+      <MediaViewer />
     </>
   );
 
