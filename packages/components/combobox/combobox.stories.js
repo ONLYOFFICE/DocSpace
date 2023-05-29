@@ -8,14 +8,15 @@ import CatalogEmployeeReactSvgUrl from "PUBLIC_DIR/images/catalog.employee.react
 import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 
+import ComboBoxDocs from "./combobox-docs..mdx";
+
 export default {
   title: "Components/ComboBox",
   component: ComboBox,
+  tags: ["autodocs"],
   parameters: {
     docs: {
-      description: {
-        component: "ComboBox is used for a action on a page.",
-      },
+      page: ComboBoxDocs,
     },
   },
 };
@@ -90,6 +91,8 @@ const BadgeTypeTemplate = (args) => (
   <Wrapper>
     <ComboBox
       {...args}
+      fixedDirection={true}
+      isDefaultMode={false}
       options={[
         { key: 1, label: "Open", backgroundColor: "#4781D1", color: "#FFFFFF" },
         { key: 2, label: "Done", backgroundColor: "#444", color: "#FFFFFF" },
@@ -119,6 +122,9 @@ const Template = (args) => (
   <Wrapper>
     <ComboBox
       {...args}
+      isDefaultMode={false}
+      fixedDirection={true}
+      directionY="both"
       options={[
         { key: 1, label: "Option 1" },
         { key: 2, label: "Option 2" },
@@ -135,6 +141,9 @@ const BaseOptionsTemplate = (args) => (
   <Wrapper>
     <ComboBox
       {...args}
+      isDefaultMode={false}
+      directionY="both"
+      fixedDirection={true}
       options={comboOptions}
       onSelect={(option) => args.onSelect(option)}
       selectedOption={{
@@ -152,6 +161,9 @@ const AdvancedOptionsTemplate = (args) => (
   <Wrapper>
     <ComboBox
       {...args}
+      isDefaultMode={false}
+      fixedDirection={true}
+      directionY="both"
       options={[]}
       advancedOptions={advancedOptions}
       onSelect={(option) => args.onSelect(option)}
@@ -168,7 +180,6 @@ const AdvancedOptionsTemplate = (args) => (
 
 export const basic = Template.bind({});
 basic.args = {
-  opened: true,
   scaled: false,
 };
 export const baseOption = BaseOptionsTemplate.bind({});
@@ -177,11 +188,9 @@ baseOption.args = {
   scaled: false,
   noBorder: false,
   isDisabled: false,
-  opened: true,
 };
 export const advancedOption = AdvancedOptionsTemplate.bind({});
 advancedOption.args = {
-  opened: true,
   isDisabled: false,
   scaled: false,
   size: "content",
