@@ -47,7 +47,7 @@ public class WebhookPublisher : IWebhookPublisher
             return;
         }
 
-        var webhookConfigs = _dbWorker.GetWebhookConfigs();
+        var webhookConfigs = _dbWorker.GetTenantWebhooks();
 
         await foreach (var config in webhookConfigs.Where(r => r.Enabled))
         {
