@@ -34,6 +34,7 @@ const Template = (args) => {
         {...args}
         open={isOpen}
         isDefaultMode={false}
+        clickOutsideAction={() => {}}
         style={{ top: "20px", left: "20px" }}
         onClick={() => {}}
       >

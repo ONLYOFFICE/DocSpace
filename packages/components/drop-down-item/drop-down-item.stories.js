@@ -41,6 +41,7 @@ const Template = (args) => {
         isDefaultMode={false}
         directionX={direction}
         open={true}
+        clickOutsideAction={() => {}}
         style={{ top: "20px", left: "20px" }}
       >
         <DropDownItem
