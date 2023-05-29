@@ -1,10 +1,18 @@
 import PropTypes from "prop-types";
 import ThemeProvider from "../../theme-provider/";
 import { Base, Dark } from "../../themes/index";
+import { useContext } from "react";
+import { DirectionContext } from "./direction-switcher";
 
-const ThemeWrapper = ({ theme, children }) => (
-  <ThemeProvider theme={theme}>{children}</ThemeProvider>
-);
+const ThemeWrapper = ({ theme, children }) => {
+  const interfaceDirection = useContext(DirectionContext);
+
+  return (
+    <ThemeProvider theme={{ ...theme, interfaceDirection }}>
+      {children}
+    </ThemeProvider>
+  );
+};
 
 ThemeWrapper.propTypes = {
   theme: PropTypes.any,
