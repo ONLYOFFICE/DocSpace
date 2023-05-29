@@ -60,7 +60,7 @@ const StyledEditLinkPanel = styled.div`
       }
 
       .edit-link_generate-icon {
-        margin: 8px 0 0 8px;
+        margin: 32px 0px 0px 8px;
       }
     }
   }

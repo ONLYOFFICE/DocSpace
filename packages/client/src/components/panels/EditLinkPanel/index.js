@@ -3,7 +3,7 @@ import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import copy from "copy-to-clipboard";
 import isEqual from "lodash/isEqual";
-import { createPasswordHash } from "@docspace/common/utils";
+// import { createPasswordHash } from "@docspace/common/utils";
 
 import Heading from "@docspace/components/heading";
 import Backdrop from "@docspace/components/backdrop";
@@ -29,14 +29,18 @@ const EditLinkPanel = (props) => {
     linkId,
     isEdit,
     visible,
-    // password,
+    password,
     setIsVisible,
     editExternalLink,
     setExternalLinks,
     shareLink,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
-    hashSettings,
+    // hashSettings,
+    isLocked,
+    disabled,
+    isDenyDownload,
+    link,
   } = props;
 
   const title = props.title ?? t("ExternalLink");
@@ -44,8 +48,10 @@ const EditLinkPanel = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [linkNameValue, setLinkNameValue] = useState(title);
-  const [passwordValue, setPasswordValue] = useState("");
+  const [passwordValue, setPasswordValue] = useState(password);
   const [expirationDate, setExpirationDate] = useState("");
+
+  const [isPasswordValid, setIsPasswordValid] = useState(true);
 
   const [linkValue, setLinkValue] = useState(shareLink);
   const [hasChanges, setHasChanges] = useState(false);
@@ -53,7 +59,7 @@ const EditLinkPanel = (props) => {
   const [passwordAccessIsChecked, setPasswordAccessIsChecked] =
     useState(isLocked);
   const [limitByTimeIsChecked, setLimitByTimeIsChecked] = useState(false);
-  const [denyDownload, setDenyDownload] = useState(false);
+  const [denyDownload, setDenyDownload] = useState(isDenyDownload);
 
   const onPasswordAccessChange = () =>
     setPasswordAccessIsChecked(!passwordAccessIsChecked);
@@ -69,19 +75,24 @@ const EditLinkPanel = (props) => {
 
   const onClose = () => setIsVisible(false);
   const onSave = () => {
-    const passwordHash = createPasswordHash(passwordValue, hashSettings);
+    const isPasswordValid = !!passwordValue.trim();
 
-    const options = {
-      linkId,
-      roomId,
-      title: linkNameValue,
-      expirationDate,
-      password: passwordHash,
-      denyDownload,
-    };
+    if (!isPasswordValid && passwordAccessIsChecked) {
+      setIsPasswordValid(isPasswordValid);
+      return;
+    }
+
+    // const passwordHash = passwordAccessIsChecked
+    //   ? createPasswordHash(passwordValue, hashSettings)
+    //   : null;
+
+    link.sharedTo.title = linkNameValue;
+    link.sharedTo.password = passwordValue;
+    link.sharedTo.denyDownload = denyDownload;
+    // link.sharedTo.expirationDate=expirationDate;
 
     setIsLoading(true);
-    editExternalLink(options)
+    editExternalLink(roomId, link)
       .then((res) => {
         setExternalLinks(res);
 
@@ -174,6 +185,7 @@ const EditLinkPanel = (props) => {
               headerText={t("Files:PasswordAccess")}
               bodyText={t("Files:PasswordLink")}
               isChecked={passwordAccessIsChecked}
+              isPasswordValid={isPasswordValid}
               passwordValue={passwordValue}
               setPasswordValue={setPasswordValue}
               onChange={onPasswordAccessChange}
@@ -219,7 +231,7 @@ const EditLinkPanel = (props) => {
 
 export default inject(({ auth, dialogsStore, publicRoomStore }) => {
   const { selectionParentRoom } = auth.infoPanelStore;
-  const { hashSettings } = auth.settingsStore;
+  // const { hashSettings } = auth.settingsStore;
   const {
     editLinkPanelIsVisible,
     setEditLinkPanelIsVisible,
@@ -241,16 +253,19 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     isEdit,
     linkId: link?.sharedTo?.id ?? template?.sharedTo?.id,
     title: link?.sharedTo?.title,
+    disabled: link?.sharedTo?.disabled,
     editExternalLink,
     roomId: selectionParentRoom.id,
     setExternalLinks,
-    isLocked: !!password,
-    // password: link?.sharedTo?.password,
+    isLocked: !!link?.sharedTo?.password,
+    password: link?.sharedTo?.password ?? "",
+    isDenyDownload: link?.sharedTo?.denyDownload,
     shareLink,
     externalLinks,
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
-    hashSettings,
+    // hashSettings,
+    link,
   };
 })(
   withTranslation(["SharingPanel", "Common", "Files"])(observer(EditLinkPanel))

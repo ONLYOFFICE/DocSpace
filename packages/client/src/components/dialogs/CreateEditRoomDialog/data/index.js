@@ -46,5 +46,7 @@ export const getRoomTypeDefaultTagTranslation = (roomType = 1, t) => {
       return t("Files:ViewOnlyRooms");
     case RoomsType.CustomRoom:
       return t("Files:CustomRooms");
+    case RoomsType.PublicRoom:
+      return t("Files:PublicRoom");
   }
 };

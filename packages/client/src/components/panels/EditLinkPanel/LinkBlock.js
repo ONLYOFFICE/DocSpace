@@ -1,4 +1,4 @@
-import React, { useState, startTransition } from "react";
+import React, { useState } from "react";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
 import TextInput from "@docspace/components/text-input";
@@ -15,9 +15,7 @@ const LinkBlock = (props) => {
   } = props;
 
   const onChangeLinkName = (e) => {
-    startTransition(() => {
-      setLinkNameValue(e.target.value);
-    });
+    setLinkNameValue(e.target.value);
   };
 
   const onShortenClick = () => {
@@ -34,7 +32,7 @@ const LinkBlock = (props) => {
         scale
         size="base"
         withBorder
-        isAutoFocussed
+        isAutoFocussed={false}
         className="edit-link_name-input"
         value={linkNameValue}
         onChange={onChangeLinkName}

@@ -1,13 +1,22 @@
-import React, { useRef, startTransition } from "react";
+import React, { useRef } from "react";
 import ToggleBlock from "./ToggleBlock";
 import PasswordInput from "@docspace/components/password-input";
 import IconButton from "@docspace/components/icon-button";
 import Link from "@docspace/components/link";
 import RefreshReactSvgUrl from "PUBLIC_DIR/images/refresh.react.svg?url";
+import FieldContainer from "@docspace/components/field-container";
 import copy from "copy-to-clipboard";
+import toastr from "@docspace/components/toast/toastr";
 
 const PasswordAccessBlock = (props) => {
-  const { t, isLoading, isChecked, passwordValue, setPasswordValue } = props;
+  const {
+    t,
+    isLoading,
+    isChecked,
+    passwordValue,
+    setPasswordValue,
+    isPasswordValid,
+  } = props;
 
   const passwordInputRef = useRef(null);
 
@@ -16,17 +25,17 @@ const PasswordAccessBlock = (props) => {
   };
 
   const onCleanClick = () => {
+    passwordInputRef.current.state.inputValue = ""; //TODO: PasswordInput bug
     setPasswordValue("");
   };
 
   const onCopyClick = () => {
     copy(passwordValue);
+    toastr.success(t("Files:PasswordSuccessfullyCopied"));
   };
 
   const onChangePassword = (e) => {
-    startTransition(() => {
-      setPasswordValue(e.target.value);
-    });
+    setPasswordValue(e.target.value);
   };
 
   return (
@@ -34,18 +43,27 @@ const PasswordAccessBlock = (props) => {
       {isChecked ? (
         <div>
           <div className="edit-link_password-block">
-            <PasswordInput
-              className="edit-link_password-input"
-              ref={passwordInputRef}
-              // scale //doesn't work
-              simpleView
-              isDisabled={isLoading}
-              // tabIndex={3}
-              // simpleView
-              // passwordSettings={{ minLength: 0 }}
-              inputValue={passwordValue}
-              onChange={onChangePassword}
-            />
+            <FieldContainer
+              labelText={t("Common:Password")}
+              isRequired
+              isVertical
+              hasError={!isPasswordValid}
+              errorMessage={t("Common:RequiredField")}
+              className="edit-link_password-block"
+            >
+              <PasswordInput
+                className="edit-link_password-input"
+                ref={passwordInputRef}
+                // scale //doesn't work
+                simpleView
+                isDisabled={isLoading}
+                // tabIndex={3}
+                // simpleView
+                // passwordSettings={{ minLength: 0 }}
+                inputValue={passwordValue}
+                onChange={onChangePassword}
+              />
+            </FieldContainer>
 
             <IconButton
               className="edit-link_generate-icon"

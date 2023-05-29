@@ -60,7 +60,10 @@ const LinkRow = (props) => {
 
   const onDisableLink = () => {
     setIsLoading(true);
-    editExternalLink({ roomId, linkId: id, title, disabled: !disabled })
+
+    link.sharedTo.disabled = !link.sharedTo.disabled;
+
+    editExternalLink(roomId, link)
       .then((res) => {
         setExternalLink(id, res);
 

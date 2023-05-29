@@ -41,7 +41,10 @@ const DeleteLinkDialogComponent = (props) => {
 
   const onDelete = () => {
     setIsLoading(true);
-    editExternalLink({ roomId, linkId, title, access: 0 })
+
+    link.access = 0;
+
+    editExternalLink(roomId, link)
       .then((res) => {
         setExternalLinks(res);
       })
