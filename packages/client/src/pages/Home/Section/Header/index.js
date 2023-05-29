@@ -548,13 +548,13 @@ const SectionHeaderContent = (props) => {
 
     if (isPublicRoom) {
       return [
-        {
+        security?.Download && {
           key: "public-room_edit",
           label: t("Files:DownloadAll"),
           icon: DownloadReactSvgUrl,
           onClick: onDownloadAll,
         },
-        {
+        security?.Download && {
           key: "public-room_separator",
           isSeparator: true,
         },

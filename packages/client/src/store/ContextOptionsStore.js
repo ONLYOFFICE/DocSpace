@@ -1039,7 +1039,7 @@ class ContextOptionsStore {
         label: t("Common:Download"),
         icon: DownloadReactSvgUrl,
         onClick: () => this.onClickDownload(item, t),
-        disabled: false,
+        disabled: !item.security.Download,
       },
       {
         id: "option_download-as",
@@ -1047,7 +1047,7 @@ class ContextOptionsStore {
         label: t("Translations:DownloadAs"),
         icon: DownloadAsReactSvgUrl,
         onClick: this.onClickDownloadAs,
-        disabled: false,
+        disabled: !item.security.Download,
       },
       ...moveActions,
       {

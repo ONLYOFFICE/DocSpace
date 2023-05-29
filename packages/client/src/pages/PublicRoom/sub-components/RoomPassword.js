@@ -7,7 +7,7 @@ import FieldContainer from "@docspace/components/field-container";
 import { inject, observer } from "mobx-react";
 import { StyledPage, StyledBody, StyledContent } from "./RoomStyles";
 import { getPasswordErrorMessage } from "../../../helpers/utils";
-import { createPasswordHash } from "@docspace/common/utils";
+// import { createPasswordHash } from "@docspace/common/utils";
 import toastr from "@docspace/components/toast/toastr";
 import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
@@ -19,7 +19,7 @@ const RoomPassword = (props) => {
   const {
     t,
     settings,
-    hashSettings,
+    // hashSettings,
     getSettings,
     roomKey,
     validatePublicRoomPassword,
@@ -52,9 +52,9 @@ const RoomPassword = (props) => {
 
     setIsLoading(true);
     try {
-      const passwordHash = createPasswordHash(password, hashSettings);
+      // const passwordHash = createPasswordHash(password, hashSettings);
 
-      const res = await validatePublicRoomPassword(roomKey, passwordHash);
+      const res = await validatePublicRoomPassword(roomKey, password);
       setIsLoading(false);
 
       switch (res?.status) {
@@ -65,13 +65,16 @@ const RoomPassword = (props) => {
 
           return;
         case ValidationResult.Invalid:
-          setError(); // Invalid
+          setError(""); // Invalid
+          toastr.error("Invalid");
           return;
         case ValidationResult.Expired:
-          setError(); // Expired
+          setError(""); // Expired
+          toastr.error("Expired");
           return;
         case ValidationResult.InvalidPassword:
-          setError(); // Invalid Password
+          setError(""); // Invalid Password
+          toastr.error("Invalid Password");
           return;
       }
     } catch (error) {
@@ -167,7 +170,7 @@ export default inject(({ auth, publicRoomStore }) => {
   return {
     theme,
     settings: passwordSettings,
-    hashSettings,
+    // hashSettings,
     defaultPage,
     isAuthenticated: auth.isAuthenticated,
     getSettings,

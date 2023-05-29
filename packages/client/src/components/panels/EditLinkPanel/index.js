@@ -87,7 +87,7 @@ const EditLinkPanel = (props) => {
     //   : null;
 
     link.sharedTo.title = linkNameValue;
-    link.sharedTo.password = passwordValue;
+    link.sharedTo.password = passwordAccessIsChecked ? passwordValue : null;
     link.sharedTo.denyDownload = denyDownload;
     // link.sharedTo.expirationDate=expirationDate;
 

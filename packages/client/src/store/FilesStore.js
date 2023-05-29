@@ -325,7 +325,9 @@ class FilesStore {
       runInAction(() => {
         this.setFilter(newFilter);
         this.setFiles(newFiles);
-        this.treeFoldersStore.fetchTreeFolders();
+
+        if (!this.publicRoomStore.isPublicRoom)
+          this.treeFoldersStore.fetchTreeFolders();
       });
     } else if (opt?.type === "folder" && opt?.id) {
       const foundIndex = this.folders.findIndex((x) => x.id === opt?.id);
