@@ -305,11 +305,7 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
   }, [userTheme]);
 
   useEffect(() => {
-    if (interfaceDirection === "RTL") {
-      document.body.dir = "rtl";
-    } else {
-      document.body.dir = "ltr";
-    }
+    document.body.dir = interfaceDirection;
   }, [interfaceDirection]);
 
   const pathname = window.location.pathname.toLowerCase();

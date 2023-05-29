@@ -10,9 +10,9 @@ const InterfaceDirection = ({ interfaceDirection, setInterfaceDirection }) => {
     const isChecked = e.currentTarget.checked;
 
     if (isChecked) {
-      setInterfaceDirection("RTL");
+      setInterfaceDirection("rtl");
     } else {
-      setInterfaceDirection("LTR");
+      setInterfaceDirection("ltr");
     }
   };
 
@@ -23,7 +23,7 @@ const InterfaceDirection = ({ interfaceDirection, setInterfaceDirection }) => {
       </Text>
       <Checkbox
         value={interfaceDirection}
-        isChecked={interfaceDirection === "RTL"}
+        isChecked={interfaceDirection === "rtl"}
         onChange={onChangeDirection}
         label={"Enable right-to-left mode"}
       />

@@ -148,7 +148,7 @@ class SettingsStore {
   baseDomain = "onlyoffice.io";
   documentationEmail = null;
 
-  interfaceDirection = "LTR";
+  interfaceDirection = "ltr";
 
   constructor() {
     makeAutoObservable(this);
