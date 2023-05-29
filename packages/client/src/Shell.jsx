@@ -49,7 +49,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     userTheme,
     //user,
     whiteLabelLogoUrls,
-    interfaceDirection,
   } = rest;
 
   useEffect(() => {
@@ -304,10 +303,6 @@ const Shell = ({ items = [], page = "home", ...rest }) => {
     if (userTheme) setTheme(userTheme);
   }, [userTheme]);
 
-  useEffect(() => {
-    document.body.dir = interfaceDirection;
-  }, [interfaceDirection]);
-
   const pathname = window.location.pathname.toLowerCase();
   const isEditor = pathname.indexOf("doceditor") !== -1;
 
@@ -360,7 +355,6 @@ const ShellWrapper = inject(({ auth, backup }) => {
     socketHelper,
     setTheme,
     whiteLabelLogoUrls,
-    interfaceDirection,
   } = settingsStore;
   const isBase = settingsStore.theme.isBase;
   const { setPreparationPortalDialogVisible } = backup;
@@ -396,7 +390,6 @@ const ShellWrapper = inject(({ auth, backup }) => {
         : "Base"
       : auth?.userStore?.user?.theme,
     whiteLabelLogoUrls,
-    interfaceDirection,
   };
 })(observer(Shell));
 
