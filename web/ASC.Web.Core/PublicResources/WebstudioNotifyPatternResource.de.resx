@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog wurde erstellt</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Lesezeichen wurde erstellt</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM-Veranstaltung wurde erstellt</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Kommentar wurde hinzugefügt</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM-Kontakt wurde erstellt </value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM-Verkaufschance wurde erstellt</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Diskussion wurde erstellt</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Ereignis wurde erstellt</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Dokument wurde erstellt/geladen</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Ordner wurde erstellt</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum wurde erstellt</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Umfrage wurde erstellt</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>die Nachricht wurde erstellt</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Meilenstein wurde erstellt</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>das Projekt wurde erstellt </value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>die Aufgabe wurde erstellt</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Annehmen</value>
   </data>
@@ -181,15 +133,12 @@
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Rabatt verwenden</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Mehr erfahren&gt;&gt;</value>
-  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Aktivieren Sie Ihre E-Mail-Adresse fürs Portal "${__VirtualRootPath}":"$InviteLink"
 
 Hallo!
 
-Sie sind eingeladen, sich bei ${LetterLogoText} anzumelden, müssen Sie Ihre E-Mail-Adresse aktivieren. Dies wird aus Sicherheitsgründen gemacht.
+Sie sind eingeladen, sich bei "${__VirtualRootPath}":"$InviteLink" anzumelden, müssen Sie Ihre E-Mail-Adresse aktivieren. Dies wird aus Sicherheitsgründen gemacht.
 
 $GreenButton
 
@@ -202,7 +151,7 @@ Sehr geehrter Herr/ Sehr geehrte Frau $OwnerName,
 
 eine Backup-Datei mit allen Daten von Ihrem Portal "${__VirtualRootPath}":"${__VirtualRootPath}" wurde erstellt.
 
-Um mehr über den Backup- bzw. Wiederherstellungsvorgang zu erfahren, lesen Sie bitte unsere Anleitung "Erstellung und Wiederherstellung des Backups von einem ONLYOFFICE™-SaaS-Portal":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx".
+Um mehr über den Backup- bzw. Wiederherstellungsvorgang zu erfahren, lesen Sie bitte unsere Anleitung "Erstellung und Wiederherstellung des Backups von einem ONLYOFFICE™-SaaS-Portal":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block".
 
 Wenn Sie Fragen haben oder Hilfe brauchen, wenden Sie sich bitte an uns unter
 "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -301,13 +250,13 @@ Sie werden weitere Tipps zur Verwendung Ihres Web-Office erhalten. Sie können d
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Kollaborationsräume für Echtzeit-Ko-Autorenschaft oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Kollaborationsräume für Echtzeit-Ko-Autorenschaft oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -333,13 +282,13 @@ Sie werden weitere Tipps zur Verwendung Ihres Web-Office erhalten. Sie können d
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -351,6 +300,7 @@ ONLYOFFICE-Team
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Nachricht von dem "${__VirtualRootPath}":"${__VirtualRootPath}" Portal
+
 Email: $UserEmail
 
 $Body</value>
@@ -376,12 +326,11 @@ $GreenButton
 *Hinweis*: Dieser Link ist nur 48 Tage gültig. Bitte schließen Sie die Aktivierung Ihrer E-Mail-Adresse in dieser Zeitperiode ab.</value>
   </data>
   <data name="pattern_mailbox_created" xml:space="preserve">
-    <value> Sehr geehrte/er Frau/ Herr $UserName,
+    <value>Sehr geehrte/er Frau/ Herr $UserName,
 
       Der Administrator hat ein neues &lt;b&gt;$Address&lt;/ b&gt; Mailbox für Sie auf dem "${__VirtualRootPath}":"${__VirtualRootPath}" erstellt.
 
       Verwenden Sie die folgenden Einstellungen für andere E-Mail-Clients:
-
       Login: &lt;b&gt;$Login&lt;/b&gt;
       Passwort: "&lt;b&gt;set password&lt;/b&gt;":"$MyStaffLink"
 
@@ -399,20 +348,18 @@ $GreenButton
      Wenn Sie diese E-Mail versehentlich erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.</value>
   </data>
   <data name="pattern_mailbox_password_changed" xml:space="preserve">
-    <value>      Sehr geehrte/er Frau/ Herr $UserName,
+    <value>Sehr geehrte/er Frau/ Herr $UserName,
 
       Das Passwort für die &lt;b&gt;$Address&lt;/b&gt; Mailbox wurde geändert.
 
-      Wenn Sie diese E-Mail versehentlich erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.
-    </value>
+      Wenn Sie diese E-Mail versehentlich erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.</value>
   </data>
   <data name="pattern_mailbox_without_settings_created" xml:space="preserve">
     <value>Sehr geehrte/er Frau/ Herr $UserName,
 
      Der Administrator hat eine neue &lt;b&gt;$Address&lt;/ b&gt; Mailbox auf dem Portal "${__VirtualRootPath}":"${__VirtualRootPath}" erstellt.
 
-      Wenn Sie diese E-Mail aus Versehen erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.
-    </value>
+      Wenn Sie diese E-Mail aus Versehen erhalten haben, bitte ignorieren Sie diese oder kontaktieren Sie Ihren Administrator, um Details zu erfahren.</value>
   </data>
   <data name="pattern_migration_error" xml:space="preserve">
     <value>h1.Andere Region Portal Migration Fehler
@@ -421,7 +368,6 @@ Ein Fehler hat während der Migration zu $RegionName Region aufgetreten. Versuch
 Ihr Portal ist nun unter der alten Adresse "$PortalUrl":"$PortalUrl" verfügbar 
 
 Falls Sie einige Fragen haben oder Hilfe brauchen, kontaktieren Sie uns bitte unter "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Mit freundlichen Grüßen,
 ONLYOFFICE™ Support Team
 "www.onlyoffice.com":"http://onlyoffice.com/"
@@ -484,13 +430,13 @@ Sie erhalten mehr Tipps für Ihr Online-Büro. Sie können dies jederzeit auf Ih
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -675,7 +621,7 @@ Hallo $UserDisplayName,
 
 Ihre Portal-Adresse $PortalUrl wurde auf die neue Adresse "${__VirtualRootPath}":"${__VirtualRootPath}" geändert.
 
-*Hinweis*: Alle freigegebenen Dokumenten-Links jetzt nicht zugänglich sind, sowie DNS-Einstellungen und Single-Sign-On-Optionen nicht arbeiten, bis Sie sie ändern. Die Drittanbieter-Links iCal, die in Ihren Kalender hinzugefügt wurden, also nicht aktualisiert werden, bis Sie sie neu laden.</value>
+*Hinweis*: DNS-Einstellungen und Single-Sign-On Optionen funktionieren nicht, bis Sie diese ändern.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Löschen des Profils von "${__VirtualRootPath}":"${__VirtualRootPath}" Portal
@@ -854,13 +800,13 @@ ONLYOFFICE Team
 
 Willkommen bei ONLYOFFICE DocSpace! Ihr Benutzerprofil wurde erfolgreich zu "${__VirtualRootPath}":"${__VirtualRootPath}" hinzugefügt. Jetzt können Sie:
 
-*#* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
+* Mit anderen Benutzern in dem Raum arbeiten, zu dem Sie eingeladen sind: *#Räume für die Zusammenarbeit in Echtzeit oder benutzerdefinierte Räume mit flexiblen Einstellungen für jeden Zweck*.
 
-*#* Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
+* *Mit Dateien in verschiedenen Formaten arbeiten*: Textdokumente, Tabellenkalkulationen, Präsentationen, digitale Formulare, PDF-Dateien, E-Books, Multimedia.
 
-*# Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
+* *Arbeiten Sie gemeinsam an Dokumenten* mit zwei Co-Editing-Modi: in Echtzeit oder mit Absatzsperren. Verfolgen Sie Änderungen, kommunizieren Sie in Echtzeit über den integrierten Chat oder führen Sie Audio- und Videoanrufe. 
 
-*# Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
+* *Verbinden Sie einen beliebigen Cloud-Speicher* und arbeiten Sie, ohne zwischen den Anwendungen zu wechseln. 
 
 $GreenButton
 
@@ -874,6 +820,7 @@ ONLYOFFICE-Team
     <value>h1.Benachrichtigung über die Profiländerung des Portals "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 "$__AuthorName":"$__AuthorUrl" hat sein/ihr Profil unter "${__VirtualRootPath}":"${__VirtualRootPath}" geändert.
+
 
 ^Wenn Sie keine Benachrichtigungen über die Profilaktualisierung erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
@@ -894,6 +841,7 @@ $activity
     <value>SMTP Testnachricht
 
 Diese Nachricht wurde automatisch generiert, um Ihre SMTP-Einstellungen zu testen. Wenn Sie sie sehen, bedeutet dies, dass die Einstellungen korrekt sind und Sie können sie auf Ihrem Portal verwenden.
+
 
 Mit freundlichen Grüßen,
 ONLYOFFICE-Team</value>
@@ -945,6 +893,7 @@ Ihr Portal steht wieder zur Verfügung.</value>
 
 "$__AuthorName":"$__AuthorUrl" ist Ihrem Portal unter "${__VirtualRootPath}":"${__VirtualRootPath}" beigetreten.
 
+
 ^Wenn Sie keine Benachrichtigungen über neue Benutzer erhalten möchten, bearbeiten Sie die "Einstellungen Ihrer Benachrichtigungen":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_user_has_join_tg" xml:space="preserve">
@@ -990,8 +939,7 @@ Dieser Link ist nur 7 Tage gültig.</value>
     <value>${__VirtualRootPath} beitreten</value>
   </data>
   <data name="subject_for_admin_notify" xml:space="preserve">
-    <value>Benutzermeldung an Administratoren
-</value>
+    <value>Benutzermeldung an Administratoren</value>
   </data>
   <data name="subject_join" xml:space="preserve">
     <value>Einladung zum Portal ${__VirtualRootPath}</value>
@@ -1015,7 +963,7 @@ Dieser Link ist nur 7 Tage gültig.</value>
     <value>${__VirtualRootPath} beitreten</value>
   </data>
   <data name="subject_personal_activate" xml:space="preserve">
-    <value>Willkommen auf ONLYOFFICE für persönlichen Gebrauch</value>
+    <value>Willkommen auf ONLYOFFICE für persönlichen Gebrauch!</value>
   </data>
   <data name="subject_personal_after_registration1" xml:space="preserve">
     <value>Willkommen auf ONLYOFFICE Personal</value>
@@ -1142,5 +1090,14 @@ Dieser Link ist nur 7 Tage gültig.</value>
   </data>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>DocSpace-Benutzer aktualisiert: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Möchten Sie das Passwort des Kontos auf ONLYOFFICE Personal ändern? Klicken Sie auf die Schaltfläche unten.
+
+$GreenButton
+
+Der Link ist innerhalb von 7 Tagen gültig.
+
+Möchten Sie das Passwort nicht ändern? Ignorieren Sie diese Nachricht.</value>
   </data>
 </root>

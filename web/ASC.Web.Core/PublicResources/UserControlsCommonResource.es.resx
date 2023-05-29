@@ -74,7 +74,7 @@
     <value>mes</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
-    <value>Nombre </value>
+    <value>Nombre</value>
   </data>
   <data name="UnknownLastName" xml:space="preserve">
     <value>Apellido</value>

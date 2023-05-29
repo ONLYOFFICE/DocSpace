@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>博客创建于</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>书签创建于</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM案例创建于</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>评论添加于</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM联系人创建于</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM机会创建于</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>讨论创建于</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>活动创建于</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>文档创建/上传于</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>文件夹创建于</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>论坛创建于</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>调查创建于</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>帖子创建于</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>里程碑创建于</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>项目创建于</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>聊天创建于</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>接受</value>
   </data>
@@ -133,9 +85,6 @@
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>立即选择定价计划</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>了解更多&gt;&gt;</value>
-  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.激活您 "${__VirtualRootPath}":"$InviteLink" 门户的电邮。
 
@@ -154,7 +103,7 @@ $GreenButton
 
 含有来自您的 "${__VirtualRootPath}":"${__VirtualRootPath}" 门户的备份文件已创建。
 
-若想了解关于备份流程的详情，请参考我们的 "数据备份":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" 用户指南。
+若想了解关于备份流程的详情，请参考我们的 "数据备份":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" 用户指南。
 
 
 若您有任何问题或需要帮助，请随时联系我们，网站为 "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -218,13 +167,13 @@ $GreenButton
 
 欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}". 现在您可以：
 
-*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
 
-*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+* *处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
 
-*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+* *借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
 
-*# 连接任何云存储* ，无需在应用程序之间切换。
+* *连接任何云存储* ，无需在应用程序之间切换。
 
 $GreenButton
 
@@ -239,13 +188,13 @@ ONLYOFFICE 团队
 
 欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}". 现在您可以：
 
-*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
 
-*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+* *处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
 
-*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+* *借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
 
-*# 连接任何云存储* ，无需在应用程序之间切换。
+* *连接任何云存储* ，无需在应用程序之间切换。
 
 $GreenButton
 
@@ -259,13 +208,13 @@ ONLYOFFICE 团队
 
 欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
 
-*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
 
-*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+* *处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
 
-*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+* *借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
 
-*# 连接任何云存储* ，无需在应用程序之间切换。
+* *连接任何云存储* ，无需在应用程序之间切换。
 
 $GreenButton
 
@@ -279,13 +228,13 @@ ONLYOFFICE 团队
 
 欢迎来到 ONLYOFFICE 协作空间！您的用户资料已添加到 "${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
 
-*#* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
+* 加入房间后与其他用户一起工作： *用于实时共同编辑文档的协作房间或具有便捷设置的自定义房间，可用于任何目的*.
 
-*# 处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
+* *处理各种格式的文件*：文本文档、电子表格、演示文稿、可填写的表单、PDF、电子书、多媒体文件。
 
-*# 借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
+* *借助两种共同编辑模式*协作处理文档* ：自动和手动。追踪变化，使用内置的聊天工具进行实时沟通，或进行音频和视频通话。
 
-*# 连接任何云存储* ，无需在应用程序之间切换。
+* *连接任何云存储* ，无需在应用程序之间切换。
 
 $GreenButton
 
@@ -404,7 +353,7 @@ $GreenButton
 
 您的$PortalUrl门户地址已变更为新的 "${__VirtualRootPath}":"${__VirtualRootPath} "地址。
 
-*注意*：在您进行更改前，所有共享文档链接现在均无法访问，DNS设置和单点登录选项停止工作。添加到您的日历的第三方iCal链接也将停止更新，直到您重新加载它们。</value>
+*注意*：在您进行更改前，DNS 设置和单点登录选项停止工作。</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.从 "${__VirtualRootPath}":"${__VirtualRootPath}" 门户删除档案
@@ -490,6 +439,7 @@ ONLYOFFICE™客服团队
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
     <value>h1. $Date 您的协作空间有什么新鲜事？
+
 #foreach($activity in $Activities)
 $activity
 
@@ -558,7 +508,7 @@ ONLYOFFICE团队</value>
     <value>${LetterLogoText} 。另一个地区门户迁移成功完成</value>
   </data>
   <data name="subject_portal_deactivate" xml:space="preserve">
-    <value>禁用${__ VirtualRootPath}门户</value>
+    <value>禁用${__VirtualRootPath}门户</value>
   </data>
   <data name="subject_portal_delete" xml:space="preserve">
     <value>删除${__VirtualRootPath}门户</value>
@@ -637,5 +587,581 @@ ONLYOFFICE团队</value>
   </data>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>协作空间的用户已更新： &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>您好， $UserName!
+ 
+您已成功创建 ONLYOFFICE 协作空间，您可以使用它管理文档，提升与团队、客户、合作伙伴的协作。协作空间的地址是"${__VirtualRootPath}"："${__VirtualRootPath}"。
+ 
+请确认您的电子邮箱（该链接有效期为7天）：
+ 
+$GreenButton
+ 
+您目前的方案是完全免费的初创版，包括：
+* 1 个管理员、2 个高级用户
+* 最多 12 个房间
+* 每个房间的用户数量不受限制
+* 2 GB 磁盘空间
+ 
+欢迎享受一种新的文档协作方式！
+ 
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>想要更改 ONLYOFFICE 帐号的密码吗？请点击下方按钮确认。
+
+$GreenButton
+
+此链接的有效期为 7 天。
+
+不想更改密码？请忽略此消息</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！欢迎获取免费的 ONLYOFFICE 应用，在任意设备上处理文档！
+
+# 如要在 Windows、Linux 和 Mac 上离线处理文档，请下载 "ONLYOFFICE 桌面编辑器":"https://www.onlyoffice.com/download-desktop.aspx"。
+
+# 如要在移动设备上编辑文档，请获取适用于 "iOS" 的 ONLYOFFICE 文档应用:"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" 或 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
+
+*#1. 选择工作方式。* 创建用于实时共同创作的协作房间，或针对任意目的灵活设置自定义房间，根据需要组织您的工作流程。
+
+*#2. 处理任意内容。* 在您的房间内存储和处理不同格式的文件：文本文档、电子表格、演示文稿、数字表格、PDF、电子书、多媒体文件等。
+ 
+*#3. 高效共同创作。* 使用两种共同编辑模式协作处理文档：实时或段落锁定。跟踪变更，使用内置聊天工具，或进行音频和视频通话实时交流。
+ 
+*#4. 连接第三方云。* 连接任意云存储，工作中无需在应用之间切换。
+ 
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
+
+*#1. 选择工作方式。* 创建用于实时共同创作的协作房间，或针对任意目的灵活设置自定义房间，根据需要组织您的工作流程。
+
+*#2. 处理任意内容。* 在您的房间内存储和处理不同格式的文件：文本文档、电子表格、演示文稿、数字表格、PDF、电子书、多媒体文件等。
+ 
+*#3. 高效共同创作。* 使用两种共同编辑模式协作处理文档：实时或段落锁定。跟踪变更，使用内置聊天工具，或进行音频和视频通话实时交流。
+ 
+*#4. 连接第三方云。* 连接任意云存储，工作中无需在应用之间切换。
+ 
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
+
+*#1. 选择工作方式。* 创建用于实时共同创作的协作房间，或针对任意目的灵活设置自定义房间，根据需要组织您的工作流程。
+
+*#2. 处理任意内容。* 在您的房间内存储和处理不同格式的文件：文本文档、电子表格、演示文稿、数字表格、PDF、电子书、多媒体文件等。
+ 
+*#3. 高效共同创作。* 使用两种共同编辑模式协作处理文档：实时或段落锁定。跟踪变更，使用内置聊天工具，或进行音频和视频通话实时交流。
+ 
+*#4. 连接第三方云。* 连接任意云存储，工作中无需在应用之间切换。
+ 
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+希望您会喜欢使用 ONLYOFFICE 协作空间。以下是一些助您更高效处理文档的提示。
+
+*#1. 选择工作方式。* 创建用于实时共同创作的协作房间，或针对任意目的灵活设置自定义房间，根据需要组织您的工作流程。
+
+*#2. 处理任意内容。* 在您的房间内存储和处理不同格式的文件：文本文档、电子表格、演示文稿、数字表格、PDF、电子书、多媒体文件等。
+ 
+*#3. 高效共同创作。* 使用两种共同编辑模式协作处理文档：实时或段落锁定。跟踪变更，使用内置聊天工具，或进行音频和视频通话实时交流。
+ 
+*#4. 连接第三方云。* 连接任意云存储，工作中无需在应用之间切换。
+ 
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
+
+* 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
+
+* 您想要创建任意数量的房间，来处理大量文档吗？
+
+* 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
+
+如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+
+为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
+ 
+_请注意：支付订阅费的人是付款人。只有付款人可以更改订阅（调整管理人员的数量）。用户无权访问付款详细信息。ONLYOFFICE 协作空间帐号的所有者可以在后期随时重新分配付款人。_
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
+
+* 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
+
+* 您想要创建任意数量的房间，来处理大量文档吗？
+
+* 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
+
+如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+
+为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
+ 
+_请注意：支付订阅费的人是付款人。只有付款人可以更改订阅（调整管理人员的数量）。用户无权访问付款详细信息。ONLYOFFICE 协作空间帐号的所有者可以在后期随时重新分配付款人。_
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
+
+* 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
+
+* 您想要创建任意数量的房间，来处理大量文档吗？
+
+* 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
+
+如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+
+为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
+ 
+_请注意：支付订阅费的人是付款人。只有付款人可以更改订阅（调整管理人员的数量）。用户无权访问付款详细信息。ONLYOFFICE 协作空间帐号的所有者可以在后期随时重新分配付款人。_
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+以下是三个简单的问题，敬请回答，帮助我们提升您的使用体验。
+
+* 您使用 ONLYOFFICE 协作空间时，是否是在大型团队内，或与大量客户及合作伙伴进行协作？
+
+* 您想要创建任意数量的房间，来处理大量文档吗？
+
+* 您想要使用打着自己品牌的 ONLYOFFICE 协作空间吗？
+
+如果您至少有一个答案为“是”，敬请选择企业版资费计划，将所需数量的管理者添加到您的 ONLYOFFICE 协作文档，还能应用品牌选项。
+
+为此，请查阅您的 ONLYOFFICE 协作空间的"付款部分":"$PricingPage"。在此处，您会找到一个单独的链接指向 Stripe 客户门户，您可以在其中轻松处理所有付款细节。
+ 
+_请注意：支付订阅费的人是付款人。只有付款人可以更改订阅（调整管理人员的数量）。用户无权访问付款详细信息。ONLYOFFICE 协作空间帐号的所有者可以在后期随时重新分配付款人。_
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>您好！
+
+您被邀请加入在 "${__VirtualRootPath}":"${__VirtualRootPath}" 的 ONLYOFFICE 协作空间。点击链接即可接受邀请：
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>您好！
+
+您被邀请加入在 "${__VirtualRootPath}":"${__VirtualRootPath}" 的 ONLYOFFICE 协作空间。点击链接即可接受邀请：
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>您好！
+
+您被邀请加入在 "${__VirtualRootPath}":"${__VirtualRootPath}" 的 ONLYOFFICE 协作空间。点击链接即可接受邀请：
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>您好！
+
+您被邀请加入在 "${__VirtualRootPath}":"${__VirtualRootPath}" 的 ONLYOFFICE 协作空间。点击链接即可接受邀请：
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+* 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。
+
+* *处理不同格式的文件*：文本文档、电子表格、演示文稿、数字表单、PDF、电子书、多媒体文件等。
+
+* *协作处理文档* 两种共同编辑模式可用：实时或段落锁定。可以跟踪变更，使用内置聊天工具或通过音频和视频通话实时交流。
+
+* *连接任意云存储* 工作中无需在应用之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/"，或询问我们的"支持团队":"https://www.onlyoffice.com/support-contact-form.aspx"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+* 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。
+
+* *处理不同格式的文件*：文本文档、电子表格、演示文稿、数字表单、PDF、电子书、多媒体文件等。
+
+* *协作处理文档* 两种共同编辑模式可用：实时或段落锁定。可以跟踪变更，使用内置聊天工具或通过音频和视频通话实时交流。
+
+* *连接任意云存储* 工作中无需在应用之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/"，或询问我们的"支持团队":"https://www.onlyoffice.com/support-contact-form.aspx"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+*# 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。
+
+*# 处理不同格式的文件*：文本文档、电子表格、演示文稿、数字表单、PDF、电子书、多媒体文件等。
+
+*# 协作处理文档* 两种共同编辑模式可用：实时或段落锁定。可以跟踪变更，使用内置聊天工具或通过音频和视频通话实时交流。
+
+*# 连接任意云存储* 工作中无需在应用之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/"，或询问我们的"支持团队":"https://www.onlyoffice.com/support-contact-form.aspx"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+欢迎使用 ONLYOFFICE 协作空间！您的用户配置文件已成功添加到"${__VirtualRootPath}":"${__VirtualRootPath}"。现在您可以：
+
+*# 与您受邀进入的房间中的其他用户协作*：有用于实时共同创作的协作房间，或者针对任意目的灵活设置的自定义房间*。
+
+*# 处理不同格式的文件*：文本文档、电子表格、演示文稿、数字表单、PDF、电子书、多媒体文件等。
+
+*# 协作处理文档* 两种共同编辑模式可用：实时或段落锁定。可以跟踪变更，使用内置聊天工具或通过音频和视频通话实时交流。
+
+*# 连接任意云存储* 工作中无需在应用之间切换。
+
+$GreenButton
+
+如果您需要帮助，请浏览我们的"帮助中心":"https://helpcenter.onlyoffice.com/"，或询问我们的"支持团队":"https://www.onlyoffice.com/support-contact-form.aspx"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.来自"${__VirtualRootPath}"的消息:"${__VirtualRootPath}"门户
+ 
+姓名：$UserName
+ 
+电子邮件地址：$UserEmail
+ 
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+欢迎获取免费的 ONLYOFFICE 应用，在任意设备上处理文档！
+
+# 如要在 Windows、Linux 和 Mac 上离线处理文档，请下载 "ONLYOFFICE 桌面编辑器":"https://www.onlyoffice.com/download-desktop.aspx"。
+
+# 如要在移动设备上编辑文档，请获取适用于 "iOS" 的 ONLYOFFICE 文档应用:"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" 或 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+欢迎获取免费的 ONLYOFFICE 应用，在任意设备上处理文档！
+
+# 如要在 Windows、Linux 和 Mac 上离线处理文档，请下载 "ONLYOFFICE 桌面编辑器":"https://www.onlyoffice.com/download-desktop.aspx"。
+
+# 如要在移动设备上编辑文档，请获取适用于 "iOS" 的 ONLYOFFICE 文档应用:"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" 或 "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>尊敬的用户：
+有人尝试使用此电子邮件注册新的"ONLYOFFICE 个人版":"$PortalUrl"帐号。如果是您，我们想通知您，该帐号已经存在——请前往 ONLYOFFICE 个人版登录。
+如果您的密码丢失了，可以在“密码找回页面”:"$LinkToRecovery" 找回。
+如果您没有尝试注册新帐号，则可能是他人操作错误。在这种情况下，请忽略此电子邮件。
+
+祝您愉快！
+ONLYOFFICE 团队</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>您的 ONLYOFFICE 协作空间已成功停用。请注意，您的所有数据将被删除，依据是我们的“隐私政策”:"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0"。
+
+您为何决定离开？欢迎分享您的体验。
+
+$GreenButton
+
+谢谢，祝您好运！
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":"http://onlyoffice.com/zh"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！欢迎调整您的 ONLYOFFICE 协作空间的安全设置，让其更为安全：
+
+* 设置密码强度。
+
+* 启用双重身份验证和单点登录。
+
+* 确定受信任的邮件域和会话生命周期。
+
+* 限制来自特定 IP 地址的访问。
+
+* 允许或限制管理消息。
+
+* 管理管理员访问权限。
+
+* 做数据备份。
+
+$GreenButton
+
+欢迎访问我们的“帮助中心” :"https://helpcenter.onlyoffice.com/"，详细了解有关配置，管理您的 ONLYOFFICE 协作空间。若您对功能有疑问，也欢迎咨询。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>您已经超过半年没有登录您的 ONLYOFFICE 文档空间 "${__VirtualRootPath}":"${__VirtualRootPath}"。
+
+考虑到您决定不再使用它，您的 ONLYOFFICE 协作空间和所有数据将被删除，依据是我们的"隐私政策":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0"。
+
+我们感谢您提供反馈。您为何决定停止使用 ONLYOFFICE 协作空间？
+
+$GreenButton
+
+如果您认为这其中有误，希望继续使用 ONLYOFFICE 协作空间，请联系我们的"支持团队":"https://www.onlyoffice.com/support-contact-form.aspx"。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>您好！
+
+您受邀加入在"${__VirtualRootPath}":"${__VirtualRootPath}"的 ONLYOFFICE 协作空间。点击链接即可接受邀请：
+
+$GreenButton
+
+点击邀请链接后，请为帐号设置一个新密码。
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已激活。
+
+请确保在宽限期到期之前支付您的企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！请注意，您的 ONLYOFFICE 协作空间订阅将在三天后到期。之后，$PaymentDelay 天的宽限期将被激活。
+
+我们建议您即刻支付企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期已结束。
+
+请尽快支付您的企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>尊敬的$UserName！，
+
+您好！请注意，您的 ONLYOFFICE 协作空间的 $PaymentDelay 天宽限期将于明天结束。
+
+请在今天支付您的企业版订阅费用，以继续畅享 ONLYOFFICE 协作空间的所有福利。
+
+$GreenButton
+
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":https://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>你好！
+ 
+您受邀加入在 "${__VirtualRootPath}":"${__VirtualRootPath}"的 $Message 房间。请点击链接接受邀请：
+
+$GreenButton
+
+点击邀请链接后，请为您的帐号设置一个新密码。
+ 
+此致！
+ONLYOFFICE 团队
+"www.onlyoffice.com":http://onlyoffice.com/zh</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>想要更改 ONLYOFFICE 个人版帐号的密码吗？请点击下方按钮确认。
+
+$GreenButton
+
+此链接的有效期为 7 天。
+
+不想更改密码？请忽略此消息。</value>
   </data>
 </root>

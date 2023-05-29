@@ -63,7 +63,7 @@
 
 個人オフィスを作成したところです。
 
-ｈ３．こちらは文書を編集して保存したり、友達にアクセス権を提供したり、どこからでも文書を修理のを可能にする仮想作業空間です。
+h3．こちらは文書を編集して保存したり、友達にアクセス権を提供したり、どこからでも文書を修理のを可能にする仮想作業空間です。
 
 ONLYOFFICEはMicrosoft Office™文書形式と互換性で、作成されたオブジェクト書式と品質の 損失が皆無であることを保証します。
 
@@ -117,9 +117,7 @@ ONLYOFFICEチーム</value>
 
 ＃文書 ‐ $DocsSpace 
 ＃メール ‐ $MailSpace
-＃チャット ‐ $TalkSpace
-
-^"${__VirtualRootPath}":"${__VirtualRootPath}" ポータルの登録なユーザーであるのためにそのメールを送信されました。^</value>
+＃チャット ‐ $TalkSpace</value>
   </data>
   <data name="pattern_saas_custom_mode_reg_data" xml:space="preserve">
     <value>h3.新しいポータルが登録された
@@ -144,15 +142,44 @@ ONLYOFFICEチーム</value>
     <value>個人的なONLYOFFICE。パスワード アシスタンス</value>
   </data>
   <data name="subject_personal_custom_mode_confirmation" xml:space="preserve">
-    <value>個人的なONLYOFFICE。メールアドレスの照合を行ってください。</value>
+    <value>個人的なONLYOFFICE。メールアドレスの照合を行ってください</value>
   </data>
   <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
     <value>個人的なONLYOFFICEアカウントを解除する</value>
   </data>
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
-    <value>${LetterLogoText}。ユーザーデータの削除は完成です。</value>
+    <value>${LetterLogoText}。ユーザーデータの削除は完成です</value>
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>新しいポータルが作成された</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>クラウドオフィスアカウントのメールを変更したいですか？下のボタンをクリックして、クラウドにログイン*してください。
+
+$GreenButton
+
+このリンクは7日間有効です。
+
+メールを変更したくない場合は、このメッセージを無視してください。</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>$UserName 様
+ 
+ONLYOFFICE DocSpaceへようこそ！あなたのユーザープロファイルは、"${__VirtualRootPath}":"${__VirtualRootPath}"に正常に追加されました。これで、次のことができるようになりました：
+ 
+* 招待されたルームで他のユーザーと作業する*: リアルタイムの共同執筆のためのコラボレーションルームや、あらゆる目的のために柔軟な設定を持つカスタムルーム*.
+ 
+* *テキスト文書、スプレッドシート、プレゼンテーション、デジタルフォーム、PDF、電子書籍、マルチメディアなど、さまざまな形式のファイルを扱うことができます。
+ 
+* *リアルタイムまたは段落ロックという2つの共同編集モードにより、文書*の共同編集が可能です。変更点を追跡し、内蔵のチャットを使ってリアルタイムでコミュニケーションしたり、オーディオやビデオ通話をすることができます。
+ 
+* *任意のクラウドストレージ*を接続し、アプリケーションを切り替えることなく作業することができます。
+
+$GreenButton
+
+お困りの際は、"ヘルプセンター":"https://helpcenter.onlyoffice.com/" をご覧いただくか、"サポートチーム":"https://www.onlyoffice.com/ja/support-contact-form.aspx"までご連絡ください。
+
+ONLYOFFICE チーム
+"www.onlyoffice.com":https://www.onlyoffice.com/ja</value>
   </data>
 </root>

@@ -94,7 +94,7 @@ public class Login
             }
 
             //Pack and redirect
-            var uriBuilder = new UriBuilder(context.Request.GetUrlRewriter());
+            var uriBuilder = new UriBuilder(context.Request.Url());
             var token = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(_params)));
             uriBuilder.Query = "p=" + token;
             context.Response.Redirect(uriBuilder.Uri.ToString(), true);
@@ -148,8 +148,8 @@ public class Login
 
     private async Task RenderXrdsAsync(HttpContext context)
     {
-        var xrdsloginuri = new Uri(context.Request.GetUrlRewriter(), new Uri(context.Request.GetUrlRewriter().AbsolutePath, UriKind.Relative)) + "?auth=openid&returnurl=" + ReturnUrl;
-        var xrdsimageuri = new Uri(context.Request.GetUrlRewriter(), new Uri(_webHostEnvironment.WebRootPath, UriKind.Relative)) + "openid.gif";
+        var xrdsloginuri = new Uri(context.Request.Url(), new Uri(context.Request.Url().AbsolutePath, UriKind.Relative)) + "?auth=openid&returnurl=" + ReturnUrl;
+        var xrdsimageuri = new Uri(context.Request.Url(), new Uri(_webHostEnvironment.WebRootPath, UriKind.Relative)) + "openid.gif";
         await XrdsHelper.RenderXrdsAsync(context.Response, xrdsloginuri, xrdsimageuri);
     }
 

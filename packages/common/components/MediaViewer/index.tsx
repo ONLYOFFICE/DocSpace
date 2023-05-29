@@ -164,7 +164,7 @@ function MediaViewer({
       },
       {
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => onClickRename(targetFile),
         disabled: archiveRoom,
@@ -198,7 +198,7 @@ function MediaViewer({
       },
       {
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         icon: MoveReactSvgUrl,
         onClick: onMoveAction,
         disabled: !targetFile.security.Move,
@@ -206,7 +206,7 @@ function MediaViewer({
       {
         id: "option_copy-to",
         key: "copy-to",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         icon: CopyReactSvgUrl,
         onClick: onCopyAction,
         disabled: !targetFile.security.Copy,
@@ -221,7 +221,7 @@ function MediaViewer({
       },
       {
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         icon: RenameReactSvgUrl,
         onClick: () => onClickRename(targetFile),
         disabled: !targetFile.security.Rename,

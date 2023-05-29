@@ -122,7 +122,7 @@
     <value>Nimate dovolj dovoljenja za izvajanje operacije</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Ne morem dovoliti {0} ponudniku z danimi poverilnicami. </value>
+    <value>Ne morem dovoliti {0} ponudniku z danimi poverilnicami.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
     <value>Nimate dovolj dovoljenja za ustvarjanje</value>
@@ -228,5 +228,62 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Sodelavec</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Nova različica ne more biti enaka trenutni</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Nimate dovoljenja za kopiranje datoteke</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Nimate dovoljenja za kopiranje mape</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Napačen ponudnik</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Te mape ni mogoče uporabiti za shranjevanje sobe</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Povezava s povabilom je neveljavna ali pa je njena veljavnost potekla</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Ta ponudnik je že povezan v sobo</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Ta vloga ni na voljo za ta tip uporabnika</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Nimate dovoljenja za arhiviranje sobe</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Nimate dovoljenja za kopiranje te mape</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Nimate dovoljenja za urejanje sobe</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Nimate dovoljenja za premik mape</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Nimate dovoljenja za odarhiviranje sobe</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Ne morete urejati arhiviranih sob</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Ne morete pripeti sobe</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Oddan obrazec</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Sodelavec</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Urednik</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Filter po meri</value>
   </data>
 </root>

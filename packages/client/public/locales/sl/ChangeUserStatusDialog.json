@@ -1,7 +1,7 @@
 {
+  "ChangeUsersActiveStatus": "omogočeno",
+  "ChangeUsersDisableStatus": "onemogočeno",
   "ChangeUserStatusDialog": "Uporabniki z '{{ userStatus }}' statusom bodo {{ status }}.",
   "ChangeUserStatusDialogHeader": "Spremeni status",
-  "ChangeUserStatusDialogMessage": "Status lastnika DocSpace in svojega statusa ne morete spremeniti.",
-  "ChangeUsersActiveStatus": "omogočeno",
-  "ChangeUsersDisableStatus": "onemogočeno"
+  "ChangeUserStatusDialogMessage": "Status lastnika DocSpace in svojega statusa ne morete spremeniti."
 }

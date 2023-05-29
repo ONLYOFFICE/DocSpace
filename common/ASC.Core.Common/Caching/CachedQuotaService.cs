@@ -67,10 +67,12 @@ class QuotaServiceCache
 [Scope]
 class CachedQuotaService : IQuotaService
 {
-    internal IQuotaService Service { get; set; }
-    internal ICache Cache { get; set; }
-    internal ICacheNotify<QuotaCacheItem> CacheNotify { get; set; }
-    internal QuotaServiceCache QuotaServiceCache { get; set; }
+    private readonly IQuotaService Service;
+    private readonly ICache Cache;
+    private readonly ICacheNotify<QuotaCacheItem> CacheNotify;
+    private readonly QuotaServiceCache QuotaServiceCache;
+
+    private readonly GeolocationHelper _geolocationHelper;
 
     private readonly TimeSpan _cacheExpiration;
 
@@ -79,17 +81,18 @@ class CachedQuotaService : IQuotaService
         _cacheExpiration = TimeSpan.FromMinutes(10);
     }
 
-    public CachedQuotaService(DbQuotaService service, QuotaServiceCache quotaServiceCache) : this()
+    public CachedQuotaService(DbQuotaService service, QuotaServiceCache quotaServiceCache, GeolocationHelper geolocationHelper) : this()
     {
         Service = service ?? throw new ArgumentNullException(nameof(service));
         QuotaServiceCache = quotaServiceCache;
         Cache = quotaServiceCache.Cache;
         CacheNotify = quotaServiceCache.CacheNotify;
+        _geolocationHelper = geolocationHelper;
     }
 
     public IEnumerable<TenantQuota> GetTenantQuotas()
     {
-        var quotas = Cache.Get<IEnumerable<TenantQuota>>(QuotaServiceCache.KeyQuota);
+        var quotas = Cache.Get<IEnumerable<TenantQuota>>(QuotaServiceCache.KeyQuota + _geolocationHelper.GetIPGeolocationFromHttpContext().Key);
         if (quotas == null)
         {
             quotas = Service.GetTenantQuotas();

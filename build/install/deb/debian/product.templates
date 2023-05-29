@@ -77,3 +77,7 @@ Template: {{product}}/rabbitmq-password
 Type: string
 Default: guest
 Description: RabbitMQ password:
+
+Template: {{product}}/machinekey
+Type: string
+Description: Enter your own machinekey:

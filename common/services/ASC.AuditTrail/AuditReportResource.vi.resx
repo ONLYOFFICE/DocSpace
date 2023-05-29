@@ -94,242 +94,8 @@
   <data name="BrowserCol" xml:space="preserve">
     <value>Trình duyệt</value>
   </data>
-  <data name="CaseAttachedFiles" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã đính kèm file: {1}</value>
-  </data>
-  <data name="CaseClosed" xml:space="preserve">
-    <value>Đã đóng trường hợp: {0}</value>
-  </data>
-  <data name="CaseCreated" xml:space="preserve">
-    <value>Đã tạo trường hợp: {0}</value>
-  </data>
-  <data name="CaseCreatedHistoryEvent" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã tạo Sự kiện lịch sử: {1}</value>
-  </data>
-  <data name="CaseCreatedTag" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã tạo Tag: {1}</value>
-  </data>
-  <data name="CaseDeleted" xml:space="preserve">
-    <value>Đã xóa trường hợp: {0}</value>
-  </data>
-  <data name="CaseDeletedHistoryEvent" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã xóa sự kiện lịch sử: {1}</value>
-  </data>
-  <data name="CaseDeletedTag" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã xoá Tag: {1}</value>
-  </data>
-  <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã tách file: {1}</value>
-  </data>
-  <data name="CaseLinkedCompany" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã kết nối Công ty: {1}</value>
-  </data>
-  <data name="CaseLinkedPerson" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã liên kết với cá nhân: {1}</value>
-  </data>
-  <data name="CaseOpened" xml:space="preserve">
-    <value>Đã mở trường hợp: {0}</value>
-  </data>
-  <data name="CaseOpenedAccess" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã mở truy cập</value>
-  </data>
-  <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã hạn chế truy cập: {1}</value>
-  </data>
-  <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Trường hợp. Đã tạo Tag: {0}</value>
-  </data>
-  <data name="CasesDeleted" xml:space="preserve">
-    <value>Đã xóa Trường hợp: {0}</value>
-  </data>
-  <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Trường hợp. Đã xóa tag: {0}</value>
-  </data>
-  <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>Trường hợp được xuất sang file CSV: {0}</value>
-  </data>
-  <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>Trường hợp được nhập từ file CSV</value>
-  </data>
-  <data name="CasesModule" xml:space="preserve">
-    <value>Trường hợp</value>
-  </data>
-  <data name="CaseUnlinkedCompany" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã hủy kết nối Công ty: {1}</value>
-  </data>
-  <data name="CaseUnlinkedPerson" xml:space="preserve">
-    <value>Trường hợp [{0}]. Đã hủy liên kết với cá nhân: {1}</value>
-  </data>
-  <data name="CaseUpdated" xml:space="preserve">
-    <value>Đã cập nhật trường hợp: {0}</value>
-  </data>
-  <data name="CaseUserFieldCreated" xml:space="preserve">
-    <value>Đã tạo trường người dùng cho trường hợp: {0}</value>
-  </data>
-  <data name="CaseUserFieldDeleted" xml:space="preserve">
-    <value>Đã xóa trường người dùng cho trường hợp: {0}</value>
-  </data>
-  <data name="CaseUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Đã cập nhật Thứ tự Trường Người dùng Trường hợp: {0}</value>
-  </data>
-  <data name="CaseUserFieldUpdated" xml:space="preserve">
-    <value>Đã cập nhật trường người dùng cho trường hợp: {0}</value>
-  </data>
   <data name="ColorThemeChanged" xml:space="preserve">
     <value>Đã thay đổi màu theme</value>
-  </data>
-  <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Thiết lập chung</value>
-  </data>
-  <data name="CompaniesMerged" xml:space="preserve">
-    <value>Các công ty được sát nhập: {0} - {1}</value>
-  </data>
-  <data name="CompaniesModule" xml:space="preserve">
-    <value>Công ty</value>
-  </data>
-  <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Công ty [{0}]. Đã đính kèm file: {1}</value>
-  </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Đã tạo Công ty: {0}</value>
-  </data>
-  <data name="CompanyCreatedHistoryEvent" xml:space="preserve">
-    <value>Công ty [{0}]. Đã tạo Lịch sử Sự kiện: {1}</value>
-  </data>
-  <data name="CompanyCreatedPersonsTag" xml:space="preserve">
-    <value>Công ty [{0}]. Đã tạo Tag Cá nhân: {1}</value>
-  </data>
-  <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Công ty [{0}]. Đã tạo Tag: {1}</value>
-  </data>
-  <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Công ty được tạo bằng Web Form: {0}</value>
-  </data>
-  <data name="CompanyDeleted" xml:space="preserve">
-    <value>Đã xóa Công ty: {0}</value>
-  </data>
-  <data name="CompanyDeletedHistoryEvent" xml:space="preserve">
-    <value>Công ty [{0}]. Đã xóa Lịch sử Sự kiện: {1}</value>
-  </data>
-  <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Công ty [{0}]. Đã xoá Tag: {1}</value>
-  </data>
-  <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Công ty [{0}]. Đã tách file: {1}</value>
-  </data>
-  <data name="CompanyLinkedPerson" xml:space="preserve">
-    <value>Công ty [{0}]. Đã liên kết với cá nhân: {1}</value>
-  </data>
-  <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Công ty [{0}]. Đã liên kết Dự án: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedPerson" xml:space="preserve">
-    <value>Công ty [{0}]. Đã hủy liên kết với cá nhân: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Công ty [{0}]. Đã hủy liên kết Dự án: {1}</value>
-  </data>
-  <data name="CompanyUpdated" xml:space="preserve">
-    <value>Đã cập nhật Công ty: {0}</value>
-  </data>
-  <data name="CompanyUpdatedPersonsTemperatureLevel" xml:space="preserve">
-    <value>Công ty [{0}]. Đã cập nhật mức Nhiệt độ Cá nhân</value>
-  </data>
-  <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Công ty [{0}]. Đã cập nhật ảnh</value>
-  </data>
-  <data name="CompanyUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Công ty [{0}]. Đã cập nhật thông tin chính</value>
-  </data>
-  <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Công ty [{0}]. Đã cập nhật mức nhiệt độ</value>
-  </data>
-  <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Đã tạo Trường Người dùng Công ty: {0}</value>
-  </data>
-  <data name="CompanyUserFieldDeleted" xml:space="preserve">
-    <value>Đã xóa Trường Người dùng Công ty: {0}</value>
-  </data>
-  <data name="CompanyUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Đã cập nhật Thứ tự Trường Người dùng Công ty: {0}</value>
-  </data>
-  <data name="CompanyUserFieldUpdated" xml:space="preserve">
-    <value>Đã cập nhật Trường Người dùng Công ty: {0}</value>
-  </data>
-  <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Đã gửi thư liên hệ quản trị viên</value>
-  </data>
-  <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Liên hệ [{0}]. Đã đã tạo Nhiệm vụ: {1}</value>
-  </data>
-  <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Liên hệ. Đã tạo Tag: {0}</value>
-  </data>
-  <data name="ContactsDeleted" xml:space="preserve">
-    <value>Đã xóa Liên hệ: {0}</value>
-  </data>
-  <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Liên hệ. Đã xóa Tag: {0}</value>
-  </data>
-  <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Liên hệ được xuất sang file CSV: {0}</value>
-  </data>
-  <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Liên hệ được nhập từ file CSV</value>
-  </data>
-  <data name="ContactsModule" xml:space="preserve">
-    <value>Liên hệ</value>
-  </data>
-  <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Cài đặt</value>
-  </data>
-  <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Đã cập nhật Thiết lập Tag Liên hệ</value>
-  </data>
-  <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Đã tạo Mức Nhiệt độ Liên hệ: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Đã Xóa Mức Nhiệt độ Liên hệ: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Đã Cập nhật Thiết lập Mức Nhiệt độ Liên Hệ</value>
-  </data>
-  <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
-    <value>Đã Cập nhật Thứ tự Mức Nhiệt độ Liên hệ: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Đã Cập nhật Mức Nhiệt độ Liên hệ: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Mức Nhiệt độ Liên hệ [{0}]. Đã cập nhật màu</value>
-  </data>
-  <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Đã tạo Hình thức Liên hệ: {0}</value>
-  </data>
-  <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Đã xóa Hình thức Liên hệ: {0}</value>
-  </data>
-  <data name="ContactTypesModule" xml:space="preserve">
-    <value>Hình thức Liên hệ</value>
-  </data>
-  <data name="ContactTypesUpdatedOrder" xml:space="preserve">
-    <value>Đã cập nhật Thứ tự Hình thức Liên hệ: {0}</value>
-  </data>
-  <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Đã cập nhật Hình thức Liên hệ: {0}</value>
-  </data>
-  <data name="ContactUserFieldCreated" xml:space="preserve">
-    <value>Đã tạo Trường Người dùng Liên hệ: {0}</value>
-  </data>
-  <data name="ContactUserFieldDeleted" xml:space="preserve">
-    <value>Đã xóa Trường Người dùng Liên hệ: {0}</value>
-  </data>
-  <data name="ContactUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Đã cập nhật Thứ tự Trường Người dùng Liên hệ: {0}</value>
-  </data>
-  <data name="ContactUserFieldUpdated" xml:space="preserve">
-    <value>Đã cập nhật Trường Người dùng Liên hệ: {0}</value>
   </data>
   <data name="CookieSettingsUpdated" xml:space="preserve">
     <value>Đã cập nhật Cài đặt Cookie</value>
@@ -339,66 +105,6 @@
   </data>
   <data name="CreateActionType" xml:space="preserve">
     <value>Tạo</value>
-  </data>
-  <data name="CrmAllDataExported" xml:space="preserve">
-    <value>Tất cả dữ liệu được xuất</value>
-  </data>
-  <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Đã cập nhật Đồng tiền Mặc định</value>
-  </data>
-  <data name="CrmProduct" xml:space="preserve">
-    <value>CRM</value>
-  </data>
-  <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>Đã gửi Thư SMTP đến Liên hệ: {0}</value>
-  </data>
-  <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>Đã cập nhật Cài đặt SMTP</value>
-  </data>
-  <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Đã cập nhật Thứ tự Danh mục Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryCreated" xml:space="preserve">
-    <value>Đã tạo Danh mục Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryDeleted" xml:space="preserve">
-    <value>Đã xóa Danh mục Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdated" xml:space="preserve">
-    <value>Đã cập nhật Danh mục Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdatedIcon" xml:space="preserve">
-    <value>Đã cập nhật Biểu tượng Danh mục Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskClosed" xml:space="preserve">
-    <value>Đã đóng Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskCreated" xml:space="preserve">
-    <value>Đã tạo Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskDeleted" xml:space="preserve">
-    <value>Đã xóa Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTaskOpened" xml:space="preserve">
-    <value>Đã mở Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>Nhiệm vụ CRM được xuất sang file CSV: {0}</value>
-  </data>
-  <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>Nhiệm vụ CRM được Nhập từ File CSV</value>
-  </data>
-  <data name="CrmTasksModule" xml:space="preserve">
-    <value>Nhiệm vụ CRM</value>
-  </data>
-  <data name="CrmTaskUpdated" xml:space="preserve">
-    <value>Đã cập nhật Nhiệm vụ CRM: {0}</value>
-  </data>
-  <data name="CrmTestMailSent" xml:space="preserve">
-    <value>Đã gửi Mail thử nghiệm</value>
-  </data>
-  <data name="CurrencyRateUpdated" xml:space="preserve">
-    <value>Đã cập nhật Tỷ giá Ngoại tệ: {0} - {1}</value>
   </data>
   <data name="DateCol" xml:space="preserve">
     <value>Ngày</value>
@@ -411,36 +117,6 @@
   </data>
   <data name="DetachActionType" xml:space="preserve">
     <value>Tách</value>
-  </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã đính kèm file: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã tạo bình luận</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã xóa bình luận</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã cập nhật bình luận</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã tạo thảo luận: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa thảo luận: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã tách file: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Thảo luận</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật thảo luận: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật theo dõi thảo luận: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>Đã cập nhật Cài đặt DNS</value>
@@ -616,74 +292,8 @@
   <data name="GuestImported" xml:space="preserve">
     <value>Đã nhập khách: {0}</value>
   </data>
-  <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Danh mục Lịch sử Sự kiện. Đã cập nhật thứ tự: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Đã tạo Danh mục Lịch sử Sự kiện: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>Đã xoá Danh mục Lịch sử Sự kiện: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>Đã cập nhật Danh mục Lịch sử Sự kiện: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>Danh mục Lịch sử Sự kiện [{0}]. Đã cập nhật biểu tượng</value>
-  </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Nhập</value>
-  </data>
-  <data name="InvoiceCreated" xml:space="preserve">
-    <value>Đã tạo Hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Đã cập nhật Điều khoản Mặc định trên Hoá đơn</value>
-  </data>
-  <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Đã xóa hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceDownloaded" xml:space="preserve">
-    <value>Đã tải về hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceItemCreated" xml:space="preserve">
-    <value>Đã tạo mục hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceItemDeleted" xml:space="preserve">
-    <value>Đã xóa mục hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceItemsDeleted" xml:space="preserve">
-    <value>Đã xóa các mục hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceItemUpdated" xml:space="preserve">
-    <value>Đã cập nhật mục hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Đã cập nhật Định dạng số hóa đơn</value>
-  </data>
-  <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Đã xóa Hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Thiết lập Hóa đơn</value>
-  </data>
-  <data name="InvoicesModule" xml:space="preserve">
-    <value>Hoá đơn</value>
-  </data>
-  <data name="InvoicesUpdatedStatus" xml:space="preserve">
-    <value>Hóa đơn [{0}]. Đã cập nhật Trạng thái: {1}</value>
-  </data>
-  <data name="InvoiceTaxCreated" xml:space="preserve">
-    <value>Đã tạo thuế hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceTaxDeleted" xml:space="preserve">
-    <value>Đã xóa thuế hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceTaxUpdated" xml:space="preserve">
-    <value>Đã cập nhật thuế hóa đơn: {0}</value>
-  </data>
-  <data name="InvoiceUpdated" xml:space="preserve">
-    <value>Đã cập nhật hóa đơn: {0}</value>
   </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
@@ -760,131 +370,11 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>Đã cập nhật Cài đặt Dịch vụ mail</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã tạo Mốc sự kiện: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa Mốc sự kiện: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Mốc sự kiện</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật Mốc sự kiện: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Mốc sự kiện [{1}]. Đã cập nhật Trạng thái: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Mô-đun</value>
   </data>
   <data name="MoveActionType" xml:space="preserve">
     <value>Di chuyển</value>
-  </data>
-  <data name="OpportunitiesCreatedTag" xml:space="preserve">
-    <value>Cơ hội. Đã tạo Tag: {0}</value>
-  </data>
-  <data name="OpportunitiesDeleted" xml:space="preserve">
-    <value>Đã xóa Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunitiesDeletedTag" xml:space="preserve">
-    <value>Cơ hội. Đã xóa Tag: {0}</value>
-  </data>
-  <data name="OpportunitiesExportedToCsv" xml:space="preserve">
-    <value>Đã xuất cơ hội sang File CSV: {0}</value>
-  </data>
-  <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Đã nhập cơ hội từ File CSV</value>
-  </data>
-  <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Cơ hội</value>
-  </data>
-  <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã đính kèm các file: {1}</value>
-  </data>
-  <data name="OpportunityCreated" xml:space="preserve">
-    <value>Đã tạo cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã tạo Lịch sử Sự kiện: {1}</value>
-  </data>
-  <data name="OpportunityCreatedTag" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã tạo Tag: {1}</value>
-  </data>
-  <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Đã xóa cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityDeletedHistoryEvent" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã xóa Lịch sử Sự kiện: {1}</value>
-  </data>
-  <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã xoá Tag: {1}</value>
-  </data>
-  <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã tách File: {1}</value>
-  </data>
-  <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã liên kết Công ty: {1}</value>
-  </data>
-  <data name="OpportunityLinkedPerson" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã liên kết Cá nhân: {1}</value>
-  </data>
-  <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã mở truy cập</value>
-  </data>
-  <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã hạn chế truy cập: {1}</value>
-  </data>
-  <data name="OpportunityStageCreated" xml:space="preserve">
-    <value>Đã tạo Giai đoạn Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityStageDeleted" xml:space="preserve">
-    <value>Đã xóa Giai đoạn Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
-    <value>Đã Cập nhật Thứ tự Giai đoạn Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdated" xml:space="preserve">
-    <value>Đã Cập nhật Giai đoạn Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Đã cập nhật Màu Giai đoạn Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã hủy liên kết Công ty: {1}</value>
-  </data>
-  <data name="OpportunityUnlinkedPerson" xml:space="preserve">
-    <value>Cơ hội [{0}]. Đã hủy liên kết với Cá nhân: {1}</value>
-  </data>
-  <data name="OpportunityUpdated" xml:space="preserve">
-    <value>Đã Cập nhật Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityUpdatedStage" xml:space="preserve">
-    <value>Đã Cập nhật Giai đoạn Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldCreated" xml:space="preserve">
-    <value>Đã tạo Trường Người dùng có Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldDeleted" xml:space="preserve">
-    <value>Đã xóa Trường Người dùng có Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Đã Cập nhật Thứ tự Người dùng có Cơ hội: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldUpdated" xml:space="preserve">
-    <value>Đã cập nhật Trường Người dùng có Cơ hội: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Hồ sơ tổ chức. Đã cập nhật địa chỉ</value>
-  </data>
-  <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Hồ sơ tổ chức. Đã Cập nhật Tên công ty: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Hồ sơ tổ chức. Đã cập nhật Logo Hoá đơn</value>
-  </data>
-  <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Cài đặt khác</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
     <value>Khác</value>
@@ -909,78 +399,6 @@
   </data>
   <data name="PeopleProduct" xml:space="preserve">
     <value>Nhân sự</value>
-  </data>
-  <data name="PersonAttachedFiles" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã đính kèm File: {1}</value>
-  </data>
-  <data name="PersonCreated" xml:space="preserve">
-    <value>Đã tạo Cá nhân: {0}</value>
-  </data>
-  <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã tạo Tag Công ty: {1}</value>
-  </data>
-  <data name="PersonCreatedHistoryEvent" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã tạo Lịch sử Sự kiện: {1}</value>
-  </data>
-  <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã tạo Tag: {1}</value>
-  </data>
-  <data name="PersonCreatedWithWebForm" xml:space="preserve">
-    <value>Cá nhân được tạo bằng Web Form: {0}</value>
-  </data>
-  <data name="PersonDeleted" xml:space="preserve">
-    <value>Đã xóa Cá nhân: {0}</value>
-  </data>
-  <data name="PersonDeletedHistoryEvent" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã xóa Lịch sử Sự kiện: {1}</value>
-  </data>
-  <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã xóa Tag: {1}</value>
-  </data>
-  <data name="PersonDetachedFile" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã tách File: {1}</value>
-  </data>
-  <data name="PersonLinkedProject" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã kết nối Dự án: {1}</value>
-  </data>
-  <data name="PersonsCreated" xml:space="preserve">
-    <value>Đã tạo Cá nhân: {0}</value>
-  </data>
-  <data name="PersonsMerged" xml:space="preserve">
-    <value>Đã hợp nhất các cá nhân: {0} - {1}</value>
-  </data>
-  <data name="PersonsModule" xml:space="preserve">
-    <value>Cá nhân</value>
-  </data>
-  <data name="PersonUnlinkedProject" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã hủy kết nối Dự án: {1}</value>
-  </data>
-  <data name="PersonUpdated" xml:space="preserve">
-    <value>Đã cập nhật Cá nhân: {0}</value>
-  </data>
-  <data name="PersonUpdatedCompanyTemperatureLevel" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã cập nhật Mức Nhiệt độ Công ty</value>
-  </data>
-  <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã cập nhật ảnh</value>
-  </data>
-  <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã cập nhật Thông tin chính</value>
-  </data>
-  <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Cá nhân [{0}]. Đã cập nhật Mức Nhiệt độ</value>
-  </data>
-  <data name="PersonUserFieldCreated" xml:space="preserve">
-    <value>Đã tạo Trường Người dùng Cá nhân: {0}</value>
-  </data>
-  <data name="PersonUserFieldDeleted" xml:space="preserve">
-    <value>Đã xóa Trường Người dùng Cá nhân: {0}</value>
-  </data>
-  <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Đã cập nhật Thứ tự Trường Người dùng Cá nhân: {0}</value>
-  </data>
-  <data name="PersonUserFieldUpdated" xml:space="preserve">
-    <value>Đã cập nhật Trường Người dùng Cá nhân: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
     <value>Nền tảng</value>
@@ -1021,86 +439,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Sản phẩm</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Đã tạo dự án: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Templates [{0}]. Đã tạo Dự án: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Đã xóa dự án: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa thành viên: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Dự án được theo dõi: {0}</value>
-  </data>
-  <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Dự án [{0}]. Đã liên kết với Công ty: {1}</value>
-  </data>
-  <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Dự án [{0}]. Đã liên kết với Liên hệ: {1}</value>
-  </data>
-  <data name="ProjectLinkedPerson" xml:space="preserve">
-    <value>Dự án [{0}]. Đã liên kết với Cá nhân: {1}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Dự án nhập từ Basecamp: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Dự án</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Dự án</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Cài đặt</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Đã tạo Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Đã xóa Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Đã cập nhật Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Đã bỏ theo dõi dự án: {0}</value>
-  </data>
-  <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Dự án [{0}]. Đã hủy liên kết với Công ty: {1}</value>
-  </data>
-  <data name="ProjectUnlinkedPerson" xml:space="preserve">
-    <value>Dự án [{0}]. Đã hủy liên kết với Cá nhân: {1}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Đã cập nhật dự án: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Dự án [{0}]. Thành viên [{1}]. Đã cập nhật Quyền truy cập</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật trạng thái: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật Nhóm: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Phân bổ lại</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Báo cáo</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Đã tạo Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Đã xóa Mẫu báo cáo dự án: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Đã cập nhật Mẫu báo cáo dự án: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Gửi</value>
@@ -1129,83 +469,11 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Bắt đầu di chuyển vùng cổng thông tin</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã tạo nhiệm vụ con: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã xóa nhiệm vụ con: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật nhiệm vụ con: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Nhiệm vụ con [{2}]. Đã cập nhật Trạng thái: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Tài khoản Hệ thống</value>
   </data>
   <data name="TargetIdCol" xml:space="preserve">
     <value>ID Đích</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã đính kèm File: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã tạo bình luận</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã xóa Bình luận</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật Bình luận</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã tạo nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Dự án [{0}]. Thảo luận [{1}]. Đã tạo nhiệm vụ: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Dự án [{0}]. Đã xóa nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ {1}. Đã tách File: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Dự án [{0}]. Mốc sự kiện [{1}]. Đã di chuyển nhiệm vụ: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Dự án [{0}]. Đã liên kết các Nhiệm vụ: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Nhiệm vụ</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Dự án [{0}]. Đã hủy liên kết các nhiệm vụ: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã tạo Thời gian Nhiệm vụ: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Đã xóa Thời gian Nhiệm vụ: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Thời gian Nhiệm vụ [{0}]. Đã cập nhật Trạng thái: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật Thời gian Nhiệm vụ: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã hủy liên kết từ Mốc sự kiện.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Dự án [{0}]. Đã cập nhật Theo dõi Nhiệm vụ: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Dự án [{0}]. Nhiệm vụ [{1}]. Đã cập nhật Trạng thái: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Đã thay đổi Template Nhóm</value>
@@ -1229,7 +497,7 @@
     <value>Đã cập nhật Cài đặt Tên miền Mail được tin cậy</value>
   </data>
   <data name="TwoFactorAuthenticationSettingsUpdated" xml:space="preserve">
-    <value>Đã cập nhật Cài đặt Xác thực Hai yếu tố </value>
+    <value>Đã cập nhật Cài đặt Xác thực Hai yếu tố</value>
   </data>
   <data name="UnfollowActionType" xml:space="preserve">
     <value>Bỏ theo dõi</value>
@@ -1327,7 +595,61 @@
   <data name="UserUpdatedPassword" xml:space="preserve">
     <value>Mật khẩu được cập nhật</value>
   </data>
-  <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Đã cập nhật Mẫu liên hệ Website</value>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Đã tạo phòng</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Phòng</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Đã dọn sạch thùng rác</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Thẻ đã thêm: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Thẻ đã xóa: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Phòng đã lưu trữ</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Người dùng đã thêm: {0}. Vai trò: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Đã xóa phòng</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Đã tạo liên kết. Vai trò: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Đã xóa liên kết</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Đã cập nhật liên kết. Vai trò: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Đã tạo logo</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Đã xóa logo</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Người dùng đã xóa: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Đã đổi tên phòng: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Phòng chưa được lưu trữ</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} được chỉ định: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Đã tạo thẻ: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Đã xóa thẻ: {0}</value>
   </data>
 </root>

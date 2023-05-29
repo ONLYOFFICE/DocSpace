@@ -63,9 +63,7 @@
 
 Hai appena creato il tuo office in cloud personale.
 
-h3.
-793/5000
-È uno spazio di lavoro virtuale in cui è possibile modificare e archiviare documenti, lavorare con loro da qualsiasi luogo fornendo accesso ai tuoi amici o colleghi.
+h3.È uno spazio di lavoro virtuale in cui è possibile modificare e archiviare documenti, lavorare con loro da qualsiasi luogo fornendo accesso ai tuoi amici o colleghi.
 
 ONLYOFFICE è compatibile con i formati di documenti Microsoft Office ™ e non garantisce alcuna perdita di formattazione o qualità degli oggetti creati. Ci impegniamo ad alleviarti dalla formattazione del mal di testa fedele e ti forniremo un set completo di strumenti di editing professionale.
 
@@ -115,6 +113,8 @@ il team ONLYOFFICE</value>
 
 La procedura di rimozione dei dati dall'utente "$FromUserName":"$FromUserLink" è stata completata con successo.
 
+L'eliminazione dei dati personali ha permesso di liberare:
+
 # Documenti - $DocsSpace
 # Mail - $MailSpace
 # Talk - $TalkSpace</value>
@@ -142,12 +142,42 @@ La procedura di rimozione dei dati dall'utente "$FromUserName":"$FromUserLink" �
     <value>ONLYOFFICE Personal. Si prega di attivare il tuo indirizzo email</value>
   </data>
   <data name="subject_personal_custom_mode_profile_delete" xml:space="preserve">
-    <value>Chiusura account personale ONLYOFFICE </value>
+    <value>Chiusura account personale ONLYOFFICE</value>
   </data>
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
     <value>${LetterLogoText}. Procedura di rimozione dati dell'utente completata</value>
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Il nuovo portale è stato registrato</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>‎Vuoi cambiare la password del tuo account cloud office? Fai clic sul pulsante qui sotto per confermare.
+
+$GreenButton
+
+‎Il link è valido per 7 giorni.
+
+Non vuoi cambiare la tua password? Basta ignorare questo messaggio.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Ciao, $UserName!
+
+Benvenuto in ONLYOFFICE DocSpace! Il tuo profilo utente è stato aggiunto con successo a "${__VirtualRootPath}":"${__VirtualRootPath}". Ora puoi:
+
+* Lavorare con altri utenti nella stanza in cui sei invitato*: stanze di collaborazione per la creazione condivisa in tempo reale o stanze personalizzate con impostazioni flessibili per qualsiasi scopo*.
+
+* *Lavorare con file di diversi formati*: documenti di testo, fogli di calcolo, presentazioni, moduli digitali, PDF, e-book, multimedia.
+
+* *Collaborare sui documenti* con due modalità di co-editing: in tempo reale o con blocco dei paragrafi. Monitora le modifiche, comunica in tempo reale utilizzando la chat integrata o effettua chiamate audio e video.
+
+* *Collegare qualsiasi archivio cloud* e lavorare senza passare da un'app all'altra.
+
+$GreenButton
+
+Se hai bisogno di aiuto, consulta il nostro "Centro assistenza":"https://helpcenter.onlyoffice.com/" o chiedi al nostro "team di supporto":"https://www.onlyoffice.com/it/support-contact-form.aspx ".
+
+Distinti saluti,
+Team di ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com/it</value>
   </data>
 </root>
