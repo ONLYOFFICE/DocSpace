@@ -63,6 +63,8 @@ Button.propTypes = {
   minwidth: PropTypes.string,
   /** Sets the action initiated upon clicking the button */
   onClick: PropTypes.func,
+  /**Direction state*/
+  interfaceDirection: PropTypes.oneOf(["rtl", "ltr"]),
 };
 
 Button.defaultProps = {
