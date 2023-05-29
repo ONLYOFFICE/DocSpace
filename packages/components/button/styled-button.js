@@ -117,7 +117,6 @@ const ButtonWrapper = ({
   isClicked,
   isDisabled,
   disableHover,
-  interfaceDirection,
   isLoading,
   label,
   innerRef,
@@ -132,7 +131,7 @@ const StyledButton = styled(ButtonWrapper).attrs((props) => ({
   tabIndex: props.tabIndex,
 }))`
   position: relative;
-  direction: ${(props) => props.interfaceDirection === "rtl" && "rtl"};
+  direction: ${(props) => props.interfaceDirection && "rtl"};
   height: ${(props) => heightStyle(props)};
   font-size: ${(props) => fontSizeStyle(props)};
 
@@ -258,8 +257,6 @@ ButtonWrapper.propTypes = {
   isLoading: PropTypes.bool,
 
   onClick: PropTypes.func,
-
-  interfaceDirection: PropTypes.oneOf(["rtl", "ltr"]),
 };
 
 StyledButton.defaultProps = { theme: Base };

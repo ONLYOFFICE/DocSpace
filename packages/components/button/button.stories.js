@@ -223,14 +223,7 @@ const HoveredTemplate = (args) => {
 };
 
 const InterfaceDirectionTemplate = (args) => {
-  return (
-    <Button
-      interfaceDirection={"rtl"}
-      label="أزرار"
-      icon={<Icon />}
-      {...args}
-    />
-  );
+  return <Button label="أزرار" icon={<Icon />} {...args} />;
 };
 
 export const Default = Template.bind({});
