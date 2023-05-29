@@ -230,7 +230,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         _nonProfitFeature = new TenantQuotaFeatureFlag(this) { Name = "non-profit", Visible = false };
         _trialFeature = new TenantQuotaFeatureFlag(this) { Name = "trial", Visible = false };
         _freeFeature = new FreeFeature(this) { Visible = false };
-        _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Visible = false };
+        _updateFeature = new TenantQuotaFeatureFlag(this) { Name = "update", Standalone = true };
         _auditFeature = new TenantQuotaFeatureFlag(this) { Name = "audit", Order = 7 };
         _docsEditionFeature = new TenantQuotaFeatureFlag(this) { Name = "docs", Visible = false };
         _ldapFeature = new TenantQuotaFeatureFlag(this) { Name = "ldap", Visible = false };
@@ -400,7 +400,14 @@ public class TenantQuota : IMapFrom<DbQuota>
 
         if (!EqualityComparer<T>.Default.Equals(value, default))
         {
-            _featuresList.Add($"{name}:{value}");
+            if (value is bool)
+            {
+                _featuresList.Add($"{name}");
+            }
+            else
+            {
+                _featuresList.Add($"{name}:{value}");
+            }
         }
     }
 }

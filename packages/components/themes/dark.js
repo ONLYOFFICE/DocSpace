@@ -3004,6 +3004,10 @@ const Dark = {
           iconButton: white,
           iconButtonDisabled: "#333",
         },
+
+        smtp: {
+          requirementColor: "#E06451",
+        },
       },
 
       backup: {
@@ -3038,7 +3042,12 @@ const Dark = {
         benefitsContainer: {
           iconsColor: "#858585",
         },
+        contactContainer: {
+          textColor: "#ADADAD",
+          linkColor: "#858585",
+        },
         warningColor: "#E06451",
+        color: "#E17415",
       },
     },
 

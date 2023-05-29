@@ -64,6 +64,7 @@ public class PortalController : ControllerBase
     private readonly TfaAppAuthSettingsHelper _tfaAppAuthSettingsHelper;
     private readonly IMapper _mapper;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly QuotaHelper _quotaHelper;
 
     public PortalController(
         ILogger<PortalController> logger,
@@ -96,7 +97,8 @@ public class PortalController : ControllerBase
         StudioSmsNotificationSettingsHelper studioSmsNotificationSettingsHelper,
         TfaAppAuthSettingsHelper tfaAppAuthSettingsHelper,
         IMapper mapper,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        QuotaHelper quotaHelper)
     {
         _log = logger;
         _apiContext = apiContext;
@@ -129,6 +131,7 @@ public class PortalController : ControllerBase
         _tfaAppAuthSettingsHelper = tfaAppAuthSettingsHelper;
         _mapper = mapper;
         _httpContextAccessor = httpContextAccessor;
+        _quotaHelper = quotaHelper;
     }
 
     [AllowNotPayment]
@@ -170,25 +173,35 @@ public class PortalController : ControllerBase
         }
     }
 
+    [AllowNotPayment, AllowAnonymous]
     [HttpGet("tenantextra")]
-    public async Task<object> GetTenantExtraAsync()
+    public async Task<TenantExtraDto> GetTenantExtra(bool refresh)
     {
-        return new
+        var result = new TenantExtraDto
         {
-            customMode = _coreBaseSettings.CustomMode,
-            opensource = _tenantExtra.Opensource,
-            enterprise = _tenantExtra.Enterprise,
-            tariff = _tenantExtra.GetCurrentTariff(),
-            quota = _tenantManager.GetCurrentTenantQuota(),
-            notPaid = _tenantExtra.IsNotPaid(),
-            licenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting,
-            enableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
+            CustomMode = _coreBaseSettings.CustomMode,
+            Opensource = _tenantExtra.Opensource,
+            Enterprise = _tenantExtra.Enterprise,
+            EnableTariffPage = //TenantExtra.EnableTarrifSettings - think about hide-settings for opensource
                 (!_coreBaseSettings.Standalone || !string.IsNullOrEmpty(_licenseReader.LicensePath))
                 && string.IsNullOrEmpty(_setupInfo.AmiMetaUrl)
-                && !_coreBaseSettings.CustomMode,
-            DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync(),
-            DocServerLicense = await _documentServiceLicense.GetLicenseAsync()
+                && !_coreBaseSettings.CustomMode
         };
+
+
+
+        if (_authContext.IsAuthenticated)
+        {
+            result.Tariff = _tenantExtra.GetCurrentTariff(refresh);
+            result.Quota = await _quotaHelper.GetCurrentQuota(refresh);
+            result.NotPaid = _tenantExtra.IsNotPaid();
+            result.LicenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting;
+            result.DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync();
+            result.DocServerLicense = await _documentServiceLicense.GetLicenseAsync();
+
+        }
+
+        return result;
     }
 
 

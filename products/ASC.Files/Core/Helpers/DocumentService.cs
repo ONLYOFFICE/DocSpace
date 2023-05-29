@@ -334,7 +334,11 @@ public static class DocumentService
 
         try
         {
-            var commandResponse = JsonConvert.DeserializeObject<CommandResponse>(dataResponse);
+            var commandResponse = JsonSerializer.Deserialize<CommandResponse>(dataResponse, new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true,
+                PropertyNameCaseInsensitive = true
+            });
             return commandResponse;
         }
         catch (Exception ex)
@@ -616,7 +620,7 @@ public static class DocumentService
         [JsonPropertyName("callback")]
         public string Callback { get; set; }
 
-        [JsonProperty(PropertyName = "key", Required = Required.Always)]
+        [JsonProperty(PropertyName = "key", Required = Required.AllowNull)]
         [JsonPropertyName("key")]
         public string Key { get; set; }
 
@@ -807,7 +811,7 @@ public static class DocumentService
         public string Url { get; set; }
 
         [JsonProperty(PropertyName = "token", DefaultValueHandling = DefaultValueHandling.Ignore)]
-[JsonPropertyName("token")]
+        [JsonPropertyName("token")]
         public string Token { get; set; }
     }
 
@@ -858,7 +862,7 @@ public static class DocumentService
 
         public static void ProcessResponseError(string errorCode)
         {
-            if (!ErrorCodeExtensions.TryParse(errorCode, true, out ErrorCode code))
+            if (!ErrorCodeExtensions.TryParse(errorCode, true, out var code))
             {
                 code = ErrorCode.Unknown;
             }

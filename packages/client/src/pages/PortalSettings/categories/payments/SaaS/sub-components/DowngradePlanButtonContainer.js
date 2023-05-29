@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
 import styled from "styled-components";
-import ChangePricingPlanDialog from "../../../../../components/dialogs/ChangePricingPlanDialog";
+import ChangePricingPlanDialog from "../../../../../../components/dialogs/ChangePricingPlanDialog";
 
 const StyledBody = styled.div`
   button {

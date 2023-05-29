@@ -3000,6 +3000,10 @@ const Base = {
           iconButton: black,
           iconButtonDisabled: gray,
         },
+
+        smtp: {
+          requirementColor: "#F21C0E",
+        },
       },
 
       backup: {
@@ -3036,7 +3040,13 @@ const Base = {
           iconsColor: "#657077",
         },
 
+        contactContainer: {
+          textColor: "#A3A9AE",
+          linkColor: "#657077",
+        },
+
         warningColor: "#F21C0E",
+        color: "#F97A0B",
       },
     },
 

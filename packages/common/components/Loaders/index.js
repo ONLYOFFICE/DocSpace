@@ -36,6 +36,7 @@ import DataBackupLoader from "./DataBackupLoader";
 import AutoBackupLoader from "./AutoBackupLoader";
 import RestoreBackupLoader from "./RestoreBackupLoader";
 import PaymentsLoader from "./PaymentsLoader";
+import PaymentsStandaloneLoader from "./PaymentsStandaloneLoader";
 import SelectorSearchLoader from "./SelectorSearchLoader";
 import SelectorRowLoader from "./SelectorRowLoader";
 
@@ -45,7 +46,7 @@ import InfoPanelHeaderLoader from "./InfoPanelHeaderLoader";
 import SettingsHeader from "./SettingsLoader/SettingsHeaderLoader";
 import SettingsAdmin from "./SettingsLoader/SettingsAdminLoader";
 import SettingsCommon from "./SettingsLoader/SettingsCommonLoader";
-
+import SettingsSMTP from "./SettingsLoader/SettingsSMTPLoader";
 import EmptyContainerLoader from "./EmptyContainerLoader/EmptyContainerLoader";
 
 export default {
@@ -86,6 +87,7 @@ export default {
   AutoBackupLoader,
   RestoreBackupLoader,
   PaymentsLoader,
+  PaymentsStandaloneLoader,
   SelectorSearchLoader,
   SelectorRowLoader,
 
@@ -95,6 +97,7 @@ export default {
   SettingsHeader,
   SettingsAdmin,
   SettingsCommon,
+  SettingsSMTP,
 
   EmptyContainerLoader,
   Notifications,

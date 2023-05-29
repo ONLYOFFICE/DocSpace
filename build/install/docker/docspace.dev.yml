@@ -27,7 +27,8 @@ x-service: &x-service-base
     ENV_EXTENSION: ${ENV_EXTENSION}
   volumes:
     #- /app/onlyoffice/CommunityServer/data:/app/onlyoffice/data
-    - app_data:/app/onlyoffice/data
+    - ${ROOT_DIR}/Data:/app/onlyoffice/data
+    #- app_data:/app/onlyoffice/data
     - files_data:/var/www/products/ASC.Files/server/
     - people_data:/var/www/products/ASC.People/server/
     - ${ROOT_DIR}/config/appsettings.${ENV_EXTENSION}.json:/app/onlyoffice/config/appsettings.${ENV_EXTENSION}.json
@@ -208,6 +209,6 @@ networks:
 volumes:
   es_data:
   proxy_log:
-  app_data:
+  #app_data:
   files_data:
   people_data:

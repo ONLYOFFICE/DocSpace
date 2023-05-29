@@ -252,6 +252,19 @@ public class CoreConfiguration
         return _personalMaxSpace.Value;
     }
 
+    public SmtpSettings DefaultSmtpSettings
+    {
+        get
+        {
+            var settingsValue = GetSetting("SmtpSettings");
+
+            var settings = SmtpSettings.Deserialize(settingsValue);
+            settings.IsDefaultSettings = true;
+
+            return settings;
+        }
+    }
+
     public SmtpSettings SmtpSettings
     {
         get

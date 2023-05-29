@@ -35,6 +35,7 @@ class PaymentStore {
   minAvailableTotalSizeValue = 107374182400;
 
   isInitPaymentPage = false;
+  isLicenseCorrect = false;
 
   constructor() {
     makeAutoObservable(this);
@@ -156,6 +157,14 @@ class PaymentStore {
         }
       });
   };
+
+  standaloneInit = async () => {
+    if (this.isInitPaymentPage) return;
+
+    await this.getSettingsPayment();
+
+    this.isInitPaymentPage = true;
+  };
   getSettingsPayment = async () => {
     try {
       const newSettings = await getPaymentSettings();
@@ -189,19 +198,35 @@ class PaymentStore {
     }
   };
 
+  setIsLicenseCorrect = (isLicenseCorrect) => {
+    this.isLicenseCorrect = isLicenseCorrect;
+  };
   setPaymentsLicense = async (confirmKey, data) => {
-    const response = await setLicense(confirmKey, data);
+    try {
+      const message = await setLicense(confirmKey, data);
+      this.setIsLicenseCorrect(true);
 
-    this.acceptPaymentsLicense();
-    this.getSettingsPayment();
-
-    return response;
+      toastr.success(message);
+    } catch (e) {
+      toastr.error(e);
+      this.setIsLicenseCorrect(false);
+    }
   };
 
-  acceptPaymentsLicense = async () => {
-    const response = await acceptLicense().then((res) => console.log(res));
+  acceptPaymentsLicense = async (t) => {
+    try {
+      const { currentTariffStatusStore, currentQuotaStore } = authStore;
+      const { setPortalQuota } = currentQuotaStore;
+      const { setPortalTariff } = currentTariffStatusStore;
 
-    return response;
+      await acceptLicense();
+      toastr.success(t("ActivateLicenseActivated"));
+      localStorage.removeItem("enterpriseAlertClose");
+
+      await Promise.all([setPortalTariff(), setPortalQuota()]);
+    } catch (e) {
+      toastr.error(e);
+    }
   };
 
   setPaymentAccount = async () => {

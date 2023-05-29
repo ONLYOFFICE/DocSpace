@@ -24,13 +24,18 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
-namespace ASC.Web.Api.Log;
+namespace ASC.Web.Api.ApiModels.ResponseDto;
 
-internal static partial class SmtpOperationLogger
+public class TenantExtraDto
 {
-    [LoggerMessage(Level = LogLevel.Error, Message = "LdapOperation finalization problem")]
-    public static partial void ErrorLdapOperationFinalizationProblem(this ILogger<SmtpOperation> logger, Exception exception);
-
-    [LoggerMessage(Level = LogLevel.Information, Message = "Progress: {progress}% {status} {source}")]
-    public static partial void InformationProgress(this ILogger<SmtpOperation> logger, int progress, string status, string source);
+    public bool CustomMode { get; set; }
+    public bool Opensource { get; set; }
+    public bool Enterprise { get; set; }
+    public Tariff Tariff { get; set; }
+    public QuotaDto Quota { get; set; }
+    public bool NotPaid { get; set; }
+    public string LicenseAccept { get; set; }
+    public bool EnableTariffPage { get; set; }
+    public Dictionary<string, DateTime> DocServerUserQuota { get; set; }
+    public License DocServerLicense { get; set; }
 }

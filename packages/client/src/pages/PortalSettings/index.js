@@ -24,7 +24,9 @@ const SessionLifetimePage = lazy(() =>
   import("./categories/security/access-portal/sessionLifetime")
 );
 
-const CustomizationSettings = lazy(() => import("./categories/common/index.js"));
+const CustomizationSettings = lazy(() =>
+  import("./categories/common/index.js")
+);
 
 const DeveloperTools = lazy(() =>
   import("./categories/developer-tools/index.js")
@@ -53,12 +55,16 @@ const ThirdParty = lazy(() =>
 const SingleSignOn = lazy(() =>
   import("./categories/integration/SingleSignOn")
 );
-
+const SMTPSettings = lazy(() =>
+  import("./categories/integration/SMTPSettings")
+);
 const Backup = lazy(() => import("./categories/data-management/index"));
 
 const RestoreBackup = lazy(() =>
   import("./categories/data-management/backup/restore-backup/index")
 );
+
+const Bonus = lazy(() => import("../Bonus"));
 const DeleteDataPage = lazy(() => import("./categories/delete-data"));
 
 const WhiteLabel = lazy(() =>
@@ -152,6 +158,7 @@ const INTEGRATION_URLS = [
   combineUrl(PROXY_BASE_URL, "/integration/single-sign-on"),
   combineUrl(PROXY_BASE_URL, "/integration/portal-integration"),
   combineUrl(PROXY_BASE_URL, "/integration/plugins"),
+  combineUrl(PROXY_BASE_URL, "/integration/smtp-settings"),
 ];
 
 const PAYMENTS_URL = combineUrl(PROXY_BASE_URL, "/payments/portal-payments");
@@ -162,6 +169,10 @@ const THIRD_PARTY_URL = combineUrl(
 );
 
 const SSO_URL = combineUrl(PROXY_BASE_URL, "/integration/single-sign-on");
+
+const SMTP_Settings = combineUrl(PROXY_BASE_URL, "/integration/smtp-settings");
+
+const bonus_Settings = combineUrl(combineUrl(PROXY_BASE_URL, "/bonus"));
 
 const DELETE_DATA_URLS = [
   combineUrl(PROXY_BASE_URL, "/delete-data/deletion"),
@@ -179,28 +190,54 @@ const Settings = () => {
       <Panels />
       <Suspense fallback={null}>
         <Switch>
-          <Route exact path={CUSTOMIZATION_URLS} component={CustomizationSettings} />
+          <Route
+            exact
+            path={CUSTOMIZATION_URLS}
+            component={CustomizationSettings}
+          />
           <Route exact path={LTZ_URL} component={LanguageAndTimeZoneSettings} />
-          <Route exact path={WELCOME_PAGE_SETTINGS_URL} component={WelcomePageSettings} />
+          <Route
+            exact
+            path={WELCOME_PAGE_SETTINGS_URL}
+            component={WelcomePageSettings}
+          />
           <Route exact path={DNS_SETTINGS} component={DNSSettings} />
           <Route exact path={PORTAL_RENAMING} component={PortalRenaming} />
           <Route exact path={WHITELABEL_URL} component={WhiteLabel} />
           <Route exact path={SECURITY_URLS} component={SecuritySettings} />
           <Route exact path={TFA_PAGE_URL} component={TfaPage} />
-          <Route exact path={PASSWORD_PAGE_URL} component={PasswordStrengthPage} />
-          <Route exact path={TRUSTED_MAIL_PAGE_URL} component={TrustedMailPage} />
+          <Route
+            exact
+            path={PASSWORD_PAGE_URL}
+            component={PasswordStrengthPage}
+          />
+          <Route
+            exact
+            path={TRUSTED_MAIL_PAGE_URL}
+            component={TrustedMailPage}
+          />
           <Route exact path={IP_SECURITY_PAGE_URL} component={IpSecurityPage} />
-          <Route exact path={ADMIN_MESSAGE_PAGE_URL} component={AdminMessagePage} />
-          <Route exact path={SESSION_LIFETIME_PAGE_URL} component={SessionLifetimePage} />
+          <Route
+            exact
+            path={ADMIN_MESSAGE_PAGE_URL}
+            component={AdminMessagePage}
+          />
+          <Route
+            exact
+            path={SESSION_LIFETIME_PAGE_URL}
+            component={SessionLifetimePage}
+          />
           <Route exact path={INTEGRATION_URLS} component={Integration} />
           <Route exact path={PAYMENTS_URL} component={Payments} />
           <Route exact path={THIRD_PARTY_URL} component={ThirdParty} />
           <Route exact path={SSO_URL} component={SingleSignOn} />
+          <Route exact path={SMTP_Settings} component={SMTPSettings} />
           <Route exact path={DEVELOPER_URLS} component={DeveloperTools} />
           <Route exact path={BACKUP_URLS} component={Backup} />
           <Route exact path={DELETE_DATA_URLS} component={DeleteDataPage} />
           <Route path={RESTORE_DATA_URL} component={RestoreBackup} />
-          <Redirect to={{pathname: ERROR_404_URL}} />
+          <Route path={bonus_Settings} component={Bonus} />
+          <Redirect to={{ pathname: ERROR_404_URL }} />
         </Switch>
       </Suspense>
     </Layout>

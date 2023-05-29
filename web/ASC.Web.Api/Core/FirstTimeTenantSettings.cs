@@ -124,7 +124,7 @@ public class FirstTimeTenantSettings
 
             await _userManager.UpdateUserInfo(currentUser);
 
-            if (RequestLicense)
+            if (_tenantExtra.EnableTariffSettings && _tenantExtra.Enterprise)
             {
                 TariffSettings.SetLicenseAccept(_settingsManager);
                 _messageService.Send(MessageAction.LicenseKeyUploaded);
