@@ -11,6 +11,7 @@ import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import Textarea from "@docspace/components/textarea";
 import IconButton from "@docspace/components/icon-button";
+import toastr from "@docspace/components/toast/toastr";
 
 import {
   getCrashReport,
@@ -53,7 +54,7 @@ const ModalDialogContainer = styled(ModalDialog)`
 
 const ReportDialog = (props) => {
   const { t, ready } = useTranslation(["Common"]);
-  const { visible, onClose, error, user, version } = props;
+  const { visible, onClose, error, user, version, FirebaseHelper } = props;
   const [report, setReport] = useState({});
   const [description, setDescription] = useState("");
 
@@ -69,6 +70,20 @@ const ReportDialog = (props) => {
 
   const onClickDownload = () => {
     downloadJson(report, fileTitle);
+  };
+
+  const onClickSend = () => {
+    try {
+      const reportWithDescription = Object.assign(report, {
+        description: description,
+      });
+      FirebaseHelper.sendCrashReport(reportWithDescription);
+      toastr.success(t("ErrorReportSuccess"));
+      onClose();
+    } catch (e) {
+      console.error(e);
+      toastr.error(e);
+    }
   };
 
   const fileTitle = t("ErrorReport") + " " + getCurrentDate();
@@ -118,6 +133,7 @@ const ReportDialog = (props) => {
           size="normal"
           primary
           scale
+          onClick={onClickSend}
         />
         <Button
           key="CancelButton"
