@@ -104,6 +104,8 @@
   "EnterName": "Enter name",
   "Error": "Error",
   "ErrorInternalServer": "Internal server error. Try again later.",
+  "ErrorReport": "Error Report",
+  "ErrorReportDescription": "Open the report below to see what data is included. Error reports do not contain any personal data of the users. To help our team better understand the problem, describe it in the free form using the comment field",
   "Exabyte": "EB",
   "FeedbackAndSupport": "Feedback & Support",
   "FillFormButton": "Fill in the form",
