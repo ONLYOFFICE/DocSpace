@@ -189,6 +189,7 @@ const SectionHeaderContent = (props) => {
     setRoomSharingPanelVisible,
     downloadAction,
     isPublicRoomType,
+    externalLinks,
   } = props;
 
   const navigate = useNavigate();
@@ -532,7 +533,6 @@ const SectionHeaderContent = (props) => {
       selectedFolder,
 
       onClickEditRoom,
-      onClickCopyExternalLink,
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
@@ -569,35 +569,38 @@ const SectionHeaderContent = (props) => {
 
     const isDisabled = isRecycleBinFolder || isRoom;
 
-    const links = [];
-    const isMultiExternalLink = links.length;
+    const isMultiExternalLink = externalLinks.length > 1;
 
-    const publicAction = {
-      id: "header_option_copy-external-link",
-      key: "copy-external-link",
-      label: t("SharingPanel:CopyExternalLink"),
-      icon: CopyToReactSvgUrl,
-      // onClick: () => onClickCopyExternalLink(),
-      // disabled: !isPublicRoomType,
-      items: [
-        {
-          id: "option_move-to",
-          key: "move-to",
-          label: t("MoveTo"),
+    const roomLinks = externalLinks.map((link) => {
+      if (!link.sharedTo.title) {
+      }
+      return {
+        // id: "option_move-to",
+        key: `external-link_${link.sharedTo.id}`,
+        label: link.sharedTo.title,
+        icon: InvitationLinkReactSvgUrl,
+        onClick: () => copy(link.sharedTo.shareLink),
+        disabled: link.sharedTo.disabled,
+      };
+    });
+
+    const publicAction = isMultiExternalLink
+      ? {
+          id: "header_option_copy-external-link",
+          key: "copy-external-link",
+          label: t("SharingPanel:CopyExternalLink"),
           icon: CopyToReactSvgUrl,
-          onClick: () => {},
-          disabled: false,
-        },
-        {
-          id: "option_move-to1",
-          key: "move-to1",
-          label: t("MoveTo"),
+          disabled: !isPublicRoomType,
+          items: roomLinks,
+        }
+      : {
+          id: "header_option_copy-external-link",
+          key: "copy-external-link",
+          label: t("SharingPanel:CopyExternalLink"),
           icon: CopyToReactSvgUrl,
-          onClick: () => {},
-          disabled: false,
-        },
-      ],
-    };
+          onClick: () => copy(roomLinks[0]?.sharedTo?.shareLink),
+          disabled: !isPublicRoomType,
+        };
 
     if (isArchiveFolder) {
       return [
@@ -642,7 +645,7 @@ const SectionHeaderContent = (props) => {
         key: "link-for-room-members",
         label: t("LinkForRoomMembers"),
         onClick: onCopyLinkAction,
-        disabled: isRecycleBinFolder || isPersonalRoom || isPublicRoomType,
+        disabled: isRecycleBinFolder || isPersonalRoom,
         icon: InvitationLinkReactSvgUrl,
       },
       {
@@ -1074,7 +1077,6 @@ export default inject(
       onClickArchive,
       onClickReconnectStorage,
       onCopyLink,
-      onClickCopyExternalLink,
     } = contextOptionsStore;
 
     const canRestoreAll = isArchiveFolder && roomsForRestore.length > 0;
@@ -1177,7 +1179,6 @@ export default inject(
       selectedFolder,
 
       onClickEditRoom,
-      onClickCopyExternalLink,
       onClickInviteUsers,
       onShowInfoPanel,
       onClickArchive,
@@ -1192,6 +1193,7 @@ export default inject(
       onClickBack,
       isPublicRoomType,
       isPublicRoom: publicRoomStore.isPublicRoom,
+      externalLinks: publicRoomStore.roomLinks,
 
       getAccountsHeaderMenu,
       isAccountsHeaderVisible,

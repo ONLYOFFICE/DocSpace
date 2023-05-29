@@ -8,6 +8,7 @@ import { tablet } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 import ToggleInfoPanelButton from "./toggle-infopanel-btn";
 import PlusButton from "./plus-btn";
+import ContextButton from "./context-btn";
 import VerticalDotsReactSvgUrl from "PUBLIC_DIR/images/vertical-dots.react.svg?url";
 
 const StyledContainer = styled.div`
@@ -126,7 +127,7 @@ const ControlButtons = ({
             />
           )}
 
-          <ContextMenuButton
+          {/* <ContextMenuButton
             id="header_optional-button"
             zIndex={402}
             className="option-button"
@@ -137,6 +138,15 @@ const ControlButtons = ({
             getData={getContextOptionsFolder}
             isDisabled={false}
             title={titles?.contextMenu}
+          /> */}
+
+          <ContextButton
+            id="header_optional-button"
+            className="add-button"
+            getData={getContextOptionsFolder}
+            withMenu={withMenu}
+            //onPlusClick={onPlusClick}
+            title={titles?.actions}
           />
 
           {!isDesktop && (

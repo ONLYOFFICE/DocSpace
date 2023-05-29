@@ -1209,6 +1209,13 @@ class FilesStore {
       .then(async (data) => {
         filterData.total = data.total;
 
+        if (
+          data.current.roomType === RoomsType.PublicRoom &&
+          !this.publicRoomStore.isPublicRoom
+        ) {
+          await this.publicRoomStore.getExternalLinks(data.current.id);
+        }
+
         if (data.total > 0) {
           const lastPage = filterData.getLastPage();
 

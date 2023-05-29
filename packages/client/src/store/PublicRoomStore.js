@@ -35,7 +35,8 @@ class PublicRoomStore {
   getExternalLinks = async (roomId) => {
     const type = 1;
     const externalLinks = await api.rooms.getExternalLinks(roomId, type);
-    // this.externalLinks = externalLinks;
+
+    this.externalLinks = externalLinks;
   };
 
   setExternalLink = (linkId, data) => {
@@ -47,7 +48,8 @@ class PublicRoomStore {
   };
 
   setExternalLinks = (links) => {
-    const externalLinks = links.filter((t) => t.sharedTo.shareLink);
+    const externalLinks = links.filter((t) => t.sharedTo.shareLink); // shareLink
+
     this.externalLinks = externalLinks;
   };
 
@@ -94,6 +96,16 @@ class PublicRoomStore {
 
   get isPublicRoom() {
     return this.isLoaded;
+  }
+
+  get roomLinks() {
+    const a = this.externalLinks.filter(
+      (l) => l.sharedTo.shareLink && !l.sharedTo.isTemplate
+    );
+
+    return this.externalLinks.filter(
+      (l) => l.sharedTo.shareLink && !l.sharedTo.isTemplate
+    );
   }
 }
 
