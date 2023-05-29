@@ -101,3 +101,5 @@ export const DEFAULT_SELECT_LANGUAGE = {
   label: "English (United States)",
   icon: EnUSReactSvgUrl,
 };
+
+export const SSO_LABEL = "SSO";

@@ -1,7 +1,7 @@
 import lodash from "lodash";
 import { useGesture } from "@use-gesture/react";
 import { useSpring, animated } from "@react-spring/web";
-import { isMobile, isDesktop } from "react-device-detect";
+import { isMobile, isDesktop, isIOS, isMobileOnly } from "react-device-detect";
 import React, {
   useCallback,
   useEffect,
@@ -485,6 +485,15 @@ function ViewerPlayer({
   const toggleVideoFullscreen = useCallback(() => {
     if (!videoRef.current) return;
 
+    if (isIOS && isMobileOnly) {
+      videoRef.current.pause();
+      videoRef.current.playsInline = false;
+      videoRef.current.play();
+      videoRef.current.playsInline = true;
+
+      return;
+    }
+
     if (isFullScreen) {
       if (document.exitFullscreen) {
         document.exitFullscreen();
@@ -533,6 +542,7 @@ function ViewerPlayer({
     () => model.filter((item) => !item.disabled).length <= 1,
     [model]
   );
+
   return (
     <>
       {isMobile && panelVisible && mobileDetails}

@@ -134,7 +134,7 @@
     <value>Tên miền không hợp lệ</value>
   </data>
   <data name="ErrorPasswordEmpty" xml:space="preserve">
-    <value>Chưa có mật khẩu</value>
+    <value>Chưa có mật khẩu.</value>
   </data>
   <data name="ErrorPasswordLength" xml:space="preserve">
     <value>từ {0} đến {1} ký tự</value>
@@ -155,7 +155,7 @@
     <value>Không tìm thấy người dùng này</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
-    <value>Không tìm thấy người dùng với thư điện tử "{0}" </value>
+    <value>Không tìm thấy người dùng với thư điện tử "{0}"</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
     <value>Vùng châu Âu (Frankfurt)</value>
@@ -167,14 +167,13 @@
     <value>Lưu ý: kích thước file không được vượt quá {1}{0}{2}</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
-    <value>bytes,KB,MB,GB,TB
-</value>
+    <value>bytes,KB,MB,GB,TB</value>
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Liên kết để xác nhận tài khoản của bạn đã được gửi tới email chỉ định</value>
   </data>
   <data name="FirstName" xml:space="preserve">
-    <value>Họ</value>
+    <value>Tên</value>
   </data>
   <data name="LastName" xml:space="preserve">
     <value>Họ</value>
@@ -294,7 +293,7 @@
     <value>Giấy phép không đúng</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Giấy phép đã hết hạn</value>
+    <value>Giấy phép đã hết hạn.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Số cổng thông tin vượt quá số lượng quy định trong giấy phép</value>
@@ -433,5 +432,173 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Số lượng quản trị viên/người dùng cấp cao:</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>đăng nhập</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Kết nối dịch vụ Bitly để rút gọn các liên kết lời mời của cổng thông tin và các liên kết được chia sẻ trong mô-đun Tài liệu.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Box ID</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Kết nối ứng dụng để quản lý các file và thư mục Box.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Bật ứng dụng cho phép xác thực hai yếu tố thông qua Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign Key</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Kết nối ứng dụng để thêm chữ ký điện tử DocuSign vào tài liệu.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Điểm cuối xác thực DocuSign</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Kết nối ứng dụng để quản lý các file và thư mục Dropbox.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Kết nối ứng dụng để đăng nhập vào hệ thống bằng tài khoản Facebook.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook Key</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Web API key</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Kết nối Dịch vụ Tin nhắn đám mây Firebase để nhận thông báo về tin nhắn được gửi cho bạn.</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID người gửi</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID dự án</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Kết nối dự án để đăng nhập vào cổng thông tin bằng tài khoản Google và quản lý file và thư mục Google Drive.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Kết nối ứng dụng để đăng nhập vào hệ thống bằng tài khoản LinkedIn.</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Kết nối ứng dụng để quản lý file và thư mục OneDrive.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Kích hoạt ứng dụng cho phép xác thực hai yếu tố thông qua Trung tâm SMS.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Mật khẩu hoặc mật khẩu MD5 hash bằng chữ thường</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Thêm Twilio để có thể gọi cho các liên hệ CRM ngay từ trình duyệt.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Số điện thoại từ Twilio (được yêu cầu để cho phép gửi SMS)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Kết nối ứng dụng để đăng nhập vào hệ thống bằng tài khoản Twitter và tìm kiếm địa chỉ liên hệ.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Bật ứng dụng cho phép nhập liên hệ từ Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Loại file ảnh không xác định</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Kích thước hình ảnh vượt quá thông số cho phép</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox Key</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google Key</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>Trung tâm SMS</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Đăng nhập</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Tài khoản Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Token xác thực</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Mật khẩu</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign Secret</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>

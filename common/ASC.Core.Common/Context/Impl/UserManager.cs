@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.AspNetCore.Http.Extensions;
+
 using Constants = ASC.Core.Users.Constants;
 
 namespace ASC.Core;
@@ -185,6 +187,7 @@ public class UserManager
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
         EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
         string text,
         string sortBy,
         bool sortOrderAsc,
@@ -193,7 +196,7 @@ public class UserManager
         out int total,
         out int count)
     {
-        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
+        return _userService.GetUsers(Tenant.Id, isDocSpaceAdmin, employeeStatus, includeGroups, excludeGroups, activationStatus, accountLoginType, text, sortBy, sortOrderAsc, limit, offset, out total, out count);
     }
 
     public string[] GetUserNames(EmployeeStatus status)
@@ -427,7 +430,7 @@ public class UserManager
     private async Task SyncCardDavAsync(UserInfo u, UserInfo oldUserData, UserInfo newUser)
     {
         var tenant = _tenantManager.GetCurrentTenant();
-        var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+        var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetDisplayUrl() :
                     (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                     new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
 
@@ -516,7 +519,7 @@ public class UserManager
             var currentAccountPaswd = _instanceCrypto.Encrypt(curreMail);
             var userAuthorization = curreMail + ":" + currentAccountPaswd;
             var rootAuthorization = _cardDavAddressbook.GetSystemAuthorization();
-            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetDisplayUrl() :
                 (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                 new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
             var davUsersEmails = GetDavUserEmails();
@@ -687,7 +690,7 @@ public class UserManager
         if (groupId == Constants.GroupUser.ID)
         {
             var tenant = _tenantManager.GetCurrentTenant();
-            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetUrlRewriter().ToString() :
+            var myUri = (_accessor?.HttpContext != null) ? _accessor.HttpContext.Request.GetDisplayUrl() :
                        (_cache.Get<string>("REWRITE_URL" + tenant.Id) != null) ?
                        new Uri(_cache.Get<string>("REWRITE_URL" + tenant.Id)).ToString() : tenant.GetTenantDomain(_coreSettings);
 

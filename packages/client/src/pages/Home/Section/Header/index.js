@@ -348,11 +348,11 @@ class SectionHeaderContent extends React.Component {
   };
 
   onEmptyTrashAction = () => {
-    const { activeFiles, activeFolders } = this.props;
+    const { activeFiles, activeFolders, emptyTrashInProgress } = this.props;
 
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
-    if (isExistActiveItems) return;
+    if (isExistActiveItems || emptyTrashInProgress) return;
 
     this.props.setEmptyTrashDialogVisible(true);
   };
@@ -377,9 +377,8 @@ class SectionHeaderContent extends React.Component {
       return;
     }
 
-    this.props.setArchiveAction("unarchive");
     this.props.setRestoreAllArchive(true);
-    this.props.setArchiveDialogVisible(true);
+    this.props.setRestoreRoomDialogVisible(true);
   };
 
   onShowInfo = () => {
@@ -551,7 +550,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_move-to",
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         onClick: this.onMoveAction,
         disabled: isDisabled || !security?.MoveTo,
         icon: MoveReactSvgUrl,
@@ -559,7 +558,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_copy",
         key: "copy",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         onClick: this.onCopyAction,
         disabled: isDisabled || !security?.CopyTo,
         icon: CopyReactSvgUrl,
@@ -567,7 +566,7 @@ class SectionHeaderContent extends React.Component {
       {
         id: "header_option_rename",
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         onClick: this.renameAction,
         disabled: isDisabled || !security?.Rename,
         icon: RenameReactSvgUrl,
@@ -732,7 +731,7 @@ class SectionHeaderContent extends React.Component {
                     onClose={this.onClose}
                     onClickFolder={this.onClickFolder}
                     isTrashFolder={isRecycleBinFolder}
-                    isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
+                    isRecycleBinFolder={isRecycleBinFolder}
                     isEmptyFilesList={
                       isArchiveFolder ? isEmptyArchive : isEmptyFilesList
                     }
@@ -815,9 +814,8 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
       setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
@@ -837,6 +835,7 @@ export default inject(
       isGroupMenuBlocked,
       moveToRoomsPage,
       onClickBack,
+      emptyTrashInProgress,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -942,9 +941,8 @@ export default inject(
 
       setRestoreAllPanelVisible,
       isEmptyPage,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
 
       selectedFolder,
 
@@ -961,6 +959,7 @@ export default inject(
 
       moveToRoomsPage,
       onClickBack,
+      emptyTrashInProgress,
     };
   }
 )(

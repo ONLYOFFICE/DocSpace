@@ -1,0 +1,728 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Želite spremeniti geslo na svojem računu ONLYOFFICE? Kliknite spodnji gumb za potrditev.
+
+$GreenButton
+
+Povezava je veljavna 7 dni.
+
+Ne želite spremeniti gesla? Prezrite to sporočilo</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Pravkar ste ustvarili ONLYOFFICE DocSpace, središče za dokumente, kjer lahko okrepite sodelovanje s svojo ekipo, strankami, partnerji in drugimi. Njegov naslov je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Prosimo potrdite vaš e-mail (povezava velja 7 dni):
+
+$GreenButton
+
+Vaš trenutni naročniški paket je STARTUP. Je popolnoma brezplačen in vključuje:
+
+* 1 skrbnik, 2 napredna uporabnika
+* Do 12 sob
+* Neomejeno število uporabnikov v vsaki sobi
+* 2 GB prostora na disku
+
+Uživajte v novem načinu sodelovanja pri dokumentih!
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Pravkar ste ustvarili ONLYOFFICE DocSpace, središče za dokumente, kjer lahko okrepite sodelovanje s svojo ekipo, strankami, partnerji in drugimi. Njegov naslov je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Prosimo potrdite vaš e-mail (povezava velja 7 dni):
+
+$GreenButton
+
+Vaš trenutni paket je STARTUP. Je popolnoma brezplačen in vključuje:
+
+* 1 skrbnik, 2 napredna uporabnika
+* Do 12 sob
+* Neomejeno število uporabnikov v vsaki sobi
+* 2 GB prostora na disku
+
+Uživajte v novem načinu sodelovanja pri dokumentih!
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Pravkar ste ustvarili ONLYOFFICE DocSpace, središče za dokumente, kjer lahko okrepite sodelovanje s svojo ekipo, strankami, partnerji in drugimi. Njegov naslov je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Prosimo potrdite vaš e-mail (povezava velja 7 dni):
+
+$GreenButton
+
+Vaš trenutni naročniški paket je STARTUP. Je popolnoma brezplačen in vključuje:
+
+* 1 skrbnik, 2 napredna uporabnika
+* Do 12 sob
+* Neomejeno število uporabnikov v vsaki sobi
+* 2 GB prostora na disku
+
+Uživajte v novem načinu sodelovanja pri dokumentih!
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Pravkar ste ustvarili ONLYOFFICE DocSpace, središče za dokumente, kjer lahko okrepite sodelovanje s svojo ekipo, strankami, partnerji in drugimi. Njegov naslov je "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Prosimo potrdite vaš e-mail (povezava velja 7 dni):
+
+$GreenButton
+
+Vaš trenutni paket je STARTUP. Je popolnoma brezplačen in vključuje:
+
+* 1 skrbnik, 2 napredna uporabnika
+* Do 12 sob
+* Neomejeno število uporabnikov v vsaki sobi
+* 2 GB prostora na disku
+
+Uživajte v novem načinu sodelovanja pri dokumentih!
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Pridobite brezplačne aplikacije ONLYOFFICE za delo z dokumenti s katero koli od vaših naprav.
+
+# Za delo z dokumenti brez povezave v sistemih Windows, Linux in Mac prenesite "ONLYOFFICE Desktop upravljalce":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Za urejanje dokumentov na mobilnih napravah prenesite aplikacijo Dokumenti ONLYOFFICE za "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" ali "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Verjamemo, da boste uživali v uporabi vašega ONLYOFFICE DocSpace. Tukaj je nekaj nasvetov, kako organizirati delo z dokumenti učinkoviteje.
+
+*#1. Izberite način dela.* Organizirajte svoj potek dela, kot vam ustreza in ustvarite sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami v kateri koli namen.
+
+*#2. Delajte z vašo katero koli vsebino.* Shranjujte in delajte z datotekami različnih formatov v svojih prostorih: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, večpredstavnost.
+
+*#3. Učinkovito soavtorstvo.* Sodelujte pri dokumentih z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici.
+
+*#4. Povežite oblake tretjih oseb.* Povežite katero koli shrambo v oblaku in delajte brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Verjamemo, da boste uživali v uporabi vašega ONLYOFFICE DocSpace. Tukaj je nekaj nasvetov, kako organizirati delo z dokumenti učinkoviteje.
+
+*#1. Izberite način dela.* Organizirajte svoj potek dela, kot vam ustreza in ustvarite sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami v kateri koli namen.
+
+*#2. Delajte z vašo katero koli vsebino.* Shranjujte in delajte z datotekami različnih formatov v svojih prostorih: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, večpredstavnost.
+
+*#3. Učinkovito soavtorstvo.* Sodelujte pri dokumentih z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici.
+
+*#4. Povežite oblake tretjih oseb.* Povežite katero koli shrambo v oblaku in delajte brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Verjamemo, da boste uživali v uporabi vašega ONLYOFFICE DocSpace. Tukaj je nekaj nasvetov, kako organizirati delo z dokumenti učinkoviteje.
+
+*#1. Izberite način dela.* Organizirajte svoj potek dela, kot vam ustreza in ustvarite sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami v kateri koli namen.
+
+*#2. Delajte z vašo katero koli vsebino.* Shranjujte in delajte z datotekami različnih formatov v svojih prostorih: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, večpredstavnost.
+
+*#3. Učinkovito soavtorstvo.* Sodelujte pri dokumentih z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici.
+
+*#4. Povežite oblake tretjih oseb.* Povežite katero koli shrambo v oblaku in delajte brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Verjamemo, da boste uživali v uporabi vašega ONLYOFFICE DocSpace. Tukaj je nekaj nasvetov, kako organizirati delo z dokumenti učinkoviteje.
+
+*#1. Izberite način dela.* Organizirajte svoj potek dela, kot vam ustreza in ustvarite sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami v kateri koli namen.
+
+*#2. Delajte z vašo katero koli vsebino.* Shranjujte in delajte z datotekami različnih formatov v svojih prostorih: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, večpredstavnost.
+
+*#3. Učinkovito soavtorstvo.* Sodelujte pri dokumentih z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici.
+
+*#4. Povežite oblake tretjih oseb.* Povežite katero koli shrambo v oblaku in delajte brez preklapljanja med aplikacijami.
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Za vas imamo tri preprosta vprašanja, ki nam lahko pomagajo narediti vašo uporabniško izkušnjo še boljšo.
+
+* Ali imate veliko ekipo in veliko strank ali partnerjev, s katerimi lahko sodelujete v vašem ONLYOFFICE DocSpace? 
+
+* Ali želite ustvariti poljubno število sob za delo s številnimi dokumenti? 
+
+* Ali želite uporabljati ONLYOFFICE DocSpace pod svojo blagovno znamko?
+
+Če ste vsaj na eno vprašanje odgovorili z »da«, se odločite za naročniški paket BUSINESS, ki vam omogoča, da v svoj ONLYOFFICE DocSpace dodate poljubno število upraviteljev in uporabite možnosti blagovne znamke.
+
+Da to uredite, se prosim obrnite na naš "Razdelek za plačila":"$PricingPage" v vašem ONLYOFFICE DocSpace. Tam boste našli individualno povezavo do portala za stranke Stripe, kjer lahko preprosto upravljate z vsemi podrobnostmi plačila. 
+
+_Opomba: Oseba, ki plača naročnino, postane plačnik. Samo plačnik lahko spreminja naročnino (prilagodi število upravljalcev). Uporabniki nimajo dostopa do podrobnosti plačila. Lastnik računa ONLYOFFICE DocSpace lahko plačnika kadar koli kasneje spremeni. _
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Za vas imamo tri preprosta vprašanja, ki nam lahko pomagajo narediti vašo uporabniško izkušnjo še boljšo.
+
+* Ali imate veliko ekipo in veliko strank ali partnerjev, s katerimi lahko sodelujete v vašem ONLYOFFICE DocSpace? 
+
+* Ali želite ustvariti poljubno število sob za delo s številnimi dokumenti? 
+
+* Ali želite uporabljati ONLYOFFICE DocSpace pod svojo blagovno znamko?
+
+Če ste vsaj na eno vprašanje odgovorili z »da«, se odločite za naročniški paket BUSINESS, ki vam omogoča, da v svoj ONLYOFFICE DocSpace dodate poljubno število upraviteljev in uporabite možnosti blagovne znamke.
+
+Da to uredite, se prosim obrnite na naš "Razdelek za plačila":"$PricingPage" v vašem ONLYOFFICE DocSpace. Tam boste našli individualno povezavo do portala za stranke Stripe, kjer lahko preprosto upravljate z vsemi podrobnostmi plačila. 
+
+_Opomba: Oseba, ki plača naročnino, postane plačnik. Samo plačnik lahko spreminja naročnino (prilagodi število upravljalcev). Uporabniki nimajo dostopa do podrobnosti plačila. Lastnik računa ONLYOFFICE DocSpace lahko plačnika kadar koli kasneje spremeni. _
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Za vas imamo tri preprosta vprašanja, ki nam lahko pomagajo narediti vašo uporabniško izkušnjo še boljšo.
+
+* Ali imate veliko ekipo in veliko strank ali partnerjev, s katerimi lahko sodelujete v vašem ONLYOFFICE DocSpace? 
+
+* Ali želite ustvariti poljubno število sob za delo s številnimi dokumenti? 
+
+* Ali želite uporabljati ONLYOFFICE DocSpace pod svojo blagovno znamko?
+
+Če ste vsaj na eno vprašanje odgovorili z »da«, se odločite za naročniški paket BUSINESS, ki vam omogoča, da v svoj ONLYOFFICE DocSpace dodate poljubno število upraviteljev in uporabite možnosti blagovne znamke.
+
+Da to uredite, se prosim obrnite na naš "Razdelek za plačila":"$PricingPage" v vašem ONLYOFFICE DocSpace. Tam boste našli individualno povezavo do portala za stranke Stripe, kjer lahko preprosto upravljate z vsemi podrobnostmi plačila. 
+
+_Opomba: Oseba, ki plača naročnino, postane plačnik. Samo plačnik lahko spreminja naročnino (prilagodi število upravljalcev). Uporabniki nimajo dostopa do podrobnosti plačila. Lastnik računa ONLYOFFICE DocSpace lahko plačnika kadar koli kasneje spremeni. _
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Za vas imamo tri preprosta vprašanja, ki nam lahko pomagajo narediti vašo uporabniško izkušnjo še boljšo.
+
+* Ali imate veliko ekipo in veliko strank ali partnerjev, s katerimi lahko sodelujete v vašem ONLYOFFICE DocSpace? 
+
+* Ali želite ustvariti poljubno število sob za delo s številnimi dokumenti? 
+
+* Ali želite uporabljati ONLYOFFICE DocSpace pod svojo blagovno znamko?
+
+Če ste vsaj na eno vprašanje odgovorili z »da«, se odločite za naročniški paket BUSINESS, ki vam omogoča, da v svoj ONLYOFFICE DocSpace dodate poljubno število upraviteljev in uporabite možnosti blagovne znamke.
+
+Da to uredite, se prosim obrnite na naš "Razdelek za plačila":"$PricingPage" v vašem ONLYOFFICE DocSpace. Tam boste našli individualno povezavo do portala za stranke Stripe, kjer lahko preprosto upravljate z vsemi podrobnostmi plačila. 
+
+_Opomba: Oseba, ki plača naročnino, postane plačnik. Samo plačnik lahko spreminja naročnino (prilagodi število upravljalcev). Uporabniki nimajo dostopa do podrobnosti plačila. Lastnik računa ONLYOFFICE DocSpace lahko plačnika kadar koli kasneje spremeni. _
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Povabljeni ste, da se pridružite ONLYOFFICE DocSpace na "${__VirtualRootPath}":"${__VirtualRootPath}". Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Povabljeni ste, da se pridružite ONLYOFFICE DocSpace na "${__VirtualRootPath}":"${__VirtualRootPath}". Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Povabljeni ste, da se pridružite ONLYOFFICE DocSpace na "${__VirtualRootPath}":"${__VirtualRootPath}". Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Povabljeni ste, da se pridružite ONLYOFFICE DocSpace na "${__VirtualRootPath}":"${__VirtualRootPath}". Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan v "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj vam je omogočeno:
+
+* Sodelovanje z drugimi uporabniki v sobi, v katero ste povabljeni*: sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen*.
+
+* *Delo z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelovanje pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
+
+* *Povezovanje s katero koli shrambo v oblaku* in delo brez preklapljanja med aplikacijami. 
+
+$GreenButton
+
+Če potrebujete pomoč, jo poiščite v našem "Centru za pomoč":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "Ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan v "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj vam je omogočeno:
+
+* Sodelovanje z drugimi uporabniki v sobi, v katero ste povabljeni*: sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen*.
+
+* *Delo z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelovanje pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
+
+* *Povezovanje s katero koli shrambo v oblaku* in delo brez preklapljanja med aplikacijami. 
+
+$GreenButton
+
+Če potrebujete pomoč, jo poiščite v našem "Centru za pomoč":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "Ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan v "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj vam je omogočeno:
+
+* Sodelovanje z drugimi uporabniki v sobi, v katero ste povabljeni*: sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen*.
+
+* *Delo z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelovanje pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
+
+* *Povezovanje s katero koli shrambo v oblaku* in delo brez preklapljanja med aplikacijami. 
+
+$GreenButton
+
+Če potrebujete pomoč, jo poiščite v našem "Centru za pomoč":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "Ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Dobrodošli v ONLYOFFICE DocSpace! Vaš uporabniški profil je bil uspešno dodan v "${__VirtualRootPath}":"${__VirtualRootPath}". Zdaj vam je omogočeno:
+
+* Sodelovanje z drugimi uporabniki v sobi, v katero ste povabljeni*: sobe za sodelovanje za soavtorstvo v realnem času ali sobe po meri s prilagodljivimi nastavitvami za kateri koli namen*.
+
+* *Delo z datotekami različnih formatov*: besedilni dokumenti, preglednice, predstavitve, digitalni obrazci, PDF-ji, e-knjige, multimedija.
+
+* *Sodelovanje pri dokumentih* z dvema načinoma sourejanja: v realnem času ali z zaklepanjem odstavkov. Sledite spremembam, komunicirajte v realnem času z uporabo vgrajenega klepeta ali z zvočnimi in video klici. 
+
+* *Povezovanje s katero koli shrambo v oblaku* in delo brez preklapljanja med aplikacijami. 
+
+$GreenButton
+
+Če potrebujete pomoč, jo poiščite v našem "Centru za pomoč":"https://helpcenter.onlyoffice.com/" ali vprašajte našo "Ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.Sporočilo portala "${__VirtualRootPath}":"${__VirtualRootPath}" 
+
+Ime: $UserName
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Pridobite brezplačne aplikacije ONLYOFFICE za delo z dokumenti iz katere koli od vaših naprav.
+
+# Za delo z dokumenti brez povezave v sistemih Windows, Linux in Mac prenesite "ONLYOFFICE Desktop urejevalnike":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Za urejanje dokumentov na mobilnih napravah prenesite aplikacijo Dokumenti ONLYOFFICE za "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" ali "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Pridobite brezplačne aplikacije ONLYOFFICE za delo z dokumenti iz katere koli od vaših naprav.
+
+# Za delo z dokumenti brez povezave v sistemih Windows, Linux in Mac prenesite "ONLYOFFICE Desktop urejevalnike":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Za urejanje dokumentov na mobilnih napravah prenesite aplikacijo Dokumenti ONLYOFFICE za "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" ali "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Pozdravljeni!
+Prišlo je do poskusa registracije novega "ONLYOFFICE osebnega":"$PortalUrl" računa z uporabo tega email naslova. Če ste bili vi, vas želimo obvestiti, da račun že obstaja — nadaljujte na ONLYOFFICE osebnem računu in se prijavite.
+Če ste izgubili geslo, ga lahko obnovite na "strani za obnovo gesla":"$LinkToRecovery".
+Če niste poskusili registrirati novega računa, je to verjetno pomotoma storil nekdo drug. V tem primeru prezrite ta email.
+
+Želimo vam lep dan!
+Ekipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Želite spremeniti geslo na svojem osebnem računu ONLYOFFICE? Kliknite spodnji gumb za potrditev.
+
+$GreenButton 
+
+Povezava je veljavna 7 dni.
+
+Ne želite spremeniti gesla? Prezrite to sporočilo.</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>Vaš ONLYOFFICE DocSpace je bil uspešno deaktiviran. Upoštevajte, da bodo vsi vaši podatki izbrisani v skladu z našo"Politiko zasebnosti":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Zakaj ste se odločili oditi? Delite svoje izkušnje z nami.
+ 
+$GreenButton
+
+Hvala in srečno!
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Prilagodite varnostne nastavitve vašega ONLYOFFICE DocSpace, da bo bolj varen:
+
+* Nastavite močno geslo.  
+
+* Omogočite dvostopenjsko avtentikacijo in enotno prijavo.
+
+* Določite zaupanja vredne poštne domene in življenjsko dobo seje.
+
+* Omejite dostop iz določenih IP naslovov. 
+
+* Dovolite ali omejite skrbniška sporočila.  
+
+* Upravljajte s pravicami skrbniškega dostopa.
+
+* Delajte varnostne kopije.
+
+$GreenButton
+
+Obiščite naš "Center za pomoč":"https://helpcenter.onlyoffice.com/" in izvedite več o konfiguriranju in upravljanju ONLYOFFICE DocSpace. Vabimo vas tudi, da ga obiščete, ko imate vprašanja glede funkcionalnosti.
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>V vaš ONLYOFFICE DocSpace niste vstopili "${__VirtualRootPath}":"${__VirtualRootPath}" že več kot pol leta. 
+
+Ker ste se odločili, da ga ne boste več uporabljali, bodo vaš ONLYOFFICE DocSpace in vsi podatki izbrisani v skladu z našo "Politiko zasebnosti":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Veseli bomo vaših povratnih informacij. Zakaj ste se odločili prenehati uporabljati ONLYOFFICE DocSpace?
+
+$GreenButton
+
+Če menite, da je to napaka in želite še naprej uporabljati ONLYOFFICE DocSpace, se obrnite na našo "ekipo za podporo":"https://www.onlyoffice.com/support-contact-form.aspx". 
+
+S spoštovanjem, 
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Povabljeni ste, da se pridružite ONLYOFFICE DocSpace na "${__VirtualRootPath}":"${__VirtualRootPath}". Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+Po kliku na povezavo s povabilom nastavite novo geslo za svoj račun.
+
+S spoštovanjem,
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Upoštevajte, da je za vaš ONLYOFFICE DocSpace aktivirano obdobje odloga $PaymentDelay‎ dni.
+
+Poskrbite za plačano poslovno naročnino pred iztekom obdobja odloga. Tako boste lahko še naprej uporabljali vse prednosti vašega ONLYOFFICE DocSpace.
+
+$GreenButton
+
+S spoštovanjem,
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Upoštevajte, da vaša naročnina na ONLYOFFICE DocSpace poteče čez tri dni. Nato bo aktivirano obdobje odloga $PaymentDelay dni.
+
+Priporočamo, da že zdaj plačate poslovno naročnino in še naprej uporabljate vse prednosti vašega ONLYOFFICE DocSpace.
+
+$GreenButton
+
+S spoštovanjem,
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Upoštevajte, da je obdobje odloga $PaymentDelay dni za vaš ONLYOFFICE DocSpace poteklo.
+
+Poskrbite za plačilo poslovne naročnine čim prej. Tako boste lahko še naprej uporabljali vse prednosti vašega ONLYOFFICE DocSpace.
+
+$GreenButton
+
+S spoštovanjem,
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Pozdravljeni, $UserName!
+
+Upoštevajte, da bo jutri poteklo obdobje odloga $PaymentDelay dni za vaš ONLYOFFICE DocSpace.
+
+Poskrbite, da boste svojo poslovno naročnino plačali še danes. Tako boste lahko še naprej uporabljali vse prednosti vašega ONLYOFFICE DocSpace.
+
+$GreenButton
+
+S spoštovanjem,
+Ekipa ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Pozdravljeni!
+
+Povabljeni ste, da se pridružite $Message sobi na "${__VirtualRootPath}":"${__VirtualRootPath}". Sprejmite povabilo s klikom na povezavo:
+
+$GreenButton
+
+Ko kliknete povezavo s povabilom, nastavite novo geslo za svoj račun.
+
+S spoštovanjem,
+Ekipa ONLYOFFICE 
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Sprejmi</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>SPREJMI</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Sodelujte v DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Potrdite povabilo DocSpace</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>POTRDI</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Potrdi</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Potrdite povabilo sobe</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Obiščite razdelek za plačila</value>
+  </data>
+</root>

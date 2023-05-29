@@ -192,4 +192,9 @@
           &lt;/td&gt;
         &lt;/tr&gt;</value>
   </data>
+  <data name="TextForFooterUnsubsribeDocSpace" xml:space="preserve">
+    <value>Это сообщение создано автоматически, и отвечать на него не нужно.&lt;br /&gt;Вы получили это сообщение, так как являетесь зарегистрированным пользователем&lt;a href="{0}" target="_blank"&gt; DocSpace&lt;/a&gt;.
+&lt;br /&gt; Если вы хотите отписаться от информационных электронных писем DocSpace, нажмите на следующую ссылку: &lt;a href="{1}"  target="_blank"&gt;Unsubscribe&lt;/a&gt;
+&lt;br /&gt;</value>
+  </data>
 </root>

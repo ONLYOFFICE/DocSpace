@@ -4,7 +4,7 @@
   "CollaborationRoomTitle": "协作房间",
   "CreateRoomConfirmation": "继续且不连接存储？\n您已选择尚未连接的第三方存储选项。如果在未连接服务的情况下继续，则不会添加此选项。",
   "CreateTagOption": "创建标签",
-  "CustomRoomDescription": "应用您自己的设置以出于自定义目的使用此房间。",
+  "CustomRoomDescription": "根据不同目的和用途对房间进行自定义设置",
   "CustomRoomTitle": "自定义房间",
   "FillingFormsRoomDescription": "构建、分享以及填充文档模板，或使用现有预设来快速创建各类文档。",
   "FillingFormsRoomTitle": "表单填充房间",

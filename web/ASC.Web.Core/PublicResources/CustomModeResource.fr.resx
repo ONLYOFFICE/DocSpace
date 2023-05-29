@@ -63,7 +63,7 @@
 
 Vous venez de créer votre bureau personnel dans le cloud.
 
-h3 C'est un espace de travail virtuel où vous pouvez éditer et stocker des documents, travailler sur des documents où que vous soyez et donner accès à vos amis ou collègues.
+h3.C'est un espace de travail virtuel où vous pouvez éditer et stocker des documents, travailler sur des documents où que vous soyez et donner accès à vos amis ou collègues.
 
 h3.Pour un démarrage rapide, voici ce que vous pouvez faire dans ONLYOFFICE :
 
@@ -164,5 +164,35 @@ L'effacement des données personnelles permet de libérer :
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Nouveau portail a été enregistré</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Vous voulez changer le mot de passe de votre compte cloud office ? Cliquez sur le bouton ci-dessous pour confirmer.
+
+$GreenButton
+
+Le lien est valable pendant 7 jours.
+
+Vous ne voulez pas changer votre mot de passe ? Ignorez ce message.</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_custom_mode_v1" xml:space="preserve">
+    <value>Bonjour, $UserName !
+ 
+Bienvenue à ONLYOFFICE DocSpace ! Votre profil utilisateur a été ajouté avec succès à "${__VirtualRootPath}":"${__VirtualRootPath}". Vous pouvez maintenant :
+ 
+* Travailler avec d'autres utilisateurs dans la salle où vous êtes invité* : salles de collaboration pour la co-écriture en temps réel ou salles personnalisées avec des paramètres flexibles pour tout objectif.*.
+ 
+* *Travailler avec des fichiers de différents formats* : documents texte, feuilles de calcul, présentations, formulaires numériques, PDF, livres électroniques, multimédia.
+ 
+* *Collaborer sur des documents* grâce à deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivre les modifications, communiquer en temps réel en utilisant le chat intégré ou en passant des appels audio et vidéo.
+ 
+* *Connecter n'importe quel stockage en nuage* et travailler sans passer d'une application à l'autre.
+ 
+$GreenButton
+ 
+Si vous avez besoin d'aide, veuillez consulter notre "Centre d'aide" : "https://helpcenter.onlyoffice.com/fr/" ou demander à notre "équipe d'assistance" : "https://www.onlyoffice.com/fr/support-contact-form.aspx".
+ 
+Bien à vous, 
+équipe ONLYOFFICE 
+"www.onlyoffice.com": https://www.onlyoffice.com/fr</value>
   </data>
 </root>
