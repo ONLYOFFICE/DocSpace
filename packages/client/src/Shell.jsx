@@ -10,6 +10,7 @@ import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
 import { getLogoFromPath, updateTempContent } from "@docspace/common/utils";
 
+import DirectionProvider from "@docspace/common/components/DirectionPovider";
 import ThemeProvider from "@docspace/components/theme-provider";
 import store from "client/store";
 
@@ -414,7 +415,9 @@ export default () => (
   <MobxProvider {...store}>
     <I18nextProvider i18n={i18n}>
       <ThemeProviderWrapper>
-        <ShellWrapper />
+        <DirectionProvider>
+          <ShellWrapper />
+        </DirectionProvider>
       </ThemeProviderWrapper>
     </I18nextProvider>
   </MobxProvider>
