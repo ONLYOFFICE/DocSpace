@@ -491,7 +491,7 @@ const Dark = {
     testColor: grayMaxLight,
     textDisableColor: "#5c5c5c",
 
-    marginRight: "8px",
+    marginBeforeLabel: "8px",
 
     background: "#292929",
     disableBackground: "#545454",

@@ -496,7 +496,7 @@ const Base = {
     textColor: black,
     textDisableColor: gray,
 
-    marginRight: "8px",
+    marginBeforeLabel: "8px",
 
     background: white,
     disableBackground: grayLight,
