@@ -18,3 +18,14 @@ export const getCrashReport = (userId, version, language, error) => {
 
   return report;
 };
+
+export const downloadJson = (json, fileName) => {
+  const cleanJson = JSON.stringify(json);
+  const data = new Blob([cleanJson], { type: "application/json" });
+  const url = window.URL.createObjectURL(data);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `${fileName}.json`;
+  a.click();
+  a.remove();
+};
