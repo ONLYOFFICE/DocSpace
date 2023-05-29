@@ -1,4 +1,5 @@
 import FileReactSvgUrl from "PUBLIC_DIR/images/icons/24/file.svg?url";
+import DownloadReactSvgUrl from "PUBLIC_DIR/images/download.react.svg?url";
 
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
@@ -9,12 +10,18 @@ import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
 import Textarea from "@docspace/components/textarea";
+import IconButton from "@docspace/components/icon-button";
 
-import { getCrashReport } from "SRC_DIR/helpers/crashReport";
+import {
+  getCrashReport,
+  downloadJson,
+  getCurrentDate,
+} from "SRC_DIR/helpers/crashReport";
 
 const ModalDialogContainer = styled(ModalDialog)`
   #modal-dialog {
-    width: 520px;
+    width: auto;
+    max-width: 520px;
     max-height: 560px;
   }
 
@@ -24,13 +31,22 @@ const ModalDialogContainer = styled(ModalDialog)`
 
   .report-wrapper {
     margin-top: 8px;
-    height: 56px;
+    height: 48px;
     display: flex;
     gap: 16px;
     align-items: center;
 
-    .image {
+    .report-filename {
+      display: flex;
+    }
+
+    .file-icon {
       width: 24px;
+      user-select: none;
+    }
+
+    .icon-button {
+      cursor: pointer;
     }
   }
 `;
@@ -38,16 +54,24 @@ const ModalDialogContainer = styled(ModalDialog)`
 const ReportDialog = (props) => {
   const { t, ready } = useTranslation(["Common"]);
   const { visible, onClose, error, user, version } = props;
+  const [report, setReport] = useState({});
   const [description, setDescription] = useState("");
 
   useEffect(() => {
     const report = getCrashReport(user.id, version, user.cultureName, error);
+    setReport(report);
     console.log(report);
   }, []);
 
   const onChangeTextareaValue = (e) => {
     setDescription(e.target.value);
   };
+
+  const onClickDownload = () => {
+    downloadJson(report, fileTitle);
+  };
+
+  const fileTitle = t("ErrorReport") + " " + getCurrentDate();
 
   return (
     <ModalDialogContainer
@@ -56,9 +80,11 @@ const ReportDialog = (props) => {
       onClose={onClose}
       displayType="modal"
     >
-      <ModalDialog.Header>{"Error report"}</ModalDialog.Header>
+      <ModalDialog.Header>{t("ErrorReport")}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text className="report-description">description</Text>
+        <Text className="report-description" noSelect>
+          {t("ErrorReportDescription")}
+        </Text>
         <Textarea
           placeholder={t("RecoverDescribeYourProblemPlaceholder")}
           value={description}
@@ -68,6 +94,22 @@ const ReportDialog = (props) => {
           heightTextArea={72}
           fontSize={13}
         />
+        <div className="report-wrapper">
+          <img src={FileReactSvgUrl} className="file-icon" />
+          <Text as="div" fontWeight={600} noSelect className="report-filename">
+            {fileTitle}
+            <Text fontWeight={600} noSelect color="#A3A9AE">
+              .json
+            </Text>
+          </Text>
+          <IconButton
+            className="icon-button"
+            iconName={DownloadReactSvgUrl}
+            size="16"
+            isfill={true}
+            onClick={onClickDownload}
+          />
+        </div>
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button
