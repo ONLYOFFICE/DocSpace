@@ -44,7 +44,9 @@ const StyledErrorContainer = styled.div`
   }
 
   #button-container {
-    margin: 0 0 auto 0;
+    width: 320px;
+    max-width: 320px;
+    margin: 24px 0 auto 0;
   }
 
   #button {

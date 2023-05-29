@@ -15,6 +15,7 @@ const ErrorContainer = (props) => {
     onClickButton,
     children,
     customizedBodyText,
+    isPrimaryButton,
     ...rest
   } = props;
 
@@ -361,7 +362,7 @@ const ErrorContainer = (props) => {
             id="button"
             size="normal"
             scale
-            primary
+            primary={isPrimaryButton}
             label={buttonText}
             onClick={onClickButton}
           />
@@ -372,9 +373,14 @@ const ErrorContainer = (props) => {
   );
 };
 
+ErrorContainer.defaultProps = {
+  isPrimaryButton: true,
+};
+
 ErrorContainer.propTypes = {
   headerText: PropTypes.string,
   bodyText: PropTypes.string,
+  isPrimaryButton: PropTypes.bool,
   buttonText: PropTypes.string,
   onClickButton: PropTypes.func,
   children: PropTypes.any,
