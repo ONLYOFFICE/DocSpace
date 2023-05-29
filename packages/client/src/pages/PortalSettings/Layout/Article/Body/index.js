@@ -288,6 +288,11 @@ class ArticleBodyContent extends React.Component {
       if (index !== -1) {
         resultTree.splice(index, 1);
       }
+    } else {
+      const index = resultTree.findIndex((n) => n.tKey === "Common:Bonus");
+      if (index !== -1) {
+        resultTree.splice(index, 1);
+      }
     }
 
     if (!isOwner || standalone) {
