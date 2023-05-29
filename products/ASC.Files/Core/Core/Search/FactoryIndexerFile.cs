@@ -102,23 +102,12 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         (int, int, int) getCount(DateTime lastIndexed)
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
-                .Where(r => r.Version == 1)
-                .OrderBy(r => r.Id)
-                .Select(r => r.Id);
 
-            var minid = dataQuery.FirstOrDefault();
+            var minid = Queries.GetMinId(filesDbContext, lastIndexed);
 
-            dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
-                .Where(r => r.Version == 1)
-                .OrderByDescending(r => r.Id)
-                .Select(r => r.Id);
+            var maxid = Queries.GetMaxId(filesDbContext, lastIndexed);
 
-            var maxid = dataQuery.FirstOrDefault();
-
-            var count = GetBaseQuery(filesDbContext, lastIndexed)
-                .Where(r => r.Version == 1)
-                .Count();
+            var count = Queries.GetCount(filesDbContext, lastIndexed);
 
             return new(count, maxid, minid);
         }
@@ -126,14 +115,11 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         List<DbFile> getData(long start, long stop, DateTime lastIndexed)
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            return GetBaseQuery(filesDbContext, lastIndexed)
-                .Where(r => r.Id >= start && r.Id <= stop && r.CurrentVersion)
-                .Select(file => new { file = file, folders = filesDbContext.Tree.Where(b => b.FolderId == file.ParentId).ToList() })
-                .AsEnumerable()
+            return Queries.GetData(filesDbContext, lastIndexed, start, stop)
                 .Select(r =>
                 {
-                    var result = r.file;
-                    result.Folders = r.folders;
+                    var result = r.File;
+                    result.Folders = r.Folders;
                     return result;
                 })
                 .ToList();
@@ -149,14 +135,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
 
             while (true)
             {
-                var dataQuery = GetBaseQuery(filesDbContext, lastIndexed)
-                    .Where(r => r.Id >= start)
-                    .Where(r => r.Version == 1)
-                    .OrderBy(r => r.Id)
-                    .Select(r => r.Id)
-                    .Skip(BaseIndexer<DbFile>.QueryLimit);
-
-                var id = dataQuery.FirstOrDefault();
+                var id = Queries.GetId(filesDbContext, lastIndexed, start);
                 if (id != 0)
                 {
                     start = id;
@@ -170,12 +149,6 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
 
             return result;
         }
-
-        IQueryable<DbFile> GetBaseQuery(FilesDbContext filesDbContext, DateTime lastIndexed) => filesDbContext.Files
-            .Where(r => r.ModifiedOn >= lastIndexed)
-            .Join(filesDbContext.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
-            .Where(r => r.DbTenant.Status == TenantStatus.Active)
-            .Select(r => r.DbFile);
 
         try
         {
@@ -228,4 +201,71 @@ public static class FactoryIndexerFileExtension
     {
         services.TryAdd<DbFile>();
     }
+}
+
+file class FilesFoldersPair
+{
+    public DbFile File { get; set; }
+    public List<DbFolderTree> Folders { get; set; }
+}
+
+file static class Queries
+{
+    public static readonly Func<FilesDbContext, DateTime, int> GetMinId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (FilesDbContext ctx, DateTime lastIndexed) =>
+        ctx.Files
+            .Where(r => r.ModifiedOn >= lastIndexed)
+            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Where(r => r.DbTenant.Status == TenantStatus.Active)
+            .Select(r => r.DbFile)
+            .Where(r => r.Version == 1)
+            .OrderBy(r => r.Id)
+            .Select(r => r.Id)
+            .FirstOrDefault());
+    
+    public static readonly Func<FilesDbContext, DateTime, int> GetMaxId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (FilesDbContext ctx, DateTime lastIndexed) =>
+        ctx.Files
+            .Where(r => r.ModifiedOn >= lastIndexed)
+            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Where(r => r.DbTenant.Status == TenantStatus.Active)
+            .Select(r => r.DbFile)
+            .Where(r => r.Version == 1)
+            .OrderByDescending(r => r.Id)
+            .Select(r => r.Id)
+            .FirstOrDefault());
+    
+    public static readonly Func<FilesDbContext, DateTime, int> GetCount = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (FilesDbContext ctx, DateTime lastIndexed) =>
+        ctx.Files
+            .Where(r => r.ModifiedOn >= lastIndexed)
+            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Where(r => r.DbTenant.Status == TenantStatus.Active)
+            .Select(r => r.DbFile)
+            .Where(r => r.Version == 1)
+            .Count());
+    
+    public static readonly Func<FilesDbContext, DateTime, long, long, IEnumerable<FilesFoldersPair>> GetData = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (FilesDbContext ctx, DateTime lastIndexed, long start, long stop) =>
+        ctx.Files
+            .Where(r => r.ModifiedOn >= lastIndexed)
+            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Where(r => r.DbTenant.Status == TenantStatus.Active)
+            .Select(r => r.DbFile)
+            .Where(r => r.Id >= start && r.Id <= stop && r.CurrentVersion)
+            .Select(file => new FilesFoldersPair { File = file, Folders = ctx.Tree.Where(b => b.FolderId == file.ParentId).ToList() }));
+    
+    public static readonly Func<FilesDbContext, DateTime, long, int> GetId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (FilesDbContext ctx, DateTime lastIndexed, long start) =>
+        ctx.Files
+            .Where(r => r.ModifiedOn >= lastIndexed)
+            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FileTenant { DbFile = f, DbTenant = t })
+            .Where(r => r.DbTenant.Status == TenantStatus.Active)
+            .Select(r => r.DbFile)
+            .Where(r => r.Id >= start)
+            .Where(r => r.Version == 1)
+            .OrderBy(r => r.Id)
+            .Select(r => r.Id)
+            .Skip(BaseIndexer<DbFile>.QueryLimit)
+            .FirstOrDefault());
 }
