@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import ModalDialog from "@docspace/components/modal-dialog";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
+import Textarea from "@docspace/components/textarea";
 
 import ModalDialogContainer from "../ModalDialogContainer";
 
@@ -13,11 +14,16 @@ import { getCrashReport } from "SRC_DIR/helpers/crashReport";
 const ReportDialog = (props) => {
   const { t, ready } = useTranslation(["Common"]);
   const { visible, onClose, error, user, version } = props;
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     const report = getCrashReport(user.id, version, user.cultureName, error);
     console.log(report);
   }, []);
+
+  const onChangeTextareaValue = (e) => {
+    setDescription(e.target.value);
+  };
 
   return (
     <ModalDialogContainer
@@ -28,7 +34,16 @@ const ReportDialog = (props) => {
     >
       <ModalDialog.Header>{"Error report"}</ModalDialog.Header>
       <ModalDialog.Body>
-        <Text>description</Text>
+        <Text className="report-description">description</Text>
+        <Textarea
+          placeholder={t("RecoverDescribeYourProblemPlaceholder")}
+          value={description}
+          onChange={onChangeTextareaValue}
+          autoFocus
+          areaSelect
+          heightTextArea={72}
+          fontSize={13}
+        />
       </ModalDialog.Body>
       <ModalDialog.Footer>
         <Button

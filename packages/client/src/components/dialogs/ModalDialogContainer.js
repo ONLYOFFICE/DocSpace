@@ -146,6 +146,10 @@ const ModalDialogContainer = styled(ModalDialog)`
       margin: 0 !important;
     }
   }
+
+  .report-description {
+    margin-bottom: 16px;
+  }
 `;
 
 ModalDialogContainer.defaultProps = { theme: Base };
