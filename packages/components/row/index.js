@@ -34,7 +34,6 @@ class Row extends React.Component {
       element,
       indeterminate,
       onSelect,
-      onContextClick,
       rowContextClose,
       sectionWidth,
       getContextModel,
@@ -42,6 +41,9 @@ class Row extends React.Component {
       withoutBorder,
       contextTitle,
     } = this.props;
+
+    const { onRowClick, inProgress, mode, onContextClick, ...rest } =
+      this.props;
 
     const renderCheckbox = Object.prototype.hasOwnProperty.call(
       this.props,
@@ -93,8 +95,6 @@ class Row extends React.Component {
           : children.props.item.displayName,
       };
     }
-
-    const { onRowClick, inProgress, mode, ...rest } = this.props;
 
     const onElementClick = () => {
       if (!isMobile) return;

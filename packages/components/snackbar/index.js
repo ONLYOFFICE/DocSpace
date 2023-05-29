@@ -104,6 +104,7 @@ class SnackBar extends React.Component {
       style,
       countDownTime,
       isCampaigns,
+      onAction,
       ...rest
     } = this.props;
 
