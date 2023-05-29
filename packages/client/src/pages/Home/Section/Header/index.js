@@ -905,11 +905,11 @@ const SectionHeaderContent = (props) => {
       : title;
 
   const logo = !theme.isBase
-    ? getLogoFromPath(whiteLabelLogoUrls[0].path.dark)
-    : getLogoFromPath(whiteLabelLogoUrls[0].path.light);
+    ? getLogoFromPath(whiteLabelLogoUrls[0]?.path?.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[0]?.path?.light);
   const burgerLogo = !theme.isBase
-    ? getLogoFromPath(whiteLabelLogoUrls[5].path.dark)
-    : getLogoFromPath(whiteLabelLogoUrls[5].path.light);
+    ? getLogoFromPath(whiteLabelLogoUrls[5]?.path?.dark)
+    : getLogoFromPath(whiteLabelLogoUrls[5]?.path?.light);
 
   return (
     <Consumer key="header">
