@@ -407,8 +407,9 @@ const ShellWrapper = inject(({ auth, backup }) => {
 
 const ThemeProviderWrapper = inject(({ auth }) => {
   const { settingsStore } = auth;
+  const { theme, interfaceDirection } = settingsStore;
 
-  return { theme: settingsStore.theme };
+  return { theme: { ...theme, interfaceDirection } };
 })(observer(ThemeProvider));
 
 export default () => (
