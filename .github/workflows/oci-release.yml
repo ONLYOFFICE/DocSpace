@@ -1,0 +1,53 @@
+name: Upload OneСlickInstall scripts on S3
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'build/install/OneClickInstall/**'
+  workflow_dispatch:
+
+env:
+  SCRIPT_DIR: 'build/install/OneClickInstall'
+  PRODUCT: $(echo "${{ github.event.repository.name }}" |  tr '[:upper:]' '[:lower:]' )
+
+jobs:
+  release:
+    name: Scripts release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Creating an enterprise script
+        run: |
+          cp ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-install.sh ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-enterprise-install.sh
+          sed -i 's/\(PARAMETERS -it\).*";/\1 ENTERPRISE";/' ${{ env.SCRIPT_DIR }}/${{ env.PRODUCT }}-enterprise-install.sh
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID_OCI }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY_OCI }}
+          aws-region: us-east-1
+
+      - name: Upload scripts
+        run: |
+          cd ${{ env.SCRIPT_DIR }}
+          aws s3 cp . ${{ secrets.AWS_BUCKET_URL_OCI }}/ \
+            --recursive \
+            --acl public-read \
+            --content-type application/x-sh \
+            --metadata-directive REPLACE \
+            --exclude '*' \
+            --include="${{ env.PRODUCT }}-install.sh" \
+            --include="${{ env.PRODUCT }}-enterprise-install.sh"
+
+      - name: Invalidate AWS CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_OCI }} \
+            --paths \
+            "/${{ env.PRODUCT }}-install.sh" \
+            "/${{ env.PRODUCT }}-enterprise-install.sh"
