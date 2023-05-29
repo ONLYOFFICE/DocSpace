@@ -27,3 +27,11 @@ export const downloadJson = (json, fileName) => {
   const url = window.URL.createObjectURL(data);
   saveAs(url, `${fileName}.json`);
 };
+
+export const getCurrentDate = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  return `${day}.${month}.${year}`;
+};
