@@ -10,7 +10,7 @@ const StyledErrorContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0;
+  margin: 0 16px;
   padding-top: 36px;
   border: 0;
   box-sizing: border-box;
@@ -45,8 +45,7 @@ const StyledErrorContainer = styled.div`
 
   #button-container {
     width: 320px;
-    max-width: 320px;
-    margin: 24px 0 auto 0;
+    margin: 24px 0;
   }
 
   #button {
@@ -56,6 +55,7 @@ const StyledErrorContainer = styled.div`
   #customized-text {
     color: ${(props) => props.theme.errorContainer.bodyText};
   }
+
   @media screen and (max-width: 960px) {
     body {
       padding: 24px 24px 0 24px;
@@ -90,8 +90,7 @@ const StyledErrorContainer = styled.div`
     }
 
     #button-container {
-      align-self: stretch;
-      margin: auto 0 0 0;
+      width: 100%;
     }
 
     #button {
