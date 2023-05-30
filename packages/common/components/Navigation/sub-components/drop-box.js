@@ -44,6 +44,10 @@ const StyledBox = styled.div`
   filter: drop-shadow(0px 12px 40px rgba(4, 15, 27, 0.12));
   border-radius: 0px 0px 6px 6px;
 
+  .title-container {
+    display: flex;
+  }
+
   @media ${tablet} {
     width: ${({ dropBoxWidth }) => dropBoxWidth + "px"};
     left: -16px;
@@ -109,6 +113,7 @@ const DropBox = React.forwardRef(
       isOpen,
       isDesktop,
       isDesktopClient,
+      showRootFolderNavigation,
     },
     ref
   ) => {
@@ -144,6 +149,23 @@ const DropBox = React.forwardRef(
       );
     }, [sectionHeight]);
 
+    const navigationTitleNode = (
+      <Text title={title} isOpen={true} onClick={toggleDropBox} />
+    );
+
+    const navigationTitleContainerNode = showRootFolderNavigation ? (
+      <div className="title-container">
+        <Text
+          title={navigationItems[0].title}
+          isOpen={true}
+          isRootFolderTitle
+        />
+        {navigationTitleNode}
+      </div>
+    ) : (
+      navigationTitleNode
+    );
+
     return (
       <>
         <StyledBox
@@ -164,7 +186,9 @@ const DropBox = React.forwardRef(
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
-            <Text title={title} isOpen={true} onClick={toggleDropBox} />
+
+            {navigationTitleContainerNode}
+
             <ControlButtons
               isDesktop={isDesktop}
               personal={personal}

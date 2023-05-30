@@ -50,6 +50,7 @@ const Navigation = ({
   isDesktop: isDesktopClient,
   isRoom,
   hideInfoPanel,
+  showRootFolderTitle = true,
   ...rest
 }) => {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -128,6 +129,35 @@ const Navigation = ({
     onBackToParentFolder && onBackToParentFolder();
   }, [onBackToParentFolder]);
 
+  const showRootFolderNavigation =
+    showRootFolderTitle &&
+    !isRootFolder &&
+    navigationItems &&
+    !isSmallTabletUtils();
+
+  const navigationTitleNode = (
+    <Text
+      title={title}
+      isOpen={false}
+      isRootFolder={isRootFolder}
+      onClick={toggleDropBox}
+    />
+  );
+
+  const navigationTitleContainerNode = showRootFolderNavigation ? (
+    <div className="title-container">
+      <Text
+        title={navigationItems[0].title}
+        isOpen={false}
+        isRootFolder={isRootFolder}
+        isRootFolderTitle
+      />
+      {navigationTitleNode}
+    </div>
+  ) : (
+    navigationTitleNode
+  );
+
   return (
     <Consumer>
       {(context) => (
@@ -153,7 +183,7 @@ const Navigation = ({
                 onBackToParentFolder={onBackToParentFolderAction}
                 title={title}
                 personal={personal}
-                canCreate={canCreate}
+                canCreate={canCreate && !showRootFolderNavigation}
                 navigationItems={navigationItems}
                 getContextOptionsFolder={getContextOptionsFolder}
                 getContextOptionsPlus={getContextOptionsPlus}
@@ -162,6 +192,7 @@ const Navigation = ({
                 isInfoPanelVisible={isInfoPanelVisible}
                 onClickAvailable={onClickAvailable}
                 isDesktopClient={isDesktopClient}
+                showRootFolderNavigation={showRootFolderNavigation}
               />
             </>
           )}
@@ -169,7 +200,7 @@ const Navigation = ({
             ref={containerRef}
             width={context.sectionWidth}
             isRootFolder={isRootFolder}
-            canCreate={canCreate}
+            canCreate={canCreate && !showRootFolderNavigation}
             isTabletView={isTabletView}
             isTrashFolder={isTrashFolder}
             isRecycleBinFolder={isRecycleBinFolder}
@@ -181,16 +212,13 @@ const Navigation = ({
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
-            <Text
-              title={title}
-              isOpen={false}
-              isRootFolder={isRootFolder}
-              onClick={toggleDropBox}
-            />
+
+            {navigationTitleContainerNode}
+
             <ControlButtons
               personal={personal}
               isRootFolder={isRootFolder}
-              canCreate={canCreate}
+              canCreate={canCreate && !showRootFolderNavigation}
               getContextOptionsFolder={getContextOptionsFolder}
               getContextOptionsPlus={getContextOptionsPlus}
               isRecycleBinFolder={isRecycleBinFolder}

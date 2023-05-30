@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 
 import ExpanderDownIcon from "PUBLIC_DIR/images/expander-down.react.svg";
+import ArrowIcon from "PUBLIC_DIR/images/arrow.react.svg";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import Heading from "@docspace/components/heading";
 
@@ -21,8 +22,9 @@ const StyledTextContainer = styled.div`
 
   overflow: hidden;
 
-  ${(props) => !props.isRootFolder && "cursor: pointer"};
-
+  ${(props) =>
+    !props.isRootFolder && !props.isRootFolderTitle && "cursor: pointer"};
+  ${(props) => props.isRootFolderTitle && "padding-right: 2px"};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -34,6 +36,8 @@ const StyledHeading = styled(Heading)`
   line-height: 24px;
 
   margin: 0;
+
+  ${(props) => props.isRootFolderTitle && "color: #A3A9AE"};
 
   @media ${tablet} {
     font-size: 21px;
@@ -65,6 +69,16 @@ const StyledExpanderDownIcon = styled(ExpanderDownIcon)`
   ${commonIconsStyles};
 `;
 
+const StyledArrowIcon = styled(ArrowIcon)`
+  height: 12px;
+  width: 12px;
+
+  padding-left: 6px;
+  path {
+    fill: #a3a9ae;
+  }
+`;
+
 StyledExpanderDownIcon.defaultProps = { theme: Base };
 
 const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
@@ -83,18 +97,34 @@ const StyledExpanderDownIconRotate = styled(ExpanderDownIcon)`
 
 StyledExpanderDownIconRotate.defaultProps = { theme: Base };
 
-const Text = ({ title, isRootFolder, isOpen, onClick, ...rest }) => {
+const Text = ({
+  title,
+  isRootFolder,
+  isOpen,
+  isRootFolderTitle,
+  onClick,
+  ...rest
+}) => {
   return (
     <StyledTextContainer
       isRootFolder={isRootFolder}
       onClick={onClick}
       isOpen={isOpen}
+      isRootFolderTitle={isRootFolderTitle}
       {...rest}
     >
-      <StyledHeading type="content" title={title} truncate={true}>
+      <StyledHeading
+        type="content"
+        title={title}
+        truncate={true}
+        isRootFolderTitle={isRootFolderTitle}
+      >
         {title}
       </StyledHeading>
-      {!isRootFolder ? (
+
+      {isRootFolderTitle && <StyledArrowIcon />}
+
+      {!isRootFolderTitle && !isRootFolder ? (
         isOpen ? (
           <StyledExpanderDownIconRotate />
         ) : (

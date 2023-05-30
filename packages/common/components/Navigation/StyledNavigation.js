@@ -40,6 +40,10 @@ const StyledContainer = styled.div`
     min-width: 17px;
   }
 
+  .title-container {
+    display: flex;
+  }
+
   .navigation-header-separator {
     display: ${isMobileOnly ? "none" : "block"};
     padding-left: 16px;
