@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PasswordInput from ".";
 import TextInput from "../text-input";
+import PasswordInputDocs from "./password-input.mdx";
 
 const disable = {
   table: {
@@ -16,6 +17,7 @@ export default {
       description: {
         component: "Paging is used to navigate med content pages",
       },
+      page: PasswordInputDocs,
     },
   },
   argTypes: {
