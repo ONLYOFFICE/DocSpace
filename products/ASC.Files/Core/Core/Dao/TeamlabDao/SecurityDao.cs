@@ -256,6 +256,17 @@ internal abstract class SecurityBaseDao<T> : AbstractDao
         }
     }
 
+    internal IQueryable<DbFilesSecurity> GetQuery(FilesDbContext filesDbContext, Expression<Func<DbFilesSecurity, bool>> where = null)
+    {
+        var q = Query(filesDbContext.Security);
+        if (q != null)
+        {
+
+            q = q.Where(where);
+        }
+        return q;
+    }
+
     internal async Task<FileShareRecord> ToFileShareRecordAsync(DbFilesSecurity r)
     {
         var result = _mapper.Map<DbFilesSecurity, FileShareRecord>(r);
@@ -316,9 +327,22 @@ internal class SecurityDao : SecurityBaseDao<int>, ISecurityDao<int>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var q = SecurityDaoQueries.SaveFilesAndFoldersForShareAsync(filesDbContext, TenantID, files, folders);
+        var q = await Query(filesDbContext.Security)
+            .Join(filesDbContext.Tree, r => r.EntryId, a => a.ParentId.ToString(), (security, tree) => new SecurityTreeRecord { DbFilesSecurity = security, DbFolderTree = tree })
+            .Where(r => folders.Contains(r.DbFolderTree.FolderId) &&
+                        r.DbFilesSecurity.EntryType == FileEntryType.Folder)
+            .ToListAsync();
+
+        if (0 < files.Count)
+        {
+            var q1 = await GetQuery(filesDbContext, r => files.Contains(r.EntryId) && r.EntryType == FileEntryType.File)
+                .Select(r => new SecurityTreeRecord { DbFilesSecurity = r })
+                .ToListAsync();
+            q = q.Union(q1).ToList();
+        }
 
         return await q
+            .ToAsyncEnumerable()
             .SelectAwait(async e => await ToFileShareRecordAsync(e))
             .OrderBy(r => r.Level)
             .ThenByDescending(r => r.Share, new FileShareRecord.ShareComparer())
@@ -501,13 +525,4 @@ file static class SecurityDaoQueries
             .Where(r => r.TenantId == tenantID
             && (r.Subject == subject || r.Owner == subject))
             .ExecuteDelete());
-
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IEnumerable<int>, IAsyncEnumerable<SecurityTreeRecord>> SaveFilesAndFoldersForShareAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantID, IEnumerable<string> files, IEnumerable<int> folders) =>
-            ctx.Security.Where(r => r.TenantId == tenantID)
-            .Join(ctx.Tree, r => r.EntryId, a => a.ParentId.ToString(), (security, tree) => new SecurityTreeRecord { DbFilesSecurity = security, DbFolderTree = tree })
-            .Where(r => folders.Contains(r.DbFolderTree.FolderId) && r.DbFilesSecurity.EntryType == FileEntryType.Folder)
-            .Union(ctx.Security
-                .Where(r => files.Any() && r.TenantId == tenantID && files.Contains(r.EntryId) && r.EntryType == FileEntryType.File)
-                .Select(r => new SecurityTreeRecord { DbFilesSecurity = r })));
 }
