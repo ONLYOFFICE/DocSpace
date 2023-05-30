@@ -48,17 +48,17 @@ public class PortalControllerHelper
         {
             TenantAlias = tenant.ToLowerInvariant()
         };
+
         var context = _teamlabSiteContext.CreateDbContext();
         await context.Cache.AddAsync(cache);
         await context.SaveChangesAsync();
-
     }
 
     public async Task RemoveTenantFromCacheAsync(string domain)
     {
         domain = domain.ToLowerInvariant();
         var context = _teamlabSiteContext.CreateDbContext();
-        var cache = await context.Cache.SingleOrDefaultAsync(q => q.TenantAlias == domain);
+        var cache = await Queries.GetDbCacheAsync(context, domain);
         context.Cache.Remove(cache);
         await context.SaveChangesAsync();
     }
@@ -72,7 +72,7 @@ public class PortalControllerHelper
 
         // forbidden or exists
         var context = _teamlabSiteContext.CreateDbContext();
-        var exists = await context.Cache.Where(q => q.TenantAlias.Equals(portalName)).AnyAsync();
+        var exists = await Queries.AnyDbCacheAsync(context, portalName);
 
         if (exists)
         {
@@ -89,8 +89,27 @@ public class PortalControllerHelper
                 }
             }
 
-            return await context.Cache.Select(q => q.TenantAlias).Where(q => q.StartsWith(portalName)).ToListAsync();
+            return await Queries.GetTenantAliasesAsync(context, portalName).ToListAsync();
         }
         return null;
     }
+}
+
+file static class Queries
+{
+    public static readonly Func<TeamlabSiteContext, string, Task<DbCache>> GetDbCacheAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (TeamlabSiteContext ctx, string portalName) =>
+        ctx.Cache.SingleOrDefault(q => q.TenantAlias == portalName));
+    
+    public static readonly Func<TeamlabSiteContext, string, Task<bool>> AnyDbCacheAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (TeamlabSiteContext ctx, string portalName) =>
+        ctx.Cache
+            .Where(q => q.TenantAlias.Equals(portalName))
+            .Any());
+    
+    public static readonly Func<TeamlabSiteContext, string, IAsyncEnumerable<string>> GetTenantAliasesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (TeamlabSiteContext ctx, string portalName) =>
+        ctx.Cache
+            .Select(q => q.TenantAlias)
+            .Where(q => q.StartsWith(portalName)));
 }
