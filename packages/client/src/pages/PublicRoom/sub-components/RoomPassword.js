@@ -38,6 +38,7 @@ const RoomPassword = (props) => {
 
   const onChangePassword = (e) => {
     setPassword(e.target.value);
+    !passwordValid && setPasswordValid(true);
   };
 
   const onSubmit = async () => {
@@ -123,9 +124,7 @@ const RoomPassword = (props) => {
                 isVertical={true}
                 labelVisible={false}
                 hasError={!passwordValid}
-                errorMessage={`${t(
-                  "Common:PasswordLimitMessage"
-                )}: ${getPasswordErrorMessage(t, settings)}`}
+                errorMessage={"Error password TODO:"}
               >
                 <PasswordInput
                   simpleView
