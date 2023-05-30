@@ -61,31 +61,24 @@
   <data name="pattern_DocuSignComplete" xml:space="preserve">
     <value>h1. Visas parakstošās puses pabeidza $DocumentTitle
 
-Šis ir e-pasta paziņojums, lai informētu jūs, ka visas parakstošās puses ir aizpildījušas "$DocumentTitle":"$DocumentURL".
-
-^Jūs saņēmāt šo ziņu, jo esat reģistrēts lietotājs portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Šis ir e-pasta paziņojums, lai informētu jūs, ka visas parakstošās puses ir aizpildījušas "$DocumentTitle":"$DocumentURL".</value>
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle
 
-Lai saņemtu papildu informāciju, ieejiet savā DocuSign kontā.
-^Jūs saņēmāt šo ziņu, jo esat reģistrēts lietotājs portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Lai saņemtu papildu informāciju, ieejiet savā DocuSign kontā.</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Sūtīšana pabeigta
 
 Šis ir e-pasta paziņojums, lai jūs informētu par to, ka esat pieprasījuši $MailsCount ziņu nosūtīšanu un ka process ir pabeigts. $Message
 
-Veiksmīgi nosūtītās ziņas varat atrast savā Pasta moduļa mapē "Nosūtītās":"$__VirtualRootPath/addons/mail/#sent".
-
-^Jūs saņēmāt šo ziņu, jo esat reģistrēts lietotājs portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Veiksmīgi nosūtītās ziņas varat atrast savā Pasta moduļa mapē "Nosūtītās":"$__VirtualRootPath/addons/mail/#sent".</value>
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.Piekļuve piešķirta dokumentam: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" piešķir jums piekļuvi dokumentam "$DocumentTitle":"$DocumentURL" 
-
-ar piekļuves tiesībām: "$AccessRights".
+$__DateTime "$__AuthorName":"$__AuthorUrl" piešķir jums piekļuvi dokumentam "$DocumentTitle":"$DocumentURL" ar piekļuves tiesībām: "$AccessRights".
 
 $Message</value>
   </data>
@@ -97,7 +90,7 @@ $__DateTime "$__AuthorName":"$__AuthorUrl" piešķir jums piekļuvi mapei "$Docu
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
-    <value>Dokumenti. Visas parakstošās puses ir pabeigušas $DocumentTitle.</value>
+    <value>Dokumenti. Visas parakstošās puses ir pabeigušas $DocumentTitle</value>
   </data>
   <data name="subject_DocuSignStatus" xml:space="preserve">
     <value>Dokumenti. Mainīts paraksta statuss</value>
@@ -110,5 +103,53 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Dokumenti. Nodrošināta piekļuve mapei $DocumentTitle</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName pieminēja jūs dokumenta komentārā
+
+$__AuthorName pieminēja jūs komentārā par dokumentu "$DocumentTitle":"$DocumentURL" telpā "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName izdzēsa telpu
+
+$__AuthorName izdzēsa telpu: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Visi parakstītāji pabeidza $DocumentTitle</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Minēts dokumentā</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Mapei ir piešķirta piekļuve: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Šifrētajam dokumentam ir piešķirta piekļuve: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Dokumenti. Mapei ir piešķirta piekļuve: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Dokumenti. Visi parakstītāji pabeidza [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Parakstīšanas statuss ir mainīts</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace paziņojums. Minēts dokumentā</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Nosūtīšana ir pabeigta.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace paziņojums. Telpa ir izdzēsta</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Dokumentam ir piešķirta piekļuve: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Dokumenti. Dokumentam ir piešķirta piekļuve: [$DocumentTitle]($DocumentURL)</value>
   </data>
 </root>

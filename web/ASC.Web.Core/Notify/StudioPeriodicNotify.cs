@@ -128,9 +128,6 @@ public class StudioPeriodicNotify
 
                 if (quota.Free)
                 {
-                }
-                else if (quota.Trial)
-                {
                     #region After registration letters
 
                     #region 1 days after registration to admins SAAS TRIAL

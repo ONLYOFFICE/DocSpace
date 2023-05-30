@@ -169,8 +169,6 @@ public class TariffService : ITariffService
 
             if (_billingClient.Configured && withRequestToPaymentSystem)
             {
-                var paymentFound = false;
-
                 try
                 {
                     var currentPayments = _billingClient.GetCurrentPayments(await _coreSettings.GetKeyAsync(tenantId));
@@ -225,8 +223,6 @@ public class TariffService : ITariffService
                     }
 
                     UpdateCache(tariff.Id);
-
-                    paymentFound = true;
                 }
                 catch (Exception error)
                 {
@@ -236,7 +232,7 @@ public class TariffService : ITariffService
                     }
                 }
 
-                if (!paymentFound)
+                if (tariff.Id == 0)
                 {
                     var freeTariff = await tariff.Quotas.ToAsyncEnumerable().FirstOrDefaultAwaitAsync(async tariffRow =>
                     {

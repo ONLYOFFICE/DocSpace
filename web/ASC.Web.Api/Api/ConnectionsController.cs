@@ -244,7 +244,7 @@ public class ConnectionsController : ControllerBase
     {
         try
         {
-            var location = await _geolocationHelper.GetIPGeolocationAsync(ip);
+            var location = await _geolocationHelper.GetIPGeolocationAsync(IPAddress.Parse(ip));
             if (string.IsNullOrEmpty(location.Key))
             {
                 return new string[] { string.Empty, string.Empty };

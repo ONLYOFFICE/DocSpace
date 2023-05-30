@@ -77,7 +77,7 @@ public class RadicaleController : BaseSettingsController
             throw new MethodAccessException("Method not available");
         }
 
-        var myUri = HttpContext.Request.GetUrlRewriter();
+        var myUri = HttpContext.Request.Url();
         var currUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
         var userName = currUser.Email.ToLower();
         var currentAccountPaswd = _crypto.Encrypt(userName);
@@ -135,7 +135,7 @@ public class RadicaleController : BaseSettingsController
         var currUser = await _userManager.GetUsersAsync(_authContext.CurrentAccount.ID);
         var currentUserEmail = currUser.Email;
         var authorization = _cardDavAddressbook.GetSystemAuthorization();
-        var myUri = HttpContext.Request.GetUrlRewriter();
+        var myUri = HttpContext.Request.Url();
         var requestUrlBook = _cardDavAddressbook.GetRadicaleUrl(myUri.ToString(), currentUserEmail, true, true);
         var tenant = await _tenantManager.GetCurrentTenantIdAsync();
         var davRequest = new DavRequest()

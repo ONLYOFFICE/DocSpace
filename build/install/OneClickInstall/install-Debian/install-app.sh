@@ -11,6 +11,29 @@ cat<<EOF
 EOF
 apt-get -y update
 
+if [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
+	ds_pkg_installed_name=$(dpkg -l | grep ${package_sysname}-documentserver | tail -n1 | awk '{print $2}');
+
+	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then
+		ds_pkg_name="${package_sysname}-documentserver";
+	elif [ "$INSTALLATION_TYPE" = "ENTERPRISE" ]; then
+		ds_pkg_name="${package_sysname}-documentserver-ee";
+	fi
+
+	if [ -n $ds_pkg_name ]; then
+		if ! dpkg -l ${ds_pkg_name} &> /dev/null; then
+			
+			debconf-get-selections | grep ^${ds_pkg_installed_name} | sed s/${ds_pkg_installed_name}/${ds_pkg_name}/g | debconf-set-selections
+						
+			apt-get remove -yq ${ds_pkg_installed_name}
+			
+			apt-get install -yq ${ds_pkg_name}
+		else
+			apt-get install -y --only-upgrade ${ds_pkg_name};	
+		fi				
+	fi
+fi
+
 if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	DS_PORT=${DS_PORT:-8083};
 
@@ -20,8 +43,8 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	DS_DB_PWD=$DS_COMMON_NAME;
 	
 	DS_JWT_ENABLED=${DS_JWT_ENABLED:-true};
-	DS_JWT_SECRET="$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)";
-	DS_JWT_HEADER="AuthorizationJwt";
+	DS_JWT_SECRET=${DS_JWT_SECRET:-$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 32)};
+	DS_JWT_HEADER=${DS_JWT_HEADER:-AuthorizationJwt};
 
 	if ! su - postgres -s /bin/bash -c "psql -lqt" | cut -d \| -f 1 | grep -q ${DS_DB_NAME}; then
 		su - postgres -s /bin/bash -c "psql -c \"CREATE USER ${DS_DB_USER} WITH password '${DS_DB_PWD}';\""
@@ -36,9 +59,11 @@ if [ "$DOCUMENT_SERVER_INSTALLED" = "false" ]; then
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-secret select ${DS_JWT_SECRET} | sudo debconf-set-selections
 	echo ${package_sysname}-documentserver $DS_COMMON_NAME/jwt-header select ${DS_JWT_HEADER} | sudo debconf-set-selections
 	
-	apt-get install -yq ${package_sysname}-documentserver
-elif [ "$UPDATE" = "true" ] && [ "$DOCUMENT_SERVER_INSTALLED" = "true" ]; then
-	apt-get install -y --only-upgrade ${package_sysname}-documentserver
+	if [ "$INSTALLATION_TYPE" = "COMMUNITY" ]; then
+		apt-get install -yq ${package_sysname}-documentserver
+	else
+		apt-get install -yq ${package_sysname}-documentserver-ee
+	fi
 fi
 
 if [ "$PRODUCT_INSTALLED" = "false" ]; then

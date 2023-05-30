@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Yer imi oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM vaka oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Yorum eklenme tarihi</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM iletişim oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM fırsat oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Tartışma oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Etkinlik oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Belge oluşturulma/yüklenme tarihi</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Klasör oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Forum oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Anket oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Gönderi oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Aşama oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Proje oluşturulma tarihi</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Görev oluşturulma tarihi</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Kabul et</value>
   </data>
@@ -166,9 +118,6 @@
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Fiyatlandırma Planlarını Şimdi Seçin</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Daha Fazla Bilgi &gt;&gt;</value>
-  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"$InviteLink" portalındaki e-posta adresinizi aktifleştirin.
 
@@ -187,15 +136,13 @@ Değerli $OwnerName,
 
 "${__VirtualRootPath}":"${__VirtualRootPath}" portalınızın verilerini içeren bir yedekleme tamamlandı.
 
-Daha fazla bilgi edinmek için lütfen "Veri yedekleme" bölümümüze göz atın:"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" kullanıcı kılavuzu.
+Daha fazla bilgi edinmek için lütfen "Veri yedekleme" bölümümüze göz atın:"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" kullanıcı kılavuzu.
 
 Herhangi bir sorunuz olursa veya yardıma ihtiyaç duyarsanız lütfen bizimle irtibata geçin "support.onlyoffice.com":"http://support.onlyoffice.com"
 
 Saygılarımızla,
 ONLYOFFICE™ Destek Ekibi
-"www.onlyoffice.com":"http://onlyoffice.com/"
-
-</value>
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
   <data name="pattern_change_password" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalı için şifre değişikliği talebi
@@ -252,13 +199,13 @@ $GreenButton
 
 ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
 
-*#* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
 
-*# Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+* *Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
 
-*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
+* *İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
 
-*# Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
+* *Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
 
 $GreenButton
 
@@ -273,13 +220,13 @@ ONLYOFFICE Team
 
 ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
 
-*#* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
 
-*# Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+* *Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
 
-*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
+* *İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
 
-*# Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
+* *Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
 
 $GreenButton
 
@@ -294,13 +241,13 @@ ONLYOFFICE Team
 
 ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
 
-*#* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
 
-*# Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+* *Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
 
-*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
+* *İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
 
-*# Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
+* *Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
 
 $GreenButton
 
@@ -315,13 +262,13 @@ ONLYOFFICE Team
 
 ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
 
-*#* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+* Davet edildiğiniz odada diğer kullanıcılarla birlikte çalışın: *gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
 
-*# Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+* *Farklı biçimlerdeki dosyalarla çalışın*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
 
-*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
+* *İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapın*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun. 
 
-*# Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
+* *Herhangi bir bulut depolama alanını bağlayın* ve uygulamalar arasında geçiş yapmadan çalışın. 
 
 $GreenButton
 
@@ -523,6 +470,7 @@ ONLYOFFICE™ Destek Ekibi
 
 "$__AuthorName":"$__AuthorUrl" kullanıcısı "${__VirtualRootPath}":"${__VirtualRootPath}" portalında yer alan profilindeki bilgileri değiştirdi.
 
+
 ^Profil güncellemeleri hakkında bildirim almak istemiyorsanız, lütfen "abonelik ayarlarınızı" değiştirin:"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_send_whats_new" xml:space="preserve">
@@ -546,6 +494,7 @@ ONLYOFFICE Ekibi</value>
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalına yeni kişi eklendi
 
 "$__AuthorName":"$__AuthorUrl" "${__VirtualRootPath}":"${__VirtualRootPath}" adresindeki portalınıza katıldı.
+
 
 ^Yeni kullanıcılar ile ilgili bildirimler almak istemiyorsanız lütfen "abonelik ayarları" bölümüne gidin:"$RecipientSubscriptionConfigURL".^</value>
   </data>
@@ -677,5 +626,615 @@ ONLYOFFICE Ekibi</value>
   </data>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>DocSpace kullanıcısı güncellendi: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>ONLYOFFICE hesabınızın şifresini değiştirmek mi istiyorsunuz? Onaylamak için aşağıdaki düğmeyi tıklayın.
+
+$GreenButton
+
+Bağlantı 7 gün boyunca geçerlidir.
+
+Şifrenizi değiştirmek istemiyorsanız bu mesajı yoksayın</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Ekibiniz, müşterileriniz, iş ortaklarınız ve daha fazlası ile iş birliğini artırabileceğiniz bir belge merkezi olan ONLYOFFICE DocSpace'i oluşturdunuz. Adresi "${__VirtualRootPath}":"${__VirtualRootPath}" şeklindedir.
+
+Lütfen e-postanızı onaylayın (bağlantı 7 gün boyunca geçerlidir):
+
+$GreenButton
+
+Mevcut tarife planınız STARTUP. Tamamen ücretsizdir ve şunları içerir:
+
+* 1 yönetici, 2 uzman kullanıcı
+* 12 odaya kadar
+* Her odada sınırsız sayıda kullanıcı
+* 2 GB disk alanı
+
+Yeni bir belge iş birliği yönteminin keyfini çıkarın!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Belgeler üzerinde herhangi bir cihazınızdan çalışmak için ücretsiz ONLYOFFICE uygulamalarını edinin.
+
+# Windows, Linux ve Mac'te belgeler üzerinde çevrimdışı çalışmak için "ONLYOFFICE Masaüstü Editörleri":"https://www.onlyoffice.com/download-desktop.aspx" ni indirin.
+
+#Mobil cihazlarda doküman düzenlemek için "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" veya "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi kullanmaktan umarız memnun kalırsınız. Belgeler üzerinde çalışmayı nasıl daha etkili hale getireceğinize dair bazı ipuçlarını burada bulabilirsiniz.
+
+*#1. Çalışma şeklinizi seçin.* Gerçek zamanlı birlikte yazma için iş birliği odaları veya her amaca yönelik esnek ayarlara sahip özel odalar oluşturarak iş akışınızı ihtiyacınıza göre düzenleyin.
+
+*#2. Sahip olduğunuz herhangi bir içerikle çalışın.* Odalarınızda farklı biçimlerdeki dosyaları depolayın ve bunlarla çalışın: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*#3. Etkin bir şekilde birlikte yazın.* İki birlikte düzenleme moduyla belgeler üzerinde iş birliği yapın: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*#4. 3. taraf bulutları bağlayın.* Herhangi bir bulut depolama birimini bağlayın ve uygulamalar arasında geçiş yapmadan çalışın.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
+
+* ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
+
+* Çok sayıda belge ile çalışmak için herhangi bir sayıda oda oluşturmak ister misiniz?
+
+* ONLYOFFICE DocSpace'i kendi markanız altında kullanmak ister misiniz?
+
+En az bir 'evet' cevabınız varsa, ONLYOFFICE DocSpace'inize istediğiniz sayıda yönetici eklemenize ve markalama seçeneklerini uygulamanıza olanak tanıyan BUSINESS planını seçin.
+
+Bunu yapmak için lütfen ONLYOFFICE DocSpace'inizin "Ödemeler bölümü":"$PricingPage" kısmına bakın. Burada, tüm ödeme ayrıntılarını kolayca işleyebileceğiniz Stripe Müşteri Portalı'na giden bireysel bir bağlantı göreceksiniz.
+
+_Lütfen dikkat: Aboneliğe ödeme yapan kişi ödeyen olur. Yalnızca ödeyen kişi abonelikte değişiklik (yönetici sayısını ayarlama) yapabilir. Kullanıcıların ödeme ayrıntılarına erişimi yoktur. ONLYOFFICE DocSpace hesabının sahibi, ödeyeni daha sonra istediği zaman yeniden atayabilir. _
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
+
+
+* ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
+
+* Çok sayıda belge ile çalışmak için herhangi bir sayıda oda oluşturmak ister misiniz?
+
+* ONLYOFFICE DocSpace'i kendi markanız altında kullanmak ister misiniz?
+
+En az bir 'evet' cevabınız varsa, ONLYOFFICE DocSpace'inize istediğiniz sayıda yönetici eklemenize ve markalama seçeneklerini uygulamanıza olanak tanıyan BUSINESS planını seçin.
+
+Bunu yapmak için lütfen ONLYOFFICE DocSpace'inizin "Ödemeler bölümü":"$PricingPage" kısmına bakın. Burada, tüm ödeme ayrıntılarını kolayca işleyebileceğiniz Stripe Müşteri Portalı'na giden bireysel bir bağlantı göreceksiniz.
+
+_Lütfen dikkat: Aboneliğe ödeme yapan kişi ödeyen olur. Yalnızca ödeyen kişi abonelikte değişiklik (yönetici sayısını ayarlama) yapabilir. Kullanıcıların ödeme ayrıntılarına erişimi yoktur. ONLYOFFICE DocSpace hesabının sahibi, ödeyeni daha sonra istediği zaman yeniden atayabilir. _
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
+
+
+* ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
+
+* Çok sayıda belge ile çalışmak için herhangi bir sayıda oda oluşturmak ister misiniz?
+
+* ONLYOFFICE DocSpace'i kendi markanız altında kullanmak ister misiniz?
+
+En az bir 'evet' cevabınız varsa, ONLYOFFICE DocSpace'inize istediğiniz sayıda yönetici eklemenize ve markalama seçeneklerini uygulamanıza olanak tanıyan BUSINESS planını seçin.
+
+Bunu yapmak için lütfen ONLYOFFICE DocSpace'inizin "Ödemeler bölümü":"$PricingPage" kısmına bakın. Burada, tüm ödeme ayrıntılarını kolayca işleyebileceğiniz Stripe Müşteri Portalı'na giden bireysel bir bağlantı göreceksiniz.
+
+_Lütfen dikkat: Aboneliğe ödeme yapan kişi ödeyen olur. Yalnızca ödeyen kişi abonelikte değişiklik (yönetici sayısını ayarlama) yapabilir. Kullanıcıların ödeme ayrıntılarına erişimi yoktur. ONLYOFFICE DocSpace hesabının sahibi, ödeyeni daha sonra istediği zaman yeniden atayabilir. _
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Burada, kullanıcı deneyiminizi daha da konforlu hâle getirmemize yardımcı olabilecek üç basit soru bulunmaktadır.
+
+* ONLYOFFICE DocSpace'inizde iş birliği yapabileceğiniz büyük bir ekibiniz veya çok sayıda müşteri ve ortağınız mı var?
+
+* Çok sayıda belge ile çalışmak için herhangi bir sayıda oda oluşturmak ister misiniz?
+
+* ONLYOFFICE DocSpace'i kendi markanız altında kullanmak ister misiniz?
+
+En az bir 'evet' cevabınız varsa, ONLYOFFICE DocSpace'inize istediğiniz sayıda yönetici eklemenize ve markalama seçeneklerini uygulamanıza olanak tanıyan BUSINESS planını seçin.
+
+Bunu yapmak için lütfen ONLYOFFICE DocSpace'inizin "Ödemeler bölümü":"$PricingPage" kısmına bakın. Burada, tüm ödeme ayrıntılarını kolayca işleyebileceğiniz Stripe Müşteri Portalı'na giden bireysel bir bağlantı göreceksiniz.
+
+_Lütfen dikkat: Aboneliğe ödeme yapan kişi ödeyen olur. Yalnızca ödeyen kişi abonelikte değişiklik (yönetici sayısını ayarlama) yapabilir. Kullanıcıların ödeme ayrıntılarına erişimi yoktur. ONLYOFFICE DocSpace hesabının sahibi, ödeyeni daha sonra istediği zaman yeniden atayabilir. _
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Merhaba!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" konumunda ONLYOFFICE DocSpace'e katılmaya davetlisiniz. Bağlantıyı tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Merhaba!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" konumunda ONLYOFFICE DocSpace'e katılmaya davetlisiniz. Bağlantıyı tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Merhaba!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" konumunda ONLYOFFICE DocSpace'e katılmaya davetlisiniz. Bağlantıyı tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Merhaba!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" konumunda ONLYOFFICE DocSpace'e katılmaya davetlisiniz. Bağlantıyı tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
+
+*# Davet edildiğiniz odadaki diğer kullanıcılarla birlikte çalışmak*: gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+
+*# Farklı biçimlerdeki dosyalarla çalışmak*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapmak*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*# Herhangi bir bulut depolama alanını bağlamak* ve uygulamalar arasında geçiş yapmadan çalışmak.
+
+$GreenButton
+
+Yardıma ihtiyacınız varsa "Yardım Merkezimize":"https://helpcenter.onlyoffice.com/" göz atın veya "destek ekibimize":"https://www.onlyoffice.com/support-contact-form.aspx" sorun.
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
+
+*# Davet edildiğiniz odadaki diğer kullanıcılarla birlikte çalışmak*: gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+
+*# Farklı biçimlerdeki dosyalarla çalışmak*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapmak*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*# Herhangi bir bulut depolama alanını bağlamak* ve uygulamalar arasında geçiş yapmadan çalışmak.
+
+$GreenButton
+
+Yardıma ihtiyacınız varsa "Yardım Merkezimize":"https://helpcenter.onlyoffice.com/" göz atın veya "destek ekibimize":"https://www.onlyoffice.com/support-contact-form.aspx" sorun.
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
+
+*# Davet edildiğiniz odadaki diğer kullanıcılarla birlikte çalışmak*: gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+
+*# Farklı biçimlerdeki dosyalarla çalışmak*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapmak*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*# Herhangi bir bulut depolama alanını bağlamak* ve uygulamalar arasında geçiş yapmadan çalışmak.
+
+$GreenButton
+
+Yardıma ihtiyacınız varsa "Yardım Merkezimize":"https://helpcenter.onlyoffice.com/" göz atın veya "destek ekibimize":"https://www.onlyoffice.com/support-contact-form.aspx" sorun.
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'e hoş geldiniz! Kullanıcı profiliniz "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna başarıyla eklendi. Şimdi yapabilecekleriniz:
+
+*# Davet edildiğiniz odadaki diğer kullanıcılarla birlikte çalışmak*: gerçek zamanlı birlikte yazma için ortak çalışma odaları veya herhangi bir amaç için esnek ayarlara sahip özel odalar*.
+
+*# Farklı biçimlerdeki dosyalarla çalışmak*: metin belgeleri, elektronik tablolar, sunumlar, dijital formlar, PDF'ler, e-kitaplar, multimedya.
+
+*# İki ortak düzenleme moduyla belgeler üzerinde iş birliği yapmak*: gerçek zamanlı veya paragraf kilitleme. Değişiklikleri takip edin, yerleşik sohbeti kullanarak veya sesli ve görüntülü aramalar yaparak gerçek zamanlı olarak iletişim kurun.
+
+*# Herhangi bir bulut depolama alanını bağlamak* ve uygulamalar arasında geçiş yapmadan çalışmak.
+
+$GreenButton
+
+Yardıma ihtiyacınız varsa "Yardım Merkezimize":"https://helpcenter.onlyoffice.com/" göz atın veya "destek ekibimize":"https://www.onlyoffice.com/support-contact-form.aspx" sorun.
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portalından gelen mesaj
+
+İsim: $UserName
+
+E-posta: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Belgeler üzerinde herhangi bir cihazınızdan çalışmak için ücretsiz ONLYOFFICE uygulamalarını edinin.
+
+# Windows, Linux ve Mac'te belgeler üzerinde çevrimdışı çalışmak için "ONLYOFFICE Masaüstü Editörleri"ni indirin:"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Mobil cihazlarda doküman düzenlemek için "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" veya "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Belgeler üzerinde herhangi bir cihazınızdan çalışmak için ücretsiz ONLYOFFICE uygulamalarını edinin.
+
+# Windows, Linux ve Mac'te belgeler üzerinde çevrimdışı çalışmak için "ONLYOFFICE Masaüstü Editörleri"ni indirin:"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Mobil cihazlarda doküman düzenlemek için "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" veya "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Merhaba!
+Bu e-posta kullanılarak yeni bir "ONLYOFFICE Kişisel":"$PortalUrl" hesabı kaydedilmeye çalışıldı. Eğer bunu yapan sizseniz, hesabın zaten var olduğunu size bildirmek isteriz — ONLYOFFICE Personal'a gidin ve oturum açın.
+Parolanızı kaybettiyseniz, "parola kurtarma sayfası":"$LinkToRecovery" üzerinden sıfırlayabilirsiniz.
+Yeni bir hesap kaydetmeye çalışmadıysanız, muhtemelen bunu başka biri yanlışlıkla yaptı. Bu durumda, bu e-postayı lütfen dikkate almayın.
+
+İyi günler!
+ONLYOFFICE ekibi</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>ONLYOFFICE Kişisel hesabınızın şifresini değiştirmek mi istiyorsunuz? Onaylamak için aşağıdaki düğmeyi tıklayın.
+
+$GreenButton 
+
+Bağlantı 7 gün boyunca geçerlidir.
+
+Şifrenizi değiştirmek istemiyorsanız bu mesajı yoksayın.</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace'iniz başarıyla devre dışı bırakıldı. Tüm verilerinizin "Gizlilik Politikamız":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" uyarınca silineceğini lütfen unutmayın.
+
+Neden ayrılmaya karar verdiniz? Deneyiminizi bizimle paylaşın.
+ 
+$GreenButton
+
+Teşekkürler ve iyi şanslar!
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'inizi daha güvenli hale getirmek için güvenlik ayarlarını düzenleyin:
+
+* Şifre gücünü ayarlayın.
+
+* İki faktörlü kimlik doğrulamayı ve Tek Oturum Açma’yı etkinleştirin.
+
+* Güvenilir posta alan adlarını ve oturum ömrünü belirleyin.
+
+* Belirli IP adreslerinden erişimi kısıtlayın.
+
+* Yönetici mesajlarına izin verin veya kısıtlayın.
+
+* Yönetici erişim haklarını yönetin.
+
+* Veri yedeklemeleri yapın.
+
+$GreenButton
+
+ONLYOFFICE DocSpace'inizi yapılandırma ve yönetme hakkında daha fazla bilgi edinmek için "Yardım Merkezimizi":"https://helpcenter.onlyoffice.com/" ziyaret edin. İşlevsellik hakkında sorularınız olduğunda da buraya başvurabilirsiniz.
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" konumuna yarım yıldan fazla bir süredir giriş yapmadınız.
+
+Artık kullanmamaya karar verdiğiniz için ONLYOFFICE DocSpace'iniz ve tüm veriler "Gizlilik Politikamız":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" uyarınca silinecektir.
+
+Geri bildirim almaktan memnun oluruz. Niçin ONLYOFFICE DocSpace'i kullanmayı bırakmaya karar verdiniz?
+
+$GreenButton
+
+Bunun bir hata olduğunu düşünüyorsanız ve ONLYOFFICE DocSpace'i kullanmaya devam etmek istiyorsanız, lütfen "destek ekibimiz":"https://www.onlyoffice.com/support-contact-form.aspx" ile iletişime geçin.
+
+Saygılarımızla, 
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Merhaba!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" konumunda ONLYOFFICE DocSpace'e katılmaya davetlisiniz. Bağlantıya tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Davet linkine tıkladıktan sonra hesabınız için lütfen yeni bir şifre belirleyiniz.
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Lütfen ONLYOFFICE DocSpace'iniz için $PaymentDelay‎ günlük ek sürenin etkinleştirildiğini dikkate alın.
+
+Business aboneliğinizin ödemesini, ödemesiz dönem sona ermeden önce yaptığınızdan emin olun. Bu sayede ONLYOFFICE DocSpace'inizin tüm avantajlarından daha fazla yararlanabileceksiniz.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+Lütfen ONLYOFFICE DocSpace aboneliğinizin üç gün içinde sona ereceğini dikkate alın. Bunun ardından, $PaymentDelay günlük ödemesiz dönem etkinleştirilecektir.
+
+Business aboneliğinizi şimdi ödemenizi ve ONLYOFFICE DocSpace'inizin tüm avantajlarını kullanmaya devam etmenizi tavsiye ederiz.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'iniz için $PaymentDelay günlük ödemesiz sürenin sona erdiğini lütfen dikkate alın.
+
+Business aboneliğinizin ödemesini mümkün olan en kısa sürede yaptığınızdan emin olun. Böylece ONLYOFFICE DocSpace'inizin tüm avantajlarını eskisi gibi kullanabileceksiniz.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Merhaba, $UserName!
+
+ONLYOFFICE DocSpace'iniz için $PaymentDelay günlük ek sürenin yarın sona ereceğini lütfen dikkate alın.
+
+Business aboneliğinizin ödemesini bugün yaptığınızdan emin olun. Böylece ONLYOFFICE DocSpace'inizin tüm avantajlarından daha fazla yararlanabileceksiniz.
+
+$GreenButton
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Merhaba!
+
+"${__VirtualRootPath}":"${__VirtualRootPath}" konumundaki $Message odasına katılmaya davet edildiniz. Bağlantıyı tıklayarak daveti kabul edin:
+
+$GreenButton
+
+Davet bağlantısına tıkladıktan sonra lütfen hesabınız için yeni bir şifre belirleyiniz.
+
+Saygılarımızla,
+ONLYOFFICE Ekibi
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>$Date gününde portalda neler var?</value>
+  </data>
+  <data name="subject_change_password_v115" xml:space="preserve">
+    <value>Parolanızı değiştirmeyi onaylayın</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>KABUL ET</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>DocSpace'te iş birliği yapın</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>ONAYLA</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>DocSpace Davetini Onaylayın</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Oda Davetini Onaylayın</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Ödemeler Bölümünü Ziyaret Edin</value>
   </data>
 </root>

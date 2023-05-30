@@ -15,10 +15,7 @@ import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url
 import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
-import React from "react";
 import { makeAutoObservable } from "mobx";
-import { Trans } from "react-i18next";
-
 import toastr from "@docspace/components/toast/toastr";
 
 import { combineUrl } from "@docspace/common/utils";
@@ -27,6 +24,7 @@ import { resendUserInvites } from "@docspace/common/api/people";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 
@@ -390,18 +388,7 @@ class AccountsContextOptionsStore {
   onInviteAgainClick = (t, item) => {
     const { id, email } = item;
     resendUserInvites([id])
-      .then(() =>
-        toastr.success(
-          <Trans
-            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            ns="People"
-            t={t}
-          >
-            The email activation instructions have been sent to the
-            <strong>{{ email: email }}</strong> email address
-          </Trans>
-        )
-      )
+      .then(() => showEmailActivationToast(email))
       .catch((error) => toastr.error(error));
   };
 

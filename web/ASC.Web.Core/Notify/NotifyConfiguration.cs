@@ -369,8 +369,6 @@ public class NotifyTransferRequest : INotifyEngineAction
     private async Task AddLetterLogoAsync(NotifyRequest request)
     {
 
-        if (_tenantExtra.Enterprise || _coreBaseSettings.CustomMode)
-        {
             try
             {
                 var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
@@ -379,7 +377,6 @@ public class NotifyTransferRequest : INotifyEngineAction
                 {
                     request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
                     request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-                    return;
                 }
             }
             catch (Exception error)
@@ -387,9 +384,4 @@ public class NotifyTransferRequest : INotifyEngineAction
                 _log.ErrorAddLetterLogo(error);
             }
         }
-
-        var logoUrl = _commonLinkUtility.GetFullAbsolutePath(await _tenantLogoManager.GetLogoDarkAsync(false));
-
-        request.Arguments.Add(new TagValue(CommonTags.LetterLogo, logoUrl));
     }
-}

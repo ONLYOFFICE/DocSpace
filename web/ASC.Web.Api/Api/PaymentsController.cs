@@ -179,7 +179,8 @@ public class PaymentController : ControllerBase
 
     internal void CheckCache(string basekey)
     {
-        var key = _httpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+        var key = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString() + basekey;
+
         if (_memoryCache.TryGetValue<int>(key, out var count))
         {
             if (count > _maxCount)

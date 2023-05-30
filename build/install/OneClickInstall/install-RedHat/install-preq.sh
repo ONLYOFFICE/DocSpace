@@ -50,6 +50,7 @@ yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusi
 MONOREV=$REV
 if [ "$REV" = "9" ]; then
 	MONOREV="8"
+	TESTING_REPO="--enablerepo=crb"
 elif [ "$REV" = "8" ]; then
 	POWERTOOLS_REPO="--enablerepo=powertools"
 fi
@@ -117,7 +118,7 @@ ${package_manager} -y install epel-release \
 			redis --enablerepo=remi \
 			SDL2 $POWERTOOLS_REPO \
 			expect \
-			ffmpeg
+			ffmpeg $TESTING_REPO
 	
 py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
 if [[ $py3_version -lt 6 ]]; then

@@ -2,6 +2,6 @@
   "RequestDetails": "Veuillez décrire ici les détails de votre demande.",
   "SalesDepartmentRequest": "Demande du service commercial",
   "SuccessfullySentMessage": "Votre message a été envoyé avec succès. Vous serez contacté par le service commercial.",
-  "YouWillBeContacted": "L’équipe de vente vous contactera après avoir créé la demande.",
-  "YourName": "Votre nom"
+  "YourName": "Votre nom",
+  "YouWillBeContacted": "L’équipe de vente vous contactera après avoir créé la demande."
 }

@@ -45,22 +45,6 @@ public class ThumbnailSettings
         set => _serverRoot = value;
     }
 
-    private int _boundedChannelCapacity;
-
-    public int BoundedChannelCapacity
-    {
-        get => _boundedChannelCapacity != 0 ? _boundedChannelCapacity : MaxDegreeOfParallelism * 10;
-        set => _boundedChannelCapacity = value;
-    }
-
-    private int _batchSize;
-
-    public int BatchSize
-    {
-        get => _batchSize != 0 ? _batchSize : MaxDegreeOfParallelism * 10;
-        set => _batchSize = value;
-    }
-
     #endregion
 
 
@@ -111,7 +95,7 @@ public class ThumbnailSettings
     private int _maxDegreeOfParallelism;
     public int MaxDegreeOfParallelism
     {
-        get => _maxDegreeOfParallelism != 0 ? _maxDegreeOfParallelism : 10;
+        get => _maxDegreeOfParallelism != 0 ? _maxDegreeOfParallelism : 1;
         set => _maxDegreeOfParallelism = value;
     }
 

@@ -89,7 +89,7 @@ public class CookiesManager
         {
             options.HttpOnly = true;
 
-            var urlRewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+            var urlRewriter = _httpContextAccessor.HttpContext.Request.Url();
             if (urlRewriter.Scheme == "https")
             {
                 options.Secure = true;
@@ -304,7 +304,7 @@ public class CookiesManager
 
     private bool FromCors()
     {
-        var urlRewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+        var urlRewriter = _httpContextAccessor.HttpContext.Request.Url();
         var origin = _httpContextAccessor.HttpContext.Request.Headers[HeaderNames.Origin].FirstOrDefault();
         var baseDomain = _coreBaseSettings.Basedomain;
 

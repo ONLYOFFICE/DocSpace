@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blog đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Bookmark được tạo lúc</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Trường hợp CRM đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Bình luận được thêm lúc</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Liên hệ CRM đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Cơ hội CRM đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Thảo luận đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Sự kiện đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Tài liệu đã được tạo/đăng tải lên tại</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Thư mục đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Diễn đàn được tạo tại</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Thăm dò ý kiến đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Bài viết đã được tạo lúc</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Mốc sự kiện đã được tạo tại</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Dự án được tạo tại</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Nhiệm vụ được tạo tại</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Truy cập Control Panel</value>
   </data>
@@ -127,9 +79,6 @@
   <data name="ButtonSelectPricingPlans" xml:space="preserve">
     <value>Chọn Gói dịch vụ ngay bây giờ</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Tìm hiểu thêm &gt;&gt;</value>
-  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Kích hoạt email của bạn cho cổng "${__VirtualRootPath}":"$InviteLink".
 
@@ -148,7 +97,7 @@ Thân gửi $OwnerName,
 
 Một file sao lưu chứa dữ liệu từ cổng "${__VirtualRootPath}":"${__VirtualRootPath}" của bạn đã được tạo.
 
-Để tìm hiểu thêm về quy trình sao lưu, vui lòng tham khảo hướng dẫn người dùng "Sao lưu dữ liệu":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx" của chúng tôi.
+Để tìm hiểu thêm về quy trình sao lưu, vui lòng tham khảo hướng dẫn người dùng "Sao lưu dữ liệu":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block" của chúng tôi.
 
 
 Nếu bạn có câu hỏi hoặc cần hỗ trợ, vui lòng liên hệ với chúng tôi tại "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -161,7 +110,6 @@ ONLYOFFICE™ Support Team
     <value>h1.Người dùng mới được thêm vào cổng "${__VirtualRootPath}":"${__VirtualRootPath}"
 
 "$__AuthorName":"$__AuthorUrl" đã tham gia cổng thông tin của bạn tại "${__VirtualRootPath}":"${__VirtualRootPath}".
-
 
 ^Bạn nhận được email này vì bạn là quản trị viên của cổng "${__VirtualRootPath}":"${__VirtualRootPath}". Nếu bạn không muốn nhận thông báo về người dùng mới, vui lòng điều chỉnh "thiết lập đăng ký":"$RecipientSubscriptionConfigURL".^
 
@@ -219,13 +167,13 @@ $GreenButton
 
 Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
 
-*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
 
-*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+* *Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
 
-*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
 
-*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
 
 $GreenButton
 
@@ -240,13 +188,13 @@ Nhóm ONLYOFFICE
 
 Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
 
-*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
 
-*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+* *Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
 
-*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
 
-*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
 
 $GreenButton
 
@@ -261,13 +209,13 @@ Nhóm ONLYOFFICE
 
 Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
 
-*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
 
-*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+* *Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
 
-*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
 
-*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
 
 $GreenButton
 
@@ -282,13 +230,13 @@ Nhóm ONLYOFFICE
 
 Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
 
-*#* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+* Làm việc với những người dùng khác trong phòng mà bạn được mời: * phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
 
-*# Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+* *Làm việc với các tập tin có định dạng khác nhau *: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
 
-*# Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn bản. Theo dõi các thay đổi, trao đổi theo thời gian thực bằng cách sử dụng tính năng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video.
 
-*# Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
 
 $GreenButton
 
@@ -411,7 +359,7 @@ Thân gửi $UserDisplayName,
 
 Địa chỉ cổng thông tin $PortalUrl của bạn đã được thay đổi sang địa chỉ mới "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Lưu ý*: Hiện tại sẽ không thể truy cập vào tất cả các liên kết tài liệu đã chia sẻ cũng như các thiết lập DNS và tùy chọn đăng nhập một lần sẽ ngừng hoạt động cho đến khi bạn thay đổi chúng. Các liên kết iCal của bên thứ ba được thêm vào lịch của bạn cũng sẽ ngừng cập nhật cho đến khi bạn tải lại chúng.</value>
+*Lưu ý*: Thiết lập DNS và tùy chọn đăng nhập một lần sẽ ngừng hoạt động cho đến khi bạn thay đổi chúng.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Xóa hồ sơ khỏi cổng "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -452,7 +400,7 @@ h3.Chức vụ
 $Position
 
 h3.Email
-"$UserEmail":"mailto:$UserEmail"
+$UserEmailailto:$UserEmail"
 
 h3.Điện thoại
 $Phone
@@ -461,7 +409,16 @@ h3.Website của Công ty
 $Website
 
 h3.Tên Công ty
-$CompanyTitle</value>
+$CompanyTitle
+
+h3.Quy mô công ty
+$CompanySize
+
+h3.Yêu cầu nội dung
+$Body
+
+h3.Địa chỉ cổng
+"${__VirtualRootPath}":"${__VirtualRootPath}"</value>
   </data>
   <data name="pattern_restore_started" xml:space="preserve">
     <value>h1.Đã bắt đầu khôi phục cổng
@@ -587,7 +544,7 @@ Trân trọng,
     <value>${LetterLogoText}. Đã bắt đầu khôi phục</value>
   </data>
   <data name="subject_self_profile_updated" xml:space="preserve">
-    <value>${__ VirtualRootPath} thông báo thay đổi hồ sơ cổng thông tin</value>
+    <value>${__VirtualRootPath} thông báo thay đổi hồ sơ cổng thông tin</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
     <value>Tin nhắn SMTP thử nghiệm</value>
@@ -636,5 +593,616 @@ Trân trọng,
   </data>
   <data name="ActionUserUpdated" xml:space="preserve">
     <value>Người dùng DocSpace đã được cập nhật: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>CHẤP NHẬN</value>
+  </data>
+  <data name="ButtonAccept" xml:space="preserve">
+    <value>Chấp nhận</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>XÁC NHẬN</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>Xác nhận</value>
+  </data>
+  <data name="ButtonCollaborateDocSpace" xml:space="preserve">
+    <value>Cộng tác trong DocSpace</value>
+  </data>
+  <data name="ButtonConfirmDocSpaceInvite" xml:space="preserve">
+    <value>Xác nhận Lời mời DocSpace</value>
+  </data>
+  <data name="ButtonConfirmRoomInvite" xml:space="preserve">
+    <value>Xác nhận Phòng Mời</value>
+  </data>
+  <data name="ButtonVisitPaymentsSection" xml:space="preserve">
+    <value>Truy cập Phần Thanh toán</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Bạn muốn thay đổi mật khẩu cho tài khoản ONLYOFFICE của mình? Hãy nhấp vào nút bên dưới để xác nhận.
+
+$GreenButton
+
+Liên kết có hiệu lực trong 7 ngày.
+
+Bạn không muốn thay đổi mật khẩu? Xin hãy bỏ qua tin nhắn này</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Bạn vừa tạo ONLYOFFICE DocSpace, một trung tâm tài liệu nơi bạn có thể tăng cường hợp tác với nhóm, khách hàng, đối tác của mình và hơn thế nữa. Địa chỉ của nó là "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Xin vui lòng xác nhận email của bạn (liên kết có hiệu lực trong 7 ngày):
+
+$GreenButton
+
+Gói dịch vụ hiện tại của bạn là STARTUP. Nó hoàn toàn miễn phí và bao gồm:
+
+* 1 quản trị viên, 2 người dùng cấp cao
+* Lên đến 12 phòng
+* Không giới hạn số lượng người dùng trong mỗi phòng
+* Dung lượng lưu trữ 2 GB
+
+Tận hưởng một cách cộng tác tài liệu mới!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Hãy nhận các ứng dụng ONLYOFFICE miễn phí để làm việc trên các tài liệu từ bất kỳ thiết bị nào của bạn.
+
+# Để làm việc trên các tài liệu ngoại tuyến trên Windows, Linux và Mac, hãy tải "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Để chỉnh sửa tài liệu trên thiết bị di động, hãy tải ứng dụng ONLYOFFICE Documents cho "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" hay "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com": "http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chúng tôi hy vọng bạn thích sử dụng ONLYOFFICE DocSpace của mình. Dưới đây là một số lời khuyên giúp làm việc trên các tài liệu hiệu quả hơn.
+
+*#1. Chọn cách bạn làm việc.* Sắp xếp quy trình làm việc theo yêu cầu của bạn bằng cách tạo các phòng cộng tác để cùng làm việc theo thời gian thực hoặc các phòng tùy chỉnh với các cài đặt linh hoạt cho bất kỳ mục đích nào.
+
+*#2. Làm việc với bất kỳ nội dung nào bạn có.* Lưu trữ và làm việc với các tập tin có định dạng khác nhau trong phòng của bạn: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+*#3. Đồng làm việc một cách hiệu quả.*Cộng tác trên tài liệu với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+*#4. Kết nối các đám mây của bên thứ 3.*Kết nối với bất kỳ lưu trữ đám mây nào và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Dưới đây là ba câu hỏi đơn giản dành cho bạn có thể giúp chúng tôi cải thiện trải nghiệm người dùng của bạn tốt hơn nữa.
+
+* Có phải bạn có một nhóm lớn hoặc rất nhiều khách hàng và đối tác để cộng tác trong ONLYOFFICE DocSpace của mình? 
+
+* Bạn có muốn tạo bất kỳ số lượng phòng nào để làm việc với nhiều tài liệu không? 
+
+* Bạn có muốn sử dụng ONLYOFFICE DocSpace dưới thương hiệu của riêng bạn không?
+
+Nếu bạn có ít nhất một câu trả lời ‘có’, hãy chọn gói BUSINESS cho phép bạn thêm bất kỳ số lượng người quản lý mong muốn nào vào ONLYOFFICE DocSpace của bạn cũng như áp dụng các tùy chọn xây dựng thương hiệu.
+
+Để làm như vậy, xin vui lòng tham khảo "Phần Thanh toán":"$PricingPage" của ONLYOFFICE DocSpace của bạn. Ở đó, bạn sẽ thấy một liên kết riêng lẻ đến Cổng thông tin khách hàng Stripe nơi bạn có thể dễ dàng xử lý tất cả các chi tiết thanh toán. 
+
+_Xin lưu ý: Người trả tiền cho gói dịch vụ trở thành người trả tiền. Chỉ người trả tiền mới có thể thay đổi gói dịch vụ đăng ký (điều chỉnh số lượng người quản lý). Người dùng không có quyền truy cập vào chi tiết thanh toán. Chủ sở hữu tài khoản ONLYOFFICE DocSpace có thể chỉ định lại người trả tiền bất cứ lúc nào sau đó. _
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Dưới đây là ba câu hỏi đơn giản dành cho bạn có thể giúp chúng tôi cải thiện trải nghiệm người dùng của bạn tốt hơn nữa.
+
+* Có phải bạn có một nhóm lớn hoặc rất nhiều khách hàng và đối tác để cộng tác trong ONLYOFFICE DocSpace của mình? 
+
+* Bạn có muốn tạo bất kỳ số lượng phòng nào để làm việc với nhiều tài liệu không? 
+
+* Bạn có muốn sử dụng ONLYOFFICE DocSpace dưới thương hiệu của riêng bạn không?
+
+Nếu bạn có ít nhất một câu trả lời ‘có’, hãy chọn gói BUSINESS cho phép bạn thêm bất kỳ số lượng người quản lý mong muốn nào vào ONLYOFFICE DocSpace của bạn cũng như áp dụng các tùy chọn xây dựng thương hiệu.
+
+Để làm như vậy, xin vui lòng tham khảo "Phần Thanh toán":"$PricingPage" của ONLYOFFICE DocSpace của bạn. Ở đó, bạn sẽ thấy một liên kết riêng lẻ đến Cổng thông tin khách hàng Stripe nơi bạn có thể dễ dàng xử lý tất cả các chi tiết thanh toán. 
+
+_Xin lưu ý: Người trả tiền cho gói dịch vụ trở thành người trả tiền. Chỉ người trả tiền mới có thể thay đổi gói dịch vụ đăng ký (điều chỉnh số lượng người quản lý). Người dùng không có quyền truy cập vào chi tiết thanh toán. Chủ sở hữu tài khoản ONLYOFFICE DocSpace có thể chỉ định lại người trả tiền bất cứ lúc nào sau đó. _
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Dưới đây là ba câu hỏi đơn giản dành cho bạn có thể giúp chúng tôi cải thiện trải nghiệm người dùng của bạn tốt hơn nữa.
+
+* Có phải bạn có một nhóm lớn hoặc rất nhiều khách hàng và đối tác để cộng tác trong ONLYOFFICE DocSpace của mình? 
+
+* Bạn có muốn tạo bất kỳ số lượng phòng nào để làm việc với nhiều tài liệu không? 
+
+* Bạn có muốn sử dụng ONLYOFFICE DocSpace dưới thương hiệu của riêng bạn không?
+
+Nếu bạn có ít nhất một câu trả lời ‘có’, hãy chọn gói BUSINESS cho phép bạn thêm bất kỳ số lượng người quản lý mong muốn nào vào ONLYOFFICE DocSpace của bạn cũng như áp dụng các tùy chọn xây dựng thương hiệu.
+
+Để làm như vậy, xin vui lòng tham khảo "Phần Thanh toán":"$PricingPage" của ONLYOFFICE DocSpace của bạn. Ở đó, bạn sẽ thấy một liên kết riêng lẻ đến Cổng thông tin khách hàng Stripe nơi bạn có thể dễ dàng xử lý tất cả các chi tiết thanh toán. 
+
+_Xin lưu ý: Người trả tiền cho gói dịch vụ trở thành người trả tiền. Chỉ người trả tiền mới có thể thay đổi gói dịch vụ đăng ký (điều chỉnh số lượng người quản lý). Người dùng không có quyền truy cập vào chi tiết thanh toán. Chủ sở hữu tài khoản ONLYOFFICE DocSpace có thể chỉ định lại người trả tiền bất cứ lúc nào sau đó. _
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Dưới đây là ba câu hỏi đơn giản dành cho bạn có thể giúp chúng tôi cải thiện trải nghiệm người dùng của bạn tốt hơn nữa.
+
+* Có phải bạn có một nhóm lớn hoặc rất nhiều khách hàng và đối tác để cộng tác trong ONLYOFFICE DocSpace của mình? 
+
+* Bạn có muốn tạo bất kỳ số lượng phòng nào để làm việc với nhiều tài liệu không? 
+
+* Bạn có muốn sử dụng ONLYOFFICE DocSpace dưới thương hiệu của riêng bạn không?
+
+Nếu bạn có ít nhất một câu trả lời ‘có’, hãy chọn gói BUSINESS cho phép bạn thêm bất kỳ số lượng người quản lý mong muốn nào vào ONLYOFFICE DocSpace của bạn cũng như áp dụng các tùy chọn xây dựng thương hiệu.
+
+Để làm như vậy, xin vui lòng tham khảo "Phần Thanh toán":"$PricingPage" của ONLYOFFICE DocSpace của bạn. Ở đó, bạn sẽ thấy một liên kết riêng lẻ đến Cổng thông tin khách hàng Stripe nơi bạn có thể dễ dàng xử lý tất cả các chi tiết thanh toán. 
+
+_Xin lưu ý: Người trả tiền cho gói dịch vụ trở thành người trả tiền. Chỉ người trả tiền mới có thể thay đổi gói dịch vụ đăng ký (điều chỉnh số lượng người quản lý). Người dùng không có quyền truy cập vào chi tiết thanh toán. Chủ sở hữu tài khoản ONLYOFFICE DocSpace có thể chỉ định lại người trả tiền bất cứ lúc nào sau đó. _
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Xin chào! 
+
+Bạn được mời tham gia ONLYOFFICE DocSpace tại "${__VirtualRootPath}":"${__VirtualRootPath}". Hãy chấp nhận lời mời bằng cách nhấp vào liên kết:
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Xin chào! 
+
+Bạn được mời tham gia ONLYOFFICE DocSpace tại "${__VirtualRootPath}":"${__VirtualRootPath}". Hãy chấp nhận lời mời bằng cách nhấp vào liên kết:
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Xin chào! 
+
+Bạn được mời tham gia ONLYOFFICE DocSpace tại "${__VirtualRootPath}":"${__VirtualRootPath}". Hãy chấp nhận lời mời bằng cách nhấp vào liên kết:
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Xin chào! 
+
+Bạn được mời tham gia ONLYOFFICE DocSpace tại "${__VirtualRootPath}":"${__VirtualRootPath}". Hãy chấp nhận lời mời bằng cách nhấp vào liên kết:
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+* Làm việc với những người dùng khác trong phòng mà bạn được mời*: phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+* *Làm việc với các tập tin có định dạng khác nhau*: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần hỗ trợ, hãy xem qua "Trung tâm Hỗ trợ":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+* Làm việc với những người dùng khác trong phòng mà bạn được mời*: phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+* *Làm việc với các tập tin có định dạng khác nhau*: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần hỗ trợ, hãy xem qua "Trung tâm Hỗ trợ":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+* Làm việc với những người dùng khác trong phòng mà bạn được mời*: phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+* *Làm việc với các tập tin có định dạng khác nhau*: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần hỗ trợ, hãy xem qua "Trung tâm Hỗ trợ":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Chào mừng bạn đến với ONLYOFFICE DocSpace! Hồ sơ người dùng của bạn đã được thêm thành công vào "${__VirtualRootPath}":"${__VirtualRootPath}". Giờ đây bạn đã có thể:
+
+* Làm việc với những người dùng khác trong phòng mà bạn được mời*: phòng cộng tác để cùng soạn thảo theo thời gian thực hoặc phòng tùy chỉnh với cài đặt linh hoạt cho mọi mục đích*.
+
+* *Làm việc với các tập tin có định dạng khác nhau*: tài liệu văn bản, bảng tính, bản trình bày, biểu mẫu kỹ thuật số, PDF, sách điện tử, đa phương tiện.
+
+* *Cộng tác trên tài liệu* với hai chế độ đồng chỉnh sửa: theo thời gian thực hoặc khóa đoạn văn. Theo dõi các thay đổi, trao đổi trong thời gian thực bằng cách sử dụng trò chuyện tích hợp hoặc thực hiện cuộc gọi âm thanh và video. 
+
+* *Kết nối với bất kỳ lưu trữ đám mây nào* và làm việc mà không cần chuyển đổi giữa các ứng dụng. 
+
+$GreenButton
+
+Nếu bạn cần hỗ trợ, hãy xem qua "Trung tâm Hỗ trợ":"https://helpcenter.onlyoffice.com/" của chúng tôi hoặc hỏi "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.Tin nhắn từ cổng "${__VirtualRootPath}":"${__VirtualRootPath}"
+
+Tên: $UserName
+
+Email: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Hãy nhận các ứng dụng ONLYOFFICE miễn phí để làm việc trên các tài liệu từ bất kỳ thiết bị nào của bạn.
+
+# Để làm việc trên các tài liệu ngoại tuyến trên Windows, Linux và Mac, hãy tải "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Để chỉnh sửa tài liệu trên thiết bị di động, hãy tải ứng dụng ONLYOFFICE Documents cho "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" hay "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Hãy nhận các ứng dụng ONLYOFFICE miễn phí để làm việc trên các tài liệu từ bất kỳ thiết bị nào của bạn.
+
+# Để làm việc trên các tài liệu ngoại tuyến trên Windows, Linux và Mac, hãy tải "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Để chỉnh sửa tài liệu trên thiết bị di động, hãy tải ứng dụng ONLYOFFICE Documents cho "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" hay "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Xin chào! 
+Đã có người cố đăng ký tài khoản "ONLYOFFICE Personal":"$PortalUrl" mới bằng email này. Nếu đó là bạn, chúng tôi muốn thông báo cho bạn rằng tài khoản đã tồn tại — hãy chuyển sang ONLYOFFICE Personal và đăng nhập.
+Nếu bạn bị mất mật khẩu, bạn có thể khôi phục nó trên "trang khôi phục mật khẩu":"$LinkToRecovery".
+Nếu bạn không đăng ký một tài khoản mới, có lẽ người khác đã làm điều đó do nhầm lẫn. Trong trường hợp này, vui lòng bỏ qua email này.
+
+Chúc bạn một ngày tốt lành!
+Nhóm ONLYOFFICE</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Bạn muốn thay đổi mật khẩu cho tài khoản ONLYOFFICE Personal của mình? Hãy nhấp vào nút bên dưới để xác nhận.
+
+$GreenButton 
+
+Liên kết có hiệu lực trong 7 ngày.
+
+Bạn không muốn thay đổi mật khẩu? Xin hãy bỏ qua tin nhắn này.</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>ONLYOFFICE DocSpace của bạn đã được hủy kích hoạt thành công. Xin lưu ý rằng tất cả dữ liệu của bạn sẽ bị xóa theo "Chính sách Bảo mật":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" của chúng tôi.
+
+Bạn có thể cho biết vì sao bạn lại quyết định ngừng sử dụng? Xin hãy chia sẻ trải nghiệm của bạn với chúng tôi.
+ 
+$GreenButton
+
+Cảm ơn và chúc bạn may mắn!
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Hãy điều chỉnh cài đặt bảo mật của ONLYOFFICE DocSpace của bạn để giúp nó an toàn hơn:
+
+* Tăng độ mạnh cho mật khẩu.
+
+* Cho phép xác thực hai yếu tố và Đăng nhập một lần.
+
+* Xác định tên miền thư đáng tin cậy và xác định thời gian cho phiên đăng nhập.
+
+* Hạn chế quyền truy cập từ các địa chỉ IP cụ thể. 
+
+* Cho phép hoặc hạn chế tin nhắn quản trị. 
+
+* Quản lý quyền truy cập của quản trị viên.
+
+* Thực hiện sao lưu dữ liệu.
+
+$GreenButton
+
+Xin hãy truy cập "Trung tâm Hỗ trợ":"https://helpcenter.onlyoffice.com/" của chúng tôi để tìm hiểu thêm về cách định cấu hình và quản lý ONLYOFFICE DocSpace của bạn. Bạn cũng có thể tham khảo nó khi có câu hỏi về tính năng.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Bạn chưa vào ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" trong hơn nửa năm. 
+
+Vì bạn đã quyết định không sử dụng nó nữa, ONLYOFFICE DocSpace của bạn và tất cả dữ liệu sẽ bị xóa theo "Chính sách Bảo mật":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0" của chúng tôi.
+
+Chúng tôi mong nhận được phản hồi của bạn. Bạn có thể cho biết vì sao bạn lại quyết định ngừng sử dụng ONLYOFFICE DocSpace?
+
+$GreenButton
+
+Nếu bạn cho rằng đây chỉ là sai sót và muốn tiếp tục sử dụng ONLYOFFICE DocSpace, xin vui lòng liên hệ với "nhóm hỗ trợ":"https://www.onlyoffice.com/support-contact-form.aspx" của chúng tôi.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Xin chào! 
+
+Bạn được mời tham gia ONLYOFFICE DocSpace tại "${__VirtualRootPath}":"${__VirtualRootPath}". Hãy chấp nhận lời mời bằng cách nhấp vào liên kết:
+
+$GreenButton
+
+Sau khi nhấp vào liên kết mời, xin vui lòng đặt mật khẩu mới cho tài khoản của bạn.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Xin vui lòng lưu ý rằng thời gian ân hạn $PaymentDelay ngày cho ONLYOFFICE DocSpace của bạn đã được kích hoạt.
+
+Hãy đảm bảo thanh toán cho gói đăng ký Business của bạn trước khi hết thời gian ân hạn. Như vậy, bạn sẽ có thể tiếp tục sử dụng tất cả các quyền lợi của ONLYOFFICE DocSpace của mình.
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Xin vui lòng lưu ý rằng gói đăng ký ONLYOFFICE DocSpace của bạn sẽ hết hạn sau ba ngày. Sau đó, thời gian ân hạn của $PaymentDelay ngày sẽ được kích hoạt.
+
+Chúng tôi mong bạn thanh toán gói dịch vụ Business của bạn ngay và tiếp tục sử dụng tất cả các quyền lợi của ONLYOFFICE DocSpace.
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Xin vui lòng lưu ý rằng thời gian ân hạn $PaymentDelay ngày cho ONLYOFFICE DocSpace của bạn đã hết.
+
+Hãy đảm bảo thanh toán cho gói dịch vụ Business của bạn càng sớm càng tốt. Như vậy, bạn sẽ có thể sử dụng tất cả các quyền lợi của ONLYOFFICE DocSpace của mình như trước đây.
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Xin chào $UserName!
+
+Xin vui lòng lưu ý rằng thời gian ân hạn $PaymentDelay ngày cho ONLYOFFICE DocSpace của bạn sẽ hết hạn vào ngày mai.
+
+Hãy đảm bảo thanh toán cho gói dịch vụ Business của bạn ngay hôm nay. Như vậy, bạn sẽ có thể tiếp tục sử dụng tất cả các quyền lợi của ONLYOFFICE DocSpace của mình.
+
+$GreenButton
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Xin chào! 
+
+Bạn được mời tham gia phòng $Message tại "${__VirtualRootPath}":"${__VirtualRootPath}". Hãy chấp nhận lời mời bằng cách nhấp vào liên kết:
+
+$GreenButton
+
+Sau khi nhấp vào liên kết mời, xin vui lòng đặt mật khẩu mới cho tài khoản của bạn.
+
+Trân trọng, 
+Nhóm ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="subject_send_whats_new" xml:space="preserve">
+    <value>Có gì mới trên cổng thông tin của bạn vào ngày $Date</value>
   </data>
 </root>

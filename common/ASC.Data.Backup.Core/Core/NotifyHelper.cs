@@ -192,7 +192,14 @@ public class NotifyHelper
         {
             args.Add(new TagValue(CommonTags.VirtualRootPath, url));
             args.Add(new TagValue(CommonTags.ProfileUrl, url + _commonLinkUtility.GetMyStaff()));
-            args.Add(new TagValue(CommonTags.LetterLogo, await _tenantLogoManager.GetLogoDarkAsync(false)));
+
+            var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
+
+            if (attachment != null)
+            {
+                args.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
+                args.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
+            }
         }
 
         return args;

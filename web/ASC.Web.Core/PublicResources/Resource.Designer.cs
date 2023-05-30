@@ -268,20 +268,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add the Bitly service you will get shortened links to invite new users to the ONLYOFFICE™ portal and shortened links to documents in the Documents module that have been shared with external users..
+        ///   Looks up a localized string similar to Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:.
         /// </summary>
         public static string ConsumersBitlyInstruction {
             get {
                 return ResourceManager.GetString("ConsumersBitlyInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:.
-        /// </summary>
-        public static string ConsumersBitlyInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersBitlyInstructionV11", resourceCulture);
             }
         }
         
@@ -322,20 +313,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Box service you will be able to connect your Box account in the Documents module. This will allow to upload and create new files in Box, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersBoxInstruction {
             get {
                 return ResourceManager.GetString("ConsumersBoxInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersBoxInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersBoxInstructionV11", resourceCulture);
             }
         }
         
@@ -367,20 +349,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the Clickatell service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal..
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:.
         /// </summary>
         public static string ConsumersClickatellInstruction {
             get {
                 return ResourceManager.GetString("ConsumersClickatellInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:.
-        /// </summary>
-        public static string ConsumersClickatellInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersClickatellInstructionV11", resourceCulture);
             }
         }
         
@@ -430,20 +403,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the DocuSign service you will be able to sign files from the Documents module. This will allow to send a file for electronic signature to the ONLYOFFICE™ portal employees via the DocuSugn service. The signed file will be saved in the ONLYOFFICE™ Documents module..
+        ///   Looks up a localized string similar to Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersDocuSignInstruction {
             get {
                 return ResourceManager.GetString("ConsumersDocuSignInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersDocuSignInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersDocuSignInstructionV11", resourceCulture);
             }
         }
         
@@ -466,20 +430,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Dropbox service you will be able to connect your Dropbox account in the Documents module. This will allow to upload and create new files in Dropbox, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersDropBoxInstruction {
             get {
                 return ResourceManager.GetString("ConsumersDropBoxInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersDropBoxInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersDropBoxInstructionV11", resourceCulture);
             }
         }
         
@@ -529,7 +484,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add the EasyBib application, you can easily create bibliographic lists in your documents..
+        ///   Looks up a localized string similar to Enable this app to create bibliographies in ONLYOFFICE editors. {0}Go to the EasyBib signup page and fill in the form to add ONLYOFFICE integration. After you get an app key, paste it below:.
         /// </summary>
         public static string ConsumersEasyBibInstruction {
             get {
@@ -583,20 +538,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Facebook service you will be able to connect your Facebook account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Facebook account of a contact in the CRM module and link it on the &apos;Edit person/company&apos; page..
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersFacebookInstruction {
             get {
                 return ResourceManager.GetString("ConsumersFacebookInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersFacebookInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersFacebookInstructionV11", resourceCulture);
             }
         }
         
@@ -655,7 +601,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you connect Firebase Cloud Messaging you will be able to receive notifications about the messages sent to you even when you are offline..
+        ///   Looks up a localized string similar to Enable this app to allow your users to receive notifications about the messages even offline. {0}Go to Firebase console and add a new project for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersFirebaseInstruction {
             get {
@@ -727,7 +673,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Google Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Google Cloud Storage service to backup and store data from your portal. {0}Go to Google Cloud Platform Console and create a new service account for ONLYOFFICE. Paste the data you received  below:.
         /// </summary>
         public static string ConsumersGoogleCloudInstruction {
             get {
@@ -754,20 +700,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add a project of the Google service you will be able to connect your Google account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it as well as connect your Google Drive account in the Documents module. This will allow to upload and create new files in Google Drive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersGoogleInstruction {
             get {
                 return ResourceManager.GetString("ConsumersGoogleInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersGoogleInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersGoogleInstructionV11", resourceCulture);
             }
         }
         
@@ -790,20 +727,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the LinkedIn service you will be able to connect your LinkedIn account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it..
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersLinkedInInstruction {
             get {
                 return ResourceManager.GetString("ConsumersLinkedInInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersLinkedInInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersLinkedInInstructionV11", resourceCulture);
             }
         }
         
@@ -934,7 +862,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Rackspace Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Rackspace Cloud Storage service to backup and store data from your portal. {0}In the security settings of  Rackspace Cloud Control Panel, click the Show link next to Rackspace API Key. Paste the data you received below:.
         /// </summary>
         public static string ConsumersRackspaceInstruction {
             get {
@@ -1033,7 +961,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Amazon AWS S3 to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Amazon AWS S3 to backup and store data from your portal. {0}Go to the AWS Management Console and create access keys for ONLYOFFICE. Paste the data you received below:.
         /// </summary>
         public static string ConsumersS3Instruction {
             get {
@@ -1105,7 +1033,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal..
+        ///   Looks up a localized string similar to Connect Selectel Cloud Storage service to backup and store data from your portal. {0}Get the access data for a user with Read/Write rights for containers where you plan to store your backups and paste it below:.
         /// </summary>
         public static string ConsumersSelectelInstruction {
             get {
@@ -1186,20 +1114,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the OneDrive service you will be able to connect your OneDrive account in the Documents module. This will allow to upload and create new files in OneDrive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users..
+        ///   Looks up a localized string similar to Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersSkyDriveInstruction {
             get {
                 return ResourceManager.GetString("ConsumersSkyDriveInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersSkyDriveInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersSkyDriveInstructionV11", resourceCulture);
             }
         }
         
@@ -1222,20 +1141,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the SMS Center service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal. SMS Center application is useful as a provider for CIS countries..
+        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:.
         /// </summary>
         public static string ConsumersSmscInstruction {
             get {
                 return ResourceManager.GetString("ConsumersSmscInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:.
-        /// </summary>
-        public static string ConsumersSmscInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersSmscInstructionV11", resourceCulture);
             }
         }
         
@@ -1296,9 +1206,9 @@ namespace ASC.Web.Core.PublicResources {
         /// <summary>
         ///   Looks up a localized string similar to To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below..
         /// </summary>
-        public static string ConsumersTelegramInstructionV11 {
+        public static string ConsumersTelegramInstruction {
             get {
-                return ResourceManager.GetString("ConsumersTelegramInstructionV11", resourceCulture);
+                return ResourceManager.GetString("ConsumersTelegramInstruction", resourceCulture);
             }
         }
         
@@ -1339,20 +1249,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to After you add Twilio, you will be able to call any CRM contact right from the browser..
+        ///   Looks up a localized string similar to Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:.
         /// </summary>
         public static string ConsumersTwilioInstruction {
             get {
                 return ResourceManager.GetString("ConsumersTwilioInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:.
-        /// </summary>
-        public static string ConsumersTwilioInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersTwilioInstructionV11", resourceCulture);
             }
         }
         
@@ -1402,20 +1303,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to If you add an application of the Twitter service you will be able to connect your Twitter account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Twitter account of a person in the CRM module and link it on the &apos;Edit person/company&apos; page and then view Twitter news feed..
+        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersTwitterInstruction {
             get {
                 return ResourceManager.GetString("ConsumersTwitterInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersTwitterInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersTwitterInstructionV11", resourceCulture);
             }
         }
         
@@ -1510,7 +1402,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the WordPress application you can easily publish the documents on your WordPress website, saving their formatting..
+        ///   Looks up a localized string similar to Enable the application to easily publish documents to your WordPress website. {0}On the Wordpress Developers page, create a new app for ONLYOFFICE integration. Paste the data you received below:.
         /// </summary>
         public static string ConsumersWordpressInstruction {
             get {
@@ -1573,20 +1465,11 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Adding the Yahoo service application you will be able to add ONLYOFFICE portal new users from the contact list..
+        ///   Looks up a localized string similar to Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:.
         /// </summary>
         public static string ConsumersYahooInstruction {
             get {
                 return ResourceManager.GetString("ConsumersYahooInstruction", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:.
-        /// </summary>
-        public static string ConsumersYahooInstructionV11 {
-            get {
-                return ResourceManager.GetString("ConsumersYahooInstructionV11", resourceCulture);
             }
         }
         
@@ -2500,7 +2383,7 @@ namespace ASC.Web.Core.PublicResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The email change instructions have been successfuly sent.
+        ///   Looks up a localized string similar to The email change instructions have been successfully sent.
         /// </summary>
         public static string MessageEmailChangeInstuctionsSentOnEmail {
             get {

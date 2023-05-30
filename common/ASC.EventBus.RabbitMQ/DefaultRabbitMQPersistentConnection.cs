@@ -70,6 +70,11 @@ public class DefaultRabbitMQPersistentConnection
 
         _disposed = true;
 
+        DisposeConnection();
+    }
+
+    private void DisposeConnection()
+    {
         try
         {
             _connection.ConnectionShutdown -= OnConnectionShutdown;
@@ -99,6 +104,11 @@ public class DefaultRabbitMQPersistentConnection
 
             policy.Execute(() =>
             {
+                if (_connection != null)
+                {
+                    DisposeConnection();
+                }
+
                 _connection = _connectionFactory
                         .CreateConnection();
             });

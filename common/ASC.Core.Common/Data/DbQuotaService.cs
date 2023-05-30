@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Data;
 
-[Scope]
+[Scope(Additional = typeof(DbQuotaServiceExtensions))]
 class DbQuotaService : IQuotaService
 {
     private readonly IDbContextFactory<CoreDbContext> _dbContextFactory;
@@ -40,18 +40,15 @@ class DbQuotaService : IQuotaService
     public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
-        return await coreDbContext.Quotas
-            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
-            .ToListAsync();
+
+        return _mapper.Map<List<DbQuota>, List<TenantQuota>>(await coreDbContext.Quotas.ToListAsync());
     }
 
     public async Task<TenantQuota> GetTenantQuotaAsync(int id)
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
-        return await coreDbContext.Quotas
-            .Where(r => r.Tenant == id)
-            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
-            .SingleOrDefaultAsync();
+
+        return _mapper.Map<DbQuota, TenantQuota>(await coreDbContext.Quotas.SingleOrDefaultAsync(r => r.Tenant == id));
     }
 
     public async Task<TenantQuota> SaveTenantQuotaAsync(TenantQuota quota)
@@ -89,7 +86,7 @@ class DbQuotaService : IQuotaService
         dbTenantQuotaRow.UserId = row.UserId;
 
         var exist = await coreDbContext.QuotaRows.FindAsync(new object[] { dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
-        
+
         if (exist == null)
         {
             await coreDbContext.QuotaRows.AddAsync(dbTenantQuotaRow);
@@ -127,5 +124,13 @@ class DbQuotaService : IQuotaService
         }
 
         return await q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToListAsync();
+    }
+}
+
+public static class DbQuotaServiceExtensions
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<TenantQuotaPriceResolver>();
     }
 }

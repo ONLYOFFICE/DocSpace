@@ -94,19 +94,22 @@ public class RegisterInstanceWorkerService<T> : BackgroundService where T : IHos
     }
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        try
+        if (!_isSingletoneMode)
         {
-            await using var scope = _serviceProvider.CreateAsyncScope();
+            try
+            {
+                await using var scope = _serviceProvider.CreateAsyncScope();
 
-            var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
+                var registerInstanceService = scope.ServiceProvider.GetService<IRegisterInstanceManager<T>>();
 
-            await registerInstanceService.UnRegister(InstanceId);
+                await registerInstanceService.UnRegister(InstanceId);
 
-            _logger.InformationUnRegister(InstanceId, DateTimeOffset.Now);
-        }
-        catch
-        {
-            _logger.ErrorUnableToUnRegister(InstanceId, DateTimeOffset.Now);
+                _logger.InformationUnRegister(InstanceId, DateTimeOffset.Now);
+            }
+            catch
+            {
+                _logger.ErrorUnableToUnRegister(InstanceId, DateTimeOffset.Now);
+            }
         }
 
         await base.StopAsync(cancellationToken);
