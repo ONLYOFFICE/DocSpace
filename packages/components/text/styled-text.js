@@ -45,6 +45,6 @@ const StyledText = styled.p`
   ${(props) => props.noSelect && NoUserSelect}
 `;
 
-StyledText.defaultProps = { theme: Base };
+StyledText.defaultProps = { theme: { ...Base, interfaceDirection: "ltr" } };
 
 export default StyledText;
