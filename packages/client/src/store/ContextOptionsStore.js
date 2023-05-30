@@ -1053,7 +1053,7 @@ class ContextOptionsStore {
         label: t("Translations:DownloadAs"),
         icon: DownloadAsReactSvgUrl,
         onClick: this.onClickDownloadAs,
-        disabled: !item.security.Download,
+        disabled: !item.security.Download || this.publicRoomStore.isPublicRoom,
       },
       ...moveActions,
       {
