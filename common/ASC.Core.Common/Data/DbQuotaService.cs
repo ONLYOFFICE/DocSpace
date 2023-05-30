@@ -87,7 +87,7 @@ class DbQuotaService : IQuotaService
         var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
         dbTenantQuotaRow.UserId = row.UserId;
 
-        var exist = await Queries.FindQuotaRowAsync(coreDbContext, dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path);
+        var exist = await coreDbContext.QuotaRows.FindAsync(new object[] { dbTenantQuotaRow.Tenant, dbTenantQuotaRow.UserId, dbTenantQuotaRow.Path });
         
         if (exist == null)
         {
@@ -134,11 +134,6 @@ file static class Queries
         ctx.Quotas
                  .Where(r => r.Tenant == tenantId)
                  .SingleOrDefault());  
-    
-    public static readonly Func<CoreDbContext, int, Guid, string, Task<DbQuotaRow>> FindQuotaRowAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (CoreDbContext ctx, int tenantId, Guid userId, string path) =>
-        ctx.QuotaRows
-            .Find(new object[] { tenantId, userId, path }));  
     
     public static readonly Func<CoreDbContext, int, Guid, string, long, Task<int>> UpdateCounterAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (CoreDbContext ctx, int tenantId, Guid userId, string path, long counter) =>

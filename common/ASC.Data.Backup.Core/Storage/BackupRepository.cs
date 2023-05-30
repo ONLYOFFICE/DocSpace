@@ -48,7 +48,7 @@ public class BackupRepository : IBackupRepository
     public async Task<BackupRecord> GetBackupRecordAsync(Guid id)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await Queries.FindBackupAsync(backupContext, id);
+        return await backupContext.Backups.FindAsync(id);
     }
 
     public async Task<BackupRecord> GetBackupRecordAsync(string hash, int tenant)
@@ -96,7 +96,7 @@ public class BackupRepository : IBackupRepository
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
 
-        var backup = await Queries.FindBackupAsync(backupContext ,id);
+        var backup = await backupContext.Backups.FindAsync(id);
 
         if (backup != null)
         {
@@ -133,9 +133,6 @@ public class BackupRepository : IBackupRepository
 
 file static class Queries
 {
-    public static readonly Func<BackupsContext, Guid, Task<BackupRecord>> FindBackupAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx, Guid id) =>
-        ctx.Backups.Find(id));
 
     public static readonly Func<BackupsContext, int, string, Task<BackupRecord>> GetBackupAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (BackupsContext ctx, int tenantId, string hash) =>

@@ -66,8 +66,8 @@ public class DbLoginEventsManager
         if (id < 0) return null;
 
         using var loginEventContext = _dbContextFactory.CreateDbContext();
-
-        return await Queries.FindLoginEventAsync(loginEventContext, id);
+        
+        return await loginEventContext.LoginEvents.FindAsync(id);
     }
 
     public async Task<List<BaseEvent>> GetLoginEventsAsync(int tenantId, Guid userId)
@@ -135,10 +135,6 @@ public class DbLoginEventsManager
 
 file static class Queries
 {
-    public static readonly Func<MessagesContext, int, Task<LoginEvent>> FindLoginEventAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (MessagesContext ctx, int id) =>
-        ctx.LoginEvents.Find(id));
-    
     public static readonly Func<MessagesContext, int, Guid, IEnumerable<int>, DateTime, IAsyncEnumerable<LoginEvent>> GetLoginEventsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (MessagesContext ctx, int tenantId, Guid userId, IEnumerable<int> loginActions, DateTime date) =>
         ctx.LoginEvents
