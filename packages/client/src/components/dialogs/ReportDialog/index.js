@@ -80,11 +80,16 @@ const ReportDialog = (props) => {
       });
       FirebaseHelper.sendCrashReport(reportWithDescription);
       toastr.success(t("ErrorReportSuccess"));
-      onClose();
+      onCloseAction();
     } catch (e) {
       console.error(e);
       toastr.error(e);
     }
+  };
+
+  const onCloseAction = () => {
+    setDescription("");
+    onClose();
   };
 
   const fileTitle = t("ErrorReport") + " " + getCurrentDate();
@@ -93,7 +98,7 @@ const ReportDialog = (props) => {
     <ModalDialogContainer
       isLoading={!ready}
       visible={visible}
-      onClose={onClose}
+      onClose={onCloseAction}
       displayType="modal"
     >
       <ModalDialog.Header>{t("ErrorReport")}</ModalDialog.Header>
@@ -141,7 +146,7 @@ const ReportDialog = (props) => {
           label={t("CancelButton")}
           size="normal"
           scale={isMobileOnly}
-          onClick={onClose}
+          onClick={onCloseAction}
         />
       </ModalDialog.Footer>
     </ModalDialogContainer>
