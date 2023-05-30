@@ -110,20 +110,6 @@ public class LoginEventsRepository
 
         return _mapper.Map<List<LoginEventQuery>, IEnumerable<LoginEventDto>>(await query.ToListAsync());
     }
-
-    public async Task<int> GetCountAsync(int tenant, DateTime? from = null, DateTime? to = null)
-    {
-        using var messagesContext = _dbContextFactory.CreateDbContext();
-        var query = messagesContext.LoginEvents
-            .Where(l => l.TenantId == tenant);
-
-        if (from.HasValue && to.HasValue)
-        {
-            query = query.Where(l => l.Date >= from & l.Date <= to);
-        }
-
-        return await query.CountAsync();
-    }
 }
 
 public static class LoginEventsRepositoryExtensions

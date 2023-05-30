@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.EntityFrameworkCore;
+
 namespace ASC.Web.Core.Mobile;
 
 [Scope]
@@ -54,13 +56,16 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
     public async Task<bool> IsInstallRegisteredAsync(string userEmail, MobileAppType? appType)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
-        var q = dbContext.MobileAppInstall.Where(r => r.UserEmail == userEmail);
-
-        if (appType.HasValue)
-        {
-            q = q.Where(r => r.AppType == (int)appType.Value);
-        }
-
-        return await q.AnyAsync();
+        return await Queries.AnyMobileAppInstallAsync(dbContext, userEmail, appType);
     }
+}
+
+file static class Queries
+{
+    public static readonly Func<CustomDbContext, string, MobileAppType?, IAsyncEnumerable<MobileAppInstall>> AnyMobileAppInstallAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (CustomDbContext ctx, string userEmail, MobileAppType? appType) =>
+        ctx.MobileAppInstall
+            .Where(r => r.UserEmail == userEmail)
+            .Where(r => appType.HasValue && r.AppType == (int)appType.Value)
+            .Any());
 }
