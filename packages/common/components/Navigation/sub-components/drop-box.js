@@ -88,7 +88,7 @@ const Row = React.memo(({ data, index, style }) => {
       isRootRoom={data[0][index].isRootRoom}
       isRoot={isRoot}
       onClick={data[1]}
-      withLogo={data[0].withLogo}
+      withLogo={data[2].withLogo}
       style={{ ...style }}
     />
   );
@@ -205,8 +205,9 @@ const DropBox = React.forwardRef(
             itemCount={countItems}
             itemSize={getItemSize}
             itemData={[
-              { ...navigationItems, ...{ withLogo: !!withLogo } },
+              navigationItems,
               onClickAvailable,
+              { withLogo: !!withLogo },
             ]}
             outerElementType={CustomScrollbarsVirtualList}
           >
