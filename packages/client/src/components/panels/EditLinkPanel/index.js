@@ -265,7 +265,7 @@ export default inject(({ auth, dialogsStore, publicRoomStore }) => {
     unsavedChangesDialogVisible,
     setUnsavedChangesDialog,
     // hashSettings,
-    link,
+    link: link ?? template,
   };
 })(
   withTranslation(["SharingPanel", "Common", "Files"])(observer(EditLinkPanel))
