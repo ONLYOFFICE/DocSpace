@@ -15,6 +15,8 @@ const StyledLabel = styled.label`
 
   .checkbox {
     margin-right: 12px;
+    margin-left: ${(props) =>
+      props.theme.interfaceDirection === "rtl" && "12px"};
     overflow: visible;
     outline: none;
   }
