@@ -126,9 +126,7 @@ public class FilesSpaceUsageStatManager : SpaceUsageStatManager, IUserSpaceUsage
         var trash = await _globalFolder.GetFolderTrashAsync(_daoFactory);
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        return await filesDbContext.Files
-            .Where(r => r.TenantId == tenantId && r.CreateBy == userId && (r.ParentId == my || r.ParentId == trash))
-            .SumAsync(r => r.ContentLength);
+        return await Queries.SumContentLengthAsync(filesDbContext, tenantId, userId, my, trash);
     }
 
     public async Task RecalculateUserQuota(int TenantId, Guid userId)
@@ -148,4 +146,13 @@ public static class FilesSpaceUsageStatExtension
     {
         services.ServiceCollection.AddBaseDbContextPool<FilesDbContext>();
     }
+}
+
+file static class Queries
+{
+    public static readonly Func<FilesDbContext, int, Guid, int, int, Task<long>> SumContentLengthAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (FilesDbContext ctx, int tenantId, Guid userId, int my, int trash) =>
+        ctx.Files
+            .Where(r => r.TenantId == tenantId && r.CreateBy == userId && (r.ParentId == my || r.ParentId == trash))
+            .Sum(r => r.ContentLength));
 }
