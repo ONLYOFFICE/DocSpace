@@ -420,14 +420,14 @@ const FilterBlock = ({
                 id="filter_apply-button"
                 size="normal"
                 primary={true}
-                label={t("ApplyButton")}
+                label={t("Common:ApplyButton")}
                 scale={true}
                 onClick={onFilterAction}
               />
               <Button
                 id="filter_cancel-button"
                 size="normal"
-                label={t("CancelButton")}
+                label={t("Common:CancelButton")}
                 scale={true}
                 onClick={hideFilterBlock}
               />

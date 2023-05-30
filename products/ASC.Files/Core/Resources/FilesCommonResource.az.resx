@@ -146,7 +146,7 @@
     <value>Sənədlərin DocuSign vasitəsilə göndərilməsi ləğv edildi</value>
   </data>
   <data name="DocuSignStatusSended" xml:space="preserve">
-    <value>Sənəd DocuSign vasitəsilə imzalanmaq üçün göndərildi.</value>
+    <value>Sənəd DocuSign vasitəsilə imzalanmaq üçün göndərildi</value>
   </data>
   <data name="DocuSignStatusVoided" xml:space="preserve">
     <value>Ləğv edildi</value>
@@ -197,13 +197,13 @@
     <value>Yanlış başlıq</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value>Hazırda fayl başqa istifadəçi tərəfindən kilidlənib.</value>
+    <value>Hazırda fayl başqa istifadəçi tərəfindən kilidlənib</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Ən azı {0} poçt mesajı göndərmək alınmadı. Bunun səbəbini öyrənmək üçün Poçt moduluna daxil olun.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Həddən çox endirmə var</value>
+    <value>Həddən çox endirmə var.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Üzr istəyirik, amma bu format dəstəklənmir</value>
@@ -245,7 +245,7 @@
     <value>Bu sənəd Sizin tərəfinizdən başqa bir nişanda redaktə olunur</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
-    <value>Bu faylı köçürmək üçün kifayət qədər icazəniz yoxdur.</value>
+    <value>Bu faylı köçürmək üçün kifayət qədər icazəniz yoxdur</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFolder" xml:space="preserve">
     <value>Bu qovluğu köçürmək üçün kifayət qədər icazəniz yoxdur</value>
@@ -296,7 +296,7 @@
     <value>"{0}" qovluğunda fayl yaradıldı</value>
   </data>
   <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>Doldurula bilən OFORM sənədi hazırdır. {0} qovluğunda yadda saxlanıldı </value>
+    <value>Doldurula bilən OFORM sənədi hazırdır. {0} qovluğunda yadda saxlanıldı</value>
   </data>
   <data name="MessageFillFormDraftCreated" xml:space="preserve">
     <value>OFORM-un kopyası {0} qovluğunda yaradıldı. Formanı doldurun və nəticəni PDF və ya DOCX formatında yükləyin.</value>
@@ -357,5 +357,62 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Əməkdaş</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Əməkdaş</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Otaq Administratoru</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Redaktor</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Təqdim edilmiş forma</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Yeni versiya cari versiya ilə eyni ola bilməz</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Faylı kopyalamaq üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Qovluğu kopyalamaq üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Etibarsız provayder</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Otağı saxlamaq üçün bu qovluqdan istifadə etmək mümkün deyil</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Dəvət linki etibarsızdır və ya vaxtı keçmişdir</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Bu provayder artıq otağa qoşulub</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Rol bu istifadəçi növü üçün əlçatan deyil</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Otağı arxivləşdirmək üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Bu qovluğa kopyalamaq icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Otağı redaktə etmək icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Bu qovluğa köçürmək icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Otağı arxivdən çıxarmaq üçün lazımi icazəniz yoxdur</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Arxivlənmiş otaqları redaktə edə bilməzsiniz</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Otağı sabitləyə bilməzsiniz</value>
   </data>
 </root>

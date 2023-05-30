@@ -59,7 +59,7 @@ public class ElasticSearchIndexService : BackgroundService
             {
                 while (_isStarted)
                 {
-                    await Task.Delay(10000);
+                    await Task.Delay(10000, stoppingToken);
                 }
                 await IndexAll(true);
             }, CacheNotifyAction.Any);
@@ -79,7 +79,7 @@ public class ElasticSearchIndexService : BackgroundService
                 return;
             }
 
-            await Task.Delay(10000);
+            await Task.Delay(10000, stoppingToken);
         }
 
         var service = scope.ServiceProvider.GetService<ElasticSearchService>();

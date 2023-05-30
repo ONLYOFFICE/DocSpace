@@ -4,6 +4,8 @@ import {
   findNearestIndex,
 } from "@docspace/common/components/MediaViewer/helpers";
 
+const FirstUrlKey = "isFirstUrl";
+
 class MediaViewerDataStore {
   filesStore;
   settingsStore;
@@ -48,6 +50,18 @@ class MediaViewerDataStore {
 
   setCurrentId = (id) => {
     this.id = id;
+  };
+
+  saveFirstUrl = (url) => {
+    localStorage.setItem(FirstUrlKey, url);
+  };
+
+  getFirstUrl = () => {
+    return localStorage.getItem(FirstUrlKey);
+  };
+
+  removeFirstUrl = () => {
+    localStorage.removeItem(FirstUrlKey);
   };
 
   changeUrl = (id) => {

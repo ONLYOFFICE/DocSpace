@@ -20,6 +20,9 @@ StyledPlusIcon.defaultProps = { theme: Base };
 const StyledTrashIcon = styled(TrashIcon)`
   ${commonIconsStyles}
   cursor: pointer;
+  path {
+    fill: ${(props) => props.theme.client.settings.trashIcon};
+  }
 `;
 
 const StyledInputWrapper = styled.div`
@@ -97,13 +100,13 @@ const UserFields = (props) => {
           let newInput1;
           let newInput2;
 
-          if (input.includes("-")) {
+          if (input?.includes("-")) {
             newInput1 = input.split("-")[0];
             newInput2 = input.split("-")[1];
           }
 
           const error = newInput2
-            ? input.split("-").length - 1 > 1 ||
+            ? input?.split("-").length - 1 > 1 ||
               !regexp.test(newInput1) ||
               !regexp.test(newInput2)
             : !regexp.test(input);

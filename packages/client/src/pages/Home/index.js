@@ -80,6 +80,7 @@ const PureHome = (props) => {
     files,
     selection,
     filesList,
+    removeFirstUrl,
 
     createFile,
     createFolder,
@@ -130,7 +131,9 @@ const PureHome = (props) => {
     if (isAccountsPage || isSettingsPage) return;
 
     if (!window.location.href.includes("#preview")) {
-      localStorage.removeItem("isFirstUrl");
+      // localStorage.removeItem("isFirstUrl");
+      // Media viewer
+      removeFirstUrl();
     }
 
     const categoryType = getCategoryType(location);
@@ -355,30 +358,44 @@ const PureHome = (props) => {
     switch (type) {
       case "move":
         if (qty > 1) {
-          return toastr.success(
-            <Trans t={t} i18nKey="MoveItems" ns="Files">
-              {{ qty }} elements has been moved
-            </Trans>
+          return (
+            toastr.success(
+              <Trans t={t} i18nKey="MoveItems" ns="Files">
+                {{ qty }} elements has been moved
+              </Trans>
+            ),
+            refreshFiles()
           );
         }
-        return toastr.success(
-          <Trans t={t} i18nKey="MoveItem" ns="Files">
-            {{ title }} moved
-          </Trans>
+        return (
+          toastr.success(
+            <Trans t={t} i18nKey="MoveItem" ns="Files">
+              {{ title }} moved
+            </Trans>
+          ),
+          refreshFiles()
         );
+
       case "duplicate":
         if (qty > 1) {
-          return toastr.success(
-            <Trans t={t} i18nKey="CopyItems" ns="Files">
-              {{ qty }} elements copied
-            </Trans>
+          return (
+            toastr.success(
+              <Trans t={t} i18nKey="CopyItems" ns="Files">
+                {{ qty }} elements copied
+              </Trans>
+            ),
+            refreshFiles()
           );
         }
-        return toastr.success(
-          <Trans t={t} i18nKey="CopyItem" ns="Files">
-            {{ title }} copied
-          </Trans>
+        return (
+          toastr.success(
+            <Trans t={t} i18nKey="CopyItem" ns="Files">
+              {{ title }} copied
+            </Trans>
+          ),
+          refreshFiles()
         );
+
       default:
         break;
     }
@@ -399,14 +416,6 @@ const PureHome = (props) => {
   React.useEffect(() => {
     if (isHeaderVisible !== prevProps.current.isHeaderVisible) {
       setHeaderVisible(isHeaderVisible);
-    }
-
-    if (isProgressFinished !== prevProps.current.isProgressFinished) {
-      if (!isAccountsPage && !isSettingsPage) {
-        setTimeout(() => {
-          refreshFiles();
-        }, 100);
-      }
     }
 
     if (
@@ -736,12 +745,8 @@ export default inject(
       setItemsSelectionTitle,
     } = secondaryProgressDataStore;
 
-    const {
-      setUploadPanelVisible,
-      startUpload,
-      uploaded,
-      converted,
-    } = uploadDataStore;
+    const { setUploadPanelVisible, startUpload, uploaded, converted } =
+      uploadDataStore;
 
     const { uploadEmptyFolders, onClickBack } = filesActionsStore;
 
@@ -750,7 +755,7 @@ export default inject(
       ? filesStore.selectionTitle
       : null;
 
-    const { setToPreviewFile, playlist } = mediaViewerDataStore;
+    const { setToPreviewFile, playlist, removeFirstUrl } = mediaViewerDataStore;
 
     const { settingsStore, currentTariffStatusStore } = auth;
 
@@ -835,6 +840,7 @@ export default inject(
       setToPreviewFile,
       setIsPreview,
       playlist,
+      removeFirstUrl,
 
       getFileInfo,
       gallerySelected,

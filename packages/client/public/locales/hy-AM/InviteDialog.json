@@ -4,11 +4,11 @@
   "AddManuallyDescriptionRoom": "Ավելացրեք DocSpace-ի առկա օգտատերերին սենյակին՝ օգտագործելով անունները կամ անձամբ հրավիրեք նոր օգտատերերի էլփոստի միջոցով",
   "EmailErrorMessage": "Էլփոստի հասցեն վավեր չէ: Դուք կարող եք խմբագրել էլփոստը՝ սեղմելով դրա վրա:",
   "InviteAccountSearchPlaceholder": "Հրավիրեք մարդկանց էլ փոստով",
+  "Invited": "Հրավիրված",
   "InviteRoomSearchPlaceholder": "Հրավիրեք մարդկանց անունով կամ էլ փոստով",
   "InviteViaLink": "Հրավիրեք հղման միջոցով",
   "InviteViaLinkDescriptionAccounts": "Ստեղծեք ունիվերսալ հղում DocSpace-ում ինքնալիազորման համար",
   "InviteViaLinkDescriptionRoom": "Ստեղծեք համընդհանուր հղում սենյակում ինքնալիազորման համար",
-  "Invited": "Հրավիրված",
   "LinkCopySuccess": "Հղումը պատճենվել է",
   "SendInvitation": "Ուղարկել հրավոր"
 }

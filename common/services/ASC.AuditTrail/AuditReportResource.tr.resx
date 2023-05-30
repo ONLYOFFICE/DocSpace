@@ -91,242 +91,8 @@
   <data name="BrowserCol" xml:space="preserve">
     <value>Tarayıcı</value>
   </data>
-  <data name="CaseAttachedFiles" xml:space="preserve">
-    <value>Olaylar [{0}].Eklenmiş Dosya:{1}</value>
-  </data>
-  <data name="CaseClosed" xml:space="preserve">
-    <value>Olay Kapandı:{0}</value>
-  </data>
-  <data name="CaseCreated" xml:space="preserve">
-    <value>Olay Oluşturuldu:{0}</value>
-  </data>
-  <data name="CaseCreatedHistoryEvent" xml:space="preserve">
-    <value>Olaylar [{0}].Geçmiş Etkinliği Yaratıldı:{1}</value>
-  </data>
-  <data name="CaseCreatedTag" xml:space="preserve">
-    <value>Olaylar [{0}].Etiket Oluşturuldu:{1}</value>
-  </data>
-  <data name="CaseDeleted" xml:space="preserve">
-    <value>Olay Silindi:{0}</value>
-  </data>
-  <data name="CaseDeletedHistoryEvent" xml:space="preserve">
-    <value>Olaylar [{0}].Geçmiş Etkinliği Silindi:{1}</value>
-  </data>
-  <data name="CaseDeletedTag" xml:space="preserve">
-    <value>Olaylar [{0}].Etiket Silindi:{1}</value>
-  </data>
-  <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Olaylar [{0}].Ayrılmış Dosya:{1}</value>
-  </data>
-  <data name="CaseLinkedCompany" xml:space="preserve">
-    <value>Olaylar [{0}].Bağlantılanmış şirket:{1}</value>
-  </data>
-  <data name="CaseLinkedPerson" xml:space="preserve">
-    <value>Olaylar [{0}].Kişi bağlantılandı:{1}</value>
-  </data>
-  <data name="CaseOpened" xml:space="preserve">
-    <value>Olay Açıldı:{0}</value>
-  </data>
-  <data name="CaseOpenedAccess" xml:space="preserve">
-    <value>Olaylar [{0}]. Erişim Açıldı</value>
-  </data>
-  <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>Olaylar [{0}]. Erişim Engellendi: {1}</value>
-  </data>
-  <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Olaylar. Etiket Oluşturuldu:{0} </value>
-  </data>
-  <data name="CasesDeleted" xml:space="preserve">
-    <value>Silinen Olaylar: {0}</value>
-  </data>
-  <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Olaylar. Etiket Silindi:{0} </value>
-  </data>
-  <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>CSV dosyasına Aktarılan Olaylar:{0} </value>
-  </data>
-  <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>CSV dosyasından Aktarılan Olaylar:{0} </value>
-  </data>
-  <data name="CasesModule" xml:space="preserve">
-    <value>Olaylar</value>
-  </data>
-  <data name="CaseUnlinkedCompany" xml:space="preserve">
-    <value>Olaylar [{0}].Bağlantısı kaldırılmış şirket:{1}</value>
-  </data>
-  <data name="CaseUnlinkedPerson" xml:space="preserve">
-    <value>Olaylar [{0}].Kişi bağlantısı kaldırıldı:{1}</value>
-  </data>
-  <data name="CaseUpdated" xml:space="preserve">
-    <value>Olay Güncellendi:{0}</value>
-  </data>
-  <data name="CaseUserFieldCreated" xml:space="preserve">
-    <value>Olay Kullanıcı Alanı Yaratıldı: {0}</value>
-  </data>
-  <data name="CaseUserFieldDeleted" xml:space="preserve">
-    <value>Olay Kullanıcı Alanı Silindi: {0}</value>
-  </data>
-  <data name="CaseUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Olay Kullanıcı Alanı Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="CaseUserFieldUpdated" xml:space="preserve">
-    <value>Olay Kullanıcı Alanı Güncellendi: {0}</value>
-  </data>
   <data name="ColorThemeChanged" xml:space="preserve">
     <value>Renk Teması Değiştirildi</value>
-  </data>
-  <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Genel Ayarlar</value>
-  </data>
-  <data name="CompaniesMerged" xml:space="preserve">
-    <value>Birleştirilen Şirketler: {0} - {1}</value>
-  </data>
-  <data name="CompaniesModule" xml:space="preserve">
-    <value>Şirketler</value>
-  </data>
-  <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Şirketler [{0}].Dosyalar Eklendi: {1}</value>
-  </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Şirket Oluşturuldu: {0}</value>
-  </data>
-  <data name="CompanyCreatedHistoryEvent" xml:space="preserve">
-    <value>Şirketler [{0}].Geçmiş Etkinliği Oluşturuldu: {1}</value>
-  </data>
-  <data name="CompanyCreatedPersonsTag" xml:space="preserve">
-    <value>Şirketler [{0}].Kişilerin Etiketi Oluşturuldu: {1}</value>
-  </data>
-  <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Şirketler [{0}]. Etiket Oluşturuldu: {1}</value>
-  </data>
-  <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Web Formuyla Şirket Oluşturuldu: {0}</value>
-  </data>
-  <data name="CompanyDeleted" xml:space="preserve">
-    <value>Şirket Silindi: {0}</value>
-  </data>
-  <data name="CompanyDeletedHistoryEvent" xml:space="preserve">
-    <value>Şirketler [{0}].Geçmiş Etkinliği Silindi: {1}</value>
-  </data>
-  <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Şirketler [{0}]. Etiket Silindi: {1}</value>
-  </data>
-  <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Şirketler [{0}].Dosya Ayrıldı: {1}</value>
-  </data>
-  <data name="CompanyLinkedPerson" xml:space="preserve">
-    <value>Şirketler [{0}].Kişi Bağlandı: {1}</value>
-  </data>
-  <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Şirketler [{0}]. Proje Bağlandı: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedPerson" xml:space="preserve">
-    <value>Şirketler [{0}].Kişi Bağlantısı Kaldırıldı: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Şirketler [{0}]. Proje Bağlantısı Kaldırıldı: {1}</value>
-  </data>
-  <data name="CompanyUpdated" xml:space="preserve">
-    <value>Şirket Güncellendi: {0}</value>
-  </data>
-  <data name="CompanyUpdatedPersonsTemperatureLevel" xml:space="preserve">
-    <value>Şirketler [{0}].Kişi Yakınlık Seviyesi Güncellendi</value>
-  </data>
-  <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Şirketler [{0}]. Resim Güncellendi</value>
-  </data>
-  <data name="CompanyUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Şirketler [{0}]. Müdür bilgisi güncellendi</value>
-  </data>
-  <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Şirketler [{0}]. Yakınlık derecesi güncellendi</value>
-  </data>
-  <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Şirket Kullanıcı Alanı Oluşturuldu: {0}</value>
-  </data>
-  <data name="CompanyUserFieldDeleted" xml:space="preserve">
-    <value>Şirket Kullanıcı Alanı Silindi: {0}</value>
-  </data>
-  <data name="CompanyUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Şirket Kullanıcı Alanları Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="CompanyUserFieldUpdated" xml:space="preserve">
-    <value>Şirket Kullanıcı Alanı Güncellendi: {0}</value>
-  </data>
-  <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Kişi Yöneticisi Postası Gönderildi</value>
-  </data>
-  <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Kişiler [{0}]. Görev Oluşturuldu: {1}</value>
-  </data>
-  <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Kişiler. Etiket Oluşturuldu: {0}</value>
-  </data>
-  <data name="ContactsDeleted" xml:space="preserve">
-    <value>Kişiler Silindi: {1}</value>
-  </data>
-  <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Kişiler. Etiket Silindi: {0}</value>
-  </data>
-  <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Kişiler CSV Dosyasına Aktarıldı: {1}</value>
-  </data>
-  <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Kişiler CSV Dosyasından Aktarıldı</value>
-  </data>
-  <data name="ContactsModule" xml:space="preserve">
-    <value>Kişiler</value>
-  </data>
-  <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Ayarlar</value>
-  </data>
-  <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Kişiler Etiket Ayarları Güncellendi</value>
-  </data>
-  <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Kişi Sıcaklık Düzeyi [{0}]. Seviye oluşturuldu: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Kişi Sıcaklık Düzeyi Silindi: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Kişi Sıcaklık Düzeyi Ayarları Güncellendi</value>
-  </data>
-  <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
-    <value>Kişi Sıcaklık Düzeyleri Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Kişi Sıcaklık Düzeyi Güncellendi: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Kişi Sıcaklık Düzeyi [{0}]. Renk Güncellendi</value>
-  </data>
-  <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Kişi Tipi Oluşturuldu: {0}</value>
-  </data>
-  <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Kişi Tipi Silindi: {0}</value>
-  </data>
-  <data name="ContactTypesModule" xml:space="preserve">
-    <value>Kişi Tipleri</value>
-  </data>
-  <data name="ContactTypesUpdatedOrder" xml:space="preserve">
-    <value>Kişi Tipleri Sıralaması Güncellendi: {0}</value>
-  </data>
-  <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Kişi Tipi Güncellendi: {0}</value>
-  </data>
-  <data name="ContactUserFieldCreated" xml:space="preserve">
-    <value>Kişi Kullanıcı Alanı Oluşturuldu: {0}</value>
-  </data>
-  <data name="ContactUserFieldDeleted" xml:space="preserve">
-    <value>Kişi Kullanıcı Alanı Silindi: {0}</value>
-  </data>
-  <data name="ContactUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Kişiler Kullanıcı Alanları Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="ContactUserFieldUpdated" xml:space="preserve">
-    <value>Kişi Kullanıcı Alanı Güncellendi: {0}</value>
   </data>
   <data name="CookieSettingsUpdated" xml:space="preserve">
     <value>Çerez Ayarları Güncellendi</value>
@@ -336,66 +102,6 @@
   </data>
   <data name="CreateActionType" xml:space="preserve">
     <value>Oluştur</value>
-  </data>
-  <data name="CrmAllDataExported" xml:space="preserve">
-    <value>Tüm Veriler Verildi</value>
-  </data>
-  <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Varsayılan Kur Güncellendi</value>
-  </data>
-  <data name="CrmProduct" xml:space="preserve">
-    <value>CRM</value>
-  </data>
-  <data name="CrmSmtpMailSent" xml:space="preserve">
-    <value>SMTP E-postası Gönderilen Kişiler: {0}</value>
-  </data>
-  <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>SMTP Ayarları Güncellendi</value>
-  </data>
-  <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
-    <value>CRM Görev Kategorileri Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryCreated" xml:space="preserve">
-    <value>CRM Görev Kategorisi Oluşturuldu: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryDeleted" xml:space="preserve">
-    <value>CRM Görev Kategorisi Silindi: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdated" xml:space="preserve">
-    <value>CRM Görev Kategorisi Güncellendi: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdatedIcon" xml:space="preserve">
-    <value>CRM Görev Kategorisi İkonu Güncellendi: {0}</value>
-  </data>
-  <data name="CrmTaskClosed" xml:space="preserve">
-    <value>CRM Görevi Kapatıldı: {0}</value>
-  </data>
-  <data name="CrmTaskCreated" xml:space="preserve">
-    <value>CRM Görevi Oluşturuldu: {0}</value>
-  </data>
-  <data name="CrmTaskDeleted" xml:space="preserve">
-    <value>CRM Görev Silindi: {0}</value>
-  </data>
-  <data name="CrmTaskOpened" xml:space="preserve">
-    <value>CRM Görev Açıldı: {0}</value>
-  </data>
-  <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>CRM Görevler CSV Dosyasına Aktarıldı: {0}</value>
-  </data>
-  <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM Görevler CSV Dosyasından Aktarıldı: {0}</value>
-  </data>
-  <data name="CrmTasksModule" xml:space="preserve">
-    <value>CRM Görevler</value>
-  </data>
-  <data name="CrmTaskUpdated" xml:space="preserve">
-    <value>CRM Görevler Güncellendi: {0}</value>
-  </data>
-  <data name="CrmTestMailSent" xml:space="preserve">
-    <value>Test Postası Gönderildi</value>
-  </data>
-  <data name="CurrencyRateUpdated" xml:space="preserve">
-    <value>Kur Oranı Güncellendi: {0} - {1}</value>
   </data>
   <data name="DateCol" xml:space="preserve">
     <value>Tarih</value>
@@ -408,36 +114,6 @@
   </data>
   <data name="DetachActionType" xml:space="preserve">
     <value>Ayır</value>
-  </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışmalar[{1}]. Dosya Eklendi: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışmalar[{1}]. Yorum Oluşturuldu</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışmalar[{1}]. Yorum Silindi</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışmalar[{1}]. Yorum Güncellendi</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışma Oluşturuldu: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışma Silindi: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışmalar[{1}]. Dosya Ayrıldı: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Tartışmalar</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışma Güncellendi: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışma Takibi Güncellendi: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS Ayarları Güncellendi</value>
@@ -533,7 +209,7 @@
     <value>Dosya Kilidi Kaldırıldı: {0}</value>
   </data>
   <data name="FileUpdated" xml:space="preserve">
-    <value>Dosya Güncellendi:{0} </value>
+    <value>Dosya Güncellendi: {0}</value>
   </data>
   <data name="FileUpdatedAccess" xml:space="preserve">
     <value>Dosyalar[{0}].Erişim Güncellendi</value>
@@ -613,74 +289,8 @@
   <data name="GuestImported" xml:space="preserve">
     <value>Misafir Aktarıldı: {0}</value>
   </data>
-  <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Geçmiş Etkinlik Kategorileri.Sıralama Güncellendi: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Geçmiş Etkinlik Kategorisi Oluşturuldu: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>Geçmiş Etkinlik Kategorisi Silindi: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>Geçmiş Etkinlik Kategorisi Güncellendi: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>Geçmiş Etkinlik Kategorileri [{0}].İkon Güncellendi</value>
-  </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Aktar</value>
-  </data>
-  <data name="InvoiceCreated" xml:space="preserve">
-    <value>Fatura Oluşturuldu: {0}</value>
-  </data>
-  <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Fatura Varsayılan Koşullar Güncellendi</value>
-  </data>
-  <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Fatura Silindi: {0}</value>
-  </data>
-  <data name="InvoiceDownloaded" xml:space="preserve">
-    <value>Fatura İndirildi: {0}</value>
-  </data>
-  <data name="InvoiceItemCreated" xml:space="preserve">
-    <value>Fatura Ögesi Oluşturuldu: {0}</value>
-  </data>
-  <data name="InvoiceItemDeleted" xml:space="preserve">
-    <value>Fatura Ögesi Silindi: {0}</value>
-  </data>
-  <data name="InvoiceItemsDeleted" xml:space="preserve">
-    <value>Fatura Ögeleri Silindi: {0}</value>
-  </data>
-  <data name="InvoiceItemUpdated" xml:space="preserve">
-    <value>Fatura Ögesi Güncellendi: {0}</value>
-  </data>
-  <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Fatura Numara Formatı Güncellendi</value>
-  </data>
-  <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Faturalar Silindi: {1}</value>
-  </data>
-  <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Fatura Ayarları</value>
-  </data>
-  <data name="InvoicesModule" xml:space="preserve">
-    <value>Faturalar</value>
-  </data>
-  <data name="InvoicesUpdatedStatus" xml:space="preserve">
-    <value>Faturalar [{0}].Durum Güncellendi:{1}</value>
-  </data>
-  <data name="InvoiceTaxCreated" xml:space="preserve">
-    <value>Fatura Vergisi Oluşturuldu: {0}</value>
-  </data>
-  <data name="InvoiceTaxDeleted" xml:space="preserve">
-    <value>Fatura Vergisi Silindi: {0}</value>
-  </data>
-  <data name="InvoiceTaxUpdated" xml:space="preserve">
-    <value>Fatura Vergisi Güncellendi: {0}</value>
-  </data>
-  <data name="InvoiceUpdated" xml:space="preserve">
-    <value>Fatura Güncellendi: {0}</value>
   </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
@@ -740,7 +350,7 @@
     <value>API ile başarılı giriş</value>
   </data>
   <data name="LoginSuccessViaApiSms" xml:space="preserve">
-    <value>API &amp; SMS Kodu ile başarılı giriş </value>
+    <value>API &amp; SMS Kodu ile başarılı giriş</value>
   </data>
   <data name="LoginSuccessViaSms" xml:space="preserve">
     <value>SMS'le giriş başarılı</value>
@@ -757,131 +367,11 @@
   <data name="MailServiceSettingsUpdated" xml:space="preserve">
     <value>E-posta Hizmeti Ayarları Güncellendi</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projeler[{0}]. Kilometre Taşı Oluşturuldu: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projeler[{0}]. Kilometre Taşı Silindi: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>kilometre taşları</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projeler[{0}]. Kilometre Taşı Güncellendi: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projeler[{0}]. Kilometre Taşları [{1}].Durum Güncellendi: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Modül</value>
   </data>
   <data name="MoveActionType" xml:space="preserve">
     <value>Taşı</value>
-  </data>
-  <data name="OpportunitiesCreatedTag" xml:space="preserve">
-    <value>Fırsatlar. Etiket Oluşturuldu: {0}</value>
-  </data>
-  <data name="OpportunitiesDeleted" xml:space="preserve">
-    <value>Fırsatlar Silindi: {0}</value>
-  </data>
-  <data name="OpportunitiesDeletedTag" xml:space="preserve">
-    <value>Fırsatlar. Etiket Silindi: {0}</value>
-  </data>
-  <data name="OpportunitiesExportedToCsv" xml:space="preserve">
-    <value>Fırsatlar CSV Dosyasına Aktarıldı: {0}</value>
-  </data>
-  <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Fırsatlar CSV Dosyasından Aktarıldı</value>
-  </data>
-  <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Fırsatlar</value>
-  </data>
-  <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Fırsatlar [{0}].Dosya Eklendi: {1}</value>
-  </data>
-  <data name="OpportunityCreated" xml:space="preserve">
-    <value>Fırsat Oluşturuldu:{0}</value>
-  </data>
-  <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Fırsatlar [{0}].Geçmiş Etkinliği Oluşturuldu: {1}</value>
-  </data>
-  <data name="OpportunityCreatedTag" xml:space="preserve">
-    <value>Fırsatlar [{0}].Etiket Oluşturuldu: {1}</value>
-  </data>
-  <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Fırsat Silindi:{0}</value>
-  </data>
-  <data name="OpportunityDeletedHistoryEvent" xml:space="preserve">
-    <value>Fırsatlar [{0}].Geçmiş Etkinliği Silindi: {1}</value>
-  </data>
-  <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Fırsatlar [{0}].Etiket Silindi: {1}</value>
-  </data>
-  <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Fırsatlar [{0}].Dosya Ayrıldı: {1}</value>
-  </data>
-  <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Fırsatlar [{0}].Şirket Bağlandı: {1}</value>
-  </data>
-  <data name="OpportunityLinkedPerson" xml:space="preserve">
-    <value>Fırsatlar [{0}].Kişi Bağlandı: {1}</value>
-  </data>
-  <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Fırsatlar [{0}].Erişim Açıldı</value>
-  </data>
-  <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Fırsatlar [{0}].Erişim Engellendi: {1}</value>
-  </data>
-  <data name="OpportunityStageCreated" xml:space="preserve">
-    <value>Fırsat Zemini Oluşturuldu: {0}</value>
-  </data>
-  <data name="OpportunityStageDeleted" xml:space="preserve">
-    <value>Fırsat Zemini Silindi: {0}</value>
-  </data>
-  <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
-    <value>Fırsat Zeminleri Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdated" xml:space="preserve">
-    <value>Fırsat Zemini Güncellendi: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Fırsat Zemin Rengi Güncellendi: {0}</value>
-  </data>
-  <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Fırsatlar [{0}].Şirket Bağlantısı Kaldırıldı: {1}</value>
-  </data>
-  <data name="OpportunityUnlinkedPerson" xml:space="preserve">
-    <value>Fırsatlar [{0}].Kişi Bağlantısı Kaldırıldı: {1}</value>
-  </data>
-  <data name="OpportunityUpdated" xml:space="preserve">
-    <value>Fırsat Güncellendi: {0}</value>
-  </data>
-  <data name="OpportunityUpdatedStage" xml:space="preserve">
-    <value>Fırsat Zemini Güncellendi: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldCreated" xml:space="preserve">
-    <value>Fırsat Kullanıcı Alanı Oluşturuldu: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldDeleted" xml:space="preserve">
-    <value>Fırsat Kullanıcı Alanı Silindi: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Fırsat Kullanıcı Alanları Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldUpdated" xml:space="preserve">
-    <value>Fırsat Kullanıcı Alanı Güncellendi: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Organizasyon Profili. Adres Güncellendi</value>
-  </data>
-  <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Organizasyon Profili. Şirket İsmi Güncellendi: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Organizasyon Profili. Fatura Logosu Güncellendi</value>
-  </data>
-  <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Diğer Ayarlar</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
     <value>Diğerleri</value>
@@ -906,78 +396,6 @@
   </data>
   <data name="PeopleProduct" xml:space="preserve">
     <value>İnsanlar</value>
-  </data>
-  <data name="PersonAttachedFiles" xml:space="preserve">
-    <value>Kişiler [{0}].Dosya Eklendi: {1}</value>
-  </data>
-  <data name="PersonCreated" xml:space="preserve">
-    <value>Kişi Oluşturuldu: {0}</value>
-  </data>
-  <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Kişiler [{0}].Şirket Etiketi Oluşturuldu: {1}</value>
-  </data>
-  <data name="PersonCreatedHistoryEvent" xml:space="preserve">
-    <value>Kişiler [{0}].Geçmiş Etkinliği Oluşturuldu: {1}</value>
-  </data>
-  <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Kişiler [{0}].Etiket Oluşturuldu: {1}</value>
-  </data>
-  <data name="PersonCreatedWithWebForm" xml:space="preserve">
-    <value>Web formuyla kişi oluşturuldu: {0}</value>
-  </data>
-  <data name="PersonDeleted" xml:space="preserve">
-    <value>Kişi Silindi: {0}</value>
-  </data>
-  <data name="PersonDeletedHistoryEvent" xml:space="preserve">
-    <value>Kişiler [{0}].Geçmiş Etkinliği Silindi: {1}</value>
-  </data>
-  <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Kişiler [{0}].Etiket Silindi: {1}</value>
-  </data>
-  <data name="PersonDetachedFile" xml:space="preserve">
-    <value>Kişiler [{0}].Dosya Ayrıldı: {1}</value>
-  </data>
-  <data name="PersonLinkedProject" xml:space="preserve">
-    <value>Kişiler [{0}].Proje Bağlandı: {1}</value>
-  </data>
-  <data name="PersonsCreated" xml:space="preserve">
-    <value>Kişiler Oluşturuldu: {0}</value>
-  </data>
-  <data name="PersonsMerged" xml:space="preserve">
-    <value>Kişiler Birleştirildi: {0} - {1}</value>
-  </data>
-  <data name="PersonsModule" xml:space="preserve">
-    <value>Kişiler</value>
-  </data>
-  <data name="PersonUnlinkedProject" xml:space="preserve">
-    <value>Kişiler [{0}].Proje Bağlantısı Kaldırıldı: {1}</value>
-  </data>
-  <data name="PersonUpdated" xml:space="preserve">
-    <value>Kişi Güncellendi: {0}</value>
-  </data>
-  <data name="PersonUpdatedCompanyTemperatureLevel" xml:space="preserve">
-    <value>Kişiler [{0}].Şirket Sıcaklık Düzeyi Güncellendi</value>
-  </data>
-  <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Kişiler [{0}].Fotoğraf Güncellendi</value>
-  </data>
-  <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Kişiler [{0}].Müdür Bilgisi Güncellendi</value>
-  </data>
-  <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Kişiler [{0}].Sıcaklık Düzeyi Güncellendi</value>
-  </data>
-  <data name="PersonUserFieldCreated" xml:space="preserve">
-    <value>Kişi Kullanıcı Alanı Oluşturuldu: {0}</value>
-  </data>
-  <data name="PersonUserFieldDeleted" xml:space="preserve">
-    <value>Kişi Kullanıcı Alanı Silindi: {0}</value>
-  </data>
-  <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Kişi Kullanıcı Alanları Sırası Güncellendi: {0}</value>
-  </data>
-  <data name="PersonUserFieldUpdated" xml:space="preserve">
-    <value>Kişi Kullanıcı Alanı Güncellendi: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
     <value>Platform</value>
@@ -1018,86 +436,8 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Ürünler</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Proje Oluşturuldu: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Şablonlar [{0}].Proje Oluşturuldu: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Proje Silindi: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projeler[{0}]. Üye Silindi: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Proje Takip Edildi: {0}</value>
-  </data>
-  <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Projeler[{0}]. Şirket Bağlandı: {1}</value>
-  </data>
-  <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Projeler[{0}]. Kişiler Bağlandı: {1}</value>
-  </data>
-  <data name="ProjectLinkedPerson" xml:space="preserve">
-    <value>Projeler[{0}]. Kişi Bağlandı: {1}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Basecamp'ten Aktarılan Projeler: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projeler</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projeler</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Ayarlar</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Proje Şablonu Oluşturuldu: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Proje Şablonu Silindi: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Proje Şablonu Güncellendi: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Proje Takip Edilmiyor: {0}</value>
-  </data>
-  <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Projeler[{0}]. Şirket Bağlantısı Kaldırıldı: {1}</value>
-  </data>
-  <data name="ProjectUnlinkedPerson" xml:space="preserve">
-    <value>Projeler[{0}]. Kişi Bağlantısı Kaldırıldı: {1}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Proje Güncellendi: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projeler[{0}]. Üyeler [{1}].Erişim Hakları Güncellendi</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projeler[{0}]. Durum Güncellendi: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projeler[{0}]. Ekip Güncellendi: {1}</value>
-  </data>
   <data name="ReassignsActionType" xml:space="preserve">
     <value>Yeniden atamalar</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Raporlar</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Proje Rapor Şablonu Oluşturuldu: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Proje Rapor Şablonu Silindi: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Proje Rapor Şablonu Güncellendi: {0}</value>
   </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Gönder</value>
@@ -1126,92 +466,20 @@
   <data name="StartTransferSetting" xml:space="preserve">
     <value>Portal bölge göçünü başlat</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Altgörev Oluşturuldu: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Altgörev Silindi: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Altgörev Güncellendi: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Altgörevler [{2}]. Durum Güncellendi: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Sistem Hesabı</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Dosya Eklendi: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Yorum Oluşturuldu</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Yorum Silindi</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Yorum Güncellendi</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projeler[{0}]. Görev Oluşturuldu: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projeler[{0}]. Tartışmalar[{1}]. Görev Oluşturuldu: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projeler[{0}]. Görev Silindi: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projeler[{0}]. Görev:{1}. Dosya Ayrıldı: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projeler[{0}]. Kilometre Taşları [{1}].Görev Taşındı: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projeler[{0}]. Bağlanan Görevler: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Görevler</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projeler[{0}]. Bağlantısı Kaldırılan Görevler: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Görev Süresi Oluşturuldu: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Görev Süreleri Silindi: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Görev Süreleri [{0}]. Durum Güncellendi: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Görev Süresi Güncellendi: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Kilometre Taşlarıyla Bağlantısı Kaldırıldı</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projeler[{0}]. Görev Güncellendi: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projeler[{0}]. Görev Takibi Güncellendi: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projeler[{0}]. Görevler[{1}].Durum Güncellendi: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Ekip Şablonu Değiştirildi</value>
   </data>
   <data name="ThirdPartyCreated" xml:space="preserve">
-    <value>Üçüncü Kişi Oluşturuldu:{0}. Sağlayıcı: {1} </value>
+    <value>Üçüncü Kişi Oluşturuldu:{0}. Sağlayıcı: {1}</value>
   </data>
   <data name="ThirdPartyDeleted" xml:space="preserve">
-    <value>Üçüncü Kişi Silindi:{0}. Sağlayıcı: {1} </value>
+    <value>Üçüncü Kişi Silindi:{0}. Sağlayıcı: {1}</value>
   </data>
   <data name="ThirdPartyUpdated" xml:space="preserve">
-    <value>Üçüncü Kişi Güncellendi:{0}. Sağlayıcı: {1} </value>
+    <value>Üçüncü Kişi Güncellendi:{0}. Sağlayıcı: {1}</value>
   </data>
   <data name="TimeTrackingModule" xml:space="preserve">
     <value>Süre Takibi</value>
@@ -1295,7 +563,7 @@
     <value>Kullanıcılar</value>
   </data>
   <data name="UsersSentActivationInstructions" xml:space="preserve">
-    <value>Kullanıcılar [{0}]. Aktivasyon Kılavuzu Gönderildi </value>
+    <value>Kullanıcılar [{0}]. Aktivasyon Kılavuzu Gönderildi</value>
   </data>
   <data name="UsersUpdatedStatus" xml:space="preserve">
     <value>Kullanıcılar [{0}]. Güncellenmiş Durum</value>
@@ -1321,7 +589,61 @@
   <data name="UserUpdatedPassword" xml:space="preserve">
     <value>Şifre Güncellendi</value>
   </data>
-  <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>İnternet Sitesi İletişim Formu Anahtar Güncellendi</value>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Oda oluşturuldu</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Odalar</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Çökp kutusu boşaltıldı</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Eklenen etiketler: [{1}]</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Silinen etiketler: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Oda arşivlendi</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Kullanıcı eklendi: {0}. Rol: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Oda silindi</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Bağlantı oluşturuldu. Rol: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Bağlantı silindi</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Bağlantı güncellendi. Rol: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logo oluşturuldu</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logo silindi</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Silinen kullanıcı: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Odanın adı değiştirildi: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Oda arşivden çıkarıldı</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} atandı: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Etiket oluşturuldu: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Etiketler silindi: {0}</value>
   </data>
 </root>

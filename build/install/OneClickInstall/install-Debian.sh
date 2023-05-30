@@ -5,7 +5,8 @@ set -e
 package_sysname="onlyoffice";
 DS_COMMON_NAME="onlyoffice";
 product="docspace"
-GIT_BRANCH="develop"
+GIT_BRANCH="master"
+INSTALLATION_TYPE="ENTERPRISE"
 RES_APP_INSTALLED="is already installed";
 RES_APP_CHECK_PORTS="uses ports"
 RES_CHECK_PORTS="please, make sure that the ports are free.";
@@ -18,6 +19,27 @@ while [ "$1" != "" ]; do
 		-u | --update )
 			if [ "$2" != "" ]; then
 				UPDATE=$2
+				shift
+			fi
+		;;
+
+		-je | --jwtenabled )
+			if [ "$2" != "" ]; then
+				DS_JWT_ENABLED=$2
+				shift
+			fi
+		;;
+
+		-jh | --jwtheader )
+			if [ "$2" != "" ]; then
+				DS_JWT_HEADER=$2
+				shift
+			fi
+		;;
+
+		-js | --jwtsecret )
+			if [ "$2" != "" ]; then
+				DS_JWT_SECRET=$2
 				shift
 			fi
 		;;
@@ -44,12 +66,23 @@ while [ "$1" != "" ]; do
 			fi
 		;;
 
+		-it | --installation_type )
+			if [ "$2" != "" ]; then
+				INSTALLATION_TYPE=$(echo "$2" | awk '{print toupper($0)}');
+				shift
+			fi
+		;;
+
 		-? | -h | --help )
 			echo "  Usage $0 [PARAMETER] [[PARAMETER], ...]"
 			echo "    Parameters:"
-			echo "      -it, --installation_type          installation type (COMMUNITY|ENTERPRISE|DEVELOPER)"
+			echo "      -it, --installation_type          installation type (community|enterprise)"
 			echo "      -u, --update                      use to update existing components (true|false)"
-			echo "      -ls, --local_scripts			  use 'true' to run local scripts (true|false)"
+			echo "      -je, --jwtenabled                 specifies the enabling the JWT validation (true|false)"
+			echo "      -jh, --jwtheader                  defines the http header that will be used to send the JWT"
+			echo "      -js, --jwtsecret                  defines the secret key to validate the JWT in the request"
+			echo "      -ls, --local_scripts              use 'true' to run local scripts (true|false)"
+			echo "      -skiphc, --skiphardwarecheck      use to skip hardware check (true|false)"
 			echo "      -?, -h, --help                    this help"
 			echo
 			exit 0
@@ -86,7 +119,6 @@ fi
 # add onlyoffice repo
 mkdir -p -m 700 $HOME/.gnupg
 echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://download.onlyoffice.com/repo/debian squeeze main" | tee /etc/apt/sources.list.d/onlyoffice.list
-echo "deb [signed-by=/usr/share/keyrings/onlyoffice.gpg] http://static.teamlab.info.s3.amazonaws.com/repo/4testing/debian stable main" | sudo tee /etc/apt/sources.list.d/onlyoffice4testing.list
 curl -fsSL https://download.onlyoffice.com/GPG-KEY-ONLYOFFICE | gpg --no-default-keyring --keyring gnupg-ring:/usr/share/keyrings/onlyoffice.gpg --import
 chmod 644 /usr/share/keyrings/onlyoffice.gpg
 

@@ -71,7 +71,7 @@
     <value>Fayllar {0} .tar.gz faylına {1} sıxılacaq</value>
   </data>
   <data name="FilesWillBeCompressedZip" xml:space="preserve">
-    <value> Fayllar  {0}.zip faylına{1} sıxılacaq</value>
+    <value>Fayllar  {0}.zip faylına{1} sıxılacaq</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
     <value>Sənədlərim</value>
@@ -93,5 +93,8 @@
   </data>
   <data name="VirtualRooms" xml:space="preserve">
     <value>Otaqlar</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Şəxsi</value>
   </data>
 </root>

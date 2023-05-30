@@ -72,6 +72,7 @@ const Badges = ({
   onUnpinClick,
   isMutedBadge,
   isArchiveFolderRoot,
+  isVisitor,
 }) => {
   const {
     id,
@@ -146,7 +147,7 @@ const Badges = ({
 
   return fileExst ? (
     <div className="badges additional-badges">
-      {isEditing && (
+      {isEditing && !isVisitor && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           isEditing={isEditing}

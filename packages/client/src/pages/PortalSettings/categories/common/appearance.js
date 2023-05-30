@@ -15,7 +15,7 @@ import DropDownItem from "@docspace/components/drop-down-item";
 import DropDownContainer from "@docspace/components/drop-down";
 
 import HexColorPickerComponent from "./sub-components/hexColorPicker";
-import { isMobileOnly } from "react-device-detect";
+import { isMobileOnly, isDesktop } from "react-device-detect";
 
 import Loader from "./sub-components/loaderAppearance";
 
@@ -72,7 +72,7 @@ const Appearance = (props) => {
   const [changeCurrentColorButtons, setChangeCurrentColorButtons] =
     useState(false);
 
-  const [viewMobile, setViewMobile] = useState(false);
+  const [isSmallWindow, setIsSmallWindow] = useState(false);
 
   const [showSaveButtonDialog, setShowSaveButtonDialog] = useState(false);
 
@@ -285,10 +285,10 @@ const Appearance = (props) => {
   );
 
   const onCheckView = () => {
-    if (isMobileOnly || window.innerWidth < 600) {
-      setViewMobile(true);
+    if (isDesktop && window.innerWidth < 600) {
+      setIsSmallWindow(true);
     } else {
-      setViewMobile(false);
+      setIsSmallWindow(false);
     }
   };
 
@@ -462,6 +462,7 @@ const Appearance = (props) => {
     }
 
     setCurrentColorAccent(appliedColorAccent);
+    saveToSessionStorage("selectColorAccent", appliedColorAccent);
 
     setOpenHexColorPickerAccent(false);
   }, [
@@ -587,7 +588,6 @@ const Appearance = (props) => {
           onAppliedColor={onAppliedColorButtons}
           color={appliedColorButtons}
           setColor={setAppliedColorButtons}
-          viewMobile={viewMobile}
         />
       </DropDownItem>
     </DropDownContainer>
@@ -601,7 +601,6 @@ const Appearance = (props) => {
       isDefaultMode={false}
       open={openHexColorPickerAccent}
       clickOutsideAction={onCloseHexColorPickerAccent}
-      viewMobile={viewMobile}
     >
       <DropDownItem className="drop-down-item-hex">
         <HexColorPickerComponent
@@ -610,7 +609,6 @@ const Appearance = (props) => {
           onAppliedColor={onAppliedColorAccent}
           color={appliedColorAccent}
           setColor={setAppliedColorAccent}
-          viewMobile={viewMobile}
         />
       </DropDownItem>
     </DropDownContainer>
@@ -624,9 +622,14 @@ const Appearance = (props) => {
     );
   };
 
-  return viewMobile ? (
-    <BreakpointWarning sectionName={t("Settings:Appearance")} />
-  ) : !tReady ? (
+  if (isSmallWindow)
+    return (
+      <BreakpointWarning sectionName={t("Settings:Appearance")} isSmallWindow />
+    );
+  if (isMobileOnly)
+    return <BreakpointWarning sectionName={t("Settings:Appearance")} />;
+
+  return !tReady ? (
     <Loader />
   ) : (
     <>
@@ -719,7 +722,7 @@ const Appearance = (props) => {
           visible={showColorSchemeDialog}
           onClose={onCloseColorSchemeDialog}
           header={headerColorSchemeDialog}
-          viewMobile={viewMobile}
+          viewMobile={isMobileOnly}
           openHexColorPickerButtons={openHexColorPickerButtons}
           openHexColorPickerAccent={openHexColorPickerAccent}
           showSaveButtonDialog={showSaveButtonDialog}

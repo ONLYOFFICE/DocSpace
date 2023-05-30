@@ -256,6 +256,9 @@ const Section = (props) => {
                     icon={secondaryProgressBarIcon}
                     percent={secondaryProgressBarValue}
                     alert={showSecondaryButtonAlert}
+                    showTwoProgress={
+                      showPrimaryProgressBar && showSecondaryProgressBar
+                    }
                   />
                 </>
               ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (
