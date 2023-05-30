@@ -68,24 +68,6 @@ const SelectionPanelBody = ({
           <div className="selection-panel_body">
             <div className="selection-panel_tree-body">
               {isLoaded ? (
-                <Text
-                  fontWeight="700"
-                  fontSize="18px"
-                  className="selection-panel_folder-title"
-                >
-                  {t("Common:Rooms")}
-                </Text>
-              ) : (
-                <div className="selection-panel_folder-title">
-                  <Loaders.Rectangle
-                    className="selection-panel_header-loader"
-                    width="83px"
-                    height="24px"
-                  />
-                </div>
-              )}
-
-              {isLoaded ? (
                 <FolderTreeBody
                   selectionFiles={selectionFiles}
                   folderTree={resultingFolderTree}
@@ -108,7 +90,13 @@ const SelectionPanelBody = ({
                 <div className="selection-panel_files-header">
                   {header}
 
-                  <Text color="#A3A9AE" className="selection-panel_title">
+                  <Text
+                    color="#A3A9AE"
+                    className="selection-panel_title"
+                    fontSize="12px"
+                    fontWeight={600}
+                    noSelect
+                  >
                     {folderSelection
                       ? t("FolderContents", { folderTitle })
                       : filesListTitle}

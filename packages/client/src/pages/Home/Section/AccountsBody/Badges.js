@@ -3,13 +3,15 @@ import { inject, observer } from "mobx-react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
 
-import { PaymentsType } from "@docspace/common/constants";
+import { PaymentsType, AccountLoginType } from "@docspace/common/constants";
 
 import Badge from "@docspace/components/badge";
 import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
 import SendClockIcon from "PUBLIC_DIR/images/send.clock.react.svg";
 import CatalogSpamIcon from "PUBLIC_DIR/images/catalog.spam.react.svg";
+
+import { SSO_LABEL } from "SRC_DIR/helpers/constants";
 
 const StyledBadgesContainer = styled.div`
   height: 100%;
@@ -43,19 +45,36 @@ const Badges = ({
   isPaid = false,
   filter,
   getUsersList,
+  isSSO = false,
 }) => {
   const onClickPaid = () => {
     if (filter.payments === PaymentsType.Paid) return;
-
     const newFilter = filter.clone();
-
     newFilter.payments = PaymentsType.Paid;
+    getUsersList(newFilter, true);
+  };
 
+  const onClickSSO = () => {
+    if (filter.accountLoginType === AccountLoginType.SSO) return;
+    const newFilter = filter.clone();
+    newFilter.accountLoginType = AccountLoginType.SSO;
     getUsersList(newFilter, true);
   };
 
   return (
     <StyledBadgesContainer className="badges additional-badges">
+      {isSSO && (
+        <Badge
+          label={SSO_LABEL}
+          color={"#FFFFFF"}
+          backgroundColor="#22C386"
+          fontSize={"9px"}
+          fontWeight={800}
+          noHover
+          lineHeight={"13px"}
+          onClick={onClickSSO}
+        />
+      )}
       {!withoutPaid && isPaid && (
         <StyledPaidBadge
           className="paid-badge"

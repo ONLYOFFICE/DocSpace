@@ -1380,6 +1380,7 @@ class UploadDataStore {
   ) => {
     const { setSecondaryProgressBarData, clearSecondaryProgressData } =
       this.secondaryProgressDataStore;
+    const { refreshFiles, setMovingInProgress } = this.filesStore;
 
     return moveToFolder(
       destFolderId,
@@ -1419,6 +1420,9 @@ class UploadDataStore {
         this.clearActiveOperations(fileIds, folderIds);
         setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
         return Promise.reject(err);
+      })
+      .finally(() => {
+        refreshFiles().then(() => setMovingInProgress(false));
       });
   };
 

@@ -165,4 +165,13 @@ La eliminación de datos personales permitió liberar:
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Se ha registrado un nuevo portal</value>
   </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>¿Desea cambiar la contraseña de su cuenta de la oficina en la nube? Haga clic en el botón de abajo para confirmar.
+
+$GreenButton
+
+El enlace es válido durante 7 días.
+
+¿No desea cambiar su contraseña? Simplemente ignore este mensaje.</value>
+  </data>
 </root>

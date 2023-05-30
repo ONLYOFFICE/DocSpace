@@ -271,4 +271,229 @@
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Ο αριθμός των διαχειριστών/χρηστών ισχύο:</value>
   </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>Selectel authUser</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>σύνδεση</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Να επιτρέπεται στην εφαρμογή η αυθεντικοποίηση δύο παραγόντων μέσω Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Επιτρέψτε στην εφαρμογή να υπογράφει ψηφιακά τα έγγραφα σας με το DocuSign.</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Να επιτρέπεται στην εφαρμογή να διαχειρίζεται αρχεία και φακέλους του Dropbox.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Κλειδί εφαρμογής</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Κλειδί εξυπηρετητή</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID Αποστολέα</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID Έργου</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Συνθηματικό πρόσβασης στον αποθηκευτικό χώρο</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Να επιτρέπεται στην εφαρμογή να διαχειρίζεται αρχεία και φακέλους του OneDrive.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Να επιτρέπεται στην εφαρμογή η αυθεντικοποίηση δύο παραγόντων μέσω του Κέντρου SMS.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Αριθμός τηλεφώνου από το Twilio (απαραίτητο για εξουσιοδότηση SMS)</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Να επιτρέπεται στην εφαρμογή να δημοσιεύει έγγραφα απευθείας στο WordPress.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Να επιτρέπεται στην εφαρμογή η εισαγωγή χρηστών από την υπηρεσία Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Άγνωστος τύπος αρχείου εικόνας</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Το μέγεθος της εικόνας ξεπερνά τις επιτρεπόμενες παραμέτρους</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>χωρίς κενά</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>μόνο λατινικοί χαρακτήρες</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>Όνομα</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>Επώνυμο</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>Σφάλμα σύνδεσης</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>Οι χρήστες δεν ήταν δυνατόν να δημιουργηθούν, τα δεδομένα που ελήφθησαν είναι εσφαλμένα.</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>Ο εξυπηρετητής δεν μπόρεσε να λάβει ρυθμίσεις.</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>Λανθασμένη σύνδεση ή συνθηματικό.</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>Καμία ομάδα δεν μπόρεσε να βρεθεί.</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>Επιχειρήσατε να αφαιρέσετε διαχειριστικά δικαιώματα από τον εαυτό σας. Τα διαχειριστικά σας δικαιώματα δεν επηρεάστηκαν.</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>Άγνωστο σφάλμα.</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>Δε βρέθηκαν χρήστες.</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>Εσωτερικό σφάλμα εξυοηρετητή.</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>προσθήκη χρήστη</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>Επαλήθευση πιστοποιητικού</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>Γίνεται έλεγχος των ρυθμίσεων για υποστήριξη του LDAP</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP αποσυνδέεται</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>Ορισμός χρήστη {0} ως {1} διαχειριστή</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>αφαίρεση χρήστη</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>Αποθήκευση ομάδων</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>Αποθήκευση ρυθμίσεων</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>Αποθήκευση φωτογραφίας</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>Αποθήκευση χρηστών</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>Συγχρονισμός χρηστών</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>Ενημέρωση δικαιωμάτων πρόσβασης χρηστών</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>Ενημέρωση φωτογραφιών χρηστών</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Κλειδί DropBox</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>Linkedin ID</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID Εφαρμογής</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>Κέντρο SMS</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Σύνδεση</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Συνθηματικό</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Επαγγελματικό</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Βασικό</value>
+  </data>
 </root>

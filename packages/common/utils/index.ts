@@ -192,8 +192,8 @@ export function getCookie(name) {
   let matches = document.cookie.match(
     new RegExp(
       "(?:^|; )" +
-      name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
-      "=([^;]*)"
+        name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, "\\$1") +
+        "=([^;]*)"
     )
   );
   return matches ? decodeURIComponent(matches[1]) : undefined;
@@ -364,7 +364,7 @@ export function isElementInViewport(el) {
     rect.top >= 0 &&
     rect.left >= 0 &&
     rect.bottom <=
-    (window.innerHeight || document.documentElement.clientHeight) &&
+      (window.innerHeight || document.documentElement.clientHeight) &&
     rect.right <= (window.innerWidth || document.documentElement.clientWidth)
   );
 }
@@ -525,4 +525,16 @@ export const getDaysRemaining = (autoDelete) => {
 
   if (daysRemaining <= 0) return "<1";
   return "" + daysRemaining;
+};
+
+export const checkFilterInstance = (filterObject, certainClass) => {
+  const isInstance =
+    filterObject.constructor.name === certainClass.prototype.constructor.name;
+
+  if (!isInstance)
+    throw new Error(
+      `Filter ${filterObject.constructor.name} isn't an instance of   ${certainClass.prototype.constructor.name}`
+    );
+
+  return isInstance;
 };

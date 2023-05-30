@@ -8,6 +8,7 @@ PACKAGE_SYSNAME="onlyoffice"
 
 APP_DIR="/etc/${PACKAGE_SYSNAME}/${PRODUCT}"
 PRODUCT_DIR="/var/www/${PRODUCT}"
+LOG_DIR="/var/log/${PACKAGE_SYSNAME}/${PRODUCT}"
 USER_CONF="$APP_DIR/appsettings.$ENVIRONMENT.json"
 
 NGINX_DIR="/etc/nginx"
@@ -21,9 +22,6 @@ DB_PWD=""
 
 APP_HOST="localhost"
 APP_PORT="80"
-
-DOCUMENT_SERVER_HOST="localhost";
-DOCUMENT_SERVER_PORT="8083";
 
 ELK_SHEME="http"
 ELK_HOST="localhost"
@@ -170,6 +168,13 @@ while [ "$1" != "" ]; do
 				shift
 			fi
 		;;
+
+		-mk | --machinekey )
+			if [ "$2" != "" ]; then
+				CORE_MACHINEKEY=$2
+				shift
+			fi
+		;;
 		
 		-? | -h | --help )
 			echo "  Usage: bash ${PRODUCT}-configuration [PARAMETER] [[PARAMETER], ...]"
@@ -191,6 +196,7 @@ while [ "$1" != "" ]; do
 			echo "      -mysqld, --mysqldatabase            ${PRODUCT} database name"
 			echo "      -mysqlu, --mysqluser                ${PRODUCT} database user"
 			echo "      -mysqlp, --mysqlpassword            ${PRODUCT} database password"
+			echo "      -mk, --machinekey                   setting for core.machinekey"
 			echo "      -e, --environment                   environment (default 'production')"
 			echo "      -?, -h, --help                      this help"
 			echo
@@ -206,11 +212,17 @@ while [ "$1" != "" ]; do
 done
 
 set_core_machinekey () {
-	if [ -f $APP_DIR/.private/machinekey ]; then
-		CORE_MACHINEKEY=$(cat $APP_DIR/.private/machinekey)
+	if [[ -f $APP_DIR/.private/machinekey ]] || [[ -n $CORE_MACHINEKEY ]]; then
+		CORE_MACHINEKEY=${CORE_MACHINEKEY:-$(cat $APP_DIR/.private/machinekey)};
 	else
 		CORE_MACHINEKEY=$(cat /dev/urandom | tr -dc A-Za-z0-9 | head -c 12);
-		echo $CORE_MACHINEKEY >> $APP_DIR/.private/machinekey
+		if [ "$DIST" = "RedHat" ]; then
+			echo $CORE_MACHINEKEY > $APP_DIR/.private/machinekey
+			chmod o-rwx $APP_DIR/.private/machinekey
+		elif [ "$DIST" = "Debian" ]; then
+			db_set ${PRODUCT}/machinekey $CORE_MACHINEKEY || true
+			echo ${PRODUCT} ${PRODUCT}/machinekey select $CORE_MACHINEKEY | debconf-set-selections || true
+		fi
 	fi
 
 	$JSON_USERCONF "this.core={'base-domain': \"$APP_HOST\", 'machinekey': \"$CORE_MACHINEKEY\" }" >/dev/null 2>&1
@@ -227,7 +239,9 @@ install_json() {
 }
 
 restart_services() {
-	sed -e "s/ENVIRONMENT=.*/ENVIRONMENT=$ENVIRONMENT/" -e "s/environment=.*/environment=$ENVIRONMENT/" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
+	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR
+
+	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
 
 	echo -n "Updating database... "
@@ -247,10 +261,10 @@ restart_services() {
 }
 
 input_db_params(){
-    local user_connectionString=$(json -f $USER_CONF ConnectionStrings.default.connectionString)
-    local def_DB_HOST=$(echo $user_connectionString | grep -oP 'Server=\K.*' | grep -o '^[^;]*')
-    local def_DB_NAME=$(echo $user_connectionString | grep -oP 'Database=\K.*' | grep -o '^[^;]*')
-    local def_DB_USER=$(echo $user_connectionString | grep -oP 'User ID=\K.*' | grep -o '^[^;]*')
+    local CONNECTION_STRING=$(json -f $USER_CONF ConnectionStrings.default.connectionString)
+    local def_DB_HOST=$(grep -oP 'Server=\K[^;]*' <<< "$CONNECTION_STRING")
+    local def_DB_NAME=$(grep -oP 'Database=\K[^;]*' <<< "$CONNECTION_STRING")
+    local def_DB_USER=$(grep -oP 'User ID=\K[^;]*' <<< "$CONNECTION_STRING")
 
 	if [ -z $def_DB_HOST ] && [ -z $DB_HOST ]; then 
 		read -e -p "Database host: " -i "$DB_HOST" DB_HOST;
@@ -293,8 +307,8 @@ establish_mysql_conn(){
 	fi
 
     #Save db settings in .json
-	CONNECTION_STRING="Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true;Character Set=utf8;AutoEnlist=false; \
-SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
+	CONNECTION_STRING="Server=$DB_HOST;Port=$DB_PORT;Database=$DB_NAME;User ID=$DB_USER;Password=$DB_PWD;Pooling=true; \
+Character Set=utf8; AutoEnlist=false; SSL Mode=none;AllowPublicKeyRetrieval=true;Connection Timeout=30;Maximum Pool Size=300"
 
 	$JSON_USERCONF "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
 	$JSON $APP_DIR/apisystem.$ENVIRONMENT.json -e "this.ConnectionStrings={'default': {'connectionString': \"$CONNECTION_STRING\"}}" >/dev/null 2>&1
@@ -418,20 +432,15 @@ setup_nginx(){
 	
 	# Remove default nginx website
 	rm -f $NGINX_CONF/default.conf >/dev/null 2>&1 || rm -f $NGINX_DIR/sites-enabled/default >/dev/null 2>&1
-    sed -i "s/listen.*;/listen $APP_PORT;/" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
+    sed -i "s_\(listen\).*;_\1 $APP_PORT;_" $NGINX_CONF/${PACKAGE_SYSNAME}.conf
 
-	NGINX_WORKER_PROCESSES=${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};
-	NGINX_WORKER_CONNECTIONS=${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};
-
-	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES};!" -i ${NGINX_ROOT_DIR}/nginx.conf
-	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS};!" -i ${NGINX_ROOT_DIR}/nginx.conf
+	sed "s!\(^worker_processes\).*;!\1 ${NGINX_WORKER_PROCESSES:-$(grep processor /proc/cpuinfo | wc -l)};!" -i ${NGINX_DIR}/nginx.conf 
+	sed "s!\(worker_connections\).*;!\1 ${NGINX_WORKER_CONNECTIONS:-$(ulimit -n)};!" -i ${NGINX_DIR}/nginx.conf 
 
 	if [ "$DIST" = "RedHat" ]; then
 		# Remove default nginx settings
-		DELETION_LINE=$(sed -n '/server {/=' /etc/nginx/nginx.conf | head -n 1)
-		if [ -n "$DELETION_LINE" ]; then 
-			sed "$DELETION_LINE,\$d" -i /etc/nginx/nginx.conf
-			echo "}" >> /etc/nginx/nginx.conf
+		if grep -q "server {"  ${NGINX_DIR}/nginx.conf ; then
+			sed -e '$a}' -e '/server {/,$d' -i ${NGINX_DIR}/nginx.conf
 		fi
 
 		shopt -s nocasematch
@@ -498,21 +507,17 @@ setup_nginx(){
 }
 
 setup_docs() {
-	echo -n "Configuring Docs... "
-	local DS_CONF="/etc/${PACKAGE_SYSNAME}/documentserver/local.json"
-	local JSON_DSCONF="$JSON $DS_CONF -e"
-
-	#Changing the Docs port in nginx conf
-	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i $NGINX_CONF/ds.conf 
-	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf 	
-
-	#Enable JWT validation for Docs
-	$JSON_DSCONF "this.services.CoAuthoring.token.enable.browser='true'" >/dev/null 2>&1 
-	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.inbox='true'" >/dev/null 2>&1
-	$JSON_DSCONF "this.services.CoAuthoring.token.enable.request.outbox='true'" >/dev/null 2>&1
+	echo -n "Configuring docs... "
+	local DS_CONF_DIR="/etc/${PACKAGE_SYSNAME}/documentserver"
+	local DOCUMENT_SERVER_HOST=${DOCUMENT_SERVER_HOST:-localhost}
+	local DOCUMENT_SERVER_PORT=${DOCUMENT_SERVER_PORT:-$(grep -oP '(?<=:)\d+(?=\s)' ${DS_CONF_DIR}/nginx/ds.conf)}
 	
-	local DOCUMENT_SERVER_JWT_SECRET=$(json -f ${DS_CONF} services.CoAuthoring.secret.inbox.string)
-	local DOCUMENT_SERVER_JWT_HEADER=$(json -f ${DS_CONF} services.CoAuthoring.token.inbox.header)
+	#Changing the Docs port in nginx conf
+	sed 's/\(listen .*:\)\([0-9]\{2,5\}\b\)\( default_server\)\?\(;\)/\1'${DOCUMENT_SERVER_PORT}'\3\4/' -i ${DS_CONF_DIR}/nginx/ds.conf 
+	sed "0,/proxy_pass .*;/{s/proxy_pass .*;/proxy_pass http:\/\/${DOCUMENT_SERVER_HOST}:${DOCUMENT_SERVER_PORT};/}" -i $NGINX_CONF/${PACKAGE_SYSNAME}.conf 
+	
+	local DOCUMENT_SERVER_JWT_SECRET=$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.secret.inbox.string)
+	local DOCUMENT_SERVER_JWT_HEADER=$(json -f ${DS_CONF_DIR}/local.json services.CoAuthoring.token.inbox.header)
 
 	#Save Docs address and JWT in .json
 	$JSON_USERCONF "this.files={'docservice': {\
@@ -627,11 +632,10 @@ product_configuration(){
 	#Creating environment configuration files 
 	enviromentFiles=("appsettings.$ENVIRONMENT.json" "apisystem.$ENVIRONMENT.json" "elastic.$ENVIRONMENT.json" "rabbitmq.$ENVIRONMENT.json")
 
-	for i in "${!enviromentFiles[@]}";
-	do
+	for i in "${!enviromentFiles[@]}"; do
 		if [ ! -e "$APP_DIR/${enviromentFiles[$i]}" ]; then
-			echo "{}" >> "$APP_DIR/${enviromentFiles[$i]}"
-			chown ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} "$APP_DIR/${enviromentFiles[$i]}"
+			echo "{}" > "$APP_DIR/${enviromentFiles[$i]}"
+			chmod o-rwx "$APP_DIR/${enviromentFiles[$i]}"
 		fi
 	done
 
@@ -661,12 +665,12 @@ if $PACKAGE_MANAGER mysql-client >/dev/null 2>&1 || $PACKAGE_MANAGER mysql-commu
     establish_mysql_conn || exit $?
 fi 
 
-if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
-    setup_nginx
-fi
-
 if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
     setup_docs
+fi
+
+if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
+    setup_nginx
 fi
 
 if $PACKAGE_MANAGER elasticsearch >/dev/null 2>&1; then

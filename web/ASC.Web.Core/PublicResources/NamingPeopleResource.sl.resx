@@ -124,4 +124,25 @@
   <data name="DefaultUserTitle" xml:space="preserve">
     <value>Položaj</value>
   </data>
+  <data name="EducationGuests" xml:space="preserve">
+    <value>Gosti</value>
+  </data>
+  <data name="EducationGuest" xml:space="preserve">
+    <value>Gost</value>
+  </data>
+  <data name="EducationRegDate" xml:space="preserve">
+    <value>Datum registracije</value>
+  </data>
+  <data name="EducationUserTitle" xml:space="preserve">
+    <value>Naslov</value>
+  </data>
+  <data name="EducationGroup" xml:space="preserve">
+    <value>Skupina</value>
+  </data>
+  <data name="EducationGroups" xml:space="preserve">
+    <value>Skupine</value>
+  </data>
+  <data name="EducationGroupHead" xml:space="preserve">
+    <value>Skupina vodi</value>
+  </data>
 </root>

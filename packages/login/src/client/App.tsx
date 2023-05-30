@@ -35,7 +35,7 @@ const App: React.FC<ILoginProps> = (props) => {
     <MobxProvider {...loginStore}>
       <SimpleNav {...props} />
       <Routes>
-        <Route path="/login/error" element={<InvalidRoute />} />
+        <Route path="/login/error" element={<InvalidRoute {...props} />} />
         <Route path="/login/code" element={<CodeLogin {...props} />} />
         <Route path="/login" element={<Login {...props} />} />
       </Routes>

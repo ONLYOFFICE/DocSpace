@@ -10,11 +10,11 @@ cat<<EOF
 
 EOF
 
-if rpm -qa | grep ${package_sysname}-${product}; then
-	echo "${package_sysname}-${product} $RES_APP_INSTALLED"
+if rpm -qa | grep ${product}; then
+	echo "${product} $RES_APP_INSTALLED"
 	PRODUCT_INSTALLED="true";
 elif [ "${UPDATE}" != "true" ] && netstat -lnp | awk '{print $4}' | grep -qE ":80$|:8081$|:8083$|:5001$|:5002$|:8080$|:80$"; then
-	echo "${package_sysname}-${product} $RES_APP_CHECK_PORTS: 80, 8081, 8083, 5001, 5002, 9200, 2181, 9092";
+	echo "${product} $RES_APP_CHECK_PORTS: 80, 8081, 8083, 5001, 5002, 9200, 2181, 9092";
 	echo "$RES_CHECK_PORTS"
 	exit
 else

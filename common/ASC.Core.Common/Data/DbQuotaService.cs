@@ -26,7 +26,7 @@
 
 namespace ASC.Core.Data;
 
-[Scope]
+[Scope(Additional = typeof(DbQuotaServiceExtensions))]
 class DbQuotaService : IQuotaService
 {
     private readonly IDbContextFactory<CoreDbContext> _dbContextFactory;
@@ -41,19 +41,14 @@ class DbQuotaService : IQuotaService
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
 
-        return coreDbContext.Quotas
-            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
-            .ToList();
+        return _mapper.Map<List<DbQuota>, List<TenantQuota>>(coreDbContext.Quotas.ToList());
     }
 
     public TenantQuota GetTenantQuota(int id)
     {
         using var coreDbContext = _dbContextFactory.CreateDbContext();
 
-        return coreDbContext.Quotas
-            .Where(r => r.Tenant == id)
-            .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
-            .SingleOrDefault();
+        return _mapper.Map<DbQuota, TenantQuota>(coreDbContext.Quotas.SingleOrDefault(r => r.Tenant == id));
     }
 
     public TenantQuota SaveTenantQuota(TenantQuota quota)
@@ -134,5 +129,13 @@ class DbQuotaService : IQuotaService
         }
 
         return q.ProjectTo<TenantQuotaRow>(_mapper.ConfigurationProvider).ToList();
+    }
+}
+
+public static class DbQuotaServiceExtensions
+{
+    public static void Register(DIHelper services)
+    {
+        services.TryAdd<TenantQuotaPriceResolver>();
     }
 }

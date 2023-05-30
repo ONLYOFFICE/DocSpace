@@ -102,7 +102,7 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
-  const roomHeader = "Welcome to DocSpace";
+  const roomHeader = t("EmptyRootRoomHeader");
 
   const onGoToPersonal = () => {
     const newFilter = FilesFilter.getDefault();

@@ -85,9 +85,6 @@
   <data name="CommentCreateByDocuSign" xml:space="preserve">
     <value>DocuSign으로 만든 파일</value>
   </data>
-  <data name="CommentEdit" xml:space="preserve">
-    <value>편집되었습니다.</value>
-  </data>
   <data name="CommentUpload" xml:space="preserve">
     <value>업로드 되었습니다</value>
   </data>
@@ -110,7 +107,7 @@
     <value>필요한 폴더를 찾을 수 없습니다</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>적어도 {0}개의 메일 메시지를 보낼 수 없음. 실패 원인이 무엇인지 확인하려면 메일 모듈 확인</value>
+    <value>적어도 {0}개의 메일 메시지를 보낼 수 없음. 실패 원인이 무엇인지 확인하려면 메일 모듈 확인.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
     <value>다운로드수가 너무 많습니다.</value>
@@ -128,10 +125,10 @@
     <value>만들 수있는 권한이 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFile" xml:space="preserve">
-    <value>파일이 열려 있기 때문에 삭제할 수 없습니다.</value>
+    <value>파일이 열려 있기 때문에 삭제할 수 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteEditingFolder" xml:space="preserve">
-    <value>편집중인 파일이 있어 폴더를 삭제할 수 없습니다.</value>
+    <value>편집중인 파일이 있어 폴더를 삭제할 수 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_DeleteFile" xml:space="preserve">
     <value>파일을 삭제하기에 충분한 권한이 없습니다</value>
@@ -158,7 +155,7 @@
     <value>폴더의 이름을 바꾸하기에 충분한 권한이 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_UpdateEditingFile" xml:space="preserve">
-    <value>파일이 편집중이므로 업데이트할 수 없습니다.</value>
+    <value>파일이 편집중이므로 업데이트할 수 없습니다</value>
   </data>
   <data name="ErrorMassage_SecurityException_ViewFolder" xml:space="preserve">
     <value>폴더 콘텐츠를 볼 수있는 충분한 권한이 없습니다</value>
@@ -216,5 +213,65 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>공동 작업자</value>
+  </data>
+  <data name="CommentEdit" xml:space="preserve">
+    <value>편집되었습니다</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>사용자 지정 필터</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>공동 작업자</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>편집자</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>제출한 양식</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>새 버전은 현재 버전과 같을 수 없습니다</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>파일을 복사할 수 있는 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>폴더를 복사할 수 있는 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>유효하지 않은 공급자입니다</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>이 폴더를 사용하여 방을 저장할 수 없습니다</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>초대 링크가 유효하지 않거나 유효 기간이 만료되었습니다</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>이 공급자는 이미 방에 연결되어 있습니다</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>이 사용자 유형에는 사용할 수 없는 역할입니다</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>방을 아카이브할 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>이 폴더에 복사할 수 있는 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>방을 편집할 수 있는 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>이 폴더로 이동할 수 있는 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>방의 아카이브를 취소할 권한이 없습니다</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>아카이브된 방은 편집할 수 없습니다</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>방을 고정할 수 없습니다</value>
   </data>
 </root>

@@ -8,6 +8,18 @@ import CatalogEmployeeReactSvgUrl from "PUBLIC_DIR/images/catalog.employee.react
 import CatalogGuestReactSvgUrl from "PUBLIC_DIR/images/catalog.guest.react.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 
+export default {
+  title: "Components/ComboBox",
+  component: ComboBox,
+  parameters: {
+    docs: {
+      description: {
+        component: "ComboBox is used for a action on a page.",
+      },
+    },
+  },
+};
+
 const comboOptions = [
   {
     key: 1,
@@ -74,6 +86,35 @@ const Wrapper = (props) => (
 
 const childrenItems = children.length > 0 ? children : null;
 
+const BadgeTypeTemplate = (args) => (
+  <Wrapper>
+    <ComboBox
+      {...args}
+      options={[
+        { key: 1, label: "Open", backgroundColor: "#4781D1", color: "#FFFFFF" },
+        { key: 2, label: "Done", backgroundColor: "#444", color: "#FFFFFF" },
+        {
+          key: 3,
+          label: "2nd turn",
+          backgroundColor: "#FFFFFF",
+          color: "#555F65",
+          border: "#4781D1",
+        },
+        {
+          key: 4,
+          label: "3rd turn",
+          backgroundColor: "#FFFFFF",
+          color: "#555F65",
+          border: "#4781D1",
+        },
+      ]}
+      selectedOption={{
+        key: 0,
+        label: "Select",
+      }}
+    />
+  </Wrapper>
+);
 const Template = (args) => (
   <Wrapper>
     <ComboBox
@@ -146,4 +187,12 @@ advancedOption.args = {
   size: "content",
   directionX: "right",
   directionY: "bottom",
+};
+
+export const badgeType = BadgeTypeTemplate.bind({});
+badgeType.args = {
+  scaled: false,
+  type: "badge",
+  size: "content",
+  scaledOptions: true,
 };

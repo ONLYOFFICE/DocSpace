@@ -1,4 +1,6 @@
-﻿import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
+﻿import React from "react";
+import { Trans } from "react-i18next";
+import MailReactSvgUrl from "PUBLIC_DIR/images/mail.react.svg?url";
 import { find, cloneDeep } from "lodash";
 import {
   EmployeeActivationStatus,
@@ -19,6 +21,7 @@ import MyspaceIconUrl from "PUBLIC_DIR/images/myspace.react.svg?url";
 import TwitterIconUrl from "PUBLIC_DIR/images/share.twitter.react.svg?url";
 import BloggerIconUrl from "PUBLIC_DIR/images/blogger.react.svg?url";
 import YahooIconUrl from "PUBLIC_DIR/images/yahoo.react.svg?url";
+import toastr from "@docspace/components/toast/toastr";
 
 export const getUserStatus = (user) => {
   if (
@@ -149,3 +152,13 @@ export function toEmployeeWrapper(profile) {
 
   return cloneDeep({ ...emptyData, ...profile });
 }
+
+export const showEmailActivationToast = (email) => {
+  //console.log("showEmailActivationToast", { email });
+  toastr.success(
+    <Trans i18nKey="MessageEmailActivationInstuctionsSentOnEmail" ns="People">
+      The email activation instructions have been sent to the
+      <strong>{{ email }}</strong> email address
+    </Trans>
+  );
+};

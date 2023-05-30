@@ -138,6 +138,8 @@ const IpSecurity = (props) => {
   };
 
   const onSaveClick = async () => {
+    const newIps = ips.filter((ips) => ips.trim() !== "");
+    setIps(newIps);
     setIsSaving(true);
     const valid = ips.map((ip) => regexp.test(ip));
     if (valid.includes(false)) {
@@ -145,13 +147,17 @@ const IpSecurity = (props) => {
       return;
     }
 
+    const ipsObjectArr = ips.map((ip) => {
+      return { ip: ip };
+    });
+
     try {
-      await setIpRestrictions(ips);
+      await setIpRestrictions(ipsObjectArr);
       await setIpRestrictionsEnable(enable);
 
       saveToSessionStorage("defaultIPSettings", {
         enable: enable,
-        ips: ips,
+        ips: ipsObjectArr,
       });
       setShowReminder(false);
       toastr.success(t("SuccessfullySaveSettingsMessage"));

@@ -40,6 +40,7 @@ const useFiles = ({
   setIsUpdatingRowItem,
 
   gallerySelected,
+  removeFirstUrl,
 }) => {
   const fetchDefaultFiles = () => {
     const filterObj = FilesFilter.getDefault();
@@ -80,7 +81,9 @@ const useFiles = ({
     setIsLoading(true);
 
     if (!window.location.href.includes("#preview")) {
-      localStorage.removeItem("isFirstUrl");
+      // localStorage.removeItem("isFirstUrl");
+      // Media viewer
+      removeFirstUrl();
     }
 
     const categoryType = getCategoryType(location);
@@ -140,6 +143,8 @@ const useFiles = ({
         return;
       }
     }
+
+    if (!filterObj) return;
 
     let dataObj = { filter: filterObj };
 

@@ -188,6 +188,7 @@ const Items = ({
   startDrag,
 
   activeItem,
+  emptyTrashInProgress,
 }) => {
   const getEndOfBlock = React.useCallback(
     (item) => {
@@ -321,7 +322,9 @@ const Items = ({
     (data) => {
       const items = data.map((item, index) => {
         const isTrash = item.rootFolderType === FolderType.TRASH;
-        const showBadge = item.newItems
+        const showBadge = emptyTrashInProgress
+          ? false
+          : item.newItems
           ? item.newItems > 0 && true
           : isTrash && !trashIsEmpty;
         const labelBadge = showBadge ? item.newItems : null;
@@ -396,6 +399,7 @@ const Items = ({
       isVisitor,
       firstLoad,
       activeItem,
+      emptyTrashInProgress,
     ]
   );
 
@@ -436,8 +440,12 @@ export default inject(
       treeFoldersStore;
 
     const { id } = selectedFolderStore;
-    const { moveDragItems, uploadEmptyFolders, deleteAction } =
-      filesActionsStore;
+    const {
+      moveDragItems,
+      uploadEmptyFolders,
+      deleteAction,
+      emptyTrashInProgress,
+    } = filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
     return {
@@ -469,6 +477,7 @@ export default inject(
 
       firstLoad,
       startDrag,
+      emptyTrashInProgress,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

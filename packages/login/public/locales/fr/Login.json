@@ -1,5 +1,4 @@
 {
-  "Authorization": "Autorisation",
   "CodeSubtitle": "Nous avons envoyé un code à 6 chiffres à {{email}}. Le code a une durée de validité limitée, saisissez-le dès que possible.",
   "CodeTitle": "Le code vous a été envoyé par e-mail",
   "CookieSettingsTitle": "Durée de validité de la session",

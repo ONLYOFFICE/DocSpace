@@ -44,7 +44,7 @@ module.exports = (socket, next) => {
   const getUser = () => {
     return request({
       method: "get",
-      url: "/people/@self.json?fields=id,userName,displayName",
+      url: "/people/@self?fields=id,userName,displayName",
       headers,
       basePath,
     });
@@ -53,7 +53,7 @@ module.exports = (socket, next) => {
   const getPortal = () => {
     return request({
       method: "get",
-      url: "/portal.json?fields=tenantId,tenantDomain",
+      url: "/portal?fields=tenantId,tenantDomain",
       headers,
       basePath,
     });

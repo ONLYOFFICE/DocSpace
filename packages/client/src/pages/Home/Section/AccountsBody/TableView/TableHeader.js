@@ -112,6 +112,8 @@ class PeopleTableHeader extends React.Component {
         } else {
           newFilter.sortBy = "lastname";
         }
+        newFilter.sortOrder =
+          newFilter.sortOrder === "ascending" ? "descending" : "ascending";
       }
     }
 
