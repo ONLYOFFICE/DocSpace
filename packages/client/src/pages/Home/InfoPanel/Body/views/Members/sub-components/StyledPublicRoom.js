@@ -76,6 +76,12 @@ const StyledLinkRow = styled.div`
   gap: 8px;
   padding: 8px 0px;
 
+  .external-row-link {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .external-row-icons {
     margin-left: auto;
     display: flex;

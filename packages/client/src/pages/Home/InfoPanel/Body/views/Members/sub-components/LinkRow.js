@@ -165,6 +165,7 @@ const LinkRow = (props) => {
         onClick={onEditLink}
         isDisabled={disabled}
         color={disabled ? "#A3A9AE" : ""}
+        className="external-row-link"
       >
         {title}
       </Link>
