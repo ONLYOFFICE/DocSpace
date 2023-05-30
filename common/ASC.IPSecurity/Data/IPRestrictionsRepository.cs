@@ -51,7 +51,7 @@ public class IPRestrictionsRepository
     {
         using var tenantDbContext = _dbContextManager.CreateDbContext();
 
-        tenantDbContext.TenantIpRestrictions.RemoveRange(tenantDbContext.TenantIpRestrictions.Where(r => r.Tenant == tenant));
+        tenantDbContext.TenantIpRestrictions.RemoveRange(await Queries.GetTenantIpRestrictionsAsync(tenantDbContext, tenant).ToListAsync());
 
         var ipsList = ips.Select(r => new TenantIpRestrictions
         {
@@ -66,4 +66,11 @@ public class IPRestrictionsRepository
 
         return ips.ToList();
     }
+}
+
+file static class Queries
+{
+    public static readonly Func<TenantDbContext, int, IAsyncEnumerable<TenantIpRestrictions>> GetTenantIpRestrictionsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (TenantDbContext ctx, int tenantId) =>
+        ctx.TenantIpRestrictions.Where(r => r.Tenant == tenantId));
 }
