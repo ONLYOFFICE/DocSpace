@@ -35,6 +35,7 @@ const PublicRoom = (props) => {
     showSecondaryButtonAlert,
 
     logout,
+    isEmptyPage,
   } = props;
 
   const location = useLocation();
@@ -106,9 +107,11 @@ const PublicRoom = (props) => {
           <SectionHeaderContent />
         </Section.SectionHeader>
 
-        <Section.SectionFilter>
-          <SectionFilterContent />
-        </Section.SectionFilter>
+        {!isEmptyPage && (
+          <Section.SectionFilter>
+            <SectionFilterContent />
+          </Section.SectionFilter>
+        )}
 
         <Section.SectionBody>
           <SectionBodyContent />
@@ -152,10 +155,15 @@ const PublicRoom = (props) => {
 export default inject(
   ({ auth, filesStore, publicRoomStore, uploadDataStore, settingsStore }) => {
     const { withPaging } = auth.settingsStore;
-    const { validatePublicRoomKey, isLoaded, isLoading, roomStatus, roomId } =
-      publicRoomStore;
+    const {
+      validatePublicRoomKey,
+      isLoaded,
+      isLoading,
+      roomStatus,
+      roomId,
+    } = publicRoomStore;
 
-    const { fetchFiles } = filesStore;
+    const { fetchFiles, isEmptyPage, isEmptyFilesList } = filesStore;
     const { getFilesSettings } = settingsStore;
 
     const {
@@ -183,6 +191,7 @@ export default inject(
 
       isAuthenticated: auth.isAuthenticated,
       logout: auth.logout,
+      isEmptyPage: isEmptyFilesList || isEmptyPage,
     };
   }
 )(observer(PublicRoom));
