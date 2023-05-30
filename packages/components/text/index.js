@@ -26,8 +26,9 @@ const Text = ({
 };
 
 Text.propTypes = {
-  /** Sets the tag through which to render the component */
+  /** Sets the tag through which the component is rendered */
   as: PropTypes.string,
+  /** Accepts the tag id */
   tag: PropTypes.string,
   /** Sets background color */
   backgroundColor: PropTypes.string,
@@ -47,7 +48,7 @@ Text.propTypes = {
   isItalic: PropTypes.bool,
   /** Sets the line height */
   lineHeight: PropTypes.string,
-  /** Disable selection of text*/
+  /** Disables text selection */
   noSelect: PropTypes.bool,
   /** Sets the 'text-align' property */
   textAlign: PropTypes.string,

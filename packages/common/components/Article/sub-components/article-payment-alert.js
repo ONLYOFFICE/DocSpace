@@ -1,10 +1,9 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { useTranslation, Trans } from "react-i18next";
 
 import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
 
 import AlertComponent from "../../AlertComponent";
 import Loaders from "../../Loaders";
@@ -22,12 +21,14 @@ const ArticlePaymentAlert = ({
 }) => {
   const { t, ready } = useTranslation("Common");
 
+  const navigate = useNavigate();
+
   const onClick = () => {
     const paymentPageUrl = combineUrl(
       PROXY_BASE_URL,
       "/payments/portal-payments"
     );
-    history.push(paymentPageUrl);
+    navigate(paymentPageUrl);
     toggleArticleOpen();
   };
 
@@ -70,16 +71,14 @@ const ArticlePaymentAlert = ({
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { currentQuotaStore, settingsStore } = auth;
-    const { currentTariffPlanTitle } = currentQuotaStore;
-    const { theme, toggleArticleOpen } = settingsStore;
+export default inject(({ auth }) => {
+  const { currentQuotaStore, settingsStore } = auth;
+  const { currentTariffPlanTitle } = currentQuotaStore;
+  const { theme, toggleArticleOpen } = settingsStore;
 
-    return {
-      toggleArticleOpen,
-      theme,
-      currentTariffPlanTitle,
-    };
-  })(observer(ArticlePaymentAlert))
-);
+  return {
+    toggleArticleOpen,
+    theme,
+    currentTariffPlanTitle,
+  };
+})(observer(ArticlePaymentAlert));

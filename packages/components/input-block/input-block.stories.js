@@ -15,12 +15,12 @@ export default {
     onBlur: { action: "onBlur" },
     onFocus: { action: "onFocus" },
     onIconClick: { action: "onIconClick" },
-    optionsMultiSelect: {
-      control: {
-        type: "multi-select",
-        options: ["button", "icon"],
-      },
-    },
+    // optionsMultiSelect: {
+    //   control: {
+    //     type: "multi-select",
+    //     options: ["button", "icon"],
+    //   },
+    // },
   },
 };
 

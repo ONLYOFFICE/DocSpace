@@ -11,7 +11,6 @@ import {
   StyledFilterBlockItemContent,
   StyledFilterBlockItemSelector,
   StyledFilterBlockItemSelectorText,
-  StyledFilterBlockItemTag,
   StyledFilterBlockItemTagText,
   StyledFilterBlockItemTagIcon,
   StyledFilterBlockItemToggle,
@@ -21,10 +20,14 @@ import {
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import XIcon from "PUBLIC_DIR/images/x.react.svg";
-import { FilterGroups, FilterKeys } from "../../../constants";
+import {
+  FilterGroups,
+  FilterKeys,
+  FilterSelectorTypes,
+} from "../../../constants";
 
 const FilterBlockItem = ({
   group,
@@ -55,7 +58,7 @@ const FilterBlockItem = ({
       );
   };
 
-  const showSelectorAction = (event, isAuthor, group, ref) => {
+  const showSelectorAction = (event, selectorType, group, ref) => {
     let target = event.target;
 
     while (!!target.parentNode) {
@@ -67,13 +70,16 @@ const FilterBlockItem = ({
       }
     }
 
-    showSelector && showSelector(isAuthor, group);
+    showSelector && showSelector(selectorType, group);
   };
 
   const getSelectorItem = (item) => {
     const clearSelectorRef = React.useRef(null);
 
-    const isAuthor = item.key === "user";
+    const isRoomsSelector = item.group === FilterGroups.filterRoom;
+    const selectorType = isRoomsSelector
+      ? FilterSelectorTypes.rooms
+      : FilterSelectorTypes.people;
 
     return !item.isSelected ||
       item.selectedKey === "me" ||
@@ -85,7 +91,9 @@ const FilterBlockItem = ({
             : { height: "0", width: "0" }
         }
         key={item.key}
-        onClick={(event) => showSelectorAction(event, isAuthor, item.group, [])}
+        onClick={(event) =>
+          showSelectorAction(event, selectorType, item.group, [])
+        }
       >
         {item?.displaySelectorType === "button" && (
           <SelectorAddButton id="filter_add-author" />
@@ -102,7 +110,7 @@ const FilterBlockItem = ({
         onClick={(event) =>
           showSelectorAction(
             event,
-            isAuthor,
+            selectorType,
             item.group,
             clearSelectorRef.current
           )
@@ -185,7 +193,11 @@ const FilterBlockItem = ({
   };
 
   const getTagItem = (item) => {
-    const isAuthor = item.key === FilterKeys.user;
+    const isRoomsSelector = item.group === FilterGroups.filterRoom;
+
+    const selectorType = isRoomsSelector
+      ? FilterSelectorTypes.rooms
+      : FilterSelectorTypes.people;
 
     if (
       item.group === FilterGroups.filterAuthor ||
@@ -209,7 +221,7 @@ const FilterBlockItem = ({
         id={item.id}
         onClick={
           item.key === FilterKeys.other
-            ? (event) => showSelectorAction(event, isAuthor, item.group, [])
+            ? (event) => showSelectorAction(event, selectorType, item.group, [])
             : () =>
                 changeFilterValueAction(
                   item.key,

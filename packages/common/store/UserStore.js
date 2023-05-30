@@ -1,6 +1,6 @@
 import React from "react";
 import { toastr } from "@docspace/components";
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
 import { Trans } from "react-i18next";
 import api from "../api";
 import { EmployeeActivationStatus } from "../constants";
@@ -82,7 +82,9 @@ class UserStore {
 
     const { theme } = await api.people.changeTheme(key);
 
-    this.user.theme = theme;
+    runInAction(() => {
+      this.user.theme = theme;
+    })
 
     this.setIsLoading(false);
 

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import Text from "../text";
 import { NavItem, Label, StyledScrollbar } from "./styled-tabs-container";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 class TabContainer extends Component {
   constructor(props) {
@@ -187,9 +187,9 @@ class TabContainer extends Component {
 TabContainer.propTypes = {
   /** Child elements */
   elements: PropTypes.PropTypes.arrayOf(PropTypes.object.isRequired).isRequired,
-  /** Disable the TabContainer  */
+  /** Disables the TabContainer  */
   isDisabled: PropTypes.bool,
-  /** Triggered when a title is selected */
+  /** Sets a callback function that is triggered when the title is selected */
   onSelect: PropTypes.func,
   /** Selected title of tabs container */
   selectedItem: PropTypes.number,

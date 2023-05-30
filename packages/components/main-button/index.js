@@ -4,7 +4,7 @@ import { ReactSVG } from "react-svg";
 import Text from "../text";
 import { GroupMainButton } from "./styled-main-button";
 import ContextMenu from "../context-menu";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import TriangleNavigationDownReactSvgUrl from "PUBLIC_DIR/images/triangle.navigation.down.react.svg?url";
 
@@ -74,15 +74,15 @@ const MainButton = (props) => {
 MainButton.propTypes = {
   /** Button text */
   text: PropTypes.string,
-  /** Tells when the button should present a disabled state */
+  /** Sets the button to present a disabled state */
   isDisabled: PropTypes.bool,
-  /** Select a state between two separate buttons or one with a drop-down list */
+  /** Activates a drop-down list for MainButton */
   isDropdown: PropTypes.bool,
-  /** What the main button will trigger when clicked  */
+  /** Sets a callback function that is triggered when the button is clicked */
   clickAction: PropTypes.func,
-  /** What the secondary button will trigger when clicked  */
+  /** Sets a callback function that is triggered when the secondary button is clicked   */
   clickActionSecondary: PropTypes.func,
-  /** Open DropDown */
+  /** Opens DropDown */
   opened: PropTypes.bool, //TODO: Make us whole
   /** Accepts class */
   className: PropTypes.string,
@@ -90,7 +90,7 @@ MainButton.propTypes = {
   id: PropTypes.string,
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Menu data model */
+  /** Data model menu */
   model: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 };
 

@@ -21,7 +21,7 @@ export default function withBadges(WrappedComponent) {
         item,
         setIsVerHistoryPanel,
         fetchFileVersions,
-        history,
+
         isTrashFolder,
       } = this.props;
       if (isTrashFolder) return;

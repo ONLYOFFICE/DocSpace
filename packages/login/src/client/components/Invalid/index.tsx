@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { useHistory, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import Text from "@docspace/components/text";
 import { useTranslation, Trans } from "react-i18next";
@@ -25,7 +25,7 @@ const InvalidError = ({ theme, setTheme, match }: InvalidErrorProps) => {
 
   const [proxyHomepageUrl, setProxyHomepageUrl] = React.useState("");
   const { t } = useTranslation(["Login", "Errors", "Common"]);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   useIsomorphicLayoutEffect(() => {
     const themeCurrent =
@@ -40,7 +40,7 @@ const InvalidError = ({ theme, setTheme, match }: InvalidErrorProps) => {
     const url = combineUrl(window.DocSpaceConfig?.proxy?.url, homepage);
     setProxyHomepageUrl(url);
     const timeout = setTimeout(() => {
-      history.push(url);
+      navigate(url);
     }, 10000);
     return () => clearTimeout(timeout);
   }, []);

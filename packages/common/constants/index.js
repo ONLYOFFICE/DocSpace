@@ -8,7 +8,6 @@ export const COOKIE_EXPIRATION_YEAR = 31536000000;
 export const ARTICLE_PINNED_KEY = "asc_article_pinned_key";
 export const LIVE_CHAT_LOCAL_STORAGE_KEY = "live_chat_state";
 export const MAX_FILE_COMMENT_LENGTH = 255;
-export const MIN_PERCENTAGE_FOR_DISPLAYING_UPLOADING_INDICATOR = 3;
 
 /**
  * Enum for employee activation status.
@@ -110,10 +109,10 @@ export const FileType = Object.freeze({
  * @readonly
  */
 export const RoomsType = Object.freeze({
-  //FillingFormsRoom: 1, //TODO: Restore when certs will be done
+  // FillingFormsRoom: 1, //TODO: Restore when certs will be done
   EditingRoom: 2,
-  //ReviewRoom: 3, //TODO: Restore when certs will be done
-  //ReadOnlyRoom: 4, //TODO: Restore when certs will be done
+  // ReviewRoom: 3, //TODO: Restore when certs will be done
+  // ReadOnlyRoom: 4, //TODO: Restore when certs will be done
   CustomRoom: 5,
 });
 
@@ -418,6 +417,7 @@ export const FilterGroups = Object.freeze({
   filterType: "filter-filterType",
   filterAuthor: "filter-author",
   filterFolders: "filter-folders",
+  filterRoom: "filter-room",
   filterContent: "filter-withContent",
   roomFilterProviderType: "filter-provider-type",
   roomFilterType: "filter-type",
@@ -435,4 +435,9 @@ export const FilterKeys = Object.freeze({
   me: "me",
   other: "other",
   user: "user",
+});
+
+export const FilterSelectorTypes = Object.freeze({
+  people: "people-selector",
+  rooms: "rooms-selector",
 });

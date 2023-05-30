@@ -129,11 +129,13 @@ const Table = ({
   const tagRef = useRef(null);
 
   useEffect(() => {
+    const width = window.innerWidth;
+
     if ((viewAs !== "table" && viewAs !== "row") || !setViewAs) return;
     // 400 - it is desktop info panel width
     if (
-      (sectionWidth < 1025 && !infoPanelVisible) ||
-      ((sectionWidth < 625 || (viewAs === "row" && sectionWidth < 1025)) &&
+      (width < 1025 && !infoPanelVisible) ||
+      ((width < 625 || (viewAs === "row" && width < 1025)) &&
         infoPanelVisible) ||
       isMobile
     ) {
@@ -174,6 +176,10 @@ const Table = ({
       elementResizeDetector.listenTo(node, onResize);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (!isRooms) setTagCount(0);
+  }, [isRooms]);
 
   const filesListNode = useMemo(() => {
     return filesList.map((item, index) => (

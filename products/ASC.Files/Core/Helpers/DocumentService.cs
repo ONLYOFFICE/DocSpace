@@ -83,7 +83,7 @@ public static class DocumentService
     /// <exception>
     /// </exception>
 
-    public static Task<(int ResultPercent, string ConvertedDocumentUri)> GetConvertedUriAsync(
+    public static Task<(int ResultPercent, string ConvertedDocumentUri, string convertedFileType)> GetConvertedUriAsync(
         FileUtility fileUtility,
         string documentConverterUrl,
         string documentUri,
@@ -112,7 +112,7 @@ public static class DocumentService
         return InternalGetConvertedUriAsync(fileUtility, documentConverterUrl, documentUri, fromExtension, toExtension, documentRevisionId, password, region, thumbnail, spreadsheetLayout, isAsync, signatureSecret, clientFactory);
     }
 
-    private static async Task<(int ResultPercent, string ConvertedDocumentUri)> InternalGetConvertedUriAsync(
+    private static async Task<(int ResultPercent, string ConvertedDocumentUri, string convertedFileType)> InternalGetConvertedUriAsync(
        FileUtility fileUtility,
        string documentConverterUrl,
        string documentUri,
@@ -907,7 +907,7 @@ public static class DocumentService
     /// <param name="jsonDocumentResponse">The resulting json from editing service</param>
     /// <param name="responseUri">Uri to the converted document</param>
     /// <returns>The percentage of completion of conversion</returns>
-    private static (int ResultPercent, string responseuri) GetResponseUri(string jsonDocumentResponse)
+    private static (int ResultPercent, string responseuri, string convertedFileType) GetResponseUri(string jsonDocumentResponse)
     {
         if (string.IsNullOrEmpty(jsonDocumentResponse))
         {
@@ -930,9 +930,11 @@ public static class DocumentService
 
         int resultPercent;
         var responseUri = string.Empty;
+        var responseType = string.Empty;
         if (isEndConvert)
         {
             responseUri = responseFromService.Value<string>("fileUrl");
+            responseType = responseFromService.Value<string>("fileType");
             resultPercent = 100;
         }
         else
@@ -944,6 +946,6 @@ public static class DocumentService
             }
         }
 
-        return (resultPercent, responseUri);
+        return (resultPercent, responseUri, responseType);
     }
 }

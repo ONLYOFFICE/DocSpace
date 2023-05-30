@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { inject } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -14,13 +13,8 @@ import { EmployeeActivationStatus } from "@docspace/common/constants";
 import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PortalDeactivation = (props) => {
-  const {
-    t,
-    getPortalOwner,
-    owner,
-    currentColorScheme,
-    sendActivationLink,
-  } = props;
+  const { t, getPortalOwner, owner, currentColorScheme, sendActivationLink } =
+    props;
   const [isDesktopView, setIsDesktopView] = useState(false);
 
   const fetchData = async () => {
@@ -105,8 +99,4 @@ export default inject(({ auth }) => {
     currentColorScheme,
     sendActivationLink,
   };
-})(
-  withTranslation(["Settings", "MainBar", "People"])(
-    withRouter(PortalDeactivation)
-  )
-);
+})(withTranslation("Settings", "MainBar", "People")(PortalDeactivation));

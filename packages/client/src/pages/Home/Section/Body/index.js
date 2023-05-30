@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import { isMobile, isMobileOnly } from "react-device-detect";
 
@@ -57,7 +56,6 @@ const SectionBodyContent = (props) => {
       customScrollElm && customScrollElm.scrollTo(0, 0);
     }
 
-    window.addEventListener("popstate", onClickBack);
     window.addEventListener("beforeunload", onBeforeunload);
     window.addEventListener("mousedown", onMouseDown);
     startDrag && window.addEventListener("mouseup", onMouseUp);
@@ -68,7 +66,6 @@ const SectionBodyContent = (props) => {
     document.addEventListener("drop", onDropEvent);
 
     return () => {
-      window.removeEventListener("popstate", onClickBack);
       window.removeEventListener("beforeunload", onBeforeunload);
       window.removeEventListener("mousedown", onMouseDown);
       window.removeEventListener("mouseup", onMouseUp);
@@ -335,9 +332,7 @@ export default inject(
     };
   }
 )(
-  withRouter(
-    withTranslation(["Files", "Common", "Translations"])(
-      withLoader(withHotkeys(observer(SectionBodyContent)))()
-    )
+  withTranslation(["Files", "Common", "Translations"])(
+    withHotkeys(observer(SectionBodyContent))
   )
 );

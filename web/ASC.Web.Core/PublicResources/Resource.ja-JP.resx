@@ -370,7 +370,7 @@
   <data name="ConsumersBitlyDescription" xml:space="preserve">
     <value>ポータルの招待リンクと文書モジュール共有リンクをを短くするように、Bitlyサービスを接続します。</value>
   </data>
-  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、文書と招待リンクを短くすることができます。{0}以下にBitlyログインとAPIキーを入力してください：</value>
   </data>
   <data name="ConsumersboxClientSecret" xml:space="preserve">
@@ -379,7 +379,7 @@
   <data name="ConsumersBoxDescription" xml:space="preserve">
     <value>Boxファイルとフォルダを管理するように、アプリを接続します。</value>
   </data>
-  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、Boxアカウントを文書モジュールに接続して、Boxの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Box開発者ページでサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
@@ -391,7 +391,7 @@
   <data name="ConsumersClickatellDescription" xml:space="preserve">
     <value>Clickatellを介して二要素認証のアプリを有効します。</value>
   </data>
-  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
     <value>このアプリを使用して、Clickatellサービスでの二要素認証を有効にしてください。{0}SMSプラットフォームアカウントにサインインし、ONLYOFFICE用の新しいインテグレーションを作成します。apiKeyをコピーして、下に挿入してください:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
@@ -406,13 +406,13 @@
   <data name="ConsumersdocuSignHost" xml:space="preserve">
     <value>DocuSign認証端点</value>
   </data>
-  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、DocuSignを使用してデジタル的に文書を署名します。{0}DocuSign管理者コンソールでONLYOFFICE統合を追加してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersDropBoxDescription" xml:space="preserve">
     <value>Dropboxファイルとフォルダを管理するように、アプリを接続します。</value>
   </data>
-  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、Dropboxアカウントを文書モジュールに接続して、Dropboxの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Dropbox開発者ページでサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
@@ -433,7 +433,7 @@
   <data name="ConsumersFacebookDescription" xml:space="preserve">
     <value>アプリをONLYOFFICEに接続すると、Facebookでポータルにサインインし、コンタクトを検索できます。</value>
   </data>
-  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、Facebookを使用してONLYOFFICEにサインイン、またはCRMモジュールで顧客のFacebookアカウントをリンクできます。{0}Facebook開発者ポータルでONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
@@ -469,7 +469,7 @@
   <data name="ConsumersGoogleDescription" xml:space="preserve">
     <value>プロジェクトを接続して、Googleアカウントを介してポータルにサインインしたり、Google Driveファイルとフォルダーを管理したりすることだできます。</value>
   </data>
-  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、Google Driveアカウントを文書モジュールに接続して、Google Driveの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0} Google Drive APIsコンソールでONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
@@ -556,13 +556,13 @@
   <data name="ConsumersSkyDriveDescription" xml:space="preserve">
     <value>OneDriveファイルとフォルダを管理するように、アプリを接続します。</value>
   </data>
-  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、OneDriveアカウントを文書モジュールに接続して、OneDriveの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Microsoft Azureアカウントにサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersSmscDescription" xml:space="preserve">
     <value>SMSセンターを介して二要素認証のアプリを有効します。</value>
   </data>
-  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
     <value>SMSセンターサービスで二要素認証を有効にするには、このアプリを使用します。{0}smscアカウントのログイン名とパスワード（またはパスワードのMD5ハッシュ）を小文字で入力してください:</value>
   </data>
   <data name="Consumerssmscpsw" xml:space="preserve">
@@ -577,13 +577,13 @@
   <data name="ConsumersTelegramDescription" xml:space="preserve">
     <value>ポータル通知を受けるように、Telegramアカウントを接続します。</value>
   </data>
-  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
     <value>Telegramを使用してポータル通知を受けるように、Telegram用のボットを有効にしてください。新しいボットを作成するためにTelegramデスクトップでBotFatherを使用してください。そのボットを使用を使用するように、各ユーザがプロフィールのページでTelegram通知を有効にしなければなりません。{0}ボットのユーザ名とトークンを以下のフィールドに入力してください。</value>
   </data>
   <data name="ConsumersTwilioDescription" xml:space="preserve">
     <value>Twilioを追加すると、ブラウザー直接からＣＲＭ顧客に電話できます。</value>
   </data>
-  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、Twilioを使用してCRMモジュールから顧客に電話できます。{0}Twilioコンソールからのデータを以下に入力してください：</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
@@ -592,7 +592,7 @@
   <data name="ConsumersTwitterDescription" xml:space="preserve">
     <value>アプリをONLYOFFICEに接続すると、Twitterでポータルにサインインし、コンタクトを検索できます。</value>
   </data>
-  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
     <value>このアプリを接続すると、Twitterを使用してONLYOFFICEにサインイン、またはCRMモジュールでお客様のTwitterアカウントをリンクできます。{0} Twitter開発者ポータルでONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersVkDescription" xml:space="preserve">
@@ -604,7 +604,7 @@
   <data name="ConsumersYahooDescription" xml:space="preserve">
     <value>Yahoo連絡先インポートのアプリを接続します。</value>
   </data>
-  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
     <value>このアプリを有効にすると、Yahooの連絡先リストからのユーザをポータルに追加できます。{0}Yahoo!デベロッパーネットワークのアプリ作成というページでONLYOFFICE統合のために新しいアップリを作成してください。その後、データを以下に入力してください：</value>
   </data>
   <data name="ConsumersYandexDescription" xml:space="preserve">

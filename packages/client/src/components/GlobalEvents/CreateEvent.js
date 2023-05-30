@@ -8,7 +8,7 @@ import { combineUrl } from "@docspace/common/utils";
 
 import config from "PACKAGE_FILE";
 
-import { getTitleWithoutExst } from "../../helpers/files-helpers";
+import { getTitleWithoutExtension } from "SRC_DIR/helpers/filesUtils";
 import { getDefaultFileName } from "@docspace/client/src/helpers/filesUtils";
 
 import Dialog from "./sub-components/Dialog";
@@ -71,7 +71,7 @@ const CreateEvent = ({
     if (title) {
       const item = { fileExst: extension, title: title };
 
-      setStartValue(getTitleWithoutExst(item, fromTemplate));
+      setStartValue(getTitleWithoutExtension(item, fromTemplate));
     } else {
       setStartValue(defaultName);
     }
@@ -105,7 +105,7 @@ const CreateEvent = ({
       newValue =
         templateId === null
           ? getDefaultFileName(extension)
-          : getTitleWithoutExst({ fileExst: extension });
+          : getTitleWithoutExtension({ fileExst: extension });
 
       setStartValue(newValue);
     }
@@ -322,11 +322,8 @@ export default inject(
 
     const { id: parentId } = selectedFolderStore;
 
-    const {
-      replaceFileStream,
-      setEncryptionAccess,
-      currentTariffStatusStore,
-    } = auth;
+    const { replaceFileStream, setEncryptionAccess, currentTariffStatusStore } =
+      auth;
 
     const { isDesktopClient } = auth.settingsStore;
 

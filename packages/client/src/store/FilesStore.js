@@ -10,7 +10,7 @@ import {
   RoomsTypeValues,
   RoomsProviderType,
 } from "@docspace/common/constants";
-import history from "@docspace/common/history";
+
 import { combineUrl } from "@docspace/common/utils";
 import { updateTempContent } from "@docspace/common/utils";
 import { isMobile, isMobileOnly } from "react-device-detect";
@@ -1095,7 +1095,14 @@ class FilesStore {
 
     if (newUrl === currentUrl) return;
 
-    history.push(newUrl);
+    window.DocSpace.navigate(newUrl, {
+      state: {
+        fromAccounts:
+          window.DocSpace.location.pathname.includes("accounts/filter"),
+        fromSettings: window.DocSpace.location.pathname.includes("settings"),
+      },
+      replace: !location.search,
+    });
   };
 
   isEmptyLastPageAfterOperation = (newSelection) => {
@@ -1214,6 +1221,33 @@ class FilesStore {
           data.current.rootFolderType === FolderType.Privacy;
 
         runInAction(() => {
+          const isEmptyList = [...data.folders, ...data.files].length === 0;
+
+          if (filter && isEmptyList) {
+            const {
+              authorType,
+              roomId,
+              search,
+              withSubfolders,
+              filterType,
+              searchInContent,
+            } = filter;
+            const isFiltered =
+              authorType ||
+              roomId ||
+              search ||
+              !withSubfolders ||
+              filterType ||
+              searchInContent;
+
+            if (isFiltered) {
+              this.setIsEmptyPage(false);
+            } else {
+              this.setIsEmptyPage(isEmptyList);
+            }
+          } else {
+            this.setIsEmptyPage(isEmptyList);
+          }
           this.setFolders(isPrivacyFolder && isMobile ? [] : data.folders);
           this.setFiles(isPrivacyFolder && isMobile ? [] : data.files);
         });
@@ -1402,6 +1436,36 @@ class FilesStore {
           this.setRoomsFilter(filterData);
 
           runInAction(() => {
+            const isEmptyList = data.folders.length === 0;
+            if (filter && isEmptyList) {
+              const {
+                subjectId,
+                filterValue,
+                type,
+                withSubfolders: withRoomsSubfolders,
+                searchInContent: searchInContentRooms,
+                tags,
+                withoutTags,
+              } = filter;
+
+              const isFiltered =
+                subjectId ||
+                filterValue ||
+                type ||
+                withRoomsSubfolders ||
+                searchInContentRooms ||
+                tags ||
+                withoutTags;
+
+              if (isFiltered) {
+                this.setIsEmptyPage(false);
+              } else {
+                this.setIsEmptyPage(isEmptyList);
+              }
+            } else {
+              this.setIsEmptyPage(isEmptyList);
+            }
+
             this.setFolders(data.folders);
             this.setFiles([]);
           });
@@ -1528,10 +1592,7 @@ class FilesStore {
     const canConvert = this.filesSettingsStore.extsConvertible[item.fileExst];
     const isEncrypted = item.encrypted;
     const isDocuSign = false; //TODO: need this prop;
-    const isEditing =
-      (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
-    // const isFileOwner =
-    //   item.createdBy?.id === this.authStore.userStore.user?.id;
+    const isEditing = false; // (item.fileStatus & FileStatus.IsEditing) === FileStatus.IsEditing;
 
     const { isRecycleBinFolder, isMy, isArchiveFolder } = this.treeFoldersStore;
 
@@ -2504,6 +2565,11 @@ class FilesStore {
     });
 
     const items = [...newFolders, ...this.files];
+
+    if (items.length > 0 && this.isEmptyPage) {
+      this.setIsEmptyPage(false);
+    }
+
     const newItem = items.map((item) => {
       const {
         access,
@@ -2693,8 +2759,12 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
-      this.filesSettingsStore;
+    const {
+      isDocument,
+      isPresentation,
+      isSpreadsheet,
+      isArchive,
+    } = this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -3414,6 +3484,47 @@ class FilesStore {
 
   get roomsForDelete() {
     return this.folders.filter((f) => f.security.Delete);
+  }
+
+  get isFiltered() {
+    const { isRoomsFolder, isArchiveFolder } = this.treeFoldersStore;
+
+    const {
+      subjectId,
+      filterValue,
+      type,
+      withSubfolders: withRoomsSubfolders,
+      searchInContent: searchInContentRooms,
+      tags,
+      withoutTags,
+    } = this.roomsFilter;
+
+    const {
+      authorType,
+      roomId,
+      search,
+      withSubfolders,
+      filterType,
+      searchInContent,
+    } = this.filter;
+
+    const isFiltered =
+      isRoomsFolder || isArchiveFolder
+        ? filterValue ||
+          type ||
+          withRoomsSubfolders ||
+          searchInContentRooms ||
+          subjectId ||
+          tags ||
+          withoutTags
+        : authorType ||
+          roomId ||
+          search ||
+          !withSubfolders ||
+          filterType ||
+          searchInContent;
+
+    return isFiltered;
   }
 }
 

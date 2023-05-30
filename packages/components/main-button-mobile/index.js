@@ -27,7 +27,7 @@ import commonIconsStyles from "../utils/common-icons-style";
 
 import { isMobileOnly } from "react-device-detect";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledButtonAlertIcon = styled(ButtonAlertReactSvg)`
   cursor: pointer;
@@ -95,11 +95,11 @@ ProgressBarMobile.propTypes = {
   open: PropTypes.bool,
   onCancel: PropTypes.func,
   icon: PropTypes.string,
-  /** The function that will be called after the progress header click  */
+  /** The function called after the progress header is clicked  */
   onClickAction: PropTypes.func,
-  /** The function that hide button */
+  /** The function that facilitates hiding the button */
   hideButton: PropTypes.func,
-  /** If true the progress bar changes color */
+  /** Changes the progress bar color, if set to true */
   error: PropTypes.bool,
 };
 
@@ -125,6 +125,7 @@ const MainButtonMobile = (props) => {
     onClick,
     onAlertClick,
     withAlertClick,
+    dropdownStyle,
   } = props;
 
   const [isOpen, setIsOpen] = useState(opened);
@@ -381,6 +382,7 @@ const MainButtonMobile = (props) => {
         />
 
         <StyledDropDown
+          style={dropdownStyle}
           open={isOpen}
           withBackdrop={false}
           manualWidth={manualWidth || "400px"}
@@ -419,35 +421,38 @@ const MainButtonMobile = (props) => {
 MainButtonMobile.propTypes = {
   /** Accepts css style */
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
-  /** Options for drop down items  */
+  /** Drop down items options */
   actionOptions: PropTypes.array.isRequired,
-  /** If you need display progress bar components */
+  /** Displays progress bar components */
   progressOptions: PropTypes.array,
-  /** Menu that opens by clicking on the button  */
+  /** Menu that opens by clicking on the button */
   buttonOptions: PropTypes.array,
-  /** The function that will be called after the button click  */
+  /** The function called after the button is clicked */
   onUploadClick: PropTypes.func,
-  /** Show button inside drop down */
+  /** Displays button inside the drop down */
   withButton: PropTypes.bool,
-  /** The parameter that is used with buttonOptions is needed to open the menu by clicking on the button */
+  /** Opens a menu on clicking the button. Used with buttonOptions */
   isOpenButton: PropTypes.bool,
-  /** The name of the button in the drop down */
+  /** The button name in the drop down */
   title: PropTypes.string,
   /** Loading indicator */
   percent: PropTypes.number,
-  /** Section width */
+  /** Width section */
   sectionWidth: PropTypes.number,
-  /** Required if you need to specify the exact width of the drop down component */
+  /** Specifies the exact width of the drop down component */
   manualWidth: PropTypes.string,
+  /** Accepts class */
   className: PropTypes.string,
-  /** Tells when the dropdown should be opened */
+  /** Sets the dropdown to open */
   opened: PropTypes.bool,
-  /** If you need close drop down  */
+  /** Closes the drop down */
   onClose: PropTypes.func,
   /** If you need open upload panel when clicking on alert button  */
   onAlertClick: PropTypes.func,
-  /** Enable alert click  */
+  /** Enables alert click  */
   withAlertClick: PropTypes.bool,
+  /** Enables the submenu */
+  withMenu: PropTypes.bool,
 };
 
 MainButtonMobile.defaultProps = {

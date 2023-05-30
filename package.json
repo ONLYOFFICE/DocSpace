@@ -23,7 +23,8 @@
     "storybook-serve": "yarn workspace @docspace/components run storybook-serve",
     "test": "yarn workspace @docspace/components test",
     "wipe": "shx rm -rf node_modules yarn.lock packages/**/node_modules",
-    "debug-info": "auto-changelog --unreleased-only --template debuginfo --output public/debuginfo.md"
+    "debug-info": "auto-changelog --unreleased-only --template debuginfo --output public/debuginfo.md",
+    "licenses-audit": "yarn licenses audit --output-csv=licenses.csv --config=licenses.config.js --summary"
   },
   "old-scripts": {
     "build:test": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run build:test",
@@ -36,8 +37,8 @@
   "devDependencies": {
     "auto-changelog": "file:./packages/auto-changelog-2.3.1.tgz",
     "he": "^1.2.0",
-    "shx": "^0.3.3",
-    "terser": "^5.8.0"
+    "shx": "^0.3.4",
+    "terser": "^5.16.6"
   },
   "packageManager": "yarn@3.2.4"
 }

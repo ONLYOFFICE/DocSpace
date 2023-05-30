@@ -11,7 +11,7 @@ import InfoOutlineReactSvgUrl from "PUBLIC_DIR/images/info.outline.react.svg?url
 import LogoutReactSvgUrl from "PUBLIC_DIR/images/logout.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import { combineUrl } from "@docspace/common/utils";
-import history from "@docspace/common/history";
+
 import { isDesktop, isTablet, isMobile } from "react-device-detect";
 import { getProfileMenuItems } from "SRC_DIR/helpers/plugins";
 import { ZendeskAPI } from "@docspace/common/components/Zendesk";
@@ -101,15 +101,15 @@ class ProfileActionsStore {
       this.treeFoldersStore.setSelectedNode(["accounts"]);
     }
 
-    history.push(PROFILE_SELF_URL);
+    window.DocSpace.navigate(PROFILE_SELF_URL);
   };
 
   onSettingsClick = (settingsUrl) => {
-    history.push(settingsUrl);
+    window.DocSpace.navigate(settingsUrl);
   };
 
   onPaymentsClick = () => {
-    history.push(PAYMENTS_URL);
+    window.DocSpace.navigate(PAYMENTS_URL);
   };
 
   onHelpCenterClick = () => {
@@ -153,7 +153,7 @@ class ProfileActionsStore {
     if (isDesktop || isTablet) {
       this.setIsAboutDialogVisible(true);
     } else {
-      history.push(ABOUT_URL);
+      window.DocSpace.navigate(ABOUT_URL);
     }
   };
 
@@ -161,11 +161,6 @@ class ProfileActionsStore {
     this.authStore.logout().then(() => {
       this.filesStore.reset();
       this.peopleStore.reset();
-      setTimeout(() => {
-        window.location.replace(
-          combineUrl(window.DocSpaceConfig?.proxy?.url, "/login")
-        );
-      }, 300);
     });
   };
 

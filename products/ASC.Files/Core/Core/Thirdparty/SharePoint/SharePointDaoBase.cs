@@ -24,27 +24,33 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using File = Microsoft.SharePoint.Client.File;
 using Folder = Microsoft.SharePoint.Client.Folder;
 
 namespace ASC.Files.Thirdparty.SharePoint;
 
-internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
+internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObject>
 {
-    protected override string Id => "spoint";
+    internal SharePointProviderInfo SharePointProviderInfo { get; private set; }
 
-    public SharePointDaoBase(
-        IServiceProvider serviceProvider,
+    public SharePointDaoBase(IServiceProvider serviceProvider,
         UserManager userManager,
-        TenantManager tenantManager,
+        TenantManager tenantManager, 
         TenantUtil tenantUtil,
-        IDbContextFactory<FilesDbContext> dbContextManager,
+        IDbContextFactory<FilesDbContext> dbContextFactory,
         SetupInfo setupInfo,
-        ILogger<SharePointDaoBase> monitor,
         FileUtility fileUtility,
         TempPath tempPath,
-        AuthContext authContext)
-        : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextManager, setupInfo, monitor, fileUtility, tempPath, authContext)
+        AuthContext authContext, 
+        RegexDaoSelectorBase<File, Folder, ClientObject> regexDaoSelectorBase) : base(serviceProvider, userManager, tenantManager, tenantUtil, dbContextFactory, setupInfo, fileUtility, tempPath, authContext, regexDaoSelectorBase)
     {
+    }
+
+    public void Init(string pathPrefix, IProviderInfo<File, Folder, ClientObject> providerInfo)
+    {
+        PathPrefix = pathPrefix;
+        ProviderInfo = providerInfo;
+        SharePointProviderInfo = providerInfo as SharePointProviderInfo;
     }
 
     protected string GetAvailableTitle(string requestTitle, Folder parentFolderID, Func<string, Folder, bool> isExist)
@@ -197,23 +203,18 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<SharePointProviderInfo>
         });
     }
 
-    protected Task<string> MappingIDAsync(string id)
-    {
-        return MappingIDAsync(id, false);
-    }
-
-    protected override string MakeId(string path = null)
+    public override string MakeId(string path = null)
     {
         return path;
     }
 
-    protected override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
+    public override async Task<IEnumerable<string>> GetChildrenAsync(string folderId)
     {
-        var folders = await ProviderInfo.GetFolderFoldersAsync(folderId);
-        var subFolders = folders.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+        var folders = await SharePointProviderInfo.GetFolderFoldersAsync(folderId);
+        var subFolders = folders.Select(x => SharePointProviderInfo.MakeId(x.ServerRelativeUrl));
 
-        var folderFiles = await ProviderInfo.GetFolderFilesAsync(folderId);
-        var files = folderFiles.Select(x => ProviderInfo.MakeId(x.ServerRelativeUrl));
+        var folderFiles = await SharePointProviderInfo.GetFolderFilesAsync(folderId);
+        var files = folderFiles.Select(x => SharePointProviderInfo.MakeId(x.ServerRelativeUrl));
 
         return subFolders.Concat(files);
     }

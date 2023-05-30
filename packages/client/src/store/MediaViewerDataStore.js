@@ -66,7 +66,8 @@ class MediaViewerDataStore {
 
   changeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
-    window.history.pushState(null, null, url);
+
+    window.DocSpace.navigate(url);
   };
 
   nextMedia = () => {

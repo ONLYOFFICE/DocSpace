@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useEffect } from "react";
 import { isMobile } from "react-device-detect";
+import { useLocation } from "react-router-dom";
 import Paging from "@docspace/components/paging";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
@@ -18,97 +19,174 @@ const SectionPagingContent = ({
   setPageItemsLength,
   isHidePagination,
   isRooms,
+  accountsFilter,
+  fetchPeople,
 }) => {
-  const { t } = useTranslation("Files");
+  const location = useLocation();
+
+  const isAccountsPage = location.pathname.includes("accounts");
+
+  const { t } = useTranslation(["Files", "People"]);
   const onNextClick = useCallback(
     (e) => {
-      if (!filter.hasNext()) {
-        e.preventDefault();
-        return;
-      }
-      //console.log("Next Clicked", e);
+      if (isAccountsPage) {
+        if (!accountsFilter.hasNext()) {
+          e.preventDefault();
+          return;
+        }
+        //console.log("Next Clicked", e);
 
-      const newFilter = filter.clone();
-      newFilter.page++;
+        const newFilter = accountsFilter.clone();
+        newFilter.page++;
 
-      setIsLoading(true);
-      if (isRooms) {
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        setIsLoading(true);
+        fetchPeople(newFilter).finally(() => setIsLoading(false));
       } else {
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        if (!filter.hasNext()) {
+          e.preventDefault();
+          return;
+        }
+        //console.log("Next Clicked", e);
+
+        const newFilter = filter.clone();
+        newFilter.page++;
+
+        setIsLoading(true);
+        if (isRooms) {
+          fetchRooms(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        } else {
+          fetchFiles(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        }
       }
     },
-    [filter, selectedFolderId, setIsLoading, fetchFiles, isRooms]
+    [
+      isAccountsPage,
+      accountsFilter,
+      fetchPeople,
+      filter,
+      selectedFolderId,
+      setIsLoading,
+      fetchFiles,
+      isRooms,
+    ]
   );
 
   const onPrevClick = useCallback(
     (e) => {
-      if (!filter.hasPrev()) {
-        e.preventDefault();
-        return;
-      }
+      if (isAccountsPage) {
+        if (!accountsFilter.hasPrev()) {
+          e.preventDefault();
+          return;
+        }
 
-      //console.log("Prev Clicked", e);
+        //console.log("Prev Clicked", e);
 
-      const newFilter = filter.clone();
-      newFilter.page--;
+        const newFilter = accountsFilter.clone();
+        newFilter.page--;
 
-      setIsLoading(true);
-      if (isRooms) {
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        setIsLoading(true);
+        fetchPeople(newFilter).finally(() => setIsLoading(false));
       } else {
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        if (!filter.hasPrev()) {
+          e.preventDefault();
+          return;
+        }
+
+        //console.log("Prev Clicked", e);
+
+        const newFilter = filter.clone();
+        newFilter.page--;
+
+        setIsLoading(true);
+        if (isRooms) {
+          fetchRooms(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        } else {
+          fetchFiles(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        }
       }
     },
-    [filter, selectedFolderId, setIsLoading, fetchFiles]
+    [
+      isAccountsPage,
+      accountsFiler,
+      fetchPeople,
+      filter,
+      selectedFolderId,
+      setIsLoading,
+      fetchFiles,
+    ]
   );
 
   const onChangePageSize = useCallback(
     (pageItem) => {
       //console.log("Paging onChangePageSize", pageItem);
+      if (isAccountsPage) {
+        //console.log("Paging onChangePageSize", pageItem);
 
-      const newFilter = filter.clone();
-      newFilter.page = 0;
-      newFilter.pageCount = pageItem.key;
+        const newFilter = accountsFilter.clone();
+        newFilter.page = 0;
+        newFilter.pageCount = pageItem.key;
 
-      setIsLoading(true);
-      if (isRooms) {
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        setIsLoading(true);
+        fetchPeople(newFilter).finally(() => setIsLoading(false));
       } else {
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        const newFilter = filter.clone();
+        newFilter.page = 0;
+        newFilter.pageCount = pageItem.key;
+
+        setIsLoading(true);
+        if (isRooms) {
+          fetchRooms(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        } else {
+          fetchFiles(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        }
       }
     },
-    [filter, selectedFolderId, setIsLoading, fetchFiles]
+    [
+      isAccountsPage,
+      accountsFilter,
+      fetchPeople,
+      filter,
+      selectedFolderId,
+      setIsLoading,
+      fetchFiles,
+    ]
   );
 
   const onChangePage = useCallback(
     (pageItem) => {
       //console.log("Paging onChangePage", pageItem);
+      if (isAccountsPage) {
+        const newFilter = accountsFilter.clone();
+        newFilter.page = pageItem.key;
 
-      const newFilter = filter.clone();
-      newFilter.page = pageItem.key;
-
-      setIsLoading(true);
-      if (isRooms) {
-        fetchRooms(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        setIsLoading(true);
+        fetchPeople(newFilter).finally(() => setIsLoading(false));
       } else {
-        fetchFiles(selectedFolderId, newFilter).finally(() =>
-          setIsLoading(false)
-        );
+        const newFilter = filter.clone();
+        newFilter.page = pageItem.key;
+
+        setIsLoading(true);
+        if (isRooms) {
+          fetchRooms(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        } else {
+          fetchFiles(selectedFolderId, newFilter).finally(() =>
+            setIsLoading(false)
+          );
+        }
       }
     },
     [filter, selectedFolderId, setIsLoading, fetchFiles]
@@ -133,21 +211,44 @@ const SectionPagingContent = ({
   );
 
   const pageItems = useMemo(() => {
-    if (filter.total < filter.pageCount) return [];
-    return [...Array(totalPages).keys()].map((item) => {
-      return {
-        key: item,
-        label: t("Common:PageOfTotalPage", {
-          page: item + 1,
-          totalPage: totalPages,
-        }),
-      };
-    });
-  }, [filter.total, filter.pageCount, t, totalPages]);
+    if (isAccountsPage) {
+      const totalPages = Math.ceil(
+        accountsFilter.total / accountsFilter.pageCount
+      );
+      return [...Array(totalPages).keys()].map((item) => {
+        return {
+          key: item,
+          label: t("Common:PageOfTotalPage", {
+            page: item + 1,
+            totalPage: totalPages,
+          }),
+        };
+      });
+    } else {
+      if (filter.total < filter.pageCount) return [];
+      return [...Array(totalPages).keys()].map((item) => {
+        return {
+          key: item,
+          label: t("Common:PageOfTotalPage", {
+            page: item + 1,
+            totalPage: totalPages,
+          }),
+        };
+      });
+    }
+  }, [
+    filter.total,
+    filter.pageCount,
+    t,
+    totalPages,
+    accountsFilter.total,
+    accountsFilter.pageCount,
+  ]);
 
   useEffect(() => {
+    if (isAccountsPage) return;
     setPageItemsLength(pageItems.length);
-  }, [pageItems]);
+  }, [pageItems, isAccountsPage]);
 
   const emptyPageSelection = {
     key: 0,
@@ -159,19 +260,24 @@ const SectionPagingContent = ({
     label: t("Common:CountPerPage", { count: 25 }),
   };
 
-  const selectedPageItem =
-    pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
-  const selectedCountItem =
-    countItems.find((x) => x.key === filter.pageCount) || emptyCountSelection;
+  const selectedPageItem = isAccountsPage
+    ? pageItems.find((x) => x.key === accountsFilter.page) || emptyPageSelection
+    : pageItems.find((x) => x.key === filter.page) || emptyPageSelection;
+  const selectedCountItem = isAccountsPage
+    ? countItems.find((x) => x.key === accountsFilter.pageCount) ||
+      emptyCountSelection
+    : countItems.find((x) => x.key === filter.pageCount) || emptyCountSelection;
 
   //console.log("SectionPagingContent render", filter);
 
   const showCountItem = useMemo(() => {
+    if (isAccountsPage) return false;
+
     if (files && folders)
       return (
         files.length + folders.length === filter.pageCount || filter.total > 25
       );
-  }, [files, folders, filter, pageItems]);
+  }, [isAccountsPage, files, folders, filter, pageItems]);
 
   return !tReady ||
     (filter.total <= filter.pageCount && filter.total < 26) ||
@@ -186,8 +292,12 @@ const SectionPagingContent = ({
       countItems={countItems}
       onSelectCount={onChangePageSize}
       displayItems={false}
-      disablePrevious={!filter.hasPrev()}
-      disableNext={!filter.hasNext()}
+      disablePrevious={
+        isAccountsPage ? !accountsFilter.hasPrev() : !filter.hasPrev()
+      }
+      disableNext={
+        isAccountsPage ? !accountsFilter.hasNext() : !filter.hasNext()
+      }
       disableHover={isMobile}
       previousAction={onPrevClick}
       nextAction={onNextClick}
@@ -200,7 +310,13 @@ const SectionPagingContent = ({
 };
 
 export default inject(
-  ({ filesStore, selectedFolderStore, treeFoldersStore }) => {
+  ({
+    auth,
+    peopleStore,
+    filesStore,
+    selectedFolderStore,
+    treeFoldersStore,
+  }) => {
     const {
       files,
       folders,
@@ -221,6 +337,11 @@ export default inject(
 
     const totalPages = Math.ceil(currentFilter.total / currentFilter.pageCount);
 
+    const { usersStore, filterStore } = peopleStore;
+    const { filter: accountsFilter } = filterStore;
+
+    const { getUsersList: fetchPeople } = usersStore;
+
     return {
       files,
       folders,
@@ -236,6 +357,9 @@ export default inject(
       setPageItemsLength,
       isHidePagination,
       isRooms,
+
+      accountsFilter,
+      fetchPeople,
     };
   }
 )(observer(SectionPagingContent));

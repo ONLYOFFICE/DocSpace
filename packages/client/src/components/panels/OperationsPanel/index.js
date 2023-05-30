@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { withRouter } from "react-router";
+
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
@@ -256,4 +256,4 @@ export default inject(
       setMovingInProgress,
     };
   }
-)(withRouter(observer(OperationsPanel)));
+)(observer(OperationsPanel));

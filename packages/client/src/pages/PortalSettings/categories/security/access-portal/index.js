@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
 import { withTranslation } from "react-i18next";
 import Text from "@docspace/components/text";
 import { setDocumentTitle } from "SRC_DIR/helpers/utils";
@@ -114,4 +113,4 @@ export default inject(({ auth }) => {
     trustedMailDomainSettingsUrl,
     administratorMessageSettingsUrl,
   };
-})(withTranslation("Settings")(withRouter(observer(AccessPortal))));
+})(withTranslation("Settings")(observer(AccessPortal)));

@@ -16,14 +16,8 @@ export class CustomScrollbars extends React.Component {
   };
 
   render() {
-    const {
-      onScroll,
-      forwardedRef,
-      style,
-      children,
-      className,
-      stype,
-    } = this.props;
+    const { onScroll, forwardedRef, style, children, className, stype } =
+      this.props;
     //console.log("CustomScrollbars", this.props);
     return (
       <Scrollbar

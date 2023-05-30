@@ -90,7 +90,7 @@ public class Startup : BaseWorkerStartup
         DIHelper.TryAdd<TenantManager>();
         DIHelper.TryAdd<UserManager>();
         DIHelper.TryAdd<SocketServiceClient>();
-        DIHelper.TryAdd<FileStorageService<int>>();
+        DIHelper.TryAdd<FileStorageService>();
         DIHelper.TryAdd<Builder<int>>();
 
         services.AddScoped<ITenantQuotaFeatureChecker, CountRoomChecker>();
@@ -111,6 +111,6 @@ public class Startup : BaseWorkerStartup
         services.AddSingleton(Channel.CreateUnbounded<FileData<int>>());
         services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Reader);
         services.AddSingleton(svc => svc.GetRequiredService<Channel<FileData<int>>>().Writer);
-    }
+        }
 
-}
+    }

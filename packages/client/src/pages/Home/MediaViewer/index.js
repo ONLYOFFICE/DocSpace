@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 import queryString from "query-string";
-import history from "@docspace/common/history";
 import MediaViewer from "@docspace/common/components/MediaViewer";
 
 const FilesMediaViewer = (props) => {
@@ -16,7 +15,7 @@ const FilesMediaViewer = (props) => {
     currentMediaFileId,
     deleteItemAction,
     setMediaViewerData,
-    location,
+
     setRemoveMediaItem,
     userAccess,
     deleteDialogVisible,
@@ -54,6 +53,9 @@ const FilesMediaViewer = (props) => {
     activeFiles,
     activeFolders,
   } = props;
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     if (visible) {
@@ -100,7 +102,7 @@ const FilesMediaViewer = (props) => {
   const onChangeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
     setCurrentId(id);
-    window.history.pushState(null, null, url);
+    navigate(url);
   };
 
   const resetSelection = () => {
@@ -112,7 +114,7 @@ const FilesMediaViewer = (props) => {
 
     if (queryParams.has(queryName)) {
       queryParams.delete(queryName);
-      history.replace({
+      navigate(_, {
         search: queryParams.toString(),
       });
     }
@@ -179,7 +181,7 @@ const FilesMediaViewer = (props) => {
     const targetFile = files.find((item) => item.id === currentMediaFileId);
     if (targetFile) setBufferSelection(targetFile);
 
-    window.history.replaceState(null, null, url);
+    navigate(url, { replace: true });
   };
 
   return (
@@ -320,8 +322,4 @@ export default inject(
       activeFolders,
     };
   }
-)(
-  withRouter(
-    withTranslation(["Files", "Translations"])(observer(FilesMediaViewer))
-  )
-);
+)(withTranslation(["Files", "Translations"])(observer(FilesMediaViewer)));

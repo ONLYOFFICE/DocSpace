@@ -3,7 +3,7 @@ import axios from "axios";
 import FilesFilter from "./filter";
 import { FolderType, RoomSearchArea } from "../../constants";
 import find from "lodash/find";
-import { decodeDisplayName } from "../../utils";
+import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
@@ -62,14 +62,17 @@ export function getFolderPath(folderId) {
 }
 
 export function getFolder(folderId, filter, signal) {
+  let params = folderId;
+
   if (folderId && typeof folderId === "string") {
     folderId = encodeURIComponent(folderId.replace(/\\\\/g, "\\"));
   }
 
-  const params =
-    filter && filter instanceof FilesFilter
-      ? `${folderId}?${filter.toApiUrlParams()}`
-      : folderId;
+  if (filter) {
+    checkFilterInstance(filter, FilesFilter);
+
+    params = `${folderId}?${filter.toApiUrlParams()}`;
+  }
 
   const options = {
     method: "get",
@@ -966,6 +969,16 @@ export function getSharedUsers(fileId) {
 
   return request(options);
 }
+
+export function getProtectUsers(fileId) {
+  const options = {
+    method: "get",
+    url: `/files/file/${fileId}/protectusers`,
+  };
+
+  return request(options);
+}
+
 export function sendEditorNotify(fileId, actionLink, emails, message) {
   return request({
     method: "post",

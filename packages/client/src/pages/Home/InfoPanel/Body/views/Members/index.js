@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import toastr from "@docspace/components/toast/toastr";
@@ -78,7 +78,7 @@ const Members = ({
     };
   };
 
-  useEffect(async () => {
+  const updateSelectionParentRoomAction = useCallback(async () => {
     if (!selectionParentRoom) return;
 
     if (selectionParentRoom.members) {
@@ -93,7 +93,11 @@ const Members = ({
     });
   }, [selectionParentRoom]);
 
-  useEffect(async () => {
+  useEffect(() => {
+    updateSelectionParentRoomAction();
+  }, [selectionParentRoom, updateSelectionParentRoomAction]);
+
+  const updateSelectionParentRoomActionSelection = useCallback(async () => {
     if (!selection.isRoom) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
@@ -105,7 +109,11 @@ const Members = ({
       setView("info_details");
   }, [selection]);
 
-  useEffect(async () => {
+  useEffect(() => {
+    updateSelectionParentRoomActionSelection();
+  }, [selection, updateSelectionParentRoomActionSelection]);
+
+  const updateMembersAction = useCallback(async () => {
     if (!updateRoomMembers) return;
 
     const fetchedMembers = await fetchMembers(selection.id);
@@ -116,6 +124,15 @@ const Members = ({
     });
     setMembers(fetchedMembers);
   }, [selectionParentRoom, selection?.id, updateRoomMembers]);
+
+  useEffect(() => {
+    updateMembersAction();
+  }, [
+    selectionParentRoom,
+    selection?.id,
+    updateRoomMembers,
+    updateMembersAction,
+  ]);
 
   const onClickInviteUsers = () => {
     setIsMobileHidden(true);

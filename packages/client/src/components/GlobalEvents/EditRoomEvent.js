@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { inject, observer } from "mobx-react";
 import { useTranslation } from "react-i18next";
 import { EditRoomDialog } from "../dialogs";
@@ -176,27 +176,35 @@ const EditRoomEvent = ({
     }
   };
 
-  useEffect(async () => {
+  const fetchLogoAction = useCallback(async (logo) => {
+    const imgExst = logo.slice(".")[1];
+    const file = await fetch(logo)
+      .then((res) => res.arrayBuffer())
+      .then(
+        (buf) =>
+          new File([buf], "fetchedFile", {
+            type: `image/${imgExst}`,
+          })
+      );
+    setFetchedImage(file);
+  }, []);
+
+  useEffect(() => {
     const logo = item?.logo?.original ? item.logo.original : "";
 
     if (logo) {
-      const imgExst = logo.slice(".")[1];
-      const file = await fetch(logo)
-        .then((res) => res.arrayBuffer())
-        .then(
-          (buf) =>
-            new File([buf], "fetchedFile", {
-              type: `image/${imgExst}`,
-            })
-        );
-      setFetchedImage(file);
+      fetchLogoAction(logo);
     }
   }, []);
 
-  useEffect(async () => {
+  const fetchTagsAction = useCallback(async () => {
     const tags = await fetchTags();
     setFetchedTags(tags);
   }, []);
+
+  useEffect(() => {
+    fetchTagsAction();
+  }, [fetchTagsAction]);
 
   useEffect(() => {
     setCreateRoomDialogVisible(true);

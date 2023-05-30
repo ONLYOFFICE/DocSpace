@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
-import { withRouter } from "react-router";
 import ModalDialogContainer from "../ModalDialogContainer";
 import Text from "@docspace/components/text";
 import Button from "@docspace/components/button";
@@ -134,4 +133,4 @@ export default inject(
       items,
     };
   }
-)(withRouter(observer(RestoreRoomDialog)));
+)(observer(RestoreRoomDialog));

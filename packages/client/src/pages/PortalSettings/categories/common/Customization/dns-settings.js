@@ -6,9 +6,8 @@ import FieldContainer from "@docspace/components/field-container";
 import TextInput from "@docspace/components/text-input";
 import Button from "@docspace/components/button";
 import { inject, observer } from "mobx-react";
-import { combineUrl } from "@docspace/common/utils";
-import config from "PACKAGE_FILE";
-import history from "@docspace/common/history";
+
+import { useNavigate } from "react-router-dom";
 import { isMobileOnly } from "react-device-detect";
 import { isSmallTablet } from "@docspace/components/utils/device";
 import checkScrollSettingsBlock from "../utils";
@@ -36,6 +35,7 @@ const DNSSettings = (props) => {
   const [hasScroll, setHasScroll] = useState(false);
   const isLoadedSetting = isLoaded && tReady;
   const [isCustomizationView, setIsCustomizationView] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setDocumentTitle(t("DNSSettings"));
@@ -80,15 +80,11 @@ const DNSSettings = (props) => {
         ""
       );
 
-      const newUrl = combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        "/portal-settings/customization/general"
-      );
+      const newUrl = "/portal-settings/customization/general";
 
       if (newUrl === currentUrl) return;
 
-      history.push(newUrl);
+      navigate(newUrl);
     } else {
       setIsCustomizationView(false);
     }

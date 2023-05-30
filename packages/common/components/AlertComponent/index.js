@@ -1,6 +1,6 @@
 import React from "react";
 import { inject, observer } from "mobx-react";
-import { withRouter } from "react-router";
+
 import styled from "styled-components";
 
 import Text from "@docspace/components/text";
@@ -93,14 +93,12 @@ const AlertComponent = (props) => {
   );
 };
 
-export default withRouter(
-  inject(({ auth }) => {
-    const { settingsStore } = auth;
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
 
-    const { theme } = settingsStore;
+  const { theme } = settingsStore;
 
-    return {
-      theme,
-    };
-  })(observer(AlertComponent))
-);
+  return {
+    theme,
+  };
+})(observer(AlertComponent));

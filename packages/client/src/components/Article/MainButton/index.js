@@ -20,7 +20,7 @@ import MainButton from "@docspace/components/main-button";
 import { withTranslation } from "react-i18next";
 import Loaders from "@docspace/common/components/Loaders";
 import { encryptionUploadDialog } from "../../../helpers/desktop";
-import { withRouter } from "react-router";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import MobileView from "./MobileView";
 import { combineUrl } from "@docspace/common/utils";
@@ -90,7 +90,7 @@ const ArticleMainButtonContent = (props) => {
   const {
     t,
     isMobileArticle,
-    canCreate,
+
     isPrivacy,
     encryptedFile,
     encrypted,
@@ -101,7 +101,7 @@ const ArticleMainButtonContent = (props) => {
     isFavoritesFolder,
     isRecentFolder,
     isRecycleBinFolder,
-    history,
+
     currentFolderId,
     isRoomsFolder,
     isArchiveFolder,
@@ -114,8 +114,6 @@ const ArticleMainButtonContent = (props) => {
 
     isOwner,
     isAdmin,
-
-    canCreateFiles,
 
     setInvitePanelOptions,
 
@@ -135,6 +133,9 @@ const ArticleMainButtonContent = (props) => {
   const [uploadActions, setUploadActions] = React.useState([]);
   const [model, setModel] = React.useState([]);
   const [isDropdownMainButton, setIsDropdownMainButton] = React.useState(true);
+
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const onCreate = React.useCallback(
     (e) => {
@@ -198,13 +199,7 @@ const ArticleMainButtonContent = (props) => {
   const onInputClick = React.useCallback((e) => (e.target.value = null), []);
 
   const onShowGallery = () => {
-    history.push(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        `/form-gallery/${currentFolderId}/`
-      )
-    );
+    navigate(`/form-gallery/${currentFolderId}/`);
   };
 
   const onInvite = React.useCallback((e) => {
@@ -233,8 +228,8 @@ const ArticleMainButtonContent = (props) => {
 
   React.useEffect(() => {
     const isSettingFolder =
-      window.location.pathname.endsWith("/settings/common") ||
-      window.location.pathname.endsWith("/settings/admin");
+      location.pathname.endsWith("/settings/common") ||
+      location.pathname.endsWith("/settings/admin");
 
     const isFolderHiddenDropdown =
       isArchiveFolder ||
@@ -253,7 +248,7 @@ const ArticleMainButtonContent = (props) => {
     isFavoritesFolder,
     isRecentFolder,
     isRecycleBinFolder,
-    window.location.pathname,
+    location.pathname,
   ]);
 
   React.useEffect(() => {
@@ -467,7 +462,7 @@ const ArticleMainButtonContent = (props) => {
 
   const isDisabled = isAccountsPage ? !canInvite : !security?.Create;
 
-  const isProfile = history.location.pathname === "/accounts/view/@self";
+  const isProfile = location.pathname === "/accounts/view/@self";
 
   return (
     <>
@@ -498,6 +493,7 @@ const ArticleMainButtonContent = (props) => {
           size="small"
           primary
           scale
+          title={t("Files:NewRoom")}
         />
       ) : (
         <MainButton
@@ -510,6 +506,7 @@ const ArticleMainButtonContent = (props) => {
           isDropdown={isDropdownMainButton}
           text={mainButtonText}
           model={model}
+          title={mainButtonText}
         />
       )}
 
@@ -552,7 +549,7 @@ export default inject(
       isLoaded,
       firstLoad,
       isLoading,
-      canCreate,
+
       mainButtonMobileVisible,
     } = filesStore;
     const {
@@ -582,8 +579,6 @@ export default inject(
     const { isAdmin, isOwner } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const { canCreateFiles } = accessRightsStore;
-
     return {
       isGracePeriod,
       setInviteUsersWarningDialogVisible,
@@ -599,9 +594,6 @@ export default inject(
       isRoomsFolder,
       isArchiveFolder,
       selectedTreeNode,
-
-      canCreate,
-      canCreateFiles,
 
       startUpload,
 
@@ -632,7 +624,7 @@ export default inject(
     "People",
     "PeopleTranslations",
   ])(
-    withLoader(observer(withRouter(ArticleMainButtonContent)))(
+    withLoader(observer(ArticleMainButtonContent))(
       <Loaders.ArticleButton height="28px" />
     )
   )

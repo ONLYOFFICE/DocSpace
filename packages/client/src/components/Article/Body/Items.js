@@ -133,6 +133,7 @@ const Item = ({
         labelBadge={labelBadge}
         onClickBadge={onBadgeClick}
         iconBadge={iconBadge}
+        badgeTitle={t("RecycleBinAction")}
       />
     </StyledDragAndDrop>
   );

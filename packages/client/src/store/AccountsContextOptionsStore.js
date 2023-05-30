@@ -18,7 +18,6 @@ import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import toastr from "@docspace/components/toast/toastr";
 
-import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { EmployeeStatus, FilterSubject } from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
@@ -179,10 +178,8 @@ class AccountsContextOptionsStore {
       hasUsersToRemove,
       hasFreeUsers,
     } = this.peopleStore.selectionStore;
-    const {
-      setSendInviteDialogVisible,
-      setDeleteDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setSendInviteDialogVisible, setDeleteDialogVisible } =
+      this.peopleStore.dialogStore;
 
     const { isOwner } = this.authStore.userStore.user;
 
@@ -306,7 +303,7 @@ class AccountsContextOptionsStore {
   };
 
   onProfileClick = () => {
-    history.push(PROFILE_SELF_URL);
+    window.DocSpace.navigate(PROFILE_SELF_URL);
   };
 
   toggleChangeNameDialog = () => {
@@ -316,10 +313,8 @@ class AccountsContextOptionsStore {
   };
 
   toggleChangeEmailDialog = (item) => {
-    const {
-      setDialogData,
-      setChangeEmailDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setChangeEmailDialogVisible } =
+      this.peopleStore.dialogStore;
     const { id, email } = item;
 
     setDialogData({
@@ -331,10 +326,8 @@ class AccountsContextOptionsStore {
   };
 
   toggleChangePasswordDialog = (item) => {
-    const {
-      setDialogData,
-      setChangePasswordDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setChangePasswordDialogVisible } =
+      this.peopleStore.dialogStore;
     const { email } = item;
     setDialogData({
       email,
@@ -370,11 +363,8 @@ class AccountsContextOptionsStore {
   };
 
   toggleDeleteProfileEverDialog = (item) => {
-    const {
-      setDialogData,
-      setDeleteProfileDialogVisible,
-      closeDialogs,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setDeleteProfileDialogVisible, closeDialogs } =
+      this.peopleStore.dialogStore;
     const { id, displayName, userName } = item;
 
     closeDialogs();
@@ -403,10 +393,8 @@ class AccountsContextOptionsStore {
   };
 
   onResetAuth = (item) => {
-    const {
-      setDialogData,
-      setResetAuthDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setResetAuthDialogVisible } =
+      this.peopleStore.dialogStore;
 
     setResetAuthDialogVisible(true);
     setDialogData(item.id);

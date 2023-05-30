@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled, { css } from "styled-components";
 import PropTypes from "prop-types";
 import MobileLayout from "./MobileLayout";
+import { useNavigate, useLocation } from "react-router-dom";
 import { size } from "@docspace/components/utils/device";
 import {
   isIOS,
@@ -38,6 +39,13 @@ const Layout = (props) => {
 
   const [contentHeight, setContentHeight] = useState();
   const [isPortrait, setIsPortrait] = useState();
+
+  if (window.DocSpace) {
+    window.DocSpace.navigate = useNavigate();
+    window.DocSpace.location = useLocation();
+  } else {
+    window.DocSpace = { navigate: useNavigate(), location: useLocation() };
+  }
 
   const intervalTime = 100;
   const endTimeout = 300;

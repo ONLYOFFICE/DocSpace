@@ -31,8 +31,7 @@ public class ThirdpartyController : ApiControllerBase
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly EntryManager _entryManager;
     private readonly FilesSettingsHelper _filesSettingsHelper;
-    private readonly FileStorageService<int> _fileStorageService;
-    private readonly FileStorageService<string> _fileStorageServiceThirdparty;
+    private readonly FileStorageService _fileStorageService;
     private readonly GlobalFolderHelper _globalFolderHelper;
     private readonly SecurityContext _securityContext;
     private readonly ThirdpartyConfiguration _thirdpartyConfiguration;
@@ -46,8 +45,7 @@ public class ThirdpartyController : ApiControllerBase
         CoreBaseSettings coreBaseSettings,
         EntryManager entryManager,
         FilesSettingsHelper filesSettingsHelper,
-        FileStorageService<int> fileStorageService,
-        FileStorageService<string> fileStorageServiceThirdparty,
+        FileStorageService fileStorageService,
         GlobalFolderHelper globalFolderHelper,
         SecurityContext securityContext,
         ThirdpartyConfiguration thirdpartyConfiguration,
@@ -63,7 +61,6 @@ public class ThirdpartyController : ApiControllerBase
         _entryManager = entryManager;
         _filesSettingsHelper = filesSettingsHelper;
         _fileStorageService = fileStorageService;
-        _fileStorageServiceThirdparty = fileStorageServiceThirdparty;
         _globalFolderHelper = globalFolderHelper;
         _securityContext = securityContext;
         _thirdpartyConfiguration = thirdpartyConfiguration;
@@ -140,7 +137,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpDelete("thirdparty/{providerId:int}")]
     public Task<object> DeleteThirdPartyAsync(int providerId)
     {
-        return _fileStorageServiceThirdparty.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
+        return _fileStorageService.DeleteThirdPartyAsync(providerId.ToString(CultureInfo.InvariantCulture));
 
     }
 
@@ -190,7 +187,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpGet("thirdparty")]
     public IAsyncEnumerable<ThirdPartyParams> GetThirdPartyAccountsAsync()
     {
-        return _fileStorageServiceThirdparty.GetThirdPartyAsync();
+        return _fileStorageService.GetThirdPartyAsync();
     }
 
     /// <summary>
@@ -202,7 +199,7 @@ public class ThirdpartyController : ApiControllerBase
     [HttpGet("thirdparty/backup")]
     public async Task<FolderDto<string>> GetBackupThirdPartyAccountAsync()
     {
-        var folder = await _fileStorageServiceThirdparty.GetBackupThirdPartyAsync();
+        var folder = await _fileStorageService.GetBackupThirdPartyAsync();
         if (folder != null)
         {
 
@@ -271,7 +268,7 @@ public class ThirdpartyController : ApiControllerBase
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyAsync(thirdPartyParams);
+        var folder = await _fileStorageService.SaveThirdPartyAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }
@@ -306,7 +303,7 @@ public class ThirdpartyController : ApiControllerBase
             ProviderKey = inDto.ProviderKey,
         };
 
-        var folder = await _fileStorageServiceThirdparty.SaveThirdPartyBackupAsync(thirdPartyParams);
+        var folder = await _fileStorageService.SaveThirdPartyBackupAsync(thirdPartyParams);
 
         return await _folderDtoHelper.GetAsync(folder);
     }

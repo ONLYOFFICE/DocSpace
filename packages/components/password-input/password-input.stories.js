@@ -2,6 +2,24 @@ import React, { useState, useEffect } from "react";
 import PasswordInput from ".";
 import TextInput from "../text-input";
 
+export default {
+  title: "Components/PasswordInput",
+  component: PasswordInput,
+  parameters: {
+    docs: {
+      description: {
+        component: "Paging is used to navigate med content pages",
+      },
+    },
+  },
+  argTypes: {
+    settingMinLength: { description: "Property for story" },
+    settingsUpperCase: { description: "Property for story" },
+    settingsDigits: { description: "Property for story" },
+    settingsSpecSymbols: { description: "Property for story" },
+  },
+};
+
 const Template = ({
   settingMinLength,
   settingsUpperCase,
@@ -64,8 +82,8 @@ const Template = ({
   );
 };
 
-export const basic = Template.bind({});
-basic.args = {
+export const Default = Template.bind({});
+Default.args = {
   isDisabled: false,
   settingMinLength: 6,
   settingsUpperCase: false,

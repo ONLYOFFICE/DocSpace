@@ -1,7 +1,6 @@
 ﻿import CheckWhiteSvgUrl from "PUBLIC_DIR/images/check.white.svg?url";
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 import toastr from "@docspace/components/toast/toastr";
 import { inject, observer } from "mobx-react";
 import Button from "@docspace/components/button";
@@ -785,8 +784,4 @@ export default inject(({ auth }) => {
     deleteAppearanceTheme,
     theme,
   };
-})(
-  withTranslation(["Profile", "Common", "Settings"])(
-    withRouter(observer(Appearance))
-  )
-);
+})(withTranslation(["Profile", "Common", "Settings"])(observer(Appearance)));
