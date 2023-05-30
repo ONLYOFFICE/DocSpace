@@ -878,6 +878,10 @@ public class TariffService : ITariffService
 
                 var unlimTariff = CreateDefault();
                 unlimTariff.LicenseDate = tariff.DueDate;
+                unlimTariff.Quotas = new List<Quota>()
+                {
+                    new Quota(defaultQuota.Tenant, 1)
+                };
 
                 tariff = unlimTariff;
             }

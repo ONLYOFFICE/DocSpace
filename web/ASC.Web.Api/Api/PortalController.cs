@@ -195,10 +195,9 @@ public class PortalController : ControllerBase
             result.Tariff = _tenantExtra.GetCurrentTariff(refresh);
             result.Quota = await _quotaHelper.GetCurrentQuota(refresh);
             result.NotPaid = _tenantExtra.IsNotPaid();
-            result.LicenseAccept = _settingsManager.LoadForCurrentUser<TariffSettings>().LicenseAcceptSetting;
+            result.LicenseAccept = _settingsManager.LoadForDefaultTenant<TariffSettings>().LicenseAcceptSetting;
             result.DocServerUserQuota = await _documentServiceLicense.GetLicenseQuotaAsync();
             result.DocServerLicense = await _documentServiceLicense.GetLicenseAsync();
-
         }
 
         return result;
