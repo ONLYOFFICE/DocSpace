@@ -42,6 +42,7 @@ public class FirstTimeTenantSettings
     private readonly TimeZoneConverter _timeZoneConverter;
     private readonly CoreBaseSettings _coreBaseSettings;
     private readonly IHttpClientFactory _clientFactory;
+    private readonly CookiesManager _cookiesManager;
 
     public FirstTimeTenantSettings(
         ILogger<FirstTimeTenantSettings> logger,
@@ -56,7 +57,8 @@ public class FirstTimeTenantSettings
         StudioNotifyService studioNotifyService,
         TimeZoneConverter timeZoneConverter,
         CoreBaseSettings coreBaseSettings,
-        IHttpClientFactory clientFactory)
+        IHttpClientFactory clientFactory,
+        CookiesManager cookiesManager)
     {
         _log = logger;
         _tenantManager = tenantManager;
@@ -71,6 +73,7 @@ public class FirstTimeTenantSettings
         _timeZoneConverter = timeZoneConverter;
         _coreBaseSettings = coreBaseSettings;
         _clientFactory = clientFactory;
+        _cookiesManager = cookiesManager;
     }
 
     public async Task<WizardSettings> SaveData(WizardRequestsDto inDto)
@@ -148,6 +151,8 @@ public class FirstTimeTenantSettings
             {
                 SubscribeFromSite(currentUser);
             }
+
+            _cookiesManager.AuthenticateMeAndSetCookies(currentUser.Tenant, currentUser.Id, MessageAction.LoginSuccess);
 
             return settings;
         }
