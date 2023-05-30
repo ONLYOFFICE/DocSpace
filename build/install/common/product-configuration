@@ -239,7 +239,7 @@ install_json() {
 }
 
 restart_services() {
-	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR
+	chown -R ${PACKAGE_SYSNAME}:${PACKAGE_SYSNAME} $APP_DIR $PRODUCT_DIR $LOG_DIR /var/www/$PACKAGE_SYSNAME/Data
 
 	sed "s_\(ENVIRONMENT=\).*_\1${ENVIRONMENT}_i" -i /lib/systemd/system/${PRODUCT}*.service >/dev/null 2>&1
 	systemctl daemon-reload
@@ -527,6 +527,11 @@ setup_docs() {
 	echo "OK"
 }
 
+setup_enterprise() {
+	[ ! -d /var/www/$PACKAGE_SYSNAME/Data/ ] && mkdir -p /var/www/$PACKAGE_SYSNAME/Data/
+	$JSON $APP_DIR/appsettings.json -e "this.license.file={'path': \"/var/www/$PACKAGE_SYSNAME/Data/license.lic\"}" >/dev/null 2>&1
+}
+
 change_elasticsearch_config(){
 
 	systemctl stop elasticsearch
@@ -667,6 +672,9 @@ fi
 
 if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-de >/dev/null 2>&1 || $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
     setup_docs
+	if $PACKAGE_MANAGER ${PACKAGE_SYSNAME}-documentserver-ee >/dev/null 2>&1; then
+		setup_enterprise
+	fi
 fi
 
 if $PACKAGE_MANAGER nginx >/dev/null 2>&1; then
