@@ -151,8 +151,8 @@ public class InvitationLinkHelper
         
         var target = _messageTarget.Create(email);
         var description = JsonConvert.SerializeObject(new[] { key });
-        
-        var message = await context.AuditEvents.FirstOrDefaultAsync(a => a.Target == target.ToString() && a.DescriptionRaw == description);
+
+        var message = await Queries.GetAuditEventsAsync(context, target.ToString(), description).ToListAsync();
 
         return message;
     }
@@ -178,4 +178,11 @@ public class LinkValidationResult
     public ValidationResult Result { get; set; }
     public InvitationLinkType LinkType { get; set; }
     public Guid LinkId { get; set; }
+}
+
+file static class Queries
+{
+    public static readonly Func<MessagesContext, string, string, IAsyncEnumerable<AuditEvent>> GetAuditEventsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (MessagesContext ctx, string target, string description) =>
+        ctx.AuditEvents.FirstOrDefault(a => a.Target == target && a.DescriptionRaw == description));
 }
