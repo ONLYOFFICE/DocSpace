@@ -19,6 +19,7 @@ const withLoader = (WrappedComponent) => (Loader) => {
       viewAs,
       setIsBurgerLoading,
       isLoadingFilesFind,
+      isPublicRoom,
     } = props;
     const [inLoad, setInLoad] = useState(false);
 
@@ -53,9 +54,12 @@ const withLoader = (WrappedComponent) => (Loader) => {
       }
     }, [isEditor, firstLoad, isLoaded, isMobile, inLoad]);
 
-    const isPublic = true;
+    let isPublicRoomLoaded = true;
+    if (window.location.pathname === "/rooms/share") {
+      isPublicRoomLoaded = isPublicRoom;
+    }
 
-    return !isPublic &&
+    return !isPublicRoomLoaded &&
       ((!isEditor && firstLoad && !isGallery) ||
         !isLoaded ||
         (isMobile && inLoad && !firstLoad) ||
@@ -76,11 +80,17 @@ const withLoader = (WrappedComponent) => (Loader) => {
     );
   };
 
-  return inject(({ auth, filesStore }) => {
-    const { firstLoad, isLoading, viewAs, isLoadingFilesFind, isInit } =
-      filesStore;
+  return inject(({ auth, filesStore, publicRoomStore }) => {
+    const {
+      firstLoad,
+      isLoading,
+      viewAs,
+      isLoadingFilesFind,
+      isInit,
+    } = filesStore;
     const { settingsStore } = auth;
     const { setIsBurgerLoading } = settingsStore;
+    const { isPublicRoom } = publicRoomStore;
     return {
       firstLoad,
       isLoaded: auth.isLoaded,
