@@ -45,13 +45,9 @@ const StyledErrorContainer = styled.div`
 
   #button-container {
     width: 320px;
-    margin: 24px 0;
+    margin-top: 24px;
   }
 
-  #button {
-    display: inline-block;
-    margin: 0 0 36px 0;
-  }
   #customized-text {
     color: ${(props) => props.theme.errorContainer.bodyText};
   }
@@ -63,10 +59,6 @@ const StyledErrorContainer = styled.div`
 
     #container {
       margin: 12px 0 48px 0;
-    }
-
-    #button {
-      margin: 0 0 24px 0;
     }
   }
 
@@ -95,7 +87,6 @@ const StyledErrorContainer = styled.div`
 
     #button {
       width: 100%;
-      margin: 0 0 18px 0;
     }
   }
 
