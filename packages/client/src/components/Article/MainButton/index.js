@@ -41,29 +41,29 @@ const StyledButton = styled(Button)`
   padding: 0;
   opacity: ${(props) => (props.isDisabled ? 0.6 : 1)};
 
-  background-color: ${({ currentColorScheme }) =>
-    currentColorScheme.main.accent} !important;
-  background: ${({ currentColorScheme }) => currentColorScheme.main.accent};
-  border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+  background-color: ${({ $currentColorScheme }) =>
+    $currentColorScheme.main.accent} !important;
+  background: ${({ $currentColorScheme }) => $currentColorScheme.main.accent};
+  border: ${({ $currentColorScheme }) => $currentColorScheme.main.accent};
 
   ${(props) =>
     !props.isDisabled &&
     css`
       :hover {
-        background-color: ${({ currentColorScheme }) =>
-          currentColorScheme.main.accent};
+        background-color: ${({ $currentColorScheme }) =>
+          $currentColorScheme.main.accent};
         opacity: 0.85;
-        background: ${({ currentColorScheme }) =>
-          currentColorScheme.main.accent};
-        border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+        background: ${({ $currentColorScheme }) =>
+          $currentColorScheme.main.accent};
+        border: ${({ $currentColorScheme }) => $currentColorScheme.main.accent};
       }
 
       :active {
-        background-color: ${({ currentColorScheme }) =>
-          currentColorScheme.main.accent};
-        background: ${({ currentColorScheme }) =>
-          currentColorScheme.main.accent};
-        border: ${({ currentColorScheme }) => currentColorScheme.main.accent};
+        background-color: ${({ $currentColorScheme }) =>
+          $currentColorScheme.main.accent};
+        background: ${({ $currentColorScheme }) =>
+          $currentColorScheme.main.accent};
+        border: ${({ $currentColorScheme }) => $currentColorScheme.main.accent};
         opacity: 1;
         filter: brightness(90%);
         cursor: pointer;
@@ -71,7 +71,7 @@ const StyledButton = styled(Button)`
     `}
 
   .button-content {
-    color: ${({ currentColorScheme }) => currentColorScheme.text.accent};
+    color: ${({ $currentColorScheme }) => $currentColorScheme.text.accent};
     position: relative;
     display: flex;
     justify-content: space-between;
@@ -488,7 +488,7 @@ const ArticleMainButtonContent = (props) => {
           id="rooms-shared_create-room-button"
           label={t("Files:NewRoom")}
           onClick={onCreateRoom}
-          currentColorScheme={currentColorScheme}
+          $currentColorScheme={currentColorScheme}
           isDisabled={isDisabled}
           size="small"
           primary
