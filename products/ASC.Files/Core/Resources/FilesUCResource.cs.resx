@@ -58,9 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
- <data name="Archive" xml:space="preserve">
+  <data name="Archive" xml:space="preserve">
     <value>Archiv</value>
-  </data> 
+  </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Společné dokumenty</value>
   </data>
@@ -76,7 +76,16 @@
   <data name="Trash" xml:space="preserve">
     <value>Koš</value>
   </data>
-   <data name="VirtualRooms" xml:space="preserve">
+  <data name="VirtualRooms" xml:space="preserve">
     <value>Místnosti</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Osobní</value>
+  </data>
+  <data name="Recent" xml:space="preserve">
+    <value>Nedávné</value>
+  </data>
+  <data name="Favorites" xml:space="preserve">
+    <value>Oblíbené</value>
   </data>
 </root>

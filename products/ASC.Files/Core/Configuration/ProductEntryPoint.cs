@@ -161,7 +161,7 @@ public class ProductEntryPoint : Product
                 actions: StudioWhatsNewNotify.DailyActions,
                 from: scheduleDate.Date.AddDays(-1),
                 to: scheduleDate.Date.AddSeconds(-1),
-            limit: 100);
+                limit: 100);
         }
 
         var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
@@ -169,7 +169,7 @@ public class ProductEntryPoint : Product
         var userRoomsWithRole = await GetUserRoomsWithRole(userId);
 
         var userRoomsWithRoleForSend = userRoomsWithRole.Where(r => !disabledRooms.Contains(r.Key));
-        var userRoomsForSend = userRoomsWithRoleForSend.Select(r=> r.Key);
+        var userRoomsForSend = userRoomsWithRoleForSend.Select(r => r.Key);
 
         var docSpaceAdmin = _userManager.IsDocSpaceAdmin(userId);
 
@@ -193,17 +193,6 @@ public class ProductEntryPoint : Product
                 activityInfo.FileTitle = e.Description[1];
             }
 
-            if (e.Action == (int)MessageAction.UserCreated
-            || e.Action == (int)MessageAction.UserUpdated)
-            {
-                if (docSpaceAdmin)
-                {
-                    result.Add(activityInfo);
-                }
-
-                continue;
-            }
-
             if (e.Action == (int)MessageAction.RoomCreated && !docSpaceAdmin)
             {
                 continue;
@@ -223,6 +212,17 @@ public class ProductEntryPoint : Product
             additionalInfo = JsonSerializer.Deserialize<AdditionalNotificationInfo>(obj);
 
             activityInfo.TargetUsers = additionalInfo.UserIds;
+
+            if (e.Action == (int)MessageAction.UserCreated
+                || e.Action == (int)MessageAction.UserUpdated)
+            {
+                if (docSpaceAdmin)
+                {
+                    result.Add(activityInfo);
+                }
+
+                continue;
+            }
 
             if (e.Action == (int)MessageAction.UsersUpdatedType)
             {

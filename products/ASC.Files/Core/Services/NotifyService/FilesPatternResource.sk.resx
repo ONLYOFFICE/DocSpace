@@ -104,4 +104,52 @@ $Message</value>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Dokumenty. Prístup umožnený k priečinku: $DocumentTitle</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName vás spomenul(a) v komentári k dokumentu
+
+$__AuthorName vás spomenul(a) v komentári k dokumentu "$DocumentTitle":"$DocumentURL" v miestnosti "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName vymazal(a) miestnosť
+
+$__AuthorName vymazal(a) miestnosť: $RoomTitle</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Oznámenie DocSpace. Miestnosť vymazaná</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Oznámenie DocSpace. Uvedené v dokumente</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Všetci používatelia vyplnili $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Prístup udelený k zašifrovanému dokumentu: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Prístup udelený k priečinku: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Prístup udelený k dokumentu: $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Dokumenty. Všetci používatelia vyplnili [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Dokumenty. Prístup udelený k dokumentu: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Dokumenty. Prístup udelený k priečinku: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Stav podpisu zmenený</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Uvedené v dokumente</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Odosielanie je ukončené.</value>
+  </data>
 </root>

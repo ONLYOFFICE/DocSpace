@@ -255,6 +255,12 @@ public abstract class EditorController<T> : ApiControllerBase
 
         return _fileStorageService.GetReferenceDataAsync(inDto.FileKey, inDto.InstanceId, inDto.SourceFileId, inDto.Path);
     }
+
+    [HttpGet("file/{fileId}/protectusers")]
+    public async Task<List<MentionWrapper>> ProtectUsers(T fileId)
+    {
+        return await _fileStorageService.ProtectUsersAsync(fileId);
+    }
 }
 
 public class EditorController : ApiControllerBase

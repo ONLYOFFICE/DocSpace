@@ -2480,10 +2480,17 @@ public class FileStorageService //: IFileStorageService
             try
             {
 
-                var eventTypes = new List<(UserInfo User, EventType EventType, FileShare Access)>();
+                var eventTypes = new List<(UserInfo User, EventType EventType, FileShare Access, string Email)>();
                 foreach (var ace in aceCollection.Aces)
                 {
                     var user = _userManager.GetUsers(ace.Id);
+
+                    if (user == Constants.LostUser)
+                    {
+                        eventTypes.Add((null, EventType.Create, ace.Access, ace.Email));
+                        continue;
+                    }
+
                     var userId = user.Id;
 
                     var userSubjects = _fileSecurity.GetUserSubjects(user.Id);
@@ -2505,7 +2512,7 @@ public class FileStorageService //: IFileStorageService
                         eventType = EventType.Remove;
                     }
 
-                    eventTypes.Add((user, eventType, ace.Access));
+                    eventTypes.Add((user, eventType, ace.Access, null));
                 }
 
                 var (changed, warningMessage) = await _fileSharingAceHelper.SetAceObjectAsync(aceCollection.Aces, entry, notify, aceCollection.Message, aceCollection.AdvancedSettings);
@@ -2515,7 +2522,7 @@ public class FileStorageService //: IFileStorageService
                 {
                     foreach (var e in eventTypes)
                     {
-                        var user = e.User;
+                        var user = e.User ?? _userManager.GetUserByEmail(e.Email);
                         var name = user.DisplayUserName(false, _displayUserSettingsHelper);
 
                         var access = e.Access;
@@ -2854,46 +2861,7 @@ public class FileStorageService //: IFileStorageService
                 continue;
             }
 
-            if (!await _fileSecurity.CanReadAsync(file, recipient.Id))
-            {
-                if (!canShare.Value)
-                {
-                    continue;
-                }
-
-                try
-                {
-                    var aces = new List<AceWrapper>
-                    {
-                        new AceWrapper
-                        {
-                            Access = FileShare.Read,
-                            Id = recipient.Id,
-                            SubjectGroup = false,
-                        }
-                    };
-
-                    var (changed, _) = await _fileSharingAceHelper.SetAceObjectAsync(aces, file, false, null, null);
-
-                    showSharingSettings |= changed;
-                    if (showSharingSettings)
-                    {
-                        foreach (var ace in aces)
-                        {
-                            _ = _filesMessageService.Send(file, GetHttpHeaders(), MessageAction.FileUpdatedAccessFor, file.Title, _userManager.GetUsers(ace.Id).DisplayUserName(false, _displayUserSettingsHelper), GetAccessString(ace.Access));
-                        }
-                    }
-                    recipients.Add(recipient.Id);
-                }
-                catch (Exception e)
-                {
-                    throw GenerateException(e);
-                }
-            }
-            else
-            {
-                recipients.Add(recipient.Id);
-            }
+            recipients.Add(recipient.Id);
         }
 
         var fileLink = _filesLinkUtility.GetFileWebEditorUrl(file.Id);
@@ -2913,7 +2881,7 @@ public class FileStorageService //: IFileStorageService
         {
             await _notifyClient.SendEditorMentions(file, fileLink, recipients, message);
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             _logger.ErrorWithException(ex);
         }
@@ -3271,6 +3239,58 @@ public class FileStorageService //: IFileStorageService
             var link = _invitationLinkService.GetInvitationLink(user.Email, share.Access, _authContext.CurrentAccount.ID);
             _studioNotifyService.SendEmailRoomInvite(user.Email, room.Title, link);
         }
+    }
+
+    public async Task<List<MentionWrapper>> ProtectUsersAsync<T>(T fileId)
+    {
+        if (!_authContext.IsAuthenticated || _coreBaseSettings.Personal)
+        {
+            return null;
+        }
+
+        var fileDao = GetFileDao<T>();
+        var file = await fileDao.GetFileAsync(fileId);
+
+        ErrorIf(file == null, FilesCommonResource.ErrorMassage_FileNotFound);
+
+        var users = new List<MentionWrapper>();
+        if (file.RootFolderType == FolderType.BUNCH)
+        {
+            //todo: request project team
+            return new List<MentionWrapper>(users);
+        }
+
+        var acesForObject = await _fileSharing.GetSharedInfoAsync(file);
+
+        var usersInfo = new List<UserInfo>();
+        foreach (var ace in acesForObject)
+        {
+            if (ace.Access == FileShare.Restrict || ace.Id.Equals(FileConstant.ShareLinkId))
+            {
+                continue;
+            }
+
+            if (ace.SubjectGroup)
+            {
+                usersInfo.AddRange(_userManager.GetUsersByGroup(ace.Id));
+            }
+            else
+            {
+                usersInfo.Add(_userManager.GetUsers(ace.Id));
+            }
+        }
+
+        users = usersInfo.Distinct()
+                         .Where(user => !user.Id.Equals(_authContext.CurrentAccount.ID)
+                                        && !user.Id.Equals(Constants.LostUser.Id))
+                         .Select(user => new MentionWrapper(user, _displayUserSettingsHelper))
+                         .ToList();
+
+        users = users
+            .OrderBy(user => user.User, UserInfoComparer.Default)
+            .ToList();
+
+        return new List<MentionWrapper>(users);
     }
 
     public string GetHelpCenter()

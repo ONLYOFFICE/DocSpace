@@ -1,0 +1,704 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Tocmai ați creat spațiul ONLYOFFICE DocSpace, un hub de documente pentru a oferi un impuls colaborării în echipă, colaborării cu clienții și partenerii dvs și nu numai. Adresa spațiului dvs este "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirmați adresa dvs de e-mail (linkul este valabil timp de 7 zile):
+ 
+$GreenButton
+ 
+Planul dvs tarifar actual est STARTUP. Acest abonament este absolut gratuit și include:
+ 
+* 1 administrator, 2 utilizatori avansați
+* Până la 12 săli
+*  Un număr nelimitat de utilizatori în fiecare sală
+* 2 GB de spațiu de stocare
+ 
+Descoperiți un nou mod de colaborare asupra documentelor!
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Tocmai ați creat spațiul ONLYOFFICE DocSpace, un hub de documente pentru a oferi un impuls colaborării în echipă, colaborării cu clienții și partenerii dvs și nu numai. Adresa spațiului dvs este "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirmați adresa dvs de e-mail (linkul este valabil timp de 7 zile):
+ 
+$GreenButton
+ 
+Planul dvs tarifar actual est STARTUP. Acest abonament este absolut gratuit și include:
+ 
+* 1 administrator, 2 utilizatori avansați
+* Până la 12 săli
+*  Un număr nelimitat de utilizatori în fiecare sală
+* 2 GB de spațiu de stocare
+ 
+Descoperiți un nou mod de colaborare asupra documentelor!
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Tocmai ați creat spațiul ONLYOFFICE DocSpace, un hub de documente pentru a oferi un impuls colaborării în echipă, colaborării cu clienții și partenerii dvs și nu numai. Adresa spațiului dvs este "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirmați adresa dvs de e-mail (linkul este valabil timp de 7 zile):
+ 
+$GreenButton
+ 
+Planul dvs tarifar actual est STARTUP. Acest abonament este absolut gratuit și include:
+ 
+* 1 administrator, 2 utilizatori avansați
+* Până la 12 săli
+*  Un număr nelimitat de utilizatori în fiecare sală
+* 2 GB de spațiu de stocare
+ 
+Descoperiți un nou mod de colaborare asupra documentelor!
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Tocmai ați creat spațiul ONLYOFFICE DocSpace, un hub de documente pentru a oferi un impuls colaborării în echipă, colaborării cu clienții și partenerii dvs și nu numai. Adresa spațiului dvs este "${__VirtualRootPath}":"${__VirtualRootPath}".
+ 
+Confirmați adresa dvs de e-mail (linkul este valabil timp de 7 zile):
+ 
+$GreenButton
+ 
+Planul dvs tarifar actual est STARTUP. Acest abonament este absolut gratuit și include:
+ 
+* 1 administrator, 2 utilizatori avansați
+* Până la 12 săli
+*  Un număr nelimitat de utilizatori în fiecare sală
+* 2 GB de spațiu de stocare
+ 
+Descoperiți un nou mod de colaborare asupra documentelor!
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Doriți să modificați parola contului dvs ONLYOFFICE? Faceți clic pe butonul de mai jos pentru a confirma.
+ 
+$GreenButton
+ 
+Linkul este valabil timp de 7 zile.
+ 
+Nu doriți să modificați parola? Atunci ignorați acest mesaj</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Obțineți gratuit aplicația ONLYOFFICE pentru a lucra cu documente de pe orice dispozitiv.
+ 
+# Pentru a lucra cu documente în Windows, Linux și Mac, încărcați aplicația de editare desktop ONLYOFFICE:"https://www.onlyoffice.com/download-desktop.aspx".
+ 
+#Pentru a edita documente de pe diapozitive mobile, obțineți aplicația ONLYOFFICE Documents pe iOS:"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" sau pe Android:"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Sperăm să vă facă plăcere să utilizați spațiul dvs ONLYOFFICE DocSpace. Iată câteva sfaturi care vă ajută să eficientizeze lucrul cu documente.
+ 
+*#1. Alegeți-vă modul de lucru.* Organizați-vă fluxul de lucru așa cum doriți  prin intermediul sălilor de colaborare pentru elaborare prin colaborare în timp real sau sălilor personalizate cu setări flexibile pentru orice scop.
+ 
+*#2. Lucrați în orice conținut pe care îl aveți.* Stocați și lucrați în sălile dvs cu diferite formate de fișier: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+*#3. Elaborați în comun în mod eficient.* Colaborați la documente în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video.
+ 
+*#4. Conectați un serviciu terț de stocare în cloud.* Conectați orice serviciu de stocare în cloud și lucrați fără a comuta între aplicații.
+ 
+$GreenButton
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Sperăm să vă facă plăcere să utilizați spațiul dvs ONLYOFFICE DocSpace. Iată câteva sfaturi care vă ajută să eficientizeze lucrul cu documente.
+ 
+*#1. Alegeți-vă modul de lucru.* Organizați-vă fluxul de lucru așa cum doriți  prin intermediul sălilor de colaborare pentru elaborare prin colaborare în timp real sau sălilor personalizate cu setări flexibile pentru orice scop.
+ 
+*#2. Lucrați în orice conținut pe care îl aveți.* Stocați și lucrați în sălile dvs cu diferite formate de fișier: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+*#3. Elaborați în comun în mod eficient.* Colaborați la documente în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video.
+ 
+*#4. Conectați un serviciu terț de stocare în cloud.* Conectați orice serviciu de stocare în cloud și lucrați fără a comuta între aplicații.
+ 
+$GreenButton
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Sperăm să vă facă plăcere să utilizați spațiul dvs ONLYOFFICE DocSpace. Iată câteva sfaturi care vă ajută să eficientizeze lucrul cu documente.
+ 
+*#1. Alegeți-vă modul de lucru.* Organizați-vă fluxul de lucru așa cum doriți  prin intermediul sălilor de colaborare pentru elaborare prin colaborare în timp real sau sălilor personalizate cu setări flexibile pentru orice scop.
+ 
+*#2. Lucrați în orice conținut pe care îl aveți.* Stocați și lucrați în sălile dvs cu diferite formate de fișier: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+*#3. Elaborați în comun în mod eficient.* Colaborați la documente în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video.
+ 
+*#4. Conectați un serviciu terț de stocare în cloud.* Conectați orice serviciu de stocare în cloud și lucrați fără a comuta între aplicații.
+ 
+$GreenButton
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Vă rugăm să țineți cont de faptul că perioada de grație de $PaymentDelay‎ zile a fost activată pentru contul dvs ONLYOFFICE DocSpace.
+ 
+Aveţi grijă să efectuaţi plata abonamentului dvs Business înainte de expirarea perioadei de graţie Astfel, veți putea folosi  în continuare toate beneficiile oferite de ONLYOFFICE DocSpace.
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":https://onlyoffice.com</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de utilizator și mai confortabilă.
+ 
+* Aveți o echipă mare sau o mulțime de clienți și parteneri cu care colaborați în ONLYOFFICE DocSpace? 
+ 
+* Doriți să creați un număr nelimitat de camere pentru a lucra cu multe documente? 
+ 
+* Doriți să utilizați ONLYOFFICE DocSpace sub marca dvs. proprie?
+ 
+Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
+ 
+Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+ 
+_Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Sperăm să vă facă plăcere să utilizați spațiul dvs ONLYOFFICE DocSpace. Iată câteva sfaturi care vă ajută să eficientizeze lucrul cu documente.
+ 
+*#1. Alegeți-vă modul de lucru.* Organizați-vă fluxul de lucru așa cum doriți  prin intermediul sălilor de colaborare pentru elaborare prin colaborare în timp real sau sălilor personalizate cu setări flexibile pentru orice scop.
+ 
+*#2. Lucrați în orice conținut pe care îl aveți.* Stocați și lucrați în sălile dvs cu diferite formate de fișier: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+*#3. Elaborați în comun în mod eficient.* Colaborați la documente în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video.
+ 
+*#4. Conectați un serviciu terț de stocare în cloud.* Conectați orice serviciu de stocare în cloud și lucrați fără a comuta între aplicații.
+ 
+$GreenButton
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de utilizator și mai confortabilă.
+ 
+* Aveți o echipă mare sau o mulțime de clienți și parteneri cu care colaborați în ONLYOFFICE DocSpace? 
+ 
+* Doriți să creați un număr nelimitat de camere pentru a lucra cu multe documente? 
+ 
+* Doriți să utilizați ONLYOFFICE DocSpace sub marca dvs. proprie?
+ 
+Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
+ 
+Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+ 
+_Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de utilizator și mai confortabilă.
+ 
+* Aveți o echipă mare sau o mulțime de clienți și parteneri cu care colaborați în ONLYOFFICE DocSpace? 
+ 
+* Doriți să creați un număr nelimitat de camere pentru a lucra cu multe documente? 
+ 
+* Doriți să utilizați ONLYOFFICE DocSpace sub marca dvs. proprie?
+ 
+Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
+ 
+Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+ 
+_Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Iată trei întrebări simple, care ne pot ajuta să facem experiența dvs de utilizator și mai confortabilă.
+ 
+* Aveți o echipă mare sau o mulțime de clienți și parteneri cu care colaborați în ONLYOFFICE DocSpace? 
+ 
+* Doriți să creați un număr nelimitat de camere pentru a lucra cu multe documente? 
+ 
+* Doriți să utilizați ONLYOFFICE DocSpace sub marca dvs. proprie?
+ 
+Dacă ați răspuns DA la oricare dintre întrebările de mai sus, optați pentru abonamentul BUSINESS, care vă permite să adăugați la spațiul dvs ONLYOFFICE DocSpace numărul de administratori dorit și să utilizați opțiuni de branding.
+ 
+Pentru a proceda astfel, consultaţi secţiunea Plăți:"$PricingPage" a spațiului dvs ONLYOFFICE DocSpace. Acolo veți găsi un link personal la portalul pentru clienți Stripe de unde puteți gestiona cu ușurință  toate detaliile de plată. 
+ 
+_Vă rugăm să rețineți: Persoana care plătește abonamentul devine plătitorul. Numai plătitorul poate modifica abonamentul (defini numărul de administratori). Utilizatorii nu pot accesa detalii de plată. Proprietarul contului ONLYOFFICE DocSpace poate reatribui rolul de plătitor oricând mai târziu. _
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Bună!
+ 
+Sunteţi invitat să vă asociaţi la spaţiul ONLYOFFICE DocSpace  "${__VirtualRootPath}":"${__VirtualRootPath}". Faceți clic pe linkul pentru a accepta invitația:
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Bună!
+ 
+Sunteţi invitat să vă asociaţi la spaţiul ONLYOFFICE DocSpace  "${__VirtualRootPath}":"${__VirtualRootPath}". Faceți clic pe linkul pentru a accepta invitația:
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Bună!
+ 
+Sunteţi invitat să vă asociaţi la spaţiul ONLYOFFICE DocSpace  "${__VirtualRootPath}":"${__VirtualRootPath}". Faceți clic pe linkul pentru a accepta invitația:
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Bună!
+ 
+Sunteţi invitat să vă asociaţi la spaţiul ONLYOFFICE DocSpace  "${__VirtualRootPath}":"${__VirtualRootPath}". Faceți clic pe linkul pentru a accepta invitația:
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost adăugat cu succes la "${__VirtualRootPath}":"${__VirtualRootPath}". Acum puteți să:
+ 
+* Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
+ 
+* *Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+* *Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
+ 
+* *Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
+ 
+$GreenButton
+ 
+Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost adăugat cu succes la "${__VirtualRootPath}":"${__VirtualRootPath}". Acum puteți să:
+ 
+* Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
+ 
+* *Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+* *Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
+ 
+* *Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
+ 
+$GreenButton
+ 
+Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost adăugat cu succes la "${__VirtualRootPath}":"${__VirtualRootPath}". Acum puteți să:
+ 
+*# Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
+ 
+*# Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+*# Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
+ 
+*# Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
+ 
+$GreenButton
+ 
+Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Bun venit în spaţiul ONLYOFFICE DocSpace! Profilul dvs. de utilizator a fost adăugat cu succes la "${__VirtualRootPath}":"${__VirtualRootPath}". Acum puteți să:
+ 
+*# Colaborați cu alți utilizatori din sala în care sunteți invitat*: săli de colaborare pentru elaborare prin colaborare în timp real sau săli personalizate cu setări flexibile pentru orice scop*.
+ 
+*# Lucrați cu diferite formate de fișier*: documente text, foi de calcul, prezentări, formulare digitale, PDF-uri, e-book-uri, multimedia.
+ 
+*# Colaborați la documente* în două moduri de co-editare: în timp real sau prin blocare de paragrafe. Urmăriți modificări, comunicați în timp real cu ajutorul chat-ului încorporat sau prin apeluri audio și video. 
+ 
+*# Conectați orice serviciu de stocare în cloud* și lucrați fără a comuta între aplicații. 
+ 
+$GreenButton
+ 
+Dacă aveți nevoie de ajutor, navigați la Centru de ajutor:"https://helpcenter.onlyoffice.com/" sau contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.Mesajul de la "${__VirtualRootPath}": portalul "${__VirtualRootPath}"
+ 
+Numele: $UserName
+ 
+Email: $UserEmail
+ 
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Obțineți gratuit aplicația ONLYOFFICE pentru a lucra cu documente de pe orice dispozitiv.
+ 
+# Pentru a lucra cu documente în Windows, Linux și Mac, încărcați aplicația de editare desktop ONLYOFFICE:"https://www.onlyoffice.com/download-desktop.aspx".
+ 
+#Pentru a edita documente de pe diqpozitive mobile, obțineți aplicația ONLYOFFICE Documents pe iOS:"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" sau pe Android:"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Obțineți gratuit aplicația ONLYOFFICE pentru a lucra cu documente de pe orice dispozitiv.
+ 
+# Pentru a lucra cu documente în Windows, Linux și Mac, încărcați aplicația de editare desktop ONLYOFFICE:"https://www.onlyoffice.com/download-desktop.aspx".
+ 
+#Pentru a edita documente de pe diqpozitive mobile, obțineți aplicația ONLYOFFICE Documents pe iOS:"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" sau pe Android:"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Salut!
+S-a încercat înregistrarea unui nou cont ONLYOFFICE Personal:"$PortalUrl" pe baza acestei adrese e-mail. Dacă dumneavoastră ați întreprins înregistrarea, vă informăm că contul există deja, accesaţi pagina ONLYOFFICE Personal și vă conectați.
+Dacă v-ați uitat sau ați pierdut parola, este posibil să o recuperați de pe pagina de recuperare a parolei:"$LinkToRecovery".
+Dacă nu s-a încercat înregistrarea unui nou cont, probabil altcineva a făcut-o din greșeală. În acest caz, ignorați acest e-mail.
+ 
+Să aveți o zi bună!
+Echipa ONLYOFFICE</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>Spațiul dvs ONLYOFFICE DocSpace a fost dezactivat cu succes. Va rugam sa rețineți că, datele dumneavoastră vor fi șterse în conformitate cu politica noastră de confidențialitate :"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+ 
+De ce v-ați decis să părăsiți? Împărtășiți-ne experiența dumneavoastră.
+ 
+$GreenButton
+ 
+Vă mulțumim și succese!
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Configurați setările de securitate ale spațiului dvs ONLYOFFICE DocSpace pentru a-l securiza și mai mult:
+ 
+* Setați nivelul de complexitate parolă.  
+ 
+* Activați autentificarea cu doi factori și autentificarea unică (SSO).
+ 
+* Indicați domeniul de e-mail de încredere și durata de expirare a sesiunii.
+ 
+* Restricționați accesul la anumite adrese IP. 
+ 
+* Permiteți sau restricționați mesaje de administrator.  
+ 
+* Gestionați drepturile de acces ale administratorului.
+ 
+* Creați copii de rezervă.
+ 
+$GreenButton
+ 
+Vizitați Centru de ajutor:"https://helpcenter.onlyoffice.com/" pentru a afla mai multe despre configurarea și gestionarea spațiului dvs ONLYOFFICE DocSpace. Sunteți binevenit să consultați Centru de ajutor de fiecare dată când aveți întrebări cu privire la funcționalități.
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Nu s-a înregistrat nicio activitate în contul dvs ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}" mai mult de 6 luni. 
+ 
+Deoarece ați decis să nu-l mai utilizați, spațiul dvs ONLYOFFICE DocSpace și toate datele vor fi șterse în conformitate cu politica noastră de confidențialitate:"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0".
+ 
+Apreciem feedbackul din partea dvs. De ce ați decis să nu mai folosiți ONLYOFFICE DocSpace?
+ 
+$GreenButton
+ 
+Dacă aceasta a fost o greșeală și doriți să continuați să utilizați ONLYOFFICE DocSpace, contactați echipa noastră de asistență:"https://www.onlyoffice.com/support-contact-form.aspx".
+ 
+Cu deosebită considerație, 
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Bună!
+ 
+Sunteţi invitat să vă asociaţi la spaţiul ONLYOFFICE DocSpace  "${__VirtualRootPath}":"${__VirtualRootPath}". Faceți clic pe linkul pentru a accepta invitația:
+ 
+$GreenButton
+ 
+Odată ce faceți clic pe linkul de invitație, setați o nouă parolă pentru contul dvs.
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Vă rugăm să țineți cont de faptul că abonamentul dumneavoastră ONLYOFFICE DocSpace expiră în trei zile. După aceea, o perioadă de grație de $PaymentDelay zile va fi activată.
+ 
+Vă recomandăm să plătiți abonamentul dvs Business acum pentru a utiliza în continuare toate beneficiile oferite de ONLYOFFICE DocSpace.
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":https://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Vă rugăm să țineți cont de faptul că perioada de grație de $PaymentDelay zile s-a încheiat pentru contul dvs ONLYOFFICE DocSpace.
+ 
+Asigurați-vă că plătiți abonamentul dvs Business cât mai curând posibil. Astfel, veți putea folosi în continuare toate beneficiile oferite de ONLYOFFICE DocSpace ca înainte.
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":https://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Stimate, $UserName!
+ 
+Vă rugăm să țineți cont de faptul că perioada de grație de $PaymentDelay zile expiră mâine pentru contul dvs ONLYOFFICE DocSpace.
+ 
+Asigurați-vă că plătiți abonamentul dvs Business astăzi. Astfel, veți putea folosi  în continuare toate beneficiile oferite de ONLYOFFICE DocSpace.
+ 
+$GreenButton
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":https://onlyoffice.com</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Bună!
+ 
+Sunteţi invitat să vă asociaţi la sala $Message la "${__VirtualRootPath}":"${__VirtualRootPath}". Faceți clic pe linkul pentru a accepta invitația:
+ 
+$GreenButton
+ 
+Odată ce faceți clic pe linkul de invitație, setați o nouă parolă pentru contul dvs.
+ 
+Cu deosebită considerație,
+Echipa ONLYOFFICE
+"www.onlyoffice.com":http://onlyoffice.com</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Doriți să modificați parola contului dvs ONLYOFFICE Personal? Faceți clic pe butonul de mai jos pentru a confirma.
+ 
+$GreenButton 
+ 
+Linkul este valabil timp de 7 zile.
+ 
+Nu doriți să modificați parola? Atunci ignorați acest mesaj.</value>
+  </data>
+</root>

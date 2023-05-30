@@ -80,7 +80,7 @@
 //            {
 //                var callbackAddress = new UriBuilder(RedirectUri)
 //                {
-//                    Query = "state=" + HttpUtility.UrlEncode(context.Request.GetUrlRewriter().AbsoluteUri)
+//                    Query = "state=" + HttpUtility.UrlEncode(context.Request.Url().AbsoluteUri)
 //                };
 
 //                var authenticationRequestId = Guid.NewGuid().ToString();

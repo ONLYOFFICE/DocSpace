@@ -723,7 +723,7 @@ class SettingsStore {
 
   setIpRestrictions = async (ips) => {
     const data = {
-      ips: ips,
+      IpRestrictions: ips,
     };
     const res = await api.settings.setIpRestrictions(data);
     this.ipRestrictions = res;

@@ -15,6 +15,7 @@ import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 import { Encoder } from "@docspace/common/utils/encoder";
 import { Base } from "@docspace/components/themes";
+import { MAX_FILE_COMMENT_LENGTH } from "@docspace/common/constants";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
@@ -56,7 +57,13 @@ const VersionRow = (props) => {
     window.open(`${info.viewUrl}&version=${info.version}`, "_self");
   const onEditComment = () => !isEditing && setShowEditPanel(!showEditPanel);
 
-  const onChange = (e) => setCommentValue(e.target.value);
+  const onChange = (e) => {
+    const value = e.target.value;
+
+    if (value.length > MAX_FILE_COMMENT_LENGTH) return;
+
+    setCommentValue(value);
+  };
 
   const onSaveClick = () => {
     setIsSavingComment(true);
@@ -191,9 +198,7 @@ const VersionRow = (props) => {
               </>
             )}
 
-            <Text className="version_text" truncate={true}>
-              {info.comment}
-            </Text>
+            <Text className="version_text">{info.comment}</Text>
           </>
         </Box>
         {showEditPanel && (

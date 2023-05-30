@@ -65,7 +65,7 @@ const RootFolderContainer = (props) => {
     setAlreadyFetchingRooms,
     categoryType,
     isEmptyPage,
-    setIsEmptyPage,
+
     isVisitor,
     isCollaborator,
     sectionWidth,
@@ -101,17 +101,10 @@ const RootFolderContainer = (props) => {
     t("PrivateRoomDescriptionUnbreakable"),
   ];
 
-  const roomHeader = "Welcome to DocSpace";
+  const roomHeader = t("EmptyRootRoomHeader");
 
   useEffect(() => {
-    if (rootFolderType !== FolderType.COMMON) {
-      setIsEmptyPage(true);
-    } else {
-      setIsEmptyPage(false);
-    }
-
     return () => {
-      setIsEmptyPage(false);
       setIsLoadedEmptyPage(false);
     };
   }, []);
@@ -351,15 +344,15 @@ const RootFolderContainer = (props) => {
 
   useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
 
-  if (isLoading) {
-    return (
-      <Loaders.EmptyContainerLoader
-        style={{ display: "none", marginTop: 32 }}
-        id="empty-container-loader"
-        viewAs={viewAs}
-      />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <Loaders.EmptyContainerLoader
+  //       style={{ display: "none", marginTop: 32 }}
+  //       id="empty-container-loader"
+  //       viewAs={viewAs}
+  //     />
+  //   );
+  // }
 
   return (
     <EmptyContainer
@@ -388,7 +381,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
     } = filesStore;
     const { title, rootFolderType, security } = selectedFolderStore;
@@ -415,7 +408,7 @@ export default inject(
       categoryType,
       setAlreadyFetchingRooms,
       isEmptyPage,
-      setIsEmptyPage,
+
       setIsLoadedEmptyPage,
       security,
     };

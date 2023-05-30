@@ -16,7 +16,14 @@ import { size } from "@docspace/components/utils/device";
 import { inject, observer } from "mobx-react";
 
 const AccessPortal = (props) => {
-  const { t, helpLink, currentColorScheme } = props;
+  const {
+    t,
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
+    tfaSettingsUrl,
+    trustedMailDomainSettingsUrl,
+    administratorMessageSettingsUrl,
+  } = props;
   const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
@@ -40,7 +47,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("SettingPasswordStrength")}
         tooltipTitle={t("SettingPasswordStrengthDescription")}
-        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipUrl={passwordStrengthSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <PasswordStrengthSection />
@@ -49,7 +56,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("TwoFactorAuth")}
         tooltipTitle={t("TwoFactorAuthDescription")}
-        tooltipUrl={`${helpLink}/administration/two-factor-authentication.aspx`}
+        tooltipUrl={tfaSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <TfaSection />
@@ -58,7 +65,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("TrustedMail")}
         tooltipTitle={t("TrustedMailDescription")}
-        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipUrl={trustedMailDomainSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <TrustedMailSection />
@@ -75,7 +82,7 @@ const AccessPortal = (props) => {
         t={t}
         title={t("AdminsMessage")}
         tooltipTitle={t("AdminsMessageDescription")}
-        tooltipUrl={`${helpLink}/administration/configuration.aspx#ChangingSecuritySettings_block`}
+        tooltipUrl={administratorMessageSettingsUrl}
         currentColorScheme={currentColorScheme}
       />
       <AdminMessageSection />
@@ -92,6 +99,18 @@ const AccessPortal = (props) => {
 };
 
 export default inject(({ auth }) => {
-  const { helpLink, currentColorScheme } = auth.settingsStore;
-  return { helpLink, currentColorScheme };
+  const {
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
+    tfaSettingsUrl,
+    trustedMailDomainSettingsUrl,
+    administratorMessageSettingsUrl,
+  } = auth.settingsStore;
+  return {
+    currentColorScheme,
+    passwordStrengthSettingsUrl,
+    tfaSettingsUrl,
+    trustedMailDomainSettingsUrl,
+    administratorMessageSettingsUrl,
+  };
 })(withTranslation("Settings")(observer(AccessPortal)));

@@ -86,10 +86,10 @@
     <value>S3 accesskey</value>
   </data>
   <data name="ConsumersapiKey" xml:space="preserve">
-    <value>Clé API Rackspace </value>
+    <value>Clé API Rackspace</value>
   </data>
   <data name="ConsumersauthPwd" xml:space="preserve">
-    <value>authPwd Selectel </value>
+    <value>authPwd Selectel</value>
   </data>
   <data name="ConsumersauthUser" xml:space="preserve">
     <value>authUser Selectel</value>
@@ -107,9 +107,6 @@
     <value>Se connecter au service Bitly pour raccourcir les liens d'invitation vers le portail et les liens d'accès aux fichiers du module Documents.</value>
   </data>
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
-    <value>Si vous ajoutez le service Bitly, vous pouvez inviter de nouveaux utilisateurs au portail ONLYOFFICE™ en utilisant les liens raccourcis. En plus, ces liens peuvent être utilisés pour les documents disponibles dans le module Documents et qui ont été partagés avec des utilisateurs externes.</value>
-  </data>
-  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
     <value>Activez cette application pour raccourcir des liens d'invitations et de documents. {0}Insérez votre identifiant Bitly et votre clé API ci-dessous :</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
@@ -125,9 +122,6 @@
     <value>Connecter l'application pour gérer les fichiers et dossiers Box.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
-    <value>Si vous ajoutez une application du service Box, vous pouvez connecter votre compte Box au module Documents. Cela vous permet de télécharger et créer de nouveaux fichiers dans Box, modifier ceux qui existent déjà, copier et supprimer, partager des fichiers et des dossiers avec les utilisateurs du portail ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
     <value>Activez cette application pour connecter votre compte Box au module Documents. Vous serez en mesure de gérer, éditer et partager les fichiers stockés sur Box avec les utilisateurs d'ONLYOFFICE. {0}Connectez-vous à votre compte Box, passez à la page pour les développeurs et créez une nouvelle appliction d'intégration pour ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
@@ -140,9 +134,6 @@
     <value>Activer l'authentification à deux facteurs pour cette application via Clickatell.</value>
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
-    <value>En ajoutant l'application du service Clickatell, vous serez en mesure d'activer l'authentification à deux facteurs et de recevoir un SMS avec un code permettant à l'utilisateur d'entrer dans le portail ONLYOFFICE.</value>
-  </data>
-  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
     <value>Utilisez cette application pour activer l'authentification à deux facteurs en utilisant le service Clickatell. {0}Connectez-vous à votre compte de SMS Platform et créez une nouvelle intégration pour ONLYOFFICE. Copiez la clé apiKey et insérez-la ci-dessous :</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
@@ -161,9 +152,6 @@
     <value>Point de terminaison d'authentification DocuSign</value>
   </data>
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>Si vous ajoutez une application du service DocuSign vous pouvez signer des fichiers à partir du module Documents. Cela permet d’envoyer un fichier pour la signature électronique aux employés du portail ONLYOFFICE™ via le service DocuSugn. Le fichier signé sera sauvegardé dans le module Documents de ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
     <value>Activez cette application pour signer les documents électroniquement via DocuSign. {0}Passez à votre console administrateur DocuSign et ajoutez l'intégration avec ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersDropBox" xml:space="preserve">
@@ -173,9 +161,6 @@
     <value>Connecter l'application pour gérer les fichiers et dossiers Dropbox.</value>
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
-    <value>Si vous ajoutez une application du service Dropbox, vous pouvez connecter votre compte Dropbox au module Documents. Cela permet de télécharger et créer de nouveaux fichiers dans Dropbox, modifier ceux qui existent déjà, copier et supprimer, partager des fichiers et des dossiers avec les utilisateurs du portail ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
     <value>Activez cette application pour connecter votre compte Dropbox au module Documents. Vous serez en mesure de gérer, éditer et partager les fichiers stockés sur Dropbox avec les utilisateurs d'ONLYOFFICE. {0}Connectez-vous à votre compte Dropbox, passez à la page pour les développeurs et créez une nouvelle appliction d'intégration pour ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
@@ -193,9 +178,6 @@
   <data name="ConsumersEasyBibDescription" xml:space="preserve">
     <value>Connectez l'application EasyBib pour créer des listes bibliographiques.</value>
   </data>
-  <data name="ConsumersEasyBibInstruction" xml:space="preserve">
-    <value>En ajoutant l'application EasyBib, vous pourrez facilement créer des listes bibliographiques dans vos documents.</value>
-  </data>
   <data name="ConsumersFacebook" xml:space="preserve">
     <value>Facebook</value>
   </data>
@@ -212,9 +194,6 @@
     <value>Connecter l'application pour accèder au portail en utilisant le compte Facebook.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
-    <value>Si vous ajoutez une application du service Facebook, vous pouvez connecter votre compte Facebook sur votre page de profil en vue de l'utiliser pour accéder au portail ONLYOFFICE™. Cela vous permet également trouver un compte Facebook d’un contact dans le module CRM et  le lier sur la page « Modifier personne/entreprise ».</value>
-  </data>
-  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
     <value>Activez cette application pour permettre aux utilisateurs de se connecter à ONLYOFFICE via Facebook et relier les comptes Facebook des clients au module CRM. {0}Passez au portail des développeurs Facebook et créez une nouvelle application d'intégration ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
@@ -235,9 +214,6 @@
   <data name="ConsumersFirebaseDescription" xml:space="preserve">
     <value>Connectez le service Firebase Cloud Messaging pour recevoir des notifications sur les messages qui vous sont envoyés.</value>
   </data>
-  <data name="ConsumersFirebaseInstruction" xml:space="preserve">
-    <value>Si vous vous connectez à Firebase Cloud Messaging, vous serez en mesure de recevoir des notifications sur les messages qui vous sont envoyés même lorsque vous n'êtes pas connecté.</value>
-  </data>
   <data name="ConsumersGoogle" xml:space="preserve">
     <value>Google</value>
   </data>
@@ -257,10 +233,7 @@
     <value>Saisissez le nom du conteneur Google Cloud bucket pour stocker vos sauvegardes.</value>
   </data>
   <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
-    <value>Connecter service Google Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail. </value>
-  </data>
-  <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
-    <value>Quand vous ajoutez le service  Google Cloud à votre portail, vous pourrez l'utiliser pour créer des copies de sauvegarde de votre portail en vous assurant qu'aucune donnée ne sera jamais perdue. Utilisez-le aussi pour stocker les données et le contenu statique de votre portail.</value>
+    <value>Connecter service Google Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
   </data>
   <data name="ConsumersGoogleCloudjson" xml:space="preserve">
     <value>Code JSON de GoogleCloud</value>
@@ -269,9 +242,6 @@
     <value>Se connecter au projet pour accéder au portail en utilisant le compte Google et pour gérer les fichiers et les dossiers Google Drive.</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
-    <value>En ajoutant un projet du service Google, vous pourrez connecter votre compte Google sur la page de votre profil en vue de l'utiliser pour l'accès au portail ONLYOFFICE™ et connecter votre compte Google Drive au module Documents. Cela vous permettra de télécharger et de créer de nouveaux fichiers dans Google Drive, modifier ceux qui existent déjà, copier et supprimer, partager des fichiers et des dossiers avec les utilisateurs du portail ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
     <value>Activez cette application pour connecter votre compte Google Drive au module Documents. Vous serez en mesure de gérer, éditer et partager les fichiers stockés sur Google Drive avec les utilisateurs d'ONLYOFFICE. {0}Passez à la console Google APIs et créez un nouveau projet d'intégration avec ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
@@ -281,9 +251,6 @@
     <value>Se connecter à l'application pour accéder au portail en utilisant le compte LinkedIn.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>Si vous ajoutez une application du service LinkedIn, vous pouvez connecter votre compte LinkedIn sur votre page de profil en vue de l'utiliser pour la connexion au portail ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
     <value>Activez cette application pour permettre aux utilisateurs de se connecter à ONLYOFFICE via leurs comptes LinkedIn.  {0}Passez au site web des développeurs LinkedIn et créez une nouvelle application d'intégration ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
@@ -302,7 +269,7 @@
     <value>Clé secrète</value>
   </data>
   <data name="ConsumersMailruDescription" xml:space="preserve">
-    <value>Activer l'application pour se connecter au portail via le compte Mail.ru</value>
+    <value>Activer l'application pour se connecter au portail via le compte Mail.ru.</value>
   </data>
   <data name="ConsumersMailruInstruction" xml:space="preserve">
     <value>Lorsque vous connectez l'application Mail.ru, vous pouvez activer la connexion au portail via votre compte Mail.ru sur la page de votre profil.</value>
@@ -311,10 +278,7 @@
     <value>Rackspace Cloud Storage</value>
   </data>
   <data name="ConsumersRackspaceDescription" xml:space="preserve">
-    <value>Connecter service Rackspace Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail. </value>
-  </data>
-  <data name="ConsumersRackspaceInstruction" xml:space="preserve">
-    <value>Quand vous ajoutez le service  Rackspace  à votre portail, vous pourrez l'utiliser pour créer des copies de sauvegarde de votre portail en vous assurant qu'aucune donnée ne sera jamais perdue. Utilisez-le aussi pour stocker les données et le contenu statique de votre portail.</value>
+    <value>Connecter service Rackspace Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
   </data>
   <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
     <value>Conteneur Privé</value>
@@ -346,9 +310,6 @@
   <data name="ConsumersS3Description" xml:space="preserve">
     <value>Connecter Amazon AWS S3 pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
   </data>
-  <data name="ConsumersS3Instruction" xml:space="preserve">
-    <value>Quand vous ajoutez le service Amazon  AWS S3 à votre portail, vous pourrez l'utiliser pour créer des copies de sauvegarde de votre portail en vous assurant qu'aucune donnée ne sera jamais perdue. Utilisez-le aussi pour stocker les données et le contenu statique de votre portail.</value>
-  </data>
   <data name="ConsumersS3region" xml:space="preserve">
     <value>Région</value>
   </data>
@@ -369,9 +330,6 @@
   </data>
   <data name="ConsumersSelectelDescription" xml:space="preserve">
     <value>Connecter le service Selectel Cloud Storage pour créer des copies de sauvegarde et stocker des données de votre portail.</value>
-  </data>
-  <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>Quand vous ajoutez le service  Selectel à votre portail, vous pourrez l'utiliser pour créer des copies de sauvegarde de votre portail en vous assurant qu'aucune donnée ne sera jamais perdue. Utilisez-le aussi pour stocker les données et le contenu statique de votre portail.</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
     <value>Conteneur Privé</value>
@@ -398,9 +356,6 @@
     <value>Connecter l'application pour gérer les fichiers et dossiers OneDrive.</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
-    <value>Si vous ajoutez une application du service OneDrive, vous pouvez connecter votre compte de OneDrive au module Documents. Cela permet de télécharger et créer de nouveaux fichiers dans OneDrive, modifier ceux qui existent déjà, copier et supprimer, partager des fichiers et des dossiers avec les utilisateurs du portail ONLYOFFICE™.</value>
-  </data>
-  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
     <value>Activez cette application pour connecter votre compte OneDrive au module Documents. Vous serez en mesure de gérer, éditer et partager vos fichiers stockés à OneDrive avec les utilisateurs ONLYOFFICE. {0}Connectez-vous à votre compte Microsoft Azure et créez une nouvelle application d'intégration pour ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
@@ -410,10 +365,7 @@
     <value>Activer l'authentification à deux facteurs pour cette application via SMS Center.</value>
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
-    <value>En ajoutant l'application de service SMS Center, vous pourrez activer l'authentification à deux facteurs et recevoir un SMS avec un code permettant à l'utilisateur d'accéder au portail ONLYOFFICE. L'application SMS Center est utile en tant que fournisseur pour les pays de la CEI.</value>
-  </data>
-  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
-    <value>Utilisez cette application pour activer l'authentification à deux facteurs via le service SMS Center. {0}Insérez l'identifiant de votre compte smsc et votre mot de passe (ou le mot de passe MD5 hash) en caractères minuscules : </value>
+    <value>Utilisez cete application pour activer l'authentification à deux facteurs via le service SMS Center. {0}Insérez l'identifiant de votre compte smsc et votre mot de passe (ou le mot de passe MD5 hash) en caractères minuscules :</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
     <value>Login</value>
@@ -434,9 +386,6 @@
     <value>Ajoutez Twilio pour appeler les contacts CRM depuis votre navigateur.</value>
   </data>
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
-    <value>Après avoir ajouté Twilio, vous pouvez appeler tout contaсt CRM depuis le navigateur.</value>
-  </data>
-  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
     <value>Activez l'application pour permettre aux utilisateur de faire des appels directement depuis le module CRM en utilisant Twilio. {0}Passez à Twilio Console et collez ci-dessous les données suivantes :</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
@@ -455,9 +404,6 @@
     <value>Se connecter à l'application pour accéder au portail en utilisant le compte Twitter et rechercher des contacts.</value>
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
-    <value>Si vous ajoutez une application du service Twitter, vous pouvez connecter votre compte Twitter sur la page de votre profil en vue de l'utiliser pour la connexion au portail ONLYOFFICE™. Cela vous permet également de trouver un compte Twitter d’une personne dans le module CRM et le lier sur la page « Modifier personne/entreprise », et ensuite afficher le fil d'actualités sur Twitter.</value>
-  </data>
-  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
     <value>Activez cette application pour permettre aux utilisateurs de se connecter à ONLYOFFICE via leur Twitter et reliez les comptes Twitter de vos clients à votre module CRM. {0}Passez au portail des développeurs Twitter et créez une nouvelle application d'intégration ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
@@ -490,9 +436,6 @@
   <data name="ConsumersWordpressDescription" xml:space="preserve">
     <value>Connectez l'application pour publier des documents dans WordPress.</value>
   </data>
-  <data name="ConsumersWordpressInstruction" xml:space="preserve">
-    <value>En rajoutant l'application WordPress vous pouvez facilement publier les documents sur votre site WordPress, en sauvegardant leur mise en forme.</value>
-  </data>
   <data name="ConsumerswpClientId" xml:space="preserve">
     <value>Clé WordPress</value>
   </data>
@@ -512,9 +455,6 @@
     <value>Activer l'importation de contacts Yahoo pour cette application.</value>
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
-    <value>En ajoutant l'application de service Yahoo, vous pourrez ajouter les nouveaux utilisateurs du portail ONLYOFFICE à partir de la liste de contacts.</value>
-  </data>
-  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
     <value>Activez l'application pour ajouter les nouveaux utilisateurs au portail depuis votre liste de contacts Yahoo. {0}Sur la page Créer l'application passez à la section réservée aux développeurs Yahoo, créez une nouvelle application d'intégration pour ONLYOFFICE. Collez ci-dessous les données que vous venez de recevoir :</value>
   </data>
   <data name="ConsumersYandex" xml:space="preserve">
@@ -524,7 +464,7 @@
     <value>Identifiant</value>
   </data>
   <data name="ConsumersYandexClientSecret" xml:space="preserve">
-    <value> Mot de passe</value>
+    <value>Mot de passe</value>
   </data>
   <data name="ConsumersYandexDescription" xml:space="preserve">
     <value>Activer l'application pour vous connecter au portail via le compte Yandex.</value>
@@ -554,7 +494,7 @@
     <value>Pas d'autorisation pour effectuer cette action</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>L'accès au portail est limité</value>
+    <value>L'accès au portail est limité.</value>
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>Clés invalides</value>
@@ -629,7 +569,7 @@
     <value>Le délai de  requête est dépassé</value>
   </data>
   <data name="ErrorTenantTooShort" xml:space="preserve">
-    <value>L'hôte du domaine ne peut pas être vide</value>
+    <value>L'hôte du domaine ne peut pas être vide.</value>
   </data>
   <data name="ErrorTenantTooShortFormat" xml:space="preserve">
     <value>Le nom de domaine doit contenir de {0} à {1} caractères.</value>
@@ -650,9 +590,7 @@
     <value>Remarque: la taille du fichier ne doit pas dépasser {1}{0}{2}</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
-    <value>octets,ko,Mo,Go,To
-
-</value>
+    <value>octets,ko,Mo,Go,To</value>
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
     <value>Le lien pour confirmer votre compte a été envoyé à l'adresse email indiquée</value>
@@ -682,7 +620,7 @@
     <value>Le domaine LDAP non trouvé.</value>
   </data>
   <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
-    <value>Pas de groupes trouvés</value>
+    <value>Pas de groupes trouvés.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
     <value>Filtre d'utilisateur non valide.</value>
@@ -697,7 +635,7 @@
     <value>Erreur inconnue.</value>
   </data>
   <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
-    <value>Pas d'utilisateurs trouvés</value>
+    <value>Pas d'utilisateurs trouvés.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
     <value>Impossible d'obtenir l'Attribut du groupe pour un ou plusieurs groupes.</value>
@@ -754,7 +692,7 @@
     <value>Suppression de groupes anciens chargés plus tôt via LDAP</value>
   </data>
   <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
-    <value>Retrait des droits d'accès dépassés qui étaient téléchargés avec LDAP </value>
+    <value>Retrait des droits d'accès dépassés qui étaient téléchargés avec LDAP</value>
   </data>
   <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
     <value>Désactivation des profils d'utilisateurs obsolètes chargés plus tôt via LDAP</value>
@@ -763,7 +701,7 @@
     <value>Enregistrement des groupes</value>
   </data>
   <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
-    <value>Paramètres d'eregistrement </value>
+    <value>Paramètres d'enregistrement</value>
   </data>
   <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
     <value>Sauvegarde de photo</value>
@@ -784,7 +722,7 @@
     <value>Un type d'authentification plus sécurisée est requise. Veuillez utiliser une connexion cryptée ou activer l'authentification simple sur le serveur.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
-    <value>La limite d'utilisateur du plan tarifaire courant a été atteinte.</value>
+    <value>La limite d'utilisateur du plan tarifaire courant a été atteinte</value>
   </data>
   <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
     <value>StartTLS n'est pas pris en charge sur la version actuelle du serveur LDAP.</value>
@@ -799,7 +737,7 @@
     <value>La licence n'est pas correcte</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>La licence  n'est pas valide pour cette version du portail</value>
+    <value>La licence  n'est pas valide pour cette version du portail.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Le nombre de portails a dépassé la limite autorisée par la licence</value>
@@ -814,7 +752,7 @@
     <value>Téléchargé avec succès. {0}Support et mises à jour ne sont plus disponibles pour cette licence depuis {2}.{1}</value>
   </data>
   <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
-    <value>Chargement réussi. {0}Le support n'est plus disponible pour cette licence à partir de {2}.{1} </value>
+    <value>Chargement réussi. {0}Le support n'est plus disponible pour cette licence à partir de {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>Les instructions de changement d'émail ont été envoyées avec succès</value>
@@ -823,7 +761,7 @@
     <value>Si l'utilisateur avec le mail {0} existe, les consignes du changement de mot de passe ont été envoyées à votre adresse mail.</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
-    <value>Pour changer le numéro; vous avez besoin de supprimer le numéro de téléphone actuel.</value>
+    <value>Pour changer le numéro; vous avez besoin de supprimer le numéro de téléphone actuel</value>
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
     <value>ORG Région</value>
@@ -962,5 +900,47 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Nombre d'administrateurs/utilisateurs avancés :</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>Clé d'application du client</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Un identifiant de 10-caractères généré pour la connexion avec la clé privée Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Autoriser l’application de se connecter au portail avec un compte Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Activez cette application pour permettre à vos utilisateurs de se connecter à ONLYOFFICE avec Apple ID. {0}Allez au portail de développeur Apple et créez une nouvelle application d’intégration ONLYOFFICE. Insérer les données que vous avez reçues ci-dessous :</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Clée privée téléchargée du programme de développeur Apple</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID d’équipe de comptes développeurs de 10-caratères</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Clé secrète du client</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Le type de fichier de l'image est inconnu</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Taille de l'image dépasse les paramètres autorisés</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
   </data>
 </root>

@@ -36,6 +36,7 @@ const InviteInput = ({
   roomUsers,
   t,
   isOwner,
+  inputsRef,
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [usersList, setUsersList] = useState([]);
@@ -44,7 +45,6 @@ const InviteInput = ({
 
   const [selectedAccess, setSelectedAccess] = useState(defaultAccess);
 
-  const inputsRef = useRef();
   const searchRef = useRef();
 
   const inRoom = (id) => {

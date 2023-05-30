@@ -18,6 +18,7 @@ const Template = (args) => <Badge {...args} />;
 const NumberTemplate = (args) => <Badge {...args} />;
 const TextTemplate = (args) => <Badge {...args} />;
 const MixedTemplate = (args) => <Badge {...args} />;
+const HighTemplate = (args) => <Badge {...args} />;
 
 export const Default = Template.bind({});
 Default.args = {
@@ -43,4 +44,14 @@ MixedBadge.argTypes = {
 };
 MixedBadge.args = {
   label: "Ver.2",
+};
+
+export const HighBadge = HighTemplate.bind({});
+HighBadge.args = {
+  type: "high",
+  label: "High",
+  backgroundColor: "#f2675a",
+};
+HighBadge.argTypes = {
+  type: { control: "radio" },
 };

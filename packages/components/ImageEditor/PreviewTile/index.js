@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Tags from "@docspace/common/components/Tags";
+import Tags from "@docspace/components/Tags";
 
 import { smallTablet } from "../../utils/device";
 import Tag from "../../tag";
