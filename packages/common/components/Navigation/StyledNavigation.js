@@ -30,14 +30,6 @@ const StyledContainer = styled.div`
       ? "1fr 49px auto 1fr"
       : "49px auto 1fr"};
 
-  .drop-box-logo {
-    display: none;
-
-    @media ${tablet} {
-      display: grid;
-    }
-  }
-
   .navigation-logo {
     display: flex;
     height: 24px;
@@ -59,7 +51,7 @@ const StyledContainer = styled.div`
     .header-burger {
       cursor: pointer;
       display: none;
-      align-items: center;
+      margin-top: -2px;
 
       img {
         height: 28px;
@@ -83,6 +75,14 @@ const StyledContainer = styled.div`
       css`
         display: none !important;
       `}
+    }
+  }
+
+  .drop-box-logo {
+    display: none;
+
+    @media ${tablet} {
+      display: grid;
     }
   }
 
@@ -132,8 +132,8 @@ const StyledContainer = styled.div`
     gap: 8px;
 
     .title-icon {
-      width: 16px;
-      height: 16px;
+      min-width: 16px;
+      min-height: 16px;
     }
   }
 

@@ -19,6 +19,7 @@ import {
   isMobile as isMobileUtils,
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
+import { ReactSVG } from "react-svg";
 
 import { Base } from "@docspace/components/themes";
 
@@ -118,6 +119,7 @@ const DropBox = React.forwardRef(
       isDesktopClient,
       withLogo,
       burgerLogo,
+      titleIcon,
     },
     ref
   ) => {
@@ -177,14 +179,17 @@ const DropBox = React.forwardRef(
               <NavigationLogo
                 logo={withLogo}
                 burgerLogo={burgerLogo}
-                className="navigation-logo"
+                className="navigation-logo drop-box-logo"
               />
             )}
             <ArrowButton
               isRootFolder={isRootFolder}
               onBackToParentFolder={onBackToParentFolder}
             />
-            <Text title={title} isOpen={true} onClick={toggleDropBox} />
+            <div className="title-block">
+              {titleIcon && <ReactSVG className="title-icon" src={titleIcon} />}
+              <Text title={title} isOpen={true} onClick={toggleDropBox} />
+            </div>
             <ControlButtons
               isDesktop={isDesktop}
               personal={personal}

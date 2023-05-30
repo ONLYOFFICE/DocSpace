@@ -14,6 +14,7 @@ import {
   tablet,
   isTablet,
   isMobile as IsMobileUtils,
+  hugeMobile,
 } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
@@ -28,11 +29,24 @@ const StyledItem = styled.div`
   grid-template-columns: 17px auto;
   cursor: pointer;
 
-  ${({ withLogo }) =>
-    withLogo &&
-    css`
-      margin-left: 44px;
-    `};
+  margin-left: 0;
+
+  @media ${tablet} {
+    ${({ withLogo }) =>
+      withLogo &&
+      css`
+        margin-left: 44px;
+      `};
+  }
+
+  ${isMobile &&
+  css`
+    margin-left: 0;
+  `};
+
+  @media ${hugeMobile} {
+    margin-left: 0;
+  }
 `;
 
 const StyledText = styled(Text)`

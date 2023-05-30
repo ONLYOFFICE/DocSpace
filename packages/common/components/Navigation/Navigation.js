@@ -169,6 +169,7 @@ const Navigation = ({
                 isDesktopClient={isDesktopClient}
                 withLogo={withLogo}
                 burgerLogo={burgerLogo}
+                titleIcon={titleIcon}
               />
             </>
           )}
