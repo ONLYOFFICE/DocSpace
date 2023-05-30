@@ -448,7 +448,7 @@ public class FileUtility
             }
 
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var list = filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToList();
+            var list = Queries.GetFolders(filesDbContext);
 
             foreach (var item in list)
             {
@@ -483,7 +483,7 @@ public class FileUtility
             }
 
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var list = await filesDbContext.FilesConverts.Select(r => new { r.Input, r.Output }).ToListAsync();
+            var list = await Queries.GetFoldersAsync(filesDbContext).ToListAsync();
 
             foreach (var item in list)
             {
@@ -743,4 +743,15 @@ public class FileUtility
     private bool GetCanForcesave() => _fileUtilityConfiguration.GetCanForcesave();
 
     #endregion
+}
+
+file static class Queries
+{
+    public static readonly Func<FilesDbContext, IEnumerable<FilesConverts>> GetFolders = Microsoft.EntityFrameworkCore.EF.CompileQuery(
+    (FilesDbContext ctx) =>
+        ctx.FilesConverts.AsNoTracking());
+    
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<FilesConverts>> GetFoldersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    (FilesDbContext ctx) =>
+        ctx.FilesConverts.AsNoTracking());
 }
