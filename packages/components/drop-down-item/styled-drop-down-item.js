@@ -173,7 +173,12 @@ const IconWrapper = styled.div`
   align-items: center;
   width: ${(props) => props.theme.dropDownItem.icon.width};
   margin-right: ${(props) => props.theme.dropDownItem.icon.marginRight};
-  //line-height: ${(props) => props.theme.dropDownItem.icon.lineHeight};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: 0;
+      margin-left: ${(props) => props.theme.dropDownItem.icon.marginRight};
+    `}
 
   height: 20px;
 
