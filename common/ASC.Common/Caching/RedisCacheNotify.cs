@@ -24,57 +24,113 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+
 namespace ASC.Common.Caching;
 
 [Singletone]
 public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 {
     private readonly IRedisDatabase _redis;
+    private readonly ConcurrentDictionary<CacheNotifyAction, ConcurrentBag<Action<T>>> _invoctionList;
+    private readonly Guid _instanceId;
 
     public RedisCacheNotify(IRedisClient redisCacheClient)
     {
         _redis = redisCacheClient.GetDefaultDatabase();
+        _instanceId = Guid.NewGuid();
+        _invoctionList = new ConcurrentDictionary<CacheNotifyAction, ConcurrentBag<Action<T>>>();
     }
+
 
     public void Publish(T obj, CacheNotifyAction action)
     {
-        Task.Run(async () => await _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }))
+        Task.Run(async () => await _redis.PublishAsync(GetChannelName(), new RedisCachePubSubItem<T>() { Id = _instanceId, Object = obj, Action = action }))
             .GetAwaiter()
             .GetResult();
+
+        foreach (var hanlder in GetInvoctionList(action))
+        {
+            hanlder(obj);
+        }
     }
 
     public async Task PublishAsync(T obj, CacheNotifyAction action)
     {
-        await Task.Run(async () => await _redis.PublishAsync(GetChannelName(action), new RedisCachePubSubItem<T>() { Object = obj, Action = action }));
+        await Task.Run(async () => await _redis.PublishAsync(GetChannelName(), new RedisCachePubSubItem<T>() { Id = _instanceId, Object = obj, Action = action }));
+
+        foreach (var hanlder in GetInvoctionList(action))
+        {
+            hanlder(obj);
+        }
     }
 
-    public void Subscribe(Action<T> onchange, CacheNotifyAction action)
+    public void Subscribe(Action<T> onChange, CacheNotifyAction action)
     {
-        Task.Run(async () => await _redis.SubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
+        Task.Run(async () => await _redis.SubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(), (i) =>
         {
-            onchange(i.Object);
+            if (i.Id != _instanceId && (i.Action == action || Enum.IsDefined(typeof(CacheNotifyAction), (i.Action & action))))
+            {
+                onChange(i.Object);
+            }
 
             return Task.FromResult(true);
         })).GetAwaiter()
           .GetResult();
+
+        AddToInInvoctionList(onChange, action);
     }
 
     public void Unsubscribe(CacheNotifyAction action)
     {
-        Task.Run(async () => await _redis.UnsubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(action), (i) =>
+        Task.Run(async () => await _redis.UnsubscribeAsync<RedisCachePubSubItem<T>>(GetChannelName(), (i) =>
         {
             return Task.FromResult(true);
         })).GetAwaiter()
           .GetResult();
+
+        _invoctionList.TryRemove(action, out _);
     }
 
-    private string GetChannelName(CacheNotifyAction action)
+    private string GetChannelName()
     {
-        return $"asc:channel:{action}:{typeof(T).FullName}".ToLower(CultureInfo.InvariantCulture);
+        return $"asc:channel:{typeof(T).FullName}".ToLower(CultureInfo.InvariantCulture);
     }
+
+    private List<Action<T>> GetInvoctionList(CacheNotifyAction action)
+    {
+        if (_invoctionList.TryGetValue(action, out var handlers))
+        {
+            return handlers.ToList();
+        }
+        else
+        {
+            return new List<Action<T>>();
+        }
+    }
+
+    private void AddToInInvoctionList(Action<T> onChange, CacheNotifyAction action)
+    {
+        if (onChange != null)
+        {
+            _invoctionList.AddOrUpdate(action,
+                new ConcurrentBag<Action<T>> { onChange },
+                (type, bag) =>
+                {
+                    bag.Add(onChange);
+                    return bag;
+                });
+        }
+        else
+        {
+            _invoctionList.TryRemove(action, out _);
+        }
+    }
+
 
     class RedisCachePubSubItem<T0>
     {
+        public Guid Id { get; set; }
+
         public T0 Object { get; set; }
 
         public CacheNotifyAction Action { get; set; }
