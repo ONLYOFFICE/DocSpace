@@ -64,7 +64,7 @@ public class FirebaseDao
     public async Task<List<FireBaseUser>> GetUserDeviceTokensAsync(Guid userId, int tenantId, string application)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetFireBaseUsersAsync(dbContext, tenantId, userId, application);
+        return await Queries.GetFireBaseUsersAsync(dbContext, tenantId, userId, application).ToListAsync();
     }
 
     public async Task<FireBaseUser> UpdateUserAsync(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)

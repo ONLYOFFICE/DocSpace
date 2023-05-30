@@ -62,7 +62,7 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
 
 file static class Queries
 {
-    public static readonly Func<CustomDbContext, string, MobileAppType?, IAsyncEnumerable<MobileAppInstall>> AnyMobileAppInstallAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    public static readonly Func<CustomDbContext, string, MobileAppType?, Task<bool>> AnyMobileAppInstallAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (CustomDbContext ctx, string userEmail, MobileAppType? appType) =>
         ctx.MobileAppInstall
             .Where(r => r.UserEmail == userEmail)
