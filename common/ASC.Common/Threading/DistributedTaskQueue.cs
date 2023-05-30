@@ -133,6 +133,11 @@ public class DistributedTaskQueue
 
         distributedTask.InstanceId = INSTANCE_ID;
 
+        if (distributedTask.LastModifiedOn.Equals(DateTime.MinValue))
+        {
+            distributedTask.LastModifiedOn = DateTime.UtcNow;
+        }
+
         var cancelation = new CancellationTokenSource();
         var token = cancelation.Token;
         _cancelations[distributedTask.Id] = cancelation;
