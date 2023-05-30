@@ -1467,7 +1467,9 @@ class FilesActionStore {
         return hasSelection && canCopy;
       case "showInfo":
       case "download":
-        return hasSelection && !this.publicRoomStore.isPublicRoom;
+        const canDownload = selection.every((s) => s.security?.Download);
+
+        return hasSelection && canDownload;
       case "downloadAs":
         return canConvertSelected && !this.publicRoomStore.isPublicRoom;
       case "moveTo":
