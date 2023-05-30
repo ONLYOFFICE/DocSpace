@@ -1378,6 +1378,13 @@ class FilesStore {
       })
       .finally(() => {
         this.setIsLoadedFetchFiles(true);
+
+        if (window?.DocSpace?.location?.state?.highlightFileId) {
+          this.setHighlightFile({
+            highlightFileId: window.DocSpace.location.state.highlightFileId,
+            isFileHasExst: window.DocSpace.location.state.isFileHasExst,
+          });
+        }
       });
   };
 

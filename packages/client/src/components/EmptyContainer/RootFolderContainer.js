@@ -402,7 +402,7 @@ export default inject(
       title,
       myFolderId,
       filter,
-      fetchFiles,
+
       isLoading,
       setIsLoading,
       rootFolderType,

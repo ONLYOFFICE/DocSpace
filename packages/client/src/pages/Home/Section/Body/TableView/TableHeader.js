@@ -337,7 +337,7 @@ class FilesTableHeader extends React.Component {
   };
 
   onFilter = (sortBy) => {
-    const { filter, selectedFolderId, setIsLoading, fetchFiles } = this.props;
+    const { filter, setIsLoading } = this.props;
     const newFilter = filter.clone();
 
     if (newFilter.sortBy !== sortBy) {
@@ -348,7 +348,10 @@ class FilesTableHeader extends React.Component {
     }
 
     setIsLoading(true);
-    fetchFiles(selectedFolderId, newFilter).finally(() => setIsLoading(false));
+
+    window.DocSpace.navigate(
+      `${window.DocSpace.location.pathname}?${newFilter.toUrlParams}`
+    );
   };
 
   onRoomsFilter = (sortBy) => {
@@ -426,7 +429,7 @@ export default inject(
       isHeaderChecked,
       setIsLoading,
       filter,
-      fetchFiles,
+
       canShare,
       firstElemChecked,
       headerBorder,
@@ -476,7 +479,6 @@ export default inject(
       sortingVisible,
 
       setIsLoading,
-      fetchFiles,
 
       roomsFilter,
 

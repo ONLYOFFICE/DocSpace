@@ -75,7 +75,6 @@ const FilesMediaViewer = (props) => {
       fetchFiles(previewFile.folderId).finally(() => {
         setIsLoading(false);
         setFirstLoad(false);
-        setAlreadyFetchingRooms(false);
       });
     }
   }, [previewFile]);

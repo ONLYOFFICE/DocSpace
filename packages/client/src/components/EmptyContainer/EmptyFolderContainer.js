@@ -26,10 +26,9 @@ const EmptyFolderContainer = ({
   setIsLoading,
   parentId,
   linkStyles,
-  isRooms,
+  editAccess,
   sectionWidth,
   canCreateFiles,
-  canInviteUsers,
 
   onClickInviteUsers,
   folderId,
@@ -43,10 +42,19 @@ const EmptyFolderContainer = ({
   const navigate = useNavigate();
   const location = useLocation();
 
+  const isRoom =
+    rootFolderType === null
+      ? location.state.rootFolderType === FolderType.Archive ||
+        location.state.rootFolderType === FolderType.Rooms
+      : rootFolderType === FolderType.Archive ||
+        rootFolderType === FolderType.Rooms;
+
+  const canInviteUsers = isRoom && editAccess;
+
   const onBackToParentFolder = () => {
     setIsLoading(true);
 
-    if (isRooms) {
+    if (isRoom) {
       const path =
         rootFolderType === FolderType.Archive
           ? "rooms/archived"
@@ -99,7 +107,7 @@ const EmptyFolderContainer = ({
   };
 
   const onInviteUsersClick = () => {
-    if (!isRooms) return;
+    if (!isRoom) return;
 
     onClickInviteUsers && onClickInviteUsers(folderId);
   };
@@ -140,7 +148,7 @@ const EmptyFolderContainer = ({
         </Link>
       </div>
 
-      {isRooms ? (
+      {isRoom ? (
         canInviteUsers ? (
           <>
             <div className="empty-folder_container-links second-description">
@@ -189,14 +197,14 @@ const EmptyFolderContainer = ({
 
   return (
     <EmptyContainer
-      headerText={isRooms ? t("RoomCreated") : t("EmptyScreenFolder")}
+      headerText={isRoom ? t("RoomCreated") : t("EmptyScreenFolder")}
       style={{ gridColumnGap: "39px", marginTop: 32 }}
       descriptionText={
         canCreateFiles
           ? t("EmptyFolderDecription")
           : t("EmptyFolderDescriptionUser")
       }
-      imageSrc={isRooms ? emptyScreenCorporateSvg : emptyScreenAltSvg}
+      imageSrc={isRoom ? emptyScreenCorporateSvg : emptyScreenAltSvg}
       buttons={buttons}
       sectionWidth={sectionWidth}
       isEmptyFolderContainer={true}
@@ -218,7 +226,7 @@ export default inject(
       parentId,
 
       id: folderId,
-      roomType,
+
       security,
       rootFolderType,
     } = selectedFolderStore;
@@ -229,25 +237,20 @@ export default inject(
       id = elem.id;
     }
 
-    const isRooms = !!roomType;
-
     const { canCreateFiles } = accessRightsStore;
 
     const { onClickInviteUsers } = contextOptionsStore;
 
-    const canInviteUsers = isRooms && security?.EditAccess; // skip sub-folders
-
     return {
       setIsLoading: filesStore.setIsLoading,
       parentId: id ?? parentId,
-      isRooms,
+
       canCreateFiles,
-      canInviteUsers,
 
       navigationPath,
       rootFolderType,
       clearFiles,
-
+      editAccess: security?.EditAccess,
       onClickInviteUsers,
       folderId,
 

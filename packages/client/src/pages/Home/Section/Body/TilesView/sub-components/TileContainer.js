@@ -278,14 +278,14 @@ TileContainer.defaultProps = {
 
 export default inject(({ auth, filesStore, treeFoldersStore }) => {
   const { personal } = auth.settingsStore;
-  const { fetchFiles, filter, setIsLoading } = filesStore;
+  const { filter, setIsLoading } = filesStore;
   const { isFavoritesFolder, isRecentFolder } = treeFoldersStore;
 
   const isDesc = filter?.sortOrder === "desc";
 
   return {
     personal,
-    fetchFiles,
+
     setIsLoading,
     isFavoritesFolder,
     isRecentFolder,

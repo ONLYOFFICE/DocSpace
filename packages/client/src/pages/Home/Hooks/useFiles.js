@@ -108,8 +108,11 @@ const useFiles = ({
           });
       }, 1);
 
-      return;
+      return setIsLoading(false);
     }
+
+    if (window.location.href.indexOf("/#preview") > 1)
+      return setIsLoading(false);
 
     const isRoomFolder = getObjectByLocation(window.location)?.folder;
 

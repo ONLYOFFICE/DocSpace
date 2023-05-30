@@ -46,6 +46,10 @@ import { getObjectByLocation } from "@docspace/common/utils";
 
 import uniqueid from "lodash/uniqueId";
 import FilesFilter from "@docspace/common/api/files/filter";
+import {
+  getCategoryTypeByFolderType,
+  getCategoryUrl,
+} from "SRC_DIR/helpers/utils";
 
 class FilesActionStore {
   authStore;
@@ -101,8 +105,9 @@ class FilesActionStore {
       this.uploadDataStore.secondaryProgressDataStore;
 
     const {
-      filter,
       fetchFiles,
+      fetchRooms,
+      filter,
       roomsFilter,
 
       isEmptyLastPageAfterOperation,
@@ -133,14 +138,16 @@ class FilesActionStore {
     }
 
     if (isRoomsFolder || isArchiveFolder || isArchiveFolderRoot) {
-      const currentFilter = newFilter ? newFilter : roomsFilter.clone();
-
-      window.DocSpace.navigate(
-        `${window.DocSpace.location.pathname}?${currentFilter.toUrlParams()}`
-      );
-
-      this.dialogsStore.setIsFolderActions(false);
-      return setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
+      fetchRooms(
+        updatedFolder,
+        newFilter ? newFilter : roomsFilter.clone()
+      ).finally(() => {
+        this.dialogsStore.setIsFolderActions(false);
+        return setTimeout(
+          () => clearSecondaryProgressData(operationId),
+          TIMEOUT
+        );
+      });
     } else {
       fetchFiles(
         updatedFolder,
@@ -1224,28 +1231,71 @@ class FilesActionStore {
     }
   };
 
-  openLocationAction = async (locationId) => {
+  openLocationAction = async (item) => {
     this.filesStore.setBufferSelection(null);
 
-    const files = await this.filesStore.fetchFiles(locationId, null);
-    return files;
+    const {
+      id,
+
+      title,
+      rootFolderType,
+      filesCount,
+      foldersCount,
+    } = item;
+    const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
+
+    const isEmpty = filesCount === 0 && foldersCount === 0;
+
+    const state = { title, isEmpty, rootFolderType, isRoot: false };
+    const filter = FilesFilter.getDefault();
+
+    filter.folder = id;
+
+    const url = getCategoryUrl(categoryType, id);
+
+    this.filesStore.clearFiles(isEmpty);
+    this.filesStore.setIsLoading(true);
+
+    window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
   };
 
   checkAndOpenLocationAction = async (item) => {
-    const { filter, setHighlightFile, fetchFiles } = this.filesStore;
-    const newFilter = filter.clone();
+    const { setIsLoading, clearFiles, categoryType } = this.filesStore;
+    const { myRoomsId, myFolderId, archiveRoomsId, recycleBinFolderId } =
+      this.treeFoldersStore;
+    const { rootFolderType } = this.selectedFolderStore;
 
-    newFilter.page = 0;
+    const { ExtraLocationTitle, ExtraLocation, fileExst } = item;
+
+    const isRoot =
+      ExtraLocation === myRoomsId ||
+      ExtraLocation === myFolderId ||
+      ExtraLocation === archiveRoomsId ||
+      ExtraLocation === recycleBinFolderId;
+
+    const isEmpty = false;
+
+    const state = {
+      title: ExtraLocationTitle,
+      isEmpty,
+      isRoot,
+      fileExst,
+      highlightFileId: item.id,
+      isFileHasExst: !item.fileExst,
+      rootFolderType,
+    };
+
+    const url = getCategoryUrl(categoryType, ExtraLocation);
+
+    const newFilter = FilesFilter.getDefault();
+
     newFilter.search = item.title;
+    newFilter.folder = ExtraLocation;
 
-    fetchFiles(item.ExtraLocation, newFilter)
-      .then(() => {
-        setHighlightFile({
-          highlightFileId: item.id,
-          isFileHasExst: !item.fileExst,
-        });
-      })
-      .catch((err) => toastr.error(err));
+    clearFiles(isEmpty);
+    setIsLoading(true);
+
+    window.DocSpace.navigate(`${url}?${newFilter.toUrlParams()}`, { state });
   };
 
   setThirdpartyInfo = (providerKey) => {
@@ -2059,11 +2109,15 @@ class FilesActionStore {
     let path = `rooms/shared`;
 
     const state = {
-      title: this.selectedFolderStore?.navigationPath[0]?.title || "",
+      title:
+        this.selectedFolderStore?.navigationPath[
+          this.selectedFolderStore?.navigationPath.length - 1
+        ]?.title || "",
       isRoot: true,
       isEmpty: false,
       rootFolderType: this.selectedFolderStore.rootFolderType,
     };
+
     setIsLoading(true);
     clearFiles(false);
 

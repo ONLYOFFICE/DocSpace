@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
+import FilesFilter from "@docspace/common/api/files/filter";
 
 class CreateEditRoomStore {
   roomParams = null;
@@ -136,12 +137,12 @@ class CreateEditRoomStore {
               this.onClose();
             }
 
-            !withPaging && this.onOpenNewRoom(room.id);
+            !withPaging && this.onOpenNewRoom(room);
             URL.revokeObjectURL(img.src);
           };
           img.src = url;
         });
-      } else !withPaging && this.onOpenNewRoom(room.id);
+      } else !withPaging && this.onOpenNewRoom(room);
 
       this.roomIsCreated = true;
     } catch (err) {
@@ -156,20 +157,36 @@ class CreateEditRoomStore {
     }
   };
 
-  onOpenNewRoom = async (id) => {
-    const { fetchFiles } = this.filesStore;
+  onOpenNewRoom = async (room) => {
+    const { setIsLoading, clearFiles } = this.filesStore;
     const { setView, setIsVisible } = this.infoPanelStore;
 
     setView("info_members");
-    fetchFiles(id)
-      .then(() => {
-        !isMobile && setIsVisible(true);
-      })
-      .finally(() => {
-        this.setIsLoading(false);
-        this.setConfirmDialogIsLoading(false);
-        this.onClose();
-      });
+
+    const isEmpty = room.filesCount + room.foldersCount === 0;
+
+    const state = {
+      isRoot: false,
+      title: room.title,
+      isEmpty,
+      rootFolderType: room.rootFolderType,
+    };
+
+    const newFilter = FilesFilter.getDefault();
+    newFilter.folder = room.id;
+    setIsLoading(true);
+    clearFiles(isEmpty);
+
+    window.DocSpace.navigate(
+      `rooms/shared/${room.id}/filter?${newFilter.toUrlParams()}`,
+      { state }
+    );
+
+    !isMobile && setIsVisible(true);
+
+    this.setIsLoading(false);
+    this.setConfirmDialogIsLoading(false);
+    this.onClose();
   };
 }
 
