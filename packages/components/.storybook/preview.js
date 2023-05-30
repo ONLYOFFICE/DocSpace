@@ -3,6 +3,7 @@ import { Base, Dark } from "../themes/index";
 import "../../common/opensansoffline.scss";
 import globalTypes from "./globals";
 import ThemeWrapper from "./globals/theme-wrapper";
+import "../index";
 
 const preview = {
   globalTypes,
