@@ -12,8 +12,6 @@ import NoHistory from "../NoItem/NoHistory";
 const History = ({
   t,
   selection,
-  selectionHistory,
-  setSelectionHistory,
   historyWithFileList,
   selectedFolder,
   selectionHistory,
