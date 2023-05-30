@@ -195,7 +195,7 @@ public class SmtpSender : INotifySender
                 : null;
         }
     }
-    private MimeMessage BuildMailMessage(NotifyMessage m)
+    protected MimeMessage BuildMailMessage(NotifyMessage m)
     {
         var mimeMessage = new MimeMessage
         {

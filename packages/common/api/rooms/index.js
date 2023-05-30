@@ -1,11 +1,20 @@
 import { request } from "../client";
-import { decodeDisplayName } from "../../utils";
+import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { FolderType } from "../../constants";
+import RoomsFilter from "./filter";
 
 export function getRooms(filter, signal) {
+  let params;
+
+  if (filter) {
+    checkFilterInstance(filter, RoomsFilter);
+
+    params = `?${filter.toApiUrlParams()}`;
+  }
+
   const options = {
     method: "get",
-    url: `/files/rooms?${filter.toApiUrlParams()}`,
+    url: `/files/rooms${params}`,
     signal,
   };
 

@@ -18,7 +18,7 @@ import {
   getBackupStorage,
   getStorageRegions,
 } from "@docspace/common/api/settings";
-import FloatingButton from "@docspace/common/components/FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 let selectedStorageType = "";

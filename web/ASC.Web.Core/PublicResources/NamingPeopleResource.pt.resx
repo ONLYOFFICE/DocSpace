@@ -112,4 +112,37 @@
   <data name="DefaultUserTitle" xml:space="preserve">
     <value>Posição</value>
   </data>
+  <data name="CommonGuest" xml:space="preserve">
+    <value>Convidado(a)</value>
+  </data>
+  <data name="DefaultGuest" xml:space="preserve">
+    <value>Convidado(a)</value>
+  </data>
+  <data name="EducationGuest" xml:space="preserve">
+    <value>Convidado(a)</value>
+  </data>
+  <data name="EducationGroupHead" xml:space="preserve">
+    <value>Líder de grupo</value>
+  </data>
+  <data name="EducationGroups" xml:space="preserve">
+    <value>Grupos</value>
+  </data>
+  <data name="EducationGuests" xml:space="preserve">
+    <value>Convidados</value>
+  </data>
+  <data name="EducationGroup" xml:space="preserve">
+    <value>Grupo</value>
+  </data>
+  <data name="CommonGuests" xml:space="preserve">
+    <value>Convidados</value>
+  </data>
+  <data name="DefaultGuests" xml:space="preserve">
+    <value>Convidados</value>
+  </data>
+  <data name="EducationRegDate" xml:space="preserve">
+    <value>Data de registo</value>
+  </data>
+  <data name="EducationUserTitle" xml:space="preserve">
+    <value>Título</value>
+  </data>
 </root>

@@ -32,6 +32,7 @@ import {
 } from "../dialogs";
 import ConvertPasswordDialog from "../dialogs/ConvertPasswordDialog";
 import ArchiveDialog from "../dialogs/ArchiveDialog";
+import RestoreRoomDialog from "../dialogs/RestoreRoomDialog";
 import PreparationPortalDialog from "../dialogs/PreparationPortalDialog";
 
 const Panels = (props) => {
@@ -65,6 +66,7 @@ const Panels = (props) => {
     inviteUsersWarningDialogVisible,
     preparationPortalDialogVisible,
     changeUserTypeDialogVisible,
+    restoreRoomDialogVisible,
     editLinkPanelIsVisible,
     unsavedChangesDialogVisible,
     deleteLinkDialogVisible,
@@ -139,6 +141,7 @@ const Panels = (props) => {
       <ConvertPasswordDialog key="convert-password-dialog" />
     ),
     archiveDialogVisible && <ArchiveDialog key="archive-dialog" />,
+    restoreRoomDialogVisible && <RestoreRoomDialog key="archive-dialog" />,
     inviteUsersWarningDialogVisible && (
       <InviteUsersWarningDialog key="invite-users-warning-dialog" />
     ),
@@ -184,6 +187,8 @@ export default inject(
       connectItem, //TODO:
       restoreAllPanelVisible,
       archiveDialogVisible,
+      restoreRoomDialogVisible,
+
       unsavedChangesDialogVisible,
       createMasterForm,
       selectFileDialogVisible,
@@ -234,6 +239,7 @@ export default inject(
       inviteUsersWarningDialogVisible,
       confirmDialogIsLoading,
       changeUserTypeDialogVisible,
+      restoreRoomDialogVisible,
       editLinkPanelIsVisible,
       unsavedChangesDialogVisible,
       deleteLinkDialogVisible,

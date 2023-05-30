@@ -320,7 +320,7 @@
     <value>Documentos</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Crie e edite documentos próprios bem como documentos compartilhados com os direitos de acesso adequados|Forneça acesso de leitura/gravação para outros usuários aos documentos e pastas|Conecte a Dropbox, Box e outras contas na seção "Meus documentos".</value>
+    <value>Crie e edite documentos próprios bem como documentos compartilhados com os direitos de acesso adequados|Forneça acesso de leitura/gravação para outros usuários aos documentos e pastas|Conecte a Dropbox, Box e outras contas na seção "Meus documentos"</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Nome</value>
@@ -357,5 +357,11 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Colaborador</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Colaborador</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
   </data>
 </root>

@@ -30,8 +30,6 @@ namespace ASC.MessagingSystem;
 public class MessageSettings
 {
     private const string UserAgentHeader = "User-Agent";
-    private const string ForwardedHeader = "X-Forwarded-For";
-    private const string HostHeader = "Host";
     private const string RefererHeader = "Referer";
 
     static MessageSettings()
@@ -66,22 +64,11 @@ public class MessageSettings
         return headers.ContainsKey(RefererHeader) ? headers[RefererHeader].FirstOrDefault() : null;
     }
 
-    public static string GetIP(IDictionary<string, StringValues> headers)
-    {
-        var forwarded = headers.ContainsKey(ForwardedHeader) ? headers[ForwardedHeader].FirstOrDefault() : null;
-        var host = headers.ContainsKey(HostHeader) ? headers[HostHeader].FirstOrDefault() : null;
-        return forwarded ?? host;
-    }
-
     public static string GetIP(HttpRequest request)
     {
         if (request != null)
         {
-            var str = request.Headers[ForwardedHeader].FirstOrDefault() ?? request.GetUserHostAddress();
-            if (str != null)
-            {
-                return str.Substring(0, str.IndexOf(':') != -1 ? str.IndexOf(':') : str.Length);
-            }
+            return request.HttpContext.Connection.RemoteIpAddress.ToString();          
         }
         return null;
     }

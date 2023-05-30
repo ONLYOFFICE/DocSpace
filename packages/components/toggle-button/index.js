@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { ToggleButtonContainer, HiddenInput } from "./styled-toggle-button";
 import Text from "../text";
 import { motion } from "framer-motion";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const ToggleIcon = ({ isChecked, isLoading, noAnimation = false }) => {
   const transition = noAnimation ? { duration: 0 } : {};

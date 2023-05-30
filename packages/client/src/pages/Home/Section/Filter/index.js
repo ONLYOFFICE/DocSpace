@@ -23,17 +23,33 @@ import {
   EmployeeType,
   EmployeeStatus,
   PaymentsType,
+  AccountLoginType,
 } from "@docspace/common/constants";
 
 import { getDefaultRoomName } from "SRC_DIR/helpers/filesUtils";
 import withLoader from "SRC_DIR/HOCs/withLoader";
-import { TableVersions } from "SRC_DIR/helpers/constants";
-import { SortByFieldName } from "SRC_DIR/helpers/constants";
+import {
+  TableVersions,
+  SortByFieldName,
+  SSO_LABEL,
+} from "SRC_DIR/helpers/constants";
 
 import ViewRowsReactSvgUrl from "PUBLIC_DIR/images/view-rows.react.svg?url";
 import ViewTilesReactSvgUrl from "PUBLIC_DIR/images/view-tiles.react.svg?url";
 
 import { showLoader, hideLoader } from "./FilterUtils";
+import { getRoomInfo } from "@docspace/common/api/rooms";
+
+const getAccountLoginType = (filterValues) => {
+  const accountLoginType = result(
+    find(filterValues, (value) => {
+      return value.group === "filter-login-type";
+    }),
+    "key"
+  );
+
+  return accountLoginType || null;
+};
 
 const getFilterType = (filterValues) => {
   const filterType = result(
@@ -66,6 +82,17 @@ const getAuthorType = (filterValues) => {
   );
 
   return authorType ? authorType : null;
+};
+
+const getRoomId = (filterValues) => {
+  const filterRoomId = result(
+    find(filterValues, (value) => {
+      return value.group === FilterGroups.filterRoom;
+    }),
+    "key"
+  );
+
+  return filterRoomId || null;
 };
 
 const getSearchParams = (filterValues) => {
@@ -237,6 +264,7 @@ const SectionFilterContent = ({
         const role = getRole(data);
         const group = getGroup(data);
         const payments = getPayments(data);
+        const accountLoginType = getAccountLoginType(data);
 
         const newFilter = accountsFilter.clone();
 
@@ -258,6 +286,9 @@ const SectionFilterContent = ({
         newFilter.group = group;
 
         newFilter.payments = payments;
+
+        newFilter.accountLoginType = accountLoginType;
+
         //console.log(newFilter);
 
         fetchPeople(newFilter, true).finally(() => setIsLoading(false));
@@ -326,6 +357,8 @@ const SectionFilterContent = ({
         const withSubfolders = getSearchParams(data);
         const withContent = getFilterContent(data);
 
+        const roomId = getRoomId(data);
+
         const newFilter = filter.clone();
         newFilter.page = 0;
 
@@ -343,6 +376,10 @@ const SectionFilterContent = ({
           withSubfolders === FilterKeys.excludeSubfolders ? "false" : "true";
         newFilter.searchInContent = withContent === "true" ? "true" : null;
 
+        if (isTrash) {
+          newFilter.roomId = roomId;
+        }
+
         setIsLoading(true);
 
         fetchFiles(selectedFolderId, newFilter).finally(() =>
@@ -352,6 +389,8 @@ const SectionFilterContent = ({
     },
     [
       isRooms,
+      isAccountsPage,
+      isTrash,
       fetchFiles,
       fetchRooms,
       fetchPeople,
@@ -360,7 +399,6 @@ const SectionFilterContent = ({
       accountsFilter,
       filter,
       selectedFolderId,
-      isAccountsPage,
     ]
   );
 
@@ -617,6 +655,21 @@ const SectionFilterContent = ({
         });
       }
 
+      if (accountsFilter?.accountLoginType?.toString()) {
+        const label =
+          AccountLoginType.SSO === accountsFilter.accountLoginType.toString()
+            ? SSO_LABEL
+            : AccountLoginType.LDAP ===
+              accountsFilter.accountLoginType.toString()
+            ? t("PeopleTranslations:LDAPLbl")
+            : t("PeopleTranslations:StandardLogin");
+        filterValues.push({
+          key: accountsFilter.accountLoginType.toString(),
+          label: label,
+          group: "filter-login-type",
+        });
+      }
+
       if (accountsFilter.group) {
         const group = groups.find((group) => group.id === accountsFilter.group);
 
@@ -823,7 +876,6 @@ const SectionFilterContent = ({
 
         if (!isMe) {
           const user = await getUser(filter.authorType.replace("user_", ""));
-
           label = user.displayName;
         }
 
@@ -834,6 +886,17 @@ const SectionFilterContent = ({
               : FilterKeys.me
             : filter.authorType.replace("user_", ""),
           group: FilterGroups.filterAuthor,
+          label: label,
+        });
+      }
+
+      if (filter.roomId) {
+        const room = await getRoomInfo(filter.roomId);
+        const label = room.title;
+
+        filterValues.push({
+          key: filter.roomId,
+          group: FilterGroups.filterRoom,
           label: label,
         });
       }
@@ -888,6 +951,7 @@ const SectionFilterContent = ({
   }, [
     filter.withSubfolders,
     filter.authorType,
+    filter.roomId,
     filter.filterType,
     filter.searchInContent,
     filter.excludeSubject,
@@ -909,7 +973,7 @@ const SectionFilterContent = ({
     accountsFilter.role,
     accountsFilter.payments,
     accountsFilter.group,
-
+    accountsFilter.accountLoginType,
     t,
   ]);
 
@@ -998,7 +1062,7 @@ const SectionFilterContent = ({
           group: "filter-account",
           label: t("ConnectDialog:Account"),
           isHeader: true,
-          isLast: true,
+          isLast: false,
         },
         {
           key: PaymentsType.Paid,
@@ -1028,6 +1092,32 @@ const SectionFilterContent = ({
       //   },
       // ];
 
+      const accountLoginTypeItems = [
+        {
+          key: "filter-login-type",
+          group: "filter-login-type",
+          label: t("PeopleTranslations:AccountLoginType"),
+          isHeader: true,
+          isLast: true,
+        },
+        {
+          key: AccountLoginType.SSO,
+          group: "filter-login-type",
+          label: SSO_LABEL,
+        },
+        //TODO: uncomment after ldap be ready
+        /*{
+          key: AccountLoginType.LDAP,
+          group: "filter-login-type",
+          label: t("PeopleTranslations:LDAPLbl"),
+        },*/
+        {
+          key: AccountLoginType.STANDART,
+          group: "filter-login-type",
+          label: t("PeopleTranslations:StandardLogin"),
+        },
+      ];
+
       const filterOptions = [];
 
       filterOptions.push(...statusItems);
@@ -1035,6 +1125,7 @@ const SectionFilterContent = ({
       // filterOptions.push(...roleItems);
       filterOptions.push(...accountItems);
       // filterOptions.push(...roomItems);
+      filterOptions.push(...accountLoginTypeItems);
 
       return filterOptions;
     }
@@ -1151,7 +1242,7 @@ const SectionFilterContent = ({
             group: FilterGroups.filterType,
             label: t("Common:Type"),
             isHeader: true,
-            isLast: true,
+            isLast: !isTrash,
           },
           ...folders,
           {
@@ -1412,8 +1503,30 @@ const SectionFilterContent = ({
       ];
 
       !isPublicRoom && filterOptions.push(...authorOption);
-
       filterOptions.push(...typeOptions);
+
+      if (isTrash) {
+        const roomOption = [
+          {
+            id: "filter_search-by-room-content-header",
+            key: "filter_search-by-room-content-header",
+            group: FilterGroups.filterRoom,
+            label: "Room",
+            isHeader: true,
+            isLast: true,
+          },
+          {
+            id: "filter_search-by-room-content",
+            key: "filter_search-by-room-content",
+            group: FilterGroups.filterRoom,
+            withoutHeader: true,
+            label: "Select room",
+            displaySelectorType: "button",
+            isLast: true,
+          },
+        ];
+        filterOptions.push(...roomOption);
+      }
     }
     return filterOptions;
   }, [
@@ -1425,6 +1538,7 @@ const SectionFilterContent = ({
     isAccountsPage,
     isFavoritesFolder,
     isRecentFolder,
+    isTrash,
     isPublicRoom,
   ]);
 
@@ -1747,6 +1861,7 @@ const SectionFilterContent = ({
     infoPanelVisible,
     viewAs,
     isPersonalRoom,
+    isTrash,
   ]);
 
   const removeSelectedItem = React.useCallback(
@@ -1770,6 +1885,10 @@ const SectionFilterContent = ({
 
         if (group === "filter-account") {
           newFilter.payments = null;
+        }
+
+        if (group === "filter-login-type") {
+          newFilter.accountLoginType = null;
         }
 
         setIsLoading(true);
@@ -1840,6 +1959,9 @@ const SectionFilterContent = ({
         }
         if (group === FilterGroups.filterContent) {
           newFilter.searchInContent = null;
+        }
+        if (group === FilterGroups.filterRoom) {
+          newFilter.roomId = null;
         }
 
         newFilter.page = 0;

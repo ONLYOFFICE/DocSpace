@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blogs izveidots</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Grāmatzīme izveidota</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>CRM lieta tika izveidota</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Komentārs tika pievienots</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>CRM kontakts tika izveidots</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>CRM iespēja tika izveidota</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Diskusija tika izveidota</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Notikums tika izveidots</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Dokuments tika izveidots / augšupielādēts</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Mape izveidota</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Mape tika izveidota</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Aptauja izveidota</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Ieraksts tika izveidots</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Posms tika izveidots</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projekts tika izveidots</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Uzdevums tika izveidots</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Piekļuve vadības panelim</value>
   </data>
@@ -130,21 +82,18 @@
   <data name="ButtonStartFreeTrial" xml:space="preserve">
     <value>Uzsākt bezmaksas izmēģinājumu</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Uzzināt vairāk&gt;&gt;</value>
-  </data>
   <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
     <value>Sveiki, $UserName!
 
 Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
 
-*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
 
-*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+* *Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
 
-*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+* *Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps. 
 
 $GreenButton
 
@@ -159,13 +108,13 @@ ONLYOFFICE komanda
 
 Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
 
-*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
 
-*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+* *Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
 
-*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+* *Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps. 
 
 $GreenButton
 
@@ -180,13 +129,13 @@ ONLYOFFICE komanda
 
 Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
 
-*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
 
-*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+* *Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
 
-*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+* *Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps. 
 
 $GreenButton
 
@@ -201,13 +150,13 @@ ONLYOFFICE komanda
 
 Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
 
-*#* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+* Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts: *sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
 
-*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+* *Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
 
-*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+* *Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
 
-*# Connect any cloud storage* and work without switching between apps. 
+* *Connect any cloud storage* and work without switching between apps. 
 
 $GreenButton
 
@@ -235,7 +184,7 @@ Cienītais/-ā $OwnerName,
 
 Ir izveidota rezerves kopija, kas satur jūsu portāla "${__VirtualRootPath}":"${__VirtualRootPath}" datus.
 
-Lai uzzinātu vairāk par rezerves kopēšanu, lūdzu, dodieties uz instrukciju "Datu rezerves kopēšana":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx".
+Lai uzzinātu vairāk par rezerves kopēšanu, lūdzu, dodieties uz instrukciju "Datu rezerves kopēšana":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block".
 
 
 Ja radušies kādi jautājumi, sazinieties ar mums uz:
@@ -296,6 +245,7 @@ $GreenButton
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Ziņojums no portāla "${__VirtualRootPath}":"${__VirtualRootPath}"
+
 E-pasts: $UserEmail
 
 $Body</value>
@@ -314,13 +264,12 @@ $GreenButton
 *Piezīme*: šī saite ir derīga 48 stundas. Lūdzu, šajā laikā pabeidziet šo darbību.</value>
   </data>
   <data name="pattern_migration_error" xml:space="preserve">
-    <value>h1.Kļūda, pārnesot portālu uz citu apgabalu
+    <value>h1.Kļūda, pārnesot portālu uz citu apgabalu $RegionName
 
-Radās kļūda, pārnesot portālu uz apgabalu $RegionName. Lūdzu, mēģiniet vēlāk vēlreiz.
+Radās kļūda, pārnesot portālu uz apgabalu. Lūdzu, mēģiniet vēlāk vēlreiz.
 Jūsu portāls ir pieejams vecajā adresē "$PortalUrl":"$PortalUrl"
 
 Ja jums radušies kādi jautājumi vai ir nepieciešama palīdzība, sazinieties ar mums, rakstot uz "support@onlyoffice.com":"mailto:support@onlyoffice.com"
-
 Ar cieņu
 ONLYOFFICE™ atbalsta komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"
@@ -408,7 +357,7 @@ Sveicināti, $UserDisplayName,
 
 Jūsu $PortalUrl portāla adrese tika nomainīta uz jauno "${__VirtualRootPath}":"${__VirtualRootPath}" adresi.
 
-*Piezīme*: Visas kopīgotās dokumentu saites šobrīd nav pieejamas, kā arī DNS uzstādījumi un vienreizējās pierakstīšanās iespējas nedarbosies līdz to maiņai. Trešās puses iCal saites, kas ir pievienotas jūsu kalendāram, neatjaunināsies, līdz tos nepārlādēsit.</value>
+*Piezīme*: DNS uzstādījumi un vienreizējās pierakstīšanās iespējas nedarbosies līdz to maiņai.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Profila dzēšana no portāla "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -429,26 +378,20 @@ Sveicināti, $UserName,
 Jūsu lietotāja "$__VirtualRootPath":"$__VirtualRootPath" datus mainīja "$__AuthorName":"$__AuthorUrl".
 
 Lai aplūkotu profilu, sekojiet zemāk esošajai saitei: 
-"$UserName":"$MyStaffLink"
 
-
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+"$UserName":"$MyStaffLink"</value>
   </data>
   <data name="pattern_reassigns_completed" xml:space="preserve">
     <value>Sveicināti, $UserName,
 
-Ir veiksmīga datu pārnese no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink".
-
-^Jūs saņemat šo e-pastu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Ir veiksmīga datu pārnese no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink".</value>
   </data>
   <data name="pattern_reassigns_failed" xml:space="preserve">
     <value>Sveicināti $UserName,
 
 Datu pārneses process no lietotāja "$FromUserName":"$FromUserLink" lietotājam "$ToUserName":"$ToUserLink" neizdevās.
 
-Ziņa par kļūdu: $Message
-
-^Jūs saņemat šo ziņu, jo esat reģistrējies portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Ziņa par kļūdu: $Message</value>
   </data>
   <data name="pattern_remove_user_data_completed" xml:space="preserve">
     <value>Sveicināti $UserName,
@@ -462,9 +405,7 @@ Datu noņemšana lietotājam "$FromUserName":"$FromUserLink" veiksmīgi pabeigta
 
 Datu noņemšana lietotājam "$FromUserName":"$FromUserLink" neizdevās.
 
-Kļūdas ziņojums: $Message
-
-^Jūs saņemat šo ziņu, jo esat reģistrējiet portālā "${__VirtualRootPath}":"${__VirtualRootPath}".^</value>
+Kļūdas ziņojums: $Message</value>
   </data>
   <data name="pattern_request_license" xml:space="preserve">
     <value>h1.Uzņēmuma licences pieprasījums
@@ -512,7 +453,7 @@ Ar cieņu,
 ONLYOFFICE™ komanda
 "www.onlyoffice.com":"http://onlyoffice.com/"
 
-^Jūs saņemat šo ziņu, jo esat reģistrēts lietotājs portālā"${__VirtualRootPath}":"${__VirtualRootPath}". Lai mainītu paziņojuma veidu, lūdzu, labojiet savus "abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
+^Lai mainītu paziņojuma veidu, lūdzu, labojiet savus "abonēšanas uzstādījumus":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_self_profile_updated" xml:space="preserve">
     <value>h1."${__VirtualRootPath}":"${__VirtualRootPath}" portāla profila maiņas paziņojums
@@ -535,11 +476,13 @@ $activity
 
 Šī ziņa tika izveidota automātiski, lai pārbaudītu jūsu SMTP uzstādījumus. Ja jūs to redzat, šie iestatījumi ir pareizi un jūs varat tos izmantot savā portālā.
 
+
 Ar cieņu,
 ONLYOFFICE komanda</value>
   </data>
   <data name="pattern_user_has_join" xml:space="preserve">
     <value>h1.Portālam "${__VirtualRootPath}":"${__VirtualRootPath}" pievienots jauns lietotājs
+
 "$__AuthorName":"$__AuthorUrl" pievienojās jūsu portālam "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 
@@ -570,7 +513,7 @@ ONLYOFFICE komanda</value>
     <value>Uzaicinājums pievienoties portālam ${__VirtualRootPath}</value>
   </data>
   <data name="subject_migration_error" xml:space="preserve">
-    <value>${__VirtualRootPath}. Kļūda, pārnesot portālu uz citu apgabalu</value>
+    <value>${LetterLogoText}. Kļūda, pārnesot portālu uz citu apgabalu</value>
   </data>
   <data name="subject_migration_start" xml:space="preserve">
     <value>${LetterLogoText}. Portāla pārnese uz citu apgabalu uzsākta</value>
@@ -679,5 +622,589 @@ ONLYOFFICE komanda</value>
   </data>
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>Laipni lūdzam ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="pattern_change_password_v115" xml:space="preserve">
+    <value>Vai vēlaties mainīt paroli savā ONLYOFFICE kontā? Noklikšķiniet uz tālāk redzamās pogas, lai apstiprinātu.
+
+$GreenButton
+
+Saite ir derīga septiņas dienas.
+
+Vai nevēlaties mainīt paroli? Vienkārši ignorējiet šo ziņojumu</value>
+  </data>
+  <data name="pattern_enterprise_admin_activation_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Jūs tikko izveidojāt ONLYOFFICE DocSpace - dokumentu centru, kurā varat uzlabot sadarbību ar savu komandu, klientiem, partneriem un daudz ko citu. Tā adrese ir "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
+
+$GreenButton
+
+Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
+
+* 1 administrators, 2 prasmīgie lietotāji
+* Līdz 12 telpām
+* Neierobežots lietotāju skaits katrā telpā
+* 2 GB diska vieta
+
+Izbaudiet jaunu dokumentu sadarbības veidu!
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_activation_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Jūs tikko izveidojāt ONLYOFFICE DocSpace - dokumentu centru, kurā varat uzlabot sadarbību ar savu komandu, klientiem, partneriem un daudz ko citu. Tā adrese ir "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
+
+$GreenButton
+
+Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
+
+* 1 administrators, 2 prasmīgie lietotāji
+* Līdz 12 telpām
+* Neierobežots lietotāju skaits katrā telpā
+* 2 GB diska vieta
+
+Izbaudiet jaunu dokumentu sadarbības veidu!
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_activation_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Jūs tikko izveidojāt ONLYOFFICE DocSpace - dokumentu centru, kurā varat uzlabot sadarbību ar savu komandu, klientiem, partneriem un daudz ko citu. Tā adrese ir "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
+
+$GreenButton
+
+Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
+
+* 1 administrators, 2 prasmīgie lietotāji
+* Līdz 12 telpām
+* Neierobežots lietotāju skaits katrā telpā
+* 2 GB diska vieta
+
+Izbaudiet jaunu dokumentu sadarbības veidu!
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_activation_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Jūs tikko izveidojāt ONLYOFFICE DocSpace - dokumentu centru, kurā varat uzlabot sadarbību ar savu komandu, klientiem, partneriem un daudz ko citu. Tā adrese ir "${__VirtualRootPath}":"${__VirtualRootPath}".
+
+Apstipriniet savu e-pastu (saite ir derīga 7 dienas):
+
+$GreenButton
+
+Jūsu pašreizējais tarifu plāns ir STARTUP. Tas ir pilnīgi bezmaksas un ietver:
+
+* 1 administrators, 2 prasmīgie lietotāji
+* Līdz 12 telpām
+* Neierobežots lietotāju skaits katrā telpā
+* 2 GB diska vieta
+
+Izbaudiet jaunu dokumentu sadarbības veidu!
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Iegūstiet bezmaksas ONLYOFFICE programmas darbam ar dokumentiem no jebkuras jūsu ierīces.
+
+# Lai strādātu ar dokumentiem bezsaistē operētājsistēmā Windows, Linux un Mac, lejupielādējiet "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Lai rediģētu dokumentus mobilajās ierīcēs, iegūstiet programmu ONLYOFFICE Documents operētājsistēmai "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" vai "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ceram, ka jums patīk izmantot ONLYOFFICE DocSpace. Tālāk ir sniegti daži padomi, kā efektīvāk darboties ar dokumentiem.
+
+*#1. Izvēlieties veidu, kā strādājat.* Organizējiet savu darbplūsmu, kā jums nepieciešams, izveidojot sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim.
+
+*#2. Strādājiet ar jebkuru saturu, kas jums ir.* Uzglabājiet un strādājiet ar dažādu formātu failiem jūsu telpās: teksta dokumentiem, izklājlapām, prezentācijām, digitālajām veidlapām, PDF, e-grāmatām, multividi.
+
+*#3. Koprediģējiet efektīvi.* Sadarboties ar dokumentiem, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*#4. Pievienojiet 3. puses mākoņus.* Pievienojiet jebkuru mākoņkrātuvi un strādājiet, nepārslēdzoties starp lietotnēm.
+
+$GreenButton
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ceram, ka jums patīk izmantot ONLYOFFICE DocSpace. Tālāk ir sniegti daži padomi, kā efektīvāk darboties ar dokumentiem.
+
+*#1. Izvēlieties veidu, kā strādājat.* Organizējiet savu darbplūsmu, kā jums nepieciešams, izveidojot sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim.
+
+*#2. Strādājiet ar jebkuru saturu, kas jums ir.* Uzglabājiet un strādājiet ar dažādu formātu failiem jūsu telpās: teksta dokumentiem, izklājlapām, prezentācijām, digitālajām veidlapām, PDF, e-grāmatām, multividi.
+
+*#3. Koprediģējiet efektīvi.* Sadarboties ar dokumentiem, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*#4. Pievienojiet 3. puses mākoņus.* Pievienojiet jebkuru mākoņkrātuvi un strādājiet, nepārslēdzoties starp lietotnēm.
+
+$GreenButton
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_docs_tips_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ceram, ka jums patīk izmantot ONLYOFFICE DocSpace. Tālāk ir sniegti daži padomi, kā efektīvāk darboties ar dokumentiem.
+
+*#1. Izvēlieties veidu, kā strādājat.* Organizējiet savu darbplūsmu, kā jums nepieciešams, izveidojot sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim.
+
+*#2. Strādājiet ar jebkuru saturu, kas jums ir.* Uzglabājiet un strādājiet ar dažādu formātu failiem jūsu telpās: teksta dokumentiem, izklājlapām, prezentācijām, digitālajām veidlapām, PDF, e-grāmatām, multividi.
+
+*#3. Koprediģējiet efektīvi.* Sadarboties ar dokumentiem, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*#4. Pievienojiet 3. puses mākoņus.* Pievienojiet jebkuru mākoņkrātuvi un strādājiet, nepārslēdzoties starp lietotnēm.
+
+$GreenButton
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_docs_tips_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ceram, ka jums patīk izmantot ONLYOFFICE DocSpace. Tālāk ir sniegti daži padomi, kā efektīvāk darboties ar dokumentiem.
+
+*#1. Izvēlieties veidu, kā strādājat.* Organizējiet savu darbplūsmu, kā jums nepieciešams, izveidojot sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim.
+
+*#2. Strādājiet ar jebkuru saturu, kas jums ir.* Uzglabājiet un strādājiet ar dažādu formātu failiem jūsu telpās: teksta dokumentiem, izklājlapām, prezentācijām, digitālajām veidlapām, PDF, e-grāmatām, multividi.
+
+*#3. Koprediģējiet efektīvi.* Sadarboties ar dokumentiem, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*#4. Pievienojiet 3. puses mākoņus.* Pievienojiet jebkuru mākoņkrātuvi un strādājiet, nepārslēdzoties starp lietotnēm.
+
+$GreenButton
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_admin_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Šeit ir trīs vienkārši jautājumi, kas var palīdzēt mums padarīt jūsu lietotāja pieredzi vēl ērtāku.
+
+* Vai jums ir liela komanda vai daudz klientu un partneru, ar kuriem sadarboties savā ONLYOFFICE DocSpace? 
+
+* Vai vēlaties izveidot jebkādu telpu skaitu, lai strādātu ar daudziem dokumentiem? 
+
+* Vai vēlaties izmantot ONLYOFFICE DocSpace ar savu zīmolu?
+
+Ja jums ir vismaz viena atbilde “jā”, izvēlieties BUSINESS tarifu plānu, kas ļauj pievienot jebkuru vēlamo pārvaldnieku skaitu jūsu ONLYOFFICE DocSpace, kā arī izmantot zīmola iespējas.
+
+Lai to izdarītu, skatiet sava ONLYOFFICE DocSpace "sadaļu Maksājumi":"$PricingPage". Tur jūs atradīsiet individuālu saiti uz Stripe klientu portālu, kur jūs varat viegli apstrādāt visu sīkāku informāciju par maksāšanu. 
+
+_Ņemiet vērā: persona, kas maksā abonementu, ir maksātājs (-a). Tikai maksātājs (-a) var veikt izmaiņas abonementā (pielāgojiet pārvaldnieku skaitu). Lietotājiem nav piekļuves maksāšanas informācijai. ONLYOFFICE DocSpace konta īpašnieks (-ce) var atkārtoti piešķirt maksātāju jebkurā laikā vēlāk. _
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_admin_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Šeit ir trīs vienkārši jautājumi, kas var palīdzēt mums padarīt jūsu lietotāja pieredzi vēl ērtāku.
+
+* Vai jums ir liela komanda vai daudz klientu un partneru, ar kuriem sadarboties savā ONLYOFFICE DocSpace? 
+
+* Vai vēlaties izveidot jebkādu telpu skaitu, lai strādātu ar daudziem dokumentiem? 
+
+* Vai vēlaties izmantot ONLYOFFICE DocSpace ar savu zīmolu?
+
+Ja jums ir vismaz viena atbilde “jā”, izvēlieties BUSINESS tarifu plānu, kas ļauj pievienot jebkuru vēlamo pārvaldnieku skaitu jūsu ONLYOFFICE DocSpace, kā arī izmantot zīmola iespējas.
+
+Lai to izdarītu, skatiet sava ONLYOFFICE DocSpace "sadaļu Maksājumi":"$PricingPage". Tur jūs atradīsiet individuālu saiti uz Stripe klientu portālu, kur jūs varat viegli apstrādāt visu sīkāku informāciju par maksāšanu. 
+
+_Ņemiet vērā: persona, kas maksā abonementu, ir maksātājs (-a). Tikai maksātājs (-a) var veikt izmaiņas abonementā (pielāgojiet pārvaldnieku skaitu). Lietotājiem nav piekļuves maksāšanas informācijai. ONLYOFFICE DocSpace konta īpašnieks (-ce) var atkārtoti piešķirt maksātāju jebkurā laikā vēlāk. _
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_admin_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Šeit ir trīs vienkārši jautājumi, kas var palīdzēt mums padarīt jūsu lietotāja pieredzi vēl ērtāku.
+
+* Vai jums ir liela komanda vai daudz klientu un partneru, ar kuriem sadarboties savā ONLYOFFICE DocSpace? 
+
+* Vai vēlaties izveidot jebkādu telpu skaitu, lai strādātu ar daudziem dokumentiem? 
+
+* Vai vēlaties izmantot ONLYOFFICE DocSpace ar savu zīmolu?
+
+Ja jums ir vismaz viena atbilde “jā”, izvēlieties BUSINESS tarifu plānu, kas ļauj pievienot jebkuru vēlamo pārvaldnieku skaitu jūsu ONLYOFFICE DocSpace, kā arī izmantot zīmola iespējas.
+
+Lai to izdarītu, skatiet sava ONLYOFFICE DocSpace "sadaļu Maksājumi":"$PricingPage". Tur jūs atradīsiet individuālu saiti uz Stripe klientu portālu, kur jūs varat viegli apstrādāt visu sīkāku informāciju par maksāšanu. 
+
+_Ņemiet vērā: persona, kas maksā abonementu, ir maksātājs (-a). Tikai maksātājs (-a) var veikt izmaiņas abonementā (pielāgojiet pārvaldnieku skaitu). Lietotājiem nav piekļuves maksāšanas informācijai. ONLYOFFICE DocSpace konta īpašnieks (-ce) var atkārtoti piešķirt maksātāju jebkurā laikā vēlāk. _
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Šeit ir trīs vienkārši jautājumi, kas var palīdzēt mums padarīt jūsu lietotāja pieredzi vēl ērtāku.
+
+* Vai jums ir liela komanda vai daudz klientu un partneru, ar kuriem sadarboties savā ONLYOFFICE DocSpace? 
+
+* Vai vēlaties izveidot jebkādu telpu skaitu, lai strādātu ar daudziem dokumentiem? 
+
+* Vai vēlaties izmantot ONLYOFFICE DocSpace ar savu zīmolu?
+
+Ja jums ir vismaz viena atbilde “jā”, izvēlieties BUSINESS tarifu plānu, kas ļauj pievienot jebkuru vēlamo pārvaldnieku skaitu jūsu ONLYOFFICE DocSpace, kā arī izmantot zīmola iespējas.
+
+Lai to izdarītu, skatiet sava ONLYOFFICE DocSpace "sadaļu Maksājumi":"$PricingPage". Tur jūs atradīsiet individuālu saiti uz Stripe klientu portālu, kur jūs varat viegli apstrādāt visu sīkāku informāciju par maksāšanu. 
+
+_Ņemiet vērā: persona, kas maksā abonementu, ir maksātājs (-a). Tikai maksātājs (-a) var veikt izmaiņas abonementā (pielāgojiet pārvaldnieku skaitu). Lietotājiem nav piekļuves maksāšanas informācijai. ONLYOFFICE DocSpace konta īpašnieks (-ce) var atkārtoti piešķirt maksātāju jebkurā laikā vēlāk. _
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_activation_v1" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat aicināts pievienoties ONLYOFFICE DocSpace šeit "${__VirtualRootPath}":"${__VirtualRootPath}". Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_activation_v1" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat aicināts pievienoties ONLYOFFICE DocSpace šeit "${__VirtualRootPath}":"${__VirtualRootPath}". Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_activation_v1" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat aicināts pievienoties ONLYOFFICE DocSpace šeit "${__VirtualRootPath}":"${__VirtualRootPath}". Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_activation_v1" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat aicināts pievienoties ONLYOFFICE DocSpace šeit "${__VirtualRootPath}":"${__VirtualRootPath}". Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_user_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*# Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts*: sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Pievienojiet jebkuru mākoņkrātuvi* un strādājiet, nepārslēdzoties starp lietotnēm. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu Palīdzības centru: https://helpcenter.onlyoffice.com/ vai jautājiet mūsu atbalsta komandai: https://www.onlyoffice.com/support-contact-form.aspx.
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_user_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*# Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts*: sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Pievienojiet jebkuru mākoņkrātuvi* un strādājiet, nepārslēdzoties starp lietotnēm. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu Palīdzības centru: https://helpcenter.onlyoffice.com/ vai jautājiet mūsu atbalsta komandai: https://www.onlyoffice.com/support-contact-form.aspx.
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_user_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*# Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts*: sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Pievienojiet jebkuru mākoņkrātuvi* un strādājiet, nepārslēdzoties starp lietotnēm. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu Palīdzības centru: https://helpcenter.onlyoffice.com/ vai jautājiet mūsu atbalsta komandai: https://www.onlyoffice.com/support-contact-form.aspx.
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_user_welcome_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Laipni lūdzam ONLYOFFICE DocSpace! Jūsu lietotāja profils ir veiksmīgi pievienots "${__VirtualRootPath}":"${__VirtualRootPath}". Tagad jūs varat:
+
+*# Strādāt ar citiem lietotājiem telpā, kurā esat uzaicināts*: sadarbības telpas reāllaika koprediģēšanai vai pielāgotas telpas ar elastīgiem iestatījumiem jebkuram mērķim*.
+
+*# Strādāt ar dažādu formātu failiem *: teksta dokumenti, izklājlapas, prezentācijas, digitālās veidlapas, PDF, e-grāmatas, multivide.
+
+*# Sadarboties ar dokumentiem*, izmantojot divus koprediģēšanas režīmus: reāllaika vai rindkopu bloķēšanu. Izsekojiet izmaiņas, sazinieties reāllaikā, izmantojot iebūvēto tērzēšanu vai veicot audio un video zvanus. 
+
+*# Pievienojiet jebkuru mākoņkrātuvi* un strādājiet, nepārslēdzoties starp lietotnēm. 
+
+$GreenButton
+
+Ja nepieciešama palīdzība, pārlūkojiet mūsu Palīdzības centru: https://helpcenter.onlyoffice.com/ vai jautājiet mūsu atbalsta komandai: https://www.onlyoffice.com/support-contact-form.aspx.
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_for_sales_notify" xml:space="preserve">
+    <value>h1.Ziņojums no portāla "${__VirtualRootPath}":"${__VirtualRootPath}" 
+
+Vārds: $UserName
+
+E-pasts: $UserEmail
+
+$Body</value>
+  </data>
+  <data name="pattern_personal_after_registration14_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Iegūstiet bezmaksas ONLYOFFICE programmas darbam ar dokumentiem no jebkuras jūsu ierīces.
+
+# Lai strādātu ar dokumentiem bezsaistē operētājsistēmā Windows, Linux un Mac, lejupielādējiet "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Lai rediģētu dokumentus mobilajās ierīcēs, iegūstiet programmu ONLYOFFICE Documents operētājsistēmai "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" vai "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_user_apps_tips_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Iegūstiet bezmaksas ONLYOFFICE programmas darbam ar dokumentiem no jebkuras jūsu ierīces.
+
+# Lai strādātu ar dokumentiem bezsaistē operētājsistēmā Windows, Linux un Mac, lejupielādējiet "ONLYOFFICE Desktop Editors":"https://www.onlyoffice.com/download-desktop.aspx".
+
+#Lai rediģētu dokumentus mobilajās ierīcēs, iegūstiet programmu ONLYOFFICE Documents operētājsistēmai "iOS":"https://apps.apple.com/us/app/onlyoffice-documents/id944896972" vai "Android":"https://play.google.com/store/apps/details?id=com.onlyoffice.documents".
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_personal_already_exist" xml:space="preserve">
+    <value>Sveiki!
+Izmantojot šo e-pasta adresi, tika mēģināts reģistrēt jaunu kontu "ONLYOFFICE Personal":"$PortalUrl". Ja tas bijāt jūs, mēs vēlamies jūs informēt, ka konts jau pastāv — pārejiet uz ONLYOFFICE Personal un piesakieties.
+Ja pazaudējāt paroli, varat to atkopt paroles atkopšanas lapā:"$LinkToRecovery".
+Ja nemēģinājāt reģistrēt jaunu kontu, iespējams, kāds cits to izdarīja kļūdas dēļ. Šādā gadījumā ignorējiet šo e-pasta ziņojumu.
+
+Jauku dienu!
+ONLYOFFICE komanda</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>Vai vēlaties mainīt paroli savā ONLYOFFICE Personal kontā? Noklikšķiniet uz tālāk redzamās pogas, lai apstiprinātu.
+
+$GreenButton 
+
+Saite ir derīga septiņas dienas.
+
+Vai nevēlaties mainīt paroli? Vienkārši ignorējiet šo ziņojumu.</value>
+  </data>
+  <data name="pattern_portal_delete_success_v1" xml:space="preserve">
+    <value>Jūsu ONLYOFFICE DocSpace ir veiksmīgi deaktivizēts. Ņemiet vērā, ka visi jūsu dati tiks izdzēsti saskaņā ar mūsu "Konfidencialitātes politiku":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Kāds jums ir iemesls aiziet? Dalieties savā pieredzē ar mums.
+ 
+$GreenButton
+
+Pateicamies un vēlam veiksmi!
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_modules_v1" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Pielāgojiet sava ONLYOFFICE DocSpace drošības iestatījumus, lai padarītu to drošāku:
+
+* Iestatiet paroles stiprumu.  
+
+* Iespējojiet divfaktoru autentifikāciju un vienoto pierakstīšanos.
+
+* Nosakiet uzticamos pasta domēnus un sesijas ilgumu.
+
+* Ierobežojiet piekļuvi no konkrētām interneta protokola (IP) adresēm. 
+
+* Atļaujiet vai ierobežojiet administratora ziņojumus.
+
+* Pārvaldiet administratora piekļuves tiesības.
+
+* Veiciet datu dublēšanu.
+
+$GreenButton
+
+Apmeklējiet mūsu palīdzības centru: https://helpcenter.onlyoffice.com/, lai uzzinātu vairāk par ONLYOFFICE DocSpace konfigurēšanu un pārvaldību. Aicinām konsultēties arī tad, ja jums ir jautājumi par funkcionalitāti.
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_admin_trial_warning_after_half_year_v1" xml:space="preserve">
+    <value>Jūs vairāk nekā pusgadu neesat iegājis savā ONLYOFFICE DocSpace "${__VirtualRootPath}":"${__VirtualRootPath}". 
+
+Tā kā nolēmt vairs to neizmantot, jūsu ONLYOFFICE DocSpace un visi dati tiks izdzēsti saskaņā ar mūsu "Konfidencialitātes politiku":"https://help.onlyoffice.com/products/files/doceditor.aspx?fileid=5048502&amp;doc=SXhWMEVzSEYxNlVVaXJJeUVtS0kyYk14YWdXTEFUQmRWL250NllHNUFGbz0_IjUwNDg1MDIi0". 
+
+Mēs būsim pateicīgi par jūsu atsauksmi. Kāpēc nolēmāt pārtraukt lietot ONLYOFFICE DocSpace?
+
+$GreenButton
+
+Ja uzskatāt, ka šī ir kļūda, un vēlaties turpināt lietot ONLYOFFICE DocSpace, sazinieties ar mūsu "atbalsta komandu":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Jūsu 
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_docspace_invite" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat aicināts pievienoties ONLYOFFICE DocSpace šeit "${__VirtualRootPath}":"${__VirtualRootPath}". Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Pēc tam, kad noklikšķiniet uz uzaicinājuma saites, iestatiet jaunu paroli savam kontam.
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_activation" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ņemiet vērā, ka jūsu ONLYOFFICE DocSpace ir aktivizēts $PaymentDelay ‎ dienas (-u) pagarinājuma periods.
+
+Pārliecinieties, ka apmaksājiet Business abonementu pirms pagarinājuma perioda beigām. Tādējādi jūs varēsiet turpināt izmantot visas ONLYOFFICE DocSpace priekšrocības.
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_before_activation" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ņemiet vērā, ka jūsu ONLYOFFICE DocSpace abonementa derīguma termiņš beigsies pēc trim dienām. Pēc tam tiks aktivizēts $PaymentDelay dienas (-u) pagarinājuma periods.
+
+Mēs iesakām samaksāt jūsu Business abonementu tagad un turpināt izmantot visas jūsu ONLYOFFICE DocSpace priekšrocības.
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_expired" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ņemiet vērā, ka jūsu ONLYOFFICE DocSpace ir beidzies $PaymentDelay ‎dienas (-u) pagarinājuma periods.
+
+Pārliecinieties, ka apmaksājat savu Business abonementu, cik drīz vien iespējams. Tādējādi jūs varēsiet izmantot visas ONLYOFFICE DocSpace priekšrocības tāpat kā iepriekš.
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_owner_payment_warning_grace_period_last_day" xml:space="preserve">
+    <value>Sveiki, $UserName!
+
+Ņemiet vērā, ka jūsu ONLYOFFICE DocSpace rīt beigsies $PaymentDelay  dienas (-u) pagarinājuma periods.
+
+Noteikti apmaksājiet Business abonementu jau šodien. Tādējādi jūs varēsiet turpināt izmantot visas ONLYOFFICE DocSpace priekšrocības.
+
+$GreenButton
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"https://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_saas_room_invite" xml:space="preserve">
+    <value>Sveiki!
+
+Jūs esat uzaicināts (-a) pievienoties $Message room šeit "${__VirtualRootPath}":"${__VirtualRootPath}". Apstipriniet uzaicinājumu, noklikšķinot uz saites:
+
+$GreenButton
+
+Pēc tam, kad noklikšķiniet uz uzaicinājuma saites, iestatiet jaunu paroli savam kontam.
+
+Jūsu
+ONLYOFFICE komanda
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
   </data>
 </root>

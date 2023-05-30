@@ -92,7 +92,7 @@
     <value>Nav atļaujas šajai darbībai</value>
   </data>
   <data name="ErrorAccessRestricted" xml:space="preserve">
-    <value>Piekļuve portālam ir ierobežota</value>
+    <value>Piekļuve portālam ir ierobežota.</value>
   </data>
   <data name="ErrorBadKeys" xml:space="preserve">
     <value>Nepareizas atslēgas</value>
@@ -185,7 +185,7 @@
     <value>Lietotājus neizdevās izveidot, saņemtie dati nav pareizi.</value>
   </data>
   <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
-    <value>Serverim neizdevās iegūt iestatījumus</value>
+    <value>Serverim neizdevās iegūt iestatījumus.</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
     <value>Serverim neizdevās noglabāt iestatījumus.</value>
@@ -200,13 +200,13 @@
     <value>Nav atrastas grupas.</value>
   </data>
   <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
-    <value>Nederīga lietotāja filtra vērtība</value>
+    <value>Nederīga lietotāja filtra vērtība.</value>
   </data>
   <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
-    <value>Nezināma kļūda</value>
+    <value>Nezināma kļūda.</value>
   </data>
   <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
-    <value>Neizdevās atrast lietotājus</value>
+    <value>Neizdevās atrast lietotājus.</value>
   </data>
   <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
     <value>Neizdevās iegūt grupas atribūtu vienai vai vairākām grupām.</value>
@@ -278,13 +278,13 @@
     <value>Ir nepieciešams drošās autentifikācijas veids. Lūdzu, izmantojiet šifrēto savienojumu vai iespējojiet autentifikāciju serverī.</value>
   </data>
   <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
-    <value>Ir sasniegts šībrīža cenu plāna lietotāju limits.</value>
+    <value>Ir sasniegts šībrīža cenu plāna lietotāju limits</value>
   </data>
   <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
-    <value>Šībrīža LDAP serveris neatbalsta StartTLS</value>
+    <value>Šībrīža LDAP serveris neatbalsta StartTLS.</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>Par daudz LDAP darbību</value>
+    <value>Par daudz LDAP darbību.</value>
   </data>
   <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
     <value>Neizdevās iegūt lietotāja/grupas objektu unikālo ID. Sistēma pēc noklusējuma mēģinās saskaņot vienu no šādiem identifikatoriem: entryUUID, nsuniqueid, GUID, objectSid. Ja neviens no atribūtiem neatbilst jūsu LDAP serverim, lūdzu, precizējiet nepieciešamo atribūtu ldap.unique.id iestatījumā web.appsettings.config failā.</value>
@@ -293,7 +293,7 @@
     <value>Licence nav pareiza</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licencei beidzies termiņš</value>
+    <value>Licencei beidzies termiņš.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Portālu skaits pārsniedz licencē atļauto</value>
@@ -369,5 +369,227 @@
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>Kas Jauns</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Lietotāju pieteikšanās un darbību izsekošana</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksimālais faila lielums</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Faila lielums nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Administratoru skaits nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Administratoru skaits</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automātiska dublēšana un atkopšana</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Neierobežots aktīvo telpu skaits</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Telpu skaits nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} krātuves vieta</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Izmantotās krātuves lielums nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Krātuves vieta</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Telpas:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Izmantotā krātuves vieta:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Lietotāji telpā:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Neierobežots lietotāju skaits</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Lietotāju skaits nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Lietotāji telpā</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Lietotāju skaits telpā nedrīkst pārsniegt {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Zīmolrade un pielāgošana</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>pieteikties</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Pievienojiet Bitly pakalpojumu, lai saīsinātu portāla ielūgumu saites un Dokumentu moduļa koplietošanas saites.</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>Laatikon tunnus</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box atslēga</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai pārvaldītu Box failus un mapes.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Iespējot lietotni divu faktoru autentifikācijai ar Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSign atslēga</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai dokumentiem pievienotu DocuSign digitālos parakstus.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign autentifikācijas galapunkts</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai pārvaldītu Dropbox failus un mapes.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai ieietu portālā ar Facebook kontu.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Facebook atslēga</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>API atslēga</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Servera atslēga</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSign slēptā atslēga</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Sūtītāja ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>Projekta ID</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Pievienojiet projektu, lai ieietu portālā ar Google kontu un pārvaldītu Google Drive failus un mapes.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai ieietu portālā ar LinkedIn kontu.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedin atslēga</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai pārvaldītu OneDrive failus un mapes.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Iespējot lietotni divu faktoru autentifikācijai ar SMS centru.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Parole vai paroles MD5 hešs ar mazajiem burtiem</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Pievienojiet Twilio, lai varētu pa tiešo no pārlūka zvanīt CMR kontaktiem.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Tālruņa numurs no Twilio (nepieciešams SMS autorizācijai)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Pievienojiet lietotni, lai ieietu portālā ar Twitter kontu un meklētu lietotājus.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Iespējot lietotni Yahoo kontaktu importēšanai.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Nezināms attēla faila veids</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Attēla izmērs pārsniedz atļautos parametrus</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Dropbox atslēga</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google atslēga</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Logins</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Konta Sid</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Parole</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>

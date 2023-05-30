@@ -128,7 +128,7 @@
     <value>Anulēts</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Slikts pieprāsījums</value>
+    <value>Slikts pieprāsījums.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
     <value>Jūs nevarat izvēlēties šo lietotāju</value>
@@ -312,5 +312,53 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Līdzstrādnieks</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Iesniegta veidlapa</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Jaunā versija nevar būt tāda pati kā pašreizējā versija</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai kopētu failu</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai kopētu mapi</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Nederīgs pakalpojuma sniedzējs</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Šo mapi nevar izmantot telpas uzglabāšanai</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Uzaicinājuma saite nav derīga vai tās derīguma termiņš ir beidzies</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Šis pakalpojuma sniedzējs jau ir savienots ar telpu</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Šim lietotāja tipam nav pieejama loma</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai arhivētu telpu</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Jums nav atļaujas kopēt šajā mapē</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Jums nav atļaujas rediģēt telpu</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Jums nav atļaujas pārvietot šajā mapē</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Jums nepietiek tiesību, lai atarhivētu telpu</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Jūs nevarat rediģēt arhivētās telpas</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Jūs nevarat piespraust telpu</value>
   </data>
 </root>

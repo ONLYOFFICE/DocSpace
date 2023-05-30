@@ -64,7 +64,8 @@
   </data>
   <data name="pattern_DocuSignStatus" xml:space="preserve">
     <value>h1. $Message: $DocumentTitle 
-Влезте в своя DocuSign акаунт за повече информация. </value>
+
+Влезте в своя DocuSign акаунт за повече информация.</value>
   </data>
   <data name="pattern_MailMergeEnd" xml:space="preserve">
     <value>h1. Изпращане на поща 
@@ -76,13 +77,16 @@ $Message
   </data>
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1. Достъп до документа: "$DocumentTitle":"$DocumentURL"
+
 $__DateTime "$__AuthorName":"$__AuthorUrl" ви даде достъп до "$DocumentTitle":"$DocumentURL" документ със следните права за достъп: "$AccessRights". 
+
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1. Достъпът до папката: "$DocumentTitle":"$DocumentURL"
-$__DateTime "$__AuthorName":"$__AuthorUrl" ви даде достъп до 
-"$DocumentTitle":"$DocumentURL" със следните права за достъп: "$AccessRights".
+
+$__DateTime "$__AuthorName":"$__AuthorUrl" ви даде достъп до "$DocumentTitle":"$DocumentURL" със следните права за достъп: "$AccessRights".
+
 $Message</value>
   </data>
   <data name="subject_DocuSignComplete" xml:space="preserve">
@@ -99,5 +103,53 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Документи. Достъпът до папката: $DocumentTitle</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName Ви спомена в коментар на документа
+
+$__AuthorName Ви спомена в коментар към документа "$DocumentTitle":"$DocumentURL" в стаята "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName изтри стая
+
+$__AuthorName изтри стаята: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Всички подписали попълниха $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Статуса на подписването е променен</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace известие. Споменато в документа</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Споменато в документа</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Изпращането по пощата приключи.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace известие. Стаята е изтрита</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Предоставен е достъп до документа: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Предоставен е достъп до криптирания документ: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Предоставен е достъп до папката: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Документи. Предоставен е достъп до папката: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Документи. Всички подписали попълниха [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Документи. Предоставен е достъп до криптирания документ [$DocumentTitle]($DocumentURL)</value>
   </data>
 </root>

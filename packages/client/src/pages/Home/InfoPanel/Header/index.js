@@ -12,6 +12,8 @@ import {
   isTablet as isTabletUtils,
 } from "@docspace/components/utils/device";
 
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
+
 import { StyledInfoPanelHeader } from "./styles/common";
 import { RoomsType } from "@docspace/common/constants";
 

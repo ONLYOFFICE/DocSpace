@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import Text from "@docspace/components/text";
 
 const StyledContactContainer = styled.div`

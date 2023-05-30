@@ -59,7 +59,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmailNotSpecified" xml:space="preserve">
-    <value>Email non è specificato
-</value>
+    <value>Email non è specificato</value>
   </data>
 </root>

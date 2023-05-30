@@ -10,11 +10,7 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 import { isMobile, isTablet } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-
-export const StyledIcon = styled(IconButton)`
-  ${commonIconsStyles}
-`;
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const QuickButtons = (props) => {
   const {

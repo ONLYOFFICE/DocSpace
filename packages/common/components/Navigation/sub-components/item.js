@@ -17,7 +17,7 @@ import {
 } from "@docspace/components/utils/device";
 import { Base } from "@docspace/components/themes";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledItem = styled.div`
   height: auto;

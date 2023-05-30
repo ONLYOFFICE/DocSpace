@@ -61,4 +61,7 @@
   <data name="BackupNotFound" xml:space="preserve">
     <value>Yedək faylı etibarsızdır. ONLYOFFICE v11.5 və ya daha yeni versiyada yaradılmış fayldan istifadə edin.</value>
   </data>
+  <data name="ButtonSetPassword" xml:space="preserve">
+    <value>Parol təyin edin</value>
+  </data>
 </root>

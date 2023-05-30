@@ -84,6 +84,7 @@ $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1.$__DateTime, "$__AuthorName":"$__AuthorUrl" kullanıcısı
+
 "$DocumentTitle":"$DocumentURL" klasörüne erişiminize şu erişim haklarıyla izin verdi: "$AccessRights".
 
 $Message</value>
@@ -100,16 +101,55 @@ $Message</value>
   <data name="subject_MailMergeEnd" xml:space="preserve">
     <value>Belgeler. E-postalaşma tamamlandı.</value>
   </data>
-  <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Belgeler. $DocumentTitle 'a Erişim Verildi</value>
-  </data>
   <data name="subject_ShareDocument_tg" xml:space="preserve">
     <value>Belgeler. Belgeye erişim izni verildi: [$DocumentTitle]($DocumentURL)</value>
   </data>
-  <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Dökümanlar. $DocumentTitle 'a Erişim Verildi</value>
-  </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Belgeler. Şu klasöre erişim izni verildi: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName, belge yorumunda sizden bahsetti
+
+$__AuthorName, "$RoomTitle":"$RoomURL" odasındaki "$DocumentTitle":"$DocumentURL" belgesine yapılan yorumda sizden bahsetti:
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName bir odayı sildi
+
+$__AuthorName şu odayı sildi: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>İmza durumu değişti</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Belgede bahsedilen</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Postalama tamamlandı.</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Şu belgeye erişim izni verildi: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Şu klasöre erişim izni verildi: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Şifrelenmiş belgeye erişim verildi: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder" xml:space="preserve">
+    <value>Belgeler. Şu klasöre erişim izni verildi: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument" xml:space="preserve">
+    <value>Belgeler. Şu belgeye erişim izni verildi: $DocumentTitle</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace bildirimi. Oda silindi</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace bildirimi. Belgede bahsedilen</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Tüm imza sahipleri $DocumentTitle dosyasını tamamladı</value>
   </data>
 </root>

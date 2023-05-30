@@ -45,5 +45,6 @@
     },
 	"quota": {
 		"id": -3
-	}
+	},
+	"max-attempts-count" : 10
 }

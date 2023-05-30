@@ -26,6 +26,7 @@
       search: "",
       filterType: null,
       authorType: null,
+      roomId: null,
       withSubfolders: true,
     },
     keysForReload: [

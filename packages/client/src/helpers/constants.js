@@ -120,3 +120,5 @@ export const SortByFieldName = Object.freeze({
   Tags: "Tags",
   RoomType: "roomType",
 });
+
+export const SSO_LABEL = "SSO";

@@ -173,6 +173,7 @@ const Items = ({
   firstLoad,
   deleteAction,
   startDrag,
+  emptyTrashInProgress,
 }) => {
   useEffect(() => {
     data.forEach((elem) => {
@@ -341,7 +342,9 @@ const Items = ({
     (data) => {
       const items = data.map((item, index) => {
         const isTrash = item.rootFolderType === FolderType.TRASH;
-        const showBadge = item.newItems
+        const showBadge = emptyTrashInProgress
+          ? false
+          : item.newItems
           ? item.newItems > 0 && true
           : isTrash && !trashIsEmpty;
         const labelBadge = showBadge ? item.newItems : null;
@@ -400,6 +403,7 @@ const Items = ({
       isAdmin,
       isVisitor,
       firstLoad,
+      emptyTrashInProgress,
     ]
   );
 
@@ -450,6 +454,7 @@ export default inject(
       moveDragItems,
       uploadEmptyFolders,
       deleteAction,
+      emptyTrashInProgress,
     } = filesActionsStore;
     const { setEmptyTrashDialogVisible } = dialogsStore;
 
@@ -482,6 +487,7 @@ export default inject(
       rootFolderType,
       firstLoad,
       startDrag,
+      emptyTrashInProgress,
     };
   }
 )(withTranslation(["Files", "Common", "Translations"])(observer(Items)));

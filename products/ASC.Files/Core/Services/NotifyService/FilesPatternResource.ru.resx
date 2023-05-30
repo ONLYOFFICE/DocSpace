@@ -113,4 +113,43 @@ $Message</value>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Документы. Предоставлен доступ к папке: [$DocumentTitle]($DocumentURL)</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName упомянул(а) вас в комментарии к документу
+ 
+$__AuthorName упомянул(а) вас в комментарии к документу "$DocumentTitle":"$DocumentURL" в комнате "$RoomTitle":"$RoomURL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName удалил(а) комнату
+ 
+$__AuthorName удалил(а) комнату: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Изменен статус подписания</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Упоминание в документе</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Рассылка завершена.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Уведомление DocSpace. Комната удалена</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Уведомление DocSpace. Упоминание в документе</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Все стороны заполнили $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Предоставлен доступ к зашифрованному документу: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Предоставлен доступ к папке: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Предоставлен доступ к документу: $DocumentTitle</value>
+  </data>
 </root>
