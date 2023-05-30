@@ -338,35 +338,6 @@
 	  }
     },
 	{
-      "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core",
-      "services": [
-        {
-          "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-        }, 
-		{
-		  "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core"
-		}, 
-		{
-		  "key": "smsc",
-		  "type": "ASC.Core.Common.Configuration.Consumer, ASC.Core.Common"
-		}, 
-		{
-		  "key": "smsc",
-		  "type": "ASC.Web.Core.Sms.SmscProvider, ASC.Web.Core"
-		}
-      ],
-	  "instanceScope": "perlifetimescope",
-	  "parameters": {
-		  "name": "smsc",
-		  "order": "11",
-		  "props": {
-			"smsclogin": "",
-			"smscpsw": "",
-			"smscsender": ""
-		  }
-	  }
-    },
-	{
       "type": "ASC.Web.Core.Sms.TwilioProvider, ASC.Web.Core",
       "services": [
         {

@@ -173,7 +173,7 @@
     <value>Невірний заголовок</value>
   </data>
   <data name="ErrorMassage_LockedFile" xml:space="preserve">
-    <value> На даний момент файл заблоковано іншим користувачем</value>
+    <value>На даний момент файл заблоковано іншим користувачем</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
     <value>Не можна надіслати щонайменше {0} поштових повідомлень. Будь ласка, відвідайте модуль пошти, щоб побачити причину невдачі.</value>
@@ -309,5 +309,62 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Співпрацівник</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Надіслана форма</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Нова версія не може збігатися з поточною</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>У вас недостатньо прав для копіювання файлу</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>У вас недостатньо прав для копіювання папки</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Недійсний постачальник</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Неможливо використати цю папку для зберігання кімнати</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Запрошувальне посилання недійсне або термін його дії минув</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Цей постачальник вже під’єднаний до кімнати</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Роль недоступна для цього типу користувача</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>У вас недостатньо прав для архівування кімнати</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>У вас немає прав для копіювання до цієї папки</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>У вас немає прав для редагування кімнати</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>У вас немає прав для переміщення до цієї папки</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>У вас недостатньо прав для розархівування кімнати</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Ви не можете редагувати архівовані кімнати</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Ви не можете закріпити кімнату</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Настроюваний фільтр</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Співпрацівник</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Редактор</value>
   </data>
 </root>

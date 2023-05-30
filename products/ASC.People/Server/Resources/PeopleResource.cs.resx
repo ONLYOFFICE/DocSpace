@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Nebyl nalezen nahraný soubor.</value>
+    <value>Nebyl nalezen nahraný soubor</value>
   </data>
   <data name="ErrorImageSizetLimit" xml:space="preserve">
     <value>Velikost obrázku je příliš velká</value>

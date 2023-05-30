@@ -38,174 +38,125 @@ Description: {{product}}
 Package: {{product}}-common
 Architecture: any
 Depends: adduser, logrotate, ${misc:Depends}, ${shlibs:Depends}
+Recommends: default-mysql-client
 Description: {{product}}-common
 	{{product}}-common
 
 Package: {{product}}-backup
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-backup
 	{{product}}-backup
 
 Package: {{product}}-files
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
+Recommends: elasticsearch (= 7.10.0)
 Description: {{product}}-files
 	{{product}}-files
 
 Package: {{product}}-files-services
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ffmpeg,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
+Recommends: ffmpeg, elasticsearch (= 7.10.0)
 Description: {{product}}-files-services
 	{{product}}-files-services
 
 Package: {{product}}-notify
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
+Recommends: ffmpeg, elasticsearch (= 7.10.0)
 Description: {{product}}-notify
 	{{product}}-notify
 
 Package: {{product}}-people-server
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-people-server
 	{{product}}-people-server
 
 Package: {{product}}-socket
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=16),
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
+Recommends: redis-server
 Description: {{product}}-socket
 	{{product}}-socket
 
 Package: {{product}}-studio-notify
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-studio-notify
 	{{product}}-studio-notify
 
 Package: {{product}}-api
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
+Recommends: rabbitmq-server, apache-activemq, redis-server
 Description: {{product}}-api
 	{{product}}-api
 
 Package: {{product}}-api-system
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-api-system
 	{{product}}-api-system
 
 Package: {{product}}-studio
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-studio
 	{{product}}-studio
 
 Package: {{product}}-proxy
 Architecture: any
-Depends: nginx, ${misc:Depends}, ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), nginx-extras (>= 1.9.5), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-proxy
 	{{product}}-proxy
 
 Package: {{product}}-ssoauth
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=16),
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-ssoauth
 	{{product}}-ssoauth
 
 Package: {{product}}-backup-background
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-backup-background
 	{{product}}-backup-background
 
 Package: {{product}}-clear-events
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-clear-events
 	{{product}}-clear-events
 
 Package: {{product}}-migration-runner
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-migration-runner
 	{{product}}-migration-runner
 
 Package: {{product}}-radicale
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- python3-pip,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), python3-pip, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-radicale
 	{{product}}-radicale
 
 Package: {{product}}-doceditor
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=16),
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-doceditor
 	{{product}}-doceditor
 
 Package: {{product}}-login
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- nodejs (>=16),
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), nodejs (>= 16), ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-login
 	{{product}}-login
 
 Package: {{product}}-healthchecks
 Architecture: any
-Depends: {{product}}-common (= {{package_header_tag_version}}),
- dotnet-sdk-7.0,
- ${misc:Depends},
- ${shlibs:Depends}
+Depends: {{product}}-common (= {{package_header_tag_version}}), dotnet-sdk-7.0, ${misc:Depends}, ${shlibs:Depends}
 Description: {{product}}-healthchecks
 	{{product}}-healthchecks

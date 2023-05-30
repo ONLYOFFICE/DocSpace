@@ -11,7 +11,6 @@ import {
   StyledFilterBlockItemContent,
   StyledFilterBlockItemSelector,
   StyledFilterBlockItemSelectorText,
-  StyledFilterBlockItemTag,
   StyledFilterBlockItemTagText,
   StyledFilterBlockItemTagIcon,
   StyledFilterBlockItemToggle,
@@ -21,7 +20,7 @@ import {
   StyledFilterBlockItemSeparator,
 } from "./StyledFilterBlock";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 import XIcon from "PUBLIC_DIR/images/x.react.svg";
 import { FilterGroups, FilterKeys } from "../../../constants";

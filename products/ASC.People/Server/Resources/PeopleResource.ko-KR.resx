@@ -70,4 +70,13 @@
   <data name="ProductName" xml:space="preserve">
     <value>사람들</value>
   </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>업로드 된 파일을 찾을 수 없습니다</value>
+  </data>
+  <data name="ErrorUnknownFileImageType" xml:space="preserve">
+    <value>알 수없는 이미지 파일 형식</value>
+  </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>프로필 및 그룹 보기</value>
+  </data>
 </root>

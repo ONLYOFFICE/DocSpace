@@ -181,13 +181,8 @@ class ConsumerModalDialog extends React.Component {
   );
 
   render() {
-    const {
-      selectedConsumer,
-      onModalClose,
-      dialogVisible,
-      isLoading,
-      t,
-    } = this.props;
+    const { selectedConsumer, onModalClose, dialogVisible, isLoading, t } =
+      this.props;
     const {
       state,
       onChangeHandler,
@@ -212,7 +207,9 @@ class ConsumerModalDialog extends React.Component {
                 <Box
                   displayProp="flex"
                   flexDirection="column"
-                  marginProp="0 0 16px 0"
+                  marginProp={
+                    selectedConsumer.props.length == i + 1 ? "0" : "0 0 16px 0"
+                  }
                 >
                   <Box marginProp="0 0 4px 0">
                     <Text isBold>{prop.title}:</Text>

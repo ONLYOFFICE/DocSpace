@@ -166,8 +166,7 @@ public class CookieStorage
         {
             if (_httpContext?.Request != null)
             {
-                var forwarded = _httpContext.Request.Headers["X-Forwarded-For"].ToString();
-                data = string.IsNullOrEmpty(forwarded) ? _httpContext.Request.GetUserHostAddress() : forwarded.Split(':')[0];
+                data = _httpContext.Connection.RemoteIpAddress.ToString();
             }
         }
         catch { }

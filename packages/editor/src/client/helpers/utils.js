@@ -83,3 +83,21 @@ export const initI18n = (initialI18nStoreASC) => {
     }
   }
 };
+
+export const getEditorTheme = (theme) => {
+  switch (theme) {
+    case "Base":
+      return "theme-light";
+    case "Dark":
+      return "theme-dark";
+    case "System":
+      const uiTheme =
+        window?.matchMedia &&
+        window?.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "theme-dark"
+          : "theme-light";
+      return uiTheme;
+    default:
+      return "theme-dark";
+  }
+};

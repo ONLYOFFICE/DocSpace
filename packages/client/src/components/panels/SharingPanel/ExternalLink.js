@@ -169,7 +169,7 @@ const ExternalLink = ({
 
             <Button
               className={"external-link__copy"}
-              label={t("Translations:Copy")}
+              label={t("Common:Copy")}
               size={"small"}
               onClick={onCopyLinkAction}
             />

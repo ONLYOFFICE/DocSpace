@@ -1,8 +1,9 @@
 import { makeAutoObservable } from "mobx";
+import toastr from "@docspace/components/toast/toastr";
 
 import api from "../api";
 import { PortalFeaturesLimitations } from "../constants";
-import toastr from "@docspace/components/toast/toastr";
+import authStore from "./AuthStore";
 
 const MANAGER = "manager";
 const TOTAL_SIZE = "total_size";
@@ -229,16 +230,23 @@ class QuotasStore {
   setPortalQuota = async () => {
     try {
       let refresh = false;
-      if (window.location.search === "?complete=true") {
+
+      if (
+        window.location.search === "?complete=true" &&
+        !authStore.isUpdatingTariff
+      ) {
+        refresh = true;
+      }
+
+      const res = await api.portal.getPortalQuota(refresh);
+
+      if (refresh) {
         window.history.replaceState(
           {},
           document.title,
           window.location.pathname
         );
-        refresh = true;
       }
-
-      const res = await api.portal.getPortalQuota(refresh);
 
       if (!res) return;
 

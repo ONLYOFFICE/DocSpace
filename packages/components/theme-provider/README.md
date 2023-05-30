@@ -28,6 +28,7 @@ const newTheme = {...Themes.Base, color: "red"}
 
 ### ThemeProvider Properties
 
-| Props   |   Type   | Required | Values |    Default    | Description                                |
-| ------- | :------: | :------: | :----: | :-----------: | ------------------------------------------ |
-| `theme` | `object` |    ✅    |   -    | `Base styles` | Applies a theme to all children components |
+| Props                |        Type         | Required | Values |    Default    | Description                                     |
+| -------------------- | :-----------------: | :------: | :----: | :-----------: | ----------------------------------------------- |
+| `theme`              |      `object`       |    ✅    |   -    | `Base styles` | Applies a theme to all children components      |
+| `currentColorScheme` | `object`, `boolean` |    ✅    |   -    |       -       | Applies a colorTheme to all children components |

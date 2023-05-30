@@ -86,7 +86,7 @@
     <value>管理</value>
   </data>
   <data name="AppAccessDenied" xml:space="preserve">
-    <value>ファイルを操作するように、アクセス権を付与するはずです。</value>
+    <value>ファイルを操作するように、アクセス権を付与するはずです</value>
   </data>
   <data name="Author_Me" xml:space="preserve">
     <value>私に</value>
@@ -98,10 +98,10 @@
     <value>所有者が変更されました</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
-    <value>｛０｝から変換しました。</value>
+    <value>{0}から変換しました</value>
   </data>
   <data name="CommentCopy" xml:space="preserve">
-    <value>コピーしました。　</value>
+    <value>コピーしました</value>
   </data>
   <data name="CommentCreate" xml:space="preserve">
     <value>作成した</value>
@@ -161,7 +161,7 @@
     <value>文書サービでスエラーが発生してしまいました</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>｛０｝はファイルを編集しています。そのファイルの形式では、共同編集機能が現在サポートされていません。</value>
+    <value>{0}はファイルを編集しています。そのファイルの形式では、共同編集機能が現在サポートされていません。</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
     <value>ファイルがモバイルアップで｛０｝によって編集するように開かれています</value>
@@ -197,7 +197,7 @@
     <value>このファイルが別のユーザーによってロックされています</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>少なくとも｛０｝通のメールメッセージが送信できませんでした。失敗のあり得る原因を確認するためには、「メール」モジュールのページを訪問してください。</value>
+    <value>少なくとも{0}通のメールメッセージが送信できませんでした。失敗のあり得る原因を確認するためには、「メール」モジュールのページを訪問してください。</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
     <value>あまりにも多くのダウンロード。</value>
@@ -206,7 +206,7 @@
     <value>申し訳ありませんが、このファイル形式はサポートされていません</value>
   </data>
   <data name="ErrorMassage_SaveAnonymous" xml:space="preserve">
-    <value>保存した人は不明です。</value>
+    <value>保存した人は不明です</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
     <value>保存しようとした時に、ファイルが破損してしまいました</value>
@@ -345,5 +345,14 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>コラボレーター</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>コラボレーター</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>編集者</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>ルームの管理者</value>
   </data>
 </root>

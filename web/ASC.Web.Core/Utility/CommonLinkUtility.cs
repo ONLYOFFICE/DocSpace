@@ -251,7 +251,7 @@ public class CommonLinkUtility : BaseCommonLinkUtility
         var currentURL = string.Empty;
         if (_httpContextAccessor?.HttpContext?.Request != null)
         {
-            currentURL = _httpContextAccessor.HttpContext.Request.GetUrlRewriter().AbsoluteUri;
+            currentURL = _httpContextAccessor.HttpContext.Request.Url().AbsoluteUri;
 
             //TODO ?
             // http://[hostname]/[virtualpath]/[AjaxPro.Utility.HandlerPath]/[assembly],[classname].ashx

@@ -69,7 +69,7 @@ public class BaseCommonLinkUtility
 
             if (_httpContextAccessor?.HttpContext?.Request != null)
             {
-                var u = _httpContextAccessor?.HttpContext.Request.GetUrlRewriter();
+                var u = _httpContextAccessor?.HttpContext.Request.Url();
 
                 ArgumentNullException.ThrowIfNull(u);
 
@@ -77,7 +77,16 @@ public class BaseCommonLinkUtility
             }
             else if (_serverRoot == null)
             {
-                _serverRoot = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                var serverRoot = coreBaseSettings.ServerRoot;
+
+                if (string.IsNullOrEmpty(serverRoot))
+                {
+                    _serverRoot = new UriBuilder(Uri.UriSchemeHttp, LocalHost);
+                }
+                else
+                {
+                    ServerUri = serverRoot;
+                }
             }
         }
         catch (Exception error)
@@ -104,7 +113,7 @@ public class BaseCommonLinkUtility
             // first, take from current request
             if (_httpContextAccessor?.HttpContext?.Request != null)
             {
-                var u = _httpContextAccessor?.HttpContext?.Request.GetUrlRewriter();
+                var u = _httpContextAccessor?.HttpContext?.Request.Url();
 
                 ArgumentNullException.ThrowIfNull(u);
 

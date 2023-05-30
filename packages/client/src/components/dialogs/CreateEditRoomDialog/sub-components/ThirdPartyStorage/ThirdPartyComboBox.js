@@ -169,7 +169,7 @@ const ThirdPartyComboBox = ({
       setIsOauthWindowOpen(true);
       const authModal = window.open(
         "",
-        "Authorization",
+        t("Common:Authorization"),
         "height=600, width=1020"
       );
       openConnectWindow(provider.providerKey, authModal).then((modal) =>

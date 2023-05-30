@@ -158,9 +158,18 @@ Beim Entfernen persönlicher Daten es wurde freigegeben:
     <value>Löschung des ONLYOFFICE Personal-Kontos</value>
   </data>
   <data name="subject_remove_user_data_completed_custom_mode" xml:space="preserve">
-    <value>${LetterLogoText}. Entfernen von Benutzerdaten ist abgeschlossen.</value>
+    <value>${LetterLogoText}. Entfernen von Benutzerdaten ist abgeschlossen</value>
   </data>
   <data name="subject_saas_custom_mode_reg_data" xml:space="preserve">
     <value>Neues Portal wurde registriert</value>
+  </data>
+  <data name="pattern_personal_custom_mode_change_password_v115" xml:space="preserve">
+    <value>Möchten Sie das Passwort Ihres Cloud-Office-Kontos ändern? Klicken Sie auf die Schaltfläche unten.
+
+$GreenButton
+
+Der Link ist innerhalb von 7 Tagen gültig.
+
+Möchten Sie das Passwort nicht ändern? Ignorieren Sie diese Nachricht.</value>
   </data>
 </root>

@@ -45,12 +45,17 @@ class ChangeEmailDialogComponent extends React.Component {
 
   onSendEmailChangeInstructions = () => {
     const { email } = this.state;
-    const { user } = this.props;
+    const { user, updateProfileInUsers, updateProfile, fromList } = this.props;
     const { id } = user;
+    const newProfile = user;
+    newProfile.email = email;
+
     this.setState({ isRequestRunning: true }, () => {
       sendInstructionsToChangeEmail(id, email)
-        .then((res) => {
+        .then(async (res) => {
           toastr.success(res);
+          const currentProfile = await updateProfile(newProfile);
+          fromList && (await updateProfileInUsers(currentProfile));
         })
         .catch((error) => toastr.error(error))
         .finally(() => {
@@ -202,6 +207,14 @@ ChangeEmailDialog.propTypes = {
   user: PropTypes.object.isRequired,
 };
 
-export default inject(({ auth }) => ({
-  isTabletView: auth.settingsStore.isTabletView,
-}))(observer(ChangeEmailDialog));
+export default inject(({ auth, peopleStore }) => {
+  const { updateProfile } = peopleStore.targetUserStore;
+
+  const { updateProfileInUsers } = peopleStore.usersStore;
+
+  return {
+    updateProfile,
+    updateProfileInUsers,
+    isTabletView: auth.settingsStore.isTabletView,
+  };
+})(observer(ChangeEmailDialog));

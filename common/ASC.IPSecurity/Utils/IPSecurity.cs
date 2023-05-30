@@ -98,7 +98,7 @@ public class IPSecurity
             if (string.IsNullOrWhiteSpace(requestIps))
             {
                 var request = _httpContextAccessor.HttpContext.Request;
-                requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
+                requestIps = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             }
 
             var ips = string.IsNullOrWhiteSpace(requestIps)
