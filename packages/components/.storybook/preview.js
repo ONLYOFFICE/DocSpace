@@ -3,6 +3,7 @@ import { Base, Dark } from "../themes/index";
 import "../../common/opensansoffline.scss";
 import globalTypes from "./globals";
 import ThemeWrapper from "./globals/theme-wrapper";
+import { DocsContainer } from "./DocsContainer";
 import "../index";
 
 const preview = {
@@ -11,6 +12,9 @@ const preview = {
     backgrounds: { disable: true },
     actions: { argTypesRegex: "^on[A-Z].*" },
     controls: { expanded: true },
+    docs: {
+      container: DocsContainer,
+    },
     viewport: {
       viewports: MINIMAL_VIEWPORTS,
     },
