@@ -109,8 +109,12 @@ const RoomPassword = (props) => {
                 {t("Common:NeedPassword")}:
               </Text>
               <div className="public-room-name">
-                <PublicRoomIcon />
-                <Text fontSize="15px" fontWeight="600">
+                <PublicRoomIcon className="public-room-icon" />
+                <Text
+                  className="public-room-text"
+                  fontSize="15px"
+                  fontWeight="600"
+                >
                   {roomTitle}
                 </Text>
               </div>

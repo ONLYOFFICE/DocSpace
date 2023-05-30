@@ -50,6 +50,17 @@ export const StyledPage = styled.div`
       gap: 12px;
       margin-bottom: 32px;
     }
+
+    .public-room-icon {
+      min-width: 32px;
+      min-height: 32px;
+    }
+
+    .public-room-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   }
 `;
 
