@@ -1,23 +1,35 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Badge from "@docspace/components/badge";
 
 import { useTranslation } from "react-i18next";
 
-export const StatusBadge = ({ status }) => {
-  const [badgeColorScheme, setBadgeColorScheme] = useState({
-    backgroundColor: "#2DB4821A",
-    color: "#2DB482",
-  });
+import { inject, observer } from "mobx-react";
+
+const StatusBadge = (props) => {
+  const { status, theme } = props;
+
+  const badgeColorScheme =
+    status >= 200 && status < 300
+      ? theme.isBase
+        ? {
+            backgroundColor: "rgba(53, 173, 23, 0.1)",
+            color: "#35AD17",
+          }
+        : {
+            backgroundColor: "rgba(59, 164, 32, 0.1)",
+            color: "#3BA420",
+          }
+      : theme.isBase
+      ? {
+          backgroundColor: "rgba(242, 28, 14, 0.1)",
+          color: "#F21C0E",
+        }
+      : {
+          backgroundColor: "rgba(224, 100, 81, 0.1)",
+          color: "#E06451",
+        };
   const { t } = useTranslation(["Webhooks"]);
 
-  useEffect(() => {
-    if (status < 200 || status > 299) {
-      setBadgeColorScheme({
-        backgroundColor: "#F21C0E1A",
-        color: "#F21C0E",
-      });
-    }
-  }, []);
   if (status === undefined) {
     return;
   }
@@ -33,3 +45,13 @@ export const StatusBadge = ({ status }) => {
     />
   );
 };
+
+export default inject(({ auth }) => {
+  const { settingsStore } = auth;
+
+  const { theme } = settingsStore;
+
+  return {
+    theme,
+  };
+})(observer(StatusBadge));
