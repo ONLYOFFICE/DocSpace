@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 
-import HistoryHeader from "./sub-components/HistoryHeader";
 import HistoryFilterHeader from "./sub-components/HistoryFilterHeader";
 import WebhookHistoryTable from "./sub-components/WebhookHistoryTable";
 import { WebhookHistoryLoader } from "../sub-components/Loaders";
@@ -15,22 +14,33 @@ const WebhookWrapper = styled.div`
 `;
 
 const WebhookHistory = (props) => {
-  const { historyItems, fetchHistoryItems, hideTitle, showTitle, emptyCheckedIds } = props;
+  const { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds } =
+    props;
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetchFinished, setIsFetchFinished] = useState(false);
 
   const { id } = useParams();
 
   useEffect(() => {
-    hideTitle();
+    setTitleHistory();
     (async () => {
-      await fetchHistoryItems({
-        configId: id,
-        count: 30,
-      });
+      const timer = setTimeout(() => {
+        !webhookDetails.status && setIsLoading(true);
+      }, 300);
+
+      historyItems.length === 0 &&
+        (await fetchHistoryItems({
+          configId: id,
+          count: 30,
+        }));
+      setIsFetchFinished(true);
+
+      clearTimeout(timer);
       setIsLoading(false);
     })();
-    return showTitle;
+
+    return setTitleDefault;
   }, []);
 
   const applyFilters = async ({ deliveryFrom, deliveryTo, groupStatus }) => {
@@ -42,13 +52,12 @@ const WebhookHistory = (props) => {
 
   return (
     <WebhookWrapper>
-      <HistoryHeader />
       {isLoading ? (
         <WebhookHistoryLoader />
       ) : (
         <main>
           <HistoryFilterHeader applyFilters={applyFilters} />
-          {historyItems.length === 0 ? (
+          {historyItems.length === 0 && isFetchFinished ? (
             <EmptyFilter applyFilters={applyFilters} />
           ) : (
             <WebhookHistoryTable />
@@ -60,7 +69,8 @@ const WebhookHistory = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { historyItems, fetchHistoryItems, hideTitle, showTitle, emptyCheckedIds } = webhooksStore;
+  const { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds } =
+    webhooksStore;
 
-  return { historyItems, fetchHistoryItems, hideTitle, showTitle, emptyCheckedIds };
+  return { historyItems, fetchHistoryItems, setTitleHistory, setTitleDefault, emptyCheckedIds };
 })(observer(WebhookHistory));
