@@ -102,7 +102,7 @@ public class FilesSettings : ISettings<FilesSettings>
             DefaultSortedAscSetting = false,
             HideConfirmConvertSaveSetting = false,
             HideConfirmConvertOpenSetting = false,
-            ForcesaveSetting = false,
+            ForcesaveSetting = true,
             StoreForcesaveSetting = false,
             HideRecentSetting = false,
             HideFavoritesSetting = false,
@@ -306,11 +306,11 @@ public class FilesSettingsHelper
     {
         set
         {
-            var setting = LoadForCurrentUser();
-            setting.ForcesaveSetting = value;
-            SaveForCurrentUser(setting);
+            //var setting = LoadForCurrentUser();
+            //setting.ForcesaveSetting = value;
+            //SaveForCurrentUser(setting);
         }
-        get => LoadForCurrentUser().ForcesaveSetting;
+        get => true;//LoadForCurrentUser().ForcesaveSetting;
     }
 
     public bool StoreForcesave
@@ -383,7 +383,7 @@ public class FilesSettingsHelper
         get
         {
             var setting = LoadForCurrentUser().AutomaticallyCleanUpSetting;
-            
+
             if (setting != null)
             {
                 return setting;
