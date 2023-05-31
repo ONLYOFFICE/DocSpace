@@ -238,7 +238,7 @@ public class PortalController : ControllerBase
                 _log.LogDebug("PortalName = {0}; Elapsed ms. CacheController.AddTenantToCache: {1}", model.PortalName, sw.ElapsedMilliseconds);
             }
 
-             t = await _hostedSolution.RegisterTenantAsync(info);
+            t = await _hostedSolution.RegisterTenantAsync(info);
 
             /*********/
 

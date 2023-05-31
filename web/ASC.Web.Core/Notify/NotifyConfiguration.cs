@@ -106,10 +106,10 @@ public class NotifyConfiguration
             "ProductSecurityInterceptor",
              InterceptorPlace.DirectSend,
              InterceptorLifetime.Global,
-             (r, p, scope) =>
+             async (r, p, scope) =>
              {
                  var scopeClass = scope.ServiceProvider.GetRequiredService<ProductSecurityInterceptor>();
-                 return scopeClass.InterceptAsync(r, p).Result;
+                 return await scopeClass.InterceptAsync(r, p);
              });
         client.AddInterceptor(securityAndCulture);
 
@@ -369,19 +369,19 @@ public class NotifyTransferRequest : INotifyEngineAction
     private async Task AddLetterLogoAsync(NotifyRequest request)
     {
 
-            try
-            {
-                var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
+        try
+        {
+            var attachment = await _tenantLogoManager.GetMailLogoAsAttacmentAsync();
 
-                if (attachment != null)
-                {
-                    request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
-                    request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
-                }
-            }
-            catch (Exception error)
+            if (attachment != null)
             {
-                _log.ErrorAddLetterLogo(error);
+                request.Arguments.Add(new TagValue(CommonTags.LetterLogo, "cid:" + attachment.ContentId));
+                request.Arguments.Add(new TagValue(CommonTags.EmbeddedAttachments, new[] { attachment }));
             }
         }
+        catch (Exception error)
+        {
+            _log.ErrorAddLetterLogo(error);
+        }
     }
+}

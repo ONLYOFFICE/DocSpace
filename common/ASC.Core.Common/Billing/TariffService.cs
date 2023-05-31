@@ -706,7 +706,7 @@ public class TariffService : ITariffService
 
         var tariffRows = coreDbContext.TariffRows
             .Where(row => row.TariffId == r.Id && row.Tenant == tenant);
-        
+
         tariff.Quotas = await tariffRows.Select(r => new Quota(r.Quota, r.Quantity)).ToListAsync();
 
         return tariff;
@@ -783,7 +783,7 @@ public class TariffService : ITariffService
 
         if (inserted)
         {
-            var t =  await _tenantService.GetTenantAsync(tenant);
+            var t = await _tenantService.GetTenantAsync(tenant);
             if (t != null)
             {
                 // update tenant.LastModified to flush cache in documents
@@ -830,7 +830,7 @@ public class TariffService : ITariffService
 
         if (_trialEnabled)
         {
-            var trial = tariff.Quotas.Exists(q => _quotaService.GetTenantQuotaAsync(q.Id).Result.Trial);
+            var trial = await tariff.Quotas.ToAsyncEnumerable().AnyAwaitAsync(async q => (await _quotaService.GetTenantQuotaAsync(q.Id)).Trial);
             if (trial)
             {
                 setDelay = false;

@@ -98,7 +98,7 @@ public class RadicaleController : BaseSettingsController
         }
         else if (getResponse.StatusCode == 404)
         {
-            var createResponse = _cardDavAddressbook.Create("", "", "", sharedCardUrl, rootAuthorization).Result;
+            var createResponse = await _cardDavAddressbook.Create("", "", "", sharedCardUrl, rootAuthorization);
             if (createResponse.Completed)
             {
                 try

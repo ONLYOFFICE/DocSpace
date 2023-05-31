@@ -92,7 +92,7 @@ public class RoomsModule : FeedModule
             targetCond = true;
         }
 
-        return targetCond && _fileSecurity.CanReadAsync(folder, userId).Result;
+        return targetCond && await _fileSecurity.CanReadAsync(folder, userId);
     }
 
     public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
@@ -115,7 +115,7 @@ public class RoomsModule : FeedModule
         if (shareRecord == null)
         {
             var roomCreatedUtc = _tenantUtil.DateTimeToUtc(room.CreateOn);
-            
+
             return new Feed.Aggregator.Feed(room.CreateBy, roomCreatedUtc)
             {
                 Item = RoomItem,

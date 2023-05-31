@@ -29,27 +29,43 @@ namespace ASC.Notify.Engine;
 public class SendInterceptorSkeleton : ISendInterceptor
 {
     private readonly Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> _method;
+    private readonly Func<NotifyRequest, InterceptorPlace, IServiceScope, Task<bool>> _methodAsync;
     public string Name { get; internal set; }
     public InterceptorPlace PreventPlace { get; internal set; }
     public InterceptorLifetime Lifetime { get; internal set; }
 
-    public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
+    private SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime)
     {
         if (string.IsNullOrEmpty(name))
         {
             throw new ArgumentException("Empty name.", nameof(name));
         }
 
-        ArgumentNullException.ThrowIfNull(sendInterceptor);
-
-        _method = sendInterceptor;
         Name = name;
         PreventPlace = preventPlace;
         Lifetime = lifetime;
     }
 
-    public bool PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
+    public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, IServiceScope, bool> sendInterceptor)
+        : this(name, preventPlace, lifetime)
     {
-        return _method(request, place, serviceScope);
+        ArgumentNullException.ThrowIfNull(sendInterceptor);
+
+        _method = sendInterceptor;
+    }
+
+    public SendInterceptorSkeleton(string name, InterceptorPlace preventPlace, InterceptorLifetime lifetime, Func<NotifyRequest, InterceptorPlace, IServiceScope, Task<bool>> sendInterceptor)
+        : this(name, preventPlace, lifetime)
+    {
+        ArgumentNullException.ThrowIfNull(sendInterceptor);
+
+        _methodAsync = sendInterceptor;
+    }
+
+    public async Task<bool> PreventSend(NotifyRequest request, InterceptorPlace place, IServiceScope serviceScope)
+    {
+        if (_method != null) return _method(request, place, serviceScope);
+
+        return await _methodAsync(request, place, serviceScope);
     }
 }
