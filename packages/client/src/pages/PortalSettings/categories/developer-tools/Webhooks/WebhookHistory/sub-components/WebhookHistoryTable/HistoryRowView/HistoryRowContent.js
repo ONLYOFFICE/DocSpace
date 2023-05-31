@@ -5,7 +5,7 @@ import styled from "styled-components";
 import Text from "@docspace/components/text";
 import RowContent from "@docspace/components/row-content";
 
-import { StatusBadge } from "../../../../sub-components/StatusBadge";
+import StatusBadge from "../../../../sub-components/StatusBadge";
 
 const StyledRowContent = styled(RowContent)`
   display: flex;
