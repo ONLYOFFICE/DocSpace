@@ -254,7 +254,7 @@ const Wizard = (props) => {
       );
       setWizardComplete();
       getPortalSettings();
-      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/login"));
+      history.push(combineUrl(window.DocSpaceConfig?.proxy?.url, "/"));
     } catch (error) {
       console.error(error);
       setIsCreated(false);
