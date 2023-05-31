@@ -1,10 +1,4 @@
-import {
-  Story,
-  ArgsTable,
-  Canvas,
-  Meta,
-  Controls,
-} from "@storybook/addon-docs/blocks";
+import { Story, ArgsTable, Canvas, Meta, Controls } from "@storybook/blocks";
 import * as stories from "./tooltip.stories.js";
 
 import Tooltip from "./";
@@ -26,7 +20,7 @@ Custom tooltip
 #### See documentation: https://github.com/wwayne/react-tooltip
 
 <Canvas>
-  <Story story={stories.all} name="All" />
+  <Story of={stories.all} />
 </Canvas>
 
 ### Usage with IconButton

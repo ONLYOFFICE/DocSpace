@@ -1,10 +1,4 @@
-import {
-  Meta,
-  Story,
-  ArgsTable,
-  Canvas,
-  Controls,
-} from "@storybook/addon-docs/blocks";
+import { Meta, Story, ArgsTable, Canvas, Controls } from "@storybook/blocks";
 
 import * as stories from "./main-button-mobile.stories.js";
 import MainButtonMobile from "./index.js";
@@ -18,7 +12,7 @@ import MainButtonMobile from "./index.js";
 # MainButtonMobile
 
 <Canvas>
-  <Story story={stories.Default} />
+  <Story of={stories.Default} />
 </Canvas>
 
 ## Properties
