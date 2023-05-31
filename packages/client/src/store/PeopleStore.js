@@ -96,11 +96,9 @@ class PeopleStore {
   };
 
   resetFilter = () => {
-    const { getUsersList } = this.usersStore;
-
     const filter = Filter.getDefault();
 
-    return getUsersList(filter, true);
+    window.DocSpace.navigate(`accounts/filter?${filter.toUrlParams()}`);
   };
 
   onChangeType = (e) => {
@@ -167,10 +165,8 @@ class PeopleStore {
   };
 
   changeStatus = (status, users) => {
-    const {
-      setChangeUserStatusDialogVisible,
-      setDialogData,
-    } = this.dialogStore;
+    const { setChangeUserStatusDialogVisible, setDialogData } =
+      this.dialogStore;
 
     const userIDs = users.map((user) => {
       return user?.id ? user.id : user;
@@ -195,10 +191,8 @@ class PeopleStore {
       hasUsersToRemove,
       hasFreeUsers,
     } = this.selectionStore;
-    const {
-      setSendInviteDialogVisible,
-      setDeleteDialogVisible,
-    } = this.dialogStore;
+    const { setSendInviteDialogVisible, setDeleteDialogVisible } =
+      this.dialogStore;
 
     const { isOwner } = this.authStore.userStore.user;
 
