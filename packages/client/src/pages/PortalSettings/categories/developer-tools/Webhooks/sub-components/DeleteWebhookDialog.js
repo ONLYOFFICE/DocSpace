@@ -4,6 +4,10 @@ import Button from "@docspace/components/button";
 import styled from "styled-components";
 import { useTranslation } from "react-i18next";
 
+const StyledBodyText = styled.div`
+  line-height: 20px;
+`;
+
 const Footer = styled.div`
   width: 100%;
   display: flex;
@@ -19,7 +23,7 @@ const Footer = styled.div`
 export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) => {
   const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && onClose();
 
-  const { t } = useTranslation(["Webhooks"]);
+  const { t } = useTranslation(["Webhooks", "Common", "EmptyTrashDialog"]);
 
   useEffect(() => {
     window.addEventListener("keyup", onKeyPress);
@@ -27,19 +31,21 @@ export const DeleteWebhookDialog = ({ visible, onClose, header, handleSubmit }) 
   });
 
   return (
-    <ModalDialog withFooterBorder visible={visible} onClose={onClose} displayType="modal">
+    <ModalDialog visible={visible} onClose={onClose} displayType="modal">
       <ModalDialog.Header>{header}</ModalDialog.Header>
-      <ModalDialog.Body>{t("DeleteHint")}</ModalDialog.Body>
+      <ModalDialog.Body>
+        <StyledBodyText>{t("DeleteHint")}</StyledBodyText>
+      </ModalDialog.Body>
 
       <ModalDialog.Footer>
         <Footer>
           <Button
-            label={t("DeleteForever")}
+            label={t("EmptyTrashDialog:DeleteForeverButton")}
             size="normal"
             primary={true}
             onClick={handleSubmit}
           />
-          <Button label={t("Cancel")} size="normal" onClick={onClose} />
+          <Button label={t("Common:CancelButton")} size="normal" onClick={onClose} />
         </Footer>
       </ModalDialog.Footer>
     </ModalDialog>
