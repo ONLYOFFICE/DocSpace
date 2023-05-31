@@ -14,9 +14,9 @@ const displaySettings = css`
   ${(props) =>
     !props.hasScroll &&
     !isMobileOnly &&
-    css`
-      padding-left: 24px;
-    `}
+    (props.theme.interfaceDirection === "rtl"
+      ? "padding-right: 24px;"
+      : "padding-left: 24px;")}
 
   ${(props) =>
     props.hasScroll &&
@@ -59,8 +59,16 @@ const displaySettings = css`
       .unsaved-changes {
         border-top: 1px solid #eceef1;
         width: calc(100% - 16px);
-        left: 0px;
-        padding-left: 16px;
+
+        ${props.theme.interfaceDirection === "rtl"
+          ? css`
+              right: 0;
+              padding-right: 16px;
+            `
+          : css`
+              left: 0;
+              padding-left: 16px;
+            `}
       }
     `}
 `;
@@ -88,10 +96,14 @@ const tabletButtons = css`
 
   .unsaved-changes {
     border-top: none;
-    margin-left: 8px;
-    margin-bottom: 0;
     position: static;
     padding: 0;
+    margin-bottom: 0;
+
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? "margin-right: 8px;"
+        : "margin-left: 8px;"}
   }
 `;
 
@@ -103,25 +115,29 @@ const StyledSaveCancelButtons = styled.div`
   align-items: center;
   bottom: ${(props) => props.theme.saveCancelButtons.bottom};
   width: ${(props) => props.theme.saveCancelButtons.width};
-  left: ${(props) => props.theme.saveCancelButtons.left};
+
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl"
+      ? `right: ${props.theme.saveCancelButtons.left};`
+      : `left: ${props.theme.saveCancelButtons.left};`}
+
   padding: ${(props) =>
     props.displaySettings ? "16px" : props.theme.saveCancelButtons.padding};
 
   .save-button {
-    margin-right: ${(props) => props.theme.saveCancelButtons.marginRight};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl"
+        ? `margin-left: ${props.theme.saveCancelButtons.marginRight};`
+        : `margin-right: ${props.theme.saveCancelButtons.marginRight};`}
   }
   .unsaved-changes {
     color: ${(props) => props.theme.saveCancelButtons.unsavedColor};
   }
 
-  ${(props) => props.displaySettings && displaySettings}
+  ${(props) => props.displaySettings && displaySettings};
 
   @media (min-width: 600px), isTablet {
-    ${(props) =>
-      props.displaySettings &&
-      `
-      ${tabletButtons}
-    `}
+    ${(props) => props.displaySettings && tabletButtons}
   }
 
   @media ${tablet} {
@@ -133,7 +149,7 @@ const StyledSaveCancelButtons = styled.div`
 
         .unsaved-changes {
           display: none;
-        } 
+        }
   `}
   }
 
@@ -152,5 +168,7 @@ const StyledSaveCancelButtons = styled.div`
     `}
   }
 `;
-StyledSaveCancelButtons.defaultProps = { theme: Base };
+StyledSaveCancelButtons.defaultProps = {
+  theme: { Base, interfaceDirection: "ltr" },
+};
 export default StyledSaveCancelButtons;
