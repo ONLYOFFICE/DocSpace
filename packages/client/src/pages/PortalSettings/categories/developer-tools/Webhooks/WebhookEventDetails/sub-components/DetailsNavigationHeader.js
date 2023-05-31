@@ -16,6 +16,8 @@ import IconButton from "@docspace/components/icon-button";
 import { tablet } from "@docspace/components/utils/device";
 import { useTranslation } from "react-i18next";
 
+import { useParams } from "react-router-dom";
+
 const HeaderContainer = styled.div`
   position: sticky;
   top: 0;
@@ -42,7 +44,9 @@ const HeaderContainer = styled.div`
 `;
 
 const DetailsNavigationHeader = (props) => {
-  const { eventId, retryWebhookEvent } = props;
+  const { retryWebhookEvent } = props;
+  const { eventId } = useParams();
+
   const { t } = useTranslation(["Webhooks", "Common"]);
   const navigate = useNavigate();
   const onBack = () => {
