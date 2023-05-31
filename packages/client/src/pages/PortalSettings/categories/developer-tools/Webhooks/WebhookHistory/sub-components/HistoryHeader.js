@@ -18,6 +18,7 @@ import DropDownItem from "@docspace/components/drop-down-item";
 
 import toastr from "@docspace/components/toast/toastr";
 import { useTranslation } from "react-i18next";
+import { useParams } from "react-router-dom";
 
 const HeaderContainer = styled.div`
   position: sticky;
@@ -44,12 +45,12 @@ const HeaderContainer = styled.div`
     `}
 
   .arrow-button {
-    margin-right: 18.5px;
+    margin-right: 15px;
 
     @media ${tablet} {
       padding: 8px 0 8px 8px;
       margin-left: -8px;
-      margin-right: 18.5px;
+      margin-right: 15px;
     }
   }
 
@@ -93,23 +94,34 @@ const HistoryHeader = (props) => {
     retryWebhookEvents,
     isIndeterminate,
     areAllIdsChecked,
+    fetchHistoryItems,
+    theme,
   } = props;
   const navigate = useNavigate();
   const onBack = () => {
     navigate(-1);
   };
-  const { t } = useTranslation(["Webhooks", "Common"]);
+  const { t } = useTranslation(["Webhooks", "Common", "InfoPanel"]);
+  const { id } = useParams();
 
   const handleGroupSelection = (isChecked) => {
     isChecked ? checkAllIds() : emptyCheckedIds();
   };
+  const SelectAll = () => {
+    () => checkAllIds();
+  };
 
   const handleRetryAll = async () => {
     await retryWebhookEvents(checkedEventIds);
+    fetchHistoryItems({
+      configId: id,
+      count: 30,
+    });
     toastr.success(
       `${t("WebhookRedilivered")}: ${checkedEventIds.length}`,
       <b>{t("Common:Done")}</b>,
     );
+    emptyCheckedIds();
   };
 
   const headerMenu = [
@@ -121,13 +133,20 @@ const HistoryHeader = (props) => {
     },
   ];
 
+  const onKeyPress = (e) => (e.key === "Esc" || e.key === "Escape") && emptyCheckedIds();
+
+  useEffect(() => {
+    window.addEventListener("keyup", onKeyPress);
+    return () => window.removeEventListener("keyup", onKeyPress);
+  }, []);
+
   const menuItems = (
     <>
       <DropDownItem
         key="select-all-event-ids"
         label={t("Common:SelectAll")}
         data-index={0}
-        onClick={() => checkAllIds()}
+        onClick={SelectAll}
       />
       <DropDownItem
         key="unselect-all-event-ids"
@@ -148,9 +167,11 @@ const HistoryHeader = (props) => {
         className="arrow-button"
       />
       <Headline type="content" truncate={true} className="headline">
-        {t("History")}
+        {t("InfoPanel:SubmenuHistory")}
       </Headline>
-      <Hint backgroundColor="#F8F9F9" color="#555F65">
+      <Hint
+        backgroundColor={theme.isBase ? "#F8F9F9" : "#3D3D3D"}
+        color={theme.isBase ? "#555F65" : "#FFFFFF"}>
         {t("EventHint")}
       </Hint>
     </>
@@ -187,7 +208,7 @@ const HistoryHeader = (props) => {
   );
 };
 
-export default inject(({ webhooksStore }) => {
+export default inject(({ webhooksStore, auth }) => {
   const {
     isHeaderVisible,
     checkAllIds,
@@ -196,7 +217,12 @@ export default inject(({ webhooksStore }) => {
     retryWebhookEvents,
     isIndeterminate,
     areAllIdsChecked,
+    fetchHistoryItems,
   } = webhooksStore;
+
+  const { settingsStore } = auth;
+
+  const { theme } = settingsStore;
 
   return {
     isHeaderVisible,
@@ -206,5 +232,7 @@ export default inject(({ webhooksStore }) => {
     retryWebhookEvents,
     isIndeterminate,
     areAllIdsChecked,
+    fetchHistoryItems,
+    theme,
   };
 })(observer(HistoryHeader));
