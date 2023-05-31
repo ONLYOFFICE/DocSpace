@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import EmptyFilterImg from "PUBLIC_DIR/images/empty_filter.react.svg?url";
+import EmptyFilterDarkImg from "PUBLIC_DIR/images/empty_filter_dark.react.svg?url";
 import ClearEmptyFilterIcon from "PUBLIC_DIR/images/clear.empty.filter.svg?url";
 import Text from "@docspace/components/text";
 import Link from "@docspace/components/link";
@@ -39,7 +40,7 @@ const EmptyFilterContent = styled.div`
 `;
 
 const EmptyFilter = (props) => {
-  const { applyFilters, formatFilters, clearHistoryFilters } = props;
+  const { applyFilters, formatFilters, clearHistoryFilters, theme } = props;
   const { t } = useTranslation(["Webhooks", "Common"]);
 
   const clearFilters = () => {
@@ -55,17 +56,21 @@ const EmptyFilter = (props) => {
   return (
     <EmptyFilterWrapper>
       <EmptyFilterContent>
-        <img src={EmptyFilterImg} alt="Empty filter" />
+        <img src={theme.isBased ? EmptyFilterImg : EmptyFilterDarkImg} alt="Empty filter" />
         <div className="emptyFilterText">
           <Text fontSize="16px" fontWeight={700} as="p" className="emptyFilterHeading">
-            {t("NothingFound")}
+            {t("Common:NotFoundTitle")}
           </Text>
-          <Text fontSize="12px" color="#555F65">
+          <Text fontSize="12px" color={theme.isBased ? "#555F65" : "rgba(255, 255, 255, 0.6)"}>
             {t("NoResultsMatched")}
           </Text>
           <span className="clearFilter" onClick={clearFilters}>
             <img src={ClearEmptyFilterIcon} alt={t("ClearFilter")} className="clearFilterIcon" />
-            <Link color="#657077" isHovered fontWeight={600}>
+            <Link
+              color={theme.isBased ? "#657077" : "inherit"}
+              isHovered
+              fontWeight={600}
+              type="action">
               {t("Common:ClearFilter")}
             </Link>
           </span>
@@ -75,8 +80,10 @@ const EmptyFilter = (props) => {
   );
 };
 
-export default inject(({ webhooksStore }) => {
+export default inject(({ webhooksStore, auth }) => {
   const { formatFilters, clearHistoryFilters } = webhooksStore;
+  const { settingsStore } = auth;
+  const { theme } = settingsStore;
 
-  return { formatFilters, clearHistoryFilters };
+  return { formatFilters, clearHistoryFilters, theme };
 })(observer(EmptyFilter));
