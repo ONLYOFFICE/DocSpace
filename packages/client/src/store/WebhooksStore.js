@@ -1,29 +1,33 @@
-import { runInAction, makeAutoObservable } from "mobx";
-import moment from "moment";
 import {
   createWebhook,
   getAllWebhooks,
-  updateWebhook,
-  removeWebhook,
-  toggleEnabledWebhook,
   getWebhooksJournal,
+  removeWebhook,
   retryWebhook,
   retryWebhooks,
+  toggleEnabledWebhook,
+  updateWebhook,
 } from "@docspace/common/api/settings";
+import { makeAutoObservable, runInAction } from "mobx";
 
 class WebhooksStore {
   webhooks = [];
   state = "pending"; // "pending", "done" or "error"
   checkedEventIds = [];
-  isTitleVisible = true;
   historyFilters = null;
   historyItems = [];
   startIndex = 0;
   totalItems = 0;
+  developerToolsTab = 0;
+  titleType = "default"; // "default", "history" or "details"
 
   constructor() {
     makeAutoObservable(this);
   }
+
+  setTab = (tabIndex) => {
+    this.developerToolsTab = tabIndex;
+  };
 
   loadWebhooks = async () => {
     try {
@@ -201,11 +205,14 @@ class WebhooksStore {
     return this.checkedEventIds.length !== 0;
   }
 
-  hideTitle = () => {
-    this.isTitleVisible = false;
+  setTitleDefault = () => {
+    this.titleType = "default";
   };
-  showTitle = () => {
-    this.isTitleVisible = true;
+  setTitleHistory = () => {
+    this.titleType = "history";
+  };
+  setTitleDetails = () => {
+    this.titleType = "details";
   };
 }
 
