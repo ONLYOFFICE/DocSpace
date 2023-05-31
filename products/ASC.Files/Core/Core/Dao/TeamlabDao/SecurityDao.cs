@@ -470,7 +470,7 @@ internal class SecurityTreeRecord
     public DbFolderTree DbFolderTree { get; set; }
 }
 
-file static class SecurityDaoQueries
+static file class SecurityDaoQueries
 {
     public static readonly Func<FilesDbContext, FileShareRecord, IAsyncEnumerable<DbFilesSecurity>> GetForDeleteShareRecordsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
         (FilesDbContext ctx, FileShareRecord record) =>

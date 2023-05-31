@@ -1543,7 +1543,7 @@ public class DbFileQueryWithSecurity
     public DbFilesSecurity Security { get; set; }
 }
 
-file static class FileDaoQueries
+static file class FileDaoQueries
 {
     public static readonly Func<FilesDbContext, int, int, Task<DbFileQuery>> GetDbFileQueryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FilesDbContext ctx, int tenantId, int fileId) =>

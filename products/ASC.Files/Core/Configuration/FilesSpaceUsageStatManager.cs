@@ -148,7 +148,7 @@ public static class FilesSpaceUsageStatExtension
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<FilesDbContext, int, Guid, int, int, Task<long>> SumContentLengthAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FilesDbContext ctx, int tenantId, Guid userId, int my, int trash) =>

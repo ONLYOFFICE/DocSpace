@@ -131,7 +131,7 @@ public class BackupRepository : IBackupRepository
     }
 }
 
-file static class Queries
+static file class Queries
 {
 
     public static readonly Func<BackupsContext, int, string, Task<BackupRecord>> GetBackupAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

@@ -745,7 +745,7 @@ public class FileUtility
     #endregion
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<FilesDbContext, IEnumerable<FilesConverts>> GetFolders = Microsoft.EntityFrameworkCore.EF.CompileQuery(
     (FilesDbContext ctx) =>

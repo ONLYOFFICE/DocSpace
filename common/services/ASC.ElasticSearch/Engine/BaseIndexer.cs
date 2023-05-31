@@ -673,7 +673,7 @@ static class CamelCaseExtension
 }
 
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<WebstudioDbContext, string, Task<DateTime>> GetLastIndexedAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (WebstudioDbContext ctx, string indexName) =>

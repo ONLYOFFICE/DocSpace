@@ -99,7 +99,7 @@ public class NotifyCleanerService : BackgroundService
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyInfo>> GetNotifyInfosAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (NotifyDbContext ctx, DateTime date) =>

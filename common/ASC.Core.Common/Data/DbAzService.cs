@@ -132,7 +132,7 @@ class DbAzService : IAzService
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<bool>> AclAnyAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>

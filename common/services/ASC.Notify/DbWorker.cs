@@ -171,7 +171,7 @@ public class DbWorker : IDisposable
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<NotifyDbContext, Task<int>> ResetStatesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (NotifyDbContext ctx) =>

@@ -338,7 +338,7 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<FeedDbContext, string, Task<DateTime>> GetLastTimeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FeedDbContext ctx, string key) =>

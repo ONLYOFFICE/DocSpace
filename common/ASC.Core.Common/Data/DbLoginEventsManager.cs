@@ -133,7 +133,7 @@ public class DbLoginEventsManager
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<MessagesContext, int, Guid, IEnumerable<int>, DateTime, IAsyncEnumerable<LoginEvent>> GetLoginEventsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (MessagesContext ctx, int tenantId, Guid userId, IEnumerable<int> loginActions, DateTime date) =>

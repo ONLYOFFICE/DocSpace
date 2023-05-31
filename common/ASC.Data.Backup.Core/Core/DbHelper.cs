@@ -296,7 +296,7 @@ public class DbHelper : IDisposable
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<TenantDbContext, Task<DbTenant>> GetLastTenantAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (TenantDbContext ctx) =>

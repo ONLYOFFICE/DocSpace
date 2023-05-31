@@ -118,7 +118,7 @@ internal class LinkDao : AbstractDao, ILinkDao
     }
 }
 
-file static class LinkDaoQueries
+static file class LinkDaoQueries
 {
     public static readonly Func<FilesDbContext, int, string, Guid, Task<string>> GetSourceIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FilesDbContext ctx, int tenantId, string linkedId, Guid id) =>

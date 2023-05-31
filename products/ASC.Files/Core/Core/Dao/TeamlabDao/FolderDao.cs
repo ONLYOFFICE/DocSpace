@@ -1623,7 +1623,7 @@ public class OriginData
     public HashSet<KeyValuePair<string, FileEntryType>> Entries { get; set; }
 }
 
-file static class FolderDaoQueries
+static file class FolderDaoQueries
 {
     public static readonly Func<FilesDbContext, int, int, Task<DbFolderQuery>> GetDbFolderQueryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
         (FilesDbContext ctx, int tenantId, int folderId) =>

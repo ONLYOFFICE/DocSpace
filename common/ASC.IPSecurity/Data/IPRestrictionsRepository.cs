@@ -68,7 +68,7 @@ public class IPRestrictionsRepository
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<TenantDbContext, int, IAsyncEnumerable<TenantIpRestrictions>> GetTenantIpRestrictionsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (TenantDbContext ctx, int tenantId) =>

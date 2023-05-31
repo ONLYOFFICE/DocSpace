@@ -105,7 +105,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<IntegrationEventLogContext, string, IAsyncEnumerable<IntegrationEventLogEntry>> GetIntegrationEventLogEntriesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (IntegrationEventLogContext ctx, string tid) =>

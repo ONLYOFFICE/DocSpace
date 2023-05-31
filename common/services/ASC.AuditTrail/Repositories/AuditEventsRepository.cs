@@ -264,7 +264,7 @@ public static class AuditEventsRepositoryExtensions
     }
 }
 
-file static class AuditEventsRepositoryQueries
+static file class AuditEventsRepositoryQueries
 {
     public static readonly Func<MessagesContext, DateTime?, DateTime?, IAsyncEnumerable<int>> GetTenantsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (MessagesContext ctx, DateTime? from, DateTime? to) =>

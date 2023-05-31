@@ -61,7 +61,7 @@ public class DbRadicale
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<UserDbContext, int, Guid, Task<UserDav>> GetUserDavAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (UserDbContext ctx, int tenantId, Guid userId) =>

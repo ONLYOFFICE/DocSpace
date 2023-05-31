@@ -60,7 +60,7 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<CustomDbContext, string, MobileAppType?, Task<bool>> AnyMobileAppInstallAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (CustomDbContext ctx, string userEmail, MobileAppType? appType) =>

@@ -742,7 +742,7 @@ public class BackupPortalTask : PortalTaskBase
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> GetBackupRecordsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (BackupsContext ctx, int tenantId) =>

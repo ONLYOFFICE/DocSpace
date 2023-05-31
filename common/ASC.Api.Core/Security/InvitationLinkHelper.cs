@@ -180,7 +180,7 @@ public class LinkValidationResult
     public Guid LinkId { get; set; }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<MessagesContext, string, string, Task<AuditEvent>> GetAuditEventsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (MessagesContext ctx, string target, string description) =>

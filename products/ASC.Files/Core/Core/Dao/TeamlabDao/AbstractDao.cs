@@ -192,7 +192,7 @@ public class AbstractDao
     }
 }
 
-file static class AbstractDaoQueries
+static file class AbstractDaoQueries
 {
     public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFolder>> GetFoldersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FilesDbContext ctx, int tenantId, int folderId) =>

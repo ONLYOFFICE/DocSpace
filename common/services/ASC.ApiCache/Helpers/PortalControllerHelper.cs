@@ -95,7 +95,7 @@ public class PortalControllerHelper
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<TeamlabSiteContext, string, Task<DbCache>> GetDbCacheAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (TeamlabSiteContext ctx, string portalName) =>

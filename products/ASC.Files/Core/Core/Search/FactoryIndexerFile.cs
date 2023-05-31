@@ -209,7 +209,7 @@ file class FilesFoldersPair
     public List<DbFolderTree> Folders { get; set; }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<FilesDbContext, DateTime, int> GetMinId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
     (FilesDbContext ctx, DateTime lastIndexed) =>

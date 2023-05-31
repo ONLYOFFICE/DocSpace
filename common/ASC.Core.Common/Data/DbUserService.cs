@@ -720,7 +720,7 @@ public class DbUserSecurity
     public UserSecurity UserSecurity { get; set; }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<UserDbContext, int, Guid, Task<DateTime?>> GetLastModifiedAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (UserDbContext ctx, int tenantId, Guid userId) =>

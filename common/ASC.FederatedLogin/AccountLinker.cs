@@ -167,7 +167,7 @@ public class AccountLinker
     }
 }
 
-file static class AccountLinkerQueries
+static file class AccountLinkerQueries
 {
     public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> GetLinkedObjectsByHashIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (AccountLinkContext ctx, string hashid) =>

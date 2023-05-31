@@ -87,7 +87,7 @@ public class FirebaseDao
 
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<FirebaseDbContext, int, Guid, string, string, Task<FireBaseUser>> GetFireBaseUserAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FirebaseDbContext ctx, int tenantId, Guid userId, string application, string fbDeviceToken) =>

@@ -744,7 +744,7 @@ public static class ProviderAccountDaoExtension
 }
 
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<DbFilesThirdpartyAccount>> GetThirdpartyAccountsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FilesDbContext ctx, int tenantId, Guid userId) =>

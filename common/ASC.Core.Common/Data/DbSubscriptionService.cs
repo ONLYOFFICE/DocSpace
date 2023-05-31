@@ -239,7 +239,7 @@ public class DbSubscriptionService : ISubscriptionService
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<UserDbContext, int, string, string, string, IAsyncEnumerable<string>> GetRecipientsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (UserDbContext ctx, int tenantId, string sourceId, string actionId, string objectId) =>

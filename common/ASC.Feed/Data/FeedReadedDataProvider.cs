@@ -115,7 +115,7 @@ public class FeedReadedDataProvider
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<FeedDbContext, int, Guid, string, Task<DateTime>> GetMaxTimeStampAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (FeedDbContext ctx, int tenantId, Guid userId, string module) =>

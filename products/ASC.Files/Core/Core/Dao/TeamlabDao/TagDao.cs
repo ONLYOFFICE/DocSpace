@@ -851,7 +851,7 @@ public class TagLinkData
     public DbFilesTagLink Link { get; set; }
 }
 
-file static class TagDaoQueries
+static file class TagDaoQueries
 {
     public static readonly Func<FilesDbContext, int, Guid, IEnumerable<TagType>, HashSet<string>, HashSet<string>, IAsyncEnumerable<TagLinkData>> GetTagsQuery = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
         (FilesDbContext ctx, int tenantId, Guid subject, IEnumerable<TagType> tagType, HashSet<string> filesId, HashSet<string> foldersId) =>

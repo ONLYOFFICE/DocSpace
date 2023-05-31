@@ -422,7 +422,7 @@ public class SettingsManager
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<WebstudioDbContext, int, Guid, Guid, Task<string>> GetDataAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (WebstudioDbContext ctx, int tenantId, Guid id, Guid userId) =>

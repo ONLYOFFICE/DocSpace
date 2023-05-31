@@ -447,7 +447,7 @@ public class TenantUserSecurity
     public UserSecurity UserSecurity { get; set; }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<TenantDbContext, Task<int>> GetVersionIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (TenantDbContext ctx) =>

@@ -127,7 +127,7 @@ class DbQuotaService : IQuotaService
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<CoreDbContext, int, Task<DbQuota>> GetQuotaAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (CoreDbContext ctx, int tenantId) =>

@@ -255,7 +255,7 @@ public class DbWorker
     }
 }
 
-file static class Queries
+static file class Queries
 {
     public static readonly Func<WebhooksDbContext, int, string, Task<WebhooksConfig>> GetWebhooksConfigByUriAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (WebhooksDbContext ctx, int tenantId, string uri) =>
