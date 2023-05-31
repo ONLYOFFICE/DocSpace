@@ -36,7 +36,7 @@ const SelectFolderDialog = ({
   };
 
   const footerProps =
-    extension !== "fb2"
+    extension !== "fb2" && onClickCheckbox
       ? {
           footer: (
             <StyledSelectFolder>

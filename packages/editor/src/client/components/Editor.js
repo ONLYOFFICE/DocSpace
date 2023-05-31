@@ -295,7 +295,10 @@ function Editor({
           config.homepage,
           `/doceditor?fileId=${encodeURIComponent(newFile.id)}`
         );
-        window.open(newUrl, "_blank");
+        window.open(
+          newUrl,
+          window.DocSpaceConfig?.editor?.openOnNewPage ? "_blank" : "_self"
+        );
       })
       .catch((e) => {
         toastr.error(e);
@@ -618,7 +621,7 @@ function Editor({
           editorGoBack === "false"
             ? {}
             : {
-                blank: true,
+                blank: window.DocSpaceConfig?.editor?.openOnNewPage ?? true,
                 requestClose: false,
                 text: t("FileLocation"),
                 url: `${combineUrl(origin, backUrl)}`,
@@ -663,7 +666,10 @@ function Editor({
         onRequestCreateNew;
 
       if (successAuth && !user.isVisitor) {
-        if (isDesktopEditor) {
+        if (
+          isDesktopEditor ||
+          window.DocSpaceConfig?.editor?.openOnNewPage === false
+        ) {
           onRequestCreateNew = onSDKRequestCreateNew;
         } else {
           //FireFox security issue fix (onRequestCreateNew will be blocked)
