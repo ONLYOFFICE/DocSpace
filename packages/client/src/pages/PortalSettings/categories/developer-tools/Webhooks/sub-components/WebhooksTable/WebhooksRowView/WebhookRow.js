@@ -6,7 +6,7 @@ import { WebhookRowContent } from "./WebhookRowContent";
 import WebhookDialog from "../../WebhookDialog";
 import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
 
-import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
+import SettingsIcon from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 
