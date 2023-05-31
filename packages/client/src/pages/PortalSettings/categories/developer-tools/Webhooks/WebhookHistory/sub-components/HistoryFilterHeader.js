@@ -5,6 +5,7 @@ import { inject, observer } from "mobx-react";
 import { Base } from "@docspace/components/themes";
 import FilterReactSvrUrl from "PUBLIC_DIR/images/filter.react.svg?url";
 import IconButton from "@docspace/components/icon-button";
+import Text from "@docspace/components/text";
 
 import { useParams } from "react-router-dom";
 import FilterDialog from "./FilterDialog";
@@ -15,12 +16,11 @@ const ListHeader = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 1px;
 `;
 
-const ListHeading = styled.h3`
-  font-size: 16px;
+const ListHeading = styled(Text)`
   line-height: 22px;
-  color: #333333;
   font-weight: 700;
   margin: 0;
 `;
@@ -53,6 +53,8 @@ const FilterButton = styled.div`
   }
 `;
 
+FilterButton.defaultProps = { theme: Base };
+
 const HistoryFilterHeader = (props) => {
   const { applyFilters, historyFilters } = props;
   const { t } = useTranslation(["Webhooks"]);
@@ -71,7 +73,7 @@ const HistoryFilterHeader = (props) => {
   return (
     <div>
       <ListHeader>
-        <ListHeading>
+        <ListHeading fontWeight={700} fontSize="16px">
           {t("Webhook")} {id}
         </ListHeading>
 
@@ -88,8 +90,6 @@ const HistoryFilterHeader = (props) => {
     </div>
   );
 };
-
-FilterButton.defaultProps = { theme: Base };
 
 export default inject(({ webhooksStore }) => {
   const { historyFilters } = webhooksStore;
