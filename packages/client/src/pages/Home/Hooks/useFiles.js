@@ -1,15 +1,16 @@
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import FilesFilter from "@docspace/common/api/files/filter";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import { getGroup } from "@docspace/common/api/groups";
 import { getUserById } from "@docspace/common/api/people";
 
-import { Events } from "@docspace/common/constants";
+import { Events, RoomSearchArea } from "@docspace/common/constants";
 import { getObjectByLocation } from "@docspace/common/utils";
 
-import { getCategoryType } from "SRC_DIR/helpers/utils";
+import { getCategoryType, getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 
 const useFiles = ({
@@ -42,21 +43,29 @@ const useFiles = ({
   gallerySelected,
   removeFirstUrl,
 }) => {
-  const fetchDefaultFiles = () => {
-    const filterObj = FilesFilter.getDefault();
-    const folderId = filterObj.folder;
+  const navigate = useNavigate();
 
-    fetchFiles(folderId).finally(() => {
-      setIsLoading(false);
-      setFirstLoad(false);
-    });
+  const fetchDefaultFiles = () => {
+    const filter = FilesFilter.getDefault();
+
+    const url = getCategoryUrl(CategoryType.personal);
+
+    navigate(`${url}?${filter.toUrlParams()}`);
   };
 
   const fetchDefaultRooms = () => {
-    fetchRooms().finally(() => {
-      setIsLoading(false);
-      setFirstLoad(false);
-    });
+    const filter = RoomsFilter.getDefault();
+
+    const categoryType = getCategoryType(location);
+
+    const url = getCategoryUrl(categoryType);
+
+    filter.searchArea =
+      categoryType === CategoryType.Shared
+        ? RoomSearchArea.Active
+        : RoomSearchArea.Archive;
+
+    navigate(`${url}?${filter.toUrlParams()}`);
   };
 
   const onDrop = (files, uploadToFolder) => {

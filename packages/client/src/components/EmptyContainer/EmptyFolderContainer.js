@@ -43,7 +43,7 @@ const EmptyFolderContainer = ({
   const location = useLocation();
 
   const isRoom =
-    rootFolderType === null
+    rootFolderType === null && location?.state?.rootFolderType
       ? location.state.rootFolderType === FolderType.Archive ||
         location.state.rootFolderType === FolderType.Rooms
       : rootFolderType === FolderType.Archive ||
