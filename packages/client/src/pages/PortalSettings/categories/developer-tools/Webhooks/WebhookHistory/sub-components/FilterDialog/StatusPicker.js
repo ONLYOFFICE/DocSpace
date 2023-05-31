@@ -7,15 +7,19 @@ import Button from "@docspace/components/button";
 import { useTranslation } from "react-i18next";
 
 const RoundedButton = styled(Button)`
+  box-sizing: border-box;
   font-size: 13px;
   font-weight: 400;
+  padding: 13.5px 15px;
 
   border-radius: 16px;
-  margin-right: 8px;
+  margin-right: 7px;
+
+  line-height: 20px;
 `;
 
 const StatusPicker = ({ Selectors, filters, setFilters }) => {
-  const { t } = useTranslation(["Webhooks"]);
+  const { t } = useTranslation(["Webhooks", "People"]);
 
   const StatusCodes = {
     0: "Not sent",
@@ -39,7 +43,7 @@ const StatusPicker = ({ Selectors, filters, setFilters }) => {
   return (
     <>
       <Text fontWeight={600} fontSize="15px">
-        {t("Status")}
+        {t("People:UserStatus")}
       </Text>
       <Selectors>
         <RoundedButton
