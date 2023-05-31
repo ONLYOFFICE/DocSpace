@@ -241,10 +241,10 @@ const Base = {
   },
 
   mainButton: {
-    backgroundColor: orangeMain,
-    disableBackgroundColor: orangeDisabled,
-    hoverBackgroundColor: orangeHover,
-    clickBackgroundColor: orangePressed,
+    backgroundColor: "#4781D1",
+    disableBackgroundColor: "rgb(71, 129, 209, 0.6)",
+    hoverBackgroundColor: "rgb(71, 129, 209, .85)",
+    clickBackgroundColor: "#4074BC",
 
     padding: "5px 14px 5px 12px",
     borderRadius: "3px",
@@ -1300,6 +1300,10 @@ const Base = {
       title: {
         width: "85%",
       },
+    },
+
+    icon: {
+      color: "#657077",
     },
 
     draggable: {
