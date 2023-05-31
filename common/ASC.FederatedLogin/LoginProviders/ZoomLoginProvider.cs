@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using AutoMapper;
+
 using static System.Formats.Asn1.AsnWriter;
 
 namespace ASC.FederatedLogin.LoginProviders;
@@ -37,8 +39,10 @@ public class ZoomLoginProvider : BaseLoginProvider<ZoomLoginProvider>
     public override string ClientSecret => this["zoomClientSecret"];
     public override string CodeUrl => "https://zoom.us/oauth/authorize";
     public override string Scopes => "";
+    public string ApiRedirectUri => this["zoomApiRedirectUrl"];
 
-    private const string UserProfileUrl = "https://api.zoom.us/v2/users/me";
+    public const string ApiUrl = "https://api.zoom.us/v2";
+    private const string UserProfileUrl = $"{ApiUrl}/users/me";
 
     public ZoomLoginProvider() { }
 
@@ -128,7 +132,21 @@ public class ZoomLoginProvider : BaseLoginProvider<ZoomLoginProvider>
             throw new Exception("Login failed");
         }
 
-        return RequestProfile(accessToken);
+        var (loginProfile, _) = RequestProfile(accessToken);
+
+        return loginProfile;
+    }
+
+    public (LoginProfile, ZoomProfile) GetLoginProfileAndRaw(string accessToken)
+    {
+        if (string.IsNullOrEmpty(accessToken))
+        {
+            throw new Exception("Login failed");
+        }
+
+        var (loginProfile, raw) = RequestProfile(accessToken);
+
+        return (loginProfile, raw);
     }
 
     public LoginProfile GetMinimalProfile(string uid)
@@ -140,7 +158,7 @@ public class ZoomLoginProvider : BaseLoginProvider<ZoomLoginProvider>
         };
     }
 
-    internal LoginProfile ProfileFromZoom(string zoomProfile)
+    private (LoginProfile, ZoomProfile) ProfileFromZoom(string zoomProfile)
     {
         var jsonProfile = JsonConvert.DeserializeObject<ZoomProfile>(zoomProfile);
 
@@ -157,18 +175,18 @@ public class ZoomLoginProvider : BaseLoginProvider<ZoomLoginProvider>
             Provider = ProviderConstants.Zoom,
         };
 
-        return profile;
+        return (profile, jsonProfile);
     }
 
-    private LoginProfile RequestProfile(string accessToken)
+    private (LoginProfile, ZoomProfile) RequestProfile(string accessToken)
     {
         var json = _requestHelper.PerformRequest(UserProfileUrl, headers: new Dictionary<string, string> { { "Authorization", "Bearer " + accessToken } });
-        var loginProfile = ProfileFromZoom(json);
+        var (loginProfile, jsonProfile) = ProfileFromZoom(json);
 
-        return loginProfile;
+        return (loginProfile, jsonProfile);
     }
 
-    private class ZoomProfile
+    public class ZoomProfile
     {
         [JsonProperty("id")]
         public string Id { get; set; }

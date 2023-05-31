@@ -561,7 +561,7 @@
 			  "zoomClientSecret": ""
 			},
 			"additional": {
-			  "zoomRedirectUrl" : "https://service.teamlab.info/oauth2.aspx"
+			  "zoomRedirectUrl": "https://service.teamlab.info/oauth2.aspx"
 			}
 		}
 	}
