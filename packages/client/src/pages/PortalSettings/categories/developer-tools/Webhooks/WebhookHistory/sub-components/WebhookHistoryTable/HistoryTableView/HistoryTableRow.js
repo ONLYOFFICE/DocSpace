@@ -9,7 +9,7 @@ import TableRow from "@docspace/components/table-container/TableRow";
 import TableCell from "@docspace/components/table-container/TableCell";
 import Text from "@docspace/components/text";
 import Checkbox from "@docspace/components/checkbox";
-import { StatusBadge } from "../../../../sub-components/StatusBadge";
+import StatusBadge from "../../../../sub-components/StatusBadge";
 
 import toastr from "@docspace/components/toast/toastr";
 
@@ -19,6 +19,10 @@ import InfoIcon from "PUBLIC_DIR/images/info.outline.react.svg?url";
 import { useTranslation } from "react-i18next";
 
 const StyledTableRow = styled(TableRow)`
+  .no-wrap {
+    white-space: nowrap;
+  }
+
   ${(props) =>
     props.isHighlight &&
     css`
@@ -83,7 +87,7 @@ const HistoryTableRow = (props) => {
           <StatusBadge status={item.status} />
         </TableCell>
         <TableCell>
-          <Text fontWeight={600} fontSize="11px">
+          <Text fontWeight={600} fontSize="11px" className="no-wrap">
             {formattedDelivery}
           </Text>
         </TableCell>
