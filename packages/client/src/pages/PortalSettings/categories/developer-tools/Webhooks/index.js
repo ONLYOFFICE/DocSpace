@@ -1,7 +1,7 @@
 import Button from "@docspace/components/button";
 import React, { useState, useEffect } from "react";
 import WebhookDialog from "./sub-components/WebhookDialog";
-import { WebhookInfo } from "./sub-components/WebhookInfo";
+import WebhookInfo from "./sub-components/WebhookInfo";
 import WebhooksTable from "./sub-components/WebhooksTable";
 
 import { inject, observer } from "mobx-react";
@@ -15,6 +15,7 @@ import { useTranslation } from "react-i18next";
 
 const MainWrapper = styled.div`
   width: 100%;
+  margin-top: 5px;
 
   .toggleButton {
     display: flex;
