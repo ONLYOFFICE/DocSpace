@@ -98,14 +98,20 @@ public class RedisCacheNotify<T> : ICacheNotify<T> where T : IMessage<T>, new()
 
     private List<Action<T>> GetInvoctionList(CacheNotifyAction action)
     {
-        if (_invoctionList.TryGetValue(action, out var handlers))
+        var result = new List<Action<T>>();
+
+        foreach (var val in (CacheNotifyAction[])Enum.GetValues(typeof(CacheNotifyAction)))
         {
-            return handlers.ToList();
+            if (!(val == action || Enum.IsDefined(typeof(CacheNotifyAction), (val & action)))) continue;
+
+            if (_invoctionList.TryGetValue(val, out var handlers))
+            {
+                result.AddRange(handlers);
+            }
+
         }
-        else
-        {
-            return new List<Action<T>>();
-        }
+
+        return result;
     }
 
     private void AddToInInvoctionList(Action<T> onChange, CacheNotifyAction action)
