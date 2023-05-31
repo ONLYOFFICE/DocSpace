@@ -65,6 +65,7 @@ const ConflictResolveDialog = (props) => {
     setMoveToPanelVisible,
     setCopyPanelVisible,
     setRestoreAllPanelVisible,
+    setMoveToPublicRoomVisible,
   } = props;
 
   const {
@@ -80,12 +81,16 @@ const ConflictResolveDialog = (props) => {
   const [resolveType, setResolveType] = useState("overwrite");
 
   const onSelectResolveType = (e) => setResolveType(e.target.value);
-  const onClose = () => setConflictResolveDialogVisible(false);
+  const onClose = () => {
+    setMoveToPublicRoomVisible(false);
+    setConflictResolveDialogVisible(false);
+  };
   const onClosePanels = () => {
     setConflictResolveDialogVisible(false);
     setMoveToPanelVisible(false);
     setCopyPanelVisible(false);
     setRestoreAllPanelVisible(false);
+    setMoveToPublicRoomVisible(false);
   };
   const onCloseDialog = () => {
     let newActiveFiles = activeFiles;
@@ -260,6 +265,7 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     setMoveToPanelVisible,
     setRestoreAllPanelVisible,
     setCopyPanelVisible,
+    setMoveToPublicRoomVisible,
   } = dialogsStore;
 
   const { itemOperationToFolder } = uploadDataStore;
@@ -278,6 +284,7 @@ export default inject(({ auth, dialogsStore, uploadDataStore, filesStore }) => {
     setMoveToPanelVisible,
     setRestoreAllPanelVisible,
     setCopyPanelVisible,
+    setMoveToPublicRoomVisible,
   };
 })(
   withTranslation(["ConflictResolveDialog", "Common"])(

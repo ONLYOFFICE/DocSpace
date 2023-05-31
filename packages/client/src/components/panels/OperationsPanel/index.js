@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { RoomsType } from "@docspace/common/constants";
 import { withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
@@ -32,6 +32,8 @@ const OperationsPanelComponent = (props) => {
     thirdPartyMoveDialogVisible,
     setRestoreAllPanelVisible,
     setMovingInProgress,
+    setMoveToPublicRoomVisible,
+    moveToPublicRoomVisible,
   } = props;
 
   const deleteAfter = false; // TODO: get from settings
@@ -56,19 +58,20 @@ const OperationsPanelComponent = (props) => {
     setExpandedPanelKeys(null);
   };
 
-  const onSubmit = (selectedFolder, folderTitle, providerKey) => {
+  const onSubmit = (selectedFolder, folderTitle, providerKey, roomType) => {
     if (!isCopy && currentFolderId === selectedFolder) {
       return;
     }
 
-    if (isCopy) {
-      startOperation(isCopy, selectedFolder, folderTitle);
-    } else {
-      startOperation(isCopy, selectedFolder, folderTitle);
-    }
+    startOperation(isCopy, selectedFolder, folderTitle, roomType);
   };
 
-  const startOperation = async (isCopy, destFolderId, folderTitle) => {
+  const startOperation = async (
+    isCopy,
+    destFolderId,
+    folderTitle,
+    roomType
+  ) => {
     const isProviderFolder = selection.find((x) => !x.providerKey);
     const items =
       isProviderFolder && !isCopy
@@ -110,6 +113,11 @@ const OperationsPanelComponent = (props) => {
       },
     };
 
+    if (roomType === RoomsType.PublicRoom) {
+      setMoveToPublicRoomVisible(true, operationData);
+      return;
+    }
+
     if (!timerId)
       timerId = setTimeout(() => {
         setIsLoading(true);
@@ -141,7 +149,9 @@ const OperationsPanelComponent = (props) => {
 
   // console.log("Operations panel render", expandedKeys);
   const isVisible =
-    conflictResolveDialogVisible || thirdPartyMoveDialogVisible
+    conflictResolveDialogVisible ||
+    thirdPartyMoveDialogVisible ||
+    moveToPublicRoomVisible
       ? false
       : visible;
 
@@ -215,6 +225,8 @@ export default inject(
       thirdPartyMoveDialogVisible,
       restoreAllPanelVisible,
       setRestoreAllPanelVisible,
+      moveToPublicRoomVisible,
+      setMoveToPublicRoomVisible,
     } = dialogsStore;
 
     const selections = isRestore
@@ -254,6 +266,8 @@ export default inject(
       clearActiveOperations,
       thirdPartyMoveDialogVisible,
       setMovingInProgress,
+      moveToPublicRoomVisible,
+      setMoveToPublicRoomVisible,
     };
   }
 )(observer(OperationsPanel));

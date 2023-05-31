@@ -32,6 +32,7 @@ import PortalRenamingDialog from "./PortalRenamingDialog";
 import UnsavedChangesDialog from "./UnsavedChangesDialog";
 import DeleteLinkDialog from "./DeleteLinkDialog";
 import RoomSharingDialog from "./RoomSharingDialog";
+import MoveToPublicRoom from "./MoveToPublicRoom";
 
 export {
   EmptyTrashDialog,
@@ -68,4 +69,5 @@ export {
   UnsavedChangesDialog,
   DeleteLinkDialog,
   RoomSharingDialog,
+  MoveToPublicRoom,
 };

@@ -28,6 +28,8 @@ class DialogsStore {
   convertPasswordDialogVisible = false;
   inviteUsersWarningDialogVisible = false;
   unsavedChangesDialogVisible = false;
+  moveToPublicRoomVisible = false;
+  moveToPublicRoomData = null;
 
   isFolderActions = false;
   roomCreation = false;
@@ -343,6 +345,11 @@ class DialogsStore {
     this.embeddingPanelIsVisible = embeddingPanelIsVisible;
   };
 
+  setMoveToPublicRoomVisible = (visible, data = null) => {
+    this.moveToPublicRoomVisible = visible;
+    this.moveToPublicRoomData = data;
+  };
+
   get someDialogIsOpen() {
     return (
       this.sharingPanelVisible ||
@@ -373,7 +380,8 @@ class DialogsStore {
       this.editLinkPanelIsVisible ||
       this.unsavedChangesDialogVisible ||
       this.deleteLinkDialogVisible ||
-      this.embeddingPanelIsVisible
+      this.embeddingPanelIsVisible ||
+      this.moveToPublicRoomVisible
     );
   }
 

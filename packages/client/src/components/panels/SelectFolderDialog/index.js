@@ -175,11 +175,12 @@ class SelectFolderDialog extends React.Component {
       folderTitle,
       resultingFolderId,
       setSelectedItems,
+      roomType,
     } = this.props;
 
     setSelectedItems();
 
-    onSubmit && onSubmit(resultingFolderId, folderTitle, providerKey);
+    onSubmit && onSubmit(resultingFolderId, folderTitle, providerKey, roomType);
     onSave && onSave(e, resultingFolderId);
     onSetNewFolderPath && onSetNewFolderPath(resultingFolderId);
     onSelectFolder && onSelectFolder(resultingFolderId);
@@ -341,6 +342,7 @@ export default inject(
       toDefault,
       setItemSecurity,
       securityItem,
+      roomType,
     } = selectFolderDialogStore;
 
     const selectedFolderId = selectedId ? selectedId : id;
@@ -350,6 +352,7 @@ export default inject(
       providerKey,
       folderTitle,
       resultingFolderId,
+      roomType,
       setExpandedPanelKeys,
       setResultingFolderId,
       setFolderTitle,
