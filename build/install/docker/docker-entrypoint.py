@@ -25,6 +25,7 @@ MYSQL_PASSWORD = os.environ["MYSQL_PASSWORD"] if environ.get("MYSQL_PASSWORD") e
 
 APP_CORE_BASE_DOMAIN = os.environ["APP_CORE_BASE_DOMAIN"] if environ.get("APP_CORE_BASE_DOMAIN") is not None else "localhost"
 APP_CORE_MACHINEKEY = os.environ["APP_CORE_MACHINEKEY"] if environ.get("APP_CORE_MACHINEKEY") else "your_core_machinekey"
+INSTALLATION_TYPE = os.environ["INSTALLATION_TYPE"].upper() if environ.get("INSTALLATION_TYPE") else "ENTERPRISE"
 APP_URL_PORTAL = os.environ["APP_URL_PORTAL"] if environ.get("APP_URL_PORTAL") else "http://" + ROUTER_HOST + ":8092"
 APP_STORAGE_ROOT = os.environ["APP_STORAGE_ROOT"] if environ.get("APP_STORAGE_ROOT") else BASE_DIR + "/data/"
 APP_KNOWN_PROXIES = os.environ["APP_KNOWN_PROXIES"]
@@ -147,6 +148,8 @@ updateJsonData(jsonData,"$.files.docservice.url.public", DOCUMENT_SERVER_URL_PUB
 updateJsonData(jsonData,"$.files.docservice.url.internal", DOCUMENT_SERVER_URL_INTERNAL)
 updateJsonData(jsonData,"$.files.docservice.secret.value", DOCUMENT_SERVER_JWT_SECRET)
 updateJsonData(jsonData,"$.files.docservice.secret.header", DOCUMENT_SERVER_JWT_HEADER)
+if INSTALLATION_TYPE == "ENTERPRISE":
+    updateJsonData(jsonData, "$.license.file.path", "/app/onlyoffice/data/license.lic")
 
 ip_address = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('addr')
 netmask = netifaces.ifaddresses('eth0').get(netifaces.AF_INET)[0].get('netmask')

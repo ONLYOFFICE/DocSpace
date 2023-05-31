@@ -956,6 +956,7 @@ download_files () {
 	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
+	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
 	
 	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
 	reconfigure MYSQL_USER ${MYSQL_USER}
