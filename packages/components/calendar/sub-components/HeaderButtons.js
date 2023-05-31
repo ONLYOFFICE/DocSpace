@@ -1,6 +1,6 @@
 import React from "react";
 import { ButtonsContainer, ArrowIcon } from "../styled-components";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 export const HeaderButtons = ({
   onLeftClick,

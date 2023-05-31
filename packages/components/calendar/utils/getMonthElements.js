@@ -1,6 +1,6 @@
 import React from "react";
 import moment from "moment";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const onDateClick = (dateString, setObservedDate, setSelectedScene) => {
   setObservedDate((prevObservedDate) =>

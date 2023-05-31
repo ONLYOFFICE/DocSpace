@@ -2,7 +2,7 @@ import React from "react";
 import moment from "moment";
 
 import { getCalendarDays } from "./getCalendarDays";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const onDateClick = (handleDateChange, newDate) => {
   handleDateChange(moment(newDate));
