@@ -129,7 +129,10 @@ export const openDocEditor = async (
   if (tab) {
     url ? (tab.location = url) : tab.close();
   } else {
-    window.open(url, "_blank");
+    window.open(
+      url,
+      window.DocSpaceConfig?.editor?.openOnNewPage ? "_blank" : "_self"
+    );
   }
 
   return Promise.resolve();

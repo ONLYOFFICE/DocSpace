@@ -241,6 +241,12 @@ const withDialogs = (WrappedComponent) => {
     };
 
     const onClickCheckbox = () => {
+      if (
+        typeof window !== "undefined" &&
+        window.DocSpaceConfig?.editor?.openOnNewPage === false
+      )
+        return;
+
       setNewOpenTab(!openNewTab);
     };
 
@@ -281,7 +287,12 @@ const withDialogs = (WrappedComponent) => {
         onClickSaveSelectFolder={onClickSaveSelectFolder}
         titleSelectorFolder={titleSelectorFolder}
         onChangeInput={onChangeInput}
-        onClickCheckbox={onClickCheckbox}
+        onClickCheckbox={
+          typeof window !== "undefined" &&
+          window.DocSpaceConfig?.editor?.openOnNewPage === false
+            ? undefined
+            : onClickCheckbox
+        }
         openNewTab={openNewTab}
         mfReady={mfReady}
       />
