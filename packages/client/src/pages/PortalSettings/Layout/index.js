@@ -6,6 +6,10 @@ import { inject, observer } from "mobx-react";
 import Section from "@docspace/common/components/Section";
 import withLoading from "SRC_DIR/HOCs/withLoading";
 //import commonIconsStyles from "@docspace/components/utils/common-icons-style";
+
+import HistoryHeader from "../categories/developer-tools/Webhooks/WebhookHistory/sub-components/HistoryHeader";
+import DetailsNavigationHeader from "../categories/developer-tools/Webhooks/WebhookEventDetails/sub-components/DetailsNavigationHeader";
+
 const ArticleSettings = React.memo(() => {
   return (
     <Article>
@@ -26,21 +30,28 @@ const Layout = ({
   language,
   children,
   addUsers,
-  isTitleVisible,
+  titleType,
 }) => {
   useEffect(() => {
     currentProductId !== "settings" && setCurrentProductId("settings");
   }, [language, currentProductId, setCurrentProductId]);
 
+  const isTitleHistory = titleType === "history";
+  const isTitleDetails = titleType === "details";
+
   return (
     <>
       <ArticleSettings />
       <Section withBodyScroll={true} settingsStudio={true}>
-        {isTitleVisible && (
-          <Section.SectionHeader>
+        <Section.SectionHeader>
+          {isTitleHistory ? (
+            <HistoryHeader />
+          ) : isTitleDetails ? (
+            <DetailsNavigationHeader />
+          ) : (
             <SectionHeaderContent />
-          </Section.SectionHeader>
-        )}
+          )}
+        </Section.SectionHeader>
 
         <Section.SectionBody>{children}</Section.SectionBody>
         {addUsers && (
@@ -56,12 +67,12 @@ const Layout = ({
 export default inject(({ auth, setup, webhooksStore }) => {
   const { language, settingsStore } = auth;
   const { addUsers } = setup.headerAction;
-  const { isTitleVisible } = webhooksStore;
+  const { titleType } = webhooksStore;
 
   return {
     language,
     setCurrentProductId: settingsStore.setCurrentProductId,
     addUsers,
-    isTitleVisible,
+    titleType,
   };
 })(withLoading(observer(Layout)));
