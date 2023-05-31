@@ -8,19 +8,27 @@ import { NoBoxShadowToast } from "../../../styled-components";
 import toastr from "@docspace/components/toast/toastr";
 
 import ToggleButton from "@docspace/components/toggle-button";
-import SettingsIcon from "PUBLIC_DIR/images/settings.webhooks.react.svg?url";
+import SettingsIcon from "PUBLIC_DIR/images/catalog.settings.react.svg?url";
 import HistoryIcon from "PUBLIC_DIR/images/history.react.svg?url";
 import DeleteIcon from "PUBLIC_DIR/images/delete.react.svg?url";
 import WebhookDialog from "../../WebhookDialog";
 import { DeleteWebhookDialog } from "../../DeleteWebhookDialog";
-import { StatusBadge } from "../../StatusBadge";
+import StatusBadge from "../../StatusBadge";
 
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 const StyledTableRow = styled(TableRow)`
+  .table-container_cell {
+    padding-right: 30px;
+    text-overflow: ellipsis;
+  }
+
   .mr-8 {
     margin-right: 8px;
+  }
+  .no-wrap {
+    white-space: nowrap;
   }
 `;
 
@@ -81,7 +89,7 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
     <>
       <StyledTableRow contextOptions={contextOptions}>
         <TableCell>
-          <Text as="span" fontWeight={600} className="mr-8">
+          <Text as="span" fontWeight={600} className="mr-8 no-wrap">
             {webhook.name}{" "}
           </Text>
           <StatusBadge status={webhook.status} />
