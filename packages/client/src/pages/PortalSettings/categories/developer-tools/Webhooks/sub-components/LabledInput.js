@@ -24,10 +24,11 @@ export const LabledInput = ({
   name,
   mask,
   hasError,
+  className,
   required = false,
 }) => {
   return (
-    <StyledLabel text={label}>
+    <StyledLabel text={label} className={className}>
       <TextInput
         name={name}
         placeholder={placeholder}
