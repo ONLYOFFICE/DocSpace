@@ -5,7 +5,7 @@ import Text from "@docspace/components/text";
 import RowContent from "@docspace/components/row-content";
 import ToggleButton from "@docspace/components/toggle-button";
 
-import { StatusBadge } from "../../StatusBadge";
+import StatusBadge from "../../StatusBadge";
 
 import { isMobileOnly } from "react-device-detect";
 
