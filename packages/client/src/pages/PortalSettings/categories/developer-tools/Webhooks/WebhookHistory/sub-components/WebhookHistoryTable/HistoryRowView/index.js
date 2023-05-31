@@ -8,6 +8,8 @@ import { useParams } from "react-router-dom";
 import RowContainer from "@docspace/components/row-container";
 import HistoryRow from "./HistoryRow";
 
+import { Base } from "@docspace/components/themes";
+
 const StyledRowContainer = styled(RowContainer)`
   margin-top: 11px;
 
@@ -16,9 +18,11 @@ const StyledRowContainer = styled(RowContainer)`
   }
 
   .row-list-item:has(.selected-row-item) {
-    background-color: #f3f4f4;
+    background-color: ${(props) => (props.theme.isBase ? "#f3f4f4" : "#282828")};
   }
 `;
+
+StyledRowContainer.defaultProps = { theme: Base };
 
 const HistoryRowView = (props) => {
   const {
