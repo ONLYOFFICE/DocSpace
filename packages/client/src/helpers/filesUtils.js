@@ -108,18 +108,25 @@ export const openDocEditor = async (
   providerKey = null,
   tab = null,
   url = null,
-  isPrivacy
+  isPrivacy,
+  shareKey = null
 ) => {
-  if (!providerKey && id && !isPrivacy) {
+  if (!providerKey && id && !isPrivacy && !shareKey) {
     await addFileToRecent(id);
   }
+
+  const share = shareKey ? `&share=${shareKey}` : "";
 
   if (!url && id) {
     url = combineUrl(
       window.DocSpaceConfig?.proxy?.url,
       config.homepage,
-      `/doceditor?fileId=${encodeURIComponent(id)}`
+      `/doceditor?fileId=${encodeURIComponent(id)}${share}`
     );
+  }
+
+  if (shareKey) {
+    url += share;
   }
 
   if (tab) {

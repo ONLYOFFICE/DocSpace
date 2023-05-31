@@ -2155,7 +2155,11 @@ class FilesStore {
   };
 
   addFileToRecentlyViewed = (fileId) => {
-    if (this.treeFoldersStore.isPrivacyFolder) return Promise.resolve();
+    if (
+      this.treeFoldersStore.isPrivacyFolder ||
+      this.publicRoomStore.isPublicRoom
+    )
+      return Promise.resolve();
     return api.files.addFileToRecentlyViewed(fileId);
   };
 
@@ -2808,12 +2812,8 @@ class FilesStore {
   }
 
   get cbMenuItems() {
-    const {
-      isDocument,
-      isPresentation,
-      isSpreadsheet,
-      isArchive,
-    } = this.filesSettingsStore;
+    const { isDocument, isPresentation, isSpreadsheet, isArchive } =
+      this.filesSettingsStore;
 
     let cbMenu = ["all"];
     const filesItems = [...this.files, ...this.folders];
@@ -3241,7 +3241,15 @@ class FilesStore {
     }
 
     const isPrivacy = this.treeFoldersStore.isPrivacyFolder;
-    return openEditor(id, providerKey, tab, url, isPrivacy);
+
+    return openEditor(
+      id,
+      providerKey,
+      tab,
+      url,
+      isPrivacy,
+      this.publicRoomStore.publicKey
+    );
   };
 
   createThumbnails = async () => {

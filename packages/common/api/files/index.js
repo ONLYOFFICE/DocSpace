@@ -7,7 +7,7 @@ import { checkFilterInstance, decodeDisplayName } from "../../utils";
 import { getRooms } from "../rooms";
 import RoomsFilter from "../rooms/filter";
 
-export function openEdit(fileId, version, doc, view) {
+export function openEdit(fileId, version, doc, view, shareKey) {
   const params = []; // doc ? `?doc=${doc}` : "";
 
   if (view) {
@@ -20,6 +20,10 @@ export function openEdit(fileId, version, doc, view) {
 
   if (doc) {
     params.push(`doc=${doc}`);
+  }
+
+  if (shareKey) {
+    params.push(`share=${shareKey}`);
   }
 
   const paramsString = params.length > 0 ? `?${params.join("&")}` : "";
