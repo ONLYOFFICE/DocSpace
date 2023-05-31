@@ -15,8 +15,8 @@ import SSOLoader from "./sub-components/ssoLoader";
 import { useTranslation } from "react-i18next";
 
 const DeveloperToolsWrapper = (props) => {
-  const { loadBaseInfo } = props;
-  const [currentTab, setCurrentTab] = useState(0);
+  const { loadBaseInfo, developerToolsTab, setTab } = props;
+  const [currentTab, setCurrentTab] = useState(developerToolsTab);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -25,12 +25,12 @@ const DeveloperToolsWrapper = (props) => {
   const data = [
     {
       id: "javascript-sdk",
-      name: t("JavascriptSdk", { ns: "JavascriptSdk" }),
+      name: t("JavascriptSdk"),
       content: <JavascriptSDK />,
     },
     {
       id: "webhooks",
-      name: t("Webhooks", { ns: "Webhooks" }),
+      name: t("Webhooks:Webhooks"),
       content: <Webhooks />,
     },
   ];
@@ -43,7 +43,10 @@ const DeveloperToolsWrapper = (props) => {
   useEffect(() => {
     const path = location.pathname;
     const currentTab = data.findIndex((item) => path.includes(item.id));
-    if (currentTab !== -1) setCurrentTab(currentTab);
+    if (currentTab !== -1) {
+      setCurrentTab(currentTab);
+      setTab(currentTab);
+    }
 
     load();
   }, []);
@@ -63,12 +66,15 @@ const DeveloperToolsWrapper = (props) => {
   return <Submenu data={data} startSelect={currentTab} onSelect={onSelect} />;
 };
 
-export default inject(({ setup }) => {
+export default inject(({ setup, webhooksStore }) => {
   const { initSettings } = setup;
+  const { developerToolsTab, setTab } = webhooksStore;
 
   return {
     loadBaseInfo: async () => {
       await initSettings();
     },
+    developerToolsTab,
+    setTab,
   };
 })(observer(DeveloperToolsWrapper));
