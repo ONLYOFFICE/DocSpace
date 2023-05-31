@@ -50,7 +50,7 @@ const ssoStore = new SsoFormStore();
 
 const tagsStore = new TagsStore();
 
-const treeFoldersStore = new TreeFoldersStore(selectedFolderStore);
+const treeFoldersStore = new TreeFoldersStore(selectedFolderStore, authStore);
 const settingsStore = new SettingsStore(thirdPartyStore, treeFoldersStore);
 
 const accessRightsStore = new AccessRightsStore(authStore, selectedFolderStore);

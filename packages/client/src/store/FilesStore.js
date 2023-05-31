@@ -183,6 +183,8 @@ class FilesStore {
           this.selectedFolderStore.foldersCount--;
         this.authStore.infoPanelStore.reloadSelection();
       }
+
+      this.treeFoldersStore.updateTreeFoldersItem(opt);
     });
 
     socketHelper.on("refresh-folder", (id) => {
@@ -589,8 +591,11 @@ class FilesStore {
 
   clearFiles = (isEmpty) => {
     this.setIsEmptyPage(isEmpty);
-    this.setFolders([]);
-    this.setFiles([]);
+    console.log(isEmpty);
+    if (isEmpty) {
+      this.setFolders([]);
+      this.setFiles([]);
+    }
     this.selectedFolderStore.setSelectedFolder(null);
   };
 

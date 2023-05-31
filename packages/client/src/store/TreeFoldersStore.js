@@ -4,6 +4,7 @@ import { FolderType } from "@docspace/common/constants";
 
 class TreeFoldersStore {
   selectedFolderStore;
+  authStore;
 
   treeFolders = [];
   selectedTreeNode = [];
@@ -11,16 +12,65 @@ class TreeFoldersStore {
   rootFoldersTitles = {};
   isLoadingNodes = false;
 
-  constructor(selectedFolderStore) {
+  constructor(selectedFolderStore, authStore) {
     makeAutoObservable(this);
+
     this.selectedFolderStore = selectedFolderStore;
+    this.authStore = authStore;
   }
 
   fetchTreeFolders = async () => {
     const treeFolders = await getFoldersTree();
     this.setRootFoldersTitles(treeFolders);
     this.setTreeFolders(treeFolders);
+    this.listenTreeFolders(treeFolders);
     return treeFolders;
+  };
+
+  listenTreeFolders = (treeFolders) => {
+    const { socketHelper } = this.authStore.settingsStore;
+
+    if (treeFolders.length > 0) {
+      socketHelper.emit({
+        command: "unsubscribe",
+        data: {
+          roomParts: treeFolders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
+
+      socketHelper.emit({
+        command: "subscribe",
+        data: {
+          roomParts: treeFolders.map((f) => `DIR-${f.id}`),
+          individual: true,
+        },
+      });
+    }
+  };
+
+  updateTreeFoldersItem = (opt) => {
+    const data = JSON.parse(opt?.data);
+
+    const parentId = opt?.type === "file" ? data.folderId : data.parentId;
+
+    const idx = this.treeFolders.findIndex((f) => f.id === parentId);
+
+    if (idx > 0) {
+      if (opt.type === "file") {
+        if (opt?.cmd === "create") {
+          this.treeFolders[idx].filesCount++;
+        } else if (opt?.cmd === "delete") {
+          this.treeFolders[idx].filesCount--;
+        }
+      } else {
+        if (opt?.cmd === "create") {
+          this.treeFolders[idx].foldersCount++;
+        } else if (opt?.cmd === "delete") {
+          this.treeFolders[idx].foldersCount--;
+        }
+      }
+    }
   };
 
   resetTreeItemCount = () => {
