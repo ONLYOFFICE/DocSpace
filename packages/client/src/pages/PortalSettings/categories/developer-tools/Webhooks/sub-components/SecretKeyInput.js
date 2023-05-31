@@ -3,6 +3,7 @@ import styled from "styled-components";
 
 import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
 import Link from "@docspace/components/link";
+import Label from "@docspace/components/label";
 
 import { Hint } from "../styled-components";
 
@@ -11,17 +12,23 @@ import { inject, observer } from "mobx-react";
 
 import { useTranslation } from "react-i18next";
 
-const Header = styled.h1`
-  font-family: "Open Sans";
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 20px;
+const SecretKeyWrapper = styled.div`
+  .link {
+    display: inline-block;
+    margin-top: 6px;
+  }
 
+  .dotted {
+    text-decoration: underline dotted;
+  }
+`;
+
+const Header = styled.p`
   margin-top: 20px;
 
-  color: #333333;
-  display: flex;
+  display: block;
   align-items: center;
+  margin-bottom: 5px;
 
   img {
     margin-left: 4px;
@@ -34,16 +41,6 @@ const StyledInfoIcon = styled.img`
   }
 `;
 
-const ReadMore = styled.a`
-  display: inline-block;
-  margin-top: 10px;
-  font-family: "Open Sans";
-  font-weight: 600;
-  font-size: 13px;
-  line-height: 15px;
-  color: #333333;
-`;
-
 const SecretKeyInput = (props) => {
   const {
     isResetVisible,
@@ -54,6 +51,8 @@ const SecretKeyInput = (props) => {
     isPasswordValid,
     setIsPasswordValid,
     setIsResetVisible,
+    webhooksGuideUrl,
+    passwordInputKey,
   } = props;
 
   const [isHintVisible, setIsHintVisible] = useState(false);
@@ -91,59 +90,75 @@ const SecretKeyInput = (props) => {
   }, [isResetVisible]);
 
   return (
-    <div>
-      <Header>
-        {t("SecretKey")} <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
-      </Header>
-
-      <Hint isTooltip hidden={!isHintVisible} onClick={handleHintDisapear}>
-        {t("SecretKeyHint")} <br />
-        <ReadMore href="">{t("ReadMore")}</ReadMore>
-      </Hint>
-      {isResetVisible && (
-        <Hint>
-          {t("SecretKeyWarning")} <br />
+    <SecretKeyWrapper>
+      <Label
+        text={
+          <Header>
+            {t("SecretKey")} <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+          </Header>
+        }
+        fontWeight={600}>
+        <Hint isTooltip hidden={!isHintVisible} onClick={handleHintDisapear}>
+          {t("SecretKeyHint")} <br />
+          <Link
+            type="page"
+            isHovered
+            fontWeight={600}
+            href={webhooksGuideUrl}
+            target="_blank"
+            className="link"
+            color="#333333">
+            {t("ReadMore")}
+          </Link>
+        </Hint>
+        {isResetVisible && (
+          <Hint>
+            {t("SecretKeyWarning")} <br />
+            <Link
+              type="action"
+              fontWeight={600}
+              isHovered={true}
+              onClick={hideReset}
+              className="link"
+              color="#333333">
+              {t("ResetKey")}
+            </Link>
+          </Hint>
+        )}
+        <div hidden={isResetVisible}>
+          <PasswordInput
+            onChange={handleOnChange}
+            inputValue={value}
+            inputName={name}
+            placeholder={t("EnterSecretKey")}
+            onValidateInput={handleInputValidation}
+            ref={secretKeyInputRef}
+            hasError={!isPasswordValid}
+            isDisableTooltip={true}
+            inputType="password"
+            isFullWidth={true}
+            passwordSettings={passwordSettings}
+            key={passwordInputKey}
+          />
           <Link
             type="action"
             fontWeight={600}
             isHovered={true}
-            onClick={hideReset}
-            style={{ marginTop: "6px", display: "inline-block" }}>
-            {t("ResetKey")}
+            onClick={generatePassword}
+            className="link dotted">
+            {t("Generate")}
           </Link>
-        </Hint>
-      )}
-      <div hidden={isResetVisible}>
-        <PasswordInput
-          onChange={handleOnChange}
-          value={value}
-          inputName={name}
-          placeholder={t("EnterSecretKey")}
-          onValidateInput={handleInputValidation}
-          ref={secretKeyInputRef}
-          hasError={!isPasswordValid}
-          isDisableTooltip={true}
-          inputType="password"
-          isFullWidth={true}
-          passwordSettings={passwordSettings}
-        />
-        <Link
-          type="action"
-          fontWeight={600}
-          isHovered={true}
-          onClick={generatePassword}
-          style={{ marginTop: "6px", display: "inline-block" }}>
-          {t("Generate")}
-        </Link>
-      </div>
-    </div>
+        </div>
+      </Label>
+    </SecretKeyWrapper>
   );
 };
 
 export default inject(({ settingsStore }) => {
-  const { passwordSettings } = settingsStore;
+  const { webhooksGuideUrl, passwordSettings } = settingsStore;
 
   return {
     passwordSettings,
+    webhooksGuideUrl,
   };
 })(observer(SecretKeyInput));
