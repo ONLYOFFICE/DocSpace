@@ -21,8 +21,8 @@ export default {
     options: {
       control: {
         type: "multi-select",
-        options: ["radio1", "radio2", "radio3"],
       },
+      options: ["radio1", "radio2", "radio3"],
     },
     onClick: {
       cation: "onClick",

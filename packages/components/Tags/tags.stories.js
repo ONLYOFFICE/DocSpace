@@ -16,5 +16,5 @@ Default.args = {
   className: "",
   columnCount: 2,
   style: {},
-  onSelectTag: (tags) => console.log(tags),
+  onSelectTag: (tags) => {},
 };

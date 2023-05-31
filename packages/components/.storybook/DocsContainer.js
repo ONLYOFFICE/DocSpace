@@ -1,5 +1,5 @@
 import React from "react";
-import { DocsContainer as BaseContainer } from "@storybook/addon-docs/blocks";
+import { DocsContainer as BaseContainer } from "@storybook/blocks";
 import { themes } from "@storybook/theming";
 
 export const DocsContainer = ({ children, context }) => {

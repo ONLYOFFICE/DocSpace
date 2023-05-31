@@ -26,14 +26,10 @@ const Template = (args) => {
         text={args.text}
         showText={args.showText}
         showBadge={args.showBadge}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
         isEndOfBlock={args.isEndOfBlock}
         labelBadge={args.labelBadge}
-        onClickBadge={() => {
-          console.log("clicked badge");
-        }}
+        onClickBadge={() => {}}
       />
     </div>
   );
@@ -88,9 +84,7 @@ const InitialIcon = () => {
         showText={false}
         showBadge={false}
         showInitial={true}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
       />
     </div>
   );
@@ -122,27 +116,19 @@ const TwoItem = () => {
         text={"My documents"}
         showText={true}
         showBadge={true}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
         isEndOfBlock={true}
         labelBadge={3}
-        onClickBadge={() => {
-          console.log("clicked badge");
-        }}
+        onClickBadge={() => {}}
       />
       <CatalogItem
         icon={CatalogFolderReactSvgUrl}
         text={"Some text"}
         showText={true}
         showBadge={true}
-        onClick={() => {
-          console.log("clicked item");
-        }}
+        onClick={() => {}}
         iconBadge={CatalogTrashReactSvgUrl}
-        onClickBadge={() => {
-          console.log("clicked badge");
-        }}
+        onClickBadge={() => {}}
       />
     </div>
   );

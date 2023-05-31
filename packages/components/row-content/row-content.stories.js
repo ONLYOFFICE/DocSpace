@@ -21,8 +21,8 @@ const Template = (args) => {
           Demo
         </Link>
         <>
-          <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
-          <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
+          <SendClockReactSvg size="small" color="#3B72A7" />
+          <CatalogSpamReactSvg size="small" color="#3B72A7" />
         </>
         <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
           Demo
@@ -54,7 +54,7 @@ const Template = (args) => {
           Demo Demo
         </Link>
         <>
-          <CatalogSpamReactSvg size="small" isfill={true} color="#3B72A7" />
+          <CatalogSpamReactSvg size="small" color="#3B72A7" />
         </>
         <></>
         <Link
@@ -117,7 +117,7 @@ const Template = (args) => {
           Demo Demo Demo Demo
         </Link>
         <>
-          <SendClockReactSvg size="small" isfill={true} color="#3B72A7" />
+          <SendClockReactSvg size="small" color="#3B72A7" />
         </>
         <Link type="page" title="Demo" fontSize="12px" color="#A3A9AE">
           Demo

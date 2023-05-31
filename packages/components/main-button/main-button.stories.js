@@ -11,10 +11,6 @@ export default {
 };
 
 const Template = ({ onAction, clickItem, ...args }) => {
-  const clickMainButtonHandler = (e, credentials) => {
-    onAction(e, credentials);
-  };
-
   const itemsModel = [
     {
       key: 0,
@@ -64,11 +60,7 @@ const Template = ({ onAction, clickItem, ...args }) => {
 
   return (
     <div style={{ width: "280px" }}>
-      <MainButton
-        {...args}
-        onAction={clickMainButtonHandler}
-        model={itemsModel}
-      ></MainButton>
+      <MainButton {...args} model={itemsModel}></MainButton>
     </div>
   );
 };
