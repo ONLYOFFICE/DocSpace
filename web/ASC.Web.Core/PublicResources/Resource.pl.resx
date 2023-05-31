@@ -110,13 +110,13 @@
     <value>Pole e-mail jest puste</value>
   </data>
   <data name="ErrorEmailsAreTheSame" xml:space="preserve">
-    <value>Obecny e-mail jest zbieżny z nowym adresem e-mail.</value>
+    <value>Obecny e-mail jest zbieżny z nowym adresem e-mail</value>
   </data>
   <data name="ErrorEmptyFields" xml:space="preserve">
     <value>Proszę wypełnić wszystkie pola</value>
   </data>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Przesłany plik nie został znaleziony.</value>
+    <value>Przesłany plik nie został znaleziony</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
     <value>Rozmiar obrazka jest zbyt duży</value>
@@ -152,16 +152,16 @@
     <value>wielkie litery</value>
   </data>
   <data name="ErrorUserNotFound" xml:space="preserve">
-    <value>Użytkownik nie został odnaleziony.</value>
+    <value>Użytkownik nie został odnaleziony</value>
   </data>
   <data name="ErrorUserNotFoundByEmail" xml:space="preserve">
-    <value>Użytkownik z adresem e-mail "{0}" nie został odnaleziony.</value>
+    <value>Użytkownik z adresem e-mail "{0}" nie został odnaleziony</value>
   </data>
   <data name="EuServerRegion" xml:space="preserve">
     <value>Region UE (Frankfurt)</value>
   </data>
   <data name="FileSizeMaxExceed" xml:space="preserve">
-    <value>Maksymalny rozmiar pliku został przekroczony.</value>
+    <value>Maksymalny rozmiar pliku został przekroczony</value>
   </data>
   <data name="FileSizeNote" xml:space="preserve">
     <value>Uwaga: rozmiar pliku nie może przekroczyć {1}{0}{2}</value>
@@ -170,7 +170,7 @@
     <value>bajty,kB,MB,GB</value>
   </data>
   <data name="FinishInviteJoinEmailMessage" xml:space="preserve">
-    <value>Link potwierdzający założenie konta został wysłany na podany e-mail.</value>
+    <value>Link potwierdzający założenie konta został wysłany na podany e-mail</value>
   </data>
   <data name="FirstName" xml:space="preserve">
     <value>Imię</value>
@@ -293,7 +293,7 @@
     <value>Licencja nie jest poprawna</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licencja wygasła</value>
+    <value>Licencja wygasła.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>Liczba portali przekracza dozwoloną liczbę licencji</value>
@@ -356,10 +356,10 @@
     <value>Nieprawidłowe mapowanie pól</value>
   </data>
   <data name="SuccessfullySaveGreetingSettingsMessage" xml:space="preserve">
-    <value>Ustawienie powitania pozostaje puste.</value>
+    <value>Ustawienie powitania pozostaje puste</value>
   </data>
   <data name="SuccessfullySaveSettingsMessage" xml:space="preserve">
-    <value>Ustawienia zostały zaktualizowane.</value>
+    <value>Ustawienia zostały zaktualizowane</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
     <value>Instrukcje dotyczące usunięcia profilu zostały wysłane na {0} twój adres e-mail</value>
@@ -368,6 +368,228 @@
     <value>Region Stanów Zjednoczonych (Oregon)</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
-    <value>Co nowego?</value>
+    <value>Co nowego</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Śledzenie logowań i działań użytkowników</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Maksymalny rozmiar pliku</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>Rozmiar pliku nie powinien być większy niż {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>Liczba administratorów nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Liczba administratorów</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Automatyczne tworzenie kopii zapasowych i przywracanie</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Nieograniczona liczba aktywnych pokoi</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>Liczba pokoi nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>Pamięć: {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>Ilość zużytej pamięci nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Pamięć</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Pokoje:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Zużyta pamięć:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Liczba użytkowników w pokoju:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Nieograniczona liczba użytkowników</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>Liczba użytkowników nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Użytkownicy w pokoju</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>Liczba użytkowników w pokoju nie powinna być większa niż {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Branding i personalizacja</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>Zaloguj Się</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Połącz usługę Bitly w celu skrócenia linków do ogłoszeń i współdzielonych łączy w module Dokumenty.</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Box Klucz</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Podłącz aplikację do zarządzania plikami i folderami.</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Włącz aplikację do uwierzytelniania dwuczęściowego za pomocą narzędzia Clickatell.</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>Klucz DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Podłącz aplikację, aby dodać dokument elektroniczny DocuSign do dokumentów.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Punkt końcowy uwierzytelniania DocuSign</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Podłącz aplikację do zarządzania plikami i folderami programu Dropbox.</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Podłącz aplikację do logowania się do portalu za pomocą konta Facebook.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Klucz Facebook</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Klucz Web API</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Klucz serwera</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Połącz usługę Message Cloud Message dla Firebase, aby otrzymywać powiadomienia o wiadomościach wysyłanych do Ciebie.</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Tajny klucz DocuSign</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>Identyfikator nadawcy</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID projektu</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Połącz projekt, aby zalogować się do portalu za pomocą konta Google i zarządzać plikami i folderami na Dysku Google.</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Podłącz aplikację do logowania się do portalu za pomocą konta LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Klucz do Linkedin</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Podłączanie aplikacji do zarządzania plikami i folderami OneDrive.</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Włącz aplikację do uwierzytelniania dwufunkcyjnego za pośrednictwem Centrum SMS.</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Hasło lub hasło MD5 hash w małych</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Dodaj Twilio do zadzwonienia do kontaktów CRM bezpośrednio z przeglądarki.</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Numer telefonu z Twilio (wymagany do autoryzacji SMS)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Podłącz aplikację do logowania się do portalu za pomocą konta Twitter i wyszukaj kontakty.</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Włącz aplikację dla importu kontaktów Yahoo.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Nieznany typ pliku graficznego</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Rozmiar obrazu przekracza dozwolone parametry</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>DropBox Klucz</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Google klucz</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Zaloguj Się</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Konto Sid</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Hasło</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Biznes</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
   </data>
 </root>

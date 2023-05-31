@@ -128,6 +128,7 @@ class FilesStore {
 
   highlightFile = {};
   thumbnails = new Set();
+  movingInProgress = false;
 
   constructor(
     authStore,
@@ -909,9 +910,9 @@ class FilesStore {
     return newSelection;
   };
 
-  setSelected = (selected) => {
+  setSelected = (selected, clearBuffer = true) => {
     if (selected === "close" || selected === "none") {
-      this.setBufferSelection(null);
+      clearBuffer && this.setBufferSelection(null);
       this.setHotkeyCaretStart(null);
       this.setHotkeyCaret(null);
     }
@@ -1149,13 +1150,10 @@ class FilesStore {
     clearSelection = true
   ) => {
     const { setSelectedNode } = this.treeFoldersStore;
-
     if (this.isLoading) {
       this.roomsController.abort();
       this.roomsController = new AbortController();
     }
-
-    this.scrollToTop();
 
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
@@ -1228,6 +1226,7 @@ class FilesStore {
           if (filter && isEmptyList) {
             const {
               authorType,
+              roomId,
               search,
               withSubfolders,
               filterType,
@@ -1235,6 +1234,7 @@ class FilesStore {
             } = filter;
             const isFiltered =
               authorType ||
+              roomId ||
               search ||
               !withSubfolders ||
               filterType ||
@@ -3277,6 +3277,10 @@ class FilesStore {
     this.trashIsEmpty = isEmpty;
   };
 
+  setMovingInProgress = (movingInProgress) => {
+    this.movingInProgress = movingInProgress;
+  };
+
   setMainButtonMobileVisible = (visible) => {
     this.mainButtonMobileVisible = visible;
   };
@@ -3495,8 +3499,14 @@ class FilesStore {
       withoutTags,
     } = this.roomsFilter;
 
-    const { authorType, search, withSubfolders, filterType, searchInContent } =
-      this.filter;
+    const {
+      authorType,
+      roomId,
+      search,
+      withSubfolders,
+      filterType,
+      searchInContent,
+    } = this.filter;
 
     const isFiltered =
       isRoomsFolder || isArchiveFolder
@@ -3508,6 +3518,7 @@ class FilesStore {
           tags ||
           withoutTags
         : authorType ||
+          roomId ||
           search ||
           !withSubfolders ||
           filterType ||

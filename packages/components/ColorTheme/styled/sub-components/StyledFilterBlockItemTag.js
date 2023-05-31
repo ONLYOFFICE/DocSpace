@@ -1,6 +1,13 @@
 import styled, { css } from "styled-components";
 import Base from "@docspace/components/themes/base";
 
+const selectedItemTag = css`
+  background: ${(props) =>
+    props.theme.filterInput.filter.selectedItem.background};
+  border-color: ${(props) =>
+    props.theme.filterInput.filter.selectedItem.border};
+`;
+
 const StyledFilterBlockItemTag = styled.div`
   height: 28px;
   max-height: 28px;

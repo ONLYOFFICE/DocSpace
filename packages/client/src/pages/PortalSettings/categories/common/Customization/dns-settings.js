@@ -27,10 +27,10 @@ const DNSSettings = (props) => {
     setIsLoadedDNSSettings,
     isLoadedPage,
     helpLink,
-    theme,
     initSettings,
     setIsLoaded,
     isSettingPaid,
+    currentColorScheme,
   } = props;
   const [hasScroll, setHasScroll] = useState(false);
   const isLoadedSetting = isLoaded && tReady;
@@ -91,7 +91,11 @@ const DNSSettings = (props) => {
   }, [isSmallTablet, setIsCustomizationView]);
 
   const tooltipDNSSettingsTooltip = (
-    <DNSSettingsTooltip t={t} theme={theme} helpLink={helpLink} />
+    <DNSSettingsTooltip
+      t={t}
+      currentColorScheme={currentColorScheme}
+      helpLink={helpLink}
+    />
   );
 
   const settingsBlock = (
@@ -164,18 +168,18 @@ const DNSSettings = (props) => {
 };
 
 export default inject(({ auth, common }) => {
-  const { theme, helpLink } = auth.settingsStore;
+  const { helpLink, currentColorScheme } = auth.settingsStore;
   const { isLoaded, setIsLoadedDNSSettings, initSettings, setIsLoaded } =
     common;
   const { currentQuotaStore } = auth;
   const { isBrandingAndCustomizationAvailable } = currentQuotaStore;
   return {
-    theme,
     isLoaded,
     setIsLoadedDNSSettings,
     helpLink,
     initSettings,
     setIsLoaded,
     isSettingPaid: isBrandingAndCustomizationAvailable,
+    currentColorScheme,
   };
 })(withLoading(withTranslation(["Settings", "Common"])(observer(DNSSettings))));

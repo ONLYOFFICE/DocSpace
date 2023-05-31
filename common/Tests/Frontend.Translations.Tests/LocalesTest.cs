@@ -845,9 +845,17 @@ public class LocalesTest
             {
                 if (notCommonKeys.Any())
                 {
-                    message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", notCommonKeys)} \r\n";
+                    var commonEnKeys = CommonTranslations.First(c => c.Language == "en").Translations.Select(t => t.Key).ToList();
 
-                    notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>("ANY LANGUAGES", notCommonKeys));
+                    var list = notCommonKeys
+                        .Except(commonEnKeys.Select(k => k))
+                        .ToList();
+
+                    if (list.Any())
+                    {
+                        message += $"{++index}. 'ANY LANGUAGES' '{module.Path}' \r\n {string.Join("\r\n", list)} \r\n";
+                        notFoundi18nKeys.Add(new KeyValuePair<string, List<string>>("ANY LANGUAGES", list));
+                    }
                 }
 
                 continue;

@@ -6,6 +6,7 @@ import Tree from "rc-tree";
 import "rc-tree/assets/index.css";
 import Badge from "../badge";
 import Base from "../themes/base";
+import NoUserSelect from "../utils/commonStyles";
 
 const StyledTree = styled(Tree)`
   span.rc-tree-node-content-wrapper,
@@ -86,6 +87,7 @@ const StyledTree = styled(Tree)`
           }
         }
         span.rc-tree-title {
+          ${NoUserSelect}
           width: calc(100% - 32px);
           font-weight: 600;
           overflow: hidden;

@@ -184,7 +184,7 @@ public class GosUslugiLoginProvider : BaseLoginProvider<GosUslugiLoginProvider>
     private void RequestCode(HttpContext context, string scope = null)
     {
         var timestamp = DateTime.UtcNow.ToString("yyyy.MM.dd HH:mm:ss +0000");
-        var state = Guid.NewGuid().ToString();//HttpContext.Current.Request.GetUrlRewriter().AbsoluteUri;
+        var state = Guid.NewGuid().ToString();//HttpContext.Current.Request.Url().AbsoluteUri;
 
         var msg = scope + timestamp + ClientID + state;
         var encodedSignature = SignMsg(msg);

@@ -1,0 +1,14 @@
+{
+  "ErrorConfirmURLError": "Nepravilen e-naslov ali pretečena povezava",
+  "ErrorExpiredActivationLink": "Povezava je potekla",
+  "ErrorInvalidActivationLink": "Nepravilna aktivacijska povezava",
+  "ErrorNotAllowedOption": "Vaš cenovni načrt ne podpira te možnosti",
+  "ErrorUserNotFound": "Uporabnika ni bilo mogoče najti",
+  "InvalidUsernameOrPassword": "Nepravilno uporabniško ime ali geslo",
+  "LoginWithAccountNotFound": "Ne morem najti povezanega tujega računa. Najprej morate na strani urejanja profila z računom povezati svoje socialne račune.",
+  "SsoSettingsCantCreateUser": "S tem žetonom za preverjanje pristnosti ne morem ustvariti uporabnika",
+  "SsoSettingsDisabled": "Enkratna prijava je onemogočena",
+  "SsoSettingsEmptyToken": "Žetona za preverjanje pristnosti ni bilo mogoče najti",
+  "SsoSettingsNotValidToken": "Nepravilen avtentikacijski žeton",
+  "SsoSettingsUserTerminated": "Ta uporabnik je onemogočen"
+}

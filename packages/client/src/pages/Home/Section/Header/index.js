@@ -159,6 +159,7 @@ const SectionHeaderContent = (props) => {
     setInviteUsersWarningDialogVisible,
     setArchiveAction,
     setRestoreAllArchive,
+    setRestoreRoomDialogVisible,
     setArchiveDialogVisible,
     onCopyLink,
 
@@ -195,6 +196,7 @@ const SectionHeaderContent = (props) => {
     setInvitePanelOptions,
     isEmptyPage,
     pathParts,
+    emptyTrashInProgress
   } = props;
 
   const navigate = useNavigate();
@@ -476,7 +478,7 @@ const SectionHeaderContent = (props) => {
   const onEmptyTrashAction = () => {
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
-    if (isExistActiveItems) return;
+    if (isExistActiveItems || emptyTrashInProgress) return;
 
     setEmptyTrashDialogVisible(true);
   };
@@ -500,9 +502,8 @@ const SectionHeaderContent = (props) => {
       return;
     }
 
-    setArchiveAction("unarchive");
     setRestoreAllArchive(true);
-    setArchiveDialogVisible(true);
+    setRestoreRoomDialogVisible(true);
   };
 
   const onShowInfo = () => {
@@ -650,7 +651,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "header_option_move-to",
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         onClick: onMoveAction,
         disabled: isDisabled || !security?.MoveTo,
         icon: MoveReactSvgUrl,
@@ -658,7 +659,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "header_option_copy",
         key: "copy",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         onClick: onCopyAction,
         disabled: isDisabled || !security?.CopyTo,
         icon: CopyReactSvgUrl,
@@ -666,7 +667,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "header_option_rename",
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         onClick: renameAction,
         disabled: isDisabled || !security?.Rename,
         icon: RenameReactSvgUrl,
@@ -934,9 +935,8 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
       setInvitePanelOptions,
       setInviteUsersWarningDialogVisible,
     } = dialogsStore;
@@ -957,6 +957,7 @@ export default inject(
       isGroupMenuBlocked,
       moveToRoomsPage,
       onClickBack,
+      emptyTrashInProgress,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -1073,9 +1074,8 @@ export default inject(
 
       setRestoreAllPanelVisible,
 
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
 
       selectedFolder,
 
@@ -1105,6 +1105,7 @@ export default inject(
       isAdmin,
       setInvitePanelOptions,
       isEmptyPage,
+      emptyTrashInProgress,
     };
   }
 )(

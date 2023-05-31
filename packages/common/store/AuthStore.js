@@ -93,19 +93,22 @@ class AuthStore {
     const requests = [];
 
     if (this.settingsStore.isLoaded && this.settingsStore.socketUrl) {
-      requests.push(this.userStore.init());
+      requests.push(
+        this.userStore.init().then(() => {
+          if (
+            this.isQuotaAvailable &&
+            this.settingsStore.tenantStatus !== TenantStatus.PortalRestore
+          ) {
+            this.currentQuotaStore.init();
+            this.currentTariffStatusStore.init();
+          }
+        })
+      );
     } else {
       this.userStore.setIsLoaded(true);
     }
 
     if (this.isAuthenticated && !skipRequest) {
-      if (this.settingsStore.tenantStatus !== TenantStatus.PortalRestore) {
-        requests.push(
-          this.currentQuotaStore.init(),
-          this.currentTariffStatusStore.init()
-        );
-      }
-
       this.settingsStore.tenantStatus !== TenantStatus.PortalRestore &&
         requests.push(this.settingsStore.getAdditionalResources());
 
@@ -182,6 +185,14 @@ class AuthStore {
     return (
       !user.isAdmin && !user.isOwner && !user.isVisitor && !user.isCollaborator
     );
+  }
+
+  get isQuotaAvailable() {
+    const { user } = this.userStore;
+
+    if (!user) return false;
+
+    return user.isOwner || user.isAdmin || this.isRoomAdmin;
   }
 
   get isPaymentPageAvailable() {

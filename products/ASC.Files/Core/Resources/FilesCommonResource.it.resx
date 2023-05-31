@@ -161,10 +161,10 @@
     <value>Non puoi selezionare questo utente</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>La conversione sta impiegando troppo tempo</value>
+    <value>La conversione sta impiegando troppo tempo.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>Si è verificato un errore nel servizio di conversione </value>
+    <value>Si è verificato un errore nel servizio di conversione</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>Il file risulta aperto per la modifica da {0}. Attualmente il co-editing non è ancora supportato per questo formato di file.</value>
@@ -206,7 +206,7 @@
     <value>Non è stato possibile eseguire l'invio di almeno {0} mail. Si prega di controllare il Modulo mail per conoscere il motivo del errore.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Molti download</value>
+    <value>Molti download.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Scusa, questo formato file non è supportato</value>
@@ -299,7 +299,7 @@
     <value>File creato nella cartella "{0}"</value>
   </data>
   <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>Il documento compilabile OFORM è pronto. È salvato in</value>
+    <value>Il documento compilabile OFORM è pronto. È salvato in {0}</value>
   </data>
   <data name="MessageFillFormDraftCreated" xml:space="preserve">
     <value>La copia di OFORM è creata nella cartella {0}. Compila il modulo e scarica il risultato come file PDF o DOCX.</value>
@@ -361,5 +361,14 @@ Massima compatibilità con docx, xlsx, pptx.</value>
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Collaboratore</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaboratore</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editore</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Amministratore di stanza</value>
   </data>
 </root>

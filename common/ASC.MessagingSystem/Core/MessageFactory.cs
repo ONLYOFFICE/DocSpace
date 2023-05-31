@@ -32,12 +32,17 @@ public class MessageFactory
     private readonly ILogger<MessageFactory> _logger;
     private readonly AuthContext _authContext;
     private readonly TenantManager _tenantManager;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public MessageFactory(AuthContext authContext, TenantManager tenantManager, ILogger<MessageFactory> logger)
+    public MessageFactory(AuthContext authContext, 
+        TenantManager tenantManager, 
+        ILogger<MessageFactory> logger,
+        IHttpContextAccessor httpContextAccessor)
     {
         _authContext = authContext;
         _tenantManager = tenantManager;
         _logger = logger;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public EventMessage Create(HttpRequest request, string initiator, DateTime? dateTime, MessageAction action, MessageTarget target, params string[] description)
@@ -82,11 +87,14 @@ public class MessageFactory
 
             if (headers != null)
             {
-                var ip = MessageSettings.GetIP(headers);
                 var userAgent = MessageSettings.GetUAHeader(headers);
                 var referer = MessageSettings.GetReferer(headers);
 
-                message.Ip = ip;
+                if (_httpContextAccessor.HttpContext != null)
+                {
+                    message.Ip = MessageSettings.GetIP(_httpContextAccessor.HttpContext.Request);
+                }
+
                 message.UAHeader = userAgent;
                 message.Page = referer;
             }

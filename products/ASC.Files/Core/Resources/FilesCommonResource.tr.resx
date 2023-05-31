@@ -98,7 +98,7 @@
     <value>Sahibi Degisti</value>
   </data>
   <data name="CommentConvert" xml:space="preserve">
-    <value>...dan cevrilmistir.</value>
+    <value>{0} dan cevrilmistir</value>
   </data>
   <data name="CommentCopy" xml:space="preserve">
     <value>Kopyalandi</value>
@@ -158,13 +158,13 @@
     <value>Bu kullaniciyi secemezsiniz</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>Cevirme islemi uzun suruyor</value>
+    <value>Cevirme islemi uzun suruyor.</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
     <value>Dökümanlar Servisinde Hata oluştu</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>Dosya degistirilmek uzere acik durumda, ortak calisma icin bu dosya formati desteklenmiyor</value>
+    <value>Dosya degistirilmek uzere acik durumda, ortak calisma icin bu dosya formati desteklenmiyor.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
     <value>Dosya mobil bir uygulama taraindan degistirilmek icin acik durumda</value>
@@ -200,10 +200,10 @@
     <value>Dosya başka bir kullanıcı tarafından kilitlenmiş</value>
   </data>
   <data name="ErrorMassage_MailMergeCount" xml:space="preserve">
-    <value>Mail Mesaji Gonderilemedi. Hata nedeni icin, lutfen Mail Modulune Gidip, kontrol ediniz</value>
+    <value>Mail Mesaji Gonderilemedi. Hata nedeni icin, lutfen Mail Modulune Gidip, kontrol ediniz.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Çok fazla indirme</value>
+    <value>Çok fazla indirme.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Üzgünüm, bu dosya biçimi desteklenmiyor</value>
@@ -221,7 +221,7 @@
     <value>Bu işlemi gerçekleştirmek için yeterli izniniz yok</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>{0} sunulan ehliyetle yetkilendirilemiyor</value>
+    <value>{0} sunulan ehliyetle yetkilendirilemiyor.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
     <value>Oluşturma için yeterli izniniz yok</value>
@@ -269,7 +269,7 @@
     <value>Klasör içeriğini görüntülemek için yeterli izniniz yok</value>
   </data>
   <data name="ErrorMassage_SharpBoxException" xml:space="preserve">
-    <value>Ucuncu parti icerik klasorune ulasilamiyor, hesabiniza tekrar baglanmayi deneyin</value>
+    <value>Ucuncu parti icerik klasorune ulasilamiyor, hesabiniza tekrar baglanmayi deneyin.</value>
   </data>
   <data name="ErrorMassage_StartEditing" xml:space="preserve">
     <value>Dosya düzenleme başlangıç hatası</value>
@@ -296,7 +296,7 @@
     <value>"{0}" klasöründe dosya oluşturuldu</value>
   </data>
   <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>Doldurulabilir OFORM belgesi hazır. {0} klasörüne kaydedilir.</value>
+    <value>Doldurulabilir OFORM belgesi hazır. {0} klasörüne kaydedilir</value>
   </data>
   <data name="MessageFillFormDraftCreated" xml:space="preserve">
     <value>OFORM kopyası, {0} klasöründe oluşturulur. Lütfen formu doldurun ve sonucu PDF veya DOCX dosyası olarak indirin.</value>
@@ -357,5 +357,59 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Ortak çalışan</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Gönderilen form</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Yeni sürüm, mevcut sürümle aynı olamaz</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Dosyayı kopyalamak için yeterli izniniz yok</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Klasörü kopyalamak için yeterli izniniz yok</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Geçersiz sağlayıcı</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Odayı saklamak için bu klasörü kullanmak mümkün değil</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Davet bağlantısı geçersiz veya geçerliliği sona ermiş</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Bu sağlayıcı odaya zaten bağlı</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Rol, bu kullanıcı türü için mevcut değil</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Odayı arşivlemek için yeterli izniniz yok</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Bu klasöre kopyalama izniniz yok</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Odayı düzenleme izniniz yok</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Bu klasöre taşıma izniniz yok</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Odayı arşivden çıkarmak için yeterli izniniz yok</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Arşivlenmiş odaları düzenleyemezsiniz</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Bir odayı sabitleyemezsiniz</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Ortak çalışan</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Editör</value>
   </data>
 </root>
