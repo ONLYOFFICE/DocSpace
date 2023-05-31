@@ -8,6 +8,18 @@ import { useTranslation } from "react-i18next";
 
 const DetailsWrapper = styled.div`
   width: 100%;
+
+  .mt-7 {
+    margin-top: 7px;
+  }
+
+  .mt-16 {
+    margin-top: 16px;
+  }
+
+  .mb-4 {
+    margin-bottom: 4px;
+  }
 `;
 const ErrorMessageTooltip = styled.div`
   box-sizing: border-box;
@@ -23,6 +35,10 @@ const ErrorMessageTooltip = styled.div`
   align-items: center;
 
   margin-bottom: 16px;
+
+  img {
+    margin-right: 8px;
+  }
 `;
 
 export const RequestDetails = ({ webhookDetails }) => {
@@ -31,11 +47,11 @@ export const RequestDetails = ({ webhookDetails }) => {
     <DetailsWrapper>
       {webhookDetails.status === 0 && (
         <ErrorMessageTooltip>
-          <img src={DangerIcon} alt="danger icon" style={{ marginRight: "8px" }} />
+          <img src={DangerIcon} alt="danger icon" />
           {t("FailedToConnect")}
         </ErrorMessageTooltip>
       )}
-      <Text as="h3" fontWeight={600} style={{ marginBottom: "4px" }}>
+      <Text as="h3" fontWeight={600} className="mb-4 mt-7">
         {t("RequestPostHeader")}
       </Text>
       {!webhookDetails.requestHeaders ? (
@@ -51,7 +67,7 @@ export const RequestDetails = ({ webhookDetails }) => {
         />
       )}
 
-      <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
+      <Text as="h3" fontWeight={600} className="mb-4 mt-16">
         {t("RequestPostBody")}
       </Text>
       <Textarea

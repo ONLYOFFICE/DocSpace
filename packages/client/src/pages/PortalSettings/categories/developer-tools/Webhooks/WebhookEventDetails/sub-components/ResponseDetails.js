@@ -1,7 +1,7 @@
 import React from "react";
 import styled, { css } from "styled-components";
 import Textarea from "@docspace/components/textarea";
-import Button  from "@docspace/components/button";
+import Button from "@docspace/components/button";
 import Text from "@docspace/components/text";
 
 import json_beautifier from "csvjson-json_beautifier";
@@ -13,6 +13,18 @@ const DetailsWrapper = styled.div`
 
   .textareaBody {
     height: 50vh !important;
+  }
+
+  .mt-7 {
+    margin-top: 7px;
+  }
+
+  .mt-16 {
+    margin-top: 16px;
+  }
+
+  .mb-4 {
+    margin-bottom: 4px;
   }
 `;
 
@@ -73,7 +85,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
 
   return (
     <DetailsWrapper>
-      <Text as="h3" fontWeight={600} style={{ marginBottom: "4px" }}>
+      <Text as="h3" fontWeight={600} className="mb-4 mt-7">
         {t("ResponsePostHeader")}
       </Text>
       <Textarea
@@ -84,7 +96,7 @@ export const ResponseDetails = ({ webhookDetails }) => {
         isJSONField
         copyInfoText={t("ResponseHeaderCopied")}
       />
-      <Text as="h3" fontWeight={600} style={{ marginBottom: "4px", marginTop: "16px" }}>
+      <Text as="h3" fontWeight={600} className="mb-4 mt-16">
         {t("ResponsePostBody")}
       </Text>
       {responsePayload.length > 4000 || numberOfLines > 100 ? (
