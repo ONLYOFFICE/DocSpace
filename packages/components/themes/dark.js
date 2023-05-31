@@ -693,7 +693,8 @@ const Dark = {
       background: "#292929",
 
       border: "1px solid",
-      borderRadius: "0 3px 3px 0",
+      borderRadiusLtr: "0 3px 3px 0",
+      borderRadiusRtl: "3px 0 0 3px",
 
       width: {
         base: "30px",
