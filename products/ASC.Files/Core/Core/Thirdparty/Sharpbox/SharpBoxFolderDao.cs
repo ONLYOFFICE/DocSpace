@@ -247,9 +247,9 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using (var tx = await filesDbContext.Database.BeginTransactionAsync())
             {
-                var hashIds = await Queries.HashIdsAsync(filesDbContext, TenantID, id).ToListAsync();
+                var hashIds = await Queries.HashIdsAsync(filesDbContext, _tenantId, id).ToListAsync();
 
-                var link = await Queries.TagLinksAsync(filesDbContext, TenantID, hashIds).ToListAsync();
+                var link = await Queries.TagLinksAsync(filesDbContext, _tenantId, hashIds).ToListAsync();
 
                 filesDbContext.TagLink.RemoveRange(link);
                 await filesDbContext.SaveChangesAsync();
@@ -258,12 +258,12 @@ internal class SharpBoxFolderDao : SharpBoxDaoBase, IFolderDao<string>
 
                 filesDbContext.Tag.RemoveRange(tagsToRemove);
 
-                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, TenantID, hashIds).ToListAsync();
+                var securityToDelete = await Queries.SecuritiesAsync(filesDbContext, _tenantId, hashIds).ToListAsync();
 
                 filesDbContext.Security.RemoveRange(securityToDelete);
                 await filesDbContext.SaveChangesAsync();
                 
-                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, TenantID, hashIds).ToListAsync();
+                var mappingToDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, hashIds).ToListAsync();
 
                 filesDbContext.ThirdpartyIdMapping.RemoveRange(mappingToDelete);
                 await filesDbContext.SaveChangesAsync();

@@ -134,7 +134,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
-            var oldIds = Queries.IdsAsync(filesDbContext, TenantID, oldValue);
+            var oldIds = Queries.IdsAsync(filesDbContext, _tenantId, oldValue);
 
             await foreach (var oldId in oldIds)
             {
@@ -142,7 +142,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
                 var newId = oldId.Replace(oldValue, newValue);
                 var newHashId = await MappingIDAsync(newId);
 
-                var mappingForDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, TenantID, oldHashId).ToListAsync();
+                var mappingForDelete = await Queries.ThirdpartyIdMappingsAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
                 var mappingForInsert = mappingForDelete.Select(m => new DbFilesThirdpartyIdMapping
                 {
                     TenantId = m.TenantId,
@@ -154,7 +154,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
                 await filesDbContext.AddRangeAsync(mappingForInsert);
 
                 var securityForDelete =
-                    await Queries.DbFilesSecuritiesAsync(filesDbContext, TenantID, oldHashId).ToListAsync();
+                    await Queries.DbFilesSecuritiesAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var securityForInsert = securityForDelete.Select(s => new DbFilesSecurity
                 {
@@ -171,7 +171,7 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
                 await filesDbContext.AddRangeAsync(securityForInsert);
 
                 var linkForDelete =
-                    await Queries.DbFilesTagLinksAsync(filesDbContext, TenantID, oldHashId).ToListAsync();
+                    await Queries.DbFilesTagLinksAsync(filesDbContext, _tenantId, oldHashId).ToListAsync();
 
                 var linkForInsert = linkForDelete.Select(l => new DbFilesTagLink
                 {
