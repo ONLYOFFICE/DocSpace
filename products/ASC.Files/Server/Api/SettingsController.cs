@@ -187,9 +187,10 @@ public class SettingsController : ApiControllerBase
     /// <param name="set"></param>
     /// <returns></returns>
     [HttpPut("storeforcesave")]
-    public bool StoreForcesave(SettingsRequestDto inDto)
+    public bool StoreForcesave()
     {
-        return _fileStorageServiceString.StoreForcesave(inDto.Set);
+        return false;
+        //return _fileStorageServiceString.StoreForcesave(inDto.Set);
     }
 
     /// <summary>
