@@ -13,8 +13,14 @@ import { useParams } from "react-router-dom";
 
 import { inject, observer } from "mobx-react";
 
+import { Base } from "@docspace/components/themes";
+
 const TableWrapper = styled(TableContainer)`
-  margin-top: 5px;
+  margin-top: 0;
+
+  .header-container-text {
+    font-size: 12px;
+  }
 
   .noPadding {
     padding: 0;
@@ -23,18 +29,20 @@ const TableWrapper = styled(TableContainer)`
   .table-list-item {
     cursor: pointer;
     &:hover {
-      background-color: #f3f4f4;
+      background-color: ${(props) => (props.theme.isBase ? "#f3f4f4" : "#282828")};
     }
   }
 
   .table-list-item:has(.selected-table-row) {
-    background-color: #f3f4f4;
+    background-color: ${(props) => (props.theme.isBase ? "#f3f4f4" : "#282828")};
   }
   .div1 > .div2 {
     background-color: red;
     width: 50%;
   }
 `;
+
+TableWrapper.defaultProps = { theme: Base };
 
 const HistoryTableView = (props) => {
   const {
