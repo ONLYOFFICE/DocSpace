@@ -3,9 +3,9 @@ import moment from "moment";
 import styled from "styled-components";
 
 import Text from "@docspace/components/text";
-import { StatusBadge } from "../../sub-components/StatusBadge";
+import StatusBadge from "../../sub-components/StatusBadge";
 
-import { tablet } from "@docspace/components/utils/device";
+import { Base } from "@docspace/components/themes";
 
 const BarWrapper = styled.div`
   width: 100%;
@@ -16,10 +16,16 @@ const BarWrapper = styled.div`
 
   margin-top: 24px;
 
-  background: #f8f9f9;
+  background: ${(props) => (props.theme.isBase ? "#f8f9f9" : "#3D3D3D")};
   border-radius: 3px;
   flex-wrap: wrap;
+
+  .barItemHeader {
+    margin-bottom: 10px;
+  }
 `;
+
+BarWrapper.defaultProps = { theme: Base };
 
 const BarItem = styled.div`
   box-sizing: border-box;
@@ -27,16 +33,16 @@ const BarItem = styled.div`
   padding: 16px;
   flex-basis: 25%;
 
-  @media ${tablet} {
+  @media (max-width: 1300px) {
     flex-basis: 50%;
   }
-  @media (max-width: 440px) {
+  @media (max-width: 560px) {
     flex-basis: 100%;
   }
 `;
 
 const BarItemHeader = ({ children }) => (
-  <Text as="h3" color="#A3A9AE" fontSize="12px" fontWeight={600} style={{ marginBottom: "8px" }}>
+  <Text as="h3" color="#A3A9AE" fontSize="12px" fontWeight={600} className="barItemHeader">
     {children}
   </Text>
 );
