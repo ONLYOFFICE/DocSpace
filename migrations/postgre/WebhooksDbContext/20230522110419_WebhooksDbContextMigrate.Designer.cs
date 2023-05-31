@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20230406171638_WebhooksDbContextMigrate")]
+    [Migration("20230522110419_WebhooksDbContextMigrate")]
     partial class WebhooksDbContextMigrate
     {
         /// <inheritdoc />
@@ -91,8 +91,7 @@ namespace ASC.Migrations.PostgreSql.Migrations.WebhooksDb
 
                     b.Property<string>("Uri")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
+                        .HasColumnType("text")
                         .HasColumnName("uri")
                         .HasDefaultValueSql("''");
 

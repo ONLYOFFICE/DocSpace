@@ -138,11 +138,6 @@ public class WebhooksController : BaseSettingsController
             throw new ItemNotFoundException();
         }
 
-        if (item.Status >= 200 && item.Status <= 299 || item.Status == 0)
-        {
-            throw new HttpException(HttpStatusCode.Forbidden);
-        }
-
         var result = await _webhookPublisher.PublishAsync(item.Id, item.RequestPayload, item.ConfigId);
 
         return _mapper.Map<WebhooksLog, WebhooksLogDto>(result);
@@ -157,7 +152,7 @@ public class WebhooksController : BaseSettingsController
         {
             var item = await _webhookDbWorker.ReadJournal(id);
 
-            if (item == null || item.Status >= 200 && item.Status <= 299 || item.Status == 0)
+            if (item == null)
             {
                 continue;
             }

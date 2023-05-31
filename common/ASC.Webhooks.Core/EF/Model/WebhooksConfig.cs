@@ -73,9 +73,11 @@ public static class WebhooksConfigExtension
                 .HasColumnType("int unsigned");
 
             entity.Property(e => e.Uri)
-                .HasMaxLength(50)
                 .HasColumnName("uri")
-                .HasDefaultValueSql("''");
+                .HasDefaultValueSql("''")
+                .HasColumnType("text")
+                .HasCharSet("utf8")
+                .UseCollation("utf8_general_ci");
 
             entity.Property(e => e.SecretKey)
                 .HasMaxLength(50)
@@ -120,7 +122,6 @@ public static class WebhooksConfigExtension
                 .HasColumnType("int unsigned");
 
             entity.Property(e => e.Uri)
-                .HasMaxLength(50)
                 .HasColumnName("uri")
                 .HasDefaultValueSql("''");
 

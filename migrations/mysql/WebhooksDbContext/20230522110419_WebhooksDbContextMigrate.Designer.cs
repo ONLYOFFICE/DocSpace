@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASC.Migrations.MySql.Migrations.WebhooksDb
 {
     [DbContext(typeof(WebhooksDbContext))]
-    [Migration("20230406171638_WebhooksDbContextMigrate")]
+    [Migration("20230522110419_WebhooksDbContextMigrate")]
     partial class WebhooksDbContextMigrate
     {
         /// <inheritdoc />
@@ -89,10 +89,11 @@ namespace ASC.Migrations.MySql.Migrations.WebhooksDb
 
                     b.Property<string>("Uri")
                         .ValueGeneratedOnAdd()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)")
+                        .HasColumnType("text")
                         .HasColumnName("uri")
-                        .HasDefaultValueSql("''");
+                        .HasDefaultValueSql("''")
+                        .UseCollation("utf8_general_ci")
+                        .HasAnnotation("MySql:CharSet", "utf8");
 
                     b.HasKey("Id")
                         .HasName("PRIMARY");
