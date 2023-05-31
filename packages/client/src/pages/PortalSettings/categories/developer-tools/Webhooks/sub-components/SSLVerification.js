@@ -4,19 +4,16 @@ import styled from "styled-components";
 import InfoIcon from "PUBLIC_DIR/images/info.react.svg?url";
 
 import RadioButtonGroup from "@docspace/components/radio-button-group";
+import Label from "@docspace/components/label";
 
 import { Hint } from "../styled-components";
 import { useTranslation } from "react-i18next";
 
-const Header = styled.h1`
-  font-family: "Open Sans";
+const Header = styled.p`
   font-weight: 600;
-  font-size: 13px;
-  line-height: 20px;
+  margin-top: 22px;
+  margin-bottom: 10px;
 
-  margin-top: 20px;
-
-  color: #333333;
   display: flex;
   align-items: center;
 
@@ -41,15 +38,16 @@ export const SSLVerification = ({ onChange, value }) => {
 
   const toggleHint = () => setIsHintVisible((prevIsHintVisible) => !prevIsHintVisible);
   return (
-    <div>
-      <Header>
-        {t("SSLVerification")} <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
-      </Header>
-
+    <Label
+      text={
+        <Header>
+          {t("SSLVerification")}{" "}
+          <StyledInfoIcon src={InfoIcon} alt="infoIcon" onClick={toggleHint} />
+        </Header>
+      }>
       <Hint isTooltip hidden={!isHintVisible} onClick={toggleHint}>
         {t("SSLHint")}
       </Hint>
-
       <RadioButtonGroup
         fontSize="13px"
         fontWeight="400"
@@ -70,6 +68,6 @@ export const SSLVerification = ({ onChange, value }) => {
         orientation="vertical"
         spacing="8px"
       />
-    </div>
+    </Label>
   );
 };
