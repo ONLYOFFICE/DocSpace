@@ -7,7 +7,6 @@ import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
 
 import { DetailsBar } from "./sub-components/DetailsBar";
-import DetailsNavigationHeader from "./sub-components/DetailsNavigationHeader";
 import { MessagesDetails } from "./sub-components/MessagesDetails";
 import { WebhookDetailsLoader } from "../sub-components/Loaders";
 
@@ -20,30 +19,32 @@ const EventDetailsHeader = styled.header`
 `;
 
 const WebhookEventDetails = (props) => {
-  const { getEvent, hideTitle, showTitle } = props;
+  const { getEvent, setTitleDetails, setTitleDefault } = props;
 
   const { id, eventId } = useParams();
 
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const [webhookDetails, setWebhookDetails] = useState({});
 
   useEffect(() => {
-    hideTitle();
+    setTitleDetails();
     (async () => {
+      const timer = setTimeout(() => {
+        webhookDetails.status === undefined && setIsLoading(true);
+      }, 300);
       const webhookDetailsData = await getEvent(eventId);
       setWebhookDetails(webhookDetailsData);
+      clearTimeout(timer);
       setIsLoading(false);
     })();
-    return showTitle;
+    return setTitleDefault;
   }, []);
 
   return (
     <DetailsWrapper>
-      <DetailsNavigationHeader eventId={eventId} />
-      {isLoading ? (
-        <WebhookDetailsLoader />
-      ) : (
+      {isLoading && <WebhookDetailsLoader />}
+      {webhookDetails.status !== undefined && (
         <main>
           <EventDetailsHeader>
             <Text fontWeight={600}>Webhook {id}</Text>
@@ -57,7 +58,7 @@ const WebhookEventDetails = (props) => {
 };
 
 export default inject(({ webhooksStore }) => {
-  const { getEvent, hideTitle, showTitle } = webhooksStore;
+  const { getEvent, setTitleDetails, setTitleDefault } = webhooksStore;
 
-  return { getEvent, hideTitle, showTitle };
+  return { getEvent, setTitleDetails, setTitleDefault };
 })(observer(WebhookEventDetails));
