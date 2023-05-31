@@ -27,7 +27,7 @@ const FilesListRow = ({
     >
       <div className="selection-panel_icon">{element}</div>
       <div className="selection-panel_text">
-        <Text fontSize="14px" fontWeight={600}>
+        <Text fontSize="14px" fontWeight={600} noSelect>
           {title}
         </Text>
       </div>

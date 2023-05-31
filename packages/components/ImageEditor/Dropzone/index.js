@@ -7,7 +7,7 @@ import Loader from "../../loader";
 
 import { toastr } from "../../";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import StyledDropzone from "./StyledDropzone";
 
 const ONE_MEGABYTE = 1024 * 1024;
@@ -76,37 +76,46 @@ const Dropzone = ({ t, setUploadedFile, isDisabled }) => {
     timer.current = setTimeout(() => {
       setLoadingFile(true);
     }, 50);
-    const imageBitMap = await createImageBitmap(file);
+    try {
+      const imageBitMap = await createImageBitmap(file);
 
-    const width = imageBitMap.width;
-    const height = imageBitMap.height;
-    const canvas = resizeImage.resize2Canvas(imageBitMap, width, height);
+      const width = imageBitMap.width;
+      const height = imageBitMap.height;
+      const canvas = resizeImage.resize2Canvas(imageBitMap, width, height);
 
-    resizeRecursiveAsync(
-      { width, height },
-      canvas,
-      file.size > ONE_MEGABYTE ? COMPRESSION_RATIO : NO_COMPRESSION_RATIO
-    )
-      .then((file) => {
-        if (mount.current) {
-          setUploadedFile(file);
-        }
-      })
-      .catch((error) => {
-        if (
-          error instanceof Error &&
-          error.message === "recursion depth exceeded"
-        ) {
-          toastr.error(t("Common:SizeImageLarge"));
-        }
-        console.error(error);
-      })
-      .finally(() => {
-        timer.current && clearTimeout(timer.current);
-        if (mount.current) {
-          setLoadingFile(false);
-        }
-      });
+      resizeRecursiveAsync(
+        { width, height },
+        canvas,
+        file.size > ONE_MEGABYTE ? COMPRESSION_RATIO : NO_COMPRESSION_RATIO
+      )
+        .then((file) => {
+          if (mount.current) {
+            setUploadedFile(file);
+          }
+        })
+        .catch((error) => {
+          if (
+            error instanceof Error &&
+            error.message === "recursion depth exceeded"
+          ) {
+            toastr.error(t("Common:SizeImageLarge"));
+          }
+          console.error(error);
+        })
+        .finally(() => {
+          timer.current && clearTimeout(timer.current);
+          if (mount.current) {
+            setLoadingFile(false);
+          }
+        });
+    } catch (error) {
+      console.error(error);
+      toastr.error(t("Common:NotSupportedFormat"));
+      timer.current && clearTimeout(timer.current);
+      if (mount.current) {
+        setLoadingFile(false);
+      }
+    }
   };
 
   const { getRootProps, getInputProps } = useDropzone({

@@ -70,4 +70,16 @@
   <data name="ProductName" xml:space="preserve">
     <value>人</value>
   </data>
+  <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
+    <value>アップロードされたファイルが見つかりませんでした</value>
+  </data>
+  <data name="ErrorUnknownFileImageType" xml:space="preserve">
+    <value>未知の画像ファイルの種類</value>
+  </data>
+  <data name="ProductAdminOpportunities" xml:space="preserve">
+    <value>ユーザーと同じようにする|プロフィールとグループを作成する|プロフィールをインポートする|ユーザーを招待する</value>
+  </data>
+  <data name="ProductUserOpportunities" xml:space="preserve">
+    <value>プロフィールとグループを表示する</value>
+  </data>
 </root>

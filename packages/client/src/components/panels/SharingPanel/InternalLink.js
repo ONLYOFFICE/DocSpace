@@ -21,7 +21,7 @@ const InternalLink = ({ t, internalLink, style }) => {
         className={"internal-link__copy-text"}
         onClick={onCopyInternalLinkAction}
       >
-        {t("Translations:Copy")}
+        {t("Common:Copy")}
       </Text>
     </StyledInternalLink>
   );

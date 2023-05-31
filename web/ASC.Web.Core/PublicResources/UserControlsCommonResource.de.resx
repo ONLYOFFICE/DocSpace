@@ -59,7 +59,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="LicenseException" xml:space="preserve">
-    <value>Lizenz ist abgelaufen oder Benutzer-Quote zusammenfällt die Lizenz nicht.</value>
+    <value>Lizenz ist abgelaufen oder Benutzer-Quote zusammenfällt die Lizenz nicht</value>
   </data>
   <data name="LicenseKeyNotCorrect" xml:space="preserve">
     <value>Lizenzschlüssel ist nicht korrekt</value>

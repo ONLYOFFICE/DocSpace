@@ -1,4 +1,5 @@
 using System;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
@@ -14,40 +15,41 @@ namespace ASC.Migrations.MySql.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "dbip_location",
+                name: "dbip_lookup",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    addr_type = table.Column<string>(type: "enum('ipv4','ipv6')", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    ip_start = table.Column<string>(type: "varchar(39)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    ip_end = table.Column<string>(type: "varchar(39)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    country = table.Column<string>(type: "varchar(2)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    stateprov = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    district = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    city = table.Column<string>(type: "varchar(255)", nullable: false, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    zipcode = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    latitude = table.Column<float>(type: "float", nullable: true, defaultValueSql: "NULL"),
-                    longitude = table.Column<float>(type: "float", nullable: true, defaultValueSql: "NULL"),
-                    geoname_id = table.Column<int>(type: "int", nullable: true, defaultValueSql: "NULL"),
-                    timezone_offset = table.Column<int>(type: "int", nullable: true, defaultValueSql: "NULL"),
-                    timezone_name = table.Column<string>(type: "varchar(255)", nullable: true, collation: "utf8_general_ci")
-                        .Annotation("MySql:CharSet", "utf8"),
-                    processed = table.Column<int>(type: "int", nullable: false, defaultValueSql: "'1'")
+                    addrtype = table.Column<string>(name: "addr_type", type: "enum('ipv4','ipv6')", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ipstart = table.Column<byte[]>(name: "ip_start", type: "varbinary(16)", nullable: false),
+                    ipend = table.Column<byte[]>(name: "ip_end", type: "varbinary(16)", nullable: false),
+                    continent = table.Column<string>(type: "char(2)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    country = table.Column<string>(type: "char(2)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    stateprovcode = table.Column<string>(name: "stateprov_code", type: "varchar(15)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    stateprov = table.Column<string>(type: "varchar(80)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    district = table.Column<string>(type: "varchar(80)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    city = table.Column<string>(type: "varchar(80)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    zipcode = table.Column<string>(type: "varchar(20)", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    latitude = table.Column<float>(type: "float", nullable: false),
+                    longitude = table.Column<float>(type: "float", nullable: false),
+                    geonameid = table.Column<int>(name: "geoname_id", type: "int(10)", nullable: true),
+                    timezoneoffset = table.Column<float>(name: "timezone_offset", type: "float", nullable: false),
+                    timezonename = table.Column<string>(name: "timezone_name", type: "varchar(64)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    weathercode = table.Column<string>(name: "weather_code", type: "varchar(10)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_dbip_location", x => x.id);
+                    table.PrimaryKey("PK_dbip_lookup", x => new { x.addrtype, x.ipstart });
                 })
-                .Annotation("MySql:CharSet", "utf8");
+                .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
                 name: "mobile_app_install",
@@ -81,17 +83,12 @@ namespace ASC.Migrations.MySql.Migrations
                     table.PrimaryKey("PK_Regions", x => x.Region);
                 })
                 .Annotation("MySql:CharSet", "utf8");
-
-            migrationBuilder.CreateIndex(
-                name: "ip_start",
-                table: "dbip_location",
-                column: "ip_start");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "dbip_location");
+                name: "dbip_lookup");
 
             migrationBuilder.DropTable(
                 name: "mobile_app_install");

@@ -59,6 +59,7 @@ class FilesActionStore {
   isBulkDownload = false;
   isLoadedSearchFiles = false;
   isGroupMenuBlocked = false;
+  emptyTrashInProgress = false;
 
   constructor(
     authStore,
@@ -246,29 +247,33 @@ class FilesActionStore {
     withoutDialog = false
   ) => {
     const { isRecycleBinFolder, isPrivacyFolder } = this.treeFoldersStore;
-    const { addActiveItems, getIsEmptyTrash } = this.filesStore;
-    const { secondaryProgressDataStore, clearActiveOperations } =
-      this.uploadDataStore;
-    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
-      secondaryProgressDataStore;
+    const {
+      addActiveItems,
+      getIsEmptyTrash,
+      bufferSelection,
+      activeFiles,
+      activeFolders,
+    } = this.filesStore;
+    const {
+      secondaryProgressDataStore,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
     const { withPaging } = this.authStore.settingsStore;
 
-    const selection = newSelection ? newSelection : this.filesStore.selection;
+    const selection = newSelection
+      ? newSelection
+      : this.filesStore.selection.length
+      ? this.filesStore.selection
+      : [bufferSelection];
     const isThirdPartyFile = selection.some((f) => f.providerKey);
 
     const currentFolderId = this.selectedFolderStore.id;
 
     const operationId = uniqueid("operation_");
-
-    setSecondaryProgressBarData({
-      icon: "trash",
-      visible: true,
-      percent: 0,
-      label: translations.deleteOperation,
-      alert: false,
-      filesCount: selection.length,
-      operationId,
-    });
 
     const deleteAfter = false; //Delete after finished TODO: get from settings
     const immediately = isRecycleBinFolder || isPrivacyFolder ? true : false; //Don't move to the Recycle Bin
@@ -279,12 +284,31 @@ class FilesActionStore {
     let i = 0;
     while (selection.length !== i) {
       if (selection[i].fileExst || selection[i].contentLength) {
-        fileIds.push(selection[i].id);
+        // try to fix with one check later (see onDeleteMediaFile)
+        const isActiveFile = activeFiles.find((id) => id === selection[i].id);
+        !isActiveFile && fileIds.push(selection[i].id);
       } else {
-        folderIds.push(selection[i].id);
+        // try to fix with one check later (see onDeleteMediaFile)
+        const isActiveFolder = activeFolders.find(
+          (id) => id === selection[i].id
+        );
+        !isActiveFolder && folderIds.push(selection[i].id);
       }
       i++;
     }
+
+    if (!folderIds.length && !fileIds.length) return;
+    const filesCount = folderIds.length + fileIds.length;
+
+    setSecondaryProgressBarData({
+      icon: "trash",
+      visible: true,
+      percent: 0,
+      label: translations.deleteOperation,
+      alert: false,
+      filesCount,
+      operationId,
+    });
 
     addActiveItems(fileIds);
     addActiveItems(null, folderIds);
@@ -378,9 +402,14 @@ class FilesActionStore {
 
     const fileIds = files.map((f) => f.id);
     const folderIds = folders.map((f) => f.id);
-    if (isRecycleBinFolder) addActiveItems(fileIds, folderIds);
+
+    if (isRecycleBinFolder) {
+      addActiveItems(fileIds, folderIds);
+    }
 
     const operationId = uniqueid("operation_");
+
+    this.emptyTrashInProgress = true;
 
     setSecondaryProgressBarData({
       icon: "trash",
@@ -415,6 +444,8 @@ class FilesActionStore {
       });
       setTimeout(() => clearSecondaryProgressData(operationId), TIMEOUT);
       return toastr.error(err.message ? err.message : err);
+    } finally {
+      this.emptyTrashInProgress = false;
     }
   };
 
@@ -1008,10 +1039,15 @@ class FilesActionStore {
     const { roomsFolder, isRoomsFolder, archiveRoomsId, myRoomsId } =
       this.treeFoldersStore;
 
-    const { secondaryProgressDataStore, clearActiveOperations } =
-      this.uploadDataStore;
-    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
-      secondaryProgressDataStore;
+    const {
+      secondaryProgressDataStore,
+      clearActiveOperations,
+    } = this.uploadDataStore;
+
+    const {
+      setSecondaryProgressBarData,
+      clearSecondaryProgressData,
+    } = secondaryProgressDataStore;
 
     if (!myRoomsId || !archiveRoomsId) {
       console.error("Default categories not found");
@@ -1083,7 +1119,12 @@ class FilesActionStore {
 
             toastr.success(successTranslation);
           })
-          .then(() => setSelected("close"))
+          .then(() => {
+            const clearBuffer =
+              !this.dialogsStore.archiveDialogVisible &&
+              !this.dialogsStore.restoreRoomDialogVisible;
+            setSelected("close", clearBuffer);
+          })
           .catch((err) => {
             clearActiveOperations(null, items);
             setSecondaryProgressBarData({
@@ -1433,12 +1474,15 @@ class FilesActionStore {
         );
 
       case "archive":
-      case "unarchive":
         const canArchive = selection.every((s) => s.security?.Move);
 
         return canArchive;
+      case "unarchive":
+        const canUnArchive = selection.some((s) => s.security?.Move);
+
+        return canUnArchive;
       case "delete-room":
-        const canRemove = selection.every((s) => s.security?.Delete);
+        const canRemove = selection.some((s) => s.security?.Delete);
 
         return canRemove;
       case "delete":
@@ -1484,9 +1528,9 @@ class FilesActionStore {
 
   archiveRooms = (action) => {
     const {
-      setArchiveAction,
       setArchiveDialogVisible,
       setInviteUsersWarningDialogVisible,
+      setRestoreRoomDialogVisible,
     } = this.dialogsStore;
     const { isGracePeriod } = this.authStore.currentTariffStatusStore;
 
@@ -1495,8 +1539,11 @@ class FilesActionStore {
       return;
     }
 
-    setArchiveAction(action);
-    setArchiveDialogVisible(true);
+    if (action === "archive") {
+      setArchiveDialogVisible(true);
+    } else {
+      setRestoreRoomDialogVisible(true);
+    }
   };
 
   deleteRooms = (t) => {
@@ -1598,7 +1645,7 @@ class FilesActionStore {
         else
           return {
             id: "menu-copy",
-            label: t("Translations:Copy"),
+            label: t("Common:Copy"),
             onClick: () => setCopyPanelVisible(true),
             iconUrl: CopyToReactSvgUrl,
           };
@@ -1631,7 +1678,7 @@ class FilesActionStore {
         else
           return {
             id: "menu-move-to",
-            label: t("MoveTo"),
+            label: t("Common:MoveTo"),
             onClick: () => setMoveToPanelVisible(true),
             iconUrl: MoveReactSvgUrl,
           };
@@ -1962,11 +2009,8 @@ class FilesActionStore {
       }
 
       if (isMediaOrImage) {
-        localStorage.setItem(
-          "isFirstUrl",
-          `${window.location.pathname}${window.location.search}`
-        );
-
+        // localStorage.setItem("isFirstUrl", window.location.href);
+        this.mediaViewerDataStore.saveFirstUrl(window.location.href);
         setMediaViewerData({ visible: true, id });
 
         const url = "/products/files/#preview/" + id;

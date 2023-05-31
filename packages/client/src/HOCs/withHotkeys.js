@@ -59,6 +59,8 @@ const withHotkeys = (Component) => {
       archiveRooms,
       isGracePeriod,
       setInviteUsersWarningDialogVisible,
+
+      security,
     } = props;
 
     const navigate = useNavigate();
@@ -85,7 +87,8 @@ const withHotkeys = (Component) => {
       isTrashFolder ||
       isArchiveFolder ||
       isRoomsFolder ||
-      isVisitor;
+      isVisitor ||
+      !security?.Create;
 
     const onCreate = (extension) => {
       if (folderWithNoAction) return;
@@ -363,6 +366,7 @@ const withHotkeys = (Component) => {
       hotkeyStore,
       mediaViewerDataStore,
       treeFoldersStore,
+      selectedFolderStore,
     }) => {
       const {
         setSelected,
@@ -421,6 +425,8 @@ const withHotkeys = (Component) => {
         isRoomsFolder,
       } = treeFoldersStore;
 
+      const security = selectedFolderStore.security;
+
       return {
         setSelected,
         viewAs,
@@ -472,6 +478,8 @@ const withHotkeys = (Component) => {
 
         isGracePeriod,
         setInviteUsersWarningDialogVisible,
+
+        security,
       };
     }
   )(observer(WithHotkeys));

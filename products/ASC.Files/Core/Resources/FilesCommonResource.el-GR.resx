@@ -161,7 +161,7 @@
     <value>Αρχείο μεγαλύτερο από {0} δε θα τροποποιηθεί</value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>Αρχείο μεγαλύτερο από δε θα μετακινηθεί</value>
+    <value>Αρχείο μεγαλύτερο {0} από δε θα μετακινηθεί</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>Δεν μπορείτε να αντιγράψετε τον φάκελο στους υποφακέλους του</value>
@@ -304,5 +304,59 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Συνεργάτης</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Συνεργάτης</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Επεξεργαστής</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Υποβληθείσα φόρμα</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Η νέα έκδοση δεν μπορεί να είναι η ίδια με την τρέχουσα</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Δεν έχετε αρκετά δικαιώματα για την αντιγραφή του αρχείου</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Δεν έχετε επαρκή δικαιώματα για την αντιγραφή του φακέλου</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Μη έγκυρος πάροχος</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Δεν είναι δυνατή η χρήση αυτού του φακέλου για την αποθήκευση του δωματίου</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Ο σύνδεσμος πρόσκλησης δεν είναι έγκυρος ή η ισχύς του έχει λήξει</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Αυτός ο πάροχος είναι ήδη συνδεδεμένος με το δωμάτιο</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Ο ρόλος δεν είναι διαθέσιμος για αυτόν τον τύπο χρήστη</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Δεν έχετε επαρκή δικαιώματα για την αρχειοθέτηση του δωματίου</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Δεν έχετε δικαίωμα αντιγραφής σε αυτόν τον φάκελο</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Δεν έχετε δικαίωμα επεξεργασίας του δωματίου</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Δεν έχετε δικαίωμα μετακίνησης σε αυτόν το φάκελο</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Δεν έχετε επαρκή δικαιώματα για την κατάργηση της αρχειοθέτησης του δωματίου</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Δεν μπορείτε να επεξεργαστείτε αρχειοθετημένα δωμάτια</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Δεν μπορείτε να καρφιτσώσετε ένα δωμάτιο</value>
   </data>
 </root>

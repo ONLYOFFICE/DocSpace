@@ -36,6 +36,7 @@ class DialogsStore {
   };
   restoreAllPanelVisible = false;
   archiveDialogVisible = false;
+  restoreRoomDialogVisible = false;
   eventDialogVisible = false;
 
   removeItem = null;
@@ -48,7 +49,6 @@ class DialogsStore {
   removeMediaItem = null;
   unsubscribe = null;
   isRoomDelete = false;
-  archiveAction = null;
   convertItem = null;
   formCreationInfo = null;
   saveThirdpartyResponse = null;
@@ -80,16 +80,16 @@ class DialogsStore {
     this.isRoomDelete = isRoomDelete;
   };
 
-  setArchiveAction = (archiveAction) => {
-    this.archiveAction = archiveAction;
-  };
-
   setRestoreAllArchive = (restoreAllArchive) => {
     this.restoreAllArchive = restoreAllArchive;
   };
 
   setArchiveDialogVisible = (archiveDialogVisible) => {
     this.archiveDialogVisible = archiveDialogVisible;
+  };
+
+  setRestoreRoomDialogVisible = (restoreRoomDialogVisible) => {
+    this.restoreRoomDialogVisible = restoreRoomDialogVisible;
   };
 
   setSharingPanelVisible = (sharingPanelVisible) => {
@@ -334,6 +334,7 @@ class DialogsStore {
       this.eventDialogVisible ||
       this.invitePanelOptions.visible ||
       this.archiveDialogVisible ||
+      this.restoreRoomDialogVisible ||
       this.restoreAllPanelVisible ||
       this.inviteUsersWarningDialogVisible ||
       this.createRoomDialogVisible ||

@@ -42,3 +42,6 @@ addFilter(r'E: non-executable-script')
 
 # docspace-configuration.sh has a permission of 744, so that users do not have the opportunity to run the script
 addFilter(r'non-standard-executable-perm')
+
+# We use this to protect sensitive information (ie passwords) in the config file
+addFilter(r'non-readable')

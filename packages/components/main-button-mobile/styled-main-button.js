@@ -2,7 +2,7 @@ import styled, { css } from "styled-components";
 import Base from "../themes/base";
 import DropDown from "../drop-down";
 import DropDownItem from "../drop-down-item";
-import FloatingButton from "@docspace/common/components/FloatingButton";
+import FloatingButton from "../floating-button";
 
 import { isMobileOnly } from "react-device-detect";
 import { mobile } from "../utils/device";

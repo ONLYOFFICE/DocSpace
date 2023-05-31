@@ -24,6 +24,8 @@
 // content are licensed under the terms of the Creative Commons Attribution-ShareAlike 4.0
 // International. See the License terms at http://creativecommons.org/licenses/by-sa/4.0/legalcode
 
+using Microsoft.AspNetCore.Http.Extensions;
+
 namespace ASC.Api.Core.Middleware;
 
 public abstract class CommonApiResponse
@@ -121,7 +123,7 @@ public class SuccessApiResponse : CommonApiResponse
         {
             new Link()
             {
-                Href = httpContext.Request.GetUrlRewriter().ToString(),
+                Href = httpContext.Request.GetDisplayUrl(),
                 Action = httpContext.Request.Method
             }
         };

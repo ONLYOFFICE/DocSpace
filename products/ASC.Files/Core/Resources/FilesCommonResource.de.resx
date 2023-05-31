@@ -131,7 +131,7 @@
     <value>Von Revision {0} wieder hergestellt</value>
   </data>
   <data name="CommentRevertChanges" xml:space="preserve">
-    <value>Aus der Dokumentänderung{0}wiederhergestellt </value>
+    <value>Aus der Dokumentänderung{0}wiederhergestellt</value>
   </data>
   <data name="CommentSubmitFillForm" xml:space="preserve">
     <value>Formular abgesendet</value>
@@ -143,8 +143,7 @@
     <value>Abgelehnt</value>
   </data>
   <data name="DocuSignStatusError" xml:space="preserve">
-    <value>Während des Versandvorgangs ist ein Fehler aufgetreten
-</value>
+    <value>Während des Versandvorgangs ist ein Fehler aufgetreten</value>
   </data>
   <data name="DocuSignStatusNotSended" xml:space="preserve">
     <value>Versand des Dokumentes via DocuSign wurde abgebrochen</value>
@@ -156,7 +155,7 @@
     <value>Aufgehoben</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>Ungültige Anfrage</value>
+    <value>Ungültige Anfrage.</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
     <value>Man kann diesen Benutzer nicht auswählen</value>
@@ -168,8 +167,7 @@
     <value>Fehler in Dokumnetendienstleistungen aufgetreten</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
-    <value>Die Datei wird zur Bearbeitung von{0}geöffnet. Derzeit wird die Zusammenbearbeitung für dieses Dateiformat nicht unterstützt.
-</value>
+    <value>Die Datei ird zur Bearbeitung von{0}geöffnet. Derzeit wird die Zusammenbearbeitung für dieses Dateiformat nicht unterstützt.</value>
   </data>
   <data name="ErrorMassage_EditingMobile" xml:space="preserve">
     <value>{0} öffnetet die Datei zum Bearbeiten mit der mobilen Anwendung</value>
@@ -187,10 +185,10 @@
     <value>Datei größer als {0} wird nicht kopiert</value>
   </data>
   <data name="ErrorMassage_FileSizeEdit" xml:space="preserve">
-    <value>Datei größer als {0} wird nicht bearbeitet </value>
+    <value>Datei größer als {0} wird nicht bearbeitet</value>
   </data>
   <data name="ErrorMassage_FileSizeMove" xml:space="preserve">
-    <value>Datei größer als {0} wird nicht verschoben </value>
+    <value>Datei größer als {0} wird nicht verschoben</value>
   </data>
   <data name="ErrorMassage_FolderCopyError" xml:space="preserve">
     <value>Unmöglich das Verzeichnis in sein Unterverzeichnis zu kopieren</value>
@@ -217,7 +215,7 @@
     <value>Der Autor der Speicherung ist unbekannt</value>
   </data>
   <data name="ErrorMassage_SaveCorrupted" xml:space="preserve">
-    <value>Die Datei wurde beim Versuch der Speicherung beschädigt.</value>
+    <value>Die Datei wurde beim Versuch der Speicherung beschädigt</value>
   </data>
   <data name="ErrorMassage_SaveUrlLost" xml:space="preserve">
     <value>Erhaltung der Datei für die Speicherung ist fehlgeschlagen</value>
@@ -226,7 +224,7 @@
     <value>Sie haben keine Berechtigung, diese Operation durchzuführen</value>
   </data>
   <data name="ErrorMassage_SecurityException_Auth" xml:space="preserve">
-    <value>Authentifizierung bei Provider {0} mit den gegebenen Zugangsdaten nicht möglich</value>
+    <value>Authentifizierung bei Provider {0} mit den gegebenen Zugangsdaten nicht möglich.</value>
   </data>
   <data name="ErrorMassage_SecurityException_Create" xml:space="preserve">
     <value>Sie haben keine Berechtigung zum Erstellen</value>
@@ -247,7 +245,7 @@
     <value>Keine Bearbeitungsberechtigung für diese Datei</value>
   </data>
   <data name="ErrorMassage_SecurityException_EditFileTwice" xml:space="preserve">
-    <value>Dieses Dokument wird von Ihnen in einer anderen Registerkarte bearbeitet.</value>
+    <value>Dieses Dokument wird von Ihnen in einer anderen Registerkarte bearbeitet</value>
   </data>
   <data name="ErrorMassage_SecurityException_MoveFile" xml:space="preserve">
     <value>Sie haben keine Berechtigung, die Datei zu verschieben</value>
@@ -362,5 +360,14 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Collaborator</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Collaborator</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Redakteur</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrator des Raums</value>
   </data>
 </root>
