@@ -65,6 +65,27 @@ const StyledComboButton = styled.div`
       ? props.theme.comboBox.button.selectPaddingRight
       : props.theme.comboBox.button.selectPaddingRightNoArrow};
 
+  ${(props) => {
+    return (
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        padding-right: ${(props) =>
+          props.size === "content"
+            ? props.theme.comboBox.button.paddingLeft
+            : props.theme.comboBox.button.selectPaddingLeft};
+
+        padding-left: ${(props) =>
+          props.size === "content"
+            ? props.displayArrow
+              ? props.theme.comboBox.button.paddingRight
+              : props.theme.comboBox.button.paddingRightNoArrow
+            : props.displayArrow
+            ? props.theme.comboBox.button.selectPaddingRight
+            : props.theme.comboBox.button.selectPaddingRightNoArrow};
+      `
+    );
+  }}
+
   background: ${(props) =>
     !props.noBorder
       ? props.theme.comboBox.button.background
@@ -149,6 +170,15 @@ const StyledComboButton = styled.div`
       props.noBorder
         ? props.theme.comboBox.label.marginRight
         : props.theme.comboBox.label.marginRightWithBorder};
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-right: 0;
+        margin-left: ${(props) =>
+          props.noBorder
+            ? props.theme.comboBox.label.marginRight
+            : props.theme.comboBox.label.marginRightWithBorder};
+      `}
     color: ${(props) =>
       props.isDisabled
         ? props.theme.comboBox.label.disabledColor
@@ -189,7 +219,13 @@ StyledComboButton.defaultProps = { theme: Base };
 
 const StyledOptionalItem = styled.div`
   margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
-
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: 0;
+      margin-left: ${(props) =>
+        props.theme.comboBox.childrenButton.marginRight};
+    `}
   visibility: ${(props) => (props.isLoading ? "hidden" : "visible")};
 
   path {
@@ -207,6 +243,13 @@ StyledOptionalItem.defaultProps = { theme: Base };
 
 const StyledIcon = styled.div`
   margin-right: ${(props) => props.theme.comboBox.childrenButton.marginRight};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: 0;
+      margin-left: ${(props) =>
+        props.theme.comboBox.childrenButton.marginRight};
+    `}
   width: ${(props) => props.theme.comboBox.childrenButton.width};
   height: ${(props) => props.theme.comboBox.childrenButton.height};
 
@@ -255,6 +298,14 @@ const StyledArrowIcon = styled.div`
     props.displayArrow ? props.theme.comboBox.arrow.marginRight : "0px"};
   margin-left: ${(props) =>
     props.displayArrow ? props.theme.comboBox.arrow.marginLeft : "0px"};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: ${(props) =>
+        props.displayArrow ? props.theme.comboBox.arrow.marginLeft : "0px"};
+      margin-left: ${(props) =>
+        props.displayArrow ? props.theme.comboBox.arrow.marginRight : "0px"};
+    `}
 
   ${(props) =>
     props.isOpen &&
@@ -274,6 +325,13 @@ const StyledLoader = styled(Loader)`
   position: absolute;
   margin-left: ${(props) =>
     props.displaySize === "content" ? "-16px" : "-8px"};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      margin-right: ${(props) =>
+        props.displaySize === "content" ? "-16px" : "-8px"};
+      margin-left: 0;
+    `}
   margin-top: 2px;
 `;
 
