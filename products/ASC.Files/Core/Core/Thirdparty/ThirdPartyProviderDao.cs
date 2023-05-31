@@ -289,9 +289,8 @@ internal abstract class ThirdPartyProviderDao
     {
         if (withoutTags)
         {
-            return rooms.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-                .WhereAwait(async r => !await filesDbContext.TagLink.Join(filesDbContext.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
-                    .Where(r => r.tag.Type == TagType.Custom).ToAsyncEnumerable().AnyAsync(t => t.EntryId == r.HashId))
+            return rooms.Join(Queries.AllThirdpartyIdMappingsAsync(filesDbContext), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+                .WhereAwait(async r => !await Queries.AnyTagLinksAsync(filesDbContext, r.HashId))
                 .Select(r => r.folder);
         }
 
@@ -300,16 +299,16 @@ internal abstract class ThirdPartyProviderDao
             return rooms;
         }
 
-        var filtered = rooms.Join(filesDbContext.ThirdpartyIdMapping.ToAsyncEnumerable(), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
-            .Join(filesDbContext.TagLink.ToAsyncEnumerable(), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
-            .Join(filesDbContext.Tag.ToAsyncEnumerable(), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
+        var filtered = rooms.Join(Queries.AllThirdpartyIdMappingsAsync(filesDbContext), f => f.Id, m => m.Id, (folder, map) => new { folder, map.HashId })
+            .Join(Queries.AllTagLinksAsync(filesDbContext), r => r.HashId, t => t.EntryId, (result, tag) => new { result.folder, tag.TagId })
+            .Join(Queries.AllTagsAsync(filesDbContext), r => r.TagId, t => t.Id, (result, tagInfo) => new { result.folder, tagInfo.Name })
             .Where(r => tags.Contains(r.Name))
             .Select(r => r.folder);
 
         return filtered;
     }
 
-    protected static IAsyncEnumerable<Folder<string>> FilterByProvidersAsync(IAsyncEnumerable<Folder<string>> rooms, ProviderFilter providerFilter)
+    private static IAsyncEnumerable<Folder<string>> FilterByProvidersAsync(IAsyncEnumerable<Folder<string>> rooms, ProviderFilter providerFilter)
     {
         if (providerFilter == ProviderFilter.None)
         {
@@ -608,4 +607,29 @@ public class TagLinkComparer : IEqualityComparer<TagLink>
     {
         return obj.Id.GetHashCode() + obj.TenantId.GetHashCode();
     }
+}
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        AllThirdpartyIdMappingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.ThirdpartyIdMapping.AsQueryable());
+
+    public static readonly Func<FilesDbContext, string, Task<bool>>
+        AnyTagLinksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, string entryId) =>
+                ctx.TagLink
+                    .Join(ctx.Tag, l => l.TagId, t => t.Id, (link, tag) => new { link.EntryId, tag })
+                    .Where(r => r.tag.Type == TagType.Custom).Any(t => t.EntryId == entryId));
+    
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTagLink>>
+        AllTagLinksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.TagLink.AsQueryable());
+    
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFilesTag>>
+        AllTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.Tag.AsQueryable());
 }
