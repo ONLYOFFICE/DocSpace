@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 const HistoryTableHeader = (props) => {
   const { sectionWidth, tableRef } = props;
-  const { t } = useTranslation(["Webhooks"]);
+  const { t } = useTranslation(["Webhooks", "People"]);
 
   const columns = useRef([
     {
@@ -15,10 +15,11 @@ const HistoryTableHeader = (props) => {
       enable: true,
       default: true,
       active: true,
+      minWidth: 210,
     },
     {
       key: "Status",
-      title: t("Status"),
+      title: t("People:UserStatus"),
       enable: true,
       resizable: true,
     },
