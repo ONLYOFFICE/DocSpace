@@ -4,7 +4,7 @@ import commonIconsStyles from "@docspace/components/utils/common-icons-style";
 
 const StyledPublicRoomBar = styled.div`
   display: flex;
-  background-color: #f8f7bf;
+  background-color: #f8f9f9;
   color: #333;
   font-size: 12px;
   padding: 12px 16px;

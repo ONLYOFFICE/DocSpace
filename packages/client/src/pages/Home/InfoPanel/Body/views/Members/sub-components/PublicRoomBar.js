@@ -20,13 +20,13 @@ const PublicRoomBar = (props) => {
         <div className="body-container">{bodyText}</div>
       </div>
 
-      <IconButton
+      {/* <IconButton
         className="close-icon"
         size={8}
         iconName={CrossReactSvg}
         onClick={onClose}
         color="#657077"
-      />
+      /> */}
     </StyledPublicRoomBar>
   );
 };

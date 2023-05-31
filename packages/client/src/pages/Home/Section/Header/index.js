@@ -601,8 +601,7 @@ const SectionHeaderContent = (props) => {
           label: t("SharingPanel:CopyExternalLink"),
           icon: CopyToReactSvgUrl,
           onClick: () => {
-            copy(roomLinks[0]?.sharedTo?.shareLink);
-            toastr.success(t("Files:LinkSuccessfullyCopied"));
+            roomLinks[0]?.onClick();
           },
           disabled: !isPublicRoomType,
         };

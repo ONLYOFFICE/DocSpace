@@ -120,13 +120,13 @@ const LinkRow = (props) => {
         onClick: onEmbeddingClick,
       },
       disabled
-        ? {
+        ? canLinkDelete && {
             key: "enable-link-key",
             label: t("Files:EnableLink"),
             icon: LoadedReactSvgUrl,
             onClick: onDisableLink,
           }
-        : {
+        : canLinkDelete && {
             key: "disable-link-key",
             label: t("Files:DisableLink"),
             icon: OutlineReactSvgUrl,
