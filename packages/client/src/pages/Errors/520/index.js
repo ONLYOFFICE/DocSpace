@@ -1,13 +1,15 @@
 import React, { useState } from "react";
-import { inject, observer } from "mobx-react";
 import styled from "styled-components";
+import { inject, observer } from "mobx-react";
+import { I18nextProvider, useTranslation } from "react-i18next";
 import ErrorContainer from "@docspace/common/components/ErrorContainer";
 import Link from "@docspace/components/link";
-import { I18nextProvider, useTranslation } from "react-i18next";
-import i18n from "./i18n";
+import { ZendeskAPI } from "@docspace/common/components/Zendesk";
 
 import { ReportDialog } from "SRC_DIR/components/dialogs";
 import DocspaceLogo from "SRC_DIR/DocspaceLogo";
+
+import i18n from "./i18n";
 
 const StyledWrapper = styled.div`
   width: 100%;
@@ -42,6 +44,8 @@ const Error520 = ({ errorLog, currentColorScheme }) => {
   const onReloadClick = () => {
     window.location.reload();
   };
+
+  ZendeskAPI("webWidget", "show");
 
   return (
     <StyledWrapper>
