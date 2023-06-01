@@ -6,8 +6,9 @@ import WebhooksTable from "./sub-components/WebhooksTable";
 
 import { inject, observer } from "mobx-react";
 
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { WebhookConfigsLoader } from "./sub-components/Loaders";
+import { Base } from "@docspace/components/themes";
 
 import { isMobile } from "@docspace/components/utils/device";
 
@@ -23,15 +24,24 @@ const MainWrapper = styled.div`
   }
 `;
 
+const ButtonSeating = styled.div`
+  position: fixed;
+  z-index: 2;
+  width: 100vw;
+  height: 73px;
+  bottom: 0;
+  left: 0;
+  background-color: ${(props) => props.theme.backgroundColor};
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+ButtonSeating.defaultProps = { theme: Base };
+
 const StyledCreateButton = styled(Button)`
-  ${() =>
-    isMobile() &&
-    css`
-      position: fixed;
-      z-index: 2;
-      width: calc(100% - 32px);
-      bottom: 16px;
-    `}
+  width: calc(100% - 32px);
 `;
 
 const Webhooks = (props) => {
@@ -63,12 +73,19 @@ const Webhooks = (props) => {
   ) : state === "success" ? (
     <MainWrapper>
       <WebhookInfo />
-      <StyledCreateButton
-        label={t("CreateWebhook")}
-        primary
-        size={isMobile() ? "normal" : "small"}
-        onClick={openModal}
-      />
+      {isMobile() ? (
+        <ButtonSeating>
+          <StyledCreateButton
+            label={t("CreateWebhook")}
+            primary
+            size={"normal"}
+            onClick={openModal}
+          />
+        </ButtonSeating>
+      ) : (
+        <Button label={t("CreateWebhook")} primary size={"small"} onClick={openModal} />
+      )}
+
       {!isWebhooksEmpty && <WebhooksTable />}
       <WebhookDialog
         visible={isModalOpen}
