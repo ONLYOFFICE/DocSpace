@@ -63,6 +63,12 @@ const mobileDropDown = css`
   }
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.right};
+      right: 0;
+    `}
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.mobile.bottom};
 
   .dialog-background-scroll {
@@ -84,6 +90,12 @@ const StyledDropDown = styled(DropDown)`
   max-width: calc(100vw - 48px);
 
   right: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: ${(props) => props.theme.mainButtonMobile.dropDown.right};
+      right: 0;
+    `}
   bottom: ${(props) => props.theme.mainButtonMobile.dropDown.bottom};
 
   z-index: ${(props) => props.theme.mainButtonMobile.dropDown.zIndex};
@@ -245,6 +257,12 @@ const StyledProgressBarContainer = styled.div`
 
         text-align: right;
         margin-right: 12px;
+        ${(props) =>
+          props.theme.interfaceDirection === "rtl" &&
+          css`
+            margin-left: 12px;
+            margin-right: 0px;
+          `}
       }
 
       .progress_icon {
@@ -282,7 +300,13 @@ const StyledAlertIcon = styled.div`
   z-index: 1010;
   width: 12px;
   height: 12px;
-  left: 26px;
+  right: 26px;
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: 26px;
+      right: 0px;
+    `}
   top: 6px;
 `;
 
