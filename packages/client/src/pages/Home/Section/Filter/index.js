@@ -2043,7 +2043,6 @@ export default inject(
       clearSearch,
       setClearSearch,
       isLoadedEmptyPage,
-      isEmptyPage,
     } = filesStore;
 
     const { providers } = thirdPartyStore;
@@ -2104,7 +2103,6 @@ export default inject(
       providers,
 
       isLoadedEmptyPage,
-      isEmptyPage,
 
       clearSearch,
       setClearSearch,

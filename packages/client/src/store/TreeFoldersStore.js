@@ -50,24 +50,28 @@ class TreeFoldersStore {
   };
 
   updateTreeFoldersItem = (opt) => {
-    const data = JSON.parse(opt?.data);
+    if (opt?.data && opt?.cmd === "create") {
+      const data = JSON.parse(opt.data);
 
-    const parentId = opt?.type === "file" ? data.folderId : data.parentId;
+      const parentId = opt?.type === "file" ? data.folderId : data.parentId;
 
-    const idx = this.treeFolders.findIndex((f) => f.id === parentId);
+      const idx = this.treeFolders.findIndex((f) => f.id === parentId);
 
-    if (idx > 0) {
-      if (opt.type === "file") {
-        if (opt?.cmd === "create") {
+      if (idx >= 0) {
+        if (opt.type === "file") {
           this.treeFolders[idx].filesCount++;
-        } else if (opt?.cmd === "delete") {
-          this.treeFolders[idx].filesCount--;
-        }
-      } else {
-        if (opt?.cmd === "create") {
+          if (this.treeFolders[idx].files) {
+            this.treeFolders[idx].files.push(data);
+          } else {
+            this.treeFolders[idx].files = [data];
+          }
+        } else {
           this.treeFolders[idx].foldersCount++;
-        } else if (opt?.cmd === "delete") {
-          this.treeFolders[idx].foldersCount--;
+          if (this.treeFolders[idx].folders) {
+            this.treeFolders[idx].folders.push(data);
+          } else {
+            this.treeFolders[idx].folders = [data];
+          }
         }
       }
     }

@@ -51,6 +51,10 @@ import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu"
 import { getCategoryType } from "SRC_DIR/helpers/utils";
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 import withLoader from "../../../../HOCs/withLoader";
+import {
+  getCategoryTypeByFolderType,
+  getCategoryUrl,
+} from "SRC_DIR/helpers/utils";
 
 const StyledContainer = styled.div`
   width: 100%;
@@ -199,6 +203,7 @@ const SectionHeaderContent = (props) => {
 
     clearFiles,
     emptyTrashInProgress,
+    isLoading,
   } = props;
 
   const navigate = useNavigate();
@@ -754,22 +759,10 @@ const SectionHeaderContent = (props) => {
 
     const rootFolderType = selectedFolder.rootFolderType;
 
-    let path = "";
-
-    switch (rootFolderType) {
-      case FolderType.Rooms:
-        path = `rooms/shared/${id}`;
-        break;
-      case FolderType.Archive:
-        path = `rooms/archived`;
-        break;
-      case FolderType.USER:
-        path = `rooms/personal`;
-        break;
-      case FolderType.TRASH:
-        path = `files/trash`;
-        break;
-    }
+    const path = getCategoryUrl(
+      getCategoryTypeByFolderType(rootFolderType, id),
+      id
+    );
 
     const filter = FilesFilter.getDefault();
 
@@ -780,14 +773,13 @@ const SectionHeaderContent = (props) => {
     const state = {
       title: selectedFolder.navigationPath[itemIdx]?.title || "",
       isRoot: itemIdx === 0,
-      isEmpty: false,
+
       rootFolderType: rootFolderType,
     };
 
     setIsLoading(true);
-    clearFiles(false);
 
-    path = `${path}/filter?${filter.toUrlParams()}`;
+    path = `${path}?${filter.toUrlParams()}`;
 
     window.DocSpace.navigate(path, { state });
   };
@@ -849,19 +841,22 @@ const SectionHeaderContent = (props) => {
 
   const stateTitle = location?.state?.title;
   const stateIsRoot = location?.state?.isRoot;
+  const stateIsRoom = location?.state?.isRoom;
 
   const isRoot =
-    pathParts === null && stateIsRoot
-      ? true
+    isLoading && stateIsRoot
+      ? stateIsRoot
       : isRootFolder || isAccountsPage || isSettingsPage;
 
   const currentTitle = isSettingsPage
     ? t("Common:Settings")
     : isAccountsPage
     ? t("Common:Accounts")
-    : !title && stateTitle
+    : isLoading && stateTitle
     ? stateTitle
     : title;
+
+  const isCurrentRoom = isLoading && stateIsRoom ? stateIsRoom : isRoom;
 
   return (
     <Consumer key="header">
@@ -913,7 +908,7 @@ const SectionHeaderContent = (props) => {
                 withMenu={!isRoomsFolder}
                 onPlusClick={onCreateRoom}
                 isEmptyPage={isEmptyPage}
-                isRoom={isRoom}
+                isRoom={isCurrentRoom}
                 hideInfoPanel={isSettingsPage}
               />
             </div>
@@ -963,6 +958,8 @@ export default inject(
       isEmptyPage,
 
       clearFiles,
+
+      isLoading,
     } = filesStore;
 
     const {
@@ -1053,6 +1050,7 @@ export default inject(
       showText: auth.settingsStore.showText,
       isDesktop: auth.settingsStore.isDesktopClient,
 
+      isLoading,
       isRootFolder: pathParts?.length === 1,
       isPersonalRoom,
       title,

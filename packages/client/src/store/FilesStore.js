@@ -589,13 +589,10 @@ class FilesStore {
     }
   };
 
-  clearFiles = (isEmpty) => {
-    this.setIsEmptyPage(isEmpty);
-    console.log(isEmpty);
-    if (isEmpty) {
-      this.setFolders([]);
-      this.setFiles([]);
-    }
+  clearFiles = () => {
+    this.setFolders([]);
+    this.setFiles([]);
+
     this.selectedFolderStore.setSelectedFolder(null);
   };
 

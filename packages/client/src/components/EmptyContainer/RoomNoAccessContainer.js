@@ -12,6 +12,7 @@ import Link from "@docspace/components/link";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 const RoomNoAccessContainer = (props) => {
   const {
@@ -41,7 +42,9 @@ const RoomNoAccessContainer = (props) => {
 
     const filterParamsStr = filter.toUrlParams();
 
-    navigate(`rooms/shared/filter?${filterParamsStr}`);
+    const path = getCategoryUrl(CategoryType.Shared);
+
+    navigate(`${path}?${filterParamsStr}`);
   };
 
   const goToButtons = (

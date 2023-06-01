@@ -18,6 +18,8 @@ import RoomsFilter from "@docspace/common/api/rooms/filter";
 import Loaders from "@docspace/common/components/Loaders";
 import { showLoader, hideLoader } from "./EmptyFolderContainerUtils";
 import { FolderType, RoomSearchArea } from "@docspace/common/constants";
+import { getCategoryUrl, getCategoryType } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 const EmptyFolderContainer = ({
   t,
@@ -38,16 +40,14 @@ const EmptyFolderContainer = ({
   navigationPath,
   rootFolderType,
   clearFiles,
+  roomType,
+  isLoading,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const isRoom =
-    rootFolderType === null && location?.state?.rootFolderType
-      ? location.state.rootFolderType === FolderType.Archive ||
-        location.state.rootFolderType === FolderType.Rooms
-      : rootFolderType === FolderType.Archive ||
-        rootFolderType === FolderType.Rooms;
+    isLoading && location?.state?.isRoom ? location?.state?.isRoom : !!roomType;
 
   const canInviteUsers = isRoom && editAccess;
 
@@ -57,8 +57,8 @@ const EmptyFolderContainer = ({
     if (isRoom) {
       const path =
         rootFolderType === FolderType.Archive
-          ? "rooms/archived"
-          : "rooms/shared";
+          ? getCategoryUrl(CategoryType.Archive)
+          : getCategoryUrl(CategoryType.Shared);
 
       const newFilter = RoomsFilter.getDefault();
 
@@ -70,23 +70,17 @@ const EmptyFolderContainer = ({
       const state = {
         title: navigationPath[0].title,
         isRoot: true,
-        isEmpty: false,
         rootFolderType,
       };
 
-      clearFiles(false);
-
-      navigate(`${path}/filter?${newFilter.toUrlParams()}`, {
+      navigate(`${path}?${newFilter.toUrlParams()}`, {
         state,
       });
     } else {
-      let path = location.pathname.split("/filter")[0];
-      const splittedPath = path.split("/");
-      if (splittedPath.length > 3) {
-        splittedPath[3] = `${parentId}`;
-      }
+      const categoryType = getCategoryType(location);
+
       const newFilter = FilesFilter.getDefault();
-      newFilter.folder = `${parentId}`;
+      newFilter.folder = parentId;
 
       const parentIdx = navigationPath.findIndex((v) => v.id === parentId);
 
@@ -95,12 +89,12 @@ const EmptyFolderContainer = ({
       const state = {
         title: parentItem.title,
         isRoot: navigationPath.length === 1,
-        isEmpty: false,
         rootFolderType,
       };
 
-      clearFiles(false);
-      navigate(`${splittedPath.join("/")}/filter?${newFilter.toUrlParams()}`, {
+      const path = getCategoryUrl(categoryType, parentId);
+
+      navigate(`${path}?${newFilter.toUrlParams()}`, {
         state,
       });
     }
@@ -220,7 +214,7 @@ export default inject(
     selectedFolderStore,
     contextOptionsStore,
   }) => {
-    const { clearFiles } = filesStore;
+    const { clearFiles, isLoading } = filesStore;
     const {
       navigationPath,
       parentId,
@@ -229,6 +223,7 @@ export default inject(
 
       security,
       rootFolderType,
+      roomType,
     } = selectedFolderStore;
 
     let id;
@@ -243,8 +238,9 @@ export default inject(
 
     return {
       setIsLoading: filesStore.setIsLoading,
+      isLoading,
       parentId: id ?? parentId,
-
+      roomType,
       canCreateFiles,
 
       navigationPath,

@@ -186,7 +186,7 @@ class ContextOptionsStore {
   };
 
   onOpenLocation = (item) => {
-    this.filesActionsStore.openLocationAction(locationId);
+    this.filesActionsStore.openLocationAction(item);
   };
 
   onOwnerChange = () => {

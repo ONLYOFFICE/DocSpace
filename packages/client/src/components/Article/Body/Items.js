@@ -106,17 +106,9 @@ const Item = ({
 
   const onClickAction = React.useCallback(
     (folderId) => {
-      const isEmpty = item.filesCount === 0 && item.foldersCount === 0;
-
-      onClick && onClick(folderId, item.title, isEmpty, item.rootFolderType);
+      onClick && onClick(folderId, item.title, item.rootFolderType);
     },
-    [
-      onClick,
-      item.title,
-      item.filesCount,
-      item.foldersCount,
-      item.rootFolderType,
-    ]
+    [onClick, item.title, item.rootFolderType]
   );
 
   return (

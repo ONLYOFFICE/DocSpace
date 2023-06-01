@@ -176,7 +176,7 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
       return "/rooms/archived/filter";
 
     case CategoryType.ArchivedRoom:
-      return "/rooms/archived/${folderId}/filter";
+      return `/rooms/archived/${folderId}/filter`;
 
     case CategoryType.Favorite:
       return "/files/favorite/filter";
@@ -186,6 +186,12 @@ export const getCategoryUrl = (categoryType, folderId = null) => {
 
     case CategoryType.Trash:
       return "/files/trash/filter";
+
+    case CategoryType.Accounts:
+      return "/accounts/filter";
+
+    case CategoryType.Settings:
+      return "/settings/common";
 
     default:
       throw new Error("Unknown category type");

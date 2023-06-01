@@ -20,6 +20,7 @@ const linkStyles = {
 
 const EmptyContainer = ({
   isFiltered,
+  isLoading,
   parentId,
   theme,
 
@@ -66,9 +67,7 @@ const EmptyContainer = ({
   }
 
   const isRootEmptyPage =
-    parentId === null && location.state
-      ? location.state?.isRoot
-      : parentId === 0;
+    isLoading && location?.state ? location.state?.isRoot : parentId === 0;
 
   return isFiltered ? (
     <EmptyFilterContainer linkStyles={linkStyles} />
@@ -96,7 +95,7 @@ export default inject(
 
     selectedFolderStore,
   }) => {
-    const { isErrorRoomNotAvailable, isFiltered } = filesStore;
+    const { isErrorRoomNotAvailable, isFiltered, isLoading } = filesStore;
 
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
@@ -110,6 +109,7 @@ export default inject(
     return {
       theme: auth.settingsStore.theme,
       isFiltered,
+      isLoading,
 
       parentId: selectedFolderStore.parentId,
       isRoomNotFoundOrMoved,

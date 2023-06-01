@@ -153,11 +153,9 @@ class NewFilesPanel extends React.Component {
 
     if (!fileExst) {
       const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
-      const isEmpty = filesCount === 0 && foldersCount === 0;
 
-      const state = { title, rootFolderType, isEmpty, isRoot: false };
+      const state = { title, rootFolderType, isRoot: false };
       setIsLoading(true);
-      clearFiles(isEmpty);
 
       const url = getCategoryUrl(categoryType, id);
 
@@ -204,11 +202,10 @@ class NewFilesPanel extends React.Component {
           const state = {
             title: "",
             rootFolderType,
-            isEmpty: false,
+
             isRoot: false,
           };
           setIsLoading(true);
-          clearFiles(false);
 
           const url = getCategoryUrl(categoryType, item.folderId);
 

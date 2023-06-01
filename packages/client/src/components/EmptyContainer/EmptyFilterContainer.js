@@ -43,15 +43,13 @@ const EmptyFilterContainer = ({
     if (isRoomsFolder) {
       const newFilter = RoomsFilter.getDefault();
 
-      navigate(`/rooms/shared/filter?${newFilter.toUrlParams()}`);
+      navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
     } else {
       const newFilter = FilesFilter.getDefault();
 
       newFilter.folder = selectedFolderId;
 
-      const path = location.pathname.split("/filter")[0];
-
-      navigate(`${path}/filter?${newFilter.toUrlParams()}`);
+      navigate(`${location.pathname}?${newFilter.toUrlParams()}`);
     }
   };
 

@@ -261,14 +261,10 @@ class FilesActionStore {
       activeFiles,
       activeFolders,
     } = this.filesStore;
-    const {
-      secondaryProgressDataStore,
-      clearActiveOperations,
-    } = this.uploadDataStore;
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
+    const { secondaryProgressDataStore, clearActiveOperations } =
+      this.uploadDataStore;
+    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
+      secondaryProgressDataStore;
     const { withPaging } = this.authStore.settingsStore;
 
     const selection = newSelection
@@ -1046,15 +1042,11 @@ class FilesActionStore {
     const { roomsFolder, isRoomsFolder, archiveRoomsId, myRoomsId } =
       this.treeFoldersStore;
 
-    const {
-      secondaryProgressDataStore,
-      clearActiveOperations,
-    } = this.uploadDataStore;
+    const { secondaryProgressDataStore, clearActiveOperations } =
+      this.uploadDataStore;
 
-    const {
-      setSecondaryProgressBarData,
-      clearSecondaryProgressData,
-    } = secondaryProgressDataStore;
+    const { setSecondaryProgressBarData, clearSecondaryProgressData } =
+      secondaryProgressDataStore;
 
     if (!myRoomsId || !archiveRoomsId) {
       console.error("Default categories not found");
@@ -1275,26 +1267,16 @@ class FilesActionStore {
   openLocationAction = async (item) => {
     this.filesStore.setBufferSelection(null);
 
-    const {
-      id,
-
-      title,
-      rootFolderType,
-      filesCount,
-      foldersCount,
-    } = item;
+    const { id, isRoom, title, rootFolderType } = item;
     const categoryType = getCategoryTypeByFolderType(rootFolderType, id);
 
-    const isEmpty = filesCount === 0 && foldersCount === 0;
-
-    const state = { title, isEmpty, rootFolderType, isRoot: false };
+    const state = { title, rootFolderType, isRoot: false, isRoom };
     const filter = FilesFilter.getDefault();
 
     filter.folder = id;
 
     const url = getCategoryUrl(categoryType, id);
 
-    this.filesStore.clearFiles(isEmpty);
     this.filesStore.setIsLoading(true);
 
     window.DocSpace.navigate(`${url}?${filter.toUrlParams()}`, { state });
@@ -1314,11 +1296,9 @@ class FilesActionStore {
       ExtraLocation === archiveRoomsId ||
       ExtraLocation === recycleBinFolderId;
 
-    const isEmpty = false;
-
     const state = {
       title: ExtraLocationTitle,
-      isEmpty,
+
       isRoot,
       fileExst,
       highlightFileId: item.id,
@@ -1333,7 +1313,6 @@ class FilesActionStore {
     newFilter.search = item.title;
     newFilter.folder = ExtraLocation;
 
-    clearFiles(isEmpty);
     setIsLoading(true);
 
     window.DocSpace.navigate(`${url}?${newFilter.toUrlParams()}`, { state });
@@ -2024,27 +2003,21 @@ class FilesActionStore {
     if (isRecycleBinFolder || isLoading) return;
 
     if (isFolder) {
-      const { filesCount, foldersCount, isRoom, rootFolderType, title } = item;
+      const { isRoom, rootFolderType, title } = item;
 
-      const isEmpty = filesCount === 0 && foldersCount === 0;
       setIsLoading(true);
-      clearFiles(isEmpty);
-      let path =
-        rootFolderType === FolderType.Rooms ||
-        rootFolderType === FolderType.Archive
-          ? rootFolderType === FolderType.Rooms
-            ? `rooms/shared/${id}`
-            : "rooms/archived"
-          : "rooms/personal";
+
+      const path = getCategoryUrl(
+        getCategoryTypeByFolderType(rootFolderType, id),
+        id
+      );
 
       const filter = FilesFilter.getDefault();
       filter.folder = id;
 
-      path = `${path}/filter?${filter.toUrlParams()}`;
+      const state = { title, isRoot: false, rootFolderType, isRoom };
 
-      const state = { title, isRoot: false, isEmpty, rootFolderType };
-
-      window.DocSpace.navigate(path, { state });
+      window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
     } else {
       if (canConvert) {
         setConvertItem({ ...item, isOpen: true });
@@ -2120,26 +2093,26 @@ class FilesActionStore {
     }
 
     if (categoryType === CategoryType.Settings) {
-      clearFiles(isEmpty);
+      clearFiles();
+
+      const path = getCategoryUrl(CategoryType.Settings);
 
       setSelectedNode(["common"]);
 
-      return navigate("/settings/common");
+      return navigate(path);
     }
 
     if (categoryType === CategoryType.Accounts) {
       const accountsFilter = AccountsFilter.getDefault();
       params = accountsFilter.toUrlParams();
-      path = "/accounts";
+      const path = getCategoryUrl(CategoryType.Accounts);
 
       clearFiles();
       setIsLoading(true);
 
       setSelectedNode(["accounts", "filter"]);
 
-      path += `/filter?${params}`;
-
-      return navigate(path);
+      return navigate(`${path}?${params}`);
     }
   };
 
@@ -2150,7 +2123,7 @@ class FilesActionStore {
 
     const filter = RoomsFilter.getDefault();
 
-    let path = `rooms/shared`;
+    const path = getCategoryUrl(categoryType);
 
     const state = {
       title:
@@ -2158,21 +2131,16 @@ class FilesActionStore {
           this.selectedFolderStore?.navigationPath.length - 1
         ]?.title || "",
       isRoot: true,
-      isEmpty: false,
       rootFolderType: this.selectedFolderStore.rootFolderType,
     };
 
     setIsLoading(true);
-    clearFiles(false);
 
     if (categoryType == CategoryType.Archive) {
       filter.searchArea = RoomSearchArea.Archive;
-      path = "rooms/archived";
     }
 
-    path = `${path}/filter?${filter.toUrlParams()}`;
-
-    window.DocSpace.navigate(path, { state });
+    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
   backToParentFolder = () => {
@@ -2187,21 +2155,10 @@ class FilesActionStore {
       id = urlFilter.folder;
     }
 
-    let path = "";
-    switch (rootFolderType) {
-      case FolderType.Rooms:
-        path = `rooms/shared/${id}`;
-        break;
-      case FolderType.Archive:
-        path = `rooms/archived`;
-        break;
-      case FolderType.USER:
-        path = `rooms/personal`;
-        break;
-      case FolderType.TRASH:
-        path = `files/trash`;
-        break;
-    }
+    const path = getCategoryUrl(
+      getCategoryTypeByFolderType(rootFolderType, id),
+      id
+    );
 
     const filter = FilesFilter.getDefault();
 
@@ -2210,16 +2167,12 @@ class FilesActionStore {
     const state = {
       title: navigationPath[0]?.title || "",
       isRoot: navigationPath.length === 1,
-      isEmpty: false,
       rootFolderType: rootFolderType,
     };
 
     setIsLoading(true);
-    clearFiles(false);
 
-    path = `${path}/filter?${filter.toUrlParams()}`;
-
-    window.DocSpace.navigate(path, { state });
+    window.DocSpace.navigate(`${path}?${filter.toUrlParams()}`, { state });
   };
 
   setGroupMenuBlocked = (blocked) => {

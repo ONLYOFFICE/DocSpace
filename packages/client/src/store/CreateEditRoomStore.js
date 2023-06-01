@@ -2,6 +2,8 @@ import { makeAutoObservable } from "mobx";
 import toastr from "@docspace/components/toast/toastr";
 import { isMobile } from "react-device-detect";
 import FilesFilter from "@docspace/common/api/files/filter";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 class CreateEditRoomStore {
   roomParams = null;
@@ -163,24 +165,20 @@ class CreateEditRoomStore {
 
     setView("info_members");
 
-    const isEmpty = room.filesCount + room.foldersCount === 0;
-
     const state = {
       isRoot: false,
       title: room.title,
-      isEmpty,
+
       rootFolderType: room.rootFolderType,
     };
 
     const newFilter = FilesFilter.getDefault();
     newFilter.folder = room.id;
     setIsLoading(true);
-    clearFiles(isEmpty);
 
-    window.DocSpace.navigate(
-      `rooms/shared/${room.id}/filter?${newFilter.toUrlParams()}`,
-      { state }
-    );
+    const path = getCategoryUrl(CategoryType.SharedRoom, room.id);
+
+    window.DocSpace.navigate(`${path}?${newFilter.toUrlParams()}`, { state });
 
     !isMobile && setIsVisible(true);
 

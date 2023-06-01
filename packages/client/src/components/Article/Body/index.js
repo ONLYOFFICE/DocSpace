@@ -18,6 +18,8 @@ import Banner from "./Banner";
 
 import Loaders from "@docspace/common/components/Loaders";
 import withLoader from "../../../HOCs/withLoader";
+import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 const StyledBlock = styled.div`
   padding: 0 20px;
@@ -41,6 +43,7 @@ const ArticleBodyContent = (props) => {
     archiveFolderId,
     myFolderId,
     recycleBinFolderId,
+    rootFolderId,
 
     isVisitor,
     setIsLoading,
@@ -60,16 +63,16 @@ const ArticleBodyContent = (props) => {
   //   .filter((campaign) => campaign.length > 0);
 
   const onClick = React.useCallback(
-    (folderId, title, isEmpty, rootFolderType) => {
+    (folderId, title, rootFolderType) => {
       const { toggleArticleOpen } = props;
 
-      let path = `/rooms`;
+      // let path = `/rooms`;
       let params = null;
+      let path = ``;
 
       const state = {
         title,
         isRoot: true,
-        isEmpty,
         rootFolderType,
       };
 
@@ -78,7 +81,8 @@ const ArticleBodyContent = (props) => {
           const myFilter = FilesFilter.getDefault();
           myFilter.folder = folderId;
           params = myFilter.toUrlParams();
-          path += "/personal";
+
+          path = getCategoryUrl(CategoryType.Personal);
 
           if (activeItem === myFolderId && folderId === selectedFolderId)
             return;
@@ -88,7 +92,7 @@ const ArticleBodyContent = (props) => {
           const archiveFilter = RoomsFilter.getDefault();
           archiveFilter.searchArea = RoomSearchArea.Archive;
           params = archiveFilter.toUrlParams();
-          path += "/archived";
+          path = getCategoryUrl(CategoryType.Archive);
           if (activeItem === archiveFolderId && folderId === selectedFolderId)
             return;
           break;
@@ -96,7 +100,7 @@ const ArticleBodyContent = (props) => {
           const recycleBinFilter = FilesFilter.getDefault();
           recycleBinFilter.folder = folderId;
           params = recycleBinFilter.toUrlParams();
-          path = "/files/trash";
+          path = getCategoryUrl(CategoryType.Trash);
           if (
             activeItem === recycleBinFolderId &&
             folderId === selectedFolderId
@@ -104,14 +108,17 @@ const ArticleBodyContent = (props) => {
             return;
           break;
         case "accounts":
+          clearFiles();
           const accountsFilter = AccountsFilter.getDefault();
           params = accountsFilter.toUrlParams();
-          path = "/accounts";
+          path = getCategoryUrl(CategoryType.Accounts);
 
           break;
         case "settings":
-          clearFiles(isEmpty);
-          navigate("/settings/common");
+          clearFiles();
+
+          path = getCategoryUrl(CategoryType.Settings);
+          navigate(path);
 
           if (isMobileOnly || isMobile()) {
             toggleArticleOpen();
@@ -122,15 +129,14 @@ const ArticleBodyContent = (props) => {
           const roomsFilter = RoomsFilter.getDefault();
           roomsFilter.searchArea = RoomSearchArea.Active;
           params = roomsFilter.toUrlParams();
-          path += "/shared";
+          path = getCategoryUrl(CategoryType.Shared);
           if (activeItem === roomsFolderId && folderId === selectedFolderId)
             return;
           break;
       }
 
-      clearFiles(isEmpty);
       setIsLoading(true);
-      path += `/filter?${params}`;
+      path += `?${params}`;
 
       navigate(path, { state });
 
@@ -198,7 +204,7 @@ const ArticleBodyContent = (props) => {
     if (location.pathname.includes("/accounts/view/@self")) {
       if (isVisitor) {
         if (activeItem) return;
-        return setActiveItem(myFolderId);
+        return setActiveItem(rootFolderId);
       }
 
       if (activeItem !== "accounts") return setActiveItem("accounts");
@@ -211,6 +217,7 @@ const ArticleBodyContent = (props) => {
     myFolderId,
     recycleBinFolderId,
     isVisitor,
+    rootFolderId,
   ]);
 
   return (
@@ -252,6 +259,8 @@ export default inject(
 
     const selectedFolderId = selectedFolderStore.id;
 
+    const rootFolderId = selectedFolderStore.rootFolderId;
+
     const {
       showText,
 
@@ -279,6 +288,7 @@ export default inject(
       archiveFolderId,
       myFolderId,
       recycleBinFolderId,
+      rootFolderId,
 
       setIsLoading,
 

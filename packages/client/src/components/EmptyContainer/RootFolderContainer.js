@@ -15,7 +15,9 @@ import Box from "@docspace/components/box";
 
 import RoomsFilter from "@docspace/common/api/rooms/filter";
 import FilesFilter from "@docspace/common/api/files/filter";
+
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 
 import PlusIcon from "PUBLIC_DIR/images/plus.react.svg";
 import EmptyScreenPersonalUrl from "PUBLIC_DIR/images/empty_screen_personal.svg?url";
@@ -109,19 +111,17 @@ const RootFolderContainer = (props) => {
 
     newFilter.folder = myFolderId;
 
-    const isEmpty = myFolder.filesCount + myFolder.foldersCount === 0;
-
     const state = {
       title: myFolder.title,
-      isEmpty,
       isRoot: true,
       rootFolderType: myFolder.rootFolderType,
     };
 
-    clearFiles(isEmpty);
+    const path = getCategoryUrl(CategoryType.Personal);
+
     setIsLoading(true);
 
-    navigate(`/rooms/personal/filter?${newFilter.toUrlParams()}`, { state });
+    navigate(`${path}?${newFilter.toUrlParams()}`, { state });
   };
 
   const onGoToShared = () => {
@@ -129,19 +129,17 @@ const RootFolderContainer = (props) => {
 
     newFilter.searchArea = RoomSearchArea.Active;
 
-    const isEmpty = roomsFolder.foldersCount === 0;
-
     const state = {
       title: roomsFolder.title,
-      isEmpty,
       isRoot: true,
       rootFolderType: roomsFolder.rootFolderType,
     };
 
-    clearFiles(isEmpty);
     setIsLoading(true);
 
-    navigate(`/rooms/shared/filter?${newFilter.toUrlParams()}`, { state });
+    const path = getCategoryUrl(CategoryType.Shared);
+
+    navigate(`${path}?${newFilter.toUrlParams()}`, { state });
   };
 
   const getEmptyFolderProps = () => {
@@ -345,8 +343,6 @@ const RootFolderContainer = (props) => {
 
   const headerText = isPrivacyFolder ? privateRoomHeader : title;
   const emptyFolderProps = getEmptyFolderProps();
-
-  useEffect(() => (isLoading ? showLoader() : hideLoader()), [isLoading]);
 
   // if (isLoading) {
   //   return (

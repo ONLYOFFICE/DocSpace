@@ -255,8 +255,7 @@ const SectionBodyContent = (props) => {
 
   if (isEmptyFilesList && movingInProgress) return <></>;
 
-  const isEmptyPage =
-    isLoading && location.state ? location?.state?.isEmpty : isEmptyFilesList;
+  const isEmptyPage = isEmptyFilesList;
 
   return (
     <Consumer>
