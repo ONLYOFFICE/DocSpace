@@ -1,7 +1,7 @@
 /*
  * Returns correct text-align value depending on interface direction (ltr/rtl)
  */
-const getTextAlign = (currentTextAlign, interfaceDirection) => {
+const getCorrectTextAlign = (currentTextAlign, interfaceDirection) => {
   if (interfaceDirection === "ltr") return currentTextAlign;
 
   switch (currentTextAlign) {
@@ -14,4 +14,4 @@ const getTextAlign = (currentTextAlign, interfaceDirection) => {
   }
 };
 
-export default getTextAlign;
+export default getCorrectTextAlign;

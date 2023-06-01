@@ -1,10 +1,10 @@
 import { css } from "styled-components";
-import getTextAlign from "./utils/getTextAlign";
+import getCorrectTextAlign from "../utils/getCorrectTextAlign";
 
 const commonTextStyles = css`
   font-family: ${(props) => props.theme.fontFamily};
   text-align: ${(props) =>
-    getTextAlign(props.textAlign, props.theme.interfaceDirection)};
+    getCorrectTextAlign(props.textAlign, props.theme.interfaceDirection)};
   color: ${(props) =>
     props.colorProp ? props.colorProp : props.theme.text.color};
   ${(props) =>
