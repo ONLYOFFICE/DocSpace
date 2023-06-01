@@ -11,13 +11,38 @@ import { WebhooksTableRow } from "./WebhooksTableRow";
 
 import { WebhookTableHeader } from "./WebhookTableHeader";
 
+import { Base } from "@docspace/components/themes";
+
 const TableWrapper = styled(TableContainer)`
   margin-top: 16px;
+
+  .table-container_caption-header {
+    position: absolute;
+  }
+
+  .table-list-item {
+    margin-top: -1px;
+    &:hover {
+      cursor: pointer;
+      background-color: ${(props) => (props.theme.isBase ? "#F8F9F9" : "#282828")};
+    }
+  }
 `;
 
+TableWrapper.defaultProps = { theme: Base };
+
 const WebhooksTableView = (props) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, sectionWidth, viewAs, setViewAs } =
-    props;
+  const {
+    webhooks,
+    loadWebhooks,
+    toggleEnabled,
+    deleteWebhook,
+    editWebhook,
+    sectionWidth,
+    viewAs,
+    setViewAs,
+    setTitleHistory,
+  } = props;
 
   const tableRef = useRef(null);
 
@@ -35,9 +60,16 @@ const WebhooksTableView = (props) => {
       forwardedRef={tableRef}
       style={{
         gridTemplateColumns: "200px 500px 110px 24px",
-      }}>
+      }}
+      useReactWindow>
       <WebhookTableHeader sectionWidth={sectionWidth} tableRef={tableRef} />
-      <TableBody>
+      <TableBody
+        itemHeight={49}
+        useReactWindow
+        filesLength={webhooks.length}
+        fetchMoreFiles={loadWebhooks}
+        hasMoreFiles={false}
+        itemCount={webhooks.length}>
         {webhooks.map((webhook, index) => (
           <WebhooksTableRow
             key={webhook.id}
@@ -46,6 +78,7 @@ const WebhooksTableView = (props) => {
             toggleEnabled={toggleEnabled}
             deleteWebhook={deleteWebhook}
             editWebhook={editWebhook}
+            setTitleHistory={setTitleHistory}
           />
         ))}
       </TableBody>
@@ -54,7 +87,8 @@ const WebhooksTableView = (props) => {
 };
 
 export default inject(({ webhooksStore, setup }) => {
-  const { webhooks, toggleEnabled, deleteWebhook, editWebhook } = webhooksStore;
+  const { webhooks, toggleEnabled, deleteWebhook, editWebhook, loadWebhooks, setTitleHistory } =
+    webhooksStore;
 
   const { viewAs, setViewAs } = setup;
 
@@ -65,5 +99,7 @@ export default inject(({ webhooksStore, setup }) => {
     editWebhook,
     viewAs,
     setViewAs,
+    loadWebhooks,
+    setTitleHistory,
   };
 })(observer(WebhooksTableView));

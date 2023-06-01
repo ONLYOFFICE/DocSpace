@@ -18,6 +18,10 @@ import StatusBadge from "../../StatusBadge";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
+const StyledWrapper = styled.div`
+  display: contents;
+`;
+
 const StyledTableRow = styled(TableRow)`
   .table-container_cell {
     padding-right: 30px;
@@ -32,7 +36,13 @@ const StyledTableRow = styled(TableRow)`
   }
 `;
 
-export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWebhook }) => {
+export const WebhooksTableRow = ({
+  webhook,
+  toggleEnabled,
+  deleteWebhook,
+  editWebhook,
+  setTitleHistory,
+}) => {
   const navigate = useNavigate();
 
   const { t } = useTranslation(["Webhooks", "Common"]);
@@ -45,8 +55,25 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
   const openSettings = () => setIsSettingsOpened(true);
   const onDeleteOpen = () => setIsDeleteOpened(true);
   const onDeleteClose = () => setIsDeleteOpened(false);
-  const redirectToHistory = () => navigate(window.location.pathname + `/${webhook.id}`);
+  const redirectToHistory = () => {
+    setTitleHistory();
+    navigate(window.location.pathname + `/${webhook.id}`);
+  };
 
+  const handleRowClick = (e) => {
+    if (
+      e.target.closest(".checkbox") ||
+      e.target.closest(".table-container_row-checkbox") ||
+      e.target.closest(".type-combobox") ||
+      e.target.closest(".table-container_row-context-menu-wrapper") ||
+      e.target.closest(".toggleButton") ||
+      e.detail === 0
+    ) {
+      return;
+    }
+
+    redirectToHistory();
+  };
   const handleWebhookUpdate = async (webhookInfo) => {
     await editWebhook(webhook, webhookInfo);
     toastr.success(t("WebhookEditedSuccessfully"), <b>{t("Common:Done")}</b>);
@@ -87,28 +114,31 @@ export const WebhooksTableRow = ({ webhook, toggleEnabled, deleteWebhook, editWe
 
   return (
     <>
-      <StyledTableRow contextOptions={contextOptions}>
-        <TableCell>
-          <Text as="span" fontWeight={600} className="mr-8 no-wrap">
-            {webhook.name}{" "}
-          </Text>
-          <StatusBadge status={webhook.status} />
-          <NoBoxShadowToast />
-        </TableCell>
-        <TableCell>
-          <Text as="span" fontSize="11px" color="#A3A9AE" fontWeight={600}>
-            {webhook.uri}
-          </Text>
-        </TableCell>
-        <TableCell>
-          <ToggleButton
-            className="toggle toggleButton"
-            id="toggle id"
-            isChecked={isChecked}
-            onChange={handleToggleEnabled}
-          />
-        </TableCell>
-      </StyledTableRow>
+      <StyledWrapper onClick={handleRowClick}>
+        <StyledTableRow contextOptions={contextOptions}>
+          <TableCell>
+            <Text as="span" fontWeight={600} className="mr-8 no-wrap">
+              {webhook.name}{" "}
+            </Text>
+            <StatusBadge status={webhook.status} />
+            <NoBoxShadowToast />
+          </TableCell>
+          <TableCell>
+            <Text as="span" fontSize="11px" color="#A3A9AE" fontWeight={600}>
+              {webhook.uri}
+            </Text>
+          </TableCell>
+          <TableCell>
+            <ToggleButton
+              className="toggle toggleButton"
+              id="toggle id"
+              isChecked={isChecked}
+              onChange={handleToggleEnabled}
+            />
+          </TableCell>
+        </StyledTableRow>
+      </StyledWrapper>
+
       <WebhookDialog
         visible={isSettingsOpened}
         onClose={closeSettings}

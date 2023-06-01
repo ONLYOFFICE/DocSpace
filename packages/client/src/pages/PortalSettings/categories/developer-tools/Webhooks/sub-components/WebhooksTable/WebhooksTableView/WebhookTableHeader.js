@@ -33,7 +33,9 @@ export const WebhookTableHeader = ({ sectionWidth, tableRef }) => {
       containerRef={tableRef}
       sectionWidth={sectionWidth}
       showSettings={false}
-      style={{ position: "absolute" }}
+      useReactWindow
+      setHideColumns={true}
+      infoPanelVisible={true}
     />
   );
 };
