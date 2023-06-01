@@ -36,6 +36,7 @@ const StyledContainer = styled.div`
   }
 
   .arrow-button {
+    padding-top: 2px;
     width: 17px;
     min-width: 17px;
   }
@@ -49,7 +50,7 @@ const StyledContainer = styled.div`
     padding-left: 16px;
     border-right: ${(props) =>
       `1px solid ${props.theme.navigation.icon.stroke}`};
-
+    height: 21px;
     @media ${mobile} {
       display: none;
     }

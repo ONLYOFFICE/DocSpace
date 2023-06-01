@@ -24,7 +24,7 @@ const StyledTextContainer = styled.div`
 
   ${(props) =>
     !props.isRootFolder && !props.isRootFolderTitle && "cursor: pointer"};
-  ${(props) => props.isRootFolderTitle && "padding-right: 2px"};
+  ${(props) => props.isRootFolderTitle && "padding-right: 3px"};
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -37,7 +37,9 @@ const StyledHeading = styled(Heading)`
 
   margin: 0;
 
-  ${(props) => props.isRootFolderTitle && "color: #A3A9AE"};
+  ${(props) =>
+    props.isRootFolderTitle &&
+    `color: ${props.theme.navigation.rootFolderTitle}`};
 
   @media ${tablet} {
     font-size: 21px;
@@ -75,7 +77,7 @@ const StyledArrowIcon = styled(ArrowIcon)`
 
   padding-left: 6px;
   path {
-    fill: #a3a9ae;
+    fill: ${(props) => props.theme.navigation.rootFolderTitle};
   }
 `;
 
