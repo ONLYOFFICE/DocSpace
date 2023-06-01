@@ -102,7 +102,7 @@ public class FilesSettings : ISettings<FilesSettings>
             DefaultSortedAscSetting = false,
             HideConfirmConvertSaveSetting = false,
             HideConfirmConvertOpenSetting = false,
-            ForcesaveSetting = false,
+            ForcesaveSetting = true,
             StoreForcesaveSetting = false,
             HideRecentSetting = false,
             HideFavoritesSetting = false,
@@ -306,27 +306,27 @@ public class FilesSettingsHelper
     {
         set
         {
-            var setting = LoadForCurrentUser();
-            setting.ForcesaveSetting = value;
-            SaveForCurrentUser(setting);
+            //var setting = LoadForCurrentUser();
+            //setting.ForcesaveSetting = value;
+            //SaveForCurrentUser(setting);
         }
-        get => LoadForCurrentUser().ForcesaveSetting;
+        get => true;//LoadForCurrentUser().ForcesaveSetting;
     }
 
     public bool StoreForcesave
     {
         set
         {
-            if (_coreBaseSettings.Personal)
-            {
-                throw new NotSupportedException();
-            }
+            //if (_coreBaseSettings.Personal)
+            //{
+            //    throw new NotSupportedException();
+            //}
 
-            var setting = _settingsManager.Load<FilesSettings>();
-            setting.StoreForcesaveSetting = value;
-            _settingsManager.Save(setting);
+            //var setting = _settingsManager.Load<FilesSettings>();
+            //setting.StoreForcesaveSetting = value;
+            //_settingsManager.Save(setting);
         }
-        get => !_coreBaseSettings.Personal && _settingsManager.Load<FilesSettings>().StoreForcesaveSetting;
+        get => false;//!_coreBaseSettings.Personal && _settingsManager.Load<FilesSettings>().StoreForcesaveSetting;
     }
 
     public bool RecentSection
@@ -383,7 +383,7 @@ public class FilesSettingsHelper
         get
         {
             var setting = LoadForCurrentUser().AutomaticallyCleanUpSetting;
-            
+
             if (setting != null)
             {
                 return setting;

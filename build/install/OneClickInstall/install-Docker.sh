@@ -445,7 +445,7 @@ get_os_info () {
 				CONTAINS=$(cat /etc/redhat-release | { grep -sw release || true; });
 				if [[ -n ${CONTAINS} ]]; then
 					DIST=`cat /etc/redhat-release |sed s/\ release.*//`
-					REV=`cat /etc/redhat-release | sed s/.*release\ // | sed s/\ .*//`
+					REV=`cat /etc/redhat-release | grep -oP '(?<=release )\d+'`
 				else
 					DIST=`cat /etc/os-release | grep -sw 'ID' | awk -F=  '{ print $2 }' | sed -e 's/^"//' -e 's/"$//'`
 					REV=`cat /etc/os-release | grep -sw 'VERSION_ID' | awk -F=  '{ print $2 }' | sed -e 's/^"//' -e 's/"$//'`
@@ -572,10 +572,13 @@ install_docker_compose () {
 }
 
 install_jq () {
-	curl -s -o jq http://stedolan.github.io/jq/download/linux64/jq
-	chmod +x jq
-	cp jq /usr/bin
-	rm jq
+	if command_exists apt-get; then
+		apt-get -y update
+		apt-get -y -q install jq
+	elif command_exists yum; then
+		rpm -ivh https://dl.fedoraproject.org/pub/epel/epel-release-latest-$REV.noarch.rpm || true
+		yum -y install jq
+	fi
 
 	if ! command_exists jq; then
 		echo "command jq not found"
@@ -953,6 +956,7 @@ download_files () {
 	svn export --force https://github.com/${PACKAGE_SYSNAME}/${PRODUCT}/branches/${GIT_BRANCH}/build/install/docker/ ${BASE_DIR}
 
 	reconfigure STATUS ${STATUS}
+	reconfigure INSTALLATION_TYPE ${INSTALLATION_TYPE}
 	
 	reconfigure MYSQL_DATABASE ${MYSQL_DATABASE}
 	reconfigure MYSQL_USER ${MYSQL_USER}
