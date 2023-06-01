@@ -75,43 +75,43 @@ public class PaymentController : ControllerBase
     }
 
     [HttpPut("payment/url")]
-    public async Task<Uri> GetPaymentUrl(PaymentUrlRequestsDto inDto)
+    public async Task<Uri> GetPaymentUrlAsync(PaymentUrlRequestsDto inDto)
     {
-        if (_tariffService.GetPayments(Tenant.Id).Any() ||
-            !_userManager.IsDocSpaceAdmin(_securityContext.CurrentAccount.ID))
+        if ((await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() ||
+            !await _userManager.IsDocSpaceAdminAsync(_securityContext.CurrentAccount.ID))
         {
             return null;
         }
 
-        var currency = _regionHelper.GetCurrencyFromRequest();
+        var currency = await _regionHelper.GetCurrencyFromRequestAsync();
 
-        return await _tariffService.GetShoppingUri(Tenant.Id, currency,
-            Thread.CurrentThread.CurrentCulture.TwoLetterISOLanguageName,
-            _userManager.GetUsers(_securityContext.CurrentAccount.ID).Email,
+        return await _tariffService.GetShoppingUriAsync(Tenant.Id, currency,
+            CultureInfo.CurrentCulture.TwoLetterISOLanguageName,
+            (await _userManager.GetUsersAsync(_securityContext.CurrentAccount.ID)).Email,
             inDto.Quantity,
             inDto.BackUrl);
     }
 
     [HttpPut("payment/update")]
-    public async Task<bool> PaymentUpdate(PaymentUrlRequestsDto inDto)
+    public async Task<bool> PaymentUpdateAsync(PaymentUrlRequestsDto inDto)
     {
-        var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
-        var payer = _userManager.GetUserByEmail(payerId);
+        var payerId = (await _tariffService.GetTariffAsync(Tenant.Id)).CustomerId;
+        var payer = await _userManager.GetUserByEmailAsync(payerId);
 
-        if (!_tariffService.GetPayments(Tenant.Id).Any() ||
+        if (!(await _tariffService.GetPaymentsAsync(Tenant.Id)).Any() ||
             _securityContext.CurrentAccount.ID != payer.Id)
         {
             return false;
         }
 
-        return await _tariffService.PaymentChange(Tenant.Id, inDto.Quantity);
+        return await _tariffService.PaymentChangeAsync(Tenant.Id, inDto.Quantity);
     }
 
     [HttpGet("payment/account")]
-    public Uri GetPaymentAccount(string backUrl)
+    public async Task<Uri> GetPaymentAccountAsync(string backUrl)
     {
-        var payerId = _tariffService.GetTariff(Tenant.Id).CustomerId;
-        var payer = _userManager.GetUserByEmail(payerId);
+        var payerId = (await _tariffService.GetTariffAsync(Tenant.Id)).CustomerId;
+        var payer = await _userManager.GetUserByEmailAsync(payerId);
 
         if (_securityContext.CurrentAccount.ID != payer.Id &&
             _securityContext.CurrentAccount.ID != Tenant.OwnerId)
@@ -119,24 +119,24 @@ public class PaymentController : ControllerBase
             return null;
         }
 
-        return _tariffService.GetAccountLink(Tenant.Id, backUrl);
+        return await _tariffService.GetAccountLinkAsync(Tenant.Id, backUrl);
     }
 
     [HttpGet("payment/prices")]
-    public object GetPrices()
+    public async Task<object> GetPricesAsync()
     {
-        var currency = _regionHelper.GetCurrencyFromRequest();
-        var result = _tenantManager.GetProductPriceInfo()
+        var currency = await _regionHelper.GetCurrencyFromRequestAsync();
+        var result = (await _tenantManager.GetProductPriceInfoAsync())
             .ToDictionary(pr => pr.Key, pr => pr.Value.ContainsKey(currency) ? pr.Value[currency] : 0);
         return result;
     }
 
 
     [HttpGet("payment/currencies")]
-    public IEnumerable<CurrenciesDto> GetCurrencies()
+    public async IAsyncEnumerable<CurrenciesDto> GetCurrenciesAsync()
     {
         var defaultRegion = _regionHelper.GetDefaultRegionInfo();
-        var currentRegion = _regionHelper.GetCurrentRegionInfo();
+        var currentRegion = await _regionHelper.GetCurrentRegionInfoAsync();
 
         yield return new CurrenciesDto(defaultRegion);
 
@@ -147,19 +147,19 @@ public class PaymentController : ControllerBase
     }
 
     [HttpGet("payment/quotas")]
-    public IAsyncEnumerable<QuotaDto> GetQuotas()
+    public async Task<IEnumerable<QuotaDto>> GetQuotasAsync()
     {
-        return _quotaHelper.GetQuotas();
+        return await _quotaHelper.GetQuotasAsync().ToListAsync();
     }
 
     [HttpGet("payment/quota")]
-    public async Task<QuotaDto> GetQuota(bool refresh)
+    public async Task<QuotaDto> GetQuotaAsync(bool refresh)
     {
-        return await _quotaHelper.GetCurrentQuota(refresh);
+        return await _quotaHelper.GetCurrentQuotaAsync(refresh);
     }
 
     [HttpPost("payment/request")]
-    public void SendSalesRequest(SalesRequestsDto inDto)
+    public async Task SendSalesRequestAsync(SalesRequestsDto inDto)
     {
         if (!inDto.Email.TestEmailRegex())
         {
@@ -173,13 +173,14 @@ public class PaymentController : ControllerBase
 
         CheckCache("salesrequest");
 
-        _studioNotifyService.SendMsgToSales(inDto.Email, inDto.UserName, inDto.Message);
-        _messageService.Send(MessageAction.ContactSalesMailSent);
+        await _studioNotifyService.SendMsgToSalesAsync(inDto.Email, inDto.UserName, inDto.Message);
+        await _messageService.SendAsync(MessageAction.ContactSalesMailSent);
     }
 
     internal void CheckCache(string basekey)
     {
-        var key = _httpContextAccessor.HttpContext.Request.GetUserHostAddress() + basekey;
+        var key = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString() + basekey;
+
         if (_memoryCache.TryGetValue<int>(key, out var count))
         {
             if (count > _maxCount)

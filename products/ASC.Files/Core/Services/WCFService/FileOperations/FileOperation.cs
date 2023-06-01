@@ -46,10 +46,10 @@ public abstract class FileOperation : DistributedTaskProgress
     public int Total { get; set; }
     protected FileOperation(IServiceProvider serviceProvider)
     {
-        _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? Thread.CurrentPrincipal;
-        _culture = Thread.CurrentThread.CurrentCulture.Name;
+        _principal = serviceProvider.GetService<IHttpContextAccessor>()?.HttpContext?.User ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal;
+        _culture = CultureInfo.CurrentCulture.Name;
 
-        this[Owner] = ((IAccount)(_principal ?? Thread.CurrentPrincipal).Identity).ID.ToString();
+        this[Owner] = ((IAccount)(_principal ?? CustomSynchronizationContext.CurrentContext.CurrentPrincipal).Identity).ID.ToString();
         this[Src] = _props.ContainsValue(Src) ? this[Src] : "";
         this[Progress] = 0;
         this[Res] = "";
@@ -88,11 +88,25 @@ internal class ComposeFileOperation<T1, T2> : FileOperation
 
     public override async Task RunJob(DistributedTask _, CancellationToken cancellationToken)
     {
-        ThirdPartyOperation.Publication = PublishChanges;
-        await ThirdPartyOperation.RunJob(_, cancellationToken);
+        if (ThirdPartyOperation.Files.Any() || ThirdPartyOperation.Folders.Any())
+        {
+            ThirdPartyOperation.Publication = PublishChanges;
+            await ThirdPartyOperation.RunJob(_, cancellationToken);
+        }
+        else
+        {
+            ThirdPartyOperation[Finish] = true;
+        }
 
-        DaoOperation.Publication = PublishChanges;
-        await DaoOperation.RunJob(_, cancellationToken);
+        if (DaoOperation.Files.Any() || DaoOperation.Folders.Any())
+        {
+            DaoOperation.Publication = PublishChanges;
+            await DaoOperation.RunJob(_, cancellationToken);
+        }
+        else
+        {
+            DaoOperation[Finish] = true;
+        }
     }
 
     public virtual void PublishChanges(DistributedTask task)
@@ -216,7 +230,6 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
     {
         try
         {
-            //todo check files> 0 or folders > 0
             CancellationToken = cancellationToken;
 
             await using var scope = _serviceProvider.CreateAsyncScope();
@@ -224,9 +237,9 @@ abstract class FileOperation<T, TId> : FileOperation where T : FileOperationData
             var (tenantManager, daoFactory, fileSecurity, logger) = scopeClass;
             tenantManager.SetCurrentTenant(CurrentTenant);
 
-            Thread.CurrentPrincipal = _principal;
-            Thread.CurrentThread.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
+            CustomSynchronizationContext.CurrentContext.CurrentPrincipal = _principal;
+            CultureInfo.CurrentCulture = CultureInfo.GetCultureInfo(_culture);
+            CultureInfo.CurrentUICulture = CultureInfo.GetCultureInfo(_culture);
 
             FolderDao = daoFactory.GetFolderDao<TId>();
             FileDao = daoFactory.GetFileDao<TId>();

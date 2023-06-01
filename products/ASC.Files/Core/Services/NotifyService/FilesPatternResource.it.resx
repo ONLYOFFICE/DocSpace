@@ -80,9 +80,7 @@ Puoi controllare le mail inviate con successo possono nella cartella "Inviati":"
 
 $__DateTime "$__AuthorName":"$__AuthorUrl" ti ha concesso l'accesso al documento "$DocumentTitle":"$DocumentURL" con i seguenti diritti di accesso: "$AccessRights".
 
-$Message
-
-^Ricevi questa email perché sei un utente registrato del portale "${__VirtualRootPath}":"${__VirtualRootPath}". Se non desideri ricevere le notifiche relative ai documenti condivisi, si prega di gestire le "opzioni di iscrizione":"$RecipientSubscriptionConfigURL".^</value>
+$Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1. Accesso concesso alla cartella: "$DocumentTitle":"$DocumentURL"
@@ -114,5 +112,17 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Documenti. Accesso concesso alla cartella: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName ti ha menzionato nel commento al documento
+ 
+$__AuthorName ti ha menzionato nel commento al documento "$Document Title":"$Document URL" nella stanza "$RoomTitle":"$Room URL":
+ 
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName ha eliminato una stanza
+ 
+$__AuthorName ha eliminato una stanza: $RoomTitle</value>
   </data>
 </root>

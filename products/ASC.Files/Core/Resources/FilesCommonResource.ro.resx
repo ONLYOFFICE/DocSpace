@@ -128,12 +128,39 @@
     <value>Căutare după conținutul documentelor</value>
   </data>
   <data name="ProductDescription" xml:space="preserve">
-    <value>Crează, editează și partajează</value>
+    <value>Crează, editează și partajează.</value>
   </data>
   <data name="ProductDescriptionEx" xml:space="preserve">
     <value>Crează, editează și partajează. Colaborează în timp real. Compatibilitate garantată 100% cu formatele MS Office.</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>Documente</value>
+  </data>
+  <data name="RoleEnum_DocSpaceAdmin" xml:space="preserve">
+    <value>Administrator DocSpace</value>
+  </data>
+  <data name="RoleEnum_Editing" xml:space="preserve">
+    <value>Editor</value>
+  </data>
+  <data name="RoleEnum_RoomAdmin" xml:space="preserve">
+    <value>Administrator sală</value>
+  </data>
+  <data name="RoleEnum_User" xml:space="preserve">
+    <value>Utilizator</value>
+  </data>
+  <data name="RoleEnum_Read" xml:space="preserve">
+    <value>Vizualizator</value>
+  </data>
+  <data name="RoleEnum_Comment" xml:space="preserve">
+    <value>Comentator</value>
+  </data>
+  <data name="RoleEnum_FillForms" xml:space="preserve">
+    <value>Completator de formulare</value>
+  </data>
+  <data name="RoleEnum_Review" xml:space="preserve">
+    <value>Recenzent</value>
+  </data>
+  <data name="RoleEnum_Collaborator" xml:space="preserve">
+    <value>Colaborator</value>
   </data>
 </root>

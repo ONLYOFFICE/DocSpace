@@ -3,18 +3,21 @@ import { request } from "../client";
 import Filter from "./filter";
 import * as fakePeople from "./fake";
 import { Encoder } from "../../utils/encoder";
+import { checkFilterInstance } from "../../utils";
 
 export function getUserList(filter = Filter.getDefault(), fake = false) {
+  let params = "";
   if (fake) {
     return fakePeople.getUserList(filter);
   }
 
-  const params =
-    filter && filter instanceof Filter
-      ? `/filter.json?${filter.toApiUrlParams(
-          "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
-        )}`
-      : "";
+  if (filter) {
+    checkFilterInstance(filter, Filter);
+
+    params = `/filter?${filter.toApiUrlParams(
+      "id,status,isAdmin,isOwner,isVisitor,activationStatus,userName,email,mobilePhone,displayName,avatar,listAdminModules,birthday,title,location,isLDAP,isSSO,groups"
+    )}`;
+  }
 
   return request({
     method: "get",
@@ -33,7 +36,7 @@ export function getUserList(filter = Filter.getDefault(), fake = false) {
 export function getUser(userName = null) {
   return request({
     method: "get",
-    url: `/people/${userName || "@self"}.json`,
+    url: `/people/${userName || "@self"}`,
     skipUnauthorized: true,
   }).then((user) => {
     if (user && user.displayName) {
@@ -57,7 +60,7 @@ export function getUserByEmail(userEmail) {
 export function getUserFromConfirm(userId, confirmKey = null) {
   const options = {
     method: "get",
-    url: `/people/${userId}.json`,
+    url: `/people/${userId}`,
   };
 
   if (confirmKey) options.headers = { confirm: confirmKey };
@@ -118,7 +121,7 @@ export function changeEmail(userId, email, key) {
 export function updateActivationStatus(activationStatus, userId, key) {
   return request({
     method: "put",
-    url: `/people/activationstatus/${activationStatus}.json`,
+    url: `/people/activationstatus/${activationStatus}`,
     data: { userIds: [userId] },
     headers: { confirm: key },
   });
@@ -148,7 +151,7 @@ export function deleteSelf(key) {
 export function sendInstructionsToChangePassword(email) {
   return request({
     method: "post",
-    url: "/people/password.json",
+    url: "/people/password",
     data: { email },
   });
 }
@@ -160,7 +163,7 @@ export function getListAdmins(filter = Filter.getDefault()) {
 
   return request({
     method: "get",
-    url: `/people/filter.json?isadministrator=true&${filterParams}`,
+    url: `/people/filter?isadministrator=true&${filterParams}`,
   });
 }
 
@@ -172,7 +175,7 @@ export function getAdmins(isParams) {
   }
   return request({
     method: "get",
-    url: `/people/filter.json?isadministrator=true&${params}`,
+    url: `/people/filter?isadministrator=true&${params}`,
   });
 }
 
@@ -247,7 +250,7 @@ export function loadAvatar(profileId, data) {
 export function createThumbnailsAvatar(profileId, data) {
   return request({
     method: "post",
-    url: `/people/${profileId}/photo/thumbnails.json`,
+    url: `/people/${profileId}/photo/thumbnails`,
     data,
   });
 }
@@ -278,7 +281,7 @@ export function updateUserType(type, userIds) {
 export function linkOAuth(serializedProfile) {
   return request({
     method: "put",
-    url: "people/thirdparty/linkaccount.json",
+    url: "people/thirdparty/linkaccount",
     data: { serializedProfile },
   });
 }
@@ -286,7 +289,7 @@ export function linkOAuth(serializedProfile) {
 export function signupOAuth(signupAccount) {
   return request({
     method: "post",
-    url: "people/thirdparty/signup.json",
+    url: "people/thirdparty/signup",
     data: signupAccount,
   });
 }
@@ -294,21 +297,21 @@ export function signupOAuth(signupAccount) {
 export function unlinkOAuth(provider) {
   return request({
     method: "delete",
-    url: `people/thirdparty/unlinkaccount.json?provider=${provider}`,
+    url: `people/thirdparty/unlinkaccount?provider=${provider}`,
   });
 }
 
 export function sendInstructionsToDelete() {
   return request({
     method: "put",
-    url: "/people/self/delete.json",
+    url: "/people/self/delete",
   });
 }
 
 export function sendInstructionsToChangeEmail(userId, email) {
   return request({
     method: "post",
-    url: "/people/email.json",
+    url: "/people/email",
     data: { userId, email },
   });
 }
@@ -316,14 +319,14 @@ export function sendInstructionsToChangeEmail(userId, email) {
 export function deleteUser(userId) {
   return request({
     method: "delete",
-    url: `/people/${userId}.json`,
+    url: `/people/${userId}`,
   });
 }
 
 export function deleteUsers(userIds) {
   return request({
     method: "put",
-    url: "/people/delete.json",
+    url: "/people/delete",
     data: { userIds },
   });
 }
@@ -331,7 +334,7 @@ export function deleteUsers(userIds) {
 export function getSelectorUserList() {
   return request({
     method: "get",
-    url: "/people/filter.json?fields=id,displayName,groups",
+    url: "/people/filter?fields=id,displayName,groups",
   });
 }
 
@@ -340,7 +343,7 @@ export function changeTheme(key) {
 
   return request({
     method: "put",
-    url: `/people/theme.json`,
+    url: `/people/theme`,
     data,
   });
 }

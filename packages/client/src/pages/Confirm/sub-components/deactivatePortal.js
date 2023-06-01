@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import { Trans, withTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
 import Text from "@docspace/components/text";
@@ -20,14 +20,10 @@ import FormWrapper from "@docspace/components/form-wrapper";
 import DocspaceLogo from "../../../DocspaceLogo";
 
 const DeactivatePortal = (props) => {
-  const {
-    t,
-    greetingTitle,
-    linkData,
-    history,
-    companyInfoSettingsData,
-  } = props;
+  const { t, greetingTitle, linkData, companyInfoSettingsData } = props;
   const [isDeactivate, setIsDeactivate] = useState(false);
+
+  const navigate = useNavigate();
 
   const url = companyInfoSettingsData?.site
     ? companyInfoSettingsData.site
@@ -37,14 +33,14 @@ const DeactivatePortal = (props) => {
     try {
       await suspendPortal(linkData.confirmHeader);
       setIsDeactivate(true);
-      setTimeout(() => (location.href = url), 10000);
+      setTimeout(() => (window.location.href = url), 10000);
     } catch (e) {
       toastr.error(e);
     }
   };
 
   const onCancelClick = () => {
-    history.push("/");
+    navigate("/");
   };
 
   return (
@@ -101,9 +97,7 @@ export default inject(({ auth }) => ({
   theme: auth.settingsStore.theme,
   companyInfoSettingsData: auth.settingsStore.companyInfoSettingsData,
 }))(
-  withRouter(
-    withTranslation(["Confirm", "Settings", "Common"])(
-      withLoader(observer(DeactivatePortal))
-    )
+  withTranslation(["Confirm", "Settings", "Common"])(
+    withLoader(observer(DeactivatePortal))
   )
 );

@@ -15,19 +15,16 @@ import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url
 import ChangeToEmployeeReactSvgUrl from "PUBLIC_DIR/images/change.to.employee.react.svg?url";
 import DeleteReactSvgUrl from "PUBLIC_DIR/images/delete.react.svg?url";
 import InfoReactSvgUrl from "PUBLIC_DIR/images/info.react.svg?url";
-import React from "react";
 import { makeAutoObservable } from "mobx";
-import { Trans } from "react-i18next";
-
 import toastr from "@docspace/components/toast/toastr";
 
-import history from "@docspace/common/history";
 import { combineUrl } from "@docspace/common/utils";
 import { EmployeeStatus, FilterSubject } from "@docspace/common/constants";
 import { resendUserInvites } from "@docspace/common/api/people";
 import { getCategoryUrl } from "SRC_DIR/helpers/utils";
 import { CategoryType } from "SRC_DIR/helpers/constants";
 import RoomsFilter from "@docspace/common/api/rooms/filter";
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const PROXY_HOMEPAGE_URL = combineUrl(window.DocSpaceConfig?.proxy?.url, "/");
 
@@ -181,10 +178,8 @@ class AccountsContextOptionsStore {
       hasUsersToRemove,
       hasFreeUsers,
     } = this.peopleStore.selectionStore;
-    const {
-      setSendInviteDialogVisible,
-      setDeleteDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setSendInviteDialogVisible, setDeleteDialogVisible } =
+      this.peopleStore.dialogStore;
 
     const { isOwner } = this.authStore.userStore.user;
 
@@ -308,7 +303,7 @@ class AccountsContextOptionsStore {
   };
 
   onProfileClick = () => {
-    history.push(PROFILE_SELF_URL);
+    window.DocSpace.navigate(PROFILE_SELF_URL);
   };
 
   toggleChangeNameDialog = () => {
@@ -318,10 +313,8 @@ class AccountsContextOptionsStore {
   };
 
   toggleChangeEmailDialog = (item) => {
-    const {
-      setDialogData,
-      setChangeEmailDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setChangeEmailDialogVisible } =
+      this.peopleStore.dialogStore;
     const { id, email } = item;
 
     setDialogData({
@@ -333,10 +326,8 @@ class AccountsContextOptionsStore {
   };
 
   toggleChangePasswordDialog = (item) => {
-    const {
-      setDialogData,
-      setChangePasswordDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setChangePasswordDialogVisible } =
+      this.peopleStore.dialogStore;
     const { email } = item;
     setDialogData({
       email,
@@ -372,11 +363,8 @@ class AccountsContextOptionsStore {
   };
 
   toggleDeleteProfileEverDialog = (item) => {
-    const {
-      setDialogData,
-      setDeleteProfileDialogVisible,
-      closeDialogs,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setDeleteProfileDialogVisible, closeDialogs } =
+      this.peopleStore.dialogStore;
     const { id, displayName, userName } = item;
 
     closeDialogs();
@@ -400,26 +388,13 @@ class AccountsContextOptionsStore {
   onInviteAgainClick = (t, item) => {
     const { id, email } = item;
     resendUserInvites([id])
-      .then(() =>
-        toastr.success(
-          <Trans
-            i18nKey="MessageEmailActivationInstuctionsSentOnEmail"
-            ns="People"
-            t={t}
-          >
-            The email activation instructions have been sent to the
-            <strong>{{ email: email }}</strong> email address
-          </Trans>
-        )
-      )
+      .then(() => showEmailActivationToast(email))
       .catch((error) => toastr.error(error));
   };
 
   onResetAuth = (item) => {
-    const {
-      setDialogData,
-      setResetAuthDialogVisible,
-    } = this.peopleStore.dialogStore;
+    const { setDialogData, setResetAuthDialogVisible } =
+      this.peopleStore.dialogStore;
 
     setResetAuthDialogVisible(true);
     setDialogData(item.id);

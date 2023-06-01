@@ -36,16 +36,16 @@ public class FirebaseDao
         _dbContextFactory = dbContextFactory;
     }
 
-    public FireBaseUser RegisterUserDevice(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
+    public async Task<FireBaseUser> RegisterUserDeviceAsync(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
-        var user = dbContext.Users
+        var user = await dbContext.Users
             .AsNoTracking()
             .Where(r => r.UserId == userId)
             .Where(r => r.TenantId == tenantId)
             .Where(r => r.Application == application)
             .Where(r => r.FirebaseDeviceToken == fbDeviceToken)
-            .FirstOrDefault();
+            .FirstOrDefaultAsync();
 
 
         if (user == null)
@@ -58,8 +58,8 @@ public class FirebaseDao
                 IsSubscribed = isSubscribed,
                 Application = application
             };
-            dbContext.Add(newUser);
-            dbContext.SaveChanges();
+            await dbContext.AddAsync(newUser);
+            await dbContext.SaveChangesAsync();
 
             return newUser;
         }
@@ -67,18 +67,18 @@ public class FirebaseDao
         return user;
     }
 
-    public List<FireBaseUser> GetUserDeviceTokens(Guid userId, int tenantId, string application)
+    public async Task<List<FireBaseUser>> GetUserDeviceTokensAsync(Guid userId, int tenantId, string application)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
-        return dbContext.Users
+        return await dbContext.Users
             .AsNoTracking()
             .Where(r => r.UserId == userId)
             .Where(r => r.TenantId == tenantId)
             .Where(r => r.Application == application)
-            .ToList();
+            .ToListAsync();
     }
 
-    public FireBaseUser UpdateUser(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
+    public async Task<FireBaseUser> UpdateUserAsync(Guid userId, int tenantId, string fbDeviceToken, bool isSubscribed, string application)
     {
         using var dbContext = _dbContextFactory.CreateDbContext();
         var user = new FireBaseUser
@@ -91,7 +91,7 @@ public class FirebaseDao
         };
 
         dbContext.Update(user);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
 
         return user;
     }

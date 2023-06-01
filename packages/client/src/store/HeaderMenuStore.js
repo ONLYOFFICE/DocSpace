@@ -56,7 +56,7 @@ class HeaderMenuStore {
       case "disabled":
         return t("PeopleTranslations:DisabledEmployeeStatus");
       case "all":
-        return t("Files:All");
+        return t("All");
     }
   };
 

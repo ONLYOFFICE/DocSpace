@@ -78,9 +78,9 @@ public abstract class TagsController<T> : ApiControllerBase
     }
 
     [HttpGet("favorites/{fileId}")]
-    public Task<bool> ToggleFileFavoriteAsync(T fileId, bool favorite)
+    public async Task<bool> ToggleFileFavoriteAsync(T fileId, bool favorite)
     {
-        return _fileStorageService.ToggleFileFavoriteAsync(fileId, favorite);
+        return await _fileStorageService.ToggleFileFavoriteAsync(fileId, favorite);
     }
 }
 
@@ -141,9 +141,9 @@ public class TagsControllerCommon : ApiControllerBase
     /// <returns></returns>
     [HttpDelete("favorites")]
     [Consumes("application/json")]
-    public Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto inDto)
+    public async Task<bool> DeleteFavoritesFromBodyAsync([FromBody] BaseBatchRequestDto inDto)
     {
-        return DeleteFavoritesAsync(inDto);
+        return await DeleteFavoritesAsync(inDto);
     }
 
     [HttpDelete("favorites")]

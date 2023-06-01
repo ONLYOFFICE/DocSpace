@@ -65,6 +65,11 @@ app.get("*", async (req: ILoginRequest, res: Response, next) => {
       return next();
     }
 
+    if (initialState?.portalSettings?.wizardToken) {
+      res.redirect("/wizard");
+      return next();
+    }
+
     let currentLanguage: string = initialState?.portalSettings?.culture || "en";
     standalone = initialState?.portalSettings?.standalone ? true : false;
 

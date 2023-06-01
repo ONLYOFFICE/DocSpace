@@ -38,11 +38,6 @@ public class FileSizeComment
         _setupInfo = setupInfo;
     }
 
-    public string FileSizeExceptionString
-    {
-        get { return GetFileSizeExceptionString(_tenantExtra.MaxUploadSize); }
-    }
-
     public string FileImageSizeExceptionString
     {
         get { return GetFileSizeExceptionString(_setupInfo.MaxImageUploadSize); }
@@ -56,14 +51,6 @@ public class FileSizeComment
     public static string GetPersonalFreeSpaceExceptionString(long size)
     {
         return $"{Resource.PersonalFreeSpaceException} ({FilesSizeToString(size)}).";
-    }
-
-    /// <summary>
-    /// The maximum file size is exceeded (25 MB).
-    /// </summary>
-    public Exception FileSizeException
-    {
-        get { return new TenantQuotaException(FileSizeExceptionString); }
     }
 
     /// <summary>
@@ -85,12 +72,25 @@ public class FileSizeComment
     }
 
     /// <summary>
+    /// The maximum file size is exceeded (25 MB).
+    /// </summary>
+    public async Task<Exception> GetFileSizeExceptionAsync()
+    {
+        return new TenantQuotaException(await GetFileSizeExceptionStringAsync());
+    }
+
+    public async Task<string> GetFileSizeExceptionStringAsync()
+    {
+        return GetFileSizeExceptionString(await _tenantExtra.GetMaxUploadSizeAsync());
+    }
+
+    /// <summary>
     /// Get note about maximum file size
     /// </summary>
     /// <returns>Note: the file size cannot exceed 25 MB</returns>
-    public string GetFileSizeNote()
+    public async Task<string> GetFileSizeNoteAsync()
     {
-        return GetFileSizeNote(true);
+        return await GetFileSizeNoteAsync(true);
     }
 
     /// <summary>
@@ -98,9 +98,9 @@ public class FileSizeComment
     /// </summary>
     /// <param name="withHtmlStrong">Highlight a word about size</param>
     /// <returns>Note: the file size cannot exceed 25 MB</returns>
-    public string GetFileSizeNote(bool withHtmlStrong)
+    public async Task<string> GetFileSizeNoteAsync(bool withHtmlStrong)
     {
-        return GetFileSizeNote(Resource.FileSizeNote, withHtmlStrong);
+        return await GetFileSizeNoteAsync(Resource.FileSizeNote, withHtmlStrong);
     }
 
     /// <summary>
@@ -109,11 +109,11 @@ public class FileSizeComment
     /// <param name="note">Resource fromat of note</param>
     /// <param name="withHtmlStrong">Highlight a word about size</param>
     /// <returns>Note: the file size cannot exceed 25 MB</returns>
-    public string GetFileSizeNote(string note, bool withHtmlStrong)
+    public async Task<string> GetFileSizeNoteAsync(string note, bool withHtmlStrong)
     {
         return
             string.Format(note,
-                          FilesSizeToString(_tenantExtra.MaxUploadSize),
+                          FilesSizeToString(await _tenantExtra.GetMaxUploadSizeAsync()),
                           withHtmlStrong ? "<strong>" : string.Empty,
                           withHtmlStrong ? "</strong>" : string.Empty);
     }

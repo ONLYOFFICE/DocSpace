@@ -61,4 +61,7 @@
   <data name="BackupNotFound" xml:space="preserve">
     <value>Yedekleme dosyası geçersiz. Lütfen ONLYOFFICE v11.5 veya sonraki sürümlerde oluşturulmuş bir dosya kullanın.</value>
   </data>
+  <data name="ButtonSetPassword" xml:space="preserve">
+    <value>Parola Belirle</value>
+  </data>
 </root>

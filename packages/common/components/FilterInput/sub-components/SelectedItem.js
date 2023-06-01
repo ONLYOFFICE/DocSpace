@@ -32,6 +32,7 @@ const StyledSelectedItem = styled.div`
   .selected-item_label {
     line-height: 20px;
     margin-right: 10px;
+    max-width: 23ch;
   }
 `;
 
@@ -46,7 +47,12 @@ const SelectedItem = ({ propKey, label, group, removeSelectedItem }) => {
 
   return (
     <StyledSelectedItem onClick={onRemove}>
-      <Text className={"selected-item_label"} title={label} noSelect>
+      <Text
+        className={"selected-item_label"}
+        title={label}
+        truncate={true}
+        noSelect
+      >
         {label}
       </Text>
       <IconButton

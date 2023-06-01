@@ -50,13 +50,13 @@ public class CustomSchemasController : BaseSettingsController
     }
 
     [HttpGet("customschemas")]
-    public List<SchemaRequestsDto> PeopleSchemas()
+    public async Task<List<SchemaRequestsDto>> PeopleSchemasAsync()
     {
-        return _customNamingPeople
-                .GetSchemas()
-                .Select(r =>
+        return await _customNamingPeople
+                .GetSchemas().ToAsyncEnumerable()
+                .SelectAwait(async r =>
                 {
-                    var names = _customNamingPeople.GetPeopleNames(r.Key);
+                    var names = await _customNamingPeople.GetPeopleNamesAsync(r.Key);
 
                     return new SchemaRequestsDto
                     {
@@ -73,27 +73,27 @@ public class CustomSchemasController : BaseSettingsController
                         GuestsCaption = names.GuestsCaption,
                     };
                 })
-                .ToList();
+                .ToListAsync();
     }
 
     [HttpPost("customschemas")]
-    public SchemaRequestsDto SaveNamingSettings(SchemaRequestsDto inDto)
+    public async Task<SchemaRequestsDto> SaveNamingSettingsAsync(SchemaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _customNamingPeople.SetPeopleNames(inDto.Id);
+        await _customNamingPeople.SetPeopleNamesAsync(inDto.Id);
 
-        _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
+        await _tenantManager.SaveTenantAsync(await _tenantManager.GetCurrentTenantAsync());
 
-        _messageService.Send(MessageAction.TeamTemplateChanged);
+        await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
-        return PeopleSchema(inDto.Id);
+        return await PeopleSchemaAsync(inDto.Id);
     }
 
     [HttpPut("customschemas")]
-    public SchemaRequestsDto SaveCustomNamingSettings(SchemaRequestsDto inDto)
+    public async Task<SchemaRequestsDto> SaveCustomNamingSettingsAsync(SchemaRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var usrCaption = (inDto.UserCaption ?? "").Trim();
         var usrsCaption = (inDto.UsersCaption ?? "").Trim();
@@ -132,19 +132,19 @@ public class CustomSchemasController : BaseSettingsController
             GuestsCaption = guestsCaption.Substring(0, Math.Min(30, guestsCaption.Length)),
         };
 
-        _customNamingPeople.SetPeopleNames(names);
+        await _customNamingPeople.SetPeopleNamesAsync(names);
 
-        _tenantManager.SaveTenant(_tenantManager.GetCurrentTenant());
+        await _tenantManager.SaveTenantAsync(await _tenantManager.GetCurrentTenantAsync());
 
-        _messageService.Send(MessageAction.TeamTemplateChanged);
+        await _messageService.SendAsync(MessageAction.TeamTemplateChanged);
 
-        return PeopleSchema(PeopleNamesItem.CustomID);
+        return await PeopleSchemaAsync(PeopleNamesItem.CustomID);
     }
 
     [HttpGet("customschemas/{id}")]
-    public SchemaRequestsDto PeopleSchema(string id)
+    public async Task<SchemaRequestsDto> PeopleSchemaAsync(string id)
     {
-        var names = _customNamingPeople.GetPeopleNames(id);
+        var names = await _customNamingPeople.GetPeopleNamesAsync(id);
         var schemaItem = new SchemaRequestsDto
         {
             Id = names.Id,

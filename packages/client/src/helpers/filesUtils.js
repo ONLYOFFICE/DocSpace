@@ -16,28 +16,28 @@ import i18n from "./i18n";
 
 import { request } from "@docspace/common/api/client";
 
-export const getFileTypeName = (fileType, t) => {
+export const getFileTypeName = (fileType) => {
   switch (fileType) {
     case FileType.Unknown:
-      return t("Common:Unknown");
+      return i18n.t("Common:Unknown");
     case FileType.Archive:
-      return t("Common:Archive");
+      return i18n.t("Common:Archive");
     case FileType.Video:
-      return t("Common:Video");
+      return i18n.t("Common:Video");
     case FileType.Audio:
-      return t("Common:Audio");
+      return i18n.t("Common:Audio");
     case FileType.Image:
-      return t("Common:Image");
+      return i18n.t("Common:Image");
     case FileType.Spreadsheet:
-      return t("Files:Spreadsheet");
+      return i18n.t("Files:Spreadsheet");
     case FileType.Presentation:
-      return t("Files:Presentation");
+      return i18n.t("Files:Presentation");
     case FileType.Document:
     case FileType.OFormTemplate:
     case FileType.OForm:
-      return t("Files:Document");
+      return i18n.t("Files:Document");
     default:
-      return t("Files:Folder");
+      return i18n.t("Files:Folder");
   }
 };
 
@@ -158,14 +158,16 @@ export const SaveAs = (title, url, folderId, openNewTab) => {
   if (!openNewTab) {
     return getDataSaveAs(params);
   } else {
-    window.open(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        `/filehandler.ashx?${params}`
-      ),
-      "_blank"
+    const handlerUrl = combineUrl(
+      window.DocSpaceConfig?.proxy?.url,
+      config.homepage,
+      window["AscDesktopEditor"] !== undefined //FIX Save as with open new tab on DesktopEditors
+        ? "/Products/Files/HttpHandlers/"
+        : "",
+      `/filehandler.ashx?${params}`
     );
+    //console.log({ handlerUrl });
+    window.open(handlerUrl, "_blank");
   }
 };
 
@@ -264,4 +266,11 @@ export const connectedCloudsTypeIcon = (key) => {
       return CloudServicesWebdavReactSvgUrl;
     default:
   }
+};
+
+export const getTitleWithoutExtension = (item, fromTemplate) => {
+  const titleWithoutExst = item.title.split(".").slice(0, -1).join(".");
+  return titleWithoutExst && item.fileExst && !fromTemplate
+    ? titleWithoutExst
+    : item.title;
 };

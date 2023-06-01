@@ -1,7 +1,6 @@
 import HelpReactSvgUrl from "PUBLIC_DIR/images/help.react.svg?url";
 import React from "react";
 import styled, { css } from "styled-components";
-import { withRouter } from "react-router";
 import { Trans } from "react-i18next";
 import { inject, observer } from "mobx-react";
 
@@ -102,6 +101,7 @@ const PaymentContainer = (props) => {
     paymentDate,
     t,
     isNonProfit,
+    isPaymentDateValid,
   } = props;
   const renderTooltip = () => {
     return (
@@ -120,7 +120,7 @@ const PaymentContainer = (props) => {
               <Text>{t("RoomManagerDescription")}</Text>
               <br />
               <Text isBold>{t("Common:PowerUser")}</Text>
-              <Text>{t("PowerUserDescription")}</Text>
+              <Text>{t("Translations:RolePowerUserDescription")}</Text>
             </>
           }
         />
@@ -252,7 +252,7 @@ const PaymentContainer = (props) => {
         </Text>
       );
 
-    if (isPaidPeriod)
+    if (isPaidPeriod && isPaymentDateValid)
       return (
         <Text
           noSelect
@@ -356,6 +356,7 @@ export default inject(({ auth, payments }) => {
     paymentDate,
     gracePeriodEndDate,
     delayDaysCount,
+    isPaymentDateValid,
   } = currentTariffStatusStore;
 
   const { planCost, tariffPlanTitle, portalPaymentQuotas } = paymentQuotasStore;
@@ -389,5 +390,6 @@ export default inject(({ auth, payments }) => {
     portalTariffStatus,
     portalPaymentQuotas,
     isNonProfit,
+    isPaymentDateValid,
   };
-})(withRouter(observer(PaymentContainer)));
+})(observer(PaymentContainer));

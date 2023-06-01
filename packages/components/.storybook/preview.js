@@ -10,6 +10,11 @@ export const parameters = {
   viewport: {
     viewports: MINIMAL_VIEWPORTS,
   },
+  previewTabs: {
+    "storybook/docs/panel": {
+      hidden: true,
+    },
+  },
 };
 
 export const decorators = [withContexts(contexts)];

@@ -55,19 +55,19 @@ public class UsersModule : FeedModule
     public override Guid ProductID => WebItemManager.PeopleProductID;
     protected override string DbId => string.Empty;
 
-    public override Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
+    public override async Task<IEnumerable<Tuple<Feed.Aggregator.Feed, object>>> GetFeeds(FeedFilter filter)
     {
-        var users = _userManager.GetUsers().Where(u => u.LastModified >= filter.Time.From && u.LastModified <= filter.Time.To);
+        var users = (await _userManager.GetUsersAsync()).Where(u => u.LastModified >= filter.Time.From && u.LastModified <= filter.Time.To).ToAsyncEnumerable();
 
-        return Task.FromResult(users.Select(u => new Tuple<Feed.Aggregator.Feed, object>(ToFeed(u), u)));
+        return await users.SelectAwait(async u => new Tuple<Feed.Aggregator.Feed, object>(await ToFeedAsync(u), u)).ToListAsync();
     }
 
-    public override Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
+    public override async Task<IEnumerable<int>> GetTenantsWithFeeds(DateTime fromTime)
     {
-        return Task.FromResult(_userManager.GetTenantsWithFeeds(fromTime));
+        return await _userManager.GetTenantsWithFeedsAsync(fromTime);
     }
 
-    private Feed.Aggregator.Feed ToFeed(UserInfo u)
+    private async Task<Feed.Aggregator.Feed> ToFeedAsync(UserInfo u)
     {
         var fullName = _displayUserSettingsHelper.GetFullUserName(u);
 
@@ -80,7 +80,7 @@ public class UsersModule : FeedModule
             Title = fullName,
             ExtraLocation = u.Id.ToString(),
             AdditionalInfo = u.Email,
-            AdditionalInfo2 = _userManager.GetUserType(u.Id).ToString(),
+            AdditionalInfo2 = (await _userManager.GetUserTypeAsync(u.Id)).ToString(),
             AdditionalInfo3 = u.Status.ToString(),
             AdditionalInfo4 = u.ActivationStatus.ToString(),
             Keywords = fullName,
@@ -90,18 +90,18 @@ public class UsersModule : FeedModule
         return feed;
     }
 
-    public override bool VisibleFor(Feed.Aggregator.Feed feed, object data, Guid userId)
+    public override async Task<bool> VisibleForAsync(Feed.Aggregator.Feed feed, object data, Guid userId)
     {
         var user = data as UserInfo;
 
-        return user.Id != userId && !_userManager.IsUser(userId);
+        return user.Id != userId && !await _userManager.IsUserAsync(userId);
     }
 
-    public override Task VisibleFor(List<Tuple<FeedRow, object>> feed, Guid userId)
+    public override async Task VisibleForAsync(List<Tuple<FeedRow, object>> feed, Guid userId)
     {
-        if (_userManager.IsUser(userId))
+        if (await _userManager.IsUserAsync(userId))
         {
-            return Task.CompletedTask;
+            return;
         }
 
         foreach (var row in feed)
@@ -113,7 +113,5 @@ public class UsersModule : FeedModule
                 row.Item1.Users.Add(userId);
             }
         }
-
-        return Task.CompletedTask;
     }
 }

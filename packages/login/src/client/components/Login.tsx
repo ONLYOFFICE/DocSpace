@@ -1,14 +1,22 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useEffect
+} from"react";
 import { useTranslation } from "react-i18next";
 import { inject, observer } from "mobx-react";
-import { ButtonsWrapper, LoginFormWrapper, LoginContent } from "./StyledLogin";
+import {
+  ButtonsWrapper,
+  LoginFormWrapper,
+  LoginContent
+} from "./StyledLogin";
 import Text from "@docspace/components/text";
 import SocialButton from "@docspace/components/social-button";
 import {
   getProviderTranslation,
   getOAuthToken,
   getLoginLink,
-  checkIsSSR,
+  checkIsSSR
 } from "@docspace/common/utils";
 import { providersData } from "@docspace/common/constants";
 import Link from "@docspace/components/link";
@@ -18,7 +26,10 @@ import MoreLoginModal from "@docspace/common/components/MoreLoginModal";
 import RecoverAccessModalDialog from "@docspace/common/components/Dialogs/RecoverAccessModalDialog";
 import FormWrapper from "@docspace/components/form-wrapper";
 import Register from "./sub-components/register-container";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import {
+  ColorTheme,
+  ThemeType
+} from "@docspace/components/ColorTheme";
 import SSOIcon from "PUBLIC_DIR/images/sso.react.svg";
 import { Dark, Base } from "@docspace/components/themes";
 import { useMounted } from "../helpers/useMounted";
@@ -239,7 +250,7 @@ const Login: React.FC<ILoginProps> = ({
                     type="action"
                     fontSize="13px"
                     fontWeight="600"
-                    color="#3B72A7"
+                    color={currentColorScheme?.main?.accent}
                     className="more-label"
                     onClick={moreAuthOpen}
                   >

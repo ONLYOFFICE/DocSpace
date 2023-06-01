@@ -42,6 +42,7 @@ public class TenantQuota : IMapFrom<DbQuota>
     public int Tenant { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
+    public string PriceCurrencySymbol { get; set; }
     public string ProductId { get; set; }
     public bool Visible { get; set; }
 
@@ -294,7 +295,7 @@ public class TenantQuota : IMapFrom<DbQuota>
         return obj is TenantQuota q && q.Tenant == Tenant;
     }
 
-    public async Task Check(IServiceProvider serviceProvider)
+    public async Task CheckAsync(IServiceProvider serviceProvider)
     {
         foreach (var checker in serviceProvider.GetServices<ITenantQuotaFeatureChecker>())
         {
@@ -373,7 +374,8 @@ public class TenantQuota : IMapFrom<DbQuota>
 
     public void Mapping(Profile profile)
     {
-        profile.CreateMap<DbQuota, TenantQuota>();
+        profile.CreateMap<DbQuota, TenantQuota>()
+            .ForMember(dest => dest.Price, o => o.MapFrom<TenantQuotaPriceResolver>());
     }
 
     public TenantQuotaFeature<T> GetFeature<T>(string name)

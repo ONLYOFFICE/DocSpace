@@ -73,7 +73,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
             _logger.DebugBackupSchedulerServiceDoingWork();
 
-            ExecuteBackupScheduler(stoppingToken);
+            await ExecuteBackupSchedulerAsync(stoppingToken);
 
             await Task.Delay(_backupSchedulerPeriod, stoppingToken);
         }
@@ -81,7 +81,7 @@ public sealed class BackupSchedulerService : BackgroundService
         _logger.DebugBackupSchedulerServiceStopping();
     }
 
-    private void ExecuteBackupScheduler(CancellationToken stoppingToken)
+    private async Task ExecuteBackupSchedulerAsync(CancellationToken stoppingToken)
     {
         using var serviceScope = _scopeFactory.CreateScope();
 
@@ -92,7 +92,7 @@ public sealed class BackupSchedulerService : BackgroundService
 
         _logger.DebugStartedToSchedule();
 
-        var backupsToSchedule = backupRepository.GetBackupSchedules().Where(schedule => backupSchedule.IsToBeProcessed(schedule)).ToList();
+        var backupsToSchedule = await (await backupRepository.GetBackupSchedulesAsync()).ToAsyncEnumerable().WhereAwait(async schedule => await backupSchedule.IsToBeProcessedAsync(schedule)).ToListAsync();
 
         _logger.DebugBackupsSchedule(backupsToSchedule.Count);
 
@@ -105,15 +105,15 @@ public sealed class BackupSchedulerService : BackgroundService
 
             try
             {
-                if (_coreBaseSettings.Standalone || tenantManager.GetTenantQuota(schedule.TenantId).AutoBackupRestore)
+                if (_coreBaseSettings.Standalone || (await tenantManager.GetTenantQuotaAsync(schedule.TenantId)).AutoBackupRestore)
                 {
-                    var tariff = tariffService.GetTariff(schedule.TenantId);
+                    var tariff = await tariffService.GetTariffAsync(schedule.TenantId);
 
                     if (tariff.State < TariffState.Delay)
                     {
                         schedule.LastBackupTime = DateTime.UtcNow;
 
-                        backupRepository.SaveBackupSchedule(schedule);
+                        await backupRepository.SaveBackupScheduleAsync(schedule);
 
                         _logger.DebugStartScheduledBackup(schedule.TenantId, schedule.StorageType, schedule.StorageBasePath);
 

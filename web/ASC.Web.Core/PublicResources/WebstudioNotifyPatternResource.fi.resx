@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>Blogi luotiin: </value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Kirjanmerkki luotiin: </value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Asiakkuushallinnan tapaus luotiin:</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Kommentti lisättiin:</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Asiakkuudenhallinnan kontakti luotiin:</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Asiakkuudenhallinnan mahdollisuus luotiin:</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Keskustelu luotiin:</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Tapahtuma luotiin:</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Asiakirja luotiin/ladattiin: </value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Kansio luotiin:</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Keskusteluryhmä luotiin:</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Kysely luotiin:</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Postaus luotiin:</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Välitavoite luotiin:</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Projekti luotiin:</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Tehtävä luotiin:</value>
-  </data>
   <data name="ButtonAccessControlPanel" xml:space="preserve">
     <value>Hallintapaneeliin pääsy</value>
   </data>
@@ -124,8 +76,13 @@
   <data name="ButtonRequestCallButton" xml:space="preserve">
     <value>Soittopyyntö</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Lisätietoa &gt;&gt;</value>
+  <data name="pattern_send_whats_new" xml:space="preserve">
+    <value>h1.Uutta DocSpacessa $Date
+
+#foreach($activity in $Activities)
+$activity
+
+#end</value>
   </data>
   <data name="pattern_smtp_test" xml:space="preserve">
     <value>SMTP testiviesti
@@ -198,5 +155,162 @@ ONLYOFFICE Tiimi</value>
   </data>
   <data name="subject_user_has_join" xml:space="preserve">
     <value>Uusi käyttäjä lisätty ${LetterLogoText} portaaliin</value>
+  </data>
+  <data name="ActionFileCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; uusi dokumentti luotu: &lt;a href={1}&gt;{2}&lt;/a&gt; huoneessa: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionNewComment" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; uusi kommentti lisätty dokumentin versioon: &lt;a href={1}&gt;{2}&lt;/a&gt; huoneessa: &lt;a href={3}&gt;{4}&lt;/a&gt; - &lt;b&gt;{5}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileUploaded" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; uusi dokumentti ladattu: &lt;a href={1}&gt;{2}&lt;/a&gt; huoneessa: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRenamed" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; huone nimetty uudelleen: &lt;b&gt;{1}&lt;/b&gt; &gt; &lt;a href={2}&gt;{3}&lt;/a&gt; - &lt;b&gt;{4}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomCreated" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; uusi huone luotu: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserRemovedFromRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; poistettu huoneesta: &lt;a href={1}&gt;{2}&lt;/a&gt; - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionFileEdited" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; muokkasi dokumenttia: &lt;a href={1}&gt;{2}&lt;/a&gt; huoneessa: &lt;a href={3}&gt;{4}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomRemoved" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; huone poistettu: &lt;b&gt;{1}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserAddedToRoom" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; lisättiin huoneeseen: &lt;a href={1}&gt;{2}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionRoomArchived" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; siirrettiin huoneeseen: &lt;a href={1}&gt;{2}&lt;/a&gt; to arkisto - &lt;b&gt;{3}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionRoomUpdateAccessForUser" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; määrättiin rooliin &lt;b&gt;{1}&lt;/b&gt; huoneessa: &lt;a href={2}&gt;{3}&lt;/a&gt;</value>
+  </data>
+  <data name="ActionUserCreated" xml:space="preserve">
+    <value>Uusi DocSpace käyttäjä lisätty: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUsersUpdatedType" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; muutti käyttäjien käyttöoikeustasoa &lt;b&gt;{1}&lt;/b&gt; to &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="ActionUserUpdated" xml:space="preserve">
+    <value>DocSpace käyttäjä päivitetty: &lt;b&gt;{0} ({1})&lt;/b&gt; - &lt;b&gt;{2}&lt;/b&gt;</value>
+  </data>
+  <data name="pattern_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
+
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriä":"https://helpcenter.onlyoffice.com/" tai kysy "tuki tiimiltä":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Ystävällisin terveisin, 
+ONLYOFFICE-Tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
+
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriä":"https://helpcenter.onlyoffice.com/" tai kysy "tuki tiimiltä":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Ystävällisin terveisin, 
+ONLYOFFICE-Tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+  </data>
+  <data name="pattern_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
+
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriä":"https://helpcenter.onlyoffice.com/" tai kysy "tuki tiimiltä":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Ystävällisin terveisin, 
+ONLYOFFICE-Tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="pattern_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Hei, $UserName!
+
+Tervetuloa ONLYOFFICE DocSpaceen! Käyttäjäprofiilisi on onnistuneesti lisätty "${__VirtualRootPath}":"${__VirtualRootPath}". Nyt voit:
+
+* Työskentele toisten käyttäjien kanssa huoneessa, johon sinut on kutsuttu: *Yhteistyöhuoneet reaaliaikaista kirjoittamista varten tai muokatut huoneet, joissa on joustavat asetukset mihin tahansa tarkoitukseen*.
+
+* *Työskentele eri formaattien tiedostojen kanssa*: tekstidokumentit, laskentataulukot, esitykset, digitaaliset lomakkeet, PDF:t, e-kirjat, multimedia.
+
+* *Tee yhteistyötä dokumenttien kanssa* kahdella yhteismuokkaustilalla: reaaliajassa tai kappaleen lukituksella. Jäljitä muutokset, kommunikoi reaaliajassa käyttäen sisäänrakennettua chattia tai tehden audio- ja videopuheluita. 
+
+* *Yhdistä pilvipalvelu* ja työskentele vaihtamatta sovellusten välillä. 
+
+$GreenButton
+
+Jos tarvitset apua, selaa "Help Centeriä":"https://helpcenter.onlyoffice.com/" tai kysy "tuki tiimiltä":"https://www.onlyoffice.com/support-contact-form.aspx".
+
+Ystävällisin terveisin, 
+ONLYOFFICE-Tiimi
+"www.onlyoffice.com":"http://onlyoffice.com/"</value>
+ </data>
+  <data name="subject_enterprise_guest_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_enterprise_whitelabel_guest_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_opensource_guest_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
+    <value>Tervetuloa ONLYOFFICE DocSpaceen!</value>
+  </data>
+  <data name="pattern_opensource_admin_docs_tips_v1" xml:space="preserve">
+    <value>Bonjour, $UserName !
+ 
+Nous espérons que vous apprécierez l'utilisation de votre ONLYOFFICE DocSpace. Voici quelques conseils pour rendre le travail sur les documents plus efficace.
+ 
+*#1. Choisissez votre mode de travail.* Organisez votre flux de travail en fonction de vos besoins en créant des salles de collaboration pour la co-écriture en temps réel ou des salles personnalisées avec des paramètres flexibles pour n'importe quel usage.
+ 
+*#2. Travaillez avec tous les contenus dont vous disposez.* Travaillez avec tous les contenus dont vous disposez. Stockez et travaillez avec des fichiers de différents formats dans vos salles : documents texte, feuilles de calcul, présentations, formulaires numériques, PDF, livres électroniques, multimédia.
+ 
+*#3. Coéditez efficacement.* Collaborez sur des documents grâce à deux modes de coédition : en temps réel ou avec verrouillage des paragraphes. Suivez les modifications, communiquez en temps réel en utilisant le chat intégré ou en effectuant des appels audio et vidéo.
+ 
+*#4. Connectez des clouds tiers.* Connectez n'importe quel stockage en cloud et travaillez sans passer d'une application à l'autre.
+ 
+$GreenButton
+ 
+Bien à vous, 
+équipe ONLYOFFICE 
+"www.onlyoffice.com" : https://www.onlyoffice.com/fr</value>
   </data>
 </root>

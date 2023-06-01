@@ -4,11 +4,11 @@
   "AddManuallyDescriptionRoom": "Dodaj istniejących użytkowników DocSpace do pokoju za pomocą nazw lub zaproś nowych użytkowników osobiście za pośrednictwem poczty elektronicznej",
   "EmailErrorMessage": "Niepoprawny adres e-mail Możesz poprawić adres e-mail klikając go.",
   "InviteAccountSearchPlaceholder": "Zaproś ludzi poprzez e-mail",
+  "Invited": "Zaproszono",
   "InviteRoomSearchPlaceholder": "Zaproś ludzi po imieniu lub poprzez adres e-mail",
   "InviteViaLink": "Zaproś poprzez link",
   "InviteViaLinkDescriptionAccounts": "Utwórz uniwersalny link do samodzielnej autoryzacji w DocSpace",
   "InviteViaLinkDescriptionRoom": "Stwórz uniwersalny link do samodzielnej autoryzacji w pokoju",
-  "Invited": "Zaproszono",
   "LinkCopySuccess": "Link został skopiowany",
   "SendInvitation": "Wyślij zaproszenie"
 }

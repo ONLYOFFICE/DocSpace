@@ -4,6 +4,8 @@ import {
   findNearestIndex,
 } from "@docspace/common/components/MediaViewer/helpers";
 
+const FirstUrlKey = "isFirstUrl";
+
 class MediaViewerDataStore {
   filesStore;
   settingsStore;
@@ -50,9 +52,22 @@ class MediaViewerDataStore {
     this.id = id;
   };
 
+  saveFirstUrl = (url) => {
+    localStorage.setItem(FirstUrlKey, url);
+  };
+
+  getFirstUrl = () => {
+    return localStorage.getItem(FirstUrlKey);
+  };
+
+  removeFirstUrl = () => {
+    localStorage.removeItem(FirstUrlKey);
+  };
+
   changeUrl = (id) => {
     const url = "/products/files/#preview/" + id;
-    window.history.pushState(null, null, url);
+
+    window.DocSpace.navigate(url);
   };
 
   nextMedia = () => {

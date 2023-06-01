@@ -406,7 +406,17 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         new
                         {
                             Input = ".docxf",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".docxf",
                             Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".docxf",
+                            Output = ".dotm"
                         },
                         new
                         {
@@ -630,6 +640,96 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".dps",
+                            Output = ".odp"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
+                            Input = ".dps",
+                            Output = ".pptx"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".odp"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
+                            Input = ".dpt",
+                            Output = ".pptx"
+                        },
+                        new
+                        {
                             Input = ".epub",
                             Output = ".docx"
                         },
@@ -682,6 +782,86 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".epub",
                             Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".csv"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".ods"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".et",
+                            Output = ".xltx"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".csv"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".ods"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".ett",
+                            Output = ".xltx"
                         },
                         new
                         {
@@ -767,6 +947,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".fodp",
                             Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".fodp",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".fodp",
+                            Output = ".ppsx"
                         },
                         new
                         {
@@ -875,6 +1065,66 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".htm",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".htm",
+                            Output = ".txt"
+                        },
+                        new
+                        {
                             Input = ".html",
                             Output = ".docx"
                         },
@@ -981,7 +1231,72 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         new
                         {
                             Input = ".mht",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".mht",
                             Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".mhtml",
+                            Output = ".txt"
                         },
                         new
                         {
@@ -1007,6 +1322,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".odp",
                             Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".odp",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".odp",
+                            Output = ".ppsx"
                         },
                         new
                         {
@@ -1037,6 +1362,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".otp",
                             Output = ".pptm"
+                        },
+                        new
+                        {
+                            Input = ".otp",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".otp",
+                            Output = ".ppsx"
                         },
                         new
                         {
@@ -1112,6 +1447,161 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".ots",
                             Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".odt",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".ott",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".oxps",
+                            Output = ".ott"
                         },
                         new
                         {
@@ -1120,116 +1610,71 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
-                            Input = ".odt",
-                            Output = ".docx"
-                        },
-                        new
-                        {
-                            Input = ".odt",
-                            Output = ".pdf"
-                        },
-                        new
-                        {
-                            Input = ".odt",
+                            Input = ".oxps",
                             Output = ".rtf"
                         },
                         new
                         {
-                            Input = ".odt",
+                            Input = ".oxps",
                             Output = ".txt"
                         },
                         new
                         {
-                            Input = ".odt",
+                            Input = ".pdf",
                             Output = ".docm"
                         },
                         new
                         {
-                            Input = ".odt",
-                            Output = ".dotm"
-                        },
-                        new
-                        {
-                            Input = ".odt",
-                            Output = ".dotx"
-                        },
-                        new
-                        {
-                            Input = ".odt",
-                            Output = ".epub"
-                        },
-                        new
-                        {
-                            Input = ".odt",
-                            Output = ".fb2"
-                        },
-                        new
-                        {
-                            Input = ".odt",
-                            Output = ".html"
-                        },
-                        new
-                        {
-                            Input = ".odt",
-                            Output = ".ott"
-                        },
-                        new
-                        {
-                            Input = ".ott",
+                            Input = ".pdf",
                             Output = ".docx"
                         },
                         new
                         {
-                            Input = ".ott",
+                            Input = ".pdf",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".pdf",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".pdf",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".pdf",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".pdf",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".pdf",
                             Output = ".odt"
                         },
                         new
                         {
-                            Input = ".ott",
-                            Output = ".pdf"
+                            Input = ".pdf",
+                            Output = ".ott"
                         },
                         new
                         {
-                            Input = ".ott",
+                            Input = ".pdf",
                             Output = ".rtf"
                         },
                         new
                         {
-                            Input = ".ott",
+                            Input = ".pdf",
                             Output = ".txt"
                         },
                         new
                         {
-                            Input = ".ott",
-                            Output = ".docm"
-                        },
-                        new
-                        {
-                            Input = ".ott",
-                            Output = ".dotm"
-                        },
-                        new
-                        {
-                            Input = ".ott",
-                            Output = ".dotx"
-                        },
-                        new
-                        {
-                            Input = ".ott",
-                            Output = ".epub"
-                        },
-                        new
-                        {
-                            Input = ".ott",
-                            Output = ".fb2"
-                        },
-                        new
-                        {
-                            Input = ".ott",
-                            Output = ".html"
-                        },
-                        new
-                        {
                             Input = ".pot",
                             Output = ".odp"
                         },
@@ -1262,6 +1707,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".pot",
                             Output = ".pptm"
+                        },
+                        new
+                        {
+                            Input = ".pot",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".pot",
+                            Output = ".ppsx"
                         },
                         new
                         {
@@ -1295,6 +1750,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".potm",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".potm",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
                             Input = ".potx",
                             Output = ".odp"
                         },
@@ -1322,6 +1787,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".potx",
                             Output = ".pptm"
+                        },
+                        new
+                        {
+                            Input = ".potx",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".potx",
+                            Output = ".ppsx"
                         },
                         new
                         {
@@ -1360,6 +1835,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".pps",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".pps",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
                             Input = ".ppsm",
                             Output = ".odp"
                         },
@@ -1395,6 +1880,11 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".ppsm",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
                             Input = ".ppsx",
                             Output = ".odp"
                         },
@@ -1422,6 +1912,11 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".ppsx",
                             Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".ppsx",
+                            Output = ".ppsm"
                         },
                         new
                         {
@@ -1465,6 +1960,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".ppt",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".ppt",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
                             Input = ".pptm",
                             Output = ".odp"
                         },
@@ -1492,6 +1997,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".pptm",
                             Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".pptm",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".pptm",
+                            Output = ".ppsx"
                         },
                         new
                         {
@@ -1530,6 +2045,16 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".pptx",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".pptx",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
                             Input = ".rtf",
                             Output = ".odt"
                         },
@@ -1582,6 +2107,211 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         {
                             Input = ".rtf",
                             Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".stw",
+                            Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".csv"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".ods"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".sxc",
+                            Output = ".xltx"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".odp"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".otp"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".potm"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".potx"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".ppsm"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".ppsx"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".pptm"
+                        },
+                        new
+                        {
+                            Input = ".sxi",
+                            Output = ".pptx"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".sxw",
+                            Output = ".txt"
                         },
                         new
                         {
@@ -1640,6 +2370,126 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
+                            Input = ".wps",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".wps",
+                            Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".wpt",
+                            Output = ".txt"
+                        },
+                        new
+                        {
                             Input = ".xls",
                             Output = ".csv"
                         },
@@ -1676,6 +2526,46 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         new
                         {
                             Input = ".xls",
+                            Output = ".xltx"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
+                            Output = ".csv"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
+                            Output = ".ods"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
+                            Output = ".ots"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
+                            Output = ".xlsm"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
+                            Output = ".xlsx"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
+                            Output = ".xltm"
+                        },
+                        new
+                        {
+                            Input = ".xlsb",
                             Output = ".xltx"
                         },
                         new
@@ -1865,11 +2755,6 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         },
                         new
                         {
-                            Input = ".xps",
-                            Output = ".pdf"
-                        },
-                        new
-                        {
                             Input = ".xml",
                             Output = ".docm"
                         },
@@ -1926,6 +2811,66 @@ namespace ASC.Migrations.PostgreSql.Migrations.FilesDb
                         new
                         {
                             Input = ".xml",
+                            Output = ".txt"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".docm"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".docx"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".dotm"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".dotx"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".epub"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".fb2"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".html"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".odt"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".ott"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".pdf"
+                        },
+                        new
+                        {
+                            Input = ".xps",
+                            Output = ".rtf"
+                        },
+                        new
+                        {
+                            Input = ".xps",
                             Output = ".txt"
                         });
                 });

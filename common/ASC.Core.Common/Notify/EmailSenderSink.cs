@@ -49,8 +49,8 @@ public class EmailSenderSink : Sink
         try
         {
             await using var scope = _serviceProvider.CreateAsyncScope();
-            var m = scope.ServiceProvider.GetRequiredService<EmailSenderSinkMessageCreator>().CreateNotifyMessage(message, _senderName);
-            var result = await _sender.Send(m);
+            var m = await scope.ServiceProvider.GetRequiredService<EmailSenderSinkMessageCreator>().CreateNotifyMessageAsync(message, _senderName);
+            var result = await _sender.SendAsync(m);
 
             responce.Result = result switch
             {
@@ -83,7 +83,7 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
         _logger = options.CreateLogger("ASC.Notify");
     }
 
-    public override NotifyMessage CreateNotifyMessage(INoticeMessage message, string senderName)
+    public override async Task<NotifyMessage> CreateNotifyMessageAsync(INoticeMessage message, string senderName)
     {
         var m = new NotifyMessage
         {
@@ -94,12 +94,13 @@ public class EmailSenderSinkMessageCreator : SinkMessageCreator
             CreationDate = DateTime.UtcNow,
         };
 
-        var tenant = _tenantManager.GetCurrentTenant(false);
+        var tenant = await _tenantManager.GetCurrentTenantAsync(false);
         m.TenantId = tenant == null ? Tenant.DefaultTenant : tenant.Id;
 
-        var from = MailAddressUtils.Create(_coreConfiguration.SmtpSettings.SenderAddress, _coreConfiguration.SmtpSettings.SenderDisplayName);
+        var settings = await _coreConfiguration.GetSmtpSettingsAsync();
+        var from = MailAddressUtils.Create(settings.SenderAddress, settings.SenderDisplayName);
         var fromTag = message.Arguments.FirstOrDefault(x => x.Tag.Equals("MessageFrom"));
-        if ((_coreConfiguration.SmtpSettings.IsDefaultSettings || string.IsNullOrEmpty(_coreConfiguration.SmtpSettings.SenderDisplayName)) &&
+        if ((settings.IsDefaultSettings || string.IsNullOrEmpty(settings.SenderDisplayName)) &&
             fromTag != null && fromTag.Value != null)
         {
             try

@@ -106,12 +106,12 @@ services:
       target: studio
     image: "${REPO}/${DOCKER_IMAGE_PREFIX}-studio:${DOCKER_TAG}"
 
-  # onlyoffice-ssoauth:
-  #   build:
-  #     context: ./
-  #     dockerfile: "${DOCKERFILE}"
-  #     target: ssoauth
-  #   image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
+  onlyoffice-ssoauth:
+    build:
+      context: ./
+      dockerfile: "${DOCKERFILE}"
+      target: ssoauth
+    image: "${REPO}/${DOCKER_IMAGE_PREFIX}-ssoauth:${DOCKER_TAG}"
 
   # onlyoffice-webhooks-service:
   #   build:

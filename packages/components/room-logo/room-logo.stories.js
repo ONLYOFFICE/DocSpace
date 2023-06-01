@@ -13,15 +13,29 @@ export default {
       },
     },
   },
-  argTypes: {},
+  argTypes: {
+    type: {
+      description: "Accepts room type",
+      control: {
+        type: "select",
+        options: ["EditingRoom", "CustomRoom"],
+      },
+    },
+  },
 };
 
-const Template = (args) => <RoomLogo {...args} />;
+const Template = (args) => {
+  const RoomType = {
+    EditingRoom: 2,
+    CustomRoom: 5,
+  };
+  return <RoomLogo {...args} type={RoomType[args.type]} />;
+};
 
 export const Default = Template.bind({});
 
 Default.args = {
-  type: "custom",
+  type: "EditingRoom",
   isPrivacy: false,
   isArchive: false,
   withCheckbox: false,

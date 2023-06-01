@@ -9,7 +9,6 @@ import EmptyScreenFilter from "PUBLIC_DIR/images/empty_screen_filter.png";
 const StyledRowLoader = styled.div`
   width: 100%;
   height: 48px;
-  background: red;
 `;
 
 const StyledSearchLoader = styled.div`
@@ -28,6 +27,9 @@ export default {
           "Selector for displaying items list of people or room selector",
       },
     },
+  },
+  argTypes: {
+    height: { description: "Property for story" },
   },
 };
 
@@ -50,7 +52,7 @@ const getItems = (count) => {
       key: `user_${i}`,
       id: `user_${i}`,
       label: makeName() + " " + i,
-      avatar: ArchiveSvgUrl,
+      icon: CustomSvgUrl,
     });
   }
 
@@ -129,7 +131,7 @@ const Template = (args) => {
       style={{
         width: "480px",
         height: args.height,
-        border: "1px solid red",
+        border: "1px solid #eee",
         margin: "auto",
       }}
     >

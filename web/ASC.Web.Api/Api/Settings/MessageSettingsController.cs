@@ -78,46 +78,46 @@ public class MessageSettingsController : BaseSettingsController
     }
 
     [HttpPost("messagesettings")]
-    public object EnableAdminMessageSettings(AdminMessageSettingsRequestsDto inDto)
+    public async Task<object> EnableAdminMessageSettingsAsync(AdminMessageSettingsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        _settingsManager.Save(new StudioAdminMessageSettings { Enable = inDto.TurnOn });
+        await _settingsManager.SaveAsync(new StudioAdminMessageSettings { Enable = inDto.TurnOn });
 
-        _messageService.Send(MessageAction.AdministratorMessageSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.AdministratorMessageSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
     [HttpGet("cookiesettings")]
-    public int GetCookieSettings()
+    public async Task<int> GetCookieSettingsAsync()
     {
-        return _cookiesManager.GetLifeTime(_tenantManager.GetCurrentTenant().Id);
+        return await _cookiesManager.GetLifeTimeAsync(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     [HttpPut("cookiesettings")]
     public async Task<object> UpdateCookieSettings(CookieSettingsRequestsDto model)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         if (!SetupInfo.IsVisibleSettings("CookieSettings"))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "CookieSettings");
         }
 
-        await _cookiesManager.SetLifeTime(model.LifeTime);
+        await _cookiesManager.SetLifeTimeAsync(model.LifeTime);
 
-        _messageService.Send(MessageAction.CookieSettingsUpdated);
+        await _messageService.SendAsync(MessageAction.CookieSettingsUpdated);
 
         return Resource.SuccessfullySaveSettingsMessage;
     }
 
     [AllowAnonymous]
     [HttpPost("sendadmmail")]
-    public object SendAdmMail(AdminMessageSettingsRequestsDto inDto)
+    public async Task<object> SendAdmMailAsync(AdminMessageSettingsRequestsDto inDto)
     {
-        var studioAdminMessageSettings = _settingsManager.Load<StudioAdminMessageSettings>();
-        var enableAdmMess = studioAdminMessageSettings.Enable || _tenantExtra.IsNotPaid();
+        var studioAdminMessageSettings = await _settingsManager.LoadAsync<StudioAdminMessageSettings>();
+        var enableAdmMess = studioAdminMessageSettings.Enable || (await _tenantExtra.IsNotPaidAsync());
 
         if (!enableAdmMess)
         {
@@ -136,8 +136,8 @@ public class MessageSettingsController : BaseSettingsController
 
         CheckCache("sendadmmail");
 
-        _studioNotifyService.SendMsgToAdminFromNotAuthUser(inDto.Email, inDto.Message);
-        _messageService.Send(MessageAction.ContactAdminMailSent);
+        await _studioNotifyService.SendMsgToAdminFromNotAuthUserAsync(inDto.Email, inDto.Message);
+        await _messageService.SendAsync(MessageAction.ContactAdminMailSent);
 
         return Resource.AdminMessageSent;
     }
@@ -164,20 +164,20 @@ public class MessageSettingsController : BaseSettingsController
 
             CheckCache("sendjoininvite");
 
-            var user = _userManager.GetUserByEmail(email);
+            var user = await _userManager.GetUserByEmailAsync(email);
             if (!user.Id.Equals(Constants.LostUser.Id))
             {
                 throw new Exception(_customNamingPeople.Substitute<Resource>("ErrorEmailAlreadyExists"));
             }
 
-            var settings = _settingsManager.Load<IPRestrictionsSettings>();
+            var settings = await _settingsManager.LoadAsync<IPRestrictionsSettings>();
 
-            if (settings.Enable && !_ipSecurity.Verify())
+            if (settings.Enable && !await _ipSecurity.VerifyAsync())
             {
                 throw new Exception(Resource.ErrorAccessRestricted);
             }
 
-            var trustedDomainSettings = _settingsManager.Load<StudioTrustedDomainSettings>();
+            var trustedDomainSettings = await _settingsManager.LoadAsync<StudioTrustedDomainSettings>();
             var emplType = trustedDomainSettings.InviteAsUsers ? EmployeeType.User : EmployeeType.RoomAdmin;
             if (!_coreBaseSettings.Personal)
             {
@@ -204,8 +204,8 @@ public class MessageSettingsController : BaseSettingsController
                         var address = new MailAddress(email);
                         if (Tenant.TrustedDomains.Any(d => address.Address.EndsWith("@" + d.Replace("*", ""), StringComparison.InvariantCultureIgnoreCase)))
                         {
-                            _studioNotifyService.SendJoinMsg(email, emplType);
-                            _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                            await _studioNotifyService.SendJoinMsgAsync(email, emplType);
+                            await _messageService.SendAsync(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                             return Resource.FinishInviteJoinEmailMessage;
                         }
 
@@ -213,8 +213,8 @@ public class MessageSettingsController : BaseSettingsController
                     }
                 case TenantTrustedDomainsType.All:
                     {
-                        _studioNotifyService.SendJoinMsg(email, emplType);
-                        _messageService.Send(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
+                        await _studioNotifyService.SendJoinMsgAsync(email, emplType);
+                        await _messageService.SendAsync(MessageInitiator.System, MessageAction.SentInviteInstructions, email);
                         return Resource.FinishInviteJoinEmailMessage;
                     }
                 default:
@@ -223,11 +223,7 @@ public class MessageSettingsController : BaseSettingsController
         }
         catch (FormatException)
         {
-            return Resource.ErrorNotCorrectEmail;
-        }
-        catch (Exception e)
-        {
-            return e.Message.HtmlEncode();
+            throw new Exception(Resource.ErrorNotCorrectEmail);
         }
     }
 }

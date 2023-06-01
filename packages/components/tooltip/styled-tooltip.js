@@ -64,6 +64,13 @@ const StyledTooltip = styled.div`
   .__react_component_tooltip.place-bottom::before {
     background: none; !important;
   }
+
+  .__react_component_tooltip.place-bottom::after,
+  .__react_component_tooltip.place-top::after,
+  .__react_component_tooltip.place-right::after,
+  .__react_component_tooltip.place-left::after {
+    display: none;
+  }
 `;
 
 StyledTooltip.defaultProps = {

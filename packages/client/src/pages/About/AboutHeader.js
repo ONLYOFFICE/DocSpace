@@ -2,7 +2,7 @@
 import React from "react";
 import styled from "styled-components";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
+import { useNavigate } from "react-router-dom";
 import Headline from "@docspace/common/components/Headline";
 import IconButton from "@docspace/components/icon-button";
 import { tablet } from "@docspace/components/utils/device";
@@ -24,10 +24,12 @@ const HeaderContainer = styled.div`
 `;
 
 const AboutHeader = (props) => {
-  const { t, history } = props;
+  const { t } = props;
+
+  const navigate = useNavigate();
 
   const onBack = () => {
-    history.goBack();
+    navigate(-1);
   };
 
   return (
@@ -46,4 +48,4 @@ const AboutHeader = (props) => {
   );
 };
 
-export default withRouter(withTranslation(["About"])(AboutHeader));
+export default withTranslation(["About"])(AboutHeader);

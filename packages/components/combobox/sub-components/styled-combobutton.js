@@ -33,6 +33,7 @@ const hoverModernViewButton = css`
 const StyledComboButton = styled.div`
   display: flex;
   align-items: center;
+  gap: ${(props) => props.type && "4px"};
   justify-content: center;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 
@@ -78,6 +79,7 @@ const StyledComboButton = styled.div`
 
   ${(props) =>
     !props.noBorder &&
+    !props.type &&
     `
     border:  ${props.theme.comboBox.button.border};
     border-radius: ${props.theme.comboBox.button.borderRadius};
@@ -154,7 +156,8 @@ const StyledComboButton = styled.div`
         ? props.theme.comboBox.label.selectedColor
         : props.theme.comboBox.label.color};
 
-    max-width: ${(props) => props.theme.comboBox.label.maxWidth};
+    max-width: ${(props) =>
+      props.scaled ? "100%" : props.theme.comboBox.label.maxWidth};
 
     ${(props) =>
       props.noBorder &&

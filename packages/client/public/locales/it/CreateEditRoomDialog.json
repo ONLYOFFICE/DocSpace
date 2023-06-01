@@ -22,7 +22,6 @@
   "ThirdPartyStorageNoStorageAlert": "Prima è necessario collegare il servizio corrispondente nella sezione \"Integrazione\". Altrimenti la connessione non sarà possibile.",
   "ThirdPartyStoragePermanentSettingDescription": "I file sono archiviati in uno spazio di archiviazione {{thirdpartyTitle}} di terze parti nella cartella \"{{thirdpartyFolderName}}\".\n<strong>{{thirdpartyPath}}</strong>",
   "ThirdPartyStorageRoomAdminNoStorageAlert": "Per connettere uno storage di terze parti, è necessario aggiungere il servizio corrispondente nella sezione Integrazione delle impostazioni di DocSpace. Contatta il proprietario o l'amministratore di DocSpace per abilitare l'integrazione.",
-  "ThirdPartyStorageTitle": "Archiviazione di terze parti",
   "ViewOnlyRoomDescription": "Condividi documenti, report, documentazione e altri file pronti per la visualizzazione.",
   "ViewOnlyRoomTitle": "Stanza di sola visualizzazione"
 }

@@ -5,7 +5,8 @@ import { ReactSVG } from "react-svg";
 
 import toastr from "@docspace/components/toast/toastr";
 import { Button, Text, Textarea } from "@docspace/components";
-import infoPanel from "@docspace/common/components/Section/sub-components/info-panel";
+import { MAX_FILE_COMMENT_LENGTH } from "@docspace/common/constants";
+// import infoPanel from "@docspace/common/components/Section/sub-components/info-panel";
 
 const CommentEditor = ({
   t,
@@ -31,7 +32,13 @@ const CommentEditor = ({
   const [isLoading, setIsLoading] = useState(false);
 
   const [inputValue, setInputValue] = useState(comment || "");
-  const onChangeInputValue = (e) => setInputValue(e.target.value);
+
+  const onChangeInputValue = (e) => {
+    const value = e.target.value;
+    if (value.length > MAX_FILE_COMMENT_LENGTH) return;
+
+    setInputValue(value);
+  };
 
   const onOpenEditor = async () => {
     setInputValue(comment);

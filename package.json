@@ -1,6 +1,6 @@
 {
   "name": "docspace",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "workspaces": {
     "packages": [
@@ -23,7 +23,8 @@
     "storybook-serve": "yarn workspace @docspace/components run storybook-serve",
     "test": "yarn workspace @docspace/components test",
     "wipe": "shx rm -rf node_modules yarn.lock packages/**/node_modules",
-    "debug-info": "auto-changelog --unreleased-only --template debuginfo --output public/debuginfo.md"
+    "debug-info": "auto-changelog --unreleased-only --template debuginfo --output public/debuginfo.md",
+    "licenses-audit": "yarn licenses audit --output-csv=licenses.csv --config=licenses.config.js --summary"
   },
   "old-scripts": {
     "build:test": "yarn workspaces foreach -vptiR --from '{@docspace/client,@docspace/login,@docspace/editor}' run build:test",

@@ -293,7 +293,7 @@ const Base = {
     width: "100%",
 
     background: white,
-    disableBackgroundColor: "rgba(0, 0, 0, 0.08)",
+    disableBackgroundColor: "#F8F9F9",
     connectBackground: "#3B72A7",
     hoverBackground: white,
     hoverConnectBackground: "#265A8F",
@@ -305,7 +305,8 @@ const Base = {
     hoverBoxShadow: "none",
 
     color: "rgba(0, 0, 0, 0.54)",
-    disableColor: "rgba(0, 0, 0, 0.4)",
+    disableColor: "#333333",
+    disabledSvgColor: "none",
     border: "none",
     text: {
       width: "100%",
@@ -2869,6 +2870,7 @@ const Base = {
 
     settings: {
       iconFill: black,
+      trashIcon: "#A3A9AE",
       article: {
         titleColor: grayMain,
         fillIcon: "dimgray",
@@ -2948,6 +2950,7 @@ const Base = {
         separatorBorder: "1px solid #eceef1",
         warningColor: "#f21c0e",
         textColor: "#A3A9AE",
+        backupCheckedListItemBackground: "#F3F4F4",
       },
 
       payment: {

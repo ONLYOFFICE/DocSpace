@@ -58,6 +58,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Archive" xml:space="preserve">
+    <value>Arxiv</value>
+  </data>
   <data name="CorporateFiles" xml:space="preserve">
     <value>Ortaq sənədlər</value>
   </data>
@@ -68,7 +71,7 @@
     <value>Fayllar {0} .tar.gz faylına {1} sıxılacaq</value>
   </data>
   <data name="FilesWillBeCompressedZip" xml:space="preserve">
-    <value> Fayllar  {0}.zip faylına{1} sıxılacaq</value>
+    <value>Fayllar  {0}.zip faylına{1} sıxılacaq</value>
   </data>
   <data name="MyFiles" xml:space="preserve">
     <value>Sənədlərim</value>
@@ -87,5 +90,11 @@
   </data>
   <data name="Trash" xml:space="preserve">
     <value>Səbət</value>
+  </data>
+  <data name="VirtualRooms" xml:space="preserve">
+    <value>Otaqlar</value>
+  </data>
+  <data name="Personal" xml:space="preserve">
+    <value>Şəxsi</value>
   </data>
 </root>

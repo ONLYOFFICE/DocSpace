@@ -50,7 +50,7 @@ yum localinstall -y --nogpgcheck https://download1.rpmfusion.org/free/el/rpmfusi
 MONOREV=$REV
 if [ "$REV" = "9" ]; then
 	MONOREV="8"
-	yum localinstall -y --nogpgcheck https://vault.centos.org/centos/8/AppStream/x86_64/os/Packages/xorg-x11-font-utils-7.5-41.el8.x86_64.rpm
+	TESTING_REPO="--enablerepo=crb"
 elif [ "$REV" = "8" ]; then
 	POWERTOOLS_REPO="--enablerepo=powertools"
 fi
@@ -61,6 +61,7 @@ curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.
 
 #add nodejs repo
 curl -sL https://rpm.nodesource.com/setup_16.x | sed 's/centos|/'$DIST'|/g' |  sudo bash - || true
+rpm --import http://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
 
 #add dotnet repo
 if [ $REV = "7" ] || [[ $DIST != "redhat" && $REV = "8" ]]; then
@@ -104,9 +105,6 @@ gpgkey=https://nginx.org/keys/nginx_signing.key
 module_hotfixes=true
 END
 
-${package_manager} -y install python3-dnf-plugin-versionlock || ${package_manager} -y install yum-plugin-versionlock
-${package_manager} versionlock clear
-
 ${package_manager} -y install epel-release \
 			python3 \
 			nodejs \
@@ -119,7 +117,8 @@ ${package_manager} -y install epel-release \
 			rabbitmq-server$rabbitmq_version \
 			redis --enablerepo=remi \
 			SDL2 $POWERTOOLS_REPO \
-			expect
+			expect \
+			ffmpeg $TESTING_REPO
 	
 py3_version=$(python3 -c 'import sys; print(sys.version_info.minor)')
 if [[ $py3_version -lt 6 ]]; then

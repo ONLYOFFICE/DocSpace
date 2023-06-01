@@ -18,7 +18,7 @@ import {
   getBackupStorage,
   getStorageRegions,
 } from "@docspace/common/api/settings";
-import FloatingButton from "@docspace/common/components/FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 import { getSettingsThirdParty } from "@docspace/common/api/files";
 
 let selectedStorageType = "";
@@ -362,7 +362,7 @@ class ManualBackup extends React.Component {
         </StyledModules>
         <StyledModules isDisabled={isNotPaidPeriod}>
           <RadioButton
-            label={t("ThirdPartyStorage")}
+            label={t("Common:ThirdPartyStorage")}
             name={"isCheckedThirdPartyStorage"}
             key={3}
             isChecked={isCheckedThirdPartyStorage}

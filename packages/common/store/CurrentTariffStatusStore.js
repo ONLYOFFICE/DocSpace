@@ -1,17 +1,16 @@
 import { makeAutoObservable, runInAction } from "mobx";
+import moment from "moment";
+
+import { getDaysRemaining } from "@docspace/common/utils";
+
 import api from "../api";
 import { TariffState } from "../constants";
 import { getUserByEmail } from "../api/people";
-import moment from "moment";
-import { getDaysRemaining } from "@docspace/common/utils";
+import authStore from "./AuthStore";
 class CurrentTariffStatusStore {
   portalTariffStatus = {};
   isLoaded = false;
   payerInfo = null;
-
-  paymentDate = "";
-  gracePeriodEndDate = "";
-  delayDaysCount = "";
 
   constructor() {
     makeAutoObservable(this);
@@ -76,29 +75,47 @@ class CurrentTariffStatusStore {
       console.error(e);
     }
   };
-  setTariffDates = () => {
-    const setGracePeriodDays = () => {
-      const delayDueDateByMoment = moment(this.delayDueDate);
 
-      this.gracePeriodEndDate = delayDueDateByMoment.format("LL");
+  get paymentDate() {
+    moment.locale(authStore.language);
+    if (this.dueDate === null) return "";
+    return moment(this.dueDate).format("LL");
+  }
 
-      this.delayDaysCount = getDaysRemaining(delayDueDateByMoment);
-    };
+  get isPaymentDateValid() {
+    moment.locale(authStore.language);
+    if (this.dueDate === null) return "";
+    return moment(this.dueDate).year() !== 9999;
+  }
 
-    this.paymentDate = moment(this.dueDate).format("LL");
+  get gracePeriodEndDate() {
+    moment.locale(authStore.language);
+    if (this.delayDueDate === null) return "";
+    return moment(this.delayDueDate).format("LL");
+  }
 
-    (this.isGracePeriod || this.isNotPaidPeriod) && setGracePeriodDays();
-  };
+  get delayDaysCount() {
+    moment.locale(authStore.language);
+    if (this.delayDueDate === null) return "";
+    return getDaysRemaining(this.delayDueDate);
+  }
 
   setPortalTariff = async () => {
-    const res = await api.portal.getPortalTariff();
+    let refresh = false;
+
+    if (window.location.search === "?complete=true") {
+      refresh = true;
+    }
+
+    const res = await api.portal.getPortalTariff(refresh);
+
+    if (refresh)
+      window.history.replaceState({}, document.title, window.location.pathname);
 
     if (!res) return;
 
     runInAction(() => {
       this.portalTariffStatus = res;
-
-      this.setTariffDates();
     });
   };
 }

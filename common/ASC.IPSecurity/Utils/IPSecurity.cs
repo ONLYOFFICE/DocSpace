@@ -64,9 +64,9 @@ public class IPSecurity
         IpSecurityEnabled = !hideSettings.Contains("IpSecurity", StringComparer.CurrentCultureIgnoreCase);
     }
 
-    public bool Verify()
+    public async Task<bool> VerifyAsync()
     {
-        var tenant = _tenantManager.GetCurrentTenant();
+        var tenant = await _tenantManager.GetCurrentTenantAsync();
 
         if (!IpSecurityEnabled)
         {
@@ -86,7 +86,7 @@ public class IPSecurity
         string requestIps = null;
         try
         {
-            var restrictions = _ipRestrictionsService.Get(tenant.Id).ToList();
+            var restrictions = (await _ipRestrictionsService.GetAsync(tenant.Id)).ToList();
 
             if (restrictions.Count == 0)
             {
@@ -98,14 +98,14 @@ public class IPSecurity
             if (string.IsNullOrWhiteSpace(requestIps))
             {
                 var request = _httpContextAccessor.HttpContext.Request;
-                requestIps = request.Headers["X-Forwarded-For"].FirstOrDefault() ?? request.GetUserHostAddress();
+                requestIps = _httpContextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
             }
 
             var ips = string.IsNullOrWhiteSpace(requestIps)
                           ? Array.Empty<string>()
                           : requestIps.Split(new[] { ",", " " }, StringSplitOptions.RemoveEmptyEntries);
 
-            var isDocSpaceAdmin = _userManager.IsUserInGroup(_securityContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
+            var isDocSpaceAdmin = await _userManager.IsUserInGroupAsync(_securityContext.CurrentAccount.ID, Core.Users.Constants.GroupAdmin.ID);
 
             if (ips.Any(requestIp => restrictions.Any(restriction => (restriction.ForAdmin ? isDocSpaceAdmin : true) && MatchIPs(GetIpWithoutPort(requestIp), restriction.Ip))))
             {

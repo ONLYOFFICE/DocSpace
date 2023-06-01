@@ -4,11 +4,11 @@
   "AddManuallyDescriptionRoom": "Bestaande DocSpace gebruikers toevoegen aan de kamer met behulp van de namen of nieuwe gebruikers persoonlijk uitnodigen per e-mail",
   "EmailErrorMessage": "E-mailadres niet geldig. U kunt de e-mail bewerken door erop te klikken.",
   "InviteAccountSearchPlaceholder": "Mensen per e-mail uitnodigen",
+  "Invited": "Uitgenodigd",
   "InviteRoomSearchPlaceholder": "Mensen per e-mail uitnodigen",
   "InviteViaLink": "Uitnodigen via link",
   "InviteViaLinkDescriptionAccounts": "Maak een universele link voor zelfautorisatie in DocSpace",
   "InviteViaLinkDescriptionRoom": "Maak een universele link voor zelfautorisatie in de kamer",
-  "Invited": "Uitgenodigd",
   "LinkCopySuccess": "Link is gekopieerd",
   "SendInvitation": "Stuur uitnodiging"
 }

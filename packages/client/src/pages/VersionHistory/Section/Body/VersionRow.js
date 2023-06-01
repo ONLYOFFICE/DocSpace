@@ -7,7 +7,6 @@ import Textarea from "@docspace/components/textarea";
 import Button from "@docspace/components/button";
 import ModalDialog from "@docspace/components/modal-dialog";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 import VersionBadge from "./VersionBadge";
 import { StyledVersionRow } from "./StyledVersionHistory";
 import ExternalLinkIcon from "PUBLIC_DIR/images/external.link.react.svg";
@@ -16,6 +15,7 @@ import { inject, observer } from "mobx-react";
 import toastr from "@docspace/components/toast/toastr";
 import { Encoder } from "@docspace/common/utils/encoder";
 import { Base } from "@docspace/components/themes";
+import { MAX_FILE_COMMENT_LENGTH } from "@docspace/common/constants";
 
 const StyledExternalLinkIcon = styled(ExternalLinkIcon)`
   ${commonIconsStyles}
@@ -57,7 +57,13 @@ const VersionRow = (props) => {
     window.open(`${info.viewUrl}&version=${info.version}`, "_self");
   const onEditComment = () => !isEditing && setShowEditPanel(!showEditPanel);
 
-  const onChange = (e) => setCommentValue(e.target.value);
+  const onChange = (e) => {
+    const value = e.target.value;
+
+    if (value.length > MAX_FILE_COMMENT_LENGTH) return;
+
+    setCommentValue(value);
+  };
 
   const onSaveClick = () => {
     setIsSavingComment(true);
@@ -129,6 +135,7 @@ const VersionRow = (props) => {
       isTabletView={isTabletView}
       isSavingComment={isSavingComment}
       isEditing={isEditing}
+      contextTitle={t("Common:Actions")}
     >
       <div className={`version-row_${index}`}>
         <Box displayProp="flex" className="row-header">
@@ -142,6 +149,13 @@ const VersionRow = (props) => {
             versionGroup={info.versionGroup}
             {...onClickProp}
             t={t}
+            title={
+              index > 0
+                ? isVersion
+                  ? t("Files:MarkAsRevision")
+                  : t("Files:MarkAsVersion")
+                : ""
+            }
           />
           <Link
             onClick={onOpenFile}
@@ -172,7 +186,7 @@ const VersionRow = (props) => {
             {showEditPanel && (
               <>
                 <Textarea
-                  className="version_edit-comment textarea-desktop"
+                  className="version_edit-comment"
                   onChange={onChange}
                   fontSize={12}
                   heightTextArea={54}
@@ -249,9 +263,7 @@ export default inject(({ auth, versionHistoryStore, selectedFolderStore }) => {
     canChangeVersionFileHistory,
   };
 })(
-  withRouter(
-    withTranslation(["VersionHistory", "Common", "Translations"])(
-      observer(VersionRow)
-    )
+  withTranslation(["VersionHistory", "Common", "Translations"])(
+    observer(VersionRow)
   )
 );

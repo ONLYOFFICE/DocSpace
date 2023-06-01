@@ -35,8 +35,8 @@ class TargetUserStore {
   get getDisableProfileType() {
     const res =
       this.peopleStore.authStore.userStore.user.id === this.targetUser.id ||
-      !this.peopleStore.authStore.isAdmin ||
-      this.peopleStore.isPeoplesAdmin
+        !this.peopleStore.authStore.isAdmin ||
+        this.peopleStore.isPeoplesAdmin
         ? false
         : true;
 
@@ -47,8 +47,13 @@ class TargetUserStore {
     return (
       this.targetUser &&
       this.targetUser.userName ===
-        this.peopleStore.authStore.userStore.user.userName
+      this.peopleStore.authStore.userStore.user.userName
     );
+  }
+
+  setHasAvatar = (value) => {
+    this.targetUser.hasAvatar = value;
+    this.peopleStore.authStore.userStore.user.hasAvatar = value;
   }
 
   getTargetUser = async (userName) => {

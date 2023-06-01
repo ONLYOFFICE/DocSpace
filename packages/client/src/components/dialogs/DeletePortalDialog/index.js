@@ -7,7 +7,7 @@ import toastr from "@docspace/components/toast/toastr";
 import { sendDeletePortalEmail } from "@docspace/common/api/portal";
 
 import ModalDialogContainer from "../ModalDialogContainer";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const DeletePortalDialog = (props) => {
   const { t, ready } = useTranslation("Settings", "Common");

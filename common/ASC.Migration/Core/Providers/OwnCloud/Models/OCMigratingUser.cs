@@ -149,7 +149,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
         }
     }
 
-    public override async Task Migrate()
+    public override async Task MigrateAsync()
     {
         if (string.IsNullOrWhiteSpace(_userInfo.FirstName))
         {
@@ -160,7 +160,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
             _userInfo.LastName = FilesCommonResource.UnknownLastName;
         }
 
-        var saved = _userManager.GetUserByEmail(_userInfo.Email);
+        var saved = await _userManager.GetUserByEmailAsync(_userInfo.Email);
         if (saved != Constants.LostUser)
         {
             saved.ContactsList = saved.ContactsList.Union(_userInfo.ContactsList).ToList();
@@ -178,7 +178,7 @@ public class OCMigratingUser : MigratingUser<OCMigratingContacts, OCMigratingCal
                 {
                     fs.CopyTo(ms);
                 }
-                _userManager.SaveUserPhoto(saved.Id, ms.ToArray());
+                await _userManager.SaveUserPhotoAsync(saved.Id, ms.ToArray());
             }
         }
     }

@@ -7,7 +7,7 @@ import {
   Wrapper,
   Numeration,
 } from "./styled-textarea";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 import Toast from "@docspace/components/toast";
 import toastr from "@docspace/components/toast/toastr";
 import { isJSON, beautifyJSON } from "./utils";
@@ -85,13 +85,18 @@ const Textarea = ({
     }
   }, [areaSelect]);
 
+  const WrappedStyledCopyIcon = ({ heightScale, isJSONField, ...props }) => (
+    <StyledCopyIcon {...props} />
+  );
+
   return (
     <Wrapper
+      className="textarea-wrapper"
       isJSONField={isJSONField}
       onFocus={isJSONField ? onTextareaClick : undefined}
     >
       {isJSONField && (
-        <StyledCopyIcon
+        <WrappedStyledCopyIcon
           onClick={() => {
             copy(modifiedValue);
             toastr.success(copyInfoText);
@@ -155,11 +160,11 @@ Textarea.propTypes = {
   hasError: PropTypes.bool,
   /** Indicates the input field has scale */
   heightScale: PropTypes.bool,
-  /** Max Length of value */
+  /** Max value length */
   maxLength: PropTypes.number,
   /** Used as HTML `name` property  */
   name: PropTypes.string,
-  /** Allow you to handle changing events of component */
+  /** Sets a callback function that allows handling the component's changing events */
   onChange: PropTypes.func,
   /** Placeholder for Textarea  */
   placeholder: PropTypes.string,
@@ -167,15 +172,17 @@ Textarea.propTypes = {
   style: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
   /** Used as HTML `tabindex` property */
   tabIndex: PropTypes.number,
-  /** Value for Textarea */
+  /** Textarea value */
   value: PropTypes.string,
-  /** Value for font-size */
+  /** Font-size value */
   fontSize: PropTypes.number,
-  /** Value for height text-area */
+  /** Text-area height value */
   heightTextArea: PropTypes.number,
   /** Specifies the text color */
   color: PropTypes.string,
+  /** Default input property */
   autoFocus: PropTypes.bool,
+  /** Allows selecting the textarea */
   areaSelect: PropTypes.bool,
   /** Prettifies Json and adds lines numeration */
   isJSONField: PropTypes.bool,

@@ -53,7 +53,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
         }
 
         var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
-        _tenantManager.SetCurrentTenant(data.TenantId);
+        await _tenantManager.SetCurrentTenantAsync(data.TenantId);
         await fileDao.InitDocumentAsync(data);
 
         return true;
@@ -67,7 +67,7 @@ public class BaseIndexerFile : BaseIndexer<DbFile>
         }
 
         var fileDao = _daoFactory.GetFileDao<int>() as FileDao;
-        _tenantManager.SetCurrentTenant(data.TenantId);
+        await _tenantManager.SetCurrentTenantAsync(data.TenantId);
         await fileDao.InitDocumentAsync(data);
 
         return true;
@@ -97,7 +97,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
         _settings = settings;
     }
 
-    public override async Task IndexAll()
+    public override async Task IndexAllAsync()
     {
         (int, int, int) getCount(DateTime lastIndexed)
         {
@@ -182,7 +182,7 @@ public class FactoryIndexerFile : FactoryIndexer<DbFile>
             var j = 0;
             var tasks = new List<Task>();
 
-            foreach (var data in _indexer.IndexAll(getCount, getIds, getData))
+            foreach (var data in await _indexer.IndexAllAsync(getCount, getIds, getData))
             {
                 if (_settings.Threads == 1)
                 {

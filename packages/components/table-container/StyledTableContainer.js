@@ -4,6 +4,7 @@ import { mobile, tablet, hugeMobile } from "../utils/device";
 import IconButton from "../icon-button";
 import Scrollbar from "../scrollbar";
 import { isMobile, isMobileOnly } from "react-device-detect";
+import { ColorTheme } from "@docspace/components/ColorTheme";
 
 const reactWindowContainerStyles = css`
   height: 100%;
@@ -172,8 +173,8 @@ const StyledTableGroupMenu = styled.div`
 
 StyledTableGroupMenu.defaultProps = { theme: Base };
 
-const StyledInfoPanelToggleWrapper = styled.div`
-  display: ${(props) => (props.isInfoPanelVisible ? "none" : "flex")};
+const StyledInfoPanelToggleColorThemeWrapper = styled(ColorTheme)`
+  display: flex;
 
   align-items: center;
   align-self: center;
@@ -182,6 +183,7 @@ const StyledInfoPanelToggleWrapper = styled.div`
   height: 100%;
   width: auto;
   padding-left: 20px;
+  padding-right: 0;
 
   @media ${tablet} {
     display: none;
@@ -191,30 +193,10 @@ const StyledInfoPanelToggleWrapper = styled.div`
   margin-top: 1px;
 
   .info-panel-toggle-bg {
-    height: 32px;
-    width: 32px;
-    display: flex;
-    align-items: center;
-    align-self: center;
-
-    justify-content: center;
-    border-radius: 50%;
-    background-color: ${(props) =>
-      props.isInfoPanelVisible
-        ? props.theme.infoPanel.sectionHeaderToggleBgActive
-        : props.theme.infoPanel.sectionHeaderToggleBg};
-
-    path {
-      fill: ${(props) =>
-        props.isInfoPanelVisible
-          ? props.theme.infoPanel.sectionHeaderToggleIconActive
-          : props.theme.infoPanel.sectionHeaderToggleIcon};
-    }
-
     margin-bottom: 1px;
   }
 `;
-StyledInfoPanelToggleWrapper.defaultProps = { theme: Base };
+StyledInfoPanelToggleColorThemeWrapper.defaultProps = { theme: Base };
 
 const StyledTableHeader = styled.div`
   position: fixed;
@@ -437,7 +419,7 @@ export {
   StyledTableCell,
   StyledTableSettings,
   StyledTableGroupMenu,
-  StyledInfoPanelToggleWrapper,
+  StyledInfoPanelToggleColorThemeWrapper,
   StyledEmptyTableContainer,
   StyledScrollbar,
   StyledSettingsIcon,

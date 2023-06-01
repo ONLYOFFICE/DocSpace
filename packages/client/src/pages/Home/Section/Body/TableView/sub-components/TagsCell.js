@@ -1,10 +1,18 @@
 import React from "react";
 
-import Tags from "@docspace/common/components/Tags";
+import Tags from "@docspace/components/Tags";
 
-import { RoomsTypeTranslations } from "@docspace/common/constants";
+//import { RoomsTypeTranslations } from "@docspace/common/constants";
+import Text from "@docspace/components/text";
 
-const TagsCell = ({ t, item, tagCount, onSelectTag, onSelectOption }) => {
+const TagsCell = ({
+  t,
+  item,
+  tagCount,
+  onSelectTag,
+  onSelectOption,
+  sideColor,
+}) => {
   const styleTagsCell = {
     width: "100%",
     overflow: "hidden",
@@ -28,21 +36,16 @@ const TagsCell = ({ t, item, tagCount, onSelectTag, onSelectOption }) => {
 
   if (item?.tags?.length > 0) {
     tags.push(...item.tags);
-  } else {
-    tags.push({
-      isDefault: true,
-      label: t(RoomsTypeTranslations[item.roomType]),
-      onClick: () =>
-        onSelectOption({
-          option: "defaultTypeRoom",
-          value: item.roomType,
-        }),
-    });
   }
 
   return (
     <div style={styleTagsCell}>
-      <Tags tags={tags} columnCount={tagCount} onSelectTag={onSelectTag} />
+      {tags.length === 0 ? (
+        <Text color={sideColor}>{"—"}</Text>
+      ) : (
+        <Tags tags={tags} columnCount={tagCount} onSelectTag={onSelectTag} />
+      )}
+
       {/* {item.providerType && (
         <Tag
           icon={item.thirdPartyIcon}

@@ -52,7 +52,7 @@ export const LanguageTimeSettingsTooltip = ({
             className="display-block font-size"
             isHovered={true}
             target="_blank"
-            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+            href={`${helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`}
           >
             {{ learnMore }}
           </Link>
@@ -102,7 +102,7 @@ export const CustomTitlesTooltip = ({ t }) => {
 
 export const DNSSettingsTooltip = ({
   t,
-  theme,
+  currentColorScheme,
   helpLink,
   organizationName,
 }) => {
@@ -119,11 +119,11 @@ export const DNSSettingsTooltip = ({
           and our specialists will help you with the settings.
         </Trans>
         <Link
-          color={theme.client.settings.common.linkColorHelp}
+          color={currentColorScheme.main.accent}
           className="display-block font-size"
           isHovered={true}
           target="_blank"
-          href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+          href={`${helpLink}/administration/docspace-settings.aspx#alternativeurl`}
         >
           {t("Common:LearnMore")}
         </Link>
@@ -132,7 +132,7 @@ export const DNSSettingsTooltip = ({
   );
 };
 
-export const PortalRenamingTooltip = ({ t }) => {
+export const PortalRenamingTooltip = ({ t, domain }) => {
   const text = t("Settings:PortalRenamingDescription");
   const pleaseNote = t("Settings:PleaseNote");
   const save = t("Common:SaveButton");
@@ -144,10 +144,11 @@ export const PortalRenamingTooltip = ({ t }) => {
           ns="Settings"
           i18nKey="PortalRenamingSettingsTooltip"
           text={text}
+          domain={domain}
         >
           <div className="display-inline font-size"> {{ text }}</div>
           Enter the part that will appear next to the
-          onlyoffice.com/onlyoffice.eu portal address.
+          {{ domain }} portal address.
         </Trans>
       </div>
       <div className="font-size">

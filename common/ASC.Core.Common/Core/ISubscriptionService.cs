@@ -29,15 +29,15 @@ namespace ASC.Core;
 [Scope(typeof(DbSubscriptionService))]
 public interface ISubscriptionService
 {
-    bool IsUnsubscribe(int tenant, string sourceId, string actionId, string recipientId, string objectId);
-    IEnumerable<SubscriptionMethod> GetSubscriptionMethods(int tenant, string sourceId, string actionId, string recipientId);
-    IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId);
-    IEnumerable<SubscriptionRecord> GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, string objectId);
-    string[] GetRecipients(int tenant, string sourceID, string actionID, string objectID);
-    string[] GetSubscriptions(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe);
-    SubscriptionRecord GetSubscription(int tenant, string sourceId, string actionId, string recipientId, string objectId);
-    void RemoveSubscriptions(int tenant, string sourceId, string actionId);
-    void RemoveSubscriptions(int tenant, string sourceId, string actionId, string objectId);
-    void SaveSubscription(SubscriptionRecord s);
-    void SetSubscriptionMethod(SubscriptionMethod m);
+    Task<bool> IsUnsubscribeAsync(int tenant, string sourceId, string actionId, string recipientId, string objectId);
+    Task<IEnumerable<SubscriptionMethod>> GetSubscriptionMethodsAsync(int tenant, string sourceId, string actionId, string recipientId);
+    Task<IEnumerable<SubscriptionRecord>> GetSubscriptionsAsync(int tenant, string sourceId, string actionId);
+    Task<IEnumerable<SubscriptionRecord>> GetSubscriptionsAsync(int tenant, string sourceId, string actionId, string recipientId, string objectId);
+    Task<string[]> GetRecipientsAsync(int tenant, string sourceID, string actionID, string objectID);
+    Task<string[]> GetSubscriptionsAsync(int tenant, string sourceId, string actionId, string recipientId, bool checkSubscribe);
+    Task<SubscriptionRecord> GetSubscriptionAsync(int tenant, string sourceId, string actionId, string recipientId, string objectId);
+    Task RemoveSubscriptionsAsync(int tenant, string sourceId, string actionId);
+    Task RemoveSubscriptionsAsync(int tenant, string sourceId, string actionId, string objectId);
+    Task SaveSubscriptionAsync(SubscriptionRecord s);
+    Task SetSubscriptionMethodAsync(SubscriptionMethod m);
 }

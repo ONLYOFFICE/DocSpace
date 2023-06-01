@@ -303,6 +303,7 @@ const Dark = {
 
     color: "rgba(0, 0, 0, 0.54)",
     disableColor: "rgba(0, 0, 0, 0.4)",
+    disabledSvgColor: "#474747",
 
     border: "1px solid #474747",
     text: {
@@ -2873,6 +2874,7 @@ const Dark = {
 
     settings: {
       iconFill: white,
+      trashIcon: "#858585",
       article: {
         titleColor: "#c4c4c4",
         fillIcon: "#c4c4c4",
@@ -2948,10 +2950,11 @@ const Dark = {
       },
 
       backup: {
-        rectangleBackgroundColor: "#292929",
+        rectangleBackgroundColor: "#3D3D3D",
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
+        backupCheckedListItemBackground: "#3D3D3D",
       },
 
       payment: {

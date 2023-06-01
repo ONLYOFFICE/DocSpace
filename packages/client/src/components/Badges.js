@@ -12,11 +12,7 @@ import { isTablet } from "react-device-detect";
 import { FileStatus } from "@docspace/common/constants";
 import { Base } from "@docspace/components/themes";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
-
-export const StyledIcon = styled(IconButton)`
-  ${commonIconsStyles}
-`;
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const StyledWrapper = styled.div`
   display: flex;
@@ -75,6 +71,8 @@ const Badges = ({
   viewAs,
   onUnpinClick,
   isMutedBadge,
+  isArchiveFolderRoot,
+  isVisitor,
 }) => {
   const {
     id,
@@ -148,8 +146,8 @@ const Badges = ({
     : {};
 
   return fileExst ? (
-    <div className="badges additional-badges temp-badges">
-      {isEditing && (
+    <div className="badges additional-badges">
+      {isEditing && !isVisitor && (
         <ColorTheme
           themeId={ThemeType.IconButton}
           isEditing={isEditing}
@@ -161,16 +159,18 @@ const Badges = ({
           title={isForm ? t("Common:FillFormButton") : t("Common:EditButton")}
         />
       )}
-      {item.viewAccessability?.Convert && !isTrashFolder && (
-        <ColorTheme
-          themeId={ThemeType.IconButton}
-          onClick={setConvertDialogVisible}
-          iconName={iconRefresh}
-          className="badge tablet-badge icons-group can-convert"
-          size={sizeBadge}
-          hoverColor={theme.filesBadges.hoverIconColor}
-        />
-      )}
+      {item.viewAccessability?.Convert &&
+        !isTrashFolder &&
+        !isArchiveFolderRoot && (
+          <ColorTheme
+            themeId={ThemeType.IconButton}
+            onClick={setConvertDialogVisible}
+            iconName={iconRefresh}
+            className="badge tablet-badge icons-group can-convert"
+            size={sizeBadge}
+            hoverColor={theme.filesBadges.hoverIconColor}
+          />
+        )}
       {version > 1 && (
         <BadgeWrapper {...onShowVersionHistoryProp} isTile={isTile}>
           <Badge
@@ -181,6 +181,7 @@ const Badges = ({
             {...onShowVersionHistoryProp}
             noHover={true}
             isVersionBadge={true}
+            title={t("ShowVersionHistory")}
           />
         </BadgeWrapper>
       )}

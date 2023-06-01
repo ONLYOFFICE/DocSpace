@@ -82,6 +82,7 @@ $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1.$__DateTime, "$__AuthorName":"$__AuthorUrl" istifadəçisi
+
 "$DocumentTitle":"$DocumentURL" qovluğuna girişinizə bu giriş hüququları ilə icazə verdi: "$AccessRights".
 
 $Message</value>
@@ -109,5 +110,44 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder_tg" xml:space="preserve">
     <value>Sənədlər. Qovluğa girişicazəsi verildi:[$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName sənədin şərh bölməsində sizi qeyd etdi
+
+$__AuthorName "$DocumentTitle":"$DocumentURL" otağında "$RoomTitle ":"$RoomURL" sənədinə şərhdə sizi qeyd etdi:
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName otağı sildi
+
+$__AuthorName otağı sildi: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Bütün imzalayanlar tamamlandı $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>İmza statusu dəyişdi</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>DocSpace bildirişi. Sənəddə qeyd olunub</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Sənəddə qeyd olunub</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Poçt göndərişi tamamlandı.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>DocSpace bildirişi. Otaq silindi</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Sənədə giriş icazəsi verildi: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Şifrələnmiş sənədə giriş icazəsi verildi: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Qovluğa giriş icazəsi verildi: $DocumentTitle</value>
   </data>
 </root>

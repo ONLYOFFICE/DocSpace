@@ -105,4 +105,52 @@ $Message</value>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Dokumenty. Přístup umožněn ke složce $DocumentTitle</value>
   </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName vás zmínil v komentáři k dokumentu
+
+$__AuthorName vás zmínil v komentáři k dokumentu "$DocumentTitle":"$DocumentURL" v místnosti "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName smazal místnost
+
+$__AuthorName smazal místnost: $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Všichni podepisující vyplnili $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Změna stavu značky</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Oznámení DocSpace. Zmíněno v dokumentu</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Zmíněno v doku</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Odesílání je dokončeno.</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Oznámení DocSpace. Místnost odstraněna</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Udělen přístup k dokumentu: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Přístup udělený k zašifrovanému dokumentu: $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Dokumenty. Všichni podepisující vyplnili [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Dokumenty. Udělen přístup k dokumentu:  [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Přístup udělen do složky: $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Dokumenty. Přístup udělen do složky: [$DocumentTitle]($DocumentURL)</value>
+  </data>
 </root>

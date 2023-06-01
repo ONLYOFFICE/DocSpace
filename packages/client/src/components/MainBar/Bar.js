@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 import difference from "lodash/difference";
 import { withTranslation } from "react-i18next";
-import { withRouter } from "react-router";
 
 import { ADS_TIMEOUT } from "@docspace/client/src/helpers/filesConstants";
 
@@ -14,6 +13,7 @@ import { QuotaBarTypes } from "SRC_DIR/helpers/constants";
 
 import QuotasBar from "./QuotasBar";
 import ConfirmEmailBar from "./ConfirmEmailBar";
+import { showEmailActivationToast } from "SRC_DIR/helpers/people-helpers";
 
 const Bar = (props) => {
   const {
@@ -131,7 +131,7 @@ const Bar = (props) => {
   }, []);
 
   const sendActivationLinkAction = () => {
-    sendActivationLink && sendActivationLink(t);
+    sendActivationLink && sendActivationLink().then(showEmailActivationToast);
   };
 
   const onCloseActivationBar = () => {
@@ -340,4 +340,4 @@ export default inject(({ auth, profileActionsStore }) => {
     currentColorScheme,
     setMainBarVisible,
   };
-})(withTranslation(["Profile", "Common"])(withRouter(observer(Bar))));
+})(withTranslation(["Profile", "Common"])(observer(Bar)));
