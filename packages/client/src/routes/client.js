@@ -7,12 +7,14 @@ import PublicRoute from "@docspace/common/components/PublicRoute";
 import ErrorBoundary from "@docspace/common/components/ErrorBoundary";
 
 import Error404 from "SRC_DIR/pages/Errors/404";
+import FilesView from "SRC_DIR/pages/Home/View/Files";
+import AccountsView from "SRC_DIR/pages/Home/View/Accounts";
+import SettingsView from "SRC_DIR/pages/Home/View/Settings";
 
 const Client = loadable(() => import("../Client"));
 
 const Home = loadable(() => import("../pages/Home"));
-const AccountsHome = loadable(() => import("../pages/AccountsHome"));
-const Settings = loadable(() => import("../pages/Settings"));
+
 const Profile = loadable(() => import("../pages/Profile"));
 const NotificationComponent = loadable(() => import("../pages/Notifications"));
 
@@ -37,6 +39,10 @@ const ClientRoutes = [
     errorElement: <Error404 />,
     children: [
       {
+        path: "/",
+        element: <Home />,
+        children: [
+          {
         index: true,
         element: (
           <PrivateRoute>
@@ -64,7 +70,7 @@ const ClientRoutes = [
         path: "rooms/personal",
         element: (
           <PrivateRoute restricted withManager withCollaborator>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -72,7 +78,7 @@ const ClientRoutes = [
         path: "rooms/personal/filter",
         element: (
           <PrivateRoute restricted withManager withCollaborator>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -80,7 +86,7 @@ const ClientRoutes = [
         path: "files/trash",
         element: (
           <PrivateRoute restricted withManager withCollaborator>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -88,7 +94,7 @@ const ClientRoutes = [
         path: "files/trash/filter",
         element: (
           <PrivateRoute restricted withManager withCollaborator>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -96,7 +102,7 @@ const ClientRoutes = [
         path: "rooms/shared",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -104,7 +110,7 @@ const ClientRoutes = [
         path: "rooms/shared/filter",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -112,7 +118,7 @@ const ClientRoutes = [
         path: "rooms/shared/:room",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -120,7 +126,7 @@ const ClientRoutes = [
         path: "rooms/shared/:room/filter",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -128,7 +134,7 @@ const ClientRoutes = [
         path: "rooms/archived",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -136,7 +142,7 @@ const ClientRoutes = [
         path: "rooms/archived/filter",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -144,7 +150,7 @@ const ClientRoutes = [
         path: "rooms/archived/:room",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -152,7 +158,7 @@ const ClientRoutes = [
         path: "rooms/archived/:room/filter",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -160,7 +166,7 @@ const ClientRoutes = [
         path: "products/files",
         element: (
           <PrivateRoute>
-            <Home />
+                <FilesView />
           </PrivateRoute>
         ),
       },
@@ -176,10 +182,37 @@ const ClientRoutes = [
         path: "accounts/filter",
         element: (
           <PrivateRoute restricted withManager>
-            <AccountsHome />
+                <AccountsView />
           </PrivateRoute>
         ),
       },
+      {
+            path: "settings",
+        element: (
+              <PrivateRoute withCollaborator restricted>
+                <Navigate to="/settings/common" replace />
+          </PrivateRoute>
+        ),
+      },
+      {
+            path: "settings/common",
+        element: (
+              <PrivateRoute withCollaborator restricted>
+                <SettingsView />
+          </PrivateRoute>
+        ),
+      },
+      {
+            path: "settings/admin",
+        element: (
+          <PrivateRoute withCollaborator restricted>
+                <SettingsView />
+          </PrivateRoute>
+        ),
+      },
+        ],
+      },
+
       {
         path: "accounts/view/@self",
         element: (
@@ -193,30 +226,6 @@ const ClientRoutes = [
         element: (
           <PrivateRoute>
             <NotificationComponent />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "settings",
-        element: (
-          <PrivateRoute withCollaborator restricted>
-            <Navigate to="/settings/common" replace />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "settings/common",
-        element: (
-          <PrivateRoute withCollaborator restricted>
-            <Settings />
-          </PrivateRoute>
-        ),
-      },
-      {
-        path: "settings/admin",
-        element: (
-          <PrivateRoute withCollaborator restricted>
-            <Settings />
           </PrivateRoute>
         ),
       },

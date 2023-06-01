@@ -31,6 +31,7 @@ const OperationsPanelComponent = (props) => {
     clearActiveOperations,
     thirdPartyMoveDialogVisible,
     setRestoreAllPanelVisible,
+    setMovingInProgress,
   } = props;
 
   const deleteAfter = false; // TODO: get from settings
@@ -122,6 +123,8 @@ const OperationsPanelComponent = (props) => {
         } else {
           setIsLoading(false);
           onClose();
+          const move = !isCopy;
+          if (move) setMovingInProgress(move);
           await itemOperationToFolder(operationData);
         }
       })
@@ -156,8 +159,8 @@ const OperationsPanelComponent = (props) => {
         isRecycleBin
           ? t("Common:Restore")
           : isCopy
-          ? t("Translations:Copy")
-          : t("Files:MoveTo")
+          ? t("Common:Copy")
+          : t("Common:MoveTo")
       }
       buttonName={
         isRecycleBin
@@ -189,7 +192,13 @@ export default inject(
     },
     { isCopy, isRestore }
   ) => {
-    const { filter, selection, filesList, bufferSelection } = filesStore;
+    const {
+      filter,
+      selection,
+      filesList,
+      bufferSelection,
+      setMovingInProgress,
+    } = filesStore;
     const { isRecycleBinFolder, setExpandedPanelKeys } = treeFoldersStore;
     const { setConflictDialogData, checkFileConflicts } = filesActionsStore;
     const { itemOperationToFolder, clearActiveOperations } = uploadDataStore;
@@ -244,6 +253,7 @@ export default inject(
       conflictResolveDialogVisible,
       clearActiveOperations,
       thirdPartyMoveDialogVisible,
+      setMovingInProgress,
     };
   }
 )(observer(OperationsPanel));

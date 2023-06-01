@@ -20,7 +20,7 @@ import SubInfoPanelBody from "./sub-components/info-panel-body";
 import SubInfoPanelHeader from "./sub-components/info-panel-header";
 import SubSectionFooter from "./sub-components/section-footer";
 
-import FloatingButton from "../FloatingButton";
+import FloatingButton from "@docspace/components/floating-button";
 
 const Section = (props) => {
   const {
@@ -256,6 +256,9 @@ const Section = (props) => {
                     icon={secondaryProgressBarIcon}
                     percent={secondaryProgressBarValue}
                     alert={showSecondaryButtonAlert}
+                    showTwoProgress={
+                      showPrimaryProgressBar && showSecondaryProgressBar
+                    }
                   />
                 </>
               ) : showPrimaryProgressBar && !showSecondaryProgressBar ? (

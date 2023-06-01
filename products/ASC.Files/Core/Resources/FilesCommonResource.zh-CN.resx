@@ -116,8 +116,7 @@
     <value>已编辑</value>
   </data>
   <data name="CommentEditEncrypt" xml:space="preserve">
-    <value>
-用加密编辑</value>
+    <value>用加密编辑</value>
   </data>
   <data name="CommentEncrypted" xml:space="preserve">
     <value>加密的</value>
@@ -153,17 +152,16 @@
     <value>已取消</value>
   </data>
   <data name="ErrorMassage_BadRequest" xml:space="preserve">
-    <value>错误请求</value>
+    <value>错误请求。</value>
   </data>
   <data name="ErrorMassage_ChangeOwner" xml:space="preserve">
     <value>您无法选择该用户</value>
   </data>
   <data name="ErrorMassage_ConvertTimeout" xml:space="preserve">
-    <value>通过</value>
+    <value>通过。</value>
   </data>
   <data name="ErrorMassage_DocServiceException" xml:space="preserve">
-    <value>
-发生了错误的服务文件</value>
+    <value>发生了错误的服务文件</value>
   </data>
   <data name="ErrorMassage_EditingCoauth" xml:space="preserve">
     <value>该文件已由{0}打开进行编辑。 目前，此文件格式暂不支持协同编辑功能。</value>
@@ -205,7 +203,7 @@
     <value>至少有{0}封邮件未发送成功。请通过邮箱模块查看失败原因。</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>下载次数超过系统限制</value>
+    <value>下载次数超过系统限制。</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>很抱歉，系统暂不支持此文件格式</value>
@@ -298,7 +296,7 @@
     <value>文件已在文件夹“{0}”中创建</value>
   </data>
   <data name="MessageFileCreatedForm" xml:space="preserve">
-    <value>可填写的OFORM文件已准备就绪。该文件已保存在 {0} </value>
+    <value>可填写的OFORM文件已准备就绪。该文件已保存在 {0}</value>
   </data>
   <data name="MessageFillFormDraftCreated" xml:space="preserve">
     <value>OFORM副本是在 {0} 文件夹中创建的。请填写表单并下载为PDF或DOCX。</value>
@@ -316,13 +314,13 @@
     <value>创建、编辑、分享文档。和他们实时协作。100%兼容微软Office格式。</value>
   </data>
   <data name="ProductDescriptionShort" xml:space="preserve">
-    <value>创建、编辑、保存和共享文档。连接你的Google驱动器，Dropbox和Box账户，把所有文档放在一个地方</value>
+    <value>创建、编辑、保存和共享文档。连接你的Google驱动器，Dropbox和Box账户，把所有文档放在一个地方。</value>
   </data>
   <data name="ProductName" xml:space="preserve">
     <value>文档</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>创建和编辑自己创建的文档，以及修改自己有访问权限的共享文档|可设置其他用户对自己的文档、文件夹的浏览和编辑权限|在“我的文档”区中导入自己在Dropbox、Box.net等其他第三方云储存服务中的文档资源。</value>
+    <value>创建和编辑自己创建的文档，以及修改自己有访问权限的共享文档|可设置其他用户对自己的文档、文件夹的浏览和编辑权限|在“我的文档”区中导入自己在Dropbox、Box.net等其他第三方云储存服务中的文档资源</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>名</value>
@@ -343,21 +341,30 @@
     <value>房间管理员</value>
   </data>
   <data name="RoleEnum_User" xml:space="preserve">
-    <value>用户</value>
+    <value>普通用户</value>
   </data>
   <data name="RoleEnum_Read" xml:space="preserve">
-    <value>查看者</value>
+    <value>可查看</value>
   </data>
   <data name="RoleEnum_Comment" xml:space="preserve">
-    <value>评论者</value>
+    <value>可评论</value>
   </data>
   <data name="RoleEnum_FillForms" xml:space="preserve">
-    <value>表单填写者</value>
+    <value>可填写表单</value>
   </data>
   <data name="RoleEnum_Review" xml:space="preserve">
-    <value>审阅者</value>
+    <value>可审阅</value>
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>协作者</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>可编辑</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>协作者</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>房间管理员</value>
   </data>
 </root>

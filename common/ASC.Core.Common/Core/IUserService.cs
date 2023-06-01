@@ -35,6 +35,7 @@ public interface IUserService
         List<List<Guid>> includeGroups,
         List<Guid> excludeGroups,
         EmployeeActivationStatus? activationStatus,
+        AccountLoginType? accountLoginType,
         string text,
         string sortBy,
         bool sortOrderAsc,

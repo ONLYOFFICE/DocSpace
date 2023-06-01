@@ -21,24 +21,34 @@ import PersonReactSvgUrl from "PUBLIC_DIR/images/person.react.svg?url";
 import RoomArchiveSvgUrl from "PUBLIC_DIR/images/room.archive.svg?url";
 import CopyReactSvgUrl from "PUBLIC_DIR/images/copy.react.svg?url";
 import CatalogTrashReactSvgUrl from "PUBLIC_DIR/images/catalog.trash.react.svg?url";
+import PlusSvgUrl from "PUBLIC_DIR/images/plus.svg?url";
+import PanelReactSvgUrl from "PUBLIC_DIR/images/panel.react.svg?url";
+import PersonAdminReactSvgUrl from "PUBLIC_DIR/images/person.admin.react.svg?url";
+import PersonManagerReactSvgUrl from "PUBLIC_DIR/images/person.manager.react.svg?url";
+import PersonUserReactSvgUrl from "PUBLIC_DIR/images/person.user.react.svg?url";
+import InviteAgainReactSvgUrl from "PUBLIC_DIR/images/invite.again.react.svg?url";
+
 import React from "react";
-import copy from "copy-to-clipboard";
-import styled, { css } from "styled-components";
-import { useNavigate } from "react-router-dom";
-import toastr from "@docspace/components/toast/toastr";
-import Loaders from "@docspace/common/components/Loaders";
+import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { isMobile, isTablet, isMobileOnly } from "react-device-detect";
+import styled, { css } from "styled-components";
+import copy from "copy-to-clipboard";
+import { useNavigate, useLocation } from "react-router-dom";
+
+import Loaders from "@docspace/common/components/Loaders";
+import Navigation from "@docspace/common/components/Navigation";
+import TrashWarning from "@docspace/common/components/Navigation/sub-components/trash-warning";
+import { Events, EmployeeType } from "@docspace/common/constants";
+
+import { resendInvitesAgain } from "@docspace/common/api/people";
+
 import DropDownItem from "@docspace/components/drop-down-item";
 import { tablet, mobile } from "@docspace/components/utils/device";
 import { Consumer } from "@docspace/components/utils/context";
-import { inject, observer } from "mobx-react";
+import toastr from "@docspace/components/toast/toastr";
 import TableGroupMenu from "@docspace/components/table-container/TableGroupMenu";
-import Navigation from "@docspace/common/components/Navigation";
-import TrashWarning from "@docspace/common/components/Navigation/sub-components/trash-warning";
-import { Events } from "@docspace/common/constants";
-import config from "PACKAGE_FILE";
-import { combineUrl } from "@docspace/common/utils";
+
 import { getMainButtonItems } from "SRC_DIR/helpers/plugins";
 import withLoader from "../../../../HOCs/withLoader";
 
@@ -95,9 +105,105 @@ const StyledContainer = styled.div`
 `;
 
 const SectionHeaderContent = (props) => {
-  const [navigationItems, setNavigationItems] = React.useState([]);
+  const {
+    currentFolderId,
+    setSelectFileDialogVisible,
+    t,
+    isPrivacyFolder,
+    isRoomsFolder,
+    enablePlugins,
+    security,
+    setIsFolderActions,
+    setBufferSelection,
+    setMoveToPanelVisible,
+    tReady,
+    isInfoPanelVisible,
+    isRootFolder,
+    title,
+
+    isDesktop,
+    isTabletView,
+    personal,
+    navigationPath,
+    getHeaderMenu,
+    isRecycleBinFolder,
+    isArchiveFolder,
+    isEmptyFilesList,
+    isHeaderVisible,
+    isHeaderChecked,
+    isHeaderIndeterminate,
+    showText,
+
+    isEmptyArchive,
+
+    isRoom,
+    isGroupMenuBlocked,
+
+    onClickBack,
+    hideContextMenuInsideArchiveRoom,
+    activeFiles,
+    activeFolders,
+    selectedFolder,
+    setCopyPanelVisible,
+    setSharingPanelVisible,
+    deleteAction,
+    confirmDelete,
+    setDeleteDialogVisible,
+    isThirdPartySelection,
+
+    getFolderInfo,
+
+    setEmptyTrashDialogVisible,
+    setRestoreAllPanelVisible,
+    isGracePeriod,
+    setInviteUsersWarningDialogVisible,
+    setArchiveAction,
+    setRestoreAllArchive,
+    setRestoreRoomDialogVisible,
+    setArchiveDialogVisible,
+    onCopyLink,
+
+    isPersonalRoom,
+
+    onClickEditRoom,
+    onClickInviteUsers,
+    onShowInfoPanel,
+    onClickArchive,
+    onClickReconnectStorage,
+
+    canRestoreAll,
+    canDeleteAll,
+    setSelected,
+    cbMenuItems,
+    getCheckboxItemLabel,
+    getCheckboxItemId,
+    setSelectedNode,
+    setIsLoading,
+    fetchFiles,
+    moveToRoomsPage,
+    setIsInfoPanelVisible,
+
+    getAccountsHeaderMenu,
+    isAccountsHeaderVisible,
+    isAccountsHeaderIndeterminate,
+    isAccountsHeaderChecked,
+    accountsCbMenuItems,
+    getAccountsMenuItemId,
+    getAccountsCheckboxItemLabel,
+    setAccountsSelected,
+    isOwner,
+    isAdmin,
+    setInvitePanelOptions,
+    isEmptyPage,
+    pathParts,
+    emptyTrashInProgress
+  } = props;
 
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isAccountsPage = location.pathname.includes("accounts");
+  const isSettingsPage = location.pathname.includes("settings");
 
   const onCreate = (format) => {
     const event = new Event(Events.CREATE);
@@ -113,8 +219,8 @@ const SectionHeaderContent = (props) => {
   };
 
   const onCreateRoom = () => {
-    if (props.isGracePeriod) {
-      props.setInviteUsersWarningDialogVisible(true);
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
       return;
     }
 
@@ -131,18 +237,11 @@ const SectionHeaderContent = (props) => {
   const createForm = () => onCreate("docxf");
 
   const createFormFromFile = () => {
-    props.setSelectFileDialogVisible(true);
+    setSelectFileDialogVisible(true);
   };
 
   const onShowGallery = () => {
-    const { currentFolderId } = props;
-    navigate(
-      combineUrl(
-        window.DocSpaceConfig?.proxy?.url,
-        config.homepage,
-        `/form-gallery/${currentFolderId}/`
-      )
-    );
+    navigate(`/form-gallery/${currentFolderId}/`);
   };
 
   const createFolder = () => onCreate();
@@ -158,8 +257,59 @@ const SectionHeaderContent = (props) => {
   };
 
   const getContextOptionsPlus = () => {
-    const { t, isPrivacyFolder, isRoomsFolder, enablePlugins, security } =
-      props;
+    if (isAccountsPage) {
+      return [
+        isOwner && {
+          id: "accounts-add_administrator",
+          className: "main-button_drop-down",
+          icon: PersonAdminReactSvgUrl,
+          label: t("Common:DocSpaceAdmin"),
+          onClick: onInvite,
+          "data-type": EmployeeType.Admin,
+          key: "administrator",
+        },
+        {
+          id: "accounts-add_manager",
+          className: "main-button_drop-down",
+          icon: PersonManagerReactSvgUrl,
+          label: t("Common:RoomAdmin"),
+          onClick: onInvite,
+          "data-type": EmployeeType.User,
+          key: "manager",
+        },
+        {
+          id: "accounts-add_collaborator",
+          className: "main-button_drop-down",
+          icon: PersonReactSvgUrl,
+          label: t("Common:PowerUser"),
+          onClick: onInvite,
+          "data-type": EmployeeType.Collaborator,
+          key: "collaborator",
+        },
+        {
+          id: "accounts-add_user",
+          className: "main-button_drop-down",
+          icon: PersonUserReactSvgUrl,
+          label: t("Common:User"),
+          onClick: onInvite,
+          "data-type": EmployeeType.Guest,
+          key: "user",
+        },
+        {
+          key: "separator",
+          isSeparator: true,
+        },
+        {
+          id: "accounts-add_invite-again",
+          className: "main-button_drop-down",
+          icon: InviteAgainReactSvgUrl,
+          label: t("People:LblInviteAgain"),
+          onClick: onInviteAgain,
+          "data-action": "invite-again",
+          key: "invite-again",
+        },
+      ];
+    }
 
     const options = isRoomsFolder
       ? [
@@ -262,8 +412,6 @@ const SectionHeaderContent = (props) => {
   };
 
   const createLinkForPortalUsers = () => {
-    const { currentFolderId, t } = props;
-
     copy(
       `${window.location.origin}/filter?folder=${currentFolderId}` //TODO: Change url by category
     );
@@ -272,28 +420,26 @@ const SectionHeaderContent = (props) => {
   };
 
   const onMoveAction = () => {
-    props.setIsFolderActions(true);
-    props.setBufferSelection(props.selectedFolder);
-    return props.setMoveToPanelVisible(true);
+    setIsFolderActions(true);
+    setBufferSelection(selectedFolder);
+    return setMoveToPanelVisible(true);
   };
+
   const onCopyAction = () => {
-    props.setIsFolderActions(true);
-    props.setBufferSelection(props.currentFolderId);
-    return props.setCopyPanelVisible(true);
+    setIsFolderActions(true);
+    setBufferSelection(currentFolderId);
+    return setCopyPanelVisible(true);
   };
-  const downloadAction = () => {
-    props.setBufferSelection(props.currentFolderId);
-    props.setIsFolderActions(true);
+
+  const onDownloadAction = () => {
+    setBufferSelection(currentFolderId);
+    setIsFolderActions(true);
     props
-      .downloadAction(props.t("Translations:ArchivingData"), [
-        props.currentFolderId,
-      ])
+      .downloadAction(t("Translations:ArchivingData"), [currentFolderId])
       .catch((err) => toastr.error(err));
   };
 
   const renameAction = () => {
-    const { selectedFolder } = props;
-
     const event = new Event(Events.RENAME);
 
     event.item = selectedFolder;
@@ -302,24 +448,12 @@ const SectionHeaderContent = (props) => {
   };
 
   const onOpenSharingPanel = () => {
-    props.setBufferSelection(props.currentFolderId);
-    props.setIsFolderActions(true);
-    return props.setSharingPanelVisible(true);
+    setBufferSelection(currentFolderId);
+    setIsFolderActions(true);
+    return setSharingPanelVisible(true);
   };
 
   const onDeleteAction = () => {
-    const {
-      t,
-      deleteAction,
-      confirmDelete,
-      setDeleteDialogVisible,
-      isThirdPartySelection,
-      currentFolderId,
-      getFolderInfo,
-      setBufferSelection,
-      setIsFolderActions,
-    } = props;
-
     setIsFolderActions(true);
 
     if (confirmDelete || isThirdPartySelection) {
@@ -342,17 +476,15 @@ const SectionHeaderContent = (props) => {
   };
 
   const onEmptyTrashAction = () => {
-    const { activeFiles, activeFolders, setEmptyTrashDialogVisible } = props;
-
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
-    if (isExistActiveItems) return;
+    if (isExistActiveItems || emptyTrashInProgress) return;
 
     setEmptyTrashDialogVisible(true);
   };
 
   const onRestoreAllAction = () => {
-    const { activeFiles, activeFolders, setRestoreAllPanelVisible } = props;
+    setRestoreAllPanelVisible;
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
     if (isExistActiveItems) return;
@@ -361,15 +493,6 @@ const SectionHeaderContent = (props) => {
   };
 
   const onRestoreAllArchiveAction = () => {
-    const {
-      activeFiles,
-      activeFolders,
-      isGracePeriod,
-      setInviteUsersWarningDialogVisible,
-      setArchiveAction,
-      setRestoreAllArchive,
-      setArchiveDialogVisible,
-    } = props;
     const isExistActiveItems = [...activeFiles, ...activeFolders].length > 0;
 
     if (isExistActiveItems) return;
@@ -379,9 +502,8 @@ const SectionHeaderContent = (props) => {
       return;
     }
 
-    setArchiveAction("unarchive");
     setRestoreAllArchive(true);
-    setArchiveDialogVisible(true);
+    setRestoreRoomDialogVisible(true);
   };
 
   const onShowInfo = () => {
@@ -390,38 +512,14 @@ const SectionHeaderContent = (props) => {
   };
 
   const onToggleInfoPanel = () => {
-    const { isInfoPanelVisible, setIsInfoPanelVisible } = props;
     setIsInfoPanelVisible(!isInfoPanelVisible);
   };
 
   const onCopyLinkAction = () => {
-    const { t, selectedFolder, onCopyLink } = props;
-
     onCopyLink && onCopyLink({ ...selectedFolder, isFolder: true }, t);
   };
 
   const getContextOptionsFolder = () => {
-    const {
-      t,
-      isRoom,
-      isRecycleBinFolder,
-      isArchiveFolder,
-      isPersonalRoom,
-
-      selectedFolder,
-
-      onClickEditRoom,
-      onClickInviteUsers,
-      onShowInfoPanel,
-      onClickArchive,
-      onClickReconnectStorage,
-
-      canRestoreAll,
-      canDeleteAll,
-
-      security,
-    } = props;
-
     const isDisabled = isRecycleBinFolder || isRoom;
 
     if (isArchiveFolder) {
@@ -546,14 +644,14 @@ const SectionHeaderContent = (props) => {
         id: "header_option_download",
         key: "download",
         label: t("Common:Download"),
-        onClick: downloadAction,
+        onClick: onDownloadAction,
         disabled: isDisabled,
         icon: DownloadReactSvgUrl,
       },
       {
         id: "header_option_move-to",
         key: "move-to",
-        label: t("MoveTo"),
+        label: t("Common:MoveTo"),
         onClick: onMoveAction,
         disabled: isDisabled || !security?.MoveTo,
         icon: MoveReactSvgUrl,
@@ -561,7 +659,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "header_option_copy",
         key: "copy",
-        label: t("Translations:Copy"),
+        label: t("Common:Copy"),
         onClick: onCopyAction,
         disabled: isDisabled || !security?.CopyTo,
         icon: CopyReactSvgUrl,
@@ -569,7 +667,7 @@ const SectionHeaderContent = (props) => {
       {
         id: "header_option_rename",
         key: "rename",
-        label: t("Rename"),
+        label: t("Common:Rename"),
         onClick: renameAction,
         disabled: isDisabled || !security?.Rename,
         icon: RenameReactSvgUrl,
@@ -593,16 +691,32 @@ const SectionHeaderContent = (props) => {
 
   const onSelect = (e) => {
     const key = e.currentTarget.dataset.key;
-    props.setSelected(key);
+
+    isAccountsPage ? setAccountsSelected(key) : setSelected(key);
   };
 
   const onClose = () => {
-    props.setSelected("close");
+    setSelected("close");
   };
 
   const getMenuItems = () => {
-    const { t, cbMenuItems, getCheckboxItemLabel, getCheckboxItemId } = props;
-    const checkboxOptions = (
+    const checkboxOptions = isAccountsPage ? (
+      <>
+        {accountsCbMenuItems.map((key) => {
+          const label = getAccountsCheckboxItemLabel(t, key);
+          const id = getAccountsMenuItemId(key);
+          return (
+            <DropDownItem
+              id={id}
+              key={key}
+              label={label}
+              data-key={key}
+              onClick={onSelect}
+            />
+          );
+        })}
+      </>
+    ) : (
       <>
         {cbMenuItems.map((key) => {
           const label = getCheckboxItemLabel(t, key);
@@ -624,13 +738,12 @@ const SectionHeaderContent = (props) => {
   };
 
   const onChange = (checked) => {
-    props.setSelected(checked ? "all" : "none");
+    isAccountsPage
+      ? setAccountsSelected(checked ? "all" : "none")
+      : setSelected(checked ? "all" : "none");
   };
 
   const onClickFolder = (id, isRootRoom) => {
-    const { setSelectedNode, setIsLoading, fetchFiles, moveToRoomsPage } =
-      props;
-
     if (isRootRoom) {
       return moveToRoomsPage();
     }
@@ -642,123 +755,140 @@ const SectionHeaderContent = (props) => {
       .finally(() => setIsLoading(false));
   };
 
-  const {
-    t,
-    tReady,
-    isInfoPanelVisible,
-    isRootFolder,
-    title,
+  const onInvite = (e) => {
+    const type = e.item["data-type"];
 
-    isDesktop,
-    isTabletView,
-    personal,
-    navigationPath,
-    getHeaderMenu,
-    isRecycleBinFolder,
-    isArchiveFolder,
-    isEmptyFilesList,
-    isHeaderVisible,
-    isHeaderChecked,
-    isHeaderIndeterminate,
-    showText,
-    isRoomsFolder,
-    isEmptyPage,
+    if (isGracePeriod) {
+      setInviteUsersWarningDialogVisible(true);
+      return;
+    }
 
-    isEmptyArchive,
+    setInvitePanelOptions({
+      visible: true,
+      roomId: -1,
+      hideSelector: true,
+      defaultAccess: type,
+    });
+  };
 
-    isRoom,
-    isGroupMenuBlocked,
-    security,
-    onClickBack,
-    hideContextMenuInsideArchiveRoom,
-    activeFiles,
-    activeFolders,
-  } = props;
+  const onInviteAgain = React.useCallback(() => {
+    resendInvitesAgain()
+      .then(() =>
+        toastr.success(t("PeopleTranslations:SuccessSentMultipleInvitatios"))
+      )
+      .catch((err) => toastr.error(err));
+  }, [resendInvitesAgain]);
 
+  const headerMenu = isAccountsPage
+    ? getAccountsHeaderMenu(t)
+    : getHeaderMenu(t);
   const menuItems = getMenuItems();
-  const isLoading = !title || !tReady;
-  const headerMenu = getHeaderMenu(t);
-  const isEmptyTrash = !![...activeFiles, ...activeFolders].length;
 
-  return [
+  let tableGroupMenuVisible = headerMenu.length;
+  const tableGroupMenuProps = {
+    checkboxOptions: menuItems,
+    onChange,
+    headerMenu,
+    isInfoPanelVisible,
+    toggleInfoPanel: onToggleInfoPanel,
+    isMobileView: isMobileOnly,
+  };
+
+  if (isAccountsPage) {
+    tableGroupMenuVisible =
+      isAccountsHeaderVisible &&
+      tableGroupMenuVisible &&
+      headerMenu.some((x) => !x.disabled);
+    tableGroupMenuProps.isChecked = isAccountsHeaderChecked;
+    tableGroupMenuProps.isIndeterminate = isAccountsHeaderIndeterminate;
+    tableGroupMenuProps.withoutInfoPanelToggler = false;
+  } else {
+    tableGroupMenuVisible = isHeaderVisible && tableGroupMenuVisible;
+    tableGroupMenuProps.isChecked = isHeaderChecked;
+    tableGroupMenuProps.isIndeterminate = isHeaderIndeterminate;
+    tableGroupMenuProps.isBlocked = isGroupMenuBlocked;
+  }
+
+  const fromAccounts = location?.state?.fromAccounts;
+  const fromSettings = location?.state?.fromSettings;
+
+  const isRoot =
+    pathParts === null && (fromAccounts || fromSettings)
+      ? true
+      : isRootFolder || isAccountsPage || isSettingsPage;
+  const currentTitle =
+    isSettingsPage || (!title && fromSettings)
+      ? t("Common:Settings")
+      : isAccountsPage || (!title && fromAccounts)
+      ? t("Common:Accounts")
+      : title;
+
+  return (
     <Consumer key="header">
       {(context) => (
         <StyledContainer
           isRecycleBinFolder={isRecycleBinFolder}
           hideContextMenuInsideArchiveRoom={hideContextMenuInsideArchiveRoom}
         >
-          {isHeaderVisible && headerMenu.length ? (
-            <TableGroupMenu
-              checkboxOptions={menuItems}
-              onChange={onChange}
-              isChecked={isHeaderChecked}
-              isIndeterminate={isHeaderIndeterminate}
-              headerMenu={headerMenu}
-              isInfoPanelVisible={isInfoPanelVisible}
-              toggleInfoPanel={onToggleInfoPanel}
-              isMobileView={isMobileOnly}
-              isBlocked={isGroupMenuBlocked}
-            />
+          {tableGroupMenuVisible ? (
+            <TableGroupMenu {...tableGroupMenuProps} />
           ) : (
             <div className="header-container">
-              {isLoading ? (
-                <Loaders.SectionHeader />
-              ) : (
-                <Navigation
-                  sectionWidth={context.sectionWidth}
-                  showText={showText}
-                  isRootFolder={isRootFolder}
-                  canCreate={security?.Create}
-                  title={title}
-                  isDesktop={isDesktop}
-                  isTabletView={isTabletView}
-                  personal={personal}
-                  tReady={tReady}
-                  menuItems={menuItems}
-                  navigationItems={navigationPath}
-                  getContextOptionsPlus={getContextOptionsPlus}
-                  getContextOptionsFolder={getContextOptionsFolder}
-                  onClose={onClose}
-                  onClickFolder={onClickFolder}
-                  isTrashFolder={isRecycleBinFolder}
-                  isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
-                  isEmptyFilesList={
-                    isArchiveFolder ? isEmptyArchive : isEmptyFilesList
-                  }
-                  clearTrash={onEmptyTrashAction}
-                  onBackToParentFolder={onClickBack}
-                  toggleInfoPanel={onToggleInfoPanel}
-                  isInfoPanelVisible={isInfoPanelVisible}
-                  titles={{
-                    trash: t("EmptyRecycleBin"),
-                    trashWarning: t("TrashErasureWarning"),
-                  }}
-                  withMenu={!isRoomsFolder}
-                  onPlusClick={onCreateRoom}
-                  isEmptyPage={isEmptyPage}
-                  isRoom={isRoom}
-                />
-              )}
+              <Navigation
+                sectionWidth={context.sectionWidth}
+                showText={showText}
+                isRootFolder={isRoot}
+                canCreate={
+                  security?.Create || isAccountsPage || !isSettingsPage
+                }
+                title={currentTitle}
+                isDesktop={isDesktop}
+                isTabletView={isTabletView}
+                personal={personal}
+                tReady={tReady}
+                menuItems={menuItems}
+                navigationItems={navigationPath}
+                getContextOptionsPlus={getContextOptionsPlus}
+                getContextOptionsFolder={getContextOptionsFolder}
+                onClose={onClose}
+                onClickFolder={onClickFolder}
+                isTrashFolder={isRecycleBinFolder}
+                isRecycleBinFolder={isRecycleBinFolder || isArchiveFolder}
+                isEmptyFilesList={
+                  isArchiveFolder ? isEmptyArchive : isEmptyFilesList
+                }
+                clearTrash={onEmptyTrashAction}
+                onBackToParentFolder={onClickBack}
+                toggleInfoPanel={onToggleInfoPanel}
+                isInfoPanelVisible={isInfoPanelVisible}
+                titles={{
+                  trash: t("EmptyRecycleBin"),
+                  trashWarning: t("TrashErasureWarning"),
+                  actions: isRoomsFolder
+                    ? t("Files:NewRoom")
+                    : t("Common:Actions"),
+                  contextMenu: t("Translations:TitleShowFolderActions"),
+                  infoPanel: t("Common:InfoPanel"),
+                }}
+                withMenu={!isRoomsFolder}
+                onPlusClick={onCreateRoom}
+                isEmptyPage={isEmptyPage}
+                isRoom={isRoom}
+                hideInfoPanel={isSettingsPage}
+              />
             </div>
           )}
         </StyledContainer>
       )}
-    </Consumer>,
-    isRecycleBinFolder && !isEmptyPage && (
-      <TrashWarning
-        key="trash-warning"
-        title={t("Files:TrashErasureWarning")}
-        isTabletView
-      />
-    ),
-  ];
+    </Consumer>
+  );
 };
 
 export default inject(
   ({
     auth,
     filesStore,
-
+    peopleStore,
     dialogsStore,
     selectedFolderStore,
     treeFoldersStore,
@@ -767,6 +897,8 @@ export default inject(
 
     contextOptionsStore,
   }) => {
+    const { isOwner, isAdmin } = auth.userStore.user;
+
     const {
       setSelected,
 
@@ -803,9 +935,9 @@ export default inject(
       setSelectFileDialogVisible,
       setIsFolderActions,
       setRestoreAllPanelVisible,
-      setArchiveDialogVisible,
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
+      setInvitePanelOptions,
       setInviteUsersWarningDialogVisible,
     } = dialogsStore;
 
@@ -825,6 +957,7 @@ export default inject(
       isGroupMenuBlocked,
       moveToRoomsPage,
       onClickBack,
+      emptyTrashInProgress,
     } = filesActionsStore;
 
     const { setIsVisible, isVisible } = auth.infoPanelStore;
@@ -857,6 +990,23 @@ export default inject(
     const hideContextMenuInsideArchiveRoom = isArchiveFolderRoot
       ? !isArchiveFolder
       : false;
+
+    const {
+      selectionStore,
+      headerMenuStore,
+      getHeaderMenu: getAccountsHeaderMenu,
+    } = peopleStore;
+
+    const {
+      isHeaderVisible: isAccountsHeaderVisible,
+      isHeaderIndeterminate: isAccountsHeaderIndeterminate,
+      isHeaderChecked: isAccountsHeaderChecked,
+      cbMenuItems: accountsCbMenuItems,
+      getMenuItemId: getAccountsMenuItemId,
+      getCheckboxItemLabel: getAccountsCheckboxItemLabel,
+    } = headerMenuStore;
+
+    const { setSelected: setAccountsSelected } = selectionStore;
 
     return {
       isGracePeriod,
@@ -923,10 +1073,9 @@ export default inject(
       enablePlugins,
 
       setRestoreAllPanelVisible,
-      isEmptyPage,
-      setArchiveDialogVisible,
+
+      setRestoreRoomDialogVisible,
       setRestoreAllArchive,
-      setArchiveAction,
 
       selectedFolder,
 
@@ -943,6 +1092,20 @@ export default inject(
 
       moveToRoomsPage,
       onClickBack,
+
+      getAccountsHeaderMenu,
+      isAccountsHeaderVisible,
+      isAccountsHeaderIndeterminate,
+      isAccountsHeaderChecked,
+      accountsCbMenuItems,
+      getAccountsMenuItemId,
+      getAccountsCheckboxItemLabel,
+      setAccountsSelected,
+      isOwner,
+      isAdmin,
+      setInvitePanelOptions,
+      isEmptyPage,
+      emptyTrashInProgress,
     };
   }
 )(
@@ -953,5 +1116,8 @@ export default inject(
     "InfoPanel",
     "SharingPanel",
     "Article",
+    "People",
+    "PeopleTranslations",
+    "ChangeUserTypeDialog",
   ])(withLoader(observer(SectionHeaderContent))(<Loaders.SectionHeader />))
 );

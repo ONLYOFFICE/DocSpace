@@ -13,7 +13,7 @@ import {
   SubmenuScrollbarSize,
 } from "./styled-submenu";
 
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const Submenu = (props) => {
   const {

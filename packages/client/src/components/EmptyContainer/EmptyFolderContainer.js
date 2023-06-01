@@ -27,7 +27,7 @@ const EmptyFolderContainer = ({
   sectionWidth,
   canCreateFiles,
   canInviteUsers,
-  setIsEmptyPage,
+
   onClickInviteUsers,
   folderId,
   tReady,
@@ -53,10 +53,7 @@ const EmptyFolderContainer = ({
   }, [isLoadedFetchFiles, tReady]);
 
   useEffect(() => {
-    setIsEmptyPage(true);
-
     return () => {
-      setIsEmptyPage(false);
       setIsLoadedEmptyPage(false);
     };
   }, []);
@@ -193,7 +190,7 @@ export default inject(
     const {
       fetchFiles,
       fetchRooms,
-      setIsEmptyPage,
+
       isLoadedFetchFiles,
       viewAs,
       setIsLoadedEmptyPage,
@@ -229,7 +226,7 @@ export default inject(
       isRooms,
       canCreateFiles,
       canInviteUsers,
-      setIsEmptyPage,
+
       onClickInviteUsers,
       folderId,
       isLoadedFetchFiles,

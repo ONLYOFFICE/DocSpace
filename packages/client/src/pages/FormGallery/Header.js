@@ -71,6 +71,7 @@ const SectionHeaderContent = (props) => {
             size="16"
             isFill={true}
             onClick={toggleInfoPanel}
+            title={t("Common:InfoPanel")}
           />
         </div>
       </StyledInfoPanelToggleWrapper>

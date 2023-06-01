@@ -78,21 +78,39 @@ class CurrentTariffStatusStore {
 
   get paymentDate() {
     moment.locale(authStore.language);
+    if (this.dueDate === null) return "";
     return moment(this.dueDate).format("LL");
+  }
+
+  get isPaymentDateValid() {
+    moment.locale(authStore.language);
+    if (this.dueDate === null) return "";
+    return moment(this.dueDate).year() !== 9999;
   }
 
   get gracePeriodEndDate() {
     moment.locale(authStore.language);
+    if (this.delayDueDate === null) return "";
     return moment(this.delayDueDate).format("LL");
   }
 
   get delayDaysCount() {
     moment.locale(authStore.language);
+    if (this.delayDueDate === null) return "";
     return getDaysRemaining(this.delayDueDate);
   }
 
   setPortalTariff = async () => {
-    const res = await api.portal.getPortalTariff();
+    let refresh = false;
+
+    if (window.location.search === "?complete=true") {
+      refresh = true;
+    }
+
+    const res = await api.portal.getPortalTariff(refresh);
+
+    if (refresh)
+      window.history.replaceState({}, document.title, window.location.pathname);
 
     if (!res) return;
 

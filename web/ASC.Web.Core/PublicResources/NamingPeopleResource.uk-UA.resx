@@ -74,8 +74,7 @@
     <value>Гість</value>
   </data>
   <data name="CommonGuests" xml:space="preserve">
-    <value>Гості
-</value>
+    <value>Гості</value>
   </data>
   <data name="CommonRegDate" xml:space="preserve">
     <value>Дата реєстрації</value>
@@ -108,8 +107,7 @@
     <value>Гість</value>
   </data>
   <data name="DefaultGuests" xml:space="preserve">
-    <value>Гості
-</value>
+    <value>Гості</value>
   </data>
   <data name="DefaultRegDate" xml:space="preserve">
     <value>Дата прийому</value>
@@ -142,15 +140,13 @@
     <value>Гість</value>
   </data>
   <data name="EducationGuests" xml:space="preserve">
-    <value>Гості
-</value>
+    <value>Гості</value>
   </data>
   <data name="EducationRegDate" xml:space="preserve">
     <value>Дата реєстрації</value>
   </data>
   <data name="EducationSchemaName" xml:space="preserve">
-    <value>Навчальний заклад
-</value>
+    <value>Навчальний заклад</value>
   </data>
   <data name="EducationUser" xml:space="preserve">
     <value>Вчитель/Студент</value>

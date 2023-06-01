@@ -1,5 +1,5 @@
 import React from "react";
-import { ColorTheme, ThemeType } from "@docspace/common/components/ColorTheme";
+import { ColorTheme, ThemeType } from "@docspace/components/ColorTheme";
 
 const IndicatorLoader = () => {
   return (

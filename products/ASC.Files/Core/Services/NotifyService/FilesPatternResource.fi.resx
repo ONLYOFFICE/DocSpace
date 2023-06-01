@@ -99,9 +99,9 @@ $Message</value>
     <value>Asiakirjoja. Sähköpostilähetys on valmis.</value>
   </data>
   <data name="subject_ShareDocument" xml:space="preserve">
-    <value>Asiakirjat. Pääsy tiedostoon $DocumentTitle myönnetty.</value>
+    <value>Asiakirjat. Pääsy tiedostoon $DocumentTitle myönnetty</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
-    <value>Asiakirjat. Pääsy kansioon $DocumentTitle myönnetty.</value>
+    <value>Asiakirjat. Pääsy kansioon $DocumentTitle myönnetty</value>
   </data>
 </root>

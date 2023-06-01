@@ -131,6 +131,7 @@ public class PortalController : ControllerBase
         _httpContextAccessor = httpContextAccessor;
     }
 
+    [AllowNotPayment]
     [HttpGet("")]
     public TenantDto Get()
     {
@@ -209,9 +210,9 @@ public class PortalController : ControllerBase
 
     [AllowNotPayment]
     [HttpGet("tariff")]
-    public Tariff GetTariff()
+    public Tariff GetTariff(bool refresh)
     {
-        return _tariffService.GetTariff(Tenant.Id);
+        return _tariffService.GetTariff(Tenant.Id, refresh: refresh);
     }
 
     [AllowNotPayment]
@@ -368,7 +369,7 @@ public class PortalController : ControllerBase
 
             if (!localhost || string.IsNullOrEmpty(tenant.MappedDomain))
             {
-                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath);
+                _studioNotifyService.PortalRenameNotify(tenant, oldVirtualRootPath, oldAlias);
             }
         }
         else
@@ -376,7 +377,7 @@ public class PortalController : ControllerBase
             return string.Empty;
         }
 
-        var rewriter = _httpContextAccessor.HttpContext.Request.GetUrlRewriter();
+        var rewriter = _httpContextAccessor.HttpContext.Request.Url();
         return string.Format("{0}{1}{2}{3}/{4}",
                                 rewriter?.Scheme ?? Uri.UriSchemeHttp,
                                 Uri.SchemeDelimiter,

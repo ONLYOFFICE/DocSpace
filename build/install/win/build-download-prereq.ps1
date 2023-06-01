@@ -36,14 +36,20 @@ function DownloadComponents {
   }
 }
 
-switch ( $env:DOCUMENT_SERVER_VERSION )
+switch ( $env:DOCUMENT_SERVER_VERSION_EE )
 {
-  latest { $DOCUMENT_SERVER_LINK = "https://download.onlyoffice.com/install/documentserver/windows/onlyoffice-documentserver-ee.exe" }
-  custom { $DOCUMENT_SERVER_LINK = $env:DOCUMENT_SERVER_CUSTOM_LINK.Replace(",", "") }
+  latest { $DOCUMENT_SERVER_EE_LINK = "https://download.onlyoffice.com/install/documentserver/windows/onlyoffice-documentserver-ee.exe" }
+  custom { $DOCUMENT_SERVER_EE_LINK = $env:DOCUMENT_SERVER_EE_CUSTOM_LINK.Replace(",", "") }
+}
+
+switch ( $env:DOCUMENT_SERVER_VERSION_CE )
+{
+  latest { $DOCUMENT_SERVER_CE_LINK = "https://download.onlyoffice.com/install/documentserver/windows/onlyoffice-documentserver.exe" }
+  custom { $DOCUMENT_SERVER_CE_LINK = $env:DOCUMENT_SERVER_CE_CUSTOM_LINK.Replace(",", "") }
 }
 
 $nginx_version = '1.21.1'
-$psql_version = '9.5.4'
+$psql_version = '12.9'
 
 $path_prereq = "${pwd}\build\install\win\"
 
@@ -60,12 +66,20 @@ $prerequisites = @(
     link = "https://github.com/winsw/winsw/releases/download/v2.11.0/WinSW.NET4.exe";
   }
 
-  @{  
+   @{  
+    # Downloading onlyoffice-documentserver-ee for DocSpace Enterprise
     download_allways = $true; 
-    name = "onlyoffice-documentserver.latest.exe"; 
-    link = $DOCUMENT_SERVER_LINK
+    name = "onlyoffice-documentserver-ee.exe"; 
+    link = $DOCUMENT_SERVER_EE_LINK
   }
 
+  @{
+    # Downloading onlyoffice-documentserver for DocSpace Community
+    download_allways = $true; 
+    name = "onlyoffice-documentserver.exe"; 
+    link = $DOCUMENT_SERVER_CE_LINK
+  }
+   
   @{  
     download_allways = $false; 
     name = "psqlodbc_x64.msi"; 

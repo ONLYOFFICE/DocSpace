@@ -128,9 +128,6 @@
     <value>Enable this application to shorten portal invitation links and shared links in the Documents module with the Bitly service.</value>
   </data>
   <data name="ConsumersBitlyInstruction" xml:space="preserve">
-    <value>If you add the Bitly service you will get shortened links to invite new users to the ONLYOFFICE™ portal and shortened links to documents in the Documents module that have been shared with external users.</value>
-  </data>
-  <data name="ConsumersBitlyInstructionV11" xml:space="preserve">
     <value>Enable this app to shorten the invitation and document links. {0}Insert your Bitly login and API key below:</value>
   </data>
   <data name="ConsumersBox" xml:space="preserve">
@@ -146,9 +143,6 @@
     <value>Enable the application to manage Box files and folders.</value>
   </data>
   <data name="ConsumersBoxInstruction" xml:space="preserve">
-    <value>If you add an application of the Box service you will be able to connect your Box account in the Documents module. This will allow to upload and create new files in Box, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
-  </data>
-  <data name="ConsumersBoxInstructionV11" xml:space="preserve">
     <value>Enable this app to connect your Box account to the Documents module. You’ll be able to manage, edit, and share files from Box with ONLYOFFICE users. {0}Sign in to your account on the Box developers page and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersClickatell" xml:space="preserve">
@@ -161,9 +155,6 @@
     <value>Enable the application for the two-factor authentication via Clickatell.</value>
   </data>
   <data name="ConsumersClickatellInstruction" xml:space="preserve">
-    <value>Adding the Clickatell service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal.</value>
-  </data>
-  <data name="ConsumersClickatellInstructionV11" xml:space="preserve">
     <value>Use this app to enable two-factor authentication with Clickatell service. {0}Sign in to your SMS Platform account and create a new integration for ONLYOFFICE. Copy an apiKey and insert it below:</value>
   </data>
   <data name="ConsumersDocuSign" xml:space="preserve">
@@ -182,9 +173,6 @@
     <value>DocuSign authentication endpoint</value>
   </data>
   <data name="ConsumersDocuSignInstruction" xml:space="preserve">
-    <value>If you add an application of the DocuSign service you will be able to sign files from the Documents module. This will allow to send a file for electronic signature to the ONLYOFFICE™ portal employees via the DocuSugn service. The signed file will be saved in the ONLYOFFICE™ Documents module.</value>
-  </data>
-  <data name="ConsumersDocuSignInstructionV11" xml:space="preserve">
     <value>Enable this app to digitally sign documents using DocuSign. {0}Go to your DocuSign Admin Console and add ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersDropBox" xml:space="preserve">
@@ -194,9 +182,6 @@
     <value>Enable the application to manage Dropbox files and folders.</value>
   </data>
   <data name="ConsumersDropBoxInstruction" xml:space="preserve">
-    <value>If you add an application of the Dropbox service you will be able to connect your Dropbox account in the Documents module. This will allow to upload and create new files in Dropbox, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
-  </data>
-  <data name="ConsumersDropBoxInstructionV11" xml:space="preserve">
     <value>Enable this app to connect your Dropbox account to the Documents module. You’ll be able to manage, edit, and share files from Dropbox with ONLYOFFICE users. {0}Sign in to your account on the Dropbox Developers website and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersDropBoxKey" xml:space="preserve">
@@ -215,7 +200,7 @@
     <value>Enable this application to create bibliographic lists in documents with EasyBib.</value>
   </data>
   <data name="ConsumersEasyBibInstruction" xml:space="preserve">
-    <value>When you add the EasyBib application, you can easily create bibliographic lists in your documents.</value>
+    <value>Enable this app to create bibliographies in ONLYOFFICE editors. {0}Go to the EasyBib signup page and fill in the form to add ONLYOFFICE integration. After you get an app key, paste it below:</value>
   </data>
   <data name="ConsumersFacebook" xml:space="preserve">
     <value>Facebook</value>
@@ -233,9 +218,6 @@
     <value>Enable the application to sign in to the portal using a Facebook account.</value>
   </data>
   <data name="ConsumersFacebookInstruction" xml:space="preserve">
-    <value>If you add an application of the Facebook service you will be able to connect your Facebook account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Facebook account of a contact in the CRM module and link it on the 'Edit person/company' page.</value>
-  </data>
-  <data name="ConsumersFacebookInstructionV11" xml:space="preserve">
     <value>Enable this app to allow your users to sign in to ONLYOFFICE using Facebook and link their customers’ Facebook accounts to the CRM module. {0}Go to Facebook Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersFirebase" xml:space="preserve">
@@ -257,7 +239,7 @@
     <value>Enable this application to receive notifications about the messages sent to you with Firebase Cloud Messaging.</value>
   </data>
   <data name="ConsumersFirebaseInstruction" xml:space="preserve">
-    <value>If you connect Firebase Cloud Messaging you will be able to receive notifications about the messages sent to you even when you are offline.</value>
+    <value>Enable this app to allow your users to receive notifications about the messages even offline. {0}Go to Firebase console and add a new project for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersGoogle" xml:space="preserve">
     <value>Google</value>
@@ -281,7 +263,7 @@
     <value>Connect Google Cloud Storage service to backup and store data from your portal.</value>
   </data>
   <data name="ConsumersGoogleCloudInstruction" xml:space="preserve">
-    <value>When you add Google Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Connect Google Cloud Storage service to backup and store data from your portal. {0}Go to Google Cloud Platform Console and create a new service account for ONLYOFFICE. Paste the data you received  below:</value>
   </data>
   <data name="ConsumersGoogleCloudjson" xml:space="preserve">
     <value>GoogleCloud json</value>
@@ -290,9 +272,6 @@
     <value>Connect the project to sign in to the portal using a Google account and manage Google Drive files and folders.</value>
   </data>
   <data name="ConsumersGoogleInstruction" xml:space="preserve">
-    <value>If you add a project of the Google service you will be able to connect your Google account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it as well as connect your Google Drive account in the Documents module. This will allow to upload and create new files in Google Drive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
-  </data>
-  <data name="ConsumersGoogleInstructionV11" xml:space="preserve">
     <value>Enable this app to connect your Google Drive account to the Documents module. You’ll be able to manage, edit, and share files from Google Drive with ONLYOFFICE users. {0}Go to Google APIs console and create a new project for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersLinkedIn" xml:space="preserve">
@@ -302,10 +281,7 @@
     <value>Enable the application to sign in to the portal using a LinkedIn account.</value>
   </data>
   <data name="ConsumersLinkedInInstruction" xml:space="preserve">
-    <value>If you add an application of the LinkedIn service you will be able to connect your LinkedIn account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it.</value>
-  </data>
-  <data name="ConsumersLinkedInInstructionV11" xml:space="preserve">
-    <value>Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the  LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
+    <value>Enable this app to allow your users to sign in to ONLYOFFICE using their LinkedIn accounts. {0}Go to the LinkedIn Developers website and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersLinkedInKey" xml:space="preserve">
     <value>Linkedin ID</value>
@@ -350,7 +326,7 @@
     <value>Connect Rackspace Cloud Storage service to backup and store data from your portal.</value>
   </data>
   <data name="ConsumersRackspaceInstruction" xml:space="preserve">
-    <value>When you add Rackspace Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Connect Rackspace Cloud Storage service to backup and store data from your portal. {0}In the security settings of  Rackspace Cloud Control Panel, click the Show link next to Rackspace API Key. Paste the data you received below:</value>
   </data>
   <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
     <value>Private Container</value>
@@ -383,7 +359,7 @@
     <value>Connect Amazon AWS S3 to backup and store data from your portal.</value>
   </data>
   <data name="ConsumersS3Instruction" xml:space="preserve">
-    <value>When you add Amazon AWS S3 to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Connect Amazon AWS S3 to backup and store data from your portal. {0}Go to the AWS Management Console and create access keys for ONLYOFFICE. Paste the data you received below:</value>
   </data>
   <data name="ConsumersS3region" xml:space="preserve">
     <value>Region</value>
@@ -407,7 +383,7 @@
     <value>Connect Selectel Cloud Storage service to backup and store data from your portal.</value>
   </data>
   <data name="ConsumersSelectelInstruction" xml:space="preserve">
-    <value>When you add Selectel Cloud Storage service to your portal, you can use it to create backups of your portal making sure no data will be ever lost. Use it also to store data and static content from your portal.</value>
+    <value>Connect Selectel Cloud Storage service to backup and store data from your portal. {0}Get the access data for a user with Read/Write rights for containers where you plan to store your backups and paste it below:</value>
   </data>
   <data name="ConsumersSelectelprivate_container" xml:space="preserve">
     <value>Private container</value>
@@ -434,9 +410,6 @@
     <value>Enable the application to manage OneDrive files and folders.</value>
   </data>
   <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
-    <value>If you add an application of the OneDrive service you will be able to connect your OneDrive account in the Documents module. This will allow to upload and create new files in OneDrive, edit existing ones, copy and delete them, share files and folders with ONLYOFFICE™ portal users.</value>
-  </data>
-  <data name="ConsumersSkyDriveInstructionV11" xml:space="preserve">
     <value>Enable this app to connect your OneDrive account to the Documents module. You’ll be able to manage, edit, and share files from OneDrive with ONLYOFFICE users. {0}Sign in to your Microsoft Azure account and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersSmsc" xml:space="preserve">
@@ -446,9 +419,6 @@
     <value>Enable the application for the two-factor authentication via SMS Center.</value>
   </data>
   <data name="ConsumersSmscInstruction" xml:space="preserve">
-    <value>Adding the SMS Center service application you will be able to enable the two-factor authentication and receive an SMS with a code allowing the user to enter ONLYOFFICE portal. SMS Center application is useful as a provider for CIS countries.</value>
-  </data>
-  <data name="ConsumersSmscInstructionV11" xml:space="preserve">
     <value>Use this app to enable two-factor authentication with SMS Center service. {0}Insert your smsc account login and your password (or password MD5 hash) in lower case:</value>
   </data>
   <data name="Consumerssmsclogin" xml:space="preserve">
@@ -469,7 +439,7 @@
   <data name="ConsumersTelegramDescription" xml:space="preserve">
     <value>Connect Telegram account to receive portal notifications via Telegram.</value>
   </data>
-  <data name="ConsumersTelegramInstructionV11" xml:space="preserve">
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
     <value>To receive portal notifications via Telegram, enable Telegram bot. You can create a new bot using BotFather in Telegram Desktop. To use this bot, portal users need to enable Telegram notifications on their Profile Page. {0}Paste bot’s username and the token you received in the fields below.</value>
   </data>
   <data name="ConsumersTwilio" xml:space="preserve">
@@ -485,9 +455,6 @@
     <value>Enable this application to call CRM contacts with Twilio.</value>
   </data>
   <data name="ConsumersTwilioInstruction" xml:space="preserve">
-    <value>After you add Twilio, you will be able to call any CRM contact right from the browser.</value>
-  </data>
-  <data name="ConsumersTwilioInstructionV11" xml:space="preserve">
     <value>Enable this app to allow your users to call their contacts from the CRM module using Twilio. {0}Go to Twilio Console and paste the following data below:</value>
   </data>
   <data name="Consumerstwiliosender" xml:space="preserve">
@@ -506,9 +473,6 @@
     <value>Enable the application to sign in to the portal using a Twitter account and search for contacts.</value>
   </data>
   <data name="ConsumersTwitterInstruction" xml:space="preserve">
-    <value>If you add an application of the Twitter service you will be able to connect your Twitter account on your profile page so that you can sign in to the ONLYOFFICE™ portal using it. You will also be able to find a Twitter account of a person in the CRM module and link it on the 'Edit person/company' page and then view Twitter news feed.</value>
-  </data>
-  <data name="ConsumersTwitterInstructionV11" xml:space="preserve">
     <value>Enable this app to allow your users to sign in to ONLYOFFICE using their Twitter and link their customers’ Twitter accounts to the CRM module. {0}Go to Twitter Developers Portal and create a new app ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersTwitterKey" xml:space="preserve">
@@ -542,7 +506,7 @@
     <value>Enable the application to publish documents directly in WordPress.</value>
   </data>
   <data name="ConsumersWordpressInstruction" xml:space="preserve">
-    <value>Adding the WordPress application you can easily publish the documents on your WordPress website, saving their formatting.</value>
+    <value>Enable the application to easily publish documents to your WordPress website. {0}On the Wordpress Developers page, create a new app for ONLYOFFICE integration. Paste the data you received below:</value>
   </data>
   <data name="ConsumerswpClientId" xml:space="preserve">
     <value>WordPress Key</value>
@@ -563,9 +527,6 @@
     <value>Enable the application to import users from the Yahoo service.</value>
   </data>
   <data name="ConsumersYahooInstruction" xml:space="preserve">
-    <value>Adding the Yahoo service application you will be able to add ONLYOFFICE portal new users from the contact list.</value>
-  </data>
-  <data name="ConsumersYahooInstructionV11" xml:space="preserve">
     <value>Enable this app to add new portal users from your Yahoo contact list. {0}Go to the Create Application page in the Yahoo Developer Network and create a new app for ONLYOFFICE integration. Insert the data you received below:</value>
   </data>
   <data name="ConsumersYandex" xml:space="preserve">
@@ -872,7 +833,7 @@
     <value>Uploaded successfully. {0}Support are not available for this license since {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>The email change instructions have been successfuly sent</value>
+    <value>The email change instructions have been successfully sent</value>
   </data>
   <data name="MessageYourPasswordSendedToEmail" xml:space="preserve">
     <value>If a user with the {0} email exists, the password change instruction has been sent to this email address.</value>

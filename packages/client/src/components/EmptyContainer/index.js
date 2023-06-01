@@ -84,57 +84,15 @@ export default inject(
     auth,
     filesStore,
     dialogsStore,
-    treeFoldersStore,
+
     selectedFolderStore,
   }) => {
-    const { filter, roomsFilter, isErrorRoomNotAvailable } = filesStore;
-
-    const {
-      authorType,
-      search,
-      withSubfolders,
-      filterType,
-      searchInContent,
-    } = filter;
-    const {
-      subjectId,
-      filterValue,
-      type,
-      withSubfolders: withRoomsSubfolders,
-      searchInContent: searchInContentRooms,
-      tags,
-      withoutTags,
-    } = roomsFilter;
-
-    const {
-      isPrivacyFolder,
-      isRoomsFolder,
-      isArchiveFolder,
-    } = treeFoldersStore;
+    const { isErrorRoomNotAvailable, isFiltered } = filesStore;
 
     const { isGracePeriod } = auth.currentTariffStatusStore;
 
-    const isRooms = isRoomsFolder || isArchiveFolder;
-
-    const {
-      setCreateRoomDialogVisible,
-      setInviteUsersWarningDialogVisible,
-    } = dialogsStore;
-
-    const isFiltered = isRooms
-      ? filterValue ||
-        type ||
-        withRoomsSubfolders ||
-        searchInContentRooms ||
-        subjectId ||
-        tags ||
-        withoutTags
-      : (authorType ||
-          search ||
-          !withSubfolders ||
-          filterType ||
-          searchInContent) &&
-        !(isPrivacyFolder && isMobile);
+    const { setCreateRoomDialogVisible, setInviteUsersWarningDialogVisible } =
+      dialogsStore;
 
     const isRoomNotFoundOrMoved =
       isFiltered === null &&

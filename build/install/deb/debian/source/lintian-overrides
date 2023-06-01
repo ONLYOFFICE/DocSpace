@@ -41,3 +41,6 @@ invalid-standards-version
 
 # Temporary ignoring of translation errors
 untranslatable-debconf-templates
+
+# We use this to protect sensitive information (ie passwords) in the config file
+non-standard-file-perm

@@ -78,16 +78,13 @@
   <data name="pattern_ShareDocument" xml:space="preserve">
     <value>h1.Надано доступ до документу: "$DocumentTitle":"$DocumentURL"
 
-$__DateTime "$__AuthorName":"$__AuthorUrl" 
-
-надав Вам доступ до документу "$DocumentTitle":"$DocumentURL"
-
-з правами доступу: "$AccessRights". 
+$__DateTime "$__AuthorName":"$__AuthorUrl" надав Вам доступ до документу "$DocumentTitle":"$DocumentURL" з правами доступу: "$AccessRights". 
 
 $Message</value>
   </data>
   <data name="pattern_ShareFolder" xml:space="preserve">
     <value>h1.Надано доступ до папки:"$DocumentTitle":"$DocumentURL"
+
 $__DateTime "$__AuthorName":"$__AuthorUrl" надав вам доступ до "$DocumentTitle":"$DocumentURL" папки з наступними правами доступу: "$AccessRights". 
 
 $Message</value>
@@ -106,5 +103,53 @@ $Message</value>
   </data>
   <data name="subject_ShareFolder" xml:space="preserve">
     <value>Документи. Надано Доступ до $DocumentTitle</value>
+  </data>
+  <data name="pattern_EditorMentions" xml:space="preserve">
+    <value>h1. $__AuthorName згадав(ла) вас у коментарі до документа
+
+$__AuthorName згадав(ла) вас у коментарі до документа "$DocumentTitle":"$DocumentURL" у кімнаті "$RoomTitle":"$RoomURL":
+
+$Message</value>
+  </data>
+  <data name="pattern_RoomRemoved" xml:space="preserve">
+    <value>h1. $__AuthorName видалив(ла) кімнату
+
+$__AuthorName видалив(ла) кімнату $RoomTitle</value>
+  </data>
+  <data name="subject_DocuSignStatus_push" xml:space="preserve">
+    <value>Статус підписання змінився</value>
+  </data>
+  <data name="subject_EditorMentions_push" xml:space="preserve">
+    <value>Згадано в документі</value>
+  </data>
+  <data name="subject_MailMergeEnd_push" xml:space="preserve">
+    <value>Надсилання виконано.</value>
+  </data>
+  <data name="subject_ShareDocument_push" xml:space="preserve">
+    <value>Надано доступ до документа $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareFolder_push" xml:space="preserve">
+    <value>Надано доступ до папки $DocumentTitle</value>
+  </data>
+  <data name="subject_ShareEncryptedDocument_push" xml:space="preserve">
+    <value>Надано доступ до зашифрованого документа $DocumentTitle</value>
+  </data>
+  <data name="subject_DocuSignComplete_push" xml:space="preserve">
+    <value>Усі підписанти підписали $DocumentTitle</value>
+  </data>
+  <data name="subject_RoomRemoved" xml:space="preserve">
+    <value>Сповіщення DocSpace. Кімнату видалено</value>
+  </data>
+  <data name="subject_EditorMentions" xml:space="preserve">
+    <value>Сповіщення DocSpace. Згадано в документі</value>
+  </data>
+  <data name="subject_DocuSignComplete_tg" xml:space="preserve">
+    <value>Документи. Усі підписанти підписали [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareFolder_tg" xml:space="preserve">
+    <value>Документи. Надано доступ до папки: [$DocumentTitle]($DocumentURL)</value>
+  </data>
+  <data name="subject_ShareDocument_tg" xml:space="preserve">
+    <value>Документи. Надано доступ до документа [$DocumentTitle]($DocumentURL)</value>
   </data>
 </root>

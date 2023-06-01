@@ -10,7 +10,7 @@ import { isMobile } from "react-device-detect";
 import Link from "@docspace/components/link";
 import Loader from "@docspace/components/loader";
 import { Base } from "@docspace/components/themes";
-import Tags from "@docspace/common/components/Tags";
+import Tags from "@docspace/components/Tags";
 import Tag from "@docspace/components/tag";
 import { RoomsTypeTranslations } from "@docspace/common/constants";
 

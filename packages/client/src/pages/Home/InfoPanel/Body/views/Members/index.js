@@ -270,12 +270,17 @@ export default inject(
       isScrollLocked,
       setIsScrollLocked,
     } = auth.infoPanelStore;
-    const { getRoomMembers, updateRoomMemberRole, resendEmailInvitations } =
-      filesStore;
+    const {
+      getRoomMembers,
+      updateRoomMemberRole,
+      resendEmailInvitations,
+    } = filesStore;
     const { id: selfId } = auth.userStore.user;
     const { isGracePeriod } = auth.currentTariffStatusStore;
-    const { setInvitePanelOptions, setInviteUsersWarningDialogVisible } =
-      dialogsStore;
+    const {
+      setInvitePanelOptions,
+      setInviteUsersWarningDialogVisible,
+    } = dialogsStore;
 
     const { changeType: changeUserType } = peopleStore;
 

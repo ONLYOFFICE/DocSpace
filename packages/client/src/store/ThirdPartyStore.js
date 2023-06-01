@@ -20,6 +20,7 @@ import IconWebdavSmallReactSvgUrl from "PUBLIC_DIR/images/icon_webdav_small.reac
 import IconWebdavReactSvgUrl from "PUBLIC_DIR/images/icon_webdav.react.svg?url";
 import { makeAutoObservable } from "mobx";
 import api from "@docspace/common/api";
+import i18n from "../helpers/i18n";
 
 class ThirdPartyStore {
   capabilities = null;
@@ -94,9 +95,13 @@ class ThirdPartyStore {
     try {
       let params =
         "height=600,width=1020,resizable=0,status=0,toolbar=0,menubar=0,location=1";
-      newWindow = modal ? newWindow : window.open(url, "Authorization", params);
+      newWindow = modal
+        ? newWindow
+        : window.open(url, i18n.t("Common:Authorization"), params);
     } catch (err) {
-      newWindow = modal ? newWindow : window.open(url, "Authorization");
+      newWindow = modal
+        ? newWindow
+        : window.open(url, i18n.t("Common:Authorization"));
     }
 
     return newWindow;
