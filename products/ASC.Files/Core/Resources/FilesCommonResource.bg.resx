@@ -343,4 +343,76 @@
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Сътрудник</value>
   </data>
- </root>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Сътрудник</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Персонализиран филтър</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Редактор</value>
+  </data>
+  <data name="AceStatusEnum_RoomAdmin" xml:space="preserve">
+    <value>Администратор на стаята</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Изпратен формуляр</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Новата версия не може да бъде същата като текущата</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Нямате нужното разрешение, за да копиране на файла</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Нямате нужното разрешение, за да копиране на папката</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Невалиден доставчик</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Не е възможно да ползвате тази папка да съхранява стаята</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Линкът на поканата е невалиден или валидността му е изтекла</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Този доставчик вече е свързан със стаята</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Ролята не е налична за този тип потребител</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Нямате достатъчно разрешение да архивирате стаята</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Нямате разрешение да копирате в тази папка</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Нямате разрешение да редактирате стаята</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Нямате разрешение да местите тази папка</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Нямате достатъчно разрешение да разархивирате стаята</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Не можете да редактирате архивирани стаи</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Не можете да фиксирате стая</value>
+  </data>
+  <data name="CommentCreateFillFormDraft" xml:space="preserve">
+    <value>Създаден за попълване на формуляра</value>
+  </data>
+  <data name="MessageFileCreatedForm" xml:space="preserve">
+    <value>OFORM документ за попълване е готов. Той е запазен в {0}</value>
+  </data>
+  <data name="MessageFillFormDraftCreated" xml:space="preserve">
+    <value>Копието на OFORM се създава в папката {0}. Моля, попълнете формуляра и изтеглете резултата като PDF или DOCX файл.</value>
+  </data>
+  <data name="MessageFillFormDraftDiscard" xml:space="preserve">
+    <value>Файлът вече не е чернова за попълване на формуляра.</value>
+  </data>
+</root>

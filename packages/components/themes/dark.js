@@ -2874,6 +2874,7 @@ const Dark = {
 
     settings: {
       iconFill: white,
+      trashIcon: "#858585",
       article: {
         titleColor: "#c4c4c4",
         fillIcon: "#c4c4c4",
@@ -2953,6 +2954,7 @@ const Dark = {
         separatorBorder: "1px solid #474747",
         warningColor: "#E06451",
         textColor: "#ADADAD",
+        backupCheckedListItemBackground: "#3D3D3D",
       },
 
       payment: {

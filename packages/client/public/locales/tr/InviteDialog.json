@@ -4,11 +4,11 @@
   "AddManuallyDescriptionRoom": "Adları kullanarak mevcut DocSpace kullanıcılarını odaya ekleyin veya e-mail yoluyla kişisel olarak yeni kullanıcılar davet edin",
   "EmailErrorMessage": "E-posta adresi geçerli değil. E-postayı tıklayarak düzenleyebilirsiniz.",
   "InviteAccountSearchPlaceholder": "İnsanları e-posta ile davet et",
+  "Invited": "Davet edildi",
   "InviteRoomSearchPlaceholder": "Kişileri ada veya e-postaya göre davet et",
   "InviteViaLink": "Bağlantı yoluyla davet et",
   "InviteViaLinkDescriptionAccounts": "DocSpace'te kendi kendine yetkilendirme için evrensel bir bağlantı oluştur",
   "InviteViaLinkDescriptionRoom": "Odada kendi kendine yetkilendirme için evrensel bir bağlantı oluştur",
-  "Invited": "Davet edildi",
   "LinkCopySuccess": "Bağlantı kopyalandı",
   "SendInvitation": "Davetiye gönder"
 }

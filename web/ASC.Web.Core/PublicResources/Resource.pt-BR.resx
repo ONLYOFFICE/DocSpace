@@ -215,13 +215,13 @@
     <value>Erro de conexão</value>
   </data>
   <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
-    <value>Os usuários não puderam ser criados, os dados recebidos estão incorretos</value>
+    <value>Os usuários não puderam ser criados, os dados recebidos estão incorretos.</value>
   </data>
   <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
     <value>O servidor não obteve as configurações.</value>
   </data>
   <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
-    <value>o servidor não salvou as configurações.</value>
+    <value>O servidor não salvou as configurações.</value>
   </data>
   <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
     <value>Login ou senha incorreta.</value>
@@ -347,7 +347,7 @@
     <value>Licença não está correta</value>
   </data>
   <data name="LicenseErrorExpired" xml:space="preserve">
-    <value>Licença expirou</value>
+    <value>Licença expirou.</value>
   </data>
   <data name="LicenseErrorPortal" xml:space="preserve">
     <value>O número de portais excede o que é permitido pela licença</value>
@@ -359,10 +359,10 @@
     <value>Carregado com sucesso</value>
   </data>
   <data name="LicenseUploadedOverdue" xml:space="preserve">
-    <value>Carregado com sucesso. {0}Suporte e atualizações não estão disponíveis para esta licença desde {2}.{1}.</value>
+    <value>Carregado com sucesso. {0}Suporte e atualizações não estão disponíveis para esta licença desde {2}.{1}</value>
   </data>
   <data name="LicenseUploadedOverdueSupport" xml:space="preserve">
-    <value>Carregado com sucesso. {0}Não há suporte disponível para esta licença desde {2}.{1}.</value>
+    <value>Carregado com sucesso. {0}Não há suporte disponível para esta licença desde {2}.{1}</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
     <value>As instruções de alteração de e-mail foram enviadas com sucesso</value>
@@ -510,5 +510,356 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>Número de administradores/usuários avançados:</value>
+  </data>
+  <data name="ConsumersAppleId" xml:space="preserve">
+    <value>Apple ID</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>ID do cliente do aplicativo</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Um identificador de chave de 10 caracteres gerado para a chave privada Sign in with Apple</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>Habilite o aplicativo para entrar no portal usando uma conta Apple ID.</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para permitir que seus usuários façam login no ONLYOFFICE usando o ID Apple. {0} Acesse o Portal de desenvolvedores da Apple e crie um novo aplicativo de integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Chave privada baixada do Apple Developer</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>ID da equipe da conta de desenvolvedor de 10 caracteres</value>
+  </data>
+  <data name="ConsumersauthPwd" xml:space="preserve">
+    <value>authPwd Selectel</value>
+  </data>
+  <data name="ConsumersauthUser" xml:space="preserve">
+    <value>authUser Selectel</value>
+  </data>
+  <data name="ConsumersBitly" xml:space="preserve">
+    <value>Bitly</value>
+  </data>
+  <data name="ConsumersbitlyClientSecret" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>login</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>Conecte o serviço Bitly para encurtar os links compartilhados e os links de convite do portal no módulo Documentos.</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>Habilitar este aplicativo para encurtar os links de convite e documento. {0}Inserir seu login Bitly e a chave API abaixo:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersboxClientId" xml:space="preserve">
+    <value>ID da caixa</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Chave da caixa</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Conecte o aplicativo para gerenciar os arquivos e pastas da Box.</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para conectar sua conta Box ao módulo Documentos. Você poderá gerenciar, editar e compartilhar arquivos do Box com usuários ONLYOFFICE. {0}Assine sua conta na página de desenvolvedores do Box e crie um novo aplicativo para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Habilitar o aplicativo para autenticação de dois fatores via Clickatell.</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>Use este aplicativo para permitir a autenticação de dois fatores com o serviço Clickatell. {0}Ingresse em sua conta da plataforma SMS e crie uma nova integração para ONLYOFFICE. Copie uma apiKey e insira-a abaixo:</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>Chave do DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>Conectar o aplicativo para adicionar a assinatura eletrônica do DocuSign aos documentos.</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>Endpoint de autenticação DocuSign</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>Habilitar este aplicativo para assinar digitalmente documentos usando DocuSign. {0} Vá para seu DocuSign Admin Console e adicione a integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Conectar o aplicativo para gerenciar arquivos e pastas da Dropbox.</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para conectar sua conta Dropbox ao módulo Documentos. Você será capaz de gerenciar, editar e compartilhar arquivos do Dropbox com usuários ONLYOFFICE. {0}Assine sua conta no website Dropbox Developers e crie um novo aplicativo para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>Chave de aplicação</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>Habilite este aplicativo para criar listas bibliográficas em documentos com EasyBib.</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Token de aplicativo</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>Conecte o aplicativo para entrar no portal usando uma conta do Facebook.</value>
+  </data>
+  <data name="ConsumersfacebookClientSecret" xml:space="preserve">
+    <value>Chave do Facebook</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>Chave API Web</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>Chave do servidor</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>Conecte o serviço de mensagens em nuvem da Firebase para receber notificações sobre as mensagens enviadas para você.</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>Segredo do DocuSign</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>ID do remetente</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>ID do projeto</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>Digite o nome do balde Google Cloud onde você quer armazenar seus backups.</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>Conecte o serviço Google Cloud Storage ao backup e armazenamento de dados de seu portal.</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud json</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>Conecte o projeto para entrar no portal usando uma conta do Google e gerenciar os arquivos e pastas do Google Drive.</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para conectar sua conta Google Drive ao módulo Documentos. Você será capaz de gerenciar, editar e compartilhar arquivos do Google Drive com usuários do ONLYOFFICE. {0}Vá ao console das APIs do Google e crie um novo projeto para integração com o ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>Conecte o aplicativo para entrar no portal usando uma conta do LinkedIn.</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Chave do Linkedin</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Habilite o aplicativo a entrar no portal usando uma conta Mail.ru.</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>ID do cliente do aplicativo</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>Segredo de cliente</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>Habilite o aplicativo para entrar no portal usando uma conta Apple ID.</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para permitir que seus usuários façam login no ONLYOFFICE usando a Microsoft. {0} Vá para o Microsoft Azure e crie uma nova integração de aplicativo ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>Conecte o serviço Rackspace Cloud Storage ao backup e armazenamento de dados de seu portal.</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>Container privado</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>Digite o endereço URL do contêiner privado do Rackspace onde você deseja armazenar seus backups.</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>Container público</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>Digite o endereço URL do contêiner público do Rackspace onde você deseja armazenar seus backups.</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>Região</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Entre na região onde se encontram seus contêineres Rackspace.</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>Digite o nome exclusivo do bucket da Amazon onde você deseja armazenar seus backups.</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>Conecte a Amazon AWS S3 ao backup e armazenamento de dados de seu portal.</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Digite a região AWS onde reside o seu bucket da Amazon.</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>Chave de acesso secreta S3</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>Senha para acessar o armazenamento</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>Conecte o serviço Selectel Cloud Storage ao backup e armazenamento de dados de seu portal.</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>Container privado</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>Digite o nome do container privado Selectel onde você deseja armazenar seus backups.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>Digite o nome do recipiente público Selectel onde você deseja armazenar seus backups.</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>Container público</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>Conecte o aplicativo para gerenciar os arquivos e pastas do OneDrive.</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para conectar sua conta OneDrive ao módulo Documentos. Você será capaz de gerenciar, editar e compartilhar arquivos da OneDrive com usuários ONLYOFFICE. {0}Ingresse em sua conta Microsoft Azure e crie um novo aplicativo para integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>Habilitar o aplicativo para a autenticação de dois fatores via SMS Center.</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>Use este aplicativo para permitir a autenticação de dois fatores com o serviço SMS Center. {0}Inserir login de sua conta smsc e sua senha (ou senha MD5 hash) em minúsculas:</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>Senha e hash MD5 de senha em minúscula</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>Collega l'account Telegram per ricevere le notifiche del portale tramite Telegram.</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Para receber notificações do portal via Telegram, habilite o Telegram bot. Você pode criar um novo bot usando BotFather in Telegram Desktop. Para usar este bot, os usuários do portal precisam ativar as notificações por telegrama em sua página de perfil. {0}Colar o nome de usuário do bot e o token que você recebeu nos campos abaixo.</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Adicionar Twilio para poder chamar contatos CRM diretamente do navegador.</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para permitir que seus usuários chamem seus contatos a partir do módulo CRM usando o Twilio. {0} Vá para o Twilio Console e cole os seguintes dados abaixo:</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Número de telefone do Twilio (exigido para autorização SMS)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>Conecte o aplicativo para entrar no portal usando uma conta do Twitter e pesquisar por contatos.</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para permitir que seus usuários acessem a ONLYOFFICE usando seu Twitter e vinculem as contas de seus clientes no Twitter ao módulo CRM. {0} Vá para o Portal de Desenvolvedores do Twitter e crie um novo aplicativo de integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>Habilite o aplicativo a entrar no portal usando uma conta VK.</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>Habilitar o aplicativo para publicar documentos diretamente no WordPress.</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>Habilite este aplicativo para adicionar novos usuários do portal a partir de sua lista de contatos do Yahoo. {0}Vá para a página Criar aplicativo na Rede de Desenvolvedores Yahoo e crie um novo aplicativo para integração ONLYOFFICE. Insira os dados que você recebeu abaixo:</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Habilite o aplicativo a entrar no portal usando uma conta Yandex.</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>Tipo desconhcido de arquivo de imagem</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>Tamanho da imagem excedeu os parâmetros permitidos</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Chave da Dropbox</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>ID do Google</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Chave do Google</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>Balde</value>
+  </data>
+  <data name="ConsumersLinkedInKey" xml:space="preserve">
+    <value>ID do Linkedin</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>Senha secreta</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>Usuário de autenticação</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>ID da aplicação</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>Login</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>Conta Sid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>Token de autenticação</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>Senha</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
   </data>
 </root>

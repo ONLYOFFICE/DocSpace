@@ -9,7 +9,7 @@ import {
   SectionFooterContent,
 } from "./Section";
 
-import Dialogs from "../AccountsHome/Section/Body/Dialogs";
+import Dialogs from "../Home/Section/AccountsBody/Dialogs";
 
 import withCultureNames from "@docspace/common/hoc/withCultureNames";
 import { inject, observer } from "mobx-react";

@@ -19,112 +19,86 @@ namespace ASC.Migrations.MySql.Migrations
                 .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
-            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbipLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("id");
+            modelBuilder.Entity("ASC.Core.Common.EF.Model.DbIPLookup", b =>
+            {
+                b.Property<string>("AddrType")
+                    .HasColumnType("enum('ipv4','ipv6')")
+                    .HasColumnName("addr_type");
 
-                    b.Property<string>("AddrType")
-                        .IsRequired()
-                        .HasColumnType("enum('ipv4','ipv6')")
-                        .HasColumnName("addr_type")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<byte[]>("IPStart")
+                    .HasColumnType("varbinary(16)")
+                    .HasColumnName("ip_start");
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("city")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<string>("City")
+                    .IsRequired()
+                    .HasColumnType("varchar(80)")
+                    .HasColumnName("city");
 
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("varchar(2)")
-                        .HasColumnName("country")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<string>("Continent")
+                    .IsRequired()
+                    .HasColumnType("char(2)")
+                    .HasColumnName("continent");
 
-                    b.Property<string>("District")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("district")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<string>("Country")
+                    .IsRequired()
+                    .HasColumnType("char(2)")
+                    .HasColumnName("country");
 
-                    b.Property<int?>("GeonameId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("geoname_id")
-                        .HasDefaultValueSql("NULL");
+                b.Property<string>("District")
+                    .IsRequired()
+                    .HasColumnType("varchar(80)")
+                    .HasColumnName("district");
 
-                    b.Property<string>("IPEnd")
-                        .IsRequired()
-                        .HasColumnType("varchar(39)")
-                        .HasColumnName("ip_end")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<int?>("GeonameId")
+                    .HasColumnType("int(10)")
+                    .HasColumnName("geoname_id");
 
-                    b.Property<string>("IPStart")
-                        .IsRequired()
-                        .HasColumnType("varchar(39)")
-                        .HasColumnName("ip_start")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<byte[]>("IPEnd")
+                    .IsRequired()
+                    .HasColumnType("varbinary(16)")
+                    .HasColumnName("ip_end");
 
-                    b.Property<float?>("Latitude")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasColumnName("latitude")
-                        .HasDefaultValueSql("NULL");
+                b.Property<float>("Latitude")
+                    .HasColumnType("float")
+                    .HasColumnName("latitude");
 
-                    b.Property<float?>("Longitude")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("float")
-                        .HasColumnName("longitude")
-                        .HasDefaultValueSql("NULL");
+                b.Property<float>("Longitude")
+                    .HasColumnType("float")
+                    .HasColumnName("longitude");
 
-                    b.Property<int>("Processed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("processed")
-                        .HasDefaultValueSql("'1'");
+                b.Property<string>("StateProv")
+                    .IsRequired()
+                    .HasColumnType("varchar(80)")
+                    .HasColumnName("stateprov");
 
-                    b.Property<string>("StateProv")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("stateprov")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<string>("StateProvCode")
+                    .HasColumnType("varchar(15)")
+                    .HasColumnName("stateprov_code");
 
-                    b.Property<string>("TimezoneName")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("timezone_name")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<string>("TimezoneName")
+                    .IsRequired()
+                    .HasColumnType("varchar(64)")
+                    .HasColumnName("timezone_name");
 
-                    b.Property<int?>("TimezoneOffset")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("timezone_offset")
-                        .HasDefaultValueSql("NULL");
+                b.Property<float>("TimezoneOffset")
+                    .HasColumnType("float")
+                    .HasColumnName("timezone_offset");
 
-                    b.Property<string>("ZipCode")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("zipcode")
-                        .UseCollation("utf8_general_ci")
-                        .HasAnnotation("MySql:CharSet", "utf8");
+                b.Property<string>("WeatherCode")
+                    .IsRequired()
+                    .HasColumnType("varchar(10)")
+                    .HasColumnName("weather_code");
 
-                    b.HasKey("Id");
+                b.Property<string>("ZipCode")
+                    .HasColumnType("varchar(20)")
+                    .HasColumnName("zipcode");
 
-                    b.HasIndex("IPStart")
-                        .HasDatabaseName("ip_start");
+                b.HasKey("AddrType", "IPStart");
 
-                    b.ToTable("dbip_location", (string)null);
+                b.ToTable("dbip_lookup", (string)null);
 
-                    b.HasAnnotation("MySql:CharSet", "utf8");
-                });
+                b.HasAnnotation("MySql:CharSet", "utf8mb4");
+            });
 
             modelBuilder.Entity("ASC.Core.Common.EF.Model.MobileAppInstall", b =>
                 {

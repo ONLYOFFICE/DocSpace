@@ -35,11 +35,6 @@ public class Startup : BaseStartup
     {
         base.Configure(app, env);
 
-        app.UseForwardedHeaders(new ForwardedHeadersOptions
-        {
-            ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
-        });
-
         app.UseRouting();
 
         app.UseAuthentication();

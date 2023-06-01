@@ -11,6 +11,7 @@ const DEFAULT_FILTER_TYPE = null;
 const DEFAULT_SEARCH_TYPE = true; //withSubfolders
 const DEFAULT_SEARCH = null;
 const DEFAULT_AUTHOR_TYPE = null;
+const DEFAULT_ROOM_ID = null;
 const DEFAULT_SELECTED_ITEM = {};
 const DEFAULT_FOLDER = "@my";
 const DEFAULT_SEARCH_IN_CONTENT = null;
@@ -19,6 +20,7 @@ const DEFAULT_EXCLUDE_SUBJECT = null;
 const SEARCH_TYPE = "withSubfolders";
 const AUTHOR_TYPE = "authorType";
 const FILTER_TYPE = "filterType";
+const ROOM_ID = "roomId";
 const SEARCH = "search";
 const SORT_BY = "sortby";
 const SORT_ORDER = "sortorder";
@@ -51,11 +53,13 @@ class FilesFilter {
     const filterType =
       (urlFilter[FILTER_TYPE] && +urlFilter[FILTER_TYPE]) ||
       defaultFilter.filterType;
+
     const authorType =
       (urlFilter[AUTHOR_TYPE] &&
         urlFilter[AUTHOR_TYPE].includes("_") &&
         urlFilter[AUTHOR_TYPE]) ||
       defaultFilter.authorType;
+    const roomId = urlFilter[ROOM_ID] || defaultFilter.roomId;
     const withSubfolders =
       (urlFilter[SEARCH_TYPE] && urlFilter[SEARCH_TYPE]) ||
       defaultFilter.withSubfolders;
@@ -84,6 +88,7 @@ class FilesFilter {
       filterType,
       withSubfolders,
       search,
+      roomId,
       authorType,
       defaultFilter.selectedItem,
       folder,
@@ -104,6 +109,7 @@ class FilesFilter {
     filterType = DEFAULT_FILTER_TYPE,
     withSubfolders = DEFAULT_SEARCH_TYPE,
     search = DEFAULT_SEARCH,
+    roomId = DEFAULT_ROOM_ID,
     authorType = DEFAULT_AUTHOR_TYPE,
     selectedItem = DEFAULT_SELECTED_ITEM,
     folder = DEFAULT_FOLDER,
@@ -118,8 +124,9 @@ class FilesFilter {
     this.filterType = filterType;
     this.withSubfolders = withSubfolders;
     this.search = search;
-    this.total = total;
+    this.roomId = roomId;
     this.authorType = authorType;
+    this.total = total;
     this.selectedItem = selectedItem;
     this.folder = folder;
     this.searchInContent = searchInContent;
@@ -146,6 +153,7 @@ class FilesFilter {
       pageCount,
       search,
       sortBy,
+      roomId,
       sortOrder,
       withSubfolders,
       startIndex,
@@ -157,6 +165,7 @@ class FilesFilter {
       filterType || (search ?? "").trim() || authorType
         ? withSubfolders
         : false;
+
     const userIdOrGroupId =
       authorType && authorType.includes("_")
         ? authorType.slice(authorType.indexOf("_") + 1)
@@ -171,6 +180,7 @@ class FilesFilter {
       filterType: filterType,
       filterValue: (search ?? "").trim(),
       withSubfolders: isFilterSet,
+      roomId: roomId,
       userIdOrGroupId,
       searchInContent,
       excludeSubject,
@@ -191,6 +201,7 @@ class FilesFilter {
       sortBy,
       sortOrder,
       withSubfolders,
+      roomId,
       searchInContent,
       excludeSubject,
     } = this;
@@ -199,39 +210,16 @@ class FilesFilter {
 
     const URLParams = queryString.parse(window.location.href);
 
-    if (filterType) {
-      dtoFilter[FILTER_TYPE] = filterType;
-    }
-
-    if (withSubfolders) {
-      dtoFilter[SEARCH_TYPE] = withSubfolders;
-    }
-
-    if (search) {
-      dtoFilter[SEARCH] = search.trim();
-    }
-    if (authorType) {
-      dtoFilter[AUTHOR_TYPE] = authorType;
-    }
-    if (folder) {
-      dtoFilter[FOLDER] = folder;
-    }
-
-    if (pageCount !== DEFAULT_PAGE_COUNT) {
-      dtoFilter[PAGE_COUNT] = pageCount;
-    }
-
-    if (URLParams.preview) {
-      dtoFilter[PREVIEW] = URLParams.preview;
-    }
-
-    if (searchInContent) {
-      dtoFilter[SEARCH_IN_CONTENT] = searchInContent;
-    }
-
-    if (excludeSubject) {
-      dtoFilter[EXCLUDE_SUBJECT] = excludeSubject;
-    }
+    if (filterType) dtoFilter[FILTER_TYPE] = filterType;
+    if (withSubfolders) dtoFilter[SEARCH_TYPE] = withSubfolders;
+    if (search) dtoFilter[SEARCH] = search.trim();
+    if (roomId) dtoFilter[ROOM_ID] = roomId;
+    if (authorType) dtoFilter[AUTHOR_TYPE] = authorType;
+    if (folder) dtoFilter[FOLDER] = folder;
+    if (pageCount !== DEFAULT_PAGE_COUNT) dtoFilter[PAGE_COUNT] = pageCount;
+    if (URLParams.preview) dtoFilter[PREVIEW] = URLParams.preview;
+    if (searchInContent) dtoFilter[SEARCH_IN_CONTENT] = searchInContent;
+    if (excludeSubject) dtoFilter[EXCLUDE_SUBJECT] = excludeSubject;
 
     dtoFilter[PAGE] = page + 1;
     dtoFilter[SORT_BY] = sortBy;
@@ -256,6 +244,7 @@ class FilesFilter {
       this.filterType,
       this.withSubfolders,
       this.search,
+      this.roomId,
       this.authorType,
       this.selectedItem,
       this.folder,
@@ -267,9 +256,10 @@ class FilesFilter {
   equals(filter) {
     const equals =
       this.filterType === filter.filterType &&
-      this.authorType === filter.authorType &&
       this.withSubfolders === filter.withSubfolders &&
       this.search === filter.search &&
+      this.roomId === filter.roomId &&
+      this.authorType === filter.authorType &&
       this.sortBy === filter.sortBy &&
       this.sortOrder === filter.sortOrder &&
       this.viewAs === filter.viewAs &&

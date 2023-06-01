@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import { observer, inject } from "mobx-react";
 import { withTranslation } from "react-i18next";
 import { isMobileOnly } from "react-device-detect";
@@ -53,6 +53,8 @@ const InvitePanel = ({
   const [externalLinksVisible, setExternalLinksVisible] = useState(false);
   const [scrollAllPanelContent, setScrollAllPanelContent] = useState(false);
   const [activeLink, setActiveLink] = useState({});
+
+  const inputsRef = useRef();
 
   const onChangeExternalLinksVisible = (visible) => {
     setExternalLinksVisible(visible);
@@ -241,6 +243,7 @@ const InvitePanel = ({
           onClose={onClose}
           roomUsers={roomUsers}
           roomType={roomType}
+          inputsRef={inputsRef}
         />
         {hasInvitedUsers && (
           <ItemsList
@@ -249,6 +252,7 @@ const InvitePanel = ({
             roomType={roomType}
             externalLinksVisible={externalLinksVisible}
             scrollAllPanelContent={scrollAllPanelContent}
+            inputsRef={inputsRef}
           />
         )}
       </>
@@ -361,8 +365,12 @@ export default inject(({ auth, peopleStore, filesStore, dialogsStore }) => {
     setInvitePanelOptions,
   } = dialogsStore;
 
-  const { getFolderInfo, setRoomSecurity, getRoomSecurityInfo, folders } =
-    filesStore;
+  const {
+    getFolderInfo,
+    setRoomSecurity,
+    getRoomSecurityInfo,
+    folders,
+  } = filesStore;
 
   return {
     folders,

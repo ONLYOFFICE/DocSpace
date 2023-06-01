@@ -52,7 +52,7 @@ export const LanguageTimeSettingsTooltip = ({
             className="display-block font-size"
             isHovered={true}
             target="_blank"
-            href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+            href={`${helpLink}/administration/docspace-settings.aspx#DocSpacelanguage`}
           >
             {{ learnMore }}
           </Link>
@@ -102,7 +102,7 @@ export const CustomTitlesTooltip = ({ t }) => {
 
 export const DNSSettingsTooltip = ({
   t,
-  theme,
+  currentColorScheme,
   helpLink,
   organizationName,
 }) => {
@@ -119,11 +119,11 @@ export const DNSSettingsTooltip = ({
           and our specialists will help you with the settings.
         </Trans>
         <Link
-          color={theme.client.settings.common.linkColorHelp}
+          color={currentColorScheme.main.accent}
           className="display-block font-size"
           isHovered={true}
           target="_blank"
-          href={`${helpLink}/administration/configuration.aspx#CustomizingPortal_block`}
+          href={`${helpLink}/administration/docspace-settings.aspx#alternativeurl`}
         >
           {t("Common:LearnMore")}
         </Link>

@@ -179,7 +179,7 @@
     <value>Ít nhất {0} tin nhắn thư không thể gửi được. Vui lòng truy cập mô-đun Thư để xem lý do không gửi được.</value>
   </data>
   <data name="ErrorMassage_ManyDownloads" xml:space="preserve">
-    <value>Quá nhiều tập tin đang tải về</value>
+    <value>Quá nhiều tập tin đang tải về.</value>
   </data>
   <data name="ErrorMassage_NotSupportedFormat" xml:space="preserve">
     <value>Rất tiếc, định dạng file này không được hỗ trợ</value>
@@ -275,8 +275,7 @@
     <value>Tài liệu</value>
   </data>
   <data name="ProductUserOpportunities" xml:space="preserve">
-    <value>Tạo và chỉnh sửa tài liệu riêng cũng như tài liệu được chia sẻ với quyền truy cập thích hợp|Trao cho người dùng khác quyền đọc/chỉnh sửa tài liệu và thư mục|Liên kết Dropbox, Box và tài khoản tài khác trong mục 'Tài liệu của tôi'
-</value>
+    <value>Tạo và chỉnh sửa tài liệu riêng cũng như tài liệu được chia sẻ với quyền truy cập thích hợp|Trao cho người dùng khác quyền đọc/chỉnh sửa tài liệu và thư mục|Liên kết Dropbox, Box và tài khoản tài khác trong mục 'Tài liệu của tôi'</value>
   </data>
   <data name="UnknownFirstName" xml:space="preserve">
     <value>Tên</value>
@@ -313,5 +312,62 @@
   </data>
   <data name="RoleEnum_Collaborator" xml:space="preserve">
     <value>Cộng tác viên</value>
+  </data>
+  <data name="CommentSubmitFillForm" xml:space="preserve">
+    <value>Biểu mẫu đã gửi</value>
+  </data>
+  <data name="ErrorMassage_FileUpdateToVersion" xml:space="preserve">
+    <value>Phiên bản mới không thể giống với phiên bản hiện tại</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFile" xml:space="preserve">
+    <value>Bạn không có đủ quyền để sao chép tập tin</value>
+  </data>
+  <data name="ErrorMassage_SecurityException_CopyFolder" xml:space="preserve">
+    <value>Bạn không có đủ quyền để sao chép thư mục</value>
+  </data>
+  <data name="ErrorMessage_InvalidProvider" xml:space="preserve">
+    <value>Nhà cung cấp không hợp lệ</value>
+  </data>
+  <data name="ErrorMessage_InvalidThirdPartyFolder" xml:space="preserve">
+    <value>Không thể sử dụng thư mục này để lưu trữ phòng</value>
+  </data>
+  <data name="ErrorMessage_InvintationLink" xml:space="preserve">
+    <value>Liên kết lời mời không hợp lệ hoặc tính hợp lệ đã hết hạn</value>
+  </data>
+  <data name="ErrorMessage_ProviderAlreadyConnect" xml:space="preserve">
+    <value>Nhà cung cấp này đã được kết nối với phòng</value>
+  </data>
+  <data name="ErrorMessage_RoleNotAvailable" xml:space="preserve">
+    <value>Vai trò không khả dụng cho loại người dùng này</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_ArchiveRoom" xml:space="preserve">
+    <value>Bạn không có đủ quyền để lưu trữ phòng</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_CopyToFolder" xml:space="preserve">
+    <value>Bạn không có quyền sao chép vào thư mục này</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_EditRoom" xml:space="preserve">
+    <value>Bạn không có quyền chỉnh sửa phòng</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_MoveToFolder" xml:space="preserve">
+    <value>Bạn không có quyền di chuyển vào thư mục này</value>
+  </data>
+  <data name="ErrorMessage_SecurityException_UnarchiveRoom" xml:space="preserve">
+    <value>Bạn không có đủ quyền để hủy lưu trữ phòng</value>
+  </data>
+  <data name="ErrorMessage_UpdateArchivedRoom" xml:space="preserve">
+    <value>Bạn không thể chỉnh sửa phòng đã lưu trữ</value>
+  </data>
+  <data name="ErrorrMessage_PinRoom" xml:space="preserve">
+    <value>Bạn không thể ghim phòng</value>
+  </data>
+  <data name="AceStatusEnum_CustomFilter" xml:space="preserve">
+    <value>Bộ lọc tùy chỉnh</value>
+  </data>
+  <data name="AceStatusEnum_Collaborator" xml:space="preserve">
+    <value>Cộng tác viên</value>
+  </data>
+  <data name="AceStatusEnum_Editing" xml:space="preserve">
+    <value>Biên tập viên</value>
   </data>
 </root>

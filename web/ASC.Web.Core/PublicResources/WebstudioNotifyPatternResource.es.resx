@@ -58,54 +58,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionCreateBlog" xml:space="preserve">
-    <value>El blog se ha creado en</value>
-  </data>
-  <data name="ActionCreateBookmark" xml:space="preserve">
-    <value>Marcador se ha creado en</value>
-  </data>
-  <data name="ActionCreateCase" xml:space="preserve">
-    <value>Caso CRM se ha creado en</value>
-  </data>
-  <data name="ActionCreateComment" xml:space="preserve">
-    <value>Comentario se ha añadido a</value>
-  </data>
-  <data name="ActionCreateContact" xml:space="preserve">
-    <value>Contacto CRM se ha creado en</value>
-  </data>
-  <data name="ActionCreateDeal" xml:space="preserve">
-    <value>Oportunidad CRM se ha creado en</value>
-  </data>
-  <data name="ActionCreateDiscussion" xml:space="preserve">
-    <value>Discusión se ha creado en</value>
-  </data>
-  <data name="ActionCreateEvent" xml:space="preserve">
-    <value>Evento se ha creado en</value>
-  </data>
-  <data name="ActionCreateFile" xml:space="preserve">
-    <value>Documento se ha creado/subido a</value>
-  </data>
-  <data name="ActionCreateFolder" xml:space="preserve">
-    <value>Carpeta se ha creado en</value>
-  </data>
-  <data name="ActionCreateForum" xml:space="preserve">
-    <value>Foro se ha creado en</value>
-  </data>
-  <data name="ActionCreateForumPoll" xml:space="preserve">
-    <value>Encuesta creada en</value>
-  </data>
-  <data name="ActionCreateForumPost" xml:space="preserve">
-    <value>Mensaje creado en</value>
-  </data>
-  <data name="ActionCreateMilestone" xml:space="preserve">
-    <value>Hito se ha creado en</value>
-  </data>
-  <data name="ActionCreateProject" xml:space="preserve">
-    <value>Proyecto se ha creado en</value>
-  </data>
-  <data name="ActionCreateTask" xml:space="preserve">
-    <value>Tarea se ha creada en</value>
-  </data>
   <data name="ButtonAccept" xml:space="preserve">
     <value>Aceptar</value>
   </data>
@@ -181,9 +133,6 @@
   <data name="ButtonUseDiscount" xml:space="preserve">
     <value>Aplicar descuento</value>
   </data>
-  <data name="LinkLearnMore" xml:space="preserve">
-    <value>Saber más &gt;&gt;</value>
-  </data>
   <data name="pattern_activate_email" xml:space="preserve">
     <value>h1.Activación de su correo electrónico para el portal "${__VirtualRootPath}":"$InviteLink".
 
@@ -202,7 +151,7 @@ Buenos días $OwnerName,
 
 Un archivo de copia de seguridad con los datos de su portal ONLYOFFICE™ "${__VirtualRootPath}":"${__VirtualRootPath}"  ha sido creado. 
 
-Para obtener más información sobre procedimiento de creación de copia de seguridad/restauración por favor consulte nuestra guía de usuario "¿Cómo crear y restaurar la copia de seguridad de portal ONLYOFFICE™?":"http://helpcenter.onlyoffice.com/tipstricks/data-backup-restore.aspx"
+Para obtener más información sobre procedimiento de creación de copia de seguridad/restauración por favor consulte nuestra guía de usuario "¿Cómo crear y restaurar la copia de seguridad de portal ONLYOFFICE™?":"https://helpcenter.onlyoffice.com/administration/docspace-settings.aspx#CreatingBackup_block"
 
 
 Si hay algunas preguntas o necesita ayuda no dude en ponerse en contacto con nosotros vía "support.onlyoffice.com":"http://support.onlyoffice.com"
@@ -309,6 +258,7 @@ Usted obtendrá más consejos útiles sobre cómo usar su oficina web. Usted pue
   </data>
   <data name="pattern_for_admin_notify" xml:space="preserve">
     <value>h1.Mensaje de Portal "${__VirtualRootPath}":"${__VirtualRootPath}" 
+
 Email: $UserEmail
 
 $Body</value>
@@ -436,9 +386,8 @@ El enlace sólo es válido durante 7 días.
 Recibirá más consejos sobre cómo usar su oficina web. Puede cancelar las suscripciones en su página de perfil en cualquier momento, así como volver a activarlas.</value>
   </data>
   <data name="pattern_personal_activate" xml:space="preserve">
-    <value>Hola, $Usuario
-Se ha registrado correctamente en ONLYOFFICE Personal 
-"${__ VirtualRootPath}":"${__ VirtualRootPath}".
+    <value>Hola, $UserName
+Se ha registrado correctamente en ONLYOFFICE Personal "${__VirtualRootPath}":"${__VirtualRootPath}".
 
 Conecte su almacenamiento de nube favorito: Dropbox, Google Drive, OneDrive o Box para crear un único espacio de trabajo para sus documentos, accesible desde cualquier lugar.
 
@@ -611,7 +560,7 @@ Estimado(a) $UserDisplayName,
 
 Su $PortalUrl dirección de portal ha sido cambiado a la nueva dirección "${__VirtualRootPath}":"${__VirtualRootPath}".
 
-*Note*: Todos los enlaces de documentos compartidos son inaccesibles ahora, así como la configuración de DNS y  opciones single sign-on dejan de funcionar hasta que los cambie. Los enlaces iCal de tercero añadido a su calendario también se detendrá la actualización hasta que vuelva a cargarlos.</value>
+*Ojo*: la configuración de DNS y las opciones de inicio de sesión dejan de funcionar hasta que las cambie.</value>
   </data>
   <data name="pattern_profile_delete" xml:space="preserve">
     <value>h1.Eliminación del Perfil del Portal "${__VirtualRootPath}":"${__VirtualRootPath}"
@@ -844,6 +793,7 @@ $activity
 
 Este mensaje ha sido generado automáticamente para probar su configuración SMTP. Si puede verlo esto significa que la configuración es correcta y usted puede usarla en su portal.
 
+
 Atentamente,
 Equipo ONLYOFFICE</value>
   </data>
@@ -894,6 +844,7 @@ Su portal está disponible de nuevo.</value>
 
 "$__AuthorName":"$__AuthorUrl" se ha unido a su portal en "${__VirtualRootPath}":"${__VirtualRootPath}" .
 
+
 ^Si no desea recibir las notificaciones sobre nuevos usuarios, por favor, cambie los "ajustes de suscripción":"$RecipientSubscriptionConfigURL".^</value>
   </data>
   <data name="pattern_user_has_join_tg" xml:space="preserve">
@@ -916,13 +867,13 @@ El enlace es válido solo durante 7 días.</value>
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 
@@ -937,13 +888,13 @@ Equipo de ONLYOFFICE
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 
@@ -958,13 +909,13 @@ Equipo de ONLYOFFICE
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 
@@ -979,13 +930,13 @@ Equipo de ONLYOFFICE
 
 ¡Bienvenido/a a ONLYOFFICE DocSpace! Su perfil de usuario ha sido añadido correctamente a "${__VirtualRootPath}":"${__VirtualRootPath}". Ahora puede:
 
-*#* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
+* Trabajar con otros usuarios en la sala a la que se le ha invitado: *salas de colaboración para colaborar en tiempo real o salas personalizadas con configuraciones flexibles para cualquier propósito*.
 
-*# Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
+* *Trabajar con archivos de distintos formatos*: documentos de texto, hojas de cálculo, presentaciones, formularios digitales, PDF, e-books, archivos multimedia.
 
-*# Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
+* *Colaborar en documentos* con dos modos de coedición: en tiempo real o con bloqueo de párrafos. Realice un seguimiento de los cambios, comuníquese en tiempo real utilizando el chat integrado o realizando llamadas de audio y vídeo. 
 
-*# Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
+* *Conectar cualquier almacenamiento en la nube* y trabajar sin cambiar de aplicación. 
 
 $GreenButton
 
@@ -1083,7 +1034,7 @@ Equipo de ONLYOFFICE
     <value>${LetterLogoText}. Fallo en reasignación de los datos de usuario</value>
   </data>
   <data name="subject_remove_user_data_completed" xml:space="preserve">
-    <value>${LetterLogoText}. Se ha completado la eliminación de los datos de usuario.</value>
+    <value>${LetterLogoText}. Se ha completado la eliminación de los datos de usuario</value>
   </data>
   <data name="subject_remove_user_data_failed" xml:space="preserve">
     <value>${LetterLogoText}. Fallo en eliminación de los datos de usuario</value>
@@ -1107,7 +1058,7 @@ Equipo de ONLYOFFICE
     <value>Notificación de cambio de perfil en el portal ${__VirtualRootPath}</value>
   </data>
   <data name="subject_smtp_test" xml:space="preserve">
-    <value>Mensaje de prueba SMTP </value>
+    <value>Mensaje de prueba SMTP</value>
   </data>
   <data name="subject_storage_decryption_error" xml:space="preserve">
     <value>${LetterLogoText}. El proceso de descifrado ha fracasado</value>
@@ -1144,5 +1095,20 @@ Equipo de ONLYOFFICE
   </data>
   <data name="subject_saas_guest_welcome_v1" xml:space="preserve">
     <value>¡Bienvenido/a a ONLYOFFICE DocSpace!</value>
+  </data>
+  <data name="pattern_personal_change_password_v115" xml:space="preserve">
+    <value>¿Desea cambiar la contraseña de su cuenta de ONLYOFFICE Personal? Haga clic en el botón de abajo para confirmar.
+
+$GreenButton 
+
+El enlace es válido durante 7 días.
+
+¿No desea cambiar su contraseña? Simplemente ignore este mensaje.</value>
+  </data>
+  <data name="AcceptDocSpace" xml:space="preserve">
+    <value>ACEPTAR</value>
+  </data>
+  <data name="ButtonConfirmEmail" xml:space="preserve">
+    <value>CONFIRMAR</value>
   </data>
 </root>

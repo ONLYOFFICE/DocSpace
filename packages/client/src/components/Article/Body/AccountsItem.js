@@ -25,7 +25,7 @@ const PureAccountsItem = ({
 
     setSelectedNode(["accounts", "filter"]);
 
-    navigate("/accounts");
+    navigate("/accounts/filter");
     toggleArticleOpen();
   }, [setSelectedFolder, setSelectedNode, history]);
 

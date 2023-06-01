@@ -88,305 +88,14 @@
   <data name="BrowserCol" xml:space="preserve">
     <value>Brskalnik</value>
   </data>
-  <data name="CaseAttachedFiles" xml:space="preserve">
-    <value>Primeri [{0}]. Datoteka pripeta: {1}</value>
-  </data>
-  <data name="CaseClosed" xml:space="preserve">
-    <value>Primer zaprt: {0}</value>
-  </data>
-  <data name="CaseCreated" xml:space="preserve">
-    <value>Primer ustvarjen: {0}</value>
-  </data>
-  <data name="CaseCreatedHistoryEvent" xml:space="preserve">
-    <value>Primeri [{0}]. Zgodovinski dogodki ustvarjeni: {1}</value>
-  </data>
-  <data name="CaseCreatedTag" xml:space="preserve">
-    <value>Primeri [{0}]. Oznaka ustvarjena: {1}</value>
-  </data>
-  <data name="CaseDeleted" xml:space="preserve">
-    <value>Primer izbrisan: {0}</value>
-  </data>
-  <data name="CaseDeletedHistoryEvent" xml:space="preserve">
-    <value>Primeri [{0}]. Zgodovinski dogodki izbrisani: {1}</value>
-  </data>
-  <data name="CaseDeletedTag" xml:space="preserve">
-    <value>Primeri [{0}]. Oznaka izbrisana: {1}</value>
-  </data>
-  <data name="CaseDetachedFile" xml:space="preserve">
-    <value>Primeri [{0}]. Datoteka odpeta: {1}</value>
-  </data>
-  <data name="CaseLinkedCompany" xml:space="preserve">
-    <value>Primeri [{0}]. Podjetje povezano: {1}</value>
-  </data>
-  <data name="CaseLinkedPerson" xml:space="preserve">
-    <value>Primeri [{0}]. Oseba povezana: {1}</value>
-  </data>
-  <data name="CaseOpened" xml:space="preserve">
-    <value>Primer Odprt: {0}</value>
-  </data>
-  <data name="CaseOpenedAccess" xml:space="preserve">
-    <value>Primeri [{0}]. Dostop odprt</value>
-  </data>
-  <data name="CaseRestrictedAccess" xml:space="preserve">
-    <value>Primeri [{0}]. Dostop omejen: {1}</value>
-  </data>
-  <data name="CasesCreatedTag" xml:space="preserve">
-    <value>Primeri. Oznaka ustvarjena: {0}</value>
-  </data>
-  <data name="CasesDeleted" xml:space="preserve">
-    <value>Primeri izbrisani: {0}</value>
-  </data>
-  <data name="CasesDeletedTag" xml:space="preserve">
-    <value>Primeri. Oznaka izbrisana: {0}</value>
-  </data>
-  <data name="CasesExportedToCsv" xml:space="preserve">
-    <value>Primeri izvozen v CSV datoteko: {0}</value>
-  </data>
-  <data name="CasesImportedFromCSV" xml:space="preserve">
-    <value>Primeri uvoženi iz CSV datoteke</value>
-  </data>
-  <data name="CasesModule" xml:space="preserve">
-    <value>Primeri</value>
-  </data>
-  <data name="CaseUnlinkedCompany" xml:space="preserve">
-    <value>Primeri [{0}]. Povezave podjetja izbrisane: {1}</value>
-  </data>
-  <data name="CaseUnlinkedPerson" xml:space="preserve">
-    <value>Primeri [{0}]. Oseba nepovezana: {1}</value>
-  </data>
-  <data name="CaseUpdated" xml:space="preserve">
-    <value>Primer posodobljen: {0}</value>
-  </data>
-  <data name="CaseUserFieldCreated" xml:space="preserve">
-    <value>Ustvarjeno območje uporabnikov primera: {0}</value>
-  </data>
-  <data name="CaseUserFieldDeleted" xml:space="preserve">
-    <value>območje uporabnikov primera izbrisano: {0}</value>
-  </data>
-  <data name="CaseUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>območje uporabnikov primera posodobljeno: {0}</value>
-  </data>
-  <data name="CaseUserFieldUpdated" xml:space="preserve">
-    <value>območje uporabnikov primera posodobljeno: {0}</value>
-  </data>
   <data name="ColorThemeChanged" xml:space="preserve">
     <value>Barva teme spremenjena</value>
-  </data>
-  <data name="CommonCrmSettingsModule" xml:space="preserve">
-    <value>Pogoste nastavitve</value>
-  </data>
-  <data name="CompaniesMerged" xml:space="preserve">
-    <value>Podjetja združena: {0} - {1}</value>
-  </data>
-  <data name="CompaniesModule" xml:space="preserve">
-    <value>Podjetja</value>
-  </data>
-  <data name="CompanyAttachedFiles" xml:space="preserve">
-    <value>Podjetja [{0}]. Datoteke pripete: {1}</value>
-  </data>
-  <data name="CompanyCreated" xml:space="preserve">
-    <value>Podjetje ustvarjeno: {0}</value>
-  </data>
-  <data name="CompanyCreatedHistoryEvent" xml:space="preserve">
-    <value>Podjetja [{0}]. Ustvarjen zgodovinski dogodek: {1}</value>
-  </data>
-  <data name="CompanyCreatedPersonsTag" xml:space="preserve">
-    <value>Podjetja [{0}]. Ustvarjena oznaka osebe: {1}</value>
-  </data>
-  <data name="CompanyCreatedTag" xml:space="preserve">
-    <value>Podjetja [{0}]. Oznaka ustvarjena: {1}</value>
-  </data>
-  <data name="CompanyCreatedWithWebForm" xml:space="preserve">
-    <value>Podjetje ustvarjeno s spletno obliko: {0}</value>
-  </data>
-  <data name="CompanyDeleted" xml:space="preserve">
-    <value>Podjetje izbrisano: {0}</value>
-  </data>
-  <data name="CompanyDeletedHistoryEvent" xml:space="preserve">
-    <value>Podjetja [{0}]. Zgodovinski dogodek izbrisan: {1}</value>
-  </data>
-  <data name="CompanyDeletedTag" xml:space="preserve">
-    <value>Podjetja [{0}]. Oznaka izbrisana: {1}</value>
-  </data>
-  <data name="CompanyDetachedFile" xml:space="preserve">
-    <value>Podjetja [{0}]. Datoteka ovržena: {1}</value>
-  </data>
-  <data name="CompanyLinkedPerson" xml:space="preserve">
-    <value>Podjetja [{0}]. Oseba povezana: {1}</value>
-  </data>
-  <data name="CompanyLinkedProject" xml:space="preserve">
-    <value>Podjetja [{0}]. Projekt povezan: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedPerson" xml:space="preserve">
-    <value>Podjetja [{0}]. Oseba nepovezana: {1}</value>
-  </data>
-  <data name="CompanyUnlinkedProject" xml:space="preserve">
-    <value>Podjetja [{0}]. Projekt nepovezan: {1}</value>
-  </data>
-  <data name="CompanyUpdated" xml:space="preserve">
-    <value>Podjetje posodobljeno: {0}</value>
-  </data>
-  <data name="CompanyUpdatedPersonsTemperatureLevel" xml:space="preserve">
-    <value>Podjetja [{0}]. stopnja temperature osebe posodobljena</value>
-  </data>
-  <data name="CompanyUpdatedPhoto" xml:space="preserve">
-    <value>Podjetja [{0}]. Slika posodobljena</value>
-  </data>
-  <data name="CompanyUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Podjetja [{0}]. Glavni podatki posodobljeni</value>
-  </data>
-  <data name="CompanyUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Podjetja [{0}]. stopnja temperature posodobljena</value>
-  </data>
-  <data name="CompanyUserFieldCreated" xml:space="preserve">
-    <value>Ustvarjeno uporabniško območje podjetja: {0}</value>
-  </data>
-  <data name="CompanyUserFieldDeleted" xml:space="preserve">
-    <value>uporabniško območje podjetja izbrisano: {0}</value>
-  </data>
-  <data name="CompanyUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>uporabniško območje podjetja naročeno posodobljeno: {0}</value>
-  </data>
-  <data name="CompanyUserFieldUpdated" xml:space="preserve">
-    <value>uporabniško območje podjetja posodobljeno: {0}</value>
-  </data>
-  <data name="ContactAdminMailSent" xml:space="preserve">
-    <value>Sporočilo za kontaktiranje admina je bilo poslano</value>
-  </data>
-  <data name="ContactsCreatedCrmTasks" xml:space="preserve">
-    <value>Kontakti [{0}]. Naloga ustvarjena: {1}</value>
-  </data>
-  <data name="ContactsCreatedTag" xml:space="preserve">
-    <value>Kontakti. Oznaka ustvarjena: {0}</value>
-  </data>
-  <data name="ContactsDeleted" xml:space="preserve">
-    <value>Kontakti izbrisani: {0}</value>
-  </data>
-  <data name="ContactsDeletedTag" xml:space="preserve">
-    <value>Kontakti. Oznaka izbrisana: {0}</value>
-  </data>
-  <data name="ContactsExportedToCsv" xml:space="preserve">
-    <value>Kontakti izvozeni v CSV datoteko: {0}</value>
-  </data>
-  <data name="ContactsImportedFromCSV" xml:space="preserve">
-    <value>Kontakti uvoženi iz CSV datoteke</value>
-  </data>
-  <data name="ContactsModule" xml:space="preserve">
-    <value>Kontakti</value>
-  </data>
-  <data name="ContactsSettingsModule" xml:space="preserve">
-    <value>Nastavitve</value>
-  </data>
-  <data name="ContactsTagSettingsUpdated" xml:space="preserve">
-    <value>Nastavitve zaznamka Kontakti posodobljene</value>
-  </data>
-  <data name="ContactTemperatureLevelCreated" xml:space="preserve">
-    <value>Raven temperature kontakta ustvarjena: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelDeleted" xml:space="preserve">
-    <value>Raven temperature kontakta izbrisana: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelSettingsUpdated" xml:space="preserve">
-    <value>Raven temperature kontakta nastavitve posodobljene</value>
-  </data>
-  <data name="ContactTemperatureLevelsUpdatedOrder" xml:space="preserve">
-    <value>Ravni temperature kontakta naročila posodobljena: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdated" xml:space="preserve">
-    <value>Raven temperature kontakta posodobljena: {0}</value>
-  </data>
-  <data name="ContactTemperatureLevelUpdatedColor" xml:space="preserve">
-    <value>Raven temperature kontakta [{0}]. Barva posodobljena</value>
-  </data>
-  <data name="ContactTypeCreated" xml:space="preserve">
-    <value>Vrsta kontakta ustvarjena: {0}</value>
-  </data>
-  <data name="ContactTypeDeleted" xml:space="preserve">
-    <value>Vrsta kontakta izbrisana: {0}</value>
-  </data>
-  <data name="ContactTypesModule" xml:space="preserve">
-    <value>Vrste kontaktov</value>
-  </data>
-  <data name="ContactTypesUpdatedOrder" xml:space="preserve">
-    <value>Posodobljeno naročilo vrst kontakta: {0}</value>
-  </data>
-  <data name="ContactTypeUpdated" xml:space="preserve">
-    <value>Vrsta kontakta posodobljena: {0}</value>
-  </data>
-  <data name="ContactUserFieldCreated" xml:space="preserve">
-    <value>Polje za kontaktiranje uporabnika ustvarjeno: {0}</value>
-  </data>
-  <data name="ContactUserFieldDeleted" xml:space="preserve">
-    <value>Polje za kontaktiranje uporabnika izbrisano: {0}</value>
-  </data>
-  <data name="ContactUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Naročilo Kontaktnih polj uporabnikov posodobljena: {0}</value>
-  </data>
-  <data name="ContactUserFieldUpdated" xml:space="preserve">
-    <value>Polje za kontaktiranje uporabnika posodobljeno: {0}</value>
   </data>
   <data name="CopyActionType" xml:space="preserve">
     <value>Kopiraj</value>
   </data>
   <data name="CreateActionType" xml:space="preserve">
     <value>Ustvari</value>
-  </data>
-  <data name="CrmAllDataExported" xml:space="preserve">
-    <value>Vsi podatki izvozeni</value>
-  </data>
-  <data name="CrmDefaultCurrencyUpdated" xml:space="preserve">
-    <value>Privzeta valuta posodobljena</value>
-  </data>
-  <data name="CrmProduct" xml:space="preserve">
-    <value>CRM</value>
-  </data>
-  <data name="CrmSmtpSettingsUpdated" xml:space="preserve">
-    <value>SMTP nastavitve posodobljene</value>
-  </data>
-  <data name="CrmTaskCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Naročilo CRM kategorij nalog posodobljeno: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryCreated" xml:space="preserve">
-    <value>CRM kategorija naloge ustvarjena: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryDeleted" xml:space="preserve">
-    <value>CRM kategorija naloge izbrisana: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdated" xml:space="preserve">
-    <value>CRM kategorija naloge posodobljena: {0}</value>
-  </data>
-  <data name="CrmTaskCategoryUpdatedIcon" xml:space="preserve">
-    <value>ikona CRM kategorije naloge posodobljena: {0}</value>
-  </data>
-  <data name="CrmTaskClosed" xml:space="preserve">
-    <value>CRM naloga zaprta: {0}</value>
-  </data>
-  <data name="CrmTaskCreated" xml:space="preserve">
-    <value>CRM naloga ustvarjena: {0}</value>
-  </data>
-  <data name="CrmTaskDeleted" xml:space="preserve">
-    <value>CRM naloga izbrisana: {0}</value>
-  </data>
-  <data name="CrmTaskOpened" xml:space="preserve">
-    <value>CRM naloga odprta: {0}</value>
-  </data>
-  <data name="CrmTasksExportedToCsv" xml:space="preserve">
-    <value>CRM naloge izvožene v CSV datoteko: {0}</value>
-  </data>
-  <data name="CrmTasksImportedFromCSV" xml:space="preserve">
-    <value>CRM naloge uvožene iz CSV datoteke</value>
-  </data>
-  <data name="CrmTasksModule" xml:space="preserve">
-    <value>CRM naloge</value>
-  </data>
-  <data name="CrmTaskUpdated" xml:space="preserve">
-    <value>CRM naloge posodobljene: {0}</value>
-  </data>
-  <data name="CrmTestMailSent" xml:space="preserve">
-    <value>Poskusno poročilo poslano</value>
-  </data>
-  <data name="CurrencyRateUpdated" xml:space="preserve">
-    <value>Razmerje valut posodobljeno: {0} - {1}</value>
   </data>
   <data name="DateCol" xml:space="preserve">
     <value>Datum</value>
@@ -399,36 +108,6 @@
   </data>
   <data name="DetachActionType" xml:space="preserve">
     <value>Loči</value>
-  </data>
-  <data name="DiscussionAttachedFiles" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Datoteke pripete: {2}</value>
-  </data>
-  <data name="DiscussionCommentCreated" xml:space="preserve">
-    <value>Projekti [{0}]. razprave [{1}]. komentar ustvarjen</value>
-  </data>
-  <data name="DiscussionCommentDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Komentar izbrisan</value>
-  </data>
-  <data name="DiscussionCommentUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Komentar posodobljen</value>
-  </data>
-  <data name="DiscussionCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava ustvarjena: {1}</value>
-  </data>
-  <data name="DiscussionDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava izbrisana: {1}</value>
-  </data>
-  <data name="DiscussionDetachedFile" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Samostojna datoteka: {2}</value>
-  </data>
-  <data name="DiscussionsModule" xml:space="preserve">
-    <value>Razprave</value>
-  </data>
-  <data name="DiscussionUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava posodobljena: {1}</value>
-  </data>
-  <data name="DiscussionUpdatedFollowing" xml:space="preserve">
-    <value>Projekti [{0}]. Razprava, ki ji sledim posodobljena: {1}</value>
   </data>
   <data name="DnsSettingsUpdated" xml:space="preserve">
     <value>DNS nastavitve posodobljene</value>
@@ -583,71 +262,8 @@
   <data name="GuestImported" xml:space="preserve">
     <value>Gost uvožen: {0}</value>
   </data>
-  <data name="HistoryEventCategoriesUpdatedOrder" xml:space="preserve">
-    <value>Kategorija preteklih dogodkov. Naročilo posodobljeno: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryCreated" xml:space="preserve">
-    <value>Kategorija preteklih dogodkov ustvarjena: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryDeleted" xml:space="preserve">
-    <value>Kategorija preteklih dogodkov izbrisana: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdated" xml:space="preserve">
-    <value>Kategorija preteklih dogodkov posodobljena: {0}</value>
-  </data>
-  <data name="HistoryEventCategoryUpdatedIcon" xml:space="preserve">
-    <value>Kategorije preteklih dogodkov [{0}]. Ikona posodobljena</value>
-  </data>
   <data name="ImportActionType" xml:space="preserve">
     <value>Uvozi</value>
-  </data>
-  <data name="InvoiceCreated" xml:space="preserve">
-    <value>Račun ustvarjen: {0}</value>
-  </data>
-  <data name="InvoiceDefaultTermsUpdated" xml:space="preserve">
-    <value>Privzeti pogoji računa posodobljeni</value>
-  </data>
-  <data name="InvoiceDeleted" xml:space="preserve">
-    <value>Račun izbrisan: {0}</value>
-  </data>
-  <data name="InvoiceItemCreated" xml:space="preserve">
-    <value>Predmet računa ustvarjen: {0}</value>
-  </data>
-  <data name="InvoiceItemDeleted" xml:space="preserve">
-    <value>Predmet računa izbrisan: {0}</value>
-  </data>
-  <data name="InvoiceItemsDeleted" xml:space="preserve">
-    <value>Predmeti računa izbrisani: {0}</value>
-  </data>
-  <data name="InvoiceItemUpdated" xml:space="preserve">
-    <value>Predmet računa posodobljen: {0}</value>
-  </data>
-  <data name="InvoiceNumberFormatUpdated" xml:space="preserve">
-    <value>Številčni format računa posodobljen</value>
-  </data>
-  <data name="InvoicesDeleted" xml:space="preserve">
-    <value>Računi izbrisani: {0}</value>
-  </data>
-  <data name="InvoiceSettingsModule" xml:space="preserve">
-    <value>Nastavitve računa</value>
-  </data>
-  <data name="InvoicesModule" xml:space="preserve">
-    <value>Računi</value>
-  </data>
-  <data name="InvoicesUpdatedStatus" xml:space="preserve">
-    <value>Računi [{0}]. Status posodobljen: {1}</value>
-  </data>
-  <data name="InvoiceTaxCreated" xml:space="preserve">
-    <value>Davek računa ustvarjen: {0}</value>
-  </data>
-  <data name="InvoiceTaxDeleted" xml:space="preserve">
-    <value>Davek računa izbrisan: {0}</value>
-  </data>
-  <data name="InvoiceTaxUpdated" xml:space="preserve">
-    <value>Davek računa posodobljen: {0}</value>
-  </data>
-  <data name="InvoiceUpdated" xml:space="preserve">
-    <value>Račun posodobljen: {0}</value>
   </data>
   <data name="IpCol" xml:space="preserve">
     <value>IP</value>
@@ -709,131 +325,11 @@
   <data name="Logout" xml:space="preserve">
     <value>Izpis</value>
   </data>
-  <data name="MilestoneCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Mejnik ustvarjen: {1}</value>
-  </data>
-  <data name="MilestoneDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Mejnik izbrisan: {1}</value>
-  </data>
-  <data name="MilestonesModule" xml:space="preserve">
-    <value>Mejniki</value>
-  </data>
-  <data name="MilestoneUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Mejnik posodobljen: {1}</value>
-  </data>
-  <data name="MilestoneUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Mejniki [{1}]. Status Posodobljen: {2}</value>
-  </data>
   <data name="ModuleCol" xml:space="preserve">
     <value>Modul</value>
   </data>
   <data name="MoveActionType" xml:space="preserve">
     <value>Premakni</value>
-  </data>
-  <data name="OpportunitiesCreatedTag" xml:space="preserve">
-    <value>Priložnosti. Oznaka ustvarjena: {0}</value>
-  </data>
-  <data name="OpportunitiesDeleted" xml:space="preserve">
-    <value>Priložnosti izbrisane: {0}</value>
-  </data>
-  <data name="OpportunitiesDeletedTag" xml:space="preserve">
-    <value>Priložnosti. Oznaka izbrisana: {0}</value>
-  </data>
-  <data name="OpportunitiesExportedToCsv" xml:space="preserve">
-    <value>Priložnosti izvožene v CSV datoteko: {0}</value>
-  </data>
-  <data name="OpportunitiesImportedFromCSV" xml:space="preserve">
-    <value>Priložnosti uvožene iz CSV datoteke</value>
-  </data>
-  <data name="OpportunitiesModule" xml:space="preserve">
-    <value>Priložnosti</value>
-  </data>
-  <data name="OpportunityAttachedFiles" xml:space="preserve">
-    <value>Priložnosti [{0}]. Datoteka pripeta: {1}</value>
-  </data>
-  <data name="OpportunityCreated" xml:space="preserve">
-    <value>Priložnost ustvarjena: {0}</value>
-  </data>
-  <data name="OpportunityCreatedHistoryEvent" xml:space="preserve">
-    <value>Priložnosti [{0}]. Zgodovinski dogodek ustvarjen: {1}</value>
-  </data>
-  <data name="OpportunityCreatedTag" xml:space="preserve">
-    <value>Priložnosti [{0}]. Oznaka ustvarjena: {1}</value>
-  </data>
-  <data name="OpportunityDeleted" xml:space="preserve">
-    <value>Priložnost izbrisana: {0}</value>
-  </data>
-  <data name="OpportunityDeletedHistoryEvent" xml:space="preserve">
-    <value>Priložnosti [{0}]. Zgodovinski dogodek izbrisan: {1}</value>
-  </data>
-  <data name="OpportunityDeletedTag" xml:space="preserve">
-    <value>Priložnosti [{0}]. Oznaka izbrisana: {1}</value>
-  </data>
-  <data name="OpportunityDetachedFile" xml:space="preserve">
-    <value>Priložnosti [{0}]. Samostojna datoteka: {1}</value>
-  </data>
-  <data name="OpportunityLinkedCompany" xml:space="preserve">
-    <value>Priložnosti [{0}]. Podjetje povezano: {1}</value>
-  </data>
-  <data name="OpportunityLinkedPerson" xml:space="preserve">
-    <value>Priložnosti [{0}]. Oseba povezana: {1}</value>
-  </data>
-  <data name="OpportunityOpenedAccess" xml:space="preserve">
-    <value>Priložnosti [{0}]. Dostop odprt</value>
-  </data>
-  <data name="OpportunityRestrictedAccess" xml:space="preserve">
-    <value>Priložnosti [{0}]. Dostop omejen: {1}</value>
-  </data>
-  <data name="OpportunityStageCreated" xml:space="preserve">
-    <value>Stopnja priložnosti ustvarjena: {0}</value>
-  </data>
-  <data name="OpportunityStageDeleted" xml:space="preserve">
-    <value>Stopnja priložnosti izbrisana: {0}</value>
-  </data>
-  <data name="OpportunityStagesUpdatedOrder" xml:space="preserve">
-    <value>Naročilo stopenj priložnosti posodobljeno: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdated" xml:space="preserve">
-    <value>Stopnja priložnosti posodobljena: {0}</value>
-  </data>
-  <data name="OpportunityStageUpdatedColor" xml:space="preserve">
-    <value>Barva stopnje priložnosti posodobljena: {0}</value>
-  </data>
-  <data name="OpportunityUnlinkedCompany" xml:space="preserve">
-    <value>Priložnosti [{0}]. Podjetje nepovezano: {1}</value>
-  </data>
-  <data name="OpportunityUnlinkedPerson" xml:space="preserve">
-    <value>Priložnosti [{0}]. Oseba nepovezana: {1}</value>
-  </data>
-  <data name="OpportunityUpdated" xml:space="preserve">
-    <value>Priložnost posodobljena: {0}</value>
-  </data>
-  <data name="OpportunityUpdatedStage" xml:space="preserve">
-    <value>Stopnja priložnosti posodobljena: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldCreated" xml:space="preserve">
-    <value>Uporabniško poje priložnosti ustvarjeno: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldDeleted" xml:space="preserve">
-    <value>Uporabniško polje priložnosti izbrisano: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>Naročilo uporabniškega polja priložnosti posodobljeno: {0}</value>
-  </data>
-  <data name="OpportunityUserFieldUpdated" xml:space="preserve">
-    <value>Uporabniško polje priložnosti posodobljeno: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedAddress" xml:space="preserve">
-    <value>Profil organizacije. Naslov posodobljen</value>
-  </data>
-  <data name="OrganizationProfileUpdatedCompanyName" xml:space="preserve">
-    <value>Profil organizacije. Ime podjetja posodobljeno: {0}</value>
-  </data>
-  <data name="OrganizationProfileUpdatedInvoiceLogo" xml:space="preserve">
-    <value>Profil organizacije. Logo računa posodobljen</value>
-  </data>
-  <data name="OtherCrmSettingsModule" xml:space="preserve">
-    <value>Druge nastavitve</value>
   </data>
   <data name="OthersProduct" xml:space="preserve">
     <value>Drugi</value>
@@ -858,78 +354,6 @@
   </data>
   <data name="PeopleProduct" xml:space="preserve">
     <value>Osebe</value>
-  </data>
-  <data name="PersonAttachedFiles" xml:space="preserve">
-    <value>Osebe [{0}]. Datoteke pripete: {1}</value>
-  </data>
-  <data name="PersonCreated" xml:space="preserve">
-    <value>Oseba ustvarjena: {0}</value>
-  </data>
-  <data name="PersonCreatedCompanyTag" xml:space="preserve">
-    <value>Osebe [{0}]. Oznaka podjetja ustvarjena: {1}</value>
-  </data>
-  <data name="PersonCreatedHistoryEvent" xml:space="preserve">
-    <value>Osebe [{0}]. Zgodovinski dogodek ustvarjen: {1}</value>
-  </data>
-  <data name="PersonCreatedTag" xml:space="preserve">
-    <value>Osebe [{0}]. Oznaka ustvarjena: {1}</value>
-  </data>
-  <data name="PersonCreatedWithWebForm" xml:space="preserve">
-    <value>Oseba ustvarjena z spletno obliko: {0}</value>
-  </data>
-  <data name="PersonDeleted" xml:space="preserve">
-    <value>Oseba izbrisana: {0}</value>
-  </data>
-  <data name="PersonDeletedHistoryEvent" xml:space="preserve">
-    <value>Osebe [{0}]. Zgodovinski dogodek izbrisan: {1}</value>
-  </data>
-  <data name="PersonDeletedTag" xml:space="preserve">
-    <value>Osebe [{0}]. Oznaka izbrisana: {1}</value>
-  </data>
-  <data name="PersonDetachedFile" xml:space="preserve">
-    <value>Osebe [{0}]. Samostojna datoteka: {1}</value>
-  </data>
-  <data name="PersonLinkedProject" xml:space="preserve">
-    <value>Osebe [{0}]. Projekt povezan: {1}</value>
-  </data>
-  <data name="PersonsCreated" xml:space="preserve">
-    <value>Osebe ustvarjene: {0}</value>
-  </data>
-  <data name="PersonsMerged" xml:space="preserve">
-    <value>Osebe združene: {0} - {1}</value>
-  </data>
-  <data name="PersonsModule" xml:space="preserve">
-    <value>Osebe</value>
-  </data>
-  <data name="PersonUnlinkedProject" xml:space="preserve">
-    <value>Osebe [{0}]. Projekt nepovezan: {1}</value>
-  </data>
-  <data name="PersonUpdated" xml:space="preserve">
-    <value>Oseba posodobljena: {0}</value>
-  </data>
-  <data name="PersonUpdatedCompanyTemperatureLevel" xml:space="preserve">
-    <value>Osebe [{0}]. Temperaturne stopnje podjetja posodobljene</value>
-  </data>
-  <data name="PersonUpdatedPhoto" xml:space="preserve">
-    <value>Osebe [{0}]. Slika posodobljena</value>
-  </data>
-  <data name="PersonUpdatedPrincipalInfo" xml:space="preserve">
-    <value>Osebe [{0}]. Glavne informacije posodobljene</value>
-  </data>
-  <data name="PersonUpdatedTemperatureLevel" xml:space="preserve">
-    <value>Osebe [{0}]. Stopnja temperature posodobljena</value>
-  </data>
-  <data name="PersonUserFieldCreated" xml:space="preserve">
-    <value>Uporabniško polje osebe ustvarjeno: {0}</value>
-  </data>
-  <data name="PersonUserFieldDeleted" xml:space="preserve">
-    <value>Uporabniško polje osebe izbrisano: {0}</value>
-  </data>
-  <data name="PersonUserFieldsUpdatedOrder" xml:space="preserve">
-    <value>naročilo uporabniških polj osebe posodobljeno: {0}</value>
-  </data>
-  <data name="PersonUserFieldUpdated" xml:space="preserve">
-    <value>Uporabniško polje osebe posodobljeno: {0}</value>
   </data>
   <data name="PlatformCol" xml:space="preserve">
     <value>Platforma</value>
@@ -967,84 +391,6 @@
   <data name="ProductsModule" xml:space="preserve">
     <value>Izdelki</value>
   </data>
-  <data name="ProjectCreated" xml:space="preserve">
-    <value>Projekt ustvarjen: {0}</value>
-  </data>
-  <data name="ProjectCreatedFromTemplate" xml:space="preserve">
-    <value>Predloge [{0}]. Projekt ustvarjen: {1}</value>
-  </data>
-  <data name="ProjectDeleted" xml:space="preserve">
-    <value>Projekt izbrisan: {0}</value>
-  </data>
-  <data name="ProjectDeletedMember" xml:space="preserve">
-    <value>Projekti [{0}]. Član izbrisan: {1}</value>
-  </data>
-  <data name="ProjectFollowed" xml:space="preserve">
-    <value>Projekti, ki jim sledim: {0}</value>
-  </data>
-  <data name="ProjectLinkedCompany" xml:space="preserve">
-    <value>Projekti [{0}]. Podjetje povezano: {1}</value>
-  </data>
-  <data name="ProjectLinkedContacts" xml:space="preserve">
-    <value>Projekti [{0}]. Kontakti povezani: {1}</value>
-  </data>
-  <data name="ProjectLinkedPerson" xml:space="preserve">
-    <value>Projekti [{0}]. Oseba povezana: {1}</value>
-  </data>
-  <data name="ProjectsImportedFromBasecamp" xml:space="preserve">
-    <value>Projekti uvoženi iz Basecamp-a: {0}</value>
-  </data>
-  <data name="ProjectsModule" xml:space="preserve">
-    <value>Projekti</value>
-  </data>
-  <data name="ProjectsProduct" xml:space="preserve">
-    <value>Projekti</value>
-  </data>
-  <data name="ProjectsSettingsModule" xml:space="preserve">
-    <value>Nastavitve</value>
-  </data>
-  <data name="ProjectTemplateCreated" xml:space="preserve">
-    <value>Predloga projekta ustvarjena: {0}</value>
-  </data>
-  <data name="ProjectTemplateDeleted" xml:space="preserve">
-    <value>Predloga projekta izbrisana: {0}</value>
-  </data>
-  <data name="ProjectTemplateUpdated" xml:space="preserve">
-    <value>Predloga projekta posodobljena: {0}</value>
-  </data>
-  <data name="ProjectUnfollowed" xml:space="preserve">
-    <value>Projektu ne sledim več: {0}</value>
-  </data>
-  <data name="ProjectUnlinkedCompany" xml:space="preserve">
-    <value>Projekti [{0}]. Podjetje nepovezano: {1}</value>
-  </data>
-  <data name="ProjectUnlinkedPerson" xml:space="preserve">
-    <value>Projekti [{0}]. Oseba nepovezana: {1}</value>
-  </data>
-  <data name="ProjectUpdated" xml:space="preserve">
-    <value>Projekt posodobljen: {0}</value>
-  </data>
-  <data name="ProjectUpdatedMemberRights" xml:space="preserve">
-    <value>Projekti [{0}]. Člani [{1}]. Pravice dostopa posodobljene</value>
-  </data>
-  <data name="ProjectUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Status Posodobljen: {1}</value>
-  </data>
-  <data name="ProjectUpdatedTeam" xml:space="preserve">
-    <value>Projekti [{0}]. Ekipa posodobljena: {1}</value>
-  </data>
-  <data name="ReportsModule" xml:space="preserve">
-    <value>Poročila</value>
-  </data>
-  <data name="ReportTemplateCreated" xml:space="preserve">
-    <value>Poročilo predloge projekta ustvarjeno: {0}</value>
-  </data>
-  <data name="ReportTemplateDeleted" xml:space="preserve">
-    <value>Poročilo predloge projekta izbrisano: {0}</value>
-  </data>
-  <data name="ReportTemplateUpdated" xml:space="preserve">
-    <value>Poročilo predloge projekta posodobljeno: {0}</value>
-  </data>
   <data name="SendActionType" xml:space="preserve">
     <value>Pošlji</value>
   </data>
@@ -1066,80 +412,8 @@
   <data name="SSOEnabled" xml:space="preserve">
     <value>SSO omogočen</value>
   </data>
-  <data name="SubtaskCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloga ustvarjena: {2}</value>
-  </data>
-  <data name="SubtaskDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloga izbrisana: {2}</value>
-  </data>
-  <data name="SubtaskUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloga posodobljena: {2}</value>
-  </data>
-  <data name="SubtaskUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Podnaloge [{2}]. Status Posodobljen: {3}</value>
-  </data>
   <data name="SystemAccount" xml:space="preserve">
     <value>Račun sistema</value>
-  </data>
-  <data name="TaskAttachedFiles" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. datoteke pripete: {2}</value>
-  </data>
-  <data name="TaskCommentCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Komentar ustvarjen</value>
-  </data>
-  <data name="TaskCommentDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Komentar izbrisan</value>
-  </data>
-  <data name="TaskCommentUpdated" xml:space="preserve">
-    <value>Projekt [{0}]. Naloge [{1}]. Komentar posodobljen</value>
-  </data>
-  <data name="TaskCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga ustvarjena: {1}</value>
-  </data>
-  <data name="TaskCreatedFromDiscussion" xml:space="preserve">
-    <value>Projekti [{0}]. Razprave [{1}]. Naloga ustvarjena: {2}</value>
-  </data>
-  <data name="TaskDeleted" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga izbrisana: {1}</value>
-  </data>
-  <data name="TaskDetachedFile" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga: {1}. samostojna datoteka: {2}</value>
-  </data>
-  <data name="TaskMovedToMilestone" xml:space="preserve">
-    <value>Projekti [{0}]. Mejniki [{1}]. Naloga premaknjena: {2}</value>
-  </data>
-  <data name="TasksLinked" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge povezane: {1} - {2}</value>
-  </data>
-  <data name="TasksModule" xml:space="preserve">
-    <value>Naloge</value>
-  </data>
-  <data name="TasksUnlinked" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge nepovezane: {1} - {2}</value>
-  </data>
-  <data name="TaskTimeCreated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Čas naloge ustvarjen: {2}</value>
-  </data>
-  <data name="TaskTimesDeleted" xml:space="preserve">
-    <value>Časi naloge izbrisani: {0}</value>
-  </data>
-  <data name="TaskTimesUpdatedStatus" xml:space="preserve">
-    <value>Časi naloge [{0}]. Status posodobljen: {1}</value>
-  </data>
-  <data name="TaskTimeUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Čas naloge posodobljen: {2}</value>
-  </data>
-  <data name="TaskUnlinkedMilestone" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Nepovezano z mejniki.</value>
-  </data>
-  <data name="TaskUpdated" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga posodobljena: {1}</value>
-  </data>
-  <data name="TaskUpdatedFollowing" xml:space="preserve">
-    <value>Projekti [{0}]. Naloga, ki ji sledim je posodobljena: {1}</value>
-  </data>
-  <data name="TaskUpdatedStatus" xml:space="preserve">
-    <value>Projekti [{0}]. Naloge [{1}]. Status Posodobljen: {2}</value>
   </data>
   <data name="TeamTemplateChanged" xml:space="preserve">
     <value>Predloga ekipe spremenjena</value>
@@ -1255,7 +529,61 @@
   <data name="UserUpdatedPassword" xml:space="preserve">
     <value>Geslo posodobljeno</value>
   </data>
-  <data name="WebsiteContactFormUpdatedKey" xml:space="preserve">
-    <value>Kontaktni obrazec ključa spletne strani posodobljen</value>
+  <data name="RoomCreated" xml:space="preserve">
+    <value>Soba ustvarjena</value>
+  </data>
+  <data name="RoomsModule" xml:space="preserve">
+    <value>Săli</value>
+  </data>
+  <data name="TrashEmptied" xml:space="preserve">
+    <value>Koš izpraznjen</value>
+  </data>
+  <data name="DeletedRoomTags" xml:space="preserve">
+    <value>Izbrisane oznake: [{1}]</value>
+  </data>
+  <data name="AddedRoomTags" xml:space="preserve">
+    <value>Dodane oznake: [{1}]</value>
+  </data>
+  <data name="RoomArchived" xml:space="preserve">
+    <value>Soba arhivirana</value>
+  </data>
+  <data name="RoomCreateUser" xml:space="preserve">
+    <value>Dodan uporabnik: {0}. Vloga: {1}</value>
+  </data>
+  <data name="RoomDeleted" xml:space="preserve">
+    <value>Soba izbrisana</value>
+  </data>
+  <data name="RoomLinkCreated" xml:space="preserve">
+    <value>Povezava ustvarjena. Vloga: {1}</value>
+  </data>
+  <data name="RoomLinkDeleted" xml:space="preserve">
+    <value>Povezava izbrisana</value>
+  </data>
+  <data name="RoomLinkUpdated" xml:space="preserve">
+    <value>Povezava osvežena. Vloga: {1}</value>
+  </data>
+  <data name="RoomLogoCreated" xml:space="preserve">
+    <value>Logotip ustvarjen</value>
+  </data>
+  <data name="RoomLogoDeleted" xml:space="preserve">
+    <value>Logotip izbrisan</value>
+  </data>
+  <data name="RoomRemoveUser" xml:space="preserve">
+    <value>Izbrisan uporabnik: {0}</value>
+  </data>
+  <data name="RoomRenamed" xml:space="preserve">
+    <value>Soba preimenovana: {0}</value>
+  </data>
+  <data name="RoomUnarchived" xml:space="preserve">
+    <value>Soba odarhivirana</value>
+  </data>
+  <data name="RoomUpdateAccessForUser" xml:space="preserve">
+    <value>{0} dodeljen: {1}</value>
+  </data>
+  <data name="TagCreated" xml:space="preserve">
+    <value>Oznaka ustvarjena: {0}</value>
+  </data>
+  <data name="TagsDeleted" xml:space="preserve">
+    <value>Oznake izbrisane: {0}</value>
   </data>
 </root>

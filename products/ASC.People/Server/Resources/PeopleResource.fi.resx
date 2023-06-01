@@ -59,13 +59,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=6.0.2.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ErrorEmptyUploadFileSelected" xml:space="preserve">
-    <value>Ladattua tiedostoa ei löytynyt. </value>
+    <value>Ladattua tiedostoa ei löytynyt</value>
   </data>
   <data name="ErrorImageSizetLimit" xml:space="preserve">
-    <value>Kuvan koko on liian suuri. </value>
+    <value>Kuvan koko on liian suuri</value>
   </data>
   <data name="ErrorImageWeightLimit" xml:space="preserve">
-    <value>Kuvatiedoston koko on liian suuri. </value>
+    <value>Kuvatiedoston koko on liian suuri</value>
   </data>
   <data name="ErrorUnknownFileImageType" xml:space="preserve">
     <value>Tuntematon kuvatiedoston tyyppi</value>

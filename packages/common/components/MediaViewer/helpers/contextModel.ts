@@ -68,7 +68,7 @@ export const getPDFContextModel = (
     {
       id: "option_copy-to",
       key: "copy-to",
-      label: t("Translations:Copy"),
+      label: t("Common:Copy"),
       icon: CopyReactSvgUrl,
       onClick: funcs.onCopyAction,
       disabled: !item.security.Copy,
@@ -99,7 +99,7 @@ export const getPDFContextModel = (
     {
       id: "option_rename",
       key: "rename",
-      label: t("Rename"),
+      label: t("Common:Rename"),
       icon: RenameReactSvgUrl,
       onClick: () => funcs.onClickRename(item),
       disabled: !item.security.Rename,
@@ -158,7 +158,7 @@ export const getMobileMediaContextModel = (
     },
     {
       key: "move-to",
-      label: t("MoveTo"),
+      label: t("Common:MoveTo"),
       icon: MoveReactSvgUrl,
       onClick: onMoveAction,
       disabled: !targetFile.security.Move,
@@ -166,7 +166,7 @@ export const getMobileMediaContextModel = (
     {
       id: "option_copy-to",
       key: "copy-to",
-      label: t("Translations:Copy"),
+      label: t("Common:Copy"),
       icon: CopyReactSvgUrl,
       onClick: onCopyAction,
       disabled: !targetFile.security.Copy,
@@ -181,7 +181,7 @@ export const getMobileMediaContextModel = (
     },
     {
       key: "rename",
-      label: t("Rename"),
+      label: t("Common:Rename"),
       icon: RenameReactSvgUrl,
       onClick: () => onClickRename(targetFile),
       disabled: !targetFile.security.Rename,
@@ -222,7 +222,7 @@ export const getDesktopMediaContextModel = (
     },
     {
       key: "rename",
-      label: t("Rename"),
+      label: t("Common:Rename"),
       icon: RenameReactSvgUrl,
       onClick: () => onClickRename(targetFile),
       disabled: archiveRoom,

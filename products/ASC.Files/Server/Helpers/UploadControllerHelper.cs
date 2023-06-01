@@ -110,11 +110,11 @@ public class UploadControllerHelper : FilesHelperBase
         };
 
         // hack for uploader.onlyoffice.com in api requests
-        var rewriterHeader = _httpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
-        if (!string.IsNullOrEmpty(rewriterHeader))
-        {
-            request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
-        }
+        //var rewriterHeader = _httpContextAccessor.HttpContext.Request.Headers[HttpRequestExtensions.UrlRewriterHeader];
+        //if (!string.IsNullOrEmpty(rewriterHeader))
+        //{
+        //    request.Headers.Add(HttpRequestExtensions.UrlRewriterHeader, rewriterHeader.ToString());
+        //}
 
         using var response = await httpClient.SendAsync(request);
         using var responseStream = await response.Content.ReadAsStreamAsync();

@@ -6,6 +6,8 @@ import {
 } from "@docspace/common/components/MediaViewer/helpers";
 import { thumbnailStatuses } from "SRC_DIR/helpers/filesConstants";
 
+const FirstUrlKey = "isFirstUrl";
+
 class MediaViewerDataStore {
   filesStore;
   settingsStore;
@@ -55,6 +57,18 @@ class MediaViewerDataStore {
 
   setCurrentId = (id) => {
     this.id = id;
+  };
+
+  saveFirstUrl = (url) => {
+    localStorage.setItem(FirstUrlKey, url);
+  };
+
+  getFirstUrl = () => {
+    return localStorage.getItem(FirstUrlKey);
+  };
+
+  removeFirstUrl = () => {
+    localStorage.removeItem(FirstUrlKey);
   };
 
   changeUrl = (id) => {

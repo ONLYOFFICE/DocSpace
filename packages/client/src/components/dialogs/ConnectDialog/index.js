@@ -200,7 +200,11 @@ const PureConnectDialogContainer = (props) => {
   ]);
 
   const onReconnect = () => {
-    let authModal = window.open("", "Authorization", "height=600, width=1020");
+    let authModal = window.open(
+      "",
+      t("Common:Authorization"),
+      "height=600, width=1020"
+    );
     openConnectWindow(provider_key, authModal).then((modal) =>
       getOAuthToken(modal).then((token) => {
         authModal.close();

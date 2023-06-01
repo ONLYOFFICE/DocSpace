@@ -95,7 +95,7 @@
     <value>操作を確認するためのリンクが{0}（ポータル所有者の電子メールアドレス）に送信されました。</value>
   </data>
   <data name="EmailAndPasswordIncorrectAmiId" xml:space="preserve">
-    <value>インスタンスIDが間違っているようです</value>
+    <value>インスタンスIDが間違っているようです。</value>
   </data>
   <data name="EmailAndPasswordIncorrectEmail" xml:space="preserve">
     <value>正しくないメールアドレス</value>
@@ -113,7 +113,7 @@
     <value>{!User} このメールアドレスは既に登録されていると</value>
   </data>
   <data name="ErrorEmailDomainNotAllowed" xml:space="preserve">
-    <value>このドメインからのメールは登録できません。</value>
+    <value>このドメインからのメールは登録できません</value>
   </data>
   <data name="ErrorEmailEmpty" xml:space="preserve">
     <value>メールフィールドは空です</value>
@@ -164,7 +164,7 @@
     <value>大文字</value>
   </data>
   <data name="ErrorRequestLimitExceeded" xml:space="preserve">
-    <value>要求数が上限を超過しました。</value>
+    <value>要求数が上限を超過しました</value>
   </data>
   <data name="ErrorTenantTooShortFormat" xml:space="preserve">
     <value>ドメイン名の長さは{0}文字から{1}文字の間でなければなりません。</value>
@@ -182,8 +182,7 @@
     <value>最大ファイルサイズを超えています</value>
   </data>
   <data name="FileSizeNote" xml:space="preserve">
-    <value>注：ファイルサイズを超えることはできません{1}{0}{2}
-</value>
+    <value>注：ファイルサイズを超えることはできません{1}{0}{2}</value>
   </data>
   <data name="FileSizePostfix" xml:space="preserve">
     <value>bytes,KB,MB,GB</value>
@@ -192,7 +191,7 @@
     <value>アカウントを確認するためのリンクが指定された電子メールに送信されました</value>
   </data>
   <data name="LdapSettingsTooManyOperations" xml:space="preserve">
-    <value>LDAP操作が多すぎています</value>
+    <value>LDAP操作が多すぎています。</value>
   </data>
   <data name="LicenseError" xml:space="preserve">
     <value>ライセンスが間違っているようです</value>
@@ -207,10 +206,10 @@
     <value>{0}メールアドレスを持つユーザが存在する場合は、パスワード変更手順はこのメールアドレスに送信されます。</value>
   </data>
   <data name="MobilePhoneMustErase" xml:space="preserve">
-    <value>電話番号を変更のために、現在電話番後を削除するのは必要です。</value>
+    <value>電話番号を変更のために、現在電話番後を削除するのは必要です</value>
   </data>
   <data name="OrgServerRegion" xml:space="preserve">
-    <value>ORG地域 </value>
+    <value>ORG地域</value>
   </data>
   <data name="Owner" xml:space="preserve">
     <value>所有者</value>
@@ -243,7 +242,7 @@
     <value>SMS設定は利用できません</value>
   </data>
   <data name="SsoSettingsCantSaveSettings" xml:space="preserve">
-    <value>設定は保存できませんでした。</value>
+    <value>設定は保存できませんでした</value>
   </data>
   <data name="SsoSettingsCouldNotBeNull" xml:space="preserve">
     <value>設定はnullにすることはできません</value>
@@ -270,7 +269,7 @@
     <value>不正なコード</value>
   </data>
   <data name="TfaAppNotAvailable" xml:space="preserve">
-    <value>二要素認証アプリ設定は無効です。</value>
+    <value>二要素認証アプリ設定は無効です</value>
   </data>
   <data name="UsServerRegion" xml:space="preserve">
     <value>US西部地域（オレゴン）</value>
@@ -340,5 +339,506 @@
   </data>
   <data name="TariffsFeature_used_manager" xml:space="preserve">
     <value>管理者/パワーユーザー数:</value>
+  </data>
+  <data name="Consumersacesskey" xml:space="preserve">
+    <value>Ｓ３アクセスキー</value>
+  </data>
+  <data name="ConsumersapiKey" xml:space="preserve">
+    <value>Rackspace APIキー</value>
+  </data>
+  <data name="ConsumersappleIdClientId" xml:space="preserve">
+    <value>アプリケーションクライアント ID</value>
+  </data>
+  <data name="ConsumersappleIdKeyId" xml:space="preserve">
+    <value>Sign in with Appleシクレットキー用に生成された10文字の鍵識別子</value>
+  </data>
+  <data name="ConsumersAppleIdDescription" xml:space="preserve">
+    <value>アプリケーションがApple IDを使用してポータルにサインインできるようにする。</value>
+  </data>
+  <data name="ConsumersAppleIdInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、ユーザーはApple IDを使ってONLYOFFICEにサインインできるようになります。{0}Apple Developersポータルにアクセスし、新規アプリONLYOFFICE integrationを作成します。以下、受け取ったデータを挿入してください：</value>
+  </data>
+  <data name="ConsumersappleIdPrivateKey" xml:space="preserve">
+    <value>Apple Developerからダウンロードした秘密キー</value>
+  </data>
+  <data name="ConsumersappleIdTeamId" xml:space="preserve">
+    <value>10文字の開発者アカウントのTeam ID</value>
+  </data>
+  <data name="ConsumersbitlyClientId" xml:space="preserve">
+    <value>ログイン</value>
+  </data>
+  <data name="ConsumersBitlyDescription" xml:space="preserve">
+    <value>ポータルの招待リンクと文書モジュール共有リンクをを短くするように、Bitlyサービスを接続します。</value>
+  </data>
+  <data name="ConsumersBitlyInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、文書と招待リンクを短くすることができます。{0}以下にBitlyログインとAPIキーを入力してください：</value>
+  </data>
+  <data name="ConsumersboxClientSecret" xml:space="preserve">
+    <value>Boxキー</value>
+  </data>
+  <data name="ConsumersBoxDescription" xml:space="preserve">
+    <value>Boxファイルとフォルダを管理するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersBoxInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、Boxアカウントを文書モジュールに接続して、Boxの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Box開発者ページでサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersClickatellDescription" xml:space="preserve">
+    <value>Clickatellを介して二要素認証のアプリを有効します。</value>
+  </data>
+  <data name="ConsumersClickatellInstruction" xml:space="preserve">
+    <value>このアプリを使用して、Clickatellサービスでの二要素認証を有効にしてください。{0}SMSプラットフォームアカウントにサインインし、ONLYOFFICE用の新しいインテグレーションを作成します。apiKeyをコピーして、下に挿入してください:</value>
+  </data>
+  <data name="ConsumersDocuSign" xml:space="preserve">
+    <value>DocuSign</value>
+  </data>
+  <data name="ConsumersdocuSignClientId" xml:space="preserve">
+    <value>DocuSignのキー</value>
+  </data>
+  <data name="ConsumersDocuSignDescription" xml:space="preserve">
+    <value>DocuSignの電子サインを文書に追加するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersdocuSignHost" xml:space="preserve">
+    <value>DocuSign認証端点</value>
+  </data>
+  <data name="ConsumersDocuSignInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、DocuSignを使用してデジタル的に文書を署名します。{0}DocuSign管理者コンソールでONLYOFFICE統合を追加してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersDropBoxDescription" xml:space="preserve">
+    <value>Dropboxファイルとフォルダを管理するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersDropBoxInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、Dropboxアカウントを文書モジュールに接続して、Dropboxの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Dropbox開発者ページでサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersDropBoxKey" xml:space="preserve">
+    <value>DropBox ID</value>
+  </data>
+  <data name="ConsumerseasyBibappkey" xml:space="preserve">
+    <value>アプリキー</value>
+  </data>
+  <data name="ConsumersEasyBibDescription" xml:space="preserve">
+    <value>EasyBibアプリを接続して、書誌リストを作成します。</value>
+  </data>
+  <data name="ConsumersfacebookAccessToken_Default" xml:space="preserve">
+    <value>Appトークン</value>
+  </data>
+  <data name="ConsumersfacebookClientId" xml:space="preserve">
+    <value>Facebook ID</value>
+  </data>
+  <data name="ConsumersFacebookDescription" xml:space="preserve">
+    <value>アプリをONLYOFFICEに接続すると、Facebookでポータルにサインインし、コンタクトを検索できます。</value>
+  </data>
+  <data name="ConsumersFacebookInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、Facebookを使用してONLYOFFICEにサインイン、またはCRMモジュールで顧客のFacebookアカウントをリンクできます。{0}Facebook開発者ポータルでONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Consumersfirebase_apiKey" xml:space="preserve">
+    <value>ウェブAPIキー</value>
+  </data>
+  <data name="Consumersfirebase_authorization" xml:space="preserve">
+    <value>サーバーキー</value>
+  </data>
+  <data name="ConsumersFirebaseDescription" xml:space="preserve">
+    <value>このアプリを有効にすると、Firebase Cloud Messagingサービスを使用して送信されたメッセージ通知を受信するようになります。</value>
+  </data>
+  <data name="ConsumersdocuSignClientSecret" xml:space="preserve">
+    <value>DocuSignの秘密なキー</value>
+  </data>
+  <data name="Consumersfirebase_messagingSenderId" xml:space="preserve">
+    <value>送信者ID</value>
+  </data>
+  <data name="Consumersfirebase_projectId" xml:space="preserve">
+    <value>プロジェクトＩＤ</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucketDescription" xml:space="preserve">
+    <value>バックアプを保存したいGoogle Cloudバケットの名前を入力してください。</value>
+  </data>
+  <data name="ConsumersGoogleCloudDescription" xml:space="preserve">
+    <value>バックアップし、ポータルデータをストアするように、Googleクラウドストレージを接続します。</value>
+  </data>
+  <data name="ConsumersGoogleCloudjson" xml:space="preserve">
+    <value>GoogleCloud jsonファイル</value>
+  </data>
+  <data name="ConsumersGoogleDescription" xml:space="preserve">
+    <value>プロジェクトを接続して、Googleアカウントを介してポータルにサインインしたり、Google Driveファイルとフォルダーを管理したりすることだできます。</value>
+  </data>
+  <data name="ConsumersGoogleInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、Google Driveアカウントを文書モジュールに接続して、Google Driveの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0} Google Drive APIsコンソールでONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersLinkedIn" xml:space="preserve">
+    <value>LinkedIn</value>
+  </data>
+  <data name="ConsumersLinkedInDescription" xml:space="preserve">
+    <value>アプリをONLYOFFICEに接続して、LinkedInでポータルにサインインします。</value>
+  </data>
+  <data name="ConsumersLinkedInSecret" xml:space="preserve">
+    <value>Linkedinキー</value>
+  </data>
+  <data name="ConsumersMailruDescription" xml:space="preserve">
+    <value>Mail.ruアカウントでポータルにサインインするようにアプリを接続します。</value>
+  </data>
+  <data name="ConsumersmicrosoftClientId" xml:space="preserve">
+    <value>アプリケーションクライアント ID</value>
+  </data>
+  <data name="ConsumersmicrosoftClientSecret" xml:space="preserve">
+    <value>クライアントの秘密鍵</value>
+  </data>
+  <data name="ConsumersMicrosoftDescription" xml:space="preserve">
+    <value>アプリケーションがMicrosoftアカウントを使用してポータルにサインインできるようにする。</value>
+  </data>
+  <data name="ConsumersMicrosoftInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、ユーザーがMicrosoftを使用してONLYOFFICEにサインインできるようになります。{0}Microsoft Azureにアクセスし、新しいアプリONLYOFFICE integrationを作成します。以下、受け取ったデータを挿入してください：</value>
+  </data>
+  <data name="ConsumersRackspace" xml:space="preserve">
+    <value>Rackspaceクラウド・ストレージ</value>
+  </data>
+  <data name="ConsumersRackspaceDescription" xml:space="preserve">
+    <value>バックアップし、ポータルデータをストアするように、Rackspaceクラウドストレージを接続します。</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_container" xml:space="preserve">
+    <value>プライバット・コンテナ</value>
+  </data>
+  <data name="ConsumersRackspaceprivate_containerDescription" xml:space="preserve">
+    <value>バックアップを保存したいRackspaceプライベートバケットのURLを入力してください。</value>
+  </data>
+  <data name="ConsumersRackspacepublic_container" xml:space="preserve">
+    <value>パブリック・コンテナ</value>
+  </data>
+  <data name="ConsumersRackspacepublic_containerDescription" xml:space="preserve">
+    <value>バックアップを保存したいRackspaceパブリックバケットのURLを入力してください。</value>
+  </data>
+  <data name="ConsumersRackspaceregion" xml:space="preserve">
+    <value>地域</value>
+  </data>
+  <data name="ConsumersRackspaceregionDescription" xml:space="preserve">
+    <value>Rackspaceコンテナが存在する地域を入力してください。</value>
+  </data>
+  <data name="ConsumersS3bucketDescription" xml:space="preserve">
+    <value>バックアップを保存したいAmazon S3バケットの名前を入力してください。</value>
+  </data>
+  <data name="ConsumersS3Description" xml:space="preserve">
+    <value>ポータルデータをバックアップと保存するようにAmazon AWS S3を接続します。</value>
+  </data>
+  <data name="ConsumersS3regionDescription" xml:space="preserve">
+    <value>Amazonバケットが存在するAWS地域を入力してください。</value>
+  </data>
+  <data name="Consumerssecretaccesskey" xml:space="preserve">
+    <value>S3の秘密なアクセスキー</value>
+  </data>
+  <data name="ConsumersSelectel" xml:space="preserve">
+    <value>Selectelクラウド・ストレージ</value>
+  </data>
+  <data name="ConsumersSelectelauthPwd" xml:space="preserve">
+    <value>認証パスワード</value>
+  </data>
+  <data name="ConsumersSelectelDescription" xml:space="preserve">
+    <value>バックアップし、ポータルデータをストアするように、Selectelクラウドストレージを接続します。</value>
+  </data>
+  <data name="ConsumersSelectelprivate_container" xml:space="preserve">
+    <value>プライバット・コンテナ</value>
+  </data>
+  <data name="ConsumersSelectelprivate_containerDescription" xml:space="preserve">
+    <value>バックアプを保存したいSelectelプライベートバケットの名前を入力してください。</value>
+  </data>
+  <data name="ConsumersSelectelpublic_containerDescription" xml:space="preserve">
+    <value>バックアプを保存したいSelectelパブリックバケットの名前を入力してください。</value>
+  </data>
+  <data name="ConsumersSelectelpublic_container" xml:space="preserve">
+    <value>パブリック・コンテナ</value>
+  </data>
+  <data name="ConsumersSkyDriveDescription" xml:space="preserve">
+    <value>OneDriveファイルとフォルダを管理するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersSkyDriveInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、OneDriveアカウントを文書モジュールに接続して、OneDriveの文書を管理・編集・別のONLYOFFICEユーザと共有できます。{0}Microsoft Azureアカウントにサインインし、ONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersSmscDescription" xml:space="preserve">
+    <value>SMSセンターを介して二要素認証のアプリを有効します。</value>
+  </data>
+  <data name="ConsumersSmscInstruction" xml:space="preserve">
+    <value>SMSセンターサービスで二要素認証を有効にするには、このアプリを使用します。{0}smscアカウントのログイン名とパスワード（またはパスワードのMD5ハッシュ）を小文字で入力してください:</value>
+  </data>
+  <data name="Consumerssmscpsw" xml:space="preserve">
+    <value>パスワードまたはパ スワードのＭＤ５ハッシュ小文字で</value>
+  </data>
+  <data name="ConsumersTelegramBotName" xml:space="preserve">
+    <value>ボットのユーザ名</value>
+  </data>
+  <data name="ConsumersTelegramBotToken" xml:space="preserve">
+    <value>ボットのトークン</value>
+  </data>
+  <data name="ConsumersTelegramDescription" xml:space="preserve">
+    <value>ポータル通知を受けるように、Telegramアカウントを接続します。</value>
+  </data>
+  <data name="ConsumersTelegramInstruction" xml:space="preserve">
+    <value>Telegramを使用してポータル通知を受けるように、Telegram用のボットを有効にしてください。新しいボットを作成するためにTelegramデスクトップでBotFatherを使用してください。そのボットを使用を使用するように、各ユーザがプロフィールのページでTelegram通知を有効にしなければなりません。{0}ボットのユーザ名とトークンを以下のフィールドに入力してください。</value>
+  </data>
+  <data name="ConsumersTwilioDescription" xml:space="preserve">
+    <value>Twilioを追加すると、ブラウザー直接からＣＲＭ顧客に電話できます。</value>
+  </data>
+  <data name="ConsumersTwilioInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、Twilioを使用してCRMモジュールから顧客に電話できます。{0}Twilioコンソールからのデータを以下に入力してください：</value>
+  </data>
+  <data name="Consumerstwiliosender" xml:space="preserve">
+    <value>Twilioの電話番号(SMS承認のために必要です)</value>
+  </data>
+  <data name="ConsumersTwitterDescription" xml:space="preserve">
+    <value>アプリをONLYOFFICEに接続すると、Twitterでポータルにサインインし、コンタクトを検索できます。</value>
+  </data>
+  <data name="ConsumersTwitterInstruction" xml:space="preserve">
+    <value>このアプリを接続すると、Twitterを使用してONLYOFFICEにサインイン、またはCRMモジュールでお客様のTwitterアカウントをリンクできます。{0} Twitter開発者ポータルでONLYOFFICE統合のために新しいアプリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersVkDescription" xml:space="preserve">
+    <value>VKアカウントでポータルにサインインするようにアプリを接続します。</value>
+  </data>
+  <data name="ConsumersWordpressDescription" xml:space="preserve">
+    <value>WordPressで文書を公開するように、アプリを接続します。</value>
+  </data>
+  <data name="ConsumersYahooDescription" xml:space="preserve">
+    <value>Yahoo連絡先インポートのアプリを接続します。</value>
+  </data>
+  <data name="ConsumersYahooInstruction" xml:space="preserve">
+    <value>このアプリを有効にすると、Yahooの連絡先リストからのユーザをポータルに追加できます。{0}Yahoo!デベロッパーネットワークのアプリ作成というページでONLYOFFICE統合のために新しいアップリを作成してください。その後、データを以下に入力してください：</value>
+  </data>
+  <data name="ConsumersYandexDescription" xml:space="preserve">
+    <value>Yandexアカウントでポータルにサインインするようにアプリを接続します。</value>
+  </data>
+  <data name="ErrorFileNotImage" xml:space="preserve">
+    <value>不明な画像ファイルタイプ</value>
+  </data>
+  <data name="ErrorImageSize" xml:space="preserve">
+    <value>画像サイズは許容されるパラメータを超えています</value>
+  </data>
+  <data name="ErrorIpSecurity" xml:space="preserve">
+    <value>ポータルアクセスは制限です</value>
+  </data>
+  <data name="ErrorPasswordNoSpaces" xml:space="preserve">
+    <value>スペースを含めない</value>
+  </data>
+  <data name="ErrorPasswordOnlyLatinLetters" xml:space="preserve">
+    <value>ローマ字のみ</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>名</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>姓</value>
+  </data>
+  <data name="LdapSettingsConnectError" xml:space="preserve">
+    <value>接続エラー</value>
+  </data>
+  <data name="LdapSettingsErrorCantCreateUsers" xml:space="preserve">
+    <value>ユーザーを作成できませんでした。受信したデータが正しくありません。</value>
+  </data>
+  <data name="LdapSettingsErrorCantGetLdapSettings" xml:space="preserve">
+    <value>サーバが設定を取得中に失敗した。</value>
+  </data>
+  <data name="LdapSettingsErrorCantSaveLdapSettings" xml:space="preserve">
+    <value>サーバーが設定を保存できませんでした。</value>
+  </data>
+  <data name="LdapSettingsErrorCredentialsNotValid" xml:space="preserve">
+    <value>ログインまたはパスワードが間違っているようです。</value>
+  </data>
+  <data name="LdapSettingsErrorDomainNotFound" xml:space="preserve">
+    <value>LDAPドメインが見つかりません。</value>
+  </data>
+  <data name="LdapSettingsErrorGroupsNotFound" xml:space="preserve">
+    <value>グループが見つかりません。</value>
+  </data>
+  <data name="LdapSettingsErrorIncorrectLdapFilter" xml:space="preserve">
+    <value>ユーザーフィルター値が無効です。</value>
+  </data>
+  <data name="LdapSettingsErrorLostRights" xml:space="preserve">
+    <value>あなたは自分の管理者権限を奪おうとしました。あなたの管理者権限は影響を受けませんでした。</value>
+  </data>
+  <data name="LdapSettingsErrorRemovedYourself" xml:space="preserve">
+    <value>お客様のアカウントはLDAPディレクトリにリンクされておらず、LDAPパスワードは有効ではありません。プロフィール設定ページで、アカウントのパスワードを変更または設定してください。</value>
+  </data>
+  <data name="LdapSettingsErrorUnknownError" xml:space="preserve">
+    <value>不明なエラー。</value>
+  </data>
+  <data name="LdapSettingsErrorUsersNotFound" xml:space="preserve">
+    <value>ユーザーは見つかりません。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupAttribute" xml:space="preserve">
+    <value>一つまたは複数のグループのグループ属性を入手できません。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupFilter" xml:space="preserve">
+    <value>グルップフィルターが間違っているようです。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongGroupNameAttribute" xml:space="preserve">
+    <value>一つまたは複数のグループのグループ名属性を入手できません。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongLoginAttribute" xml:space="preserve">
+    <value>一つまたは複数のユーザーのログイン属性を入手できません。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongServerOrPort" xml:space="preserve">
+    <value>LDAPサーバーに接続できません。サーバーのアドレスとポート番号が正しいかどうか確認してください。</value>
+  </data>
+  <data name="LdapSettingsErrorWrongUserAttribute" xml:space="preserve">
+    <value>一つまたは複数のユーザーのユーザー属性を入手できません。</value>
+  </data>
+  <data name="LdapSettingsInternalServerError" xml:space="preserve">
+    <value>サーバ内エラー。</value>
+  </data>
+  <data name="LdapSettingsModifyLdapUsers" xml:space="preserve">
+    <value>LDAPユーザーを通常なポータルユーザーに変更する</value>
+  </data>
+  <data name="LdapSettingsStatusAddingGroupUser" xml:space="preserve">
+    <value>ユーザーの追加</value>
+  </data>
+  <data name="LdapSettingsStatusCertificateVerification" xml:space="preserve">
+    <value>証明書の検証</value>
+  </data>
+  <data name="LdapSettingsStatusCheckingLdapSettings" xml:space="preserve">
+    <value>LDAPサポート設定の確認</value>
+  </data>
+  <data name="LdapSettingsStatusDisconnecting" xml:space="preserve">
+    <value>LDAP接続解除中</value>
+  </data>
+  <data name="LdapSettingsStatusGettingGroupsFromLdap" xml:space="preserve">
+    <value>LDAPサーバーからグループリストの取得中</value>
+  </data>
+  <data name="LdapSettingsStatusGettingUsersFromLdap" xml:space="preserve">
+    <value>LDAPサーバーからユーザーリストの取得中</value>
+  </data>
+  <data name="LdapSettingsStatusGivingRights" xml:space="preserve">
+    <value>{0}ユーザーを{1}管理者として設定する</value>
+  </data>
+  <data name="LdapSettingsStatusLoadingBaseInfo" xml:space="preserve">
+    <value>LDAPベースから情報を読み込んでいます</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingGroupUser" xml:space="preserve">
+    <value>ユーザーアカウント削除中</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldGroups" xml:space="preserve">
+    <value>以前にLDAPによってロードされた古いグループの削除</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldRights" xml:space="preserve">
+    <value>以前にLDAPによってロードされた古いアクセス権の削除</value>
+  </data>
+  <data name="LdapSettingsStatusRemovingOldUsers" xml:space="preserve">
+    <value>以前にLDAP 経由でアップロードされた古いユーザープロフィル無効にしています</value>
+  </data>
+  <data name="LdapSettingsStatusSavingGroups" xml:space="preserve">
+    <value>グルップ保存</value>
+  </data>
+  <data name="LdapSettingsStatusSavingSettings" xml:space="preserve">
+    <value>設定保存</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUserPhoto" xml:space="preserve">
+    <value>写真保存</value>
+  </data>
+  <data name="LdapSettingsStatusSavingUsers" xml:space="preserve">
+    <value>ユーザー保存</value>
+  </data>
+  <data name="LdapSettingsStatusSyncingUsers" xml:space="preserve">
+    <value>ユーザーの同期</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingAccessRights" xml:space="preserve">
+    <value>ユーザーのアクセス権の更新</value>
+  </data>
+  <data name="LdapSettingsStatusUpdatingUserPhotos" xml:space="preserve">
+    <value>ユーザー写真の更新</value>
+  </data>
+  <data name="LdapSettingsStrongAuthRequired" xml:space="preserve">
+    <value>より安全な認証の種類が必要です。 暗号化された接続を使用し、または "plain" 認証をサーバーに有効にしてください。</value>
+  </data>
+  <data name="LdapSettingsTenantQuotaSettled" xml:space="preserve">
+    <value>現在の料金プランのユーザー数制限に達しました</value>
+  </data>
+  <data name="LdapSettingsTlsNotSupported" xml:space="preserve">
+    <value>現在のLDAPサーバーでStartTLSがサポートされません。</value>
+  </data>
+  <data name="LdapSettingsWrongSidAttribute" xml:space="preserve">
+    <value>ユーザー/グループ・オブジェクトの一意IDを取得できませんでした。デフォルトでは、entryUUID、nsuniqueid、GUID、objectSidのいずれかのIDに一致するものを取得しようとします。LDAPサーバーに該当する属性がない場合は、web.appsettings.configファイルのldap.unique.id設定に必要な属性を指定してください。</value>
+  </data>
+  <data name="ConsumersDropBoxSecret" xml:space="preserve">
+    <value>Dropboxキー</value>
+  </data>
+  <data name="ConsumersEasyBib" xml:space="preserve">
+    <value>EasyBib</value>
+  </data>
+  <data name="ConsumersFacebook" xml:space="preserve">
+    <value>Facebook</value>
+  </data>
+  <data name="ConsumersGoogle" xml:space="preserve">
+    <value>Google</value>
+  </data>
+  <data name="ConsumersgoogleClientId" xml:space="preserve">
+    <value>Google ID</value>
+  </data>
+  <data name="ConsumersgoogleClientSecret" xml:space="preserve">
+    <value>Googleキー</value>
+  </data>
+  <data name="ConsumersGoogleCloud" xml:space="preserve">
+    <value>Googleクラウドストレージ</value>
+  </data>
+  <data name="ConsumersGoogleCloudbucket" xml:space="preserve">
+    <value>バケット</value>
+  </data>
+  <data name="ConsumersMailru" xml:space="preserve">
+    <value>Mail.ru</value>
+  </data>
+  <data name="ConsumersMailruClientSecret" xml:space="preserve">
+    <value>秘密なスキー</value>
+  </data>
+  <data name="ConsumersMicrosoft" xml:space="preserve">
+    <value>Microsoft</value>
+  </data>
+  <data name="ConsumersS3" xml:space="preserve">
+    <value>Amazon AWS S3</value>
+  </data>
+  <data name="ConsumersSelectelauthUser" xml:space="preserve">
+    <value>認証ユーザ</value>
+  </data>
+  <data name="ConsumersSkyDrive" xml:space="preserve">
+    <value>OneDrive</value>
+  </data>
+  <data name="Consumersskydriveappkey" xml:space="preserve">
+    <value>アプリID</value>
+  </data>
+  <data name="ConsumersSmsc" xml:space="preserve">
+    <value>SMSセンター</value>
+  </data>
+  <data name="ConsumersTelegram" xml:space="preserve">
+    <value>Telegram</value>
+  </data>
+  <data name="ConsumersTwilio" xml:space="preserve">
+    <value>Twilio</value>
+  </data>
+  <data name="ConsumerstwilioAccountSid" xml:space="preserve">
+    <value>アカウントSid</value>
+  </data>
+  <data name="ConsumerstwilioAuthToken" xml:space="preserve">
+    <value>認証トークン</value>
+  </data>
+  <data name="ConsumersYahoo" xml:space="preserve">
+    <value>Yahoo</value>
+  </data>
+  <data name="ConsumersYandex" xml:space="preserve">
+    <value>Yandex</value>
+  </data>
+  <data name="ConsumersWordpress" xml:space="preserve">
+    <value>WordPress</value>
+  </data>
+  <data name="ConsumersTwitter" xml:space="preserve">
+    <value>Twitter</value>
+  </data>
+  <data name="ConsumersYandexClientSecret" xml:space="preserve">
+    <value>パスワード</value>
+  </data>
+  <data name="ConsumersS3region" xml:space="preserve">
+    <value>地域</value>
+  </data>
+  <data name="Consumerssmsclogin" xml:space="preserve">
+    <value>ログイン</value>
   </data>
 </root>

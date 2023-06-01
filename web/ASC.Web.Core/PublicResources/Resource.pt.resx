@@ -146,7 +146,7 @@
     <value>Último nome</value>
   </data>
   <data name="MessageEmailChangeInstuctionsSentOnEmail" xml:space="preserve">
-    <value>As instruções de alteração de e-mail foram enviadas para o endereço de email {0}</value>
+    <value>As instruções de alteração de e-mail foram enviadas para o endereço de email</value>
   </data>
   <data name="SmsAuthenticationMessageError" xml:space="preserve">
     <value>Código incorreto</value>
@@ -161,9 +161,90 @@
     <value>As configurações foram atualizadas com sucesso</value>
   </data>
   <data name="SuccessfullySentNotificationDeleteUserInfoMessage" xml:space="preserve">
-    <value>Instruções sobre como excluir o seu perfil foram enviadas para o seu endereço de e-mail</value>
+    <value>Instruções sobre como excluir o seu perfil foram enviadas para o {0} endereço de e-mail</value>
   </data>
   <data name="WhatsNewSubscriptionName" xml:space="preserve">
     <value>O que há de novo</value>
+  </data>
+  <data name="TariffsFeature_audit" xml:space="preserve">
+    <value>Monitorização dos inícios de sessão e das ações dos utilizadores</value>
+  </data>
+  <data name="TariffsFeature_file_size" xml:space="preserve">
+    <value>Tamanho máximo do ficheiro</value>
+  </data>
+  <data name="TariffsFeature_file_size_exception" xml:space="preserve">
+    <value>O tamanho do ficheiro não deve exceder {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_exception" xml:space="preserve">
+    <value>O número de administradores não deve exceder {0}</value>
+  </data>
+  <data name="TariffsFeature_manager_price_count" xml:space="preserve">
+    <value>Número de administradores</value>
+  </data>
+  <data name="TariffsFeature_restore" xml:space="preserve">
+    <value>Cópia de Segurança automática e recuperação</value>
+  </data>
+  <data name="TariffsFeature_room" xml:space="preserve">
+    <value>Número ilimitado de salas ativas</value>
+  </data>
+  <data name="TariffsFeature_room_exception" xml:space="preserve">
+    <value>O número de salas não deve exceder {0}</value>
+  </data>
+  <data name="TariffsFeature_sso" xml:space="preserve">
+    <value>SSO</value>
+  </data>
+  <data name="TariffsFeature_total_size" xml:space="preserve">
+    <value>{0} espaço de armazenamento</value>
+  </data>
+  <data name="TariffsFeature_total_size_exception" xml:space="preserve">
+    <value>O tamanho do armazenamento utilizado não deve exceder {0}</value>
+  </data>
+  <data name="TariffsFeature_total_size_price_count" xml:space="preserve">
+    <value>Espaço de armazenamento</value>
+  </data>
+  <data name="TariffsFeature_used_room" xml:space="preserve">
+    <value>Salas:</value>
+  </data>
+  <data name="TariffsFeature_used_total_size" xml:space="preserve">
+    <value>Armazenamento utilizado:</value>
+  </data>
+  <data name="TariffsFeature_used_usersInRoom" xml:space="preserve">
+    <value>Utilizadores na sala:</value>
+  </data>
+  <data name="TariffsFeature_users" xml:space="preserve">
+    <value>Número ilimitado de utilizadores</value>
+  </data>
+  <data name="TariffsFeature_users_exception" xml:space="preserve">
+    <value>O número de utilizadores não deve exceder {0}</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom" xml:space="preserve">
+    <value>Utilizadores na sala</value>
+  </data>
+  <data name="TariffsFeature_usersInRoom_exception" xml:space="preserve">
+    <value>O número de utilizadores na sala não deve exceder {0}</value>
+  </data>
+  <data name="TariffsFeature_whitelabel" xml:space="preserve">
+    <value>Imagem de Marca e personalização</value>
+  </data>
+  <data name="TariffsFeature_used_manager" xml:space="preserve">
+    <value>O número de administradores/utilizadores com poder:</value>
+  </data>
+  <data name="ConsumersBox" xml:space="preserve">
+    <value>Box</value>
+  </data>
+  <data name="ConsumersClickatell" xml:space="preserve">
+    <value>Clickatell</value>
+  </data>
+  <data name="ConsumersclickatellapiKey" xml:space="preserve">
+    <value>apiKey</value>
+  </data>
+  <data name="ConsumersFirebase" xml:space="preserve">
+    <value>Firebase</value>
+  </data>
+  <data name="Tariffs_startup" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Tariffs_admin" xml:space="preserve">
+    <value>Business</value>
   </data>
 </root>
