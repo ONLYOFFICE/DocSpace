@@ -100,7 +100,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var dbFolder = await FolderDaoQueries.GetDbFolderQueryAsync(filesDbContext, TenantID, folderId);
+        var dbFolder = await Queries.DbFolderQueryAsync(filesDbContext, TenantID, folderId);
 
         return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
@@ -111,7 +111,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var dbFolder = await FolderDaoQueries.GetDbFolderQueryByTitleAndParentIdAsync(filesDbContext, TenantID, title, parentId);
+        var dbFolder = await Queries.DbFolderQueryByTitleAndParentIdAsync(filesDbContext, TenantID, title, parentId);
 
         return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
@@ -120,9 +120,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var id = await FolderDaoQueries.GetParentIdAsync(filesDbContext, folderId);
+        var id = await Queries.ParentIdAsync(filesDbContext, folderId);
 
-        var dbFolder = await FolderDaoQueries.GetDbFolderQueryAsync(filesDbContext, TenantID, id);
+        var dbFolder = await Queries.DbFolderQueryAsync(filesDbContext, TenantID, id);
 
         return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
@@ -131,9 +131,9 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var id = await FolderDaoQueries.GetParentIdByFileIdAsync(filesDbContext, TenantID, fileId);
+        var id = await Queries.ParentIdByFileIdAsync(filesDbContext, TenantID, fileId);
 
-        var dbFolder = await FolderDaoQueries.GetDbFolderQueryAsync(filesDbContext, TenantID, id);
+        var dbFolder = await Queries.DbFolderQueryAsync(filesDbContext, TenantID, id);
 
         return _mapper.Map<DbFolderQuery, Folder<int>>(dbFolder);
     }
@@ -324,7 +324,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var query = FolderDaoQueries.GetDbFolderQueriesAsync(filesDbContext, TenantID, folderId);
+        var query = Queries.DbFolderQueriesAsync(filesDbContext, TenantID, folderId);
 
         await foreach (var e in query)
         {
@@ -338,7 +338,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var q = FolderDaoQueries.GetParentRoomPairAsync(filesDbContext, TenantID, foldersIds, roomTypes);
+        var q = Queries.ParentRoomPairAsync(filesDbContext, TenantID, foldersIds, roomTypes);
         await foreach (var e in q)
         {
             yield return e;
@@ -402,7 +402,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         if (folder.Id != default && await IsExistAsync(folder.Id))
         {
-            var toUpdate = await FolderDaoQueries.GetFolderForUpdateAsync(filesDbContext, TenantID, folder.Id);
+            var toUpdate = await Queries.FolderForUpdateAsync(filesDbContext, TenantID, folder.Id);
 
             toUpdate.Title = folder.Title;
             toUpdate.CreateBy = folder.CreateBy;
@@ -487,7 +487,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private async Task<bool> IsExistAsync(int folderId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        return await FolderDaoQueries.FolderIsExistAsync(filesDbContext, TenantID, folderId);
+        return await Queries.FolderIsExistAsync(filesDbContext, TenantID, folderId);
     }
 
     public async Task DeleteFolderAsync(int folderId)
@@ -504,16 +504,16 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
             using var tx = await filesDbContext.Database.BeginTransactionAsync();
-            var subfolders = await FolderDaoQueries.GetSubfolderIdsAsync(filesDbContext, folderId).ToListAsync();
+            var subfolders = await Queries.SubfolderIdsAsync(filesDbContext, folderId).ToListAsync();
 
             if (!subfolders.Contains(folderId))
             {
                 subfolders.Add(folderId); // chashed folder_tree
             }
 
-            var parent = await FolderDaoQueries.GetParentIdByIdAsync(filesDbContext, TenantID, folderId);
+            var parent = await Queries.ParentIdByIdAsync(filesDbContext, TenantID, folderId);
 
-            var folderToDelete = await FolderDaoQueries.GetDbfoldersForDeleteAsync(filesDbContext, TenantID, subfolders).ToListAsync();
+            var folderToDelete = await Queries.DbfoldersForDeleteAsync(filesDbContext, TenantID, subfolders).ToListAsync();
 
             foreach (var f in folderToDelete)
             {
@@ -522,21 +522,21 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
             filesDbContext.Folders.RemoveRange(folderToDelete);
 
-            await FolderDaoQueries.DeleteTreesAsync(filesDbContext, subfolders);
+            await Queries.DeleteTreesAsync(filesDbContext, subfolders);
 
             var subfoldersStrings = subfolders.Select(r => r.ToString()).ToList();
 
-            await FolderDaoQueries.DeleteTagLinksAsync(filesDbContext, TenantID, subfoldersStrings);
+            await Queries.DeleteTagLinksAsync(filesDbContext, TenantID, subfoldersStrings);
 
-            await FolderDaoQueries.DeleteTagsAsync(filesDbContext, TenantID);
+            await Queries.DeleteTagsAsync(filesDbContext, TenantID);
 
-            await FolderDaoQueries.DeleteTagLinkByTagOriginAsync(filesDbContext, TenantID, folderId.ToString(), subfoldersStrings);
+            await Queries.DeleteTagLinkByTagOriginAsync(filesDbContext, TenantID, folderId.ToString(), subfoldersStrings);
 
-            await FolderDaoQueries.DeleteTagOriginAsync(filesDbContext, TenantID, folderId.ToString(), subfoldersStrings);
+            await Queries.DeleteTagOriginAsync(filesDbContext, TenantID, folderId.ToString(), subfoldersStrings);
 
-            await FolderDaoQueries.DeleteFilesSecurityAsync(filesDbContext, TenantID, subfoldersStrings);
+            await Queries.DeleteFilesSecurityAsync(filesDbContext, TenantID, subfoldersStrings);
 
-            await FolderDaoQueries.DeleteBunchObjectsAsync(filesDbContext, TenantID, folderId.ToString());
+            await Queries.DeleteBunchObjectsAsync(filesDbContext, TenantID, folderId.ToString());
 
             await tx.CommitAsync();
             await RecalculateFoldersCountAsync(parent);
@@ -580,19 +580,19 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
                 }
 
                 var recalcFolders = new List<int> { toFolderId };
-                var parent = await FolderDaoQueries.GetParentIdByIdAsync(filesDbContext, TenantID, folderId);
+                var parent = await Queries.ParentIdByIdAsync(filesDbContext, TenantID, folderId);
 
                 if (parent != 0 && !recalcFolders.Contains(parent))
                 {
                     recalcFolders.Add(parent);
                 }
-                await FolderDaoQueries.UpdateFoldersAsync(filesDbContext, TenantID, folderId, toFolderId, _authContext.CurrentAccount.ID);
+                await Queries.UpdateFoldersAsync(filesDbContext, TenantID, folderId, toFolderId, _authContext.CurrentAccount.ID);
 
-                var subfolders = await FolderDaoQueries.GetSubfolderDictionaryAsync(filesDbContext, folderId);
+                var subfolders = await Queries.SubfolderDictionaryAsync(filesDbContext, folderId);
 
-                await FolderDaoQueries.DeleteTreesBySubfoldersDictionaryAsync(filesDbContext, subfolders);
+                await Queries.DeleteTreesBySubfoldersDictionaryAsync(filesDbContext, subfolders);
 
-                var toInsert = FolderDaoQueries.GetTreesOrderByLevel(filesDbContext, toFolderId);
+                var toInsert = Queries.TreesOrderByLevel(filesDbContext, toFolderId);
 
                 foreach (var subfolder in subfolders)
                 {
@@ -732,25 +732,25 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
 
         foreach (var folderId in folderIds)
         {
-            var exists = await FolderDaoQueries.AnyTreeAsync(filesDbContext, folderId, to);
+            var exists = await Queries.AnyTreeAsync(filesDbContext, folderId, to);
 
             if (exists)
             {
                 throw new InvalidOperationException(FilesCommonResource.ErrorMassage_FolderCopyError);
             }
 
-            var conflict = await FolderDaoQueries.GetFolderIdAsync(filesDbContext, TenantID, folderId, to);
+            var conflict = await Queries.FolderIdAsync(filesDbContext, TenantID, folderId, to);
 
             if (conflict != 0)
             {
-                var files = FolderDaoQueries.GetDbFilesAsync(filesDbContext, TenantID, folderId, conflict);
+                var files = Queries.DbFilesAsync(filesDbContext, TenantID, folderId, conflict);
 
                 await foreach (var file in files)
                 {
                     result[file.Id] = file.Title;
                 }
 
-                var childs = await FolderDaoQueries.GetArrayAsync(filesDbContext, TenantID, folderId);
+                var childs = await Queries.ArrayAsync(filesDbContext, TenantID, folderId);
 
                 foreach (var pair in await CanMoveOrCopyAsync(childs, conflict))
                 {
@@ -765,7 +765,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public async Task<int> RenameFolderAsync(Folder<int> folder, string newTitle)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var toUpdate = await FolderDaoQueries.GetFolderAsync(filesDbContext, TenantID, folder.Id);
+        var toUpdate = await Queries.FolderAsync(filesDbContext, TenantID, folder.Id);
 
         toUpdate.Title = Global.ReplaceInvalidCharsAndTruncate(newTitle);
         toUpdate.ModifiedOn = DateTime.UtcNow;
@@ -787,14 +787,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private async Task<int> GetFoldersCountAsync(int parentId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        return await FolderDaoQueries.CountTreesAsync(filesDbContext, parentId);
+        return await Queries.CountTreesAsync(filesDbContext, parentId);
     }
 
     private async Task<int> GetFilesCountAsync(int folderId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        return await FolderDaoQueries.CountFilesAsync(filesDbContext, TenantID, folderId);
+        return await Queries.CountFilesAsync(filesDbContext, TenantID, folderId);
     }
 
     public async Task<bool> IsEmptyAsync(int folderId)
@@ -844,7 +844,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     private async Task RecalculateFoldersCountAsync(int id)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        await FolderDaoQueries.UpdateFoldersCountAsync(filesDbContext, TenantID, id);
+        await Queries.UpdateFoldersCountAsync(filesDbContext, TenantID, id);
     }
 
     #region Only for TMFolderDao
@@ -852,7 +852,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public async Task ReassignFoldersAsync(int[] folderIds, Guid newOwnerId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        await FolderDaoQueries.ReassignFoldersAsync(filesDbContext, TenantID, folderIds, newOwnerId);
+        await Queries.ReassignFoldersAsync(filesDbContext, TenantID, folderIds, newOwnerId);
     }
 
     public async IAsyncEnumerable<Folder<int>> SearchFoldersAsync(string text, bool bunch = false)
@@ -881,7 +881,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         (var succ, var ids) = await _factoryIndexer.TrySelectIdsAsync(s => s.MatchAll(text));
         if (succ)
         {
-            await foreach (var e in FolderDaoQueries.GetDbFolderQueriesByIdsAsync(filesDbContext, TenantID, ids))
+            await foreach (var e in Queries.DbFolderQueriesByIdsAsync(filesDbContext, TenantID, ids))
             {
                 yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
             }
@@ -889,7 +889,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             yield break;
         }
 
-        await foreach (var e in FolderDaoQueries.GetDbFolderQueriesByTextAsync(filesDbContext, TenantID, GetSearchText(text)))
+        await foreach (var e in Queries.DbFolderQueriesByTextAsync(filesDbContext, TenantID, GetSearchText(text)))
         {
             yield return _mapper.Map<DbFolderQuery, Folder<int>>(e);
         }
@@ -908,7 +908,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var keys = data.Select(id => $"{module}/{bunch}/{id}").ToArray();
 
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var folderIdsDictionary = await FolderDaoQueries.GetNodeDictionaryAsync(filesDbContext, TenantID, keys);
+        var folderIdsDictionary = await Queries.NodeDictionaryAsync(filesDbContext, TenantID, keys);
 
         foreach (var key in keys)
         {
@@ -1108,7 +1108,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        return await FolderDaoQueries.GetLeftNodeAsync(filesDbContext, TenantID, key);
+        return await Queries.LeftNodeAsync(filesDbContext, TenantID, key);
     }
 
     Task<int> IFolderDao<int>.GetFolderIDProjectsAsync(bool createIfNotExists)
@@ -1170,7 +1170,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     {
         var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        return  FolderDaoQueries.GetOriginsDataAsync(filesDbContext, TenantID, entriesIds);
+        return  Queries.OriginsDataAsync(filesDbContext, TenantID, entriesIds);
     }
 
     #endregion
@@ -1231,7 +1231,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
     public async Task<string> GetBunchObjectIDAsync(int folderID)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        return await FolderDaoQueries.GetRightNodeAsync(filesDbContext, TenantID, folderID.ToString());
+        return await Queries.RightNodeAsync(filesDbContext, TenantID, folderID.ToString());
     }
 
     public async Task<Dictionary<string, string>> GetBunchObjectIDsAsync(List<int> folderIDs)
@@ -1239,7 +1239,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         var folderSIds = folderIDs.Select(r => r.ToString()).ToList();
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        return await FolderDaoQueries.GetNodeDictionaryByFolderIdsAsync(filesDbContext, TenantID, folderSIds);
+        return await Queries.NodeDictionaryByFolderIdsAsync(filesDbContext, TenantID, folderSIds);
     }
 
     public async IAsyncEnumerable<FolderWithShare> GetFeedsForRoomsAsync(int tenant, DateTime from, DateTime to)
@@ -1363,7 +1363,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var parentFolders = await FolderDaoQueries.GetParentIdTitlePairASync(filesDbContext, folderId).ToListAsync();
+        var parentFolders = await Queries.ParentIdTitlePairAsync(filesDbContext, folderId).ToListAsync();
 
         if (parentFolders.Count > 1)
         {
@@ -1623,205 +1623,225 @@ public class OriginData
     public HashSet<KeyValuePair<string, FileEntryType>> Entries { get; set; }
 }
 
-static file class FolderDaoQueries
+static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, int, Task<DbFolderQuery>> GetDbFolderQueryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId) =>
-            ctx.Folders
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => r.Id == folderId)
-            .AsNoTracking()
-            .Select(r =>
-                new DbFolderQuery
-                {
-                    Folder = r,
-                    Root = (from f in ctx.Folders
-                            where f.Id ==
-                             (from t in ctx.Tree
-                              where t.FolderId == r.ParentId
-                              orderby t.Level descending
-                              select t.ParentId
-                             ).FirstOrDefault()
-                            where f.TenantId == r.TenantId
-                            select f
-                        ).FirstOrDefault()
-                }
-            ).SingleOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, string, int, Task<DbFolderQuery>> GetDbFolderQueryByTitleAndParentIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string title, int parentId) =>
-            ctx.Folders.Where(r => r.TenantId == tenantId)
-            .Where(r => r.Title == title && r.ParentId == parentId)
-            .AsNoTracking()
-            .OrderBy(r => r.CreateOn)
-            .Select(r =>
-                new DbFolderQuery
-                {
-                    Folder = r,
-                    Root = (from f in ctx.Folders
-                            where f.Id ==
-                             (from t in ctx.Tree
-                              where t.FolderId == r.ParentId
-                              orderby t.Level descending
-                              select t.ParentId
-                             ).FirstOrDefault()
-                            where f.TenantId == r.TenantId
-                            select f
-                        ).FirstOrDefault()
-                }
-            ).FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFolderQuery>> GetDbFolderQueriesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId) =>
-            ctx.Folders
-            .Where(r => r.TenantId == tenantId)
-            .AsNoTracking()
-            .Join(ctx.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
-            .Where(r => r.tree.FolderId == folderId)
-            .OrderByDescending(r => r.tree.Level)
-            .Select(r =>
-                new DbFolderQuery
-                {
-                    Folder = r.folder,
-                    Root = (from f in ctx.Folders
-                            where f.Id ==
-                             (from t in ctx.Tree
-                              where t.FolderId == r.folder.ParentId
-                              orderby t.Level descending
-                              select t.ParentId
-                             ).FirstOrDefault()
-                            where f.TenantId == r.folder.TenantId
-                            select f
-                        ).FirstOrDefault()
-                }
-            ));
-    
-    public static readonly Func<FilesDbContext, int, Task<int>> GetParentIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int folderId) =>
-            ctx.Tree
-            .AsNoTracking()
-            .Where(r => r.FolderId == folderId)
-            .OrderByDescending(r => r.Level)
-            .Select(r => r.ParentId)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, int, Task<int>> GetParentIdByFileIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int fileId) =>
-            ctx.Tree.AsNoTracking()
-            .Where(r => ctx.Files
-            .Where(r => r.TenantId == tenantId)
-            .AsNoTracking()
-            .Where(r => r.Id == fileId && r.CurrentVersion)
-            .Select(r => r.ParentId)
-            .Distinct()
-            .Contains(r.FolderId))
-            .OrderByDescending(r => r.Level)
-            .Select(r => r.ParentId)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<int>, IEnumerable<FolderType>, IAsyncEnumerable<ParentRoomPair>> GetParentRoomPairAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<int> foldersIds, IEnumerable<FolderType> roomTypes) =>
-            ctx.Folders
-            .Where(r => r.TenantId == tenantId)
-            .AsNoTracking()
-            .Join(ctx.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
-            .Where(r => foldersIds.Contains(r.tree.FolderId))
-            .OrderByDescending(r => r.tree.Level)
-            .Where(r => roomTypes.Contains(r.folder.FolderType))
-            .Select(r => new ParentRoomPair { FolderId = r.tree.FolderId, ParentRoomId = r.folder.Id }));
-    
-    public static readonly Func<FilesDbContext, int, int, Task<DbFolder>> GetFolderForUpdateAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int id) =>
-            ctx.Folders
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.Id == id)
-                .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, int, Task<bool>> FolderIsExistAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int id) =>
-            ctx.Folders
-            .Where(r => r.TenantId == tenantId)
-            .Any(r => r.Id == id));
-    
-    public static readonly Func<FilesDbContext, int, IAsyncEnumerable<int>> GetSubfolderIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int id) =>
-            ctx.Tree
-                .Where(r => r.ParentId == id)
-                .Select(r => r.FolderId));
-    
-    public static readonly Func<FilesDbContext, int, int, Task<int>> GetParentIdByIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int id) =>
-            ctx.Folders
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.Id == id)
-                .Select(r => r.ParentId)
-                .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<DbFolder>> GetDbfoldersForDeleteAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<int> subfolders) =>
-            ctx.Folders
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => subfolders.Contains(r.Id)));
-    
-    public static readonly Func<FilesDbContext, IEnumerable<int>, Task<int>> DeleteTreesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, IEnumerable<int> subfolders) =>
-            ctx.Tree
-            .Where(r => subfolders.Contains(r.FolderId))
-            .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<int>> DeleteTagLinksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<string> subfolders) =>
-            ctx.TagLink
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => subfolders.Contains(r.EntryId))
-                .Where(r => r.EntryType == FileEntryType.Folder)
-                .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, Task<int>> DeleteTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId) =>
-            ctx.Tag
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => !ctx.TagLink.Where(a => a.TenantId == tenantId).Any(a => a.TagId == r.Id))
-                .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, string, IEnumerable<string>, Task<int>> DeleteTagLinkByTagOriginAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string id, IEnumerable<string> subfolders) =>
-            ctx.TagLink
-                .Where(r => r.TenantId == tenantId)
-                .Where(l =>
-                    ctx.Tag
+    public static readonly Func<FilesDbContext, int, int, Task<DbFolderQuery>> DbFolderQueryAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id == folderId)
+                    .AsNoTracking()
+                    .Select(r =>
+                        new DbFolderQuery
+                        {
+                            Folder = r,
+                            Root = (from f in ctx.Folders
+                                    where f.Id ==
+                                          (from t in ctx.Tree
+                                              where t.FolderId == r.ParentId
+                                              orderby t.Level descending
+                                              select t.ParentId
+                                          ).FirstOrDefault()
+                                    where f.TenantId == r.TenantId
+                                    select f
+                                ).FirstOrDefault()
+                        }
+                    ).SingleOrDefault());
+
+    public static readonly Func<FilesDbContext, int, string, int, Task<DbFolderQuery>>
+        DbFolderQueryByTitleAndParentIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string title, int parentId) =>
+                ctx.Folders.Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Title == title && r.ParentId == parentId)
+                    .AsNoTracking()
+                    .OrderBy(r => r.CreateOn)
+                    .Select(r =>
+                        new DbFolderQuery
+                        {
+                            Folder = r,
+                            Root = (from f in ctx.Folders
+                                    where f.Id ==
+                                          (from t in ctx.Tree
+                                              where t.FolderId == r.ParentId
+                                              orderby t.Level descending
+                                              select t.ParentId
+                                          ).FirstOrDefault()
+                                    where f.TenantId == r.TenantId
+                                    select f
+                                ).FirstOrDefault()
+                        }
+                    ).FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFolderQuery>> DbFolderQueriesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .AsNoTracking()
+                    .Join(ctx.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
+                    .Where(r => r.tree.FolderId == folderId)
+                    .OrderByDescending(r => r.tree.Level)
+                    .Select(r =>
+                        new DbFolderQuery
+                        {
+                            Folder = r.folder,
+                            Root = (from f in ctx.Folders
+                                    where f.Id ==
+                                          (from t in ctx.Tree
+                                              where t.FolderId == r.folder.ParentId
+                                              orderby t.Level descending
+                                              select t.ParentId
+                                          ).FirstOrDefault()
+                                    where f.TenantId == r.folder.TenantId
+                                    select f
+                                ).FirstOrDefault()
+                        }
+                    ));
+
+    public static readonly Func<FilesDbContext, int, Task<int>> ParentIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int folderId) =>
+                ctx.Tree
+                    .AsNoTracking()
+                    .Where(r => r.FolderId == folderId)
+                    .OrderByDescending(r => r.Level)
+                    .Select(r => r.ParentId)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, int, Task<int>> ParentIdByFileIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int fileId) =>
+                ctx.Tree.AsNoTracking()
+                    .Where(r => ctx.Files
+                        .Where(f => f.TenantId == tenantId)
+                        .AsNoTracking()
+                        .Where(f => f.Id == fileId && f.CurrentVersion)
+                        .Select(f => f.ParentId)
+                        .Distinct()
+                        .Contains(r.FolderId))
+                    .OrderByDescending(r => r.Level)
+                    .Select(r => r.ParentId)
+                    .FirstOrDefault());
+
+    public static readonly
+        Func<FilesDbContext, int, IEnumerable<int>, IEnumerable<FolderType>, IAsyncEnumerable<ParentRoomPair>>
+        ParentRoomPairAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<int> foldersIds, IEnumerable<FolderType> roomTypes) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .AsNoTracking()
+                    .Join(ctx.Tree, r => r.Id, a => a.ParentId, (folder, tree) => new { folder, tree })
+                    .Where(r => foldersIds.Contains(r.tree.FolderId))
+                    .OrderByDescending(r => r.tree.Level)
+                    .Where(r => roomTypes.Contains(r.folder.FolderType))
+                    .Select(r => new ParentRoomPair { FolderId = r.tree.FolderId, ParentRoomId = r.folder.Id }));
+
+    public static readonly Func<FilesDbContext, int, int, Task<DbFolder>> FolderForUpdateAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int id) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id == id)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, int, Task<bool>> FolderIsExistAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int id) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Any(r => r.Id == id));
+
+    public static readonly Func<FilesDbContext, int, IAsyncEnumerable<int>> SubfolderIdsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int id) =>
+                ctx.Tree
+                    .Where(r => r.ParentId == id)
+                    .Select(r => r.FolderId));
+
+    public static readonly Func<FilesDbContext, int, int, Task<int>> ParentIdByIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int id) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id == id)
+                    .Select(r => r.ParentId)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<DbFolder>>
+        DbfoldersForDeleteAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<int> subfolders) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => subfolders.Contains(r.Id)));
+
+    public static readonly Func<FilesDbContext, IEnumerable<int>, Task<int>> DeleteTreesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, IEnumerable<int> subfolders) =>
+                ctx.Tree
+                    .Where(r => subfolders.Contains(r.FolderId))
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<int>> DeleteTagLinksAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<string> subfolders) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => subfolders.Contains(r.EntryId))
+                    .Where(r => r.EntryType == FileEntryType.Folder)
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, Task<int>> DeleteTagsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId) =>
+                ctx.Tag
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => !ctx.TagLink.Where(a => a.TenantId == tenantId).Any(a => a.TagId == r.Id))
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, string, IEnumerable<string>, Task<int>>
+        DeleteTagLinkByTagOriginAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string id, IEnumerable<string> subfolders) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(l =>
+                        ctx.Tag
+                            .Where(r => r.TenantId == tenantId)
+                            .Where(t => t.Name == id || subfolders.Contains(t.Name))
+                            .Select(t => t.Id)
+                            .Contains(l.TagId)
+                    )
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, string, IEnumerable<string>, Task<int>> DeleteTagOriginAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string id, IEnumerable<string> subfolders) =>
+                ctx.Tag
                     .Where(r => r.TenantId == tenantId)
                     .Where(t => t.Name == id || subfolders.Contains(t.Name))
-                    .Select(t => t.Id)
-                    .Contains(l.TagId)
-                )
-                .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, string, IEnumerable<string>, Task<int>> DeleteTagOriginAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string id, IEnumerable<string> subfolders) =>
-            ctx.Tag
-                .Where(r => r.TenantId == tenantId)
-                .Where(t => t.Name == id || subfolders.Contains(t.Name))
-                .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<int>> DeleteFilesSecurityAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<string> subfolders) =>
-            ctx.Security
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => subfolders.Contains(r.EntryId))
-                .Where(r => r.EntryType == FileEntryType.Folder)
-                .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, string, Task<int>> DeleteBunchObjectsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string id) =>
-            ctx.BunchObjects
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.LeftNode == id)
-                .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, int, int, Guid, Task<int>> UpdateFoldersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId, int parentId, Guid modifiedBy) =>
-            ctx.Folders
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<int>> DeleteFilesSecurityAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<string> subfolders) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => subfolders.Contains(r.EntryId))
+                    .Where(r => r.EntryType == FileEntryType.Folder)
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, string, Task<int>> DeleteBunchObjectsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string id) =>
+                ctx.BunchObjects
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.LeftNode == id)
+                    .ExecuteDelete());
+
+    public static readonly Func<FilesDbContext, int, int, int, Guid, Task<int>> UpdateFoldersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId, int parentId, Guid modifiedBy) =>
+                ctx.Folders
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == folderId)
                     .ExecuteUpdate(toUpdate => toUpdate
@@ -1829,219 +1849,239 @@ static file class FolderDaoQueries
                         .SetProperty(p => p.ModifiedOn, DateTime.UtcNow)
                         .SetProperty(p => p.ModifiedBy, modifiedBy)
                     ));
-    
-    public static readonly Func<FilesDbContext, int, Task<Dictionary<int, int>>> GetSubfolderDictionaryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int folderId) =>
-            ctx.Tree
+
+    public static readonly Func<FilesDbContext, int, Task<Dictionary<int, int>>> SubfolderDictionaryAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int folderId) =>
+                ctx.Tree
                     .Where(r => r.ParentId == folderId)
-                    .ToDictionary(r => r.FolderId, r => r.Level));   
-    
-    public static readonly Func<FilesDbContext, Dictionary<int, int>, Task<int>> DeleteTreesBySubfoldersDictionaryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, Dictionary<int, int> subfolders) =>
-            ctx.Tree
+                    .ToDictionary(r => r.FolderId, r => r.Level));
+
+    public static readonly Func<FilesDbContext, Dictionary<int, int>, Task<int>>
+        DeleteTreesBySubfoldersDictionaryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, Dictionary<int, int> subfolders) =>
+                ctx.Tree
                     .Where(r => subfolders.Keys.Contains(r.FolderId) && !subfolders.Keys.Contains(r.ParentId))
                     .ExecuteDelete());
-    
-    public static readonly Func<FilesDbContext, int, IAsyncEnumerable<DbFolderTree>> GetTreesOrderByLevel = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int toFolderId) =>
-            ctx.Tree
+
+    public static readonly Func<FilesDbContext, int, IAsyncEnumerable<DbFolderTree>> TreesOrderByLevel =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int toFolderId) =>
+                ctx.Tree
                     .Where(r => r.FolderId == toFolderId)
                     .OrderBy(r => r.Level)
-                    .AsQueryable()); 
+                    .AsQueryable());
     
     public static readonly Func<FilesDbContext, int, int, Task<bool>> AnyTreeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
         (FilesDbContext ctx, int parentId, int folderId) =>
             ctx.Tree
                 .Any(r => r.ParentId == parentId && r.FolderId == folderId));
-    
-    public static readonly Func<FilesDbContext, int, int, Task<string>> GetFolderTitleAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId) =>
-           ctx.Folders
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.Id == folderId)
-                .AsNoTracking()
-                .Select(r => r.Title.ToLower())
-                .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, int, int, Task<int>> GetFolderIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId, int parentId) =>
-          ctx.Folders
-                .AsNoTracking()
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.Title.ToLower() == ctx.Folders
+
+    public static readonly Func<FilesDbContext, int, int, Task<string>> FolderTitleAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Folders
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.Id == folderId)
                     .AsNoTracking()
                     .Select(r => r.Title.ToLower())
-                    .FirstOrDefault()
-                )
-                .Where(r => r.ParentId == parentId)
-                .Select(r => r.Id)
-                .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, int, int, IAsyncEnumerable<DbFile>> GetDbFilesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId, int conflict) =>
-          ctx.Files
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, int, int, Task<int>> FolderIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId, int parentId) =>
+                ctx.Folders
+                    .AsNoTracking()
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Title.ToLower() == ctx.Folders
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(r => r.Id == folderId)
+                        .AsNoTracking()
+                        .Select(r => r.Title.ToLower())
+                        .FirstOrDefault()
+                    )
+                    .Where(r => r.ParentId == parentId)
+                    .Select(r => r.Id)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, int, int, IAsyncEnumerable<DbFile>> DbFilesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId, int conflict) =>
+                ctx.Files
                     .AsNoTracking()
                     .Join(ctx.Files, f1 => f1.Title.ToLower(), f2 => f2.Title.ToLower(), (f1, f2) => new { f1, f2 })
                     .Where(r => r.f1.TenantId == tenantId && r.f1.CurrentVersion && r.f1.ParentId == folderId)
                     .Where(r => r.f2.TenantId == tenantId && r.f2.CurrentVersion && r.f2.ParentId == conflict)
-                    .Select(r => r.f1)); 
-    
-    public static readonly Func<FilesDbContext, int, int, Task<int[]>> GetArrayAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId) =>
-         ctx.Folders
+                    .Select(r => r.f1));
+
+    public static readonly Func<FilesDbContext, int, int, Task<int[]>> ArrayAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Folders
                     .AsNoTracking()
                     .Where(r => r.TenantId == tenantId)
                     .Where(r => r.ParentId == folderId)
                     .Select(r => r.Id)
                     .ToArray());
-    
-    public static readonly Func<FilesDbContext, int, int, Task<DbFolder>> GetFolderAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId) =>
-         ctx.Folders
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => r.Id == folderId)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, Task<int>> CountTreesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int parentId) =>
-         ctx.Tree
-            .Count(r => r.ParentId == parentId && r.Level > 0));
-    
-    public static readonly Func<FilesDbContext, int, int, Task<int>> CountFilesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int folderId) =>
-         ctx.Files
-            .Where(r=> r.TenantId == tenantId)
-            .Join(ctx.Tree, r => r.ParentId, r => r.FolderId, (file, tree) => new { tree, file })
-            .Where(r => r.tree.ParentId == folderId)
-            .Select(r => r.file.Id)
-            .Distinct()
-            .Count());
-    
-    public static readonly Func<FilesDbContext, int, int, Task<int>> UpdateFoldersCountAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, int id) =>
-         ctx.Folders
-            .Where(r=> r.TenantId == tenantId)
-            .Join(ctx.Tree, r => r.Id, r => r.ParentId, (file, tree) => new { file, tree })
-            .Where(r => r.tree.FolderId == id)
-            .Select(r => r.file)
-            .ExecuteUpdate(q =>
-                q.SetProperty(r => r.FoldersCount, r => ctx.Tree.Where(t => t.ParentId == r.Id).Count() - 1)
-            ));
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<int>, Guid, Task<int>> ReassignFoldersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<int> folderIds, Guid newOwnerId) =>
-          ctx.Folders
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => folderIds.Contains(r.Id))
-            .ExecuteUpdate(f => f.SetProperty(p => p.CreateBy, newOwnerId)));
 
-    public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<DbFolderQuery>> GetDbFolderQueriesByIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<int> ids) =>
-            ctx.Folders
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => ids.Contains(r.Id))
-                .Select(r =>
-                    new DbFolderQuery
+    public static readonly Func<FilesDbContext, int, int, Task<DbFolder>> FolderAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id == folderId)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, Task<int>> CountTreesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int parentId) =>
+                ctx.Tree
+                    .Count(r => r.ParentId == parentId && r.Level > 0));
+
+    public static readonly Func<FilesDbContext, int, int, Task<int>> CountFilesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Files
+                    .Where(r => r.TenantId == tenantId)
+                    .Join(ctx.Tree, r => r.ParentId, r => r.FolderId, (file, tree) => new { tree, file })
+                    .Where(r => r.tree.ParentId == folderId)
+                    .Select(r => r.file.Id)
+                    .Distinct()
+                    .Count());
+
+    public static readonly Func<FilesDbContext, int, int, Task<int>> UpdateFoldersCountAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int id) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Join(ctx.Tree, r => r.Id, r => r.ParentId, (file, tree) => new { file, tree })
+                    .Where(r => r.tree.FolderId == id)
+                    .Select(r => r.file)
+                    .ExecuteUpdate(q =>
+                        q.SetProperty(r => r.FoldersCount, r => ctx.Tree.Count(t => t.ParentId == r.Id) - 1)
+                    ));
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<int>, Guid, Task<int>> ReassignFoldersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<int> folderIds, Guid newOwnerId) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => folderIds.Contains(r.Id))
+                    .ExecuteUpdate(f => f.SetProperty(p => p.CreateBy, newOwnerId)));
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<DbFolderQuery>>
+        DbFolderQueriesByIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<int> ids) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ids.Contains(r.Id))
+                    .Select(r =>
+                        new DbFolderQuery
+                        {
+                            Folder = r,
+                            Root = (from f in ctx.Folders
+                                    where f.Id ==
+                                          (from t in ctx.Tree
+                                              where t.FolderId == r.ParentId
+                                              orderby t.Level descending
+                                              select t.ParentId
+                                          ).FirstOrDefault()
+                                    where f.TenantId == r.TenantId
+                                    select f
+                                ).FirstOrDefault()
+                        }
+                    ));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFolderQuery>>
+        DbFolderQueriesByTextAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string text) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Title.ToLower().Contains(text))
+                    .Select(r =>
+                        new DbFolderQuery
+                        {
+                            Folder = r,
+                            Root = (from f in ctx.Folders
+                                    where f.Id ==
+                                          (from t in ctx.Tree
+                                              where t.FolderId == r.ParentId
+                                              orderby t.Level descending
+                                              select t.ParentId
+                                          ).FirstOrDefault()
+                                    where f.TenantId == r.TenantId
+                                    select f
+                                ).FirstOrDefault()
+                        }
+                    ));
+
+    public static readonly Func<FilesDbContext, int, string[], Task<Dictionary<string, string>>>
+        NodeDictionaryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string[] keys) =>
+                ctx.BunchObjects
+                    .AsNoTracking()
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => keys.Length > 1 ? keys.Any(a => a == r.RightNode) : r.RightNode == keys[0])
+                    .ToDictionary(r => r.RightNode, r => r.LeftNode));
+
+    public static readonly Func<FilesDbContext, int, string, Task<string>> LeftNodeAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string key) =>
+                ctx.BunchObjects
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.RightNode == key)
+                    .Select(r => r.LeftNode)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, string, Task<string>> RightNodeAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string key) =>
+                ctx.BunchObjects
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.LeftNode == key)
+                    .Select(r => r.RightNode)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<OriginData>> OriginsDataAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<int> entriesIds) =>
+                ctx.TagLink.AsNoTracking()
+                    .Where(l => l.TenantId == tenantId)
+                    .Where(l => entriesIds.Contains(Convert.ToInt32(l.EntryId)))
+                    .Join(ctx.Tag.AsNoTracking()
+                            .Where(t => t.Type == TagType.Origin), l => l.TagId, t => t.Id,
+                        (l, t) => new { t.Name, t.Type, l.EntryType, l.EntryId })
+                    .GroupBy(r => r.Name, r => new { r.EntryId, r.EntryType })
+                    .Select(r => new OriginData
                     {
-                        Folder = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                 (from t in ctx.Tree
-                                  where t.FolderId == r.ParentId
-                                  orderby t.Level descending
-                                  select t.ParentId
-                                 ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    }
-                ));
-    
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFolderQuery>> GetDbFolderQueriesByTextAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string text) =>
-            ctx.Folders
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.Title.ToLower().Contains(text))
-                .Select(r =>
-                    new DbFolderQuery
-                    {
-                        Folder = r,
-                        Root = (from f in ctx.Folders
-                                where f.Id ==
-                                 (from t in ctx.Tree
-                                  where t.FolderId == r.ParentId
-                                  orderby t.Level descending
-                                  select t.ParentId
-                                 ).FirstOrDefault()
-                                where f.TenantId == r.TenantId
-                                select f
-                            ).FirstOrDefault()
-                    }
-                ));
-    
-    public static readonly Func<FilesDbContext, int, string[], Task<Dictionary<string, string>>> GetNodeDictionaryAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string[] keys) =>
-           ctx.BunchObjects
-            .AsNoTracking()
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => keys.Length > 1 ? keys.Any(a => a == r.RightNode) : r.RightNode == keys[0])
-            .ToDictionary(r => r.RightNode, r => r.LeftNode));
-    
-    public static readonly Func<FilesDbContext, int, string, Task<string>> GetLeftNodeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string key) =>
-           ctx.BunchObjects
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => r.RightNode == key)
-            .Select(r => r.LeftNode)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, string, Task<string>> GetRightNodeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string key) =>
-           ctx.BunchObjects
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => r.LeftNode == key)
-            .Select(r => r.RightNode)
-            .FirstOrDefault());
+                        OriginRoom = ctx.Folders.AsNoTracking().FirstOrDefault(f => f.TenantId == tenantId &&
+                            f.Id == ctx.Tree.AsNoTracking()
+                                .Where(t => t.FolderId == Convert.ToInt32(r.Key))
+                                .OrderByDescending(t => t.Level)
+                                .Select(t => t.ParentId)
+                                .Skip(1)
+                                .FirstOrDefault()),
+                        OriginFolder =
+                            ctx.Folders.AsNoTracking().FirstOrDefault(f =>
+                                f.TenantId == tenantId && f.Id == Convert.ToInt32(r.Key)),
+                        Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType))
+                            .ToHashSet()
+                    }));
 
-    public static readonly Func<FilesDbContext, int, IEnumerable<int>, IAsyncEnumerable<OriginData>> GetOriginsDataAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<int> entriesIds) =>
-            ctx.TagLink.AsNoTracking()
-                .Where(l => l.TenantId == tenantId)
-                .Where(l => entriesIds.Contains(Convert.ToInt32(l.EntryId)))
-                .Join(ctx.Tag.AsNoTracking()
-                    .Where(t => t.Type == TagType.Origin), l => l.TagId, t => t.Id, (l, t) => new { t.Name, t.Type, l.EntryType, l.EntryId })
-                .GroupBy(r => r.Name, r => new { r.EntryId, r.EntryType })
-                .Select(r => new OriginData
-                {
-                    OriginRoom = ctx.Folders.AsNoTracking().FirstOrDefault(f => f.TenantId == tenantId &&
-                                                                            f.Id == ctx.Tree.AsNoTracking()
-                                                                                .Where(t => t.FolderId == Convert.ToInt32(r.Key))
-                                                                                .OrderByDescending(t => t.Level)
-                                                                                .Select(t => t.ParentId)
-                                                                                .Skip(1)
-                                                                                .FirstOrDefault()),
-                    OriginFolder = ctx.Folders.AsNoTracking().FirstOrDefault(f => f.TenantId == tenantId && f.Id == Convert.ToInt32(r.Key)),
-                    Entries = r.Select(e => new KeyValuePair<string, FileEntryType>(e.EntryId, e.EntryType)).ToHashSet()
-                }));
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<Dictionary<string,string>>> GetNodeDictionaryByFolderIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, IEnumerable<string> folderIds) =>
-            ctx.BunchObjects
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => folderIds.Any(a => a == r.LeftNode))
-            .ToDictionary(r => r.LeftNode, r => r.RightNode));
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, Task<Dictionary<string, string>>>
+        NodeDictionaryByFolderIdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<string> folderIds) =>
+                ctx.BunchObjects
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => folderIds.Any(a => a == r.LeftNode))
+                    .ToDictionary(r => r.LeftNode, r => r.RightNode));
 
-    public static readonly Func<FilesDbContext, int, IAsyncEnumerable<ParentIdTitlePair>> GetParentIdTitlePairASync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int folderId) =>
-            ctx.Tree
-            .Join(ctx.Folders, r => r.ParentId, s => s.Id, (t, f) => new { Tree = t, Folders = f })
-            .Where(r => r.Tree.FolderId == folderId)
-            .OrderByDescending(r => r.Tree.Level)
-            .Select(r => new ParentIdTitlePair 
-            { 
-                ParentId = r.Tree.ParentId,
-                Title = r.Folders.Title 
-            }));
+    public static readonly Func<FilesDbContext, int, IAsyncEnumerable<ParentIdTitlePair>> ParentIdTitlePairAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int folderId) =>
+                ctx.Tree
+                    .Join(ctx.Folders, r => r.ParentId, s => s.Id, (t, f) => new { Tree = t, Folders = f })
+                    .Where(r => r.Tree.FolderId == folderId)
+                    .OrderByDescending(r => r.Tree.Level)
+                    .Select(r => new ParentIdTitlePair { ParentId = r.Tree.ParentId, Title = r.Folders.Title }));
 }

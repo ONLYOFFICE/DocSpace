@@ -54,11 +54,11 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-            var minid = Queries.GetMinId(filesDbContext, lastIndexed);
+            var minid = Queries.FolderMinId(filesDbContext, lastIndexed);
 
-            var maxid = Queries.GetMaxId(filesDbContext, lastIndexed);
+            var maxid = Queries.FolderMaxId(filesDbContext, lastIndexed);
 
-            var count = Queries.GetCount(filesDbContext, lastIndexed);
+            var count = Queries.FoldersCount(filesDbContext, lastIndexed);
 
             return new(count, maxid, minid);
         }
@@ -66,7 +66,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
         List<DbFolder> getData(long start, long stop, DateTime lastIndexed)
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            return Queries.GetData(filesDbContext, lastIndexed, start, stop).ToList();
+            return Queries.FolderData(filesDbContext, lastIndexed, start, stop).ToList();
         }
 
         List<int> getIds(DateTime lastIndexed)
@@ -78,7 +78,7 @@ public class FactoryIndexerFolder : FactoryIndexer<DbFolder>
 
             while (true)
             {
-                var id = Queries.GetId(filesDbContext, lastIndexed, start);
+                var id = Queries.FolderId(filesDbContext, lastIndexed, start);
                 if (id != 0)
                 {
                     start = id;
@@ -146,52 +146,62 @@ public static class FactoryIndexerFolderExtension
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, DateTime, int> GetMinId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (FilesDbContext ctx, DateTime lastIndexed) =>
-        ctx.Folders
-            .Where(r => r.ModifiedOn >= lastIndexed)
-            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
-            .Where(r => r.DbTenant.Status == TenantStatus.Active)
-            .OrderBy(r => r.DbFolder.Id)
-            .Select(r => r.DbFolder.Id)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, DateTime, int> GetMaxId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (FilesDbContext ctx, DateTime lastIndexed) =>
-        ctx.Folders
-            .Where(r => r.ModifiedOn >= lastIndexed)
-            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
-            .Where(r => r.DbTenant.Status == TenantStatus.Active)
-            .OrderByDescending(r => r.DbFolder.Id)
-            .Select(r => r.DbFolder.Id)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, DateTime, int> GetCount = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (FilesDbContext ctx, DateTime lastIndexed) =>
-        ctx.Folders
-            .Where(r => r.ModifiedOn >= lastIndexed)
-            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
-            .Where(r => r.DbTenant.Status == TenantStatus.Active)
-            .Count());
-    
-    public static readonly Func<FilesDbContext, DateTime, long, int> GetId = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (FilesDbContext ctx, DateTime lastIndexed, long start) =>
-        ctx.Folders
-            .Where(r => r.ModifiedOn >= lastIndexed)
-            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
-            .Where(r => r.DbTenant.Status == TenantStatus.Active)
-            .Where(r => r.DbFolder.Id >= start)
-            .OrderBy(r => r.DbFolder.Id)
-            .Select(r => r.DbFolder.Id)
-            .Skip(BaseIndexer<DbFolder>.QueryLimit)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, DateTime, long, long, IEnumerable<DbFolder>> GetData = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (FilesDbContext ctx, DateTime lastIndexed, long start, long stop) =>
-        ctx.Folders
-            .Where(r => r.ModifiedOn >= lastIndexed)
-            .Join(ctx.Tenants, r => r.TenantId, r => r.Id, (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
-            .Where(r => r.DbTenant.Status == TenantStatus.Active)
-            .Where(r => r.DbFolder.Id >= start && r.DbFolder.Id <= stop)
-            .Select(r => r.DbFolder));
+    public static readonly Func<FilesDbContext, DateTime, int> FolderMinId =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (FilesDbContext ctx, DateTime lastIndexed) =>
+                ctx.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
+                    .Join(ctx.Tenants, r => r.TenantId, r => r.Id,
+                        (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Where(r => r.DbTenant.Status == TenantStatus.Active)
+                    .OrderBy(r => r.DbFolder.Id)
+                    .Select(r => r.DbFolder.Id)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, DateTime, int> FolderMaxId =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (FilesDbContext ctx, DateTime lastIndexed) =>
+                ctx.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
+                    .Join(ctx.Tenants, r => r.TenantId, r => r.Id,
+                        (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Where(r => r.DbTenant.Status == TenantStatus.Active)
+                    .OrderByDescending(r => r.DbFolder.Id)
+                    .Select(r => r.DbFolder.Id)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, DateTime, int> FoldersCount =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (FilesDbContext ctx, DateTime lastIndexed) =>
+                ctx.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
+                    .Join(ctx.Tenants, r => r.TenantId, r => r.Id,
+                        (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Where(r => r.DbTenant.Status == TenantStatus.Active)
+                    .Count());
+
+    public static readonly Func<FilesDbContext, DateTime, long, int> FolderId =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (FilesDbContext ctx, DateTime lastIndexed, long start) =>
+                ctx.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
+                    .Join(ctx.Tenants, r => r.TenantId, r => r.Id,
+                        (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Where(r => r.DbTenant.Status == TenantStatus.Active)
+                    .Where(r => r.DbFolder.Id >= start)
+                    .OrderBy(r => r.DbFolder.Id)
+                    .Select(r => r.DbFolder.Id)
+                    .Skip(BaseIndexer<DbFolder>.QueryLimit)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, DateTime, long, long, IEnumerable<DbFolder>> FolderData =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (FilesDbContext ctx, DateTime lastIndexed, long start, long stop) =>
+                ctx.Folders
+                    .Where(r => r.ModifiedOn >= lastIndexed)
+                    .Join(ctx.Tenants, r => r.TenantId, r => r.Id,
+                        (f, t) => new FolderTenant { DbFolder = f, DbTenant = t })
+                    .Where(r => r.DbTenant.Status == TenantStatus.Active)
+                    .Where(r => r.DbFolder.Id >= start && r.DbFolder.Id <= stop)
+                    .Select(r => r.DbFolder));
 }

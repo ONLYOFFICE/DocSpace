@@ -111,7 +111,7 @@ internal class ProviderAccountDao : IProviderDao
         try
         {
             var filesDbContext = _dbContextFactory.CreateDbContext();
-            var thirdpartyAccounts = Queries.GetThirdpartyAccountsAsync(filesDbContext, TenantID, userId);
+            var thirdpartyAccounts = Queries.ThirdpartyAccountsAsync(filesDbContext, TenantID, userId);
 
             return thirdpartyAccounts.Select(ToProviderInfo);
         }
@@ -138,7 +138,7 @@ internal class ProviderAccountDao : IProviderDao
         try
         {
             var filesDbContext = _dbContextFactory.CreateDbContext();
-            return Queries.GetThirdpartyAccountsByFilterAsync(filesDbContext, TenantID, linkId, folderType, _securityContext.CurrentAccount.ID, GetSearchText(searchText))
+            return Queries.ThirdpartyAccountsByFilterAsync(filesDbContext, TenantID, linkId, folderType, _securityContext.CurrentAccount.ID, GetSearchText(searchText))
                 .Select(ToProviderInfo);
         }
         catch (Exception e)
@@ -198,7 +198,7 @@ internal class ProviderAccountDao : IProviderDao
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var forUpdate = await Queries.GetThirdpartyAccountAsync(filesDbContext, TenantID, linkId);
+        var forUpdate = await Queries.ThirdpartyAccountAsync(filesDbContext, TenantID, linkId);
 
         if (forUpdate == null)
         {
@@ -215,7 +215,7 @@ internal class ProviderAccountDao : IProviderDao
     public async Task<bool> UpdateProviderInfoAsync(int linkId, bool hasLogo)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var forUpdate = await Queries.GetThirdpartyAccountAsync(filesDbContext, TenantID, linkId);
+        var forUpdate = await Queries.ThirdpartyAccountAsync(filesDbContext, TenantID, linkId);
 
         if (forUpdate == null)
         {
@@ -232,7 +232,7 @@ internal class ProviderAccountDao : IProviderDao
     public async Task<bool> UpdateProviderInfoAsync(int linkId, string title, string folderId, FolderType roomType, bool @private)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var forUpdate = await Queries.GetThirdpartyAccountAsync(filesDbContext, TenantID, linkId);
+        var forUpdate = await Queries.ThirdpartyAccountAsync(filesDbContext, TenantID, linkId);
 
         if (forUpdate == null)
         {
@@ -274,7 +274,7 @@ internal class ProviderAccountDao : IProviderDao
             DbFilesThirdpartyAccount input;
             try
             {
-                input = await Queries.GetThirdpartyAccountByLinkIdAsync(filesDbContext, TenantID, linkId);
+                input = await Queries.ThirdpartyAccountByLinkIdAsync(filesDbContext, TenantID, linkId);
             }
             catch (Exception e)
             {
@@ -304,7 +304,7 @@ internal class ProviderAccountDao : IProviderDao
             }
         }
 
-        var toUpdate = Queries.GetThirdpartyAccountsByLinkIdAsync(filesDbContext, TenantID, linkId);
+        var toUpdate = Queries.ThirdpartyAccountsByLinkIdAsync(filesDbContext, TenantID, linkId);
 
         await foreach (var t in toUpdate)
         {
@@ -344,7 +344,7 @@ internal class ProviderAccountDao : IProviderDao
         DbFilesThirdpartyAccount thirdparty;
         try
         {
-            thirdparty = await Queries.GetThirdpartyBackupAccountAsync(filesDbContext, TenantID);
+            thirdparty = await Queries.ThirdpartyBackupAccountAsync(filesDbContext, TenantID);
         }
         catch (Exception e)
         {
@@ -397,17 +397,17 @@ internal class ProviderAccountDao : IProviderDao
 
         var folderId = (await GetProviderInfoAsync(linkId)).RootFolderId;
 
-        var entryIDs = await Queries.GetHashIdsAsync(filesDbContext, TenantID, folderId).ToListAsync();
+        var entryIDs = await Queries.HashIdsAsync(filesDbContext, TenantID, folderId).ToListAsync();
 
-        var forDelete = await Queries.GetDbFilesSecuritiesAsync(filesDbContext, TenantID, entryIDs).ToListAsync();
+        var forDelete = await Queries.DbFilesSecuritiesAsync(filesDbContext, TenantID, entryIDs).ToListAsync();
 
         filesDbContext.Security.RemoveRange(forDelete);
 
-        var linksForDelete = await Queries.GetDbFilesTagLinksAsync(filesDbContext, TenantID, entryIDs).ToListAsync();
+        var linksForDelete = await Queries.DbFilesTagLinksAsync(filesDbContext, TenantID, entryIDs).ToListAsync();
 
         filesDbContext.TagLink.RemoveRange(linksForDelete);
 
-        var accountsForDelete = await Queries.GetThirdpartyAccountsByLinkIdAsync(filesDbContext, TenantID, linkId).ToListAsync();
+        var accountsForDelete = await Queries.ThirdpartyAccountsByLinkIdAsync(filesDbContext, TenantID, linkId).ToListAsync();
 
         filesDbContext.ThirdpartyAccount.RemoveRange(accountsForDelete);
         await filesDbContext.SaveChangesAsync();
@@ -746,76 +746,89 @@ public static class ProviderAccountDaoExtension
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<DbFilesThirdpartyAccount>> GetThirdpartyAccountsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, Guid userId) =>
-        ctx.ThirdpartyAccount
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => r.UserId == userId));
+    public static readonly Func<FilesDbContext, int, Guid, IAsyncEnumerable<DbFilesThirdpartyAccount>>
+        ThirdpartyAccountsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, Guid userId) =>
+                ctx.ThirdpartyAccount
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.UserId == userId));
 
-    public static readonly Func<FilesDbContext, int, int, FolderType, Guid, string, IAsyncEnumerable<DbFilesThirdpartyAccount>> GetThirdpartyAccountsByFilterAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
-        ctx.ThirdpartyAccount
-            .AsNoTracking()
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) || r.UserId == userId || r.FolderType == FolderType.ThirdpartyBackup)
-            .Where(r => linkId == -1 || r.Id == linkId)
-            .Where(r => folderType == FolderType.DEFAULT && !(r.FolderType == FolderType.ThirdpartyBackup && linkId == -1) || r.FolderType == folderType)
-            .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText)));
-    
-    public static readonly Func<FilesDbContext, int, int, Task<DbFilesThirdpartyAccount>> GetThirdpartyAccountAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, int linkId) =>
-        ctx.ThirdpartyAccount
-            .Where(r => r.Id == linkId)
-            .Where(r => r.TenantId == tenantId)
-            .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, int, string, string, string , string, Task<int>> UpdateThirdpartyAccountsAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, int linkId, string login, string password, string token, string url) =>
-        ctx.ThirdpartyAccount
-            .Where(r => r.Id == linkId)
-            .Where(r => r.TenantId == tenantId)
-            .ExecuteUpdate(f => f
-                .SetProperty(p => p.UserName, login)
-                .SetProperty(p => p.Password, password)
-                .SetProperty(p => p.Token, token)
-                .SetProperty(p => p.Url, url)));
-    
-    public static readonly Func<FilesDbContext, int, int, Task<DbFilesThirdpartyAccount>> GetThirdpartyAccountByLinkIdAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, int linkId) =>
-        ctx.ThirdpartyAccount
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.Id == linkId)
-                .Single());
-    
-    public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFilesThirdpartyAccount>> GetThirdpartyAccountsByLinkIdAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, int linkId) =>
-        ctx.ThirdpartyAccount
-            .Where(r => r.Id == linkId)
-            .Where(r => r.TenantId == tenantId));
-    
-    public static readonly Func<FilesDbContext, int, Task<DbFilesThirdpartyAccount>> GetThirdpartyBackupAccountAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId) =>
-       ctx.ThirdpartyAccount
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => r.FolderType == FolderType.ThirdpartyBackup)
-            .Single());
-    
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<string>> GetHashIdsAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, string folderId) =>
-       ctx.ThirdpartyIdMapping
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => r.Id.StartsWith(folderId))
-            .Select(r => r.HashId));
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesSecurity>> GetDbFilesSecuritiesAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIDs) =>
-       ctx.Security
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => entryIDs.Any(a => a == r.EntryId)));
-    
-    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesTagLink>> GetDbFilesTagLinksAsync = EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIDs) =>
-       ctx.TagLink
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => entryIDs.Any(e => e == r.EntryId)));
+    public static readonly
+        Func<FilesDbContext, int, int, FolderType, Guid, string, IAsyncEnumerable<DbFilesThirdpartyAccount>>
+        ThirdpartyAccountsByFilterAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int linkId, FolderType folderType, Guid userId, string searchText) =>
+                ctx.ThirdpartyAccount
+                    .AsNoTracking()
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => !(folderType == FolderType.USER || folderType == FolderType.DEFAULT && linkId == -1) ||
+                                r.UserId == userId || r.FolderType == FolderType.ThirdpartyBackup)
+                    .Where(r => linkId == -1 || r.Id == linkId)
+                    .Where(r => folderType == FolderType.DEFAULT &&
+                        !(r.FolderType == FolderType.ThirdpartyBackup && linkId == -1) || r.FolderType == folderType)
+                    .Where(r => searchText == "" || r.Title.ToLower().Contains(searchText)));
+
+    public static readonly Func<FilesDbContext, int, int, Task<DbFilesThirdpartyAccount>> ThirdpartyAccountAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int linkId) =>
+                ctx.ThirdpartyAccount
+                    .Where(r => r.Id == linkId)
+                    .Where(r => r.TenantId == tenantId)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, int, string, string, string, string, Task<int>>
+        UpdateThirdpartyAccountsAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int linkId, string login, string password, string token, string url) =>
+                ctx.ThirdpartyAccount
+                    .Where(r => r.Id == linkId)
+                    .Where(r => r.TenantId == tenantId)
+                    .ExecuteUpdate(f => f
+                        .SetProperty(p => p.UserName, login)
+                        .SetProperty(p => p.Password, password)
+                        .SetProperty(p => p.Token, token)
+                        .SetProperty(p => p.Url, url)));
+
+    public static readonly Func<FilesDbContext, int, int, Task<DbFilesThirdpartyAccount>>
+        ThirdpartyAccountByLinkIdAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int linkId) =>
+                ctx.ThirdpartyAccount
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id == linkId)
+                    .Single());
+
+    public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFilesThirdpartyAccount>>
+        ThirdpartyAccountsByLinkIdAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int linkId) =>
+                ctx.ThirdpartyAccount
+                    .Where(r => r.Id == linkId)
+                    .Where(r => r.TenantId == tenantId));
+
+    public static readonly Func<FilesDbContext, int, Task<DbFilesThirdpartyAccount>> ThirdpartyBackupAccountAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId) =>
+                ctx.ThirdpartyAccount
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.FolderType == FolderType.ThirdpartyBackup)
+                    .Single());
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<string>> HashIdsAsync =
+        EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string folderId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id.StartsWith(folderId))
+                    .Select(r => r.HashId));
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesSecurity>>
+        DbFilesSecuritiesAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIDs) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => entryIDs.Any(a => a == r.EntryId)));
+
+    public static readonly Func<FilesDbContext, int, IEnumerable<string>, IAsyncEnumerable<DbFilesTagLink>>
+        DbFilesTagLinksAsync = EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIDs) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => entryIDs.Any(e => e == r.EntryId)));
 }

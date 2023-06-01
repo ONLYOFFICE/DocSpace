@@ -121,21 +121,23 @@ public class StatisticManager
 
 static file class Queries
 {
-    public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>> UserVisitsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
-            ctx.WebstudioUserVisit
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
-                .OrderBy(r => r.VisitDate)
-                .GroupBy(r => r.VisitDate)
-                .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) }));
-    
-    public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>> UserVisitsGroupByUserIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
-            ctx.WebstudioUserVisit
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
-                .OrderBy(r => r.VisitDate)
-                .GroupBy(r => new { r.UserId, r.VisitDate })
-                .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId }));
+    public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>>
+        UserVisitsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
+                ctx.WebstudioUserVisit
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+                    .OrderBy(r => r.VisitDate)
+                    .GroupBy(r => r.VisitDate)
+                    .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) }));
+
+    public static readonly Func<WebstudioDbContext, int, DateTime, DateTime, IAsyncEnumerable<UserVisit>>
+        UserVisitsGroupByUserIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, int tenantId, DateTime startDate, DateTime endPeriod) =>
+                ctx.WebstudioUserVisit
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
+                    .OrderBy(r => r.VisitDate)
+                    .GroupBy(r => new { r.UserId, r.VisitDate })
+                    .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId }));
 }

@@ -46,7 +46,7 @@ public class DbRadicale
     public async Task RemoveCardDavUserAsync(int tenant, Guid id)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        var userDav = await Queries.GetUserDavAsync(userDbContext, tenant, id);
+        var userDav = await Queries.UserDavAsync(userDbContext, tenant, id);
         if (userDav != null)
         {
             userDbContext.UsersDav.Remove(userDav);
@@ -63,11 +63,13 @@ public class DbRadicale
 
 static file class Queries
 {
-    public static readonly Func<UserDbContext, int, Guid, Task<UserDav>> GetUserDavAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (UserDbContext ctx, int tenantId, Guid userId) =>
-        ctx.UsersDav.FirstOrDefault(r => r.TenantId == tenantId && r.UserId == userId));
-    
-    public static readonly Func<UserDbContext, int, Guid, Task<bool>> UserDavAnyAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (UserDbContext ctx, int tenantId, Guid userId) =>
-        ctx.UsersDav.Any(r => r.TenantId == tenantId && r.UserId == userId));
+    public static readonly Func<UserDbContext, int, Guid, Task<UserDav>> UserDavAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid userId) =>
+                ctx.UsersDav.FirstOrDefault(r => r.TenantId == tenantId && r.UserId == userId));
+
+    public static readonly Func<UserDbContext, int, Guid, Task<bool>> UserDavAnyAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid userId) =>
+                ctx.UsersDav.Any(r => r.TenantId == tenantId && r.UserId == userId));
 }

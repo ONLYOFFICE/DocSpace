@@ -109,13 +109,13 @@ class DbAzService : IAzService
     private async Task<bool> ExistEscapeRecordAsync(AzRecord r)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        return await Queries.AclAnyAsync(userDbContext, Tenant.DefaultTenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
+        return await Queries.AnyAclAsync(userDbContext, Tenant.DefaultTenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
     }
 
     private async Task DeleteRecordAsync(AzRecord r)
     {
         using var userDbContext = _dbContextFactory.CreateDbContext();
-        var record = await Queries.GetAclAsync(userDbContext, r.Tenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
+        var record = await Queries.AclAsync(userDbContext, r.Tenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
 
         if (record != null)
         {
@@ -134,23 +134,25 @@ class DbAzService : IAzService
 
 static file class Queries
 {
-    public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<bool>> AclAnyAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
-        ctx.Acl
-            .Where(r => r.Tenant == tenantId)
-            .Where(r => r.Subject == subject)
-            .Where(r => r.Action == action)
-            .Where(r => r.Object == obj)
-            .Where(r => r.AceType == aceType)
-            .Any());
-    
-    public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<Acl>> GetAclAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
-        ctx.Acl
-            .Where(r => r.Tenant == tenantId)
-            .Where(r => r.Subject == subject)
-            .Where(r => r.Action == action)
-            .Where(r => r.Object == obj)
-            .Where(r => r.AceType == aceType)
-            .FirstOrDefault());
+    public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<bool>> AnyAclAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
+                ctx.Acl
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.Subject == subject)
+                    .Where(r => r.Action == action)
+                    .Where(r => r.Object == obj)
+                    .Where(r => r.AceType == aceType)
+                    .Any());
+
+    public static readonly Func<UserDbContext, int, Guid, Guid, string, AceType, Task<Acl>> AclAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (UserDbContext ctx, int tenantId, Guid subject, Guid action, string obj, AceType aceType) =>
+                ctx.Acl
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.Subject == subject)
+                    .Where(r => r.Action == action)
+                    .Where(r => r.Object == obj)
+                    .Where(r => r.AceType == aceType)
+                    .FirstOrDefault());
 }

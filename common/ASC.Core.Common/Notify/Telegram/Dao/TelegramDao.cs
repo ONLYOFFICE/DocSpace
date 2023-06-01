@@ -81,22 +81,25 @@ public class TelegramDao
 
 static file class Queries
 {
-    public static readonly Func<TelegramDbContext, long, IAsyncEnumerable<TelegramUser>> TelegramUsersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (TelegramDbContext ctx, long telegramId) =>
-            ctx.Users
-                .AsNoTracking()
-                .Where(r => r.TelegramUserId == telegramId));
-    
-    public static readonly Func<TelegramDbContext, int, Guid, Task<int>> DeleteTelegramUsersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (TelegramDbContext ctx, int tenantId, Guid userId) =>
-            ctx.Users
-                .Where(r => r.PortalUserId == userId)
-                .Where(r => r.TenantId == tenantId)
-                .ExecuteDelete());
-    
-    public static readonly Func<TelegramDbContext, long, Task<int>> DeleteTelegramUsersByTelegramIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (TelegramDbContext ctx, long telegramId) =>
-            ctx.Users
-                .Where(r => r.TelegramUserId == telegramId)
-                .ExecuteDelete());
+    public static readonly Func<TelegramDbContext, long, IAsyncEnumerable<TelegramUser>> TelegramUsersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TelegramDbContext ctx, long telegramId) =>
+                ctx.Users
+                    .AsNoTracking()
+                    .Where(r => r.TelegramUserId == telegramId));
+
+    public static readonly Func<TelegramDbContext, int, Guid, Task<int>> DeleteTelegramUsersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TelegramDbContext ctx, int tenantId, Guid userId) =>
+                ctx.Users
+                    .Where(r => r.PortalUserId == userId)
+                    .Where(r => r.TenantId == tenantId)
+                    .ExecuteDelete());
+
+    public static readonly Func<TelegramDbContext, long, Task<int>> DeleteTelegramUsersByTelegramIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TelegramDbContext ctx, long telegramId) =>
+                ctx.Users
+                    .Where(r => r.TelegramUserId == telegramId)
+                    .ExecuteDelete());
 }

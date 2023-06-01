@@ -150,9 +150,11 @@ public static class FilesSpaceUsageStatExtension
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, Guid, int, int, Task<long>> SumContentLengthAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, Guid userId, int my, int trash) =>
-        ctx.Files
-            .Where(r => r.TenantId == tenantId && r.CreateBy == userId && (r.ParentId == my || r.ParentId == trash))
-            .Sum(r => r.ContentLength));
+    public static readonly Func<FilesDbContext, int, Guid, int, int, Task<long>> SumContentLengthAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, Guid userId, int my, int trash) =>
+                ctx.Files
+                    .Where(r => r.TenantId == tenantId && r.CreateBy == userId &&
+                                (r.ParentId == my || r.ParentId == trash))
+                    .Sum(r => r.ContentLength));
 }

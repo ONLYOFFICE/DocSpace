@@ -448,7 +448,7 @@ public class FileUtility
             }
 
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var list = Queries.GetFolders(filesDbContext);
+            var list = Queries.Folders(filesDbContext);
 
             foreach (var item in list)
             {
@@ -483,7 +483,7 @@ public class FileUtility
             }
 
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            var list = await Queries.GetFoldersAsync(filesDbContext).ToListAsync();
+            var list = await Queries.FoldersAsync(filesDbContext).ToListAsync();
 
             foreach (var item in list)
             {
@@ -747,11 +747,13 @@ public class FileUtility
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, IEnumerable<FilesConverts>> GetFolders = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (FilesDbContext ctx) =>
-        ctx.FilesConverts.AsNoTracking());
-    
-    public static readonly Func<FilesDbContext, IAsyncEnumerable<FilesConverts>> GetFoldersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FilesDbContext ctx) =>
-        ctx.FilesConverts.AsNoTracking());
+    public static readonly Func<FilesDbContext, IEnumerable<FilesConverts>> Folders =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (FilesDbContext ctx) =>
+                ctx.FilesConverts.AsNoTracking());
+
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<FilesConverts>> FoldersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.FilesConverts.AsNoTracking());
 }

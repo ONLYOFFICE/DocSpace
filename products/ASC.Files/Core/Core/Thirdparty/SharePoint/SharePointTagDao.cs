@@ -113,10 +113,10 @@ static file class Queries
             Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
                 (FilesDbContext ctx, int tenantId, IEnumerable<string> entryIds, Guid owner) =>
                     (from r in ctx.Tag
-                    from l in ctx.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
-                    where r.TenantId == tenantId && l.TenantId == tenantId && r.Type == TagType.New &&
-                          entryIds.Contains(l.EntryId)
-                    select new TagLinkTagPair { Tag = r, TagLink = l })
+                        from l in ctx.TagLink.Where(a => a.TenantId == r.TenantId && a.TagId == r.Id).DefaultIfEmpty()
+                        where r.TenantId == tenantId && l.TenantId == tenantId && r.Type == TagType.New &&
+                              entryIds.Contains(l.EntryId)
+                        select new TagLinkTagPair { Tag = r, TagLink = l })
                     .Where(r => owner != Guid.Empty && r.Tag.Owner == owner)
                     .Distinct());
 }

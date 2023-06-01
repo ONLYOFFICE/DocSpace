@@ -59,7 +59,7 @@ public class FeedAggregateDataProvider
     public async Task<DateTime> GetLastTimeAggregateAsync(string key)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        var value = await Queries.GetLastTimeAsync(feedDbContext, key);
+        var value = await Queries.LastTimeAsync(feedDbContext, key);
 
         return value != default ? value.AddSeconds(1) : value;
     }
@@ -113,7 +113,7 @@ public class FeedAggregateDataProvider
 
             if (f.ClearRightsBeforeInsert)
             {
-                var fu = await Queries.GetFeedUsersAsync(feedDbContext, f.Id);
+                var fu = await Queries.FeedUsersAsync(feedDbContext, f.Id);
                 if (fu != null)
                 {
                     feedDbContext.FeedUsers.Remove(fu);
@@ -141,8 +141,8 @@ public class FeedAggregateDataProvider
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
 
-        var aggregates = await Queries.GetFeedAggregatesByFromTimeAsync(feedDbContext, fromTime).ToListAsync();
-        var users = await Queries.GetFeedsUsersByFromTimeAsync(feedDbContext, fromTime).ToListAsync();
+        var aggregates = await Queries.FeedAggregatesByFromTimeAsync(feedDbContext, fromTime).ToListAsync();
+        var users = await Queries.FeedsUsersByFromTimeAsync(feedDbContext, fromTime).ToListAsync();
 
         feedDbContext.FeedAggregates.RemoveRange(aggregates);
         feedDbContext.FeedUsers.RemoveRange(users);
@@ -293,13 +293,13 @@ public class FeedAggregateDataProvider
     public async Task<IEnumerable<int>> GetTenantsAsync(TimeInterval interval)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetKeysAsync(feedDbContext, interval.From, interval.To).ToListAsync();
+        return await Queries.KeysAsync(feedDbContext, interval.From, interval.To).ToListAsync();
     }
 
     public async Task<FeedResultItem> GetFeedItemAsync(string id)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        var news = await Queries.GetFeedAggregateAsync(feedDbContext, id);
+        var news = await Queries.FeedAggregateAsync(feedDbContext, id);
 
         return _mapper.Map<FeedAggregate, FeedResultItem>(news);
     }
@@ -307,8 +307,8 @@ public class FeedAggregateDataProvider
     public async Task RemoveFeedItemAsync(string id)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        var aggregates = await Queries.GetFeedAggregatesAsync(feedDbContext, id).ToListAsync();
-        var users = await Queries.GetFeedsUsersAsync(feedDbContext, id).ToListAsync();
+        var aggregates = await Queries.FeedAggregatesAsync(feedDbContext, id).ToListAsync();
+        var users = await Queries.FeedsUsersAsync(feedDbContext, id).ToListAsync();
 
         feedDbContext.FeedAggregates.RemoveRange(aggregates);
         feedDbContext.FeedUsers.RemoveRange(users);
@@ -340,61 +340,68 @@ public class FeedResultItem : IMapFrom<FeedAggregate>
 
 static file class Queries
 {
-    public static readonly Func<FeedDbContext, string, Task<DateTime>> GetLastTimeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, string key) =>
-        ctx.FeedLast
-            .Where(r => r.LastKey == key)
-            .Select(r => r.LastDate)
-            .FirstOrDefault());
-    
-    public static readonly Func<FeedDbContext, string, Task<FeedUsers>> GetFeedUsersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, string id) =>
-        ctx.FeedUsers
-            .Where(r => r.FeedId == id)
-            .FirstOrDefault());
-    
-    public static readonly Func<FeedDbContext, DateTime, IAsyncEnumerable<FeedAggregate>> GetFeedAggregatesByFromTimeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, DateTime fromTime) =>
-        ctx.FeedAggregates
-            .Where(r => r.AggregateDate <= fromTime));
-    
-    public static readonly Func<FeedDbContext, DateTime, IAsyncEnumerable<FeedUsers>> GetFeedsUsersByFromTimeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, DateTime fromTime) =>
-        ctx.FeedUsers
-            .Where(r => ctx.FeedAggregates.Where(r => r.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)));
-    
-    public static readonly Func<FeedDbContext, int, Guid, DateTime, Task<int>> CountFeedAggregatesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, int tenantId, Guid id, DateTime lastReadedTime) =>
-        ctx.FeedAggregates
-            .Where(r => r.Tenant == tenantId)
-            .Where(r => r.ModifiedBy != id)
-            .Join(ctx.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
-            .Where(r => r.user.UserId == id)
-            .Where(r => 1 < lastReadedTime.Year && r.agg.AggregateDate >= lastReadedTime)
-            .Take(1001)
-            .Select(r => r.agg.Id)
-            .Count()); 
-    
-    public static readonly Func<FeedDbContext, DateTime, DateTime, IAsyncEnumerable<int>> GetKeysAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, DateTime from, DateTime to) =>
-        ctx.FeedAggregates
-            .Where(r => r.AggregateDate >= from && r.AggregateDate <= to)
-            .GroupBy(r => r.Tenant)
-            .Select(r => r.Key));
-    
-    public static readonly Func<FeedDbContext, string, Task<FeedAggregate>> GetFeedAggregateAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, string id) =>
-        ctx.FeedAggregates
-            .Where(r => r.Id == id)
-            .FirstOrDefault());
-    
-    public static readonly Func<FeedDbContext, string, IAsyncEnumerable<FeedAggregate>> GetFeedAggregatesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, string id) =>
-        ctx.FeedAggregates
-            .Where(r => r.Id == id));
-    
-    public static readonly Func<FeedDbContext, string, IAsyncEnumerable<FeedUsers>> GetFeedsUsersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, string id) =>
-        ctx.FeedUsers
-            .Where(r => r.FeedId == id)); 
+    public static readonly Func<FeedDbContext, string, Task<DateTime>> LastTimeAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, string key) =>
+                ctx.FeedLast
+                    .Where(r => r.LastKey == key)
+                    .Select(r => r.LastDate)
+                    .FirstOrDefault());
+
+    public static readonly Func<FeedDbContext, string, Task<FeedUsers>> FeedUsersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, string id) =>
+                ctx.FeedUsers
+                    .FirstOrDefault(r => r.FeedId == id));
+
+    public static readonly Func<FeedDbContext, DateTime, IAsyncEnumerable<FeedAggregate>>
+        FeedAggregatesByFromTimeAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, DateTime fromTime) =>
+                ctx.FeedAggregates
+                    .Where(r => r.AggregateDate <= fromTime));
+
+    public static readonly Func<FeedDbContext, DateTime, IAsyncEnumerable<FeedUsers>> FeedsUsersByFromTimeAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, DateTime fromTime) =>
+                ctx.FeedUsers
+                    .Where(r => ctx.FeedAggregates.Where(f => f.AggregateDate <= fromTime).Any(a => a.Id == r.FeedId)));
+
+    public static readonly Func<FeedDbContext, int, Guid, DateTime, Task<int>> CountFeedAggregatesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, int tenantId, Guid id, DateTime lastReadedTime) =>
+                ctx.FeedAggregates
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.ModifiedBy != id)
+                    .Join(ctx.FeedUsers, r => r.Id, u => u.FeedId, (agg, user) => new { agg, user })
+                    .Where(r => r.user.UserId == id)
+                    .Where(r => 1 < lastReadedTime.Year && r.agg.AggregateDate >= lastReadedTime)
+                    .Take(1001)
+                    .Select(r => r.agg.Id)
+                    .Count());
+
+    public static readonly Func<FeedDbContext, DateTime, DateTime, IAsyncEnumerable<int>> KeysAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, DateTime from, DateTime to) =>
+                ctx.FeedAggregates
+                    .Where(r => r.AggregateDate >= from && r.AggregateDate <= to)
+                    .GroupBy(r => r.Tenant)
+                    .Select(r => r.Key));
+
+    public static readonly Func<FeedDbContext, string, Task<FeedAggregate>> FeedAggregateAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, string id) =>
+                ctx.FeedAggregates
+                    .FirstOrDefault(r => r.Id == id));
+
+    public static readonly Func<FeedDbContext, string, IAsyncEnumerable<FeedAggregate>> FeedAggregatesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, string id) =>
+                ctx.FeedAggregates
+                    .Where(r => r.Id == id));
+
+    public static readonly Func<FeedDbContext, string, IAsyncEnumerable<FeedUsers>> FeedsUsersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, string id) =>
+                ctx.FeedUsers
+                    .Where(r => r.FeedId == id));
 }

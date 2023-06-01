@@ -167,7 +167,7 @@ public class DbHelper : IDisposable
             if ("tenants_tenants".Equals(table.TableName, StringComparison.InvariantCultureIgnoreCase))
             {
                 // remove last tenant
-                var tenant = await Queries.GetLastTenantAsync(_tenantDbContext);
+                var tenant = await Queries.LastTenantAsync(_tenantDbContext);
                 if (tenant != null)
                 {
                     _tenantDbContext.Tenants.Remove(tenant);
@@ -182,7 +182,7 @@ public class DbHelper : IDisposable
                         r[table.Columns["mappeddomain"]] = null;
                         if (table.Columns.Contains("id"))
                         {
-                            var tariff = await Queries.GetTarrifAsync(_coreDbContext, tenant.Id);
+                            var tariff = await Queries.TariffAsync(_coreDbContext, tenant.Id);
                             tariff.Tenant = (int)r[table.Columns["id"]];
                             tariff.CreateOn = DateTime.Now;
                             //  CreateCommand("update tenants_tariff set tenant = " + r[table.Columns["id"]] + " where tenant = " + tenantid).ExecuteNonQuery();
@@ -298,11 +298,13 @@ public class DbHelper : IDisposable
 
 static file class Queries
 {
-    public static readonly Func<TenantDbContext, Task<DbTenant>> GetLastTenantAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx) =>
-        ctx.Tenants.LastOrDefault());
-    
-    public static readonly Func<CoreDbContext, int, Task<DbTariff>> GetTarrifAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (CoreDbContext ctx, int tenantId) =>
-        ctx.Tariffs.FirstOrDefault(t => t.Tenant == tenantId));
+    public static readonly Func<TenantDbContext, Task<DbTenant>> LastTenantAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx) =>
+                ctx.Tenants.LastOrDefault());
+
+    public static readonly Func<CoreDbContext, int, Task<DbTariff>> TariffAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (CoreDbContext ctx, int tenantId) =>
+                ctx.Tariffs.FirstOrDefault(t => t.Tenant == tenantId));
 }

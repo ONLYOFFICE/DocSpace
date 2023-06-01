@@ -150,20 +150,22 @@ public class TokenHelper
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, Guid, string, Task<string>> TokenAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, Guid userId, string app) =>
-            ctx.ThirdpartyApp
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.UserId == userId)
-                .Where(r => r.App == app)
-                .Select(r => r.Token)
-                .FirstOrDefault());
-    
-    public static readonly Func<FilesDbContext, int, Guid, string, Task<int>> DeleteTokenAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, Guid userId, string app) =>
-            ctx.ThirdpartyApp
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.UserId == userId)
-                .Where(r => r.App == app)
-                .ExecuteDelete());
+    public static readonly Func<FilesDbContext, int, Guid, string, Task<string>> TokenAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, Guid userId, string app) =>
+                ctx.ThirdpartyApp
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.UserId == userId)
+                    .Where(r => r.App == app)
+                    .Select(r => r.Token)
+                    .FirstOrDefault());
+
+    public static readonly Func<FilesDbContext, int, Guid, string, Task<int>> DeleteTokenAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, Guid userId, string app) =>
+                ctx.ThirdpartyApp
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.UserId == userId)
+                    .Where(r => r.App == app)
+                    .ExecuteDelete());
 }

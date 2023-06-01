@@ -213,28 +213,32 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
 
 static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<string>> IdsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string idStart) =>
-            ctx.ThirdpartyIdMapping
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.Id.StartsWith(idStart))
-                .Select(r => r.Id));
-    
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>> ThirdpartyIdMappingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string hashId) =>
-            ctx.ThirdpartyIdMapping
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.HashId == hashId));
-    
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> DbFilesSecuritiesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string entryId) =>
-            ctx.Security
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.EntryId == entryId));
-    
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> DbFilesTagLinksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (FilesDbContext ctx, int tenantId, string entryId) =>
-            ctx.TagLink
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.EntryId == entryId));
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<string>> IdsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string idStart) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.Id.StartsWith(idStart))
+                    .Select(r => r.Id));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string hashId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.HashId == hashId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> DbFilesSecuritiesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string entryId) =>
+                ctx.Security
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.EntryId == entryId));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesTagLink>> DbFilesTagLinksAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string entryId) =>
+                ctx.TagLink
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.EntryId == entryId));
 }

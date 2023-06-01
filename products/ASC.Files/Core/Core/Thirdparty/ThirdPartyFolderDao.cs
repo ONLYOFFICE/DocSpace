@@ -796,16 +796,17 @@ static file class Queries
                         .Where(t => t.Id.StartsWith(idStart))
                         .Select(t => t.HashId).Any(h => h == r.EntryId)));
 
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>> ThirdpartyIdMappingsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (FilesDbContext ctx, int tenantId, string idStart) =>
-                ctx.ThirdpartyIdMapping
-                    .Where(r => r.TenantId == tenantId)
-                    .Where(r => ctx.ThirdpartyIdMapping
-                        .Where(t => t.TenantId == tenantId)
-                        .Where(t => t.Id.StartsWith(idStart))
-                        .Select(t => t.HashId).Any(h => h == r.HashId)));
-    
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync =
+            Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+                (FilesDbContext ctx, int tenantId, string idStart) =>
+                    ctx.ThirdpartyIdMapping
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(r => ctx.ThirdpartyIdMapping
+                            .Where(t => t.TenantId == tenantId)
+                            .Where(t => t.Id.StartsWith(idStart))
+                            .Select(t => t.HashId).Any(h => h == r.HashId)));
+
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> SecuritiesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>

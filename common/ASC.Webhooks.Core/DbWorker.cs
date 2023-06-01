@@ -60,7 +60,7 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var objForCreate = await Queries.GetWebhooksConfigByUriAsync(webhooksDbContext, Tenant, uri);
+        var objForCreate = await Queries.WebhooksConfigByUriAsync(webhooksDbContext, Tenant, uri);
 
         if (objForCreate != null)
         {
@@ -84,14 +84,14 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        return Queries.GetWebhooksConfigsAsync(webhooksDbContext, Tenant);
+        return Queries.WebhooksConfigsAsync(webhooksDbContext, Tenant);
     }
 
     public async Task<WebhooksConfig> UpdateWebhookConfig(int id, string uri, string key, bool? enabled)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var updateObj = await Queries.GetWebhooksConfigAsync(webhooksDbContext, Tenant, id);
+        var updateObj = await Queries.WebhooksConfigAsync(webhooksDbContext, Tenant, id);
 
         if (updateObj != null)
         {
@@ -123,7 +123,7 @@ public class DbWorker
 
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var removeObj = await Queries.GetWebhooksConfigAsync(webhooksDbContext, Tenant, id);
+        var removeObj = await Queries.WebhooksConfigAsync(webhooksDbContext, Tenant, id);
 
         if (removeObj != null)
         {
@@ -175,7 +175,7 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        return await Queries.GetWebhooksLogAsync(webhooksDbContext, id);
+        return await Queries.WebhooksLogAsync(webhooksDbContext, id);
     }
 
     public async Task<WebhooksLog> WriteToJournal(WebhooksLog webhook)
@@ -195,7 +195,7 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var webhook = await Queries.GetWebhooksLogAsync(webhooksDbContext, id);
+        var webhook = await Queries.WebhooksLogAsync(webhooksDbContext, id);
         webhook.Status = status;
         webhook.RequestHeaders = requestHeaders;
         webhook.ResponsePayload = responsePayload;
@@ -212,7 +212,7 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var dbWebhooks = Queries.GetDbWebhooksAsync(webhooksDbContext);
+        var dbWebhooks = Queries.DbWebhooksAsync(webhooksDbContext);
 
         foreach (var webhook in webhooks)
         {
@@ -234,14 +234,14 @@ public class DbWorker
     public async Task<List<Webhook>> GetWebhooksAsync()
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        var webHooks = await Queries.GetDbWebhooksAsync(webhooksDbContext).ToListAsync();
+        var webHooks = await Queries.DbWebhooksAsync(webhooksDbContext).ToListAsync();
         return _mapper.Map<List<DbWebhook>, List<Webhook>>(webHooks);
     }
 
     public async Task<Webhook> GetWebhookAsync(int id)
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
-        var webHook = await Queries.GetDbWebhookAsync(webhooksDbContext, id);
+        var webHook = await Queries.DbWebhookAsync(webhooksDbContext, id);
         return _mapper.Map<DbWebhook, Webhook>(webHook);
     }
 
@@ -249,7 +249,7 @@ public class DbWorker
     {
         using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
-        var webHook = await Queries.GetDbWebhookByMethodAsync(webhooksDbContext, method, routePattern);
+        var webHook = await Queries.DbWebhookByMethodAsync(webhooksDbContext, method, routePattern);
 
         return _mapper.Map<DbWebhook, Webhook>(webHook);
     }
@@ -257,46 +257,48 @@ public class DbWorker
 
 static file class Queries
 {
-    public static readonly Func<WebhooksDbContext, int, string, Task<WebhooksConfig>> GetWebhooksConfigByUriAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebhooksDbContext ctx, int tenantId, string uri) =>
-        ctx.WebhooksConfigs
-           .Where(r => r.TenantId == tenantId && r.Uri == uri)
-           .FirstOrDefault());
-    
-    public static readonly Func<WebhooksDbContext, int, IAsyncEnumerable<WebhooksConfig>> GetWebhooksConfigsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebhooksDbContext ctx, int tenantId) =>
-        ctx.WebhooksConfigs
-            .AsNoTracking()
-            .Where(it => it.TenantId == tenantId));
-    
-    public static readonly Func<WebhooksDbContext, int, int, Task<WebhooksConfig>> GetWebhooksConfigAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebhooksDbContext ctx, int tenantId, int id) =>
-        ctx.WebhooksConfigs
-            .Where(it => it.TenantId == tenantId && it.Id == id)
-            .FirstOrDefault());
-    
-    public static readonly Func<WebhooksDbContext, int, Task<WebhooksLog>> GetWebhooksLogAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebhooksDbContext ctx, int id) =>
-        ctx.WebhooksLogs
-            .AsNoTracking()
-            .Where(it => it.Id == id)
-            .FirstOrDefault());
-    
-    public static readonly Func<WebhooksDbContext, IAsyncEnumerable<DbWebhook>> GetDbWebhooksAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebhooksDbContext ctx) =>
-        ctx.Webhooks.AsNoTracking());
-    
-    public static readonly Func<WebhooksDbContext, int, Task<DbWebhook>> GetDbWebhookAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebhooksDbContext ctx, int id) =>
-        ctx.Webhooks
-            .Where(r => r.Id == id)
-            .AsNoTracking()
-            .FirstOrDefault());
-    
-    public static readonly Func<WebhooksDbContext, string, string, Task<DbWebhook>> GetDbWebhookByMethodAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebhooksDbContext ctx, string method, string routePattern) =>
-        ctx.Webhooks
-            .Where(r => r.Method == method && r.Route == routePattern)
-            .AsNoTracking()
-            .FirstOrDefault());
+    public static readonly Func<WebhooksDbContext, int, string, Task<WebhooksConfig>> WebhooksConfigByUriAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebhooksDbContext ctx, int tenantId, string uri) =>
+                ctx.WebhooksConfigs
+                    .FirstOrDefault(r => r.TenantId == tenantId && r.Uri == uri));
+
+    public static readonly Func<WebhooksDbContext, int, IAsyncEnumerable<WebhooksConfig>> WebhooksConfigsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebhooksDbContext ctx, int tenantId) =>
+                ctx.WebhooksConfigs
+                    .AsNoTracking()
+                    .Where(it => it.TenantId == tenantId));
+
+    public static readonly Func<WebhooksDbContext, int, int, Task<WebhooksConfig>> WebhooksConfigAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebhooksDbContext ctx, int tenantId, int id) =>
+                ctx.WebhooksConfigs
+                    .FirstOrDefault(it => it.TenantId == tenantId && it.Id == id));
+
+    public static readonly Func<WebhooksDbContext, int, Task<WebhooksLog>> WebhooksLogAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebhooksDbContext ctx, int id) =>
+                ctx.WebhooksLogs
+                    .AsNoTracking()
+                    .FirstOrDefault(it => it.Id == id));
+
+    public static readonly Func<WebhooksDbContext, IAsyncEnumerable<DbWebhook>> DbWebhooksAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebhooksDbContext ctx) =>
+                ctx.Webhooks.AsNoTracking());
+
+    public static readonly Func<WebhooksDbContext, int, Task<DbWebhook>> DbWebhookAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebhooksDbContext ctx, int id) =>
+                ctx.Webhooks
+                    .AsNoTracking()
+                    .FirstOrDefault(r => r.Id == id));
+
+    public static readonly Func<WebhooksDbContext, string, string, Task<DbWebhook>> DbWebhookByMethodAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebhooksDbContext ctx, string method, string routePattern) =>
+                ctx.Webhooks
+                    .AsNoTracking()
+                    .FirstOrDefault(r => r.Method == method && r.Route == routePattern));
 }

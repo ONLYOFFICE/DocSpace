@@ -62,10 +62,11 @@ public class MobileAppInstallRegistrator : IMobileAppInstallRegistrator
 
 static file class Queries
 {
-    public static readonly Func<CustomDbContext, string, MobileAppType?, Task<bool>> AnyMobileAppInstallAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (CustomDbContext ctx, string userEmail, MobileAppType? appType) =>
-        ctx.MobileAppInstall
-            .Where(r => r.UserEmail == userEmail)
-            .Where(r => appType.HasValue && r.AppType == (int)appType.Value)
-            .Any());
+    public static readonly Func<CustomDbContext, string, MobileAppType?, Task<bool>> AnyMobileAppInstallAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (CustomDbContext ctx, string userEmail, MobileAppType? appType) =>
+                ctx.MobileAppInstall
+                    .Where(r => r.UserEmail == userEmail)
+                    .Where(r => appType.HasValue && r.AppType == (int)appType.Value)
+                    .Any());
 }

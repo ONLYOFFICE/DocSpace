@@ -978,23 +978,26 @@ public class TariffService : ITariffService
 
 static file class Queries
 {
-    public static readonly Func<CoreDbContext, int?, int?, Task<DbTariff>> TariffAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (CoreDbContext ctx, int? tenantId, int? id) =>
-            ctx.Tariffs
-                .Where(r => tenantId.HasValue && r.Tenant == tenantId)
-                .Where(r => id.HasValue && r.Id == id.Value)
-                .OrderByDescending(r => r.Id)
-                .FirstOrDefault());
-    
-    public static readonly Func<CoreDbContext, int, int, IAsyncEnumerable<Quota>> QuotasAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (CoreDbContext ctx, int tenantId, int id) =>
-            ctx.TariffRows
-                .Where(r => r.TariffId == id && r.Tenant == tenantId)
-                .Select(r => new Quota(r.Quota, r.Quantity)));
-    
-    public static readonly Func<CoreDbContext, int, Task<int>> UpdateTariffs = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-        (CoreDbContext ctx, int tenantId) =>
-            ctx.Tariffs.Where(r => r.Tenant == tenantId).ExecuteUpdate(t =>
-                t.SetProperty(p => p.Tenant, -2)
-                 .SetProperty(p => p.CreateOn, DateTime.UtcNow)));
+    public static readonly Func<CoreDbContext, int?, int?, Task<DbTariff>> TariffAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (CoreDbContext ctx, int? tenantId, int? id) =>
+                ctx.Tariffs
+                    .Where(r => tenantId.HasValue && r.Tenant == tenantId)
+                    .Where(r => id.HasValue && r.Id == id.Value)
+                    .OrderByDescending(r => r.Id)
+                    .FirstOrDefault());
+
+    public static readonly Func<CoreDbContext, int, int, IAsyncEnumerable<Quota>> QuotasAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (CoreDbContext ctx, int tenantId, int id) =>
+                ctx.TariffRows
+                    .Where(r => r.TariffId == id && r.Tenant == tenantId)
+                    .Select(r => new Quota(r.Quota, r.Quantity)));
+
+    public static readonly Func<CoreDbContext, int, Task<int>> UpdateTariffs =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (CoreDbContext ctx, int tenantId) =>
+                ctx.Tariffs.Where(r => r.Tenant == tenantId).ExecuteUpdate(t =>
+                    t.SetProperty(p => p.Tenant, -2)
+                        .SetProperty(p => p.CreateOn, DateTime.UtcNow)));
 }

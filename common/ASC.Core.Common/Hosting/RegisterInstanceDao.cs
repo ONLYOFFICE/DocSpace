@@ -116,7 +116,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
 }
 
-static file class Queries
+ Queries
 {
     public static readonly Func<InstanceRegistrationContext, string, IAsyncEnumerable<InstanceRegistration>> GetInstanceRegistrationsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (InstanceRegistrationContext ctx, string workerTypeName) =>

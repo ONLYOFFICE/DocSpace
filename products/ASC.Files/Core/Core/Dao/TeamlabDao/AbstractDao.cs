@@ -95,11 +95,11 @@ public class AbstractDao
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
     {
         using var filesDbContext = _dbContextFactory.CreateDbContext();
-        var folders = AbstractDaoQueries.GetFoldersAsync(filesDbContext, TenantID, folderId);
+        var folders = Queries.FoldersAsync(filesDbContext, TenantID, folderId);
 
         await foreach (var f in folders)
         {
-            f.FilesCount = await AbstractDaoQueries.GetFilesCountAsync(filesDbContext, f.TenantId, f.Id);
+            f.FilesCount = await Queries.FilesCountAsync(filesDbContext, f.TenantId, f.Id);
         }
 
         await filesDbContext.SaveChangesAsync();
@@ -149,7 +149,7 @@ public class AbstractDao
         else
         {
             using var filesDbContext = _dbContextFactory.CreateDbContext();
-            result = await AbstractDaoQueries.GetIdAsync(filesDbContext, TenantID, id.ToString());
+            result = await Queries.IdAsync(filesDbContext, TenantID, id.ToString());
         }
 
         if (saveIfNotExist)
@@ -192,30 +192,33 @@ public class AbstractDao
     }
 }
 
-static file class AbstractDaoQueries
+static file class Queries
 {
-    public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFolder>> GetFoldersAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, int folderId) =>
-        ctx.Folders
-            .Where(r => r.TenantId == tenantId)
-            .Where(r => ctx.Tree.Where(r => r.FolderId == folderId).Any(a => a.ParentId == r.Id)));
-    
-    public static readonly Func<FilesDbContext, int, int, Task<int>> GetFilesCountAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, int folderId) =>
-        ctx.Files
-                .Join(ctx.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
-                .Where(r => r.file.TenantId == tenantId)
-                .Where(r => r.tree.ParentId == folderId)
-                .Select(r => r.file.Id)
-                .Distinct()
-                .Count());
-    
-    public static readonly Func<FilesDbContext, int, string, Task<string>> GetIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FilesDbContext ctx, int tenantId, string hashId) =>
-        ctx.ThirdpartyIdMapping
-                .Where(r => r.TenantId == tenantId)
-                .Where(r => r.HashId == hashId)
-                .AsNoTracking()
-                .Select(r => r.Id)
-                .FirstOrDefault());
+    public static readonly Func<FilesDbContext, int, int, IAsyncEnumerable<DbFolder>> FoldersAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Folders
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => ctx.Tree.Where(t => t.FolderId == folderId).Any(a => a.ParentId == r.Id)));
+
+    public static readonly Func<FilesDbContext, int, int, Task<int>> FilesCountAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, int folderId) =>
+                ctx.Files
+                    .Join(ctx.Tree, a => a.ParentId, b => b.FolderId, (file, tree) => new { file, tree })
+                    .Where(r => r.file.TenantId == tenantId)
+                    .Where(r => r.tree.ParentId == folderId)
+                    .Select(r => r.file.Id)
+                    .Distinct()
+                    .Count());
+
+    public static readonly Func<FilesDbContext, int, string, Task<string>> IdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx, int tenantId, string hashId) =>
+                ctx.ThirdpartyIdMapping
+                    .Where(r => r.TenantId == tenantId)
+                    .Where(r => r.HashId == hashId)
+                    .AsNoTracking()
+                    .Select(r => r.Id)
+                    .FirstOrDefault());
 }

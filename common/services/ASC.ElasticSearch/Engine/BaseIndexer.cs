@@ -101,7 +101,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
         var now = DateTime.UtcNow;
-        var lastIndexed = await Queries.GetLastIndexedAsync(webstudioDbContext, Wrapper.IndexName);
+        var lastIndexed = await Queries.LastIndexedAsync(webstudioDbContext, Wrapper.IndexName);
 
         if (lastIndexed.Equals(DateTime.MinValue))
         {
@@ -434,7 +434,7 @@ public class BaseIndexer<T> where T : class, ISearchItem
     private async Task ClearAsync()
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var index = await Queries.GetIndexAsync(webstudioDbContext, Wrapper.IndexName);
+        var index = await Queries.IndexAsync(webstudioDbContext, Wrapper.IndexName);
 
         if (index != null)
         {
@@ -675,16 +675,17 @@ static class CamelCaseExtension
 
 static file class Queries
 {
-    public static readonly Func<WebstudioDbContext, string, Task<DateTime>> GetLastIndexedAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebstudioDbContext ctx, string indexName) =>
-        ctx.WebstudioIndex
-            .Where(r => r.IndexName == indexName)
-            .Select(r => r.LastModified)
-            .FirstOrDefault());
-    
-    public static readonly Func<WebstudioDbContext, string, Task<DbWebstudioIndex>> GetIndexAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (WebstudioDbContext ctx, string indexName) =>
-        ctx.WebstudioIndex
-            .Where(r => r.IndexName == indexName)
-            .FirstOrDefault());
+    public static readonly Func<WebstudioDbContext, string, Task<DateTime>> LastIndexedAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, string indexName) =>
+                ctx.WebstudioIndex
+                    .Where(r => r.IndexName == indexName)
+                    .Select(r => r.LastModified)
+                    .FirstOrDefault());
+
+    public static readonly Func<WebstudioDbContext, string, Task<DbWebstudioIndex>> IndexAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (WebstudioDbContext ctx, string indexName) =>
+                ctx.WebstudioIndex
+                    .FirstOrDefault(r => r.IndexName == indexName));
 }

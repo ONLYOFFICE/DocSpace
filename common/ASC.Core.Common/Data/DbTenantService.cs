@@ -242,7 +242,7 @@ public class DbTenantService : ITenantService
 
         if (tenant.Id == Tenant.DefaultTenant)
         {
-            tenant.Version = await Queries.GetVersionIdAsync(tenantDbContext);
+            tenant.Version = await Queries.VersionIdAsync(tenantDbContext);
 
             tenant.LastModified = DateTime.UtcNow;
 
@@ -254,7 +254,7 @@ public class DbTenantService : ITenantService
         }
         else
         {
-            var dbTenant = await Queries.GetTenantAsync(tenantDbContext, tenant.Id);
+            var dbTenant = await Queries.TenantAsync(tenantDbContext, tenant.Id);
 
             if (dbTenant != null)
             {
@@ -293,9 +293,9 @@ public class DbTenantService : ITenantService
 
         var alias = await Queries.GetAliasAsync(tenantDbContext, id);
 
-        var count = await Queries.GetCountAsync(tenantDbContext, alias + postfix);
+        var count = await Queries.TenantsCountAsync(tenantDbContext, alias + postfix);
 
-        var tenant = await Queries.GetTenantAsync(tenantDbContext, id);
+        var tenant = await Queries.TenantAsync(tenantDbContext, id);
 
         if (tenant != null)
         {
@@ -311,20 +311,20 @@ public class DbTenantService : ITenantService
     public async Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync()
     {
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetTenantVersionsAsync(tenantDbContext).ToListAsync();
+        return await Queries.TenantVersionsAsync(tenantDbContext).ToListAsync();
     }
 
 
     public async Task<byte[]> GetTenantSettingsAsync(int tenant, string key)
     {
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetBytesAsync(tenantDbContext, tenant, key);
+        return await Queries.SettingValueAsync(tenantDbContext, tenant, key);
     }
 
     public byte[] GetTenantSettings(int tenant, string key)
     {
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        return Queries.GetBytes(tenantDbContext, tenant, key);
+        return Queries.SettingValue(tenantDbContext, tenant, key);
     }
 
 
@@ -333,7 +333,7 @@ public class DbTenantService : ITenantService
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
         if (data == null || data.Length == 0)
         {
-            var settings = await Queries.GetCoreSettingsAsync(tenantDbContext, tenant, key);
+            var settings = await Queries.CoreSettingsAsync(tenantDbContext, tenant, key);
 
             if (settings != null)
             {
@@ -361,7 +361,7 @@ public class DbTenantService : ITenantService
         using var tenantDbContext = _dbContextFactory.CreateDbContext();
         if (data == null || data.Length == 0)
         {
-            var settings = Queries.GetCoreSettings(tenantDbContext, tenant, key);
+            var settings = Queries.CoreSettings(tenantDbContext, tenant, key);
 
             if (settings != null)
             {
@@ -402,7 +402,7 @@ public class DbTenantService : ITenantService
         domain = domain.ToLowerInvariant();
         if (_forbiddenDomains == null)
         {
-            _forbiddenDomains = await Queries.GetAddressAsync(tenantDbContext).ToListAsync();
+            _forbiddenDomains = await Queries.AddressAsync(tenantDbContext).ToListAsync();
         }
 
         exists = tenantId != 0 && _forbiddenDomains.Contains(domain);
@@ -449,77 +449,87 @@ public class TenantUserSecurity
 
 static file class Queries
 {
-    public static readonly Func<TenantDbContext, Task<int>> GetVersionIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx) =>
-        ctx.TenantVersion
-                .Where(r => r.DefaultVersion == 1 || r.Id == 0)
-                .OrderByDescending(r => r.Id)
-                .Select(r => r.Id)
-                .FirstOrDefault());
+    public static readonly Func<TenantDbContext, Task<int>> VersionIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx) =>
+                ctx.TenantVersion
+                    .Where(r => r.DefaultVersion == 1 || r.Id == 0)
+                    .OrderByDescending(r => r.Id)
+                    .Select(r => r.Id)
+                    .FirstOrDefault());
+
+    public static readonly Func<TenantDbContext, int, Task<DbTenant>> TenantAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx, int tenantId) =>
+                ctx.Tenants
+                    .Where(r => r.Id == tenantId)
+                    .FirstOrDefault());
+
+    public static readonly Func<TenantDbContext, int, Task<string>> GetAliasAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx, int tenantId) =>
+                ctx.Tenants
+                    .Where(r => r.Id == tenantId)
+                    .Select(r => r.Alias)
+                    .FirstOrDefault());
     
-    public static readonly Func<TenantDbContext, int, Task<DbTenant>> GetTenantAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx, int tenantId) =>
-        ctx.Tenants
-                .Where(r => r.Id == tenantId)
-                .FirstOrDefault());
-    
-    public static readonly Func<TenantDbContext, int, Task<string>> GetAliasAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx, int tenantId) =>
-        ctx.Tenants
-                .Where(r => r.Id == tenantId)
-                .Select(r => r.Alias)
-                .FirstOrDefault());
-    
-    public static readonly Func<TenantDbContext, string, Task<int>> GetCountAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+    public static readonly Func<TenantDbContext, string, Task<int>> TenantsCountAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
     (TenantDbContext ctx, string startAlias) =>
         ctx.Tenants
-            .Where(r => r.Alias.StartsWith(startAlias))
-            .Count());
-    
-    public static readonly Func<TenantDbContext, IAsyncEnumerable<TenantVersion>> GetTenantVersionsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx) =>
-        ctx.TenantVersion
-            .Where(r => r.Visible)
-            .Select(r => new TenantVersion(r.Id, r.Version)));
-    
-    public static readonly Func<TenantDbContext, int, string, Task<byte[]>> GetBytesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx, int tenantId, string id) =>
-        ctx.CoreSettings
-            .Where(r => r.Tenant == tenantId)
-            .Where(r => r.Id == id)
-            .Select(r => r.Value)
-            .FirstOrDefault());
-    
-    public static readonly Func<TenantDbContext, int, string, byte[]> GetBytes = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (TenantDbContext ctx, int tenantId, string id) =>
-        ctx.CoreSettings
-            .Where(r => r.Tenant == tenantId)
-            .Where(r => r.Id == id)
-            .Select(r => r.Value)
-            .FirstOrDefault());
-    
-    public static readonly Func<TenantDbContext, int, string, Task<DbCoreSettings>> GetCoreSettingsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx, int tenantId, string id) =>
-        ctx.CoreSettings
-                .Where(r => r.Tenant == tenantId)
-                .Where(r => r.Id == id)
-                .FirstOrDefault());
-    
-    public static readonly Func<TenantDbContext, int, string, DbCoreSettings> GetCoreSettings = Microsoft.EntityFrameworkCore.EF.CompileQuery(
-    (TenantDbContext ctx, int tenantId, string id) =>
-        ctx.CoreSettings
-                .Where(r => r.Tenant == tenantId)
-                .Where(r => r.Id == id)
-                .FirstOrDefault());
-    
-    public static readonly Func<TenantDbContext, IAsyncEnumerable<string>> GetAddressAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx) =>
-        ctx.TenantForbiden.Select(r => r.Address));
-    
-    public static readonly Func<TenantDbContext, int, string, Task<bool>> AnyTenantsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (TenantDbContext ctx, int tenantId, string domain) =>
-    ctx.Tenants
-            .Where(r => r.Alias == domain || r.MappedDomain == domain && (r.Status == TenantStatus.RemovePending || r.Status == TenantStatus.Restoring)
-                && r.Id != tenantId)
-            .Any());
+            .Count(r => r.Alias.StartsWith(startAlias)));
+
+    public static readonly Func<TenantDbContext, IAsyncEnumerable<TenantVersion>> TenantVersionsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx) =>
+                ctx.TenantVersion
+                    .Where(r => r.Visible)
+                    .Select(r => new TenantVersion(r.Id, r.Version)));
+
+    public static readonly Func<TenantDbContext, int, string, Task<byte[]>> SettingValueAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx, int tenantId, string id) =>
+                ctx.CoreSettings
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.Id == id)
+                    .Select(r => r.Value)
+                    .FirstOrDefault());
+
+    public static readonly Func<TenantDbContext, int, string, byte[]> SettingValue =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (TenantDbContext ctx, int tenantId, string id) =>
+                ctx.CoreSettings
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.Id == id)
+                    .Select(r => r.Value)
+                    .FirstOrDefault());
+
+    public static readonly Func<TenantDbContext, int, string, Task<DbCoreSettings>> CoreSettingsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx, int tenantId, string id) =>
+                ctx.CoreSettings
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.Id == id)
+                    .FirstOrDefault());
+
+    public static readonly Func<TenantDbContext, int, string, DbCoreSettings> CoreSettings =
+        Microsoft.EntityFrameworkCore.EF.CompileQuery(
+            (TenantDbContext ctx, int tenantId, string id) =>
+                ctx.CoreSettings
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.Id == id)
+                    .FirstOrDefault());
+
+    public static readonly Func<TenantDbContext, IAsyncEnumerable<string>> AddressAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx) =>
+                ctx.TenantForbiden.Select(r => r.Address));
+
+    public static readonly Func<TenantDbContext, int, string, Task<bool>> AnyTenantsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (TenantDbContext ctx, int tenantId, string domain) =>
+                ctx.Tenants
+                    .Any(r => r.Alias == domain ||
+                              r.MappedDomain == domain && (r.Status == TenantStatus.RemovePending ||
+                                                           r.Status == TenantStatus.Restoring)
+                                                       && r.Id != tenantId));
 }

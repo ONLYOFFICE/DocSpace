@@ -55,7 +55,7 @@ public class FeedReadedDataProvider
     public async Task<DateTime> GetTimeReadedAsync(Guid user, string module, int tenant)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetMaxTimeStampAsync(feedDbContext, tenant, user, module);
+        return await Queries.MaxTimeStampAsync(feedDbContext, tenant, user, module);
     }
 
     public async Task SetTimeReadedAsync()
@@ -101,7 +101,7 @@ public class FeedReadedDataProvider
     public async Task<IEnumerable<string>> GetReadedModulesAsync(Guid user, int tenant, DateTime fromTime)
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetModulesAsync(feedDbContext, tenant, user, fromTime).ToListAsync();
+        return await Queries.ModulesAsync(feedDbContext, tenant, user, fromTime).ToListAsync();
     }
 
     private async Task<int> GetTenantAsync()
@@ -117,19 +117,21 @@ public class FeedReadedDataProvider
 
 static file class Queries
 {
-    public static readonly Func<FeedDbContext, int, Guid, string, Task<DateTime>> GetMaxTimeStampAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, int tenantId, Guid userId, string module) =>
-        ctx.FeedReaded
-            .Where(r => r.Tenant == tenantId)
-            .Where(r => r.UserId == userId)
-            .Where(r => r.Module == module)
-            .Max(r => r.TimeStamp));
-    
-    public static readonly Func<FeedDbContext, int, Guid, DateTime, IAsyncEnumerable<string>> GetModulesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (FeedDbContext ctx, int tenantId, Guid userId, DateTime fromTime) =>
-        ctx.FeedReaded
-            .Where(r => r.Tenant == tenantId)
-            .Where(r => r.UserId == userId)
-            .Where(r => r.TimeStamp >= fromTime)
-            .Select(r => r.Module));
+    public static readonly Func<FeedDbContext, int, Guid, string, Task<DateTime>> MaxTimeStampAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, int tenantId, Guid userId, string module) =>
+                ctx.FeedReaded
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.UserId == userId)
+                    .Where(r => r.Module == module)
+                    .Max(r => r.TimeStamp));
+
+    public static readonly Func<FeedDbContext, int, Guid, DateTime, IAsyncEnumerable<string>> ModulesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FeedDbContext ctx, int tenantId, Guid userId, DateTime fromTime) =>
+                ctx.FeedReaded
+                    .Where(r => r.Tenant == tenantId)
+                    .Where(r => r.UserId == userId)
+                    .Where(r => r.TimeStamp >= fromTime)
+                    .Select(r => r.Module));
 }

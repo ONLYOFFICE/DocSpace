@@ -86,7 +86,7 @@ public class AccountLinker
     public async Task<IEnumerable<string>> GetLinkedObjectsByHashIdAsync(string hashid)
     {
         using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
-        return await AccountLinkerQueries.GetLinkedObjectsByHashIdAsync(accountLinkContext, hashid).ToListAsync();
+        return await Queries.LinkedObjectsByHashIdAsync(accountLinkContext, hashid).ToListAsync();
     }
 
     public async Task<IEnumerable<LoginProfile>> GetLinkedProfilesAsync(string obj, string provider)
@@ -141,7 +141,7 @@ public class AccountLinker
     {
         using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
 
-        var accountLink = await AccountLinkerQueries.GetAccountLinkAsync(accountLinkContext, obj, provider, hashId);
+        var accountLink = await Queries.AccountLinkAsync(accountLinkContext, obj, provider, hashId);
 
         accountLinkContext.AccountLinks.Remove(accountLink);
         await accountLinkContext.SaveChangesAsync();
@@ -153,7 +153,7 @@ public class AccountLinker
     {
         using var accountLinkContext = _accountLinkContextManager.CreateDbContext();
         //Retrieve by uinque id
-        return (await AccountLinkerQueries.GetLinkedProfilesFromDBAsync(accountLinkContext, obj).ToListAsync())
+        return (await Queries.LinkedProfilesFromDbAsync(accountLinkContext, obj).ToListAsync())
                 .ConvertAll(x => LoginProfile.CreateFromSerializedString(_signature, _instanceCrypto, x));
     }
 
@@ -167,26 +167,29 @@ public class AccountLinker
     }
 }
 
-static file class AccountLinkerQueries
+static file class Queries
 {
-    public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> GetLinkedObjectsByHashIdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (AccountLinkContext ctx, string hashid) =>
-        ctx.AccountLinks
-            .Where(r => r.UId == hashid)
-            .Where(r => r.Provider != string.Empty)
-            .Select(r => r.Id));
-    
-    public static readonly Func<AccountLinkContext, string, string, string, Task<AccountLinks>> GetAccountLinkAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (AccountLinkContext ctx, string id, string provider, string hashId) =>
-        ctx.AccountLinks
-            .Where(r => r.Id == id)
-            .Where(r => !string.IsNullOrEmpty(provider) && r.Provider == provider)
-            .Where(r => !string.IsNullOrEmpty(hashId) && r.UId == hashId)
-            .FirstOrDefault());
-    
-    public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> GetLinkedProfilesFromDBAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (AccountLinkContext ctx, string id) =>
-        ctx.AccountLinks
-                .Where(r => r.Id == id)
-                .Select(r => r.Profile));
+    public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> LinkedObjectsByHashIdAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (AccountLinkContext ctx, string hashId) =>
+                ctx.AccountLinks
+                    .Where(r => r.UId == hashId)
+                    .Where(r => r.Provider != string.Empty)
+                    .Select(r => r.Id));
+
+    public static readonly Func<AccountLinkContext, string, string, string, Task<AccountLinks>> AccountLinkAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (AccountLinkContext ctx, string id, string provider, string hashId) =>
+                ctx.AccountLinks
+                    .Where(r => r.Id == id)
+                    .Where(r => !string.IsNullOrEmpty(provider) && r.Provider == provider)
+                    .Where(r => !string.IsNullOrEmpty(hashId) && r.UId == hashId)
+                    .FirstOrDefault());
+
+    public static readonly Func<AccountLinkContext, string, IAsyncEnumerable<string>> LinkedProfilesFromDbAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (AccountLinkContext ctx, string id) =>
+                ctx.AccountLinks
+                    .Where(r => r.Id == id)
+                    .Select(r => r.Profile));
 }

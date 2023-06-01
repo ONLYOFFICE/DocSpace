@@ -629,7 +629,7 @@ static file class Queries
         AllTagsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 ctx.Tag.AsQueryable());
-    
+
     public static readonly Func<FilesDbContext, string, Task<string>>
         IdAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, string hashId) =>

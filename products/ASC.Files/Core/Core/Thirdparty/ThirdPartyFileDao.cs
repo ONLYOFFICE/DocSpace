@@ -687,7 +687,10 @@ static file class Queries
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx) =>
                 from ft in ctx.Tag
-                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new { TenantId = ftl.TenantId, Id = ftl.TagId }
+                join ftl in ctx.TagLink.DefaultIfEmpty() on new { TenantId = ft.TenantId, Id = ft.Id } equals new
+                {
+                    TenantId = ftl.TenantId, Id = ftl.TagId
+                }
                 where ftl == null
                 select ft);
 
@@ -700,7 +703,7 @@ static file class Queries
                         .Where(t => t.TenantId == tenantId)
                         .Where(t => t.Id.StartsWith(idStart))
                         .Select(t => t.HashId).Any(h => h == r.EntryId)));
-    
+
     public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesSecurity>> FilesSecuritiesAsync =
         Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
             (FilesDbContext ctx, int tenantId, string idStart) =>
@@ -710,14 +713,15 @@ static file class Queries
                         .Where(t => t.TenantId == tenantId)
                         .Where(t => t.Id.StartsWith(idStart))
                         .Select(t => t.HashId).Any(h => h == r.EntryId)));
-    
-    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>> ThirdpartyIdMappingsAsync =
-        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-            (FilesDbContext ctx, int tenantId, string idStart) =>
-                ctx.ThirdpartyIdMapping
-                    .Where(r => r.TenantId == tenantId)
-                    .Where(r => ctx.ThirdpartyIdMapping
-                        .Where(t => t.TenantId == tenantId)
-                        .Where(t => t.Id.StartsWith(idStart))
-                        .Select(t => t.HashId).Any(h => h == r.HashId)));
+
+    public static readonly Func<FilesDbContext, int, string, IAsyncEnumerable<DbFilesThirdpartyIdMapping>>
+        ThirdpartyIdMappingsAsync =
+            Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+                (FilesDbContext ctx, int tenantId, string idStart) =>
+                    ctx.ThirdpartyIdMapping
+                        .Where(r => r.TenantId == tenantId)
+                        .Where(r => ctx.ThirdpartyIdMapping
+                            .Where(t => t.TenantId == tenantId)
+                            .Where(t => t.Id.StartsWith(idStart))
+                            .Select(t => t.HashId).Any(h => h == r.HashId)));
 }

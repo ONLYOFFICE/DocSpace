@@ -54,32 +54,32 @@ public class BackupRepository : IBackupRepository
     public async Task<BackupRecord> GetBackupRecordAsync(string hash, int tenant)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetBackupAsync(backupContext, tenant, hash);
+        return await Queries.BackupAsync(backupContext, tenant, hash);
     }
 
     public async Task<List<BackupRecord>> GetExpiredBackupRecordsAsync()
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetExpiredBackupsAsync(backupContext).ToListAsync();
+        return await Queries.ExpiredBackupsAsync(backupContext).ToListAsync();
     }
 
     public async Task<List<BackupRecord>> GetScheduledBackupRecordsAsync()
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetScheduledBackupsAsync(backupContext).ToListAsync();
+        return await Queries.ScheduledBackupsAsync(backupContext).ToListAsync();
     }
 
     public async Task<List<BackupRecord>> GetBackupRecordsByTenantIdAsync(int tenantId)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetBackupsAsync(backupContext, tenantId).ToListAsync();
+        return await Queries.BackupsAsync(backupContext, tenantId).ToListAsync();
     }
 
     public async Task MigrationBackupRecordsAsync(int tenantId, int newTenantId, string region)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
 
-        var backups = await Queries.GetBackupsForMigrationAsync(backupContext, tenantId).ToListAsync();
+        var backups = await Queries.BackupsForMigrationAsync(backupContext, tenantId).ToListAsync();
 
         backups.ForEach(backup =>
         {
@@ -121,69 +121,77 @@ public class BackupRepository : IBackupRepository
     public async Task<List<BackupSchedule>> GetBackupSchedulesAsync()
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetBackupSchedulesAsync(backupContext).ToListAsync();
+        return await Queries.BackupSchedulesAsync(backupContext).ToListAsync();
     }
 
     public async Task<BackupSchedule> GetBackupScheduleAsync(int tenantId)
     {
         using var backupContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetBackupScheduleAsync(backupContext, tenantId);
+        return await Queries.BackupScheduleAsync(backupContext, tenantId);
     }
 }
 
 static file class Queries
 {
 
-    public static readonly Func<BackupsContext, int, string, Task<BackupRecord>> GetBackupAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx, int tenantId, string hash) =>
-        ctx.Backups
-            .AsNoTracking()
-            .SingleOrDefault(b => b.Hash == hash && b.TenantId == tenantId));
-    
-    public static readonly Func<BackupsContext, IAsyncEnumerable<BackupRecord>> GetExpiredBackupsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx) =>
-        ctx.Backups
-            .AsNoTracking()
-            .Where(b => b.ExpiresOn != DateTime.MinValue 
-                && b.ExpiresOn <= DateTime.UtcNow 
-                && b.Removed == false));
-    
-    public static readonly Func<BackupsContext, IAsyncEnumerable<BackupRecord>> GetScheduledBackupsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx) =>
-        ctx.Backups
-            .AsNoTracking()
-            .Where(b => b.IsScheduled == true && b.Removed == false));
-    
-    public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> GetBackupsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx, int tenantId) =>
-        ctx.Backups
-            .AsNoTracking()
-            .Where(b => b.TenantId == tenantId && b.Removed == false));
-    
-    public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> GetBackupsForMigrationAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx, int tenantId) =>
-        ctx.Backups
-            .AsNoTracking()
-            .Where(b => b.TenantId == tenantId)); 
-    
-    public static readonly Func<BackupsContext, int, Task<int>> DeleteSchedulesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx, int tenantId) =>
-        ctx.Schedules
-            .Where(s => s.TenantId == tenantId)
-            .ExecuteDelete());
-    
-    public static readonly Func<BackupsContext, IAsyncEnumerable<BackupSchedule>> GetBackupSchedulesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx) =>
-        ctx.Schedules.Join(ctx.Tenants,
-                s => s.TenantId,
-                t => t.Id,
-                (s, t) => new { schedule = s, tenant = t })
-            .Where(q => q.tenant.Status == TenantStatus.Active)
-            .Select(q => q.schedule));
-    
-    public static readonly Func<BackupsContext, int, Task<BackupSchedule>> GetBackupScheduleAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (BackupsContext ctx, int tenantId) =>
-        ctx.Schedules
-            .AsNoTracking()
-            .SingleOrDefault(s => s.TenantId == tenantId));
+    public static readonly Func<BackupsContext, int, string, Task<BackupRecord>> BackupAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx, int tenantId, string hash) =>
+                ctx.Backups
+                    .AsNoTracking()
+                    .SingleOrDefault(b => b.Hash == hash && b.TenantId == tenantId));
+
+    public static readonly Func<BackupsContext, IAsyncEnumerable<BackupRecord>> ExpiredBackupsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx) =>
+                ctx.Backups
+                    .AsNoTracking()
+                    .Where(b => b.ExpiresOn != DateTime.MinValue
+                                && b.ExpiresOn <= DateTime.UtcNow
+                                && b.Removed == false));
+
+    public static readonly Func<BackupsContext, IAsyncEnumerable<BackupRecord>> ScheduledBackupsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx) =>
+                ctx.Backups
+                    .AsNoTracking()
+                    .Where(b => b.IsScheduled == true && b.Removed == false));
+
+    public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> BackupsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx, int tenantId) =>
+                ctx.Backups
+                    .AsNoTracking()
+                    .Where(b => b.TenantId == tenantId && b.Removed == false));
+
+    public static readonly Func<BackupsContext, int, IAsyncEnumerable<BackupRecord>> BackupsForMigrationAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx, int tenantId) =>
+                ctx.Backups
+                    .AsNoTracking()
+                    .Where(b => b.TenantId == tenantId));
+
+    public static readonly Func<BackupsContext, int, Task<int>> DeleteSchedulesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx, int tenantId) =>
+                ctx.Schedules
+                    .Where(s => s.TenantId == tenantId)
+                    .ExecuteDelete());
+
+    public static readonly Func<BackupsContext, IAsyncEnumerable<BackupSchedule>> BackupSchedulesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx) =>
+                ctx.Schedules.Join(ctx.Tenants,
+                        s => s.TenantId,
+                        t => t.Id,
+                        (s, t) => new { schedule = s, tenant = t })
+                    .Where(q => q.tenant.Status == TenantStatus.Active)
+                    .Select(q => q.schedule));
+
+    public static readonly Func<BackupsContext, int, Task<BackupSchedule>> BackupScheduleAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (BackupsContext ctx, int tenantId) =>
+                ctx.Schedules
+                    .AsNoTracking()
+                    .SingleOrDefault(s => s.TenantId == tenantId));
 }

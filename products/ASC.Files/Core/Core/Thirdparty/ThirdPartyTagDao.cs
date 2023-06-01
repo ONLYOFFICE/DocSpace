@@ -119,7 +119,7 @@ static file class Queries
                 ctx.ThirdpartyIdMapping
                     .Where(r => r.Id.StartsWith(idStart))
                     .Select(r => r.HashId));
-    
+
     public static readonly Func<FilesDbContext, int, IEnumerable<string>, Guid, IAsyncEnumerable<TagLinkTagPair>>
         TagLinkTagPairAsync =
             Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(

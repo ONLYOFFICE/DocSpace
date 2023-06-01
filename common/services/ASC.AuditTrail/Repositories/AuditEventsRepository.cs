@@ -224,7 +224,7 @@ public class AuditEventsRepository
     {
         using var feedDbContext = _dbContextFactory.CreateDbContext();
 
-        return await AuditEventsRepositoryQueries.GetTenantsAsync(feedDbContext, from, to).ToListAsync();
+        return await Queries.TenantsAsync(feedDbContext, from, to).ToListAsync();
     }
 }
 
@@ -264,12 +264,13 @@ public static class AuditEventsRepositoryExtensions
     }
 }
 
-static file class AuditEventsRepositoryQueries
+static file class Queries
 {
-    public static readonly Func<MessagesContext, DateTime?, DateTime?, IAsyncEnumerable<int>> GetTenantsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (MessagesContext ctx, DateTime? from, DateTime? to) =>
-        ctx.AuditEvents
-            .Where(r => r.Date >= from && r.Date <= to)
-            .Select(r => r.TenantId)
-            .Distinct());
+    public static readonly Func<MessagesContext, DateTime?, DateTime?, IAsyncEnumerable<int>> TenantsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (MessagesContext ctx, DateTime? from, DateTime? to) =>
+                ctx.AuditEvents
+                    .Where(r => r.Date >= from && r.Date <= to)
+                    .Select(r => r.TenantId)
+                    .Distinct());
 }

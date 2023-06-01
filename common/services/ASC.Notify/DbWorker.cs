@@ -145,7 +145,7 @@ public class DbWorker : IDisposable
 
         if (result == MailSendingState.Sended)
         {
-            var d = await Queries.GetNotifyInfoAsync(dbContext, id);
+            var d = await Queries.NotifyInfoAsync(dbContext, id);
 
             dbContext.NotifyInfo.Remove(d);
             await dbContext.SaveChangesAsync();
@@ -154,7 +154,7 @@ public class DbWorker : IDisposable
         {
             if (result == MailSendingState.Error)
             {
-                var attempts = await Queries.GetAttemptsAsync(dbContext, id);
+                var attempts = await Queries.AttemptsAsync(dbContext, id);
                 if (_notifyServiceCfg.Process.MaxAttempts <= attempts + 1)
                 {
                     result = MailSendingState.FatalError;
@@ -173,31 +173,34 @@ public class DbWorker : IDisposable
 
 static file class Queries
 {
-    public static readonly Func<NotifyDbContext, Task<int>> ResetStatesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (NotifyDbContext ctx) =>
-        ctx.NotifyInfo
-            .Where(r => r.State == 1)
-            .ExecuteUpdate(q => q.SetProperty(p => p.State, 0)));
-    
-    public static readonly Func<NotifyDbContext, int, Task<NotifyInfo>> GetNotifyInfoAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (NotifyDbContext ctx, int id) =>
-        ctx.NotifyInfo
-            .Where(r => r.NotifyId == id)
-            .FirstOrDefault());
-    
-    public static readonly Func<NotifyDbContext, int, Task<int>> GetAttemptsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (NotifyDbContext ctx, int id) =>
-        ctx.NotifyInfo
-            .Where(r => r.NotifyId == id)
-            .Select(r => r.Attempts)
-            .FirstOrDefault());
-    
-    public static readonly Func<NotifyDbContext, int, int, Task<int>> UpdateNotifyInfoAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (NotifyDbContext ctx, int id, int result) =>
-        ctx.NotifyInfo
-            .Where(r => r.NotifyId == id)
-            .ExecuteUpdate(q =>
-                q.SetProperty(p => p.State, result)
-                .SetProperty(p => p.Attempts, p => p.Attempts + 1)
-                .SetProperty(p => p.ModifyDate, DateTime.UtcNow)));
+    public static readonly Func<NotifyDbContext, Task<int>> ResetStatesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (NotifyDbContext ctx) =>
+                ctx.NotifyInfo
+                    .Where(r => r.State == 1)
+                    .ExecuteUpdate(q => q.SetProperty(p => p.State, 0)));
+
+    public static readonly Func<NotifyDbContext, int, Task<NotifyInfo>> NotifyInfoAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, int id) =>
+                ctx.NotifyInfo
+                    .FirstOrDefault(r => r.NotifyId == id));
+
+    public static readonly Func<NotifyDbContext, int, Task<int>> AttemptsAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, int id) =>
+                ctx.NotifyInfo
+                    .Where(r => r.NotifyId == id)
+                    .Select(r => r.Attempts)
+                    .FirstOrDefault());
+
+    public static readonly Func<NotifyDbContext, int, int, Task<int>> UpdateNotifyInfoAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, int id, int result) =>
+                ctx.NotifyInfo
+                    .Where(r => r.NotifyId == id)
+                    .ExecuteUpdate(q =>
+                        q.SetProperty(p => p.State, result)
+                            .SetProperty(p => p.Attempts, p => p.Attempts + 1)
+                            .SetProperty(p => p.ModifyDate, DateTime.UtcNow)));
 }

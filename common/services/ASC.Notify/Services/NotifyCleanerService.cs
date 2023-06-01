@@ -79,8 +79,8 @@ public class NotifyCleanerService : BackgroundService
             using var scope = _scopeFactory.CreateScope();
             using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
-            var info = await Queries.GetNotifyInfosAsync(dbContext, date).ToListAsync();
-            var queue = await Queries.GetNotifyQueuesAsync(dbContext, date).ToListAsync();
+            var info = await Queries.NotifyInfosAsync(dbContext, date).ToListAsync();
+            var queue = await Queries.NotifyQueuesAsync(dbContext, date).ToListAsync();
             
             dbContext.NotifyInfo.RemoveRange(info);
             dbContext.NotifyQueue.RemoveRange(queue);
@@ -101,13 +101,15 @@ public class NotifyCleanerService : BackgroundService
 
 static file class Queries
 {
-    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyInfo>> GetNotifyInfosAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (NotifyDbContext ctx, DateTime date) =>
-        ctx.NotifyInfo
-            .Where(r => r.ModifyDate < date && r.State == 4));
-    
-    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyQueue>> GetNotifyQueuesAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (NotifyDbContext ctx, DateTime date) =>
-         ctx.NotifyQueue
-            .Where(r => r.CreationDate < date));
+    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyInfo>> NotifyInfosAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, DateTime date) =>
+                ctx.NotifyInfo
+                    .Where(r => r.ModifyDate < date && r.State == 4));
+
+    public static readonly Func<NotifyDbContext, DateTime, IAsyncEnumerable<NotifyQueue>> NotifyQueuesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (NotifyDbContext ctx, DateTime date) =>
+                ctx.NotifyQueue
+                    .Where(r => r.CreationDate < date));
 }
