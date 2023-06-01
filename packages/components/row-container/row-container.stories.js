@@ -116,7 +116,7 @@ const Template = (args) => {
                 title={user.userName}
                 isBold={true}
                 fontSize="15px"
-                color={nameColor}
+                color={nameColor ? nameColor : ""}
               >
                 {user.userName}
               </Link>

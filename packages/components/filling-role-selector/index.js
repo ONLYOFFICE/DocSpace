@@ -17,16 +17,15 @@ import {
 import AvatarBaseReactSvgUrl from "PUBLIC_DIR/images/avatar.base.react.svg?url";
 import RemoveSvgUrl from "PUBLIC_DIR/images/remove.session.svg?url";
 
-const FillingRoleSelector = (props) => {
-  const {
-    roles,
-    users,
-    onAddUser,
-    onRemoveUser,
-    descriptionEveryone,
-    descriptionTooltip,
-  } = props;
-
+const FillingRoleSelector = ({
+  roles,
+  users,
+  onAddUser,
+  onRemoveUser,
+  descriptionEveryone,
+  descriptionTooltip,
+  ...props
+}) => {
   //If the roles in the roles array come out of order
   const cloneRoles = JSON.parse(JSON.stringify(roles));
   const sortedInOrderRoles = cloneRoles.sort((a, b) =>
