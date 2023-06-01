@@ -31,6 +31,7 @@ namespace System.Web;
 public static class HttpRequestExtensions
 {
     public static readonly string UrlRewriterHeader = "X-REWRITER-URL";
+    public static readonly string RequestTokenHeader = "Request-Token";
 
     public static Uri GetUrlRewriter(this HttpRequest request)
     {
