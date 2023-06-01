@@ -53,20 +53,16 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
 
     private async Task<IEnumerable<FileData<int>>> GetFreezingThumbnailsAsync()
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        var result = filesDbContext.Files
-                    .AsQueryable()
-                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Creating && EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5);
-
-        var updatedRows = await result.ExecuteUpdateAsync(s => s.SetProperty(b => b.ThumbnailStatus, b => ASC.Files.Core.Thumbnail.Waiting));
+        var updatedRows = await Queries.UpdateDbFilesAsync(filesDbContext);
 
         if (updatedRows == 0)
         {
             return new List<FileData<int>>();
         }
        
-        return await result.ToAsyncEnumerable().SelectAwait(async r =>
+        return await Queries.DbFilesAsync(filesDbContext).SelectAwait(async r =>
         {
             var tariff = await _tariffService.GetTariffAsync(r.TenantId);
             var fileData = new FileData<int>(r.TenantId, r.Id, "", tariff.State);
@@ -98,4 +94,23 @@ public class ThumbnailRequestedIntegrationEventHandler : IIntegrationEventHandle
             }
         }
     }
+}
+
+
+static file class Queries
+{
+    public static readonly Func<FilesDbContext, IAsyncEnumerable<DbFile>> DbFilesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.Files
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Creating &&
+                                EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5));
+
+    public static readonly Func<FilesDbContext, Task<int>> UpdateDbFilesAsync =
+        Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+            (FilesDbContext ctx) =>
+                ctx.Files
+                    .Where(r => r.CurrentVersion && r.ThumbnailStatus == ASC.Files.Core.Thumbnail.Creating &&
+                                EF.Functions.DateDiffMinute(r.ModifiedOn, DateTime.UtcNow) > 5)
+                    .ExecuteUpdate(s => s.SetProperty(b => b.ThumbnailStatus, b => ASC.Files.Core.Thumbnail.Waiting)));
 }
