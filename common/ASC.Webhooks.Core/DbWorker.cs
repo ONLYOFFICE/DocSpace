@@ -119,8 +119,6 @@ public class DbWorker
 
     public async Task<WebhooksConfig> RemoveWebhookConfigAsync(int id)
     {
-        var tenant = await _tenantManager.GetCurrentTenantIdAsync();
-
         await using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var removeObj = await Queries.WebhooksConfigAsync(webhooksDbContext, Tenant, id);
@@ -136,7 +134,7 @@ public class DbWorker
 
     public IAsyncEnumerable<WebhooksLog> ReadJournal(int startIndex, int limit, DateTime? delivery, string hookUri, int hookId)
     {
-        var webhooksDbContext = _dbContextFactory.CreateDbContext();
+        using var webhooksDbContext = _dbContextFactory.CreateDbContext();
 
         var q = webhooksDbContext.WebhooksLogs
             .AsNoTracking()

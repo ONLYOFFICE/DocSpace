@@ -876,7 +876,7 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
             yield break;
         }
 
-        var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         (var succ, var ids) = await _factoryIndexer.TrySelectIdsAsync(s => s.MatchAll(text));
         if (succ)
@@ -1166,11 +1166,14 @@ internal class FolderDao : AbstractDao, IFolderDao<int>
         return await (this as IFolderDao<int>).GetFolderIDAsync(FileConstant.ModuleId, Archive, null, createIfNotExists);
     }
 
-    public IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<int> entriesIds)
+    public async IAsyncEnumerable<OriginData> GetOriginsDataAsync(IEnumerable<int> entriesIds)
     {
-        var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
-        return  Queries.OriginsDataAsync(filesDbContext, TenantID, entriesIds);
+        await foreach (var data in Queries.OriginsDataAsync(filesDbContext, TenantID, entriesIds))
+        {
+            yield return data;
+        }
     }
 
     #endregion
