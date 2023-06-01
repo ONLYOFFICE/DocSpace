@@ -10,6 +10,12 @@ const styledTabletView = css`
   max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
   left: ${(props) => props.theme.newContextMenu.devices.left};
   right: ${(props) => props.theme.newContextMenu.devices.right};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: ${(props) => props.theme.newContextMenu.devices.right};
+      right: ${(props) => props.theme.newContextMenu.devices.left};
+    `}
   bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
   margin: ${(props) => props.theme.newContextMenu.devices.margin};
 `;
@@ -20,6 +26,12 @@ const styledMobileView = css`
   max-width: ${(props) => props.theme.newContextMenu.devices.mobileWidth};
   max-height: ${(props) => props.theme.newContextMenu.devices.maxHeight};
   left: ${(props) => props.theme.newContextMenu.devices.left};
+  ${(props) =>
+    props.theme.interfaceDirection === "rtl" &&
+    css`
+      left: 0;
+      right: ${(props) => props.theme.newContextMenu.devices.left};
+    `}
   bottom: ${(props) => props.theme.newContextMenu.devices.bottom};
   border-radius: ${(props) => props.theme.newContextMenu.mobileBorderRadius};
 `;
@@ -133,6 +145,12 @@ const StyledContextMenu = styled.div`
       min-width: 32px;
       box-sizing: border-box;
       margin-right: 8px;
+      ${(props) =>
+        props.theme.interfaceDirection === "rtl" &&
+        css`
+          margin-right: 0px;
+          margin-left: 8px;
+        `}
     }
 
     .text {
@@ -277,11 +295,24 @@ const StyledContextMenu = styled.div`
     }
 
     margin-right: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        margin-right: 0px;
+        margin-left: 8px;
+      `}
   }
 
   .p-submenu-icon {
     margin-left: auto;
     padding-left: 8px;
+    ${(props) =>
+      props.theme.interfaceDirection === "rtl" &&
+      css`
+        transform: scaleX(-1);
+        margin-right: auto;
+        margin-left: 0;
+      `}
     path[fill] {
       fill: ${(props) => props.theme.dropDownItem.icon.color};
     }
