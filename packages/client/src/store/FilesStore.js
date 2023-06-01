@@ -19,14 +19,16 @@ import config from "PACKAGE_FILE";
 import { thumbnailStatuses } from "@docspace/client/src/helpers/filesConstants";
 import { openDocEditor as openEditor } from "@docspace/client/src/helpers/filesUtils";
 import { getDaysRemaining } from "@docspace/common/utils";
-import { getCategoryUrl } from "SRC_DIR/helpers/utils";
+
 import {
   getCategoryType,
+  getCategoryUrl,
   getCategoryTypeByFolderType,
 } from "SRC_DIR/helpers/utils";
 import { isDesktop } from "@docspace/components/utils/device";
 import { getContextMenuKeysByType } from "SRC_DIR/helpers/plugins";
 import { PluginContextMenuItemType } from "SRC_DIR/helpers/plugins/constants";
+import { CategoryType } from "SRC_DIR/helpers/constants";
 import debounce from "lodash.debounce";
 
 const { FilesFilter, RoomsFilter } = api;
@@ -1167,10 +1169,12 @@ class FilesStore {
     const filterData = filter ? filter.clone() : FilesFilter.getDefault();
     filterData.folder = folderId;
 
-    if (folderId === "@my" && this.authStore.userStore.user.isVisitor)
+    if (folderId === "@my" && this.authStore.userStore.user.isVisitor) {
+      const url = getCategoryUrl(CategoryType.Shared);
       return window.DocSpace.navigate(
-        `rooms/shared/filter?${RoomsFilter.getDefault().toUrlParams()}`
+        `${url}?${RoomsFilter.getDefault().toUrlParams()}`
       );
+    }
 
     this.setIsErrorRoomNotAvailable(false);
     this.setIsLoadedFetchFiles(false);
