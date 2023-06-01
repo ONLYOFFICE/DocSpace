@@ -75,14 +75,14 @@ public class ReassignProgressItem : DistributedTaskProgress
         var queueWorkerRemove = scope.ServiceProvider.GetService<QueueWorkerRemove>();
         var (tenantManager, coreBaseSettings, messageService, studioNotifyService, securityContext, userManager, userPhotoManager, displayUserSettingsHelper, messageTarget, options) = scopeClass;
         var logger = options.CreateLogger("ASC.Web");
-        tenantManager.SetCurrentTenant(_tenantId);
+        await tenantManager.SetCurrentTenantAsync(_tenantId);
 
         try
         {
             Percentage = 0;
             Status = DistributedTaskStatus.Running;
 
-            securityContext.AuthenticateMeWithoutCookie(_currentUserId);
+            await securityContext.AuthenticateMeWithoutCookieAsync(_currentUserId);
 
             logger.LogInformation("reassignment of data from {fromUser} to {toUser}", FromUser, ToUser);
 
@@ -115,7 +115,7 @@ public class ReassignProgressItem : DistributedTaskProgress
                 PublishChanges();
             }
 
-            SendSuccessNotify(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
+            await SendSuccessNotifyAsync(userManager, studioNotifyService, messageService, messageTarget, displayUserSettingsHelper);
 
             Percentage = 100;
             Status = DistributedTaskStatus.Completed;
@@ -130,7 +130,7 @@ public class ReassignProgressItem : DistributedTaskProgress
             logger.ErrorReassignProgressItem(ex);
             Status = DistributedTaskStatus.Failted;
             Exception = ex;
-            SendErrorNotify(userManager, studioNotifyService, ex.Message);
+            await SendErrorNotifyAsync(userManager, studioNotifyService, ex.Message);
         }
         finally
         {
@@ -146,50 +146,50 @@ public class ReassignProgressItem : DistributedTaskProgress
         return MemberwiseClone();
     }
 
-    private void SendSuccessNotify(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
+    private async Task SendSuccessNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper)
     {
-        var fromUser = userManager.GetUsers(FromUser);
-        var toUser = userManager.GetUsers(ToUser);
+        var fromUser = await userManager.GetUsersAsync(FromUser);
+        var toUser = await userManager.GetUsersAsync(ToUser);
 
-        studioNotifyService.SendMsgReassignsCompleted(_currentUserId, fromUser, toUser);
+        await studioNotifyService.SendMsgReassignsCompletedAsync(_currentUserId, fromUser, toUser);
 
         var fromUserName = fromUser.DisplayUserName(false, displayUserSettingsHelper);
         var toUserName = toUser.DisplayUserName(false, displayUserSettingsHelper);
 
         if (_httpHeaders != null)
         {
-            messageService.Send(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
+            await messageService.SendAsync(_httpHeaders, MessageAction.UserDataReassigns, messageTarget.Create(FromUser), new[] { fromUserName, toUserName });
         }
         else
         {
-            messageService.Send(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
+           await messageService.SendAsync(MessageAction.UserDataReassigns, messageTarget.Create(FromUser), fromUserName, toUserName);
         }
     }
 
-    private void SendErrorNotify(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
+    private async Task SendErrorNotifyAsync(UserManager userManager, StudioNotifyService studioNotifyService, string errorMessage)
     {
-        var fromUser = userManager.GetUsers(FromUser);
-        var toUser = userManager.GetUsers(ToUser);
+        var fromUser = await userManager.GetUsersAsync(FromUser);
+        var toUser = await userManager.GetUsersAsync(ToUser);
 
-        studioNotifyService.SendMsgReassignsFailed(_currentUserId, fromUser, toUser, errorMessage);
+        await studioNotifyService.SendMsgReassignsFailedAsync(_currentUserId, fromUser, toUser, errorMessage);
     }
 
     private async Task DeleteUserProfile(UserManager userManager, UserPhotoManager userPhotoManager, MessageService messageService, MessageTarget messageTarget, DisplayUserSettingsHelper displayUserSettingsHelper, QueueWorkerRemove queueWorkerRemove)
     {
-        var user = userManager.GetUsers(FromUser);
+        var user = await userManager.GetUsersAsync(FromUser);
         var userName = user.DisplayUserName(false, displayUserSettingsHelper);
 
-        await userPhotoManager.RemovePhoto(user.Id);
-        await userManager.DeleteUser(user.Id);
+        await userPhotoManager.RemovePhotoAsync(user.Id);
+        await userManager.DeleteUserAsync(user.Id);
         queueWorkerRemove.Start(_tenantId, user, _currentUserId, false);
 
         if (_httpHeaders != null)
         {
-            messageService.Send(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
+            await messageService.SendAsync(_httpHeaders, MessageAction.UserDeleted, messageTarget.Create(FromUser), new[] { userName });
         }
         else
         {
-            messageService.Send(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
+            await messageService.SendAsync(MessageAction.UserDeleted, messageTarget.Create(FromUser), userName);
         }
     }
 }

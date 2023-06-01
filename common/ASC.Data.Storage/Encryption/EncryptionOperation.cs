@@ -61,7 +61,7 @@ public class EncryptionOperation : DistributedTaskProgress
         var scopeClass = scope.ServiceProvider.GetService<EncryptionOperationScope>();
         var (log, encryptionSettingsHelper, tenantManager, notifyHelper, coreBaseSettings, storageFactoryConfig, storageFactory, configuration) = scopeClass;
         notifyHelper.Init(_serverRootPath);
-        _tenants = tenantManager.GetTenants(false);
+        _tenants = await tenantManager.GetTenantsAsync(false);
         _modules = storageFactoryConfig.GetModuleList(exceptDisabledMigration: true);
         _useProgressFile = Convert.ToBoolean(configuration["storage:encryption:progressfile"] ?? "true");
 
@@ -91,7 +91,7 @@ public class EncryptionOperation : DistributedTaskProgress
 
                 foreach (var module in _modules)
                 {
-                    dictionary.Add(module, (DiscDataStore)storageFactory.GetStorage(tenant.Id, module));
+                    dictionary.Add(module, (DiscDataStore)await storageFactory.GetStorageAsync(tenant.Id, module));
                 }
 
                 await Parallel.ForEachAsync(dictionary, async (elem, token) =>
@@ -106,12 +106,12 @@ public class EncryptionOperation : DistributedTaskProgress
             if (!_hasErrors)
             {
                 await DeleteProgressFilesAsync(storageFactory);
-                SaveNewSettings(encryptionSettingsHelper, log);
+                await SaveNewSettingsAsync(encryptionSettingsHelper, log);
             }
 
             Percentage = 90;
             PublishChanges();
-            ActivateTenants(tenantManager, log, notifyHelper);
+            await ActivateTenantsAsync(tenantManager, log, notifyHelper);
 
             Percentage = 100;
 
@@ -149,18 +149,13 @@ public class EncryptionOperation : DistributedTaskProgress
         log.DebugPercentage(Percentage);
     }
 
-    private Task<List<string>> ReadProgressAsync(DiscDataStore store)
+    private async ValueTask<List<string>> ReadProgressAsync(DiscDataStore store)
     {
         if (!_useProgressFile)
         {
-            return Task.FromResult(new List<string>());
+            return new List<string>();
         }
 
-        return InternalReadProgressAsync(store);
-    }
-
-    private async Task<List<string>> InternalReadProgressAsync(DiscDataStore store)
-    {
         var encryptedFiles = new List<string>();
 
         if (await store.IsFileAsync(string.Empty, ProgressFileName))
@@ -258,7 +253,7 @@ public class EncryptionOperation : DistributedTaskProgress
         {
             foreach (var module in _modules)
             {
-                var store = (DiscDataStore)storageFactory.GetStorage(tenant.Id, module);
+                var store = (DiscDataStore)await storageFactory.GetStorageAsync(tenant.Id, module);
 
                 if (await store.IsFileAsync(string.Empty, ProgressFileName))
                 {
@@ -268,7 +263,7 @@ public class EncryptionOperation : DistributedTaskProgress
         }
     }
 
-    private void SaveNewSettings(EncryptionSettingsHelper encryptionSettingsHelper, ILogger log)
+    private async Task SaveNewSettingsAsync(EncryptionSettingsHelper encryptionSettingsHelper, ILogger log)
     {
         if (_isEncryption)
         {
@@ -280,12 +275,12 @@ public class EncryptionOperation : DistributedTaskProgress
             _encryptionSettings.Password = string.Empty;
         }
 
-        encryptionSettingsHelper.Save(_encryptionSettings);
+        await encryptionSettingsHelper.SaveAsync(_encryptionSettings);
 
         log.DebugSaveNewEncryptionSettings();
     }
 
-    private void ActivateTenants(TenantManager tenantManager, ILogger log, NotifyHelper notifyHelper)
+    private async Task ActivateTenantsAsync(TenantManager tenantManager, ILogger log, NotifyHelper notifyHelper)
     {
         foreach (var tenant in _tenants)
         {
@@ -294,7 +289,7 @@ public class EncryptionOperation : DistributedTaskProgress
                 tenantManager.SetCurrentTenant(tenant);
 
                 tenant.SetStatus(TenantStatus.Active);
-                tenantManager.SaveTenant(tenant);
+                await tenantManager.SaveTenantAsync(tenant);
                 log.DebugTenantSetStatusActive(tenant.Alias);
 
                 if (!_hasErrors)

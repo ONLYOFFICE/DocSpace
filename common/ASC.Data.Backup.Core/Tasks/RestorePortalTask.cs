@@ -118,7 +118,7 @@ public class RestorePortalTask : PortalTaskBase
 
                     await restoreTask.RunJob();
                 }
-                _backupRepository.MigrationBackupRecords(TenantId, _columnMapper.GetTenantMapping(), _region);
+                await _backupRepository.MigrationBackupRecordsAsync(TenantId, _columnMapper.GetTenantMapping(), _region);
             }
 
             _options.DebugEndRestoreData();
@@ -145,7 +145,7 @@ public class RestorePortalTask : PortalTaskBase
             _options.DebugRefreshLicense();
             try
             {
-                _licenseReader.RejectLicense();
+                await _licenseReader.RejectLicenseAsync();
             }
             catch (Exception ex)
             {
@@ -187,13 +187,13 @@ public class RestorePortalTask : PortalTaskBase
         if (ProcessStorage)
         {
             var storageModules = StorageFactoryConfig.GetModuleList(_region).Where(IsStorageModuleAllowed);
-            var tenants = _tenantManager.GetTenants(false);
+            var tenants = await _tenantManager.GetTenantsAsync(false);
 
             stepscount += storageModules.Count() * tenants.Count;
 
             SetStepsCount(stepscount + 1);
 
-            await DoDeleteStorage(storageModules, tenants);
+            await DoDeleteStorageAsync(storageModules, tenants);
         }
         else
         {
@@ -359,7 +359,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
+                var storage = await StorageFactory.GetStorageAsync(Dump ? file.Tenant : _columnMapper.GetTenantMapping(), group.Key);
                 var quotaController = storage.QuotaController;
                 storage.SetQuotaController(null);
 
@@ -405,7 +405,7 @@ public class RestorePortalTask : PortalTaskBase
         _options.DebugEndRestoreStorage();
     }
 
-    private async Task DoDeleteStorage(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
+    private async Task DoDeleteStorageAsync(IEnumerable<string> storageModules, IEnumerable<Tenant> tenants)
     {
         _options.DebugBeginDeleteStorage();
 
@@ -413,7 +413,7 @@ public class RestorePortalTask : PortalTaskBase
         {
             foreach (var module in storageModules)
             {
-                var storage = StorageFactory.GetStorage(tenant.Id, module, _region);
+                var storage = await StorageFactory.GetStorageAsync(tenant.Id, module, _region);
                 var domains = StorageFactoryConfig.GetDomainList(module, _region).ToList();
 
                 domains.Add(string.Empty); //instead storage.DeleteFiles("\\", "*.*", true);

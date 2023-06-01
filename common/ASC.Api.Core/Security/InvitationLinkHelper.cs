@@ -83,7 +83,7 @@ public class InvitationLinkHelper
             return validationResult;
         }
 
-        var commonLinkResult = _emailValidationKeyProvider.ValidateEmailKey(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType,
+        var commonLinkResult = await _emailValidationKeyProvider.ValidateEmailKeyAsync(ConfirmType.LinkInvite.ToStringFast() + (int)employeeType,
             key, _emailValidationKeyProvider.ValidEmailKeyInterval);
 
         if (commonLinkResult != ValidationResult.Invalid)
@@ -99,7 +99,7 @@ public class InvitationLinkHelper
             return validationResult;
         }
 
-        var individualLinkResult = await ValidateIndividualLink(email, key, employeeType);
+        var individualLinkResult = await ValidateIndividualLinkAsync(email, key, employeeType);
 
         validationResult.Result = individualLinkResult;
         validationResult.LinkType = InvitationLinkType.Individual;
@@ -107,14 +107,9 @@ public class InvitationLinkHelper
         return validationResult;
     }
 
-    public LinkValidationResult Validate(string key, string email, EmployeeType employeeType)
+    private async Task<ValidationResult> ValidateIndividualLinkAsync(string email, string key, EmployeeType employeeType)
     {
-        return ValidateAsync(key, email, employeeType).Result;
-    }
-
-    private async Task<ValidationResult> ValidateIndividualLink(string email, string key, EmployeeType employeeType)
-    {
-        var result = _emailValidationKeyProvider.ValidateEmailKey(email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast(), 
+        var result = await _emailValidationKeyProvider.ValidateEmailKeyAsync(email + ConfirmType.LinkInvite.ToStringFast() + employeeType.ToStringFast(), 
             key, IndividualLinkExpirationInterval);
 
         if (result != ValidationResult.Ok)
@@ -122,9 +117,9 @@ public class InvitationLinkHelper
             return result;
         }
 
-        var user = _userManager.GetUserByEmail(email);
+        var user = await _userManager.GetUserByEmailAsync(email);
 
-        if (user.Equals(Constants.LostUser) || _authManager.GetUserPasswordStamp(user.Id) != DateTime.MinValue)
+        if (user.Equals(Constants.LostUser) || await _authManager.GetUserPasswordStampAsync(user.Id) != DateTime.MinValue)
         {
             return ValidationResult.Invalid;
         }
@@ -133,7 +128,7 @@ public class InvitationLinkHelper
 
         if (visitMessage == null)
         {
-            SaveLinkVisitMessage(email, key);
+            await SaveLinkVisitMessageAsync(email, key);
         }
         else if (visitMessage.Date + _emailValidationKeyProvider.ValidVisitLinkInterval < DateTime.UtcNow)
         {
@@ -162,12 +157,12 @@ public class InvitationLinkHelper
         return message;
     }
 
-    private void SaveLinkVisitMessage(string email, string key)
+    private async Task SaveLinkVisitMessageAsync(string email, string key)
     {
         var headers = _httpContextAccessor?.HttpContext?.Request.Headers;
         var target = _messageTarget.Create(email);
 
-        _messageService.Send(headers, MessageAction.RoomInviteLinkUsed, target, key);
+        await _messageService.SendAsync(headers, MessageAction.RoomInviteLinkUsed, target, key);
     }
 }
 

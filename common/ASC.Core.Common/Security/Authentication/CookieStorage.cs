@@ -134,11 +134,11 @@ public class CookieStorage
         return loginEventId;
     }
 
-    public string EncryptCookie(int tenant, Guid userid, int loginEventId)
+    public async Task<string> EncryptCookieAsync(int tenant, Guid userid, int loginEventId)
     {
-        var settingsTenant = _tenantCookieSettingsHelper.GetForTenant(tenant);
-        var expires = _tenantCookieSettingsHelper.GetExpiresTime(tenant);
-        var settingsUser = _tenantCookieSettingsHelper.GetForUser(tenant, userid);
+        var settingsTenant = await _tenantCookieSettingsHelper.GetForTenantAsync(tenant);
+        var expires = await _tenantCookieSettingsHelper.GetExpiresTimeAsync(tenant);
+        var settingsUser = await _tenantCookieSettingsHelper.GetForUserAsync(tenant, userid);
 
         return EncryptCookie(tenant, userid, settingsTenant.Index, expires, settingsUser.Index, loginEventId);
     }

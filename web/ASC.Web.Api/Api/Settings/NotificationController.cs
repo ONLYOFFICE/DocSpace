@@ -44,17 +44,17 @@ public class NotificationController : BaseSettingsController
     }
 
     [HttpGet("notification/{type}")]
-    public NotificationSettingsDto GetSettings(NotificationType type)
+    public async Task<NotificationSettingsDto> GetSettingsAsync(NotificationType type)
     {
-        var isEnabled = _notificationControllerHelper.GetNotificationStatus(type);
+        var isEnabled = await _notificationControllerHelper.GetNotificationStatusAsync(type);
 
         return new NotificationSettingsDto() { Type = type, IsEnabled = isEnabled };
     }
 
     [HttpPost("notification")]
-    public NotificationSettingsDto SetSettings(NotificationSettingsRequestsDto model)
+    public async Task<NotificationSettingsDto> SetSettingsAsync(NotificationSettingsRequestsDto model)
     {
-        _notificationControllerHelper.SetNotificationStatus(model.Type, model.IsEnabled);
+        await _notificationControllerHelper.SetNotificationStatusAsync(model.Type, model.IsEnabled);
 
         return _mapper.Map<NotificationSettingsDto>(model);
     }

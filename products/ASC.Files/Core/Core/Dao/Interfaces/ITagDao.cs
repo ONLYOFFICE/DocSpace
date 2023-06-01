@@ -42,7 +42,7 @@ public interface ITagDao<T>
     IAsyncEnumerable<TagInfo> GetTagsInfoAsync(string searchText, TagType tagType, bool byName, int from = 0, int count = 0);
     IAsyncEnumerable<TagInfo> GetTagsInfoAsync(IEnumerable<string> names);
     Task<IEnumerable<Tag>> SaveTags(IEnumerable<Tag> tag, Guid createdBy = default);
-    Task<IEnumerable<Tag>> SaveTags(Tag tag);
+    Task<IEnumerable<Tag>> SaveTagsAsync(Tag tag);
     Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo);
     Task UpdateNewTags(IEnumerable<Tag> tag, Guid createdBy = default);
     Task UpdateNewTags(Tag tag);

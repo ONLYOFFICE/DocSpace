@@ -147,7 +147,7 @@ public class ProductEntryPoint : Product
 
         if (whatsNewType == WhatsNewType.RoomsActivity)
         {
-            events = _auditEventsRepository.GetByFilterWithActions(
+            events = await _auditEventsRepository.GetByFilterWithActionsAsync(
                 withoutUserId: userId,
                 actions: StudioWhatsNewNotify.RoomsActivityActions,
                 from: scheduleDate.AddHours(-1),
@@ -156,7 +156,7 @@ public class ProductEntryPoint : Product
         }
         else
         {
-            events = _auditEventsRepository.GetByFilterWithActions(
+            events = await _auditEventsRepository.GetByFilterWithActionsAsync(
                 withoutUserId: userId,
                 actions: StudioWhatsNewNotify.DailyActions,
                 from: scheduleDate.Date.AddDays(-1),
@@ -166,12 +166,12 @@ public class ProductEntryPoint : Product
 
         var disabledRooms = _roomsNotificationSettingsHelper.GetDisabledRoomsForCurrentUser();
 
-        var userRoomsWithRole = await GetUserRoomsWithRole(userId);
+        var userRoomsWithRole = await GetUserRoomsWithRoleAsync(userId);
 
         var userRoomsWithRoleForSend = userRoomsWithRole.Where(r => !disabledRooms.Contains(r.Key));
         var userRoomsForSend = userRoomsWithRoleForSend.Select(r => r.Key);
 
-        var docSpaceAdmin = _userManager.IsDocSpaceAdmin(userId);
+        var docSpaceAdmin = await _userManager.IsDocSpaceAdminAsync(userId);
 
         var result = new List<ActivityInfo>();
 
@@ -296,14 +296,14 @@ public class ProductEntryPoint : Product
     public override ProductContext Context => _productContext;
     public override string ApiURL => string.Empty;
 
-    private async Task<Dictionary<string, bool>> GetUserRoomsWithRole(Guid userId)
+    private async Task<Dictionary<string, bool>> GetUserRoomsWithRoleAsync(Guid userId)
     {
         var result = new Dictionary<string, bool>();
 
         var folderDao = _daoFactory.GetFolderDao<int>();
         var securityDao = _daoFactory.GetSecurityDao<int>();
 
-        var currentUserSubjects = _fileSecurity.GetUserSubjects(userId);
+        var currentUserSubjects = await _fileSecurity.GetUserSubjectsAsync(userId);
         var currentUsersRecords = await securityDao.GetSharesAsync(currentUserSubjects).ToListAsync();
 
         foreach (var record in currentUsersRecords)

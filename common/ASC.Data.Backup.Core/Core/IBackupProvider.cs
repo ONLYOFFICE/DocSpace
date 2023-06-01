@@ -32,7 +32,7 @@ public interface IBackupProvider
     event EventHandler<ProgressChangedEventArgs> ProgressChanged;
 
     Task<IEnumerable<XElement>> GetElements(int tenant, string[] configs, IDataWriteOperator writer);
-    Task LoadFrom(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader);
+    Task LoadFromAsync(IEnumerable<XElement> elements, int tenant, string[] configs, IDataReadOperator reader);
 }
 
 public class ProgressChangedEventArgs : EventArgs

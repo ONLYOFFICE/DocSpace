@@ -73,14 +73,14 @@ public class FirstTimeTenantSettings
         _clientFactory = clientFactory;
     }
 
-    public async Task<WizardSettings> SaveData(WizardRequestsDto inDto)
+    public async Task<WizardSettings> SaveDataAsync(WizardRequestsDto inDto)
     {
         try
         {
             var (email, passwordHash, lng, timeZone, amiid, subscribeFromSite) = inDto;
 
-            var tenant = _tenantManager.GetCurrentTenant();
-            var settings = _settingsManager.Load<WizardSettings>();
+            var tenant = await _tenantManager.GetCurrentTenantAsync();
+            var settings = await _settingsManager.LoadAsync<WizardSettings>();
             if (settings.Completed)
             {
                 throw new Exception("Wizard passed.");
@@ -93,15 +93,15 @@ public class FirstTimeTenantSettings
 
             if (tenant.OwnerId == Guid.Empty)
             {
-                Thread.Sleep(TimeSpan.FromSeconds(6)); // wait cache interval
-                tenant = _tenantManager.GetTenant(tenant.Id);
+                await Task.Delay(TimeSpan.FromSeconds(6));// wait cache interval
+                tenant = await _tenantManager.GetTenantAsync(tenant.Id);
                 if (tenant.OwnerId == Guid.Empty)
                 {
                     _log.ErrorOwnerEmpty(tenant.Id);
                 }
             }
 
-            var currentUser = _userManager.GetUsers(_tenantManager.GetCurrentTenant().OwnerId);
+            var currentUser = await _userManager.GetUsersAsync((await _tenantManager.GetCurrentTenantAsync()).OwnerId);
 
             if (!UserManagerWrapper.ValidateEmail(email))
             {
@@ -113,7 +113,7 @@ public class FirstTimeTenantSettings
                 throw new Exception(Resource.ErrorPasswordEmpty);
             }
 
-            _securityContext.SetUserPasswordHash(currentUser.Id, passwordHash);
+            await _securityContext.SetUserPasswordHashAsync(currentUser.Id, passwordHash);
 
             email = email.Trim();
             if (currentUser.Email != email)
@@ -122,27 +122,27 @@ public class FirstTimeTenantSettings
                 currentUser.ActivationStatus = EmployeeActivationStatus.NotActivated;
             }
 
-            await _userManager.UpdateUserInfo(currentUser);
+            await _userManager.UpdateUserInfoAsync(currentUser);
 
             if (RequestLicense)
             {
-                TariffSettings.SetLicenseAccept(_settingsManager);
-                _messageService.Send(MessageAction.LicenseKeyUploaded);
+                await TariffSettings.SetLicenseAcceptAsync(_settingsManager);
+                await _messageService.SendAsync(MessageAction.LicenseKeyUploaded);
 
-                _licenseReader.RefreshLicense();
+                await _licenseReader.RefreshLicenseAsync();
             }
 
             settings.Completed = true;
-            _settingsManager.Save(settings);
+            await _settingsManager.SaveAsync(settings);
 
             TrySetLanguage(tenant, lng);
 
             tenant.TimeZone = _timeZoneConverter.GetTimeZone(timeZone).Id;
 
-            _tenantManager.SaveTenant(tenant);
+            await _tenantManager.SaveTenantAsync(tenant);
 
-            _studioNotifyService.SendCongratulations(currentUser);
-            _studioNotifyService.SendRegData(currentUser);
+            await _studioNotifyService.SendCongratulationsAsync(currentUser);
+            await _studioNotifyService.SendRegDataAsync(currentUser);
 
             if (subscribeFromSite && _tenantExtra.Opensource && !_coreBaseSettings.CustomMode)
             {

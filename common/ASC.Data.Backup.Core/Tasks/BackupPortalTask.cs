@@ -74,7 +74,7 @@ public class BackupPortalTask : PortalTaskBase
     public override async Task RunJob()
     {
         _logger.DebugBeginBackup(TenantId);
-        _tenantManager.SetCurrentTenant(TenantId);
+        await _tenantManager.SetCurrentTenantAsync(TenantId);
 
         await using (WriteOperator)
         {
@@ -97,7 +97,7 @@ public class BackupPortalTask : PortalTaskBase
                 }
                 if (ProcessStorage)
                 {
-                    await DoBackupStorage(WriteOperator, fileGroups);
+                    await DoBackupStorageAsync(WriteOperator, fileGroups);
                 }
             }
         }
@@ -170,7 +170,7 @@ public class BackupPortalTask : PortalTaskBase
 
         if (ProcessStorage)
         {
-            var tenants = _tenantManager.GetTenants(false).Select(r => r.Id);
+            var tenants = (await _tenantManager.GetTenantsAsync(false)).Select(r => r.Id);
             foreach (var t in tenants)
             {
                 files.AddRange(await GetFiles(t));
@@ -262,7 +262,7 @@ public class BackupPortalTask : PortalTaskBase
     {
         var files = (await GetFilesToProcess(tenantId)).ToList();
         using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        var exclude = await backupRecordContext.Backups.Where(b => b.TenantId == tenantId && b.StorageType == 0 && b.StoragePath != null).ToListAsync();
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
         return files;
 
@@ -544,7 +544,7 @@ public class BackupPortalTask : PortalTaskBase
             for (var j = 0; j < TasksLimit && i + j < files.Count; j++)
             {
                 var t = files[i + j];
-                tasks.Add(Task.Run(() => DoDumpFile(t, storageDir)));
+                tasks.Add(Task.Run(() => DoDumpFileAsync(t, storageDir)));
             }
 
             Task.WaitAll(tasks.ToArray());
@@ -572,9 +572,9 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndBackupStorage();
     }
 
-    private async Task DoDumpFile(BackupFileInfo file, string dir)
+    private async Task DoDumpFileAsync(BackupFileInfo file, string dir)
     {
-        var storage = StorageFactory.GetStorage(file.Tenant, file.Module);
+        var storage = await StorageFactory.GetStorageAsync(file.Tenant, file.Module);
         var filePath = CrossPlatform.PathCombine(dir, file.GetZipKey());
         var dirName = Path.GetDirectoryName(filePath);
 
@@ -626,7 +626,7 @@ public class BackupPortalTask : PortalTaskBase
         var files = (await GetFilesToProcess(TenantId)).ToList();
 
         using var backupRecordContext = _dbContextFactory.CreateDbContext();
-        var exclude = backupRecordContext.Backups.AsQueryable().Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToList();
+        var exclude = await backupRecordContext.Backups.Where(b => b.TenantId == TenantId && b.StorageType == 0 && b.StoragePath != null).ToListAsync();
 
         files = files.Where(f => !exclude.Any(e => f.Path.Replace('\\', '/').Contains($"/file_{e.StoragePath}/"))).ToList();
 
@@ -697,7 +697,7 @@ public class BackupPortalTask : PortalTaskBase
         _logger.DebugEndSavingDataForModule(module.ModuleName);
     }
 
-    private async Task DoBackupStorage(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
+    private async Task DoBackupStorageAsync(IDataWriteOperator writer, List<IGrouping<string, BackupFileInfo>> fileGroups)
     {
         _logger.DebugBeginBackupStorage();
 
@@ -708,7 +708,7 @@ public class BackupPortalTask : PortalTaskBase
 
             foreach (var file in group)
             {
-                var storage = StorageFactory.GetStorage(TenantId, group.Key);
+                var storage = await StorageFactory.GetStorageAsync(TenantId, group.Key);
                 var file1 = file;
                 Stream fileStream = null;
                 await ActionInvoker.Try(async state =>

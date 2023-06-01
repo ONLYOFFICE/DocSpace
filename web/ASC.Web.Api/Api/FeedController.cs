@@ -66,9 +66,9 @@ public class FeedController : ControllerBase
     ///Read feeds
     ///</short>
     [HttpPut("read")]
-    public void Read()
+    public async Task Read()
     {
-        _feedReadedDataProvider.SetTimeReaded();
+        await _feedReadedDataProvider.SetTimeReadedAsync();
     }
 
     ///<summary>
@@ -88,7 +88,7 @@ public class FeedController : ControllerBase
     /// <param name="timeReaded">Time when the feeds were read</param>
     ///<returns>List of filtered feeds</returns>
     [HttpGet("filter")]
-    public object GetFeed(
+    public async Task<object> GetFeedAsync(
         string id,
         string product,
         string module,
@@ -131,7 +131,7 @@ public class FeedController : ControllerBase
 
         if (string.IsNullOrEmpty(id))
         {
-            lastTimeReaded = _feedReadedDataProvider.GetTimeReaded();
+            lastTimeReaded = await _feedReadedDataProvider.GetTimeReadedAsync();
             readedDate = timeReaded != null ? timeReaded.UtcTime : lastTimeReaded;
         }
 
@@ -142,12 +142,12 @@ public class FeedController : ControllerBase
         }
         else if (timeReaded == null)
         {
-            _feedReadedDataProvider.SetTimeReaded();
+            await _feedReadedDataProvider.SetTimeReadedAsync();
             _newFeedsCountCache.Remove(Key);
         }
 
-        var feeds = _feedAggregateDataProvider
-            .GetFeeds(filter)
+        var feeds = (await _feedAggregateDataProvider
+            .GetFeedsAsync(filter))
             .GroupBy(n => n.GroupId,
                      n => _mapper.Map<FeedResultItem, FeedDto>(n),
                      (n, group) =>
@@ -170,15 +170,15 @@ public class FeedController : ControllerBase
     ///</short>
     ///<returns>Number of fresh feeds</returns>
     [HttpGet("newfeedscount")]
-    public object GetFreshNewsCount()
+    public async Task<object> GetFreshNewsCountAsync()
     {
         var cacheKey = Key;
         var resultfromCache = _newFeedsCountCache.Get<string>(cacheKey);
 
         if (!int.TryParse(resultfromCache, out var result))
         {
-            var lastTimeReaded = _feedReadedDataProvider.GetTimeReaded();
-            result = _feedAggregateDataProvider.GetNewFeedsCount(lastTimeReaded);
+            var lastTimeReaded = await _feedReadedDataProvider.GetTimeReadedAsync();
+            result = await _feedAggregateDataProvider.GetNewFeedsCountAsync(lastTimeReaded);
             _newFeedsCountCache.Insert(cacheKey, result.ToString(), DateTime.UtcNow.AddMinutes(3));
         }
 

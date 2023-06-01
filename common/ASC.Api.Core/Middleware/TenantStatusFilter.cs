@@ -27,7 +27,7 @@
 namespace ASC.Api.Core.Middleware;
 
 [Scope]
-public class TenantStatusFilter : IResourceFilter
+public class TenantStatusFilter : IAsyncResourceFilter
 {
     private readonly TenantManager _tenantManager;
     private readonly ILogger<TenantStatusFilter> _logger;
@@ -40,9 +40,7 @@ public class TenantStatusFilter : IResourceFilter
         _tenantManager = tenantManager;
     }
 
-    public void OnResourceExecuted(ResourceExecutedContext context) { }
-
-    public void OnResourceExecuting(ResourceExecutingContext context)
+    public async Task OnResourceExecutionAsync(ResourceExecutingContext context, ResourceExecutionDelegate next)
     {
         var tenant = _tenantManager.GetCurrentTenant(false);
         if (tenant == null)
@@ -58,6 +56,7 @@ public class TenantStatusFilter : IResourceFilter
                 context.ActionDescriptor is ControllerActionDescriptor controllerActionDescriptor &&
                 controllerActionDescriptor.EndpointMetadata.OfType<AllowSuspendedAttribute>().Any())
             {
+                await next();
                 return;
             }
 
@@ -70,6 +69,7 @@ public class TenantStatusFilter : IResourceFilter
         {
             if (_passthroughtRequestEndings.Any(path => context.HttpContext.Request.Path.ToString().EndsWith(path, StringComparison.InvariantCultureIgnoreCase)))
             {
+                await next();
                 return;
             }
 
@@ -77,5 +77,6 @@ public class TenantStatusFilter : IResourceFilter
             _logger.WarningTenantStatus(tenant.Id, tenant.Status);
             return;
         }
+        await next();
     }
 }

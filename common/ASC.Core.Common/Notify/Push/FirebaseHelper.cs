@@ -52,7 +52,7 @@ public class FirebaseHelper
         _firebaseDao = firebaseDao;
     }
 
-    public void SendMessage(NotifyMessage msg)
+    public async Task SendMessageAsync(NotifyMessage msg)
     {
         var defaultInstance = FirebaseApp.DefaultInstance;
         if (defaultInstance == null)
@@ -71,9 +71,9 @@ public class FirebaseHelper
             }
         }
 
-        _tenantManager.SetCurrentTenant(msg.TenantId);
+        await _tenantManager.SetCurrentTenantAsync(msg.TenantId);
 
-        var user = _userManager.GetUserByUserName(msg.Reciever);
+        var user = await _userManager.GetUserByUserNameAsync(msg.Reciever);
 
         Guid productID;
 
@@ -86,7 +86,7 @@ public class FirebaseHelper
 
         if (productID == new Guid("{E67BE73D-F9AE-4ce1-8FEC-1880CB518CB4}")) //documents product
         {
-            fireBaseUser = _firebaseDao.GetUserDeviceTokens(user.Id, msg.TenantId, PushConstants.PushDocAppName);
+            fireBaseUser = await _firebaseDao.GetUserDeviceTokensAsync(user.Id, msg.TenantId, PushConstants.PushDocAppName);
         }
 
         foreach (var fb in fireBaseUser)
@@ -104,24 +104,24 @@ public class FirebaseHelper
                         Body = msg.Content
                     }
                 };
-                FirebaseAdminMessaging.FirebaseMessaging.DefaultInstance.SendAsync(m);
+                await FirebaseAdminMessaging.FirebaseMessaging.DefaultInstance.SendAsync(m);
             }
         }
     }
 
-    public FireBaseUser RegisterUserDevice(string fbDeviceToken, bool isSubscribed, string application)
+    public async Task<FireBaseUser> RegisterUserDeviceAsync(string fbDeviceToken, bool isSubscribed, string application)
     {
         var userId = _authContext.CurrentAccount.ID;
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
 
-        return _firebaseDao.RegisterUserDevice(userId, tenantId, fbDeviceToken, isSubscribed, application);
+        return await _firebaseDao.RegisterUserDeviceAsync(userId, tenantId, fbDeviceToken, isSubscribed, application);
     }
 
-    public FireBaseUser UpdateUser(string fbDeviceToken, bool isSubscribed, string application)
+    public async Task<FireBaseUser> UpdateUserAsync(string fbDeviceToken, bool isSubscribed, string application)
     {
         var userId = _authContext.CurrentAccount.ID;
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
 
-        return _firebaseDao.UpdateUser(userId, tenantId, fbDeviceToken, isSubscribed, application);
+        return await _firebaseDao.UpdateUserAsync(userId, tenantId, fbDeviceToken, isSubscribed, application);
     }
 }

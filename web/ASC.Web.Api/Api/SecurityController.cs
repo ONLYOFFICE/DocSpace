@@ -73,32 +73,32 @@ public class SecurityController : ControllerBase
     }
 
     [HttpGet("audit/login/last")]
-    public IEnumerable<LoginEventDto> GetLastLoginEvents()
+    public async Task<IEnumerable<LoginEventDto>> GetLastLoginEventsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         DemandBaseAuditPermission();
 
-        return _loginEventsRepository.GetByFilter(startIndex: 0, limit: 20).Select(x => new LoginEventDto(x));
+        return (await _loginEventsRepository.GetByFilterAsync(startIndex: 0, limit: 20)).Select(x => new LoginEventDto(x));
     }
 
     [HttpGet("audit/events/last")]
-    public IEnumerable<AuditEventDto> GetLastAuditEvents()
+    public async Task<IEnumerable<AuditEventDto>> GetLastAuditEventsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         DemandBaseAuditPermission();
 
-        return _auditEventsRepository.GetByFilter(startIndex: 0, limit: 20).Select(x => new AuditEventDto(x, _auditActionMapper));
+        return (await _auditEventsRepository.GetByFilterAsync(startIndex: 0, limit: 20)).Select(x => new AuditEventDto(x, _auditActionMapper));
     }
 
     [HttpGet("/audit/login/filter")]
-    public IEnumerable<LoginEventDto> GetLoginEventsByFilter(Guid userId,
+    public async Task<IEnumerable<LoginEventDto>> GetLoginEventsByFilterAsync(Guid userId,
     MessageAction action,
     ApiDateTime from,
     ApiDateTime to)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var startIndex = (int)_apiContext.StartIndex;
         var limit = (int)_apiContext.Count;
@@ -106,20 +106,20 @@ public class SecurityController : ControllerBase
 
         action = action == 0 ? MessageAction.None : action;
 
-        if (!_tenantManager.GetCurrentTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+        if (!(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
-            return GetLastLoginEvents();
+            return await GetLastLoginEventsAsync();
         }
         else
         {
-            DemandAuditPermission();
+            await DemandAuditPermissionAsync();
 
-            return _loginEventsRepository.GetByFilter(userId, action, from, to, startIndex, limit).Select(x => new LoginEventDto(x));
+            return (await _loginEventsRepository.GetByFilterAsync(userId, action, from, to, startIndex, limit)).Select(x => new LoginEventDto(x));
         }
     }
 
     [HttpGet("/audit/events/filter")]
-    public IEnumerable<AuditEventDto> GetAuditEventsByFilter(Guid userId,
+    public async Task<IEnumerable<AuditEventDto>> GetAuditEventsByFilterAsync(Guid userId,
             ProductType productType,
             ModuleType moduleType,
             ActionType actionType,
@@ -129,7 +129,7 @@ public class SecurityController : ControllerBase
             ApiDateTime from,
             ApiDateTime to)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var startIndex = (int)_apiContext.StartIndex;
         var limit = (int)_apiContext.Count;
@@ -137,15 +137,15 @@ public class SecurityController : ControllerBase
 
         action = action == 0 ? MessageAction.None : action;
 
-        if (!_tenantManager.GetCurrentTenantQuota().Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
+        if (!(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit || !SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString()))
         {
-            return GetLastAuditEvents();
+            return await GetLastAuditEventsAsync();
         }
         else
         {
-            DemandAuditPermission();
+            await DemandAuditPermissionAsync();
 
-            return _auditEventsRepository.GetByFilter(userId, productType, moduleType, actionType, action, entryType, target, from, to, startIndex, limit).Select(x => new AuditEventDto(x, _auditActionMapper));
+            return (await _auditEventsRepository.GetByFilterAsync(userId, productType, moduleType, actionType, action, entryType, target, from, to, startIndex, limit)).Select(x => new AuditEventDto(x, _auditActionMapper));
         }
     }
 
@@ -190,66 +190,66 @@ public class SecurityController : ControllerBase
     [HttpPost("audit/login/report")]
     public async Task<object> CreateLoginHistoryReport()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        DemandAuditPermission();
+        await DemandAuditPermissionAsync();
 
-        var settings = _settingsManager.Load<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
+        var settings = await _settingsManager.LoadAsync<TenantAuditSettings>(await _tenantManager.GetCurrentTenantIdAsync());
 
         var to = DateTime.UtcNow;
         var from = to.Subtract(TimeSpan.FromDays(settings.LoginHistoryLifeTime));
 
         var reportName = string.Format(AuditReportResource.LoginHistoryReportName + ".csv", from.ToShortDateString(), to.ToShortDateString());
-        var events = _loginEventsRepository.GetByFilter(fromDate: from, to: to);
+        var events = await _loginEventsRepository.GetByFilterAsync(fromDate: from, to: to);
 
         using var stream = _auditReportCreator.CreateCsvReport(events);
         var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
-        _messageService.Send(MessageAction.LoginHistoryReportDownloaded);
+        await _messageService.SendAsync(MessageAction.LoginHistoryReportDownloaded);
         return result;
     }
 
     [HttpPost("audit/events/report")]
     public async Task<object> CreateAuditTrailReport()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        DemandAuditPermission();
+        await DemandAuditPermissionAsync();
 
-        var tenantId = _tenantManager.GetCurrentTenant().Id;
+        var tenantId = await _tenantManager.GetCurrentTenantIdAsync();
 
-        var settings = _settingsManager.Load<TenantAuditSettings>(tenantId);
+        var settings = await _settingsManager.LoadAsync<TenantAuditSettings>(tenantId);
 
         var to = DateTime.UtcNow;
         var from = to.Subtract(TimeSpan.FromDays(settings.AuditTrailLifeTime));
 
         var reportName = string.Format(AuditReportResource.AuditTrailReportName + ".csv", from.ToString("MM.dd.yyyy"), to.ToString("MM.dd.yyyy"));
 
-        var events = _auditEventsRepository.GetByFilter(from: from, to: to);
+        var events = await _auditEventsRepository.GetByFilterAsync(from: from, to: to);
 
         using var stream = _auditReportCreator.CreateCsvReport(events);
         var result = await _auditReportSaver.UploadCsvReport(stream, reportName);
 
-        _messageService.Send(MessageAction.AuditTrailReportDownloaded);
+        await _messageService.SendAsync(MessageAction.AuditTrailReportDownloaded);
         return result;
     }
 
     [HttpGet("audit/settings/lifetime")]
-    public TenantAuditSettings GetAuditSettings()
+    public async Task<TenantAuditSettings> GetAuditSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         DemandBaseAuditPermission();
 
-        return _settingsManager.Load<TenantAuditSettings>(_tenantManager.GetCurrentTenant().Id);
+        return await _settingsManager.LoadAsync<TenantAuditSettings>(await _tenantManager.GetCurrentTenantIdAsync());
     }
 
     [HttpPost("audit/settings/lifetime")]
-    public TenantAuditSettings SetAuditSettings(TenantAuditSettingsWrapper wrapper)
+    public async Task<TenantAuditSettings> SetAuditSettings(TenantAuditSettingsWrapper wrapper)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        DemandAuditPermission();
+        await DemandAuditPermissionAsync();
 
         if (wrapper.Settings.LoginHistoryLifeTime <= 0 || wrapper.Settings.LoginHistoryLifeTime > TenantAuditSettings.MaxLifeTime)
         {
@@ -261,17 +261,17 @@ public class SecurityController : ControllerBase
             throw new ArgumentException("AuditTrailLifeTime");
         }
 
-        _settingsManager.Save(wrapper.Settings, _tenantManager.GetCurrentTenant().Id);
-        _messageService.Send(MessageAction.AuditSettingsUpdated);
+        await _settingsManager.SaveAsync(wrapper.Settings, await _tenantManager.GetCurrentTenantIdAsync());
+        await _messageService.SendAsync(MessageAction.AuditSettingsUpdated);
 
         return wrapper.Settings;
     }
 
-    private void DemandAuditPermission()
+    private async Task DemandAuditPermissionAsync()
     {
         if (!_coreBaseSettings.Standalone
             && (!SetupInfo.IsVisibleSettings(ManagementType.LoginHistory.ToString())
-                || !_tenantManager.GetCurrentTenantQuota().Audit))
+                || !(await _tenantManager.GetCurrentTenantQuotaAsync()).Audit))
         {
             throw new BillingException(Resource.ErrorNotAllowedOption, "Audit");
         }

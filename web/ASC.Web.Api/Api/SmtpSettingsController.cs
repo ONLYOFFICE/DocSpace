@@ -51,18 +51,18 @@ public class SmtpSettingsController : ControllerBase
 
 
     [HttpGet("smtp")]
-    public SmtpSettingsDto GetSmtpSettings()
+    public async Task<SmtpSettingsDto> GetSmtpSettingsAsync()
     {
         CheckSmtpPermissions();
 
-        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(_coreConfiguration.SmtpSettings);
+        var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(await _coreConfiguration.GetSmtpSettingsAsync());
         settings.CredentialsUserPassword = "";
 
         return settings;
     }
 
     [HttpPost("smtp")]
-    public SmtpSettingsDto SaveSmtpSettings( SmtpSettingsDto inDto)
+    public async Task<SmtpSettingsDto> SaveSmtpSettingsAsync( SmtpSettingsDto inDto)
     {
         CheckSmtpPermissions();
 
@@ -70,11 +70,11 @@ public class SmtpSettingsController : ControllerBase
 
         ArgumentNullException.ThrowIfNull(inDto);
 
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var settingConfig = ToSmtpSettingsConfig(inDto);
 
-        _coreConfiguration.SmtpSettings = settingConfig;
+        await _coreConfiguration.SetSmtpSettingsAsync(settingConfig);
 
         var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(settingConfig);
         settings.CredentialsUserPassword = "";
@@ -83,17 +83,17 @@ public class SmtpSettingsController : ControllerBase
     }
 
     [HttpDelete("smtp")]
-    public SmtpSettingsDto ResetSmtpSettings()
+    public async Task<SmtpSettingsDto> ResetSmtpSettingsAsync()
     {
         CheckSmtpPermissions();
 
-        if (!_coreConfiguration.SmtpSettings.IsDefaultSettings)
+        if (!(await _coreConfiguration.GetSmtpSettingsAsync()).IsDefaultSettings)
         {
-            _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-            _coreConfiguration.SmtpSettings = null;
+            await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+            await _coreConfiguration.SetSmtpSettingsAsync(null);
         }
 
-        var current = _coreBaseSettings.Standalone ? _coreConfiguration.SmtpSettings : SmtpSettings.Empty;
+        var current = _coreBaseSettings.Standalone ? await _coreConfiguration.GetSmtpSettingsAsync() : SmtpSettings.Empty;
 
         var settings = _mapper.Map<SmtpSettings, SmtpSettingsDto>(current);
         settings.CredentialsUserPassword = "";

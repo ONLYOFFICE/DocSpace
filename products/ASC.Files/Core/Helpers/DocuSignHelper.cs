@@ -50,24 +50,24 @@ public class DocuSignToken
         _logger = logger;
     }
 
-    public OAuth20Token GetToken()
+    public async Task<OAuth20Token> GetTokenAsync()
     {
-        return _tokenHelper.GetToken(AppAttr);
+        return await _tokenHelper.GetTokenAsync(AppAttr);
     }
 
-    public void DeleteToken(Guid? userId = null)
+    public async Task DeleteTokenAsync(Guid? userId = null)
     {
-        _tokenHelper.DeleteToken(AppAttr, userId);
+        await _tokenHelper.DeleteTokenAsync(AppAttr, userId);
     }
 
-    public void SaveToken(OAuth20Token token)
+    public async Task SaveTokenAsync(OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(token);
 
-        _tokenHelper.SaveToken(new Token(token, AppAttr));
+        await _tokenHelper.SaveTokenAsync(new Token(token, AppAttr));
     }
 
-    internal string GetRefreshedToken(OAuth20Token token)
+    internal async Task<string> GetRefreshedTokenAsync(OAuth20Token token)
     {
         if (token.IsExpired)
         {
@@ -84,7 +84,7 @@ public class DocuSignToken
                     token.ExpiresIn = refreshed.ExpiresIn;
                     token.Timestamp = DateTime.UtcNow;
 
-                    SaveToken(token);
+                    await SaveTokenAsync(token);
                 }
             }
             catch (Exception ex)
@@ -166,9 +166,9 @@ public class DocuSignHelper
         _requestHelper = requestHelper;
     }
 
-    public bool ValidateToken(OAuth20Token token)
+    public async Task<bool> ValidateTokenAsync(OAuth20Token token)
     {
-        GetDocuSignAccount(token);
+        await GetDocuSignAccountAsync(token);
 
         return true;
     }
@@ -177,25 +177,25 @@ public class DocuSignHelper
     {
         ArgumentNullException.ThrowIfNull(docuSignData);
 
-        var token = _docuSignToken.GetToken();
-        var account = GetDocuSignAccount(token);
+        var token = await _docuSignToken.GetTokenAsync();
+        var account = await GetDocuSignAccountAsync(token);
 
-        var apiClient = GetApiClient(account, token);
+        var apiClient = await GetApiClientAsync(account, token);
         var (document, sourceFile) = await CreateDocumentAsync(fileId, docuSignData.Name, docuSignData.FolderId);
 
-        var url = CreateEnvelope(account.AccountId, document, docuSignData, apiClient);
+        var url = await CreateEnvelopeAsync(account.AccountId, document, docuSignData, apiClient);
 
-        _ = _filesMessageService.Send(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
+        _ = _filesMessageService.SendAsync(sourceFile, requestHeaders, MessageAction.DocumentSendToSign, "DocuSign", sourceFile.Title);
 
         return url;
     }
 
-    private DocuSignAccount GetDocuSignAccount(OAuth20Token token)
+    private async Task<DocuSignAccount> GetDocuSignAccountAsync(OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(token);
 
         var userInfoString = _requestHelper.PerformRequest(_consumerFactory.Get<DocuSignLoginProvider>().DocuSignHost + "/oauth/userinfo",
-                                                          headers: new Dictionary<string, string> { { "Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token) } });
+                                                          headers: new Dictionary<string, string> { { "Authorization", "Bearer " + await _docuSignToken.GetRefreshedTokenAsync(token) } });
 
         _logger.DebugDocuSingUserInfo(userInfoString);
 
@@ -211,14 +211,14 @@ public class DocuSignHelper
         return account;
     }
 
-    private DocuSignClient GetApiClient(DocuSignAccount account, OAuth20Token token)
+    private async Task<DocuSignClient> GetApiClientAsync(DocuSignAccount account, OAuth20Token token)
     {
         ArgumentNullException.ThrowIfNull(account);
         ArgumentNullException.ThrowIfNull(token);
 
         var apiClient = new DocuSignClient(account.BaseUri + "/restapi");
 
-        apiClient.Configuration.DefaultHeader.Add("Authorization", "Bearer " + _docuSignToken.GetRefreshedToken(token));
+        apiClient.Configuration.DefaultHeader.Add("Authorization", "Bearer " + await _docuSignToken.GetRefreshedTokenAsync(token));
 
         return apiClient;
     }
@@ -279,7 +279,7 @@ public class DocuSignHelper
         return (document, file);
     }
 
-    private string CreateEnvelope(string accountId, Document document, DocuSignData docuSignData, DocuSignClient apiClient)
+    private async Task<string> CreateEnvelopeAsync(string accountId, Document document, DocuSignData docuSignData, DocuSignClient apiClient)
     {
         var eventNotification = new EventNotification
         {
@@ -307,11 +307,12 @@ public class DocuSignHelper
         _logger.DebugDocuSingHookUrl(eventNotification.Url);
 
         var signers = new List<Signer>();
-        docuSignData.Users.ForEach(uid =>
+        
+        foreach(var uid in docuSignData.Users)
         {
             try
             {
-                var user = _userManager.GetUsers(uid);
+                var user = await _userManager.GetUsersAsync(uid);
                 signers.Add(new Signer
                 {
                     Email = user.Email,
@@ -323,7 +324,7 @@ public class DocuSignHelper
             {
                 _logger.ErrorSignerIsUndefined(ex);
             }
-        });
+        }
 
         var envelopeDefinition = new EnvelopeDefinition
         {
@@ -365,9 +366,9 @@ public class DocuSignHelper
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(envelopeId);
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(documentId);
 
-        var token = _docuSignToken.GetToken();
-        var account = GetDocuSignAccount(token);
-        var apiClient = GetApiClient(account, token);
+        var token = await _docuSignToken.GetTokenAsync();
+        var account = await GetDocuSignAccountAsync(token);
+        var apiClient = await GetApiClientAsync(account, token);
 
         var fileDao = _daoFactory.GetFileDao<T>();
         var folderDao = _daoFactory.GetFolderDao<T>();
@@ -382,9 +383,9 @@ public class DocuSignHelper
             || folder.RootFolderType == FolderType.TRASH
             || !await _fileSecurity.CanCreateAsync(folder))
         {
-            if (_globalFolderHelper.FolderMy != 0)
+            if (await _globalFolderHelper.FolderMyAsync != 0)
             {
-                folderId = _globalFolderHelper.GetFolderMy<T>();
+                folderId = await _globalFolderHelper.GetFolderMyAsync<T>();
             }
             else
             {
@@ -405,7 +406,7 @@ public class DocuSignHelper
             file = await fileDao.SaveFileAsync(file, stream);
         }
 
-        _ = _filesMessageService.Send(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);
+        _ = _filesMessageService.SendAsync(file, MessageInitiator.ThirdPartyProvider, MessageAction.DocumentSignComplete, "DocuSign", file.Title);
 
         await _fileMarker.MarkAsNewAsync(file);
 
