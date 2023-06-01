@@ -29,7 +29,7 @@ namespace ASC.Core;
 [Scope(typeof(DbAzService), typeof(CachedAzService))]
 public interface IAzService
 {
-    AzRecord SaveAce(int tenant, AzRecord r);
-    IEnumerable<AzRecord> GetAces(int tenant, DateTime from);
-    void RemoveAce(int tenant, AzRecord r);
+    Task<AzRecord> SaveAceAsync(int tenant, AzRecord r);
+    Task<IEnumerable<AzRecord>> GetAcesAsync(int tenant, DateTime from);
+    Task RemoveAceAsync(int tenant, AzRecord r);
 }

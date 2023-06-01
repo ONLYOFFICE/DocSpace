@@ -120,12 +120,12 @@ public class QuotaSyncJob : DistributedTaskProgress
             var _storageFactoryConfig = scope.ServiceProvider.GetRequiredService<StorageFactoryConfig>();
             var _storageFactory = scope.ServiceProvider.GetRequiredService<StorageFactory>();
 
-            _tenantManager.SetCurrentTenant(TenantId);
+            await _tenantManager.SetCurrentTenantAsync(TenantId);
             var storageModules = _storageFactoryConfig.GetModuleList(string.Empty);
 
             foreach (var module in storageModules)
             {
-                var storage = _storageFactory.GetStorage(TenantId, module);
+                var storage = await _storageFactory.GetStorageAsync(TenantId, module);
                 await storage.ResetQuotaAsync("");
 
                 var domains = _storageFactoryConfig.GetDomainList(string.Empty, module);

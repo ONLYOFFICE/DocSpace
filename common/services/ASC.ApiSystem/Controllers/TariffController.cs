@@ -63,9 +63,10 @@ public class TariffController : ControllerBase
     [HttpPut("set")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult SetTariff(TariffModel model)
+    public async Task<IActionResult> SetTariffAsync(TariffModel model)
     {
-        if (!CommonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await CommonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             Log.LogError("Model without tenant");
 
@@ -111,7 +112,7 @@ public class TariffController : ControllerBase
             quota.MaxFileSize = model.MaxFileSize;
         }
 
-        HostedSolution.SaveTenantQuota(quota);
+        await HostedSolution.SaveTenantQuotaAsync(quota);
 
         var tariff = new Tariff
         {
@@ -119,17 +120,18 @@ public class TariffController : ControllerBase
             DueDate = model.DueDate != default ? model.DueDate : DateTime.MaxValue.AddSeconds(-1),
         };
 
-        HostedSolution.SetTariff(tenant.Id, tariff);
+        await HostedSolution.SetTariffAsync(tenant.Id, tariff);
 
-        return GetTariff(tenant);
+        return await GetTariffAsync(tenant);
     }
 
     [HttpGet("get")]
     [AllowCrossSiteJson]
     [Authorize(AuthenticationSchemes = "auth:allowskip:default")]
-    public IActionResult GetTariff([FromQuery] TariffModel model)
+    public async Task<IActionResult> GetTariffAsync([FromQuery] TariffModel model)
     {
-        if (!CommonMethods.GetTenant(model, out var tenant))
+        (var succ, var tenant) = await CommonMethods.TryGetTenantAsync(model);
+        if (!succ)
         {
             Log.LogError("Model without tenant");
 
@@ -151,14 +153,14 @@ public class TariffController : ControllerBase
             });
         }
 
-        return GetTariff(tenant);
+        return await GetTariffAsync(tenant);
     }
 
     [HttpGet("all")]
     [AllowCrossSiteJson]
-    public IActionResult GetTariffs()
+    public async Task<IActionResult> GetTariffsAsync()
     {
-        var tariffs = HostedSolution.GetTenantQuotas()
+        var tariffs = (await HostedSolution.GetTenantQuotasAsync())
             .Where(q => !q.Trial && !q.Free)
             .OrderBy(q => q.CountRoomAdmin)
             .ThenByDescending(q => q.Tenant)
@@ -174,11 +176,11 @@ public class TariffController : ControllerBase
 
     #region private methods
 
-    private IActionResult GetTariff(Tenant tenant)
+    private async Task<IActionResult> GetTariffAsync(Tenant tenant)
     {
-        var tariff = HostedSolution.GetTariff(tenant.Id, false);
+        var tariff = await HostedSolution.GetTariffAsync(tenant.Id, false);
 
-        var quota = HostedSolution.GetTenantQuota(tenant.Id);
+        var quota = await HostedSolution.GetTenantQuotaAsync(tenant.Id);
 
         return Ok(new
         {

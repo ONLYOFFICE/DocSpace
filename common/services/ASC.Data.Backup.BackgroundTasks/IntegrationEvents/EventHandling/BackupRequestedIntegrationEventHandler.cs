@@ -54,6 +54,7 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
 
     public async Task Handle(BackupRequestIntegrationEvent @event)
     {
+        CustomSynchronizationContext.CreateContext();
         using (_logger.BeginScope(new[] { new KeyValuePair<string, object>("integrationEventContext", $"{@event.Id}-{Program.AppName}") }))
         {
             _logger.InformationHandlingIntegrationEvent(@event.Id, Program.AppName, @event);
@@ -66,8 +67,8 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
                 }
             }
 
-            _tenantManager.SetCurrentTenant(@event.TenantId);
-            _securityContext.AuthenticateMeWithoutCookie(_authManager.GetAccountByID(@event.TenantId, @event.CreateBy));
+            await _tenantManager.SetCurrentTenantAsync(@event.TenantId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(await _authManager.GetAccountByIDAsync(@event.TenantId, @event.CreateBy));
 
             if (@event.IsScheduled)
             {
@@ -82,10 +83,8 @@ public class BackupRequestedIntegrationEventHandler : IIntegrationEventHandler<B
             }
             else
             {
-                _backupAjaxHandler.StartBackup(@event.StorageType, @event.StorageParams);
+                await _backupAjaxHandler.StartBackupAsync(@event.StorageType, @event.StorageParams);
             }
-
-            await Task.CompletedTask;
         }
     }
 }

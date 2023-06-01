@@ -39,7 +39,7 @@ public class StatisticManager
         _dbContextFactory = dbContextFactory;
     }
 
-    public void SaveUserVisit(int tenantID, Guid userID, Guid productID)
+    public async ValueTask SaveUserVisitAsync(int tenantID, Guid userID, Guid productID)
     {
         var now = DateTime.UtcNow;
         var key = string.Format("{0}|{1}|{2}|{3}", tenantID, userID, productID, now.Date);
@@ -63,21 +63,21 @@ public class StatisticManager
 
         if (_cacheTime < DateTime.UtcNow - _lastSave)
         {
-            FlushCache();
+            await FlushCacheAsync();
         }
     }
 
-    public List<Guid> GetVisitorsToday(int tenantID, Guid productID)
+    public async Task<List<Guid>> GetVisitorsTodayAsync(int tenantID, Guid productID)
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var users = webstudioDbContext.WebstudioUserVisit
+        var users = await webstudioDbContext.WebstudioUserVisit
             .Where(r => r.VisitDate == DateTime.UtcNow.Date)
             .Where(r => r.TenantId == tenantID)
             .Where(r => r.ProductId == productID)
             .OrderBy(r => r.FirstVisitTime)
             .GroupBy(r => r.UserId)
             .Select(r => r.Key)
-            .ToList();
+            .ToListAsync();
 
         lock (_cache)
         {
@@ -92,32 +92,31 @@ public class StatisticManager
         return users;
     }
 
-    public List<UserVisit> GetHitsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+    public async Task<List<UserVisit>> GetHitsByPeriodAsync(int tenantID, DateTime startDate, DateTime endPeriod)
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        return webstudioDbContext.WebstudioUserVisit
+        return await webstudioDbContext.WebstudioUserVisit
             .Where(r => r.TenantId == tenantID)
             .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
             .OrderBy(r => r.VisitDate)
             .GroupBy(r => r.VisitDate)
             .Select(r => new UserVisit { VisitDate = r.Key, VisitCount = r.Sum(a => a.VisitCount) })
-            .ToList();
+            .ToListAsync();
     }
 
-    public List<UserVisit> GetHostsByPeriod(int tenantID, DateTime startDate, DateTime endPeriod)
+    public async Task<List<UserVisit>> GetHostsByPeriodAsync(int tenantID, DateTime startDate, DateTime endPeriod)
     {
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        return
-            webstudioDbContext.WebstudioUserVisit
+        return await webstudioDbContext.WebstudioUserVisit
             .Where(r => r.TenantId == tenantID)
             .Where(r => r.VisitDate >= startDate && r.VisitDate <= endPeriod)
             .OrderBy(r => r.VisitDate)
             .GroupBy(r => new { r.UserId, r.VisitDate })
             .Select(r => new UserVisit { VisitDate = r.Key.VisitDate, UserID = r.Key.UserId })
-            .ToList();
+            .ToListAsync();
     }
 
-    private void FlushCache()
+    private async Task FlushCacheAsync()
     {
         if (_cache.Count == 0)
         {
@@ -133,37 +132,26 @@ public class StatisticManager
         }
 
         using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-        var strategy = webstudioDbContext.Database.CreateExecutionStrategy();
 
-        strategy.Execute(async () =>
+        foreach (var v in visits)
         {
-            using var webstudioDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await webstudioDbContext.Database.BeginTransactionAsync(IsolationLevel.ReadUncommitted);
-
-            foreach (var v in visits)
+            var w = new DbWebstudioUserVisit
             {
-                var w = new DbWebstudioUserVisit
-                {
-                    TenantId = v.TenantID,
-                    ProductId = v.ProductID,
-                    UserId = v.UserID,
-                    VisitDate = v.VisitDate.Date,
-                    FirstVisitTime = v.VisitDate,
-                    VisitCount = v.VisitCount
-                };
+                TenantId = v.TenantID,
+                ProductId = v.ProductID,
+                UserId = v.UserID,
+                VisitDate = v.VisitDate.Date,
+                FirstVisitTime = v.VisitDate,
+                VisitCount = v.VisitCount
+            };
 
-                if (v.LastVisitTime.HasValue)
-                {
-                    w.LastVisitTime = v.LastVisitTime.Value;
-                }
-
-                webstudioDbContext.WebstudioUserVisit.Add(w);
-                
-                await webstudioDbContext.SaveChangesAsync();
+            if (v.LastVisitTime.HasValue)
+            {
+                w.LastVisitTime = v.LastVisitTime.Value;
             }
 
-            await tx.CommitAsync();
-        }).GetAwaiter()
-          .GetResult();
+            await webstudioDbContext.WebstudioUserVisit.AddAsync(w);
+        }
+        await webstudioDbContext.SaveChangesAsync();
     }
 }

@@ -52,12 +52,12 @@ public class NotificationController : ApiControllerBase
     }
 
     [HttpPost("phone")]
-    public async Task<object> SendNotificationToChange(UpdateMemberRequestDto inDto)
+    public async Task<object> SendNotificationToChangeAsync(UpdateMemberRequestDto inDto)
     {
-        var user = _userManager.GetUsers(string.IsNullOrEmpty(inDto.UserId)
+        var user = await _userManager.GetUsersAsync(string.IsNullOrEmpty(inDto.UserId)
             ? _securityContext.CurrentAccount.ID : new Guid(inDto.UserId));
 
-        var canChange = user.IsMe(_authContext) || _permissionContext.CheckPermissions(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
+        var canChange = user.IsMe(_authContext) || await _permissionContext.CheckPermissionsAsync(new UserSecurityProvider(user.Id), Constants.Action_EditUser);
 
         if (!canChange)
         {
@@ -66,14 +66,14 @@ public class NotificationController : ApiControllerBase
 
         user.MobilePhoneActivationStatus = MobilePhoneActivationStatus.NotActivated;
 
-        await _userManager.UpdateUserInfo(user);
+        await _userManager.UpdateUserInfoAsync(user);
 
         if (user.IsMe(_authContext))
         {
-            return _commonLinkUtility.GetConfirmationEmailUrl(user.Email, ConfirmType.PhoneActivation);
+            return await _commonLinkUtility.GetConfirmationEmailUrlAsync(user.Email, ConfirmType.PhoneActivation);
         }
 
-        _studioNotifyService.SendMsgMobilePhoneChange(user);
+        await _studioNotifyService.SendMsgMobilePhoneChangeAsync(user);
 
         return string.Empty;
     }

@@ -209,15 +209,10 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         }
     }
 
-    public Task<string> SaveFolderAsync(Folder<string> folder)
+    public async Task<string> SaveFolderAsync(Folder<string> folder)
     {
         ArgumentNullException.ThrowIfNull(folder);
 
-        return InternalSaveFolderAsync(folder);
-    }
-
-    private async Task<string> InternalSaveFolderAsync(Folder<string> folder)
-    {
         if (folder.Id != null)
         {
             return await RenameFolderAsync(folder, folder.Title);
@@ -521,9 +516,9 @@ internal class ThirdPartyFolderDao<TFile, TFolder, TItem> : BaseFolderDao, IFold
         return chunkedUpload ? storageMaxUploadSize : Math.Min(storageMaxUploadSize, _setupInfo.AvailableFileSize);
     }
 
-    public IDataWriteOperator CreateDataWriteOperator(string folderId, CommonChunkedUploadSession chunkedUploadSession, CommonChunkedUploadSessionHolder sessionHolder)
+    public Task<IDataWriteOperator> CreateDataWriteOperatorAsync(string folderId, CommonChunkedUploadSession chunkedUploadSession, CommonChunkedUploadSessionHolder sessionHolder)
     {
-        return new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder);
+        return Task.FromResult<IDataWriteOperator>(new ChunkZipWriteOperator(_tempStream, chunkedUploadSession, sessionHolder));
     }
 
     public Task ReassignFoldersAsync(string[] folderIds, Guid newOwnerId)

@@ -201,7 +201,7 @@ public class S3Storage : BaseStorage
 
         if (EnableQuotaCheck(domain))
         {
-            QuotaController.QuotaUsedCheck(buffered.Length);
+            await QuotaController.QuotaUsedCheckAsync(buffered.Length);
         }
 
         using var client = GetClient();
@@ -261,7 +261,7 @@ public class S3Storage : BaseStorage
 
         await InvalidateCloudFrontAsync(MakePath(domain, path));
 
-        await QuotaUsedAdd(domain, buffered.Length);
+        await QuotaUsedAddAsync(domain, buffered.Length);
 
         return await GetUriAsync(domain, path);
     }
@@ -354,7 +354,7 @@ public class S3Storage : BaseStorage
             if (QuotaController != null)
             {
                 var size = await GetFileSizeAsync(domain, path);
-                await QuotaUsedAdd(domain, size);
+                await QuotaUsedAddAsync(domain, size);
             }
 
             return await GetUriAsync(domain, path);
@@ -409,21 +409,16 @@ public class S3Storage : BaseStorage
 
         await client.DeleteObjectAsync(request);
 
-        await QuotaUsedDelete(domain, size);
+        await QuotaUsedDeleteAsync(domain, size);
     }
 
-    public override Task DeleteFilesAsync(string domain, List<string> paths)
+    public override async Task DeleteFilesAsync(string domain, List<string> paths)
     {
         if (paths.Count == 0)
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalDeleteFilesAsync(domain, paths);
-    }
-
-    private async Task InternalDeleteFilesAsync(string domain, List<string> paths)
-    {
         var keysToDel = new List<string>();
 
         long quotaUsed = 0;
@@ -469,7 +464,7 @@ public class S3Storage : BaseStorage
 
         if (quotaUsed > 0)
         {
-            await QuotaUsedDelete(domain, quotaUsed);
+            await QuotaUsedDeleteAsync(domain, quotaUsed);
         }
     }
 
@@ -495,7 +490,7 @@ public class S3Storage : BaseStorage
 
             await client.DeleteObjectAsync(deleteRequest);
 
-            await QuotaUsedDelete(domain, s3Object.Size);
+            await QuotaUsedDeleteAsync(domain, s3Object.Size);
         }
     }
 
@@ -517,7 +512,7 @@ public class S3Storage : BaseStorage
 
             await client.DeleteObjectAsync(deleteRequest);
 
-            await QuotaUsedDelete(domain, s3Object.Size);
+            await QuotaUsedDeleteAsync(domain, s3Object.Size);
         }
     }
 
@@ -556,16 +551,16 @@ public class S3Storage : BaseStorage
         await CopyFileAsync(client, srcKey, dstKey, newdomain, S3MetadataDirective.REPLACE);
         await DeleteAsync(srcdomain, srcpath);
 
-        await QuotaUsedDelete(srcdomain, size);
-        await QuotaUsedAdd(newdomain, size, quotaCheckFileSize);
+        await QuotaUsedDeleteAsync(srcdomain, size);
+        await QuotaUsedAddAsync(newdomain, size, quotaCheckFileSize);
 
         return await GetUriAsync(newdomain, newpath);
     }
 
-    public override Task<Uri> SaveTempAsync(string domain, out string assignedPath, Stream stream)
+    public override async Task<(Uri, string)> SaveTempAsync(string domain, Stream stream)
     {
-        assignedPath = Guid.NewGuid().ToString();
-        return SaveAsync(domain, assignedPath, stream);
+        var assignedPath = Guid.NewGuid().ToString();
+        return (await SaveAsync(domain, assignedPath, stream), assignedPath);
     }
 
     public override async IAsyncEnumerable<string> ListDirectoriesRelativeAsync(string domain, string path, bool recursive)
@@ -827,7 +822,7 @@ public class S3Storage : BaseStorage
         {
             var objects = await GetS3ObjectsAsync(domain);
             var size = objects.Sum(s3Object => s3Object.Size);
-            QuotaController.QuotaUsedSet(Modulename, domain, DataList.GetData(domain), size);
+            await QuotaController.QuotaUsedSetAsync(Modulename, domain, DataList.GetData(domain), size);
 
             return size;
         }
@@ -850,7 +845,7 @@ public class S3Storage : BaseStorage
         using var client = GetClient();
         await CopyFileAsync(client, srcKey, dstKey, newdomain, S3MetadataDirective.REPLACE);
 
-        await QuotaUsedAdd(newdomain, size);
+        await QuotaUsedAddAsync(newdomain, size);
 
         return await GetUriAsync(newdomain, newpath);
     }
@@ -868,7 +863,7 @@ public class S3Storage : BaseStorage
         {
             await CopyFileAsync(client, s3Object.Key, s3Object.Key.Replace(srckey, dstkey), newdomain);
 
-            await QuotaUsedAdd(newdomain, s3Object.Size);
+            await QuotaUsedAddAsync(newdomain, s3Object.Size);
         }
     }
 
@@ -1020,18 +1015,13 @@ public class S3Storage : BaseStorage
         return new UnencodedUri(baseUri, signedPart);
     }
 
-    private Task InvalidateCloudFrontAsync(params string[] paths)
+    private async ValueTask InvalidateCloudFrontAsync(params string[] paths)
     {
         if (!_revalidateCloudFront || string.IsNullOrEmpty(_distributionId))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalInvalidateCloudFrontAsync(paths);
-    }
-
-    private async Task InternalInvalidateCloudFrontAsync(params string[] paths)
-    {
         using var cfClient = GetCloudFrontClient();
         var invalidationRequest = new CreateInvalidationRequest
         {
@@ -1173,18 +1163,13 @@ public class S3Storage : BaseStorage
         return string.IsNullOrEmpty(_recycleDir) ? "" : $"{_recycleDir}/{path.TrimStart('/')}";
     }
 
-    private Task RecycleAsync(IAmazonS3 client, string domain, string key)
+    private async ValueTask RecycleAsync(IAmazonS3 client, string domain, string key)
     {
         if (string.IsNullOrEmpty(_recycleDir))
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        return InternalRecycleAsync(client, domain, key);
-    }
-
-    private async Task InternalRecycleAsync(IAmazonS3 client, string domain, string key)
-    {
         await CopyFileAsync(client, key, GetRecyclePath(key), domain, S3MetadataDirective.REPLACE, S3StorageClass.Glacier);
     }
 

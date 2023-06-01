@@ -28,15 +28,15 @@ namespace ASC.Data.Backup.Storage;
 
 public interface IBackupRepository
 {
-    BackupRecord GetBackupRecord(Guid id);
-    BackupRecord GetBackupRecord(string hash, int tenant);
-    BackupSchedule GetBackupSchedule(int tenantId);
-    List<BackupRecord> GetBackupRecordsByTenantId(int tenantId);
-    List<BackupRecord> GetExpiredBackupRecords();
-    List<BackupRecord> GetScheduledBackupRecords();
-    List<BackupSchedule> GetBackupSchedules();
-    void DeleteBackupRecord(Guid id);
-    void DeleteBackupSchedule(int tenantId);
-    void SaveBackupRecord(BackupRecord backupRecord);
-    void SaveBackupSchedule(BackupSchedule schedule);
+    Task<BackupRecord> GetBackupRecordAsync(Guid id);
+    Task<BackupRecord> GetBackupRecordAsync(string hash, int tenant);
+    Task<BackupSchedule> GetBackupScheduleAsync(int tenantId);
+    Task<List<BackupRecord>> GetBackupRecordsByTenantIdAsync(int tenantId);
+    Task<List<BackupRecord>> GetExpiredBackupRecordsAsync();
+    Task<List<BackupRecord>> GetScheduledBackupRecordsAsync();
+    Task<List<BackupSchedule>> GetBackupSchedulesAsync();
+    Task DeleteBackupRecordAsync(Guid id);
+    Task DeleteBackupScheduleAsync(int tenantId);
+    Task SaveBackupRecordAsync(BackupRecord backupRecord);
+    Task SaveBackupScheduleAsync(BackupSchedule schedule);
 }

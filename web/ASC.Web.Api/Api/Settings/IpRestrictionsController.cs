@@ -49,34 +49,34 @@ public class IpRestrictionsController : BaseSettingsController
     }
 
     [HttpGet("iprestrictions")]
-    public IEnumerable<IPRestriction> GetIpRestrictions()
+    public async Task<IEnumerable<IPRestriction>> GetIpRestrictionsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _iPRestrictionsService.Get(Tenant.Id);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        return await _iPRestrictionsService.GetAsync(Tenant.Id);
     }
 
     [HttpPut("iprestrictions")]
-    public IEnumerable<IpRestrictionBase> SaveIpRestrictions(IpRestrictionsRequestsDto inDto)
+    public async Task<IEnumerable<IpRestrictionBase>> SaveIpRestrictionsAsync(IpRestrictionsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
-        return _iPRestrictionsService.Save(inDto.IpRestrictions, Tenant.Id);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
+        return await _iPRestrictionsService.SaveAsync(inDto.IpRestrictions, Tenant.Id);
     }
 
     [HttpGet("iprestrictions/settings")]
-    public IPRestrictionsSettings ReadIpRestrictionsSettings()
+    public async Task<IPRestrictionsSettings> ReadIpRestrictionsSettingsAsync()
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
-        return _settingsManager.Load<IPRestrictionsSettings>();
+        return await _settingsManager.LoadAsync<IPRestrictionsSettings>();
     }
 
     [HttpPut("iprestrictions/settings")]
-    public IPRestrictionsSettings UpdateIpRestrictionsSettings(IpRestrictionsRequestsDto inDto)
+    public async Task<IPRestrictionsSettings> UpdateIpRestrictionsSettingsAsync(IpRestrictionsRequestsDto inDto)
     {
-        _permissionContext.DemandPermissions(SecutiryConstants.EditPortalSettings);
+        await _permissionContext.DemandPermissionsAsync(SecutiryConstants.EditPortalSettings);
 
         var settings = new IPRestrictionsSettings { Enable = inDto.Enable };
-        _settingsManager.Save(settings);
+        await _settingsManager.SaveAsync(settings);
 
         return settings;
     }

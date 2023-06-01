@@ -43,22 +43,22 @@ public class AuthManager
     }
 
 
-    public IUserAccount[] GetUserAccounts(Tenant tenant)
+    public async Task<IUserAccount[]> GetUserAccountsAsync(Tenant tenant)
     {
-        return _userManager.GetUsers(EmployeeStatus.Active).Select(u => ToAccount(tenant.Id, u)).ToArray();
+        return (await _userManager.GetUsersAsync(EmployeeStatus.Active)).Select(u => ToAccount(tenant.Id, u)).ToArray();
     }
 
-    public void SetUserPasswordHash(Guid userID, string passwordHash)
+    public async Task SetUserPasswordHashAsync(Guid userID, string passwordHash)
     {
-        _userService.SetUserPasswordHash(_tenantManager.GetCurrentTenant().Id, userID, passwordHash);
+        await _userService.SetUserPasswordHashAsync(await _tenantManager.GetCurrentTenantIdAsync(), userID, passwordHash);
     }
 
-    public DateTime GetUserPasswordStamp(Guid userID)
+    public async Task<DateTime> GetUserPasswordStampAsync(Guid userID)
     {
-        return _userService.GetUserPasswordStamp(_tenantManager.GetCurrentTenant().Id, userID);
+        return await _userService.GetUserPasswordStampAsync(await _tenantManager.GetCurrentTenantIdAsync(), userID);
     }
 
-    public IAccount GetAccountByID(int tenantId, Guid id)
+    public async Task<IAccount> GetAccountByIDAsync(int tenantId, Guid id)
     {
         var s = Configuration.Constants.SystemAccounts.FirstOrDefault(a => a.ID == id);
         if (s != null)
@@ -66,9 +66,9 @@ public class AuthManager
             return s;
         }
 
-        var u = _userManager.GetUsers(id);
+        var u = await _userManager.GetUsersAsync(id);
 
-        return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? (IAccount)ToAccount(tenantId, u) : Configuration.Constants.Guest;
+        return !Users.Constants.LostUser.Equals(u) && u.Status == EmployeeStatus.Active ? ToAccount(tenantId, u) : Configuration.Constants.Guest;
     }
 
     private IUserAccount ToAccount(int tenantId, UserInfo u)

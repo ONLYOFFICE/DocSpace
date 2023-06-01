@@ -89,7 +89,7 @@ public class GwsMigratingContacts : MigratingContacts
         }*/
     }
 
-    public override Task Migrate()
+    public override Task MigrateAsync()
     {/*
         if (!ShouldImport)
         {

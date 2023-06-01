@@ -215,12 +215,12 @@ public class ApiContext : ICloneable
                              SortBy, SortDescending, FilterBy, FilterOp, FilterValue, UpdatedSince.Ticks, FilterToType);
     }
 
-    public void AuthByClaim()
+    public async Task AuthByClaimAsync()
     {
         var id = _httpContextAccessor.HttpContext.User.Claims.FirstOrDefault(r => r.Type == ClaimTypes.Sid);
         if (Guid.TryParse(id?.Value, out var userId))
         {
-            _securityContext.AuthenticateMeWithoutCookie(userId);
+            await _securityContext.AuthenticateMeWithoutCookieAsync(userId);
         }
     }
 }

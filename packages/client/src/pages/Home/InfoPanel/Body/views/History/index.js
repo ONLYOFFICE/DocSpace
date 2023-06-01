@@ -1,20 +1,22 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useTransition } from "react";
 import { inject, observer } from "mobx-react";
 import { withTranslation } from "react-i18next";
 
 import { StyledHistoryList, StyledHistorySubtitle } from "../../styles/history";
 
 import Loaders from "@docspace/common/components/Loaders";
-import { getRelativeDateDay } from "./../../helpers/HistoryHelper";
+import { parseHistory } from "./../../helpers/HistoryHelper";
 import HistoryBlock from "./HistoryBlock";
 import NoHistory from "../NoItem/NoHistory";
 
 const History = ({
   t,
   selection,
+  historyWithFileList,
   selectedFolder,
+  selectionHistory,
+  setSelectionHistory,
   selectionParentRoom,
-  setSelection,
   getInfoPanelItemIcon,
   getHistory,
   checkAndOpenLocationAction,
@@ -22,112 +24,77 @@ const History = ({
   isVisitor,
   isCollaborator,
 }) => {
-  const [history, setHistory] = useState(null);
-  const [showLoader, setShowLoader] = useState(false);
-
   const isMount = useRef(true);
+  const abortControllerRef = useRef(new AbortController());
 
-  useEffect(() => {
-    return () => (isMount.current = false);
-  }, []);
+  const [isPending, startTransition] = useTransition();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const fetchHistory = async (itemId) => {
+    if (isLoading) {
+      abortControllerRef.current?.abort();
+      abortControllerRef.current = new AbortController();
+    } else setIsLoading(true);
+
     let module = "files";
     if (selection.isRoom) module = "rooms";
     else if (selection.isFolder) module = "folders";
 
-    let timerId = setTimeout(() => setShowLoader(true), 1500);
-    let fetchedHistory = await getHistory(module, itemId);
-    fetchedHistory = parseHistoryJSON(fetchedHistory);
-    clearTimeout(timerId);
-
-    if (isMount.current) {
-      setHistory(fetchedHistory);
-      setSelection({ ...selection, history: fetchedHistory });
-      setShowLoader(false);
-    }
-  };
-
-  const parseHistoryJSON = (fetchedHistory) => {
-    let feeds = fetchedHistory.feeds;
-    let parsedFeeds = [];
-
-    for (let i = 0; i < feeds.length; i++) {
-      const feedsJSON = JSON.parse(feeds[i].json);
-      const feedDay = getRelativeDateDay(t, feeds[i].modifiedDate);
-
-      let newGroupedFeeds = [];
-      if (feeds[i].groupedFeeds) {
-        let groupFeeds = feeds[i].groupedFeeds;
-        for (let j = 0; j < groupFeeds.length; j++)
-          newGroupedFeeds.push(
-            !!groupFeeds[j].target
-              ? groupFeeds[j].target
-              : JSON.parse(groupFeeds[j].json)
-          );
-      }
-
-      if (parsedFeeds.length && parsedFeeds.at(-1).day === feedDay)
-        parsedFeeds.at(-1).feeds.push({
-          ...feeds[i],
-          json: feedsJSON,
-          groupedFeeds: newGroupedFeeds,
-        });
-      else
-        parsedFeeds.push({
-          day: feedDay,
-          feeds: [
-            {
-              ...feeds[i],
-              json: feedsJSON,
-              groupedFeeds: newGroupedFeeds,
-            },
-          ],
-        });
-    }
-
-    return { ...fetchedHistory, feedsByDays: parsedFeeds };
+    getHistory(module, itemId, abortControllerRef.current?.signal)
+      .then((data) => {
+        if (isMount.current)
+          startTransition(() => {
+            const parsedHistory = parseHistory(t, data);
+            setSelectionHistory(parsedHistory);
+          });
+      })
+      .catch((err) => {
+        if (err.message !== "canceled") console.error(err);
+      })
+      .finally(() => {
+        if (isMount.current) setIsLoading(false);
+      });
   };
 
   useEffect(() => {
     if (!isMount.current) return;
-
-    if (selection.history) {
-      setHistory(selection.history);
-      return;
-    }
-
     fetchHistory(selection.id);
-  }, [selection]);
+  }, [selection.id]);
 
-  if (showLoader) return <Loaders.InfoPanelViewLoader view="history" />;
-  if (!history) return <></>;
-  if (history?.feeds?.length === 0) return <NoHistory t={t} />;
+  useEffect(() => {
+    return () => {
+      abortControllerRef.current?.abort();
+      isMount.current = false;
+    };
+  }, []);
+
+  if (!selectionHistory) return <Loaders.InfoPanelViewLoader view="history" />;
+  if (!selectionHistory?.length) return <NoHistory t={t} />;
 
   return (
-    <>
-      <StyledHistoryList>
-        {history.feedsByDays.map(({ day, feeds }) => [
-          <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
-          ...feeds.map((feed, i) => (
-            <HistoryBlock
-              key={feed.json.Id}
-              t={t}
-              feed={feed}
-              selection={selection}
-              selectedFolder={selectedFolder}
-              selectionParentRoom={selectionParentRoom}
-              getInfoPanelItemIcon={getInfoPanelItemIcon}
-              checkAndOpenLocationAction={checkAndOpenLocationAction}
-              openUser={openUser}
-              isVisitor={isVisitor}
-              isCollaborator={isCollaborator}
-              isLastEntity={i === feeds.length - 1}
-            />
-          )),
-        ])}
-      </StyledHistoryList>
-    </>
+    <StyledHistoryList>
+      {selectionHistory.map(({ day, feeds }) => [
+        <StyledHistorySubtitle key={day}>{day}</StyledHistorySubtitle>,
+        ...feeds.map((feed, i) => (
+          <HistoryBlock
+            key={feed.json.Id}
+            t={t}
+            feed={feed}
+            selection={selection}
+            selectedFolder={selectedFolder}
+            selectionParentRoom={selectionParentRoom}
+            getInfoPanelItemIcon={getInfoPanelItemIcon}
+            checkAndOpenLocationAction={checkAndOpenLocationAction}
+            openUser={openUser}
+            isVisitor={isVisitor}
+            isCollaborator={isCollaborator}
+            withFileList={historyWithFileList}
+            isLastEntity={i === feeds.length - 1}
+          />
+        )),
+      ])}
+    </StyledHistoryList>
   );
 };
 
@@ -135,8 +102,10 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
   const { userStore } = auth;
   const {
     selection,
+    selectionHistory,
+    setSelectionHistory,
+    historyWithFileList,
     selectionParentRoom,
-    setSelection,
     getInfoPanelItemIcon,
     openUser,
   } = auth.infoPanelStore;
@@ -153,8 +122,10 @@ export default inject(({ auth, filesStore, filesActionsStore }) => {
     personal,
     culture,
     selection,
+    selectionHistory,
+    setSelectionHistory,
+    historyWithFileList,
     selectionParentRoom,
-    setSelection,
     getInfoPanelItemIcon,
     getHistory,
     checkAndOpenLocationAction,
