@@ -126,12 +126,12 @@ internal class SharePointDaoBase : ThirdPartyProviderDao<File, Folder, ClientObj
             return;
         }
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             var oldIds = Queries.IdsAsync(filesDbContext, _tenantId, oldValue);

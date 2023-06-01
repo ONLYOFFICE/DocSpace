@@ -314,7 +314,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
         try
         {
             using var response = await httpClient.SendAsync(request);
-            using var responseStream = await response.Content.ReadAsStreamAsync();
+            await using var responseStream = await response.Content.ReadAsStreamAsync();
             string result = null;
             if (responseStream != null)
             {
@@ -440,7 +440,7 @@ public class BoxApp : Consumer, IThirdPartyApp, IOAuthProvider
 
             var httpClient = _clientFactory.CreateClient();
             using var response = await httpClient.SendAsync(request);
-            using var stream = new ResponseStream(response);
+            await using var stream = new ResponseStream(response);
             await stream.CopyToAsync(context.Response.Body);
         }
         catch (Exception ex)

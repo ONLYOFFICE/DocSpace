@@ -90,7 +90,7 @@ public class AuditEventsRepository
         Guid? withoutUserId = null)
     {
         var tenant = await _tenantManager.GetCurrentTenantIdAsync();
-        using var auditTrailContext = _dbContextFactory.CreateDbContext();
+        await using var auditTrailContext = _dbContextFactory.CreateDbContext();
 
         var query =
            from q in auditTrailContext.AuditEvents
@@ -222,7 +222,7 @@ public class AuditEventsRepository
 
     public async Task<IEnumerable<int>> GetTenantsAsync(DateTime? from = null, DateTime? to = null)
     {
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
 
         return await Queries.TenantsAsync(feedDbContext, from, to).ToListAsync();
     }

@@ -147,7 +147,7 @@ public class InvitationLinkHelper
 
     private async Task<AuditEvent> GetLinkVisitMessageAsync(string email, string key)
     {
-        using var context = _dbContextFactory.CreateDbContext();
+        await using var context = _dbContextFactory.CreateDbContext();
         
         var target = _messageTarget.Create(email);
         var description = JsonConvert.SerializeObject(new[] { key });

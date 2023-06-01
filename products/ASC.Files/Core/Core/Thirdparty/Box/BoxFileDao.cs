@@ -78,7 +78,7 @@ internal class BoxFileDao : ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>
         }
 
         var tempPath = uploadSession.GetItemOrDefault<string>("TempPath");
-        using (var fs = new FileStream(tempPath, FileMode.Append))
+        await using (var fs = new FileStream(tempPath, FileMode.Append))
         {
             await stream.CopyToAsync(fs);
         }
@@ -87,7 +87,7 @@ internal class BoxFileDao : ThirdPartyFileDao<BoxFile, BoxFolder, BoxItem>
 
         if (uploadSession.BytesUploaded == uploadSession.BytesTotal)
         {
-            using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
+            await using var fs = new FileStream(uploadSession.GetItemOrDefault<string>("TempPath"),
                                            FileMode.Open, FileAccess.Read, System.IO.FileShare.None, 4096, FileOptions.DeleteOnClose);
             uploadSession.File = await SaveFileAsync(uploadSession.File, fs);
         }

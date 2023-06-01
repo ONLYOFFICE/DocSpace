@@ -482,7 +482,7 @@ public class FileUtility
                 return _extsConvertible;
             }
 
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             var list = await Queries.FoldersAsync(filesDbContext).ToListAsync();
 
             foreach (var item in list)

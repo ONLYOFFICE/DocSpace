@@ -619,7 +619,7 @@ public class FileConverter
         try
         {
             using var response = await httpClient.SendAsync(request);
-            using var convertedFileStream = new ResponseStream(response);
+            await using var convertedFileStream = new ResponseStream(response);
             newFile.ContentLength = convertedFileStream.Length;
             newFile = await fileDao.SaveFileAsync(newFile, convertedFileStream);
         }

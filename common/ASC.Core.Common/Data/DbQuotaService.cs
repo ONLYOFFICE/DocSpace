@@ -39,7 +39,7 @@ class DbQuotaService : IQuotaService
 
     public async Task<IEnumerable<TenantQuota>> GetTenantQuotasAsync()
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        await using var coreDbContext = _dbContextFactory.CreateDbContext();
         return await coreDbContext.Quotas
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
             .ToListAsync();
@@ -47,7 +47,7 @@ class DbQuotaService : IQuotaService
 
     public async Task<TenantQuota> GetTenantQuotaAsync(int id)
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        await using var coreDbContext = _dbContextFactory.CreateDbContext();
         return await coreDbContext.Quotas
             .Where(r => r.Tenant == id)
             .ProjectTo<TenantQuota>(_mapper.ConfigurationProvider)
@@ -58,7 +58,7 @@ class DbQuotaService : IQuotaService
     {
         ArgumentNullException.ThrowIfNull(quota);
 
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        await using var coreDbContext = _dbContextFactory.CreateDbContext();
         await coreDbContext.AddOrUpdateAsync(q => q.Quotas, _mapper.Map<TenantQuota, DbQuota>(quota));
         await coreDbContext.SaveChangesAsync();
 
@@ -67,7 +67,7 @@ class DbQuotaService : IQuotaService
 
     public async Task RemoveTenantQuotaAsync(int id)
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        await using var coreDbContext = _dbContextFactory.CreateDbContext();
 
         var quota = await Queries.QuotaAsync(coreDbContext, id);
 
@@ -83,7 +83,7 @@ class DbQuotaService : IQuotaService
     {
         ArgumentNullException.ThrowIfNull(row);
 
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        await using var coreDbContext = _dbContextFactory.CreateDbContext();
         var dbTenantQuotaRow = _mapper.Map<TenantQuotaRow, DbQuotaRow>(row);
         dbTenantQuotaRow.UserId = row.UserId;
 
@@ -115,7 +115,7 @@ class DbQuotaService : IQuotaService
 
     public async Task<IEnumerable<TenantQuotaRow>> FindUserQuotaRowsAsync(int tenantId, Guid userId)
     {
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        await using var coreDbContext = _dbContextFactory.CreateDbContext();
         var q = coreDbContext.QuotaRows.Where(r => r.UserId == userId);
 
         if (tenantId != Tenant.DefaultTenant)

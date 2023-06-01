@@ -115,8 +115,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         if (filesId.Any() || foldersId.Any())
         {
-
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             var fromQuery = await FromQueryAsync(Queries.TagsBySubjectAsync(filesDbContext, TenantID, subject, tagType, filesId, foldersId)).ToListAsync();
 
             return fromQuery
@@ -148,7 +147,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         if (filesId.Any() || foldersId.Any())
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             var fromQuery = await FromQueryAsync(Queries.TagsBySubjectAsync(filesDbContext, TenantID, subject, tagType, filesId, foldersId)).ToListAsync();
 
             return fromQuery
@@ -255,7 +254,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
     public async Task<TagInfo> SaveTagInfoAsync(TagInfo tagInfo)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var tagDb = _mapper.Map<TagInfo, DbFilesTag>(tagInfo);
         tagDb.TenantId = TenantID;
 
@@ -284,13 +283,13 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         await _semaphore.WaitAsync();
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
             await DeleteTagsBeforeSave();
 
             var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
@@ -327,13 +326,13 @@ internal abstract class BaseTagDao<T> : AbstractDao
         {
             await _semaphore.WaitAsync();
 
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
             await strategy.ExecuteAsync(async () =>
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = await filesDbContext.Database.BeginTransactionAsync();
+                await using var filesDbContext = _dbContextFactory.CreateDbContext();
+                await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
                 await DeleteTagsBeforeSave();
 
@@ -358,7 +357,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
     private async Task DeleteTagsBeforeSave()
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var date = _tenantUtil.DateTimeNow().AddMonths(-1);
         var mustBeDeleted = Queries.MustBeDeletedFilesAsync(filesDbContext, TenantID, date);
 
@@ -372,7 +371,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
     private async Task<Tag> SaveTagAsync(Tag t, Dictionary<string, int> cacheTagId, DateTime createOn, Guid createdBy = default)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var cacheTagIdKey = string.Join("/", new[] { TenantID.ToString(), t.Owner.ToString(), t.Name, ((int)t.Type).ToString(CultureInfo.InvariantCulture) });
 
@@ -427,13 +426,13 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         await _semaphore.WaitAsync();
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             var createOn = _tenantUtil.DateTimeToUtc(_tenantUtil.DateTimeNow());
 
@@ -471,7 +470,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
             return;
         }
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var mappedId = (await MappingIDAsync(tag.EntryId)).ToString();
         var tagId = tag.Id;
         var tagEntryType = tag.EntryType;
@@ -490,13 +489,13 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
         await _semaphore.WaitAsync();
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
         await strategy.ExecuteAsync(async () =>
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
-            using var tx = await filesDbContext.Database.BeginTransactionAsync();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var tx = await filesDbContext.Database.BeginTransactionAsync();
 
             foreach (var t in tags)
             {
@@ -520,13 +519,13 @@ internal abstract class BaseTagDao<T> : AbstractDao
         {
             await _semaphore.WaitAsync();
 
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             var strategy = filesDbContext.Database.CreateExecutionStrategy();
 
             await strategy.ExecuteAsync(async () =>
             {
-                using var filesDbContext = _dbContextFactory.CreateDbContext();
-                using var tx = await filesDbContext.Database.BeginTransactionAsync();
+                await using var filesDbContext = _dbContextFactory.CreateDbContext();
+                await using var tx = await filesDbContext.Database.BeginTransactionAsync();
                 await RemoveTagInDbAsync(tag);
 
                 await tx.CommitAsync();
@@ -545,7 +544,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
     public async Task RemoveTagsAsync(FileEntry<T> entry, IEnumerable<int> tagsIds)
     {
         var entryId = (entry.Id is int fid ? MappingIDAsync(fid) : await MappingIDAsync(entry.Id)).ToString();
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         await Queries.DeleteTagLinksAsync(filesDbContext, TenantID, tagsIds, entryId, entry.FileEntryType);
 
@@ -558,7 +557,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
 
     public async Task RemoveTagsAsync(IEnumerable<int> tagsIds)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var toDeleteTags = await Queries.TagsToDeleteAsync(filesDbContext, TenantID, tagsIds).ToListAsync();
         var ids = toDeleteTags.Select(r => r.Id);
@@ -585,7 +584,7 @@ internal abstract class BaseTagDao<T> : AbstractDao
             return;
         }
 
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
 
         var id = await Queries.FirstTagIdAsync(filesDbContext, TenantID, tag.Owner, tag.Name, tag.Type);
 

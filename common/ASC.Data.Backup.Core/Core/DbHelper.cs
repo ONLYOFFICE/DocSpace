@@ -161,7 +161,7 @@ public class DbHelper : IDisposable
 
     public async Task SetTableAsync(DataTable table)
     {
-        using var tx = _connect.BeginTransaction();
+        await using var tx = _connect.BeginTransaction();
         try
         {
             if ("tenants_tenants".Equals(table.TableName, StringComparison.InvariantCultureIgnoreCase))

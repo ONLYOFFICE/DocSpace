@@ -40,7 +40,7 @@ class DbAzService : IAzService
 
     public async Task<IEnumerable<AzRecord>> GetAcesAsync(int tenant, DateTime from)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
 
         // row with tenant = -1 - common for all tenants, but equal row with tenant != -1 escape common row for the portal
         var commonAces = await
@@ -108,13 +108,13 @@ class DbAzService : IAzService
 
     private async Task<bool> ExistEscapeRecordAsync(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.AnyAclAsync(userDbContext, Tenant.DefaultTenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
     }
 
     private async Task DeleteRecordAsync(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
         var record = await Queries.AclAsync(userDbContext, r.Tenant, r.Subject, r.Action, r.Object ?? string.Empty, r.AceType);
 
         if (record != null)
@@ -126,7 +126,7 @@ class DbAzService : IAzService
 
     private async Task InsertRecordAsync(AzRecord r)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
         await userDbContext.AddOrUpdateAsync(q=> q.Acl, _mapper.Map<AzRecord, Acl>(r));
         await userDbContext.SaveChangesAsync();
     }

@@ -77,7 +77,7 @@ public class NotifyCleanerService : BackgroundService
             var date = DateTime.UtcNow.AddDays(-_notifyServiceCfg.StoreMessagesDays);
 
             using var scope = _scopeFactory.CreateScope();
-            using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
+            await using var dbContext = scope.ServiceProvider.GetService<IDbContextFactory<NotifyDbContext>>().CreateDbContext();
 
             var info = await Queries.NotifyInfosAsync(dbContext, date).ToListAsync();
             var queue = await Queries.NotifyQueuesAsync(dbContext, date).ToListAsync();

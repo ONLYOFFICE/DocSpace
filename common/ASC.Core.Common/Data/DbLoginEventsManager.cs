@@ -65,7 +65,7 @@ public class DbLoginEventsManager
     {
         if (id < 0) return null;
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
         
         return await loginEventContext.LoginEvents.FindAsync(id);
     }
@@ -74,7 +74,7 @@ public class DbLoginEventsManager
     {
         var date = DateTime.UtcNow.AddYears(-1);
 
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         var loginInfo = await Queries.LoginEventsAsync(loginEventContext, tenantId, userId, _loginActions, date).ToListAsync();
 
@@ -83,7 +83,7 @@ public class DbLoginEventsManager
 
     public async Task LogOutEventAsync(int loginEventId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await Queries.DeleteLoginEventsAsync(loginEventContext, loginEventId);
 
@@ -92,7 +92,7 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnectionsAsync(int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await Queries.DeleteLoginEventsByUserIdAsync(loginEventContext, tenantId, userId);
 
@@ -101,14 +101,14 @@ public class DbLoginEventsManager
 
     public async Task LogOutAllActiveConnectionsForTenantAsync(int tenantId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await Queries.UpdateLoginEventsByTenantIdAsync(loginEventContext, tenantId);
     }
 
     public async Task LogOutAllActiveConnectionsExceptThisAsync(int loginEventId, int tenantId, Guid userId)
     {
-        using var loginEventContext = _dbContextFactory.CreateDbContext();
+        await using var loginEventContext = _dbContextFactory.CreateDbContext();
 
         await Queries.UpdateLoginEventsAsync(loginEventContext, tenantId, userId, loginEventId);
 

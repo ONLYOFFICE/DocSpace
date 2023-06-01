@@ -94,7 +94,7 @@ public class AbstractDao
 
     protected async Task GetRecalculateFilesCountUpdateAsync(int folderId)
     {
-        using var filesDbContext = _dbContextFactory.CreateDbContext();
+        await using var filesDbContext = _dbContextFactory.CreateDbContext();
         var folders = Queries.FoldersAsync(filesDbContext, TenantID, folderId);
 
         await foreach (var f in folders)
@@ -148,7 +148,7 @@ public class AbstractDao
         }
         else
         {
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             result = await Queries.IdAsync(filesDbContext, TenantID, id.ToString());
         }
 
@@ -161,7 +161,7 @@ public class AbstractDao
                 TenantId = TenantID
             };
 
-            using var filesDbContext = _dbContextFactory.CreateDbContext();
+            await using var filesDbContext = _dbContextFactory.CreateDbContext();
             await filesDbContext.AddOrUpdateAsync(r => r.ThirdpartyIdMapping, newItem);
             await filesDbContext.SaveChangesAsync();
         }

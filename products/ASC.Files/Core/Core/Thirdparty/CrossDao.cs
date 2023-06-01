@@ -82,9 +82,9 @@ internal class CrossDao //Additional SharpBox
         fromFile.Id = fromConverter(fromFile.Id);
 
         var mustConvert = !string.IsNullOrEmpty(fromFile.ConvertedType);
-        using (var fromFileStream = mustConvert
-                                        ? await _fileConverter.ExecAsync(fromFile)
-                                        : await fromFileDao.GetFileStreamAsync(fromFile))
+        await using (var fromFileStream = mustConvert
+                         ? await _fileConverter.ExecAsync(fromFile)
+                         : await fromFileDao.GetFileStreamAsync(fromFile))
         {
             toFile.ContentLength = fromFileStream.CanSeek ? fromFileStream.Length : fromFile.ContentLength;
             toFile = await toFileDao.SaveFileAsync(toFile, fromFileStream);

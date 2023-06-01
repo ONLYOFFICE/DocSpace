@@ -47,7 +47,7 @@ public class GeolocationHelper
     {
         try
         {
-            using var dbContext = _creatorDbContext.CreateDbContext<CustomDbContext>(nameConnectionString: "teamlabsite");
+            await using var dbContext = _creatorDbContext.CreateDbContext<CustomDbContext>(nameConnectionString: "teamlabsite");
             var ipformatted = FormatIP(ip);
             var q = await dbContext.DbipLocation
                 .Where(r => r.IPStart.CompareTo(ipformatted) <= 0)

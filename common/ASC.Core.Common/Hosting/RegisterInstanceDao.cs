@@ -42,7 +42,7 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
     public async Task AddOrUpdateAsync(InstanceRegistration obj)
     {
-        using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
+        await using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
         var inst = await instanceRegistrationContext.InstanceRegistrations.FindAsync(obj.InstanceRegistrationId);
 
         if (inst == null)
@@ -83,13 +83,13 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
     public async Task<IEnumerable<InstanceRegistration>> GetAllAsync()
     {
-        using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
-        return await Queries.GetInstanceRegistrationsAsync(instanceRegistrationContext, typeof(T).GetFormattedName()).ToListAsync();
+        await using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
+        return await Queries.InstanceRegistrationsAsync(instanceRegistrationContext, typeof(T).GetFormattedName()).ToListAsync();
     }
 
     public async Task DeleteAsync(string instanceId)
     {
-        using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
+        await using var instanceRegistrationContext = _dbContextFactory.CreateDbContext();
         var item = await instanceRegistrationContext.InstanceRegistrations.FindAsync(instanceId);
 
         if (item == null)
@@ -116,10 +116,11 @@ public class RegisterInstanceDao<T> : IRegisterInstanceDao<T> where T : IHostedS
 
 }
 
- Queries
-{
-    public static readonly Func<InstanceRegistrationContext, string, IAsyncEnumerable<InstanceRegistration>> GetInstanceRegistrationsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
-    (InstanceRegistrationContext ctx, string workerTypeName) =>
-        ctx.InstanceRegistrations
-                .Where(x => x.WorkerTypeName == workerTypeName));
-}
+ static file class Queries
+ {
+     public static readonly Func<InstanceRegistrationContext, string, IAsyncEnumerable<InstanceRegistration>>
+         InstanceRegistrationsAsync = Microsoft.EntityFrameworkCore.EF.CompileAsyncQuery(
+             (InstanceRegistrationContext ctx, string workerTypeName) =>
+                 ctx.InstanceRegistrations
+                     .Where(x => x.WorkerTypeName == workerTypeName));
+ }

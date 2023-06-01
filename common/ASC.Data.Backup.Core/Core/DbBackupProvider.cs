@@ -183,7 +183,7 @@ public class DbBackupProvider : IBackupProvider
                 }
             }
 
-            using (var file = _tempStream.Create())
+            await using (var file = _tempStream.Create())
             {
                 dataTable.WriteXml(file, XmlWriteMode.WriteSchema);
                 await writer.WriteEntryAsync($"{Name}\\{connectionString.Name}\\{table}".ToLower(), file);
@@ -224,7 +224,7 @@ public class DbBackupProvider : IBackupProvider
 
             if (dbElement.Element(table) != null)
             {
-                using (var stream = reader.GetEntry($"{Name}\\{dbName}\\{table}".ToLower()))
+                await using (var stream = reader.GetEntry($"{Name}\\{dbName}\\{table}".ToLower()))
                 {
                     var data = new DataTable();
                     data.ReadXml(stream);

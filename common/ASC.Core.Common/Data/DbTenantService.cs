@@ -63,7 +63,7 @@ public class DbTenantService : ITenantService
 
     public async Task<IEnumerable<Tenant>> GetTenantsAsync(DateTime from, bool active = true)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         var q = tenantDbContext.Tenants.AsQueryable();
 
         if (active)
@@ -81,7 +81,7 @@ public class DbTenantService : ITenantService
 
     public async Task<IEnumerable<Tenant>> GetTenantsAsync(List<int> ids)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         return await tenantDbContext.Tenants
             .Where(r => ids.Contains(r.Id) && r.Status == TenantStatus.Active)
@@ -93,8 +93,8 @@ public class DbTenantService : ITenantService
     {
         ArgumentNullOrEmptyException.ThrowIfNullOrEmpty(login);
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
-        using var userDbContext = _userDbContextFactory.CreateDbContext();//TODO: remove
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _userDbContextFactory.CreateDbContext();//TODO: remove
         IQueryable<TenantUserSecurity> query() => tenantDbContext.Tenants
                 .Where(r => r.Status == TenantStatus.Active)
                 .Join(userDbContext.Users, r => r.Id, r => r.Tenant, (tenant, user) => new
@@ -150,7 +150,7 @@ public class DbTenantService : ITenantService
 
     public async Task<Tenant> GetTenantAsync(int id)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return await tenantDbContext.Tenants
             .Where(r => r.Id == id)
             .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
@@ -159,7 +159,7 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenant(int id)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return tenantDbContext.Tenants
             .Where(r => r.Id == id)
             .ProjectTo<Tenant>(_mapper.ConfigurationProvider)
@@ -172,7 +172,7 @@ public class DbTenantService : ITenantService
 
         domain = domain.ToLowerInvariant();
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         return await tenantDbContext.Tenants
             .Where(r => r.Alias == domain || r.MappedDomain == domain)
@@ -188,7 +188,7 @@ public class DbTenantService : ITenantService
 
         domain = domain.ToLowerInvariant();
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         return tenantDbContext.Tenants
             .Where(r => r.Alias == domain || r.MappedDomain == domain)
@@ -200,7 +200,7 @@ public class DbTenantService : ITenantService
 
     public Tenant GetTenantForStandaloneWithoutAlias(string ip)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         return tenantDbContext.Tenants
             .OrderBy(a => a.Status)
@@ -211,7 +211,7 @@ public class DbTenantService : ITenantService
 
     public async Task<Tenant> GetTenantForStandaloneWithoutAliasAsync(string ip)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         return await tenantDbContext.Tenants
             .OrderBy(a => a.Status)
@@ -224,7 +224,7 @@ public class DbTenantService : ITenantService
     {
         ArgumentNullException.ThrowIfNull(tenant);
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         if (!string.IsNullOrEmpty(tenant.MappedDomain))
         {
@@ -289,7 +289,7 @@ public class DbTenantService : ITenantService
     {
         var postfix = auto ? "_auto_deleted" : "_deleted";
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
 
         var alias = await Queries.GetAliasAsync(tenantDbContext, id);
 
@@ -310,14 +310,14 @@ public class DbTenantService : ITenantService
 
     public async Task<IEnumerable<TenantVersion>> GetTenantVersionsAsync()
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.TenantVersionsAsync(tenantDbContext).ToListAsync();
     }
 
 
     public async Task<byte[]> GetTenantSettingsAsync(int tenant, string key)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.SettingValueAsync(tenantDbContext, tenant, key);
     }
 
@@ -330,7 +330,7 @@ public class DbTenantService : ITenantService
 
     public async Task SetTenantSettingsAsync(int tenant, string key, byte[] data)
     {
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         if (data == null || data.Length == 0)
         {
             var settings = await Queries.CoreSettingsAsync(tenantDbContext, tenant, key);
@@ -395,7 +395,7 @@ public class DbTenantService : ITenantService
             _tenantDomainValidator.ValidateDomainCharacters(domain);
         }
 
-        using var tenantDbContext = _dbContextFactory.CreateDbContext();
+        await using var tenantDbContext = _dbContextFactory.CreateDbContext();
         // forbidden or exists
         var exists = false;
 

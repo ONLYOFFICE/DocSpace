@@ -54,7 +54,7 @@ public class FeedReadedDataProvider
 
     public async Task<DateTime> GetTimeReadedAsync(Guid user, string module, int tenant)
     {
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.MaxTimeStampAsync(feedDbContext, tenant, user, module);
     }
 
@@ -88,7 +88,7 @@ public class FeedReadedDataProvider
             Tenant = tenant
         };
 
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
         await feedDbContext.AddOrUpdateAsync(q => q.FeedReaded, feedReaded);
         await feedDbContext.SaveChangesAsync();
     }
@@ -100,7 +100,7 @@ public class FeedReadedDataProvider
 
     public async Task<IEnumerable<string>> GetReadedModulesAsync(Guid user, int tenant, DateTime fromTime)
     {
-        using var feedDbContext = _dbContextFactory.CreateDbContext();
+        await using var feedDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.ModulesAsync(feedDbContext, tenant, user, fromTime).ToListAsync();
     }
 

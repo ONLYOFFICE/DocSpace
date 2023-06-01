@@ -1125,7 +1125,7 @@ public class EntryManager
             linkedFile.Comment = FilesCommonResource.CommentCreateFillFormDraft;
             linkedFile.Encrypted = sourceFile.Encrypted;
 
-            using (var stream = await sourceFileDao.GetFileStreamAsync(sourceFile))
+            await using (var stream = await sourceFileDao.GetFileStreamAsync(sourceFile))
             {
                 linkedFile.ContentLength = stream.CanSeek ? stream.Length : sourceFile.ContentLength;
                 linkedFile = await fileDao.SaveFileAsync(linkedFile, stream);
@@ -1304,7 +1304,7 @@ public class EntryManager
                 Encrypted = draft.Encrypted,
             };
 
-            using (var stream = await fileDraftDao.GetFileStreamAsync(draft))
+            await using (var stream = await fileDraftDao.GetFileStreamAsync(draft))
             {
                 submitFile.ContentLength = stream.CanSeek ? stream.Length : draft.ContentLength;
                 submitFile = await fileSourceDao.SaveFileAsync(submitFile, stream);
@@ -1479,7 +1479,7 @@ public class EntryManager
 
                 var httpClient = _clientFactory.CreateClient();
                 using var response = await httpClient.SendAsync(request);
-                using var editedFileStream = new ResponseStream(response);
+                await using var editedFileStream = new ResponseStream(response);
                 await editedFileStream.CopyToAsync(tmpStream);
             }
             tmpStream.Position = 0;
@@ -1657,7 +1657,7 @@ public class EntryManager
             newFile.Encrypted = fromFile.Encrypted;
             newFile.ThumbnailStatus = fromFile.ThumbnailStatus == Thumbnail.Created ? Thumbnail.Creating : Thumbnail.Waiting;
 
-            using (var stream = await fileDao.GetFileStreamAsync(fromFile))
+            await using (var stream = await fileDao.GetFileStreamAsync(fromFile))
             {
                 newFile.ContentLength = stream.CanSeek ? stream.Length : fromFile.ContentLength;
                 newFile = await fileDao.SaveFileAsync(newFile, stream);

@@ -38,14 +38,14 @@ public class DbRadicale
 
     public async Task SaveCardDavUserAsync(int tenant, Guid id)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
         await userDbContext.AddOrUpdateAsync(q => q.UsersDav, new UserDav() { TenantId = tenant, UserId = id });
         await userDbContext.SaveChangesAsync();
     }
 
     public async Task RemoveCardDavUserAsync(int tenant, Guid id)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
         var userDav = await Queries.UserDavAsync(userDbContext, tenant, id);
         if (userDav != null)
         {
@@ -56,7 +56,7 @@ public class DbRadicale
 
     public async Task<bool> IsExistCardDavUserAsync(int tenant, Guid id)
     {
-        using var userDbContext = _dbContextFactory.CreateDbContext();
+        await using var userDbContext = _dbContextFactory.CreateDbContext();
         return await Queries.UserDavAnyAsync(userDbContext, tenant, id);
     }
 }

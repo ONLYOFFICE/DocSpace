@@ -44,7 +44,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
     {
         var tid = transactionId.ToString();
 
-        using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
+        await using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
 
         var result = Queries.IntegrationEventLogEntriesAsync(integrationEventLogContext, tid);
 
@@ -66,7 +66,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
 
         var eventLogEntry = new IntegrationEventLogEntry(@event, transaction.TransactionId);
 
-        using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
+        await using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
         integrationEventLogContext.Database.UseTransaction(transaction.GetDbTransaction());
         integrationEventLogContext.IntegrationEventLogs.Add(eventLogEntry);
 
@@ -90,7 +90,7 @@ public class IntegrationEventLogService : IIntegrationEventLogService
 
     private async Task UpdateEventStatusAsync(Guid eventId, EventStateEnum status)
     {
-        using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
+        await using var integrationEventLogContext = _dbContextFactory.CreateDbContext();
         var eventLogEntry = await Queries.IntegrationEventLogEntryAsync(integrationEventLogContext, eventId);
         eventLogEntry.State = status;
 

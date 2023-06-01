@@ -114,7 +114,7 @@ public class LicenseReader
                 temp = false;
             }
 
-            using (var licenseStream = GetLicenseStream(temp))
+            await using (var licenseStream = GetLicenseStream(temp))
             using (var reader = new StreamReader(licenseStream))
             {
                 var licenseJsonString = reader.ReadToEnd();

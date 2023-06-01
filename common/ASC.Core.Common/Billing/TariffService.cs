@@ -781,7 +781,7 @@ public class TariffService : ITariffService
     {
         const int tenant = Tenant.DefaultTenant;
 
-        using var coreDbContext = _dbContextFactory.CreateDbContext();
+        await using var coreDbContext = _dbContextFactory.CreateDbContext();
         await Queries.UpdateTariffs(coreDbContext, tenant);
         
         ClearCache(tenant);

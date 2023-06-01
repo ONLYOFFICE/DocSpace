@@ -237,7 +237,7 @@ public class SettingsManager
                 return settings;
             }
 
-            using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+            await using var webstudioDbContext = _dbContextFactory.CreateDbContext();
             var result = await Queries.DataAsync(webstudioDbContext, tenantId, def.ID, userId);
 
             if (result != null)
@@ -302,7 +302,7 @@ public class SettingsManager
     {
         ArgumentNullException.ThrowIfNull(settings);
 
-        using var webstudioDbContext = _dbContextFactory.CreateDbContext();
+        await using var webstudioDbContext = _dbContextFactory.CreateDbContext();
 
         try
         {
