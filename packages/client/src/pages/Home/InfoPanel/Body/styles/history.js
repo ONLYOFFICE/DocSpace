@@ -108,12 +108,24 @@ const StyledHistoryBlockMessage = styled.div`
   font-size: 13px;
   line-height: 20px;
 
+  display: flex;
+  gap: 4px;
+
   strong {
     font-weight: 600;
   }
 
-  .folderLabel {
+  .main-message {
+    width: max-content;
+    white-space: nowrap;
+  }
+
+  .folder-label {
+    max-width: 100%;
     color: ${(props) => props.theme.infoPanel.history.locationIconColor};
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
   }
 `;
 
