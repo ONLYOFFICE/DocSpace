@@ -133,7 +133,8 @@ const Navigation = ({
     showRootFolderTitle &&
     !isRootFolder &&
     navigationItems &&
-    !isSmallTabletUtils();
+    !isSmallTabletUtils() &&
+    !isMobileOnly;
 
   const navigationTitleNode = (
     <Text
